@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,15 +47,14 @@ class Item_DeviceGraphicCard extends Item_Devices
     public static function getSpecificities($specif = '')
     {
 
-        return ['memory' => ['long name'  => sprintf(
-            __('%1$s (%2$s)'),
-            _n('Memory', 'Memories', 1),
-            __('Mio')
-        ),
-            'short name' => _n('Memory', 'Memories', 1),
-            'size'       => 10,
-            'id'         => 20,
-        ],
+        return [
+            'memory' => [
+                'long name'  => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
+                'short name' => _n('Memory', 'Memories', 1),
+                'size'       => 10,
+                'id'         => 20,
+                'datatype'   => 'integer',
+            ],
             'serial' => parent::getSpecificities('serial'),
             'otherserial' => parent::getSpecificities('otherserial'),
             'locations_id' => parent::getSpecificities('locations_id'),

@@ -63,9 +63,9 @@
         "symfony/polyfill-iconv": "^1.27",
         "symfony/polyfill-mbstring": "^1.27",
         "symfony/polyfill-php80": "^1.27",
-        "symfony/polyfill-php81": "^1.26",
+        "symfony/polyfill-php81": "^1.27",
         "symfony/polyfill-php82": "^1.27",
-        "tecnickcom/tcpdf": "^6.5",
+        "tecnickcom/tcpdf": "^6.6",
         "twig/string-extra": "^3.5",
         "twig/twig": "^3.5",
         "wapmorgan/unified-archive": "^1.1"
@@ -125,12 +125,14 @@
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true"
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true"
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true"
         ],
         "build": [
             "bin/console dependencies install && bin/console locales:compile"

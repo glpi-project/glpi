@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -445,6 +445,14 @@ class Printer extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '73',
+            'table'              => 'glpi_snmpcredentials',
+            'field'              => 'name',
+            'name'               => SNMPCredential::getTypeName(1),
+            'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
             'id'                 => '19',
             'table'              => $this->getTable(),
             'field'              => 'date_mod',
@@ -515,7 +523,7 @@ class Printer extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'memory_size',
             'name'               => _n('Memory', 'Memories', 1),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [

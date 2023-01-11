@@ -7,6 +7,9 @@ on:
   # Enable manual run
   workflow_dispatch:
 
+permissions:
+  issues: write
+
 jobs:
   audit:
     # Do not run scheduled audit on tier repositories

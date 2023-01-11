@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1862,6 +1862,15 @@ class Ticket extends DbTestCase
         $this->setEntity('Root entity', true);
         $ticket = getItemByTypeName('Ticket', '_ticket01');
 
+        $task = new \TicketTask();
+        $this->integer(
+            (int)$task->add([
+                'tickets_id' => $ticket->getID(),
+                'content'    => 'A task to check cloning',
+                'actiontime' => 3600,
+            ])
+        )->isGreaterThan(0);
+
         $date = date('Y-m-d H:i:s');
         $_SESSION['glpi_currenttime'] = $date;
 
@@ -1871,6 +1880,9 @@ class Ticket extends DbTestCase
 
         $clonedTicket = new \Ticket();
         $this->boolean($clonedTicket->getFromDB($added))->isTrue();
+
+         // Check timeline items are not cloned
+        $this->integer((int)$clonedTicket->getTimelineItems())->isEqualTo(0);
 
         $fields = $ticket->fields;
 
@@ -1992,7 +2004,7 @@ class Ticket extends DbTestCase
             )->isEqualto(true);
 
             $this->integer(
-                (int)$tkt->getTimelinePosition($tickets_id, 'Solution', $uid)
+                (int)$tkt->getTimelinePosition($tickets_id, 'ITILSolution', $uid)
             )->isEqualTo($user['pos']);
         }
     }
@@ -2063,7 +2075,7 @@ class Ticket extends DbTestCase
                         $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_RIGHT);
                     }
                     break;
-                case 'Solution':
+                case 'ITILSolution':
                     $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_RIGHT);
                     break;
             }

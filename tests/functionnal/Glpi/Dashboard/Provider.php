@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,9 @@
 namespace tests\units\Glpi\Dashboard;
 
 use DbTestCase;
+use Reminder;
+use Reminder_User;
+use User;
 
 /* Test for inc/dashboard/provider.class.php */
 
@@ -314,5 +317,38 @@ class Provider extends DbTestCase
     {
         $this->array(\Glpi\Dashboard\Provider::formatMonthyearDates($monthyear))
          ->isEqualTo($expected);
+    }
+
+    protected function testGetArticleListReminderProvider(): iterable
+    {
+        $this->login();
+
+        // Create one reminder that will be visible because we are its author
+        $reminder = $this->createItem(Reminder::class, ['name' => 'test']);
+        yield ['expected' => 1];
+
+        // Change author to someone else
+        $tech = getItemByTypeName(User::class, 'tech');
+        $this->updateItem($reminder::getType(), $reminder->getID(), [
+            'users_id'  => $tech->getID()
+        ]);
+        yield ['expected' => 0];
+
+        // Allow our user through the visiblity criteria system
+        $self = getItemByTypeName(User::class, TU_USER);
+        $this->createItem(Reminder_User::class, [
+            'reminders_id' => $reminder->getID(),
+            'users_id' => $self->getID(),
+        ]);
+        yield ['expected' => 1];
+    }
+
+    /**
+     * @dataprovider testGetArticleListReminderProvider
+     */
+    public function testGetArticleListReminder(int $expected): void
+    {
+        $results = \Glpi\Dashboard\Provider::getArticleListReminder();
+        $this->integer($results['number'])->isEqualTo($expected);
     }
 }

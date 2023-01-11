@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -989,7 +989,6 @@ class Reminder extends CommonDBVisible implements
         $output .= "<table class='table table-striped card-table table-hover'>";
         $output .= "<thead>";
         $output .= "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
-        $output .= "</thead>";
 
         if (
             ($personal && self::canCreate())
@@ -1002,6 +1001,7 @@ class Reminder extends CommonDBVisible implements
         }
 
         $output .= "</div></th></tr>";
+        $output .= "</thead>";
 
         if ($nb) {
             $rand = mt_rand();

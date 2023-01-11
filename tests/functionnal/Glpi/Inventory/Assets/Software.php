@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -66,7 +66,7 @@ class Software extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Application", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Feodra Project", "comment": "GNU Image Manipulation Program", "_system_category": "Application", "operatingsystems_id": 0, "entities_id": 0, "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
+                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Application", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Fedora Project", "comment": "GNU Image Manipulation Program", "_system_category": "Application", "operatingsystems_id": 0, "entities_id": 0, "softwarecategories_id": "Application", "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
             ],
             [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -98,7 +98,7 @@ class Software extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "System Component", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Feodra Project", "comment": "GNU Image Manipulation Program", "_system_category": "System Component", "operatingsystems_id": 0, "entities_id": 0, "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
+                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "System Component", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Fedora Project", "comment": "GNU Image Manipulation Program", "_system_category": "System Component", "operatingsystems_id": 0, "entities_id": 0, "softwarecategories_id": "System Component", "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
             ]
         ];
     }
@@ -117,16 +117,8 @@ class Software extends AbstractInventoryAsset
         $asset->setExtraData((array)$json->content);
         $result = $asset->prepare();
 
-       //Manufacturer has been imported into db...
+        //Manufacturer has been imported into db...
         $expected = json_decode($expected);
-
-        $manu = new \Manufacturer();
-        $this->boolean($manu->getFromDbByCrit(['name' => $result[0]->publisher]))->isTrue();
-        $expected->manufacturers_id = $manu->fields['id'];
-
-        $softCate = new \SoftwareCategory();
-        $this->boolean($softCate->getFromDbByCrit(['name' => $result[0]->system_category]))->isTrue();
-        $expected->softwarecategories_id = $softCate->fields['id'];
 
         $this->object($result[0])->isEqualTo($expected);
     }
@@ -135,12 +127,12 @@ class Software extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no software linked to this computer
+        //first, check there are no software linked to this computer
         $sov = new \Item_SoftwareVersion();
         $this->boolean($sov->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A software version is already linked to computer!');
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -152,15 +144,10 @@ class Software extends AbstractInventoryAsset
         $asset->setExtraData((array)$json->content);
         $result = $asset->prepare();
         $expected = json_decode($expected['expected']);
-        $manu = new \Manufacturer();
-        $this->boolean($manu->getFromDbByCrit(['name' => $result[0]->publisher]))->isTrue();
-        $expected->manufacturers_id = $manu->fields['id'];
-        $softCate = new \SoftwareCategory();
-        $this->boolean($softCate->getFromDbByCrit(['name' => $result[0]->system_category]))->isTrue();
-        $expected->softwarecategories_id = $softCate->fields['id'];
+
         $this->object($result[0])->isEqualTo($expected);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->boolean($sov->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
@@ -170,7 +157,7 @@ class Software extends AbstractInventoryAsset
         $this->boolean($version->getFromDB($sov->fields['softwareversions_id']))->isTrue();
         $this->integer($version->fields['operatingsystems_id'])->isIdenticalTo(0);
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[1];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -181,7 +168,7 @@ class Software extends AbstractInventoryAsset
         $asset = new \Glpi\Inventory\Asset\Software($computer, $json->content->softwares);
         $osasset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
         $osasset->prepare();
-       //handle
+        //handle
         $osasset->handleLinks();
         $osasset->handle();
 
@@ -191,12 +178,6 @@ class Software extends AbstractInventoryAsset
         $asset->setExtraData($extra_data);
         $result = $asset->prepare();
         $expected = json_decode($expected['expected']);
-        $manu = new \Manufacturer();
-        $this->boolean($manu->getFromDbByCrit(['name' => $result[0]->publisher]))->isTrue();
-        $expected->manufacturers_id = $manu->fields['id'];
-        $softCate = new \SoftwareCategory();
-        $this->boolean($softCate->getFromDbByCrit(['name' => $result[0]->system_category]))->isTrue();
-        $expected->softwarecategories_id = $softCate->fields['id'];
         $this->object($result[0])->isEqualTo($expected);
 
        //handle
@@ -224,7 +205,7 @@ class Software extends AbstractInventoryAsset
         $asset = new \Glpi\Inventory\Asset\Software($computer2, $json->content->softwares);
         $osasset = new \Glpi\Inventory\Asset\OperatingSystem($computer2, (array)$json->content->operatingsystem);
         $osasset->prepare();
-       //handle
+        //handle
         $osasset->handleLinks();
         $osasset->handle();
 
@@ -234,7 +215,7 @@ class Software extends AbstractInventoryAsset
         $asset->setExtraData($extra_data);
         $result = $asset->prepare();
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->boolean($sov->getFromDbByCrit(['items_id' => $computer2->fields['id'], 'itemtype' => 'Computer']))
@@ -250,7 +231,6 @@ class Software extends AbstractInventoryAsset
         $soft = new \Software();
         $version = new \SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
-        $software_categorie = new \SoftwareCategory();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -289,8 +269,8 @@ class Software extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //software import behave differently: non-dynamic are not handled at all.
-       //create manually a computer
+        //software import behave differently: non-dynamic are not handled at all.
+        //create manually a computer
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
@@ -298,7 +278,7 @@ class Software extends AbstractInventoryAsset
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
-       //computer inventory knows only "gimp" and "php-cli" software
+        //computer inventory knows only "gimp" and "php-cli" software
         $this->doInventory($xml_source, true);
 
        //we have 2 software & versions
@@ -346,15 +326,15 @@ class Software extends AbstractInventoryAsset
         $iterator = $DB->request($criteria);
         $this->integer(count($iterator))->isIdenticalTo(1);
 
-       //we have 2 softwareversion items linked to the computer
+        //we have 2 softwareversion items linked to the computer
         $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($item_versions))->isIdenticalTo(2);
 
-       //software present in the inventory source are dynamic
+        //software present in the inventory source are dynamic
         $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($item_versions))->isIdenticalTo(2);
 
-       //Redo inventory, but with removed "php-cli" software and change softwareCategories
+        //Redo inventory, but with removed "php-cli" software and change softwareCategories
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -383,13 +363,16 @@ class Software extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have 2 software & versions
+        //we still have 2 software & versions
         $softs = $soft->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($softs))->isIdenticalTo(2);
         $versions = $version->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($versions))->isIdenticalTo(2);
 
-        //check that sofware still exist but with different softwarecategories
+        $categories_iterator = $DB->request(['FROM' => \SoftwareCategory::getTable()]);
+        $this->integer(count($categories_iterator))->isIdenticalTo(4);
+
+        //check that software still exist but with different softwarecategories
         $criteria = [
             'FROM' => \Software::getTable(),
             'LEFT JOIN' => [
@@ -408,11 +391,11 @@ class Software extends AbstractInventoryAsset
         $iterator = $DB->request($criteria);
         $this->integer(count($iterator))->isIdenticalTo(1);
 
-       //we now have 1 softwareversion items linked to the computer
+        //we now have 1 softwareversion items linked to the computer
         $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($item_versions))->isIdenticalTo(1);
 
-       //software present in the inventory source is still dynamic
+        //software present in the inventory source is still dynamic
         $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($item_versions))->isIdenticalTo(1);
     }

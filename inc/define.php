@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,7 +50,7 @@ if (!defined('GLPI_MARKETPLACE_PRERELEASES')) {
 
 define('GLPI_MIN_PHP', '8.0'); // Must also be changed in top of index.php
 define('GLPI_MAX_PHP', '8.2'); // Must also be changed in top of index.php
-define('GLPI_YEAR', '2022');
+define('GLPI_YEAR', '2023');
 
 //Define a global recipient address for email notifications
 //define('GLPI_FORCE_MAIL', 'me@localhost');
@@ -194,12 +194,12 @@ $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEqui
     'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
     'Certificate', 'Enclosure', 'PDU', 'Line',
     'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
-    'Appliance', 'DatabaseInstance', 'Cable'
+    'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged'
 ];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
     'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-    'Certificate'
+    'Certificate', 'Unmanaged'
 ];
 
 $CFG_GLPI["project_asset_types"]          = ['Computer', 'Monitor', 'NetworkEquipment',
@@ -468,7 +468,7 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
     'highcontrast_css', 'default_dashboard_central', 'default_dashboard_assets',
     'default_dashboard_helpdesk', 'default_dashboard_mini_ticket', 'default_central_tab',
     'fold_menu', 'fold_search', 'savedsearches_pinned', 'richtext_layout', 'timeline_order',
-    'itil_layout', 'toast_location'
+    'itil_layout', 'toast_location', 'timeline_action_btn_layout', 'timeline_date_format',
 ];
 
 $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract', 'Document',

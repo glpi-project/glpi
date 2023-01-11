@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -56,6 +56,16 @@ class ProblemTemplate extends ITILTemplate
             ProblemTemplateHiddenField::class,
             ProblemTemplateMandatoryField::class,
             ProblemTemplatePredefinedField::class,
+        ];
+    }
+
+    public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0)
+    {
+        $problem = new Problem();
+        return [
+            $problem->getSearchOptionIDByField('field', 'impactcontent', 'glpi_problems')  => 'impactcontent',
+            $problem->getSearchOptionIDByField('field', 'causecontent', 'glpi_problems')   => 'causecontent',
+            $problem->getSearchOptionIDByField('field', 'symptomcontent', 'glpi_problems') => 'symptomcontent',
         ];
     }
 }

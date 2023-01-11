@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2015-2023 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -215,8 +215,12 @@
             {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
             <div class="d-flex card-footer mx-n3 mb-n3">
                {% set pending_reasons %}
+                  {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason and not add_reopen %}
                   {% if get_current_interface() == 'central' and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) %}
-                     <span class="input-group-text bg-yellow-lt py-0 pe-0" id="pending-reasons-control-{{ rand }}">
+                     <span
+                        class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
+                        id="pending-reasons-control-{{ rand }}"
+                     >
                         <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
                               data-bs-toggle="tooltip" data-bs-placement="top" role="button">
                            <i class="fas fa-pause me-2"></i>
@@ -230,8 +234,12 @@
                            </label>
                         </span>
 
-                        {% if item.fields['status'] != constant('CommonITILObject::WAITING') %}
-                           <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
+                        {% if not has_pending_reason %}
+                           <div
+                              class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
+                              aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
+                              id="pending-reasons-setup-{{ rand }}"
+                           >
                               {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
                            </div>
                         {% endif %}

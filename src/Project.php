@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1997,7 +1997,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $required_project_fields = [
             'id', 'name', 'content', 'plan_start_date', 'plan_end_date', 'real_start_date',
-            'real_end_date', 'percent_done', 'projects_id', 'projectstates_id',
+            'real_end_date', 'percent_done', 'projects_id', 'projectstates_id', 'is_deleted'
         ];
         $request = [
             'SELECT' => [
@@ -2223,7 +2223,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 'id'              => "{$itemtype}-{$item['id']}",
                 'title'           => '<span class="pointer">' . $item['name'] . '</span>',
                 'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'] ?? "", false, true), 100),
-                'is_deleted'      => $item['is_deleted'] ?? false,
             ];
 
             $content = "<div class='kanban-plugin-content'>";
@@ -2284,7 +2283,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
             $card['_metadata'] = [];
             $metadata_values = ['name', 'content', 'is_milestone', 'plan_start_date', 'plan_end_date', 'real_start_date', 'real_end_date',
-                'planned_duration', 'effective_duration', 'percent_done'
+                'planned_duration', 'effective_duration', 'percent_done', 'is_deleted'
             ];
             foreach ($metadata_values as $metadata_value) {
                 if (isset($item[$metadata_value])) {
@@ -2501,6 +2500,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     'description' => _x('filters', 'The content of the item'),
                     'supported_prefixes' => ['!', '#']
                 ],
+                'deleted' => [
+                    'description' => _x('filters', 'If the item is deleted or not'),
+                    'supported_prefixes' => ['!']
+                ],
                 'team' => [
                     'description' => _x('filters', 'A team member for the item'),
                     'supported_prefixes' => ['!']
@@ -2657,6 +2660,37 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return true;
     }
 
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        $tab = [];
+
+        if (is_a($itemtype, CommonITILObject::class, true)) {
+            $link_table = Itil_Project::getTable();
+        } else {
+            $link_table = Item_Project::getTable();
+        }
+
+        $tab[] = [
+            'id'                 => '450',
+            'table'              => Project::getTable(),
+            'field'              => 'name',
+            'name'               => Project::getTypeName(1),
+            'massiveaction'      => false,
+            'searchtype'         => ['equals', 'notequals'],
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'           => 'items_id',
+                'beforejoin'         => [
+                    'table'              => $link_table,
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item'
+                    ]
+                ]
+            ]
+        ];
+
+        return $tab;
+    }
 
     public static function getIcon()
     {

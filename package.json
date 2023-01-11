@@ -70,32 +70,27 @@
     "scripts": {
         "build:pack": "webpack --config webpack.config.js",
         "build": "npm run build:pack",
-        "test": "jest --colors --config tests/js/jest.config.js ./tests/js/**"
+        "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js ./tests/js/**"
     },
     "devDependencies": {
-        "@babel/core": "^7.20.5",
-        "@babel/plugin-transform-modules-commonjs": "^7.19.6",
-        "@babel/plugin-transform-runtime": "^7.19.6",
-        "@babel/preset-env": "^7.20.2",
         "@testing-library/jest-dom": "^5.16.5",
-        "babel-jest": "^29.2.2",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^11.0.0",
-        "css-loader": "^6.7.2",
+        "css-loader": "^6.7.3",
         "csso-cli": "^4.0.1",
-        "eslint": "^8.28.0",
+        "eslint": "^8.31.0",
         "exports-loader": "^4.0.0",
         "glob": "^8.0.3",
         "jest": "^29.3.1",
         "jest-environment-jsdom": "^29.3.1",
         "jest-extended": "^3.2.0",
-        "mini-css-extract-plugin": "^2.7.1",
+        "mini-css-extract-plugin": "^2.7.2",
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
-        "stylelint": "^14.15.0",
+        "stylelint": "^14.16.1",
         "stylelint-config-standard-scss": "^6.1.0",
-        "terser": "^5.16.0",
+        "terser": "^5.16.1",
         "webpack": "^5.75.0",
-        "webpack-cli": "^5.0.0"
+        "webpack-cli": "^5.0.1"
     }
 }

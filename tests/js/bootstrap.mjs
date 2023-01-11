@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,10 @@
 
 // Bootstrap for all JS test modules
 
-window.$ = window.jQuery = require('jquery');
+await import('jquery').then((jquery) => {
+    window.$ = window.jQuery = jquery.default;
+});
+await import('@tabler/core');
 
 // Add a flag variable to know in other scripts if they are run in tests. Should not affect how they behave, just how functions/vars in non-modules are bound.
 window.GLPI_TEST_ENV = true;
@@ -155,4 +158,4 @@ class AjaxMock {
 }
 window.AjaxMock = new AjaxMock();
 
-require('../../js/common.js');
+await import('../../js/common.js');

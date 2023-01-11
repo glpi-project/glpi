@@ -1,0 +1,295 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set form_id = 'project_task_' ~ rand %}
+{% set content_field_id = 'content_' ~ rand %}
+{% set params = {
+    'formoptions': 'id="' ~ form_id ~ '"'
+} %}
+
+{% block form_fields %}
+
+    {{ fields.dropdownField(
+        'ProjectTaskTemplate',
+        'projecttasktemplates_id',
+        item.fields.projecttasktemplates_id,
+        'ProjectTaskTemplate'|itemtype_name,
+        {
+            'entity': item.getEntityID(),
+            'on_change': 'projecttasktemplate_update(this.value)'
+        }
+    ) }}
+
+    <script>
+        const form = $('#{{ form_id }}');
+        function projecttasktemplate_update(value) {
+            $.ajax({
+                url: CFG_GLPI.root_doc + "/ajax/projecttask.php",
+                type: "POST",
+                data: {
+                    projecttasktemplates_id: value
+                }
+            }).done(function(data) {
+                // Set simple inputs
+                form.find('input[name=name]').val(data.name);
+                form.find('textarea[name=comment]').val(data.comments);
+
+                // Set flatpickr dates
+                form.find('input[name=plan_start_date]').parent()[0]._flatpickr.setDate(data.plan_start_date);
+                form.find('input[name=plan_end_date]').parent()[0]._flatpickr.setDate(data.plan_end_date);
+                form.find('input[name=real_start_date]').parent()[0]._flatpickr.setDate(data.real_start_date);
+                form.find('input[name=real_end_date]').parent()[0]._flatpickr.setDate(data.real_end_date);
+
+                // Set tinymce
+                if (tasktinymce = tinymce.get("{{ content_field_id }}")) {
+                    tasktinymce.setContent(data.description);
+                }
+
+                // Set dropdowns and dates
+                form.find('select[name=projecttasks_id]').trigger("setValue", data.projecttasks_id);
+                form.find('select[name=projectstates_id]').trigger("setValue", data.projectstates_id);
+                form.find('select[name=projecttasktypes_id]').trigger("setValue", data.projecttasktypes_id);
+                form.find('select[name=percent_done]').trigger("setValue", data.percent_done);
+                form.find('select[name=is_milestone]').trigger("setValue", data.is_milestone);
+                form.find('select[name=effective_duration]').trigger("setValue", data.effective_duration);
+                form.find('select[name=planned_duration]').trigger("setValue", data.planned_duration);
+            });
+         }
+    </script>
+
+    {{ fields.nullField() }}
+
+    {% set project_link %}
+        <span class="col-form-label d-inline-flex">{{ parent.getLink()|raw }}</span>
+    {% endset %}
+    {{ fields.field(
+        '_project',
+        project_link|raw,
+        parent.getTypeName(),
+    ) }}
+
+    {% if item.isNewID(id) %}
+        <input type='hidden' name='projects_id' value='{{ projects_id }}'>
+        <input type='hidden' name='is_recursive' value='{{ recursive }}'>
+    {% endif %}
+
+    {{ fields.dropdownField(
+        'ProjectTask',
+        'projecttasks_id',
+        projecttasks_id,
+        __('As child of'),
+        {
+            'entity': item.getEntityID(),
+            'condition': {'glpi_projecttasks.projects_id': projects_id},
+            'used': [item.getID()],
+        }
+    ) }}
+
+    {{ fields.textField(
+        'name',
+        item.fields.name,
+        __('Name'),
+    ) }}
+
+    {{ fields.nullField() }}
+
+    {{ fields.dropdownField(
+        'ProjectState',
+        'projectstates_id',
+        item.fields.projectstates_id,
+        _x('item', 'State'),
+    ) }}
+
+    {{ fields.dropdownField(
+        'ProjectTaskType',
+        'projecttasktypes_id',
+        item.fields.projecttasktypes_id,
+        _n('Type', 'Types', 1),
+    ) }}
+
+    {{ fields.dropdownNumberField(
+        'percent_done',
+        item.fields.percent_done,
+        __('Percent done'),
+        {
+            'value': item.fields.percent_done,
+            'min': 0,
+            'max': 100,
+            'step': 5,
+            'unit': '%',
+         }|merge(item.fields.auto_percent_done ? {'specific_tags': {'disabled': 'disabled'}} : {})
+    ) }}
+
+    {% set tooltip %}
+        {% do call('Html::showToolTip', [
+            __('When automatic computation is active, percentage is computed based on the average of all child task percent done.')
+        ]) %}
+    {% endset %}
+    {{ fields.checkboxField(
+        'auto_percent_done',
+        item.fields.auto_percent_done,
+        __('Automatically calculate'),
+        {
+            'add_field_html': tooltip,
+        }
+    ) }}
+    <script>
+        form.find("input[name=auto_percent_done]").on('change', function() {
+            $("select[name='percent_done']").prop('disabled', $("input[name='auto_percent_done']").eq(1).prop('checked'));
+        });
+    </script>
+
+    {{ fields.dropdownYesNo(
+        'is_milestone',
+        item.fields.is_milestone,
+        __('Milestone'),
+    ) }}
+    <script>
+        form.find('select[name=is_milestone]').on('change', function() {
+            $('.is_milestone').toggleClass('d-none', Boolean(Number(this.value)));
+        });
+    </script>
+
+    {{ fields.nullField() }}
+
+    <div class="hr-text">
+        <i class="ti ti-calendar-event"></i>
+        <span>{{ __('Planning') }}</span>
+    </div>
+
+    {{ fields.datetimeField(
+        'plan_start_date',
+        item.fields.plan_start_date,
+        __('Planned start date'),
+    ) }}
+
+    {{ fields.datetimeField(
+        'real_start_date',
+        item.fields.real_start_date,
+        __('Real start date'),
+    ) }}
+
+    {{ fields.datetimeField(
+        'plan_end_date',
+        item.fields.plan_end_date,
+        __('Planned end date'),
+    ) }}
+
+    {{ fields.datetimeField(
+        'real_end_date',
+        item.fields.real_end_date,
+        __('Real end date'),
+    ) }}
+
+    {{ fields.dropdownTimestampField(
+        'planned_duration',
+        item.fields.planned_duration,
+        __('Planned duration'),
+        {
+            'min': 0,
+            'max': 8 * constant('HOUR_TIMESTAMP'),
+            'addfirstminutes': true,
+            'inhours': true,
+            'toadd': duration_dropdown_to_add,
+            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+        },
+    ) }}
+
+    {{ fields.dropdownTimestampField(
+        'effective_duration',
+        item.fields.effective_duration,
+        __('Effective duration'),
+        {
+            'min': 0,
+            'max': 8 * constant('HOUR_TIMESTAMP'),
+            'addfirstminutes': true,
+            'inhours': true,
+            'toadd': duration_dropdown_to_add,
+            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+        },
+    ) }}
+
+    {% if id %}
+        {% set ticket_duration %}
+            <span class="fw-normal col-form-label d-inline-flex ">{{ duration|formatted_duration(false) }}</span>
+        {% endset %}
+        {{ fields.field(
+            '_ticket_duration',
+            ticket_duration,
+            __("Tickets duration"),
+        ) }}
+
+        {% set total_duration %}
+            <span class="fw-normal col-form-label d-inline-flex ">{{ (duration + item.fields.effective_duration)|formatted_duration(false) }}</span>
+        {% endset %}
+        {{ fields.field(
+            '_total_duration',
+            total_duration,
+            __("Total duration"),
+        ) }}
+    {% endif %}
+
+    <div class="hr-text">
+        <i class="ti ti-file-description"></i>
+        <span>{{ __('Details') }}</span>
+    </div>
+
+    {{ fields.textareaField(
+        'content',
+        item.fields.content,
+        __("Description"),
+        {
+            'name': 'content',
+            'enable_richtext': true,
+            'id': content_field_id,
+            'label_class': "col-xxl-2",
+            'input_class': "col-xxl-10",
+            'field_class' : "col-12",
+        }
+    ) }}
+
+    {{ fields.textareaField(
+        'comment',
+        item.fields.comment,
+        __("Comments"),
+        {
+            'label_class': "col-xxl-2",
+            'input_class': "col-xxl-10",
+            'field_class' : "col-12",
+        }
+    ) }}
+
+{% endblock %}

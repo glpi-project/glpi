@@ -5,7 +5,7 @@
 --
 -- http://glpi-project.org
 --
--- @copyright 2015-2022 Teclib' and contributors.
+-- @copyright 2015-2023 Teclib' and contributors.
 -- @copyright 2003-2014 by the INDEPNET Development Team.
 -- @licence   https://www.gnu.org/licenses/gpl-3.0.html
 --
@@ -2442,6 +2442,7 @@ CREATE TABLE `glpi_items_devicesimcards` (
   `puk` varchar(255) NOT NULL DEFAULT '',
   `puk2` varchar(255) NOT NULL DEFAULT '',
   `msin` varchar(255) NOT NULL DEFAULT '',
+  `comment` text,
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `devicesimcards_id` (`devicesimcards_id`),
@@ -7728,6 +7729,8 @@ CREATE TABLE `glpi_users` (
   `substitution_end_date` timestamp NULL DEFAULT NULL,
   `substitution_start_date` timestamp NULL DEFAULT NULL,
   `toast_location` varchar(255) DEFAULT NULL,
+  `timeline_action_btn_layout` tinyint DEFAULT '0',
+  `timeline_date_format` tinyint DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
   KEY `firstname` (`firstname`),
@@ -8936,6 +8939,7 @@ CREATE TABLE `glpi_unmanageds` (
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `groups_id` int unsigned NOT NULL DEFAULT '0',
   `states_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
@@ -8947,6 +8951,7 @@ CREATE TABLE `glpi_unmanageds` (
   `hub` tinyint NOT NULL DEFAULT '0',
   `ip` varchar(255) DEFAULT NULL,
   `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
+  `last_inventory_update` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -8957,6 +8962,7 @@ CREATE TABLE `glpi_unmanageds` (
   KEY `locations_id` (`locations_id`),
   KEY `networks_id` (`networks_id`),
   KEY `states_id` (`states_id`),
+  KEY `groups_id_tech` (`groups_id_tech`),
   KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`),
   KEY `is_dynamic` (`is_dynamic`),

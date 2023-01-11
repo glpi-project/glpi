@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -101,8 +101,9 @@ window.GLPI.Search.GenericView = class GenericView {
             `);
             const bs_modal = new bootstrap.Modal(modal.get(0), {show: false});
             modal.on('show.bs.modal', () => {
-                const url = modal.attr('data-url')+'&url=' + encodeURIComponent(window.location.pathname + window.location.search);
-                modal.find('.modal-body').load(url, {});
+                const params = JSON.parse(modal.attr('data-params'));
+                params['url'] = window.location.pathname + window.location.search;
+                modal.find('.modal-body').load(CFG_GLPI.root_doc + '/ajax/savedsearch.php', params);
             });
             bs_modal.show();
         });

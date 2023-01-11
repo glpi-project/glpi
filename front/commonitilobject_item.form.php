@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,7 +41,7 @@
 use Glpi\Event;
 use Glpi\Http\Response;
 
-Session ::checkLoginUser();
+Session::checkLoginUser();
 
 if (!($obj instanceof CommonDBTM) || !($item_obj instanceof CommonItilObject_Item)) {
     Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);

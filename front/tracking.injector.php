@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -78,7 +78,7 @@ if (isset($_POST['add'])) {
         unset($_POST['_actors']['requester'], $_POST['_actors']['assign']);
     }
     if ($track->add($_POST)) {
-        if ($_SESSION['glpibackcreated']) {
+        if ($_SESSION['glpibackcreated'] && Ticket::canView()) {
             Html::redirect($track->getLinkURL());
         }
         if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {

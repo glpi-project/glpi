@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -257,7 +257,7 @@ class TicketTask extends DbTestCase
             }
         )
          ->contains("Ticket tasks to do <span class='primary-bg primary-fg count'>4</span>")
-         ->matches("/a id='[^']+' href='\/glpi\/front\/ticket.form.php\?id=\d+[^']+'>/");
+         ->matches("/a href='\/glpi\/front\/ticket.form.php\?id=\d+[^']+'>/");
 
        //How could we test there are 2 matching links?
         $this->output(
@@ -268,7 +268,7 @@ class TicketTask extends DbTestCase
             }
         )
          ->contains("Ticket tasks to do <span class='primary-bg primary-fg count'>2 on 4</span>")
-         ->matches("/a id='[^']+' href='\/glpi\/front\/ticket.form.php\?id=\d+[^']+'>/");
+         ->matches("/a href='\/glpi\/front\/ticket.form.php\?id=\d+[^']+'>/");
     }
 
     public function testPlanningConflict()

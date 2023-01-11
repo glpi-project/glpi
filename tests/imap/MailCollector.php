@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -712,6 +712,7 @@ class MailCollector extends DbTestCase
                     '35 - Message with some invalid headers',
                     '36 - Microsoft specific code',
                     '37 - Image using application/octet-steam content-type',
+                    '38 - E-mail address too long',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)

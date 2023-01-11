@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1412,6 +1412,21 @@ class Toolbox extends DbTestCase
         yield [
             'size'     => "2TO",
             'expected' => 2097152,
+        ];
+
+        yield [
+            'size'     => '>200',
+            'expected' => '>200',
+        ];
+
+        yield [
+            'size'     => '200AA',
+            'expected' => '200AA',
+        ];
+
+        yield [
+            'size'     => '200 AA',
+            'expected' => '200 AA',
         ];
     }
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -5545,8 +5545,12 @@ final class SQLProvider implements SearchProviderInterface
                             }
                             $count_display++;
 
-
-                            $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, \Search::$output_type == \Search::HTML_OUTPUT);
+                            $plaintext = '';
+                            if (isset($so['htmltext']) && $so['htmltext']) {
+                                $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output);
+                            } else {
+                                $plaintext = nl2br($data[$ID][$k]['name']);
+                            }
 
                             if ($html_output && (\Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
                                 $rand = mt_rand();

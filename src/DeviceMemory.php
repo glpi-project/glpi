@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -60,7 +60,8 @@ class DeviceMemory extends CommonDevice
                 [
                     'name'  => 'frequence',
                     'label' => __('Frequency'),
-                    'type'  => 'text',
+                    'type'  => 'integer',
+                    'min'   => 0,
                     'unit'  => __('MHz')
                 ],
                 [
@@ -87,7 +88,7 @@ class DeviceMemory extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'size_default',
             'name'               => __('Size by default'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -95,7 +96,7 @@ class DeviceMemory extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'frequence',
             'name'               => __('Frequency'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [

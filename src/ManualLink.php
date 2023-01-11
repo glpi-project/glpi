@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -361,8 +361,9 @@ JAVASCRIPT
         $target = $fields['open_window'] == 1 ? '_blank' : '_self';
         $html .= '<a href="' . Html::entities_deep($fields['url']) . '" target="' . $target . '">';
         if (!empty($fields['icon'])) {
-            $html .= '<i class="fa-lg fa-fw fas ' . Html::entities_deep($fields['icon']) . '"'
-            . ' style="font-family:\'Font Awesome 5 Free\', \'Font Awesome 5 Brands\';"></i>&nbsp;';
+            // Forces font family values to fallback on ".fab" family font if char is not available in ".fas" family.
+            $html .= '<i class="fa-lg fa-fw fa ' . Html::entities_deep($fields['icon']) . '"'
+            . ' style="font-family:\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\';"></i>&nbsp;';
         }
         $html .= !empty($fields['name']) ? $fields['name'] : $fields['url'];
         $html .= '</a>';

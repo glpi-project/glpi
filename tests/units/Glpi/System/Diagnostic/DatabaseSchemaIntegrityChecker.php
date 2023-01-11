@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1184,9 +1184,7 @@ DIFF,
         array $expected_differences, // ignored
         array $args
     ) {
-        $this->mockGenerator->orphanize('__construct');
-
-        $db = new \mock\DBmysql();
+        $db = $this->geDbMock();
         $db->use_utf8mb4 = $args['use_utf8mb4'];
 
         $this->newTestedInstance(
@@ -1215,9 +1213,7 @@ DIFF,
         array $expected_differences,
         array $args
     ) {
-        $this->mockGenerator->orphanize('__construct');
-
-        $db = new \mock\DBmysql();
+        $db = $this->geDbMock();
         $db->use_utf8mb4 = $args['use_utf8mb4'];
 
         $this->newTestedInstance(
@@ -1265,8 +1261,7 @@ DIFF,
             ]
         );
 
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBmysql();
+        $db = $this->geDbMock();
 
         $this->newTestedInstance($db);
         $this->array($this->testedInstance->extractSchemaFromFile(vfsStream::url('glpi/install/schema.sql')))
@@ -1294,10 +1289,8 @@ DIFF,
             ]
         );
 
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBmysql();
+        $db = $this->geDbMock();
         $db->use_utf8mb4 = $args['use_utf8mb4'];
-        $this->calling($db)->tableExists = true;
         $that = $this;
         $this->calling($db)->query = function ($query) use ($effective_tables, $that) {
             $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
@@ -1383,8 +1376,7 @@ SQL,
                 ]
             );
 
-            $this->mockGenerator->orphanize('__construct');
-            $db = new \mock\DBmysql();
+            $db = $this->geDbMock();
             $db->use_utf8mb4 = true;
             $this->calling($db)->tableExists = function ($table_name) use ($table_prefix) {
                 return $table_name !== "glpi_{$table_prefix}missingtable";
@@ -1494,10 +1486,7 @@ CREATE TABLE `glpi_impactcontexts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 SQL;
 
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBmysql();
-        $this->calling($db)->tableExists = true;
-        $this->calling($db)->fieldExists = true;
+        $db = $this->geDbMock();
         $that = $this;
 
         // Case 1: "DEFAULT ''" not returned by MySQL should not be detected as a difference for GLPI < 10.0.1
@@ -1632,6 +1621,209 @@ DIFF
         }
     }
 
+    public function testNotImportedEmailsCollateCheck()
+    {
+        $db = $this->geDbMock();
+
+        // Case 1: COLLATE is ignored if DB version is < 10.0.0
+        $schema_sql_from_955 = <<<SQL
+CREATE TABLE `glpi_notimportedemails` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from` varchar(255) NOT NULL,
+  `to` varchar(255) NOT NULL,
+  `mailcollectors_id` int(11) NOT NULL DEFAULT '0',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `subject` text,
+  `messageid` varchar(255) NOT NULL,
+  `reason` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`),
+  KEY `mailcollectors_id` (`mailcollectors_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SQL;
+
+        $that = $this;
+        $this->calling($db)->query = function ($query) use ($that) {
+            if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
+                $that->mockGenerator->orphanize('__construct');
+                $res = new \mock\mysqli_result();
+                // Expected result for GLPI < 10.0.0
+                $that->calling($res)->fetch_assoc = [
+                    'Create Table' => <<<SQL
+CREATE TABLE `glpi_notimportedemails` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `from` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `to` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `mailcollectors_id` int NOT NULL DEFAULT '0',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `subject` text CHARACTER SET latin1 COLLATE latin1_general_ci,
+  `messageid` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `reason` int NOT NULL DEFAULT '0',
+  `users_id` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`),
+  KEY `mailcollectors_id` (`mailcollectors_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+SQL
+                ];
+                return $res;
+            }
+            return false;
+        };
+
+        $dbversions = [
+            '9.3.0',
+            '9.5.0',
+            '9.5.1',
+            '9.5.2',
+            '9.5.3',
+            '9.5.4',
+            '9.5.5',
+            '9.5.6',
+            '9.5.7',
+            '9.5.8',
+            '9.5.9',
+            '9.5.10',
+            '9.5.11',
+        ];
+        foreach ($dbversions as $dbversion) {
+            $this->newTestedInstance($db);
+            $this->calling($db)->request = function ($query) use ($dbversion) {
+                return new \ArrayIterator(
+                    [
+                        [
+                            'context' => 'core',
+                            'name'    => 'dbversion',
+                            'value'   => $dbversion,
+                        ]
+                    ]
+                );
+            };
+            $this->string($this->testedInstance->getDiff('glpi_notimportedemails', $schema_sql_from_955))->isEqualTo(null);
+        }
+
+        // Case 2: COLLATE is NOT ignored if DB version is >= 10.0.0
+        $schema_sql_from_1000_ok = <<<SQL
+CREATE TABLE `glpi_notimportedemails` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `from` varchar(255) NOT NULL,
+  `to` varchar(255) NOT NULL,
+  `mailcollectors_id` int unsigned NOT NULL DEFAULT '0',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `subject` text,
+  `messageid` varchar(255) NOT NULL,
+  `reason` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`),
+  KEY `mailcollectors_id` (`mailcollectors_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+SQL;
+        $schema_sql_from_1000_ko = <<<SQL
+CREATE TABLE `glpi_notimportedemails` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `from` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `to` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `mailcollectors_id` int unsigned NOT NULL DEFAULT '0',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `subject` text CHARACTER SET latin1 COLLATE latin1_general_ci,
+  `messageid` varchar(255) NOT NULL COLLATE latin1_general_ci,
+  `reason` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`),
+  KEY `mailcollectors_id` (`mailcollectors_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC;
+SQL;
+
+        $that = $this;
+        $this->calling($db)->query = function ($query) use ($that) {
+            if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
+                $that->mockGenerator->orphanize('__construct');
+                $res = new \mock\mysqli_result();
+                // Expected result for GLPI >= 10.0.0
+                $that->calling($res)->fetch_assoc = [
+                    'Create Table' => <<<SQL
+CREATE TABLE `glpi_notimportedemails` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `from` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `to` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mailcollectors_id` int unsigned NOT NULL DEFAULT '0',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `subject` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `messageid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reason` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`),
+  KEY `mailcollectors_id` (`mailcollectors_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+SQL
+                ];
+                return $res;
+            }
+            return false;
+        };
+
+        $dbversions = [
+            '10.0.0-beta1',
+            '10.0.0-rc1',
+            '10.0.0-rc2',
+            '10.0.0-rc3',
+            '10.0.0',
+            '10.0.1',
+            '10.0.2',
+            '10.0.3',
+            '10.1.0-dev',
+            '10.1.0',
+            '11.0.0-beta1',
+            '11.0.0-rc2',
+            '11.0.0',
+        ];
+        $db->use_utf8mb4 = true;
+        foreach ($dbversions as $dbversion) {
+            $this->newTestedInstance($db);
+            $this->calling($db)->request = function ($query) use ($dbversion) {
+                return new \ArrayIterator(
+                    [
+                        [
+                            'context' => 'core',
+                            'name'    => 'dbversion',
+                            'value'   => $dbversion,
+                        ]
+                    ]
+                );
+            };
+            $this->string($this->testedInstance->getDiff('glpi_notimportedemails', $schema_sql_from_1000_ok))->isEqualTo(null);
+            $this->string($this->testedInstance->getDiff('glpi_notimportedemails', $schema_sql_from_1000_ko))->isEqualTo(<<<DIFF
+--- Expected database schema
++++ Current database schema
+@@ @@
+ CREATE TABLE `glpi_notimportedemails` (
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
+-  `from` varchar(255) COLLATE latin1_general_ci NOT NULL,
+-  `to` varchar(255) COLLATE latin1_general_ci NOT NULL,
++  `from` varchar(255) NOT NULL,
++  `to` varchar(255) NOT NULL,
+   `mailcollectors_id` int unsigned NOT NULL DEFAULT 0,
+   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+-  `subject` text CHARACTER SET latin1 COLLATE latin1_general_ci,
+-  `messageid` varchar(255) NOT NULL COLLATE latin1_general_ci,
++  `subject` text,
++  `messageid` varchar(255) NOT NULL,
+   `reason` int NOT NULL DEFAULT 0,
+   `users_id` int unsigned NOT NULL DEFAULT 0,
+   PRIMARY KEY (`id`),
+   KEY `users_id` (`users_id`),
+   KEY `mailcollectors_id` (`mailcollectors_id`)
+-) COLLATE=latin1_general_ci DEFAULT CHARSET=latin1 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
++) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+
+DIFF);
+        }
+    }
+
     protected function versionProvider(): iterable
     {
         $root = realpath(GLPI_ROOT);
@@ -1698,8 +1890,7 @@ DIFF
         ?string $expected_schema_path
     ) {
 
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBmysql();
+        $db = $this->geDbMock();
         $this->newTestedInstance($db);
 
         $this->variable($this->callPrivateMethod($this->testedInstance, 'getSchemaPath', $version, $context))->isEqualTo($expected_schema_path);
@@ -1715,10 +1906,25 @@ DIFF
         ?string $expected_schema_path
     ) {
 
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBmysql();
+        $db = $this->geDbMock();
         $this->newTestedInstance($db);
 
         $this->variable($this->testedInstance->canCheckIntegrity($version, $context))->isEqualTo($expected_can_check, $version);
+    }
+
+    /**
+     * Return DB mock that implements minimal required behaviour.
+     *
+     * @return \DBmysql
+     */
+    private function geDbMock(): \DBmysql
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBmysql();
+        $this->calling($db)->tableExists = true;
+        $this->calling($db)->fieldExists = true;
+        $this->calling($db)->request = new \ArrayIterator();
+
+        return $db;
     }
 }

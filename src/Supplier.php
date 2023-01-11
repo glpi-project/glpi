@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -269,7 +269,7 @@ class Supplier extends CommonDBTM
             'massiveaction'      => false
         ];
 
-        if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
+        if (($_SESSION["glpinames_format"] ?? User::REALNAME_BEFORE) == User::FIRSTNAME_BEFORE) {
             $name1 = 'firstname';
             $name2 = 'name';
         } else {

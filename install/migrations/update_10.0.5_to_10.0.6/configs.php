@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -5,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,33 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-/* global GLPI */
+/**
+ * @var Migration $migration
+ */
 
-require('../../../js/modules/Search/ResultsView.js');
-require('../../../js/modules/Search/Table.js');
-
-describe('Search ResultsView', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-    $(document.body).append(`
-    <div class="ajax-container search-display-data">
-        <form id="massformComputer" data-search-itemtype="Computer">
-            <div class="table-responsive-md">
-                <table id="search_9439839" class="search-results">
-                </table>
-            </div>
-        </form>
-    </div>
-`);
-
-    const results_view = new GLPI.Search.ResultsView('massformComputer', GLPI.Search.Table);
-    test('Class exists', () => {
-        expect(GLPI).toBeDefined();
-        expect(GLPI.Search).toBeDefined();
-        expect(GLPI.Search.ResultsView).toBeDefined();
-    });
-    test('getView', () => {
-        expect(results_view.getView() instanceof GLPI.Search.Table).toBeTrue();
-    });
-});
+$migration->displayMessage('Add new configurations / user preferences');
+$migration->addConfig([
+    'timeline_action_btn_layout'   => 0,
+    'timeline_date_format'   => 0,
+]);
+$migration->addField('glpi_users', 'timeline_action_btn_layout', 'tinyint DEFAULT 0');
+$migration->addField('glpi_users', 'timeline_date_format', 'tinyint DEFAULT 0');

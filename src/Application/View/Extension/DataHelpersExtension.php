@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -100,15 +100,18 @@ class DataHelpersExtension extends AbstractExtension
      * Return human readable duration.
      *
      * @param mixed $duration
+     * @param bool $display_seconds (default: true)
      *
      * @return string|null
      */
-    public function getFormattedDuration($duration): ?string
-    {
+    public function getFormattedDuration(
+        $duration,
+        bool $display_seconds = true
+    ): ?string {
         if (!is_numeric($duration)) {
             return null;
         }
-        return Html::timestampToString($duration);
+        return Html::timestampToString($duration, $display_seconds);
     }
 
     /**

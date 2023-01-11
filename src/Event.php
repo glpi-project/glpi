@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -408,7 +408,27 @@ class Event extends CommonDBTM
             'LIMIT'  => (int)$_SESSION['glpilist_limit']
         ]);
 
-       // Number of results
+        $events = [];
+        foreach ($iterator as $data) {
+            $itemtype_name = null;
+            $itemtype_icon = CommonDBTM::getIcon();
+            if (isset($logItemtype[$data['type']])) {
+                $itemtype_name = $logItemtype[$data['type']];
+            } else {
+                // Converts lowercase plural string into corresponding classname
+                $item = getItemForItemtype(getSingular($data['type']));
+                if ($item !== false) {
+                    $itemtype_name = $item->getTypeName();
+                    $itemtype_icon = $item->getIcon();
+                }
+            }
+            $data['itemtype_name'] = $itemtype_name;
+            $data['itemtype_icon'] = $itemtype_icon;
+
+            $events[] = $data;
+        }
+
+        // Number of results
         $numrows = countElementsInTable("glpi_events");
 
         TemplateRenderer::getInstance()->display('pages/admin/events_list.html.twig', [
@@ -417,7 +437,7 @@ class Event extends CommonDBTM
             'sort'      => $sort,
             'start'     => $start,
             'target'    => $target,
-            'events'    => $iterator,
+            'events'    => $events,
             'itemtypes' => $logItemtype,
             'services'  => $logService,
         ]);

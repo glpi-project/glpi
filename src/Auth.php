@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1154,7 +1154,7 @@ class Auth extends CommonGLPI
                 $auth = new AuthMail();
                 if ($auth->getFromDB($auths_id)) {
                     //TRANS: %1$s is the auth method type, %2$s the auth method name or link
-                    return sprintf(__('%1$s: %2$s'), AuthLDAP::getTypeName(1), $auth->getLink());
+                    return sprintf(__('%1$s: %2$s'), AuthMail::getTypeName(1), $auth->getLink());
                 }
                 return sprintf(__('%1$s: %2$s'), __('Email server'), $name);
 

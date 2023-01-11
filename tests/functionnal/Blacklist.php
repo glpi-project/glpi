@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,7 +51,7 @@ class Blacklist extends DbTestCase
             \Blacklist::MAC => 19,
             \Blacklist::MODEL => 7,
             \Blacklist::MANUFACTURER => 1,
-            \Blacklist::IP => 3
+            \Blacklist::IP => 4
         ];
         $this->array(array_keys($defaults))->isIdenticalTo(array_keys($expecteds));
 
@@ -90,6 +90,15 @@ class Blacklist extends DbTestCase
             ], [
                 'input'    => ['name' => 'My name', 'serial' => 'XYZ01'],
                 'expected' => ['name' => 'My name', 'serial' => 'XYZ01']
+            ], [
+                'input'    => ['name' => 'My name', 'ip' => '::1'],
+                'expected' => ['name' => 'My name']
+            ], [
+                'input'    => ['name' => 'My name', 'ip' => '127.0.0.1'],
+                'expected' => ['name' => 'My name']
+            ], [
+                'input'    => ['name' => 'My name', 'ip' => '0.0.0.0'],
+                'expected' => ['name' => 'My name']
             ]
         ];
     }

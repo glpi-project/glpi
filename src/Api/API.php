@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1698,7 +1698,12 @@ abstract class API
             $cleaned_cols[] = $col['id'];
             if (isset($params['uid_cols'])) {
                // prepare cols with uid
-                $uid_cols[] = $soptions[$col['id']]['uid'];
+                if (isset($col['meta']) && $col['meta']) {
+                    $meta_opts = $this->listSearchOptions($col['itemtype'], [], false);
+                    $uid_cols[] = $meta_opts[$col['id']]['uid'];
+                } else {
+                    $uid_cols[] = $soptions[$col['id']]['uid'];
+                }
             }
         }
 

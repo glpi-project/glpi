@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,51 +36,70 @@
 namespace Glpi\Console\Database;
 
 use CommonDBTM;
-use ITILFollowup;
-use Ticket;
 use Glpi\Console\AbstractCommand;
+use ITILFollowup;
+use Search;
+use Session;
+use Ticket;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FixHtmlEncodingCommand extends AbstractCommand
+/**
+ * Prior from GLPI 10.0, some HTML entities were not properly encoded.
+ *
+ * This CLI tool helps to fix items one by one or in small batches
+ */
+final class FixHtmlEncodingCommand extends AbstractCommand
 {
     /**
-     * Error code returned when a specified itemtype does not exists
+     * Error code returned when a specified itemtype does not exists.
      *
      * @var integer
      */
-    const ERROR_ITEMTYPE_NOT_FOUND = 1;
+    public const ERROR_ITEMTYPE_NOT_FOUND = 1;
 
     /**
-     * Error code returned when at least one item id is not found
+     * Error code returned when update of an item failed.
      *
      * @var integer
      */
-    const ERROR_ITEM_ID_NOT_FOUND = 2;
+    public const ERROR_UPDATE_FAILED = 2;
 
     /**
-     * Error code returned when at least one field is not found
+     * Error code returned when rollback file could not be created.
      *
      * @var integer
      */
-    const ERROR_FIELD_NOT_FOUND = 3;
+    public const ERROR_ROLLBACK_FILE_FAILED = 3;
 
     /**
-     * Error code returned when update of an item failed
+     * Error code returned when rollback file path is not passed to command.
      *
      * @var integer
      */
-    const ERROR_UPDATE_FAILED = 4;
+    public const ERROR_ROLLBACK_FILE_REQUIRED = 4;
 
     /**
-     * Error code returned when rollback file cound not be created
+     * Items with invalid HTML.
      *
-     * @var integer
+     * @var array
      */
-    const ERROR_ROLLBACK_FILE_FAILED = 5;
+    private array $invalid_items = [];
 
-    private array $failed_items = [];
+    /**
+     * Count of items with invalid HTML that have NOT been fixed.
+     *
+     * @var int
+     */
+    private int $failed_items_count = 0;
+
+    /**
+     * Columns which contains rich text, populated by analyzing search options.
+     *
+     * @var array
+     */
+    private array $text_fields = [];
 
     protected function configure()
     {
@@ -88,46 +107,30 @@ class FixHtmlEncodingCommand extends AbstractCommand
 
         $this->setName('glpi:database:fix_html_encoding');
         $this->setAliases(['db:fix_html']);
-        $this->setDescription(__('Fix HTML encoding in database.'));
-
-        $this->addOption(
-            'itemtype',
-            null,
-            InputOption::VALUE_REQUIRED,
-            __('Itemtype to fix')
-        );
-
-        $this->addOption(
-            'id',
-            null,
-            InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
-            __('Id of the item to fix')
-        );
-
-        $this->addOption(
-            'field',
-            null,
-            InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
-            __('Field of the item to fix')
-        );
+        $this->setDescription(__('Fix HTML encoding issues in database.'));
 
         $this->addOption(
             'dump',
             null,
-            InputOption::VALUE_OPTIONAL,
-            __('Path of file containing dump of existing values.')
+            InputOption::VALUE_REQUIRED,
+            __('Path of file where will be stored SQL queries that can be used to rollback changes')
         );
-
-        $this->addUsage('--itemtype=ITILFollowup --id=42 --field=content [--dump=file_path.sql]');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        global $DB;
+        $this->warnAboutExecutionTime();
+        $this->findTextFields();
+        $this->scanItems();
 
-        $this->checkArguments();
+        $count = $this->countItems($this->invalid_items);
+        if ($count === 0) {
+            $output->writeln('<info>' . __('No item to fix.') . '</info>');
+            return 0;
+        }
 
-        $itemtype = $input->getOption('itemtype');
+        $output->writeln('<info>' . sprintf(_n('Found %d item to fix.', 'Found %d items to fix.', $count), $count) . '</info>');
+        $this->askForConfirmation();
 
         if ($input->getOption('dump')) {
             $this->dumpObjects();
@@ -135,17 +138,11 @@ class FixHtmlEncodingCommand extends AbstractCommand
 
         $this->fixItems();
 
-        if (count($this->failed_items) > 0) {
+        if ($this->failed_items_count > 0) {
             $this->output->writeln(
-                '<error>' . sprintf(__('Unable to update %s items'), count($this->failed_items)) . '</error>',
+                '<error>' . sprintf(__('Unable to update %s items'), $this->failed_items_count) . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
-            foreach ($this->failed_items as $item_id) {
-                $this->output->writeln(
-                    '<error>' . sprintf(__('Itemtype %s ID %s'), $itemtype, $item_id) . '</error>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
-            }
             return self::ERROR_UPDATE_FAILED;
         }
 
@@ -154,91 +151,35 @@ class FixHtmlEncodingCommand extends AbstractCommand
     }
 
     /**
-     * Check that the arguments are correct
-     *
-     * @return void
-     */
-    private function checkArguments()
-    {
-        global $DB;
-
-        // Check itemtype exists
-        $itemtype = $this->input->getOption('itemtype');
-        if (empty($itemtype) || !class_exists($itemtype) || !is_a($itemtype, CommonDBTM::class, true)) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . sprintf(__('Itemtype %s not found'), $itemtype) . '</error>',
-                self::ERROR_ITEMTYPE_NOT_FOUND
-            );
-        }
-
-        // Check all items exists
-        $item_ids = $this->input->getOption('id');
-        if (count($item_ids) < 1) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . sprintf(__('Item id not specified')) . '</error>',
-                self::ERROR_ITEM_ID_NOT_FOUND
-            );
-        }
-        foreach ($item_ids as $item_id) {
-            $item = new $itemtype();
-            if (!$item->getFromDB($item_id)) {
-                throw new \Glpi\Console\Exception\EarlyExitException(
-                    '<error>' . sprintf(__('Item id %s not found'), $item_id) . '</error>',
-                    self::ERROR_ITEM_ID_NOT_FOUND
-                );
-            }
-        }
-
-        // Check all fields exist
-        $fields = $this->input->getOption('field');
-        if (count($fields) < 1) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . sprintf(__('Field not specified')) . '</error>',
-                self::ERROR_FIELD_NOT_FOUND
-            );
-        }
-        foreach ($fields as $field) {
-            if (!$DB->fieldExists($itemtype::getTable(), $field)) {
-                throw new \Glpi\Console\Exception\EarlyExitException(
-                    '<error>' . sprintf(__('Field %s not found'), $field) . '</error>',
-                    self::ERROR_FIELD_NOT_FOUND
-                );
-            }
-        }
-    }
-
-    /**
      * Dump items
      *
      * @return void
      */
-    private function dumpObjects()
+    private function dumpObjects(): void
     {
         global $DB;
 
-        $itemtype = $this->input->getOption('itemtype');
-        $item_ids = $this->input->getOption('id');
-        $fields = $this->input->getOption('field');
-
         $dump_content = '';
 
-        foreach ($item_ids as $item_id) {
-            // Get the item to save
-            $item = new $itemtype();
-            $item->getFromDB($item_id);
+        foreach ($this->invalid_items as $itemtype => $items) {
+            foreach ($items as $item_id => $fields) {
+                // Get the item to save
+                $item = new $itemtype();
+                $item->getFromDB($item_id);
 
-            // read the fields to save
-            $object_state = [];
-            foreach ($fields as $field) {
-                $object_state[$field] = $DB->escape($item->fields[$field]);
+                // read the fields to save
+                $object_state = [];
+                foreach ($fields as $field) {
+                    $object_state[$field] = $DB->escape($item->fields[$field]);
+                }
+
+                // Build the SQL query
+                $dump_content .= $DB->buildUpdate(
+                    $itemtype::getTable(),
+                    $object_state,
+                    ['id' => $item_id],
+                ) . ';' . PHP_EOL;
             }
-
-            // Build the SQL query
-            $dump_content .= $DB->buildUpdate(
-                $itemtype::getTable(),
-                $object_state,
-                ['id' => $item_id],
-            ) . ';' . PHP_EOL;
         }
 
         // Save the rollback SQL queries dump
@@ -256,27 +197,49 @@ class FixHtmlEncodingCommand extends AbstractCommand
         }
     }
 
-    private function fixItems()
+    /**
+     * Fix encoding issues.
+     *
+     * @return void
+     */
+    private function fixItems(): void
     {
-        $itemtype = $this->input->getOption('itemtype');
-        $item_ids = $this->input->getOption('id');
+        foreach ($this->invalid_items as $itemtype => $items) {
+            $this->outputMessage(
+                '<comment>' . sprintf(__('Fixing %s...'), $itemtype::getTypeName(Session::getPluralNumber())) . '</comment>',
+            );
+            $progress_message = function (array $fields, int $id) use ($itemtype) {
+                return sprintf(__('Fixing %s with ID %s...'), $itemtype::getTypeName(1), $id);
+            };
 
-        foreach ($item_ids as $item_id) {
-            $item = new $itemtype();
-            if (!$item->getFromDB($item_id)) {
-                $this->failed_items[] = $item_id;
-                continue;
+            foreach ($this->iterate($items, $progress_message) as $item_id => $fields) {
+                /* @var \CommonDBTM $item */
+                $item = new $itemtype();
+                if (!$item->getFromDB($item_id)) {
+                    $this->outputMessage(
+                        '<error>' . sprintf(__('Unable to fix %s with ID %s.'), $itemtype::getTypeName(1), $item_id) . '</error>',
+                        OutputInterface::VERBOSITY_QUIET
+                    );
+                    $this->failed_items_count++;
+                    continue;
+                }
+                $this->fixOneItem($item, $fields);
             }
-            $this->fixOneItem($item);
         }
     }
 
-    private function fixOneItem(CommonDBTM $item)
+    /**
+     * Fix a single item, on specified fields.
+     *
+     * @param CommonDBTM $item item to fix
+     * @param array $fields fields names to fix
+     * @return void
+     */
+    private function fixOneItem(CommonDBTM $item, array $fields): void
     {
         global $DB;
 
-        $itemtype = $this->input->getOption('itemtype');
-        $fields = $this->input->getOption('field');
+        $itemtype = $item::getType();
 
         // update the item
         $update = [];
@@ -291,15 +254,24 @@ class FixHtmlEncodingCommand extends AbstractCommand
             ['id' => $item->fields['id']],
         );
         if (!$success) {
-            $this->failed_items[] = $item->getID();
+            $this->outputMessage(
+                '<error>' . sprintf(__('Unable to fix %s with ID %s.'), $itemtype::getTypeName(1), $item->getID()) . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            $this->failed_items_count++;
         }
     }
 
-    private function fixOneField(CommonDBTM $item, string $field)
+    /**
+     * Fix a single field of an item.
+     *
+     * @param CommonDBTM $item
+     * @param string $field
+     * @return string
+     */
+    private function fixOneField(CommonDBTM $item, string $field): string
     {
         $new_value = $item->fields[$field];
-
-        $new_value = $this->doubleEncoding($new_value);
 
         if (in_array($item::getType(), [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
             $new_value = $this->fixEmailHeadersEncoding($new_value);
@@ -308,30 +280,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
         $new_value = $this->fixQuoteEntityWithoutSemicolon($new_value);
 
         return $new_value;
-    }
-
-    /**
-     * Remove double encoding of HTML tags
-     * character < is encoded &#38;lt; but should be encoded &#60;
-     * character > is encoded &#38;gt; but should be encoded &#62;
-     *
-     * Does not take into account the content of < and > pair
-     *
-     * @param string $input
-     * @return string
-     */
-    private function doubleEncoding(string $input): string
-    {
-        // Prepare the double encoding fix of HTML tag
-        $pattern = [
-            '/&#38;lt;/', // Opening tag
-            '/&#38;gt;/', // closing tag
-        ];
-        $replace = [
-            '&#60;',
-            '&#62;',
-        ];
-        return preg_replace($pattern, $replace, $input);
     }
 
     /**
@@ -351,28 +299,16 @@ class FixHtmlEncodingCommand extends AbstractCommand
         // 2: email address
         // 3: Triple encoded > character
         $pattern = '/(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)/';
-        $replace = '&amp;lt;${2}&amp;gt;';
+        $replace = '&#38;lt;${2}&#38;gt;';
         $output = preg_replace($pattern, $replace, $output);
-        // Triple encoded should be now double encoded
-
-        // Not very strict pattern for emails, but should be enough
-        // Capturing parentheses:
-        // 1: Double encoded < character
-        // 2: email address
-        // 3: Double encoded > character
-        $pattern = '/(&amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&amp;gt;)/';
-        $replace = '&lt;${2}&gt;';
-        $output = preg_replace($pattern, $replace, $output);
+        // Triple encoded should be now double encoded (this double encoding is expected)
 
         return $output;
     }
 
     /**
-     * Fix &quot; HTML entity without its final semicolon
+     * Fix &quot; HTML entity without its final semicolon.
      * @see https://github.com/glpi-project/glpi/pull/6084
-     *
-     * The pattern searches for &quot (without semicolon) found only between encoded < and >
-     * Therefore any ocurence found between HTML tabs are ignored
      *
      * @param string $input
      * @return string
@@ -387,5 +323,110 @@ class FixHtmlEncodingCommand extends AbstractCommand
         $output = preg_replace($pattern, $replace, $output);
 
         return $output;
+    }
+
+    /**
+     * Find rich text fields for itemtypes given as CLI argument.
+     *
+     * @return void
+     */
+    private function findTextFields(): void
+    {
+        global $DB;
+
+        $table_iterator = $DB->listTables();
+        foreach ($table_iterator as $table_data) {
+            $table = $table_data['TABLE_NAME'];
+            $itemtype = getItemTypeForTable($table);
+
+            if (!is_a($itemtype, CommonDBTM::class, true)) {
+                continue;
+            }
+
+            $search_options = Search::getOptions($itemtype);
+            foreach ($search_options as $search_option) {
+                if (!isset($search_option['table'])) {
+                    continue;
+                }
+                if (
+                    $search_option['table'] === $table
+                    && ($search_option['datatype'] ?? '') === 'text'
+                    && ($search_option['htmltext'] ?? false) === true
+                ) {
+                    $this->text_fields[$itemtype][] = $search_option['field'];
+                }
+            }
+        }
+    }
+
+    /**
+     * Search in all items of an itemtype for bad HTML.
+     *
+     * @return void
+     */
+    private function scanItems(): void
+    {
+        $this->outputMessage(
+            '<comment>' . __('Scanning database for items to fix...') . '</comment>'
+        );
+        foreach ($this->text_fields as $itemtype => $fields) {
+            foreach ($fields as $field) {
+                $this->scanField($itemtype, $field);
+            }
+        }
+    }
+
+    /**
+     * Search for bad HTML in a single column of a table
+     *
+     * @param string $itemtype
+     * @param string $field
+     * @return void
+     */
+    private function scanField(string $itemtype, string $field): void
+    {
+        global $DB;
+
+        $searches = [
+            [$field => ['LIKE', '%&quot(?!;)/%']],
+        ];
+
+        if (in_array($itemtype, [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
+            $searches[] = [
+                $field => ['REGEXP', $DB->escape('(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)')]
+            ];
+        }
+
+        $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $itemtype::getTable(),
+            'WHERE'  => [
+                'OR' => $searches,
+            ],
+        ]);
+
+        foreach ($iterator as $row) {
+            $this->invalid_items[$itemtype][$row['id']][] = $field;
+        }
+    }
+
+    /**
+     * Count items in list of invalid idems
+     *
+     * @return integer
+     */
+    private function countItems(array $items_array): int
+    {
+        $count = 0;
+
+        if (count($items_array) === 0) {
+            return 0;
+        }
+
+        foreach ($items_array as $items) {
+            $count += count($items);
+        }
+
+        return $count;
     }
 }

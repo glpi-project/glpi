@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -214,7 +214,9 @@ export default class SearchInput {
 
         input.on('blur', '.search-input-tag-input', (e) => {
             const tag_input = $(e.target).closest('.search-input-tag-input');
-            this.tagifyInputNode(tag_input);
+            if (tag_input.length > 0 && tag_input.text().trim().length > 0) {
+                this.tagifyInputNode(tag_input);
+            }
         });
 
         input.on('keydown', '.search-input-tag-input', (e) => {
@@ -475,7 +477,9 @@ export default class SearchInput {
                 const term_text = $(`<span>${last_token.term}</span>`).text();
                 if (autocomplete_value.localeCompare(term_text, undefined, { sensitivity: 'accent' }) === 0) {
                     last_token.term = t;
-                    node.replaceWith($(this.tokenToTagHtml(last_token)));
+                    const replacement = $(this.tokenToTagHtml(last_token));
+                    replacement.data('token', last_token);
+                    node.replaceWith(replacement);
                 }
             });
         }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -209,22 +209,24 @@ abstract class MainAsset extends InventoryAsset
                     $val->uuid .= '-' . $val->name;
                 }
             } else {
-                $bios = (object)$this->extra_data['bios'];
-                if (
-                    property_exists($hardware, 'chassis_type')
-                    && !empty($hardware->chassis_type)
-                ) {
-                    $val->$types_id = $hardware->chassis_type;
-                } else if (
-                    isset($bios) && property_exists($bios, 'type')
-                    && !empty($bios->type)
-                ) {
-                    $val->$types_id = $bios->type;
-                } else if (
-                    isset($bios) && property_exists($bios, 'mmodel')
-                    && !empty($bios->mmodel)
-                ) {
-                    $val->$types_id = $bios->mmodel;
+                if (array_key_exists('bios', $this->extra_data)) {
+                    $bios = (object)$this->extra_data['bios'];
+                    if (
+                        property_exists($hardware, 'chassis_type')
+                        && !empty($hardware->chassis_type)
+                    ) {
+                        $val->$types_id = $hardware->chassis_type;
+                    } else if (
+                        isset($bios) && property_exists($bios, 'type')
+                        && !empty($bios->type)
+                    ) {
+                        $val->$types_id = $bios->type;
+                    } else if (
+                        isset($bios) && property_exists($bios, 'mmodel')
+                        && !empty($bios->mmodel)
+                    ) {
+                        $val->$types_id = $bios->mmodel;
+                    }
                 }
             }
         }
@@ -407,6 +409,10 @@ abstract class MainAsset extends InventoryAsset
 
         if (isset($this->getAgent()->fields['tag'])) {
             $input['tag'] = $this->getAgent()->fields['tag'];
+        }
+
+        if (isset($this->getAgent()->fields['deviceid'])) {
+            $input['deviceid'] = $this->getAgent()->fields['deviceid'];
         }
 
         $models_id = $this->getModelsFieldName();
@@ -655,6 +661,8 @@ abstract class MainAsset extends InventoryAsset
 
         // append data from RuleImportEntity
         foreach ($this->ruleentity_data as $attribute => $value) {
+            $known_key = md5($attribute . $value);
+            $this->known_links[$known_key] = $value;
             $val->{$attribute} = $value;
         }
         // append data from RuleLocation

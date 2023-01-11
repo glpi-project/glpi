@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -87,6 +87,11 @@ class Plugin extends CommonDBTM
      * @var int The plugin's files are for a newer version than installed. An update is needed.
      */
     const NOTUPDATED     = 6;
+
+    /**
+     * The plugin has been replaced by another one.
+     */
+    const REPLACED       = 7;
 
     /**
      * Option used to indicates that auto installation of plugin should be disabled (bool value expected).
@@ -300,7 +305,26 @@ class Plugin extends CommonDBTM
                     self::$loaded_plugins[] = $plugin_key;
                     $init_function = "plugin_init_$plugin_key";
                     if (function_exists($init_function)) {
-                        $init_function();
+                        try {
+                            $init_function();
+                        } catch (\Throwable $e) {
+                            trigger_error(
+                                sprintf(
+                                    'Error while loading plugin %s: %s',
+                                    $plugin_key,
+                                    $e->getMessage()
+                                ),
+                                E_USER_WARNING
+                            );
+                            // Plugin has errored, so it should be disabled if it isn't already
+                            $plugin = new self();
+                            if ($plugin->isActivated($plugin_key)) {
+                                // We don't want to override another status like TOBECONFIGURED or NOTUPDATED
+                                $plugin->getFromDBbyDir($plugin_key);
+                                $plugin->unactivate($plugin->getID());
+                            }
+                            continue;
+                        }
                         self::loadLang($plugin_key);
                     }
                 }
@@ -496,51 +520,68 @@ class Plugin extends CommonDBTM
     {
 
         $plugin = new self();
-        $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
 
         $informations = $this->getInformationsFromDirectory($plugin_key);
+        $new_specs    = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
 
-        if (empty($informations)) {
-            if (!$is_already_known) {
-                // Plugin is not known and we are unable to load information, we ignore it
-                return;
-            }
+        $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
+        $is_loadable      = !empty($informations);
+        $is_replaced      = $new_specs !== null;
 
-           // Try to get information from a plugin that lists current name as its old name
-           // If something found, and not already registerd in DB,, base plugin information on it
-           // If nothing found, mark plugin as "To be cleaned"
-            $new_specs = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
-            if (
-                null !== $new_specs
-                && countElementsInTable(self::getTable(), ['directory' => $new_specs['directory']]) === 0
-            ) {
-                $plugin_key    = $new_specs['directory'];
-                $informations = $new_specs['informations'];
-            } else {
+        if (!$is_already_known && !$is_loadable) {
+            // Plugin is not known and we are unable to load information, we ignore it.
+            return;
+        }
+
+        if ($is_already_known && $is_replaced) {
+            // Filesystem contains both the checked plugin and the plugin that is supposed to replace it.
+            // Mark it as REPLACED as it should not be loaded anymore.
+            if ((int)$plugin->fields['state'] !== self::REPLACED) {
                 trigger_error(
                     sprintf(
-                        'Unable to load plugin "%s" information.',
-                        $plugin_key
+                        'Plugin "%s" has been replaced by "%s" and therefore has been deactivated.',
+                        $plugin_key,
+                        $new_specs['directory']
                     ),
                     E_USER_WARNING
                 );
-               // Plugin is known but we are unable to load information, we ignore it
-                return;
+                $this->update(
+                    [
+                        'id'    => $plugin->fields['id'],
+                        'state' => self::REPLACED,
+                    ] + $informations
+                );
+
+                $this->unload($plugin_key);
+
+                // reset menu
+                if (isset($_SESSION['glpimenu'])) {
+                    unset($_SESSION['glpimenu']);
+                }
             }
+            // Plugin has been replaced, we ignore it
+            return;
         }
 
-        if (!$is_already_known && array_key_exists('oldname', $informations)) {
-           // Plugin not known but was named differently before, we try to load state using old name
-            $is_already_known = $plugin->getFromDBByCrit(['directory' => $informations['oldname']]);
+        if (!$is_loadable) {
+            trigger_error(
+                sprintf(
+                    'Unable to load plugin "%s" information.',
+                    $plugin_key
+                ),
+                E_USER_WARNING
+            );
+            // Plugin is known but we are unable to load information, we ignore it
+            return;
         }
 
         if (!$is_already_known) {
-           // Plugin not known, add it in DB
+            // Plugin not known, add it in DB
             $this->add(
                 array_merge(
                     $informations,
                     [
-                        'state'     => self::NOTINSTALLED,
+                        'state'     => $is_replaced ? self::REPLACED : self::NOTINSTALLED,
                         'directory' => $plugin_key,
                     ]
                 )
@@ -552,13 +593,13 @@ class Plugin extends CommonDBTM
             $informations['version'] != $plugin->fields['version']
             || $plugin_key != $plugin->fields['directory']
         ) {
-           // Plugin known version differs from information or plugin has been renamed,
-           // update information in database
+            // Plugin known version differs from information or plugin has been renamed,
+            // update information in database
             $input              = $informations;
             $input['id']        = $plugin->fields['id'];
             $input['directory'] = $plugin_key;
             if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED, self::NOTUPDATED])) {
-               // mark it as 'updatable' unless it was not installed
+                // mark it as 'updatable' unless it was not installed
                 trigger_error(
                     sprintf(
                         'Plugin "%s" version changed. It has been deactivated as its update process has to be launched.',
@@ -573,7 +614,7 @@ class Plugin extends CommonDBTM
             $this->update($input);
 
             $this->unload($plugin_key);
-           // reset menu
+            // reset menu
             if (isset($_SESSION['glpimenu'])) {
                 unset($_SESSION['glpimenu']);
             }
@@ -581,13 +622,25 @@ class Plugin extends CommonDBTM
             return;
         }
 
-       // Check if configuration state changed
+        // Check if replacement state changed
+        if ((int)$plugin->fields['state'] === self::REPLACED && !$is_replaced) {
+            // Reset plugin state as replacement plugin is not present anymore on filesystem
+            $this->update(
+                [
+                    'id'    => $plugin->fields['id'],
+                    'state' => self::NOTINSTALLED
+                ]
+            );
+            return;
+        }
+
+        // Check if configuration state changed
         if (in_array((int)$plugin->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)) {
             $function = 'plugin_' . $plugin_key . '_check_config';
             $is_config_ok = !function_exists($function) || $function();
 
             if ((int)$plugin->fields['state'] === self::TOBECONFIGURED && $is_config_ok) {
-               // Remove TOBECONFIGURED state if configuration is OK now
+                // Remove TOBECONFIGURED state if configuration is OK now
                 $this->update(
                     [
                         'id'    => $plugin->fields['id'],
@@ -596,7 +649,7 @@ class Plugin extends CommonDBTM
                 );
                 return;
             } else if ((int)$plugin->fields['state'] !== self::TOBECONFIGURED && !$is_config_ok) {
-               // Add TOBECONFIGURED state if configuration is required
+                // Add TOBECONFIGURED state if configuration is required
                 trigger_error(
                     sprintf(
                         'Plugin "%s" must be configured.',
@@ -615,21 +668,21 @@ class Plugin extends CommonDBTM
         }
 
         if (self::ACTIVATED !== (int)$plugin->fields['state']) {
-           // Plugin is not activated, nothing to do
+            // Plugin is not activated, nothing to do
             return;
         }
 
-       // Check that active state of plugin can be kept
+        // Check that active state of plugin can be kept
         $usage_ok = true;
 
-       // Check compatibility
+        // Check compatibility
         ob_start();
         if (!$this->checkVersions($plugin_key)) {
             $usage_ok = false;
         }
         ob_end_clean();
 
-       // Check prerequisites
+        // Check prerequisites
         if ($usage_ok) {
             $function = 'plugin_' . $plugin_key . '_check_prerequisites';
             if (function_exists($function)) {
@@ -642,7 +695,7 @@ class Plugin extends CommonDBTM
         }
 
         if (!$usage_ok) {
-           // Deactivate if not usable
+            // Deactivate if not usable
             trigger_error(
                 sprintf(
                     'Plugin "%s" prerequisites are not matched. It has been deactivated.',
@@ -2185,6 +2238,9 @@ class Plugin extends CommonDBTM
 
             case self::NOTACTIVATED:
                 return _x('plugin', 'Installed / not activated');
+
+            case self::REPLACED:
+                return _x('plugin', 'Replaced');
         }
 
         return __('Error / to clean');

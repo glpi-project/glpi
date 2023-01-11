@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1602,7 +1602,35 @@ class Migration
                 $old_search_opt = $p['old'];
                 $new_search_opt = $p['new'];
 
-               // Update display preferences
+                // Remove duplicates (a display preference exists for both old key and new key for a same user).
+                // Removes existing SO using new ID as they are probably corresponding to an ID that existed before and
+                // was not cleaned correctly.
+                $duplicates_iterator = $DB->request([
+                    'SELECT'     => ['new.id'],
+                    'FROM'       => DisplayPreference::getTable() . ' AS new',
+                    'INNER JOIN' => [
+                        DisplayPreference::getTable() . ' AS old' => [
+                            'ON' => [
+                                'new' => 'itemtype',
+                                'old' => 'itemtype',
+                                [
+                                    'AND' => [
+                                        'new.users_id' => new QueryExpression($DB->quoteName('old.users_id')),
+                                        'new.itemtype' => $itemtype,
+                                        'new.num'      => $new_search_opt,
+                                        'old.num'      => $old_search_opt,
+                                    ],
+                                ],
+                            ]
+                        ]
+                    ]
+                ]);
+                if ($duplicates_iterator->count() > 0) {
+                    $ids = array_column(iterator_to_array($duplicates_iterator), 'id');
+                    $DB->deleteOrDie(DisplayPreference::getTable(), ['id' => $ids]);
+                }
+
+                // Update display preferences
                 $DB->updateOrDie(DisplayPreference::getTable(), [
                     'num' => $new_search_opt
                 ], [

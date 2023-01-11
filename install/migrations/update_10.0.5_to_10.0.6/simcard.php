@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -5,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,8 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-// Load jest-dom assertion library
-import '@testing-library/jest-dom';
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-// Load extended jest assertions
-import "jest-extended/all";
+$migration->addField('glpi_items_devicesimcards', 'comment', 'text');

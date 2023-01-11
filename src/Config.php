@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -55,6 +55,12 @@ class Config extends CommonDBTM
     public const UNIT_MANAGEMENT = 0;
     public const GLOBAL_MANAGEMENT = 1;
     public const NO_MANAGEMENT = 2;
+
+    public const TIMELINE_ACTION_BTN_MERGED = 0;
+    public const TIMELINE_ACTION_BTN_SPLITTED = 1;
+
+    public const TIMELINE_RELATIVE_DATE = 0;
+    public const TIMELINE_ABSOLUTE_DATE = 1;
 
    // From CommonGLPI
     protected $displaylist         = false;
@@ -1289,7 +1295,29 @@ JAVASCRIPT
             } else {
                 echo Dropdown::getYesNo(0);
             }
+
+            echo "<tr class='tab_bg_2'><td><label for='timeline_action_btn_layout$rand'>" . __('Action button layout') .
+              "</label></td><td>";
+            Dropdown::showFromArray('timeline_action_btn_layout', [
+                self::TIMELINE_ACTION_BTN_MERGED => __('Merged'),
+                self::TIMELINE_ACTION_BTN_SPLITTED => __('Splitted'),
+            ], [
+                'value' => $data['timeline_action_btn_layout'],
+                'rand' => $rand
+            ]);
+            echo "</td><td></td></tr>";
             echo "</td></tr>";
+
+            echo "<tr class='tab_bg_2'><td><label for='timeline_date_format$rand'>" . __('Timeline date display') .
+            "</label></td><td>";
+            Dropdown::showFromArray('timeline_date_format', [
+                self::TIMELINE_RELATIVE_DATE => __('Relative'),
+                self::TIMELINE_ABSOLUTE_DATE => __('Precise'),
+            ], [
+                'value' => $data['timeline_date_format'],
+                'rand' => $rand
+            ]);
+            echo "</td><td></td></tr>";
 
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . __('Priority colors') . "</td>";

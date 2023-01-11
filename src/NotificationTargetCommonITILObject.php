@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1675,12 +1675,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             foreach ($timeline as $timeline_data) {
                 $tmptimelineitem = [];
 
-                if ($timeline_data['type'] == "Solution") {
-                    $tmptimelineitem['##timelineitems.type##'] = ITILSolution::getType();
-                } else {
-                    $tmptimelineitem['##timelineitems.type##'] = $timeline_data['type']::getType();
-                }
-
+                $tmptimelineitem['##timelineitems.type##']        = $timeline_data['type']::getType();
                 $tmptimelineitem['##timelineitems.typename##']    = $tmptimelineitem['##timelineitems.type##']::getTypeName(0);
                 $tmptimelineitem['##timelineitems.date##']        = $timeline_data['item']['date'];
                 $tmptimelineitem['##timelineitems.description##'] = $timeline_data['item']['content'];

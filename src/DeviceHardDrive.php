@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -65,7 +65,7 @@ class DeviceHardDrive extends CommonDevice
                 [
                     'name'  => 'cache',
                     'label' => __('Cache'),
-                    'type'  => 'text',
+                    'type'  => 'integer',
                     'unit'  => __('Mio')
                 ],
                 [
@@ -92,7 +92,7 @@ class DeviceHardDrive extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'capacity_default',
             'name'               => __('Capacity by default'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -108,7 +108,7 @@ class DeviceHardDrive extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'cache',
             'name'               => __('Cache'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [

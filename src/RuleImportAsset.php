@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -413,6 +413,10 @@ class RuleImportAsset extends Rule
             }
         }
 
+        foreach ($this->getCriteriaByID('tag') as $crit) {
+            $this->complex_criteria[] = $crit;
+        }
+
         foreach ($this->getCriteriaByID('states_id') as $crit) {
             $this->complex_criteria[] = $crit;
         }
@@ -768,6 +772,21 @@ class RuleImportAsset extends Rule
                         $it_criteria['SELECT'][] = 'glpi_networkports.id AS portid';
                     }
                     $it_criteria['WHERE'][] = [$ntable . '.logical_number' => $input['ifnumber']];
+                    break;
+
+                case 'tag':
+                    if (isset($input['tag']) && isset($input['deviceid'])) {
+                        $it_criteria['LEFT JOIN']['glpi_agents'] = [
+                            'ON'  => [
+                                'glpi_agents'  => 'items_id',
+                                $itemtable     => 'id'
+                            ]
+                        ];
+                        $it_criteria['WHERE'][] = [
+                            'glpi_agents.deviceid' => $input['deviceid'],
+                            'glpi_agents.tag' => $input['tag']
+                        ];
+                    }
                     break;
 
                 case 'serial':
@@ -2353,6 +2372,66 @@ class RuleImportAsset extends Rule
                     'criteria'  => 'itemtype',
                     'condition' => Rule::PATTERN_IS,
                     'pattern'   => 'DatabaseInstance'
+                ]
+            ],
+            'action'    => '_deny'
+        ];
+
+        $rules[] = [
+            'name'      => 'Unmanaged update (by name)',
+            'uuid'      => 'glpi_rule_import_asset_unmanaged_update_name',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Unmanaged'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
+            ],
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Unmanaged import (by name)',
+            'uuid'      => 'glpi_rule_import_asset_unmanaged_import_name',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Unmanaged'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
+            ],
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Unmanaged import denied',
+            'uuid'      => 'glpi_rule_import_asset_unmanaged_import_denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Unmanaged'
                 ]
             ],
             'action'    => '_deny'

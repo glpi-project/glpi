@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1438,6 +1438,7 @@ HTML;
         $tpl_vars['css_files'][] = ['path' => $theme->getPath()];
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
+        $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
        // Search
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/ResultsView.js'];
@@ -1688,9 +1689,8 @@ HTML;
         }
 
         if (
-            Session::haveRight("ticket", CREATE)
+            Session::haveRight("ticket", READ)
             || Session::haveRight("ticket", Ticket::READMY)
-            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)
         ) {
             $menu['tickets'] = [
                 'default' => '/front/ticket.php',
@@ -1924,7 +1924,6 @@ HTML;
             }
         }
 
-        $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/misc.js'];
 
         if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
@@ -3990,7 +3989,8 @@ JS;
 
                      editor.on('submit', function (e) {
                         if ($('#$id').val() == '') {
-                           alert(__('The description field is mandatory'));
+                           const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
+                           alert(__('The %s field is mandatory').replace('%s', field));
                            e.preventDefault();
 
                            // Prevent other events to run
@@ -4178,9 +4178,9 @@ JAVASCRIPT
 
        // Back and fast backward button
         if (!$start == 0) {
-            $out .= "<th class='left'><a href='javascript:reloadTab(\"start=0$additional_params\");'>
+            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0$additional_params\");'>
                      <i class='fa fa-step-backward' title=\"" . __s('Start') . "\"></i></a></th>";
-            $out .= "<th class='left'><a href='javascript:reloadTab(\"start=$back$additional_params\");'>
+            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back$additional_params\");'>
                      <i class='fa fa-chevron-left' title=\"" . __s('Previous') . "\"></i></a></th>";
         }
 
@@ -4200,9 +4200,9 @@ JAVASCRIPT
 
        // Forward and fast forward button
         if ($forward < $numrows) {
-            $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$forward$additional_params\");'>
+            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward$additional_params\");'>
                      <i class='fa fa-chevron-right' title=\"" . __s('Next') . "\"></i></a></th>";
-            $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$end$additional_params\");'>
+            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end$additional_params\");'>
                      <i class='fa fa-step-forward' title=\"" . __s('End') . "\"></i></a></th>";
         }
 
@@ -4751,7 +4751,7 @@ JAVASCRIPT
             $placeholder
             width: '$width',
             dropdownAutoWidth: true,
-            dropdownParent: $('#$id').closest('div.modal, body'),
+            dropdownParent: $('#$id').closest('div.modal, div.dropdown-menu, body'),
             quietMillis: 100,
             minimumResultsForSearch: " . $CFG_GLPI['ajax_limit_count'] . ",
             matcher: function(params, data) {
@@ -4956,7 +4956,7 @@ JAVASCRIPT
             minimumInputLength: 0,
             quietMillis: 100,
             dropdownAutoWidth: true,
-            dropdownParent: $('#$field_id').closest('div.modal, body'),
+            dropdownParent: $('#$field_id').closest('div.modal, div.dropdown-menu, body'),
             minimumResultsForSearch: " . $CFG_GLPI['ajax_limit_count'] . ",
             ajax: {
                url: '$url',
@@ -6456,7 +6456,6 @@ HTML;
         }
 
        // Some Javascript-Functions which we may need later
-        echo Html::script('js/common.js');
         self::redefineAlert();
         self::redefineConfirm();
 

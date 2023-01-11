@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -481,6 +481,12 @@ class GLPIKanbanRights {
             </li>`;
             if (self.rights.canDeleteItem()) {
                 card_overflow_dropdown += `
+                <li class='kanban-item-restore dropdown-item d-none'>
+                   <span>
+                      <i class="fa-fw ti ti-trash-off"></i>${__('Restore')}
+                   </span>
+                </li>`;
+                card_overflow_dropdown += `
                 <li class='kanban-item-remove dropdown-item'>
                    <span>
                       <i class="fa-fw ti ti-trash"></i>${__('Delete')}
@@ -794,9 +800,12 @@ class GLPIKanbanRights {
                 $(card_overflow_dropdown.find('.kanban-item-goto a')).attr('href', form_link);
 
                 let delete_action = $(card_overflow_dropdown.find('.kanban-item-remove'));
-                if (card.hasClass('deleted')) {
+                const restore_action = $(card_overflow_dropdown.find('.kanban-item-restore'));
+                if (card.data('is_deleted')) {
+                    restore_action.removeClass('d-none');
                     delete_action.html('<span><i class="ti ti-trash"></i>'+__('Purge')+'</span>');
                 } else {
+                    restore_action.addClass('d-none');
                     delete_action.html('<span><i class="ti ti-trash"></i>'+__('Delete')+'</span>');
                 }
             });
@@ -842,6 +851,12 @@ class GLPIKanbanRights {
                 const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item').prop('id');
                 // Try to delete that card item
                 deleteCard(card, undefined, undefined);
+            });
+            $(self.element + ' .kanban-container').on('click', '.kanban-item-restore', function(e) {
+                // Get root dropdown, then the button that triggered it, and finally the card that the button is in
+                const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item').prop('id');
+                // Try to delete that card item
+                restoreCard(card, undefined, undefined);
             });
             $(self.element + ' .kanban-container').on('click', '.kanban-collapse-column', function(e) {
                 self.toggleCollapseColumn(e.target.closest('.kanban-column'));
@@ -1121,7 +1136,7 @@ class GLPIKanbanRights {
 
             sortable(self.element + ' .kanban-body', {
                 acceptFrom: '.kanban-body',
-                items: '.kanban-item:not(.readonly):not(.temporarily-readonly)',
+                items: '.kanban-item:not(.readonly):not(.temporarily-readonly):not(.filtered-out)',
             });
 
             $(self.element + ' .kanban-body').off('sortstart');
@@ -1334,6 +1349,39 @@ class GLPIKanbanRights {
                     if (success) {
                         success();
                         $('#'+card).trigger('kanban:card_delete');
+                    }
+                }
+            });
+        };
+
+        /**
+         * Restore a trashed card
+         * @param {string} card The ID of the card being restored.
+         * @param {function} error Callback function called when the server reports an error.
+         * @param {function} success Callback function called when the server processes the request successfully.
+         */
+        const restoreCard = function(card, error, success) {
+            const [itemtype, items_id] = card.split('-', 2);
+            const card_obj = $('#'+card);
+            $.ajax({
+                type: "POST",
+                url: (self.ajax_root + "kanban.php"),
+                data: {
+                    action: "restore_item",
+                    itemtype: itemtype,
+                    items_id: items_id,
+                },
+                error: function() {
+                    if (error) {
+                        error();
+                    }
+                },
+                success: function() {
+                    card_obj.data('is_deleted', false);
+                    card_obj.removeClass('deleted');
+                    if (success) {
+                        success();
+                        $('#'+card).trigger('kanban:card_restore');
                     }
                 }
             });
@@ -2132,7 +2180,7 @@ class GLPIKanbanRights {
             const col_body = $(column_el).find('.kanban-body').first();
             const readonly = card['_readonly'] !== undefined && (card['_readonly'] === true || card['_readonly'] === 1);
             let card_el = `
-            <li id="${card['id']}" class="kanban-item card ${readonly ? 'readonly' : ''} ${card['is_deleted'] ? 'deleted' : ''}">
+            <li id="${card['id']}" class="kanban-item card ${readonly ? 'readonly' : ''}">
                 <div class="kanban-item-header">
                     <span class="kanban-item-title" title="${card['title_tooltip']}">
                     <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
@@ -2159,6 +2207,9 @@ class GLPIKanbanRights {
                 $.each(card['_metadata'], (k, v) => {
                     card_obj.data(k, v);
                 });
+                if (card_obj.data('is_deleted')) {
+                    card_obj.addClass('deleted');
+                }
             }
             card_obj.data('_team', card['_team']);
             self.updateColumnCount(column_el);
@@ -2170,6 +2221,7 @@ class GLPIKanbanRights {
             // Refresh core tags autocomplete
             self.filter_input.tokenizer.setAutocomplete('type', Object.keys(self.supported_itemtypes).map(k => `<i class="${self.supported_itemtypes[k].icon} me-1"></i>` + k));
             self.filter_input.tokenizer.setAutocomplete('milestone', ["true", "false"]);
+            self.filter_input.tokenizer.setAutocomplete('deleted', ["true", "false"]);
 
             $(self.element).trigger('kanban:refresh_tokenizer', self.filter_input.tokenizer);
         };
@@ -2252,6 +2304,15 @@ class GLPIKanbanRights {
                     }
                 };
 
+                const filter_boolean = (filter_data, target) => {
+                    const negative_values = ['false', 'no', '0', 0, false, undefined];
+                    const negative_filter = negative_values.includes(typeof filter_data.term === 'string' ? filter_data.term.toLowerCase() : filter_data.term);
+                    const negative_target = negative_values.includes(typeof target === 'string' ? target.toLowerCase() : target);
+                    if ((negative_target !== negative_filter) !== filter_data.exclusion) {
+                        shown = false;
+                    }
+                };
+
                 if (self.filters._text) {
                     try {
                         if (!title.match(new RegExp(self.filters._text, 'i'))) {
@@ -2265,6 +2326,10 @@ class GLPIKanbanRights {
                     }
                 }
 
+                if (self.filters.deleted !== undefined) {
+                    filter_boolean(self.filters.deleted, card.data('is_deleted'));
+                }
+
                 if (self.filters.title !== undefined) {
                     filter_text(self.filters.title, title);
                 }
@@ -2274,8 +2339,7 @@ class GLPIKanbanRights {
                 }
 
                 if (self.filters.milestone !== undefined) {
-                    self.filters.milestone.term = (self.filters.milestone.term == '0' || self.filters.milestone.term == 'false') ? 0 : 1;
-                    filter_equal(self.filters.milestone, card.data('is_milestone'));
+                    filter_boolean(self.filters.milestone, card.data('is_milestone'));
                 }
 
                 if (self.filters.category !== undefined) {

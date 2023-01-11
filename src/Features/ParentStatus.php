@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,18 +51,27 @@ trait ParentStatus
     {
         $needupdateparent = false;
 
-       // Set pending reason data on parent and self
+       // Set pending reason data on parent and self if not already set
         if ($input['pending'] ?? 0) {
-            PendingReason_Item::createForItem($parentitem, [
-                'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
-                'followup_frequency'          => $input['followup_frequency'] ?? 0,
-                'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
-            ]);
-            PendingReason_Item::createForItem($this, [
-                'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
-                'followup_frequency'          => $input['followup_frequency'] ?? 0,
-                'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
-            ]);
+            $parent_pending_reason = PendingReason_Item::getForItem($this->input['_job']);
+            if (
+                !$parent_pending_reason
+                || (
+                    $parent_pending_reason
+                    && !$parent_pending_reason->fields['pendingreasons_id']
+                )
+            ) {
+                PendingReason_Item::createForItem($parentitem, [
+                    'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
+                    'followup_frequency'          => $input['followup_frequency'] ?? 0,
+                    'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
+                ]);
+                PendingReason_Item::createForItem($this, [
+                    'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
+                    'followup_frequency'          => $input['followup_frequency'] ?? 0,
+                    'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
+                ]);
+            }
         }
 
         if (

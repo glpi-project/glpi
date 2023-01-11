@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -798,9 +798,9 @@ class Agent extends CommonDBTM
      * Cron task: clean and do other defined actions when agent not have been contacted
      * the server since xx days
      *
-     * @global object $DB
+     * @global object $DB, $PLUGIN_HOOKS
      * @param object $task
-     * @return boolean
+     * @return int
      *
      * @copyright 2010-2022 by the FusionInventory Development Team.
      */
@@ -812,8 +812,11 @@ class Agent extends CommonDBTM
 
         $retention_time = $config['stale_agents_delay'] ?? 0;
         if ($retention_time <= 0) {
-            return true;
+            return 0;
         }
+
+        $total  = 0;
+        $errors = 0;
 
         $iterator = $DB->request([
             'SELECT' => ['id'],
@@ -823,80 +826,92 @@ class Agent extends CommonDBTM
             ]
         ]);
 
-        $cron_status = false;
-        if (count($iterator)) {
-            foreach ($iterator as $data) {
-                $agent = new self();
-                $agent->getFromDB($data['id']);
+        foreach ($iterator as $data) {
+            $agent = new self();
+            if (!$agent->getFromDB($data['id'])) {
+                $errors++;
+                continue;
+            }
 
-                $item = is_a($agent->fields['itemtype'], CommonDBTM::class, true) ? new $agent->fields['itemtype']() : null;
-                if (
-                    $item !== null
-                    && (
-                        $item->getFromDB($agent->fields['items_id']) === false
-                        || $item->fields['is_dynamic'] != 1
-                    )
-                ) {
-                    $item = null;
-                }
+            $item = is_a($agent->fields['itemtype'], CommonDBTM::class, true) ? new $agent->fields['itemtype']() : null;
+            if (
+                $item !== null
+                && (
+                    $item->getFromDB($agent->fields['items_id']) === false
+                    || $item->fields['is_dynamic'] != 1
+                )
+            ) {
+                $item = null;
+            }
 
-                $actions = importArrayFromDB($config['stale_agents_action']);
-                foreach ($actions as $action) {
-                    switch ($action) {
-                        case Conf::STALE_AGENT_ACTION_CLEAN:
-                            //delete agents
-                            $agent->delete($data);
+            $actions = importArrayFromDB($config['stale_agents_action']);
+            foreach ($actions as $action) {
+                switch ($action) {
+                    case Conf::STALE_AGENT_ACTION_CLEAN:
+                        //delete agents
+                        if ($agent->delete($data)) {
                             $task->addVolume(1);
-                            $cron_status = true;
-                            break;
-                        case Conf::STALE_AGENT_ACTION_STATUS:
-                            if (isset($config['stale_agents_status']) && $item !== null) {
-                                //change status of agents linked assets
-                                $item->update([
-                                    'id'        => $item->fields['id'],
-                                    'states_id' => $config['stale_agents_status']
-                                ]);
+                            $total++;
+                        } else {
+                            $errors++;
+                        }
+                        break;
+                    case Conf::STALE_AGENT_ACTION_STATUS:
+                        if (isset($config['stale_agents_status']) && $item !== null) {
+                            //change status of agents linked assets
+                            $input = [
+                                'id'        => $item->fields['id'],
+                                'states_id' => $config['stale_agents_status']
+                            ];
+                            if ($item->update($input)) {
                                 $task->addVolume(1);
-                                $cron_status = true;
+                                $total++;
+                            } else {
+                                $errors++;
                             }
-                            break;
-                        case Conf::STALE_AGENT_ACTION_TRASHBIN:
-                            //put linked assets in trashbin
-                            if ($item !== null) {
-                                $item->delete([
-                                    'id' => $item->fields['id'],
-                                ]);
+                        }
+                        break;
+                    case Conf::STALE_AGENT_ACTION_TRASHBIN:
+                        //put linked assets in trashbin
+                        if ($item !== null) {
+                            if ($item->delete(['id' => $item->fields['id']])) {
                                 $task->addVolume(1);
-                                $cron_status = true;
+                                $total++;
+                            } else {
+                                $errors++;
                             }
-                            break;
-                    }
+                        }
+                        break;
                 }
+            }
 
-                $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
-                /**
-                 * @var string $plugin
-                 * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
-                 */
-                foreach ($plugin_actions as $plugin => $actions) {
-                    if (is_array($actions) && Plugin::isPluginActive($plugin)) {
-                        foreach ($actions as $action) {
-                            if (!is_callable($action['action_callback'] ?? null)) {
-                                trigger_error(
-                                    sprintf('Invalid plugin "%s" action callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
-                                    E_USER_WARNING
-                                );
-                                continue;
-                            }
-                            // Run the action
-                            $action['callback']($agent, $config, $item);
+            $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
+            /**
+             * @var string $plugin
+             * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+             */
+            foreach ($plugin_actions as $plugin => $actions) {
+                if (is_array($actions) && Plugin::isPluginActive($plugin)) {
+                    foreach ($actions as $action) {
+                        if (!is_callable($action['action_callback'] ?? null)) {
+                            trigger_error(
+                                sprintf('Invalid plugin "%s" action callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
+                                E_USER_WARNING
+                            );
+                            continue;
+                        }
+                        // Run the action
+                        if ($action['action_callback']($agent, $config, $item)) {
                             $task->addVolume(1);
-                            $cron_status = true;
+                            $total++;
+                        } else {
+                            $errors++;
                         }
                     }
                 }
             }
         }
-        return $cron_status;
+
+        return $errors > 0 ? -1 : ($total > 0 ? 1 : 0);
     }
 }

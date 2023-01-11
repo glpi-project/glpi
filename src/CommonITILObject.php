@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -450,6 +450,7 @@ abstract class CommonITILObject extends CommonDBTM
             'canupdate'               => $canupdate,
             'canpriority'             => $canupdate,
             'canassign'               => $canupdate,
+            'has_pending_reason'      => PendingReason_Item::getForItem($this) !== false,
         ]);
 
         return true;
@@ -4186,6 +4187,8 @@ abstract class CommonITILObject extends CommonDBTM
             'linkfield'          => $this->getTemplateClass()::getForeignKeyField(),
         ];
 
+        $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
+
         return $tab;
     }
 
@@ -6715,7 +6718,8 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                 }
                 break;
-            case 'Solution':
+            case 'Solution': // FIXME Remove it in GLPI 10.1, it may be still used in some edge cases in GLPI 10.0
+            case ITILSolution::class:
                 $pos = self::TIMELINE_RIGHT;
                 break;
         }
@@ -6763,6 +6767,7 @@ abstract class CommonITILObject extends CommonDBTM
             'class'         => 'ITILFollowup',
             'icon'          => 'ti ti-message-circle',
             'label'         => _x('button', 'Answer'),
+            'short_label'   => _x('button', 'Answer'),
             'template'      => 'components/itilobject/timeline/form_followup.html.twig',
             'item'          => $fup,
             'hide_in_menu'  => !$canadd_fup
@@ -6772,6 +6777,7 @@ abstract class CommonITILObject extends CommonDBTM
             'class'         => $task_class,
             'icon'          => 'ti ti-checkbox',
             'label'         => _x('button', 'Create a task'),
+            'short_label'   => _x('button', 'Task'),
             'template'      => 'components/itilobject/timeline/form_task.html.twig',
             'item'          => $task,
             'hide_in_menu'  => !$canadd_task
@@ -6781,6 +6787,7 @@ abstract class CommonITILObject extends CommonDBTM
             'class'         => 'ITILSolution',
             'icon'          => 'ti ti-check',
             'label'         => _x('button', 'Add a solution'),
+            'short_label'   => _x('button', 'Solution'),
             'template'      => 'components/itilobject/timeline/form_solution.html.twig',
             'item'          => new ITILSolution(),
             'hide_in_menu'  => !$canadd_solution
@@ -6790,6 +6797,7 @@ abstract class CommonITILObject extends CommonDBTM
             'class'         => Document_Item::class,
             'icon'          => Document_Item::getIcon(),
             'label'         => _x('button', 'Add a document'),
+            'short_label'   => _x('button', 'Document'),
             'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
             'item'          => new Document_Item(),
             'hide_in_menu'  => !$canadd_document
@@ -6800,6 +6808,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'class'         => $validation::getType(),
                 'icon'          => 'ti ti-thumb-up',
                 'label'         => _x('button', 'Ask for validation'),
+                'short_label'   => _x('button', 'Validation'),
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',
                 'item'          => $validation,
                 'hide_in_menu'  => !$canadd_validation
@@ -6979,7 +6988,7 @@ abstract class CommonITILObject extends CommonDBTM
         ]);
         foreach ($solution_items as $solution_item) {
             $timeline["ITILSolution_" . $solution_item['id'] ] = [
-                'type'     => 'Solution',
+                'type'     => ITILSolution::class,
                 'itiltype' => 'Solution',
                 'item'     => [
                     'id'                 => $solution_item['id'],
@@ -9958,5 +9967,11 @@ abstract class CommonITILObject extends CommonDBTM
             return null;
         }
         return $user;
+    }
+
+    public function prepareInputForClone($input)
+    {
+        unset($input['actiontime']);
+        return $input;
     }
 }

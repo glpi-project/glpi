@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -595,6 +595,8 @@ class Entity extends CommonTreeDropdown
        // Add right to current user - Hack to avoid login/logout
         $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
         $_SESSION['glpiactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
+        // Root entity cannot be deleted, so if we added an entity this means GLPI is now multi-entity
+        $_SESSION['glpi_multientitiesmode'] = 1;
 
        // clean entity tree cache
         $this->cleanEntitySelectorCache();
@@ -4037,6 +4039,8 @@ class Entity extends CommonTreeDropdown
 
         $contract = new Contract();
         $criteria = getEntitiesRestrictCriteria('', '', $entities_id, true);
+        $criteria['is_deleted'] = 0;
+        $criteria['is_template'] = 0;
         $criteria[] = Contract::getExpiredCriteria();
         $contracts = $contract->find($criteria);
 
@@ -4062,7 +4066,11 @@ class Entity extends CommonTreeDropdown
         if ($entity_default_contract_strategy == self::CONFIG_AUTO) {
             // Contract in current entity
             $contract = new Contract();
-            $criteria = ['entities_id' => $entities_id];
+            $criteria = [
+                'entities_id' => $entities_id,
+                'is_deleted'  => 0,
+                'is_template' => 0,
+            ];
             $criteria[] = Contract::getExpiredCriteria();
             $contracts = $contract->find($criteria);
 
@@ -4102,7 +4110,7 @@ class Entity extends CommonTreeDropdown
         );
 
 
-        return '<span class="entity-badge" title="' . $title . '">' . $breadcrumbs . "</span>";
+        return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . "</span>";
     }
 
     /**

@@ -1,0 +1,18 @@
+diff --git a/src/Address.php b/src/Address.php
+index 7b2956f2..8bcbd14d 100644
+--- a/src/Address.php
++++ b/src/Address.php
+@@ -60,7 +60,12 @@ class Address implements Address\AddressInterface
+      */
+     public function __construct($email, $name = null, $comment = null)
+     {
+-        $emailAddressValidator = new EmailAddressValidator(Hostname::ALLOW_DNS | Hostname::ALLOW_LOCAL);
++        $emailAddressValidator = new EmailAddressValidator(
++            [
++                'allow'  => Hostname::ALLOW_DNS | Hostname::ALLOW_LOCAL,
++                'strict' => false,
++            ]
++        );
+         if (! is_string($email) || empty($email)) {
+             throw new Exception\InvalidArgumentException('Email must be a valid email address');
+         }

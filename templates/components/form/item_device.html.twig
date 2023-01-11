@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2015-2023 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -109,8 +109,9 @@
                   {% for specificities in specificities_fields %}
                      {% if specificities['canread'] %}
 
+                        {% set specific_field_options = field_options %}
                         {% if specificities['tooltip'] is defined %}
-                           {% set field_options = field_options|merge({'helper': specificities['tooltip']}) %}
+                           {% set specific_field_options = specific_field_options|merge({'helper': specificities['tooltip']}) %}
                         {% endif %}
 
                         {% if specificities['datatype'] == "dropdown" %}
@@ -120,27 +121,32 @@
                               specificities['field'],
                               specificities['value'],
                               specificities['label'],
-                              specificities['dropdown_options']|merge(field_options)
+                              specificities['dropdown_options']|merge(specific_field_options)
                            ) }}
-                        {% else %}
-                           {% if specificities['protected'] %}
-                              {{ fields.passwordField(
+                        {% elseif specificities['protected'] %}
+                           {{ fields.passwordField(
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
-                                 field_options|merge({
+                                 specific_field_options|merge({
                                     'id': specificities['protected_field_id'],
                                     'is_disclosable': true,
                                  })
-                              ) }}
-                           {% else %}
-                              {{ fields.textField(
+                           ) }}
+                        {% elseif specificities['datatype'] == "integer" %}
+                           {{ fields.numberField(
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
-                                 field_options
-                              ) }}
-                           {% endif %}
+                                 specific_field_options
+                           ) }}
+                        {% else %}
+                           {{ fields.textField(
+                                 specificities['field'],
+                                 specificities['value'],
+                                 specificities['label'],
+                                 specific_field_options
+                           ) }}
                         {% endif %}
                      {% endif %}
                   {% endfor %}
@@ -215,6 +221,16 @@
                         })
                      ) }}
                   {% endif %}
+
+                  {% if item.isField('comment') %}
+                     {{ fields.textareaField(
+                        'comment',
+                        item.fields['comment'],
+                        _n('Comment', 'Comments', get_plural_number()),
+                        field_options
+                     ) }}
+                  {% endif %}
+
                </div> {# .row #}
             </div> {# .row #}
          </div> {# .flex-row #}

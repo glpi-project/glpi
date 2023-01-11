@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Blacklist;
 use CommonDBTM;
 use Glpi\Toolbox\Sanitizer;
 use IPAddress;
@@ -365,20 +366,25 @@ class Printer extends NetworkEquipment
      */
     public static function needToBeUpdatedFromDiscovery(CommonDBTM $item, $val)
     {
-        if (property_exists($val, 'ips') && isset($val->ips[0])) {
-            $ip = $val->ips[0];
-            //try to find IP (get from discovery) from known IP of Printer
-            //if found refuse update
-            //if no, printer IP have changed so  we allow the update from discovery
-            $ipadress = new IPAddress($ip);
-            $tmp['mainitems_id'] = $item->fields['id'];
-            $tmp['mainitemtype'] = $item::getType();
-            $tmp['is_dynamic']   = 1;
-            $tmp['name']         = $ipadress->getTextual();
-            if ($ipadress->getFromDBByCrit(Sanitizer::sanitize($tmp))) {
-                return false;
+        if (property_exists($val, 'ips')) {
+            foreach ($val->ips as $ip) {
+                $blacklist = new Blacklist();
+                //exclude IP if needed
+                if ('' != $blacklist->process(Blacklist::IP, $ip)) {
+                    //try to find IP (get from discovery) from known IP of Printer
+                    //if found refuse update
+                    //if no, printer IP have changed so  we allow the update from discovery
+                    $ipadress = new IPAddress($ip);
+                    $tmp['mainitems_id'] = $item->fields['id'];
+                    $tmp['mainitemtype'] = $item::getType();
+                    $tmp['is_dynamic']   = 1;
+                    $tmp['name']         = $ipadress->getTextual();
+                    if ($ipadress->getFromDBByCrit(Sanitizer::sanitize($tmp))) {
+                        return false;
+                    }
+                    return true;
+                }
             }
-            return true;
         }
         return false;
     }

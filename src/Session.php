@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -413,7 +413,7 @@ class Session
                 $active
             );
             $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
-            if ($is_recursive || $ID == "all") {
+            if ($is_recursive) {
                 //TRANS: %s is the entity name
                 $_SESSION["glpiactive_entity_name"]      = sprintf(
                     __('%1$s (%2$s)'),
@@ -425,6 +425,18 @@ class Session
                      $_SESSION["glpiactive_entity_shortname"],
                      __('tree structure')
                  );
+            } elseif ($ID == "all") {
+                //TRANS: %s is the entity name
+                $_SESSION["glpiactive_entity_name"]      = sprintf(
+                    __('%1$s (%2$s)'),
+                    $_SESSION["glpiactive_entity_name"],
+                    __('full structure')
+                );
+                $_SESSION["glpiactive_entity_shortname"] = sprintf(
+                    __('%1$s (%2$s)'),
+                    $_SESSION["glpiactive_entity_shortname"],
+                    __('full structure')
+                );
             }
 
             if (countElementsInTable('glpi_entities') <= count($_SESSION['glpiactiveentities'])) {
