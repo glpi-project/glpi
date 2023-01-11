@@ -74,10 +74,10 @@
    {% if item.isTemplate() %} {# TODO exluded types #}
       {% set tplmark = item.getAutofillMark(name, {'withtemplate': withtemplate}, tpl_value) %}
    {% endif %}
-   {%  if item.fields[name] is defined and item.fields[name] is not null %}
+   {% if item.fields[name] is defined and item.fields[name] is not null %}
       {% set value = call('autoName', [item.fields[name]|verbatim_value, name, (withtemplate == 2), item.getType(), item.fields['entities_id']]) %}
    {% else %}
-      {%  set value = null %}
+      {% set value = null %}
    {% endif %}
    {% set label = __('%1$s%2$s')|format(label, tplmark) %}
 
