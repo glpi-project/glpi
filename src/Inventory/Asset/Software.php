@@ -879,6 +879,7 @@ class Software extends InventoryAsset
                 'date_install'          => $val->date_install ?? null
             ]);
 
+            $itemtype = $this->item->getType();
             $stmt->bind_param(
                 'ssssss',
                 $itemtype,
