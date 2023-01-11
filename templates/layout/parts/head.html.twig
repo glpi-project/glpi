@@ -44,6 +44,9 @@
    {# auto desktop / mobile viewport #}
    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+   {# prevent robots to index GLPI instances #}
+   <meta name="robots" content="noindex, nofollow" />
+
    <meta property="glpi:csrf_token" content="{{ csrf_token(true) }}" />
 
    {% for css_file in css_files %}
