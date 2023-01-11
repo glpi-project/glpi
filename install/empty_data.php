@@ -5674,7 +5674,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'cable_management',
-                'rights' => READ | UPDATE | CREATE | PURGE,
+                'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'statistic',
@@ -6555,7 +6555,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'cable_management',
-                'rights' => READ | UPDATE | CREATE | PURGE,
+                'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'statistic',
@@ -6838,7 +6838,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'cable_management',
-                'rights' => READ | UPDATE | CREATE | PURGE,
+                'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'statistic',
