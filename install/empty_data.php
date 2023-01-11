@@ -1606,27 +1606,27 @@ $empty_data_builder = new class
                 'num' => '5',
                 'rank' => '3',
             ], [
-                'itemtype' => 'QueueMail',
+                'itemtype' => 'QueuedNotification',
                 'num' => '16',
                 'rank' => '1',
             ], [
-                'itemtype' => 'QueueMail',
+                'itemtype' => 'QueuedNotification',
                 'num' => '7',
                 'rank' => '2',
             ], [
-                'itemtype' => 'QueueMail',
+                'itemtype' => 'QueuedNotification',
                 'num' => '20',
                 'rank' => '3',
             ], [
-                'itemtype' => 'QueueMail',
+                'itemtype' => 'QueuedNotification',
                 'num' => '21',
                 'rank' => '4',
             ], [
-                'itemtype' => 'QueueMail',
+                'itemtype' => 'QueuedNotification',
                 'num' => '22',
                 'rank' => '5',
             ], [
-                'itemtype' => 'QueueMail',
+                'itemtype' => 'QueuedNotification',
                 'num' => '15',
                 'rank' => '6',
             ], [
