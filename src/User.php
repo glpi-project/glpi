@@ -5182,7 +5182,7 @@ JAVASCRIPT;
                 ]
             ],
             'WHERE'     => [
-                'glpi_useremails.email' => $DB->escape(stripslashes($email))
+                'glpi_useremails.email' => stripslashes($email)
             ],
             'ORDER'     => ['glpi_users.is_active DESC', 'is_deleted ASC']
         ]);

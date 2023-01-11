@@ -2844,9 +2844,9 @@ class AuthLDAP extends CommonDBTM
                         //Get the ID by sync field (Used to check if restoration is needed)
                         $searched_user = new User();
                         $user_found = false;
-                        if ($login === null || !($user_found = $searched_user->getFromDBbySyncField($DB->escape($login)))) {
+                        if ($login === null || !($user_found = $searched_user->getFromDBbySyncField($login))) {
                          //In case user id has changed : get id by dn (Used to check if restoration is needed)
-                            $user_found = $searched_user->getFromDBbyDn($DB->escape($user_dn));
+                            $user_found = $searched_user->getFromDBbyDn($user_dn);
                         }
                         if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
                             User::manageRestoredUserInLdap($searched_user->fields['id']);
@@ -4414,7 +4414,7 @@ class AuthLDAP extends CommonDBTM
             return $user;
         }
 
-        if ($user->getFromDBbyNameAndAuth($DB->escape($name), Auth::LDAP, $authldaps_id)) {
+        if ($user->getFromDBbyNameAndAuth($name, Auth::LDAP, $authldaps_id)) {
             return $user;
         }
 

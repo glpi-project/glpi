@@ -239,7 +239,7 @@ class DropdownTranslation extends CommonDBChild
 
         return countElementsInTable(
             getTableForItemType(__CLASS__),
-            ['itemtype' => $DB->escape($item->getType()),
+            ['itemtype' => $item->getType(),
                 'items_id' => $item->getID(),
                 'NOT'      => ['field' => 'completename' ]
             ]
@@ -405,7 +405,7 @@ class DropdownTranslation extends CommonDBChild
         $iterator = $DB->request([
             'FROM'   => getTableForItemType(__CLASS__),
             'WHERE'  => [
-                'itemtype'  => $DB->escape($item->getType()),
+                'itemtype'  => $item->getType(),
                 'items_id'  => $item->getID(),
                 'field'     => ['<>', 'completename']
             ],
@@ -586,7 +586,7 @@ class DropdownTranslation extends CommonDBChild
                 'SELECT' => 'field',
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
-                    'itemtype'  => $DB->escape($item->getType()),
+                    'itemtype'  => $item->getType(),
                     'items_id'  => $item->getID(),
                     'language'  => $language
                 ]
