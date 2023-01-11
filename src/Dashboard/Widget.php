@@ -660,7 +660,7 @@ HTML;
             labels: {$labels},
             series: {$series},
          }, {
-            width: 'calc(100% - 5px)',
+            width: '100%',
             chartPadding: {$chartPadding},
             donut: {$donut},
             $donut_opts
@@ -685,7 +685,7 @@ HTML;
                      'data-clickable': true
                   });
                   data.element._node.onclick = function() {
-                     if (!Dashboard.edit_mode) {
+                     if (!Dashboard.getActiveDashboard().edit_mode) {
                         window.location = url;
                      }
                   }
@@ -1195,7 +1195,7 @@ HTML;
                      'data-clickable': true
                   });
                   data.element._node.onclick = function() {
-                     if (!Dashboard.edit_mode) {
+                     if (!Dashboard.getActiveDashboard().edit_mode) {
                         window.location = url;
                      }
                   }
@@ -1656,7 +1656,7 @@ HTML;
 
                if (clickable) {
                   circle.getNode().onclick = function() {
-                     if (!Dashboard.edit_mode) {
+                     if (!Dashboard.getActiveDashboard().edit_mode) {
                         window.location = url;
                      }
                   }
