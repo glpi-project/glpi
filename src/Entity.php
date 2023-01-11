@@ -4005,17 +4005,15 @@ class Entity extends CommonTreeDropdown
     {
         // `completename` is expected to be received as it is stored in DB,
         // meaning that `>` separator is not encoded, but `<`, `>` and `&` from self or parent names are encoded.
-        $names     = explode(' > ', trim($entity->fields['completename']));
+        $names = explode(' > ', trim($entity->fields['completename']));
         // Convert the whole completename into decoded HTML.
         foreach ($names as &$name) {
             $name = Sanitizer::decodeHtmlSpecialChars($name);
         }
 
-        $last_name = array_pop($names);
-        $last_url  = '<i class="fas fa-caret-right mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . htmlspecialchars($last_name) . '">' . htmlspecialchars($last_name) . '</a>';
-
         // Construct HTML with special chars encoded.
-        $title = htmlspecialchars(implode(' > ', $names));
+        $title       = htmlspecialchars(implode(' > ', $names));
+        $last_name   = array_pop($names);
         $breadcrumbs = implode(
             '<i class="fas fa-caret-right mx-1"></i>',
             array_map(
@@ -4025,6 +4023,8 @@ class Entity extends CommonTreeDropdown
                 $names
             )
         );
+
+        $last_url  = '<i class="fas fa-caret-right mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlspecialchars($last_name) . '</a>';
 
         return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . $last_url . '</span>';
     }
