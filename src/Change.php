@@ -281,7 +281,7 @@ class Change extends CommonITILObject
                 ) {
                     if (
                         !isset($this->fields[$key])
-                        || ($DB->escape($this->fields[$key]) != $input[$key])
+                        || ($this->fields[$key] != $input[$key])
                     ) {
                         $changes[] = $key;
                     }

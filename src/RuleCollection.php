@@ -1226,8 +1226,6 @@ JAVASCRIPT;
                             $crit
                         )
                     ) {
-                       //escape pattern
-                        $criteria['pattern'] = $DB->escape(Html::entity_decode_deep($criteria['pattern']));
                         $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
                         $item     = new $itemtype();
                         if ($item instanceof CommonTreeDropdown) {
@@ -1270,8 +1268,6 @@ JAVASCRIPT;
                             continue;
                         }
 
-                       //escape value
-                        $action['value'] = $DB->escape(Html::entity_decode_deep($action['value']));
                         $itemtype = getItemTypeForTable($available_actions[$act]['table']);
                         $item     = new $itemtype();
                         if ($item instanceof CommonTreeDropdown) {
