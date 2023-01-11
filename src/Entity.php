@@ -4012,7 +4012,7 @@ class Entity extends CommonTreeDropdown
         }
 
         $last_name = array_pop($names);
-        $last_url  = '<i class="fas fa-caret-right mx-1"></i>' . '<a href="' . $entity->getLinkURL() .'" title="' . htmlspecialchars($last_name) . '">' . htmlspecialchars($last_name) . '</a>';
+        $last_url  = '<i class="fas fa-caret-right mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . htmlspecialchars($last_name) . '">' . htmlspecialchars($last_name) . '</a>';
 
         // Construct HTML with special chars encoded.
         $title = htmlspecialchars(implode(' > ', $names));
