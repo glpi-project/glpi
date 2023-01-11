@@ -91,7 +91,7 @@
       <input type="{{ options.type }}" id="%id%"
              class="form-control {{ options.input_addclass }}"
              name="{{ name }}" value="{{ value|verbatim_value }}"
-             {{ options.maxlenght ? 'maxlenght=' ~ options.maxlenght : '' }}
+             {{ options.maxlength ? 'maxlength=' ~ options.maxlength : '' }}
              {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }}
              {{ options.multiple ? 'multiple' : '' }} {# Only for emailField #}
