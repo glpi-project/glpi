@@ -2599,16 +2599,16 @@ abstract class CommonITILObject extends CommonDBTM
             // Build name based on content
 
             // Unsanitize
-            $content = Sanitizer::decodeHtmlSpecialChars($input['content']);
+            $content = Sanitizer::unsanitize($input['content']);
 
             // Get unformatted text
-            $name = RichText::getTextFromHtml($input['content'], false);
+            $name = RichText::getTextFromHtml($content, false);
 
             // Shorten result
             $name = Toolbox::substr(preg_replace('/\s{2,}/', ' ', $name), 0, 70);
 
             // Sanitize result
-            $input['name'] = Sanitizer::encodeHtmlSpecialChars($name);
+            $input['name'] = Sanitizer::sanitize($name);
         }
 
        // Set default dropdown
