@@ -136,7 +136,7 @@ class GLPIKey extends \DbTestCase
             }
         )->error
          ->withType(E_USER_WARNING)
-         ->withMessage('You must create a security key, see glpi:security:change_key command.')
+         ->withMessage('You must create a security key, see security:change_key command.')
          ->exists();
     }
 

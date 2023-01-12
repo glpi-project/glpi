@@ -49,7 +49,7 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
     {
         parent::configure();
 
-        $this->setName('glpi:migration:domains_plugin_to_core');
+        $this->setName('migration:domains_plugin_to_core');
         $this->setDescription(__('Migrate Domains plugin data into GLPI core tables'));
     }
 

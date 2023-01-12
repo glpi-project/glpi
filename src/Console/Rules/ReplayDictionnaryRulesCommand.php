@@ -47,8 +47,7 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:rules:replay_dictionnary_rules');
-        $this->setAliases(['rules:replay_dictionnary_rules']);
+        $this->setName('rules:replay_dictionnary_rules');
         $this->setDescription(__('Replay dictionnary rules on existing items'));
 
         $this->addOption(

@@ -48,8 +48,7 @@ class CleanSoftwareCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:assets:cleansoftware');
-        $this->setAliases(['assets:cleansoftware']);
+        $this->setName('assets:cleansoftware');
         $this->setDescription(CleanSoftwareCron::getTaskDescription());
 
         $this->addOption(

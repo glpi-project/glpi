@@ -105,7 +105,7 @@ final class FixHtmlEncodingCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:database:fix_html_encoding');
+        $this->setName('database:fix_html_encoding');
         $this->setAliases(['db:fix_html']);
         $this->setDescription(__('Fix HTML encoding issues in database.'));
 

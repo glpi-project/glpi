@@ -47,8 +47,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:rules:process_software_category_rules');
-        $this->setAliases(['rules:process_software_category_rules']);
+        $this->setName('rules:process_software_category_rules');
         $this->setDescription(__('Process software category rules'));
 
         $this->addOption(

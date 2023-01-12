@@ -1212,7 +1212,7 @@ class Config extends CommonDBTM
         } else {
             echo __('Timezone usage has not been activated.')
             . ' '
-            . sprintf(__('Run the "php bin/console %1$s" command to activate it.'), 'glpi:database:enable_timezones');
+            . sprintf(__('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
         }
 
         echo "<tr class='tab_bg_2'><td><label for='dropdown_default_central_tab$rand'>" . __('Default central tab') . "</label></td>";

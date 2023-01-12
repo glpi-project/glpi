@@ -66,8 +66,7 @@ class CheckDatabaseKeysCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:tools:check_database_keys');
-        $this->setAliases(['tools:check_database_keys']);
+        $this->setName('tools:check_database_keys');
         $this->setDescription(__('Check database for missing and errounous keys.'));
 
         $this->addOption(

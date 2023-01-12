@@ -46,8 +46,7 @@ class ListServicesCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:system:list_services');
-        $this->setAliases(['system:list_services']);
+        $this->setName('system:list_services');
         $this->setDescription(__('List system services'));
     }
 

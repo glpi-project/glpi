@@ -157,7 +157,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:migration:racks_plugin_to_core');
+        $this->setName('migration:racks_plugin_to_core');
         $this->setDescription(__('Migrate Racks plugin data into GLPI core tables'));
 
         $this->addOption(

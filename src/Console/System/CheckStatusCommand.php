@@ -50,8 +50,7 @@ class CheckStatusCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:system:status');
-        $this->setAliases(['system:status']);
+        $this->setName('system:status');
         $this->setDescription(__('Check system status'));
         $this->addOption(
             'format',

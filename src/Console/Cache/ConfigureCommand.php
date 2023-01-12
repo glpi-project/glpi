@@ -71,8 +71,7 @@ class ConfigureCommand extends AbstractCommand
     protected function configure()
     {
 
-        $this->setName('glpi:cache:configure');
-        $this->setAliases(['cache:configure']);
+        $this->setName('cache:configure');
         $this->setDescription('Define cache configuration');
 
         $this->addOption(

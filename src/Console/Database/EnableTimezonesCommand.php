@@ -68,7 +68,7 @@ class EnableTimezonesCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:database:enable_timezones');
+        $this->setName('database:enable_timezones');
         $this->setAliases(['db:enable_timezones']);
         $this->setDescription(__('Enable timezones usage.'));
     }
@@ -91,7 +91,7 @@ class EnableTimezonesCommand extends AbstractCommand
         if (($datetime_count = $this->db->getTzIncompatibleTables()->count()) > 0) {
             $message = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
             . ' '
-            . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
+            . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
             throw new \Glpi\Console\Exception\EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_TIMESTAMP_FIELDS_REQUIRED

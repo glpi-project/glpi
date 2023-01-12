@@ -51,8 +51,7 @@ class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:tools:check_database_schema_consistency');
-        $this->setAliases(['tools:check_database_schema_consistency']);
+        $this->setName('tools:check_database_schema_consistency');
         $this->setDescription(__('Check database schema consistency.'));
     }
 

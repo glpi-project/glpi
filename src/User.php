@@ -2518,7 +2518,7 @@ HTML;
                // Display a warning but only if user is more or less an admin
                 echo __('Timezone usage has not been activated.')
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to activate it.'), 'glpi:database:enable_timezones');
+                . sprintf(__('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
             }
             echo "</td></tr>";
         }
@@ -3009,7 +3009,7 @@ HTML;
                    // Display a warning but only if user is more or less an admin
                     echo __('Timezone usage has not been activated.')
                     . ' '
-                    . sprintf(__('Run the "php bin/console %1$s" command to activate it.'), 'glpi:database:enable_timezones');
+                    . sprintf(__('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
                 }
                 echo "</td>";
                 if (
