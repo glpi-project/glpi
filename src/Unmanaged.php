@@ -311,7 +311,7 @@ class Unmanaged extends CommonDBTM
         //do not keep Unmanaged ID
         unset($asset_data['id']);
 
-        $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
+        $assets_id = $asset->add($asset_data);
 
         foreach ($iterator_np as $row) {
             $row += [
@@ -326,7 +326,7 @@ class Unmanaged extends CommonDBTM
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $rulematch->update(Toolbox::addslashes_deep($row));
+            $rulematch->update($row);
         }
 
         foreach ($iterator_lf as $row) {
@@ -334,7 +334,7 @@ class Unmanaged extends CommonDBTM
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $lockfield->update(Toolbox::addslashes_deep($row));
+            $lockfield->update($row);
         }
         $this->deleteFromDB(1);
     }
