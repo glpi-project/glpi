@@ -198,7 +198,7 @@ $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEqui
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
     'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-    'Certificate', 'Unmanaged'
+    'Certificate', 'Unmanaged', 'Appliance'
 ];
 
 $CFG_GLPI["project_asset_types"]          = ['Computer', 'Monitor', 'NetworkEquipment',
