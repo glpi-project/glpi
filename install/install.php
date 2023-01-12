@@ -427,7 +427,7 @@ function step8()
     $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
     $DB->update(
         'glpi_configs',
-        ['value' => $DB->escape($url_base)],
+        ['value' => $url_base],
         [
             'context'   => 'core',
             'name'      => 'url_base'
@@ -437,7 +437,7 @@ function step8()
     $url_base_api = "$url_base/apirest.php/";
     $DB->update(
         'glpi_configs',
-        ['value' => $DB->escape($url_base_api)],
+        ['value' => $url_base_api],
         [
             'context'   => 'core',
             'name'      => 'url_base_api'
