@@ -123,7 +123,7 @@ HTML
                     'add_expected_observers' => [$tech_id],
                     'add_expected_notified'  => [$tech_id],
 
-               // Same mentions on update => mentionned users are not notified
+               // Same mentions on update => mentioned users are not notified
                     'update_content'            => <<<HTML
                   <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
 HTML
