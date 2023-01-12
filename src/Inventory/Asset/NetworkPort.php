@@ -131,6 +131,10 @@ class NetworkPort extends InventoryAsset
                 }
             }
 
+            if ((!property_exists($val, 'name') || empty($val->name)) && property_exists($val, 'ifdescr')) {
+                $val->name = $val->ifdescr;
+            }
+
             if ((!property_exists($val, 'ifdescr') || empty($val->ifdescr)) && property_exists($val, 'name')) {
                 $val->ifdescr = $val->name;
             }
