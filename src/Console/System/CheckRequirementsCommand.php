@@ -49,8 +49,7 @@ class CheckRequirementsCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:system:check_requirements');
-        $this->setAliases(['system:check_requirements']);
+        $this->setName('system:check_requirements');
         $this->setDescription(__('Check system requirements'));
     }
 

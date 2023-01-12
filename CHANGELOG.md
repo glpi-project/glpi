@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- `glpi:` command prefix has been removed from console commands canonical name.
 
 ### Deprecated
 

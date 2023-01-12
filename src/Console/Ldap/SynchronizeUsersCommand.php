@@ -69,7 +69,7 @@ class SynchronizeUsersCommand extends AbstractCommand
 
         parent::configure();
 
-        $this->setName('glpi:ldap:synchronize_users');
+        $this->setName('ldap:synchronize_users');
         $this->setAliases(['ldap:sync']);
         $this->setDescription(__('Synchronize users against LDAP server information'));
 

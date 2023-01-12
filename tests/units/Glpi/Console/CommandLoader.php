@@ -58,7 +58,7 @@ PHP
 <?php
 class InstallCommand extends \\Symfony\\Component\\Console\\Command\\Command {
    protected function configure() {
-      \$this->setName('glpi:database:install');
+      \$this->setName('database:install');
       \$this->setAliases(['db:install']);
    }
 }
@@ -71,7 +71,7 @@ PHP
 namespace Glpi;
 class ValidateCommand extends \\Symfony\\Component\\Console\\Command\\Command {
    protected function configure() {
-      \$this->setName('glpi:validate');
+      \$this->setName('validate');
    }
 }
 PHP
@@ -87,7 +87,7 @@ PHP
 namespace Glpi\\Console;
 class TestCommand extends \\Symfony\\Component\\Console\\Command\\Command {
    protected function configure() {
-      \$this->setName('glpi:test');
+      \$this->setName('test');
    }
 }
 PHP
@@ -99,8 +99,7 @@ PHP
 <?php
 class DebugCommand extends \\Symfony\\Component\\Console\\Command\\Command {
    protected function configure() {
-      \$this->setName('glpi:tools:debug');
-      \$this->setAliases(['tools:debug']);
+      \$this->setName('tools:debug');
    }
 }
 PHP
@@ -258,12 +257,11 @@ PHP
         vfsStream::setup('glpi', null, $structure);
 
         $core_names_to_class = [
-            'glpi:database:install' => 'InstallCommand',
-            'db:install'            => 'InstallCommand',
-            'glpi:validate'         => 'Glpi\\ValidateCommand',
-            'glpi:test'             => 'Glpi\\Console\\TestCommand',
-            'glpi:tools:debug'      => 'DebugCommand',
-            'tools:debug'           => 'DebugCommand',
+            'database:install' => 'InstallCommand',
+            'db:install'       => 'InstallCommand',
+            'validate'         => 'Glpi\\ValidateCommand',
+            'test'             => 'Glpi\\Console\\TestCommand',
+            'tools:debug'      => 'DebugCommand',
         ];
 
         $plugins_names_to_class = [

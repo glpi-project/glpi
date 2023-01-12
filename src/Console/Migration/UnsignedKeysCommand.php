@@ -61,7 +61,7 @@ class UnsignedKeysCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:migration:unsigned_keys');
+        $this->setName('migration:unsigned_keys');
         $this->setDescription(__('Migrate primary/foreign keys to unsigned integers'));
     }
 

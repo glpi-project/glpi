@@ -93,7 +93,7 @@ function update95xto1000()
     $migration->executeMigration();
 
     $migration->displayWarning(
-        '"utf8mb4" support requires additional migration which can be performed via the "php bin/console glpi:migration:utf8mb4" command.'
+        '"utf8mb4" support requires additional migration which can be performed via the "php bin/console migration:utf8mb4" command.'
     );
 
     return $updateresult;

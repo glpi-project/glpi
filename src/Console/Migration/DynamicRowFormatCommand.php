@@ -61,7 +61,7 @@ class DynamicRowFormatCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:migration:dynamic_row_format');
+        $this->setName('migration:dynamic_row_format');
         $this->setDescription(__('Convert database tables to "Dynamic" row format (required for "utf8mb4" character support).'));
     }
 
@@ -85,7 +85,7 @@ class DynamicRowFormatCommand extends AbstractCommand
         if (($myisam_count = $this->db->getMyIsamTables()->count()) > 0) {
             $msg = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
             . ' '
-            . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:myisam_to_innodb');
+            . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
             throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_INNODB_REQUIRED);
         }
     }

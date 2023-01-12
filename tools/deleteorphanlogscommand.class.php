@@ -45,12 +45,7 @@ class DeleteOrphanLogsCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:tools:delete_orphan_logs');
-        $this->setAliases(
-            [
-                'tools:delete_orphan_logs',
-            ]
-        );
+        $this->setName('tools:delete_orphan_logs');
         $this->setDescription(__('Delete orphan logs'));
 
         $this->addOption(

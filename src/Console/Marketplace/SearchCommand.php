@@ -50,8 +50,7 @@ class SearchCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:marketplace:search');
-        $this->setAliases(['marketplace:search']);
+        $this->setName('marketplace:search');
         $this->setDescription(__('Search GLPI marketplace'));
 
         $this->addArgument('term', InputArgument::OPTIONAL, __('The search term'));

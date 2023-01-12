@@ -82,7 +82,7 @@ class Utf8mb4Command extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:migration:utf8mb4');
+        $this->setName('migration:utf8mb4');
         $this->setDescription(__('Convert database character set from "utf8" to "utf8mb4".'));
     }
 
@@ -115,7 +115,7 @@ class Utf8mb4Command extends AbstractCommand
         if (($myisam_count = $this->db->getMyIsamTables()->count()) > 0) {
             $msg = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
             . ' '
-            . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:myisam_to_innodb');
+            . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
             throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_INNODB_REQUIRED);
         }
 
@@ -123,7 +123,7 @@ class Utf8mb4Command extends AbstractCommand
         if ($this->db->listTables('glpi\_%', ['row_format' => ['COMPACT', 'REDUNDANT']])->count() > 0) {
             $msg = sprintf(__('%d tables are still using Compact or Redundant row format.'), $myisam_count)
             . ' '
-            . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:dynamic_row_format');
+            . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:dynamic_row_format');
             throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_DYNAMIC_ROW_FORMAT_REQUIRED);
         }
     }

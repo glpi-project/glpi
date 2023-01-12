@@ -231,6 +231,17 @@ class Application extends BaseApplication
         return $this->output;
     }
 
+    protected function getCommandName(InputInterface $input)
+    {
+        $name = parent::getCommandName($input);
+        if ($name !== null) {
+            // strip `glpi:` prefix that was used before GLPI 10.0.6
+            // FIXME Deprecate usage of `glpi:` prefix in GLPI 10.1.
+            $name = preg_replace('/^glpi:/', '', $name);
+        }
+        return $name;
+    }
+
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
 
@@ -243,7 +254,7 @@ class Application extends BaseApplication
                 . '</error>'
                 . PHP_EOL
                 . '<error>'
-                . sprintf(__('Run the "php bin/console %1$s" command to process to the update.'), 'glpi:database:update')
+                . sprintf(__('Run the "%1$s" command to process to the update.'), 'php bin/console database:update')
                 . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
@@ -496,8 +507,8 @@ class Application extends BaseApplication
 
         if ($core_requirements->hasMissingMandatoryRequirements()) {
             $message = __('Some mandatory system requirements are missing.')
-            . ' '
-            . __('Run "php bin/console glpi:system:check_requirements" for more details.');
+                . ' '
+                . sprintf(__('Run the "%1$s" command for more details.'), 'php bin/console system:check_requirements');
             $this->output->writeln(
                 '<error>' . $message . '</error>',
                 OutputInterface::VERBOSITY_QUIET
