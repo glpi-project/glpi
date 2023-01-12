@@ -64,6 +64,34 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
+} else if (isset($_POST["delete"])) {
+    $cable->check($_POST["id"], DELETE);
+
+    if ($cable->delete($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "cable",
+            4,
+            "management",
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+        );
+    }
+    $cable->redirectToList();
+} else if (isset($_POST["restore"])) {
+    $cable->check($_POST["id"], DELETE);
+
+    if ($cable->restore($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "cable",
+            4,
+            "management",
+            //TRANS: %s is the user login
+            sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+        );
+    }
+    $cable->redirectToList();
 } else if (isset($_POST["purge"])) {
     $cable->check($_POST["id"], PURGE);
 

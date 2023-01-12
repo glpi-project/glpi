@@ -4342,6 +4342,7 @@ CREATE TABLE `glpi_cables` (
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `item_endpoint_a` (`itemtype_endpoint_a`,`items_id_endpoint_a`),
@@ -4359,7 +4360,8 @@ CREATE TABLE `glpi_cables` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `cabletypes_id` (`cabletypes_id`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
