@@ -176,7 +176,6 @@ class Change extends CommonITILObject
                 ['recursive' => true],
                 ['condition' => RuleCommonITILObject::ONADD]
             );
-            $input = Toolbox::stripslashes_deep($input);
 
             // Recompute default values based on values computed by rules
             $input = $this->computeDefaultValuesForAdd($input);
@@ -316,7 +315,6 @@ class Change extends CommonITILObject
                         'only_criteria' => $changes
                     ]
                 );
-                $input = Toolbox::stripslashes_deep($input);
             }
 
             // Clean actors fields added for rules

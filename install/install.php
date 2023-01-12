@@ -545,9 +545,7 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
 
    // DB clean
     if (isset($_POST["db_pass"])) {
-        $_POST["db_pass"] = stripslashes($_POST["db_pass"]);
         $_POST["db_pass"] = rawurldecode($_POST["db_pass"]);
-        $_POST["db_pass"] = stripslashes($_POST["db_pass"]);
     }
 
     switch ($_POST["install"]) {

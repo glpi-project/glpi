@@ -2780,7 +2780,6 @@ class AuthLDAP extends CommonDBTM
     ) {
         global $DB;
 
-        $params      = Toolbox::stripslashes_deep($params);
         $config_ldap = new self();
         $res         = $config_ldap->getFromDB($ldap_server);
         $input = [];
@@ -2938,7 +2937,7 @@ class AuthLDAP extends CommonDBTM
        //Connect to the directory
         $ds = $config_ldap->connect();
         if ($ds) {
-            $group_infos = self::getGroupByDn($ds, stripslashes($group_dn));
+            $group_infos = self::getGroupByDn($ds, $group_dn);
             $group       = new Group();
             if ($options['type'] == "groups") {
                 return $group->add(["name"          => $group_infos["cn"][0],
