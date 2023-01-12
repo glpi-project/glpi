@@ -174,6 +174,14 @@ class Appliance extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '15',
+            'table'              => $this->getTable(),
+            'field'              => 'contact_num',
+            'name'               => __('Alternate username number'),
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
             'id'            => '23',
             'table'         => 'glpi_manufacturers',
             'field'         => 'name',
