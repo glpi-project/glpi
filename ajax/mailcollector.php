@@ -61,7 +61,7 @@ if (isset($_REQUEST['action'])) {
                // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
                 $input['passwd'] = $_REQUEST['passwd'];
             }
-            $input['login'] = stripslashes($input['login']);
+            $input['login'] = $input['login'];
 
             if (isset($input["passwd"])) {
                 if (empty($input["passwd"])) {

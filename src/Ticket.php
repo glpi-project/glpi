@@ -1228,7 +1228,6 @@ class Ticket extends CommonITILObject
                     'only_criteria' => $changes
                 ]
             );
-            $input = Toolbox::stripslashes_deep($input);
         }
 
        // Clean actors fields added for rules

@@ -779,7 +779,7 @@ class Software extends CommonDBTM
 
        //Process software's category rules
         $softcatrule = new RuleSoftwareCategoryCollection();
-        $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
+        $result      = $softcatrule->processAllRules(null, null, $input);
 
         if (isset($result['_ignore_import'])) {
             $input["softwarecategories_id"] = 0;
@@ -1157,7 +1157,7 @@ class Software extends CommonDBTM
        //If category was not set by user (when manually adding a user)
         if (!isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
             $softcatrule = new RuleSoftwareCategoryCollection();
-            $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
+            $result      = $softcatrule->processAllRules(null, null, $input);
 
             if (!isset($result['_ignore_import'])) {
                 if (isset($result["softwarecategories_id"])) {

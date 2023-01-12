@@ -1233,7 +1233,7 @@ class MassiveAction
 
                 $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-                    $submitname = stripslashes($ma->POST['submitname']);
+                    $submitname = $ma->POST['submitname'];
                 }
                 echo Html::submit($submitname, [
                     'name'  => 'massiveaction',
@@ -1262,7 +1262,7 @@ class MassiveAction
 
                 $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-                      $submitname = stripslashes($ma->POST['submitname']);
+                      $submitname = $ma->POST['submitname'];
                 }
                 echo Html::submit($submitname, [
                     'name'  => 'massiveaction',

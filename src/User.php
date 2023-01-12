@@ -687,7 +687,7 @@ class User extends CommonDBTM
             return false;
         }
 
-        if (empty($input['name']) || !Auth::isValidLogin(stripslashes($input['name']))) {
+        if (empty($input['name']) || !Auth::isValidLogin($input['name'])) {
             Session::addMessageAfterRedirect(
                 __('The login is not valid. Unable to add the user.'),
                 false,
@@ -1957,7 +1957,7 @@ class User extends CommonDBTM
                     $groups = [];
                 }
 
-                $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields), [
+                $this->fields = $rule->processAllRules($groups, $this->fields, [
                     'type'        => Auth::LDAP,
                     'ldap_server' => $ldap_method["id"],
                     'connection'  => $ldap_connection,
@@ -2162,7 +2162,7 @@ class User extends CommonDBTM
             } else {
                 $groups = [];
             }
-            $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields), [
+            $this->fields = $rule->processAllRules($groups, $this->fields, [
                 'type'        => Auth::MAIL,
                 'mail_server' => $mail_method["id"],
                 'login'       => $name,
@@ -2268,7 +2268,7 @@ class User extends CommonDBTM
                 $groups_id = array_column($groups, 'id');
             }
 
-            $this->fields = $rule->processAllRules($groups_id, Toolbox::stripslashes_deep($this->fields), [
+            $this->fields = $rule->processAllRules($groups_id, $this->fields, [
                 'type'   => Auth::EXTERNAL,
                 'email'  => $this->fields["_emails"],
                 'login'  => $this->fields["name"]
@@ -3398,7 +3398,7 @@ JAVASCRIPT;
                  );
             }
 
-            if (!Auth::isValidLogin(stripslashes($this->input['name']))) {
+            if (!Auth::isValidLogin($this->input['name'])) {
                 $this->fields['name'] = $this->oldvalues['name'];
                 unset($this->updates[$key]);
                 unset($this->oldvalues['name']);
@@ -5182,7 +5182,7 @@ JAVASCRIPT;
                 ]
             ],
             'WHERE'     => [
-                'glpi_useremails.email' => stripslashes($email)
+                'glpi_useremails.email' => $email
             ],
             'ORDER'     => ['glpi_users.is_active DESC', 'is_deleted ASC']
         ]);
