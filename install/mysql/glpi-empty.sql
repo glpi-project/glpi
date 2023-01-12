@@ -8667,6 +8667,7 @@ CREATE TABLE `glpi_appliances` (
   `externalidentifier` varchar(255) DEFAULT NULL,
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
+  `contact` varchar(255) DEFAULT NULL,
   `is_helpdesk_visible` tinyint NOT NULL DEFAULT '1',
   `pictures` text,
   PRIMARY KEY (`id`),
