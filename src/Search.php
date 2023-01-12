@@ -4740,7 +4740,6 @@ JAVASCRIPT;
                     }
                 }
                 break;
-                break;
         }
 
        //Check in current item if a specific where is defined
