@@ -6162,7 +6162,7 @@ JAVASCRIPT;
                     $input = [
                         'itemtype'        => 'Ticket',
                         'items_id'        => $merge_target_id,
-                        'content'         => $DB->escape($ticket->fields['name'] . Sanitizer::encodeHtmlSpecialChars("<br /><br />") . $ticket->fields['content']),
+                        'content'         => $ticket->fields['name'] . Sanitizer::encodeHtmlSpecialChars("<br /><br />") . $ticket->fields['content'],
                         'users_id'        => $ticket->fields['users_id_recipient'],
                         'date_creation'   => $ticket->fields['date_creation'],
                         'date_mod'        => $ticket->fields['date_mod'],
@@ -6182,7 +6182,7 @@ JAVASCRIPT;
                         foreach ($tomerge as $fup2) {
                              $fup2['items_id'] = $merge_target_id;
                              $fup2['sourceitems_id'] = $id;
-                             $fup2['content'] = $DB->escape($fup2['content']);
+                             $fup2['content'] = $fup2['content'];
                              unset($fup2['id']);
                             if (!$fup->add($fup2)) {
                              // Cannot add followup. Abort/fail the merge
@@ -6202,7 +6202,7 @@ JAVASCRIPT;
                         foreach ($tomerge as $task2) {
                              $task2['tickets_id'] = $merge_target_id;
                              $task2['sourceitems_id'] = $id;
-                             $task2['content'] = $DB->escape($task2['content']);
+                             $task2['content'] = $task2['content'];
                              unset($task2['id']);
                              unset($task2['uuid']);
                             if (!$task->add($task2)) {
