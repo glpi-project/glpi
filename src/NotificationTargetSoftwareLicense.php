@@ -110,4 +110,16 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
 
         asort($this->tag_descriptions);
     }
+
+    public function addAdditionalTargets($event = '')
+    {
+        $this->addTarget(
+            Notification::ITEM_TECH_IN_CHARGE,
+            __('Technician in charge of the software license')
+        );
+        $this->addTarget(
+            Notification::ITEM_TECH_GROUP_IN_CHARGE,
+            __('Group in charge of the software license')
+        );
+    }
 }
