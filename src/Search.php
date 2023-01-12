@@ -4634,7 +4634,7 @@ JAVASCRIPT;
         // These search options will need an additionnal subquery in their WHERE
         // clause to ensure accurate results
         // See https://github.com/glpi-project/glpi/pull/13684 for detailed examples
-        $where_on_linked_children = ($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"]["jointype"] ?? '') == 'child';
+        $where_on_linked_children = $searchopt[$ID]["use_subquery"] ?? false;
 
         // Default mode for most search types that use a subquery
         $use_subquery_on_id_search = false;
