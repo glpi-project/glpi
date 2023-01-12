@@ -4629,20 +4629,21 @@ JAVASCRIPT;
 
         $SEARCH = "";
 
-        // In some cases, we will need to replace the WHERE condition by a subquery.
-        // This is needed to avoid false positif for negative conditions on
-        // children items (e.g. search for tickets that DON'T have a given group)
-        // See https://github.com/glpi-project/glpi/pull/13684 for detailed examples
-        $use_subquery_on_id_search = false;
-
-        // Special case when having a negative condition on children items with
-        // the "contains" or "not contains" search type.
-        // The subquery will need to be constructed differently
-        $use_subquery_on_text_search = false;
-
         // Is the current criteria on a linked children item ? (e.g. search
         // option 65 for CommonITILObjects)
+        // These search options will need an additionnal subquery in their WHERE
+        // clause to ensure accurate results
+        // See https://github.com/glpi-project/glpi/pull/13684 for detailed examples
         $where_on_linked_children = ($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"]["jointype"] ?? '') == 'child';
+
+        // Default mode for most search types that use a subquery
+        $use_subquery_on_id_search = false;
+
+        // Special case for "contains" or "not contains" search type
+        $use_subquery_on_text_search = false;
+
+        // The subquery operator will be"IN" or "NOT IN" depending on the context and criteria
+        $subquery_operator = "";
 
         switch ($searchtype) {
             case "notcontains":
@@ -4658,74 +4659,87 @@ JAVASCRIPT;
                         }
                     }
                 }
-                if ($where_on_linked_children && $nott) {
-                    // Negative criteria on linked children found, subquery will be needed
-                    // Note that we invert the criteria as we will use a NOT IN subquery
-                    $SEARCH = self::makeTextSearch($val, !$nott);
+
+                if ($where_on_linked_children) {
+                    // Subquery will be needed to get accurate results
                     $use_subquery_on_text_search = true;
+
+                    // Potential negation will be handled by the subquery operator
+                    $SEARCH = self::makeTextSearch($val, false);
+                    $subquery_operator = $nott ? "NOT IN" : "IN";
                 } else {
                     $SEARCH = self::makeTextSearch($val, $nott);
                 }
                 break;
 
             case "equals":
-                if ($nott) {
-                    if ($where_on_linked_children) {
-                        // Negative criteria on linked children found, subquery will be needed
-                        // Note that we invert the criteria as we will use a NOT IN subquery
-                        $SEARCH = " = " . DBmysql::quoteValue($val);
-                        $use_subquery_on_id_search = true;
-                    } else {
-                        $SEARCH = " <> " . DBmysql::quoteValue($val);
-                    }
-                } else {
+                if ($where_on_linked_children) {
+                    // Subquery will be needed to get accurate results
+                    $use_subquery_on_id_search = true;
+
+                    // Potential negation will be handled by the subquery operator
                     $SEARCH = " = " . DBmysql::quoteValue($val);
+                    $subquery_operator = $nott ? "NOT IN" : "IN";
+                } else {
+                    if ($nott) {
+                        $SEARCH = " <> " . DBmysql::quoteValue($val);
+                    } else {
+                        $SEARCH = " = " . DBmysql::quoteValue($val);
+                    }
                 }
                 break;
 
             case "notequals":
-                if ($nott) {
+                if ($where_on_linked_children) {
+                    // Subquery will be needed to get accurate results
+                    $use_subquery_on_id_search = true;
+
+                    // Potential negation will be handled by the subquery operator
                     $SEARCH = " = " . DBmysql::quoteValue($val);
+                    $subquery_operator = $nott ? "IN" : "NOT IN";
                 } else {
-                    if ($where_on_linked_children) {
-                        // Negative criteria on linked children found, subquery will be needed
-                        // Note that we invert the criteria as we will use a NOT IN subquery
+                    if ($nott) {
                         $SEARCH = " = " . DBmysql::quoteValue($val);
-                        $use_subquery_on_id_search = true;
                     } else {
                         $SEARCH = " <> " . DBmysql::quoteValue($val);
                     }
                 }
+
                 break;
 
             case "under":
-                if ($nott) {
-                    if ($where_on_linked_children) {
-                        // Negative criteria on linked children found, subquery will be needed
-                        // Note that we invert the criteria as we will use a NOT IN subquery
-                        $use_subquery_on_id_search = true;
-                        $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
-                    } else {
-                        $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
-                    }
-                } else {
+                if ($where_on_linked_children) {
+                    // Subquery will be needed to get accurate results
+                    $use_subquery_on_id_search = true;
+
+                    // // Potential negation will be handled by the subquery operator
                     $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    $subquery_operator = $nott ? "NOT IN" : "IN";
+                } else {
+                    if ($nott) {
+                        $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    } else {
+                        $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    }
                 }
                 break;
 
             case "notunder":
-                if ($nott) {
+                if ($where_on_linked_children) {
+                    // Subquery will be needed to get accurate results
+                    $use_subquery_on_id_search = true;
+
+                    // Potential negation will be handled by the subquery operator
                     $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    $subquery_operator = $nott ? "IN" : "NOT IN";
                 } else {
-                    if ($where_on_linked_children) {
-                        // Negative criteria on linked children found, subquery will be needed
-                        // Note that we invert the criteria as we will use a NOT IN subquery
-                        $use_subquery_on_id_search = true;
+                    if ($nott) {
                         $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
                     } else {
                         $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
                     }
                 }
+                break;
                 break;
         }
 
@@ -5268,7 +5282,8 @@ JAVASCRIPT;
 
             if ($use_subquery_on_id_search) {
                 // Subquery for "Is not", "Not + is", "Not under" and "Not + Under" search types
-                $out = " $link `$main_table`.`id` NOT IN (
+
+                $out = " $link `$main_table`.`id` $subquery_operator (
                     SELECT `$fk`
                     FROM `$link_table`
                     WHERE `$linked_fk` $SEARCH $addcondition
@@ -5283,7 +5298,7 @@ JAVASCRIPT;
                 // )
             } elseif ($use_subquery_on_text_search) {
                 // Subquery for "Not contains" and "Not + contains" search types
-                $out = " $link `$main_table`.`id` NOT IN (
+                $out = " $link `$main_table`.`id` $subquery_operator (
                     SELECT `$fk`
                     FROM `$link_table`
                     WHERE `$linked_fk` IN (

@@ -2241,6 +2241,767 @@ class Search extends DbTestCase
        // Check results
         $this->array($names)->isEqualTo($expected);
     }
+
+    protected function testCriteriaWithSubqueriesProvider(): iterable
+    {
+        $this->login();
+        $root = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // All our test set will be assigned to this category
+        $category = $this->createItem('ITILCategory', [
+            'name' => 'Test Criteria With Subqueries',
+            'entities_id' => $root,
+        ])->getId();
+
+        // Check that our test set is empty
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 7, // Category
+                    'searchtype' => 'equals',
+                    'value'      => $category,
+                ]
+            ],
+            'expected' => [],
+        ];
+
+        // Create the needed groups for our data
+        $this->createItems('Group', [
+            [
+                'name' => 'Group 1',
+                'entities_id' => $root,
+            ],
+            [
+                'name' => 'Group 2',
+                'entities_id' => $root,
+            ],
+        ]);
+        $group_1 = getItemByTypeName('Group', 'Group 1', true);
+        $group_2 = getItemByTypeName('Group', 'Group 2', true);
+
+        $this->createItem('Group', [
+            'name' => 'Group 1A',
+            'entities_id' => $root,
+            'groups_id' => getItemByTypeName('Group', 'Group 1', true),
+        ]);
+        $group_1A = getItemByTypeName('Group', 'Group 1A', true);
+
+        $this->createItems('Ticket', [
+            [
+                'name' => 'Ticket group 1',
+                'content' => '',
+                'entities_id' => $root,
+                'itilcategories_id' => $category,
+                '_actors' => [
+                    'observer' => [['itemtype' => 'Group', 'items_id' => $group_1]]
+                ]
+            ]
+        ]);
+        $this->createItems('Ticket', [
+            [
+                'name' => 'Ticket group 2',
+                'content' => '',
+                'entities_id' => $root,
+                'itilcategories_id' => $category,
+                '_actors' => [
+                    'observer' => [['itemtype' => 'Group', 'items_id' => $group_2]]
+                ]
+            ]
+        ]);
+        $this->createItems('Ticket', [
+            [
+                'name' => 'Ticket group 1 + group 2',
+                'content' => '',
+                'entities_id' => $root,
+                'itilcategories_id' => $category,
+                '_actors' => [
+                    'observer' => [
+                        ['itemtype' => 'Group', 'items_id' => $group_1],
+                        ['itemtype' => 'Group', 'items_id' => $group_2],
+                    ]
+                ]
+            ]
+        ]);
+        $this->createItems('Ticket', [
+            [
+                'name' => 'Ticket group 1A + group 2',
+                'content' => '',
+                'entities_id' => $root,
+                'itilcategories_id' => $category,
+                '_actors' => [
+                    'observer' => [
+                        ['itemtype' => 'Group', 'items_id' => $group_1A],
+                        ['itemtype' => 'Group', 'items_id' => $group_2],
+                    ]
+                ]
+            ]
+        ]);
+
+        // Validate all items are here as expected
+        $base_condition = [
+            'link'       => 'AND',
+            'field'      => 7, // Category
+            'searchtype' => 'equals',
+            'value'      => $category,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [$base_condition],
+            'expected' => [
+                'Ticket group 1',
+                'Ticket group 2',
+                'Ticket group 1 + group 2',
+                'Ticket group 1A + group 2'
+            ],
+        ];
+
+        // Ticket where watcher group is "Group 1"
+        $expected = [
+            'Ticket group 1',
+            'Ticket group 1 + group 2',
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'equals',
+                    'value'      => $group_1,
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND NOT',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'notequals',
+                    'value'      => $group_1,
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'equals',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notequals',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notequals',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'equals',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+
+        // Ticket where watcher group is not "Group 1"
+        $expected = [
+            'Ticket group 2',
+            'Ticket group 1A + group 2',
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND NOT',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'equals',
+                    'value'      => $group_1,
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'notequals',
+                    'value'      => $group_1,
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notequals',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'equals',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'equals',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notequals',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+
+        // Ticket where watcher group contains "group 1"
+        $expected = [
+            'Ticket group 1',
+            'Ticket group 1 + group 2',
+            'Ticket group 1A + group 2',
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'contains',
+                    'value'      => "group 1",
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND NOT',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'notcontains',
+                    'value'      => "group 1",
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'contains',
+                            'value'      => "group 1",
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notcontains',
+                            'value'      => "group 1",
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notcontains',
+                            'value'      => "group 1",
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'contains',
+                            'value'      => "group 1",
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+
+        // Ticket where watcher group doesn't contains "group 1"
+        $expected = ['Ticket group 2'];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND NOT',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'contains',
+                    'value'      => "group 1",
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'notcontains',
+                    'value'      => "group 1",
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notcontains',
+                            'value'      => "group 1",
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'contains',
+                            'value'      => "group 1",
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'contains',
+                            'value'      => "group 1",
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notcontains',
+                            'value'      => "group 1",
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+
+        // Ticket where watcher group is under "group 1"
+        $expected = [
+            'Ticket group 1',
+            'Ticket group 1 + group 2',
+            'Ticket group 1A + group 2',
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'under',
+                    'value'      => $group_1,
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND NOT',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'notunder',
+                    'value'      => $group_1,
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'under',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notunder',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notunder',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'under',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+
+        // Ticket where watcher group is not under "group 1"
+        $expected = ['Ticket group 2'];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND NOT',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'under',
+                    'value'      => $group_1,
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link'       => 'AND',
+                    'field'      => 65, // Watcher group
+                    'searchtype' => 'notunder',
+                    'value'      => $group_1,
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notunder',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'AND NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'under',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'under',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+        yield [
+            'itemtype' => 'Ticket',
+            'criteria' => [
+                $base_condition,
+                [
+                    'link' => 'NOT',
+                    'criteria' => [
+                        [
+                            'link'       => 'NOT',
+                            'field'      => 65, // Watcher group
+                            'searchtype' => 'notunder',
+                            'value'      => $group_1,
+                        ]
+                    ]
+                ]
+            ],
+            'expected' => $expected,
+        ];
+    }
+
+    /**
+     * @dataprovider testCriteriaWithSubqueriesProvider
+     */
+    public function testCriteriaWithSubqueries(
+        string $itemtype,
+        array $criteria,
+        array $expected
+    ): void {
+        // Run search
+        $data = \Search::getDatas($itemtype, [
+            'criteria' => $criteria
+        ]);
+
+        // Parse results
+        $names = [];
+        foreach ($data['data']['rows'] as $row) {
+            $names[] = $row['raw']['ITEM_Ticket_1'];
+        }
+
+        // Validate results
+        sort($names);
+        sort($expected);
+        $this->array($names)->isEqualTo($expected);
+    }
 }
 
 // @codingStandardsIgnoreStart
