@@ -804,9 +804,9 @@ PLAINTEXT,
       
     </div>
 HTML,
-            '39 - Link in content' => <<<HTML
+            '39 - Link in content' => <<<PLAINTEXT
 This HTML message has a link  <https://glpi-project.org>.
-HTML,
+PLAINTEXT,
 
         ];
 
