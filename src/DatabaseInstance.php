@@ -579,7 +579,7 @@ class DatabaseInstance extends CommonDBTM
             $header = "<tr>";
             $header .= "<th>" . __('Name') . "</th>";
             $header .= "<th>" . Database::getTypeName(1) . "</th>";
-            $header .= "<th>" . __('Version') . "</th>";
+            $header .= "<th>" . _n('Version', 'Versions', 1) . "</th>";
             $header .= "<th>" . DatabaseInstanceType::getTypeName(0) . "</th>";
             $header .= "<th>" . Manufacturer::getTypeName(0) . "</th>";
             $header .= "<th></th>";
