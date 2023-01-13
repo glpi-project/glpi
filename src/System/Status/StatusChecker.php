@@ -118,6 +118,7 @@ final class StatusChecker
      * @param bool $as_array True if the service check result should be returned as an array instead of a plain-text string.
      * @return array|string An array or string with the result based on the $as_array parameter value.
      * @since 10.0.0
+     * @FIXME Remove deprecated plain text output in GLPI 10.1.
      */
     public static function getServiceStatus(?string $service, $public_only = true, $as_array = true)
     {
@@ -615,7 +616,6 @@ final class StatusChecker
      * Format the given full service status result as a plain-text output compatible with previous versions of GLPI.
      * @param array $status
      * @return string
-     * @deprecated 10.0.0
      */
     private static function getPlaintextOutput(array $status): string
     {
