@@ -578,6 +578,10 @@ class DatabaseInstance extends CommonDBTM
             echo "<table class='tab_cadre_fixehov'>";
             $header = "<tr>";
             $header .= "<th>" . __('Name') . "</th>";
+            $header .= "<th>" . Database::getTypeName(1) . "</th>";
+            $header .= "<th>" . __('Version') . "</th>";
+            $header .= "<th>" . DatabaseInstanceType::getTypeName(0) . "</th>";
+            $header .= "<th>" . Manufacturer::getTypeName(0) . "</th>";
             $header .= "<th></th>";
             $header .= "</tr>";
             echo $header;
@@ -589,6 +593,13 @@ class DatabaseInstance extends CommonDBTM
                 echo "<td>" . $item->getLink() . "</td>";
                 $databases = $item->getDatabases();
                 echo "<td>" . sprintf(_n('%1$d database', '%1$d databases', count($databases)), count($databases)) . "</td>";
+                echo "<td>" . $item->fields['version'] . "</td>";
+                $databasetype = new DatabaseInstanceType();
+                $databasetype->getFromDB($item->fields['databaseinstancetypes_id']);
+                echo "<td>" . $databasetype->fields['name'] . "</td>";
+                $manufacturer = new Manufacturer();
+                $manufacturer->getFromDB($item->fields['manufacturers_id']);
+                echo "<td>" . $manufacturer->fields['name'] . "</td>";
                 echo "</tr>";
             }
             echo $header;
