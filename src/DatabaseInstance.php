@@ -595,8 +595,11 @@ class DatabaseInstance extends CommonDBTM
                 echo "<td>" . sprintf(_n('%1$d database', '%1$d databases', count($databases)), count($databases)) . "</td>";
                 echo "<td>" . $item->fields['version'] . "</td>";
                 $databasetype = new DatabaseInstanceType();
-                $databasetype->getFromDB($item->fields['databaseinstancetypes_id']);
-                echo "<td>" . $databasetype->fields['name'] . "</td>";
+                $databasetype_name = '';
+                if ($item->fields['databaseinstancetypes_id'] > 0 && $databasetype->getFromDB($item->fields['databaseinstancetypes_id']) {
+                    $databasetype_name = $databasetype->fields['name'];
+                }
+                echo "<td>" . $databasetype_name . "</td>";
                 $manufacturer = new Manufacturer();
                 $manufacturer->getFromDB($item->fields['manufacturers_id']);
                 echo "<td>" . $manufacturer->fields['name'] . "</td>";
