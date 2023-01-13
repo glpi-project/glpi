@@ -206,12 +206,18 @@
         'plan_end_date',
         item.fields.plan_end_date,
         __('Planned end date'),
+        {
+            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+        }
     ) }}
 
     {{ fields.datetimeField(
         'real_end_date',
         item.fields.real_end_date,
         __('Real end date'),
+        {
+            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+        }
     ) }}
 
     {{ fields.dropdownTimestampField(
