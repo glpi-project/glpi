@@ -156,7 +156,7 @@ class Knowbase extends CommonGLPI
                         : 0;
 
         $category_list = json_encode(self::getTreeCategoryList());
-        $no_cat_found  = __("No category found");
+        $no_cat_found  = __s("No category found");
 
         $JS = <<<JAVASCRIPT
          $(function() {
