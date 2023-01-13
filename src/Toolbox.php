@@ -1031,28 +1031,24 @@ class Toolbox
         if (empty($img_height)) {
             $img_height = $img_infos[1];
         }
-        if (empty($new_width)) {
-            $new_width  = $img_infos[0];
-        }
-        if (empty($new_height)) {
-            $new_height = $img_infos[1];
+
+        if (
+            empty($max_size)
+            && (
+                !empty($new_width)
+                || !empty($new_height)
+            )
+        ) {
+            $max_size = ($new_width > $new_height ? $new_width : $new_height);
         }
 
-       // Image max size is 500 pixels : is set to 0 no resize
-        if ($max_size > 0) {
-            if (
-                ($img_width > $max_size)
-                || ($img_height > $max_size)
-            ) {
-                $source_aspect_ratio = $img_width / $img_height;
-                if ($source_aspect_ratio < 1) {
-                    $new_width  = ceil($max_size * $source_aspect_ratio);
-                    $new_height = $max_size;
-                } else {
-                    $new_width  = $max_size;
-                    $new_height = ceil($max_size / $source_aspect_ratio);
-                }
-            }
+        $source_aspect_ratio = $img_width / $img_height;
+        if ($source_aspect_ratio < 1) {
+            $new_width  = ceil($max_size * $source_aspect_ratio);
+            $new_height = $max_size;
+        } else {
+            $new_width  = $max_size;
+            $new_height = ceil($max_size / $source_aspect_ratio);
         }
 
         $img_type = $img_infos[2];
