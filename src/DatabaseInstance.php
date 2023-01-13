@@ -601,8 +601,11 @@ class DatabaseInstance extends CommonDBTM
                 }
                 echo "<td>" . $databasetype_name . "</td>";
                 $manufacturer = new Manufacturer();
-                $manufacturer->getFromDB($item->fields['manufacturers_id']);
-                echo "<td>" . $manufacturer->fields['name'] . "</td>";
+                $manufacturer_name = '';
+                if ($item->fields['manufacturers_id'] > 0 && $manufacturer->getFromDB($item->fields['manufacturers_id'])) {
+                    $manufacturer_name = $manufacturer->fields['name'];
+                }
+                echo "<td>" . $manufacturer_name . "</td>";
                 echo "</tr>";
             }
             echo $header;
