@@ -107,18 +107,18 @@ trait AssetImage
 
         $new_pictures = [];
         if (isset($input['_pictures'])) {
-            $pic_count = count($input['_pictures']);
+            $input_keys = array_keys($input['_pictures']);
             if (!isset($input['pictures'])) {
                 $input['pictures'] = [];
             }
-            for ($i = 0; $i < $pic_count; $i++) {
-                $filename = $input["_pictures"][$i];
+            foreach ($input_keys as $input_key) {
+                $filename = $input["_pictures"][$input_key];
                 $src = GLPI_TMP_DIR . '/' . $filename;
 
-                $prefix = $input["_prefix_pictures"][$i] ?? '';
+                $prefix = $input["_prefix_pictures"][$input_key] ?? '';
 
                 if ($dest = Toolbox::savePicture($src, $prefix)) {
-                    $new_pictures[$i] = $dest;
+                    $new_pictures[$input_key] = $dest;
                 } else {
                     Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
                 }
