@@ -906,5 +906,4 @@ class RuleCriteria extends DbTestCase
             ->exists()
         ;
     }
-
 }
