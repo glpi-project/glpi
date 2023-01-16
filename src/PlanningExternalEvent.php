@@ -490,4 +490,50 @@ JAVASCRIPT;
     {
         return $this->trait_rawSearchOptions();
     }
+
+
+    public static function getVisibilityCriteria(): array
+    {
+        if (Session::haveRight(Planning::$rightname, Planning::READALL)) {
+            return [];
+        }
+
+        $condition = [
+            'OR' => [
+                self::getTableField('users_id') => $_SESSION['glpiID'],
+                self::getTableField('users_id_guests') => ['LIKE', '%"' . $_SESSION['glpiID'] . '"%'],
+            ]
+        ];
+
+        if (Session::haveRight(Planning::$rightname, Planning::READGROUP)) {
+            $groups = $_SESSION['glpigroups'];
+            if (count($groups)) {
+                $users = Group_User::getGroupUsers($groups);
+                $users_id = [];
+                foreach ($users as $data) {
+                    $users_id[] = $data['id'];
+                }
+                $condition['OR'][self::getTableField('users_id')] = $users_id;
+            }
+        }
+
+        return $condition;
+    }
+
+
+    public static function addVisibilityRestrict()
+    {
+        $criteria = self::getVisibilityCriteria();
+        if (!count($criteria)) {
+            return;
+        }
+        $criteria['FROM'] = self::getTable();
+
+        $it = new \DBmysqlIterator(null);
+        $it->buildQuery($criteria);
+        $sql = $it->getSql();
+        $sql = preg_replace('/.*WHERE /', '', $sql);
+
+        return $sql;
+    }
 }
