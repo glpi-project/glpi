@@ -874,9 +874,10 @@ class RuleCriteria extends DbTestCase
                 );
             }
         )->error()
-            ->exists()
             ->withType(E_USER_WARNING)
-            ->withMessage('Invalid regular expression `/Mozilla Firefox (.*)`.');
+            ->withMessage('Invalid regular expression `/Mozilla Firefox (.*)`.')
+            ->exists()
+        ;
     }
 
 }
