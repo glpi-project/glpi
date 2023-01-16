@@ -4423,7 +4423,7 @@ HTML;
        // Check default value for dropdown : need to be a numeric (or null)
         if (
             isset($p['value'])
-            && ((strlen($p['value']) == 0) || !is_numeric($p['value']) && $p['value'] != 'myself')
+            && ((strlen($p['value']) == 0) || !is_numeric($p['value']) && $p['value'] !== 'myself')
         ) {
             $p['value'] = 0;
         }

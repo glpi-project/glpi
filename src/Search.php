@@ -4699,7 +4699,7 @@ JAVASCRIPT;
            // case "glpi_users_validation.name" :
 
             case "glpi_users.name":
-                if ($val == 'myself') {
+                if ($val === 'myself') {
                     switch ($searchtype) {
                         case 'equals':
                             return " $link (`$table`.`id` =  " . $DB->quoteValue($_SESSION['glpiID']) . ") ";
