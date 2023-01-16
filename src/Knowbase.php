@@ -150,7 +150,7 @@ class Knowbase extends CommonGLPI
 
         $rand        = mt_rand();
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/knowbase.php";
-        $loading_txt = addslashes(__s('Loading...'));
+        $loading_txt = __s('Loading...');
         $start       = isset($_REQUEST['start'])
                         ? $_REQUEST['start']
                         : 0;

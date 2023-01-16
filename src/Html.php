@@ -848,7 +848,7 @@ class Html
             }
             foreach ($plugin_tabs as $tab_id => $tab_info) {
                 if (isset($tab_info['display_callable']) && !is_callable($tab_info['display_callable'])) {
-                    //trigger_error(sprintf('Debug tab "%s"(%s) display callable is invalid.', $tab_info['title'] ?? '', $tab_id), E_USER_WARNING);
+                    trigger_error(sprintf('Debug tab "%s"(%s) display callable is invalid.', $tab_info['title'] ?? '', $tab_id), E_USER_WARNING);
                     continue;
                 }
                 echo "<div id='debug$tab_id$rand' class='tab-pane'>";
