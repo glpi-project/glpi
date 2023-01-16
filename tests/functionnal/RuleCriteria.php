@@ -905,34 +905,6 @@ class RuleCriteria extends DbTestCase
             ->withMessage('Invalid regular expression `/Firefox (.*)`.')
             ->exists()
         ;
-
-        $criteria = new \RuleCriteria();
-
-        $criteria->fields = ['id'        => 1,
-            'rules_id'  => 1,
-            'criteria'  => 'name',
-            'condition' => \Rule::PATTERN_END,
-            'pattern'   => 'fox/' //bad regexp pattern
-        ];
-
-        $results      = [];
-        $regex_result = [];
-
-        $this->when(
-            function () use ($criteria, &$results, &$regex_result) {
-                $criteria->match(
-                    $criteria,
-                    'Da fox',
-                    $results,
-                    $regex_result
-                );
-            }
-        )->error()
-            ->withType(E_USER_WARNING)
-            ->withMessage('Invalid value `fox/`.')
-            ->exists()
-        ;
-
     }
 
 }

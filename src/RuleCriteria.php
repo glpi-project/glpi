@@ -447,14 +447,8 @@ class RuleCriteria extends CommonDBChild
                 if (empty($pattern) || empty($field)) {
                     return false;
                 }
-                $value = "/" . $pattern . "$/i";
-                $match_result = @preg_match($value, $field);
-                if ($match_result === false) {
-                    trigger_error(
-                        sprintf('Invalid value `%s`.', $pattern),
-                        E_USER_WARNING
-                    );
-                } elseif ($match_result > 0) {
+
+                if (str_ends_with(mb_strtolower($field), mb_strtolower($pattern))) {
                     $criterias_results[$criteria] = $pattern;
                     return true;
                 }
