@@ -502,9 +502,9 @@ JAVASCRIPT;
         $res_table   = static::getTable();
         $res_i_table = ReservationItem::getTable();
 
-        $canedit_admin = Session::getCurrentInterface() == "central"
-                       && Session::haveRight("reservation", READ);
-        $can_reserve   = Session::haveRight("reservation", ReservationItem::RESERVEANITEM);
+        $can_read    = Session::haveRight("reservation", READ);
+        $can_edit    = Session::getCurrentInterface() == "central" && Session::haveRight("reservation", UPDATE);
+        $can_reserve = Session::haveRight("reservation", ReservationItem::RESERVEANITEM);
 
         $user = new User();
 
@@ -552,7 +552,7 @@ JAVASCRIPT;
 
             $my_item = $data['users_id'] === Session::getLoginUserID();
 
-            if ($canedit_admin || $my_item) {
+            if ($can_read || $my_item) {
                 $user->getFromDB($data['users_id']);
                 $data['comment'] .= '<br />' . sprintf(__("Reserved by %s"), $user->getFriendlyName());
             }
@@ -561,14 +561,14 @@ JAVASCRIPT;
                 'complete' => true,
             ]);
 
-            $editable = $canedit_admin || ($can_reserve && $my_item);
+            $editable = $can_edit || ($can_reserve && $my_item);
 
             $events[] = [
                 'id'          => $data['id'],
                 'resourceId'  => $data['itemtype'] . "-" . $data['items_id'],
                 'start'       => $data['begin'],
                 'end'         => $data['end'],
-                'comment'     => $canedit_admin || $my_item ? $data['comment'] : '',
+                'comment'     => $can_read || $my_item ? $data['comment'] : '',
                 'title'       => $params['reservationitems_id'] ? "" : $name,
                 'icon'        => $item->getIcon(),
                 'description' => $item->getTypeName(),
