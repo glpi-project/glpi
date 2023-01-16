@@ -2499,6 +2499,16 @@ class Search extends DbTestCase
             'expected' => [],
         ];
 
+        // Get tests users
+        $user_1 = getItemByTypeName('User', TU_USER, true);
+        $user_2 = getItemByTypeName('User', 'glpi', true);
+
+        // Set name to user_1 so we can test searching for ticket on firstname / lastname
+        $this->updateItem('User', $user_1, [
+            'firstname' => 'Firstname',
+            'realname'  => 'Lastname',
+        ]);
+
         // Create test groups
         $this->createItems('Group', [
             [
@@ -2639,6 +2649,79 @@ class Search extends DbTestCase
                     ],
                 ]
             ],
+
+            // Test set on requester
+            [
+                'name' => 'Ticket user 1 (R)',
+                'content' => '',
+                'entities_id' => $root,
+                'itilcategories_id' => $category,
+                '_actors' => [
+                    'requester' => [['itemtype' => 'User', 'items_id' => $user_1]],
+                ]
+            ],
+            [
+                'name' => 'Ticket user 2 (R)',
+                'content' => '',
+                'entities_id' => $root,
+                'itilcategories_id' => $category,
+                '_actors' => [
+                    'requester' => [['itemtype' => 'User', 'items_id' => $user_2]],
+                ]
+            ],
+            [
+                'name' => 'Ticket user 1 (R) + user 2 (R)',
+                'content' => '',
+                'entities_id' => $root,
+                'itilcategories_id' => $category,
+                '_actors' => [
+                    'requester' => [
+                        ['itemtype' => 'User', 'items_id' => $user_1],
+                        ['itemtype' => 'User', 'items_id' => $user_2],
+                    ],
+                ]
+            ],
+            [
+                'name' => 'Ticket anonymous user (R)',
+                'content' => '',
+                'entities_id' => $root,
+                'itilcategories_id' => $category,
+                '_actors' => [
+                    // FIXME: Does not seem to work (maybe not possible from a form ?), will add user manually below
+                    'requester' => [['itemtype' => 'User', 'items_id' => 0, "alternative_email" => "myemail@email.com"]],
+                ]
+            ],
+
+            // Test set on watcher
+            [
+                'name' => 'Ticket user 1 (W)',
+                'content' => '',
+                'entities_id' => $root,
+                'itilcategories_id' => $category,
+                '_actors' => [
+                    'observer' => [['itemtype' => 'User', 'items_id' => $user_1]],
+                ]
+            ],
+
+            // Test set on assigned
+            [
+                'name' => 'Ticket user 1 (A)',
+                'content' => '',
+                'entities_id' => $root,
+                'itilcategories_id' => $category,
+                '_actors' => [
+                    'assign' => [['itemtype' => 'User', 'items_id' => $user_1]],
+                ]
+            ],
+        ]);
+
+        // Not sure how to add anonymous user directiy from _actors; adding it manually
+        $ticket = getItemByTypeName('Ticket', 'Ticket anonymous user (R)', true);
+        $this->createItem('Ticket_User', [
+            'tickets_id'        => $ticket,
+            'users_id'          => 0,
+            'alternative_email' => "myemail@email.com",
+            'type'              => CommonITILActor::REQUESTER,
         ]);
 
         // Validate all items are here as expected
@@ -2665,6 +2748,18 @@ class Search extends DbTestCase
             'Ticket supplier 1',
             'Ticket supplier 2',
             'Ticket supplier 1 + supplier 2',
+
+            // Test set on requester
+            'Ticket user 1 (R)',
+            'Ticket user 2 (R)',
+            'Ticket user 1 (R) + user 2 (R)',
+            'Ticket anonymous user (R)',
+
+            // Test set on watcher
+            'Ticket user 1 (W)',
+
+            // Test set on assigned
+            'Ticket user 1 (A)',
         ];
         yield [
             'itemtype' => 'Ticket',
@@ -2841,7 +2936,7 @@ class Search extends DbTestCase
             $base_condition,
             $all_tickets,
             // Every ticket without a watcher group
-            ['Ticket group 1 (A)', 'Ticket group 1 (R)', 'Ticket supplier 1', 'Ticket supplier 2', 'Ticket supplier 1 + supplier 2'],
+            array_diff($all_tickets, ['Ticket group 1 (W)', 'Ticket group 2 (W)', 'Ticket group 1 (W) + group 2 (W)', 'Ticket group 1A (W) + group 2 (W)']),
             65, // Watcher group
             'equals',
             0
@@ -2850,12 +2945,143 @@ class Search extends DbTestCase
             'Ticket',
             $base_condition,
             $all_tickets,
-            // Every tickets (note that it isn't consistent with the previous criteria)
+            // Every tickets (note that it isn't consistent with the previous criteria "equals 0")
             $all_tickets,
             65, // Watcher group
             'contains',
             "",
-            // Not very logical but GLPI return the same results for a contains "" and not contains "" query
+            // Not very logical but GLPI return the same results for a contains "" and not contains "" queries
+            $all_tickets
+        );
+
+        // Run tests for requester
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
+            4, // Requester
+            'equals',
+            $user_1
+        );
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
+            4, // Requester
+            'contains',
+            TU_USER
+        );
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
+            4, // Requester
+            'contains',
+            "Firstname"
+        );
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
+            4, // Requester
+            'contains',
+            "Lastname"
+        );
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
+            4, // Requester
+            'contains',
+            "Lastname Firstname"
+        );
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket anonymous user (R)'],
+            4, // Requester
+            'contains',
+            "myemail@email.com"
+        );
+
+        // Run tests for watcher
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket user 1 (W)'],
+            66, // Watcher
+            'equals',
+            $user_1
+        );
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket user 1 (W)'],
+            66, // Watcher
+            'contains',
+            TU_USER
+        );
+
+        // Run tests for requester
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket user 1 (A)'],
+            5, // Assign
+            'equals',
+            $user_1
+        );
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket user 1 (A)'],
+            5, // Assign
+            'contains',
+            TU_USER
+        );
+
+        // Run test for "myself" special criteria
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
+            4, // Requester
+            'equals',
+            'myself'
+        );
+
+        // Test empty requester search
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            // Every ticket without a requester group
+            array_diff($all_tickets, ['Ticket user 1 (R)', 'Ticket user 2 (R)', 'Ticket user 1 (R) + user 2 (R)', 'Ticket anonymous user (R)']),
+            4, // Requester
+            'equals',
+            0
+        );
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            // Every tickets (note that it isn't consistent with the previous criteria "equals 0")
+            $all_tickets,
+            4, // Requester
+            'contains',
+            "",
+            // Not very logical but GLPI return the same results for a contains "" and not contains "" queries
             $all_tickets
         );
     }
@@ -2879,9 +3105,12 @@ class Search extends DbTestCase
             $names[] = $row['raw']['ITEM_Ticket_1'];
         }
 
-        // Validate results
+        // Sort both array as atoum is "position sensitive"
         sort($names);
         sort($expected);
+
+        // Debug, print the last failed request
+        // As there is a lot of test sets, some extra context on failure can go a long way
         $this->executeOnFailure(
             function () use ($data, $names, $expected) {
                 if ($names != $expected) {
@@ -2889,6 +3118,8 @@ class Search extends DbTestCase
                 }
             }
         );
+
+        // Validate results
         $this->array($names)->isEqualTo($expected);
     }
 }

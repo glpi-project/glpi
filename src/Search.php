@@ -4642,6 +4642,9 @@ JAVASCRIPT;
         // Special case for "contains" or "not contains" search type
         $use_subquery_on_text_search = false;
 
+        // Special case when searching for an user (need to compare with login, firstname, ...)
+        $subquery_specific_username = false;
+
         // The subquery operator will be "IN" or "NOT IN" depending on the context and criteria
         $subquery_operator = "";
 
@@ -4782,10 +4785,17 @@ JAVASCRIPT;
                 if ($val === 'myself') {
                     switch ($searchtype) {
                         case 'equals':
-                            return " $link (`$table`.`id` =  " . $DB->quoteValue($_SESSION['glpiID']) . ") ";
+                            $SEARCH = " = " . $DB->quoteValue($_SESSION['glpiID']) . " ";
+                            break;
 
                         case 'notequals':
-                            return " $link (`$table`.`id` <>  " . $DB->quoteValue($_SESSION['glpiID']) . ") ";
+                            if ($use_subquery_on_id_search) {
+                                // Potential negation will be handled by the subquery operator
+                                $SEARCH = " = " . $DB->quoteValue($_SESSION['glpiID']) . " ";
+                            } else {
+                                $SEARCH = " <> " . $DB->quoteValue($_SESSION['glpiID']) . " ";
+                            }
+                            break;
                     }
                 }
 
@@ -4816,9 +4826,12 @@ JAVASCRIPT;
                 }
 
                 if (in_array($searchtype, ['equals', 'notequals'])) {
-                    return " $link (`$table`.`id`" . $SEARCH .
-                               (($val == 0) ? " OR `$table`.`id` IS" .
-                                   (($searchtype == "notequals") ? " NOT" : "") . " NULL" : '') . ') ';
+                    // Seems to be obsolete code that is no longer needed
+                    // We still want to break to get out of this specific section
+                    break;
+                    // return " $link (`$table`.`id`" . $SEARCH .
+                    //            (($val == 0) ? " OR `$table`.`id` IS" .
+                    //                (($searchtype == "notequals") ? " NOT" : "") . " NULL" : '') . ') ';
                 }
                 $toadd   = '';
 
@@ -4842,6 +4855,8 @@ JAVASCRIPT;
                             $nott,
                             $tmplink
                         );
+                        // TODO: Should be deleted on next major, same as doing "Is -----"
+                        // No reason to maiting a specific code + syntax for the same thing
                         if ($val == '^$') {
                              return $link . " ((`$linktable`.`users_id` IS NULL)
                             OR `$linktable`.`alternative_email` IS NULL)";
@@ -4855,11 +4870,25 @@ JAVASCRIPT;
                 ) {
                     $toadd2 = " OR `$table`.`$field` IS NULL";
                 }
-                return $link . " (((`$table`.`$name1` $SEARCH
-                            $tmplink `$table`.`$name2` $SEARCH
-                            $tmplink `$table`.`$field` $SEARCH
-                            $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH )
-                            $toadd2) $toadd)";
+
+                if ($use_subquery_on_text_search) {
+                    $subquery_specific_username = true;
+                    $subquery_specific_username_firstname_real_name = " OR `$name1` $SEARCH "
+                        . "OR `$name2` $SEARCH "
+                        . "OR CONCAT(`$name1`, ' ', `$name2`) $SEARCH";
+                    $subquery_specific_username_anonymous = self::makeTextCriteria(
+                        "`alternative_email`",
+                        $val,
+                        false,
+                        'OR'
+                    );
+                } else {
+                    return $link . " (((`$table`.`$name1` $SEARCH
+                        $tmplink `$table`.`$name2` $SEARCH
+                        $tmplink `$table`.`$field` $SEARCH
+                        $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH )
+                        $toadd2) $toadd)";
+                }
 
             case "glpi_groups.completename":
                 if ($val == 'mygroups') {
@@ -5309,7 +5338,7 @@ JAVASCRIPT;
                 // )
                 if ($val == 0) {
                     // Special case, search criteria is empty
-                    $subquery_operator = $subquery_operator == "IN" ? "NOT IN": "IN";
+                    $subquery_operator = $subquery_operator == "IN" ? "NOT IN" : "IN";
                     $out = " $link `$main_table`.`id` $subquery_operator (
                         SELECT `$fk`
                         FROM `$link_table`
@@ -5336,15 +5365,28 @@ JAVASCRIPT;
                 //          WHERE `completename`LIKE '%groupname%'
                 //      ) AND `glpi_groups_tickets`.`type` = '3'
                 // )
-                $out = " $link `$main_table`.`id` $subquery_operator (
-                    SELECT `$fk`
-                    FROM `$link_table`
-                    WHERE `$linked_fk` IN (
-                        SELECT `id`
-                        FROM `$child_table`
-                        WHERE `$field` $SEARCH
-                    ) $addcondition
-                )";
+
+                if ($subquery_specific_username) {
+                    $out = " $link `$main_table`.`id` $subquery_operator (
+                        SELECT `$fk`
+                        FROM `$link_table`
+                        WHERE (`$linked_fk` IN (
+                            SELECT `id`
+                            FROM `$child_table`
+                            WHERE `$field` $SEARCH $subquery_specific_username_firstname_real_name
+                        ) $subquery_specific_username_anonymous) $addcondition
+                    )";
+                } else {
+                    $out = " $link `$main_table`.`id` $subquery_operator (
+                        SELECT `$fk`
+                        FROM `$link_table`
+                        WHERE `$linked_fk` IN (
+                            SELECT `id`
+                            FROM `$child_table`
+                            WHERE `$field` $SEARCH
+                        ) $addcondition
+                    )";
+                }
             }
             return $out;
         }
