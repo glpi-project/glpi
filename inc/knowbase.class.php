@@ -146,13 +146,11 @@ class Knowbase extends CommonGLPI {
       $rand        = mt_rand();
       $ajax_url    = $CFG_GLPI["root_doc"]."/ajax/knowbase.php";
       $loading_txt = addslashes(__('Loading...'));
-      $start       = isset($_REQUEST['start'])
-                        ? $_REQUEST['start']
-                        : 0;
+      $start       = (int)($_REQUEST['start'] ?? 0);
 
       $cat_id = 'false';
       if (array_key_exists('knowbaseitemcategories_id', $_REQUEST)) {
-         $cat_id = $_REQUEST['knowbaseitemcategories_id'];
+         $cat_id = (int)$_REQUEST['knowbaseitemcategories_id'];
       }
 
       $category_list = json_encode(self::getJstreeCategoryList());
