@@ -687,7 +687,7 @@ class Agent extends CommonDBTM
                 'connect_timeout' => self::TIMEOUT,
             ];
 
-           // add proxy string if configured in glpi
+            // add proxy string if configured in glpi
             if (!empty($CFG_GLPI["proxy_name"])) {
                 $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
                 ? $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]) . "@"
@@ -696,14 +696,17 @@ class Agent extends CommonDBTM
                 $options['proxy'] = $proxy_string;
             }
 
-           // init guzzle client with base options
+            // init guzzle client with base options
             $httpClient = new Guzzle_Client($options);
             try {
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;
                 break;
+            } catch (\GuzzleHttp\Exception\RequestException $e) {
+                // got an error response, we don't need to try other addresses
+                break;
             } catch (Exception $e) {
-                //many addresses will be incorrect
+                // many addresses will be incorrect
             }
         }
 
@@ -722,16 +725,16 @@ class Agent extends CommonDBTM
      */
     public function requestStatus()
     {
-       //must return json
+        // must return json
         try {
             $response = $this->requestAgent('status');
             return $this->handleAgentResponse($response, self::ACTION_STATUS);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
             ErrorHandler::getInstance()->handleException($e);
-           //not authorized
+            // not authorized
             return ['answer' => __('Not allowed')];
         } catch (Exception $e) {
-           //no response
+            // no response
             return ['answer' => __('Unknown')];
         }
     }
@@ -743,16 +746,16 @@ class Agent extends CommonDBTM
      */
     public function requestInventory()
     {
-       //must return json
+        // must return json
         try {
             $this->requestAgent('now');
             return $this->handleAgentResponse(new Response(), self::ACTION_INVENTORY);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
             ErrorHandler::getInstance()->handleException($e);
-           //not authorized
+            // not authorized
             return ['answer' => __('Not allowed')];
         } catch (Exception $e) {
-           //no response
+            // no response
             return ['answer' => __('Unknown')];
         }
     }
