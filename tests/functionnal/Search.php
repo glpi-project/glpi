@@ -2252,6 +2252,8 @@ class Search extends DbTestCase
      * @param int    $field          Search option id
      * @param string $searchtype     Positive searchtype (equals, under, contains, ...)
      * @param mixed  $value          Value being searched
+     * @param mixed  $not_expected   Optional, item expected to be found is the condition is negative
+     *                               If null, will be computed from $all and $expected
      */
     protected function testCriteriaWithSubqueriesProvider_getAllCombination(
         string $itemtype,
@@ -2260,10 +2262,13 @@ class Search extends DbTestCase
         array $expected,
         int $field,
         string $searchtype,
-        $value
+        $value,
+        ?array $not_expected = null
     ): iterable {
-        // Invert expected items
-        $not_expected = array_diff($all, $expected);
+        if (is_null($not_expected)) {
+            // Invert expected items
+            $not_expected = array_diff($all, $expected);
+        }
 
         // Inverted criteria
         $not_searchtype = "not$searchtype";
@@ -2829,6 +2834,30 @@ class Search extends DbTestCase
             'contains',
             "Supplier 1"
         );
+
+        // Test empty group search
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            // Every ticket without a watcher group
+            ['Ticket group 1 (A)', 'Ticket group 1 (R)', 'Ticket supplier 1', 'Ticket supplier 2', 'Ticket supplier 1 + supplier 2'],
+            65, // Watcher group
+            'equals',
+            0
+        );
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Ticket',
+            $base_condition,
+            $all_tickets,
+            // Every tickets (note that it isn't consistent with the previous criteria)
+            $all_tickets,
+            65, // Watcher group
+            'contains',
+            "",
+            // Not very logical but GLPI return the same results for a contains "" and not contains "" query
+            $all_tickets
+        );
     }
 
     /**
@@ -2853,11 +2882,14 @@ class Search extends DbTestCase
         // Validate results
         sort($names);
         sort($expected);
-        $this->array($names)->isEqualTo($expected)->executeOnFailure(
-            function () use ($data) {
-                var_dump($data['sql']['raw']['WHERE']);
+        $this->executeOnFailure(
+            function () use ($data, $names, $expected) {
+                if ($names != $expected) {
+                    var_dump($data['sql']['raw']['WHERE']);
+                }
             }
         );
+        $this->array($names)->isEqualTo($expected);
     }
 }
 

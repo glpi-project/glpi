@@ -5299,12 +5299,6 @@ JAVASCRIPT;
 
             if ($use_subquery_on_id_search) {
                 // Subquery for "Is not", "Not + is", "Not under" and "Not + Under" search types
-
-                $out = " $link `$main_table`.`id` $subquery_operator (
-                    SELECT `$fk`
-                    FROM `$link_table`
-                    WHERE `$linked_fk` $SEARCH $addcondition
-                )";
                 // As an example, when looking for tickets that don't have a
                 // given observer group (id = 4), $out will look like this:
                 //
@@ -5313,17 +5307,23 @@ JAVASCRIPT;
                 //     FROM `glpi_groups_tickets`
                 //     WHERE `groups_id` = '4' AND `glpi_groups_tickets`.`type` = '3'
                 // )
+                if ($val == 0) {
+                    // Special case, search criteria is empty
+                    $subquery_operator = $subquery_operator == "IN" ? "NOT IN": "IN";
+                    $out = " $link `$main_table`.`id` $subquery_operator (
+                        SELECT `$fk`
+                        FROM `$link_table`
+                        WHERE 1 $addcondition
+                    )";
+                } else {
+                    $out = " $link `$main_table`.`id` $subquery_operator (
+                        SELECT `$fk`
+                        FROM `$link_table`
+                        WHERE `$linked_fk` $SEARCH $addcondition
+                    )";
+                }
             } elseif ($use_subquery_on_text_search) {
                 // Subquery for "Not contains" and "Not + contains" search types
-                $out = " $link `$main_table`.`id` $subquery_operator (
-                    SELECT `$fk`
-                    FROM `$link_table`
-                    WHERE `$linked_fk` IN (
-                        SELECT `id`
-                        FROM `$child_table`
-                        WHERE `$field` $SEARCH
-                    ) $addcondition
-                )";
                 // As an example, when looking for tickets that don't have a
                 // given observer group (name = "groupname"), $out will look like this:
                 //
@@ -5336,6 +5336,15 @@ JAVASCRIPT;
                 //          WHERE `completename`LIKE '%groupname%'
                 //      ) AND `glpi_groups_tickets`.`type` = '3'
                 // )
+                $out = " $link `$main_table`.`id` $subquery_operator (
+                    SELECT `$fk`
+                    FROM `$link_table`
+                    WHERE `$linked_fk` IN (
+                        SELECT `id`
+                        FROM `$child_table`
+                        WHERE `$field` $SEARCH
+                    ) $addcondition
+                )";
             }
             return $out;
         }
