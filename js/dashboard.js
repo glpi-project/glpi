@@ -479,6 +479,9 @@ class GLPIDashboard {
             that.computeWidth($('body').find('.big-number').find('.formatted-number'));
             that.computeWidth($('body').find('.big-number').find('.label'));
         });
+
+        // Keep track of instance
+        Dashboard.dashboards[options.rand] = this;
     }
 
     saveMarkdown(textarea) {

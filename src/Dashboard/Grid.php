@@ -423,7 +423,7 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-        Dashboard.dashboards[$rand] = new GLPIDashboard({
+         new GLPIDashboard({
             current:     '{$this->current}',
             cols:        {$this->grid_cols},
             rows:        {$this->grid_rows},
