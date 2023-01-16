@@ -2245,14 +2245,14 @@ class Search extends DbTestCase
     /**
      * Test all possible combination of operators for a given criteria
      *
-     * @param string $itemtype       Itemtype being searched for
-     * @param array  $base_condition Common condition for all searches
-     * @param array  $all            Search results for the base condition
-     * @param array  $expected       Items names that must be found if the condition is positive
-     * @param int    $field          Search option id
-     * @param string $searchtype     Positive searchtype (equals, under, contains, ...)
-     * @param mixed  $value          Value being searched
-     * @param mixed  $not_expected   Optional, item expected to be found is the condition is negative
+     * @param string     $itemtype       Itemtype being searched for
+     * @param array      $base_condition Common condition for all searches
+     * @param array      $all            Search results for the base condition
+     * @param array      $expected       Items names that must be found if the condition is positive
+     * @param int        $field          Search option id
+     * @param string     $searchtype     Positive searchtype (equals, under, contains, ...)
+     * @param mixed      $value          Value being searched
+     * @param null|array $not_expected   Optional, item expected to be found is the condition is negative
      *                               If null, will be computed from $all and $expected
      */
     protected function testCriteriaWithSubqueriesProvider_getAllCombination(
