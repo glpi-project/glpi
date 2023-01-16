@@ -1303,7 +1303,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @return int
      */
-    public function countActiveObjectsForRequesterGroup(int $group_id): int
+    final public function countActiveObjectsForRequesterGroup(int $group_id): int
     {
         $linkclass = new $this->grouplinkclass();
         return $this->countActiveObjectsFor(
