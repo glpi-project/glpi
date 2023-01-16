@@ -78,6 +78,41 @@ if (isset($_REQUEST['users_id_requester']) && ($_REQUEST['users_id_requester'] >
         printf(__('%1$s: %2$s'), __('Processing'), $nb);
         echo ")</a>";
     }
+} else if (isset($_REQUEST['users_id_observer']) && ($_REQUEST['users_id_observer'] > 0)) {
+    $user_id = (int)$_REQUEST['users_id_observer'];
+
+    $ticket = new Ticket();
+
+    $options2 = [
+        'criteria' => [
+            [
+                'field'      => 66, // users_id observer
+                'searchtype' => 'equals',
+                'value'      => $user_id,
+                'link'       => 'AND',
+            ],
+            [
+                'field'      => 12, // status
+                'searchtype' => 'equals',
+                'value'      => 'notold',
+                'link'       => 'AND',
+            ],
+        ],
+        'reset' => 'reset',
+    ];
+
+    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
+    $nb  = $ticket->countActiveObjectsForObserverUser($user_id);
+
+    if ($only_number) {
+        if ($nb > 0) {
+            echo "<a href='$url'>" . $nb . "</a>";
+        }
+    } else {
+        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
+        printf(__('%1$s: %2$s'), __('Processing'), $nb);
+        echo ")</a>";
+    }
 } else if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
     $ticket = new Ticket();
 
@@ -101,6 +136,76 @@ if (isset($_REQUEST['users_id_requester']) && ($_REQUEST['users_id_requester'] >
 
     $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
     $nb  = $ticket->countActiveObjectsForTech($_REQUEST['users_id_assign']);
+
+    if ($only_number) {
+        if ($nb > 0) {
+            echo "<a href='$url'>" . $nb . "</a>";
+        }
+    } else {
+        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
+        printf(__('%1$s: %2$s'), __('Processing'), $nb);
+        echo ")</a>";
+    }
+} else if (isset($_REQUEST['groups_id_requester']) && ($_REQUEST['groups_id_requester'] > 0)) {
+    $group_id = (int)$_REQUEST['groups_id_requester'];
+
+    $ticket = new Ticket();
+
+    $options2 = [
+        'criteria' => [
+            [
+                'field'      => 71, // groups_id requester
+                'searchtype' => 'equals',
+                'value'      => $group_id,
+                'link'       => 'AND',
+            ],
+            [
+                'field'      => 12, // status
+                'searchtype' => 'equals',
+                'value'      => 'notold',
+                'link'       => 'AND',
+            ],
+        ],
+        'reset' => 'reset',
+    ];
+
+    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
+    $nb  = $ticket->countActiveObjectsForRequesterGroup($group_id);
+
+    if ($only_number) {
+        if ($nb > 0) {
+            echo "<a href='$url'>" . $nb . "</a>";
+        }
+    } else {
+        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
+        printf(__('%1$s: %2$s'), __('Processing'), $nb);
+        echo ")</a>";
+    }
+} else if (isset($_REQUEST['groups_id_observer']) && ($_REQUEST['groups_id_observer'] > 0)) {
+    $group_id = (int)$_REQUEST['groups_id_observer'];
+
+    $ticket = new Ticket();
+
+    $options2 = [
+        'criteria' => [
+            [
+                'field'      => 65, // groups_id observer
+                'searchtype' => 'equals',
+                'value'      => $group_id,
+                'link'       => 'AND',
+            ],
+            [
+                'field'      => 12, // status
+                'searchtype' => 'equals',
+                'value'      => 'notold',
+                'link'       => 'AND',
+            ],
+        ],
+        'reset' => 'reset',
+    ];
+
+    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
+    $nb  = $ticket->countActiveObjectsForObserverGroup($group_id);
 
     if ($only_number) {
         if ($nb > 0) {
