@@ -383,7 +383,7 @@ class Reservation extends CommonDBChild
             return false;
         }
 
-        return Session::haveAccessToEntity($item->getEntityID());
+        return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
     }
 
 
@@ -547,6 +547,9 @@ JAVASCRIPT;
         foreach ($iterator as $data) {
             $item = new $data['itemtype']();
             if (!$item->getFromDB($data['items_id'])) {
+                continue;
+            }
+            if (!Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive())) {
                 continue;
             }
 
