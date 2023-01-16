@@ -100,6 +100,8 @@
                   fk = "users_id_assign";
                } else if ("{{ actortype }}" == "requester") {
                   fk = "users_id_requester";
+               } else if ("{{ actortype }}" == "observer") {
+                  fk = "users_id_observer";
                }
                break;
             case "Group":
@@ -108,6 +110,8 @@
                   fk = "groups_id_assign";
                } else if ("{{ actortype }}" == "requester") {
                   fk = "groups_id_requester";
+               } else if ("{{ actortype }}" == "observer") {
+                  fk = "groups_id_observer";
                }
                break;
             case "Supplier":
