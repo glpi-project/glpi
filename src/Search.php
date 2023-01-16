@@ -4634,7 +4634,7 @@ JAVASCRIPT;
         // These search options will need an additionnal subquery in their WHERE
         // clause to ensure accurate results
         // See https://github.com/glpi-project/glpi/pull/13684 for detailed examples
-        $where_on_linked_children = $searchopt[$ID]["use_subquery"] ?? false;
+        $should_use_subquery = $searchopt[$ID]["use_subquery"] ?? false;
 
         // Default mode for most search types that use a subquery
         $use_subquery_on_id_search = false;
@@ -4642,7 +4642,7 @@ JAVASCRIPT;
         // Special case for "contains" or "not contains" search type
         $use_subquery_on_text_search = false;
 
-        // The subquery operator will be"IN" or "NOT IN" depending on the context and criteria
+        // The subquery operator will be "IN" or "NOT IN" depending on the context and criteria
         $subquery_operator = "";
 
         switch ($searchtype) {
@@ -4660,7 +4660,7 @@ JAVASCRIPT;
                     }
                 }
 
-                if ($where_on_linked_children) {
+                if ($should_use_subquery) {
                     // Subquery will be needed to get accurate results
                     $use_subquery_on_text_search = true;
 
@@ -4673,7 +4673,7 @@ JAVASCRIPT;
                 break;
 
             case "equals":
-                if ($where_on_linked_children) {
+                if ($should_use_subquery) {
                     // Subquery will be needed to get accurate results
                     $use_subquery_on_id_search = true;
 
@@ -4690,7 +4690,7 @@ JAVASCRIPT;
                 break;
 
             case "notequals":
-                if ($where_on_linked_children) {
+                if ($should_use_subquery) {
                     // Subquery will be needed to get accurate results
                     $use_subquery_on_id_search = true;
 
@@ -4708,35 +4708,43 @@ JAVASCRIPT;
                 break;
 
             case "under":
-                if ($where_on_linked_children) {
+                // Sometimes $val is not numeric (mygroups)
+                // In this case we must set an invalid value and let the related
+                // specific code handle in later on
+                $sons = is_numeric($val) ? implode("','", getSonsOf($inittable, $val)) : 'not yet set';
+                if ($should_use_subquery) {
                     // Subquery will be needed to get accurate results
                     $use_subquery_on_id_search = true;
 
                     // // Potential negation will be handled by the subquery operator
-                    $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    $SEARCH = " IN ('$sons')";
                     $subquery_operator = $nott ? "NOT IN" : "IN";
                 } else {
                     if ($nott) {
-                        $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                        $SEARCH = " NOT IN ('$sons')";
                     } else {
-                        $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                        $SEARCH = " IN ('$sons')";
                     }
                 }
                 break;
 
             case "notunder":
-                if ($where_on_linked_children) {
+                // Sometimes $val is not numeric (mygroups)
+                // In this case we must set an invalid value and let the related
+                // specific code handle in later on
+                $sons = is_numeric($val) ? implode("','", getSonsOf($inittable, $val)) : 'not yet set';
+                if ($should_use_subquery) {
                     // Subquery will be needed to get accurate results
                     $use_subquery_on_id_search = true;
 
                     // Potential negation will be handled by the subquery operator
-                    $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    $SEARCH = " IN ('$sons')";
                     $subquery_operator = $nott ? "IN" : "NOT IN";
                 } else {
                     if ($nott) {
-                        $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                        $SEARCH = " IN ('$sons')";
                     } else {
-                        $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                        $SEARCH = " NOT IN ('$sons')";
                     }
                 }
                 break;
@@ -4857,24 +4865,27 @@ JAVASCRIPT;
                 if ($val == 'mygroups') {
                     switch ($searchtype) {
                         case 'equals':
-                            return " $link (`$table`.`id` IN ('" . implode(
-                                "','",
-                                $_SESSION['glpigroups']
-                            ) . "')) ";
+                            $SEARCH = "IN ('" . implode("','", $_SESSION['glpigroups']) . "') ";
+                            break;
 
                         case 'notequals':
-                            return " $link (`$table`.`id` NOT IN ('" . implode(
-                                "','",
-                                $_SESSION['glpigroups']
-                            ) . "')) ";
+                            if ($use_subquery_on_id_search) {
+                                // Potential negation will be handled by the subquery operator
+                                $SEARCH = "IN ('" . implode("','", $_SESSION['glpigroups']) . "') ";
+                            } else {
+                                $SEARCH = "NOT IN ('" . implode("','", $_SESSION['glpigroups']) . "') ";
+                            }
+                            break;
 
                         case 'under':
-                             $groups = $_SESSION['glpigroups'];
+                            $groups = $_SESSION['glpigroups'];
                             foreach ($_SESSION['glpigroups'] as $g) {
                                 $groups += getSonsOf($inittable, $g);
                             }
-                             $groups = array_unique($groups);
-                            return " $link (`$table`.`id` IN ('" . implode("','", $groups) . "')) ";
+                            $groups = array_unique($groups);
+
+                            $SEARCH = "IN ('" . implode("','", $groups) . "') ";
+                            break;
 
                         case 'notunder':
                             $groups = $_SESSION['glpigroups'];
@@ -4882,7 +4893,14 @@ JAVASCRIPT;
                                  $groups += getSonsOf($inittable, $g);
                             }
                             $groups = array_unique($groups);
-                            return " $link (`$table`.`id` NOT IN ('" . implode("','", $groups) . "')) ";
+
+                            if ($use_subquery_on_id_search) {
+                                // Potential negation will be handled by the subquery operator
+                                $SEARCH = "IN ('" . implode("','", $groups) . "') ";
+                            } else {
+                                $SEARCH = "NOT IN ('" . implode("','", $groups) . "') ";
+                            }
+                            break;
                     }
                 }
                 break;
