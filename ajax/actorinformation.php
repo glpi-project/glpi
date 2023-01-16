@@ -105,9 +105,9 @@ if (isset($_REQUEST['users_id_requester']) && ($_REQUEST['users_id_requester'] >
     $nb  = $ticket->countActiveObjectsForObserverUser($user_id);
 
     if ($only_number) {
-        //if ($nb > 0) {
+        if ($nb > 0) {
             echo "<a href='$url'>" . $nb . "</a>";
-        //}
+        }
     } else {
         echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
         printf(__('%1$s: %2$s'), __('Processing'), $nb);
@@ -208,9 +208,9 @@ if (isset($_REQUEST['users_id_requester']) && ($_REQUEST['users_id_requester'] >
     $nb  = $ticket->countActiveObjectsForObserverGroup($group_id);
 
     if ($only_number) {
-        //if ($nb > 0) {
+        if ($nb > 0) {
             echo "<a href='$url'>" . $nb . "</a>";
-        //}
+        }
     } else {
         echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
         printf(__('%1$s: %2$s'), __('Processing'), $nb);
