@@ -4882,6 +4882,7 @@ JAVASCRIPT;
                         false,
                         'OR'
                     );
+                    break;
                 } else {
                     return $link . " (((`$table`.`$name1` $SEARCH
                         $tmplink `$table`.`$name2` $SEARCH
