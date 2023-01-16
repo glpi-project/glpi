@@ -31,6 +31,7 @@
  */
 
 use Glpi\Cache\SimpleCache;
+use Glpi\Toolbox\URL;
 use ScssPhp\ScssPhp\Compiler;
 
 if (!defined('GLPI_ROOT')) {
@@ -6974,7 +6975,7 @@ JAVASCRIPT;
       }
 
       echo "<li id='help_link'>".
-           "<a href='".$url_help_link."' target='_blank' title=\"".
+           "<a href='".URL::sanitizeURL($url_help_link)."' target='_blank' title=\"".
                             __s('Help')."\" class='fa fa-question'>".
            "<span class='sr-only'>" . __('Help') . "</span>";
       echo "</a></li>";
