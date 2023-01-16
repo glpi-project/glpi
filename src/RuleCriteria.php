@@ -448,7 +448,13 @@ class RuleCriteria extends CommonDBChild
                     return false;
                 }
                 $value = "/" . $pattern . "$/i";
-                if (preg_match($value, $field) > 0) {
+                $match_result = @preg_match($value, $field);
+                if ($match_result === false) {
+                    trigger_error(
+                        sprintf('Invalid value `%s`.', $pattern),
+                        E_USER_WARNING
+                    );
+                } elseif ($match_result > 0) {
                     $criterias_results[$criteria] = $pattern;
                     return true;
                 }
@@ -516,7 +522,13 @@ class RuleCriteria extends CommonDBChild
             case Rule::REGEX_NOT_MATCH:
                // Permit use < and >
                 $pattern = Sanitizer::unsanitize($pattern);
-                if (preg_match($pattern . "i", $field) == 0) {
+                $match_result = @preg_match($pattern . "i", $field);
+                if ($match_result === false) {
+                    trigger_error(
+                        sprintf('Invalid regular expression `%s`.', $pattern),
+                        E_USER_WARNING
+                    );
+                } elseif ($match_result === 0) {
                     $criterias_results[$criteria] = $pattern;
                     return true;
                 }
