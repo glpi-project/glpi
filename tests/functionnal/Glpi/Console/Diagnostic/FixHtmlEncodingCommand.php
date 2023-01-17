@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Console\Database;
+namespace tests\units\Glpi\Console\Diagnostic;
 
 use DbTestCase;
 
