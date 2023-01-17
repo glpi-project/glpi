@@ -199,6 +199,10 @@ class RuleCriteria extends DbTestCase
 
         $input    = ['rules_id' => $rules_id, 'criteria' => 'name'];
         $this->array($criteria->prepareInputForAdd($input))->isIdenticalTo($input);
+
+        // Expects prepareInputForAdd to return false if `rules_id` is not a valid ID
+        $input = ['rules_id' => $rules_id + 1000, 'criteria' => 'name'];
+        $this->boolean($criteria->prepareInputForAdd($input))->isFalse();
     }
 
     public function testGetSearchOptionsNew()
