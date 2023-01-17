@@ -261,7 +261,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             $install_version_nohash = preg_replace('/@.+$/', '', $installed_version);
             $error = sprintf(__('The database schema is not consistent with the installed GLPI version (%s).'), $install_version_nohash)
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to view found differences.'), 'database:check_schema_integrity');
+                . sprintf(__('Run the "%1$s" command to view found differences.'), 'php bin/console database:check_schema_integrity');
         }
 
         if ($error !== null) {
