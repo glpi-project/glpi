@@ -691,7 +691,7 @@ class Html
         }
 
         if ($ref_title != "") {
-            echo "<span class='btn bg-blue-lt' aria-disabled='true'>
+            echo "<span class='btn bg-blue-lt'>
             $ref_title
          </span>";
         }
