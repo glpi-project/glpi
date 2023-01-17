@@ -281,7 +281,8 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      *
      * @return iterable
      */
-    final protected function iterate(iterable $iterable, ?callable $message_callback = null): iterable {
+    final protected function iterate(iterable $iterable, ?callable $message_callback = null): iterable
+    {
         // Redefine formats
         $formats = [
             ProgressBar::FORMAT_NORMAL,
