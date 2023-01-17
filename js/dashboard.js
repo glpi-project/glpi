@@ -51,29 +51,30 @@ const Dashboard = {
 }
 
 class GLPIDashboard {
-    grid = null;
-    elem_id = "";
-    element = null;
-    elem_dom = null;
-    rand = null;
-    interval = null;
-    current_name = null;
-    markdown_editors = [];
-    all_cards = [];
-    all_widgets = [];
-    edit_mode = false;
-    embed = false;
-    ajax_cards = false;
-    context = "core";
-    markdown_contents = [];
-    dash_width = 0;
-    cell_margin = 3;
-    cols = 26;
-    cache_key = "";
-    filters = "{}";
-
     constructor(params) {
         const that = this;
+
+        this.grid = null;
+        this.elem_id = "";
+        this.element = null;
+        this.elem_dom = null;
+        this.rand = null;
+        this.interval = null;
+        this.current_name = null;
+        this.markdown_editors = [];
+        this.all_cards = [];
+        this.all_widgets = [];
+        this.edit_mode = false;
+        this.embed = false;
+        this.ajax_cards = false;
+        this.context = "core";
+        this.markdown_contents = [];
+        this.dash_width = 0;
+        this.cell_margin = 3;
+        this.cols = 26;
+        this.cache_key = "";
+        this.filters = "{}";
+        this.filters_selector = ""
 
         // get passed options and merge it with default ones
         var options = (typeof params !== 'undefined')
@@ -105,6 +106,7 @@ class GLPIDashboard {
         this.cell_margin  = options.cell_margin;
         this.cols         = options.cols;
         this.cache_key    = options.cache_key || "";
+        this.filters_selector = this.elem_id + ' .filters';
 
         // compute the width offset of gridstack container relatively to viewport
         var elem_domRect = this.elem_dom.getBoundingClientRect();
@@ -624,7 +626,7 @@ class GLPIDashboard {
                 filter_id: form_data.filter_id,
             }
         }).done(function(filter_html) {
-            $('.filters').append(filter_html);
+            $(that.filters_selector).append(filter_html);
             that.saveFilter(form_data.filter_id, []);
         });
     }
@@ -669,7 +671,7 @@ class GLPIDashboard {
         this.setFiltersInDB(filters);
 
         // refresh sortable
-        sortable('.filters', 'reload');
+        sortable(this.filters_selector, 'reload');
 
         // refresh all card impacted by the changed filter
         this.refreshCardsImpactedByFilter(filter_id);
@@ -855,7 +857,7 @@ class GLPIDashboard {
         this.grid.setStatic(!activate);
 
         // set filters as sortable (draggable) or not
-        sortable('.filters', activate ? 'enable' : 'disable');
+        sortable(this.filters_selector, activate ? 'enable' : 'disable');
 
         if (!this.edit_mode) {
             // save markdown textareas set as dirty
@@ -1147,7 +1149,7 @@ class GLPIDashboard {
     initFilters() {
         const that = this;
 
-        if ($(".filters").length === 0) {
+        if ($(this.filters_selector).length === 0) {
             return;
         }
 
@@ -1169,19 +1171,18 @@ class GLPIDashboard {
                 "filters": filters,
             }
         }).done(function(html) {
-            $('.filters').html(html);
-
+            $(that.filters_selector).html(html);
             // we must  emit an event to all filters to say them dashboard is ready
             $(document).trigger("glpiDasbhoardInitFilter");
 
             // start sortable on filter but disable it by default,
             // we will enable it when edit mode will be toggled on
-            sortable('.filters', {
+            sortable(that.filters_selector, {
                 placeholderClass: 'filter-placeholder',
                 orientation: 'horizontal',
             })[0].addEventListener('sortupdate', function(e) {
             // after drag, save the order of filters in storage
-                var items_after = $(e.detail.destination.items).filter('.filter');
+                var items_after = $(e.detail.destination.items).filter(that.filters_selector);
                 var filters     = that.getFiltersFromDB();
                 var new_filters = {};
                 $.each(items_after, function() {
@@ -1191,7 +1192,7 @@ class GLPIDashboard {
 
                 that.setFiltersInDB(new_filters);
             });
-            sortable('.filters', 'disable');
+            sortable(that.filters_selector, 'disable');
         });
     }
 
