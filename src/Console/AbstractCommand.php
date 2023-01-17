@@ -276,15 +276,12 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      * Iterate on given iterable and display a progress bar (unless on quiet mode).
      * Progress bar message can be customized.
      *
-     * @param iterable        $iterable
-     * @param callable        $message_callback
+     * @param iterable $iterable
+     * @param callable $message_callback
      *
      * @return iterable
      */
-    final protected function iterate(
-        iterable $iterable,
-        ?callable $message_callback = null
-    ): iterable {
+    final protected function iterate(iterable $iterable, ?callable $message_callback = null): iterable {
         // Redefine formats
         $formats = [
             ProgressBar::FORMAT_NORMAL,
