@@ -3944,6 +3944,13 @@ class Entity extends CommonTreeDropdown
         return self::getUsedConfig('contracts_strategy_default', $entities_id, 'contracts_id_default', 0);
     }
 
+    /**
+     * Return HTML code for entity badge showing its completename.
+     *
+     * @param string $entity_string
+     *
+     * @return string|null
+     */
     public static function badgeCompletename(string $entity_string = ""): string
     {
         // `completename` is expected to be received as it is stored in DB,
@@ -3983,6 +3990,57 @@ class Entity extends CommonTreeDropdown
         $entity = new self();
         if ($entity->getFromDB($entity_id)) {
             return self::badgeCompletename($entity->fields['completename']);
+        }
+        return null;
+    }
+
+    /**
+     * Return HTML code for entity badge showing its completename with last entity as HTML link.
+     *
+     * @param object $entity
+     *
+     * @return string|null
+     */
+    public static function badgeCompletenameLink(object $entity): string
+    {
+        // `completename` is expected to be received as it is stored in DB,
+        // meaning that `>` separator is not encoded, but `<`, `>` and `&` from self or parent names are encoded.
+        $names = explode(' > ', trim($entity->fields['completename']));
+        // Convert the whole completename into decoded HTML.
+        foreach ($names as &$name) {
+            $name = Sanitizer::decodeHtmlSpecialChars($name);
+        }
+
+        // Construct HTML with special chars encoded.
+        $title       = htmlspecialchars(implode(' > ', $names));
+        $last_name   = array_pop($names);
+        $breadcrumbs = implode(
+            '<i class="fas fa-caret-right mx-1"></i>',
+            array_map(
+                function (string $name): string {
+                    return '<span class="text-nowrap text-muted">' . htmlspecialchars($name) . '</span>';
+                },
+                $names
+            )
+        );
+
+        $last_url  = '<i class="fas fa-caret-right mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlspecialchars($last_name) . '</a>';
+
+        return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . $last_url . '</span>';
+    }
+
+    /**
+     * Return HTML code for entity badge showing its completename with last entity as HTML link.
+     *
+     * @param int $entity_id
+     *
+     * @return string|null
+     */
+    public static function badgeCompletenameLinkById(int $entity_id): ?string
+    {
+        $entity = new self();
+        if ($entity->getFromDB($entity_id)) {
+            return self::badgeCompletenameLink($entity);
         }
         return null;
     }
