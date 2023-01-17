@@ -656,7 +656,7 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Pie('#{$chart_id} .chart', {
+         var chart = new Chartist.Pie(Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0], {
             labels: {$labels},
             series: {$series},
          }, {
@@ -1147,7 +1147,7 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Bar('#{$chart_id} .chart', {
+         var chart = new Chartist.Bar(Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0], {
             labels: {$json_labels},
             series: {$json_series},
          }, {
@@ -1579,7 +1579,7 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Line('#{$chart_id} .chart', {
+         var chart = new Chartist.Line(Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0], {
             labels: {$json_labels},
             series: {$json_series},
          }, {

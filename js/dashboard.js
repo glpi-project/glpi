@@ -48,7 +48,7 @@ const Dashboard = {
 
         return this.dashboards[current_dashboard_index];
     }
-}
+};
 
 class GLPIDashboard {
     constructor(params) {
@@ -74,7 +74,7 @@ class GLPIDashboard {
         this.cols = 26;
         this.cache_key = "";
         this.filters = "{}";
-        this.filters_selector = ""
+        this.filters_selector = "";
 
         // get passed options and merge it with default ones
         var options = (typeof params !== 'undefined')
@@ -416,7 +416,7 @@ class GLPIDashboard {
             // change in selector
             $('.dashboard_select option[value='+that.current_name+']')
                 .text($(".dashboard-name").val());
-                that.saveDashboard();
+            that.saveDashboard();
 
             $('.display-message')
                 .addClass('success')
@@ -1241,4 +1241,4 @@ class GLPIDashboard {
             }
         });
     }
-};
+}
