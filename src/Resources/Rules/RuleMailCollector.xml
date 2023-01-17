@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<rules>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleMailCollector</sub_type>
+        <ranking>3</ranking>
+        <name>Root</name>
+        <description></description>
+        <match>OR</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>0</is_recursive>
+        <uuid>glpi_rule_mail_collector_root</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>subject</criteria>
+            <condition>6</condition>
+            <pattern>/.*/</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>entities_id</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleMailCollector</sub_type>
+        <ranking>1</ranking>
+        <name>X-Auto-Response-Suppress</name>
+        <description>Exclude Auto-Reply emails using X-Auto-Response-Suppress header</description>
+        <match>AND</match>
+        <is_active>0</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_mail_collector_x_auto_response_suppress</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>x-auto-response-suppress</criteria>
+            <condition>6</condition>
+            <pattern>/\S+/</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_refuse_email_no_response</field>
+            <value>1</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleMailCollector</sub_type>
+        <ranking>2</ranking>
+        <name>Auto-Reply Auto-Submitted</name>
+        <description>Exclude Auto-Reply emails using Auto-Submitted header</description>
+        <match>OR</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_mail_collector_auto_reply_auto_submitted</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>auto-submitted</criteria>
+            <condition>6</condition>
+            <pattern>/^(?!.*no).+$/i</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_refuse_email_no_response</field>
+            <value>1</value>
+        </ruleaction>
+    </rule>
+</rules>

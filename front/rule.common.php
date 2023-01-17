@@ -55,13 +55,23 @@ if (isset($_POST["action"])) {
 } else if (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
    //reinitialize current rules
     $ruleclass = $rulecollection->getRuleClass();
-    if ($ruleclass::initRules($reset = true, $with_plugins = true)) {
+    if ($ruleclass::initRules()) {
         Session::addMessageAfterRedirect(
             sprintf(
             //TRANS: first parameter is the rule type name
                 __('%1$s has been reset.'),
                 $rulecollection->getTitle()
             )
+        );
+    } else {
+        Session::addMessageAfterRedirect(
+            sprintf(
+                //TRANS: first parameter is the rule type name
+                __('%1$s reset failed.'),
+                $rulecollection->getTitle()
+            ),
+            false,
+            ERROR
         );
     }
     Html::back();

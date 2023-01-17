@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<rules>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleRight</sub_type>
+        <ranking>1</ranking>
+        <name>Root</name>
+        <description></description>
+        <match>OR</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>0</is_recursive>
+        <uuid>glpi_rule_right_root</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>TYPE</criteria>
+            <condition>0</condition>
+            <pattern>3</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>TYPE</criteria>
+            <condition>0</condition>
+            <pattern>2</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>entities_id</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+</rules>

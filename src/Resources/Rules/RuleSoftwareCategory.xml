@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<rules>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleSoftwareCategory</sub_type>
+        <ranking>1</ranking>
+        <name>Import category from inventory tool</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>0</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_rule_software_category_import_category_from_inventory_tool</uuid>
+        <condition>1</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>0</condition>
+            <pattern>*</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_import_category</field>
+            <value>1</value>
+        </ruleaction>
+    </rule>
+</rules>
