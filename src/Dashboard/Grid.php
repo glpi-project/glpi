@@ -423,7 +423,7 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-         Dashboard.display({
+         new GLPIDashboard({
             current:     '{$this->current}',
             cols:        {$this->grid_cols},
             rows:        {$this->grid_rows},

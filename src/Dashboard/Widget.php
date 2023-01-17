@@ -656,11 +656,11 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Pie('#{$chart_id} .chart', {
+         var chart = new Chartist.Pie(Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0], {
             labels: {$labels},
             series: {$series},
          }, {
-            width: 'calc(100% - 5px)',
+            width: '100%',
             chartPadding: {$chartPadding},
             donut: {$donut},
             $donut_opts
@@ -685,7 +685,7 @@ HTML;
                      'data-clickable': true
                   });
                   data.element._node.onclick = function() {
-                     if (!Dashboard.edit_mode) {
+                     if (!Dashboard.getActiveDashboard().edit_mode) {
                         window.location = url;
                      }
                   }
@@ -1147,7 +1147,7 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Bar('#{$chart_id} .chart', {
+         var chart = new Chartist.Bar(Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0], {
             labels: {$json_labels},
             series: {$json_series},
          }, {
@@ -1195,7 +1195,7 @@ HTML;
                      'data-clickable': true
                   });
                   data.element._node.onclick = function() {
-                     if (!Dashboard.edit_mode) {
+                     if (!Dashboard.getActiveDashboard().edit_mode) {
                         window.location = url;
                      }
                   }
@@ -1579,7 +1579,7 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Line('#{$chart_id} .chart', {
+         var chart = new Chartist.Line(Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0], {
             labels: {$json_labels},
             series: {$json_series},
          }, {
@@ -1656,7 +1656,7 @@ HTML;
 
                if (clickable) {
                   circle.getNode().onclick = function() {
-                     if (!Dashboard.edit_mode) {
+                     if (!Dashboard.getActiveDashboard().edit_mode) {
                         window.location = url;
                      }
                   }
