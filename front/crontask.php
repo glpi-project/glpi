@@ -45,20 +45,18 @@ Html::header(CronTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SE
 
 $crontask = new CronTask();
 if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
-    $name = sprintf(
-        __('%1$s %2$s'),
-        $crontask->fields['name'],
-        Html::getSimpleForm(
-            $crontask->getFormURL(),
-            ['execute' => $crontask->fields['name']],
-            __('Execute')
-        )
-    );
     Html::displayTitle(
         "",
         __('Next run'),
-        "<i class='fas fa-step-forward fa-lg me-2'></i>" . sprintf(__('Next task to run: %s'), $name)
+        "<i class='fas fa-step-forward fa-lg me-2'></i>" . sprintf(__('Next task to run: %s'), $crontask->fields['name'])
     );
+    echo "<div class='btn-group flex-wrap mb-3 ms-2'>";
+    Html::showSimpleForm(
+        $crontask->getFormURL(),
+        ['execute' => $crontask->fields['name']],
+        __('Execute')
+    );
+    echo "</div>";
 } else {
     Html::displayTitle(
         "",
