@@ -9,7 +9,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_no_creation_on_partial_import</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -38,7 +38,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_update_mac_ifnumber_restricted_port</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -87,7 +87,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_update_mac_ifnumber_no_restricted_port</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -131,7 +131,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_import_mac_ifnumber</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -165,7 +165,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_update_mac_ifdescr_restricted_port</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -214,7 +214,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_update_ip_ifdescr_no_restricted_port</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -258,7 +258,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_import_ip_ifdescr</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -292,7 +292,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_update_only_mac_adress</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -331,7 +331,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_import_only_mac_adress</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -365,7 +365,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_constraint_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -394,7 +394,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_update_serial_uuid</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -438,7 +438,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_update_serial_uuid_empty</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -477,7 +477,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_import_serial_uuid</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -511,7 +511,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_update_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -545,7 +545,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_update_uuid</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -579,7 +579,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_update_mac</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -613,7 +613,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_update_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -647,7 +647,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_import_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -676,7 +676,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_import_uuid</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -705,7 +705,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_import_mac</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -734,7 +734,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_import_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -763,7 +763,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_computer_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -787,7 +787,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_printer_constraint_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -816,7 +816,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_printer_update_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -850,7 +850,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_printer_update_mac</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -884,7 +884,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_printer_import_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -913,7 +913,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_printer_import_mac</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -942,7 +942,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_printer_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -966,7 +966,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_networkequipment_constraint_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -995,7 +995,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_networkequipment_update_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1029,7 +1029,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_networkequipment_update_mac</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1063,7 +1063,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_networkequipment_import_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1092,7 +1092,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_networkequipment_import_mac</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1121,7 +1121,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_networkequipment_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1145,7 +1145,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_device_update_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1179,7 +1179,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_device_importe_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1208,7 +1208,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_device_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1232,7 +1232,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_monitor_update_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1266,7 +1266,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_monitor_import_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1295,7 +1295,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_monitor_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1319,7 +1319,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_phone_constraint_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1348,7 +1348,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_phone_update_mac</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1382,7 +1382,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_phone_import_mac</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1411,7 +1411,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_phone_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1435,7 +1435,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_cluster_update_uuid</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1469,7 +1469,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_cluster_import_uuid</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1498,7 +1498,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_cluster_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1522,7 +1522,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_enclosure_update_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1556,7 +1556,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_enclosure_import_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1585,7 +1585,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_enclosure_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1609,7 +1609,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_constraint_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1633,7 +1633,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_update_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1662,7 +1662,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_update_mac</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1691,7 +1691,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_import_serial</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1715,7 +1715,7 @@
         <match>AND</match>
         <is_active>0</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_import_mac</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1739,7 +1739,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_global_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1763,7 +1763,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_database_update_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1802,7 +1802,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_database_import_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1831,7 +1831,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_database_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1855,7 +1855,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_unmanaged_update_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1889,7 +1889,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_unmanaged_import_name</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
@@ -1918,7 +1918,7 @@
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
+        <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_unmanaged_import_denied</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
