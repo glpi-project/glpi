@@ -466,8 +466,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             );
             if ($this->input->getOption('no-interaction')) {
                  $message = sprintf(
-                     __('Fix them and run the "php bin/console %1$s" command to enable timezones.'),
-                     'database:enable_timezones'
+                     __('Fix them and run the "%1$s" command to enable timezones.'),
+                     'php bin/console database:enable_timezones'
                  );
                  $this->output->writeln('<comment>' . $message . '</comment>', OutputInterface::VERBOSITY_QUIET);
             } else {

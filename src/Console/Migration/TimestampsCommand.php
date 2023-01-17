@@ -218,8 +218,8 @@ class TimestampsCommand extends AbstractCommand
                 );
             }
             $message = sprintf(
-                __('Fix them and run the "php bin/console %1$s" command to enable timezones.'),
-                'database:enable_timezones'
+                __('Fix them and run the "%1$s" command to enable timezones.'),
+                'php bin/console database:enable_timezones'
             );
             $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
         }
