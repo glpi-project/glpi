@@ -1383,4 +1383,47 @@ class APIRest extends APIBaseClass
         $this->integer($data[0]['tickets_id'])->isEqualTo($tickets_id);
         $this->integer($data[0]['groups_id'])->isEqualTo($groups_id);
     }
+
+    public function test_ITILCategoryUpdate()
+    {
+        $headers = ['Session-Token' => $this->session_token];
+        $rand = mt_rand();
+
+        // Create ITILCategory
+        $input = [
+            'input' => [
+                'name' => "test_ITILCategoryUpdate_ITILCategory_$rand",
+            ]
+        ];
+        $data = $this->query("/ITILCategory", [
+            'headers' => $headers,
+            'verb'    => "POST",
+            'json'    => $input,
+        ], 201);
+        $this->integer($data['id'])->isGreaterThan(0);
+        $itilcategories_id = $data['id'];
+
+        // Update ITILCategory
+        $input = [
+            'input' => [
+                'name' => "test_ITILCategoryUpdate_ITILCategory_$rand",
+                'comment' => "test_ITILCategoryUpdate_ITILCategory_$rand",
+            ]
+        ];
+        $this->query("/ITILCategory/$itilcategories_id", [
+            'headers' => $headers,
+            'verb'    => "PUT",
+            'json'    => $input,
+        ], 200);
+
+        // Check ITILCategory
+        $data = $this->query("/ITILCategory/$itilcategories_id", [
+            'headers' => $headers,
+            'verb'    => "GET",
+        ], 200);
+
+        $this->integer($data['id'])->isEqualTo($itilcategories_id);
+        $this->string($data['name'])->isEqualTo("test_ITILCategoryUpdate_ITILCategory_$rand");
+        $this->string($data['comment'])->isEqualTo("test_ITILCategoryUpdate_ITILCategory_$rand");
+    }
 }

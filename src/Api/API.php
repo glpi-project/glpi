@@ -3325,12 +3325,14 @@ abstract class API
         $action = explode(':', $action_key);
         $processor = $action[0];
 
-        $params['field'] = array_keys($params)[0];
+        if ($action[1] === 'update') {
+            $params['field'] = array_keys($params)[0];
 
-        foreach (Search::getOptions($itemtype) as $key => $value) {
-            if ($value['field'] == $params['field']) {
-                $params['search_options'][$itemtype] = $key;
-                break;
+            foreach (Search::getOptions($itemtype) as $key => $value) {
+                if ($value['field'] == $params['field'] && ($value['massiveaction'] ?? true) !== false) {
+                    $params['search_options'][$itemtype] = $key;
+                    break;
+                }
             }
         }
 
