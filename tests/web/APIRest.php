@@ -1200,6 +1200,37 @@ class APIRest extends APIBaseClass
                         }
                     }
                 }
+            ],
+            [
+                'url' => 'applyMassiveAction/Computer/MassiveAction:update',
+                'payload' => [
+                    'ids' => [getItemByTypeName('Computer', '_test_pc01', true)],
+                    'input' => [
+                        'comment' => "new comment",
+                    ],
+                ],
+                'status' => 200,
+                'response' => [
+                    'ok'       => 1,
+                    'noaction' => 0,
+                    'ko'       => 0,
+                    'noright'  => 0,
+                    'messages' => [],
+                ],
+                'error' => "",
+                'before_test' => function () {
+                    $computer = getItemByTypeName('Computer', '_test_pc01');
+                    $update = $computer->update([
+                        'id'      => $computer->getId(),
+                        'comment' => "test comment",
+                    ]);
+                    $this->boolean($update)->isTrue();
+                    $this->string($computer->fields['comment'])->isEqualTo("test comment");
+                },
+                'after_test' => function () {
+                    $computer = getItemByTypeName('Computer', '_test_pc01');
+                    $this->string($computer->fields['comment'])->isEqualTo("new comment");
+                }
             ]
         ];
     }
@@ -1382,48 +1413,5 @@ class APIRest extends APIBaseClass
 
         $this->integer($data[0]['tickets_id'])->isEqualTo($tickets_id);
         $this->integer($data[0]['groups_id'])->isEqualTo($groups_id);
-    }
-
-    public function test_ITILCategoryUpdate()
-    {
-        $headers = ['Session-Token' => $this->session_token];
-        $rand = mt_rand();
-
-        // Create ITILCategory
-        $input = [
-            'input' => [
-                'name' => "test_ITILCategoryUpdate_ITILCategory_$rand",
-            ]
-        ];
-        $data = $this->query("/ITILCategory", [
-            'headers' => $headers,
-            'verb'    => "POST",
-            'json'    => $input,
-        ], 201);
-        $this->integer($data['id'])->isGreaterThan(0);
-        $itilcategories_id = $data['id'];
-
-        // Update ITILCategory
-        $input = [
-            'input' => [
-                'name' => "test_ITILCategoryUpdate_ITILCategory_$rand",
-                'comment' => "test_ITILCategoryUpdate_ITILCategory_$rand",
-            ]
-        ];
-        $this->query("/ITILCategory/$itilcategories_id", [
-            'headers' => $headers,
-            'verb'    => "PUT",
-            'json'    => $input,
-        ], 200);
-
-        // Check ITILCategory
-        $data = $this->query("/ITILCategory/$itilcategories_id", [
-            'headers' => $headers,
-            'verb'    => "GET",
-        ], 200);
-
-        $this->integer($data['id'])->isEqualTo($itilcategories_id);
-        $this->string($data['name'])->isEqualTo("test_ITILCategoryUpdate_ITILCategory_$rand");
-        $this->string($data['comment'])->isEqualTo("test_ITILCategoryUpdate_ITILCategory_$rand");
     }
 }
