@@ -849,4 +849,61 @@ class RuleCriteria extends DbTestCase
             ['id' => $rules_id]
         );
     }
+
+    public function testBadRegex()
+    {
+        $criteria = new \RuleCriteria();
+
+        $criteria->fields = ['id'        => 1,
+            'rules_id'  => 1,
+            'criteria'  => 'name',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/Mozilla Firefox (.*)' //bad regexp pattern
+        ];
+
+        $results      = [];
+        $regex_result = [];
+
+        $this->when(
+            function () use ($criteria, &$results, &$regex_result) {
+                $criteria->match(
+                    $criteria,
+                    'Mozilla Firefox 52',
+                    $results,
+                    $regex_result
+                );
+            }
+        )->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage('Invalid regular expression `/Mozilla Firefox (.*)`.')
+            ->exists()
+        ;
+
+        $criteria = new \RuleCriteria();
+
+        $criteria->fields = ['id'        => 1,
+            'rules_id'  => 1,
+            'criteria'  => 'name',
+            'condition' => \Rule::REGEX_NOT_MATCH,
+            'pattern'   => '/Firefox (.*)' //bad regexp pattern
+        ];
+
+        $results      = [];
+        $regex_result = [];
+
+        $this->when(
+            function () use ($criteria, &$results, &$regex_result) {
+                $criteria->match(
+                    $criteria,
+                    'Any value',
+                    $results,
+                    $regex_result
+                );
+            }
+        )->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage('Invalid regular expression `/Firefox (.*)`.')
+            ->exists()
+        ;
+    }
 }
