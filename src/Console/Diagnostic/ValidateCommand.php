@@ -62,12 +62,6 @@ final class ValidateCommand extends AbstractCommand
         // Get all documents
         $data = $this->getDocuments();
 
-        // Init sections
-        $errors = $output->section();
-        $errors->writeln("");
-        $progress_bar = $output->section();
-        $progress_bar->writeln("");
-
         // Keep track of global command status, one error = failed
         $has_error = false;
 
@@ -75,21 +69,20 @@ final class ValidateCommand extends AbstractCommand
         $progress_message = function (array $document_row) {
             return sprintf(__('Checking document "%s"...'), $document_row['filename']);
         };
-        foreach ($this->iterate($data, $progress_message, $progress_bar) as $document_row) {
+        foreach ($this->iterate($data, $progress_message) as $document_row) {
             $status = $this->validateDocument($document_row);
 
             // Print error message
             if ($status != self::DOCUMENT_OK) {
                 $format = __('Document %d - %s: %s');
 
-                $errors->writeln("<error>" . sprintf(
+                $this->outputMessage("<error>" . sprintf(
                     $format,
                     $document_row['id'],
                     $document_row['filename'],
                     $this->getDetailedError($status, $document_row)
                 ) . '</error>');
             }
-
             $has_error = true;
         }
 
