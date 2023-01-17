@@ -33,32 +33,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Console\Document;
+namespace Glpi\Console\Diagnostic;
 
 use DBmysqlIterator;
 use Document;
 use Glpi\Console\AbstractCommand;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 final class ValidateCommand extends AbstractCommand
 {
+    private const DOCUMENT_OK = 0;
     private const ERROR_MISSING_FILE = 1;
     private const ERROR_UNEXPECTED_CONTENT = 2;
-
-    /**
-     * Keep track of errors (document id => error type)
-     * @var
-     */
-    private array $errors = [];
 
     protected function configure()
     {
         parent::configure();
 
-        $this->setName('glpi:document:check_files_integrity');
-        $this->setAliases(['document:check_files_integrity']);
+        $this->setName('glpi:diagnostic:check_documents_integrity');
+        $this->setAliases(['diagnostic:check_documents_integrity']);
         $this->setDescription("Validate files integrity for GLPI's documents");
     }
 
@@ -67,43 +62,38 @@ final class ValidateCommand extends AbstractCommand
         // Get all documents
         $data = $this->getDocuments();
 
-        // Init progress bar
-        $progress_bar = new ProgressBar($output, count($data));
-        $progress_bar->start();
+        // Init sections
+        $errors = $output->section();
+        $errors->writeln("");
+        $progress_bar = $output->section();
+        $progress_bar->writeln("");
+
+        // Keep track of global command status, one error = failed
+        $has_error = false;
 
         // Validate each documents
-        foreach ($data as $document_row) {
-            $this->validateDocument($document_row);
-            $progress_bar->advance();
-        }
+        $progress_message = function (array $document_row) {
+            return sprintf(__('Checking document "%s"...'), $document_row['filename']);
+        };
+        foreach ($this->iterate($data, $progress_message, $progress_bar) as $document_row) {
+            $status = $this->validateDocument($document_row);
 
-        // Clean progress bar
-        $progress_bar->finish();
-        $output->writeln("");
-        $output->writeln("");
-
-        if (!count($this->errors)) {
-            // Success
-            $output->writeln('<info>' . __('All documents have been validated.') . '</info>');
-        } else {
-            // Failure
-            $output->writeln('<error>' . __('The following documents are invalids:') . '</error>');
-
-            foreach ($this->errors as $id => $type) {
-                $document = Document::getById($id);
+            // Print error message
+            if ($status != self::DOCUMENT_OK) {
                 $format = __('Document %d - %s: %s');
 
-                // Print error details
-                $output->writeln(sprintf(
+                $errors->writeln("<error>" . sprintf(
                     $format,
-                    $id,
-                    $document->fields['filename'],
-                    $this->getDetailedError($type, $document)
-                ));
+                    $document_row['id'],
+                    $document_row['filename'],
+                    $this->getDetailedError($status, $document_row)
+                ) . '</error>');
             }
+
+            $has_error = true;
         }
 
-        return 0;
+        return $has_error ? Command::FAILURE : Command::SUCCESS;
     }
 
     /**
@@ -116,7 +106,7 @@ final class ValidateCommand extends AbstractCommand
         global $DB;
 
         return $DB->request([
-            'SELECT' => ['id', 'filepath', 'sha1sum'],
+            'SELECT' => ['id', 'filepath', 'sha1sum', 'filename'],
             'FROM' => Document::getTable(),
         ]);
     }
@@ -124,49 +114,47 @@ final class ValidateCommand extends AbstractCommand
     /**
      * Validate a document
      *
-     * @param array $row Simplified row of glpi_documents (id, filepath, sha1sum)
+     * @param array $row Simplified row of glpi_documents (id, filepath, sha1sum, filename)
      *
-     * @return bool
+     * @return int DOCUMENT_OK or error code
      */
-    protected function validateDocument(array $row): bool
+    protected function validateDocument(array $row): int
     {
         // Check that file exist
         $path = GLPI_DOC_DIR . '/' . $row['filepath'];
         if (!file_exists($path)) {
-            $this->errors[$row['id']] = self::ERROR_MISSING_FILE;
-            return false;
+            return self::ERROR_MISSING_FILE;
         }
 
         // Validate content
         if (sha1_file($path) !== $row['sha1sum']) {
-            $this->errors[$row['id']] = self::ERROR_UNEXPECTED_CONTENT;
-            return false;
+            return self::ERROR_UNEXPECTED_CONTENT;
         }
 
         // All good
-        return true;
+        return self::DOCUMENT_OK;
     }
 
     /**
      * Explain why a given document is invalid
      *
-     * @param int $type Error type
-     * @param Document $document Invalid document
+     * @param int   $type     Error type
+     * @param array $document Invalid document's data
      *
      * @return string Formatted error message (error type (context))
      */
-    protected function getDetailedError(int $type, Document $document): string
+    protected function getDetailedError(int $type, array $document_row): string
     {
         $format = __('%s (%s)');
 
         switch ($type) {
             case self::ERROR_MISSING_FILE:
                 $message = __("File not found");
-                $context = $document->fields['filepath'];
+                $context = $document_row['filepath'];
                 break;
             case self::ERROR_UNEXPECTED_CONTENT:
                 $message = __("Invalid sha1sum");
-                $context = $document->fields['sha1sum'];
+                $context = $document_row['sha1sum'];
                 break;
             default:
                 // Should not happen
