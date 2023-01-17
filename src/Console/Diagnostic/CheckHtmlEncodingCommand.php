@@ -51,7 +51,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  *
  * This CLI tool helps to fix items encoding issues.
  */
-final class HtmlEncodingCommand extends AbstractCommand
+final class CheckHtmlEncodingCommand extends AbstractCommand
 {
     /**
      * Error code returned when invalid items are found and are not fixed.
@@ -99,7 +99,7 @@ final class HtmlEncodingCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('diagnostic:html_encoding');
+        $this->setName('diagnostic:check_html_encoding');
         $this->setDescription(__('Check for badly HTML encoded content in database.'));
 
         $this->addOption(

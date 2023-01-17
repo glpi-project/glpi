@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Console\Diagnostic;
 
 use DbTestCase;
 
-class HtmlEncodingCommand extends DbTestCase
+class CheckHtmlEncodingCommand extends DbTestCase
 {
     protected function providerFixOneItem(): iterable
     {
