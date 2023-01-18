@@ -64,11 +64,8 @@
                      </div>
                   {% else %}
                      {% if value is object %}
-                        {% set out %}
-                           {{ dump(value) }}
-                        {% endset %}
                         {# Split the type info and object contents #}
-                        {% set out = out|trim|split(' ', 2) %}
+                        {% set out = dump(value)|trim|split(' ', 2) %}
                         {% if js_expand %}
                            <a class="fw-bolder" href="javascript:showHideDiv('content{{ key ~ row_rand }}', '', '', '')">{{ out[0] }}</a>
                         {% else %}
