@@ -3707,7 +3707,7 @@ class Rule extends CommonDBTM
     private static function getDefaultRulesFilePath(): string
     {
         return sprintf(
-            '%s/src/Resources/Rules/%s.xml',
+            '%s/resources/Rules/%s.xml',
             GLPI_ROOT,
             static::class
         );
