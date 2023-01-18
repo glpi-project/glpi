@@ -65,6 +65,13 @@ class State extends CommonTreeDropdown
     {
 
         $fields   = parent::getAdditionalFields();
+
+        $fields[] = [
+            'label' => __('Show items with this status in assistance'),
+            'name'  => 'show_in_assistance',
+            'type'  => 'bool',
+        ];
+
         $fields[] = ['label' => __('Visibility'),
             'name'  => 'header',
             'list'  => false
@@ -77,6 +84,7 @@ class State extends CommonTreeDropdown
                 'list'  => true
             ];
         }
+
         return $fields;
     }
 
@@ -582,5 +590,24 @@ class State extends CommonTreeDropdown
             $fields[$type] = 'is_visible_' . strtolower($type);
         }
         return $fields;
+    }
+
+    /**
+     * Criteria to apply to assets dropdown when shown in assistance
+     *
+     * @return array
+     */
+    public static function getDisplayConditionForAssistance(): array
+    {
+        return [
+            'OR' =>  [
+                'states_id' => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM'   => State::getTable(),
+                    'WHERE'  => ['show_in_assistance' => true]
+                ]),
+                ['states_id' => 0]
+            ]
+        ];
     }
 }

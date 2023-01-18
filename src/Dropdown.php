@@ -3677,6 +3677,10 @@ JAVASCRIPT;
             $where['is_template'] = 0;
         }
 
+        if ($item->isField('states_id')) {
+            $where[] = State::getDisplayConditionForAssistance();
+        }
+
         if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
             $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
             $orwhere = $item->isField('name') ? [
