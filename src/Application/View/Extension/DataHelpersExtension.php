@@ -53,6 +53,7 @@ class DataHelpersExtension extends AbstractExtension
             new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime']),
             new TwigFilter('formatted_duration', [$this, 'getFormattedDuration']),
             new TwigFilter('formatted_number', [$this, 'getFormattedNumber']),
+            new TwigFilter('formatted_size', [$this, 'getFormattedSize']),
             new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
             new TwigFilter('picture_url', [$this, 'getPictureUrl']),
             new TwigFilter('relative_datetime', [$this, 'getRelativeDatetime']),
@@ -123,6 +124,21 @@ class DataHelpersExtension extends AbstractExtension
     public function getFormattedNumber($number): string
     {
         return Html::formatNumber($number);
+    }
+
+    /**
+     * Return size formatted in a compact way (mo, ko, etc).
+     *
+     * @param mixed $number
+     *
+     * @return string
+     */
+    public function getFormattedSize($number): string
+    {
+        if (!is_numeric($number)) {
+            return '';
+        }
+        return Toolbox::getSize($number);
     }
 
     /**

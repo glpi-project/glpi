@@ -751,122 +751,60 @@ class Html
 
             $plugin_tabs = [];
             if (isset($PLUGIN_HOOKS[Hooks::DEBUG_TABS])) {
-                foreach ($PLUGIN_HOOKS[Hooks::DEBUG_TABS] as $plugin => $tabs) {
+                foreach ($PLUGIN_HOOKS[Hooks::DEBUG_TABS] as $tabs) {
                     $plugin_tabs = array_merge($plugin_tabs, $tabs);
                 }
             }
 
-            echo "<div id='debugpanel$rand' class='container-fluid card debug-panel " . ($ajax ? "debug_ajax" : "") . "'>";
+            $queries_duration = $CFG_GLPI["debug_sql"] ? array_sum($DEBUG_SQL['times']) : 0;
+            $execution_time = $TIMER_DEBUG->getTime();
+            $summary = [
+                'execution_time'    => sprintf(_n('%s second', '%s seconds', $execution_time), $execution_time),
+                'memory_usage'      => memory_get_usage(),
+                'sql_queries_count'     => $CFG_GLPI["debug_sql"] ? $SQL_TOTAL_REQUEST : 0,
+                'sql_queries_duration'  => $CFG_GLPI["debug_sql"] ? sprintf(_n('%s second', '%s seconds', $queries_duration), $queries_duration) : 0,
+            ];
+            $sql_info = [];
 
-            echo "<ul class='nav nav-tabs' data-bs-toggle='tabs'>";
-            echo "<li class='nav-item'><a class='nav-link active' data-bs-toggle='tab' href='#debugsummary$rand'>SUMMARY</a></li>";
-            if ($CFG_GLPI["debug_sql"]) {
-                echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugsql$rand'>SQL REQUEST</a></li>";
-            }
-            if ($CFG_GLPI["debug_vars"]) {
-                echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugpost$rand'>POST VARIABLE</a></li>";
-                echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugget$rand'>GET VARIABLE</a></li>";
-                if ($with_session) {
-                    echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugsession$rand'>SESSION VARIABLE</a></li>";
-                }
-                echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugserver$rand'>SERVER VARIABLE</a></li>";
-            }
-            foreach ($plugin_tabs as $tab_id => $tab_info) {
-                echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debug$tab_id$rand'>{$tab_info['title']}</a></li>";
-            }
-            echo "<li class='nav-item ms-auto'><a class='nav-link' href='#' id='close_debug$rand'><i class='fa fa-2x fa-times'></i><span class='sr-only'>" . __('Close') . "</span></a></li>";
-            echo "</ul>";
-
-            echo "<div class='card-body'>";
-            echo "<div class='tab-content'>";
-
-            echo "<div id='debugsummary$rand' class='tab-pane active'>";
-            echo "<dl class='row'>";
-            echo "<dt class='col-sm-3'>Execution time</dt>";
-            echo "<dd class='col-sm-9'>" . sprintf(_n('%s second', '%s seconds', $TIMER_DEBUG->getTime()), $TIMER_DEBUG->getTime()) . "</dd>";
-            echo "<dt class='col-sm-3'>Memory usage</dt>";
-            echo "<dd class='col-sm-9'>" . Toolbox::getSize(memory_get_usage()) . "</dd>";
-            if ($CFG_GLPI["debug_sql"]) {
-                $queries_duration = array_sum($DEBUG_SQL['times']);
-                echo "<dt class='col-sm-3'>SQL queries count</dt>";
-                echo "<dd class='col-sm-9'>{$SQL_TOTAL_REQUEST}</dd>";
-                echo "<dt class='col-sm-3'>SQL queries duration</dt>";
-                echo "<dd class='col-sm-9'>" . sprintf(_n('%s second', '%s seconds', $queries_duration), $queries_duration) . "</dd>";
-            }
-            echo "</dl>";
-            echo "</div>";
-
-            if ($CFG_GLPI["debug_sql"]) {
-                echo "<div id='debugsql$rand' class='tab-pane'>";
-                echo "<h1>" . $SQL_TOTAL_REQUEST . " Queries ";
-                echo "took  " . array_sum($DEBUG_SQL['times']) . "s</h1>";
-
-                echo "<table class='sql-debug table table-striped'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
-                echo "<th>Rows</th><th>Errors</th><th>SQL warnings</th></tr>";
-
+            if ($CFG_GLPI['debug_sql']) {
+                $sql_info['total_requests'] = $summary['sql_queries_count'];
+                $sql_info['total_duration'] = $summary['sql_queries_duration'];
+                $sql_info['queries'] = [];
                 foreach ($DEBUG_SQL['queries'] as $num => $query) {
-                    echo "<tr><td>$num</td><td>";
-                    echo self::cleanSQLDisplay($query);
-                    echo "</td><td>";
-                    echo $DEBUG_SQL['times'][$num];
-                    echo "</td><td>";
-                    echo $DEBUG_SQL['rows'][$num] ?? 0;
-                    echo "</td><td>";
-                    if (isset($DEBUG_SQL['errors'][$num])) {
-                        echo $DEBUG_SQL['errors'][$num];
-                    } else {
-                        echo "&nbsp;";
-                    }
-                    echo "</td><td>";
+                    $info = [
+                        'num'       => $num,
+                        'query'     => $query,
+                        'time'      => $DEBUG_SQL['times'][$num] ?? '',
+                        'rows'      => $DEBUG_SQL['rows'][$num] ?? 0,
+                        'errors'    => $DEBUG_SQL['errors'][$num] ?? '',
+                        'warnings'  => '',
+                    ];
                     if (isset($DEBUG_SQL['warnings'][$num])) {
                         foreach ($DEBUG_SQL['warnings'][$num] as $warning) {
-                            echo sprintf('%s: %s', $warning['Code'], $warning['Message']) . '<br />';
+                            $info['warnings'] .= sprintf('%s: %s', $warning['Code'], $warning['Message']) . "\n";
                         }
-                    } else {
-                        echo "&nbsp;";
                     }
-                    echo "</td></tr>";
+                    $sql_info['queries'][] = $info;
                 }
-                echo "</table>";
-                echo "</div>";
             }
-            if ($CFG_GLPI["debug_vars"]) {
-                echo "<div id='debugpost$rand' class='tab-pane'>";
-                self::printCleanArray($_POST, 0, true);
-                echo "</div>";
-                echo "<div id='debugget$rand' class='tab-pane'>";
-                self::printCleanArray($_GET, 0, true);
-                echo "</div>";
-                if ($with_session) {
-                    echo "<div id='debugsession$rand' class='tab-pane'>";
-                    self::printCleanArray($_SESSION, 0, true);
-                    echo "</div>";
-                }
-                echo "<div id='debugserver$rand' class='tab-pane'>";
-                self::printCleanArray($_SERVER, 0, true);
-                echo "</div>";
-            }
-            foreach ($plugin_tabs as $tab_id => $tab_info) {
-                if (isset($tab_info['display_callable']) && !is_callable($tab_info['display_callable'])) {
-                    trigger_error(sprintf('Debug tab "%s"(%s) display callable is invalid.', $tab_info['title'] ?? '', $tab_id), E_USER_WARNING);
-                    continue;
-                }
-                echo "<div id='debug$tab_id$rand' class='tab-pane'>";
-                $tab_info['display_callable']([
-                    'with_session' => $with_session,
-                    'ajax'         => $ajax,
-                    'rand'         => $rand,
-                ]);
-                echo "</div>";
-            }
-            echo "</div>";
+            $vars_info = [
+                'get'      => $_GET ?? [],
+                'post'     => $_POST ?? [],
+                'session'  => $_SESSION ?? [],
+                'server'   => $_SERVER ?? [],
+            ];
 
-            echo Html::scriptBlock("
-            $('#close_debug$rand').click(function() {
-                $('#debugpanel$rand').css('display', 'none');
-            });");
-
-            echo "</div></div>";
+            TemplateRenderer::getInstance()->display('debug_panel.html.twig', [
+                'summary'       => $summary,
+                'sql_info'      => $sql_info,
+                'vars_info'     => $vars_info,
+                'with_session'  => $with_session,
+                'debug_sql'     => $CFG_GLPI['debug_sql'],
+                'debug_vars'    => $CFG_GLPI['debug_vars'],
+                'ajax'          => $ajax,
+                'rand'          => $rand,
+                'plugin_tabs'   => $plugin_tabs,
+            ]);
         }
     }
 
@@ -4194,9 +4132,9 @@ JAVASCRIPT
                 $key = Sanitizer::encodeHtmlSpecialChars($key);
                 echo "<tr><td>";
                 echo $key;
+                echo "</td><td>";
                 $is_array = is_array($val);
                 $rand     = mt_rand();
-                echo "</td><td>";
                 if ($jsexpand && $is_array) {
                     echo "<a href=\"javascript:showHideDiv('content$key$rand','','','')\">";
                     echo "=></a>";
