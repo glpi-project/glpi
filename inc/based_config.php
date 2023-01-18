@@ -55,7 +55,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
    // - prevent any global variables definition from current function logic.
 
     $constants = [
-      // Constants related to system paths
+        // Constants related to system paths
         'GLPI_CONFIG_DIR'      => GLPI_ROOT . '/config', // Path for configuration files (db, security key, ...)
         'GLPI_VAR_DIR'         => GLPI_ROOT . '/files',  // Path for all files
         'GLPI_MARKETPLACE_DIR' => GLPI_ROOT . '/marketplace', // Path for marketplace plugins
@@ -76,7 +76,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
         "GLPI_INVENTORY_DIR"   => '{GLPI_VAR_DIR}/_inventories', //Path for inventories
         'GLPI_THEMES_DIR'      => '{GLPI_VAR_DIR}/_themes', // Path for custom themes storage
 
-      // Security constants
+        // Security constants
         'GLPI_USE_CSRF_CHECK'            => '1',
         'GLPI_CSRF_EXPIRES'              => '7200',
         'GLPI_CSRF_MAX_TOKENS'           => '100',
@@ -89,7 +89,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
             '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // only accept http/https/feed protocols, and reject presence of @ (username) and : (protocol) in host part of URL
         ],
 
-      // Constants related to GLPI Project / GLPI Network external services
+        // Constants related to GLPI Project / GLPI Network external services
         'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL
         'GLPI_INSTALL_MODE'                 => is_dir(GLPI_ROOT . '/.git') ? 'GIT' : 'TARBALL', // Install mode for telemetry
         'GLPI_NETWORK_MAIL'                 => 'glpi@teclib.com',
@@ -100,11 +100,12 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
         'GLPI_MARKETPLACE_ALLOW_OVERRIDE'   => true, // allow marketplace to override a plugin found outside GLPI_MARKETPLACE_DIR
         'GLPI_MARKETPLACE_MANUAL_DOWNLOADS' => true, // propose manual download link of plugins which cannot be installed/updated by marketplace
         'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
+        'GLPI_DOCUMENTATION_ROOT_URL'       => 'https://links.glpi-project.org', // Official documentations root URL
 
-      // SQL compatibility
+        // SQL compatibility
         'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
 
-      // Other constants
+        // Other constants
         'GLPI_AJAX_DASHBOARD'         => '1', // 1 for "multi ajax mode" 0 for "single ajax mode" (see Glpi\Dashboard\Grid::getCards)
         'GLPI_CALDAV_IMPORT_STATE'    => 0, // external events created from a caldav client will take this state by default (0 = Planning::INFO)
         'GLPI_DEMO_MODE'              => '0',
