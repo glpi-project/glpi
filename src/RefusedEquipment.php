@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\Request;
 
 /**
@@ -170,71 +171,19 @@ class RefusedEquipment extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
-
         $this->initForm($ID, $options);
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'>";
-
-        $itemtype = $this->fields['itemtype'];
-        echo "<th>" .  __('Item type') . "</th>";
-        echo "<td>" . $itemtype::getTypeName(1)  . "</td>";
-
-        echo "<th>" . __('Name') . "</th>";
-        echo "<td>" . $this->getName()  . "</td>";
-
-        echo "</tr>";
-        echo "<tr class='tab_bg_1'>";
-
-        echo "<th>" .  __('Serial') . "</th>";
-        echo "<td>" . $this->fields['serial']  . "</td>";
-
-        echo "<th>" .  __('UUID') . "</th>";
-        echo "<td>" . $this->fields['uuid']  . "</td>";
-
-        echo "</tr>";
-        echo "<tr class='tab_bg_1'>";
 
         $rule = new RuleImportAsset();
         $rule->getFromDB($this->fields['rules_id']);
-        echo "<th>" .  Rule::getTypeName(1) . "</th>";
-        echo "<td>";
-        echo $rule->getLink();
-
-        $rand = mt_rand();
-        echo sprintf(
-            "<a class='btn btn-primary' style='float:right;' href='#'  data-bs-toggle='modal' data-bs-target='#allruletest%s'>%s</a>",
-            $rand,
-            __s('Test rules engine')
-        );
-        Ajax::createIframeModalWindow(
-            'allruletest' . $rand,
-            $CFG_GLPI['root_doc'] . "/front/rulesengine.test.php?" . "sub_type=" . RuleImportAsset::getType() . "&refusedequipments_id=" . $this->fields['id'],
-            ['title' => __('Test rules engine')]
-        );
-
-        echo "</td>";
-
+        $options['associated_rule'] = $rule;
         $entity = new Entity();
         $entity->getFromDB($this->fields['entities_id']);
-        echo "<th>" .  Entity::getTypeName(1) . "</th>";
-        echo "<td>" . $entity->getLink() . "</td>";
+        $options['associated_entity'] = $entity;
 
-        echo "</tr>";
-        echo "<tr class='tab_bg_1'>";
-
-        echo "<th>" .  IPAddress::getTypeName(1) . "</th>";
-        echo "<td>" . implode(', ', importArrayFromDB($this->fields['ip'])) . "</td>";
-
-        echo "<th>" .  __('MAC address') . "</th>";
-        echo "<td>" . implode(', ', importArrayFromDB($this->fields['mac'])) . "</td>";
-
-        echo "</tr>";
-        $this->showInventoryInfo();
-
-        $this->showFormButtons($options);
-
+        TemplateRenderer::getInstance()->display('pages/assets/refusedequipments.html.twig', [
+            'item'   => $this,
+            'params' => $options,
+        ]);
         return true;
     }
 
