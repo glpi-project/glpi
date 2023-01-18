@@ -160,7 +160,7 @@ trait Inventoriable
 
         if ($agent === null) {
             echo '<tr class="tab_bg_1">';
-            echo '<td colspan="4">' . __('No agent has been linked.') . '</td>';
+            echo '<td colspan="4">' . __('Agent information is not available.') . '</td>';
             echo "</tr>";
         } else {
             $this->displayAgentInformation();
