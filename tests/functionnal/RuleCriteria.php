@@ -181,10 +181,9 @@ class RuleCriteria extends DbTestCase
         $rule     = new \Rule();
         $criteria = new \RuleCriteria();
 
+        // Expects an array containing a `criteria` key
         $this->boolean($criteria->prepareInputForAdd('name'))->isFalse();
-
-        $input    = ['rules_id' => 1, 'criteria' => 'name'];
-        $this->boolean($criteria->prepareInputForAdd($input))->isFalse();
+        $this->boolean($criteria->prepareInputForAdd(['rules_id' => 1]))->isFalse();
 
         $rules_id = $rule->add(['name'        => 'Ignore import',
             'is_active'   => 1,
@@ -201,7 +200,8 @@ class RuleCriteria extends DbTestCase
         $input    = ['rules_id' => $rules_id, 'criteria' => 'name'];
         $this->array($criteria->prepareInputForAdd($input))->isIdenticalTo($input);
 
-        $input = ['rules_id' => 1];
+        // Expects prepareInputForAdd to return false if `rules_id` is not a valid ID
+        $input = ['rules_id' => $rules_id + 1000, 'criteria' => 'name'];
         $this->boolean($criteria->prepareInputForAdd($input))->isFalse();
     }
 

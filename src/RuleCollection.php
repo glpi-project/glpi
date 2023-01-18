@@ -669,9 +669,10 @@ JAVASCRIPT;
             $url = $CFG_GLPI["root_doc"];
         }
 
-       //if rules provides an initRules method, then we're able to reset them
-        if (method_exists($this->getRuleClass(), 'initRules')) {
-            echo "<a class='btn btn-primary' id='reset_rules' href='" . $rule->getSearchURL() . "?reinit=true&subtype=" . $this->getRuleClassName() . "' " .
+        // if rules provides has default rules, then we're able to reset them
+        $ruleclass = $this->getRuleClass();
+        if ($ruleclass instanceof Rule && $ruleclass->hasDefaultRules()) {
+            echo "<a class='btn btn-primary' id='reset_rules' href='" . $rule->getSearchURL() . "?reinit=true&subtype=" . $ruleclass->getType() . "' " .
             "onClick='if(confirm(\"" . __s('Rules will be erased and recreated from default. Are you sure?') . "\"))
             { return true } else { return false; };' " .
             "title='" . __s("Delete all rules and recreate them by default") . "'" .
@@ -682,7 +683,7 @@ JAVASCRIPT;
         Ajax::createIframeModalWindow(
             'allruletest' . $rand,
             $url . "/front/rulesengine.test.php?" .
-                                          "sub_type=" . $this->getRuleClassName() .
+                                          "sub_type=" . $ruleclass->getType() .
                                           "&condition=" . $p['condition'],
             ['title' => __('Test rules engine')]
         );

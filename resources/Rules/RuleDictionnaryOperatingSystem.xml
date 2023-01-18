@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<rules>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleDictionnaryOperatingSystem</sub_type>
+        <ranking>1</ranking>
+        <name>Clean Linux OS Name</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>0</is_active>
+        <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
+
+            Example :
+            Ubuntu 22.04.1 LTS -&amp;#62; #0 = Ubuntu
+            SUSE Linux Enterprise Server 11 (x86_64)  -&amp;#62;#0 = SUSE
+            SunOS -&amp;#62; #0 = SunOS
+            Red Hat Enterprise Linux Server release 7.9 (Maipo) -&amp;#62; #0 = Red Hat
+            Oracle Linux Server release 7.3 -&amp;#62; #0 = Oracle
+            Fedora release 36 (Thirty Six) -&amp;#62; #0 = Fedora
+            Debian GNU/Linux 9.5 (stretch) -&amp;#62; #0 = Debian
+            CentOS Stream release 8 -&amp;#62; #0 = CentOS
+            AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #0 = AlmaLinux</comment>
+        <is_recursive>1</is_recursive>
+        <uuid>clean_linux_os_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>os_name</criteria>
+            <condition>6</condition>
+            <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>append_regex_result</action_type>
+            <field>name</field>
+            <value>#0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleDictionnaryOperatingSystem</sub_type>
+        <ranking>2</ranking>
+        <name>Clean Windows OS Name</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>0</is_active>
+        <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/
+
+            Example :
+            Microsoft Windows XP Professionnel -&amp;#62; #1 : Windows
+            Microsoft Windows 7 Enterprise  -&amp;#62; #1 : Windows
+            Microsoft&#xAE; Windows Vista Professionnel  -&amp;#62; #1 : Windows
+            Microsoft Windows XP &#xC9;dition familiale  -&amp;#62; #1 : Windows
+            Microsoft Windows 10 Entreprise  -&amp;#62; #1 : Windows
+            Microsoft Windows 10 Professionnel  -&amp;#62; #1 : Windows
+            Microsoft Windows 11 Professionnel  -&amp;#62; #1 : Windows</comment>
+        <is_recursive>1</is_recursive>
+        <uuid>clean_windows_os_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>os_name</criteria>
+            <condition>6</condition>
+            <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>append_regex_result</action_type>
+            <field>name</field>
+            <value>#1</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleDictionnaryOperatingSystem</sub_type>
+        <ranking>3</ranking>
+        <name>Clean Windows Server OS Name</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>0</is_active>
+        <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|&#xAE;)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
+
+            Example :
+            Microsoft Windows Server 2012 R2 Datacenter -&amp;#62; #1 #2 : Windows Server
+            Microsoft(R) Windows(R) Server 2003, Standard Edition x64 -&amp;#62; #1 #2 : Windows Server
+            Microsoft Hyper-V Server 2012 R2 -&amp;#62; #1 #2 : Hyper-V Server
+            Microsoft&#xAE; Windows Server&#xAE; 2008 Standard -&amp;#62; #1 #2 : Windows Server</comment>
+        <is_recursive>1</is_recursive>
+        <uuid>clean_windows_server_os_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>os_name</criteria>
+            <condition>6</condition>
+            <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|&#xAE;)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>append_regex_result</action_type>
+            <field>name</field>
+            <value>#1 #2</value>
+        </ruleaction>
+    </rule>
+</rules>
