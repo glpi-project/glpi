@@ -152,11 +152,17 @@
          });
       });
       </script>
+   {% else %}
+   <div class="card-body row">
+      <div class="mb-3 col-12 col-sm-6">
+         {{ __('No agent has been linked.') }}
+      </div>
+   </div>
    {% endif %}
 
    {# display last_inventory_update for asset using Inventoriable Trait and without agent #}
    {# like NetworkEquipement, Printer or Unmanaged Device converted #}
-   {% if item is usingtrait('Glpi\\Features\\Inventoriable') and item.getInventoryAgent() == null %}
+   {% if item is usingtrait('Glpi\\Features\\Inventoriable') and item.getInventoryAgent() == null and item.isField('last_inventory_update') %}
       <div class="card-body row">
          <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >{{ __('Last inventory') }}</label>
