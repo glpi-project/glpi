@@ -42,7 +42,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class ValidateCommand extends AbstractCommand
+final class CheckDocumentsIntegrityCommand extends AbstractCommand
 {
     private const DOCUMENT_OK = 0;
     private const ERROR_MISSING_FILE = 1;
@@ -52,9 +52,8 @@ final class ValidateCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:diagnostic:check_documents_integrity');
-        $this->setAliases(['diagnostic:check_documents_integrity']);
-        $this->setDescription("Validate files integrity for GLPI's documents");
+        $this->setName('diagnostic:check_documents_integrity');
+        $this->setDescription(__("Validate files integrity for GLPI's documents."));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -67,23 +66,23 @@ final class ValidateCommand extends AbstractCommand
 
         // Validate each documents
         $progress_message = function (array $document_row) {
-            return sprintf(__('Checking document "%s"...'), $document_row['filename']);
+            return sprintf(
+                __('Checking document #%s "%s" (%s)...'),
+                $document_row['id'],
+                $document_row['name'],
+                $document_row['filepath']
+            );
         };
         foreach ($this->iterate($data, $progress_message) as $document_row) {
             $status = $this->validateDocument($document_row);
 
-            // Print error message
             if ($status != self::DOCUMENT_OK) {
-                $format = __('Document %d - %s: %s');
-
-                $this->outputMessage("<error>" . sprintf(
-                    $format,
-                    $document_row['id'],
-                    $document_row['filename'],
-                    $this->getDetailedError($status, $document_row)
-                ) . '</error>');
+                $this->outputMessage(
+                    '<error>' . $this->getDetailedError($status, $document_row) . '</error>',
+                    OutputInterface::VERBOSITY_QUIET
+                );
+                $has_error = true;
             }
-            $has_error = true;
         }
 
         return $has_error ? Command::FAILURE : Command::SUCCESS;
@@ -99,7 +98,7 @@ final class ValidateCommand extends AbstractCommand
         global $DB;
 
         return $DB->request([
-            'SELECT' => ['id', 'filepath', 'sha1sum', 'filename'],
+            'SELECT' => ['id', 'name', 'filepath', 'sha1sum', 'filename'],
             'FROM' => Document::getTable(),
         ]);
     }
@@ -129,33 +128,35 @@ final class ValidateCommand extends AbstractCommand
     }
 
     /**
-     * Explain why a given document is invalid
+     * Get detailed error message
      *
      * @param int   $type     Error type
      * @param array $document Invalid document's data
      *
-     * @return string Formatted error message (error type (context))
+     * @return string
      */
     protected function getDetailedError(int $type, array $document_row): string
     {
-        $format = __('%s (%s)');
-
         switch ($type) {
             case self::ERROR_MISSING_FILE:
-                $message = __("File not found");
-                $context = $document_row['filepath'];
+                $message = __("file not found");
                 break;
             case self::ERROR_UNEXPECTED_CONTENT:
-                $message = __("Invalid sha1sum");
-                $context = $document_row['sha1sum'];
+                $message = __("invalid checksum");
                 break;
             default:
                 // Should not happen
-                $message = __("Unknown error");
-                $context = "unkown";
+                $message = __("unknown error");
                 break;
         }
 
-        return sprintf($format, $message, $context);
+        return sprintf(
+            '%s #%s "%s" (%s): %s.',
+            Document::getTypeName(1),
+            $document_row['id'],
+            $document_row['name'],
+            $document_row['filepath'],
+            $message
+        );
     }
 }
