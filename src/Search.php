@@ -1955,8 +1955,7 @@ class Search
                         self::displayConfigItem(
                             $data['itemtype'],
                             $col['id'],
-                            $row,
-                            $colkey
+                            $row
                         )
                     );
                 } else { // META case
