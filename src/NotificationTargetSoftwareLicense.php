@@ -40,7 +40,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
 {
     public function getEvents()
     {
-        return ['alert' => __('Alarms on expired licenses')];
+        return ['alert' => __('Alarm on expired license')];
     }
 
 
@@ -48,6 +48,21 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
     {
 
         $events                            = $this->getAllEvents();
+        $license = $this->obj;
+
+        if (!isset($options['licenses'])) {
+            $options['licenses'] = [];
+            if (!$license->isNewItem()) {
+                $options['licenses'][] = $license->fields;// Compatibility with old behaviour
+            }
+        } else {
+            Toolbox::deprecated('Using "licenses" option in NotificationTargetSoftwareLicense is deprecated.');
+        }
+        if (!isset($options['entities_id'])) {
+            $options['entities_id'] = $license->fields['entities_id'];
+        } else {
+            Toolbox::deprecated('Using "entities_id" option in NotificationSoftwareLicense is deprecated.');
+        }
 
         $this->data['##license.action##'] = $events[$event];
 
@@ -55,6 +70,21 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
             'glpi_entities',
             $options['entities_id']
         );
+        $tmp                       = [];
+        $tmp['##license.item##']   = $license->fields['softname'];
+        $tmp['##license.name##']   = $license->fields['name'];
+        $tmp['##license.serial##'] = $license->fields['serial'];
+        $tmp['##license.expirationdate##']
+            = Html::convDate($license->fields["expire"]);
+        $tmp['##license.url##']    = $this->formatURL(
+            $options['additionnaloption']['usertype'],
+            "SoftwareLicense_" . $license->getID()
+        );
+        $tmp['##license.entity##'] = Dropdown::getDropdownName(
+            'glpi_entities',
+            $license->fields['entities_id']
+        );
+        $this->data['licenses'][] = $tmp;
 
         foreach ($options['licenses'] as $id => $license) {
             $tmp                       = [];
@@ -103,7 +133,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
         }
 
         $this->addTagToList(['tag'     => 'licenses',
-            'label'   => __('Device list'),
+            'label'   => __('Licenses list (deprecated; contains only one element)'),
             'value'   => false,
             'foreach' => true
         ]);

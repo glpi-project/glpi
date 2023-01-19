@@ -4431,10 +4431,9 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => '12',
                 'notificationtemplates_id' => '11',
                 'language' => '',
-                'subject' => '##license.action##  ##license.entity##',
+                'subject' => '##license.action##  ##license.name##',
                 'content_text' => '##lang.license.entity## : ##license.entity##
 
-##FOREACHlicenses##
 
 ##lang.license.item## : ##license.item##
 
@@ -4442,16 +4441,14 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
 ##lang.license.expirationdate## : ##license.expirationdate##
 
-##license.url##
- ##ENDFOREACHlicenses##',
+##license.url##',
                 'content_html' => '&lt;p&gt;
 ##lang.license.entity## : ##license.entity##&lt;br /&gt;
-##FOREACHlicenses##
 &lt;br /&gt;##lang.license.item## : ##license.item##&lt;br /&gt;
 ##lang.license.serial## : ##license.serial##&lt;br /&gt;
 ##lang.license.expirationdate## : ##license.expirationdate##
 &lt;br /&gt; &lt;a href="##license.url##"&gt; ##license.url##
-&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHlicenses##&lt;/p&gt;',
+&lt;/a&gt;&lt;br /&gt; &lt;/p&gt;',
             ], [
                 'id' => '13',
                 'notificationtemplates_id' => '13',
