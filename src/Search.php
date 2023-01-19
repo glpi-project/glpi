@@ -4626,6 +4626,8 @@ JAVASCRIPT;
                     break;
             }
         }
+
+        $SEARCH = "";
         switch ($searchtype) {
             case "notcontains":
                 $nott = !$nott;
