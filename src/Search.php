@@ -3252,6 +3252,7 @@ JAVASCRIPT;
                                     $prefix .
                                     $num);
         $searchopt = [];
+        $fieldsearch_id = null;
         if (count($actions) > 0) {
            // get already get search options
             if (isset($actions['searchopt'])) {
@@ -3286,15 +3287,17 @@ JAVASCRIPT;
         self::displaySearchoptionValue($params);
         echo "</div>";
 
-        Ajax::updateItemOnSelectEvent(
-            $fieldsearch_id,
-            $dropdownname,
-            $CFG_GLPI["root_doc"] . "/ajax/search.php",
-            [
-                'action'     => 'display_searchoption_value',
-                'searchtype' => '__VALUE__',
-            ] + $params
-        );
+        if ($fieldsearch_id !== null) {
+            Ajax::updateItemOnSelectEvent(
+                $fieldsearch_id,
+                $dropdownname,
+                $CFG_GLPI["root_doc"] . "/ajax/search.php",
+                [
+                    'action'     => 'display_searchoption_value',
+                    'searchtype' => '__VALUE__',
+                ] + $params
+            );
+        }
     }
 
     /**
