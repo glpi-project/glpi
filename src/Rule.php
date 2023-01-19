@@ -1413,14 +1413,8 @@ class Rule extends CommonDBTM
             }
         }
 
-        $value = '';
-
         foreach ($actions as $ID => $act) {
             $items[$ID] = $act['name'];
-
-            if (empty($value) && !isset($used[$ID])) {
-                $value = $ID;
-            }
         }
         return Dropdown::showFromArray($p['name'], $items, $p);
     }
