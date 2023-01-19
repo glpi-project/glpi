@@ -2917,25 +2917,21 @@ class Transfer extends CommonDBTM
     {
         global $DB;
 
-        switch ($itemtype) {
-            case 'Ticket':
-                $table = 'glpi_suppliers_tickets';
-                $field = 'tickets_id';
-                $link  = new Supplier_Ticket();
-                break;
-
-            case 'Problem':
-                $table = 'glpi_problems_suppliers';
-                $field = 'problems_id';
-                $link  = new Problem_Supplier();
-                break;
-
-            case 'Change':
-                $table = 'glpi_changes_suppliers';
-                $field = 'changes_id';
-                $link  = new Change_Supplier();
-                break;
+        if (!is_a($itemtype, CommonITILObject::class, true)) {
+            return;
         }
+
+        /* @var CommonITILObject $item */
+        $item = new $itemtype();
+        $linkclass = $item->supplierlinkclass;
+        if (!is_a($linkclass, CommonITILActor::class, true)) {
+            return;
+        }
+
+        /* @var CommonITILActor $link */
+        $link  = new $linkclass();
+        $field = getForeignKeyFieldForItemType($itemtype);
+        $table = $link->getTable();
 
         $iterator = $DB->request([
             'FROM'   => $table,
