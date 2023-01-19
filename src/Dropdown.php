@@ -177,10 +177,22 @@ class Dropdown
         }
 
         if ($params['readonly']) {
-            return '<span class="form-control" readonly'
+            $output = '';
+            if ($params["multiple"]) {
+                $field_name = $params['name'] . "[]";
+                $values = $params['values'];
+            } else {
+                $field_name = $params['name'];
+                $values = [$params['value']];
+            }
+            foreach ($values as $value) {
+                $output .= "<input type='hidden' name='" . $field_name . "' value='$value'>";
+            }
+            $output .= '<span class="form-control" readonly'
                 . ($params['width'] ? 'style="width: ' . $params["width"] . '"' : '') . '>'
                 . ($params['multiple'] ? implode(', ', $names) : $name)
                 . '</span>';
+            return $output;
         }
 
        // Manage entity_sons
