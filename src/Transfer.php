@@ -2994,25 +2994,19 @@ class Transfer extends CommonDBTM
     {
         global $DB;
 
-        switch ($itemtype) {
-            case 'Ticket':
-                $table = 'glpi_tickettasks';
-                $field = 'tickets_id';
-                $task  = new TicketTask();
-                break;
-
-            case 'Problem':
-                $table = 'glpi_problemtasks';
-                $field = 'problems_id';
-                $task  = new ProblemTask();
-                break;
-
-            case 'Change':
-                $table = 'glpi_changetasks';
-                $field = 'changes_id';
-                $task  = new ProblemTask();
-                break;
+        if (!is_a($itemtype, CommonITILObject::class, true)) {
+            return;
         }
+
+        $taskclass = $itemtype::getTaskClass();
+        if (!is_a($taskclass, CommonITILTask::class, true)) {
+            return;
+        }
+
+        /* @var CommonITILTask $task */
+        $task  = new $taskclass();
+        $field = getForeignKeyFieldForItemType($itemtype);
+        $table = $task->getTable();
 
         $iterator = $DB->request([
             'FROM'   => $table,
