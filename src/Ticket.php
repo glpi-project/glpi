@@ -523,6 +523,8 @@ class Ticket extends CommonITILObject
                 $prefix_ticket = "internal_";
                 $level_ticket  = new OlaLevel_Ticket();
                 break;
+            default:
+                return false;
         }
 
         $input = [];
@@ -540,6 +542,8 @@ class Ticket extends CommonITILObject
                     $input[$prefix_ticket . 'time_to_own'] = '';
                 }
                 break;
+            default:
+                return false;
         }
 
         $input[$prefix . '_waiting_duration'] = 0;
