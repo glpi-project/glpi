@@ -188,7 +188,7 @@ class Document extends CommonDBTM
                 } else {
                     trigger_error(
                         sprintf(
-                            __('Failed to delete the file %s'),
+                            'Failed to delete the file %s',
                             GLPI_DOC_DIR . "/" . $this->fields["filepath"]
                         ),
                         E_USER_WARNING
@@ -1165,7 +1165,7 @@ class Document extends CommonDBTM
 
         if (!is_file($fullpath)) {
             trigger_error(
-                sprintf(__('File %s not found.'), $fullpath),
+                sprintf('File %s not found.', $fullpath),
                 E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
@@ -1204,7 +1204,7 @@ class Document extends CommonDBTM
                // TRANS: %1$s is the curent filename, %2$s is its directory
                 trigger_error(
                     sprintf(
-                        __('Failed to delete the file %1$s (%2$s)'),
+                        'Failed to delete the file %1$s (%2$s)',
                         $input['current_filename'],
                         GLPI_DOC_DIR . "/" . $input['current_filepath']
                     ),
@@ -1276,7 +1276,7 @@ class Document extends CommonDBTM
 
         if (!is_file($fullpath)) {
             trigger_error(
-                sprintf(__('File %s not found.'), $fullpath),
+                sprintf('File %s not found.', $fullpath),
                 E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
@@ -1316,7 +1316,7 @@ class Document extends CommonDBTM
                // TRANS: %1$s is the curent filename, %2$s is its directory
                 trigger_error(
                     sprintf(
-                        __('Failed to delete the file %1$s (%2$s)'),
+                        'Failed to delete the file %1$s (%2$s)',
                         $input['current_filename'],
                         GLPI_DOC_DIR . "/" . $input['current_filepath']
                     ),
@@ -1424,7 +1424,7 @@ class Document extends CommonDBTM
                // TRANS: %1$s is the curent filename, %2$s is its directory
                 trigger_error(
                     sprintf(
-                        __('Failed to delete the file %1$s (%2$s)'),
+                        'Failed to delete the file %1$s (%2$s)',
                         $input['current_filename'],
                         GLPI_DOC_DIR . "/" . $input['current_filepath']
                     ),
@@ -1491,7 +1491,7 @@ class Document extends CommonDBTM
         if (!is_dir(GLPI_DOC_DIR)) {
             trigger_error(
                 sprintf(
-                    __("The directory %s doesn't exist."),
+                    "The directory %s doesn't exist.",
                     GLPI_DOC_DIR
                 ),
                 E_USER_WARNING
@@ -1520,7 +1520,7 @@ class Document extends CommonDBTM
         if (!is_dir(GLPI_DOC_DIR . "/" . $subdir)) {
             trigger_error(
                 sprintf(
-                    __('Failed to create the directory %s. Verify that you have the correct permission'),
+                    'Failed to create the directory %s.',
                     GLPI_DOC_DIR . "/" . $subdir
                 ),
                 E_USER_WARNING
