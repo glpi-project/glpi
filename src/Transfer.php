@@ -3824,20 +3824,21 @@ class Transfer extends CommonDBTM
                         }
                     } else {
                         foreach ($iterator as $data) {
-                          // Not a copy -> only update socket
+                            // Not a copy -> only update socket
                             if (isset($data['sockets_id']) && $data['sockets_id']) {
-                                 $socket = new Socket();
+                                $socket = new Socket();
                                 if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
                                     if ($socket->getID()) {
                                         $socketID = $this->transferDropdownSocket($socket->getID());
+                                        $input['id']         = $data['id'];
+                                        $input['sockets_id'] = $socketID;
+                                        $np->update($input);
                                     }
                                 }
-                                 $input['id']           = $data['id'];
-                                 $input['sockets_id'] = $socketID;
-                                 $np->update($input);
                             }
                         }
                     }
+                    break;
             }
         }
     }
