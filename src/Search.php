@@ -7134,7 +7134,7 @@ JAVASCRIPT;
         }
 
        // Link with plugin tables : need to know left join structure
-        if (isset($table)) {
+        if (isset($table) && isset($field)) {
             if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table . '.' . $field, $matches)) {
                 if (count($matches) == 2) {
                     $plug     = $matches[1];
@@ -7181,7 +7181,7 @@ JAVASCRIPT;
                             if ($_SESSION["glpiis_ids_visible"] || empty($data[$ID][$k]['name'])) {
                                  $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                             }
-                            if ($field === 'completename') {
+                            if (isset($field) && $field === 'completename') {
                                 $chunks = preg_split('/ > /', $name);
                                 $completename = '';
                                 foreach ($chunks as $key => $element_name) {
@@ -7442,7 +7442,7 @@ HTML;
             }
             $count_display++;
            // Get specific display if available
-            if (isset($table)) {
+            if (isset($table) && isset($field)) {
                 $itemtype = getItemTypeForTable($table);
                 if ($item = getItemForItemtype($itemtype)) {
                     $tmpdata  = $data[$ID][$k];
