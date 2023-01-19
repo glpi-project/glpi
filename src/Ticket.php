@@ -3952,9 +3952,7 @@ JAVASCRIPT;
 
        // Get default values from posted values on reload form
         if (!$ticket_template) {
-            if (isset($_POST)) {
-                $options = $_POST;
-            }
+            $options = $_POST;
         }
 
         if (isset($options['name'])) {
