@@ -150,6 +150,8 @@ class State extends CommonTreeDropdown
         }
 
         if (count($states)) {
+            $total = [];
+
            // Produce headline
             echo "<div class='center'><table class='tab_cadrehov'><tr>";
 
