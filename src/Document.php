@@ -186,11 +186,12 @@ class Document extends CommonDBTM
                         $this->fields["filepath"]
                     ));
                 } else {
-                    Toolbox::logError(
+                    trigger_error(
                         sprintf(
                             __('Failed to delete the file %s'),
                             GLPI_DOC_DIR . "/" . $this->fields["filepath"]
                         ),
+                        E_USER_WARNING
                     );
                     Session::addMessageAfterRedirect(
                         sprintf(
@@ -1163,8 +1164,9 @@ class Document extends CommonDBTM
         }
 
         if (!is_file($fullpath)) {
-            Toolbox::logError(
+            trigger_error(
                 sprintf(__('File %s not found.'), $fullpath),
+                E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
                 sprintf(__('File %s not found.'), $filename),
@@ -1200,12 +1202,13 @@ class Document extends CommonDBTM
                 ));
             } else {
                // TRANS: %1$s is the curent filename, %2$s is its directory
-                Toolbox::logError(
+                trigger_error(
                     sprintf(
                         __('Failed to delete the file %1$s (%2$s)'),
                         $input['current_filename'],
                         GLPI_DOC_DIR . "/" . $input['current_filepath']
-                    )
+                    ),
+                    E_USER_WARNING
                 );
                 Session::addMessageAfterRedirect(
                     sprintf(
@@ -1272,8 +1275,9 @@ class Document extends CommonDBTM
         }
 
         if (!is_file($fullpath)) {
-            Toolbox::logError(
-                sprintf(__('File %s not found.'), $fullpath)
+            trigger_error(
+                sprintf(__('File %s not found.'), $fullpath),
+                E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
                 sprintf(__('File %s not found.'), $filename),
@@ -1310,12 +1314,13 @@ class Document extends CommonDBTM
                 ));
             } else {
                // TRANS: %1$s is the curent filename, %2$s is its directory
-                Toolbox::logError(
+                trigger_error(
                     sprintf(
                         __('Failed to delete the file %1$s (%2$s)'),
                         $input['current_filename'],
                         GLPI_DOC_DIR . "/" . $input['current_filepath']
-                    )
+                    ),
+                    E_USER_WARNING
                 );
                 Session::addMessageAfterRedirect(
                     sprintf(
@@ -1417,12 +1422,13 @@ class Document extends CommonDBTM
                 ));
             } else {
                // TRANS: %1$s is the curent filename, %2$s is its directory
-                Toolbox::logError(
+                trigger_error(
                     sprintf(
                         __('Failed to delete the file %1$s (%2$s)'),
                         $input['current_filename'],
                         GLPI_DOC_DIR . "/" . $input['current_filepath']
-                    )
+                    ),
+                    E_USER_WARNING
                 );
                 Session::addMessageAfterRedirect(
                     sprintf(
@@ -1483,11 +1489,12 @@ class Document extends CommonDBTM
         }
 
         if (!is_dir(GLPI_DOC_DIR)) {
-            Toolbox::logError(
+            trigger_error(
                 sprintf(
                     __("The directory %s doesn't exist."),
                     GLPI_DOC_DIR
-                )
+                ),
+                E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
                 sprintf(
@@ -1511,11 +1518,12 @@ class Document extends CommonDBTM
         }
 
         if (!is_dir(GLPI_DOC_DIR . "/" . $subdir)) {
-            Toolbox::logError(
+            trigger_error(
                 sprintf(
                     __('Failed to create the directory %s. Verify that you have the correct permission'),
                     GLPI_DOC_DIR . "/" . $subdir
-                )
+                ),
+                E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
                 sprintf(
