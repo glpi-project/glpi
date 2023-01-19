@@ -4438,17 +4438,15 @@ HTML;
         }
 
         // Make a select box with all glpi users
-        if (!$p['multiple']) {
-            $user = getUserName($p['value'], 2, true);
-        }
-
-        if ($p['readonly']) {
-            return '<span class="form-control" readonly>' . $user["name"] . '</span>';
-        }
-
         $view_users = self::canView();
 
         if (!$p['multiple']) {
+            $user = getUserName($p['value'], 2, true);
+
+            if ($p['readonly']) {
+                return '<span class="form-control" readonly>' . $user["name"] . '</span>';
+            }
+
             if ($p['value'] === 'myself') {
                 $default = __("Myself");
             } else if (!empty($p['value']) && ($p['value'] > 0)) {
