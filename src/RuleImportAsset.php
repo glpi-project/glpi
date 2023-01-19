@@ -179,7 +179,7 @@ class RuleImportAsset extends Rule
             ],
 
             'linked_item' => [
-                'name'            => __('Linked asset', 'Linked assets', 1),
+                'name'            => _n('Linked asset', 'Linked assets', 1),
                 'type'            => 'yesno',
                 'allow_condition' => [Rule::PATTERN_FIND]
             ],
