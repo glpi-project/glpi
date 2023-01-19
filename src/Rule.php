@@ -1340,6 +1340,7 @@ class Rule extends CommonDBTM
             }
         }
 
+        $items      = [];
         $group      = [];
         $groupname  = _n('Criterion', 'Criteria', Session::getPluralNumber());
         foreach ($this->getAllCriteria() as $ID => $crit) {
