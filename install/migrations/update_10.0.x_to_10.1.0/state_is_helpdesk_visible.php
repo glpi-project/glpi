@@ -38,4 +38,5 @@
  * @var Migration $migration
  */
 
-$migration->addField('glpi_states', 'show_in_assistance', 'bool', ['value' => 1]);
+$migration->addField('glpi_states', 'is_helpdesk_visible', 'bool', ['value' => 1]);
+$migration->addKey('glpi_states', 'is_helpdesk_visible');

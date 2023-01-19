@@ -68,7 +68,7 @@ class State extends CommonTreeDropdown
 
         $fields[] = [
             'label' => __('Show items with this status in assistance'),
-            'name'  => 'show_in_assistance',
+            'name'  => 'is_helpdesk_visible',
             'type'  => 'bool',
         ];
 
@@ -259,6 +259,9 @@ class State extends CommonTreeDropdown
         foreach ($this->getvisibilityFields() as $field) {
             $this->fields[$field] = 1;
         }
+
+        $this->fields['is_helpdesk_visible'] = 1;
+
         return true;
     }
 
@@ -604,7 +607,7 @@ class State extends CommonTreeDropdown
                 'states_id' => new QuerySubQuery([
                     'SELECT' => 'id',
                     'FROM'   => State::getTable(),
-                    'WHERE'  => ['show_in_assistance' => true]
+                    'WHERE'  => ['is_helpdesk_visible' => true]
                 ]),
                 ['states_id' => 0]
             ]
