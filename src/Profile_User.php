@@ -379,6 +379,7 @@ class Profile_User extends CommonDBRelation
             );
 
             $current_pid = null;
+            $i = 0;
             foreach ($iterator as $data) {
                 if ($data['pid'] != $current_pid) {
                     echo "<tbody><tr class='noHover'>";
