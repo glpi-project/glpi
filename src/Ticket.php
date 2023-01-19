@@ -1885,14 +1885,15 @@ class Ticket extends CommonITILObject
             }
         }
 
-        if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
+        $skip_rules = isset($input['_skip_rules']) && $input['_skip_rules'] !== false;
+        $tmprequester = 0;
+        if (!$skip_rules) {
            // Process Business Rules
             $this->fillInputForBusinessRules($input);
 
             $rules = new RuleTicketCollection($input['entities_id']);
 
            // Set unset variables with are needed
-            $tmprequester = 0;
             $user = new User();
             if (isset($input["_users_id_requester"])) {
                 if (
@@ -1929,7 +1930,8 @@ class Ticket extends CommonITILObject
         }
 
         if (
-            isset($input['_users_id_requester'])
+            !$skip_rules
+            && isset($input['_users_id_requester'])
             && !is_array($input['_users_id_requester'])
             && ($input['_users_id_requester'] != $tmprequester)
         ) {
