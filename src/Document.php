@@ -182,14 +182,20 @@ class Document extends CommonDBTM
             ) {
                 if (unlink(GLPI_DOC_DIR . "/" . $this->fields["filepath"])) {
                     Session::addMessageAfterRedirect(sprintf(
-                        __('Succesful deletion of the file %s'),
-                        GLPI_DOC_DIR . "/" . $this->fields["filepath"]
+                        __('Successful deletion of the file %s'),
+                        $this->fields["filepath"]
                     ));
                 } else {
-                    Session::addMessageAfterRedirect(
+                    Toolbox::logError(
                         sprintf(
                             __('Failed to delete the file %s'),
                             GLPI_DOC_DIR . "/" . $this->fields["filepath"]
+                        ),
+                    );
+                    Session::addMessageAfterRedirect(
+                        sprintf(
+                            __('Failed to delete the file %s'),
+                            $this->fields["filepath"]
                         ),
                         false,
                         ERROR
@@ -1157,8 +1163,11 @@ class Document extends CommonDBTM
         }
 
         if (!is_file($fullpath)) {
-            Session::addMessageAfterRedirect(
+            Toolbox::logError(
                 sprintf(__('File %s not found.'), $fullpath),
+            );
+            Session::addMessageAfterRedirect(
+                sprintf(__('File %s not found.'), $filename),
                 false,
                 ERROR
             );
@@ -1186,16 +1195,22 @@ class Document extends CommonDBTM
         ) {
             if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
                 Session::addMessageAfterRedirect(sprintf(
-                    __('Succesful deletion of the file %s'),
+                    __('Successful deletion of the file %s'),
                     $input['current_filename']
                 ));
             } else {
                // TRANS: %1$s is the curent filename, %2$s is its directory
-                Session::addMessageAfterRedirect(
+                Toolbox::logError(
                     sprintf(
                         __('Failed to delete the file %1$s (%2$s)'),
                         $input['current_filename'],
                         GLPI_DOC_DIR . "/" . $input['current_filepath']
+                    )
+                );
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        __('Failed to delete the file %1$s'),
+                        $input['current_filename']
                     ),
                     false,
                     ERROR
@@ -1257,8 +1272,11 @@ class Document extends CommonDBTM
         }
 
         if (!is_file($fullpath)) {
+            Toolbox::logError(
+                sprintf(__('File %s not found.'), $fullpath)
+            );
             Session::addMessageAfterRedirect(
-                sprintf(__('File %s not found.'), $fullpath),
+                sprintf(__('File %s not found.'), $filename),
                 false,
                 ERROR
             );
@@ -1287,16 +1305,22 @@ class Document extends CommonDBTM
         ) {
             if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
                 Session::addMessageAfterRedirect(sprintf(
-                    __('Succesful deletion of the file %s'),
+                    __('Successful deletion of the file %s'),
                     $input['current_filename']
                 ));
             } else {
                // TRANS: %1$s is the curent filename, %2$s is its directory
-                Session::addMessageAfterRedirect(
+                Toolbox::logError(
                     sprintf(
                         __('Failed to delete the file %1$s (%2$s)'),
                         $input['current_filename'],
                         GLPI_DOC_DIR . "/" . $input['current_filepath']
+                    )
+                );
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        __('Failed to delete the file %1$s'),
+                        $input['current_filename']
                     ),
                     false,
                     ERROR
@@ -1388,16 +1412,22 @@ class Document extends CommonDBTM
         ) {
             if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
                 Session::addMessageAfterRedirect(sprintf(
-                    __('Succesful deletion of the file %s'),
+                    __('Successful deletion of the file %s'),
                     $input['current_filename']
                 ));
             } else {
                // TRANS: %1$s is the curent filename, %2$s is its directory
-                Session::addMessageAfterRedirect(
+                Toolbox::logError(
                     sprintf(
                         __('Failed to delete the file %1$s (%2$s)'),
                         $input['current_filename'],
                         GLPI_DOC_DIR . "/" . $input['current_filepath']
+                    )
+                );
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        __('Failed to delete the file %1$s'),
+                        $input['current_filename']
                     ),
                     false,
                     ERROR
@@ -1453,10 +1483,15 @@ class Document extends CommonDBTM
         }
 
         if (!is_dir(GLPI_DOC_DIR)) {
-            Session::addMessageAfterRedirect(
+            Toolbox::logError(
                 sprintf(
                     __("The directory %s doesn't exist."),
                     GLPI_DOC_DIR
+                )
+            );
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __("Documents directory doesn't exist.")
                 ),
                 false,
                 ERROR
@@ -1471,15 +1506,21 @@ class Document extends CommonDBTM
         ) {
             Session::addMessageAfterRedirect(sprintf(
                 __('Create the directory %s'),
-                GLPI_DOC_DIR . "/" . $subdir
+                $subdir
             ));
         }
 
         if (!is_dir(GLPI_DOC_DIR . "/" . $subdir)) {
-            Session::addMessageAfterRedirect(
+            Toolbox::logError(
                 sprintf(
                     __('Failed to create the directory %s. Verify that you have the correct permission'),
                     GLPI_DOC_DIR . "/" . $subdir
+                )
+            );
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __('Failed to create the directory %s. Verify that you have the correct permission'),
+                    $subdir
                 ),
                 false,
                 ERROR
