@@ -839,7 +839,7 @@ class User extends CommonDBTM
             }
             if ($newPicture) {
                 $fullpath = GLPI_TMP_DIR . "/" . $input["_picture"];
-                if (Document::isImage($fullpath, 'image')) {
+                if (Document::isImage($fullpath)) {
                    // Unlink old picture (clean on changing format)
                     self::dropPictureFiles($this->fields['picture']);
                    // Move uploaded file
