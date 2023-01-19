@@ -5822,9 +5822,6 @@ JAVASCRIPT;
                         break;
 
                     case "itemtype_item_revert":
-                        if (!isset($addmain)) {
-                            $addmain = '';
-                        }
                         $used_itemtype = $itemtype;
                         if (
                             isset($joinparams['specific_itemtype'])
@@ -5834,8 +5831,8 @@ JAVASCRIPT;
                         }
                        // Itemtype join
                         $specific_leftjoin = " LEFT JOIN `$new_table` $AS
-                                          ON (`$nt`.`id` = `$rt`.`" . $addmain . "items_id`
-                                              AND `$rt`.`" . $addmain . "itemtype` = '$used_itemtype'
+                                          ON (`$nt`.`id` = `$rt`.`" . "items_id`
+                                              AND `$rt`.`" . "itemtype` = '$used_itemtype'
                                               $addcondition) ";
                         break;
 
