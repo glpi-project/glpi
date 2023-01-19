@@ -36,15 +36,6 @@
 class RuleDictionnaryManufacturer extends RuleDictionnaryDropdown
 {
     /**
-     * Constructor
-     **/
-    public function __construct()
-    {
-        parent::__construct('RuleDictionnaryManufacturer');
-    }
-
-
-    /**
      * @see Rule::getCriterias()
      **/
     public function getCriterias()

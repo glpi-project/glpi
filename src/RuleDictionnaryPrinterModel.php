@@ -36,15 +36,6 @@
 class RuleDictionnaryPrinterModel extends RuleDictionnaryDropdown
 {
     /**
-     * Constructor
-     **/
-    public function __construct()
-    {
-        parent::__construct('RuleDictionnaryPrinterModel');
-    }
-
-
-    /**
      * @see Rule::getCriterias()
      **/
     public function getCriterias()

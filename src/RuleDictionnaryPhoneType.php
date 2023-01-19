@@ -36,15 +36,6 @@
 class RuleDictionnaryPhoneType extends RuleDictionnaryDropdown
 {
     /**
-     * Constructor
-     **/
-    public function __construct()
-    {
-        parent::__construct('RuleDictionnaryPhoneType');
-    }
-
-
-    /**
      * @see Rule::getCriterias()
      **/
     public function getCriterias()

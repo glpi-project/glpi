@@ -36,15 +36,6 @@
 class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown
 {
     /**
-     * Constructor
-     **/
-    public function __construct()
-    {
-        parent::__construct('RuleDictionnaryOperatingSystemServicePack');
-    }
-
-
-    /**
      * @see Rule::getCriterias()
      **/
     public function getCriterias()
