@@ -559,9 +559,9 @@ class RuleCollection extends CommonDBTM
             $colspan++;
         }
 
+        $ruletype = $this->getRuleClassName();
         $can_sort = $canedit && $nb;
         if (count($this->RuleList->list)) {
-            $ruletype = $this->RuleList->list[0]->getType();
             $can_sort = $this->RuleList->list[0]->can_sort && $canedit && $nb;
             Session::initNavigateListItems($ruletype);
         }
