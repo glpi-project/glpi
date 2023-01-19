@@ -519,6 +519,14 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool'
         ];
 
+        $tab[] = [
+            'id'                 => '40',
+            'table'              => $this->getTable(),
+            'field'              => 'is_helpdesk_visible',
+            'name'               => __('Show items with this status in assistance'),
+            'datatype'           => 'bool'
+        ];
+
         return $tab;
     }
 
