@@ -1413,6 +1413,7 @@ class Rule extends CommonDBTM
             }
         }
 
+        $items = [];
         foreach ($actions as $ID => $act) {
             $items[$ID] = $act['name'];
         }
