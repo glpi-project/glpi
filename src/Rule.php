@@ -1007,6 +1007,7 @@ class Rule extends CommonDBTM
             }
         }
 
+        $elements = [];
         if (!$p['restrict'] || ($p['restrict'] == self::AND_MATCHING)) {
             $elements[self::AND_MATCHING] = __('and');
         }
