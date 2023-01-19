@@ -7636,7 +7636,7 @@ HTML;
         }
 
         if (
-            isset($params) && is_array($params)
+            is_array($params)
             && $usesession
         ) {
             foreach ($params as $key => $val) {
