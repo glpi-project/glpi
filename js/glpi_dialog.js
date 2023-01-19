@@ -135,6 +135,7 @@ var glpi_html_dialog = function({
 
         // call show event
         show(event);
+        $('.modal-backdrop:not(:first)').remove();
     });
     myModalEl.addEventListener('hidden.bs.modal', function(event) {
         // call close event
@@ -142,6 +143,7 @@ var glpi_html_dialog = function({
 
         // remove html on modal close
         $('#'+id).remove();
+        glpi_close_all_dialogs();
         $('.modal-backdrop').remove();
     });
 
