@@ -926,6 +926,7 @@ class ReservationItem extends CommonDBChild
     {
 
         if ($item->getType() == __CLASS__) {
+            $tabs = [];
             if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
                 $tabs[1] = Reservation::getTypeName(1);
             }
