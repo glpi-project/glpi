@@ -8316,7 +8316,7 @@ HTML;
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
                 global $PDF_TABLE;
-                $value = DataExport::normalizeValueForTextExport($value ?? '');
+                $value = DataExport::normalizeValueForTextExport($value);
                 $value = htmlspecialchars($value);
                 $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                 $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
