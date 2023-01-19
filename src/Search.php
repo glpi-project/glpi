@@ -5056,6 +5056,7 @@ JAVASCRIPT;
                     if ($searchtype == 'morethan') {
                         $val = '>' . $val;
                     }
+                    $date_computation = null;
                     if ($searchtype) {
                         $date_computation = $tocompute;
                     }
@@ -5697,22 +5698,22 @@ JAVASCRIPT;
                             $meta_type,
                             $interjoinparams
                         );
-                    }
 
-                   // No direct link with the previous joins
-                    if (!isset($tab['joinparams']['nolink']) || !$tab['joinparams']['nolink']) {
-                        $cleanrt     = $intertable;
-                        $complexjoin = self::computeComplexJoinID($interjoinparams);
-                        if (!empty($interlinkfield) && ($interlinkfield != getForeignKeyFieldForTable($intertable))) {
-                            $intertable .= "_" . $interlinkfield;
+                        // No direct link with the previous joins
+                        if (!isset($tab['joinparams']['nolink']) || !$tab['joinparams']['nolink']) {
+                            $cleanrt     = $intertable;
+                            $complexjoin = self::computeComplexJoinID($interjoinparams);
+                            if (!empty($interlinkfield) && ($interlinkfield != getForeignKeyFieldForTable($intertable))) {
+                                $intertable .= "_" . $interlinkfield;
+                            }
+                            if (!empty($complexjoin)) {
+                                $intertable .= "_" . $complexjoin;
+                            }
+                            if ($meta && $meta_type::getTable() != $cleanrt) {
+                                $intertable .= "_" . $meta_type;
+                            }
+                            $rt = $intertable;
                         }
-                        if (!empty($complexjoin)) {
-                            $intertable .= "_" . $complexjoin;
-                        }
-                        if ($meta && $meta_type::getTable() != $cleanrt) {
-                            $intertable .= "_" . $meta_type;
-                        }
-                        $rt = $intertable;
                     }
                 }
             }
