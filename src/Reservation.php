@@ -1215,6 +1215,7 @@ JAVASCRIPT;
                 echo "<td>" . Html::convDateTime($data["begin"]) . "</td>";
                 echo "<td>" . Html::convDateTime($data["end"]) . "</td>";
 
+                $item = null;
                 if ($ri->getFromDB($data["reservationitems_id"])) {
                     $link = "&nbsp;";
 
@@ -1227,17 +1228,20 @@ JAVASCRIPT;
                     echo "<td>" . $data['completename'] . "</td>";
                 } else {
                     echo "<td>&nbsp;</td>";
+                    echo "<td>&nbsp;</td>";
                 }
 
                 echo "<td>" . getUserName($data["users_id"]) . "</td>";
                 echo "<td>" . nl2br($data["comment"]) . "</td>";
                 echo "<td>";
-                list($annee, $mois, $jour) = explode("-", $data["begin"]);
-                echo "<a href='" . $item::getFormURLWithID($ri->fields['items_id']) .
-                 "&forcetab=Reservation$1&tab_params[defaultDate]={$data["begin"]}' " .
-                  "title=\"" . __s('See planning') . "\">";
-                echo "<i class='far fa-calendar-alt'></i>";
-                echo "<span class='sr-only'>" . __('See planning') . "</span>";
+                if ($item instanceof CommonDBTM) {
+                    list($annee, $mois, $jour) = explode("-", $data["begin"]);
+                    echo "<a href='" . $item::getFormURLWithID($ri->fields['items_id']) .
+                     "&forcetab=Reservation$1&tab_params[defaultDate]={$data["begin"]}' " .
+                      "title=\"" . __s('See planning') . "\">";
+                    echo "<i class='far fa-calendar-alt'></i>";
+                    echo "<span class='sr-only'>" . __('See planning') . "</span>";
+                }
                 echo "</td></tr>\n";
             }
         }
