@@ -862,7 +862,7 @@ class Socket extends CommonDBChild
             );
             echo "</td>";
             echo "<td>" . SocketModel::getTypeName(1) . "</td><td>";
-            SocketModel::dropdown("socketmodels_id", []);
+            SocketModel::dropdown();
             echo "</td>";
             echo "<td>" . __('Wiring side') . "</td><td>";
             Socket::dropdownWiringSide("wiring_side", []);
@@ -901,7 +901,7 @@ class Socket extends CommonDBChild
             echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
             echo "</td>";
             echo "<td>" . SocketModel::getTypeName(1) . "</td><td>";
-            SocketModel::dropdown("socketmodels_id", []);
+            SocketModel::dropdown();
             echo "</td>";
             echo "<td>" . __('Wiring side') . "</td><td>";
             Socket::dropdownWiringSide("wiring_side", []);
