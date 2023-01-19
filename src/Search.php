@@ -7469,23 +7469,18 @@ HTML;
                 ) {
                     $out .= $so['toadd'][$data[$ID][$k]['name']];
                 } else {
-                   // Empty is 0 or empty
-                    if (empty($split[0]) && isset($so['emptylabel'])) {
-                        $out .= $so['emptylabel'];
+                    // Trans field exists
+                    if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
+                        $out .= $data[$ID][$k]['trans'];
+                    } elseif (isset($data[$ID][$k]['trans_completename']) && !empty($data[$ID][$k]['trans_completename'])) {
+                        $out .= CommonTreeDropdown::sanitizeSeparatorInCompletename($data[$ID][$k]['trans_completename']);
+                    } elseif (isset($data[$ID][$k]['trans_name']) && !empty($data[$ID][$k]['trans_name'])) {
+                        $out .= $data[$ID][$k]['trans_name'];
                     } else {
-                       // Trans field exists
-                        if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
-                            $out .= $data[$ID][$k]['trans'];
-                        } elseif (isset($data[$ID][$k]['trans_completename']) && !empty($data[$ID][$k]['trans_completename'])) {
-                            $out .= CommonTreeDropdown::sanitizeSeparatorInCompletename($data[$ID][$k]['trans_completename']);
-                        } elseif (isset($data[$ID][$k]['trans_name']) && !empty($data[$ID][$k]['trans_name'])) {
-                            $out .= $data[$ID][$k]['trans_name'];
-                        } else {
-                            $value = $data[$ID][$k]['name'];
-                            $out .= $so['field'] === 'completename'
-                                ? CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
-                                : $value;
-                        }
+                        $value = $data[$ID][$k]['name'];
+                        $out .= $so['field'] === 'completename'
+                            ? CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
+                            : $value;
                     }
                 }
             }
