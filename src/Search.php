@@ -6743,6 +6743,7 @@ JAVASCRIPT;
                         $totaltime   = 0;
                         $currenttime = 0;
                         $slaField    = 'slas_id';
+                        $sla_class   = 'SLA';
 
                        // define correct sla field
                         switch ($table . '.' . $field) {
