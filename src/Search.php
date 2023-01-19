@@ -6821,6 +6821,8 @@ JAVASCRIPT;
                         }
                         $percentage_text = $percentage;
 
+                        $less_warn_limit = 0;
+                        $less_warn       = 0;
                         if ($_SESSION['glpiduedatewarning_unit'] == '%') {
                             $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
                             $less_warn       = (100 - $percentage);
@@ -6832,6 +6834,8 @@ JAVASCRIPT;
                             $less_warn       = ($totaltime - $currenttime);
                         }
 
+                        $less_crit_limit = 0;
+                        $less_crit       = 0;
                         if ($_SESSION['glpiduedatecritical_unit'] == '%') {
                             $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
                             $less_crit       = (100 - $percentage);
