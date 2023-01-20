@@ -1496,7 +1496,7 @@ JAVASCRIPT;
             if (!$item->isEntityAssign()) {
                 $params['entities_id'] = 0;
             } else {
-                $rule['entities_id'] = $DB->escape(Html::entity_decode_deep($rule['entities_id']));
+                $rule['entities_id'] = $DB->escape($rule['entities_id']);
                 $entities_found = $entity->find(['completename' => $rule['entities_id']]);
                 if (!empty($entities_found)) {
                     $entity_found          = array_shift($entities_found);
