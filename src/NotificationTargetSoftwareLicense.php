@@ -61,7 +61,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
         if (!isset($options['entities_id'])) {
             $options['entities_id'] = $license->fields['entities_id'];
         } else {
-            Toolbox::deprecated('Using "entities_id" option in NotificationSoftwareLicense is deprecated.');
+            Toolbox::deprecated('Using "entities_id" option in NotificationTargetSoftwareLicense is deprecated.');
         }
 
         $this->data['##license.action##'] = $events[$event];
