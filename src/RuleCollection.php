@@ -1199,7 +1199,7 @@ JAVASCRIPT;
             $tmprule = new $rule['sub_type']();
            //check entities
             if ($tmprule->isEntityAssign()) {
-                $entities_found = $entity->find(['completename' => $rule['entities_id']]);
+                $entities_found = $entity->find(['completename' => html_entity_decode($rule['entities_id'])]);
                 if (empty($entities_found)) {
                     $rules_refused[$k_rule]['entity'] = true;
                 }
