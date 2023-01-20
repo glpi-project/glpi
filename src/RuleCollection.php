@@ -1199,6 +1199,7 @@ JAVASCRIPT;
             $tmprule = new $rule['sub_type']();
            //check entities
             if ($tmprule->isEntityAssign()) {
+                $rule['entities_id'] = $DB->escape(Html::entity_decode_deep($rule['entities_id']));
                 $entities_found = $entity->find(['completename' => $rule['entities_id']]);
                 if (empty($entities_found)) {
                     $rules_refused[$k_rule]['entity'] = true;
@@ -1451,6 +1452,7 @@ JAVASCRIPT;
      **/
     public static function processImportRules()
     {
+        global $DB;
         $ruleCriteria = new RuleCriteria();
         $ruleAction   = new RuleAction();
         $entity       = new Entity();
@@ -1494,6 +1496,7 @@ JAVASCRIPT;
             if (!$item->isEntityAssign()) {
                 $params['entities_id'] = 0;
             } else {
+                $rule['entities_id'] = $DB->escape($rule['entities_id']);
                 $entities_found = $entity->find(['completename' => $rule['entities_id']]);
                 if (!empty($entities_found)) {
                     $entity_found          = array_shift($entities_found);
