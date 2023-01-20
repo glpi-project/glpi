@@ -339,7 +339,6 @@ final class FixHtmlEncodingCommand extends AbstractCommand
     {
         $output = $input;
 
-        // Add the missing semicolon to &quot; HTML entity
         $pattern = '#<br />#';
         $replace = '&lt;br /&gt;';
         $output = preg_replace($pattern, $replace, $output);
