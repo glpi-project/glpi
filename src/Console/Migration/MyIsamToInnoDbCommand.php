@@ -95,7 +95,7 @@ class MyIsamToInnoDbCommand extends AbstractCommand
             };
 
             foreach ($this->iterate($tables, $progress_message) as $table) {
-                $result = $this->db->query(sprintf('ALTER TABLE %s ENGINE = InnoDB', $this->db->quoteName($table)));
+                $result = $this->db->doQuery(sprintf('ALTER TABLE %s ENGINE = InnoDB', $this->db->quoteName($table)));
 
                 if (false === $result) {
                     $message = sprintf(

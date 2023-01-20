@@ -405,7 +405,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         ];
 
         foreach ($core_tables as $table) {
-            $result = $this->db->query('TRUNCATE ' . $this->db->quoteName($table));
+            $result = $this->db->doQuery('TRUNCATE ' . $this->db->quoteName($table));
 
             if (!$result) {
                 throw new \Symfony\Component\Console\Exception\RuntimeException(

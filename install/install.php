@@ -189,7 +189,7 @@ function step3($host, $user, $password, $update)
        // get databases
         if (
             $engine_requirement->isValidated() && $config_requirement->isValidated()
-            && $DB_list = $link->query("SHOW DATABASES")
+            && $DB_list = $link->doQuery("SHOW DATABASES")
         ) {
             while ($row = $DB_list->fetch_array()) {
                 if (
@@ -340,7 +340,7 @@ function step4($databasename, $newdatabasename)
                 prev_form($host, $user, $password);
             }
         } else { // try to create the DB
-            if ($link->query("CREATE DATABASE IF NOT EXISTS `" . $newdatabasename . "`")) {
+            if ($link->doQuery("CREATE DATABASE IF NOT EXISTS `" . $newdatabasename . "`")) {
                 echo "<p>" . __('Database created') . "</p>";
 
                 $select_db = $link->select_db($newdatabasename);
