@@ -2750,44 +2750,6 @@ HTML;
 
 
     /**
-     * Get current DB version (compatible with all version of GLPI)
-     *
-     * @since 0.85
-     *
-     * @return DB version
-     **/
-    public static function getCurrentDBVersion()
-    {
-        global $DB;
-
-       //Default current case
-        $select  = 'value AS version';
-        $table   = 'glpi_configs';
-        $where   = [
-            'context'   => 'core',
-            'name'      => 'version'
-        ];
-
-        if (!$DB->tableExists('glpi_configs')) {
-            $select  = 'version';
-            $table   = 'glpi_config';
-            $where   = ['id' => 1];
-        } else if ($DB->fieldExists('glpi_configs', 'version')) {
-            $select  = 'version';
-            $where   = ['id' => 1];
-        }
-
-        $row = $DB->request([
-            'SELECT' => [$select],
-            'FROM'   => $table,
-            'WHERE'  => $where
-        ])->current();
-
-        return trim($row['version']);
-    }
-
-
-    /**
      * Get config values
      *
      * @since 0.85
@@ -2854,19 +2816,13 @@ HTML;
             return false;
         }
 
-        if ($iterator->count() === 1) {
-           // 1 row = 0.78 to 0.84 config table schema
-            $values = $iterator->current();
-        } else {
-           // multiple rows = 0.85+ config
-            $values = [];
-            $allowed_context = ['core', 'inventory'];
-            foreach ($iterator as $row) {
-                if (!in_array($row['context'], $allowed_context)) {
-                    continue;
-                }
-                $values[$row['name']] = $row['value'];
+        $values = [];
+        $allowed_context = ['core', 'inventory'];
+        foreach ($iterator as $row) {
+            if (!in_array($row['context'], $allowed_context)) {
+                continue;
             }
+            $values[$row['name']] = $row['value'];
         }
 
         $CFG_GLPI = array_merge($CFG_GLPI, $values);

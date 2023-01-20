@@ -63,7 +63,6 @@ class Hooks
 
    // Function hooks with parameters and output
     const DISPLAY_LOCKED_FIELDS         = 'display_locked_fields';
-    const MIGRATE_TYPES                 = 'migratetypes';
     const POST_KANBAN_CONTENT           = 'post_kanban_content';
     const PRE_KANBAN_CONTENT            = 'pre_kanban_content';
     const KANBAN_ITEM_METADATA          = 'kanban_item_metadata';
@@ -175,7 +174,6 @@ class Hooks
             self::DISPLAY_LOGIN,
             self::DISPLAY_CENTRAL,
             self::INIT_SESSION,
-            self::MIGRATE_TYPES,
             self::POST_KANBAN_CONTENT,
             self::PRE_KANBAN_CONTENT,
             self::POST_INIT,

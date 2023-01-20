@@ -7,7 +7,7 @@ mkdir -p $(dirname "$LOG_FILE")
 # Reconfigure DB
 bin/console glpi:database:configure \
   --config-dir=./tests/config --ansi --no-interaction \
-  --reconfigure --db-name=glpitest080 --db-host=db --db-user=root
+  --reconfigure --db-name=glpitest085 --db-host=db --db-user=root
 
 # Execute update
 ## First run should do the migration (with no warnings).
@@ -107,4 +107,4 @@ bin/console glpi:database:configure \
   --config-dir=./tests/config --no-interaction --ansi \
   --reconfigure --db-name=glpi --db-host=db --db-user=root \
   --strict-configuration
-tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest080 --ansi --no-interaction
+tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest085 --ansi --no-interaction

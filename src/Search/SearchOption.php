@@ -351,7 +351,7 @@ final class SearchOption implements \ArrayAccess
                     // skip sub-menu
                     continue;
                 }
-                // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
+                // Force massive action to false if linkfield is empty :
                 if (isset($val['linkfield']) && empty($val['linkfield'])) {
                     $search[$itemtype][$key]['massiveaction'] = false;
                 }
