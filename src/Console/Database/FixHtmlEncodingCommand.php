@@ -38,6 +38,7 @@ namespace Glpi\Console\Database;
 use CommonDBTM;
 use Glpi\Console\AbstractCommand;
 use ITILFollowup;
+use Plugin;
 use Search;
 use Session;
 use Ticket;
@@ -358,6 +359,11 @@ final class FixHtmlEncodingCommand extends AbstractCommand
         $table_iterator = $DB->listTables();
         foreach ($table_iterator as $table_data) {
             $table = $table_data['TABLE_NAME'];
+            if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
+                if (!Plugin::isPluginActive($matches[1])) {
+                    continue;
+                }
+            }
             $itemtype = getItemTypeForTable($table);
 
             if (!is_a($itemtype, CommonDBTM::class, true)) {
