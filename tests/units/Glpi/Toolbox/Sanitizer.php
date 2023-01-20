@@ -163,7 +163,12 @@ class Sanitizer extends \GLPITestCase
         $dbescaped_value = null
     ) {
         $sanitizer = $this->newTestedInstance();
-        $this->variable($sanitizer->sanitize($value))->isEqualTo($sanitized_value);
+        $this->variable($sanitizer->sanitize($value, true))->isEqualTo($sanitized_value);
+
+        if ($htmlencoded_value !== null) {
+            // Calling `sanitize()` with `$db_escape = false` should produce HTML enoded value
+            $this->variable($sanitizer->sanitize($value, false))->isEqualTo($htmlencoded_value);
+        }
 
         // Calling sanitize on sanitized value should have no effect
         $this->variable($sanitizer->sanitize($sanitized_value))->isEqualTo($sanitized_value);
