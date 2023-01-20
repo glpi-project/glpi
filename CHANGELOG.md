@@ -113,9 +113,16 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.
+- Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.
+- `regenerateTreeCompleteName()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
+- `Config::getCurrentDBVersion()`
+- `DbUtils::regenerateTreeCompleteName()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
+- `Plugin::migrateItemType()`
+- `ProfileRight::updateProfileRightAsOtherRight()`
+- `ProfileRight::updateProfileRightsAsOtherRights()`
 - `Search::computeTitle()`
 - `Search::csv_clean()`
 - `Search::findCriteriaInSession()`

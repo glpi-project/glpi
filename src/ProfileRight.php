@@ -124,11 +124,6 @@ class ProfileRight extends CommonDBChild
     {
         global $DB;
 
-        if (!version_compare(Config::getCurrentDBVersion(), '0.84', '>=')) {
-           //table does not exists.
-            return [];
-        }
-
         $query = [
             'FROM'   => 'glpi_profilerights',
             'WHERE'  => ['profiles_id' => $profiles_id]
@@ -201,87 +196,6 @@ class ProfileRight extends CommonDBChild
             );
             if (!$result) {
                  $ok = false;
-            }
-        }
-        return $ok;
-    }
-
-
-    /**
-     * @param $right
-     * @param $value
-     * @param $condition
-     *
-     * @return boolean
-     **/
-    public static function updateProfileRightAsOtherRight($right, $value, $condition)
-    {
-        global $DB;
-
-        $profiles = [];
-        $ok       = true;
-        foreach ($DB->request('glpi_profilerights', $condition) as $data) {
-            $profiles[] = $data['profiles_id'];
-        }
-        if (count($profiles)) {
-            $result = $DB->update(
-                'glpi_profilerights',
-                [
-                    'rights' => new \QueryExpression($DB->quoteName('rights') . ' | ' . (int)$value)
-                ],
-                [
-                    'name'         => $right,
-                    'profiles_id'  => $profiles
-                ]
-            );
-            if (!$result) {
-                $ok = false;
-            }
-        }
-        return $ok;
-    }
-
-
-    /**
-     * @since 0.85
-     *
-     * @param $newright      string   new right name
-     * @param $initialright  string   right name to check
-     * @param $condition              (default '')
-     *
-     * @return boolean
-     **/
-    public static function updateProfileRightsAsOtherRights($newright, $initialright, array $condition = [])
-    {
-        global $DB;
-
-        $profiles = [];
-        $ok       = true;
-
-        $criteria = [
-            'FROM'   => self::getTable(),
-            'WHERE'  => ['name' => $initialright] + $condition
-        ];
-        $iterator = $DB->request($criteria);
-
-        foreach ($iterator as $data) {
-            $profiles[$data['profiles_id']] = $data['rights'];
-        }
-        if (count($profiles)) {
-            foreach ($profiles as $key => $val) {
-                $res = $DB->update(
-                    self::getTable(),
-                    [
-                        'rights' => $val
-                    ],
-                    [
-                        'profiles_id'  => $key,
-                        'name'         => $newright
-                    ]
-                );
-                if (!$res) {
-                     $ok = false;
-                }
             }
         }
         return $ok;

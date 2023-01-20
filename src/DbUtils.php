@@ -1524,38 +1524,6 @@ final class DbUtils
 
 
     /**
-     * Compute all completenames of Dropdown Tree table
-     *
-     * @param string $table dropdown tree table to compute
-     *
-     * @return void
-     **/
-    public function regenerateTreeCompleteName($table)
-    {
-        global $DB;
-
-        $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => $table
-        ]);
-
-        foreach ($iterator as $data) {
-            list($name, $level) = $this->getTreeValueName($table, $data['id']);
-            $DB->update(
-                $table,
-                [
-                    'completename' => addslashes($name),
-                    'level'        => $level
-                ],
-                [
-                    'id' => $data['id']
-                ]
-            );
-        }
-    }
-
-
-    /**
      * Format a user name
      *
      * @param integer $ID           ID of the user.

@@ -377,7 +377,6 @@ class Migration
                 break;
 
             default:
-               // for compatibility with old 0.80 migrations
                 $format = $type;
                 break;
         }

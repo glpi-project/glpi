@@ -205,8 +205,8 @@ class Update
             $current_version = $this->version;
         }
 
-        if (version_compare($current_version, '0.80', 'lt')) {
-            die('Upgrade is not supported before 0.80!');
+        if (version_compare($current_version, '0.85.5', 'lt')) {
+            die('Upgrade from version < 0.85.5 is not supported!');
             die(1);
         }
 
@@ -246,7 +246,7 @@ class Update
         $plugin = new Plugin();
         $plugin->unactivateAll();
 
-        if (version_compare($current_version, '0.80', '<') || version_compare($current_version, GLPI_VERSION, '>')) {
+        if (version_compare($current_version, GLPI_VERSION, '>')) {
             $message = sprintf(
                 __('Unsupported version (%1$s)'),
                 $current_version
