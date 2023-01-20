@@ -269,6 +269,10 @@ class TestUpdatedDataCommand extends Command
             'glpi_users' => [
                 'password',
             ],
+            'glpi_crontasks' => [
+                'hourmin', // Field default value changed in version 10.1.0
+                'hourmax', // Field default value changed in version 10.1.0
+            ],
         ];
         return array_merge(
             $excluded_fields['*'],
