@@ -1701,11 +1701,8 @@ JAVASCRIPT;
                     $output["result"][$rule->fields["id"]]["id"] = $rule->fields["id"];
                     $rule->process($input, $output, $params);
 
-                    if (
-                        $output["_rule_process"]
-                        && $this->stop_on_first_match
-                    ) {
-                        unset($output["_rule_process"]);
+                    if ((isset($output['_stop_rules_processing']) && (int) $output['_stop_rules_processing'] === 1) || ($output["_rule_process"] && $this->stop_on_first_match)) {
+                        unset($output["_stop_rules_processing"], $output["_rule_process"]);
                         $output["result"][$rule->fields["id"]]["result"] = 1;
                         $output["_ruleid"]                               = $rule->fields["id"];
                         return $output;
