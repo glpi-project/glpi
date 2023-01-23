@@ -54,7 +54,8 @@ final class URL
 
         $url = trim($url);
 
-        if (preg_match('/^javascript:/i', $url)) {
+        $js_pattern = '/^' . implode('\s*', str_split('javascript:')) . '/i';
+        if (preg_match($js_pattern, $url)) {
             return '';
         }
 

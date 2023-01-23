@@ -54,6 +54,14 @@ class URL extends \GLPITestCase
             'expected' => '',
         ];
         yield [
+            'url'      => "java\nscript:alert(1);",
+            'expected' => '',
+        ];
+        yield [
+            'url'      => "j a v\t\ta\n  s c \t ript  :alert(1);",
+            'expected' => '',
+        ];
+        yield [
             'url'      => 'jAvAscrIPt:alert(1);',
             'expected' => '',
         ];
