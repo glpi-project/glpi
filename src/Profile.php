@@ -3134,7 +3134,7 @@ class Profile extends CommonDBTM
         $param['size']    = count($values);
         $tabselect = [];
         foreach ($values as $k => $v) {
-            if ($current & $k) {
+            if ((int) $current & $k) {
                 $tabselect[] = $k;
             }
         }
