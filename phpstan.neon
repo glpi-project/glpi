@@ -11,7 +11,6 @@ parameters:
     stubFiles:
         - stubs/glpi_constants.php
     ignoreErrors:
-        - '/Class Ldap\\Connection not found/'
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
         - '/\w+ has been replaced by \w+/'

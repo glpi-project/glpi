@@ -12,9 +12,6 @@
     "// Missing constant in Alpine Linux",
     "GLOB_BRACE",
 
-    "// PHP 8.1 symbols",
-    "Ldap\\Connection",
-
     "// GLPI config classes",
     "DB", "DBSlave",
 

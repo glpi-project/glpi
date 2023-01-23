@@ -673,7 +673,7 @@ class AuthLDAP extends DbTestCase
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
         $this->boolean(\AuthLDAP::testLDAPConnection($ldap->getID()))->isTrue();
 
-        $this->checkLdapConnection($ldap->connect());
+        $this->object($ldap->connect())->isInstanceOf('\LDAP\Connection');
     }
 
     /**
@@ -834,7 +834,7 @@ class AuthLDAP extends DbTestCase
         $ldap = $this->ldap;
 
         $connection = $ldap->connect();
-        $this->checkLdapConnection($connection);
+        $this->object($connection)->isInstanceOf('\LDAP\Connection');
 
         $cn = \AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=glpi,dc=org');
         $this->boolean($cn)->isFalse();
@@ -1201,7 +1201,7 @@ class AuthLDAP extends DbTestCase
          ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=ldap3,dc=glpi,dc=org');
         $this->boolean($auth->user_present)->isFalse();
         $this->boolean($auth->user_dn)->isFalse();
-        $this->checkLdapConnection($auth->ldap_connection);
+        $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
 
        //import user; then try to login
         $ldap = $this->ldap;
@@ -1239,7 +1239,7 @@ class AuthLDAP extends DbTestCase
 
         $this->boolean($auth->user_present)->isTrue();
         $this->string($auth->user_dn)->isIdenticalTo($user->fields['user_dn']);
-        $this->checkLdapConnection($auth->ldap_connection);
+        $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
 
        //change user login, and try again. Existing user should be updated.
         $this->boolean(
@@ -1272,7 +1272,7 @@ class AuthLDAP extends DbTestCase
          ->string['user_dn']->isIdenticalTo('uid=brazil7test,ou=people,ou=ldap3,dc=glpi,dc=org');
 
         $this->boolean($auth->user_present)->isTrue();
-        $this->checkLdapConnection($auth->ldap_connection);
+        $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
 
        //ensure duplicated DN on different authldaps_id does not prevent login
         $this->boolean(
@@ -2123,7 +2123,7 @@ class AuthLDAP extends DbTestCase
             ->string['user_dn']->isIdenticalTo('uid=brazil5,ou=people,ou=ldap3,dc=glpi,dc=org');
         $this->boolean($auth->user_present)->isFalse();
         $this->boolean($auth->user_dn)->isFalse();
-        $this->checkLdapConnection($auth->ldap_connection);
+        $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
 
         // Get original LDAP server port
         $original_port = $this->ldap->fields['port'];
@@ -2149,15 +2149,6 @@ class AuthLDAP extends DbTestCase
         // Verify trying to log in while LDAP unavailable does not disable user's GLPI account
         $this->integer($user->fields['is_active'])->isEqualTo(1);
         $this->integer($user->fields['is_deleted_ldap'])->isEqualTo(0);
-    }
-
-    private function checkLdapConnection($ldap_connection)
-    {
-        if (version_compare(phpversion(), '8.1.0-dev', '<')) {
-            $this->resource($ldap_connection)->isOfType('ldap link');
-        } else {
-            $this->object($ldap_connection)->isInstanceOf('\LDAP\Connection');
-        }
     }
 
     public function testIgnoreImport()
