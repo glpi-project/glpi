@@ -76,20 +76,26 @@ GLPI.Forms.FaIconSelector = class {
 
         for (let i = 0; i < document.styleSheets.length; i++) {
             const rules = document.styleSheets[i].cssRules;
-            for(var j = 0; j < rules.length; j++) {
+            for(let j = 0; j < rules.length; j++) {
                 const rule = rules[j];
                 if (rule.constructor.name !== 'CSSStyleRule') {
                     continue;
                 }
-                let matches = rule.selectorText.match(/^\.(fa-[a-z-]+)::before$/);
-                if (matches !== null) {
-                    const cls = matches[1];
-                    const entry = {
-                        id: cls,
-                        text: cls
-                    };
-                    if (!icons.includes(entry)) {
-                        icons.push(entry);
+                // On minified CSS, similar icons will be grouped,
+                // e.g. `.fa-arrow-turn-right::before,.fa-mail-forward::before,.fa-share::before`.
+                // Split them to handle the separately.
+                const selectors = rule.selectorText.split(',');
+                for(let k = 0; k < selectors.length; k++) {
+                    let matches = selectors[k].trim().match(/^\.(fa-[a-z-]+)::before$/);
+                    if (matches !== null) {
+                        const cls = matches[1];
+                        const entry = {
+                            id: cls,
+                            text: cls
+                        };
+                        if (!icons.includes(entry)) {
+                            icons.push(entry);
+                        }
                     }
                 }
             }
