@@ -127,56 +127,27 @@ class UninstallCommand extends AbstractPluginCommand
 
     protected function getDirectoryChoiceChoices()
     {
-        // Fetch directory list
-        $directories = [];
-        foreach (PLUGINS_DIRECTORIES as $plugins_directory) {
-            $directory_handle  = opendir($plugins_directory);
-            while (false !== ($filename = readdir($directory_handle))) {
-                if (
-                    !in_array($filename, ['.svn', '.', '..'])
-                    && is_dir($plugins_directory . DIRECTORY_SEPARATOR . $filename)
-                ) {
-                    $directories[] = $filename;
-                }
-            }
-        }
-
-        // Fetch plugins information
         $choices = [];
-        foreach ($directories as $directory) {
-            $plugin = new Plugin();
-            $informations = $plugin->getInformationsFromDirectory($directory);
-
-            if (empty($informations)) {
-                continue; // Ignore directory if not able to load plugin information.
-            }
-
-            if ($this->isInstalled($directory)) {
-                continue;
-            }
-
-            $choices[$directory] = array_key_exists('name', $informations)
-                ? $informations['name']
-                : $directory;
+        $plugin_iterator = $this->db->request(
+            [
+                'FROM'  => Plugin::getTable(),
+                'WHERE' => [
+                    'state' => [
+                        Plugin::ACTIVATED,
+                        Plugin::NOTUPDATED,
+                        Plugin::TOBECONFIGURED,
+                        Plugin::NOTACTIVATED,
+                    ]
+                ]
+            ]
+        );
+        foreach ($plugin_iterator as $plugin) {
+            $choices[$plugin['directory']] = $plugin['name'];
         }
 
         ksort($choices, SORT_STRING);
 
         return $choices;
-    }
-
-    /**
-     * Check if plugin is installed.
-     *
-     * @param string $directory
-     *
-     * @return array
-     */
-    private function isInstalled($directory)
-    {
-        $plugin = new Plugin();
-        $is_already_known = $plugin->getFromDBByCrit(['directory' => $directory]);
-        return $is_already_known && $plugin->fields['state'] != Plugin::NOTINSTALLED;
     }
 
     /**
@@ -200,8 +171,18 @@ class UninstallCommand extends AbstractPluginCommand
             return false;
         }
 
-        // Check if plugin is not already installed
-        if (!$this->isInstalled($directory)) {
+        // Check current plugin state
+        $is_already_known = $plugin->getFromDBByCrit(['directory' => $directory]);
+        if (!$is_already_known) {
+            $this->output->writeln(
+                '<error>' . sprintf(__('Plugin "%s" is not yet installed.'), $directory) . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            return false;
+        }
+
+        // Check if plugin is not already uninstalled
+        if ($plugin->fields['state'] == Plugin::NOTINSTALLED) {
             $message = sprintf(
                 __('Plugin "%s" is not installed.'),
                 $directory
