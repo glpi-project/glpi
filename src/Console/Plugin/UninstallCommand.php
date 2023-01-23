@@ -35,16 +35,10 @@
 
 namespace Glpi\Console\Plugin;
 
-use Auth;
 use Plugin;
-use Session;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
-use User;
 
 class UninstallCommand extends AbstractPluginCommand
 {
@@ -52,8 +46,7 @@ class UninstallCommand extends AbstractPluginCommand
     {
         parent::configure();
 
-        $this->setName('glpi:plugin:uninstall');
-        $this->setAliases(['plugin:uninstall']);
+        $this->setName('plugin:uninstall');
         $this->setDescription('Run plugin(s) uninstallation script');
     }
 
@@ -132,12 +125,7 @@ class UninstallCommand extends AbstractPluginCommand
             [
                 'FROM'  => Plugin::getTable(),
                 'WHERE' => [
-                    'state' => [
-                        Plugin::ACTIVATED,
-                        Plugin::NOTUPDATED,
-                        Plugin::TOBECONFIGURED,
-                        Plugin::NOTACTIVATED,
-                    ]
+                    ['NOT' => ['state' => Plugin::NOTINSTALLED]],
                 ]
             ]
         );
@@ -186,23 +174,6 @@ class UninstallCommand extends AbstractPluginCommand
             $message = sprintf(
                 __('Plugin "%s" is not installed.'),
                 $directory
-            );
-            $this->output->writeln(
-                '<error>' . $message . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
-            return false;
-        }
-
-        Plugin::load($directory, true);
-
-        // Check that required functions exists
-        $function = 'plugin_' . $directory . '_uninstall';
-        if (!function_exists($function)) {
-            $message = sprintf(
-                __('Plugin "%s" function "%s" is missing.'),
-                $directory,
-                $function
             );
             $this->output->writeln(
                 '<error>' . $message . '</error>',
