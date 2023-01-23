@@ -2687,8 +2687,14 @@ class Search extends DbTestCase
                 'entities_id' => $root,
                 'itilcategories_id' => $category,
                 '_actors' => [
-                    // FIXME: Does not seem to work (maybe not possible from a form ?), will add user manually below
-                    'requester' => [['itemtype' => 'User', 'items_id' => 0, "alternative_email" => "myemail@email.com"]],
+                    'requester' => [
+                        [
+                            'itemtype' => 'User',
+                            'items_id' => 0,
+                            "alternative_email" => "myemail@email.com",
+                            'use_notification' => true
+                        ]
+                    ],
                 ]
             ],
 
@@ -2713,15 +2719,6 @@ class Search extends DbTestCase
                     'assign' => [['itemtype' => 'User', 'items_id' => $user_1]],
                 ]
             ],
-        ]);
-
-        // Not sure how to add anonymous user directiy from _actors; adding it manually
-        $ticket = getItemByTypeName('Ticket', 'Ticket anonymous user (R)', true);
-        $this->createItem('Ticket_User', [
-            'tickets_id'        => $ticket,
-            'users_id'          => 0,
-            'alternative_email' => "myemail@email.com",
-            'type'              => CommonITILActor::REQUESTER,
         ]);
 
         // Validate all items are here as expected
