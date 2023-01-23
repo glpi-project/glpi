@@ -1150,12 +1150,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         if ($item->countUsers(CommonITILActor::REQUESTER)) {
             $users = [];
             foreach ($item->getUsers(CommonITILActor::REQUESTER) as $tmpusr) {
-                $uid = $tmpusr['users_id'];
+                $uid = (int)$tmpusr['users_id'];
                 $user_tmp = new User();
-                if (
-                    $uid
-                    && $user_tmp->getFromDB($uid)
-                ) {
+                if ($uid > 0 && $user_tmp->getFromDB($uid)) {
                     $users[] = $user_tmp->getName();
 
                     // Legacy authors data
@@ -1165,9 +1162,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     $data['authors'][] = $actor_data;
 
                     $data['actors'][]  = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'actor');
-                } else {
+                } elseif ($uid === 0) {
                     // Anonymous users only in xxx.authors, not in authors
                     $users[] = $tmpusr['alternative_email'];
+
+                    // Anonymous user in actors
+                    $user_tmp->getEmpty();
+                    $actor_data = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'actor');
+                    $actor_data['##actor.name##'] = $tmpusr['alternative_email'];
                 }
             }
             $data["##$objettype.authors##"] = implode(', ', $users);
@@ -1598,21 +1600,23 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $tmptimelineitem['##timelineitems.description##'] = $timeline_data['item']['content'];
                 $tmptimelineitem['##timelineitems.position##']    = $this->getUserPositionFromTimelineItemPosition($timeline_data['item']['timeline_position']);
 
-                if ($timeline_data['type'] == ITILFollowup::getType()) {
-                   // Check if the author need to be anonymized
-                    if (
-                        $are_names_anonymized
-                        && ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
-                    ) {
-                        $tmptimelineitem['##timelineitems.author##'] = User::getAnonymizedNameForUser(
-                            $timeline_data['item']['users_id'],
-                            $item->fields['entities_id']
-                        );
-                    } else {
-                        $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
-                    }
+                $item_users_id = (int)$timeline_data['item']['users_id'];
+
+                // Check if the author need to be anonymized
+                if (
+                    $item_users_id > 0
+                    && $timeline_data['type'] == ITILFollowup::getType()
+                    && $are_names_anonymized
+                    && ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
+                ) {
+                    $tmptimelineitem['##timelineitems.author##'] = User::getAnonymizedNameForUser(
+                        $item_users_id,
+                        $item->fields['entities_id']
+                    );
+                } elseif ($item_users_id > 0) {
+                    $tmptimelineitem['##timelineitems.author##'] = getUserName($item_users_id);
                 } else {
-                    $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
+                    $tmptimelineitem['##timelineitems.author##'] = '';
                 }
                 $data['timelineitems'][] = $tmptimelineitem;
             }
