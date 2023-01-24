@@ -803,7 +803,7 @@ class Plugin extends CommonDBTM
             Event::log(
                 '',
                 Plugin::class,
-                4,
+                3,
                 "setup",
                 $message
             );
@@ -878,7 +878,7 @@ class Plugin extends CommonDBTM
                     Event::log(
                         '',
                         Plugin::class,
-                        4,
+                        3,
                         "setup",
                         $log_message
                     );
@@ -993,7 +993,7 @@ class Plugin extends CommonDBTM
                 Event::log(
                     '',
                     Plugin::class,
-                    4,
+                    3,
                     "setup",
                     $log_message
                 );
@@ -1059,7 +1059,7 @@ class Plugin extends CommonDBTM
             Event::log(
                 '',
                 Plugin::class,
-                4,
+                3,
                 "setup",
                 $log_message
             );
@@ -1111,9 +1111,9 @@ class Plugin extends CommonDBTM
         Event::log(
             '',
             Plugin::class,
-            4,
+            3,
             "setup",
-            __('All plugins have been disabled by the GLPI update process.')
+            __('All plugins have been disabled.')
         );
     }
 
@@ -1135,7 +1135,7 @@ class Plugin extends CommonDBTM
             Event::log(
                 '',
                 Plugin::class,
-                4,
+                3,
                 "setup",
                 $log_message
             );
