@@ -94,7 +94,7 @@
       </button>
       {% endif %}
 
-      {% if count > 0 %}
+      {% if count > 0 and get_current_interface() != 'central' %}
          <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdown-export"
                data-bs-toggle="dropdown" aria-expanded="false" >
             <span class="py-1 px-2 my-n1 mx-n2"data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ _x('button', 'Export') }}">
