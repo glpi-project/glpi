@@ -42,6 +42,7 @@ use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
+use Glpi\Event;
 
 class Plugin extends CommonDBTM
 {
@@ -549,6 +550,18 @@ class Plugin extends CommonDBTM
                 if (isset($_SESSION['glpimenu'])) {
                     unset($_SESSION['glpimenu']);
                 }
+
+                Event::log(
+                    '',
+                    Plugin::class,
+                    3,
+                    "setup",
+                    sprintf(
+                        __('Plugin %1$s has been replaced by %2$s and therefore has been deactivated.'),
+                        $plugin_key,
+                        $new_specs['directory']
+                    )
+                );
             }
             // Plugin has been replaced, we ignore it
             return;
@@ -600,6 +613,17 @@ class Plugin extends CommonDBTM
                 );
 
                 $input['state']     = self::NOTUPDATED;
+
+                Event::log(
+                    '',
+                    Plugin::class,
+                    3,
+                    "setup",
+                    sprintf(
+                        __('Plugin %1$s version changed. It has been deactivated as its update process has to be launched.'),
+                        $plugin_key
+                    )
+                );
             }
 
             $this->update($input);
@@ -798,6 +822,14 @@ class Plugin extends CommonDBTM
 
             $type = INFO;
             $message = sprintf(__('Plugin %1$s has been uninstalled!'), $this->fields['name']);
+
+            Event::log(
+                '',
+                Plugin::class,
+                3,
+                "setup",
+                $message
+            );
         } else {
             $message = sprintf(__('Plugin %1$s not found!'), $ID);
         }
@@ -845,26 +877,34 @@ class Plugin extends CommonDBTM
                         $this->update(['id'    => $ID,
                             'state' => self::NOTACTIVATED
                         ]);
-                         $message = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
-                         $message .= '<br/><br/>' . str_replace(
-                             '%activate_link',
-                             Html::getSimpleForm(
-                                 static::getFormURL(),
-                                 ['action' => 'activate'],
-                                 mb_strtolower(_x('button', 'Enable')),
-                                 ['id' => $ID],
-                                 '',
-                                 'class="pointer"'
-                             ),
-                             __('Do you want to %activate_link it?')
-                         );
+                        $log_message = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
+                        $message = $log_message . '<br/><br/>' . str_replace(
+                            '%activate_link',
+                            Html::getSimpleForm(
+                                static::getFormURL(),
+                                ['action' => 'activate'],
+                                mb_strtolower(_x('button', 'Enable')),
+                                ['id' => $ID],
+                                '',
+                                'class="pointer"'
+                            ),
+                            __('Do you want to %activate_link it?')
+                        );
                     } else {
                         $this->update(['id'    => $ID,
                             'state' => self::TOBECONFIGURED
                         ]);
-                        $message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
+                        $log_message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
+                        $message = $log_message;
                     }
                     self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
+                    Event::log(
+                        '',
+                        Plugin::class,
+                        3,
+                        "setup",
+                        $log_message
+                    );
                 }
             } else {
                 $type = WARNING;
@@ -965,10 +1005,20 @@ class Plugin extends CommonDBTM
                 }
                 self::doHook(Hooks::POST_PLUGIN_ENABLE, $this->fields['directory']);
 
+                $log_message = sprintf(__('Plugin %1$s has been activated!'), $this->fields['name']);
+
                 Session::addMessageAfterRedirect(
-                    sprintf(__('Plugin %1$s has been activated!'), $this->fields['name']),
+                    $log_message,
                     true,
                     INFO
+                );
+
+                Event::log(
+                    '',
+                    Plugin::class,
+                    3,
+                    "setup",
+                    $log_message
                 );
 
                 return true;
@@ -1021,10 +1071,20 @@ class Plugin extends CommonDBTM
                  unset($_SESSION['glpimenu']);
             }
 
+            $log_message = sprintf(__('Plugin %1$s has been deactivated!'), $this->fields['name']);
+
             Session::addMessageAfterRedirect(
-                sprintf(__('Plugin %1$s has been deactivated!'), $this->fields['name']),
+                $log_message,
                 true,
                 INFO
+            );
+
+            Event::log(
+                '',
+                Plugin::class,
+                3,
+                "setup",
+                $log_message
             );
 
             return true;
@@ -1070,6 +1130,14 @@ class Plugin extends CommonDBTM
         if (isset($_SESSION['glpimenu'])) {
             unset($_SESSION['glpimenu']);
         }
+
+        Event::log(
+            '',
+            Plugin::class,
+            3,
+            "setup",
+            __('All plugins have been disabled.')
+        );
     }
 
 
@@ -1083,8 +1151,17 @@ class Plugin extends CommonDBTM
 
         if ($this->getFromDB($ID)) {
             $this->unload($this->fields['directory']);
+            $log_message = sprintf(__('Plugin %1$s cleaned!'), $this->fields['directory']);
             self::doHook(Hooks::POST_PLUGIN_CLEAN, $this->fields['directory']);
             $this->delete(['id' => $ID]);
+
+            Event::log(
+                '',
+                Plugin::class,
+                3,
+                "setup",
+                $log_message
+            );
         }
     }
 
