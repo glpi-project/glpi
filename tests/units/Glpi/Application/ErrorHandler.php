@@ -87,42 +87,16 @@ class ErrorHandler extends \GLPITestCase
             ],
         ];
 
-        if (version_compare(PHP_VERSION, '8.0.0-dev', '>=')) {
-            $data[] = [
-                'error_call'           => function () {
-                    $param = new \ReflectionParameter([\Config::class, 'getTypeName'], 0);
-                    $param->isCallable();
-                },
-                'expected_log_level'   => LogLevel::NOTICE,
-                'expected_msg_pattern' => $log_prefix
-               . preg_quote('PHP Deprecated function (' . E_DEPRECATED . '): Method ReflectionParameter::isCallable() is deprecated', '/')
-               . $log_suffix,
-            ];
-        } else {
-            $data[] = [
-                'error_call'           => function () {
-                    $inst = new class {
-                        public function nonstatic()
-                        {
-                        }
-                    };
-                    $inst::nonstatic();
-                },
-                'expected_log_level'   => LogLevel::NOTICE,
-                'expected_msg_pattern' => $log_prefix
-               . preg_quote('PHP Deprecated function (' . E_DEPRECATED . '): Non-static method class@anonymous::nonstatic() should not be called statically', '/')
-               . $log_suffix,
-            ];
-            $data[] = [
-                'error_call'           => function () {
-                    $a = $b;
-                },
-                'expected_log_level'   => LogLevel::NOTICE,
-                'expected_msg_pattern' => $log_prefix
-               . preg_quote('PHP Notice (' . E_NOTICE . '): Undefined variable: b', '/')
-               . $log_suffix,
-            ];
-        }
+        $data[] = [
+            'error_call'           => function () {
+                $param = new \ReflectionParameter([\Config::class, 'getTypeName'], 0);
+                $param->isCallable();
+            },
+            'expected_log_level'   => LogLevel::NOTICE,
+            'expected_msg_pattern' => $log_prefix
+           . preg_quote('PHP Deprecated function (' . E_DEPRECATED . '): Method ReflectionParameter::isCallable() is deprecated', '/')
+           . $log_suffix,
+        ];
 
         return $data;
     }

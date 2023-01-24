@@ -1763,7 +1763,7 @@ class User extends CommonDBTM
             return false;
         }
 
-        if (is_resource($ldap_connection) || $ldap_connection instanceof \Ldap\Connection) {
+        if ($ldap_connection instanceof \Ldap\Connection) {
            //Set all the search fields
             $this->fields['password'] = "";
 

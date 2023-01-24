@@ -153,7 +153,7 @@ fi
 APPLICATION_ROOT=$(readlink -f "$WORKING_DIR/..")
 [[ ! -z "$APP_CONTAINER_HOME" ]] || APP_CONTAINER_HOME=$(mktemp -d -t glpi-tests-home-XXXXXXXXXX)
 [[ ! -z "$DB_IMAGE" ]] || DB_IMAGE=githubactions-mysql:8.0
-[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:8.0
+[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:8.1
 
 # Backup configuration files
 BACKUP_DIR=$(mktemp -d -t glpi-tests-backup-XXXXXXXXXX)

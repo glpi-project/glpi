@@ -2964,7 +2964,7 @@ class AuthLDAP extends CommonDBTM
      * @param boolean $use_bind      do we need to do an ldap_bind? (true by default)
      * @param string  $tls_version   TLS VERSION (default '')
      *
-     * @return resource|false|\LDAP\Connection link to the LDAP server : false if connection failed
+     * @return false|\LDAP\Connection link to the LDAP server : false if connection failed
      */
     public static function connectToServer(
         $host,
