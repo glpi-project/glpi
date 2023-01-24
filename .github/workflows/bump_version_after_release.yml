@@ -7,6 +7,9 @@ on:
 
 jobs:
   bump-version:
+    permissions:
+      contents: "write" # needed to create a new branch and push commits
+      pull-requests: "write" # needed to create a pull request
     name: "Bump version"
     runs-on: "ubuntu-latest"
     steps:

@@ -6,12 +6,11 @@ on:
       - "labeled"
       - "unlabeled"
 
-permissions:
-  contents: "read"
-  issues: "write"
-
 jobs:
   comment:
+    permissions:
+      contents: "read"
+      issues: "write"
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout"
