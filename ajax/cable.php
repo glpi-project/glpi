@@ -66,6 +66,7 @@ switch ($action) {
                     'itemtype'           => $_GET['itemtype'],
                     'items_id'           => $_GET['items_id']
                 ],
+                'used'         => Socket::getSocketAlreadyLinked(),
                 'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
             ]);
         }
