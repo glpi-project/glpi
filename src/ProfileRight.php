@@ -367,7 +367,7 @@ class ProfileRight extends CommonDBChild
         $rights   = '';
         $prem     = true;
         foreach ($item->getRights() as $val => $name) {
-            if ((is_numeric($values['rights']) && $values['rights']) & $val) {
+            if (is_numeric($values['rights']) && ((int)$values['rights'] & $val)) {
                 if ($prem) {
                     $prem = false;
                 } else {
