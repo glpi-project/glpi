@@ -529,12 +529,13 @@ class Plugin extends CommonDBTM
             // Filesystem contains both the checked plugin and the plugin that is supposed to replace it.
             // Mark it as REPLACED as it should not be loaded anymore.
             if ((int)$plugin->fields['state'] !== self::REPLACED) {
+                $log_message = sprintf(
+                    'Plugin "%s" has been replaced by "%s" and therefore has been deactivated.',
+                    $plugin_key,
+                    $new_specs['directory']
+                );
                 trigger_error(
-                    sprintf(
-                        'Plugin "%s" has been replaced by "%s" and therefore has been deactivated.',
-                        $plugin_key,
-                        $new_specs['directory']
-                    ),
+                    $log_message,
                     E_USER_WARNING
                 );
                 $this->update(
@@ -550,18 +551,34 @@ class Plugin extends CommonDBTM
                 if (isset($_SESSION['glpimenu'])) {
                     unset($_SESSION['glpimenu']);
                 }
+
+                Event::log(
+                    '',
+                    Plugin::class,
+                    3,
+                    "setup",
+                    $log_message
+                );
             }
             // Plugin has been replaced, we ignore it
             return;
         }
 
         if (!$is_loadable) {
+            $log_message = sprintf(
+                'Unable to load plugin "%s" information.',
+                $plugin_key
+            );
             trigger_error(
-                sprintf(
-                    'Unable to load plugin "%s" information.',
-                    $plugin_key
-                ),
+                $log_message,
                 E_USER_WARNING
+            );
+            Event::log(
+                '',
+                Plugin::class,
+                3,
+                "setup",
+                $log_message
             );
             // Plugin is known but we are unable to load information, we ignore it
             return;
@@ -578,6 +595,16 @@ class Plugin extends CommonDBTM
                     ]
                 )
             );
+            Event::log(
+                '',
+                Plugin::class,
+                3,
+                "setup",
+                sprintf(
+                    'A new plugin "%s" has been detected.',
+                    $plugin_key
+                )
+            );
             return;
         }
 
@@ -592,15 +619,24 @@ class Plugin extends CommonDBTM
             $input['directory'] = $plugin_key;
             if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED, self::NOTUPDATED])) {
                 // mark it as 'updatable' unless it was not installed
+                $log_message =  sprintf(
+                    'Plugin "%s" version changed. It has been deactivated as its update process has to be launched.',
+                    $plugin_key
+                );
                 trigger_error(
-                    sprintf(
-                        'Plugin "%s" version changed. It has been deactivated as its update process has to be launched.',
-                        $plugin_key
-                    ),
+                   $log_message,
                     E_USER_WARNING
                 );
 
                 $input['state']     = self::NOTUPDATED;
+
+                Event::log(
+                    '',
+                    Plugin::class,
+                    3,
+                    "setup",
+                    $log_message
+                );
             }
 
             $this->update($input);
