@@ -68,25 +68,25 @@ class Unmanaged extends AbstractInventoryAsset
                 'expected'  => '
                 {
                     "content": {
-                        "hardware": {
-                            "workgroup": "WORKGROUP"
-                        },
-                        "versionclient": "5.1",
-                        "network_device": {
-                            "type": "Unmanaged",
-                            "mac": "4c:cc:6a:02:13:a9",
-                            "name": "DESKTOP-A3J16LF",
-                            "ip": "192.168.1.20",
-                            "ips": [
-                                "192.168.1.20"
-                            ]
-                        }
+                      "hardware": {
+                        "workgroup": "WORKGROUP"
+                      },
+                      "versionclient": "5.1",
+                      "network_device": {
+                        "type": "Unmanaged",
+                        "ip": "192.168.1.20",
+                        "mac": "4c:cc:6a:02:13:a9",
+                        "name": "DESKTOP-A3J16LF",
+                        "ips": [
+                          "192.168.1.20"
+                        ]
+                      }
                     },
                     "deviceid": "asus-desktop-2022-09-20-16-43-09",
                     "action": "netdiscovery",
                     "jobid": 189,
                     "itemtype": "Unmanaged"
-                }'
+                  }'
             ]
         ];
     }

@@ -216,6 +216,7 @@ class Printer extends AbstractInventoryAsset
             'last_inventory_update' => $date_now,
             "is_deleted" => 0,
             'firmware' => '8745213_951236',
+            'ip' => '10.59.29.176',
             'ips' => ['10.59.29.176'],
             'mac' => '00:85:eb:f4:be:20',
             'manufacturer' => 'Canon',
@@ -1480,6 +1481,7 @@ class Printer extends AbstractInventoryAsset
               ],
               "network_device": {
                   "firmware": "2409048_052887",
+                  "ip": "10.59.29.208",
                   "ips": [
                        "10.59.29.208",
                        "0.0.0.0",
@@ -1563,6 +1565,7 @@ class Printer extends AbstractInventoryAsset
             'last_inventory_update' => $date_now,
             "is_deleted" => 0,
             'firmware' => '2409048_052887',
+            'ip' => '10.59.29.208',
             'ips' => ['10.59.29.208', '0.0.0.0', '127.0.0.1'],
             'mac' => '00:68:eb:f2:be:10',
             'manufacturer' => 'Hewlett-Packard',

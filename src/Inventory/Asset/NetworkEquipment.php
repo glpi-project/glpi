@@ -99,7 +99,8 @@ class NetworkEquipment extends MainAsset
                 $val->$key = $property;
             }
 
-            if (property_exists($device, 'ips')) {
+
+            if (property_exists($device, 'ip')) {
                 $portkey = 'management';
                 $port = new \stdClass();
                 if (property_exists($device, 'mac')) {
@@ -112,15 +113,9 @@ class NetworkEquipment extends MainAsset
                 $port->ipaddress = [];
 
                //add internal port(s)
-                foreach ($device->ips as $ip) {
-                    if (
-                        !in_array($ip, $port->ipaddress)
-                        && '' != $blacklist->process(Blacklist::IP, $ip)
-                    ) {
-                        $port->ipaddress[] = $ip;
-                    }
+                if ('' != $blacklist->process(Blacklist::IP, $device->ip)) {
+                    $port->ipaddress[] = $device->ip;
                 }
-
                 $this->management_ports[$portkey] = $port;
             }
         }

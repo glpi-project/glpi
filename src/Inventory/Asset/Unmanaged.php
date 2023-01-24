@@ -35,6 +35,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Blacklist;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Glpi\Toolbox\Sanitizer;
@@ -88,6 +89,8 @@ class Unmanaged extends MainAsset
      */
     protected function prepareForNetworkDevice(\stdClass $val): void
     {
+        $blacklist = new Blacklist();
+
         if (isset($this->extra_data['network_device'])) {
             $device = (object)$this->extra_data['network_device'];
 
@@ -107,7 +110,7 @@ class Unmanaged extends MainAsset
                 $val->$key = $property;
             }
 
-            if (property_exists($device, 'ips')) {
+            if (property_exists($device, 'ip')) {
                 $portkey = 'management';
                 $port = new \stdClass();
                 if (property_exists($device, 'mac')) {
@@ -117,16 +120,12 @@ class Unmanaged extends MainAsset
                 $port->netname = __('internal');
                 $port->instantiation_type = 'NetworkPortAggregate';
                 $port->is_internal = true;
-                $port->logical_number = 0;
                 $port->ipaddress = [];
 
                //add internal port(s)
-                foreach ($device->ips as $ip) {
-                    if ($ip != '127.0.0.1' && $ip != '::1' && !in_array($ip, $port->ipaddress)) {
-                        $port->ipaddress[] = $ip;
-                    }
+                if ('' != $blacklist->process(Blacklist::IP, $device->ip)) {
+                    $port->ipaddress[] = $device->ip;
                 }
-
                 $this->management_ports[$portkey] = $port;
             }
         }

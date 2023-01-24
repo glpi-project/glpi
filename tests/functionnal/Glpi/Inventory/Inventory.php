@@ -1956,8 +1956,7 @@ class Inventory extends InventoryTestCase
 
         $ips = [
             'Management' => [
-                '10.2.5.10',
-                '192.168.12.5',
+                '10.2.5.10'
             ]
         ];
 
@@ -2344,34 +2343,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $ips = [
                 'Management' => [
                     '10.1.0.100',
-                    '10.1.0.22',
-                    '10.1.0.41',
-                    '10.1.0.45',
-                    '10.1.0.59',
-                    '10.11.11.1',
-                    '10.11.11.5',
-                    '10.11.13.1',
-                    '10.11.13.5',
-                    '172.21.0.1',
-                    '172.21.0.7',
-                    '172.22.0.1',
-                    '172.22.0.5',
-                    '172.23.0.1',
-                    '172.23.0.5',
-                    '172.24.0.1',
-                    '172.24.0.5',
-                    '172.25.1.15',
-                    '172.28.200.1',
-                    '172.28.200.5',
-                    '172.28.211.5',
-                    '172.28.215.1',
-                    '172.28.221.1',
-                    '185.10.253.65',
-                    '185.10.253.97',
-                    '185.10.254.1',
-                    '185.10.255.146',
-                    '185.10.255.224',
-                    '185.10.255.250',
                 ]
             ];
 
@@ -2570,7 +2541,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(count($db_unmanageds))->isIdenticalTo(45);
 
         $db_ips = $DB->request(['FROM' => \IPAddress::getTable()]);
-        $this->integer(count($db_ips))->isIdenticalTo(150);
+        $this->integer(count($db_ips))->isIdenticalTo(10);
 
         $expected_names = [
             'san-replication',
@@ -3457,7 +3428,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->array($row)->isIdenticalTo($expected_eq, print_r($row, true) . print_r($expected_eq, true));
 
            //check network ports
-            $expected_count = ($first ? 4 : 1);
+            $expected_count = ($first ? 3 : 1);
             $ports_iterator = $DB->request([
                 'FROM'   => \NetworkPort::getTable(),
                 'WHERE'  => [
