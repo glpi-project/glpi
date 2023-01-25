@@ -828,7 +828,11 @@ class Plugin extends CommonDBTM
                 Plugin::class,
                 3,
                 "setup",
-                $message
+                sprintf(
+                    __('Plugin %1$s has been uninstalled by %2$s.'),
+                    $this->fields['name'],
+                    User::getNameForLog(Session::getLoginUserID(true))
+                )
             );
         } else {
             $message = sprintf(__('Plugin %1$s not found!'), $ID);
@@ -877,8 +881,8 @@ class Plugin extends CommonDBTM
                         $this->update(['id'    => $ID,
                             'state' => self::NOTACTIVATED
                         ]);
-                        $log_message = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
-                        $message = $log_message . '<br/><br/>' . str_replace(
+                        $message = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
+                        $message.= '<br/><br/>' . str_replace(
                             '%activate_link',
                             Html::getSimpleForm(
                                 static::getFormURL(),
@@ -894,16 +898,20 @@ class Plugin extends CommonDBTM
                         $this->update(['id'    => $ID,
                             'state' => self::TOBECONFIGURED
                         ]);
-                        $log_message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
-                        $message = $log_message;
+                        $message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
                     }
                     self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
+
                     Event::log(
                         '',
                         Plugin::class,
                         3,
                         "setup",
-                        $log_message
+                        sprintf(
+                            __('Plugin %1$s has been installed by %2$s.'),
+                            $this->fields['name'],
+                            User::getNameForLog(Session::getLoginUserID(true))
+                        )
                     );
                 }
             } else {
@@ -1005,10 +1013,8 @@ class Plugin extends CommonDBTM
                 }
                 self::doHook(Hooks::POST_PLUGIN_ENABLE, $this->fields['directory']);
 
-                $log_message = sprintf(__('Plugin %1$s has been activated!'), $this->fields['name']);
-
                 Session::addMessageAfterRedirect(
-                    $log_message,
+                    sprintf(__('Plugin %1$s has been activated!'), $this->fields['name']),
                     true,
                     INFO
                 );
@@ -1018,7 +1024,11 @@ class Plugin extends CommonDBTM
                     Plugin::class,
                     3,
                     "setup",
-                    $log_message
+                    sprintf(
+                        __('Plugin %1$s has been activated by %2$s.'),
+                        $this->fields['name'],
+                        User::getNameForLog(Session::getLoginUserID(true))
+                    )
                 );
 
                 return true;
@@ -1071,10 +1081,8 @@ class Plugin extends CommonDBTM
                  unset($_SESSION['glpimenu']);
             }
 
-            $log_message = sprintf(__('Plugin %1$s has been deactivated!'), $this->fields['name']);
-
             Session::addMessageAfterRedirect(
-                $log_message,
+                sprintf(__('Plugin %1$s has been deactivated!'), $this->fields['name']),
                 true,
                 INFO
             );
@@ -1084,7 +1092,11 @@ class Plugin extends CommonDBTM
                 Plugin::class,
                 3,
                 "setup",
-                $log_message
+                sprintf(
+                    __('Plugin %1$s has been deactivated by %2$s.'),
+                    $this->fields['name'],
+                    User::getNameForLog(Session::getLoginUserID(true))
+                )
             );
 
             return true;
