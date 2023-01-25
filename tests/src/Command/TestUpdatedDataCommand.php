@@ -244,6 +244,9 @@ class TestUpdatedDataCommand extends Command
                 'value', // Default values may have changed
             ],
             'glpi_crontasks' => [
+                'frequency', // Field default value may have changed
+                'hourmin', // Field default value may have changed
+                'hourmax', // Field default value may have changed
                 'lastrun',
             ],
             'glpi_displaypreferences' => [
@@ -268,10 +271,6 @@ class TestUpdatedDataCommand extends Command
             ],
             'glpi_users' => [
                 'password',
-            ],
-            'glpi_crontasks' => [
-                'hourmin', // Field default value changed in version 10.1.0
-                'hourmax', // Field default value changed in version 10.1.0
             ],
         ];
         return array_merge(
