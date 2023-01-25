@@ -2624,7 +2624,7 @@ class Toolbox
     public static function slugify($string, $prefix = 'slug_')
     {
         $string = transliterator_transliterate("Any-Latin; Latin-ASCII; [^a-zA-Z0-9\.\ -_] Remove;", $string);
-        $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
+        $string = str_replace(' ', '-', self::strtolower($string));
         $string = preg_replace('~[^0-9a-z_\.]+~i', '-', $string);
         $string = trim($string, '-');
         if ($string == '') {

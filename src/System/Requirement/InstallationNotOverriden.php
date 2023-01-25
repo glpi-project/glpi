@@ -82,7 +82,7 @@ final class InstallationNotOverriden extends AbstractRequirement
         }
 
         $current_version_file = $this->version_dir . '/' . VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        if (!file_exists($current_version_file) || iterator_count($file_iterator) > 1) {
+        if (!file_exists($current_version_file) || $version_files_count > 1) {
             $this->validated = false;
             $this->validation_messages[] = __("We detected files of previous versions of GLPI.");
             $this->validation_messages[] = __("Please update GLPI by following the procedure described in the installation documentation.");

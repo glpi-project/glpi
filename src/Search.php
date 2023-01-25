@@ -1955,8 +1955,7 @@ class Search
                         self::displayConfigItem(
                             $data['itemtype'],
                             $col['id'],
-                            $row,
-                            $colkey
+                            $row
                         )
                     );
                 } else { // META case
@@ -3253,6 +3252,7 @@ JAVASCRIPT;
                                     $prefix .
                                     $num);
         $searchopt = [];
+        $fieldsearch_id = null;
         if (count($actions) > 0) {
            // get already get search options
             if (isset($actions['searchopt'])) {
@@ -3287,15 +3287,17 @@ JAVASCRIPT;
         self::displaySearchoptionValue($params);
         echo "</div>";
 
-        Ajax::updateItemOnSelectEvent(
-            $fieldsearch_id,
-            $dropdownname,
-            $CFG_GLPI["root_doc"] . "/ajax/search.php",
-            [
-                'action'     => 'display_searchoption_value',
-                'searchtype' => '__VALUE__',
-            ] + $params
-        );
+        if ($fieldsearch_id !== null) {
+            Ajax::updateItemOnSelectEvent(
+                $fieldsearch_id,
+                $dropdownname,
+                $CFG_GLPI["root_doc"] . "/ajax/search.php",
+                [
+                    'action'     => 'display_searchoption_value',
+                    'searchtype' => '__VALUE__',
+                ] + $params
+            );
+        }
     }
 
     /**
@@ -4624,6 +4626,8 @@ JAVASCRIPT;
                     break;
             }
         }
+
+        $SEARCH = "";
         switch ($searchtype) {
             case "notcontains":
                 $nott = !$nott;
@@ -5052,6 +5056,7 @@ JAVASCRIPT;
                     if ($searchtype == 'morethan') {
                         $val = '>' . $val;
                     }
+                    $date_computation = null;
                     if ($searchtype) {
                         $date_computation = $tocompute;
                     }
@@ -5693,22 +5698,22 @@ JAVASCRIPT;
                             $meta_type,
                             $interjoinparams
                         );
-                    }
 
-                   // No direct link with the previous joins
-                    if (!isset($tab['joinparams']['nolink']) || !$tab['joinparams']['nolink']) {
-                        $cleanrt     = $intertable;
-                        $complexjoin = self::computeComplexJoinID($interjoinparams);
-                        if (!empty($interlinkfield) && ($interlinkfield != getForeignKeyFieldForTable($intertable))) {
-                            $intertable .= "_" . $interlinkfield;
+                        // No direct link with the previous joins
+                        if (!isset($tab['joinparams']['nolink']) || !$tab['joinparams']['nolink']) {
+                            $cleanrt     = $intertable;
+                            $complexjoin = self::computeComplexJoinID($interjoinparams);
+                            if (!empty($interlinkfield) && ($interlinkfield != getForeignKeyFieldForTable($intertable))) {
+                                $intertable .= "_" . $interlinkfield;
+                            }
+                            if (!empty($complexjoin)) {
+                                $intertable .= "_" . $complexjoin;
+                            }
+                            if ($meta && $meta_type::getTable() != $cleanrt) {
+                                $intertable .= "_" . $meta_type;
+                            }
+                            $rt = $intertable;
                         }
-                        if (!empty($complexjoin)) {
-                            $intertable .= "_" . $complexjoin;
-                        }
-                        if ($meta && $meta_type::getTable() != $cleanrt) {
-                            $intertable .= "_" . $meta_type;
-                        }
-                        $rt = $intertable;
                     }
                 }
             }
@@ -5817,9 +5822,6 @@ JAVASCRIPT;
                         break;
 
                     case "itemtype_item_revert":
-                        if (!isset($addmain)) {
-                            $addmain = '';
-                        }
                         $used_itemtype = $itemtype;
                         if (
                             isset($joinparams['specific_itemtype'])
@@ -5829,8 +5831,8 @@ JAVASCRIPT;
                         }
                        // Itemtype join
                         $specific_leftjoin = " LEFT JOIN `$new_table` $AS
-                                          ON (`$nt`.`id` = `$rt`.`" . $addmain . "items_id`
-                                              AND `$rt`.`" . $addmain . "itemtype` = '$used_itemtype'
+                                          ON (`$nt`.`id` = `$rt`.`" . "items_id`
+                                              AND `$rt`.`" . "itemtype` = '$used_itemtype'
                                               $addcondition) ";
                         break;
 
@@ -6741,6 +6743,7 @@ JAVASCRIPT;
                         $totaltime   = 0;
                         $currenttime = 0;
                         $slaField    = 'slas_id';
+                        $sla_class   = 'SLA';
 
                        // define correct sla field
                         switch ($table . '.' . $field) {
@@ -6818,6 +6821,8 @@ JAVASCRIPT;
                         }
                         $percentage_text = $percentage;
 
+                        $less_warn_limit = 0;
+                        $less_warn       = 0;
                         if ($_SESSION['glpiduedatewarning_unit'] == '%') {
                             $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
                             $less_warn       = (100 - $percentage);
@@ -6829,6 +6834,8 @@ JAVASCRIPT;
                             $less_warn       = ($totaltime - $currenttime);
                         }
 
+                        $less_crit_limit = 0;
+                        $less_crit       = 0;
                         if ($_SESSION['glpiduedatecritical_unit'] == '%') {
                             $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
                             $less_crit       = (100 - $percentage);
@@ -7127,7 +7134,7 @@ JAVASCRIPT;
         }
 
        // Link with plugin tables : need to know left join structure
-        if (isset($table)) {
+        if (isset($table) && isset($field)) {
             if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table . '.' . $field, $matches)) {
                 if (count($matches) == 2) {
                     $plug     = $matches[1];
@@ -7174,7 +7181,7 @@ JAVASCRIPT;
                             if ($_SESSION["glpiis_ids_visible"] || empty($data[$ID][$k]['name'])) {
                                  $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                             }
-                            if ($field === 'completename') {
+                            if (isset($field) && $field === 'completename') {
                                 $chunks = preg_split('/ > /', $name);
                                 $completename = '';
                                 foreach ($chunks as $key => $element_name) {
@@ -7435,7 +7442,7 @@ HTML;
             }
             $count_display++;
            // Get specific display if available
-            if (isset($table)) {
+            if (isset($table) && isset($field)) {
                 $itemtype = getItemTypeForTable($table);
                 if ($item = getItemForItemtype($itemtype)) {
                     $tmpdata  = $data[$ID][$k];
@@ -7462,23 +7469,18 @@ HTML;
                 ) {
                     $out .= $so['toadd'][$data[$ID][$k]['name']];
                 } else {
-                   // Empty is 0 or empty
-                    if (empty($split[0]) && isset($so['emptylabel'])) {
-                        $out .= $so['emptylabel'];
+                    // Trans field exists
+                    if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
+                        $out .= $data[$ID][$k]['trans'];
+                    } elseif (isset($data[$ID][$k]['trans_completename']) && !empty($data[$ID][$k]['trans_completename'])) {
+                        $out .= CommonTreeDropdown::sanitizeSeparatorInCompletename($data[$ID][$k]['trans_completename']);
+                    } elseif (isset($data[$ID][$k]['trans_name']) && !empty($data[$ID][$k]['trans_name'])) {
+                        $out .= $data[$ID][$k]['trans_name'];
                     } else {
-                       // Trans field exists
-                        if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
-                            $out .= $data[$ID][$k]['trans'];
-                        } elseif (isset($data[$ID][$k]['trans_completename']) && !empty($data[$ID][$k]['trans_completename'])) {
-                            $out .= CommonTreeDropdown::sanitizeSeparatorInCompletename($data[$ID][$k]['trans_completename']);
-                        } elseif (isset($data[$ID][$k]['trans_name']) && !empty($data[$ID][$k]['trans_name'])) {
-                            $out .= $data[$ID][$k]['trans_name'];
-                        } else {
-                            $value = $data[$ID][$k]['name'];
-                            $out .= $so['field'] === 'completename'
-                                ? CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
-                                : $value;
-                        }
+                        $value = $data[$ID][$k]['name'];
+                        $out .= $so['field'] === 'completename'
+                            ? CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
+                            : $value;
                     }
                 }
             }
@@ -7634,7 +7636,7 @@ HTML;
         }
 
         if (
-            isset($params) && is_array($params)
+            is_array($params)
             && $usesession
         ) {
             foreach ($params as $key => $val) {
@@ -8000,9 +8002,7 @@ HTML;
             if (is_null($item)) { // Special union type
                 $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
             } else {
-                if ($item = getItemForItemtype($itemtype)) {
-                    $itemtable = $item->getTable();
-                }
+                $itemtable = $item->getTable();
             }
 
             foreach (self::$search[$itemtype] as $key => $val) {
@@ -8316,7 +8316,7 @@ HTML;
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
                 global $PDF_TABLE;
-                $value = DataExport::normalizeValueForTextExport($value ?? '');
+                $value = DataExport::normalizeValueForTextExport($value);
                 $value = htmlspecialchars($value);
                 $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                 $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);

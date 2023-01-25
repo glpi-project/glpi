@@ -839,7 +839,7 @@ class User extends CommonDBTM
             }
             if ($newPicture) {
                 $fullpath = GLPI_TMP_DIR . "/" . $input["_picture"];
-                if (Document::isImage($fullpath, 'image')) {
+                if (Document::isImage($fullpath)) {
                    // Unlink old picture (clean on changing format)
                     self::dropPictureFiles($this->fields['picture']);
                    // Move uploaded file
@@ -4438,17 +4438,15 @@ HTML;
         }
 
         // Make a select box with all glpi users
-        if (!$p['multiple']) {
-            $user = getUserName($p['value'], 2, true);
-        }
-
-        if ($p['readonly']) {
-            return '<span class="form-control" readonly>' . $user["name"] . '</span>';
-        }
-
         $view_users = self::canView();
 
         if (!$p['multiple']) {
+            $user = getUserName($p['value'], 2, true);
+
+            if ($p['readonly']) {
+                return '<span class="form-control" readonly>' . $user["name"] . '</span>';
+            }
+
             if ($p['value'] === 'myself') {
                 $default = __("Myself");
             } else if (!empty($p['value']) && ($p['value'] > 0)) {
@@ -4468,6 +4466,10 @@ HTML;
                     $user = getUserName($value, 2);
                     $valuesnames[] = $user["name"];
                 }
+            }
+
+            if ($p['readonly']) {
+                return '<span class="form-control" readonly>' . implode(', ', $valuesnames) . '</span>';
             }
         }
 
