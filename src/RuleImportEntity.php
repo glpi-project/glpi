@@ -194,7 +194,7 @@ class RuleImportEntity extends Rule
         if (count($crit) && $crit['field'] == '_source') {
             if ($pattern != 'GLPI' && $pattern != 'NATIVE_INVENTORY') {
                 $name = $pattern;
-            } if ($pattern == 'NATIVE_INVENTORY') {
+            } elseif ($pattern == 'NATIVE_INVENTORY') {
                 $name = AutoUpdateSystem::NATIVE_INVENTORY;
             } else {
                 $name = Plugin::getInfo($pattern, 'name');
