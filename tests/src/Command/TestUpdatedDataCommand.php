@@ -244,6 +244,9 @@ class TestUpdatedDataCommand extends Command
                 'value', // Default values may have changed
             ],
             'glpi_crontasks' => [
+                'frequency', // Field default value may have changed
+                'hourmin', // Field default value may have changed
+                'hourmax', // Field default value may have changed
                 'lastrun',
             ],
             'glpi_displaypreferences' => [
