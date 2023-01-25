@@ -5960,7 +5960,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $ip = new \IPAddress();
         $this->array($ip->find(["itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->hasSize(1);
         $this->array($ip->find(["name" => "192.168.1.252", "itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->hasSize(1);
-
     }
 
     public function testManagementPortWithIPSAndIP()
@@ -6043,6 +6042,5 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $ip = new \IPAddress();
         $this->array($ip->find(["itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->hasSize(1);
         $this->array($ip->find(["name" => "192.168.1.252", "itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->hasSize(1);
-
     }
 }
