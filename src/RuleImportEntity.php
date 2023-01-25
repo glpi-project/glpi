@@ -151,7 +151,7 @@ class RuleImportEntity extends Rule
         global $PLUGIN_HOOKS, $CFG_GLPI;
 
         if ($criteria['field'] == '_source') {
-            $tab = ['GLPI' => __('GLPI'), 'NATIVE_INVENTORY' => AutoUpdateSystem::NATIVE_INVENTORY ];
+            $tab = ['GLPI' => __('GLPI'), 'NATIVE_INVENTORY' => AutoUpdateSystem::getLabelFor(AutoUpdateSystem::NATIVE_INVENTORY)];
             foreach ($PLUGIN_HOOKS['import_item'] as $plug => $types) {
                 if (!Plugin::isPluginActive($plug)) {
                     continue;
