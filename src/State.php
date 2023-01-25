@@ -65,6 +65,13 @@ class State extends CommonTreeDropdown
     {
 
         $fields   = parent::getAdditionalFields();
+
+        $fields[] = [
+            'label' => __('Show items with this status in assistance'),
+            'name'  => 'is_helpdesk_visible',
+            'type'  => 'bool',
+        ];
+
         $fields[] = ['label' => __('Visibility'),
             'name'  => 'header',
             'list'  => false
@@ -77,6 +84,7 @@ class State extends CommonTreeDropdown
                 'list'  => true
             ];
         }
+
         return $fields;
     }
 
@@ -251,6 +259,9 @@ class State extends CommonTreeDropdown
         foreach ($this->getvisibilityFields() as $field) {
             $this->fields[$field] = 1;
         }
+
+        $this->fields['is_helpdesk_visible'] = 1;
+
         return true;
     }
 
@@ -508,6 +519,14 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool'
         ];
 
+        $tab[] = [
+            'id'                 => '40',
+            'table'              => $this->getTable(),
+            'field'              => 'is_helpdesk_visible',
+            'name'               => __('Show items with this status in assistance'),
+            'datatype'           => 'bool'
+        ];
+
         return $tab;
     }
 
@@ -582,5 +601,24 @@ class State extends CommonTreeDropdown
             $fields[$type] = 'is_visible_' . strtolower($type);
         }
         return $fields;
+    }
+
+    /**
+     * Criteria to apply to assets dropdown when shown in assistance
+     *
+     * @return array
+     */
+    public static function getDisplayConditionForAssistance(): array
+    {
+        return [
+            'OR' =>  [
+                'states_id' => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM'   => State::getTable(),
+                    'WHERE'  => ['is_helpdesk_visible' => true]
+                ]),
+                ['states_id' => 0]
+            ]
+        ];
     }
 }
