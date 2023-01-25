@@ -272,10 +272,10 @@ class Socket extends CommonDBChild
     }
 
     /**
-     * Get all Socket already linked to Cable
+     * Get all Socket already linked to Cable for given asset
      * @return array Array of linked sockets
      **/
-    public static function getSocketAlreadyLinked()
+    public static function getSocketAlreadyLinked(string $itemtype, int $items_id): array
     {
         global $DB;
         $already_use = [];
@@ -296,6 +296,8 @@ class Socket extends CommonDBChild
                 'NOT' => [
                     'cables.sockets_id_endpoint_a' => 'NULL'
                 ],
+                'sockets.itemtype' => $itemtype,
+                'sockets.items_id' => $items_id
             ],
         ]);
 
@@ -314,6 +316,8 @@ class Socket extends CommonDBChild
                 'NOT' => [
                     'cables.sockets_id_endpoint_b' => 'NULL'
                 ],
+                'sockets.itemtype' => $itemtype,
+                'sockets.items_id' => $items_id
             ],
         ]);
 
