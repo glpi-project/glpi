@@ -42,7 +42,7 @@ class AutoUpdateSystem extends CommonDropdown
         return _n('Update Source', 'Update Sources', $nb);
     }
 
-    public static function getLabelFor($key)
+    public static function getLabelFor(string $key): string
     {
         switch ($key) {
             case self::NATIVE_INVENTORY:
