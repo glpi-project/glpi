@@ -476,7 +476,6 @@ trait InventoryNetworkPort
                             if ($ip_data == $db_ip_data) {
                                 unset($ips[$ip_key]);
                                 unset($db_addresses[$db_ip_key]);
-                                //result found in db, useless to continue
                             } else {
                                 //remove IP which is no longer exist (for NetworkPort) in the inventory
                                 $ipaddress = new IPAddress();
