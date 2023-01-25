@@ -41,4 +41,14 @@ class AutoUpdateSystem extends CommonDropdown
     {
         return _n('Update Source', 'Update Sources', $nb);
     }
+
+    public static function getLabelFor($key)
+    {
+        switch ($key) {
+            case self::NATIVE_INVENTORY:
+                return __('GLPI Native Inventory');
+        }
+
+        return '';
+    }
 }
