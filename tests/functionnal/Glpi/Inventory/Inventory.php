@@ -5882,4 +5882,167 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check if is specific value
         $this->string($operating_service_pack->fields['name'])->isEqualTo("New service_pack");
     }
+
+    public function testManagementPortWithIPSAndWithoutIP()
+    {
+        //do a netdiscovery
+        //IP is present
+        //IPS is preset
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+
+        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/01-switch_discovery.xml');
+        $converter = new \Glpi\Inventory\Converter();
+        $source = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($source);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //do a discovery
+        $inventory->setDiscovery(true);
+        $inventory->doInventory($xml_source, true);
+
+        $switch = new \NetworkEquipment();
+        $this->boolean($switch->getFromDbByCrit(['name' => 'switch_moon', 'serial' => 'TY678DFB']))->isTrue();
+
+        $np = new \NetworkPort();
+        //1 NetworkPortAggregate
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $switch->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isTrue();
+
+        //1 NetworkName form NetworkPortAggregate
+        $nm = new \NetworkName();
+        $this->boolean($nm->getFromDbByCrit(["itemtype" => "NetworkPort", "items_id" => $np->fields['id']]))->isTrue();
+
+        //1 IPAdress form NetworkName
+        $ip = new \IPAddress();
+        $this->array($ip->find(["itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->hasSize(1);
+
+        //do an netinventory
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/01-switch_inventory.xml');
+
+
+        $converter = new \Glpi\Inventory\Converter();
+        $source = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($source);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //do a netinventory
+        //IP is missing
+        //IPS is present
+        $inventory->setDiscovery(false);
+        $inventory->doInventory($xml_source, true);
+
+        $switch = new \NetworkEquipment();
+        $this->boolean($switch->getFromDbByCrit(['name' => 'switch_moon', 'serial' => 'TY678DFB']))->isTrue();
+
+        $np = new \NetworkPort();
+        //27 NetworkPortEthernet
+        $this->array($np->find(['itemtype' => 'NetworkEquipment', 'items_id' => $switch->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']))->hasSize(26);
+        //1 NetworkPortAggregate
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $switch->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isTrue();
+
+        //1 NetworkName form NetworkPortAggregate
+        $nm = new \NetworkName();
+        $this->boolean($nm->getFromDbByCrit(["itemtype" => "NetworkPort", "items_id" => $np->fields['id']]))->isTrue();
+
+        //1 IPAdress form NetworkName
+        $ip = new \IPAddress();
+        $this->array($ip->find(["itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->hasSize(1);
+        $this->array($ip->find(["name" => "192.168.1.252", "itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->hasSize(1);
+
+    }
+
+    public function testManagementPortWithIPSAndIP()
+    {
+        //do a netdiscovery
+        //IP is present
+        //IPS is preset
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+
+        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/02-switch_discovery.xml');
+        $converter = new \Glpi\Inventory\Converter();
+        $source = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($source);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //do a discovery
+        $inventory->setDiscovery(true);
+        $inventory->doInventory($xml_source, true);
+
+        $switch = new \NetworkEquipment();
+        $this->boolean($switch->getFromDbByCrit(['name' => 'switch_moon', 'serial' => 'TY678DFB']))->isTrue();
+
+
+        $np = new \NetworkPort();
+        //1 NetworkPortAggregate
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $switch->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isTrue();
+
+        //1 NetworkName form NetworkPortAggregate
+        $nm = new \NetworkName();
+        $this->boolean($nm->getFromDbByCrit(["itemtype" => "NetworkPort", "items_id" => $np->fields['id']]))->isTrue();
+
+        //1 IPAdress form NetworkName
+        $ip = new \IPAddress();
+        $this->array($ip->find(["itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->hasSize(1);
+
+        //do an netinventory
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/02-switch_inventory.xml');
+
+
+        $converter = new \Glpi\Inventory\Converter();
+        $source = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($source);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //do a netinventory
+        //IP is present
+        //IPS is preset
+        $inventory->setDiscovery(false);
+        $inventory->doInventory($xml_source, true);
+
+        $switch = new \NetworkEquipment();
+        $this->boolean($switch->getFromDbByCrit(['name' => 'switch_moon', 'serial' => 'TY678DFB']))->isTrue();
+
+        $np = new \NetworkPort();
+
+        //27 NetworkPortEthernet
+        $this->array($np->find(['itemtype' => 'NetworkEquipment', 'items_id' => $switch->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']))->hasSize(26);
+
+        //1 NetworkPortAggregate
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $switch->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isTrue();
+
+        //1 NetworkName form NetworkPortAggregate
+        $nm = new \NetworkName();
+        $this->boolean($nm->getFromDbByCrit(["itemtype" => "NetworkPort", "items_id" => $np->fields['id']]))->isTrue();
+
+        //1 IPAdress form NetworkName
+        $ip = new \IPAddress();
+        $this->array($ip->find(["itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->hasSize(1);
+        $this->array($ip->find(["name" => "192.168.1.252", "itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->hasSize(1);
+
+    }
 }

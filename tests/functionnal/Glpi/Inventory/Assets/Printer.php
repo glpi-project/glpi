@@ -216,7 +216,6 @@ class Printer extends AbstractInventoryAsset
             'last_inventory_update' => $date_now,
             "is_deleted" => 0,
             'firmware' => '8745213_951236',
-            'ip' => '10.59.29.176',
             'ips' => ['10.59.29.176'],
             'mac' => '00:85:eb:f4:be:20',
             'manufacturer' => 'Canon',

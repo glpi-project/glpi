@@ -41,6 +41,7 @@ use Glpi\Toolbox\Sanitizer;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkName;
+use Glpi\Inventory\Asset\Printer;
 
 class NetworkEquipment extends MainAsset
 {
@@ -227,19 +228,22 @@ class NetworkEquipment extends MainAsset
             }
         }
 
-        if (method_exists($this, 'getManagementPorts')) {
-            $mports = $this->getManagementPorts();
-            $np = new NetworkPort($this->item, $mports);
-            if ($np->checkConf($this->conf)) {
-                $np->setAgent($this->getAgent());
-                $np->setEntityID($this->getEntityID());
-                $np->prepare();
-                $np->handleLinks();
-                if (!isset($this->assets['\Glpi\Inventory\Asset\NetworkPort'])) {
-                    $np->addNetworkPorts($mports);
-                    $this->assets['\Glpi\Inventory\Asset\NetworkPort'] = [$np];
-                } else {
-                    $this->assets['\Glpi\Inventory\Asset\NetworkPort'][0]->addNetworkPorts($np->getNetworkPorts());
+        //handle Management Port only from discovery
+        if (!$items_id) {
+            if (method_exists($this, 'getManagementPorts')) {
+                $mports = $this->getManagementPorts();
+                $np = new NetworkPort($this->item, $mports);
+                if ($np->checkConf($this->conf)) {
+                    $np->setAgent($this->getAgent());
+                    $np->setEntityID($this->getEntityID());
+                    $np->prepare();
+                    $np->handleLinks();
+                    if (!isset($this->assets['\Glpi\Inventory\Asset\NetworkPort'])) {
+                        $np->addNetworkPorts($mports);
+                        $this->assets['\Glpi\Inventory\Asset\NetworkPort'] = [$np];
+                    } else {
+                        $this->assets['\Glpi\Inventory\Asset\NetworkPort'][0]->addNetworkPorts($np->getNetworkPorts());
+                    }
                 }
             }
         }
@@ -287,7 +291,14 @@ class NetworkEquipment extends MainAsset
 
     public function getManagementPorts()
     {
-        return $this->management_ports;
+        //return management_port if new or Printer
+        if ($this->isNew() || get_called_class() == Printer::class) {
+            return $this->management_ports;
+        } else {
+            //do not return management_port on update
+            //to avoid adding <IPS> to NetworkName
+            return [];
+        }
     }
 
     public function setManagementPorts(array $ports): NetworkEquipment
