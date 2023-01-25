@@ -274,7 +274,7 @@ final class RichText
             'images_gallery' => false,
             'user_mentions'  => true,
             'images_lazy'    => true,
-            'text_maxsize'   => 2000,
+            'text_maxsize'   => 4000,
         ];
         $p = array_replace($p, $params);
 
