@@ -1783,15 +1783,15 @@ class Inventory extends InventoryTestCase
             ]
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4411);
+        $this->integer(count($logs))->isIdenticalTo(4410);
 
         $expected_types_count = [
             0 => 2, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
-            \Log::HISTORY_ADD_SUBITEM => 3247,//network port/name, ip address, VMs, Software
+            \Log::HISTORY_ADD_SUBITEM => 3248,//network port/name, ip address, VMs, Software
             \Log::HISTORY_UPDATE_SUBITEM => 828,//disks usage, software updates
-            \Log::HISTORY_DELETE_SUBITEM => 99,//networkport and networkname, Software?
+            \Log::HISTORY_DELETE_SUBITEM => 97,//networkport and networkname, Software?
             \Log::HISTORY_CREATE_ITEM => 230, //virtual machines, os, manufacturer, net ports, net names, software category ...
             \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
         ];
@@ -3428,7 +3428,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->array($row)->isIdenticalTo($expected_eq, print_r($row, true) . print_r($expected_eq, true));
 
            //check network ports
-            $expected_count = ($first ? 3 : 1);
+            $expected_count = ($first ? 4 : 1);
             $ports_iterator = $DB->request([
                 'FROM'   => \NetworkPort::getTable(),
                 'WHERE'  => [

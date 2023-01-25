@@ -110,6 +110,7 @@ class Unmanaged extends MainAsset
                 $val->$key = $property;
             }
 
+            //manage 'real' IP as ManagementPort if possible
             if (property_exists($device, 'ip')) {
                 $portkey = 'management';
                 $port = new \stdClass();
@@ -126,6 +127,31 @@ class Unmanaged extends MainAsset
                 if ('' != $blacklist->process(Blacklist::IP, $device->ip)) {
                     $port->ipaddress[] = $device->ip;
                 }
+                $this->management_ports[$portkey] = $port;
+
+            // else manage all IPS as ManagementPort if possible
+            } else if (property_exists($device, 'ips')) {
+                $portkey = 'management';
+                $port = new \stdClass();
+                if (property_exists($device, 'mac')) {
+                    $port->mac = $device->mac;
+                }
+                $port->name = 'Management';
+                $port->netname = __('internal');
+                $port->instantiation_type = 'NetworkPortAggregate';
+                $port->is_internal = true;
+                $port->ipaddress = [];
+
+               //add internal port(s)
+                foreach ($device->ips as $ip) {
+                    if (
+                        !in_array($ip, $port->ipaddress)
+                        && '' != $blacklist->process(Blacklist::IP, $ip)
+                    ) {
+                        $port->ipaddress[] = $ip;
+                    }
+                }
+
                 $this->management_ports[$portkey] = $port;
             }
         }
