@@ -192,7 +192,7 @@ class RuleImportEntity extends Rule
 
         $crit = $this->getCriteria($ID);
         if (count($crit) && $crit['field'] == '_source') {
-            if ($pattern != 'GLPI' && $pattern != 'NATIVE_INVENTORY') {
+            if ($pattern == 'GLPI') {
                 $name = $pattern;
             } elseif ($pattern == 'NATIVE_INVENTORY') {
                 $name = AutoUpdateSystem::getLabelFor(AutoUpdateSystem::NATIVE_INVENTORY);
