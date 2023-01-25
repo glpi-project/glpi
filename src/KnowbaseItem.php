@@ -1538,7 +1538,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         ];
         if ($params['knowbaseitemcategories_id'] > 0) {
             $criteria['WHERE'][KnowbaseItem_KnowbaseItemCategory::getTableField('knowbaseitemcategories_id')] = $params['knowbaseitemcategories_id'];
-        } else {
+        } elseif ($params['knowbaseitemcategories_id'] === 0) {
             $criteria['WHERE'][KnowbaseItem_KnowbaseItemCategory::getTableField('knowbaseitemcategories_id')] = null;
         }
 
@@ -1580,6 +1580,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 $criteria['WHERE']['glpi_knowbaseitems_profiles.profiles_id'] = null;
                 $criteria['WHERE']['glpi_groups_knowbaseitems.groups_id'] = null;
                 $criteria['WHERE']['glpi_knowbaseitems_users.users_id'] = null;
+                break;
+
+            case 'allpublished':
+                $criteria['HAVING']['visibility_count'] = ['>', 0];
                 break;
 
             case 'search':
@@ -1759,7 +1763,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
        // Default values of parameters
         $params['faq']                       = !Session::haveRight(self::$rightname, READ);
         $params["start"]                     = "0";
-        $params["knowbaseitemcategories_id"] = "0";
+        $params["knowbaseitemcategories_id"] = null;
         $params["contains"]                  = "";
         $params["target"]                    = $_SERVER['PHP_SELF'];
 
