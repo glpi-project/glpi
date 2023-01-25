@@ -4467,6 +4467,10 @@ HTML;
                     $valuesnames[] = $user["name"];
                 }
             }
+
+            if ($p['readonly']) {
+                return '<span class="form-control" readonly>' . implode(', ', $valuesnames) . '</span>';
+            }
         }
 
 
