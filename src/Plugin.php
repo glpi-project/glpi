@@ -881,8 +881,8 @@ class Plugin extends CommonDBTM
                         $this->update(['id'    => $ID,
                             'state' => self::NOTACTIVATED
                         ]);
-                        $message = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
-                        $message.= '<br/><br/>' . str_replace(
+                        $message  = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
+                        $message .= '<br/><br/>' . str_replace(
                             '%activate_link',
                             Html::getSimpleForm(
                                 static::getFormURL(),
