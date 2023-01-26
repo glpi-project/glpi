@@ -760,7 +760,7 @@ class Profile extends CommonDBTM
         );
         echo "</td></tr>\n";
 
-        echo "<tr class='tab_bg_1'><td>" . __('Update password') . "</td><td>";
+        echo "<tr class='tab_bg_1'><td>" . __('Update own password') . "</td><td>";
         Html::showCheckbox(['name'    => '_password_update',
             'checked' => $this->fields['password_update']
         ]);
