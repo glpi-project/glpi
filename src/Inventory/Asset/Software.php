@@ -520,7 +520,6 @@ class Software extends InventoryAsset
      */
     protected function getSimpleCompareKey(\stdClass $val): string
     {
-        global $DB;
         return $this->getCompareKey([
             sha1(Sanitizer::sanitize($val->name)),
             strtolower($val->version),
