@@ -44,6 +44,7 @@ class APIClient extends CommonDBTM
     const DOLOG_HISTORICAL = 2;
 
     public static $rightname = 'config';
+    protected $displaylist = false;
 
    // From CommonDBTM
     public $dohistory                   = true;
