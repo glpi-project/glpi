@@ -760,7 +760,7 @@ class Profile extends CommonDBTM
         );
         echo "</td></tr>\n";
 
-        echo "<tr class='tab_bg_1'><td>" . __('Update password') . "</td><td>";
+        echo "<tr class='tab_bg_1'><td>" . __('Update own password') . "</td><td>";
         Html::showCheckbox(['name'    => '_password_update',
             'checked' => $this->fields['password_update']
         ]);
@@ -2989,7 +2989,7 @@ class Profile extends CommonDBTM
             'id'                 => '4',
             'table'              => 'glpi_profilerights',
             'field'              => 'rights',
-            'name'               => __('Update password'),
+            'name'               => __('Update own password'),
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype'           => 'child',
