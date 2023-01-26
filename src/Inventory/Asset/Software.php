@@ -522,7 +522,7 @@ class Software extends InventoryAsset
     {
         global $DB;
         return $this->getCompareKey([
-            sha1($DB->escape(Html::entity_decode_deep($val->name))),
+            sha1(Sanitizer::sanitize($val->name)),
             strtolower($val->version),
             strtolower($val->arch ?? ''),
             $val->entities_id ?? 0,
