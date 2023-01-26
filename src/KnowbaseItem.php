@@ -673,12 +673,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      */
     private static function getVisibilityCriteriaFAQ(): array
     {
-        $where = ['is_faq' => 1];
-
         // Specific case for anonymous users + multi entities
-        if (!Session::getLoginUserID() && Session::isMultiEntitiesMode()) {
-            $where[Entity_KnowbaseItem::getTableField('entities_id')] = 0;
-            $where[Entity_KnowbaseItem::getTableField('is_recursive')] = 1;
+        if (!Session::getLoginUserID()) {
+            $where = ['is_faq' => 1];
+            if (Session::isMultiEntitiesMode()) {
+                $where[Entity_KnowbaseItem::getTableField('entities_id')] = 0;
+                $where[Entity_KnowbaseItem::getTableField('is_recursive')] = 1;
+            }
+        } else {
+            $where = self::getVisibilityCriteriaKB_Entity();
+            $where['is_faq'] = 1;
         }
 
         return $where;
@@ -1530,16 +1534,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             ];
         }
 
-        $criteria['LEFT JOIN'][KnowbaseItem_KnowbaseItemCategory::getTable()] = [
-            'FKEY' => [
-                KnowbaseItem_KnowbaseItemCategory::getTable() => KnowbaseItem::getForeignKeyField(),
-                KnowbaseItem::getTable() => 'id',
-            ],
-        ];
-        if ($params['knowbaseitemcategories_id'] > 0) {
-            $criteria['WHERE'][KnowbaseItem_KnowbaseItemCategory::getTableField('knowbaseitemcategories_id')] = $params['knowbaseitemcategories_id'];
-        } elseif ($params['knowbaseitemcategories_id'] === 0) {
-            $criteria['WHERE'][KnowbaseItem_KnowbaseItemCategory::getTableField('knowbaseitemcategories_id')] = null;
+        if ($params['knowbaseitemcategories_id'] !== KnowbaseItemCategory::SEEALL) {
+            $criteria['LEFT JOIN'][KnowbaseItem_KnowbaseItemCategory::getTable()] = [
+                'FKEY' => [
+                    KnowbaseItem_KnowbaseItemCategory::getTable() => KnowbaseItem::getForeignKeyField(),
+                    KnowbaseItem::getTable() => 'id',
+                ],
+            ];
+            if ($params['knowbaseitemcategories_id'] > 0) {
+                $criteria['WHERE'][KnowbaseItem_KnowbaseItemCategory::getTableField('knowbaseitemcategories_id')] = $params['knowbaseitemcategories_id'];
+            } elseif ($params['knowbaseitemcategories_id'] === 0) {
+                $criteria['WHERE'][KnowbaseItem_KnowbaseItemCategory::getTableField('knowbaseitemcategories_id')] = null;
+            }
         }
 
         if (
