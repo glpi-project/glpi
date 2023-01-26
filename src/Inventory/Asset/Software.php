@@ -41,7 +41,6 @@ use Dropdown;
 use Entity;
 use Glpi\Inventory\Conf;
 use Glpi\Toolbox\Sanitizer;
-use Html;
 use QueryParam;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
