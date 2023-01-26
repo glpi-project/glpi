@@ -52,7 +52,7 @@ class DomainRecord extends CommonDBChild
     {
         if ($item->getType() == 'Domain') {
             if ($_SESSION['glpishow_count_on_tabs']) {
-                return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item));
+                return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item), $item::getType());
             }
             return _n('Record', 'Records', Session::getPluralNumber());
         }

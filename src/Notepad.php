@@ -56,6 +56,10 @@ class Notepad extends CommonDBChild
         return _n('Note', 'Notes', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-notes';
+    }
 
     public function getLogTypeID()
     {
@@ -116,7 +120,7 @@ class Notepad extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return false;
     }

@@ -53,6 +53,10 @@ class DropdownTranslation extends CommonDBChild
         return _n('Translation', 'Translations', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-language';
+    }
 
     /**
      * Forbidden massives actions
@@ -74,7 +78,7 @@ class DropdownTranslation extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

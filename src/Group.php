@@ -127,13 +127,13 @@ class Group extends CommonTreeDropdown
                             ['groups_id' => $item->getID()]
                         );
                     }
-                    $ong[4] = self::createTabEntry(__('Child groups'), $nb);
+                    $ong[4] = self::createTabEntry(__('Child groups'), $nb, $item::getType());
 
                     if ($item->getField('is_itemgroup')) {
-                        $ong[1] = __('Used items');
+                        $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
                     }
                     if ($item->getField('is_assign')) {
-                        $ong[2] = __('Managed items');
+                        $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::getType(), 'ti ti-package');
                     }
                     if (
                         $item->getField('is_usergroup')
@@ -141,7 +141,7 @@ class Group extends CommonTreeDropdown
                         && Session::haveRight("user", User::UPDATEAUTHENT)
                         && AuthLDAP::useAuthLdap()
                     ) {
-                        $ong[3] = __('LDAP directory link');
+                        $ong[3] = self::createTabEntry(__('LDAP directory link'), 0, $item::getType(), 'ti ti-login');
                     }
                     return $ong;
             }

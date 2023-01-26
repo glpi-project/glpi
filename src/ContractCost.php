@@ -48,6 +48,10 @@ class ContractCost extends CommonDBChild
         return _n('Cost', 'Costs', $nb);
     }
 
+    public static function getIcon()
+    {
+        return Infocom::getIcon();
+    }
 
     public function prepareInputForAdd($input)
     {
@@ -93,7 +97,7 @@ class ContractCost extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable('glpi_contractcosts', ['contracts_id' => $item->getID()]);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

@@ -33,13 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class KnowbaseItem_Comment
-/// since version 9.2
+/**
+ * Class KnowbaseItem_Comment
+ * @since 9.2.0
+ * @todo Extend CommonDBChild
+ */
 class KnowbaseItem_Comment extends CommonDBTM
 {
     public static function getTypeName($nb = 0)
     {
         return _n('Comment', 'Comments', $nb);
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-message-circle';
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -68,7 +76,7 @@ class KnowbaseItem_Comment extends CommonDBTM
                 $where
             );
         }
-        return self::createTabEntry(self::getTypeName($nb), $nb);
+        return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

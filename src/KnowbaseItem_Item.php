@@ -86,7 +86,7 @@ class KnowbaseItem_Item extends CommonDBRelation
                 $type_name = __('Knowledge base');
             }
 
-            return self::createTabEntry($type_name, $nb);
+            return self::createTabEntry($type_name, $nb, $item::getType());
         }
         return '';
     }

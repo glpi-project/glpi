@@ -68,6 +68,11 @@ class Socket extends CommonDBChild
     const FRONT   = 2;
     const BOTH    = 3;
 
+    public static function getIcon()
+    {
+        return NetworkPort::getIcon();
+    }
+
     public function canCreateItem()
     {
         return Session::haveRight(static::$rightname, CREATE);
@@ -626,7 +631,7 @@ class Socket extends CommonDBChild
                             ['locations_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                 default:
                     if (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -637,7 +642,7 @@ class Socket extends CommonDBChild
                                   ]
                               );
                         }
-                        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
             }
         }

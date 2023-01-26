@@ -78,7 +78,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

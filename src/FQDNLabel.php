@@ -55,6 +55,10 @@ abstract class FQDNLabel extends CommonDBChild
         );
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-signature';
+    }
 
     /**
      * Get the internet name from a label and a domain ID

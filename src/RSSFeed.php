@@ -549,7 +549,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $nb = 0;
             switch ($item->getType()) {
                 case 'RSSFeed':
-                    $showtab = [1 => __('Content')];
+                    $showtab = [1 => self::createTabEntry(__('Content'))];
                     if (Session::haveRight('rssfeed_public', UPDATE)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
@@ -558,7 +558,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                             'Target',
                             'Targets',
                             Session::getPluralNumber()
-                        ), $nb);
+                        ), $nb, $item::getType());
                     }
                     return $showtab;
             }

@@ -83,8 +83,8 @@ class Budget extends CommonDropdown
         if (!$withtemplate) {
             switch ($item->getType()) {
                 case __CLASS__:
-                    return [1 => __('Main'),
-                        2 => _n('Item', 'Items', Session::getPluralNumber())
+                    return [1 => self::createTabEntry(__('Main')),
+                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package')
                     ];
             }
         }

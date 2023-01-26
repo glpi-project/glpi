@@ -83,9 +83,10 @@ class Itil_Project extends DbTestCase
             )->isGreaterThan(0);
 
            // Count displayed in tab name should be equal to count of ITIL items linked to project
-            $this->integer(
-                (int)preg_replace('/[^\d]*(\d+)[^\d]*/', '$1', $itil_project->getTabNameForItem($project))
-            )->isEqualTo(count($items));
+            $item_count = count($items);
+            $this->string($itil_project->getTabNameForItem($project))->isIdenticalTo(
+                "<span><i class='ti ti-alert-circle me-2'></i>Itil items</span> <span class='badge'>{$item_count}</span>"
+            );
         }
 
        //add a task

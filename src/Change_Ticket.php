@@ -69,7 +69,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                             ['changes_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 case 'Ticket':
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -78,7 +78,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                             ['tickets_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

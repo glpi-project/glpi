@@ -49,13 +49,15 @@ class ReminderTranslation extends CommonDBChild
 
     public static $rightname       = 'reminder_public';
 
-
-
     public static function getTypeName($nb = 0)
     {
         return _n('Translation', 'Translations', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-language';
+    }
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -84,7 +86,7 @@ class ReminderTranslation extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
 
         return '';

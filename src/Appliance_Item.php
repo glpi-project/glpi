@@ -71,12 +71,12 @@ class Appliance_Item extends CommonDBRelation
                     $nb = self::countForMainItem($item);
                 }
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
         } else if (in_array($item->getType(), Appliance::getTypes(true))) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
-            return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
 
         return '';

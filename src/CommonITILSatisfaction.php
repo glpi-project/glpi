@@ -56,6 +56,11 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         return __('Satisfaction');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-star';
+    }
+
     /**
      * Get the itemtype this satisfaction is for
      * @return string

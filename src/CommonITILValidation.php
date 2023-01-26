@@ -59,7 +59,10 @@ abstract class CommonITILValidation extends CommonDBChild
     const ACCEPTED  = 3; // accepted
     const REFUSED   = 4; // rejected
 
-
+    public static function getIcon()
+    {
+        return 'ti ti-thumb-up';
+    }
 
     public function getItilObjectItemType()
     {
@@ -240,7 +243,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 }
                 $nb = countElementsInTable(static::getTable(), $restrict);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

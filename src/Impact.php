@@ -68,6 +68,11 @@ class Impact extends CommonGLPI
         return __('Impact analysis');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-affiliate';
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         global $DB;
@@ -121,7 +126,7 @@ class Impact extends CommonGLPI
             ]));
         }
 
-        return self::createTabEntry(__("Impact analysis"), $total);
+        return self::createTabEntry(__("Impact analysis"), $total, $item::getType());
     }
 
     public static function displayTabContentForItem(

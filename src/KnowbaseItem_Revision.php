@@ -33,13 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class KnowbaseItem_Revision
-/// since version 9.2
+/**
+ * Class KnowbaseItem_Revision
+ * @since 9.2.0
+ * @todo Extend CommonDBChild
+ */
 class KnowbaseItem_Revision extends CommonDBTM
 {
     public static function getTypeName($nb = 0)
     {
         return _n('Revision', 'Revisions', $nb);
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-history';
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -68,7 +76,7 @@ class KnowbaseItem_Revision extends CommonDBTM
                 $where
             );
         }
-        return self::createTabEntry(self::getTypeName($nb), $nb);
+        return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

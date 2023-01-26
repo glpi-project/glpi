@@ -284,10 +284,11 @@ class Document_Item extends CommonDBRelation
                     'Associated item',
                     'Associated items',
                     Session::getPluralNumber()
-                ), $nbdoc);
+                ), $nbdoc, $item::getType(), 'ti ti-package');
                 $ong[2] = self::createTabEntry(
                     Document::getTypeName(Session::getPluralNumber()),
-                    $nbitem
+                    $nbitem,
+                    $item::getType()
                 );
                 return $ong;
 
@@ -304,7 +305,8 @@ class Document_Item extends CommonDBRelation
                     }
                     return self::createTabEntry(
                         Document::getTypeName(Session::getPluralNumber()),
-                        $nbitem
+                        $nbitem,
+                        $item::getType()
                     );
                 }
         }

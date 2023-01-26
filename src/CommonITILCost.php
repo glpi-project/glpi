@@ -48,6 +48,10 @@ abstract class CommonITILCost extends CommonDBChild
         return _n('Cost', 'Costs', $nb);
     }
 
+    public static function getIcon()
+    {
+        return Infocom::getIcon();
+    }
 
     public function getItilObjectItemType()
     {
@@ -73,7 +77,7 @@ abstract class CommonITILCost extends CommonDBChild
                     [$item->getForeignKeyField() => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

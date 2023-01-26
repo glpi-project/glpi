@@ -59,6 +59,10 @@ class SavedSearch_Alert extends CommonDBChild
         return _n('Saved search alert', 'Saved searches alerts', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-bell';
+    }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -75,7 +79,7 @@ class SavedSearch_Alert extends CommonDBChild
                     ['savedsearches_id' => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

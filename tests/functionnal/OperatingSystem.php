@@ -59,8 +59,8 @@ class OperatingSystem extends CommonDropdown
     protected function getTabs()
     {
         return [
-            'OperatingSystem$main'  => 'Operating system',
-            'Log$1'                 => 'Historical'
+            'OperatingSystem$main'  => "<span><i class='ti ti-edit me-2'></i>Operating system</span>",
+            'Log$1'                 => "<span><i class='ti ti-history me-2'></i>Historical</span>"
         ];
     }
 

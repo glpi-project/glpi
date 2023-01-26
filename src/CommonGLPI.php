@@ -350,7 +350,7 @@ class CommonGLPI implements CommonGLPIInterface
               || Infocom::canApplyOn($class)
               || in_array($class, $CFG_GLPI["reservation_types"]))
         ) {
-            $onglets[-2] = __('Debug');
+            $onglets[-2] = static::createTabEntry(__('Debug'), 0, null, 'ti ti-bug');
         }
         return $onglets;
     }
@@ -426,8 +426,12 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function addDefaultFormTab(array &$ong)
     {
-
-        $ong[$this->getType() . '$main'] = $this->getTypeName(1);
+        $icon = '';
+        if (method_exists(static::class, 'getIcon')) {
+            $icon = static::getIcon();
+        }
+        $icon = $icon ? "<i class='$icon me-2'></i>" : '';
+        $ong[static::getType() . '$main'] = '<span>' . $icon . static::getTypeName(1) . '</span>';
         return $this;
     }
 
@@ -696,18 +700,58 @@ class CommonGLPI implements CommonGLPIInterface
         return false;
     }
 
+    /**
+     * @param class-string<CommonGLPI>|null $form_itemtype
+     * @return string
+     */
+    private static function getTabIconClass(?string $form_itemtype = null): string
+    {
+        $default_icon = CommonDBTM::getIcon();
+        $icon = $default_icon;
+        $tab_itemtype = static::class;
+        $itemtype = $tab_itemtype;
+
+        if (is_subclass_of($tab_itemtype, CommonDBRelation::class)) {
+            // Get opposite itemtype than this
+            $new_itemtype = $tab_itemtype::getOppositeItemtype($form_itemtype);
+            if ($new_itemtype !== null) {
+                $itemtype = $new_itemtype;
+            }
+        }
+        if ($icon === $default_icon && !class_exists($itemtype)) {
+            $itemtype = $tab_itemtype;
+        }
+        if ($icon === $default_icon && method_exists($itemtype, 'getIcon')) {
+            $icon = $itemtype::getIcon();
+        }
+        return $icon;
+    }
 
     /**
-     * create tab text entry
+     * Create tab text entry.
+     *
+     * This should be called on the itemtype whose form is being displayed and not on the tab itemtype for the correct
+     * icon to be displayed, unless you manually specify the icon.
      *
      * @param string  $text text to display
      * @param integer $nb   number of items (default 0)
+     * @param class-string<CommonGLPI>|null $form_itemtype
+     * @param string $icon
      *
-     *  @return array array containing the onglets
+     *  @return string The tab text (including icon and counter if applicable)
      **/
-    public static function createTabEntry($text, $nb = 0)
+    public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '')
     {
-
+        if (empty($icon)) {
+            $icon = static::getTabIconClass($form_itemtype);
+        }
+        if (str_contains($icon, 'fa-empty-icon')) {
+            $icon = '';
+        }
+        $icon = !empty($icon) ? "<i class='$icon me-2'></i>" : '';
+        if (!empty($icon)) {
+            $text = '<span>' . $icon . $text . '</span>';
+        }
         if ($nb) {
            //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
             $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge'>$nb</span>");
@@ -911,7 +955,7 @@ class CommonGLPI implements CommonGLPIInterface
                 && empty($withtemplate)
                 && (count($tabs) > 1)
             ) {
-                $tabs[-1] = ['title'  => __('All'),
+                $tabs[-1] = ['title'  => static::createTabEntry(__('All'), 0, null, 'ti ti-layout-list'),
                     'url'    => $tabpage,
                     'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
                                           "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml"

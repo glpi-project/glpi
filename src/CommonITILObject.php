@@ -7395,12 +7395,9 @@ abstract class CommonITILObject extends CommonDBTM
 
         $timeline    = $this->getTimelineItems(['with_logs' => false]);
         $nb_elements = count($timeline);
-        $label = $this->getTypeName(1);
-        if ($nb_elements > 0) {
-            $label .= " <span class='badge'>$nb_elements</span>";
-        }
+        $label = static::getTypeName(1);
 
-        $ong[$this->getType() . '$main'] = $label;
+        $ong[static::getType() . '$main'] = static::createTabEntry($label, $nb_elements, static::getType());
         return $this;
     }
 

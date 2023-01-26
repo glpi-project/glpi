@@ -457,11 +457,11 @@ class Entity extends CommonTreeDropdown
             switch ($item->getType()) {
                 case __CLASS__:
                     $ong    = [];
-                    $ong[1] = $this->getTypeName(Session::getPluralNumber());
-                    $ong[2] = __('Address');
-                    $ong[3] = __('Advanced information');
+                    $ong[1] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()));
+                    $ong[2] = self::createTabEntry(__('Address'), 0, $item::getType(), Location::getIcon());
+                    $ong[3] = self::createTabEntry(__('Advanced information'));
                     if (Notification::canView()) {
-                        $ong[4] = _n('Notification', 'Notifications', Session::getPluralNumber());
+                        $ong[4] = self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()), 0, $item::getType(), Notification::getIcon());
                     }
                     if (
                         Session::haveRightsOr(
@@ -469,11 +469,11 @@ class Entity extends CommonTreeDropdown
                             [self::READHELPDESK, self::UPDATEHELPDESK]
                         )
                     ) {
-                        $ong[5] = __('Assistance');
+                        $ong[5] = self::createTabEntry(__('Assistance'), 0, $item::getType(), 'ti ti-headset');
                     }
-                    $ong[6] = _n('Asset', 'Assets', Session::getPluralNumber());
+                    $ong[6] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package');
                     if (Session::haveRight(Config::$rightname, UPDATE)) {
-                        $ong[7] = __('UI customization');
+                        $ong[7] = self::createTabEntry(__('UI customization'), 0, $item::getType(), 'ti ti-palette');
                     }
 
                     return $ong;

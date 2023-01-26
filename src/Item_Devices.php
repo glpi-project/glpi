@@ -563,7 +563,8 @@ class Item_Devices extends CommonDBRelation
                 }
                 return self::createTabEntry(
                     _n('Component', 'Components', Session::getPluralNumber()),
-                    $nb
+                    $nb,
+                    $item::getType()
                 );
             }
             if ($item instanceof CommonDevice) {
@@ -579,7 +580,7 @@ class Item_Devices extends CommonDBRelation
                         ]
                     );
                 }
-                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

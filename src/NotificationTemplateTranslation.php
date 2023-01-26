@@ -53,6 +53,11 @@ class NotificationTemplateTranslation extends CommonDBChild
         return _n('Template translation', 'Template translations', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-language';
+    }
+
     public static function getNameField()
     {
         return 'id';
@@ -479,7 +484,7 @@ class NotificationTemplateTranslation extends CommonDBChild
                             ['notificationtemplates_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

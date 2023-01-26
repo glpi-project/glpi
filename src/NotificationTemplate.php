@@ -66,6 +66,10 @@ class NotificationTemplate extends CommonDBTM
         return _n('Notification template', 'Notification templates', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-template';
+    }
 
     public static function canCreate()
     {

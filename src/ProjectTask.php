@@ -1179,7 +1179,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         ['projects_id' => $item->getID()]
                     );
                 }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
             case __CLASS__:
                 if ($_SESSION['glpishow_count_on_tabs']) {
@@ -1188,7 +1188,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         ['projecttasks_id' => $item->getID()]
                     );
                 }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

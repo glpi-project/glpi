@@ -255,12 +255,12 @@ class User extends CommonDBTM
         switch ($item->getType()) {
             case __CLASS__:
                 $ong    = [];
-                $ong[1] = __('Used items');
-                $ong[2] = __('Managed items');
+                $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
+                $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::getType(), 'ti ti-package');
                 return $ong;
 
             case 'Preference':
-                return __('Main');
+                return self::createTabEntry(__('Main'));
         }
         return '';
     }

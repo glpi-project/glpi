@@ -54,7 +54,6 @@ class Link extends CommonDBTM
         return _n('External link', 'External links', $nb);
     }
 
-
     /**
      * For plugins, add a tag to the links tags
      *
@@ -89,7 +88,7 @@ class Link extends CommonDBTM
                     ] + $entity_criteria
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

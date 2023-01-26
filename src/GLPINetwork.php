@@ -40,7 +40,12 @@ class GLPINetwork extends CommonGLPI
 {
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        return 'GLPI Network';
+        return self::createTabEntry('GLPI Network');
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-headset';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

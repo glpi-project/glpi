@@ -826,7 +826,7 @@ class Ticket extends CommonITILObject
             }
            // Not for Ticket class
             if ($item->getType() != __CLASS__) {
-                return self::createTabEntry($title, $nb);
+                return self::createTabEntry($title, $nb, $item::getType());
             }
         }
 
@@ -835,16 +835,16 @@ class Ticket extends CommonITILObject
             case __CLASS__:
                 $ong    = [];
 
-               // enquete si statut clos
+                // enquete si statut clos
                 $satisfaction = new TicketSatisfaction();
                 if (
                     $satisfaction->getFromDB($item->getID())
                     && $item->fields['status'] == self::CLOSED
                 ) {
-                    $ong[3] = __('Satisfaction');
+                    $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
                 }
                 if ($item->canView()) {
-                    $ong[4] = __('Statistics');
+                    $ong[4] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
                 }
                 return $ong;
 

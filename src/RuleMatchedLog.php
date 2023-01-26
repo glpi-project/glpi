@@ -61,6 +61,10 @@ class RuleMatchedLog extends CommonDBTM
         return __('Matched rules');
     }
 
+    public static function getIcon()
+    {
+        return Rule::getIcon();
+    }
 
     /**
      * Count number of elements
@@ -94,18 +98,18 @@ class RuleMatchedLog extends CommonDBTM
         $array_ret = [];
 
         if ($item->getType() == 'Agent') {
-            $array_ret[0] = self::createTabEntry(__('Import information'));
+            $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::getType());
         } else {
             $continue = true;
 
             switch ($item->getType()) {
                 case 'Agent':
-                    $array_ret[0] = self::createTabEntry(__('Import information'));
+                    $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::getType());
                     break;
 
                 case 'Unmanaged':
                     $cnt = self::countForItem($item);
-                    $array_ret[1] = self::createTabEntry(__('Import information'), $cnt);
+                    $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::getType());
                     break;
 
                 case 'Computer':
@@ -123,7 +127,7 @@ class RuleMatchedLog extends CommonDBTM
                 return [];
             } else if (empty($array_ret)) {
                 $cnt = self::countForItem($item);
-                $array_ret[1] = self::createTabEntry(__('Import information'), $cnt);
+                $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::getType());
             }
         }
         return $array_ret;

@@ -42,6 +42,11 @@ use Glpi\Application\View\TemplateRenderer;
 
 abstract class CommonItilObject_Item extends CommonDBRelation
 {
+    public static function getIcon()
+    {
+        return 'ti ti-package';
+    }
+
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -515,7 +520,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                                 ]
                             );
                         }
-                        return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                        return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
                     }
             }
         }

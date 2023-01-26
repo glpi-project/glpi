@@ -163,8 +163,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                             ]
                         );
                     }
-                    $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
-                    $ong[3] = __('Kanban');
+                    $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    $ong[3] = self::createTabEntry(__('Kanban'));
                     return $ong;
             }
         }

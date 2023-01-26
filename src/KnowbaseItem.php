@@ -246,16 +246,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $nb = 0;
             switch ($item->getType()) {
                 case __CLASS__:
-                    $ong[1] = $this->getTypeName(1);
+                    $ong[1] = self::createTabEntry(self::getTypeName(1));
                     if ($item->canUpdateItem()) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
                         }
                         $ong[2] = self::createTabEntry(
                             _n('Target', 'Targets', Session::getPluralNumber()),
-                            $nb
+                            $nb,
+                            $item::getType()
                         );
-                        $ong[3] = __('Edit');
+                        $ong[3] = self::createTabEntry(__('Edit'), 0, $item::getType(), 'ti ti-pencil');
                     }
                     return $ong;
             }

@@ -71,7 +71,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                             ['changes_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 case 'Problem':
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -80,7 +80,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                             ['problems_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

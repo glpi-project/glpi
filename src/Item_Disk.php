@@ -55,6 +55,11 @@ class Item_Disk extends CommonDBChild
         return _n('Volume', 'Volumes', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'fas fa-hdd';
+    }
+
     public function post_getEmpty()
     {
 
@@ -85,7 +90,7 @@ class Item_Disk extends CommonDBChild
                     ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

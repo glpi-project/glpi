@@ -58,6 +58,11 @@ class ComputerVirtualMachine extends CommonDBChild
         return __('Virtualization');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-cpu';
+    }
+
     public function useDeletedToLockIfDynamic()
     {
         return false;
@@ -78,7 +83,7 @@ class ComputerVirtualMachine extends CommonDBChild
                     ['computers_id' => $item->getID(), 'is_deleted' => 0 ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(), $nb);
+            return self::createTabEntry(self::getTypeName(), $nb, $item::getType());
         }
         return '';
     }
