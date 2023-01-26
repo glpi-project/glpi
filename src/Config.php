@@ -1552,17 +1552,26 @@ JAVASCRIPT
      *
      * @since 0.84
      *
-     * @param $password  string   password to validate
-     * @param $display   boolean  display errors messages? (true by default)
+     * @param string $password password to validate
+     * @param bool   $display  display errors messages? (true by default)
      *
      * @throws PasswordTooWeakException when $display is false and the password does not matches the requirements
      *
      * @return boolean is password valid?
+     *
+     * @deprecated 10.0.1
      **/
     public static function validatePassword($password, $display = true)
     {
         global $CFG_GLPI;
 
+        Toolbox::deprecated(
+            "Config::validatePassword() is deprecated. "
+            . "Use User::validatePassword() instead, to ensure validation against password history."
+        );
+
+        // Despite being deprecated, original code must stay as we can't call
+        // the replacement method without an User instance
         $ok = true;
         $exception = new \Glpi\Exception\PasswordTooWeakException();
         if ($CFG_GLPI["use_password_security"]) {

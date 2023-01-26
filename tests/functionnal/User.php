@@ -224,6 +224,7 @@ class User extends \DbTestCase
        //add same user twice
         $input = ['name' => 'new_user'];
         $this->integer($user->add($input))->isGreaterThan(0);
+        $user = $this->newTestedInstance();
         $this->boolean($user->add($input))->isFalse(0);
         $this->hasSessionMessages(ERROR, ['Unable to add. The user already exists.']);
 
@@ -1265,5 +1266,132 @@ class User extends \DbTestCase
         $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP * 10;
 
         $this->variable(\User::getUserByForgottenPasswordToken($token))->isNotNull();
+    }
+
+    /**
+     * Data provider for testValidatePassword
+     *
+     * @return iterable
+     */
+    protected function testValidatePasswordProvider(): iterable
+    {
+        global $CFG_GLPI;
+
+        // Load test subject
+        $user = getItemByTypeName('User', TU_USER);
+
+        // Password security must be disabled by default
+        $this->boolean((bool)$CFG_GLPI['use_password_security'])->isFalse();
+        yield [$user, 'mypass'];
+
+        // Enable security
+        $CFG_GLPI['use_password_security'] = 1;
+        $this->integer((int)$CFG_GLPI['password_min_length'])->isIdenticalTo(8);
+        $this->integer((int)$CFG_GLPI['password_need_number'])->isIdenticalTo(1);
+        $this->integer((int)$CFG_GLPI['password_need_letter'])->isIdenticalTo(1);
+        $this->integer((int)$CFG_GLPI['password_need_caps'])->isIdenticalTo(1);
+        $this->integer((int)$CFG_GLPI['password_need_symbol'])->isIdenticalTo(1);
+        $errors = [
+            'Password too short!',
+            'Password must include at least a digit!',
+            'Password must include at least a lowercase letter!',
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
+        ];
+        yield [$user, '', $errors];
+
+        // Increase password length
+        $errors = [
+            'Password must include at least a digit!',
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
+        ];
+        yield [$user, 'mypassword', $errors];
+
+        // Reduce minimum length
+        $CFG_GLPI['password_min_length'] = strlen('mypass');
+        $errors = [
+            'Password must include at least a digit!',
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
+        ];
+        yield [$user, 'mypass', $errors];
+        $CFG_GLPI['password_min_length'] = 8; //reset
+
+        // Add digit to password
+        $errors = [
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
+        ];
+        yield [$user, 'my1password', $errors];
+
+        // Disable digit validation
+        $CFG_GLPI['password_need_number'] = 0;
+        $errors = [
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
+        ];
+        yield [$user, 'mypassword', $errors];
+        $CFG_GLPI['password_need_number'] = 1; //reset
+
+        // Add uppercase letter to password
+        yield [$user, 'my1paSsword', ['Password must include at least a symbol!']];
+
+        // Disable uppercase validation
+        $CFG_GLPI['password_need_caps'] = 0;
+        yield [$user, 'my1password', ['Password must include at least a symbol!']];
+        $CFG_GLPI['password_need_caps'] = 1; //reset
+
+        // Add symbol to password
+        yield [$user, 'my1paSsw@rd'];
+
+        // Disable password validation
+        $CFG_GLPI['password_need_symbol'] = 0;
+        yield [$user, 'my1paSsword'];
+        $CFG_GLPI['password_need_symbol'] = 1; //reset
+
+        // Test password history setting
+        $this->login();
+        $CFG_GLPI['use_password_security'] = 0; // Disable others checks
+        $CFG_GLPI['non_reusable_passwords_count'] = 3; // Check last 3 password (current + previous 2)
+        $password1 = TU_PASS; // Current password
+        $password2 = "P@ssword2"; // First password change
+        $password3 = "P@ssword3"; // Second password change
+        $password4 = "P@ssword4"; // Not yet used password
+        $this->updateItem('User', $user->getID(), ['password' => $password2, 'password2' => $password2], ['password', 'password2']);
+        $this->updateItem('User', $user->getID(), ['password' => $password3, 'password2' => $password3], ['password', 'password2']);
+        $this->boolean($user->getFromDB($user->fields['id']))->isTrue();
+
+        // Last 3 passwords should not work
+        yield [$user, $password1, ["Password was used too recently."]];
+        yield [$user, $password2, ["Password was used too recently."]];
+        yield [$user, $password3, ["Password was used too recently."]];
+
+        // Never used before password, should work
+        yield [$user, $password4];
+    }
+
+    /**
+     * Tests for $user->validatePassword()
+     *
+     * @dataprovider testValidatePasswordProvider
+     *
+     * @param User   $user     Test subject
+     * @param string $password Password to validate
+     * @param array  $errors   Expected errors
+     *
+     * @return void
+     */
+    public function testValidatePassword(
+        \User $user,
+        string $password,
+        array $errors = [],
+    ): void {
+        $expected = count($errors) === 0;
+        $password_errors = [];
+        $this->boolean($user->validatePassword($password, $password_errors))->isEqualTo($expected);
+        $this->array($password_errors)->isEqualto($errors);
+
+        return;
     }
 }

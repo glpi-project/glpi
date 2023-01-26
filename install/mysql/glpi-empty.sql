@@ -7744,6 +7744,7 @@ CREATE TABLE `glpi_users` (
   `timeline_date_format` tinyint DEFAULT '0',
   `2fa` text,
   `2fa_unenforced` tinyint NOT NULL DEFAULT 0 COMMENT 'If 1, the user is excluded from 2FA enforcement policies',
+  `password_history` longtext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
   KEY `firstname` (`firstname`),

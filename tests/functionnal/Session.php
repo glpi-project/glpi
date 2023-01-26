@@ -457,11 +457,11 @@ class Session extends \DbTestCase
     {
         global $DB;
 
-        $user = new \User();
         $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $users = [];
         for ($i = 0; $i < 6; $i++) {
+            $user = new \User();
             $users_id = $user->add([
                 'name'     => 'testCanImpersonate' . $i,
                 'password' => 'test',

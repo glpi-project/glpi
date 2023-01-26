@@ -65,6 +65,7 @@ class User extends CommonDBTM
 
     public static $undisclosedFields = [
         'password',
+        'password_history',
         'personal_token',
         'api_token',
         'cookie_token',
@@ -706,12 +707,18 @@ class User extends CommonDBTM
                 unset($input["password"]);
             } else {
                 if ($input["password"] == $input["password2"]) {
-                    if (Config::validatePassword($input["password"])) {
+                    $password_errors = [];
+                    if ($this->validatePassword($input["password"], $password_errors)) {
                         $input["password"]
                         = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
 
                         $input['password_last_update'] = $_SESSION['glpi_currenttime'];
                     } else {
+                        Session::addMessagesAfterRedirect(
+                            $password_errors,
+                            false,
+                            ERROR
+                        );
                         unset($input["password"]);
                     }
                     unset($input["password2"]);
@@ -910,10 +917,10 @@ class User extends CommonDBTM
             } else {
                 if ($input["password"] == $input["password2"]) {
                    // Check right : my password of user with lesser rights
+                    $password_errors = [];
                     if (
                         isset($input['id'])
-                        && !Auth::checkPassword($input['password'], $this->fields['password']) // Validate that password is not same as previous
-                        && Config::validatePassword($input["password"])
+                        && $this->validatePassword($input["password"], $password_errors)
                         && (($input['id'] == Session::getLoginUserID())
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email
@@ -925,6 +932,11 @@ class User extends CommonDBTM
 
                         $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                     } else {
+                        Session::addMessagesAfterRedirect(
+                            $password_errors,
+                            false,
+                            ERROR
+                        );
                         unset($input["password"]);
                     }
                     unset($input["password2"]);
@@ -1079,6 +1091,16 @@ class User extends CommonDBTM
                     'items_id' => $this->fields['id'],
                 ],
                 true
+            );
+        }
+
+        if (
+            in_array('password', $this->updates)
+            && !PasswordHistory::getInstance()->updatePasswordHistory($this, $this->oldvalues['password'])
+        ) {
+            trigger_error(
+                sprintf('Password history update failed for user %s.', $this->getId()),
+                E_USER_WARNING
             );
         }
     }
@@ -5536,7 +5558,14 @@ JAVASCRIPT;
         $input['id'] = $user->fields['id'];
 
         // Check new password validity, throws exception on failure
-        Config::validatePassword($input["password"], false);
+        $password_errors = [];
+        if (!$this->validatePassword($input["password"], $password_errors)) {
+            $expection = new \Glpi\Exception\PasswordTooWeakException();
+            foreach ($password_errors as $error) {
+                $expection->addMessage($error);
+            }
+            throw $expection;
+        }
 
         // Try to set new password
         if (!$user->update($input)) {
@@ -6885,5 +6914,47 @@ JAVASCRIPT;
         $result = $DB->request($request);
 
         return (count($result) > 0);
+    }
+
+    /**
+     * Validate password based on security rules
+     *
+     * @param string $password password to validate
+     *
+     * @return bool
+     */
+    public function validatePassword(string $password, array &$errors = []): bool
+    {
+        global $CFG_GLPI;
+
+        // Clear errors
+        $errors = [];
+
+        // Validate security policies
+        if ($CFG_GLPI["use_password_security"]) {
+            if (Toolbox::strlen($password) < $CFG_GLPI['password_min_length']) {
+                $errors[] = __('Password too short!');
+            }
+            if ($CFG_GLPI["password_need_number"] && !preg_match("/[0-9]+/", $password)) {
+                $errors[] = __('Password must include at least a digit!');
+            }
+            if ($CFG_GLPI["password_need_letter"] && !preg_match("/[a-z]+/", $password)) {
+                $errors[] = __('Password must include at least a lowercase letter!');
+            }
+            if ($CFG_GLPI["password_need_caps"] && !preg_match("/[A-Z]+/", $password)) {
+                $errors[] = __('Password must include at least a uppercase letter!');
+            }
+            if ($CFG_GLPI["password_need_symbol"] && !preg_match("/\W+/", $password)) {
+                $errors[] = __('Password must include at least a symbol!');
+            }
+        }
+
+        // Validate password history
+        if (!PasswordHistory::getInstance()->validatePassword($this, $password)) {
+            $errors[] = __('Password was used too recently.');
+        }
+
+        // Success if no error found
+        return count($errors) === 0;
     }
 }
