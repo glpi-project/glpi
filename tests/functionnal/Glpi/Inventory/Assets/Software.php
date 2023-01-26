@@ -811,7 +811,7 @@ class Software extends AbstractInventoryAsset
 
         $softwares = $software->find(['id' => $second_software_versions['softwares_id']]);
         $this->integer(count($softwares))->isIdenticalTo(1);
-        $second_software = array_pop($first_software);
+        $second_software = array_pop($softwares);
 
         $this->integer($second_software_items['id'])->isIdenticalTo($first_software_items['id']);
         $this->integer($second_software_versions['id'])->isIdenticalTo($first_software_versions['id']);
