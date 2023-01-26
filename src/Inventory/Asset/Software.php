@@ -498,7 +498,6 @@ class Software extends InventoryAsset
      */
     protected function getFullCompareKey(\stdClass $val, bool $with_version = true): string
     {
-        global $DB;
         return $this->getCompareKey([
             sha1(Sanitizer::sanitize($val->name)),
             $with_version ? strtolower($val->version) : '',
