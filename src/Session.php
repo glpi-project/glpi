@@ -1343,6 +1343,29 @@ class Session
         return "";
     }
 
+    /**
+     * Add multiple messages to be displayed after redirect
+     *
+     * @param array $messages     Messages to add
+     * @param bool  $check_once   Check if the message is not already added (false by default)
+     * @param int   $message_type Message type (INFO, WARNING, ERROR) (default INFO)
+     *
+     * @return void
+     **/
+    public static function addMessagesAfterRedirect(
+        $messages,
+        $check_once = false,
+        $message_type = INFO
+    ) {
+        foreach ($messages as $message) {
+            self::addMessageAfterRedirect(
+                $message,
+                $check_once,
+                $message_type,
+                false // Does not make sense for multiple messages, must always be false
+            );
+        }
+    }
 
     /**
      * Add a message to be displayed after redirect

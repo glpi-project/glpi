@@ -95,6 +95,7 @@ The present file will list all changes made to the project; according to the
 - `CommonITILObject::isValidator()`
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
+- `Config::validatePassword()`
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`

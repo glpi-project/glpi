@@ -98,6 +98,20 @@
         'max': constant('MONTH_TIMESTAMP'),
         'step': constant('DAY_TIMESTAMP')
     })) }}
+
+    {{ fields.dropdownArrayField(
+        'non_reusable_passwords_count',
+        config('non_reusable_passwords_count'),
+        {
+            '1': __('Last password'),
+            '2': __('Last 2 passwords'),
+            '3': __('Last 3 passwords'),
+            '4': __('Last 4 passwords'),
+            '5': __('Last 5 passwords')
+        },
+        __('Prevent users from reusing previous passwords'),
+        inline_field_options
+    ) }}
 </div>
 
 <div class="hr-text">
