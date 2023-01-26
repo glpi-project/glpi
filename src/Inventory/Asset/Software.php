@@ -504,7 +504,7 @@ class Software extends InventoryAsset
             sha1(Sanitizer::sanitize($val->name)),
             $with_version ? strtolower($val->version) : '',
             strtolower($val->arch ?? ''),
-            $DB->escape(Html::entity_decode_deep($val->manufacturers_id)),
+            Sanitizer::sanitize($val->manufacturers_id),
             $val->entities_id,
             $val->is_recursive,
             $this->getOsForKey($val)
