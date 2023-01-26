@@ -41,6 +41,7 @@ use Dropdown;
 use Entity;
 use Glpi\Inventory\Conf;
 use Glpi\Toolbox\Sanitizer;
+use Html;
 use QueryParam;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
@@ -498,11 +499,12 @@ class Software extends InventoryAsset
      */
     protected function getFullCompareKey(\stdClass $val, bool $with_version = true): string
     {
+        global $DB;
         return $this->getCompareKey([
-            sha1($val->name),
+            sha1($DB->escape(Html::entity_decode_deep($val->name))),
             $with_version ? strtolower($val->version) : '',
             strtolower($val->arch ?? ''),
-            $val->manufacturers_id,
+            $DB->escape(Html::entity_decode_deep($val->manufacturers_id)),
             $val->entities_id,
             $val->is_recursive,
             $this->getOsForKey($val)
@@ -518,8 +520,9 @@ class Software extends InventoryAsset
      */
     protected function getSimpleCompareKey(\stdClass $val): string
     {
+        global $DB;
         return $this->getCompareKey([
-            sha1($val->name),
+            sha1($DB->escape(Html::entity_decode_deep($val->name))),
             strtolower($val->version),
             strtolower($val->arch ?? ''),
             $val->entities_id ?? 0,
