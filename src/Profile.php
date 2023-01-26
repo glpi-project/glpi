@@ -2989,7 +2989,7 @@ class Profile extends CommonDBTM
             'id'                 => '4',
             'table'              => 'glpi_profilerights',
             'field'              => 'rights',
-            'name'               => __('Update password'),
+            'name'               => __('Update own password'),
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype'           => 'child',
