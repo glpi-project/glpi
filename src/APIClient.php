@@ -191,6 +191,7 @@ class APIClient extends CommonDBTM
      */
     public function showForm($ID, $options = [])
     {
+        $options['log_methods'] = self::getLogMethod();
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/setup/apiclient.html.twig', [
             'item'   => $this,

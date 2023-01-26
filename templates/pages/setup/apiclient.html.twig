@@ -39,7 +39,7 @@
     {{ fields.dropdownArrayField(
         'dolog_method',
         item.fields['dolog_method'],
-        call("APIClient::getLogMethod"),
+        params['log_methods'],
         __('Log connections')
     ) }}
 
