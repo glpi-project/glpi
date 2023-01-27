@@ -466,7 +466,7 @@ class Software extends InventoryAsset
      *
      * @return string
      */
-     function getSoftwareKey($name, $manufacturers_id): string
+    public function getSoftwareKey($name, $manufacturers_id): string
     {
         $name = Sanitizer::unsanitize($name);
         return $this->getCompareKey([sha1($name), $manufacturers_id]);
