@@ -135,7 +135,7 @@ class ProjectTaskTemplate extends CommonDropdown
             'id'       => '6',
             'name'     => __('As child of'),
             'field'    => 'name',
-            'table'    => 'glpi_projects',
+            'table'    => 'glpi_projecttasks',
             'datatype' => 'itemlink',
         ];
 
