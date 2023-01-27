@@ -761,7 +761,7 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-        //Ports are handled a different way on network equipments etprinters
+        //Ports are handled a different way on network equipments and printers
         if (
             $this->item->getType() != 'NetworkEquipment'
             && $this->item->getType() != 'Printer'
