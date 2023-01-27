@@ -466,7 +466,7 @@ class Software extends InventoryAsset
      *
      * @return string
      */
-    protected function getSoftwareKey($name, $manufacturers_id): string
+     function getSoftwareKey($name, $manufacturers_id): string
     {
         $name = Sanitizer::unsanitize($name);
         return $this->getCompareKey([sha1($name), $manufacturers_id]);
@@ -983,7 +983,7 @@ class Software extends InventoryAsset
      *
      * return \stdClass
      */
-    protected final function normalizeComparisonDataValues(\stdClass $data): \stdClass
+    final protected function normalizeComparisonDataValues(\stdClass $data): \stdClass
     {
         $normalized_data = new \stdClass();
         foreach ($data as $key => $value) {
