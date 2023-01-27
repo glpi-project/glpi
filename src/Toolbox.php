@@ -3459,7 +3459,7 @@ HTML;
        // (or would require usage of a dedicated lib).
         return (preg_match(
             "/^(?:http[s]?:\/\/(?:[^\s`!(){};'\",<>«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
-            $url
+            str_replace('&#38;', '&', $url)
         ) === 1);
     }
 
