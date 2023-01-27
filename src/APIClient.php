@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * @since 9.1
  */
@@ -190,75 +192,13 @@ class APIClient extends CommonDBTM
      */
     public function showForm($ID, $options = [])
     {
-
         $this->initForm($ID, $options);
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-        echo "<td rowspan='3'>" . __('Comments') . "</td>";
-        echo "<td rowspan='3'>";
-        echo "<textarea name='comment' class='form-control' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td >" . __('Active') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo("is_active", $this->fields["is_active"]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td >" . __('Log connections') . "</td>";
-        echo "<td>";
-        Dropdown::showFromArray(
-            "dolog_method",
-            self::getLogMethod(),
-            ['value' => $this->fields["dolog_method"]]
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<th colspan='4'>";
-        echo "<div class='center'>" . __("Filter access") . "</div>";
-        echo "</th></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td colspan='4'>";
-        echo "<i>" . __('Leave these parameters empty to disable API access restriction') . "</i>";
-        echo "<br><br><br>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('IPv4 address range') . "</td>";
-        echo "<td colspan='3'>";
-        echo "<input type='text' class='form-control' name='ipv4_range_start' value='" .
-            ($this->fields["ipv4_range_start"] ? long2ip($this->fields["ipv4_range_start"]) : '') .
-            "' size='17'> - ";
-        echo "<input type='text' class='form-control' name='ipv4_range_end' value='" .
-            ($this->fields["ipv4_range_end"] ? long2ip($this->fields["ipv4_range_end"]) : '') .
-            "' size='17'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('IPv6 address') . "</td>";
-        echo "<td>";
-        echo Html::input('ipv6', ['value' => $this->fields['ipv6']]);
-        echo "</td>";
-        echo "<td colspan='2'></td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . sprintf(__('%1$s (%2$s)'), __('Application token'), "app_token") . "</td>";
-        echo "<td colspan='2'>";
-        echo Html::input('app_token', ['value' => $this->fields['app_token']]);
-        echo "<br><input type='checkbox' name='_reset_app_token' id='app_token'>&nbsp;";
-        echo "<label for='app_token'>" . __('Regenerate') . "</label>";
-        echo "</td><td></td></tr>";
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/setup/apiclient.html.twig', [
+            'item'   => $this,
+            'params' => $options,
+            'log_methods' => self::getLogMethod()
+        ]);
+        return true;
     }
 
     public function prepareInputForAdd($input)

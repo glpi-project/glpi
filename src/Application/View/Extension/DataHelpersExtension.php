@@ -55,6 +55,7 @@ class DataHelpersExtension extends AbstractExtension
             new TwigFilter('formatted_number', [$this, 'getFormattedNumber']),
             new TwigFilter('formatted_size', [$this, 'getFormattedSize']),
             new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
+            new TwigFilter('long2ip', 'long2ip'),
             new TwigFilter('picture_url', [$this, 'getPictureUrl']),
             new TwigFilter('relative_datetime', [$this, 'getRelativeDatetime']),
             new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
