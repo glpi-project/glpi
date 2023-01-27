@@ -3,18 +3,14 @@
     "content": {
         "hardware": {
             "chassis_type": "Desktop",
-            "defaultgateway": "10.24.0.1",
-            "dns": "192.168.0.1",
-            "lastloggeduser": "user",
-            "memory": 8096,
-            "name": "pc_test",
-            "uuid": "gsdf-sdfsdf-sdfsdf-sdfsdf-sdfsdf",
-            "vmsystem": "Physical",
-            "winlang": "1049",
-            "winowner": "sdfsdfsdf",
-            "winprodid": "02345-402757-78787-787878",
-            "winprodkey": "winprodkey",
-            "workgroup": "workgroup"
+            "datelastloggeduser": "Thu Jan 26 14:16",
+            "dns": "127.0.0.53",
+            "lastloggeduser": "stanisla",
+            "memory": 32042,
+            "name": "pc_test_2",
+            "swap": 2047,
+            "uuid": "3a82e620-d7da-11dd-ad0f-bcee7b8c72b2",
+            "vmsystem": "Physical"
         },
         "softwares": [
             {
@@ -22,8 +18,8 @@
                 "folder": "C:\\Program Files\\WindowsApps\\SoundcloudLtd.SoundCloudforWindowsBeta_2.0.0.0_neutral__2xc63xn306dnw",
                 "from": "uwp",
                 "install_date": "2023-01-13",
-                "name": "SoundCloud - Music & Songs",
-                "publisher": "SoundCloud Global Limited & Co. KG",
+                "name": "Microsoft < Windows",
+                "publisher": "Microsoft < Ltd",
                 "system_category": "store",
                 "version": "2.0.0.0"
             }

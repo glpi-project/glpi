@@ -468,6 +468,7 @@ class Software extends InventoryAsset
      */
     protected function getSoftwareKey($name, $manufacturers_id): string
     {
+        $name = Sanitizer::unsanitize($name);
         return $this->getCompareKey([sha1($name), $manufacturers_id]);
     }
 
@@ -481,11 +482,12 @@ class Software extends InventoryAsset
      */
     protected function getVersionKey($val, $softwares_id): string
     {
+        $data = $this->normalizeComparisonDataValues($val);
         return $this->getCompareKey([
-            strtolower($val->version),
+            strtolower($data->version),
             $softwares_id,
-            strtolower($val->arch ?? '%'),
-            $this->getOsForKey($val)
+            strtolower($data->arch ?? '%'),
+            $this->getOsForKey($data)
         ]);
     }
 
@@ -498,14 +500,15 @@ class Software extends InventoryAsset
      */
     protected function getFullCompareKey(\stdClass $val, bool $with_version = true): string
     {
+        $data = $this->normalizeComparisonDataValues($val);
         return $this->getCompareKey([
-            sha1(Sanitizer::sanitize($val->name)),
-            $with_version ? strtolower($val->version) : '',
-            strtolower($val->arch ?? ''),
-            Sanitizer::sanitize($val->manufacturers_id),
-            $val->entities_id,
-            $val->is_recursive,
-            $this->getOsForKey($val)
+            sha1(Sanitizer::sanitize($data->name)),
+            $with_version ? strtolower($data->version) : '',
+            strtolower($data->arch ?? ''),
+            Sanitizer::sanitize($data->manufacturers_id),
+            $data->entities_id,
+            $data->is_recursive,
+            $this->getOsForKey($data)
         ]);
     }
 
@@ -518,12 +521,13 @@ class Software extends InventoryAsset
      */
     protected function getSimpleCompareKey(\stdClass $val): string
     {
+        $data = $this->normalizeComparisonDataValues($val);
         return $this->getCompareKey([
-            sha1(Sanitizer::sanitize($val->name)),
-            strtolower($val->version),
-            strtolower($val->arch ?? ''),
-            $val->entities_id ?? 0,
-            $this->getOsForKey($val)
+            sha1(Sanitizer::sanitize($data->name)),
+            strtolower($data->version),
+            strtolower($data->arch ?? ''),
+            $data->entities_id ?? 0,
+            $this->getOsForKey($data)
         ]);
     }
 
@@ -970,5 +974,24 @@ class Software extends InventoryAsset
     public function getItemtype(): string
     {
         return \Item_SoftwareVersion::class;
+    }
+
+    /**
+     * Normalize data used for comparison.
+     *
+     * @param \stdClass $data
+     *
+     * return \stdClass
+     */
+    protected final function normalizeComparisonDataValues(\stdClass $data): \stdClass
+    {
+        $normalized_data = new \stdClass();
+        foreach ($data as $key => $value) {
+            if (preg_match('/_id$/', $key) === 1 && in_array($value, ['', '0', 0])) {
+                $value = null; // normalize empty values in foreign keys
+            }
+            $normalized_data->$key = Sanitizer::unsanitize($value);
+        }
+        return $normalized_data;
     }
 }

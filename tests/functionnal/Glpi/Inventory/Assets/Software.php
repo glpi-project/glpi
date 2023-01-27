@@ -602,6 +602,7 @@ class Software extends AbstractInventoryAsset
         $this->string($version->fields['name'])->isEqualTo("1.4");
     }
 
+<<<<<<< HEAD
     public function testSoftwareRuledictionnaryManufacturer()
     {
         $this->login();
@@ -762,10 +763,32 @@ class Software extends AbstractInventoryAsset
     }
 
     public function testSoftwareWithHtmlentites()
+=======
+
+    protected function softwareProvider(): array
+    {
+        return [
+            //To test FullCompareKey (with < and & on software name / manufacturer)
+            '/tests/fixtures/inventories/softwares/01-test_software_with_html_entities_with_version.json',
+            '/tests/fixtures/inventories/softwares/02-test_software_with_html_entities_with_version.json',
+            //To test FullCompareKey without version (with < and & on software name / manufacturer)
+            '/tests/fixtures/inventories/softwares/03-test_software_with_html_entities_and_without_version.json',
+            '/tests/fixtures/inventories/softwares/04-test_software_with_html_entities_and_without_version.json',
+            // /To test FullCompareKey with version (with < and & on software name / manufacturer name / OS name / arch name)
+            '/tests/fixtures/inventories/softwares/05-test_software_with_html_entities_and_with_version_and_os.json',
+            // /To test FullCompareKey without version (with < and & on software name / manufacturer name / OS name / arch name)
+            '/tests/fixtures/inventories/softwares/06-test_software_with_html_entities_and_without_version_and_os.json',
+        ];
+    }
+
+    /**
+     * @dataProvider softwareProvider
+     */
+    public function testSoftwareWithHtmlentites($path)
+>>>>>>> 6e70b0a220 (add some test)
     {
 
-        $json_source = json_decode(file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/01-computer_with_software.json'));
-
+        $json_source = json_decode(file_get_contents(GLPI_ROOT . $path));
         $this->doInventory($json_source);
 
         $computer = new \Computer();
@@ -792,7 +815,7 @@ class Software extends AbstractInventoryAsset
 
 
         //redo an inventory
-        $json_source = json_decode(file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/01-computer_with_software.json'));
+        $json_source = json_decode(file_get_contents(GLPI_ROOT . $path));
         $this->doInventory($json_source);
 
         $computer = new \Computer();
@@ -816,5 +839,7 @@ class Software extends AbstractInventoryAsset
         $this->integer($second_software_items['id'])->isIdenticalTo($first_software_items['id']);
         $this->integer($second_software_versions['id'])->isIdenticalTo($first_software_versions['id']);
         $this->integer($second_software['id'])->isIdenticalTo($first_software['id']);
+
+        $computer->deleteByCriteria(['id' => $first_computer['id']]);
     }
 }
