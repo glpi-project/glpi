@@ -1007,6 +1007,7 @@ class Rule extends CommonDBTM
             }
         }
 
+        $elements = [];
         if (!$p['restrict'] || ($p['restrict'] == self::AND_MATCHING)) {
             $elements[self::AND_MATCHING] = __('and');
         }
@@ -1339,6 +1340,7 @@ class Rule extends CommonDBTM
             }
         }
 
+        $items      = [];
         $group      = [];
         $groupname  = _n('Criterion', 'Criteria', Session::getPluralNumber());
         foreach ($this->getAllCriteria() as $ID => $crit) {
@@ -1411,14 +1413,9 @@ class Rule extends CommonDBTM
             }
         }
 
-        $value = '';
-
+        $items = [];
         foreach ($actions as $ID => $act) {
             $items[$ID] = $act['name'];
-
-            if (empty($value) && !isset($used[$ID])) {
-                $value = $ID;
-            }
         }
         return Dropdown::showFromArray($p['name'], $items, $p);
     }

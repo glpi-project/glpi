@@ -37,15 +37,6 @@ use Glpi\Toolbox\Sanitizer;
 
 class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown
 {
-    /**
-     * Constructor
-     **/
-    public function __construct()
-    {
-        parent::__construct('RuleDictionnaryOperatingSystem');
-    }
-
-
     public function getCriterias()
     {
 

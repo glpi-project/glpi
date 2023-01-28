@@ -36,15 +36,6 @@
 class RuleDictionnaryPeripheralType extends RuleDictionnaryDropdown
 {
     /**
-     * Constructor
-     **/
-    public function __construct()
-    {
-        parent::__construct('RuleDictionnaryPeripheralType');
-    }
-
-
-    /**
      * @see Rule::getCriterias()
      **/
     public function getCriterias()

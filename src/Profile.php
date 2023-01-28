@@ -3664,9 +3664,9 @@ class Profile extends CommonDBTM
 
         $nb_cbs      = count($elements);
         $cb_options  = ['readonly' => !$param['canedit']];
+        $massive_tag = 'checkall_' . $param['field'] . '_' . $param['rand'];
         if ($param['check_all']) {
             $nb_cbs++;
-            $massive_tag                = 'checkall_' . $param['field'] . '_' . $param['rand'];
             $cb_options['massive_tags'] = $massive_tag;
         }
 

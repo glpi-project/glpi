@@ -36,15 +36,6 @@
 class RuleDictionnaryComputerModel extends RuleDictionnaryDropdown
 {
     /**
-     * Constructor
-     **/
-    public function __construct()
-    {
-        parent::__construct('RuleDictionnaryComputerModel');
-    }
-
-
-    /**
      * @see Rule::getCriterias()
      **/
     public function getCriterias()

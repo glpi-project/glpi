@@ -233,6 +233,7 @@ class RuleCriteria extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
+                    $criterion = '';
                     if (isset($values['criteria']) && !empty($values['criteria'])) {
                         $criterion = $values['criteria'];
                     }

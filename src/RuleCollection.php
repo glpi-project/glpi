@@ -559,9 +559,9 @@ class RuleCollection extends CommonDBTM
             $colspan++;
         }
 
+        $ruletype = $this->getRuleClassName();
         $can_sort = $canedit && $nb;
         if (count($this->RuleList->list)) {
-            $ruletype = $this->RuleList->list[0]->getType();
             $can_sort = $this->RuleList->list[0]->can_sort && $canedit && $nb;
             Session::initNavigateListItems($ruletype);
         }
@@ -1496,8 +1496,7 @@ JAVASCRIPT;
             if (!$item->isEntityAssign()) {
                 $params['entities_id'] = 0;
             } else {
-                $rule['entities_id'] = $DB->escape($rule['entities_id']);
-                $entities_found = $entity->find(['completename' => $rule['entities_id']]);
+                $entities_found = $entity->find(['completename' => $DB->escape($current_rule['entities_id'])]);
                 if (!empty($entities_found)) {
                     $entity_found          = array_shift($entities_found);
                     $params['entities_id'] = $entity_found['id'];
