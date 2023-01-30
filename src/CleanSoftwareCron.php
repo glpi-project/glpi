@@ -194,8 +194,7 @@ class CleanSoftwareCron extends CommonDBTM
         $total = 0;
 
         do {
-
-            $scope['LIMIT'] = $max > self::MAX_BATCH_SIZE ? self::MAX_BATCH_SIZE : $max;
+            $scope['LIMIT'] = min($max, self::MAX_BATCH_SIZE);
             $items = $DB->request($scope);
             $count = count($items);
             $total += $count;
