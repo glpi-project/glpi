@@ -123,7 +123,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-}else {
+} else {
     $menus = ["assets", "computer"];
     ComputerVirtualMachine::displayFullPageForItem($_GET["id"], $menus, [
         'computers_id' => $_GET["computers_id"]
