@@ -72,10 +72,11 @@ foreach ($_GET['users_id'] as $user_id) {
                 $path = User::getURLForPicture($user->fields['picture']);
             }
             $img = Html::image($path, [
-                'title'  => getUserName($user_id),
-                'width'  => $_GET['size'],
-                'height' => $_GET['size'],
-                'class'  => $_GET['class'] ?? ''
+                'title'          => getUserName($user_id),
+                'data-bs-toggle' => 'tooltip',
+                'width'          => $_GET['size'],
+                'height'         => $_GET['size'],
+                'class'          => $_GET['class'] ?? ''
             ]);
             if (isset($_GET['link']) && $_GET['link']) {
                  $imgs[$user_id] = Html::link($img, User::getFormURLWithID($user_id));
