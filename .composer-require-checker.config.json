@@ -49,7 +49,9 @@
     "brotli_compress",
 
     "// composer autoloader",
-    "Composer\\Autoload\\ClassLoader"
+    "Composer\\Autoload\\ClassLoader",
+
+    "SodiumException"
   ],
   "scan-files": [
     "ajax/**/*.php",

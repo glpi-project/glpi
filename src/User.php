@@ -68,6 +68,7 @@ class User extends CommonDBTM
         'personal_token',
         'api_token',
         'cookie_token',
+        '2fa',
     ];
 
     private $entities = null;
@@ -2638,6 +2639,9 @@ JAVASCRIPT;
                 if ($this->fields['is_deleted_ldap']) {
                     echo '<br>' . __('User missing in LDAP directory');
                 }
+                if ($this->fields['2fa'] !== null) {
+                    echo '<br>' . __('2FA enabled');
+                }
 
                 echo "</td>";
             } else {
@@ -3952,6 +3956,16 @@ JAVASCRIPT;
             'datatype'          => 'datetime',
         ];
 
+        $tab[] = [
+            'id'                => 132,
+            'table'             => 'glpi_users',
+            'field'             => '_virtual_2fa_status',
+            'name'              => __('2FA status'),
+            'datatype'          => 'specific',
+            'additionalfields'  => ['2fa'],
+            'nosearch'          => true, // Searching virtual fields is not supported currently
+        ];
+
        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
@@ -3978,6 +3992,9 @@ JAVASCRIPT;
                         ['class' => 'user_picture_small', 'alt' => _n('Picture', 'Pictures', 1)]
                     );
                 }
+                break;
+            case '_virtual_2fa_status':
+                return !empty($values['2fa']) ? __('Enabled') : __('Disabled');
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

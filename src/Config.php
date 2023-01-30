@@ -301,6 +301,18 @@ class Config extends CommonDBTM
             $input['glpinetwork_registration_key'] = trim($input['glpinetwork_registration_key']);
         }
 
+        $tfa_enforced_changed = isset($input['2fa_enforced']) && $input['2fa_enforced'] !== $CFG_GLPI['2fa_enforced'];
+        $tfa_grace_days_changed = isset($input['2fa_grace_days']) && $input['2fa_grace_days'] !== $CFG_GLPI['2fa_grace_days'];
+        if ($tfa_grace_days_changed || $tfa_enforced_changed) {
+            $enforced = $input['2fa_enforced'] ?? $CFG_GLPI['2fa_enforced'];
+            $grace_period = $input['2fa_grace_days'] ?? $CFG_GLPI['2fa_grace_days'];
+            if ($enforced && $grace_period > 0) {
+                $input['2fa_grace_date_start'] = $_SESSION['glpi_currenttime'];
+            } else {
+                $input['2fa_grace_date_start'] = null;
+            }
+        }
+
         $this->setConfigurationValues('core', $input);
 
         return false;
@@ -3200,202 +3212,10 @@ HTML;
             return false;
         }
 
-        $rand = mt_rand();
-
-        echo '<div class="center" id="tabsbody">';
-        echo '<form name="form" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '" method="post" data-track-changes="true">';
-        echo '<table class="tab_cadre_fixe">';
-        echo '<tr><th colspan="4">' . __('Security setup') . '</th></tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td colspan="4" class="center b">' . __('Password security policy') . '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_2">';
-        echo '<td>';
-        echo '<label for="dropdown_use_password_security' . $rand . '">';
-        echo __('Password security policy validation');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showYesNo(
-            'use_password_security',
-            $CFG_GLPI['use_password_security'],
-            -1,
-            [
-                'rand' => $rand,
-            ]
-        );
-        echo '</td>';
-        echo '<td>';
-        echo '<label for="dropdown_password_min_length' . $rand . '">';
-        echo __('Password minimum length');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showNumber(
-            'password_min_length',
-            [
-                'value' => $CFG_GLPI['password_min_length'],
-                'min'   => 4,
-                'max'   => 30,
-                'rand'  => $rand
-            ]
-        );
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_2">';
-        echo '<td>';
-        echo '<label for="dropdown_password_need_number' . $rand . '">';
-        echo __('Password need digit');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showYesNo(
-            'password_need_number',
-            $CFG_GLPI['password_need_number'],
-            -1,
-            [
-                'rand' => $rand,
-            ]
-        );
-        echo '</td>';
-        echo '<td>';
-        echo '<label for="dropdown_password_need_letter' . $rand . '">';
-        echo __('Password need lowercase character');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showYesNo(
-            'password_need_letter',
-            $CFG_GLPI['password_need_letter'],
-            -1,
-            [
-                'rand' => $rand,
-            ]
-        );
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_2">';
-        echo '<td>';
-        echo '<label for="dropdown_password_need_caps' . $rand . '">';
-        echo __('Password need uppercase character');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showYesNo(
-            'password_need_caps',
-            $CFG_GLPI['password_need_caps'],
-            -1,
-            [
-                'rand' => $rand,
-            ]
-        );
-        echo '</td>';
-        echo '<td>';
-        echo '<label for="dropdown_password_need_symbol' . $rand . '">';
-        echo __('Password need symbol');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showYesNo(
-            'password_need_symbol',
-            $CFG_GLPI['password_need_symbol'],
-            -1,
-            [
-                'rand' => $rand,
-            ]
-        );
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td colspan="4" class="center b">' . __('Password expiration policy') . '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_2">';
-        echo '<td>';
-        echo '<label for="dropdown_password_expiration_delay' . $rand . '">';
-        echo __('Password expiration delay (in days)');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showNumber(
-            'password_expiration_delay',
-            [
-                'value' => $CFG_GLPI['password_expiration_delay'],
-                'min'   => 30,
-                'max'   => 365,
-                'step'  => 15,
-                'toadd' => [-1 => __('Never')],
-                'rand'  => $rand
-            ]
-        );
-        echo '</td>';
-        echo '<td>';
-        echo '<label for="dropdown_password_expiration_notice' . $rand . '">';
-        echo __('Password expiration notice time (in days)');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showNumber(
-            'password_expiration_notice',
-            [
-                'value' => $CFG_GLPI['password_expiration_notice'],
-                'min'   => 0,
-                'max'   => 30,
-                'step'  => 1,
-                'toadd' => [-1 => __('Notification disabled')],
-                'rand'  => $rand
-            ]
-        );
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_2">';
-        echo '<td>';
-        echo '<label for="dropdown_password_expiration_lock_delay' . $rand . '">';
-        echo __('Delay before account deactivation (in days)');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showNumber(
-            'password_expiration_lock_delay',
-            [
-                'value' => $CFG_GLPI['password_expiration_lock_delay'],
-                'min'   => 0,
-                'max'   => 30,
-                'step'  => 1,
-                'toadd' => [-1 => __('Do not deactivate')],
-                'rand'  => $rand
-            ]
-        );
-        echo '</td>';
-        echo '<td>';
-        echo '<label for="password_init_token_delay' . $rand . '">';
-        echo __('Validity period of the password initialization token');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showTimeStamp('password_init_token_delay', ['value' => $CFG_GLPI["password_init_token_delay"],
-            'min'   => DAY_TIMESTAMP,
-            'max'   => MONTH_TIMESTAMP,
-            'step'  => DAY_TIMESTAMP,
-            'rand'  => $rand
+        TemplateRenderer::getInstance()->display('pages/setup/general/security_setup.html.twig', [
+            'canedit' => Session::haveRight(self::$rightname, UPDATE),
+            'config'  => $CFG_GLPI,
         ]);
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_2">';
-        echo '<td colspan="4" class="center">';
-        echo '<input type="submit" name="update" class="btn btn-primary" value="' . _sx('button', 'Save') . '">';
-        echo '</td>';
-        echo '</tr>';
-
-        echo '</table>';
-        Html::closeForm();
     }
 
     /**

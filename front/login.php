@@ -51,6 +51,10 @@ if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'test
     }
 }
 
+if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {
+    $_POST['totp_code'] = implode('', $_POST['totp_code']);
+}
+
 $_POST = array_map('stripslashes', $_POST);
 
 //Do login and checks
@@ -86,7 +90,17 @@ $auth = new Auth();
 
 
 // now we can continue with the process...
-if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth)) {
+if (isset($_REQUEST['totp_cancel'])) {
+    session_destroy();
+    Html::redirect($CFG_GLPI['root_doc'] . '/index.php');
+}
+$mfa_params = [];
+if (!empty($_POST['totp_code'])) {
+    $mfa_params['totp_code'] = $_POST['totp_code'];
+} else if (!empty($_POST['backup_code'])) {
+    $mfa_params['backup_code'] = $_POST['backup_code'];
+}
+if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth, $mfa_params)) {
     Auth::redirectIfAuthenticated();
 } else {
     TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [

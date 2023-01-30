@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2022 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,23 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\CalDAV\Backend;
+$AJAX_INCLUDE = 1;
+include('../inc/includes.php');
 
-use Sabre\DAV\Auth\Backend\AbstractBasic;
+Session::checkLoginUser();
 
-/**
- * Basic authentication backend for CalDAV server.
- *
- * @since 9.5.0
- */
-class Auth extends AbstractBasic
-{
-    protected $principalPrefix = Principal::PREFIX_USERS . '/';
-
-    protected function validateUserPass($username, $password)
-    {
-        $auth = new \Auth();
-        // TODO Enforce security by accepting here only CalDAV application dedicated password
-        return $auth->validateLogin($username, $password, true);
-    }
+if (isset($_POST['regenerate_backup_codes'])) {
+   $totp = new \Glpi\Security\TOTPManager();
+   $codes = $totp->regenerateBackupCodes(Session::getLoginUserID());
+   echo json_encode($codes);
 }

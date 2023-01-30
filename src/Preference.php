@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -33,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Security\TOTPManager;
+
 // class Preference for the current connected User
 class Preference extends CommonGLPI
 {
@@ -48,6 +49,7 @@ class Preference extends CommonGLPI
 
         $ong = [];
         $this->addStandardTab('User', $ong, $options);
+        $this->addStandardTab(__CLASS__, $ong, $options);
         if (Session::haveRightsOr('personalization', [READ, UPDATE])) {
             $this->addStandardTab('Config', $ong, $options);
         }
@@ -57,5 +59,24 @@ class Preference extends CommonGLPI
         $ong['no_all_tab'] = true;
 
         return $ong;
+    }
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        return __('Two-factor authentication (2FA)');
+    }
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        $totp = new TOTPManager();
+        $totp->showTOTPConfigForm($_SESSION['glpiID'], isset($_REQUEST['reset_2fa']));
+    }
+
+    public function showTabsContent($options = [])
+    {
+        if (isset($_REQUEST['reset_2fa'])) {
+            $options['reset_2fa'] = $_REQUEST['reset_2fa'];
+        }
+        parent::showTabsContent($options);
     }
 }

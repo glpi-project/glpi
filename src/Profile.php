@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -157,6 +158,7 @@ class Profile extends CommonDBTM
                         $ong[4] = self::createTabEntry(__('Life cycles'));
                         $ong[6] = self::createTabEntry(__('Tools'), 0, $item::getType(), 'ti ti-briefcase');
                         $ong[8] = self::createTabEntry(__('Setup'), 0, $item::getType(), 'ti ti-cog');
+                        $ong[9] = self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock');
                     } else {
                         $ong[2] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package');
                         $ong[3] = self::createTabEntry(__('Assistance'), 0, $item::getType(), 'ti ti-headset');
@@ -165,6 +167,7 @@ class Profile extends CommonDBTM
                         $ong[6] = self::createTabEntry(__('Tools'), 0, $item::getType(), 'ti ti-briefcase');
                         $ong[7] = self::createTabEntry(__('Administration'), 0, $item::getType(), 'ti ti-shield-check');
                         $ong[8] = self::createTabEntry(__('Setup'), 0, $item::getType(), 'ti ti-settings');
+                        $ong[9] = self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock');
                     }
                     return $ong;
             }
@@ -221,6 +224,10 @@ class Profile extends CommonDBTM
                     } else {
                         $item->showFormSetup();
                     }
+                    break;
+
+                case 9:
+                    $item->showFormSecurity();
                     break;
             }
         }
@@ -2160,6 +2167,22 @@ class Profile extends CommonDBTM
         echo "</div>";
 
         $this->showLegend();
+    }
+
+    /**
+     * Print the Security form for a profile
+     *
+     * @param $openform     boolean  open the form (true by default)
+     * @param $closeform    boolean  close the form (true by default)
+     **/
+    public function showFormSecurity($openform = true, $closeform = true)
+    {
+        $canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]);
+        TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
+            'canedit' => $canedit,
+            'item'   => $this,
+            'action' => Toolbox::getItemTypeFormURL(__CLASS__)
+        ]);
     }
 
 

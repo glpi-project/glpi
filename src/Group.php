@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Group class
  **/
@@ -143,6 +145,7 @@ class Group extends CommonTreeDropdown
                     ) {
                         $ong[3] = self::createTabEntry(__('LDAP directory link'), 0, $item::getType(), 'ti ti-login');
                     }
+                    $ong[5] = self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock');
                     return $ong;
             }
         }
@@ -169,7 +172,11 @@ class Group extends CommonTreeDropdown
                         return true;
 
                     case 4:
-                          $item->showChildren();
+                        $item->showChildren();
+                        return true;
+
+                    case 5:
+                        $item->showSecurityForm($item->getID());
                         return true;
                 }
                 break;
@@ -640,6 +647,19 @@ class Group extends CommonTreeDropdown
             'candel'  => false
         ];
         $this->showFormButtons($options);
+    }
+
+    /**
+     * @param $ID
+     **/
+    public function showSecurityForm($ID)
+    {
+        $canedit = self::canUpdate() && Session::haveRight("user", User::UPDATEAUTHENT);
+        TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
+            'canedit' => $canedit,
+            'item'   => $this,
+            'action' => Toolbox::getItemTypeFormURL(__CLASS__)
+        ]);
     }
 
 
