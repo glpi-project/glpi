@@ -130,9 +130,9 @@ if (isset($_GET['create_ticket'])) {
     $kb_recent     = "";
     $kb_lastupdate = "";
     if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-        $kb_popular    = KnowbaseItem::showRecentPopular("popular");
-        $kb_recent     = KnowbaseItem::showRecentPopular("recent");
-        $kb_lastupdate = KnowbaseItem::showRecentPopular("lastupdate");
+        $kb_popular    = KnowbaseItem::showRecentPopular("popular", false);
+        $kb_recent     = KnowbaseItem::showRecentPopular("recent", false);
+        $kb_lastupdate = KnowbaseItem::showRecentPopular("lastupdate", false);
     }
 
     Html::requireJs('masonry');
