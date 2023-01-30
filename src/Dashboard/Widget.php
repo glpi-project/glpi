@@ -656,7 +656,12 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Pie(Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0], {
+         if (Dashboard.getActiveDashboard()) {
+            var target = Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0];
+         } else {
+            var target = '#{$chart_id} .chart';
+         }
+         var chart = new Chartist.Pie(target, {
             labels: {$labels},
             series: {$series},
          }, {
@@ -1147,7 +1152,12 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Bar(Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0], {
+         if (Dashboard.getActiveDashboard()) {
+            var target = Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0];
+         } else {
+            var target = '#{$chart_id} .chart';
+         }
+         var chart = new Chartist.Bar(target, {
             labels: {$json_labels},
             series: {$json_series},
          }, {
@@ -1579,7 +1589,12 @@ HTML;
 
         $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Line(Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0], {
+         if (Dashboard.getActiveDashboard()) {
+            var target = Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart')[0];
+         } else {
+            var target = '#{$chart_id} .chart';
+         }
+         var chart = new Chartist.Line(target, {
             labels: {$json_labels},
             series: {$json_series},
          }, {
