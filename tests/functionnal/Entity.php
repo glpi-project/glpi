@@ -721,6 +721,28 @@ class Entity extends DbTestCase
                 'expected'  => 'user_nick_6436345654',
                 'user_nick' => 'user_nick_6436345654'
             ],
+            [
+                'interface' => 'central',
+                'setting'   => \Entity::ANONYMIZE_USE_GENERIC_USER,
+                'expected'  => 'test_anon_user',
+            ],
+            [
+                'interface' => 'helpdesk',
+                'setting'   => \Entity::ANONYMIZE_USE_GENERIC_USER,
+                'expected'  => "Helpdesk user",
+            ],
+            [
+                'interface' => 'central',
+                'setting'   => \Entity::ANONYMIZE_USE_NICKNAME_USER,
+                'expected'  => 'test_anon_user',
+                'user_nick' => 'user_nick_6436345654'
+            ],
+            [
+                'interface' => 'helpdesk',
+                'setting'   => \Entity::ANONYMIZE_USE_NICKNAME_USER,
+                'expected'  => 'user_nick_6436345654',
+                'user_nick' => 'user_nick_6436345654'
+            ],
         ];
     }
 

@@ -2749,7 +2749,10 @@ HTML;
             }
 
             if (
-                Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+                (
+                    Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+                    || Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME_USER
+                )
                 && Session::getCurrentInterface() == "central"
             ) {
                 echo "<tr class='tab_bg_1'>";
@@ -3161,7 +3164,10 @@ HTML;
             echo "</td></tr>";
 
             if (
-                Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+                (
+                    Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+                    || Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME_USER
+                )
                 && Session::getCurrentInterface() == "central"
             ) {
                 echo "<tr class='tab_bg_1'>";
@@ -6251,9 +6257,11 @@ HTML;
                 return null;
 
             case Entity::ANONYMIZE_USE_GENERIC:
+            case Entity::ANONYMIZE_USE_GENERIC_USER:
                 return __("Helpdesk user");
 
             case Entity::ANONYMIZE_USE_NICKNAME:
+            case Entity::ANONYMIZE_USE_NICKNAME_USER:
                 return $this->fields['nickname'];
         }
 
@@ -6276,9 +6284,11 @@ HTML;
                 return null;
 
             case Entity::ANONYMIZE_USE_GENERIC:
+            case Entity::ANONYMIZE_USE_GENERIC_USER:
                 return __("Helpdesk user");
 
             case Entity::ANONYMIZE_USE_NICKNAME:
+            case Entity::ANONYMIZE_USE_NICKNAME_USER:
                 $user = new User();
                 if (!$user->getFromDB($users_id)) {
                     return '';

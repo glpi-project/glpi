@@ -67,9 +67,12 @@ class Entity extends CommonTreeDropdown
     /**
      * Possible values for "anonymize_support_agents" setting
      */
-    const ANONYMIZE_DISABLED     = 0;
-    const ANONYMIZE_USE_GENERIC  = 1;
-    const ANONYMIZE_USE_NICKNAME = 2;
+    const ANONYMIZE_DISABLED            = 0;
+    const ANONYMIZE_USE_GENERIC         = 1;
+    const ANONYMIZE_USE_NICKNAME        = 2;
+    const ANONYMIZE_USE_GENERIC_USER    = 3;
+    const ANONYMIZE_USE_NICKNAME_USER   = 4;
+    const ANONYMIZE_USE_GENERIC_GROUP   = 5;
 
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
@@ -3488,8 +3491,11 @@ class Entity extends CommonTreeDropdown
         return [
             self::CONFIG_PARENT => __('Inheritance of the parent entity'),
             self::ANONYMIZE_DISABLED => __('Disabled'),
-            self::ANONYMIZE_USE_GENERIC => __("Replace the agent's name with a generic name"),
-            self::ANONYMIZE_USE_NICKNAME => __("Replace the agent's name with a customisable nickname"),
+            self::ANONYMIZE_USE_GENERIC => __("Replace the agent and group name with a generic name"),
+            self::ANONYMIZE_USE_NICKNAME => __("Replace the agent and group name with a customisable nickname"),
+            self::ANONYMIZE_USE_GENERIC_USER => __("Replace the agent's name with a generic name"),
+            self::ANONYMIZE_USE_NICKNAME_USER => __("Replace the agent's name with a customisable nickname"),
+            self::ANONYMIZE_USE_GENERIC_GROUP => __("Replace the group's name with a generic name"),
         ];
     }
 
