@@ -158,7 +158,6 @@ class Sanitizer extends \GLPITestCase
             'dbescaped_value'   => "<strong>text with slashable chars \' \\n \\\"</strong>",
             'db_escape'         => false,
         ];
-
     }
 
     /**
