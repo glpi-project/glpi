@@ -110,7 +110,20 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else {
+} else if (isset($_POST["restore"])) {
+    $computer_vm->check($_POST['id'], DELETE);
+    if ($computer_vm->restore($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "computers",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s restores a virtual machine'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
+}else {
     $menus = ["assets", "computer"];
     ComputerVirtualMachine::displayFullPageForItem($_GET["id"], $menus, [
         'computers_id' => $_GET["computers_id"]
