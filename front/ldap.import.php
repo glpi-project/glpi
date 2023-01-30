@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 if (!defined('GLPI_ROOT')) {
     include('../inc/includes.php');
 }
@@ -41,10 +43,10 @@ Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
 // Need REQUEST to manage initial walues and posted ones
 if (isset($_REQUEST['basedn'])) {
-    $_REQUEST['basedn'] = Toolbox::stripslashes_deep($_REQUEST['basedn']);
+    $_REQUEST['basedn'] = Sanitizer::unsanitize($_REQUEST['basedn']);
 }
 if (isset($_REQUEST['ldap_filter'])) {
-    $_REQUEST['ldap_filter'] = Toolbox::stripslashes_deep($_REQUEST['ldap_filter']);
+    $_REQUEST['ldap_filter'] = Sanitizer::unsanitize($_REQUEST['ldap_filter']);
 }
 
 AuthLDAP::manageValuesInSession($_REQUEST);
