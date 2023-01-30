@@ -93,7 +93,7 @@ class CleanSoftwareCron extends CommonDBTM
         $total += self::deleteItems(
             self::getSoftwareWithNoVersionsCriteria(),
             new Software(),
-            $max - $total
+            $max
         );
 
         return $total;
@@ -191,21 +191,13 @@ class CleanSoftwareCron extends CommonDBTM
     ): int {
         global $DB;
 
-        $total = 0;
+        $scope['LIMIT'] = min($max, self::MAX_BATCH_SIZE);
 
-        do {
-            $scope['LIMIT'] = min($max - $total, self::MAX_BATCH_SIZE);
-            $items = $DB->request($scope);
-            $count = count($items);
-            $total += $count;
+        $items = $DB->request($scope);
+        foreach ($items as $item) {
+            $em->delete($item);
+        }
 
-            foreach ($items as $item) {
-                $em->delete($item);
-            }
-
-           // Stop if no items found
-        } while ($count > 0);
-
-        return $total;
+        return count($items);
     }
 }
