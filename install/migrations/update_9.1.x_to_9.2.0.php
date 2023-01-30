@@ -221,11 +221,14 @@ function update91xto920()
     $migration->addKey("glpi_documents_items", "users_id");
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_documents_items', [
+            'glpi_documents_items',
+            [
                 'glpi_documents_items.users_id' => new \QueryExpression(DBmysql::quoteName('glpi_documents.users_id'))
-            ], [
+            ],
+            [
                 'glpi_documents_items.documents_id' => new \QueryExpression(DBmysql::quoteName('glpi_documents.id'))
-            ], [
+            ],
+            [
                 'LEFT JOIN' => [
                     'glpi_documents' => [
                         'ON' => [
