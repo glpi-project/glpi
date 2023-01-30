@@ -40,6 +40,13 @@ if (!defined('GLPI_ROOT')) {
 Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
 // Need REQUEST to manage initial walues and posted ones
+if (isset($_REQUEST['basedn'])) {
+   $_REQUEST['basedn'] = Toolbox::stripslashes_deep($_REQUEST['basedn']);
+}
+if (isset($_REQUEST['ldap_filter'])) {
+   $_REQUEST['ldap_filter'] = Toolbox::stripslashes_deep($_REQUEST['ldap_filter']);
+}
+
 AuthLDAP::manageValuesInSession($_REQUEST);
 
 if (isset($_SESSION['ldap_import']['_in_modal']) && $_SESSION['ldap_import']['_in_modal']) {
