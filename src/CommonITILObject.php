@@ -8686,6 +8686,18 @@ abstract class CommonITILObject extends CommonDBTM
                 }
                 if ($links) {
                     if (count($links)) {
+                        // Fill statuses
+                        $ticket_ids = array_keys($links);
+                        $status_it = $DB->request([
+                            'SELECT' => ['id', 'status'],
+                            'FROM'   => Ticket::getTable(),
+                            'WHERE'  => [
+                                'id' => $ticket_ids
+                            ]
+                        ]);
+                        foreach ($status_it as $status_data) {
+                            $links[$status_data['id']]['status'] = $status_data['status'];
+                        }
                         $data['_steps'] = $links;
                     }
                 }
