@@ -2939,7 +2939,7 @@ class Entity extends CommonTreeDropdown
 
         Contract::dropdown([
             'name'      => 'contracts_id_default',
-            'condition' => Contract::getExpiredCriteria(),
+            'condition' => ['is_template' => 0, 'is_deleted' => 0] + Contract::getExpiredCriteria(),
             'entity'    => $entity->getID(),
             'toadd'     => $toadd,
             'value'     => $current_default_contract_value,
@@ -3887,6 +3887,8 @@ class Entity extends CommonTreeDropdown
      * @since 10.0.0
      *
      * @return array
+     *
+     * @FIXME Remove this method in GLPI 10.1.
      */
     public static function getDefaultContractValues($entities_id): array
     {
