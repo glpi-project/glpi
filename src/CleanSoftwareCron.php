@@ -191,13 +191,23 @@ class CleanSoftwareCron extends CommonDBTM
     ): int {
         global $DB;
 
-        $scope['LIMIT'] = min($max, self::MAX_BATCH_SIZE);
+        $total = 0;
 
-        $items = $DB->request($scope);
-        foreach ($items as $item) {
-            $em->delete($item);
-        }
+        do {
 
-        return count($items);
+            $scope['LIMIT'] = ($max > self::MAX_BATCH_SIZE) ? self::MAX_BATCH_SIZE : $max;
+            $items = $DB->request($scope);
+            $count = count($items);
+            $total += $count;
+            $max -= $count;
+
+            foreach ($items as $item) {
+                $em->delete($item);
+            }
+
+           // Stop if no items found or max is reached
+        } while (($count > 0) && ($max > 0));
+
+        return $total;
     }
 }
