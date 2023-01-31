@@ -721,6 +721,38 @@ class Entity extends DbTestCase
                 'expected'  => 'user_nick_6436345654',
                 'user_nick' => 'user_nick_6436345654'
             ],
+            [
+                'interface' => 'central',
+                'setting'   => \Entity::ANONYMIZE_USE_GENERIC_USER,
+                'expected'  => 'test_anon_user',
+            ],
+            [
+                'interface' => 'helpdesk',
+                'setting'   => \Entity::ANONYMIZE_USE_GENERIC_USER,
+                'expected'  => "Helpdesk user",
+            ],
+            [
+                'interface' => 'central',
+                'setting'   => \Entity::ANONYMIZE_USE_NICKNAME_USER,
+                'expected'  => 'test_anon_user',
+                'user_nick' => 'user_nick_6436345654'
+            ],
+            [
+                'interface' => 'helpdesk',
+                'setting'   => \Entity::ANONYMIZE_USE_NICKNAME_USER,
+                'expected'  => 'user_nick_6436345654',
+                'user_nick' => 'user_nick_6436345654'
+            ],
+            [
+                'interface' => 'central',
+                'setting'   => \Entity::ANONYMIZE_USE_GENERIC_GROUP,
+                'expected'  => 'test_anon_user',
+            ],
+            [
+                'interface' => 'helpdesk',
+                'setting'   => \Entity::ANONYMIZE_USE_GENERIC_GROUP,
+                'expected'  => 'test_anon_user',
+            ],
         ];
     }
 
@@ -886,11 +918,13 @@ class Entity extends DbTestCase
             ]
         ]);
         foreach ($notif_data['followups'] as $n_fup) {
-            foreach ($possible_values as $value) {
-                if ($value == $expected) {
-                    $this->string($n_fup['##followup.author##'])->contains($value);
-                } else {
-                    $this->string($n_fup['##followup.author##'])->notContains($value);
+            if ($n_fup['##followup.author##'] !== null) {
+                foreach ($possible_values as $value) {
+                    if ($value == $expected) {
+                        $this->string($n_fup['##followup.author##'])->contains($value);
+                    } else {
+                        $this->string($n_fup['##followup.author##'])->notContains($value);
+                    }
                 }
             }
         }
