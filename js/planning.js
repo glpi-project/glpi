@@ -558,6 +558,7 @@ var GLPIPlanning  = {
                         },
                         dialogclass: 'modal-lg',
                         title: __('Edit an event'),
+                        bs_focus: false
                     });
                 }
             },
@@ -601,6 +602,7 @@ var GLPIPlanning  = {
                     },
                     dialogclass: 'modal-lg',
                     title: __('Add an event'),
+                    bs_focus: false
                 });
 
                 GLPIPlanning.calendar.unselect();
