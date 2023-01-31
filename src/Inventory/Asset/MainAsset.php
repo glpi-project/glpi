@@ -751,7 +751,7 @@ abstract class MainAsset extends InventoryAsset
                     'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
                     'last_inventory_update' => $input['last_inventory_update'],
                     'snmpcredentials_id'    => $input['snmpcredentials_id'],
-                    'remote_addr'           => $input['remote_addr'],
+                    'remote_addr'           => $input['remote_addr'] ?? '',
                     'is_dynamic'            => true
                 ]));
                 return;
