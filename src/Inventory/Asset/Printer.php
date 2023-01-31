@@ -163,7 +163,6 @@ class Printer extends NetworkEquipment
             }
         }
 
-        Toolbox::logDebug($this->data);
         return $this->data;
     }
 
