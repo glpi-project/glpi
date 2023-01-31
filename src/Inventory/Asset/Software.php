@@ -145,7 +145,7 @@ class Software extends InventoryAsset
 
                 //If the software category has been modified or set by the rules engine
                 if (isset($res_rule["softwarecategories_id"])) {
-                    $sckey = 'softwarecategories_id' . $res_rule["softwarecategories_id"];
+                    $sckey = md5('softwarecategories_id' . $res_rule["softwarecategories_id"]);
                     $this->known_links[$sckey] = $res_rule["softwarecategories_id"];
                     $sc = new \SoftwareCategory();
                     $sc->getFromDB($res_rule["softwarecategories_id"]);
@@ -156,7 +156,7 @@ class Software extends InventoryAsset
                     && $val->_system_category != '0'
                 ) {
                     $val->softwarecategories_id = $val->_system_category;
-                    $sckey = 'softwarecategories_id' . $val->_system_category;
+                    $sckey = md5('softwarecategories_id' . $val->_system_category);
                     if (!isset($this->known_links[$sckey])) {
                         $new_value = Dropdown::importExternal(
                             'SoftwareCategory',
@@ -171,7 +171,7 @@ class Software extends InventoryAsset
 
                 //If the manufacturer has been modified or set by the rules engine
                 if (isset($res_rule["manufacturer"])) {
-                    $mkey = 'manufacturers_id' . $res_rule['manufacturer'];
+                    $mkey = md5('manufacturers_id' . $res_rule['manufacturer']);
                     $mid = Dropdown::import(
                         'Manufacturer',
                         ['name' => $res_rule['manufacturer']]
@@ -183,7 +183,7 @@ class Software extends InventoryAsset
                     && $val->manufacturers_id != ''
                     && $val->manufacturers_id != '0'
                 ) {
-                    $mkey = 'manufacturers_id' . $val->manufacturers_id;
+                    $mkey = md5('manufacturers_id' . $val->manufacturers_id);
                     if (!isset($this->known_links[$mkey])) {
                         $new_value = Dropdown::importExternal(
                             'Manufacturer',
@@ -208,6 +208,7 @@ class Software extends InventoryAsset
                 //not a template, not deleted, ...
                 $val->is_template_item = 0;
                 $val->is_deleted_item = 0;
+
                 $val->operatingsystems_id = 0;
                 $val->entities_id = 0;
                 $val->is_recursive = 0;
@@ -808,7 +809,7 @@ class Software extends InventoryAsset
             if (!isset($known_fields[$column])) {
                 unset($input[$column]);
             } else {
-                $key = $column . $input[$column];
+                $key = md5($column . $input[$column]);
                 if (isset($this->known_links[$key])) {
                     $input[$column] = $this->known_links[$key];
                 }

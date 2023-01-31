@@ -743,7 +743,7 @@ abstract class CommonDropdown extends CommonDBTM
     ) {
 
         $value = trim($value);
-        if (strlen($value) == 0) {
+        if (empty($value)) {
             return 0;
         }
 
