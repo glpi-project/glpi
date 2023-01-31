@@ -40,6 +40,7 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
 use Glpi\Toolbox\Sanitizer;
 use NetworkPort as GlobalNetworkPort;
+use NetworkPortAggregate;
 use NetworkPortType;
 use QueryParam;
 use RuleImportAssetCollection;
@@ -767,6 +768,20 @@ class NetworkPort extends InventoryAsset
     public function handlePorts($itemtype = null, $items_id = null)
     {
         $mainasset = $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()];
+
+        //remove management port if need for Printer
+        if (get_class($mainasset) == Printer::class && !$this->item->isNewItem()) {
+            if (empty($this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()]->getManagementPorts())) {
+                //remove all port management ports
+                $networkport = new GlobalNetworkPort();
+                $networkport->deleteByCriteria([
+                    "itemtype"           => $this->item->getType(),
+                    "items_id"           => $this->item->getID(),
+                    "instantiation_type" => NetworkPortAggregate::getType(),
+                    "name"               => "Management"
+                ], 1);
+            }
+        }
 
         //handle ports for stacked switches
         if ($mainasset->isStackedSwitch()) {
