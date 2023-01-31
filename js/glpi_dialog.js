@@ -56,6 +56,7 @@
  *                                  }, {
  *                                     ...
  *                                  }]
+ * @param {boolean} dialog.bs_focus - Data-bs-focus value for the modal
  */
 var glpi_html_dialog = function({
     title       = "",
@@ -69,6 +70,7 @@ var glpi_html_dialog = function({
     show        = () => {},
     close       = () => {},
     buttons     = [],
+    bs_focus    = true,
 } = {}) {
     if (buttons.length > 0) {
         var buttons_html = "";
@@ -100,7 +102,9 @@ var glpi_html_dialog = function({
       </div>`;
     }
 
-    var modal = `<div class="modal fade ${modalclass}" id="${id}" role="dialog">';
+    const data_bs_focus = !bs_focus ? 'data-bs-focus="false"' : '';
+
+    var modal = `<div class="modal fade ${modalclass}" id="${id}" role="dialog" ${data_bs_focus}>
          <div class="modal-dialog ${dialogclass}">
             <div class="modal-content">
                <div class="modal-header">
@@ -175,6 +179,7 @@ var glpi_html_dialog = function({
  *                                  }, {
  *                                     ...
  *                                  }]
+ * @param {boolean} dialog.bs_focus - Data-bs-focus value for the modal
  */
 var glpi_ajax_dialog = function({
     url         = "",
@@ -192,6 +197,7 @@ var glpi_ajax_dialog = function({
     show        = () => {},
     close       = () => {},
     buttons     = [],
+    bs_focus    = true,
 } = {}) {
     if (url.length == 0) {
         return;
@@ -218,6 +224,7 @@ var glpi_ajax_dialog = function({
                 buttons: buttons,
                 show: show,
                 close: close,
+                bs_focus: bs_focus
             });
         }
     }).done(function(data) {
