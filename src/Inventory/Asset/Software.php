@@ -208,10 +208,7 @@ class Software extends InventoryAsset
                 //not a template, not deleted, ...
                 $val->is_template_item = 0;
                 $val->is_deleted_item = 0;
-
-                //OperatingSystem is a CommonDropdown
-                //InventoryAsset->handleLinks with Dropdown::importExternal return -1 if name is 0
-                $val->operatingsystems_id = '';
+                $val->operatingsystems_id = 0;
                 $val->entities_id = 0;
                 $val->is_recursive = 0;
 
@@ -762,6 +759,7 @@ class Software extends InventoryAsset
             if (!isset($this->versions[$vkey])) {
                  $version_name = $val->version;
                  $stmt_columns = $this->cleanInputToPrepare((array)$val, $version_fields);
+                 $stmt_columns['operatingsystems_id'] = ($stmt_columns['operatingsystems_id'] > 0) ? $stmt_columns['operatingsystems_id'] : 0;
                  $stmt_columns['name'] = $version_name;
                  $stmt_columns['softwares_id'] = $softwares_id;
                 if ($stmt === null) {
