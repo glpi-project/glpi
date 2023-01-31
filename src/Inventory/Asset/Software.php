@@ -209,7 +209,9 @@ class Software extends InventoryAsset
                 $val->is_template_item = 0;
                 $val->is_deleted_item = 0;
 
-                $val->operatingsystems_id = 0;
+                //OperatingSystem is a CommonDropdown
+                //InventoryAsset->handleLinks with Dropdown::importExternal return -1 if name is 0
+                $val->operatingsystems_id = '';
                 $val->entities_id = 0;
                 $val->is_recursive = 0;
 
