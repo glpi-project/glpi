@@ -375,7 +375,7 @@ class Software extends InventoryAsset
 
             //update softwarecategories if needed
             //reconciles the software without the version (no needed here)
-            $sckey = 'softwarecategories_id' . ($val->softwarecategories_id ?? 0);
+            $sckey = md5('softwarecategories_id' . ($val->softwarecategories_id ?? 0));
             if (
                 isset($db_software_data[$key_wo_version])
                 && $db_software_data[$key_wo_version]['softwarecategories'] != ($this->known_links[$sckey] ?? 0)
@@ -578,7 +578,7 @@ class Software extends InventoryAsset
                 continue;
             }
 
-            $mkey = 'manufacturers_id' . $val->manufacturers_id;
+            $mkey = md5('manufacturers_id' . $val->manufacturers_id);
             $input = Sanitizer::encodeHtmlSpecialCharsRecursive([
                 'name'             => $val->name,
                 'manufacturers_id' => $this->known_links[$mkey] ?? 0
