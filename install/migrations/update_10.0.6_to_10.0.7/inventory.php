@@ -37,6 +37,6 @@
  * @var DB $DB
  * @var Migration $migration
  */
-$migration->addField('glpi_printers', 'ip_contact', "string");
-$migration->addField('glpi_networkquipements', 'ip_contact', "string");
-$migration->addField('glpi_unmanageds', 'ip_contact', "string");
+$migration->addField('glpi_printers', 'remote_addr', "string");
+$migration->addField('glpi_networkequipments', 'remote_addr', "string");
+$migration->addField('glpi_unmanageds', 'remote_addr', "string");

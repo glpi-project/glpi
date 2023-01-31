@@ -80,7 +80,8 @@ class NetworkEquipment extends MainAsset
                 'model'        => $model_field,
                 'type'         => $types_field,
                 'manufacturer' => 'manufacturers_id',
-                'credentials'  => 'snmpcredentials_id'
+                'credentials'  => 'snmpcredentials_id',
+                'ip'           => 'remote_addr'
             ];
 
             foreach ($dev_mapping as $origin => $dest) {
@@ -97,31 +98,6 @@ class NetworkEquipment extends MainAsset
 
             foreach ($device as $key => $property) {
                 $val->$key = $property;
-            }
-
-            if (property_exists($device, 'ips')) {
-                $portkey = 'management';
-                $port = new \stdClass();
-                if (property_exists($device, 'mac')) {
-                    $port->mac = $device->mac;
-                }
-                $port->name = 'Management';
-                $port->netname = __('internal');
-                $port->instantiation_type = 'NetworkPortAggregate';
-                $port->is_internal = true;
-                $port->ipaddress = [];
-
-               //add internal port(s)
-                foreach ($device->ips as $ip) {
-                    if (
-                        !in_array($ip, $port->ipaddress)
-                        && '' != $blacklist->process(Blacklist::IP, $ip)
-                    ) {
-                        $port->ipaddress[] = $ip;
-                    }
-                }
-
-                $this->management_ports[$portkey] = $port;
             }
         }
 

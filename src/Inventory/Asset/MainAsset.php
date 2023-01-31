@@ -743,11 +743,7 @@ abstract class MainAsset extends InventoryAsset
             //do not update to prevents discoveries to remove all ports, IPs and so on found with network inventory
             if (
                 $itemtype == NetworkEquipment::getType()
-                ||
-                (
-                $itemtype == Printer::getType()
-                && !AssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
-                )
+                || $itemtype == Printer::getType()
             ) {
                 //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
                 $input = $this->handleInput($val, $this->item);
@@ -755,6 +751,7 @@ abstract class MainAsset extends InventoryAsset
                     'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
                     'last_inventory_update' => $input['last_inventory_update'],
                     'snmpcredentials_id'    => $input['snmpcredentials_id'],
+                    'remote_addr'           => $input['remote_addr'],
                     'is_dynamic'            => true
                 ]));
                 return;
@@ -762,10 +759,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         //Ports are handled a different way on network equipments and printers
-        if (
-            $this->item->getType() != 'NetworkEquipment'
-            && $this->item->getType() != 'Printer'
-        ) {
+        if ($this->item->getType() != 'NetworkEquipment') {
             $this->handlePorts();
         }
 
@@ -781,6 +775,7 @@ abstract class MainAsset extends InventoryAsset
                 }
             }
 
+            //For netinventory NetworkEquipement
             if (property_exists($val, 'ap_port') && method_exists($this, 'setManagementPorts')) {
                 $this->setManagementPorts(['management' => $val->ap_port]);
                 unset($val->ap_port);

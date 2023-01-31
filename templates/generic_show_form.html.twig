@@ -655,6 +655,16 @@
                         ) }}
                      {% endif %}
 
+                     {% if item.isField('remote_addr') %}
+                        {{ fields.htmlField(
+                           "remote_addr",
+                           item.fields['remote_addr'],
+                           __('Public contact address'),
+                           field_options
+                        ) }}
+                     {% endif %}
+
+
                      {# display last_boot data only if item is dynamic and have field #}
                      {% if item.isField('last_boot') and item.isField('is_dynamic') and item.fields['is_dynamic'] %}
                         {{ fields.htmlField('last_boot', item.fields['last_boot']|formatted_datetime(true), __('Last boot date')) }}

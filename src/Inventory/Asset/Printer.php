@@ -46,6 +46,7 @@ use PrinterModel;
 use PrinterType;
 use RuleDictionnaryPrinterCollection;
 use RuleImportAssetCollection;
+use Toolbox;
 
 class Printer extends NetworkEquipment
 {
@@ -162,30 +163,7 @@ class Printer extends NetworkEquipment
             }
         }
 
-        //try to know if management port IP is already known as IP port
-        //if yes remove it from management port
-        $known_ports = $port_managment = $this->getManagementPorts();
-        if (isset($known_ports['management']) && property_exists($known_ports['management'], 'ipaddress')) {
-            foreach ($known_ports['management']->ipaddress as $pa_ip_key => $pa_ip_val) {
-                if (property_exists($this->raw_data->content, 'network_ports')) {
-                    foreach ($this->raw_data->content->network_ports as $port_obj) {
-                        if (property_exists($port_obj, 'ips')) {
-                            foreach ($port_obj->ips as $port_ip) {
-                                if ($pa_ip_val == $port_ip) {
-                                    unset($port_managment['management']->ipaddress[$pa_ip_key]);
-                                    if (empty($port_managment['management']->ipaddress)) {
-                                        unset($port_managment['management']);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        $this->setManagementPorts($port_managment);
-
+        Toolbox::logDebug($this->data);
         return $this->data;
     }
 
@@ -357,36 +335,6 @@ class Printer extends NetworkEquipment
         } else {
             $metrics->add(Sanitizer::sanitize($input), [], false);
         }
-    }
-
-    /**
-     * Try to know if printer need to be updated from discovery
-     * Only if IP has changed
-     * @return boolean
-     */
-    public static function needToBeUpdatedFromDiscovery(CommonDBTM $item, $val)
-    {
-        if (property_exists($val, 'ips')) {
-            foreach ($val->ips as $ip) {
-                $blacklist = new Blacklist();
-                //exclude IP if needed
-                if ('' != $blacklist->process(Blacklist::IP, $ip)) {
-                    //try to find IP (get from discovery) from known IP of Printer
-                    //if found refuse update
-                    //if no, printer IP have changed so  we allow the update from discovery
-                    $ipadress = new IPAddress($ip);
-                    $tmp['mainitems_id'] = $item->fields['id'];
-                    $tmp['mainitemtype'] = $item::getType();
-                    $tmp['is_dynamic']   = 1;
-                    $tmp['name']         = $ipadress->getTextual();
-                    if ($ipadress->getFromDBByCrit(Sanitizer::sanitize($tmp))) {
-                        return false;
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public function getItemtype(): string

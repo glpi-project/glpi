@@ -303,6 +303,15 @@ class NetworkEquipment extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'            => '10',
+            'table'         => $this->getTable(),
+            'field'         => 'remote_addr',
+            'name'          => __('Public contact address'),
+            'datatype'      => 'text',
+            'massiveaction' => false,
+        ];
+
+        $tab[] = [
             'id'                 => '40',
             'table'              => 'glpi_networkequipmentmodels',
             'field'              => 'name',

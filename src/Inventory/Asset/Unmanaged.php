@@ -45,8 +45,6 @@ use Transfer;
 
 class Unmanaged extends MainAsset
 {
-    private $management_ports = [];
-
     protected $extra_data = [
         'hardware'        => null,
         'network_device'  => null,
@@ -92,9 +90,10 @@ class Unmanaged extends MainAsset
             $device = (object)$this->extra_data['network_device'];
 
             $dev_mapping = [
-                'mac'       => 'mac',
-                'name'      => 'name',
-                'ips'       => 'ips'
+                'mac'          => 'mac',
+                'name'         => 'name',
+                'ips'          => 'ips',
+                'ip'            => 'remote_addr'
             ];
 
             foreach ($dev_mapping as $origin => $dest) {
@@ -105,29 +104,6 @@ class Unmanaged extends MainAsset
 
             foreach ($device as $key => $property) {
                 $val->$key = $property;
-            }
-
-            if (property_exists($device, 'ips')) {
-                $portkey = 'management';
-                $port = new \stdClass();
-                if (property_exists($device, 'mac')) {
-                    $port->mac = $device->mac;
-                }
-                $port->name = 'Management';
-                $port->netname = __('internal');
-                $port->instantiation_type = 'NetworkPortAggregate';
-                $port->is_internal = true;
-                $port->logical_number = 0;
-                $port->ipaddress = [];
-
-               //add internal port(s)
-                foreach ($device->ips as $ip) {
-                    if ($ip != '127.0.0.1' && $ip != '::1' && !in_array($ip, $port->ipaddress)) {
-                        $port->ipaddress[] = $ip;
-                    }
-                }
-
-                $this->management_ports[$portkey] = $port;
             }
         }
     }
@@ -308,17 +284,6 @@ class Unmanaged extends MainAsset
             $data = $this->data;
         }
         return parent::handleLinks();
-    }
-
-    public function getManagementPorts()
-    {
-        return $this->management_ports;
-    }
-
-    public function setManagementPorts(array $ports): Unmanaged
-    {
-        $this->management_ports = $ports;
-        return $this;
     }
 
     protected function getModelsFieldName(): string
