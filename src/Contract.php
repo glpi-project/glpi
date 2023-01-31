@@ -1782,6 +1782,9 @@ class Contract extends CommonDBTM
         return "ti ti-writing-sign";
     }
 
+    /**
+     * @FIXME Rename method in GLPI 10.1. Method returns criteria to find NOT expired contracts.
+     */
     public static function getExpiredCriteria()
     {
         global $DB;
