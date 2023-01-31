@@ -67,9 +67,12 @@ class Entity extends CommonTreeDropdown
     /**
      * Possible values for "anonymize_support_agents" setting
      */
-    const ANONYMIZE_DISABLED     = 0;
-    const ANONYMIZE_USE_GENERIC  = 1;
-    const ANONYMIZE_USE_NICKNAME = 2;
+    const ANONYMIZE_DISABLED            = 0;
+    const ANONYMIZE_USE_GENERIC         = 1;
+    const ANONYMIZE_USE_NICKNAME        = 2;
+    const ANONYMIZE_USE_GENERIC_USER    = 3;
+    const ANONYMIZE_USE_NICKNAME_USER   = 4;
+    const ANONYMIZE_USE_GENERIC_GROUP   = 5;
 
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
@@ -3027,7 +3030,7 @@ class Entity extends CommonTreeDropdown
 
         Contract::dropdown([
             'name'      => 'contracts_id_default',
-            'condition' => Contract::getExpiredCriteria(),
+            'condition' => ['is_template' => 0, 'is_deleted' => 0] + Contract::getExpiredCriteria(),
             'entity'    => $entity->getID(),
             'toadd'     => $toadd,
             'value'     => $current_default_contract_value,
@@ -3626,8 +3629,11 @@ class Entity extends CommonTreeDropdown
         return [
             self::CONFIG_PARENT => __('Inheritance of the parent entity'),
             self::ANONYMIZE_DISABLED => __('Disabled'),
-            self::ANONYMIZE_USE_GENERIC => __("Replace the agent's name with a generic name"),
-            self::ANONYMIZE_USE_NICKNAME => __("Replace the agent's name with a customisable nickname"),
+            self::ANONYMIZE_USE_GENERIC => __("Replace the agent and group name with a generic name"),
+            self::ANONYMIZE_USE_NICKNAME => __("Replace the agent and group name with a customisable nickname"),
+            self::ANONYMIZE_USE_GENERIC_USER => __("Replace the agent's name with a generic name"),
+            self::ANONYMIZE_USE_NICKNAME_USER => __("Replace the agent's name with a customisable nickname"),
+            self::ANONYMIZE_USE_GENERIC_GROUP => __("Replace the group's name with a generic name"),
         ];
     }
 
@@ -4029,6 +4035,8 @@ class Entity extends CommonTreeDropdown
      * @since 10.0.0
      *
      * @return array
+     *
+     * @FIXME Remove this method in GLPI 10.1.
      */
     public static function getDefaultContractValues($entities_id): array
     {
@@ -4086,6 +4094,13 @@ class Entity extends CommonTreeDropdown
         return self::getUsedConfig('contracts_strategy_default', $entities_id, 'contracts_id_default', 0);
     }
 
+    /**
+     * Return HTML code for entity badge showing its completename.
+     *
+     * @param string $entity_string
+     *
+     * @return string|null
+     */
     public static function badgeCompletename(string $entity_string = ""): string
     {
         // `completename` is expected to be received as it is stored in DB,
@@ -4129,10 +4144,54 @@ class Entity extends CommonTreeDropdown
         return null;
     }
 
-    public static function badgeCompletenameFromID(int $entity_id): string
+    /**
+     * Return HTML code for entity badge showing its completename with last entity as HTML link.
+     *
+     * @param object $entity
+     *
+     * @return string|null
+     */
+    public static function badgeCompletenameLink(object $entity): string
+    {
+        // `completename` is expected to be received as it is stored in DB,
+        // meaning that `>` separator is not encoded, but `<`, `>` and `&` from self or parent names are encoded.
+        $names = explode(' > ', trim($entity->fields['completename']));
+        // Convert the whole completename into decoded HTML.
+        foreach ($names as &$name) {
+            $name = Sanitizer::decodeHtmlSpecialChars($name);
+        }
+
+        // Construct HTML with special chars encoded.
+        $title       = htmlspecialchars(implode(' > ', $names));
+        $last_name   = array_pop($names);
+        $breadcrumbs = implode(
+            '<i class="fas fa-caret-right mx-1"></i>',
+            array_map(
+                function (string $name): string {
+                    return '<span class="text-nowrap text-muted">' . htmlspecialchars($name) . '</span>';
+                },
+                $names
+            )
+        );
+
+        $last_url  = '<i class="fas fa-caret-right mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlspecialchars($last_name) . '</a>';
+
+        return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . $last_url . '</span>';
+    }
+
+    /**
+     * Return HTML code for entity badge showing its completename with last entity as HTML link.
+     *
+     * @param int $entity_id
+     *
+     * @return string|null
+     */
+    public static function badgeCompletenameLinkById(int $entity_id): ?string
     {
         $entity = new self();
-        $entity->getFromDB($entity_id);
-        return self::badgeCompletename($entity->fields['completename']);
+        if ($entity->getFromDB($entity_id)) {
+            return self::badgeCompletenameLink($entity);
+        }
+        return null;
     }
 }

@@ -60,7 +60,8 @@ trait TreeBrowse
         global $CFG_GLPI;
 
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
-        $loading_txt = addslashes(__('Loading...'));
+
+        $loading_txt = __s('Loading...');
         $start       = isset($params['start'])
                             ? $params['start']
                             : 0;
@@ -73,10 +74,11 @@ trait TreeBrowse
         $unpublished = isset($params['unpublished'])
                             ? $params['unpublished']
                             : 1;
+
         $criteria    = json_encode($params['criteria']);
 
         $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
-        $no_cat_found  = __("No category found");
+        $no_cat_found  = __s("No category found");
 
         $JS = <<<JAVASCRIPT
         var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
@@ -157,7 +159,7 @@ JAVASCRIPT;
 JAVASCRIPT;
             echo "<div id='tree_browse'>
             <div class='browser_tree d-flex flex-column'>
-                <input type='text' class='browser_tree_search' placeholder='" . __("Search…") . "' id='browser_tree_search'>
+                <input type='text' class='browser_tree_search' placeholder='" . __s("Search…") . "' id='browser_tree_search'>
                 <div id='tree_category' class='browser-tree-container'></div>
             </div>
             <div id='items_list' class='browser_items'></div>
@@ -304,7 +306,7 @@ JAVASCRIPT;
             ];
 
             if ($category['items_count'] > 0) {
-                $node['title'] .= ' <span class="badge bg-azure-lt" title="' . __('This category contains ') . $itemtype::getTypeName() . '">'
+                $node['title'] .= ' <span class="badge bg-azure-lt" title="' . __s('This category contains ') . $itemtype::getTypeName() . '">'
                 . $category['items_count']
                 . '</span>';
             }

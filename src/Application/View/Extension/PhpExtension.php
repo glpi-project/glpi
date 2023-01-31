@@ -51,6 +51,7 @@ class PhpExtension extends AbstractExtension
             new TwigFunction('php_config', [$this, 'phpConfig']),
             new TwigFunction('call', [$this, 'call']),
             new TwigFunction('get_static', [$this, 'getStatic']),
+            new TwigFunction('get_class', 'get_class'),
         ];
     }
 
@@ -59,6 +60,8 @@ class PhpExtension extends AbstractExtension
         return [
             new TwigTest('instanceof', [$this, 'isInstanceOf']),
             new TwigTest('usingtrait', [$this, 'isUsingTrait']),
+            new TwigTest('array', 'is_array'),
+            new TwigTest('object', 'is_object'),
         ];
     }
 

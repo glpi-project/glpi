@@ -266,7 +266,7 @@ final class RichText
             'images_gallery' => false,
             'user_mentions'  => true,
             'images_lazy'    => true,
-            'text_maxsize'   => 2000,
+            'text_maxsize'   => 4000,
         ];
         $p = array_replace($p, $params);
 
@@ -423,9 +423,9 @@ HTML;
         }
         $out .= "</div>";
 
-       // Decode images urls
+        // Unsanitize images urls
         $imgs = array_map(function ($img) {
-            $img['src'] = html_entity_decode($img['src']);
+            $img['src'] = Sanitizer::decodeHtmlSpecialChars($img['src']);
             return $img;
         }, $imgs);
 

@@ -42,6 +42,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown
 
     public static $rightname          = 'knowbasecategory';
 
+    const SEEALL = -1;
 
     public static function getTypeName($nb = 0)
     {

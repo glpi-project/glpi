@@ -62,8 +62,8 @@ class Sanitizer
     {
         if (is_array($value)) {
             return array_map(
-                function ($val) {
-                    return self::sanitize($val);
+                function ($val) use ($db_escape) {
+                    return self::sanitize($val, $db_escape);
                 },
                 $value
             );

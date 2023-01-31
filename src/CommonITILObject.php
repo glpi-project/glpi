@@ -1292,6 +1292,24 @@ abstract class CommonITILObject extends CommonDBTM
 
 
     /**
+     * Count active ITIL Objects having given user as observer.
+     *
+     * @param int $users_id
+     *
+     * @return int
+     */
+    final public function countActiveObjectsForObserverUser(int $user_id): int
+    {
+        $linkclass = new $this->userlinkclass();
+        return $this->countActiveObjectsFor(
+            $linkclass,
+            $user_id,
+            CommonITILActor::OBSERVER
+        );
+    }
+
+
+    /**
      * Count active ITIL Objects assigned to a user
      *
      * @since 0.83
@@ -1307,6 +1325,42 @@ abstract class CommonITILObject extends CommonDBTM
             $linkclass,
             $users_id,
             CommonITILActor::ASSIGN
+        );
+    }
+
+
+    /**
+     * Count active ITIL Objects having given group as requester.
+     *
+     * @param int $group_id
+     *
+     * @return int
+     */
+    final public function countActiveObjectsForRequesterGroup(int $group_id): int
+    {
+        $linkclass = new $this->grouplinkclass();
+        return $this->countActiveObjectsFor(
+            $linkclass,
+            $group_id,
+            CommonITILActor::REQUESTER
+        );
+    }
+
+
+    /**
+     * Count active ITIL Objects having given group as observer.
+     *
+     * @param int $group_id
+     *
+     * @return int
+     */
+    final public function countActiveObjectsForObserverGroup(int $group_id): int
+    {
+        $linkclass = new $this->grouplinkclass();
+        return $this->countActiveObjectsFor(
+            $linkclass,
+            $group_id,
+            CommonITILActor::OBSERVER
         );
     }
 

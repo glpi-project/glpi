@@ -1685,7 +1685,7 @@ class GLPIKanbanRights {
             context.fillText(initials, self.team_image_size / 2, self.team_image_size / 2);
             const src = canvas.toDataURL("image/png");
             const name = teammember['name'].replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-            return "<span><img src='" + src + "' title='" + name + "'/></span>";
+            return "<span><img src='" + src + "' title='" + name + "' data-bs-toggle='tooltip'/></span>";
         };
 
         /**
@@ -1702,7 +1702,7 @@ class GLPIKanbanRights {
             return `
             <span class='fa-stack fa-lg' style='font-size: ${(self.team_image_size / 2)}px'>
                 <i class='fas fa-circle fa-stack-2x' style="color: ${bg_color}" title="${teammember['name']}"></i>
-                <i class='fas ${icon} fa-stack-1x' title="${name}"></i>
+                <i class='fas ${icon} fa-stack-1x' title="${name}" data-bs-toggle='tooltip'></i>
             </span>
          `;
         };
@@ -1732,7 +1732,7 @@ class GLPIKanbanRights {
             context.textBaseline = 'middle';
             context.fillText("+" + overflow_count, self.team_image_size / 2, self.team_image_size / 2);
             const src = canvas.toDataURL("image/png");
-            return "<span><img src='" + src + "' title='" + __('%d other team members').replace('%d', overflow_count) + "'/></span>";
+            return "<span><img src='" + src + "' title='" + __('%d other team members').replace('%d', overflow_count) + "' data-bs-toggle='tooltip'/></span>";
         };
 
         /**

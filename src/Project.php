@@ -1570,6 +1570,19 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 echo "<td colspan='2'>&nbsp;</td>";
             }
             echo "</tr>";
+        } elseif ($is_template & !$this->isNewItem()) {
+            // Show template name after creation (creation is already handled by
+            // showFormHeader which add the template name in a special header
+            // only displayed on creation)
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>" . __('Template name') . "</td>";
+            echo "<td>";
+            echo Html::input('template_name', [
+                'value' => $this->fields['template_name']
+            ]);
+            echo "</td>";
+            echo "<td colspan='2'>&nbsp;</td>";
+            echo "</tr>";
         }
 
         echo "<tr class='tab_bg_1'>";

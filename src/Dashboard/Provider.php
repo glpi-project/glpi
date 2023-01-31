@@ -1764,7 +1764,7 @@ class Provider
             isset($apply_filters['user_tech'])
             && (
                 (int) $apply_filters['user_tech'] > 0
-                || $apply_filters['user_tech'] == 'myself'
+                || $apply_filters['user_tech'] === 'myself'
             )
         ) {
             if ($DB->fieldExists($table, 'users_id_tech')) {
@@ -1772,7 +1772,7 @@ class Provider
                     'link'       => 'AND',
                     'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),// tech
                     'searchtype' => 'equals',
-                    'value'      =>  $apply_filters['user_tech'] == 'myself' ? (int) Session::getLoginUserID() : (int) $apply_filters['user_tech']
+                    'value'      =>  $apply_filters['user_tech'] === 'myself' ? (int) Session::getLoginUserID() : (int) $apply_filters['user_tech']
                 ];
             } elseif (
                 in_array($table, [
@@ -1961,7 +1961,7 @@ class Provider
             $users_id = null;
             if ((int) $apply_filters['user_tech'] > 0) {
                 $users_id = (int) $apply_filters['user_tech'];
-            } else if ($apply_filters['user_tech'] == 'myself') {
+            } else if ($apply_filters['user_tech'] === 'myself') {
                 $users_id = $_SESSION['glpiID'];
             }
 

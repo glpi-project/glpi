@@ -858,7 +858,7 @@ class Reminder extends CommonDBVisible implements
         $parent = getItemForItemtype($val['itemtype']);
         $parent->getFromDB($val[$parent->getForeignKeyField()]);
         $html .= $parent->getLink(['icon' => true, 'forceid' => true]) . "<br>";
-        $html .= "<span>" . Entity::badgeCompletenameFromID($parent->getEntityID()) . "</span><br>";
+        $html .= "<span>" . Entity::badgeCompletenameById($parent->getEntityID()) . "</span><br>";
         return $html;
     }
 

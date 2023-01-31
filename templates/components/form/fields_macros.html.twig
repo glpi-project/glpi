@@ -74,7 +74,11 @@
    {% if item.isTemplate() %} {# TODO exluded types #}
       {% set tplmark = item.getAutofillMark(name, {'withtemplate': withtemplate}, tpl_value) %}
    {% endif %}
-   {% set value = call('autoName', [item.fields[name]|verbatim_value, name, (withtemplate == 2), item.getType(), item.fields['entities_id']]) %}
+   {% if item.fields[name] is defined and item.fields[name] is not null %}
+      {% set value = call('autoName', [item.fields[name]|verbatim_value, name, (withtemplate == 2), item.getType(), item.fields['entities_id']]) %}
+   {% else %}
+      {% set value = null %}
+   {% endif %}
    {% set label = __('%1$s%2$s')|format(label, tplmark) %}
 
    {{ _self.textField(name, value, label, options) }}
@@ -91,7 +95,7 @@
       <input type="{{ options.type }}" id="%id%"
              class="form-control {{ options.input_addclass }}"
              name="{{ name }}" value="{{ value|verbatim_value }}"
-             {{ options.maxlenght ? 'maxlenght=' ~ options.maxlenght : '' }}
+             {{ options.maxlength ? 'maxlength=' ~ options.maxlength : '' }}
              {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }}
              {{ options.multiple ? 'multiple' : '' }} {# Only for emailField #}

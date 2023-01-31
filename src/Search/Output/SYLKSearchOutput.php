@@ -107,7 +107,7 @@ final class SYLKSearchOutput extends ExportSearchOutput
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {
         global $SYLK_ARRAY,$SYLK_SIZE;
-        $value = DataExport::normalizeValueForTextExport($value);
+        $value = DataExport::normalizeValueForTextExport($value ?? '');
         $value = preg_replace('/' . \Search::LBBR . '/', '<br>', $value);
         $value = preg_replace('/' . \Search::LBHR . '/', '<hr>', $value);
         $SYLK_ARRAY[$row][$num] = self::cleanValue($value);

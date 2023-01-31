@@ -297,8 +297,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                         static::displayConfigItem(
                             $data['itemtype'],
                             $col['id'],
-                            $row,
-                            $colkey
+                            $row
                         )
                     );
                 } else { // META case

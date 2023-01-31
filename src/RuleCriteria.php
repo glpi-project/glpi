@@ -233,6 +233,7 @@ class RuleCriteria extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
+                    $criterion = '';
                     if (isset($values['criteria']) && !empty($values['criteria'])) {
                         $criterion = $values['criteria'];
                     }
@@ -451,8 +452,8 @@ class RuleCriteria extends CommonDBChild
                 if (empty($pattern) || empty($field)) {
                     return false;
                 }
-                $value = "/" . $pattern . "$/i";
-                if (preg_match($value, $field) > 0) {
+
+                if (str_ends_with(mb_strtolower($field), mb_strtolower($pattern))) {
                     $criterias_results[$criteria] = $pattern;
                     return true;
                 }
@@ -493,9 +494,15 @@ class RuleCriteria extends CommonDBChild
 
             case Rule::REGEX_MATCH:
                 $results = [];
-               // Permit use < and >
+                // Permit use < and >
                 $pattern = Sanitizer::unsanitize($pattern);
-                if (preg_match_all($pattern . "i", $field, $results) > 0) {
+                $match_result = @preg_match_all($pattern . "i", $field, $results);
+                if ($match_result === false) {
+                    trigger_error(
+                        sprintf('Invalid regular expression `%s`.', $pattern),
+                        E_USER_WARNING
+                    );
+                } elseif ($match_result > 0) {
                    // Drop $result[0] : complete match result
                     array_shift($results);
                    // And add to $regex_result array
@@ -514,7 +521,13 @@ class RuleCriteria extends CommonDBChild
             case Rule::REGEX_NOT_MATCH:
                // Permit use < and >
                 $pattern = Sanitizer::unsanitize($pattern);
-                if (preg_match($pattern . "i", $field) == 0) {
+                $match_result = @preg_match($pattern . "i", $field);
+                if ($match_result === false) {
+                    trigger_error(
+                        sprintf('Invalid regular expression `%s`.', $pattern),
+                        E_USER_WARNING
+                    );
+                } elseif ($match_result === 0) {
                     $criterias_results[$criteria] = $pattern;
                     return true;
                 }

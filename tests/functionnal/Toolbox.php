@@ -1045,6 +1045,8 @@ class Toolbox extends DbTestCase
             ['https://localhost?test=true', true],
             ['https://localhost?test=true&othertest=false', true],
             ['https://localhost/front/computer.php?is_deleted=0&as_map=0&criteria[0][link]=AND&criteria[0][field]=80&criteria[0][searchtype]=equals&criteria[0][value]=254&search=Search&itemtype=Computer', true],
+            ['https://localhost?test=true&#38;othertest=false', true], /* sanitized URL, &#38; is & */
+            ['https://localhost?test=true&#39;othertest=false', false], /* any entity */
         ];
     }
 

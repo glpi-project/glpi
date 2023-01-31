@@ -79,7 +79,7 @@ final class CSVSearchOutput extends ExportSearchOutput
 
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {
-        $value = DataExport::normalizeValueForTextExport($value);
+        $value = DataExport::normalizeValueForTextExport($value ?? '');
         $value = preg_replace('/' . \Search::LBBR . '/', '<br>', $value);
         $value = preg_replace('/' . \Search::LBHR . '/', '<hr>', $value);
         $out   = "\"" . self::cleanValue($value) . "\"" . $_SESSION["glpicsv_delimiter"];

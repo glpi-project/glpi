@@ -77,13 +77,13 @@ final class RulesManager
             }
 
             $rulecollection = new $rulecollection_type();
-            $ruleclass = $rulecollection->getRuleClassName();
-            if (!is_a($ruleclass, Rule::class, true) || !method_exists($ruleclass, 'initRules')) {
+            $ruleclass = $rulecollection->getRuleClass();
+            if (!($ruleclass instanceof Rule) || !$ruleclass->hasDefaultRules()) {
                 continue;
             }
 
-            if (countElementsInTable(Rule::getTable(), ['sub_type' => $ruleclass]) === 0) {
-                $ruleclass::initRules(false, false, false);
+            if (countElementsInTable(Rule::getTable(), ['sub_type' => $ruleclass->getType()]) === 0) {
+                $ruleclass->initRules(false, false, false);
             }
 
             // Mark collection as already initialized, to not reinitialize it on next update

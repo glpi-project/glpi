@@ -787,7 +787,7 @@ class Profile extends CommonDBTM
         );
         echo "</td></tr>\n";
 
-        echo "<tr class='tab_bg_1'><td>" . __('Update password') . "</td><td>";
+        echo "<tr class='tab_bg_1'><td>" . __('Update own password') . "</td><td>";
         Html::showCheckbox(['name'    => '_password_update',
             'checked' => $this->fields['password_update']
         ]);
@@ -3021,7 +3021,7 @@ class Profile extends CommonDBTM
             'id'                 => '4',
             'table'              => 'glpi_profilerights',
             'field'              => 'rights',
-            'name'               => __('Update password'),
+            'name'               => __('Update own password'),
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype'           => 'child',
@@ -3166,7 +3166,7 @@ class Profile extends CommonDBTM
         $param['size']    = count($values);
         $tabselect = [];
         foreach ($values as $k => $v) {
-            if ($current & $k) {
+            if ((int) $current & $k) {
                 $tabselect[] = $k;
             }
         }
@@ -3696,9 +3696,9 @@ class Profile extends CommonDBTM
 
         $nb_cbs      = count($elements);
         $cb_options  = ['readonly' => !$param['canedit']];
+        $massive_tag = 'checkall_' . $param['field'] . '_' . $param['rand'];
         if ($param['check_all']) {
             $nb_cbs++;
-            $massive_tag                = 'checkall_' . $param['field'] . '_' . $param['rand'];
             $cb_options['massive_tags'] = $massive_tag;
         }
 

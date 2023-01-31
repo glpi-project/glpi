@@ -847,13 +847,29 @@ class Lock extends CommonGLPI
 
         if ($header) {
             echo "<tr><th>";
-            //echo Html::getCheckAllAsCheckbox('lock_form');
             echo "</th><th colspan='4'>&nbsp</th></tr>\n";
             echo "</table>";
-            Html::openArrowMassives('lock_form', true);
-            Html::closeArrowMassives(['unlock' => _sx('button', 'Unlock'),
-                'purge'  => _sx('button', 'Delete permanently')
-            ]);
+
+            $formname = 'lock_form';
+            echo "<table width='950px'>";
+            $arrow = "fas fa-level-up-alt";
+
+            echo "<tr>";
+            echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
+            echo "<td class='center' style='white-space:nowrap;'>";
+            echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __('Check all') . "</a></td>";
+            echo "<td>/</td>";
+            echo "<td class='center' style='white-space:nowrap;'>";
+            echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __('Uncheck all') . "</a></td>";
+            echo "<td class='left' width='80%'>";
+
+            echo "<input type='submit' name='unlock' ";
+            echo "value=\"" . addslashes(_sx('button', 'Unlock')) . "\" class='btn btn-primary'>&nbsp;";
+
+            echo "<input type='submit' name='purge' ";
+            echo "value=\"" . addslashes(_sx('button', 'Delete permanently')) . "\" class='btn btn-primary'>&nbsp;";
+            echo "</td></tr>";
+            echo "</table>";
         } else {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' colspan='5'>" . __('No locked item') . "</td></tr>";

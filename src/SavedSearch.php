@@ -191,19 +191,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function rawSearchOptions()
     {
-        $tab = [];
-
-        $tab[] = ['id'                 => 'common',
-            'name'               => __('Characteristics')
-        ];
-
-        $tab[] = ['id'                 => '1',
-            'table'              => $this->getTable(),
-            'field'              => 'name',
-            'name'               => __('Name'),
-            'datatype'           => 'itemlink',
-            'massiveaction'      => false, // implicit key==1
-        ];
+        $tab = parent::rawSearchOptions();
 
         $tab[] = ['id'                 => '2',
             'table'              => $this->getTable(),
@@ -286,6 +274,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             'name'               => __('Last execution date'),
             'massiveaction'      => false,
             'datatype'           => 'datetime'
+        ];
+
+        $tab[] = [
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -1325,7 +1321,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $restrict = [
                 'OR' => [
                     $restrict,
-                    self::getTable() . '.is_private' => 0
+                    [self::getTable() . '.is_private' => 0] + getEntitiesRestrictCriteria(self::getTable(), '', '', true)
                 ]
             ];
         }

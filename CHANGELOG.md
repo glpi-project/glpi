@@ -135,11 +135,32 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::canUseCas()`
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
 
-## [10.0.6] unreleased
+## [10.0.7] unreleased
 
 ### Added
 
 ### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+## [10.0.6] 2023-01-24
+
+### Added
+
+### Changed
+- `glpi:` command prefix has been removed from console commands canonical name.
 
 ### Deprecated
 

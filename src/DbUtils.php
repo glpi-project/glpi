@@ -1617,7 +1617,7 @@ final class DbUtils
             ];
         }
 
-        if ($ID == 'myself') {
+        if ($ID === 'myself') {
             $name = __('Myself');
             if (isset($user['name'])) {
                 $user['name'] = $name;

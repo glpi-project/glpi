@@ -49,8 +49,7 @@ class DownloadCommand extends AbstractMarketplaceCommand
     {
         parent::configure();
 
-        $this->setName('glpi:marketplace:download');
-        $this->setAliases(['marketplace:download']);
+        $this->setName('marketplace:download');
         $this->setDescription(__('Download plugin from the GLPI marketplace'));
 
         $this->addArgument('plugins', InputArgument::REQUIRED | InputArgument::IS_ARRAY, __('The plugin key'));

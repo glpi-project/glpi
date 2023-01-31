@@ -92,12 +92,36 @@ See :
 
 ## Documentation
 
-Here is a [pdf version](https://forge.glpi-project.org/attachments/download/1901/glpidoc-0.85-en-partial.pdf).
-We are working on a [markdown version](https://github.com/glpi-project/doc)
+* [GLPI Administrator](https://glpi-install.readthedocs.io)
+    * Install & Update
+    * Command line tools
+    * Timezones
+    * Advanced configuration
+    * [Contribute to this documentation!](https://github.com/glpi-project/doc-install)
 
-* [Installation](https://readthedocs.org/projects/glpi-install/)
-* [Update](https://glpi-install.readthedocs.io/en/latest/update.html)
+* [GLPI User](https://glpi-user-documentation.readthedocs.io)
+    * First Steps with GLPI
+    * Overview of all modules
+    * Configuration & Administration
+    * Plugins & Marketplace
+    * GLPI command-line interface
+    * [Contribute to this documentation!](https://github.com/glpi-project/doc)
 
+* [GLPI Developer](https://glpi-developer-documentation.readthedocs.io)
+    * Source Code management
+    * Coding standards
+    * Developer API
+    * Plugins Guidelines
+    * Packaging
+    * [Contribute to this documentation!](https://github.com/glpi-project/docdev)
+
+* [GLPI Agent](https://glpi-agent.readthedocs.io)
+    * Installation (Windows / Linux / Mac OS / Source)
+    * Configuration / Settings
+    * Usage / Execution mode
+    * Tasks / HTTP Interface / Plugins
+    * Bug reporting / Man pages
+    * [Contribute to this documentation!](https://github.com/glpi-project/doc-agent)
 
 ## Additional resources
 

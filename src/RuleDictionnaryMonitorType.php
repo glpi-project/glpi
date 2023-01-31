@@ -36,15 +36,6 @@
 class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown
 {
     /**
-     * Constructor
-     **/
-    public function __construct()
-    {
-        parent::__construct('RuleDictionnaryMonitorType');
-    }
-
-
-    /**
      * @see Rule::getCriterias()
      **/
     public function getCriterias()

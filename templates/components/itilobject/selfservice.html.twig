@@ -232,6 +232,14 @@
                   right_field_options
                ) }}
 
+               {% set uploads = [] %}
+               {% if params._content is defined %}
+                  {% set uploads = uploads|merge({'_content': params._content, '_tag_content': params._tag_content}) %}
+               {% endif %}
+               {% if params._filename is defined %}
+                  {% set uploads = uploads|merge({'_filename': params._filename, '_tag_filename': params._tag_filename}) %}
+               {% endif %}
+
                {{ fields.textareaField(
                   'content',
                   params['content'],
@@ -239,6 +247,7 @@
                   right_field_options|merge({
                      'enable_richtext': true,
                      'enable_fileupload': (itiltemplate.isHiddenField('_documents_id')) ? false : true,
+                     'uploads': uploads,
                   })
                ) }}
             </div>

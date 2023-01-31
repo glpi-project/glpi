@@ -736,13 +736,6 @@ class Html extends \GLPITestCase
         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
     }
 
-    public function testCleanSQLDisplay()
-    {
-        $sql = "SELECT * FROM mytable WHERE myfield < 10 ORDER BY id";
-        $expected = "SELECT * <br/>FROM mytable <br/>WHERE myfield &lt; 10 <br/>ORDER BY id";
-        $this->string(\Html::cleanSQLDisplay($sql))->isIdenticalTo($expected);
-    }
-
     public function testDisplayBackLink()
     {
         $this->output(

@@ -183,7 +183,10 @@ class Update
             $this->migration->displayError(
                 __('The database schema is not consistent with the current GLPI version.')
                 . "\n"
-                . __('It is recommended to run the "php bin/console glpi:database:check_schema_integrity" command to see the differences.')
+                . sprintf(
+                    __('It is recommended to run the "%s" command to see the differences.'),
+                    'php bin/console database:check_schema_integrity'
+                )
             );
         }
     }
@@ -288,13 +291,13 @@ class Update
         if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
             $message = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:myisam_to_innodb');
+                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
             $this->migration->displayError($message);
         }
         if (($datetime_count = $DB->getTzIncompatibleTables()->count()) > 0) {
             $message = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
+                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
             $this->migration->displayError($message);
         }
         /*
@@ -307,7 +310,7 @@ class Update
         if ($DB->use_utf8mb4 && ($non_utf8mb4_count = $DB->getNonUtf8mb4Tables(true)->count()) > 0) {
             $message = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
+                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:utf8mb4');
             $this->migration->displayError($message);
         }
         /*
@@ -320,7 +323,7 @@ class Update
         if (!$DB->allow_signed_keys && ($signed_keys_col_count = $DB->getSignedKeysColumns(true)->count()) > 0) {
             $message = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:unsigned_keys');
+                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
             $this->migration->displayError($message);
         }
 
@@ -356,7 +359,13 @@ class Update
        //generate security key if missing, and update db
         $glpikey = new GLPIKey();
         if (!$glpikey->keyExists() && !$glpikey->generate()) {
-            $this->migration->displayWarning(__('Unable to create security key file! You have to run "php bin/console glpi:security:change_key" command to manually create this file.'), true);
+            $this->migration->displayWarning(
+                sprintf(
+                    __('Unable to create security key file! You have to run the "%s" command to manually create this file.'),
+                    'php bin/console security:change_key'
+                ),
+                true
+            );
         }
 
         // Check if schema has differences from the expected one but do not block the upgrade

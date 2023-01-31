@@ -21,11 +21,11 @@ Generating optimized autoload files
 Creating a dedicated database
 -----------------------------
 
-Use the **glpi:database:install** CLI command to create a new database,
+Use the **database:install** CLI command to create a new database,
 only used for the test suite, using the `--config-dir=./tests/config` option:
 
 ```bash
-$ bin/console glpi:database:install --config-dir=./tests/config --db-name=glpitests --db-user=root --db-password=xxxx
+$ bin/console database:install --config-dir=./tests/config --db-name=glpitests --db-user=root --db-password=xxxx
 Creating the database...
 Saving configuration file...
 Loading default schema...
@@ -37,7 +37,7 @@ The configuration file is saved as `tests/config/config_db.php`.
 The database is created using the default schema for current version.
 
 If you need to recreate the database (e.g. for a new schema), you need to run
-**glpi:database:install** CLI command again with the `--force` option.
+**database:install** CLI command again with the `--force` option.
 
 
 Changing database configuration

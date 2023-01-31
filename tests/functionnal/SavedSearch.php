@@ -51,18 +51,19 @@ class SavedSearch extends DbTestCase
         $_SESSION["glpiactiveprofile"]['config'] = $_SESSION["glpiactiveprofile"]['config'] & ~UPDATE;
         $this->array(\SavedSearch::getVisibilityCriteria()['WHERE'])->isNotEmpty();
     }
+
     public function testAddVisibilityRestrict()
     {
        //first, as a super-admin
         $this->login();
         $this->string(\SavedSearch::addVisibilityRestrict())
-         ->isIdenticalTo('');
+            ->isIdenticalTo('');
 
         $this->login('normal', 'normal');
         $this->string(\SavedSearch::addVisibilityRestrict())
-         ->isIdenticalTo("`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5'");
+            ->isIdenticalTo("`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5'");
 
-       //add public saved searches read right for normal profile
+        //add public saved searches read right for normal profile
         global $DB;
         $DB->update(
             'glpi_profilerights',
@@ -73,75 +74,115 @@ class SavedSearch extends DbTestCase
             ]
         );
 
-       //ACLs have changed: login again.
+        //ACLs have changed: login again.
         $this->login('normal', 'normal');
 
-       //reset rights. Done here so ACLs are reset even if tests fails.
-        $DB->update(
-            'glpi_profilerights',
-            ['rights' => 0],
-            [
-                'profiles_id'  => 2,
-                'name'         => 'bookmark_public'
-            ]
-        );
-
         $this->string(\SavedSearch::addVisibilityRestrict())
-         ->isIdenticalTo("((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR `glpi_savedsearches`.`is_private` = '0')");
+            ->isIdenticalTo("((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0'))");
+
+        // Check entity restriction
+        $this->setEntity('_test_root_entity', true);
+        $this->string(\SavedSearch::addVisibilityRestrict())
+            ->isIdenticalTo("((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0' AND ((`glpi_savedsearches`.`entities_id` IN ({$_SESSION['glpiactiveentities_string']}) OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))))");
     }
 
     public function testGetMine()
     {
         global $DB;
+
+        $root_entity_id  = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $child_entity_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+
         // needs a user
         // let's use TU_USER
         $this->login();
-        $uid =  getItemByTypeName('User', TU_USER, true);
+        $tuuser_id =  getItemByTypeName(\User::class, TU_USER, true);
+        $normal_id =  getItemByTypeName(\User::class, 'normal', true);
 
         // now add a bookmark on Ticket view
         $bk = new \SavedSearch();
         $this->boolean(
             (bool)$bk->add([
-                'name'         => 'public',
+                'name'         => 'public root recursive',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
-                'users_id'     => $uid,
+                'users_id'     => $tuuser_id,
                 'is_private'   => 0,
-                'entities_id'  => 0,
+                'entities_id'  => $root_entity_id,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
+            ])
+        )->isTrue();
+        $this->boolean(
+            (bool)$bk->add([
+                'name'         => 'public root NOT recursive',
+                'type'         => 1,
+                'itemtype'     => 'Ticket',
+                'users_id'     => $tuuser_id,
+                'is_private'   => 0,
+                'entities_id'  => $root_entity_id,
+                'is_recursive' => 0,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
+            ])
+        )->isTrue();
+        $this->boolean(
+            (bool)$bk->add([
+                'name'         => 'public child 1 recursive',
+                'type'         => 1,
+                'itemtype'     => 'Ticket',
+                'users_id'     => $tuuser_id,
+                'is_private'   => 0,
+                'entities_id'  => $child_entity_id,
+                'is_recursive' => 1,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
         )->isTrue();
 
         $this->boolean(
             (bool)$bk->add([
-                'name'         => 'private',
+                'name'         => 'private TU_USER',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
-                'users_id'     => $uid,
+                'users_id'     => $tuuser_id,
                 'is_private'   => 1,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
         )->isTrue();
 
         $this->boolean(
             (bool)$bk->add([
-                'name'         => 'private',
+                'name'         => 'private normal user',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
-                'users_id'     => $uid + 1,
+                'users_id'     => $normal_id,
                 'is_private'   => 1,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
         )->isTrue();
         // With UPDATE 'config' right, we still shouldn't see other user's private searches
-        $this->integer(count($bk->getMine()))->isEqualTo(2);
+        $expected = [
+            'public root recursive',
+            'public root NOT recursive',
+            'public child 1 recursive',
+            'private TU_USER',
+        ];
+        $mine = $bk->getMine();
+        $this->array($mine)->hasSize(count($expected));
+        $this->array(array_column($mine, 'name'))->containsValues($expected);
         $_SESSION["glpiactiveprofile"]['config'] = $_SESSION["glpiactiveprofile"]['config'] & ~UPDATE;
-        $this->integer(count($bk->getMine()))->isEqualTo(2);
+        $this->array($mine)->hasSize(count($expected));
+        $this->array(array_column($mine, 'name'))->containsValues($expected);
+
+        // Normal user cannot see public saved searches by default
+        $this->login('normal', 'normal');
+
+        $mine = $bk->getMine();
+        $this->array($mine)->hasSize(1);
+        $this->array(array_column($mine, 'name'))->containsValues(['private normal user']);
 
         //add public saved searches read right for normal profile
         $DB->update(
@@ -152,23 +193,46 @@ class SavedSearch extends DbTestCase
                 'name'         => 'bookmark_public'
             ]
         );
-        //ACLs have changed: login again.
-        $this->login('normal', 'normal');
+        $this->login('normal', 'normal'); // ACLs have changed: login again.
+        $expected = [
+            'public root recursive',
+            'public root NOT recursive',
+            'public child 1 recursive',
+            'private normal user',
+        ];
+        $mine = $bk->getMine('Ticket');
+        $this->array($mine)->hasSize(count($expected));
+        $this->array(array_column($mine, 'name'))->containsValues($expected);
 
-        $this->integer(count($bk->getMine('Ticket')))->isEqualTo(1);
+        // Check entity restrictions
+        $this->setEntity('_test_root_entity', false);
+        $expected = [
+            'public root recursive',
+            'public root NOT recursive',
+            'private normal user',
+        ];
+        $mine = $bk->getMine('Ticket');
+        $this->array($mine)->hasSize(count($expected));
+        $this->array(array_column($mine, 'name'))->containsValues($expected);
 
-        //reset rights
-        $DB->update(
-            'glpi_profilerights',
-            ['rights' => 0],
-            [
-                'profiles_id'  => 2,
-                'name'         => 'bookmark_public'
-            ]
-        );
-        //ACLs have changed: login again.
-        $this->login('normal', 'normal');
+        $this->setEntity('_test_child_1', true);
+        $expected = [
+            'public root recursive',
+            'public child 1 recursive',
+            'private normal user',
+        ];
+        $mine = $bk->getMine('Ticket');
+        $this->array($mine)->hasSize(count($expected));
+        $this->array(array_column($mine, 'name'))->containsValues($expected);
 
-        $this->integer(count($bk->getMine('Ticket')))->isEqualTo(0);
+        $this->setEntity('_test_child_1', false);
+        $expected = [
+            'public root recursive',
+            'public child 1 recursive',
+            'private normal user',
+        ];
+        $mine = $bk->getMine('Ticket');
+        $this->array($mine)->hasSize(count($expected));
+        $this->array(array_column($mine, 'name'))->containsValues($expected);
     }
 }

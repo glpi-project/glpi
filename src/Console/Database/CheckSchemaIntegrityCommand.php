@@ -77,11 +77,11 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:database:check_schema_integrity');
+        $this->setName('database:check_schema_integrity');
         $this->setAliases(
             [
                 'db:check_schema_integrity',
-                'glpi:database:check', // old name
+                'database:check', // old name
                 'db:check', // old alias
             ]
         );

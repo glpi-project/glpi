@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 include('../inc/includes.php');
 
 Session::checkCentralAccess();
@@ -80,7 +82,7 @@ if ($_REQUEST["action"] == "get_externalevent_template") {
         $template = new PlanningExternalEventTemplate();
         $template->getFromDB($_POST[$key]);
 
-        $template->fields = array_map('html_entity_decode', $template->fields);
+        $template->fields = Sanitizer::decodeHtmlSpecialCharsRecursive($template->fields);
         $template->fields['rrule'] = json_decode($template->fields['rrule'], true);
         header("Content-Type: application/json; charset=UTF-8");
         echo json_encode($template->fields, JSON_NUMERIC_CHECK);

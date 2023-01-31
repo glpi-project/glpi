@@ -206,7 +206,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         if ($core_requirements->hasMissingOptionalRequirements()) {
             $message = __('Some optional system requirements are missing.')
             . ' '
-            . __('Run "php bin/console glpi:system:check_requirements" for more details.');
+            . sprintf(__('Run the "%1$s" command for more details.'), 'php bin/console system:check_requirements');
             $this->output->writeln(
                 '<comment>' . $message . '</comment>',
                 OutputInterface::VERBOSITY_NORMAL

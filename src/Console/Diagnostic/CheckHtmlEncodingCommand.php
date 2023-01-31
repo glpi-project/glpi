@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Console\Database;
+namespace Glpi\Console\Diagnostic;
 
 use CommonDBTM;
 use Glpi\Console\AbstractCommand;
@@ -44,20 +44,21 @@ use Ticket;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
- * Prior from GLPI 10.0, some HTML entities were not properly encoded.
+ * Prior from GLPI 10.0, some HTML contents were not properly encoded.
  *
- * This CLI tool helps to fix items one by one or in small batches
+ * This CLI tool helps to fix items encoding issues.
  */
-final class FixHtmlEncodingCommand extends AbstractCommand
+final class CheckHtmlEncodingCommand extends AbstractCommand
 {
     /**
-     * Error code returned when a specified itemtype does not exists.
+     * Error code returned when invalid items are found and are not fixed.
      *
      * @var integer
      */
-    public const ERROR_ITEMTYPE_NOT_FOUND = 1;
+    public const ERROR_INVALID_ITEMS_FOUND = 1;
 
     /**
      * Error code returned when update of an item failed.
@@ -72,13 +73,6 @@ final class FixHtmlEncodingCommand extends AbstractCommand
      * @var integer
      */
     public const ERROR_ROLLBACK_FILE_FAILED = 3;
-
-    /**
-     * Error code returned when rollback file path is not passed to command.
-     *
-     * @var integer
-     */
-    public const ERROR_ROLLBACK_FILE_REQUIRED = 4;
 
     /**
      * Items with invalid HTML.
@@ -105,13 +99,19 @@ final class FixHtmlEncodingCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:database:fix_html_encoding');
-        $this->setAliases(['db:fix_html']);
-        $this->setDescription(__('Fix HTML encoding issues in database.'));
+        $this->setName('diagnostic:check_html_encoding');
+        $this->setDescription(__('Check for badly HTML encoded content in database.'));
+
+        $this->addOption(
+            'fix',
+            'f',
+            InputOption::VALUE_NONE | InputOption::VALUE_NEGATABLE,
+            __('Fix detected issues')
+        );
 
         $this->addOption(
             'dump',
-            null,
+            'd',
             InputOption::VALUE_REQUIRED,
             __('Path of file where will be stored SQL queries that can be used to rollback changes')
         );
@@ -130,7 +130,23 @@ final class FixHtmlEncodingCommand extends AbstractCommand
         }
 
         $output->writeln('<info>' . sprintf(_n('Found %d item to fix.', 'Found %d items to fix.', $count), $count) . '</info>');
-        $this->askForConfirmation();
+
+        $fix = $input->getOption('fix');
+
+        if ($fix === null && !$this->input->getOption('no-interaction')) {
+            $question_helper = $this->getHelper('question');
+            $fix = $question_helper->ask(
+                $input,
+                $output,
+                new ConfirmationQuestion(
+                    _n('Do you want to fix it?', 'Do you want to fix them?', $count) . ' [Yes/no]'
+                )
+            );
+        }
+
+        if ($fix !== true) {
+            return self::ERROR_INVALID_ITEMS_FOUND;
+        }
 
         if ($input->getOption('dump')) {
             $this->dumpObjects();
@@ -147,6 +163,7 @@ final class FixHtmlEncodingCommand extends AbstractCommand
         }
 
         $output->writeln('<info>' . __('HTML encoding has been fixed.') . '</info>');
+
         return 0;
     }
 

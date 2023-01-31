@@ -852,7 +852,7 @@ class User extends CommonDBTM
             }
             if ($newPicture) {
                 $fullpath = GLPI_TMP_DIR . "/" . $input["_picture"];
-                if (Document::isImage($fullpath, 'image')) {
+                if (Document::isImage($fullpath)) {
                    // Unlink old picture (clean on changing format)
                     self::dropPictureFiles($this->fields['picture']);
                    // Move uploaded file
@@ -2562,7 +2562,7 @@ JAVASCRIPT;
                // Display a warning but only if user is more or less an admin
                 echo __('Timezone usage has not been activated.')
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to activate it.'), 'glpi:database:enable_timezones');
+                . sprintf(__('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
             }
             echo "</td></tr>";
         }
@@ -2799,7 +2799,10 @@ JAVASCRIPT;
             }
 
             if (
-                Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+                (
+                    Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+                    || Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME_USER
+                )
                 && Session::getCurrentInterface() == "central"
             ) {
                 echo "<tr class='tab_bg_1'>";
@@ -3059,7 +3062,7 @@ JAVASCRIPT;
                    // Display a warning but only if user is more or less an admin
                     echo __('Timezone usage has not been activated.')
                     . ' '
-                    . sprintf(__('Run the "php bin/console %1$s" command to activate it.'), 'glpi:database:enable_timezones');
+                    . sprintf(__('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
                 }
                 echo "</td>";
                 if (
@@ -3211,7 +3214,10 @@ JAVASCRIPT;
             echo "</td></tr>";
 
             if (
-                Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+                (
+                    Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+                    || Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME_USER
+                )
                 && Session::getCurrentInterface() == "central"
             ) {
                 echo "<tr class='tab_bg_1'>";
@@ -4489,7 +4495,7 @@ JAVASCRIPT;
        // Check default value for dropdown : need to be a numeric (or null)
         if (
             isset($p['value'])
-            && ((strlen($p['value']) == 0) || !is_numeric($p['value']) && $p['value'] != 'myself')
+            && ((strlen($p['value']) == 0) || !is_numeric($p['value']) && $p['value'] !== 'myself')
         ) {
             $p['value'] = 0;
         }
@@ -4504,17 +4510,15 @@ JAVASCRIPT;
         }
 
         // Make a select box with all glpi users
-        if (!$p['multiple']) {
-            $user = getUserName($p['value'], 2, true);
-        }
-
-        if ($p['readonly']) {
-            return '<span class="form-control" readonly>' . $user["name"] . '</span>';
-        }
-
         $view_users = self::canView();
 
         if (!$p['multiple']) {
+            $user = getUserName($p['value'], 2, true);
+
+            if ($p['readonly']) {
+                return '<span class="form-control" readonly>' . $user["name"] . '</span>';
+            }
+
             if ($p['value'] === 'myself') {
                 $default = __("Myself");
             } else if (!empty($p['value']) && ($p['value'] > 0)) {
@@ -4534,6 +4538,10 @@ JAVASCRIPT;
                     $user = getUserName($value, 2);
                     $valuesnames[] = $user["name"];
                 }
+            }
+
+            if ($p['readonly']) {
+                return '<span class="form-control" readonly>' . implode(', ', $valuesnames) . '</span>';
             }
         }
 
@@ -6389,9 +6397,11 @@ JAVASCRIPT;
                 return null;
 
             case Entity::ANONYMIZE_USE_GENERIC:
+            case Entity::ANONYMIZE_USE_GENERIC_USER:
                 return __("Helpdesk user");
 
             case Entity::ANONYMIZE_USE_NICKNAME:
+            case Entity::ANONYMIZE_USE_NICKNAME_USER:
                 return $this->fields['nickname'];
         }
 
@@ -6414,9 +6424,11 @@ JAVASCRIPT;
                 return null;
 
             case Entity::ANONYMIZE_USE_GENERIC:
+            case Entity::ANONYMIZE_USE_GENERIC_USER:
                 return __("Helpdesk user");
 
             case Entity::ANONYMIZE_USE_NICKNAME:
+            case Entity::ANONYMIZE_USE_NICKNAME_USER:
                 $user = new User();
                 if (!$user->getFromDB($users_id)) {
                     return '';

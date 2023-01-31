@@ -341,9 +341,7 @@ final class SearchOption implements \ArrayAccess
             if (is_null($item)) { // Special union type
                 $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
             } else {
-                if ($item = getItemForItemtype($itemtype)) {
-                    $itemtable = $item->getTable();
-                }
+                $itemtable = $item->getTable();
             }
 
             foreach ($search[$itemtype] as $key => $val) {

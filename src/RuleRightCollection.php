@@ -223,7 +223,7 @@ class RuleRightCollection extends RuleCollection
     public function prepareInputDataForProcess($input, $params)
     {
         $groups = [];
-        if (isset($input) && is_array($input)) {
+        if (is_array($input)) {
             $groups = $input;
         }
 

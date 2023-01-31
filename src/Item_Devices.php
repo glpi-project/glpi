@@ -1043,7 +1043,7 @@ class Item_Devices extends CommonDBRelation
                                 $content = Html::progressBar("percent" . mt_rand(), [
                                     'create'  => true,
                                     'percent' => $percent,
-                                    'message' => sprintf(__('%1$s (%2$d%%) '), html_entity_decode(Html::formatNumber($this->fields[$field], false, 0)), $percent),
+                                    'message' => sprintf(__('%1$s (%2$d%%) '), Html::formatNumber($this->fields[$field], false, 0), $percent),
                                     'display' => false
                                 ]);
                                 break;

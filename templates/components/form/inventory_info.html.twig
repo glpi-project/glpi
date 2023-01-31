@@ -31,7 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% if item.isDynamic() != false %}
+{% if has_profile_right('inventory', constant('READ')) and item.isDynamic() != false %}
 <div class="card m-n2 border-0 shadow-none">
    <div class="card-header">
       <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
@@ -152,11 +152,17 @@
          });
       });
       </script>
+   {% else %}
+   <div class="card-body row">
+      <div class="mb-3 col-12 col-sm-6">
+         {{ __('Agent information is not available.') }}
+      </div>
+   </div>
    {% endif %}
 
    {# display last_inventory_update for asset using Inventoriable Trait and without agent #}
    {# like NetworkEquipement, Printer or Unmanaged Device converted #}
-   {% if item is usingtrait('Glpi\\Features\\Inventoriable') and item.getInventoryAgent() == null %}
+   {% if item is usingtrait('Glpi\\Features\\Inventoriable') and item.getInventoryAgent() == null and item.isField('last_inventory_update') %}
       <div class="card-body row">
          <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >{{ __('Last inventory') }}</label>

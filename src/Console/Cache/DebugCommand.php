@@ -49,8 +49,7 @@ class DebugCommand extends Command
     {
         parent::configure();
 
-        $this->setName('glpi:cache:debug');
-        $this->setAliases(['cache:debug']);
+        $this->setName('cache:debug');
         $this->setDescription('Debug GLPI cache.');
 
         $this->addOption(

@@ -487,12 +487,12 @@ class Central extends CommonGLPI
             if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:myisam_to_innodb');
+                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
             }
             if (($datetime_count = $DB->getTzIncompatibleTables()->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
+                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
             }
             /*
              * FIXME: Remove `$exclude_plugins = true` condition in GLPI 10.1.
@@ -502,7 +502,7 @@ class Central extends CommonGLPI
             if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables(true)->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
+                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:utf8mb4');
             }
             /*
              * FIXME: Remove `$exclude_plugins = true` condition in GLPI 10.1.
@@ -512,7 +512,7 @@ class Central extends CommonGLPI
             if (($signed_keys_col_count = $DB->getSignedKeysColumns(true)->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                 . ' '
-                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:unsigned_keys');
+                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
             }
         }
 

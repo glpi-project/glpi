@@ -521,6 +521,8 @@ class Ticket extends CommonITILObject
                 $prefix_ticket = "internal_";
                 $level_ticket  = new OlaLevel_Ticket();
                 break;
+            default:
+                return false;
         }
 
         $input = [];
@@ -538,6 +540,8 @@ class Ticket extends CommonITILObject
                     $input[$prefix_ticket . 'time_to_own'] = '';
                 }
                 break;
+            default:
+                return false;
         }
 
         $input[$prefix . '_waiting_duration'] = 0;
@@ -1808,6 +1812,7 @@ class Ticket extends CommonITILObject
             $this->fillInputForBusinessRules($input);
 
             $rules = new RuleTicketCollection($input['entities_id']);
+
 
             $input = $rules->processAllRules(
                 $input,
@@ -3717,9 +3722,7 @@ JAVASCRIPT;
 
        // Get default values from posted values on reload form
         if (!$ticket_template) {
-            if (isset($_POST)) {
-                $options = $_POST;
-            }
+            $options = $_POST;
         }
 
         if (isset($options['name'])) {

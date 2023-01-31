@@ -60,7 +60,7 @@ class MyIsamToInnoDbCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('glpi:migration:myisam_to_innodb');
+        $this->setName('migration:myisam_to_innodb');
         $this->setDescription(__('Migrate MyISAM tables to InnoDB'));
     }
 

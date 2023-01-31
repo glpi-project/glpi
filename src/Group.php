@@ -1077,6 +1077,7 @@ class Group extends CommonTreeDropdown
 
             case Entity::ANONYMIZE_USE_GENERIC:
             case Entity::ANONYMIZE_USE_NICKNAME:
+            case Entity::ANONYMIZE_USE_GENERIC_GROUP:
                 return __("Helpdesk group");
         }
     }

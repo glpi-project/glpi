@@ -82,6 +82,7 @@ var GLPIPlanning  = {
         var all_days = [0, 1, 2, 3, 4, 5, 6];
         var enabled_days = CFG_GLPI.planning_work_days;
         var hidden_days = all_days.filter(day => !enabled_days.some(n => n == day));
+        var loadedLocales = Object.keys(FullCalendarLocales);
 
         this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
             plugins:     options.plugins,
@@ -104,6 +105,7 @@ var GLPIPlanning  = {
             agendaEventMinHeight: 13,
             header: options.header,
             hiddenDays: hidden_days,
+            locale: loadedLocales.length === 1 ? loadedLocales[0] : undefined,
             //resources: options.resources,
             resources: function(fetchInfo, successCallback) {
             // Filter resources by whether their id is in visible_res.
@@ -603,11 +605,6 @@ var GLPIPlanning  = {
                 GLPIPlanning.calendar.unselect();
             }
         });
-
-        var loadedLocales = Object.keys(FullCalendarLocales);
-        if (loadedLocales.length === 1) {
-            GLPIPlanning.calendar.setOption('locale', loadedLocales[0]);
-        }
 
         $('.planning_on_central a')
             .mousedown(function() {

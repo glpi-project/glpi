@@ -7,13 +7,12 @@ on:
   # Enable manual run
   workflow_dispatch:
 
-permissions:
-  issues: write
-
 jobs:
   audit:
     # Do not run scheduled audit on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    permissions:
+      issues: "write"
     name: "Audit dependencies (${{ matrix.branch }})"
     runs-on: "ubuntu-latest"
     strategy:

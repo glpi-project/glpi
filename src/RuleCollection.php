@@ -559,9 +559,9 @@ class RuleCollection extends CommonDBTM
             $colspan++;
         }
 
+        $ruletype = $this->getRuleClassName();
         $can_sort = $canedit && $nb;
         if (count($this->RuleList->list)) {
-            $ruletype = $this->RuleList->list[0]->getType();
             $can_sort = $this->RuleList->list[0]->can_sort && $canedit && $nb;
             Session::initNavigateListItems($ruletype);
         }
@@ -669,9 +669,10 @@ JAVASCRIPT;
             $url = $CFG_GLPI["root_doc"];
         }
 
-       //if rules provides an initRules method, then we're able to reset them
-        if (method_exists($this->getRuleClass(), 'initRules')) {
-            echo "<a class='btn btn-primary' id='reset_rules' href='" . $rule->getSearchURL() . "?reinit=true&subtype=" . $this->getRuleClassName() . "' " .
+        // if rules provides has default rules, then we're able to reset them
+        $ruleclass = $this->getRuleClass();
+        if ($ruleclass instanceof Rule && $ruleclass->hasDefaultRules()) {
+            echo "<a class='btn btn-primary' id='reset_rules' href='" . $rule->getSearchURL() . "?reinit=true&subtype=" . $ruleclass->getType() . "' " .
             "onClick='if(confirm(\"" . __s('Rules will be erased and recreated from default. Are you sure?') . "\"))
             { return true } else { return false; };' " .
             "title='" . __s("Delete all rules and recreate them by default") . "'" .
@@ -682,7 +683,7 @@ JAVASCRIPT;
         Ajax::createIframeModalWindow(
             'allruletest' . $rand,
             $url . "/front/rulesengine.test.php?" .
-                                          "sub_type=" . $this->getRuleClassName() .
+                                          "sub_type=" . $ruleclass->getType() .
                                           "&condition=" . $p['condition'],
             ['title' => __('Test rules engine')]
         );
@@ -1198,6 +1199,7 @@ JAVASCRIPT;
             $tmprule = new $rule['sub_type']();
            //check entities
             if ($tmprule->isEntityAssign()) {
+                $rule['entities_id'] = $DB->escape(Html::entity_decode_deep($rule['entities_id']));
                 $entities_found = $entity->find(['completename' => $rule['entities_id']]);
                 if (empty($entities_found)) {
                     $rules_refused[$k_rule]['entity'] = true;
@@ -1450,6 +1452,7 @@ JAVASCRIPT;
      **/
     public static function processImportRules()
     {
+        global $DB;
         $ruleCriteria = new RuleCriteria();
         $ruleAction   = new RuleAction();
         $entity       = new Entity();
@@ -1493,7 +1496,7 @@ JAVASCRIPT;
             if (!$item->isEntityAssign()) {
                 $params['entities_id'] = 0;
             } else {
-                $entities_found = $entity->find(['completename' => $rule['entities_id']]);
+                $entities_found = $entity->find(['completename' => $DB->escape($current_rule['entities_id'])]);
                 if (!empty($entities_found)) {
                     $entity_found          = array_shift($entities_found);
                     $params['entities_id'] = $entity_found['id'];
@@ -1732,11 +1735,8 @@ JAVASCRIPT;
                     $output["result"][$rule->fields["id"]]["id"] = $rule->fields["id"];
                     $rule->process($input, $output, $params);
 
-                    if (
-                        $output["_rule_process"]
-                        && $this->stop_on_first_match
-                    ) {
-                        unset($output["_rule_process"]);
+                    if ((isset($output['_stop_rules_processing']) && (int) $output['_stop_rules_processing'] === 1) || ($output["_rule_process"] && $this->stop_on_first_match)) {
+                        unset($output["_stop_rules_processing"], $output["_rule_process"]);
                         $output["result"][$rule->fields["id"]]["result"] = 1;
                         $output["_ruleid"]                               = $rule->fields["id"];
                         return $output;

@@ -47,8 +47,7 @@ class InfoCommand extends AbstractMarketplaceCommand
     {
         parent::configure();
 
-        $this->setName('glpi:marketplace:info');
-        $this->setAliases(['marketplace:info']);
+        $this->setName('marketplace:info');
         $this->setDescription(__('Get information about a plugin'));
 
         $this->addArgument('plugin', InputArgument::REQUIRED, __('The plugin key'));

@@ -91,7 +91,7 @@ class InstallCommand extends AbstractConfigureCommand
 
         parent::configure();
 
-        $this->setName('glpi:database:install');
+        $this->setName('database:install');
         $this->setAliases(['db:install']);
         $this->setDescription('Install database schema');
 

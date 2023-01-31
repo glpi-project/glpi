@@ -890,9 +890,13 @@ final class SQLProvider implements SearchProviderInterface
 
                 break;
 
+            case 'PlanningExternalEvent':
+                $criteria = \PlanningExternalEvent::getVisibilityCriteria();
+                break;
+
             case 'ValidatorSubstitute':
                 if (Session::getLoginUserID() !== false) {
-                    $condition = "users_id = '" . Session::getLoginUserID() . "'" ;
+                    $criteria = ['users_id' => Session::getLoginUserID()];
                 }
 
                 break;
@@ -990,6 +994,8 @@ final class SQLProvider implements SearchProviderInterface
                     break;
             }
         }
+
+        $SEARCH = [];
         switch ($searchtype) {
             /** @noinspection PhpMissingBreakStatementInspection */
             case "notcontains":
@@ -1530,6 +1536,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype === 'morethan') {
                         $val = '>' . $val;
                     }
+                    $date_computation = null;
                     if ($searchtype) {
                         $date_computation = $tocompute;
                     }
@@ -2259,22 +2266,22 @@ final class SQLProvider implements SearchProviderInterface
                             $meta_type,
                             $interjoinparams
                         ));
-                    }
 
-                    // No direct link with the previous joins
-                    if (!isset($tab['joinparams']['nolink']) || !$tab['joinparams']['nolink']) {
-                        $cleanrt     = $intertable;
-                        $complexjoin = self::computeComplexJoinID($interjoinparams);
-                        if (!empty($interlinkfield) && ($interlinkfield !== getForeignKeyFieldForTable($intertable))) {
-                            $intertable .= "_" . $interlinkfield;
+                        // No direct link with the previous joins
+                        if (!isset($tab['joinparams']['nolink']) || !$tab['joinparams']['nolink']) {
+                            $cleanrt     = $intertable;
+                            $complexjoin = self::computeComplexJoinID($interjoinparams);
+                            if (!empty($interlinkfield) && ($interlinkfield !== getForeignKeyFieldForTable($intertable))) {
+                                $intertable .= "_" . $interlinkfield;
+                            }
+                            if (!empty($complexjoin)) {
+                                $intertable .= "_" . $complexjoin;
+                            }
+                            if ($meta && $meta_type::getTable() !== $cleanrt) {
+                                $intertable .= "_" . $meta_type;
+                            }
+                            $rt = $intertable;
                         }
-                        if (!empty($complexjoin)) {
-                            $intertable .= "_" . $complexjoin;
-                        }
-                        if ($meta && $meta_type::getTable() !== $cleanrt) {
-                            $intertable .= "_" . $meta_type;
-                        }
-                        $rt = $intertable;
                     }
                 }
             }
@@ -2479,9 +2486,6 @@ final class SQLProvider implements SearchProviderInterface
                         break;
 
                     case "itemtype_item_revert":
-                        if (!isset($addmain)) {
-                            $addmain = '';
-                        }
                         $used_itemtype = $itemtype;
                         if (
                             isset($joinparams['specific_itemtype'])
@@ -2495,10 +2499,10 @@ final class SQLProvider implements SearchProviderInterface
                                 "$new_table$AS" => [
                                     'ON' => [
                                         $nt => 'id',
-                                        $rt => "{$addmain}items_id",
+                                        $rt => 'items_id',
                                         [
                                             'AND' => [
-                                                "$rt.{$addmain}itemtype" => $used_itemtype
+                                                "$rt.itemtype" => $used_itemtype
                                             ]
                                         ]
                                     ]
@@ -5005,6 +5009,7 @@ final class SQLProvider implements SearchProviderInterface
                         $totaltime   = 0;
                         $currenttime = 0;
                         $slaField    = 'slas_id';
+                        $sla_class   = 'SLA';
 
                         // define correct sla field
                         switch ($table . '.' . $field) {
@@ -5082,6 +5087,8 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $percentage_text = $percentage;
 
+                        $less_warn_limit = 0;
+                        $less_warn       = 0;
                         if ($_SESSION['glpiduedatewarning_unit'] == '%') {
                             $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
                             $less_warn       = (100 - $percentage);
@@ -5093,6 +5100,8 @@ final class SQLProvider implements SearchProviderInterface
                             $less_warn       = ($totaltime - $currenttime);
                         }
 
+                        $less_crit_limit = 0;
+                        $less_crit       = 0;
                         if ($_SESSION['glpiduedatecritical_unit'] == '%') {
                             $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
                             $less_crit       = (100 - $percentage);
@@ -5465,7 +5474,7 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         // Link with plugin tables : need to know left join structure
-        if (isset($table)) {
+        if (isset($table) && isset($field)) {
             if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table . '.' . $field, $matches)) {
                 if (count($matches) == 2) {
                     $plug     = $matches[1];
@@ -5512,7 +5521,7 @@ final class SQLProvider implements SearchProviderInterface
                             if ($_SESSION["glpiis_ids_visible"] || empty($data[$ID][$k]['name'])) {
                                 $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                             }
-                            if ($field === 'completename') {
+                            if (isset($field) && $field === 'completename') {
                                 $chunks = preg_split('/ > /', $name);
                                 $completename = '';
                                 foreach ($chunks as $key => $element_name) {
@@ -5797,28 +5806,23 @@ HTML;
                 ) {
                     $out .= $so['toadd'][$field_data['name']];
                 } else {
-                    // Empty is 0 or empty
-                    if (empty($split[0]) && isset($so['emptylabel'])) {
-                        $out .= $so['emptylabel'];
+                    // Trans field exists
+                    if (isset($field_data['trans']) && !empty($field_data['trans'])) {
+                        $out .= $field_data['trans'];
+                    } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
+                        $out .= \CommonTreeDropdown::sanitizeSeparatorInCompletename($field_data['trans_completename']);
+                    } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
+                        $out .= $field_data['trans_name'];
                     } else {
-                        // Trans field exists
-                        if (isset($field_data['trans']) && !empty($field_data['trans'])) {
-                            $out .= $field_data['trans'];
-                        } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
-                            $out .= \CommonTreeDropdown::sanitizeSeparatorInCompletename($field_data['trans_completename']);
-                        } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
-                            $out .= $field_data['trans_name'];
-                        } else {
-                            $value = $field_data['name'];
-                            $out .= $so['field'] === 'completename'
-                                ? \CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
-                                : $value;
-                        }
+                        $value = $field_data['name'];
+                        $out .= $so['field'] === 'completename'
+                            ? \CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
+                            : $value;
                     }
                 }
             }
         };
-        if (isset($table)) {
+        if (isset($table) && isset($field)) {
             $itemtype = getItemTypeForTable($table);
             if ($item = getItemForItemtype($itemtype)) {
                 if ($aggregate) {

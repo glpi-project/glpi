@@ -1,0 +1,91 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block more_fields %}
+    {{ fields.dropdownArrayField(
+        'dolog_method',
+        item.fields['dolog_method'],
+        log_methods,
+        __('Log connections')
+    ) }}
+
+    <div class="hr-text">
+        <i class="ti ti-filter"></i>
+        <span>{{ __('Filter access') }}</span>
+    </div>
+    <p><em>{{ __('Leave these parameters empty to disable API access restriction') }}</em></p>
+
+
+    {{ fields.textField(
+        'ipv4_range_start',
+        item.fields['ipv4_range_start'] is not empty ? item.fields['ipv4_range_start']|long2ip : '',
+        __('IPv4 address range start')
+    ) }}
+
+    {{ fields.textField(
+        'ipv4_range_end',
+        item.fields['ipv4_range_end'] is not empty ? item.fields['ipv4_range_end']|long2ip : '',
+        __('IPv4 address range end')
+    ) }}
+
+    {{ fields.textField(
+        'ipv6',
+        item.fields['ipv6'],
+        __('IPv6 address')
+    ) }}
+
+    {% set reset_btn %}
+        {{ fields.checkboxField(
+            '_reset_app_token',
+            '',
+            __('Regenerate'),
+            {
+                'full_width': true
+            }
+        ) }}
+    {% endset %}
+
+    {{ fields.textField(
+        'app_token',
+        item.fields['app_token'],
+        __('%1$s (%2$s)')|format(__('Application token'), 'app_token'),
+        {
+            'add_field_html': reset_btn
+        }
+    ) }}
+
+{% endblock %}

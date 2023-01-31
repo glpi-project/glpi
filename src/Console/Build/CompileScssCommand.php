@@ -56,8 +56,7 @@ class CompileScssCommand extends Command
     {
         parent::configure();
 
-        $this->setName('glpi:build:compile_scss');
-        $this->setAliases(['build:compile_scss']);
+        $this->setName('build:compile_scss');
         $this->setDescription('Compile SCSS file.');
 
         $this->addOption(

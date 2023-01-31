@@ -383,7 +383,7 @@ class Reservation extends CommonDBChild
             return false;
         }
 
-        return Session::haveAccessToEntity($item->getEntityID());
+        return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
     }
 
 
@@ -495,9 +495,9 @@ JAVASCRIPT;
         $res_table   = static::getTable();
         $res_i_table = ReservationItem::getTable();
 
-        $canedit_admin = Session::getCurrentInterface() == "central"
-                       && Session::haveRight("reservation", READ);
-        $can_reserve   = Session::haveRight("reservation", ReservationItem::RESERVEANITEM);
+        $can_read    = Session::haveRight("reservation", READ);
+        $can_edit    = Session::getCurrentInterface() == "central" && Session::haveRight("reservation", UPDATE);
+        $can_reserve = Session::haveRight("reservation", ReservationItem::RESERVEANITEM);
 
         $user = new User();
 
@@ -542,10 +542,13 @@ JAVASCRIPT;
             if (!$item->getFromDB($data['items_id'])) {
                 continue;
             }
+            if (!Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive())) {
+                continue;
+            }
 
             $my_item = $data['users_id'] === Session::getLoginUserID();
 
-            if ($canedit_admin || $my_item) {
+            if ($can_read || $my_item) {
                 $user->getFromDB($data['users_id']);
                 $data['comment'] .= '<br />' . sprintf(__("Reserved by %s"), $user->getFriendlyName());
             }
@@ -554,14 +557,14 @@ JAVASCRIPT;
                 'complete' => true,
             ]);
 
-            $editable = $canedit_admin || ($can_reserve && $my_item);
+            $editable = $can_edit || ($can_reserve && $my_item);
 
             $events[] = [
                 'id'          => $data['id'],
                 'resourceId'  => $data['itemtype'] . "-" . $data['items_id'],
                 'start'       => $data['begin'],
                 'end'         => $data['end'],
-                'comment'     => $canedit_admin || $my_item ? $data['comment'] : '',
+                'comment'     => $can_read || $my_item ? $data['comment'] : '',
                 'title'       => $params['reservationitems_id'] ? "" : $name,
                 'icon'        => $item->getIcon(),
                 'description' => $item->getTypeName(),
@@ -1198,6 +1201,7 @@ JAVASCRIPT;
                 echo "<td>" . Html::convDateTime($data["begin"]) . "</td>";
                 echo "<td>" . Html::convDateTime($data["end"]) . "</td>";
 
+                $item = null;
                 if ($ri->getFromDB($data["reservationitems_id"])) {
                     $link = "&nbsp;";
 
@@ -1210,17 +1214,20 @@ JAVASCRIPT;
                     echo "<td>" . $data['completename'] . "</td>";
                 } else {
                     echo "<td>&nbsp;</td>";
+                    echo "<td>&nbsp;</td>";
                 }
 
                 echo "<td>" . getUserName($data["users_id"]) . "</td>";
                 echo "<td>" . nl2br($data["comment"]) . "</td>";
                 echo "<td>";
-                list($annee, $mois, $jour) = explode("-", $data["begin"]);
-                echo "<a href='" . $item::getFormURLWithID($ri->fields['items_id']) .
-                 "&forcetab=Reservation$1&tab_params[defaultDate]={$data["begin"]}' " .
-                  "title=\"" . __s('See planning') . "\">";
-                echo "<i class='far fa-calendar-alt'></i>";
-                echo "<span class='sr-only'>" . __('See planning') . "</span>";
+                if ($item instanceof CommonDBTM) {
+                    list($annee, $mois, $jour) = explode("-", $data["begin"]);
+                    echo "<a href='" . $item::getFormURLWithID($ri->fields['items_id']) .
+                     "&forcetab=Reservation$1&tab_params[defaultDate]={$data["begin"]}' " .
+                      "title=\"" . __s('See planning') . "\">";
+                    echo "<i class='far fa-calendar-alt'></i>";
+                    echo "<span class='sr-only'>" . __('See planning') . "</span>";
+                }
                 echo "</td></tr>\n";
             }
         }

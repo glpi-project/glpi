@@ -642,7 +642,7 @@ final class QueryBuilder implements SearchInputInterface
         }
 
         if (
-            isset($params) && is_array($params)
+            is_array($params)
             && $usesession
         ) {
             foreach ($params as $key => $val) {

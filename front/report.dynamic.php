@@ -35,15 +35,20 @@
 
 include('../inc/includes.php');
 
-Session::checkCentralAccess();
+if (!isset($_GET['item_type']) || !is_string($_GET['item_type']) || !is_a($_GET['item_type'], CommonGLPI::class, true)) {
+    return;
+}
 
-if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
+$itemtype = $_GET['item_type'];
+Session::checkRight($itemtype::$rightname, READ);
+
+if (isset($_GET["display_type"])) {
     if ($_GET["display_type"] < 0) {
         $_GET["display_type"] = -$_GET["display_type"];
         $_GET["export_all"]   = 1;
     }
 
-    switch ($_GET["item_type"]) {
+    switch ($itemtype) {
         case 'KnowbaseItem':
             KnowbaseItem::showList($_GET, $_GET["is_faq"]);
             break;
@@ -114,12 +119,12 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
 
         default:
            // Plugin case
-            if ($plug = isPluginItemType($_GET["item_type"])) {
+            if ($plug = isPluginItemType($itemtype)) {
                 if (Plugin::doOneHook($plug['plugin'], 'dynamicReport', $_GET)) {
                     exit();
                 }
             }
-            $params = Search::manageParams($_GET["item_type"], $_GET);
-            Search::showList($_GET["item_type"], $params);
+            $params = Search::manageParams($itemtype, $_GET);
+            Search::showList($itemtype, $params);
     }
 }

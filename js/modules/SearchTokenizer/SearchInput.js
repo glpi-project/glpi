@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global escapeMarkupText */
+
 import SearchTokenizer from "./SearchTokenizer.js";
 
 /**
@@ -410,7 +412,7 @@ export default class SearchInput {
             style_overrides = tag_color_override ? `style="background-color: ${tag_color_override} !important"` : '';
         }
         return `<span class="search-input-tag badge bg-secondary me-1" contenteditable="false" data-tag="${token.tag}" ${style_overrides}>
-                  <span class="search-input-tag-value" contenteditable="false">${tag_display}${token.term || ''}</span>
+                  <span class="search-input-tag-value" contenteditable="false">${tag_display}${escapeMarkupText(token.term) || ''}</span>
                   <i class="ti ti-x cursor-pointer ms-1" title="${__('Delete')}" contenteditable="false"></i>
                </span>`;
     }

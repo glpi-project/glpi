@@ -1014,6 +1014,7 @@ class Rule extends CommonDBTM
             }
         }
 
+        $elements = [];
         if (!$p['restrict'] || ($p['restrict'] == self::AND_MATCHING)) {
             $elements[self::AND_MATCHING] = __('and');
         }
@@ -1345,6 +1346,7 @@ class Rule extends CommonDBTM
             }
         }
 
+        $items      = [];
         $group      = [];
         $groupname  = _n('Criterion', 'Criteria', Session::getPluralNumber());
         foreach ($this->getAllCriteria() as $ID => $crit) {
@@ -1417,14 +1419,9 @@ class Rule extends CommonDBTM
             }
         }
 
-        $value = '';
-
+        $items = [];
         foreach ($actions as $ID => $act) {
             $items[$ID] = $act['name'];
-
-            if (empty($value) && !isset($used[$ID])) {
-                $value = $ID;
-            }
         }
         return Dropdown::showFromArray($p['name'], $items, $p);
     }
@@ -3631,5 +3628,164 @@ class Rule extends CommonDBTM
             self::PATTERN_DATE_IS_EQUAL,
             self::PATTERN_DATE_IS_NOT_EQUAL,
         ];
+    }
+
+    /**
+     * Create rules (initialisation).
+     *
+     * @param boolean $reset        Whether to reset before adding new rules, defaults to true
+     * @param boolean $with_plugins Use plugins rules or not
+     * @param boolean $check        Check if rule exists before creating
+     *
+     * @return boolean
+     *
+     * @FIXME Make it final in GLPI 10.1.
+     * @FIXME Remove $reset, $with_plugins and $check parameters in GLPI 10.1, they are actually not used or have no effect where they are used.
+     */
+    public static function initRules($reset = true, $with_plugins = true, $check = false): bool
+    {
+        $self = new static();
+
+        if (!$self->hasDefaultRules()) {
+            return false;
+        }
+
+        if ($reset === true) {
+            $rules = $self->find(['sub_type' => static::class]);
+            foreach ($rules as $data) {
+                $delete = $self->delete($data);
+                if (!$delete) {
+                    return false; // Do not continue if reset failed
+                }
+            }
+
+            $check = false; // Nothing to check
+        }
+
+        $xml = simplexml_load_file(self::getDefaultRulesFilePath());
+        if ($xml === false) {
+            return false;
+        }
+
+        $ranking_increment = 0;
+        if ($reset === false) {
+            global $DB;
+            $ranking_increment = $DB->request([
+                'SELECT' => ['MAX' => 'ranking AS rank'],
+                'FROM'   => static::getTable(),
+                'WHERE'  => ['sub_type' => static::class]
+            ])->current()['rank'];
+        }
+
+        $has_errors = false;
+        foreach ($xml->xpath('/rules/rule') as $rulexml) {
+            if ((string)$rulexml->sub_type !== self::getType()) {
+                trigger_error(sprintf('Unexpected rule type for rule `%s`.', (string)$rulexml->uuid), E_USER_WARNING);
+                $has_errors = true;
+                continue;
+            }
+            if ((string)$rulexml->entities_id !== 'Root entity') {
+                trigger_error(sprintf('Unexpected entity value for rule `%s`.', (string)$rulexml->uuid), E_USER_WARNING);
+                $has_errors = true;
+                continue;
+            }
+
+            $rule = new static();
+
+            if ($check === true && $rule->getFromDBByCrit(['uuid' => (string)$rulexml->uuid])) {
+                // Rule already exists, ignore it.
+                continue;
+            }
+
+            $rule_input = [
+                'entities_id'  => 0, // Always add default rules to root entity
+                'sub_type'     => self::getType(),
+                'ranking'      => (int)$rulexml->ranking + $ranking_increment,
+                'name'         => (string)$rulexml->name,
+                'description'  => (string)$rulexml->description,
+                'match'        => (string)$rulexml->match,
+                'is_active'    => (int)$rulexml->is_active,
+                'comment'      => (string)$rulexml->comment,
+                'is_recursive' => (int)$rulexml->is_recursive,
+                'uuid'         => (string)$rulexml->uuid,
+                'condition'    => (string)$rulexml->condition,
+            ];
+
+            $rule_id = $rule->add(Sanitizer::sanitize($rule_input));
+            if ($rule_id === false) {
+                trigger_error(
+                    sprintf('Unable to create rule `%s`.', (string)$rulexml->uuid),
+                    E_USER_WARNING
+                );
+                $has_errors = true;
+                continue;
+            }
+
+            foreach ($rulexml->xpath('./rulecriteria') as $criteriaxml) {
+                $criteria_input = [
+                    'rules_id'  => $rule_id,
+                    'criteria'  => (string)$criteriaxml->criteria,
+                    'condition' => (string)$criteriaxml->condition,
+                    'pattern'   => (string)$criteriaxml->pattern,
+                ];
+
+                $criteria = new RuleCriteria();
+                $criteria_id = $criteria->add(Sanitizer::sanitize($criteria_input));
+                if ($criteria_id === false) {
+                    trigger_error(
+                        sprintf('Unable to create criteria for rule `%s`.', (string)$rulexml->uuid),
+                        E_USER_WARNING
+                    );
+                    $has_errors = true;
+                    continue;
+                }
+            }
+
+            foreach ($rulexml->xpath('./ruleaction') as $actionxml) {
+                $action_input = [
+                    'rules_id'    => $rule_id,
+                    'action_type' => (string)$actionxml->action_type,
+                    'field'       => (string)$actionxml->field,
+                    'value'       => (string)$actionxml->value,
+                ];
+
+                $action = new RuleAction();
+                $action_id = $action->add(Sanitizer::sanitize($action_input));
+                if ($action_id === false) {
+                    trigger_error(
+                        sprintf('Unable to create action for rule `%s`.', (string)$rulexml->uuid),
+                        E_USER_WARNING
+                    );
+                    $has_errors = true;
+                    continue;
+                }
+            }
+        }
+
+        return !$has_errors;
+    }
+
+    /**
+     * Check wether default rules exists.
+     *
+     * @return bool
+     */
+    final public static function hasDefaultRules(): bool
+    {
+        return file_exists(static::getDefaultRulesFilePath());
+    }
+
+    /**
+     * Returns default rules file path.
+     *
+     * @return string
+     */
+    private static function getDefaultRulesFilePath(): string
+    {
+        return sprintf(
+            '%s/resources/Rules/%s.xml',
+            GLPI_ROOT,
+            static::class
+        );
     }
 }

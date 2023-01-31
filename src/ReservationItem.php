@@ -891,9 +891,10 @@ class ReservationItem extends CommonDBChild
      **/
     public function getRights($interface = 'central')
     {
-
         if ($interface == 'central') {
             $values = parent::getRights();
+        } else {
+            $values = [READ => __('Read')];
         }
         $values[self::RESERVEANITEM] = __('Make a reservation');
 
@@ -925,6 +926,7 @@ class ReservationItem extends CommonDBChild
     {
 
         if ($item->getType() == __CLASS__) {
+            $tabs = [];
             if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
                 $tabs[1] = Reservation::getTypeName(1);
             }

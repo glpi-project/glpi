@@ -746,7 +746,12 @@ HTML;
 
         $js = <<<JAVASCRIPT
         $(function () {
-            var myChart = echarts.init($('#$chart_id .chart')[0]);
+            if (Dashboard.getActiveDashboard()) {
+                var target = Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
+            } else {
+                var target = $('#$chart_id .chart');
+            }
+            var myChart = echarts.init(target[0]);
             myChart.setOption($options_json);
             myChart
                 .on('click', function (params) {
@@ -756,7 +761,7 @@ HTML;
                     }
                 });
 
-            $('#$chart_id .chart')
+            target
                 .on('mouseover', function (params) {
                     myChart.setOption({'toolbox': {'show': true}});
                 })
@@ -1221,7 +1226,12 @@ JAVASCRIPT
 
         $js = <<<JAVASCRIPT
         $(function () {
-            var myChart = echarts.init($('#$chart_id .chart')[0]);
+            if (Dashboard.getActiveDashboard()) {
+                var target = Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
+            } else {
+                var target = $('#$chart_id .chart');
+            }
+            var myChart = echarts.init(target[0]);
             myChart.setOption($options_json);
 
             myChart
@@ -1232,7 +1242,7 @@ JAVASCRIPT
                     }
                 });
 
-            $('#$chart_id .chart')
+            target
                 .on('mouseover', function (params) {
                     myChart.setOption({'toolbox': {'show': true}});
                 })
@@ -1535,7 +1545,12 @@ HTML;
 
         $js = <<<JAVASCRIPT
         $(function () {
-            var myChart = echarts.init($('#$chart_id .chart')[0]);
+            if (Dashboard.getActiveDashboard()) {
+                var target = Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
+            } else {
+                var target = $('#$chart_id .chart');
+            }
+            var myChart = echarts.init(target[0]);
             myChart.setOption($options_json);
             myChart
                 .on('click', function (params) {
@@ -1545,7 +1560,7 @@ HTML;
                     }
                 });
 
-            $('#$chart_id .chart')
+            target
                 .on('mouseover', function (params) {
                     myChart.setOption({'toolbox': {'show': true}});
                 })

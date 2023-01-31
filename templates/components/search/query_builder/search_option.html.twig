@@ -64,12 +64,14 @@
    {{ call('Glpi\\Search\\Input\\QueryBuilder::displaySearchoptionValue', [params]) }}
 </div>
 
-{% do call('Ajax::updateItemOnSelectEvent', [
-   ("dropdown_" ~ searchtype_name ~ rand),
-   dropdownname,
-   config('root_doc') ~ "/ajax/search.php",
-   params|merge({
-      action: 'display_searchoption_value',
-      searchtype: '__VALUE__',
-   })
-]) %}
+{% if actions|length > 0 %}
+    {% do call('Ajax::updateItemOnSelectEvent', [
+       ("dropdown_" ~ searchtype_name ~ rand),
+       dropdownname,
+       config('root_doc') ~ "/ajax/search.php",
+       params|merge({
+          action: 'display_searchoption_value',
+          searchtype: '__VALUE__',
+       })
+    ]) %}
+{% endif %}
