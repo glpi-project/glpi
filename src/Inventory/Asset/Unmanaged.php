@@ -306,4 +306,20 @@ class Unmanaged extends MainAsset
     {
         return \Unmanaged::class;
     }
+
+    /**
+     * @FIXME Remove method in GLPI 10.1.
+     */
+    public function getManagementPorts()
+    {
+        return [];
+    }
+
+    /**
+     * @FIXME Remove method in GLPI 10.1.
+     */
+    public function setManagementPorts(array $ports): Unmanaged
+    {
+        return $this;
+    }
 }

@@ -341,4 +341,12 @@ class Printer extends NetworkEquipment
     {
         return \Printer::class;
     }
+
+    /**
+     * @FIXME Remove method in GLPI 10.1.
+     */
+    public static function needToBeUpdatedFromDiscovery(CommonDBTM $item, $val)
+    {
+        return false;
+    }
 }
