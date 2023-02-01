@@ -656,7 +656,7 @@
                      {% endif %}
 
                      {% if item.isField('remote_addr') %}
-                        {{ fields.htmlField(
+                        {{ fields.textField(
                            "remote_addr",
                            item.fields['remote_addr'],
                            __('Public contact address'),
