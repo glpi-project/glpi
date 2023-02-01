@@ -142,8 +142,8 @@ abstract class MainAsset extends InventoryAsset
                 $val->last_boot = $entry->content->operatingsystem->boot_time;
             }
 
-            //for Computer get remote_addr from agent
-            if (isset($this->getAgent()->fields['tag'])) {
+            //for Computer / Phone get remote_addr from agent
+            if (isset($this->getAgent()->fields['remote_addr'])) {
                 $val->remote_addr = $this->getAgent()->fields['remote_addr'];
             }
 
