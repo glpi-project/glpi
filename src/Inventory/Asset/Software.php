@@ -759,6 +759,8 @@ class Software extends InventoryAsset
             if (!isset($this->versions[$vkey])) {
                  $version_name = $val->version;
                  $stmt_columns = $this->cleanInputToPrepare((array)$val, $version_fields);
+                 $stmt_columns['name'] = $version_name;
+                 $stmt_columns['softwares_id'] = $softwares_id;
                 if ($stmt === null) {
                     $stmt_types = str_repeat('s', count($stmt_columns));
                     $reference = array_fill_keys(
