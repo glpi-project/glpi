@@ -2608,4 +2608,272 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->boolean(property_exists($networkPort, 'logical_number'))->isTrue();
         $this->integer($networkPort->logical_number)->isEqualTo(1047);
     }
+
+    public function testSnmpNetworkDeviceRemoteAddrOnDiscovery()
+    {
+        /**
+         * Check if IP node is set as remote_addr from discovery
+         */
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <AUTHSNMP>1</AUTHSNMP>
+              <CONTACT>anyone@glpi-project.org</CONTACT>
+              <DESCRIPTION>Cisco NX-OS(tm) n5000, Software (n5000-uk9), Version 5.2(1)N1(5), RELEASE SOFTWARE Copyright (c) 2002-2011 by Cisco Systems, Inc. Device Manager Version 6.1(1),  Compiled 6/27/2013 16:00:00</DESCRIPTION>
+              <FIRMWARE>CW_VERSION$5.2(1)N1(5)$</FIRMWARE>
+              <IP>192.168.0.8</IP>
+              <SERIAL>cn3afrt37n</SERIAL>
+              <LOCATION>dc1 salle 07</LOCATION>
+              <MAC>00:23:04:ee:be:02</MAC>
+              <MANUFACTURER>Cisco</MANUFACTURER>
+              <MODEL>Cisco Nexus 5596</MODEL>
+              <SNMPHOSTNAME>swdc-07-01-dc1</SNMPHOSTNAME>
+              <TYPE>NETWORKING</TYPE>
+              <UPTIME>175 days, 11:33:37.48</UPTIME>
+            </DEVICE>
+            <MODULEVERSION>2.3.9901</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>qlf-sesi-inventory.glpi-project.org-2013-11-14-17-47-17</DEVICEID>
+          <QUERY>NETDISCOVERY</QUERY>
+        </REQUEST>
+        ';
+
+        $converter = new \Glpi\Inventory\Converter();
+        $source = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($source);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //do a discovery
+        $inventory->setDiscovery(true);
+        $inventory->doInventory($xml_source, true);
+
+
+        $switch = new \NetworkEquipment();
+        $this->boolean($switch->getFromDbByCrit(['name' => 'swdc-07-01-dc1', 'serial' => 'cn3afrt37n']))->isTrue();
+        $this->string($switch->fields['remote_addr'])->isIdenticalTo('192.168.0.8');
+
+        //no management port added
+        $np = new \NetworkPort();
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $switch->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isFalse();
+
+        /**
+         * Redo discovery with another IP
+         * Check if IP node is set as remote_addr from discovery
+         */
+
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <AUTHSNMP>1</AUTHSNMP>
+              <CONTACT>anyone@glpi-project.org</CONTACT>
+              <DESCRIPTION>Cisco NX-OS(tm) n5000, Software (n5000-uk9), Version 5.2(1)N1(5), RELEASE SOFTWARE Copyright (c) 2002-2011 by Cisco Systems, Inc. Device Manager Version 6.1(1),  Compiled 6/27/2013 16:00:00</DESCRIPTION>
+              <FIRMWARE>CW_VERSION$5.2(1)N1(5)$</FIRMWARE>
+              <IP>192.168.0.54</IP>
+              <SERIAL>cn3afrt37n</SERIAL>
+              <LOCATION>dc1 salle 07</LOCATION>
+              <MAC>00:23:04:ee:be:02</MAC>
+              <MANUFACTURER>Cisco</MANUFACTURER>
+              <MODEL>Cisco Nexus 5596</MODEL>
+              <SNMPHOSTNAME>swdc-07-01-dc1</SNMPHOSTNAME>
+              <TYPE>NETWORKING</TYPE>
+              <UPTIME>175 days, 11:33:37.48</UPTIME>
+            </DEVICE>
+            <MODULEVERSION>2.3.9901</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>qlf-sesi-inventory.glpi-project.org-2013-11-14-17-47-17</DEVICEID>
+          <QUERY>NETDISCOVERY</QUERY>
+        </REQUEST>
+        ';
+
+        $converter = new \Glpi\Inventory\Converter();
+        $source = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($source);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //do a discovery
+        $inventory->setDiscovery(true);
+        $inventory->doInventory($xml_source, true);
+
+
+        $switch = new \NetworkEquipment();
+        $this->boolean($switch->getFromDbByCrit(['name' => 'swdc-07-01-dc1', 'serial' => 'cn3afrt37n']))->isTrue();
+        $this->string($switch->fields['remote_addr'])->isIdenticalTo('192.168.0.54');
+
+        //no management port added
+        $np = new \NetworkPort();
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $switch->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isFalse();
+
+        $switch->delete($switch->fields);
+    }
+
+    public function testSnmpNetworkEquipementRemoteAddrOnInventory()
+    {
+        /**
+         * Check if IP node is set as remote_addr from discovery
+         */
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <AUTHSNMP>1</AUTHSNMP>
+              <CONTACT>anyone@glpi-project.org</CONTACT>
+              <DESCRIPTION>Cisco NX-OS(tm) n5000, Software (n5000-uk9), Version 5.2(1)N1(5), RELEASE SOFTWARE Copyright (c) 2002-2011 by Cisco Systems, Inc. Device Manager Version 6.1(1),  Compiled 6/27/2013 16:00:00</DESCRIPTION>
+              <FIRMWARE>CW_VERSION$5.2(1)N1(5)$</FIRMWARE>
+              <IP>192.168.0.8</IP>
+              <SERIAL>cn3afrt37n</SERIAL>
+              <LOCATION>dc1 salle 07</LOCATION>
+              <MAC>00:23:04:ee:be:02</MAC>
+              <MANUFACTURER>Cisco</MANUFACTURER>
+              <MODEL>Cisco Nexus 5596</MODEL>
+              <SNMPHOSTNAME>swdc-07-01-dc1</SNMPHOSTNAME>
+              <TYPE>NETWORKING</TYPE>
+              <UPTIME>175 days, 11:33:37.48</UPTIME>
+            </DEVICE>
+            <MODULEVERSION>2.3.9901</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>qlf-sesi-inventory.glpi-project.org-2013-11-14-17-47-17</DEVICEID>
+          <QUERY>NETDISCOVERY</QUERY>
+        </REQUEST>
+        ';
+
+        $converter = new \Glpi\Inventory\Converter();
+        $source = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($source);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //do a discovery
+        $inventory->setDiscovery(true);
+        $inventory->doInventory($xml_source, true);
+
+
+        $switch = new \NetworkEquipment();
+        $this->boolean($switch->getFromDbByCrit(['name' => 'swdc-07-01-dc1', 'serial' => 'cn3afrt37n']))->isTrue();
+        $this->string($switch->fields['remote_addr'])->isIdenticalTo('192.168.0.8');
+
+        //no management port added
+        $np = new \NetworkPort();
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $switch->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isFalse();
+
+
+        /**
+         * do a netinventory
+         * remote_addr must not change
+         */
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <INFO>
+                <COMMENTS>
+                Cisco NX-OS(tm) n5000, Software (n5000-uk9), Version 5.2(1)N1(5), RELEASE SOFTWARE Copyright (c) 2002-2011 by Cisco Systems,
+                Inc. Device Manager Version 6.1(1),
+                Compiled 6/27/2013 16:00:00</COMMENTS>
+                <CONTACT>anyone@glpi-project.org</CONTACT>
+                <FIRMWARE>CW_VERSION$5.2(1)N1(5)$</FIRMWARE>
+                <ID>0</ID>
+                <IPS>
+                  <IP>172.21.255.102</IP>
+                </IPS>
+                <SERIAL>cn3afrt37n</SERIAL>
+                <LOCATION>dc1 salle 07</LOCATION>
+                <MAC>00:23:04:ee:be:02</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>Cisco Nexus 5596</MODEL>
+                <NAME>swdc-07-01-dc1</NAME>
+                <TYPE>NETWORKING</TYPE>
+                <UPTIME>175 days, 11:33:37.48</UPTIME>
+              </INFO>
+              <MODEMS>
+                <DESCRIPTION>Digi TransPort WR11-L700-DE1-XW</DESCRIPTION>
+                <MANUFACTURER>Digi</MANUFACTURER>
+                <MODEL>LE910-EUG</MODEL>
+                <NAME>Digi modem</NAME>
+                <SERIAL>359852050062075</SERIAL>
+                <TYPE>unknown</TYPE>
+              </MODEMS>
+              <PORTS>
+                <PORT>
+                  <IFINERRORS>0</IFINERRORS>
+                  <IFINOCTETS>0</IFINOCTETS>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFLASTCHANGE>(0) 0:00:00.00</IFLASTCHANGE>
+                  <IFMTU>0</IFMTU>
+                  <IFNUMBER>1</IFNUMBER>
+                  <IFOUTERRORS>0</IFOUTERRORS>
+                  <IFOUTOCTETS>0</IFOUTOCTETS>
+                  <IFSPEED>0</IFSPEED>
+                  <IFSTATUS>5</IFSTATUS>
+                  <IFTYPE>23</IFTYPE>
+                </PORT>
+              </PORTS>
+              <SIMCARDS>
+                <COUNTRY>France</COUNTRY>
+                <ICCID>89314404000051565613</ICCID>
+                <IMSI>204043724717249</IMSI>
+                <OPERATOR_CODE>208.10</OPERATOR_CODE>
+                <OPERATOR_NAME>SFR</OPERATOR_NAME>
+                <STATE>SIM1 - Ready (PIN checking disabled)</STATE>
+              </SIMCARDS>
+            </DEVICE>
+            <MODULEVERSION>2.3</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>qlf-sesi-inventory.glpi-project.org-2013-11-14-17-47-17</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>
+        ';
+
+        $converter = new \Glpi\Inventory\Converter();
+        $source = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($source);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        $inventory->doInventory($xml_source, true);
+
+        $switch = new \NetworkEquipment();
+        $this->boolean($switch->getFromDbByCrit(['name' => 'swdc-07-01-dc1', 'serial' => 'cn3afrt37n']))->isTrue();
+        $this->string($switch->fields['remote_addr'])->isIdenticalTo('192.168.0.8');
+
+        //no management port added
+        $np = new \NetworkPort();
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $switch->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isFalse();
+
+
+
+        $switch->delete($switch->fields);
+    }
+
 }
