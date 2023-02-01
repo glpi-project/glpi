@@ -6935,6 +6935,38 @@ JAVASCRIPT;
     }
 
     /**
+     * Get all filters for the user
+     *
+     * @return int[]
+     */
+    final public function getFilters(): array
+    {
+        global $CFG_GLPI;
+
+        if ($this->isNewItem()) {
+            return [];
+        }
+
+        $filters = [];
+        foreach ($CFG_GLPI['state_types'] as $itemtype) {
+            $filters[$itemtype] = [
+                'field'     => 'states_id',
+            ];
+        }
+        $rows = (new FilterPreference())->find([
+            'users_id' => $this->fields['id'],
+        ]);
+        foreach ($rows as $row) {
+            $filters[$row['itemtype']] = [
+                'field'     => $row['field'],
+                'value'     => json_decode($row['values']),
+            ];
+        }
+
+        return $filters;
+    }
+
+    /**
      * Validate password based on security rules
      *
      * @param string $password password to validate

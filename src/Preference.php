@@ -56,6 +56,7 @@ class Preference extends CommonGLPI
         }
         $this->addStandardTab('ValidatorSubstitute', $ong, $options);
         $this->addStandardTab('DisplayPreference', $ong, $options);
+        $this->addStandardTab('FilterPreference', $ong, $options);
 
         $ong['no_all_tab'] = true;
 
