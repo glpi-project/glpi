@@ -948,12 +948,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 return false;
             }
 
-            $doc = new DOMDocument();
-            if (!@$doc->loadXML($raw_data)) {
-                // Prevent exception on invalid XML (see https://github.com/simplepie/simplepie/pull/747)
-                return false;
-            }
-
             $update_cache = true;
         }
 
