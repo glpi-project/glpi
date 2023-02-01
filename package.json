@@ -77,7 +77,7 @@
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.3",
         "csso-cli": "^4.0.1",
-        "eslint": "^8.31.0",
+        "eslint": "^8.33.0",
         "exports-loader": "^4.0.0",
         "glob": "^8.0.3",
         "jest": "^29.3.1",
