@@ -76,7 +76,7 @@ class Unmanaged extends AbstractInventoryAsset
                             "type": "Unmanaged",
                             "mac": "4c:cc:6a:02:13:a9",
                             "name": "DESKTOP-A3J16LF",
-                            "ip": "192.168.1.20",
+                            "remote_addr": "192.168.1.20",
                             "ips": [
                                 "192.168.1.20"
                             ]
@@ -222,15 +222,8 @@ class Unmanaged extends AbstractInventoryAsset
         //check entity
         $this->variable($unmanaged->fields['entities_id'])->isEqualTo($entities_id_b);
 
-        //check for one NetworkPort
-        $np = new \NetworkPort();
-        $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
-        $this->integer(count($nps))->isIdenticalTo(1);
-
-        //check for one IPAdress
-        $ip = new \IPAddress();
-        $ips = $ip->find(["mainitemtype" => \Unmanaged::class, "mainitems_id" => $unmanaged->fields['id'], "name" => "192.168.1.20"]);
-        $this->integer(count($ips))->isIdenticalTo(1);
+        //check remote_addr
+        $this->string($unmanaged->fields['remote_addr'])->isEqualTo("192.168.1.20");
 
         $rm = new \RuleMatchedLog();
         //check for one RuleMatchLog
@@ -268,13 +261,8 @@ class Unmanaged extends AbstractInventoryAsset
         $this->integer(count($locks))->isIdenticalTo(1);
 
 
-        //check for always  one NetworkPort
-        $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
-        $this->integer(count($nps))->isIdenticalTo(1);
-
-        //check for always one IPAddress
-        $ips = $ip->find(["mainitemtype" => \Unmanaged::class, "mainitems_id" => $unmanaged->fields['id'], "name" => "192.168.1.20"]);
-        $this->integer(count($ips))->isIdenticalTo(1);
+        //check remote_addr
+        $this->string($unmanaged->fields['remote_addr'])->isEqualTo("192.168.1.20");
 
         //check for 2 RuleMatchLog
         $rms = $rm->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id']]);
@@ -315,13 +303,8 @@ class Unmanaged extends AbstractInventoryAsset
         $locks = $lock->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "field" => "users_id"]);
         $this->integer(count($locks))->isIdenticalTo(1);
 
-        //check for always  one NetworkPort
-        $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
-        $this->integer(count($nps))->isIdenticalTo(1);
-
-        //check for always one IPAddress but .22
-        $ips = $ip->find(["mainitemtype" => \Unmanaged::class, "mainitems_id" => $unmanaged->fields['id'], "name" => "192.168.1.22"]);
-        $this->integer(count($ips))->isIdenticalTo(1);
+        //check remote_addr
+        $this->string($unmanaged->fields['remote_addr'])->isEqualTo("192.168.1.22");
 
         //check for 3 RuleMatchLog
         $rms = $rm->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id']]);
@@ -351,14 +334,9 @@ class Unmanaged extends AbstractInventoryAsset
         $locks = $lock->find(["itemtype" => \Unmanaged::class, "items_id" => $computer->fields['id'], "field" => "users_id"]);
         $this->integer(count($locks))->isIdenticalTo(0);
 
+        //check remote_addr
+        $this->string($unmanaged->fields['remote_addr'])->isEqualTo("192.168.1.22");
 
-        //check for always  one NetworkPort
-        $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
-        $this->integer(count($nps))->isIdenticalTo(1);
-
-        //check for always  one IPAddress but .22
-        $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.22"]);
-        $this->integer(count($ips))->isIdenticalTo(1);
 
         //check for 3 RuleMatchLog
         $rms = $rm->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id']]);
@@ -377,15 +355,11 @@ class Unmanaged extends AbstractInventoryAsset
         //check entity
         $this->variable($computer->fields['entities_id'])->isEqualTo($entities_id_b);
 
-        //check for always one NetworkPort
-        $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
-        $this->integer(count($nps))->isIdenticalTo(1);
+        //check remote_addr
+        $this->string($computer->fields['remote_addr'])->isEqualTo("192.168.1.22");
 
-        //check for always one IPAddress but .22
-        $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.22"]);
-        $this->integer(count($ips))->isIdenticalTo(1);
 
-        //check for 4 RuleMatchLog
+        //check for 3 RuleMatchLog
         $rms = $rm->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id']]);
         $this->integer(count($rms))->isIdenticalTo(4);
 
@@ -402,7 +376,7 @@ class Unmanaged extends AbstractInventoryAsset
                 <WORKGROUP>WORKGROUP</WORKGROUP>
             </DEVICE>
             <HARDWARE>
-                <LASTLOGGEDUSER>tech</LASTLOGGEDUSER>
+                <LASTLOGGEDUSER>glpi</LASTLOGGEDUSER>
             </HARDWARE>
             <MODULEVERSION>5.1</MODULEVERSION>
             <PROCESSNUMBER>189</PROCESSNUMBER>
@@ -455,7 +429,7 @@ class Unmanaged extends AbstractInventoryAsset
         $computer = new \Computer();
         $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
 
-        //check users_id is changed to tech
+        //check users_id is changed to glpi
         $this->variable($computer->fields['users_id'])->isEqualTo(getItemByTypeName('User', 'tech', true));
     }
 }

@@ -117,6 +117,7 @@ class Unmanaged extends MainAsset
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
+        global $CFG_GLPI;
         $key = $this->current_key;
         $val = &$this->data[$key];
         $entities_id = $this->entities_id;
@@ -163,18 +164,25 @@ class Unmanaged extends MainAsset
             //if found, the Unmanaged device has been converted
             $need_to_add = false;
 
-            if (property_exists($val, "mac")) {
-                $result = NetworkPortInstantiation::getUniqueItemByMac(
-                    $val->mac,
-                    $entities_id
-                );
+            if (property_exists($val, "remote_addr")) {
+                $converted_itemtype = null;
+                $converted_items_id = null;
+                foreach ($CFG_GLPI['inventory_types'] as $inventory_type) {
+                    $asset = new $inventory_type();
+                    if ($asset->getFromDBBycrit(['remote_addr' => $val->remote_addr])) {
+                        $converted_itemtype = $inventory_type;
+                        $converted_items_id = $asset->fields['id'];
+                        break 1;
+                    }
+                }
+
                 //manage converted object
-                if (!empty($result)) {
-                    $converted_object = new $result['itemtype']();
-                    if ($converted_object->getFromDB($result['id'])) {
+                if (!is_null($converted_itemtype) && !is_null($converted_items_id)) {
+                    $converted_object = new $converted_itemtype();
+                    if ($converted_object->getFromDB($converted_items_id)) {
                         $this->item = $converted_object;
-                        $items_id = $result['id'];
-                        $itemtype = $result['itemtype'];
+                        $items_id = $converted_items_id;
+                        $itemtype = $converted_itemtype;
                     } else {
                         $need_to_add = true;
                     }
