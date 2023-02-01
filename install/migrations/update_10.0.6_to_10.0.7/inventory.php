@@ -40,3 +40,5 @@
 $migration->addField('glpi_printers', 'remote_addr', "string");
 $migration->addField('glpi_networkequipments', 'remote_addr', "string");
 $migration->addField('glpi_unmanageds', 'remote_addr', "string");
+$migration->addField('glpi_computers', 'remote_addr', "string");
+$migration->addField('glpi_phones', 'remote_addr', "string");
