@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f48f10c1d08c3905521fce280b20c755",
+    "content-hash": "e6ce568eb3a8e94a03e4fb44a99141c1",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -5617,26 +5617,32 @@
         },
         {
             "name": "friendsoftwig/twigcs",
-            "version": "v6.0.0",
+            "version": "v6.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/friendsoftwig/twigcs.git",
-                "reference": "035af79b0fabbab1fc6b8e5698ead1f80e25c4ec"
+                "reference": "3c36d606c4f19db0dd2a01b735ec7a8151b7f182"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/friendsoftwig/twigcs/zipball/035af79b0fabbab1fc6b8e5698ead1f80e25c4ec",
-                "reference": "035af79b0fabbab1fc6b8e5698ead1f80e25c4ec",
+                "url": "https://api.github.com/repos/friendsoftwig/twigcs/zipball/3c36d606c4f19db0dd2a01b735ec7a8151b7f182",
+                "reference": "3c36d606c4f19db0dd2a01b735ec7a8151b7f182",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.4 || ^8.0",
+                "ext-ctype": "*",
+                "ext-hash": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-simplexml": "*",
+                "php": "~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0",
                 "symfony/console": "^4.4 || ^5.3 || ^6.0",
                 "symfony/filesystem": "^4.4 || ^5.3 || ^6.0",
                 "symfony/finder": "^4.4 || ^5.3 || ^6.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^8.0 || ^9.0"
+                "phpunit/phpunit": "^9.5.20",
+                "symfony/phpunit-bridge": "^6.2.3"
             },
             "bin": [
                 "bin/twigcs"
@@ -5660,22 +5666,22 @@
             "description": "Checkstyle automation for Twig",
             "support": {
                 "issues": "https://github.com/friendsoftwig/twigcs/issues",
-                "source": "https://github.com/friendsoftwig/twigcs/tree/v6.0.0"
+                "source": "https://github.com/friendsoftwig/twigcs/tree/v6.1.0"
             },
-            "time": "2021-12-15T11:20:27+00:00"
+            "time": "2023-01-04T16:01:24+00:00"
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.6.1",
+            "version": "0.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "213782ac7c4ab22d0a30b32d9c693708ef0fa3d7"
+                "reference": "fba8a0d6aebea6668561c96ad41a8b8eec506636"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/213782ac7c4ab22d0a30b32d9c693708ef0fa3d7",
-                "reference": "213782ac7c4ab22d0a30b32d9c693708ef0fa3d7",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/fba8a0d6aebea6668561c96ad41a8b8eec506636",
+                "reference": "fba8a0d6aebea6668561c96ad41a8b8eec506636",
                 "shasum": ""
             },
             "require": {
@@ -5714,7 +5720,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2022-11-07T14:14:46+00:00"
+            "time": "2023-01-12T13:29:23+00:00"
         },
         {
             "name": "maglnet/composer-require-checker",
@@ -6006,16 +6012,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.9.11",
+            "version": "1.9.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "60f3d68481eef216199eae7a2603cd5fe124d464"
+                "reference": "e5fcc96289cf737304286a9b505fbed091f02e58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/60f3d68481eef216199eae7a2603cd5fe124d464",
-                "reference": "60f3d68481eef216199eae7a2603cd5fe124d464",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e5fcc96289cf737304286a9b505fbed091f02e58",
+                "reference": "e5fcc96289cf737304286a9b505fbed091f02e58",
                 "shasum": ""
             },
             "require": {
@@ -6045,7 +6051,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.9.11"
+                "source": "https://github.com/phpstan/phpstan/tree/1.9.14"
             },
             "funding": [
                 {
@@ -6061,7 +6067,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-01-12T14:04:13+00:00"
+            "time": "2023-01-19T10:47:09+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",

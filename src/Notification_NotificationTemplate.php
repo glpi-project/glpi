@@ -389,7 +389,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      *
      * @param string $mode  Mode
      * @param string $label Mode's label
-     * @param strign $from  Plugin which registers the mode
+     * @param string $from  Plugin which registers the mode
      *
      * @return void
      */

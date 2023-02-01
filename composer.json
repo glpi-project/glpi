@@ -73,7 +73,7 @@
     "require-dev": {
         "ext-xml": "*",
         "atoum/atoum": "^4.1",
-        "friendsoftwig/twigcs": "^6.0",
+        "friendsoftwig/twigcs": "^6.1",
         "glpi-project/tools": "^0.6",
         "maglnet/composer-require-checker": "^4.2",
         "mikey179/vfsstream": "^1.6",
