@@ -80,7 +80,7 @@
         "eslint": "^8.33.0",
         "exports-loader": "^4.0.0",
         "glob": "^8.1.0",
-        "jest": "^29.3.1",
+        "jest": "^29.4.1",
         "jest-environment-jsdom": "^29.4.1",
         "jest-extended": "^3.2.3",
         "mini-css-extract-plugin": "^2.7.2",
