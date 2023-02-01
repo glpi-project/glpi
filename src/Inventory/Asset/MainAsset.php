@@ -143,7 +143,8 @@ abstract class MainAsset extends InventoryAsset
             }
 
             //for Computer / Phone get remote_addr from agent
-            if (isset($this->getAgent()->fields['remote_addr'])) {
+            //some TU only use handle() -> $this->getAgent() reutrn null
+            if (!defined('TU_USER') && isset($this->getAgent()->fields['remote_addr'])) {
                 $val->remote_addr = $this->getAgent()->fields['remote_addr'];
             }
 
