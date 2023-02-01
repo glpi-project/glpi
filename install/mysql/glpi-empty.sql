@@ -9458,10 +9458,7 @@ CREATE TABLE `glpi_filterpreferences` (
   `field` varchar(100) DEFAULT NULL,
   `values` text,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`field`),
-  KEY `users_id` (`users_id`),
-  KEY `itemtype` (`itemtype`),
-  KEY `field` (`field`)
+  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`field`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;
