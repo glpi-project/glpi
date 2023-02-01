@@ -101,6 +101,7 @@ class Inventory extends InventoryTestCase
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
             'last_boot' => '2020-06-09 07:58:08',
+            'remote_addr' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -885,6 +886,7 @@ class Inventory extends InventoryTestCase
             'last_inventory_update' => $_SESSION['glpi_currenttime'],
             'snmpcredentials_id' => 0,
             'autoupdatesystems_id' => $autoupdatesystems_id,
+            'remote_addr' => null,
             'linkid' => $printer_link['linkid'],
             'glpi_computers_items_is_dynamic' => 1,
             'entity' => 0,
@@ -1289,6 +1291,7 @@ class Inventory extends InventoryTestCase
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
             'last_boot' => "2017-02-20 08:11:53",
+            'remote_addr' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1502,6 +1505,7 @@ class Inventory extends InventoryTestCase
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
             'last_boot' => "2017-02-20 08:11:53",
+            'remote_addr' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1663,6 +1667,7 @@ class Inventory extends InventoryTestCase
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
             'last_boot' => "2017-06-08 07:06:47",
+            'remote_addr' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1931,11 +1936,12 @@ class Inventory extends InventoryTestCase
             'uptime' => '482 days, 05:42:18.50',
             'last_inventory_update' => $date_now,
             'snmpcredentials_id' => 4,
+            'remote_addr' => null,
         ];
         $this->array($equipment->fields)->isIdenticalTo($expected);
 
         //check network ports
-        $expected_count = 164;
+        $expected_count = 163;
         $iterator = $DB->request([
             'FROM'   => \NetworkPort::getTable(),
             'WHERE'  => [
@@ -1978,40 +1984,12 @@ class Inventory extends InventoryTestCase
             unset($port['date_mod']);
             unset($port['comment']);
 
-            if (isset($expecteds[$i])) {
-                $expected = $expecteds[$i];
-                $expected = $expected + [
-                    'items_id' => $equipments_id,
-                    'itemtype' => 'NetworkEquipment',
-                    'entities_id' => 0,
-                    'is_recursive' => 0,
-                    'is_deleted' => 0,
-                    'is_dynamic' => 1,
-                    'ifmtu' => 0,
-                    'ifspeed' => 0,
-                    'ifinternalstatus' => null,
-                    'ifconnectionstatus' => 0,
-                    'iflastchange' => null,
-                    'ifinbytes' => 0,
-                    'ifinerrors' => 0,
-                    'ifoutbytes' => 0,
-                    'ifouterrors' => 0,
-                    'ifstatus' => null,
-                    'ifdescr' => null,
-                    'ifalias' => null,
-                    'portduplex' => null,
-                    'trunk' => 0,
-                    'lastup' => null
-                ];
+            $this->string($port['itemtype'])->isIdenticalTo('NetworkEquipment');
+            $this->integer($port['items_id'])->isIdenticalTo($equipments_id);
+            $this->string($port['instantiation_type'])->isIdenticalTo('NetworkPortEthernet', print_r($port, true));
+            $this->string($port['mac'])->matches('/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i');
+            $this->integer($port['is_dynamic'])->isIdenticalTo(1);
 
-                $this->array($port)->isEqualTo($expected);
-            } else {
-                $this->string($port['itemtype'])->isIdenticalTo('NetworkEquipment');
-                $this->integer($port['items_id'])->isIdenticalTo($equipments_id);
-                $this->string($port['instantiation_type'])->isIdenticalTo('NetworkPortEthernet', print_r($port, true));
-                $this->string($port['mac'])->matches('/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i');
-                $this->integer($port['is_dynamic'])->isIdenticalTo(1);
-            }
             ++$i;
 
             //check for ips
@@ -2274,6 +2252,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'uptime' => '103 days, 13:53:28.28',
             'last_inventory_update' => $date_now,
             'snmpcredentials_id' => 0,
+            'remote_addr' => null,
         ];
 
         $stacks = [
@@ -2314,7 +2293,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->array($row)->isIdenticalTo($expected);
 
             //check network ports
-            $expected_count = 53;
+            $expected_count = 52;
             $ports_iterator = $DB->request([
                 'FROM'   => \NetworkPort::getTable(),
                 'WHERE'  => [
@@ -2331,15 +2310,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     $expected_count
                 )
             );
-
-            $expecteds = [
-                ($expected_count - 1) => [
-                    'logical_number' => 0,
-                    'name' => 'Management',
-                    'instantiation_type' => 'NetworkPortAggregate',
-                    'mac' => '00:23:ac:6a:01:00',
-                ],
-            ];
 
             $ips = [
                 'Management' => [
@@ -2394,40 +2364,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 unset($port['date_mod']);
                 unset($port['comment']);
 
-                if (isset($expecteds[$i])) {
-                    $expected = $expecteds[$i];
-                    $expected = $expected + [
-                        'items_id' => $equipments_id,
-                        'itemtype' => 'NetworkEquipment',
-                        'entities_id' => 0,
-                        'is_recursive' => 0,
-                        'is_deleted' => 0,
-                        'is_dynamic' => 1,
-                        'ifmtu' => 0,
-                        'ifspeed' => 0,
-                        'ifinternalstatus' => null,
-                        'ifconnectionstatus' => 0,
-                        'iflastchange' => null,
-                        'ifinbytes' => 0,
-                        'ifinerrors' => 0,
-                        'ifoutbytes' => 0,
-                        'ifouterrors' => 0,
-                        'ifstatus' => null,
-                        'ifdescr' => null,
-                        'ifalias' => null,
-                        'portduplex' => null,
-                        'trunk' => 0,
-                        'lastup' => null
-                    ];
+                $this->string($port['itemtype'])->isIdenticalTo('NetworkEquipment');
+                $this->integer($port['items_id'])->isIdenticalTo($equipments_id);
+                $this->string($port['instantiation_type'])->isIdenticalTo('NetworkPortEthernet', print_r($port, true));
+                $this->string($port['mac'])->matches('/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i');
+                $this->integer($port['is_dynamic'])->isIdenticalTo(1);
 
-                    $this->array($port)->isEqualTo($expected);
-                } else {
-                    $this->string($port['itemtype'])->isIdenticalTo('NetworkEquipment');
-                    $this->integer($port['items_id'])->isIdenticalTo($equipments_id);
-                    $this->string($port['instantiation_type'])->isIdenticalTo('NetworkPortEthernet', print_r($port, true));
-                    $this->string($port['mac'])->matches('/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i');
-                    $this->integer($port['is_dynamic'])->isIdenticalTo(1);
-                }
                 ++$i;
 
                 //check for ips
@@ -2558,10 +2500,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         }
 
         $db_ports = $DB->request(['FROM' => \NetworkPort::getTable()]);
-        $this->integer(count($db_ports))->isIdenticalTo(325);
+        $this->integer(count($db_ports))->isIdenticalTo(320);
 
         $db_neteq_ports = $DB->request(['FROM' => \NetworkPort::getTable(), 'WHERE' => ['itemtype' => 'NetworkEquipment']]);
-        $this->integer(count($db_neteq_ports))->isIdenticalTo(265);
+        $this->integer(count($db_neteq_ports))->isIdenticalTo(260);
 
         $db_connections = $DB->request(['FROM' => \NetworkPort_NetworkPort::getTable()]);
         $this->integer(count($db_connections))->isIdenticalTo(26);
@@ -2570,7 +2512,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(count($db_unmanageds))->isIdenticalTo(45);
 
         $db_ips = $DB->request(['FROM' => \IPAddress::getTable()]);
-        $this->integer(count($db_ips))->isIdenticalTo(150);
+        $this->integer(count($db_ips))->isIdenticalTo(5);
 
         $expected_names = [
             'san-replication',
@@ -2599,7 +2541,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(count($db_vlans_ports))->isIdenticalTo(219);
 
         $db_netnames = $DB->request(['FROM' => \NetworkName::getTable()]);
-        $this->integer(count($db_netnames))->isIdenticalTo(10);
+        $this->integer(count($db_netnames))->isIdenticalTo(5);
 
         $expecteds = [
             [
@@ -2759,6 +2701,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'uptime' => '(78894038) 9 days, 3:09:00.38',
             'last_inventory_update' => $date_now,
             'snmpcredentials_id' => 0,
+            'remote_addr' => null,
         ];
 
         foreach ($iterator as $row) {
@@ -2771,7 +2714,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->array($row)->isIdenticalTo($expected);
 
             //check network ports
-            $expected_count = 53;
+            $expected_count = 52;
             $ports_iterator = $DB->request([
                 'FROM'   => \NetworkPort::getTable(),
                 'WHERE'  => [
@@ -2788,15 +2731,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     $expected_count
                 )
             );
-
-            $expecteds = [
-                ($expected_count - 1) => [
-                    'logical_number' => 0,
-                    'name' => 'Management',
-                    'instantiation_type' => 'NetworkPortAggregate',
-                    'mac' => 'b0:5a:da:10:10:80',
-                ],
-            ];
 
             $ips = [
                 'Management' => [
@@ -2823,40 +2757,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 unset($port['date_mod']);
                 unset($port['comment']);
 
-                if (isset($expecteds[$i])) {
-                    $expected = $expecteds[$i];
-                    $expected = $expected + [
-                        'items_id' => $equipments_id,
-                        'itemtype' => 'NetworkEquipment',
-                        'entities_id' => 0,
-                        'is_recursive' => 0,
-                        'is_deleted' => 0,
-                        'is_dynamic' => 1,
-                        'ifmtu' => 0,
-                        'ifspeed' => 0,
-                        'ifinternalstatus' => null,
-                        'ifconnectionstatus' => 0,
-                        'iflastchange' => null,
-                        'ifinbytes' => 0,
-                        'ifinerrors' => 0,
-                        'ifoutbytes' => 0,
-                        'ifouterrors' => 0,
-                        'ifstatus' => null,
-                        'ifdescr' => null,
-                        'ifalias' => null,
-                        'portduplex' => null,
-                        'trunk' => 0,
-                        'lastup' => null
-                    ];
+                $this->string($port['itemtype'])->isIdenticalTo('NetworkEquipment');
+                $this->integer($port['items_id'])->isIdenticalTo($equipments_id);
+                $this->string($port['instantiation_type'])->isIdenticalTo('NetworkPortEthernet', print_r($port, true));
+                $this->string($port['mac'])->matches('/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i');
+                $this->integer($port['is_dynamic'])->isIdenticalTo(1);
 
-                    $this->array($port)->isEqualTo($expected);
-                } else {
-                    $this->string($port['itemtype'])->isIdenticalTo('NetworkEquipment');
-                    $this->integer($port['items_id'])->isIdenticalTo($equipments_id);
-                    $this->string($port['instantiation_type'])->isIdenticalTo('NetworkPortEthernet', print_r($port, true));
-                    $this->string($port['mac'])->matches('/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i');
-                    $this->integer($port['is_dynamic'])->isIdenticalTo(1);
-                }
                 ++$i;
 
                 //check for ips
@@ -3436,6 +3342,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'uptime' => '53 days, 4:19:42.16',
             'last_inventory_update' => $date_now,
             'snmpcredentials_id' => 0,
+            'remote_addr' => null,
         ];
 
         $first = true;
@@ -3457,7 +3364,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->array($row)->isIdenticalTo($expected_eq, print_r($row, true) . print_r($expected_eq, true));
 
            //check network ports
-            $expected_count = ($first ? 4 : 1);
+            $expected_count = ($first ? 3 : 1);
             $ports_iterator = $DB->request([
                 'FROM'   => \NetworkPort::getTable(),
                 'WHERE'  => [
@@ -3815,11 +3722,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'uptime' => '65 days, 20:13:08.93',
             'last_inventory_update' => $date_now,
             'snmpcredentials_id' => 0,
+            'remote_addr' => null,
         ];
         $this->array($equipment->fields)->isIdenticalTo($expected);
 
         //check network ports
-        $expected_count = 53;
+        $expected_count = 52;
         $iterator = $DB->request([
             'FROM'   => \NetworkPort::getTable(),
             'WHERE'  => [
@@ -3845,13 +3753,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'ifinbytes' => 1636476664,
                 'ifoutbytes' => 2829646176,
                 'portduplex' => 3
-            ],
-            ($expected_count - 1) => [
-                'logical_number' => 0,
-                'name' => 'Management',
-                'instantiation_type' => 'NetworkPortAggregate',
-                'mac' => 'ac:f1:df:8e:8e:00',
-            ],
+            ]
         ];
 
         $ips = [
@@ -4981,6 +4883,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'date_creation' => $phone->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $phone->fields['last_inventory_update'],
+            'remote_addr' => null,
         ];
         $this->array($phone->fields)->isIdenticalTo($expected);
 
