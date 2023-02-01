@@ -42,3 +42,64 @@ $migration->addField('glpi_networkequipments', 'remote_addr', "string");
 $migration->addField('glpi_unmanageds', 'remote_addr', "string");
 $migration->addField('glpi_computers', 'remote_addr', "string");
 $migration->addField('glpi_phones', 'remote_addr', "string");
+
+$assets = ['Computer', 'Phone', 'Printer', 'NetworkEquipment'];
+
+foreach ($assets as $itemtype) {
+    //try to find unique NetworkPortAggregate, not dynamic for an asset
+    //with NetworkName and then with IPAddress
+    $iterator = $DB->request([
+        'SELECT'       => [
+            'COUNT'  => '* AS cpt',
+            'netports.id',
+            'netports.itemtype',
+            'netports.items_id',
+            'ips.name AS ipaddress',
+        ],
+        'FROM'         => 'glpi_networkports AS netports',
+        'INNER JOIN'   => [
+            'glpi_networknames' . ' AS netnames' => [
+                'ON'  => [
+                    'netnames'  => 'items_id',
+                    'netports'  => 'id', [
+                        'AND' => [
+                            'netnames.itemtype'  => 'NetworkPort'
+                        ]
+                    ]
+                ]
+            ],
+            'glpi_ipaddresses' . ' AS ips' => [
+                'ON'  => [
+                    'ips'       => 'items_id',
+                    'netnames'  => 'id', [
+                        'AND' => [
+                            'ips.itemtype' => 'NetworkName'
+                        ]
+                    ]
+                ]
+            ]
+                        ],
+        'WHERE'        => [
+            'netports.is_dynamic'  => 0,
+            'netports.instantiation_type'  => 'NetworkPortAggregate',
+            'netports.itemtype'  => $itemtype
+        ],
+        'GROUPBY'      => ['netports.itemtype', 'netports.items_id'],
+        'HAVING'       => ['cpt' => 1]
+    ]);
+
+    foreach ($iterator as $data) {
+         //update 'remote_addr' with ipaddress found
+         $migration->addPostQuery(
+             $DB->buildUpdate(
+                 $data['itemtype']::getTable(),
+                 [
+                     'remote_addr' => $data['ipaddress'],
+                 ],
+                 [
+                     'id' => $data['items_id'],
+                 ]
+             )
+         );
+    }
+}
