@@ -383,7 +383,7 @@ class Printer extends CommonDBTM
             'id'                 => '10',
             'table'              => $this->getTable(),
             'field'              => 'remote_addr',
-            'name'               => __('Public contact address'),
+            'name'               => __('SNMP port remote address'),
             'datatype'           => 'text',
             'massiveaction'      => false,
         ];
