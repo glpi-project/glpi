@@ -136,7 +136,7 @@ class Printer extends AbstractInventoryAsset
             'last_pages_counter' => 1802,
         ]);
 
-       //no management port (network_device->ips same as network_port->ips)
+        //no management port
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
         $this->array($main->getManagementPorts())->hasSize(0);
 
@@ -153,6 +153,8 @@ class Printer extends AbstractInventoryAsset
 
         $this->boolean($printer->getFromDB($printer->fields['id']))->isTrue();
         $this->integer($printer->fields['last_pages_counter'])->isIdenticalTo($pcounter->total);
+        //no remot_addr from netinventory
+        $this->variable($printer->fields['remote_addr'])->isNull();
 
         global $DB;
         $iterator = $DB->request([
@@ -530,6 +532,9 @@ class Printer extends AbstractInventoryAsset
 
         //0 NetworkPortAggregate
         $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isFalse();
+
+        //no remot_addr from netinventory
+        $this->variable($printer->fields['remote_addr'])->isNull();
 
         //remove printer for other test
         $printer->delete($printer->fields);
@@ -1524,127 +1529,6 @@ class Printer extends AbstractInventoryAsset
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($printers))->isIdenticalTo(1);
     }
-
-    public function testSnmpPrinterDiscoveryUpdateAllowed()
-    {
-        //first step do a standard discovery
-        $date_now = date('Y-m-d H:i:s');
-        $_SESSION['glpi_currenttime'] = $date_now;
-        $json_str = file_get_contents(self::INV_FIXTURES . 'printer_1.json');
-
-        $json = json_decode($json_str);
-
-        $printer = new \Printer();
-
-        $data = (array)$json->content;
-        $inventory = new \Glpi\Inventory\Inventory();
-        $this->boolean($inventory->setData($json))->isTrue();
-
-        $agent = new \Agent();
-        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isIdenticalTo(0);
-
-        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
-        $main->setAgent($agent)->setExtraData($data);
-        $main->checkConf(new \Glpi\Inventory\Conf());
-        $main->setDiscovery(true);
-        $result = $main->prepare();
-        $this->array($result)->hasSize(1);
-        $this->array((array)$result[0])->isIdenticalTo([
-            'autoupdatesystems_id' => 'GLPI Native Inventory',
-            'last_inventory_update' => $date_now,
-            "is_deleted" => 0,
-            'firmware' => '2409048_052887',
-            'ips' => ['10.59.29.175'],
-            'mac' => '00:68:eb:f2:be:10',
-            'manufacturer' => 'Hewlett-Packard',
-            'model' => 'HP LaserJet M507',
-            'name' => 'NPIF2BE10',
-            'serial' => 'PHCVN191TG',
-            'type' => 'Printer',
-            'uptime' => '7 days, 01:26:41.98',
-            'printermodels_id' => 'HP LaserJet M507',
-            'printertypes_id' => 'Printer',
-            'manufacturers_id' => 'Hewlett-Packard',
-            'snmpcredentials_id' => 4,
-            'have_usb' => 0,
-            'have_ethernet' => 1,
-            'memory_size' => 512,
-            'last_pages_counter' => 1802,
-        ]);
-
-
-        $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-        $this->array($main->getManagementPorts())->hasSize(0);
-
-        $main->handle();
-        $inventory->doInventory();
-
-        //check data
-        $this->boolean($printer->getFromDB($printer->fields['id']))->isTrue();
-        $this->integer($printer->fields['last_pages_counter'])->isIdenticalTo(1802);
-        $this->string($printer->fields['name'])->isIdenticalTo('NPIF2BE10');
-
-        //second step do a standard discovery but change IP to update last page counter
-        //GLPI allows the update
-        $json = json_decode($json_str);
-
-        //update inventory data
-        $new_ip = "10.59.29.180";
-        $new_name = 'BE10NPIF2';
-        $json->content->network_device->name = $new_name;
-        $json->content->network_device->ips[0] = $new_ip;
-        $json->content->network_ports[1]->ips = [$new_ip];
-
-        $printer = new \Printer();
-
-        $printer = new \Printer();
-        $data = (array)$json->content;
-
-        $inventory = new \Glpi\Inventory\Inventory();
-        $this->boolean($inventory->setData($json))->isTrue();
-
-        $agent = new \Agent();
-        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isIdenticalTo(0);
-
-        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
-        $main->setAgent($agent)->setExtraData($data);
-        $main->checkConf(new \Glpi\Inventory\Conf());
-        $main->setDiscovery(true);
-        $result = $main->prepare();
-        $this->array($result)->hasSize(1);
-        $this->array((array)$result[0])->isIdenticalTo([
-            'autoupdatesystems_id' => 'GLPI Native Inventory',
-            'last_inventory_update' => $date_now,
-            "is_deleted" => 0,
-            'firmware' => '2409048_052887',
-            'ips' => [$new_ip],
-            'mac' => '00:68:eb:f2:be:10',
-            'manufacturer' => 'Hewlett-Packard',
-            'model' => 'HP LaserJet M507',
-            'name' => $new_name,
-            'serial' => 'PHCVN191TG',
-            'type' => 'Printer',
-            'uptime' => '7 days, 01:26:41.98',
-            'printermodels_id' => 'HP LaserJet M507',
-            'printertypes_id' => 'Printer',
-            'manufacturers_id' => 'Hewlett-Packard',
-            'snmpcredentials_id' => 4,
-            'have_usb' => 0,
-            'have_ethernet' => 1,
-            'memory_size' => 512,
-            'last_pages_counter' => 1802,
-        ]);
-
-        $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-        $this->array($main->getManagementPorts())->hasSize(0);
-
-        $main->handle();
-        $inventory->doInventory();
-
-        $this->boolean($printer->getFromDB($printer->fields['id']))->isTrue();
-        $this->string($printer->fields['name'])->isIdenticalTo($new_name);
-    }
-
 
     public function testSnmpPrinterNetworkPortNotRecreated()
     {
