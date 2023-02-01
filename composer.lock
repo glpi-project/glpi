@@ -5287,16 +5287,16 @@
         },
         {
             "name": "wapmorgan/unified-archive",
-            "version": "1.1.8",
+            "version": "1.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wapmorgan/UnifiedArchive.git",
-                "reference": "1079c5733f090f7db61efa2629d8859a2b1c9a75"
+                "reference": "3fc76bbe24e5ff4789738dd7ee5fb01307ae3021"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/1079c5733f090f7db61efa2629d8859a2b1c9a75",
-                "reference": "1079c5733f090f7db61efa2629d8859a2b1c9a75",
+                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/3fc76bbe24e5ff4789738dd7ee5fb01307ae3021",
+                "reference": "3fc76bbe24e5ff4789738dd7ee5fb01307ae3021",
                 "shasum": ""
             },
             "require": {
@@ -5382,9 +5382,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wapmorgan/UnifiedArchive/issues",
-                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.1.8"
+                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.1.10"
             },
-            "time": "2022-11-20T12:49:12+00:00"
+            "time": "2023-01-17T00:15:57+00:00"
         },
         {
             "name": "webmozart/assert",
