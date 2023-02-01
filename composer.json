@@ -24,7 +24,7 @@
         "ext-zlib": "*",
         "blueimp/jquery-file-upload": "^10.32",
         "donatj/phpuseragentparser": "^1.7",
-        "egulias/email-validator": "^3.2",
+        "egulias/email-validator": "^4.0",
         "elvanto/litemoji": "^4.1",
         "glpi-project/inventory_format": "^1.1",
         "guzzlehttp/guzzle": "^7.5",
