@@ -464,6 +464,15 @@ class Computer extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'remote_addr',
+            'name'               => __('Public contact address'),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
