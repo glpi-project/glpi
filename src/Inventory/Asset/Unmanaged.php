@@ -93,7 +93,6 @@ class Unmanaged extends MainAsset
                 'mac'          => 'mac',
                 'name'         => 'name',
                 'ips'          => 'ips',
-                'ip'            => 'remote_addr'
             ];
 
             foreach ($dev_mapping as $origin => $dest) {

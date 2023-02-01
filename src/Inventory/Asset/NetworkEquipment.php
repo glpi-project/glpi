@@ -80,8 +80,7 @@ class NetworkEquipment extends MainAsset
                 'model'        => $model_field,
                 'type'         => $types_field,
                 'manufacturer' => 'manufacturers_id',
-                'credentials'  => 'snmpcredentials_id',
-                'ip'           => 'remote_addr'
+                'credentials'  => 'snmpcredentials_id'
             ];
 
             foreach ($dev_mapping as $origin => $dest) {
