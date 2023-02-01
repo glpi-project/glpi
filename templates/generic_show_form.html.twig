@@ -656,12 +656,17 @@
                      {% endif %}
 
                      {% if item.isField('remote_addr') %}
-                        {{ fields.textField(
-                           "remote_addr",
-                           item.fields['remote_addr'],
-                           __('Public contact address'),
-                           field_options
-                        ) }}
+
+                        {% if has_profile_right('inventory', constant('READ')) %}
+                           {{ fields.textField(
+                              "remote_addr",
+                              item.fields['remote_addr'],
+                              __('Public contact address'),
+                              field_options|merge({
+                               disabled: not has_profile_right('inventory', constant('Glpi\\Inventory\\Conf::UPDATECONFIG'))
+                              })
+                           ) }}
+                        {% endif %}
                      {% endif %}
 
 
