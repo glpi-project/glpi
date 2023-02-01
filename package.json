@@ -22,7 +22,7 @@
         "@fullcalendar/rrule": "^4.4.2",
         "@fullcalendar/timegrid": "^4.4.2",
         "@fullcalendar/timeline": "^4.4.3",
-        "@tabler/core": "^1.0.0-beta13",
+        "@tabler/core": "^1.0.0-beta17",
         "@tabler/icons": "^1.119.0",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.2.3",
