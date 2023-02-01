@@ -1850,6 +1850,11 @@ class User extends CommonDBTM
                             $import_fields[$k] = $val;
                             break;
 
+                        case "begin_date":
+                        case "end_date":
+                            $this->fields[$k] = AuthLdap::getLdapDateValue($val);
+                            break;
+
                         default:
                               $this->fields[$k] = $val;
                     }
