@@ -50,10 +50,10 @@ if (!$DB->tableExists('glpi_filterpreferences')) {
             `field` varchar(100) DEFAULT NULL,
             `values` text,
             PRIMARY KEY (`id`),
+            UNIQUE KEY `unicity` (`users_id`,`itemtype`,`field`),
             KEY `users_id` (`users_id`),
             KEY `itemtype` (`itemtype`),
-            KEY `field` (`field`),
-            UNIQUE KEY `unicity` (`users_id`,`itemtype`,`field`)
+            KEY `field` (`field`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
     $DB->queryOrDie($query, "10.1 add glpi_filterpreferences table");
 }
