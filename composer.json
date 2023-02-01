@@ -53,7 +53,7 @@
         "scssphp/scssphp": "^1.10",
         "sebastian/diff": "^4.0",
         "simplepie/simplepie": "^1.5",
-        "symfony/cache": "^6.0",
+        "symfony/cache": "^6.2",
         "symfony/console": "^6.0",
         "symfony/css-selector": "^6.2",
         "symfony/dom-crawler": "^6.0",
