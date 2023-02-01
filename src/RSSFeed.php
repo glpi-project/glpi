@@ -40,7 +40,6 @@ use Glpi\Toolbox\URL;
 use SimplePie\SimplePie;
 
 // $feed = new SimplePie();
-// $feed->set_cache_location('../files/_rss');
 // $feed->set_cache_duration(3600);
 // $feed->set_feed_url('http://linuxfr.org/news.atom');
 // $feed->force_feed(true);
@@ -885,7 +884,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
 
         $feed = new SimplePie();
-        $feed->set_cache_location(GLPI_RSS_DIR);
         $feed->enable_cache(false);
         $feed->set_feed_url($this->fields['url']);
         $feed->init();
