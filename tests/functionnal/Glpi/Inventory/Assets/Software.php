@@ -760,4 +760,80 @@ class Software extends AbstractInventoryAsset
 
         $this->string($manufacturer->fields['name'])->isEqualTo('Other_Publisher');
     }
+
+    protected function softwareProvider(): array
+    {
+        return [
+            //To test FullCompareKey (with special chars on software name / manufacturer)
+            '/tests/fixtures/inventories/softwares/01-test_software_with_special_chars_with_version.json',
+            '/tests/fixtures/inventories/softwares/02-test_software_with_special_chars_with_version.json',
+            //To test FullCompareKey without version (with special chars on software name / manufacturer)
+            '/tests/fixtures/inventories/softwares/03-test_software_with_special_chars_and_without_version.json',
+            // /To test FullCompareKey with version (with special chars on software name / manufacturer name / OS name / arch name)
+            '/tests/fixtures/inventories/softwares/04-test_software_with_special_chars_and_with_version_and_os.json',
+            // /To test FullCompareKey without version (with special chars on software name / manufacturer name / OS name / arch name)
+            '/tests/fixtures/inventories/softwares/05-test_software_with_special_chars_and_without_version_and_os.json',
+        ];
+    }
+
+    /**
+     * @dataProvider softwareProvider
+     */
+    public function testSoftwareWithHtmlentites($path)
+    {
+
+        $json_source = json_decode(file_get_contents(GLPI_ROOT . $path));
+        $this->doInventory($json_source);
+
+        $computer = new \Computer();
+        $found_computers = $computer->find(['name' => "pc_test"]);
+        $this->integer(count($found_computers))->isIdenticalTo(1);
+        $first_computer = array_pop($found_computers);
+
+        //get Software / ItemSoftware
+        $software = new \Software();
+        $software_version = new \SoftwareVersion();
+        $software_item = new \Item_SoftwareVersion();
+
+        $software_items = $software_item->find(['itemtype' => "Computer", "items_id" => $first_computer['id']]);
+        $this->integer(count($software_items))->isIdenticalTo(1);
+        $first_software_items = array_pop($software_items);
+
+        $software_versions = $software_version->find(['id' => $first_software_items['softwareversions_id']]);
+        $this->integer(count($software_versions))->isIdenticalTo(1);
+        $first_software_versions = array_pop($software_versions);
+
+        $softwares = $software->find(['id' => $first_software_versions['softwares_id']]);
+        $this->integer(count($softwares))->isIdenticalTo(1);
+        $first_software = array_pop($softwares);
+
+
+        //redo an inventory
+        $json_source = json_decode(file_get_contents(GLPI_ROOT . $path));
+        $this->doInventory($json_source);
+
+        $computer = new \Computer();
+        $found_computers = $computer->find(['name' => "pc_test"]);
+        $this->integer(count($found_computers))->isIdenticalTo(1);
+        $first_computer = array_pop($found_computers);
+
+
+        $software_items = $software_item->find(['itemtype' => "Computer", "items_id" => $first_computer['id']]);
+        $this->integer(count($software_items))->isIdenticalTo(1);
+        $second_software_items = array_pop($software_items);
+
+        $software_versions = $software_version->find(['id' => $second_software_items['softwareversions_id']]);
+        $this->integer(count($software_versions))->isIdenticalTo(1);
+        $second_software_versions = array_pop($software_versions);
+
+        $softwares = $software->find(['id' => $second_software_versions['softwares_id']]);
+        $this->integer(count($softwares))->isIdenticalTo(1);
+        $second_software = array_pop($softwares);
+
+        $this->integer($second_software_items['id'])->isIdenticalTo($first_software_items['id']);
+        $this->integer($second_software_versions['id'])->isIdenticalTo($first_software_versions['id']);
+        $this->integer($second_software['id'])->isIdenticalTo($first_software['id']);
+
+        $computer->deleteByCriteria(['id' => $first_computer['id']]);
+    }
 }

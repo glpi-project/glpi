@@ -45,7 +45,6 @@ use QueryParam;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
 use SoftwareVersion;
-use Toolbox;
 
 class Software extends InventoryAsset
 {
@@ -468,24 +467,27 @@ class Software extends InventoryAsset
      */
     protected function getSoftwareKey($name, $manufacturers_id): string
     {
-        return $this->getCompareKey([sha1($name), $manufacturers_id]);
+        return $this->getNormalizedComparisonKey([
+            'name'             => $name,
+            'manufacturers_id' => $manufacturers_id,
+        ]);
     }
 
     /**
      * Get software version comparison key
      *
-     * @param stdClass $val          Version name
+     * @param \stdClass $val          Version name
      * @param integer   $softwares_id Software id
      *
      * @return string
      */
     protected function getVersionKey($val, $softwares_id): string
     {
-        return $this->getCompareKey([
-            strtolower($val->version),
-            $softwares_id,
-            strtolower($val->arch ?? '%'),
-            $this->getOsForKey($val)
+        return $this->getNormalizedComparisonKey([
+            'version'      => strtolower($val->version),
+            'softwares_id' => (int)$softwares_id,
+            'arch'         => strtolower($val->arch ?? '%'),
+            'os'           => $this->getOsForKey($val),
         ]);
     }
 
@@ -498,14 +500,14 @@ class Software extends InventoryAsset
      */
     protected function getFullCompareKey(\stdClass $val, bool $with_version = true): string
     {
-        return $this->getCompareKey([
-            sha1($val->name),
-            $with_version ? strtolower($val->version) : '',
-            strtolower($val->arch ?? ''),
-            $val->manufacturers_id,
-            $val->entities_id,
-            $val->is_recursive,
-            $this->getOsForKey($val)
+        return $this->getNormalizedComparisonKey([
+            'name'             => $val->name,
+            'version'          => $with_version ? strtolower($val->version) : '',
+            'arch'             => strtolower($val->arch ?? ''),
+            'manufacturers_id' => $val->manufacturers_id,
+            'entities_id'      => (int)$val->entities_id,
+            'is_recursive'     => $val->is_recursive,
+            'os'               => $this->getOsForKey($val),
         ]);
     }
 
@@ -518,12 +520,12 @@ class Software extends InventoryAsset
      */
     protected function getSimpleCompareKey(\stdClass $val): string
     {
-        return $this->getCompareKey([
-            sha1($val->name),
-            strtolower($val->version),
-            strtolower($val->arch ?? ''),
-            $val->entities_id ?? 0,
-            $this->getOsForKey($val)
+        return $this->getNormalizedComparisonKey([
+            'name'             => $val->name,
+            'version'          => strtolower($val->version),
+            'arch'             => strtolower($val->arch ?? ''),
+            'entities_id'      => (int)($val->entities_id ?? 0),
+            'os'               => $this->getOsForKey($val),
         ]);
     }
 
@@ -533,6 +535,8 @@ class Software extends InventoryAsset
      * @param array $parts Values parts
      *
      * @return string
+     *
+     * @FIXME Remove this method in GLPI 10.1.
      */
     protected function getCompareKey(array $parts): string
     {
@@ -970,5 +974,22 @@ class Software extends InventoryAsset
     public function getItemtype(): string
     {
         return \Item_SoftwareVersion::class;
+    }
+
+    /**
+     * Get comparison key with normalized data.
+     *
+     * @param \stdClass $data
+     *
+     * return string
+     */
+    final protected function getNormalizedComparisonKey(array $data): string
+    {
+        $normalized_data = [];
+        foreach ($data as $key => $value) {
+            // Ensure value is not sanitize, to prevent bad reconciliation when quotes or special chars are present
+            $normalized_data[$key] = Sanitizer::unsanitize($value);
+        }
+        return json_encode($normalized_data);
     }
 }
