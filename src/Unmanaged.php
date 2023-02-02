@@ -166,7 +166,7 @@ class Unmanaged extends CommonDBTM
             'id'             => '11',
             'table'          => $this->getTable(),
             'field'          => 'remote_addr',
-            'name'           => __('SNMP port remote address'),
+            'name'           => __('Discovery remote addr'),
             'datatype'       => 'text',
             'massiveaction'  => false,
         ];
