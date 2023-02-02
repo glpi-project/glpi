@@ -37,9 +37,6 @@ use Glpi\Toolbox\Sanitizer;
 
 abstract class RuleCommonITILObject extends Rule
 {
-    // From Rule
-    public $can_sort  = true;
-
     const PARENT  = 1024;
 
 

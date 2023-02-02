@@ -43,7 +43,6 @@ class RuleImportComputer extends Rule
 
 
     public $restrict_matching = Rule::AND_MATCHING;
-    public $can_sort          = true;
 
     public static $rightname         = 'rule_import';
 

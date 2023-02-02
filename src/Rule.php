@@ -53,10 +53,6 @@ class Rule extends CommonDBTM
     public $actions               = [];
    ///Criterias affected to this rule
     public $criterias             = [];
-   /// Rules can be sorted ?
-    public $can_sort              = false;
-   /// field used to order rules
-    public $orderby               = 'ranking';
 
    /// restrict matching to self::AND_MATCHING or self::OR_MATCHING : specify value to activate
     public $restrict_matching     = false;
@@ -608,20 +604,13 @@ class Rule extends CommonDBTM
         if (!$this->isEntityAssign()) {
             unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
         }
-        $collectiontype = $this->getCollectionClassName();
-        if ($collection = getItemForItemtype($collectiontype)) {
-            if (
-                $isadmin
-                && ($collection->orderby == "ranking")
-            ) {
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule']
-                = "<i class='fas fa-arrows-alt-v'></i>" .
-                 __('Move');
-            }
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'export']
-            = "<i class='fas fa-file-download'></i>" .
-              _x('button', 'Export');
+        if ($isadmin) {
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='fas fa-arrows-alt-v'></i>"
+                . __('Move');
         }
+        $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='fas fa-file-download'></i>"
+            . _x('button', 'Export');
+
         return $actions;
     }
 
@@ -2066,7 +2055,7 @@ class Rule extends CommonDBTM
             echo "<td>" . $entname . "</td>";
         }
 
-        if ($this->can_sort && $canedit) {
+        if ($canedit) {
             echo "<td colspan='2'><i class='fas fa-grip-horizontal grip-rule'></i></td>";
         }
         echo "</tr>";

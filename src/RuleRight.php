@@ -44,7 +44,6 @@ class RuleRight extends Rule
 {
    // From Rule
     public static $rightname           = 'rule_ldap';
-    public $orderby             = "name";
     public $specific_parameters = true;
 
     /**

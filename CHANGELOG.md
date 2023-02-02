@@ -75,6 +75,7 @@ The present file will list all changes made to the project; according to the
 - `GLPIMailer` mailer class does not extends anymore `PHPMailer\PHPMailer\PHPMailer`.
   We added a compatibility layer to handle main usages found in plugins, but we cannot ensure compatibility with all properties and methods that were inherited from `PHPMailer\PHPMailer\PHPMailer`.
 - `CommonGLPI::createTabEntry()` signature changed.
+- All types of rules are now sortable and ordered by ranking.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
@@ -124,6 +125,8 @@ The present file will list all changes made to the project; according to the
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
+- `Rule::$can_sort` property.
+- `Rule::$orderby` property.
 - `Search::computeTitle()`
 - `Search::csv_clean()`
 - `Search::findCriteriaInSession()`

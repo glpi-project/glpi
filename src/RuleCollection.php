@@ -44,8 +44,6 @@ class RuleCollection extends CommonDBTM
     public $sub_type;
    /// process collection stop on first matched rule
     public $stop_on_first_match                   = false;
-   /// field used to order rules
-    public $orderby                               = "ranking";
    /// Processing several rules : use result of the previous one to computer the current one
     public $use_output_rule_process_as_next_input = false;
    /// Rule collection can be replay (for dictionnary)
@@ -144,7 +142,7 @@ class RuleCollection extends CommonDBTM
             'SELECT' => Rule::getTable() . '.*',
             'FROM'   => Rule::getTable(),
             'ORDER'  => [
-                $this->orderby . ' ASC'
+                'ranking ASC'
             ]
         ];
 
@@ -183,7 +181,7 @@ class RuleCollection extends CommonDBTM
 
             $criteria['ORDER'] = [
                 Entity::getTable() . '.level ASC',
-                $this->orderby . ' ASC'
+                'ranking ASC'
             ];
         }
 
@@ -238,13 +236,11 @@ class RuleCollection extends CommonDBTM
         $iterator   = $DB->request($criteria);
 
         $active_tab = Session::getActiveTab($this->getType());
-        $can_sort = !(str_starts_with($this->getType() . '$', $active_tab));
 
         foreach ($iterator as $data) {
            //For each rule, get a Rule object with all the criterias and actions
             $tempRule               = $this->getRuleClass();
             $tempRule->fields       = $data;
-            $tempRule->can_sort = $can_sort;
 
             $this->RuleList->list[] = $tempRule;
         }
@@ -279,7 +275,6 @@ class RuleCollection extends CommonDBTM
             if (count($iterator)) {
                 $this->RuleList->list = [];
                 $active_tab = Session::getActiveTab($this->getType());
-                $can_sort = !(str_starts_with($this->getType() . '$', $active_tab));
 
                 foreach ($iterator as $rule) {
                     //For each rule, get a Rule object with all the criterias and actions
@@ -292,8 +287,6 @@ class RuleCollection extends CommonDBTM
                             $retrieve_action
                         )
                     ) {
-                        $tempRule->can_sort = $can_sort;
-
                       //Add the object to the list of rules
                         $this->RuleList->list[] = $tempRule;
                     }
@@ -562,7 +555,6 @@ class RuleCollection extends CommonDBTM
         $ruletype = $this->getRuleClassName();
         $can_sort = $canedit && $nb;
         if (count($this->RuleList->list)) {
-            $can_sort = $this->RuleList->list[0]->can_sort && $canedit && $nb;
             Session::initNavigateListItems($ruletype);
         }
 
@@ -592,7 +584,7 @@ class RuleCollection extends CommonDBTM
         if ($display_entities) {
             $header_row .= "<th>" . Entity::getTypeName(1) . "</th>";
         }
-        if ($nb && $canedit && $can_sort) {
+        if ($can_sort) {
             $header_row .= "<th></th><th></th>";
         }
         $header_row .= "</tr>";
@@ -618,7 +610,7 @@ class RuleCollection extends CommonDBTM
         }
         echo "</table>";
 
-        if ($canedit && $nb) {
+        if ($can_sort) {
             $collection_classname = $this->getType();
             $js = <<<JAVASCRIPT
          $(function() {

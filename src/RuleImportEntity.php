@@ -40,7 +40,6 @@ class RuleImportEntity extends Rule
 {
    // From Rule
     public static $rightname = 'rule_import';
-    public $can_sort  = true;
 
     public function getTitle()
     {

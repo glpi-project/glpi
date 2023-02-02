@@ -49,7 +49,6 @@ class RuleImportAsset extends Rule
     const LINK_RESULT_LINK              = 2;
 
     public $restrict_matching = Rule::AND_MATCHING;
-    public $can_sort          = true;
 
     public static $rightname         = 'rule_import';
 
