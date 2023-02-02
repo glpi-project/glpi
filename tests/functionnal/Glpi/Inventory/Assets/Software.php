@@ -602,7 +602,6 @@ class Software extends AbstractInventoryAsset
         $this->string($version->fields['name'])->isEqualTo("1.4");
     }
 
-<<<<<<< HEAD
     public function testSoftwareRuledictionnaryManufacturer()
     {
         $this->login();
@@ -762,9 +761,6 @@ class Software extends AbstractInventoryAsset
         $this->string($manufacturer->fields['name'])->isEqualTo('Other_Publisher');
     }
 
-    public function testSoftwareWithHtmlentites()
-=======
-
     protected function softwareProvider(): array
     {
         return [
@@ -785,7 +781,6 @@ class Software extends AbstractInventoryAsset
      * @dataProvider softwareProvider
      */
     public function testSoftwareWithHtmlentites($path)
->>>>>>> 6e70b0a220 (add some test)
     {
 
         $json_source = json_decode(file_get_contents(GLPI_ROOT . $path));
