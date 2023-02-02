@@ -79,7 +79,7 @@ foreach ($assets as $itemtype) {
                     ]
                 ]
             ]
-                        ],
+        ],
         'WHERE'        => [
             'netports.is_dynamic'  => 0,
             'netports.instantiation_type'  => 'NetworkPortAggregate',
