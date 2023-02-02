@@ -42,7 +42,6 @@
 class RuleDictionnarySoftware extends Rule
 {
     public $additional_fields_for_dictionnary = ['manufacturer'];
-    public $can_sort                          = true;
 
     public static $rightname                         = 'rule_dictionnary_software';
 
