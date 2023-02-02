@@ -163,15 +163,6 @@ class Unmanaged extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'             => '11',
-            'table'          => $this->getTable(),
-            'field'          => 'remote_addr',
-            'name'           => __('Discovery remote addr'),
-            'datatype'       => 'text',
-            'massiveaction'  => false,
-        ];
-
-        $tab[] = [
             'id'        => '13',
             'table'     => $this->getTable(),
             'field'     => 'itemtype',
@@ -198,8 +189,10 @@ class Unmanaged extends CommonDBTM
         $tab[] = [
             'id'           => '18',
             'table'        => $this->getTable(),
-            'field'        => 'ip',
-            'name'         => __('IP'),
+            'field'        => 'remote_addr',
+            'name'         => __('Discovery remote addr'),
+            'datatype'       => 'text',
+            'massiveaction'  => false,
         ];
 
         return $tab;
