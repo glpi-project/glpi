@@ -485,7 +485,7 @@ class Software extends InventoryAsset
     {
         return $this->getNormalizedComparisonKey([
             'version'      => strtolower($val->version),
-            'softwares_id' => $softwares_id,
+            'softwares_id' => (int)$softwares_id,
             'arch'         => strtolower($val->arch ?? '%'),
             'os'           => $this->getOsForKey($val),
         ]);
@@ -505,7 +505,7 @@ class Software extends InventoryAsset
             'version'          => $with_version ? strtolower($val->version) : '',
             'arch'             => strtolower($val->arch ?? ''),
             'manufacturers_id' => $val->manufacturers_id,
-            'entities_id'      => $val->entities_id,
+            'entities_id'      => (int)$val->entities_id,
             'is_recursive'     => $val->is_recursive,
             'os'               => $this->getOsForKey($val),
         ]);
@@ -524,7 +524,7 @@ class Software extends InventoryAsset
             'name'             => $val->name,
             'version'          => strtolower($val->version),
             'arch'             => strtolower($val->arch ?? ''),
-            'entities_id'      => $val->entities_id ?? 0,
+            'entities_id'      => (int)($val->entities_id ?? 0),
             'os'               => $this->getOsForKey($val),
         ]);
     }
@@ -987,19 +987,6 @@ class Software extends InventoryAsset
     {
         $normalized_data = [];
         foreach ($data as $key => $value) {
-            // Normalize values in foreign keys
-            if (preg_match('/_id$/', $key) === 1) {
-                if (is_string($value) && is_numeric($value)) {
-                    // Convert strings to integer
-                    $value = (int)$value;
-                }
-                if (in_array($value, [null, ''])) {
-                    // Convert empty values to 0, to prevent bad reconciliation
-                    // between empty value from inventory and 0 value from database.
-                    $value = 0;
-                }
-            }
-
             // Ensure value is not sanitize, to prevent bad reconciliation when quotes or special chars are present
             $normalized_data[$key] = Sanitizer::unsanitize($value);
         }
