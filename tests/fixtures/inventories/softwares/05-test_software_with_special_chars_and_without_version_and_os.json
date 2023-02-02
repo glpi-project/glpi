@@ -7,7 +7,7 @@
             "dns": "127.0.0.53",
             "lastloggeduser": "stanisla",
             "memory": 32042,
-            "name": "pc_test_5",
+            "name": "pc_test_6",
             "swap": 2047,
             "uuid": "3a82e620-d7da-11dd-ad0f-bcee7b8c72b2",
             "vmsystem": "Physical"
@@ -17,12 +17,12 @@
             "boot_time": "2023-01-26 14:15:33",
             "dns_domain": ".",
             "fqdn": "stanislas-asus-desktop..",
-            "full_name": "Ubuntu & 22.04.1 LTS",
+            "full_name": "\"Ubuntu\" & 22.04.1 LTS",
             "hostid": "007f0101",
             "install_date": "2022-09-14 10:35:07",
             "kernel_name": "linux",
             "kernel_version": "5.15.0-52-generic",
-            "name": "Ubuntu &",
+            "name": "\"Ubuntu\" &",
             "ssh_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICYWwKX1KRqEzIjEsWMQrFX5xDHjx8uTv/aqNaZ6Xk6m",
             "timezone": {
               "name": "Europe/Paris",
@@ -38,8 +38,7 @@
                 "install_date": "2023-01-13",
                 "name": "SoundCloud - Music & Songs",
                 "publisher": "SoundCloud Global Limited & Co. KG",
-                "system_category": "store",
-                "version": "2.0.0.0"
+                "system_category": "store"
             }
         ],
         "versionclient": "GLPI-Agent_v1.4",

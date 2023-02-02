@@ -764,16 +764,15 @@ class Software extends AbstractInventoryAsset
     protected function softwareProvider(): array
     {
         return [
-            //To test FullCompareKey (with < and & on software name / manufacturer)
-            '/tests/fixtures/inventories/softwares/01-test_software_with_html_entities_with_version.json',
-            '/tests/fixtures/inventories/softwares/02-test_software_with_html_entities_with_version.json',
-            //To test FullCompareKey without version (with < and & on software name / manufacturer)
-            '/tests/fixtures/inventories/softwares/03-test_software_with_html_entities_and_without_version.json',
-            '/tests/fixtures/inventories/softwares/04-test_software_with_html_entities_and_without_version.json',
-            // /To test FullCompareKey with version (with < and & on software name / manufacturer name / OS name / arch name)
-            '/tests/fixtures/inventories/softwares/05-test_software_with_html_entities_and_with_version_and_os.json',
-            // /To test FullCompareKey without version (with < and & on software name / manufacturer name / OS name / arch name)
-            '/tests/fixtures/inventories/softwares/06-test_software_with_html_entities_and_without_version_and_os.json',
+            //To test FullCompareKey (with special chars on software name / manufacturer)
+            '/tests/fixtures/inventories/softwares/01-test_software_with_special_chars_with_version.json',
+            '/tests/fixtures/inventories/softwares/02-test_software_with_special_chars_with_version.json',
+            //To test FullCompareKey without version (with special chars on software name / manufacturer)
+            '/tests/fixtures/inventories/softwares/03-test_software_with_special_chars_and_without_version.json',
+            // /To test FullCompareKey with version (with special chars on software name / manufacturer name / OS name / arch name)
+            '/tests/fixtures/inventories/softwares/04-test_software_with_special_chars_and_with_version_and_os.json',
+            // /To test FullCompareKey without version (with special chars on software name / manufacturer name / OS name / arch name)
+            '/tests/fixtures/inventories/softwares/05-test_software_with_special_chars_and_without_version_and_os.json',
         ];
     }
 

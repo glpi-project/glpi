@@ -45,7 +45,6 @@ use QueryParam;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
 use SoftwareVersion;
-use Toolbox;
 
 class Software extends InventoryAsset
 {
@@ -466,28 +465,29 @@ class Software extends InventoryAsset
      *
      * @return string
      */
-    public function getSoftwareKey($name, $manufacturers_id): string
+    protected function getSoftwareKey($name, $manufacturers_id): string
     {
-        $name = Sanitizer::unsanitize($name);
-        return $this->getCompareKey([sha1($name), $manufacturers_id]);
+        return $this->getNormalizedComparisonKey([
+            'name'             => $name,
+            'manufacturers_id' => $manufacturers_id,
+        ]);
     }
 
     /**
      * Get software version comparison key
      *
-     * @param stdClass $val          Version name
+     * @param \stdClass $val          Version name
      * @param integer   $softwares_id Software id
      *
      * @return string
      */
     protected function getVersionKey($val, $softwares_id): string
     {
-        $data = $this->normalizeComparisonDataValues($val);
-        return $this->getCompareKey([
-            strtolower($data->version),
-            $softwares_id,
-            strtolower($data->arch ?? '%'),
-            $this->getOsForKey($data)
+        return $this->getNormalizedComparisonKey([
+            'version'      => strtolower($val->version),
+            'softwares_id' => $softwares_id,
+            'arch'         => strtolower($val->arch ?? '%'),
+            'os'           => $this->getOsForKey($val),
         ]);
     }
 
@@ -500,15 +500,14 @@ class Software extends InventoryAsset
      */
     protected function getFullCompareKey(\stdClass $val, bool $with_version = true): string
     {
-        $data = $this->normalizeComparisonDataValues($val);
-        return $this->getCompareKey([
-            sha1(Sanitizer::sanitize($data->name)),
-            $with_version ? strtolower($data->version) : '',
-            strtolower($data->arch ?? ''),
-            Sanitizer::sanitize($data->manufacturers_id),
-            $data->entities_id,
-            $data->is_recursive,
-            $this->getOsForKey($data)
+        return $this->getNormalizedComparisonKey([
+            'name'             => $val->name,
+            'version'          => $with_version ? strtolower($val->version) : '',
+            'arch'             => strtolower($val->arch ?? ''),
+            'manufacturers_id' => $val->manufacturers_id,
+            'entities_id'      => $val->entities_id,
+            'is_recursive'     => $val->is_recursive,
+            'os'               => $this->getOsForKey($val),
         ]);
     }
 
@@ -521,13 +520,12 @@ class Software extends InventoryAsset
      */
     protected function getSimpleCompareKey(\stdClass $val): string
     {
-        $data = $this->normalizeComparisonDataValues($val);
-        return $this->getCompareKey([
-            sha1(Sanitizer::sanitize($data->name)),
-            strtolower($data->version),
-            strtolower($data->arch ?? ''),
-            $data->entities_id ?? 0,
-            $this->getOsForKey($data)
+        return $this->getNormalizedComparisonKey([
+            'name'             => $val->name,
+            'version'          => strtolower($val->version),
+            'arch'             => strtolower($val->arch ?? ''),
+            'entities_id'      => $val->entities_id ?? 0,
+            'os'               => $this->getOsForKey($val),
         ]);
     }
 
@@ -537,6 +535,8 @@ class Software extends InventoryAsset
      * @param array $parts Values parts
      *
      * @return string
+     *
+     * @FIXME Remove this method in GLPI 10.1.
      */
     protected function getCompareKey(array $parts): string
     {
@@ -977,21 +977,32 @@ class Software extends InventoryAsset
     }
 
     /**
-     * Normalize data used for comparison.
+     * Get comparison key with normalized data.
      *
      * @param \stdClass $data
      *
-     * return \stdClass
+     * return string
      */
-    final protected function normalizeComparisonDataValues(\stdClass $data): \stdClass
+    final protected function getNormalizedComparisonKey(array $data): string
     {
-        $normalized_data = new \stdClass();
+        $normalized_data = [];
         foreach ($data as $key => $value) {
-            if (preg_match('/_id$/', $key) === 1 && in_array($value, ['', '0', 0])) {
-                $value = null; // normalize empty values in foreign keys
+            // Normalize values in foreign keys
+            if (preg_match('/_id$/', $key) === 1) {
+                if (is_string($value) && is_numeric($value)) {
+                    // Convert strings to integer
+                    $value = (int)$value;
+                }
+                if (in_array($value, [null, ''])) {
+                    // Convert empty values to 0, to prevent bad reconciliation
+                    // between empty value from inventory and 0 value from database.
+                    $value = 0;
+                }
             }
-            $normalized_data->$key = Sanitizer::unsanitize($value);
+
+            // Ensure value is not sanitize, to prevent bad reconciliation when quotes or special chars are present
+            $normalized_data[$key] = Sanitizer::unsanitize($value);
         }
-        return $normalized_data;
+        return json_encode($normalized_data);
     }
 }

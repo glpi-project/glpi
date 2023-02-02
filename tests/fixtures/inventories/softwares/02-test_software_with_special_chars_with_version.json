@@ -7,7 +7,7 @@
             "dns": "127.0.0.53",
             "lastloggeduser": "stanisla",
             "memory": 32042,
-            "name": "pc_test_4",
+            "name": "pc_test_2",
             "swap": 2047,
             "uuid": "3a82e620-d7da-11dd-ad0f-bcee7b8c72b2",
             "vmsystem": "Physical"
@@ -18,9 +18,10 @@
                 "folder": "C:\\Program Files\\WindowsApps\\SoundcloudLtd.SoundCloudforWindowsBeta_2.0.0.0_neutral__2xc63xn306dnw",
                 "from": "uwp",
                 "install_date": "2023-01-13",
-                "name": "Power & VideoLan",
-                "publisher": "Video Lan & Video",
-                "system_category": "store"
+                "name": "Microsof't < Windows >",
+                "publisher": "Microsoft < Ltd",
+                "system_category": "store",
+                "version": "2.0.0.0"
             }
         ],
         "versionclient": "GLPI-Agent_v1.4",
