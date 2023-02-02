@@ -241,21 +241,6 @@ class Document extends CommonDBTM
             && ($item = getItemForItemtype($input["itemtype"]))
             && ($input["items_id"] > 0)
         ) {
-            $typename = $item->getTypeName(1);
-            $name     = NOT_AVAILABLE;
-
-            if ($item->getFromDB($input["items_id"])) {
-                $name = $item->getNameID();
-            }
-           //TRANS: %1$s is Document, %2$s is item type, %3$s is item name
-            $input["name"] = addslashes(Html::resume_text(
-                sprintf(
-                    __('%1$s: %2$s'),
-                    Document::getTypeName(1),
-                    sprintf(__('%1$s - %2$s'), $typename, $name)
-                ),
-                200
-            ));
             $create_from_item = true;
         }
 
