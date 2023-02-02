@@ -661,7 +661,7 @@
                            {{ fields.textField(
                               "remote_addr",
                               item.fields['remote_addr'],
-                              __('Public contact address'),
+                              item.getType() == 'Unmanaged' ? __('Discovery remote addr') :  item.getType() in ['Printer', 'NetworkEquipment'] ? __('SNMP port remote address') : __('Public contact address'),
                               field_options|merge({
                                disabled: not has_profile_right('inventory', constant('Glpi\\Inventory\\Conf::UPDATECONFIG'))
                               })
