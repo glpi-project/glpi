@@ -601,4 +601,163 @@ class Software extends AbstractInventoryAsset
         $this->boolean($version->getFromDB($first_computer_soft['softwareversions_id']))->isTrue();
         $this->string($version->fields['name'])->isEqualTo("1.4");
     }
+
+    public function testSoftwareRuledictionnaryManufacturer()
+    {
+        $this->login();
+
+        $rule         = new \RuleDictionnaryManufacturer();
+        $rulecriteria = new \RuleCriteria();
+        $ruleaction   = new \RuleAction();
+
+        $rules_id = $rule->add([
+            'is_active'    => 1,
+            'name'         => 'Microsoft',
+            'match'        => 'AND',
+            'sub_type'     => \RuleDictionnaryManufacturer::class,
+            'is_recursive' => 1,
+            'ranking'      => 1,
+        ]);
+        $this->integer((int) $rules_id)->isGreaterThan(0);
+
+        $this->integer((int) $rulecriteria->add([
+            'rules_id'    => $rules_id,
+            'criteria'  => "name",
+            'pattern'   => "Microsoft",
+            'condition' => \Rule::PATTERN_CONTAIN
+        ]))->isGreaterThan(0);
+
+        $this->integer((int) $ruleaction->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'name',
+            'value'       => 'Personal_Publisher',
+        ]))->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <ARCH>x86_64</ARCH>
+      <COMMENTS></COMMENTS>
+      <FILESIZE>67382735</FILESIZE>
+      <FROM>rpm</FROM>
+      <INSTALLDATE>03/10/2021</INSTALLDATE>
+      <NAME>test_software</NAME>
+      <PUBLISHER>Microsoft</PUBLISHER>
+      <SYSTEM_CATEGORY>Unspecified</SYSTEM_CATEGORY>
+      <VERSION>1.1</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc_test_entity</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ssnexample</SSN>
+    </BIOS>
+    <VERSIONCLIENT>test-agent</VERSIONCLIENT>
+    <ACCOUNTINFO>
+      <KEYNAME>TAG</KEYNAME>
+      <KEYVALUE>testtag_2</KEYVALUE>
+    </ACCOUNTINFO>
+  </CONTENT>
+  <DEVICEID>pc_test_entity</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $computer = new \Computer();
+        $found_computers = $computer->find(['name' => "pc_test_entity"]);
+        $this->integer(count($found_computers))->isIdenticalTo(1);
+
+        $soft = new \Software();
+        $softs = $soft->find(['name' => "test_software"]);
+        $this->integer(count($softs))->isIdenticalTo(1);
+        $first_soft = array_pop($softs);
+
+        $manufacturer = new \Manufacturer();
+        $manufacturer->getFromDB($first_soft['manufacturers_id']);
+
+        $this->string($manufacturer->fields['name'])->isEqualTo('Personal_Publisher');
+    }
+
+    public function testSoftwareRuledictionnarySoftware()
+    {
+        $this->login();
+
+        $rule         = new \RuleDictionnarySoftware();
+        $rulecriteria = new \RuleCriteria();
+        $ruleaction   = new \RuleAction();
+
+        $rules_id = $rule->add([
+            'is_active'    => 1,
+            'name'         => 'Apple',
+            'match'        => 'AND',
+            'sub_type'     => \RuleDictionnarySoftware::class,
+            'is_recursive' => 1,
+            'ranking'      => 1,
+        ]);
+        $this->integer((int) $rules_id)->isGreaterThan(0);
+
+        $this->integer((int) $rulecriteria->add([
+            'rules_id'    => $rules_id,
+            'criteria'  => "manufacturer",
+            'pattern'   => "Apple",
+            'condition' => \Rule::PATTERN_CONTAIN
+        ]))->isGreaterThan(0);
+
+        $this->integer((int) $ruleaction->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'manufacturer',
+            'value'       => 'Other_Publisher',
+        ]))->isGreaterThan(0);
+
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <ARCH>x86_64</ARCH>
+      <COMMENTS></COMMENTS>
+      <FILESIZE>67382735</FILESIZE>
+      <FROM>rpm</FROM>
+      <INSTALLDATE>03/10/2021</INSTALLDATE>
+      <NAME>test_software</NAME>
+      <PUBLISHER>Apple</PUBLISHER>
+      <SYSTEM_CATEGORY>Unspecified</SYSTEM_CATEGORY>
+      <VERSION>1.1</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc_test_entity</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ssnexample</SSN>
+    </BIOS>
+    <VERSIONCLIENT>test-agent</VERSIONCLIENT>
+    <ACCOUNTINFO>
+      <KEYNAME>TAG</KEYNAME>
+      <KEYVALUE>testtag_2</KEYVALUE>
+    </ACCOUNTINFO>
+  </CONTENT>
+  <DEVICEID>pc_test_entity</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $computer = new \Computer();
+        $found_computers = $computer->find(['name' => "pc_test_entity"]);
+        $this->integer(count($found_computers))->isIdenticalTo(1);
+
+        $soft = new \Software();
+        $softs = $soft->find(['name' => "test_software"]);
+        $this->integer(count($softs))->isIdenticalTo(1);
+        $first_soft = array_pop($softs);
+
+        $manufacturer = new \Manufacturer();
+        $manufacturer->getFromDB($first_soft['manufacturers_id']);
+
+        $this->string($manufacturer->fields['name'])->isEqualTo('Other_Publisher');
+    }
 }
