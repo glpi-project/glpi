@@ -248,6 +248,12 @@ class Printer extends CommonDBTM
     }
 
 
+    public static function getRemoteAddrLabel()
+    {
+        return __('SNMP port remote address');
+    }
+
+
     public function manageInput($input)
     {
         //without right, user can't set remote_addr
@@ -383,7 +389,7 @@ class Printer extends CommonDBTM
             'id'                 => '10',
             'table'              => $this->getTable(),
             'field'              => 'remote_addr',
-            'name'               => __('SNMP port remote address'),
+            'name'               => self::getRemoteAddrLabel(),
             'datatype'           => 'text',
             'massiveaction'      => false,
         ];

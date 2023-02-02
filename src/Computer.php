@@ -325,6 +325,12 @@ class Computer extends CommonDBTM
     }
 
 
+    public static function getRemoteAddrLabel()
+    {
+        return __('Public contact address');
+    }
+
+
     public function cleanDBonPurge()
     {
 
@@ -489,7 +495,7 @@ class Computer extends CommonDBTM
             'id'                 => '11',
             'table'              => $this->getTable(),
             'field'              => 'remote_addr',
-            'name'               => __('Public contact address'),
+            'name'               => self::getRemoteAddrLabel(),
             'datatype'           => 'text',
             'massiveaction'      => false,
         ];

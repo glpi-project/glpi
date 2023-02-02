@@ -194,6 +194,12 @@ class NetworkEquipment extends CommonDBTM
     }
 
 
+    public static function getRemoteAddrLabel()
+    {
+        return __('SNMP port remote address');
+    }
+
+
     /**
      * Can I change recursive flag to false
      * check if there is "linked" object in another entity
@@ -323,7 +329,7 @@ class NetworkEquipment extends CommonDBTM
             'id'                 => '10',
             'table'              => $this->getTable(),
             'field'              => 'remote_addr',
-            'name'               => __('SNMP port remote address'),
+            'name'               => self::getRemoteAddrLabel(),
             'datatype'           => 'text',
             'massiveaction'      => false,
         ];

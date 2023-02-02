@@ -190,7 +190,7 @@ class Unmanaged extends CommonDBTM
             'id'           => '18',
             'table'        => $this->getTable(),
             'field'        => 'remote_addr',
-            'name'         => __('Discovery remote addr'),
+            'name'         => self::getRemoteAddrLabel(),
             'datatype'       => 'text',
             'massiveaction'  => false,
         ];
@@ -288,6 +288,10 @@ class Unmanaged extends CommonDBTM
     }
 
 
+    public static function getRemoteAddrLabel()
+    {
+        return __('Discovery remote addr');
+    }
     /**
      * Convert to a managed asset
      *
