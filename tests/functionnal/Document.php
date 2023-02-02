@@ -149,7 +149,7 @@ class Document extends DbTestCase
          ->variable['users_id']->isEqualTo($uid)
          ->string['itemtype']->isIdenticalTo('Computer')
          ->variable['items_id']->isEqualTo($cid)
-         ->string['name']->isIdenticalTo('Document: Computer - Documented Computer');
+         ->string['name']->isIdenticalTo('A_name.pdf');
     }
 
     /** Cannot work without a real document uploaded.
