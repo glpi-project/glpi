@@ -61,12 +61,12 @@ switch ($action) {
             (isset($_GET['itemtype']) && class_exists($_GET['itemtype']))
             && isset($_GET['items_id'])
         ) {
-            Socket::dropdown(['name'         =>  $_GET['dom_name'],
+            Socket::dropdown(['name'         =>  $_GET['dom_name'], 
                 'condition'    => ['socketmodels_id'   => $_GET['socketmodels_id'] ?? 0,
                     'itemtype'           => $_GET['itemtype'],
                     'items_id'           => $_GET['items_id']
                 ],
-                'used'         => (int)$_GET['items_id'] > 0 ? Socket::getSocketAlreadyLinked($_GET['itemtype'], (int)$_GET['items_id']),
+                'used'         => (int)$_GET['items_id'] > 0 ?? Socket::getSocketAlreadyLinked($_GET['itemtype'], (int)$_GET['items_id']),
                 'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
             ]);
         }
