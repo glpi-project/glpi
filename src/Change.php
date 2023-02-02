@@ -663,11 +663,6 @@ class Change extends CommonITILObject
         return $tab;
     }
 
-    /**
-     * Get the ITIL object reopenable status list
-     *
-     * @return array
-     */
     public static function getReopenableStatusArray()
     {
         return self::getClosedStatusArray();
