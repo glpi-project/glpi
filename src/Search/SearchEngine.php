@@ -293,7 +293,9 @@ final class SearchEngine
             $params = \KnowbaseItem::getAdditionalSearchCriteria($params);
         }
 
-        $params['criteria'] = array_merge($params['criteria'], \FilterPreference::getCriteriaForItemtype($itemtype));
+        if (\FilterPreference::isFilteredItemtype($itemtype)) {
+            $params['criteria'] = array_merge($params['criteria'] ?? [], \FilterPreference::getCriteriaForItemtype($itemtype));
+        }
 
         foreach ($params as $key => $val) {
             switch ($key) {

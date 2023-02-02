@@ -136,13 +136,29 @@ final class FilterPreference extends CommonDBTM
         return true;
     }
 
+    public static function isFilteredItemtype($itemtype): bool
+    {
+        $filters = new FilterPreference();
+        $filters = $filters->find([
+            'users_id' => Session::getLoginUserID(),
+            'itemtype' => $itemtype,
+        ]);
+        foreach ($filters as $filter) {
+            $values = json_decode($filter['values'], true);
+            if (count($values) > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static function getCriteriaForItemtype($itemtype): array
     {
         $criteria = [];
-        $user = User::getById(Session::getLoginUserID());
         $filters = new FilterPreference();
         $filters = $filters->find([
-            'users_id' => $user->fields['id'],
+            'users_id' => Session::getLoginUserID(),
             'itemtype' => $itemtype,
         ]);
         foreach ($filters as $filter) {
