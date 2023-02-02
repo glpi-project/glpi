@@ -163,12 +163,12 @@ class Unmanaged extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'           => '11',
-            'table'        => $this->getTable(),
-            'field'        => 'remote_addr',
-            'name'         => __('Discovery remote addr'),
-            'datatype'       => 'text',
-            'massiveaction'  => false,
+            'id'            => '11',
+            'table'         => $this->getTable(),
+            'field'         => 'remote_addr',
+            'name'          => self::getRemoteAddrLabel(),
+            'datatype'      => 'text',
+            'massiveaction' => false,
         ];
 
         $tab[] = [
