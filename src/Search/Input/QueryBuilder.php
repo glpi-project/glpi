@@ -400,6 +400,7 @@ final class QueryBuilder implements SearchInputInterface
             : "";
 
         TemplateRenderer::getInstance()->display('components/search/query_builder/criteria.html.twig', [
+            'mainform'    => $p['mainform'],
             'from_meta'   => $from_meta,
             'meta'        => $criteria['meta'] ?? false,
             'sess_itemtype' => $sess_itemtype,
