@@ -53,7 +53,7 @@
       <div class="row g-1">
          {% if not from_meta %}
             {% if num == 0 and mainform is defined and mainform %}
-               {% set item = itemtype != 'AllAssets' ? call('getItemFromItemtype', [itemtype]) : null %}
+               {% set item = itemtype != 'AllAssets' ? call('getItemForItemtype', [itemtype]) : null %}
                {% if item is not null and item.maybeDeleted() %}
                   <input type="hidden" id="is_deleted" name="is_deleted" value="{{ p['is_deleted'] }}">
                {% endif %}
