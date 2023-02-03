@@ -788,7 +788,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $criteria = [
             'SELECT'    => [
                 "$table.*",
-                "$utable.id AS is_default"
+                new \QueryExpression(
+                    "IF($utable.users_id = " . Session::getLoginUserID() . ", $utable.id, NULL) AS is_default"
+                ),
             ],
             'FROM'      => $table,
             'LEFT JOIN' => [
