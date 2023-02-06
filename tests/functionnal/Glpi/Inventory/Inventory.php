@@ -5926,7 +5926,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer($inv_states_id)->isGreaterThan(0);
 
         $cleaned_states_id = $state->add([
-           'name' => 'Has been cleaned'
+            'name' => 'Has been cleaned'
         ]);
         $this->integer($cleaned_states_id)->isGreaterThan(0);
 
