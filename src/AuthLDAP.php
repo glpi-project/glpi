@@ -1881,6 +1881,13 @@ class AuthLDAP extends CommonDBTM
                     ]
                 ];
                 $sr = ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+                if ($sr === false) {
+                    trigger_error(
+                        sprintf('LDAP search failed with error (%s) %s', ldap_errno($ds), ldap_error($ds)),
+                        E_USER_WARNING
+                    );
+                    return false;
+                }
                 ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
                 if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
                     $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];

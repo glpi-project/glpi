@@ -251,7 +251,7 @@ abstract class InventoryAsset
                         );
                     } else if (isset($foreignkey_itemtype[$key])) {
                         $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
-                    } else if ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
+                    } else if ($value->$key !== 0 && $key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
                         $foreignkey_itemtype[$key] = $itemtype;
 
                         $this->known_links[$known_key] = Dropdown::importExternal(

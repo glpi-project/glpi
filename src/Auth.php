@@ -1083,7 +1083,8 @@ class Auth extends CommonGLPI
         }
 
         $methods = [
-            self::DB_GLPI => __('Authentication on GLPI database'),
+            self::DB_GLPI  => __('Authentication on GLPI database'),
+            self::EXTERNAL => __('External authentications'),
         ];
 
         $result = $DB->request([
@@ -1095,8 +1096,7 @@ class Auth extends CommonGLPI
         ])->current();
 
         if ($result['cpt'] > 0) {
-            $methods[self::LDAP]     = __('Authentication on a LDAP directory');
-            $methods[self::EXTERNAL] = __('External authentications');
+            $methods[self::LDAP] = __('Authentication on a LDAP directory');
         }
 
         $result = $DB->request([

@@ -45,7 +45,6 @@ use QueryParam;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
 use SoftwareVersion;
-use Toolbox;
 
 class Software extends InventoryAsset
 {
@@ -145,7 +144,7 @@ class Software extends InventoryAsset
 
                 //If the software category has been modified or set by the rules engine
                 if (isset($res_rule["softwarecategories_id"])) {
-                    $sckey = 'softwarecategories_id' . $res_rule["softwarecategories_id"];
+                    $sckey = md5('softwarecategories_id' . $res_rule["softwarecategories_id"]);
                     $this->known_links[$sckey] = $res_rule["softwarecategories_id"];
                     $sc = new \SoftwareCategory();
                     $sc->getFromDB($res_rule["softwarecategories_id"]);
@@ -156,7 +155,7 @@ class Software extends InventoryAsset
                     && $val->_system_category != '0'
                 ) {
                     $val->softwarecategories_id = $val->_system_category;
-                    $sckey = 'softwarecategories_id' . $val->_system_category;
+                    $sckey = md5('softwarecategories_id' . $val->_system_category);
                     if (!isset($this->known_links[$sckey])) {
                         $new_value = Dropdown::importExternal(
                             'SoftwareCategory',
@@ -171,7 +170,7 @@ class Software extends InventoryAsset
 
                 //If the manufacturer has been modified or set by the rules engine
                 if (isset($res_rule["manufacturer"])) {
-                    $mkey = 'manufacturers_id' . $res_rule['manufacturer'];
+                    $mkey = md5('manufacturers_id' . $res_rule['manufacturer']);
                     $mid = Dropdown::import(
                         'Manufacturer',
                         ['name' => $res_rule['manufacturer']]
@@ -183,7 +182,7 @@ class Software extends InventoryAsset
                     && $val->manufacturers_id != ''
                     && $val->manufacturers_id != '0'
                 ) {
-                    $mkey = 'manufacturers_id' . $val->manufacturers_id;
+                    $mkey = md5('manufacturers_id' . $val->manufacturers_id);
                     if (!isset($this->known_links[$mkey])) {
                         $new_value = Dropdown::importExternal(
                             'Manufacturer',
@@ -375,7 +374,7 @@ class Software extends InventoryAsset
 
             //update softwarecategories if needed
             //reconciles the software without the version (no needed here)
-            $sckey = 'softwarecategories_id' . ($val->softwarecategories_id ?? 0);
+            $sckey = md5('softwarecategories_id' . ($val->softwarecategories_id ?? 0));
             if (
                 isset($db_software_data[$key_wo_version])
                 && $db_software_data[$key_wo_version]['softwarecategories'] != ($this->known_links[$sckey] ?? 0)
@@ -468,24 +467,27 @@ class Software extends InventoryAsset
      */
     protected function getSoftwareKey($name, $manufacturers_id): string
     {
-        return $this->getCompareKey([sha1($name), $manufacturers_id]);
+        return $this->getNormalizedComparisonKey([
+            'name'             => $name,
+            'manufacturers_id' => $manufacturers_id,
+        ]);
     }
 
     /**
      * Get software version comparison key
      *
-     * @param stdClass $val          Version name
+     * @param \stdClass $val          Version name
      * @param integer   $softwares_id Software id
      *
      * @return string
      */
     protected function getVersionKey($val, $softwares_id): string
     {
-        return $this->getCompareKey([
-            strtolower($val->version),
-            $softwares_id,
-            strtolower($val->arch ?? '%'),
-            $this->getOsForKey($val)
+        return $this->getNormalizedComparisonKey([
+            'version'      => strtolower($val->version),
+            'softwares_id' => (int)$softwares_id,
+            'arch'         => strtolower($val->arch ?? '%'),
+            'os'           => $this->getOsForKey($val),
         ]);
     }
 
@@ -498,14 +500,14 @@ class Software extends InventoryAsset
      */
     protected function getFullCompareKey(\stdClass $val, bool $with_version = true): string
     {
-        return $this->getCompareKey([
-            sha1($val->name),
-            $with_version ? strtolower($val->version) : '',
-            strtolower($val->arch ?? ''),
-            $val->manufacturers_id,
-            $val->entities_id,
-            $val->is_recursive,
-            $this->getOsForKey($val)
+        return $this->getNormalizedComparisonKey([
+            'name'             => $val->name,
+            'version'          => $with_version ? strtolower($val->version) : '',
+            'arch'             => strtolower($val->arch ?? ''),
+            'manufacturers_id' => $val->manufacturers_id,
+            'entities_id'      => (int)$val->entities_id,
+            'is_recursive'     => $val->is_recursive,
+            'os'               => $this->getOsForKey($val),
         ]);
     }
 
@@ -518,12 +520,12 @@ class Software extends InventoryAsset
      */
     protected function getSimpleCompareKey(\stdClass $val): string
     {
-        return $this->getCompareKey([
-            sha1($val->name),
-            strtolower($val->version),
-            strtolower($val->arch ?? ''),
-            $val->entities_id ?? 0,
-            $this->getOsForKey($val)
+        return $this->getNormalizedComparisonKey([
+            'name'             => $val->name,
+            'version'          => strtolower($val->version),
+            'arch'             => strtolower($val->arch ?? ''),
+            'entities_id'      => (int)($val->entities_id ?? 0),
+            'os'               => $this->getOsForKey($val),
         ]);
     }
 
@@ -533,6 +535,8 @@ class Software extends InventoryAsset
      * @param array $parts Values parts
      *
      * @return string
+     *
+     * @FIXME Remove this method in GLPI 10.1.
      */
     protected function getCompareKey(array $parts): string
     {
@@ -578,7 +582,7 @@ class Software extends InventoryAsset
                 continue;
             }
 
-            $mkey = 'manufacturers_id' . $val->manufacturers_id;
+            $mkey = md5('manufacturers_id' . $val->manufacturers_id);
             $input = Sanitizer::encodeHtmlSpecialCharsRecursive([
                 'name'             => $val->name,
                 'manufacturers_id' => $this->known_links[$mkey] ?? 0
@@ -808,7 +812,7 @@ class Software extends InventoryAsset
             if (!isset($known_fields[$column])) {
                 unset($input[$column]);
             } else {
-                $key = $column . $input[$column];
+                $key = md5($column . $input[$column]);
                 if (isset($this->known_links[$key])) {
                     $input[$column] = $this->known_links[$key];
                 }
@@ -970,5 +974,22 @@ class Software extends InventoryAsset
     public function getItemtype(): string
     {
         return \Item_SoftwareVersion::class;
+    }
+
+    /**
+     * Get comparison key with normalized data.
+     *
+     * @param \stdClass $data
+     *
+     * return string
+     */
+    final protected function getNormalizedComparisonKey(array $data): string
+    {
+        $normalized_data = [];
+        foreach ($data as $key => $value) {
+            // Ensure value is not sanitize, to prevent bad reconciliation when quotes or special chars are present
+            $normalized_data[$key] = Sanitizer::unsanitize($value);
+        }
+        return json_encode($normalized_data);
     }
 }

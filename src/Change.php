@@ -834,6 +834,10 @@ class Change extends CommonITILObject
         return $tab;
     }
 
+    public static function getReopenableStatusArray()
+    {
+        return self::getClosedStatusArray();
+    }
 
     public function getRights($interface = 'central')
     {
