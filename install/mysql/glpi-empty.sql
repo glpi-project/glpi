@@ -8845,7 +8845,6 @@ CREATE TABLE `glpi_unmanageds` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   `sysdescr` text,
-  `domains_id` int unsigned NOT NULL DEFAULT '0',
   `agents_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
   `accepted` tinyint NOT NULL DEFAULT '0',
@@ -8871,7 +8870,6 @@ CREATE TABLE `glpi_unmanageds` (
   KEY `otherserial` (`otherserial`),
   KEY `date_creation` (`date_creation`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
-  KEY `domains_id` (`domains_id`),
   KEY `agents_id` (`agents_id`),
   KEY `snmpcredentials_id` (`snmpcredentials_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
