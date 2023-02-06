@@ -1809,7 +1809,7 @@ class Provider
         ) {
             $s_criteria['criteria'][] = [
                 'link'       => 'AND',
-                'field'      => 'type',
+                'field'      => self::getSearchOptionID($table, 'type', $table),
                 'searchtype' => 'equals',
                 'value'      => (int) $apply_filters['tickettype']
             ];
