@@ -51,8 +51,7 @@ class ListCommand extends AbstractCommand implements ForceNoPluginsOptionCommand
     {
         parent::configure();
 
-        $this->setName('glpi:plugin:list');
-        $this->setAliases(['plugin:list']);
+        $this->setName('plugin:list');
         $this->setDescription('List all plugins present in the plugins directory or from the marketplace');
 
         // Add option to change output format

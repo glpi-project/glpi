@@ -77,6 +77,7 @@ The present file will list all changes made to the project; according to the
   We added a compatibility layer to handle main usages found in plugins, but we cannot ensure compatibility with all properties and methods that were inherited from `PHPMailer\PHPMailer\PHPMailer`.
 - `CommonGLPI::createTabEntry()` signature changed.
 - All types of rules are now sortable and ordered by ranking.
+- Plugins console commands must now use the normalized prefix `plugins:XXX` where `XXX` is the plugin key.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
