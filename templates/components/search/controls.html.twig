@@ -75,6 +75,19 @@
       </label>
    {% endif %}
 
+   {% if may_be_filtered %}
+      <label class="form-check form-switch btn btn-sm btn-ghost-info me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
+             data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Status filtering') }}">
+         <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
+                name="is_filtered" value="1" autocomplete="off"
+                onclick="toogle('is_filtered','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                {{ data['search']['is_filtered'] == 1 ? 'checked' : '' }} />
+         <span class="form-check-label mb-1 mb-sm-0">
+            <i class="ti fa-lg ti-filter"></i>
+         </span>
+      </label>
+   {% endif %}
+
    {% if may_be_unpublished %}
       <label class="form-check form-switch btn btn-sm btn-ghost-danger me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show unpublished') }}">

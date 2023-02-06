@@ -178,27 +178,13 @@ final class FilterPreference extends CommonDBTM
                     }
                 }
             }
-            if (count($values) == 1) {
+            foreach ($values as $value) {
                 $criteria[] = [
                     'link'          => "AND",
                     'field'         => $field,
-                    'searchtype'    => "equals",
+                    'searchtype'    => "notequals",
                     'virtual'       => true,
-                    'value'         => $values[0],
-                ];
-            } elseif (count($values) > 1) {
-                foreach ($values as $value) {
-                    $or[] = [
-                        'link'          => "OR",
-                        'field'         => $field,
-                        'searchtype'    => "equals",
-                        'virtual'       => true,
-                        'value'         => $value,
-                    ];
-                }
-                $criteria[] = [
-                    'link'     => "AND",
-                    'criteria' => $or,
+                    'value'         => $value,
                 ];
             }
         }

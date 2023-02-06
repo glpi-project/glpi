@@ -47,6 +47,7 @@ switch ($_REQUEST['action']) {
             'showmassiveactions' => true,
             'criteria'           => $_REQUEST['criteria'],
             'unpublished'        => $_REQUEST['unpublished'],
+            'is_filtered'        => $_REQUEST['is_filtered'],
         ];
 
         $itemtype = $_REQUEST['itemtype'];

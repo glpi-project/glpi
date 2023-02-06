@@ -74,6 +74,9 @@ trait TreeBrowse
         $unpublished = isset($params['unpublished'])
                             ? $params['unpublished']
                             : 1;
+        $is_filtered = isset($params['is_filtered'])
+                            ? $params['is_filtered']
+                            : 1;
 
         $criteria    = json_encode($params['criteria']);
 
@@ -93,6 +96,7 @@ trait TreeBrowse
                 'browse': $browse,
                 'is_deleted': $is_deleted,
                 'unpublished': $unpublished,
+                'is_filtered': $is_filtered,
                 'criteria': $criteria
             });
         };
