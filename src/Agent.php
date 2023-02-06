@@ -864,7 +864,8 @@ class Agent extends CommonDBTM
                             //change status of agents linked assets
                             $input = [
                                 'id'        => $item->fields['id'],
-                                'states_id' => $config['stale_agents_status']
+                                'states_id' => $config['stale_agents_status'],
+                                'is_dynamic' => 1
                             ];
                             if ($item->update($input)) {
                                 $task->addVolume(1);

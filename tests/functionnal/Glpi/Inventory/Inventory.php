@@ -5911,4 +5911,90 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check if is specific value
         $this->string($operating_service_pack->fields['name'])->isEqualTo("New service_pack");
     }
+
+    public function testImportStatusAfterClean()
+    {
+        global $DB;
+
+        $this->login();
+
+        //create states to use
+        $state = new \State();
+        $inv_states_id = $state->add([
+            'name' => 'Has been inventoried'
+        ]);
+        $this->integer($inv_states_id)->isGreaterThan(0);
+
+        $cleaned_states_id = $state->add([
+            'name' => 'Has been cleaned'
+        ]);
+        $this->integer($cleaned_states_id)->isGreaterThan(0);
+
+        \Config::setConfigurationValues(
+            'inventory',
+            [
+                'states_id_default' => $inv_states_id,
+                'stale_agents_delay' => 1,
+                'stale_agents_action' => exportArrayToDB([
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS
+                ]),
+                'stale_agents_status' => $cleaned_states_id
+            ]
+        );
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+
+        $inventory = $this->doInventory($json);
+
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $agents_id = $agent['id'];
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id'])
+            ->integer['items_id']->isGreaterThan(0);
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check states has been set
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($inv_states_id);
+
+        $lockedfield = new \Lockedfield();
+        $this->boolean($lockedfield->isHandled($computer))->isTrue();
+        $this->array($lockedfield->getLockedValues($computer->getType(), $computers_id))->isEmpty();
+
+        //set agent inventory date in past
+        $invdate = new \DateTime($agent['last_contact']);
+        $invdate->sub(new \DateInterval('P1Y'));
+
+        $agent = new \Agent();
+        $this->boolean(
+            $agent->update([
+                'id' => $agents_id,
+                'last_contact' => $invdate->format('Y-m-d H:i:s')
+            ])
+        )->isTrue();
+
+        //cleanup old agents
+        $name = \CronTask::launch(-\CronTask::MODE_INTERNAL, 1, 'Cleanoldagents');
+        $this->string($name)->isIdenticalTo('Cleanoldagents');
+
+        //check computer state has been updated
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($cleaned_states_id);
+
+        $this->boolean($lockedfield->isHandled($computer))->isTrue();
+        $this->array($lockedfield->getLockedValues($computer->getType(), $computers_id))->isEmpty();
+    }
 }
