@@ -1164,19 +1164,15 @@ class User extends CommonDBTM
                // Compare retrived profiles to existing ones : clean arrays to do purge and add
                 if (count($retrieved_dynamic_profiles)) {
                     foreach ($retrieved_dynamic_profiles as $keyretr => $retr_profile) {
-                        $found = false;
-
                         foreach ($dynamic_profiles as $keydb => $db_profile) {
                              // Found existing profile : unset values in array
                             if (
-                                !$found
-                                && ($db_profile['entities_id']  == $retr_profile['entities_id'])
+                                ($db_profile['entities_id']  == $retr_profile['entities_id'])
                                 && ($db_profile['profiles_id']  == $retr_profile['profiles_id'])
                                 && ($db_profile['is_recursive'] == $retr_profile['is_recursive'])
                             ) {
                                 unset($retrieved_dynamic_profiles[$keyretr]);
                                 unset($dynamic_profiles[$keydb]);
-                                $found = true;
                             }
                         }
                     }
