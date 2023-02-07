@@ -279,8 +279,7 @@ class Change_Ticket extends CommonDBRelation
                     'entity'      => $change->getEntityID(),
                     'entity_sons' => $change->isRecursive(),
                     'used'        => $used,
-                    'displaywith' => ['id'],
-                    'condition'   => Ticket::getOpenCriteria(),
+                    'displaywith' => ['id']
                 ],
                 'create_link' => false
             ]);

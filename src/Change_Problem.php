@@ -281,8 +281,7 @@ class Change_Problem extends CommonDBRelation
                     'entity'      => $change->getEntityID(),
                     'entity_sons' => $change->isRecursive(),
                     'used'        => $used,
-                    'displaywith' => ['id'],
-                    'condition'   => Problem::getOpenCriteria(),
+                    'displaywith' => ['id']
                 ],
                 'create_link' => false
             ]);
