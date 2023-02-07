@@ -159,7 +159,7 @@ abstract class Device extends InventoryAsset
                             'items_id'           => $this->item->fields['id'],
                             'is_dynamic'         => 1
                         ] + $this->handleInput($val, $itemdevice);
-                        $itemdevice->update(Sanitizer::sanitize($itemdevice_data), false);
+                        $itemdevice->update(Sanitizer::sanitize($itemdevice_data), true);
                         unset($existing[$device_id][$key]);
                         break;
                     }
