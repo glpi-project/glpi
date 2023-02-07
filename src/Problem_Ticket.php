@@ -308,6 +308,7 @@ class Problem_Ticket extends CommonDBRelation
                     'entity_sons' => $problem->isRecursive(),
                     'used'        => $used,
                     'displaywith' => ['id'],
+                    'condition'   => Ticket::getOpenCriteria(),
                 ],
                 'create_link' => false
             ]);
