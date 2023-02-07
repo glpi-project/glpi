@@ -165,6 +165,12 @@ class OperatingSystem extends AbstractInventoryAsset
                 "version" => "8.4",
                 "edition" => "Ootpa"
             ],
+            "redhat_03" => [
+                "full_name" => "Red Hat Enterprise Linux Server",
+                "name" => "Red Hat",
+                "version" => "",
+                "edition" => ""
+            ],
             "oracle_01" => [
                 "full_name" => "Oracle Linux Server release 7.3",
                 "name" => "Oracle",
@@ -396,6 +402,18 @@ class OperatingSystem extends AbstractInventoryAsset
             $tz->name = 'CEST';
             $tz->offset = '+0200';
             $object->timezone = $tz;
+        }
+
+        //replace missing properties by empty string
+        //see : assetCleanOsProvider -> redhat_03 example
+        if (!property_exists($result[0], 'version')) {
+            $result[0]->version = '';
+        }
+        if (!property_exists($result[0], 'operatingsystemversions_id')) {
+            $result[0]->operatingsystemversions_id = '';
+        }
+        if (!property_exists($result[0], 'operatingsystemeditions_id')) {
+            $result[0]->operatingsystemeditions_id = '';
         }
 
         $this->object($result[0])->isEqualTo($object);

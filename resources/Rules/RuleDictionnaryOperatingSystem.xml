@@ -8,7 +8,7 @@
         <description></description>
         <match>AND</match>
         <is_active>0</is_active>
-        <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
+        <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]*) ?(?:\(?([\w ]+)\)?)?/
 
             Example :
             Ubuntu 22.04.1 LTS -&amp;#62; #0 = Ubuntu
@@ -27,7 +27,7 @@
         <rulecriteria>
             <criteria>os_name</criteria>
             <condition>6</condition>
-            <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
+            <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]*) ?(?:\(?([\w ]+)\)?)?/</pattern>
         </rulecriteria>
         <ruleaction>
             <action_type>append_regex_result</action_type>
