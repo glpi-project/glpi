@@ -320,7 +320,7 @@ class Device extends AbstractInventoryAsset
         ]);
         $this->integer(count($logs))->isIdenticalTo(0);
 
-        //redi inventory and update mémory capacity 8192 => 4096
+        //redo inventory and update memory capacity 8192 => 4096
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -385,10 +385,10 @@ class Device extends AbstractInventoryAsset
         $this->integer(count($logs))->isIdenticalTo(2); //for each memory module
 
         foreach ($logs as $key => $value) {
-          $this->string($value['old_value'])->isIdenticalTo('8192');
-          $this->string($value['new_value'])->isIdenticalTo('4096');
-          $this->integer($value['id_search_option'])->isIdenticalTo(20); //capacity SO
-          $this->array($memories)->hasKey($value['items_id']); //concerned item_devicememories
+            $this->string($value['old_value'])->isIdenticalTo('8192');
+            $this->string($value['new_value'])->isIdenticalTo('4096');
+            $this->integer($value['id_search_option'])->isIdenticalTo(20); //capacity SO
+            $this->array($memories)->hasKey($value['items_id']); //concerned item_devicememories
         }
     }
 }
