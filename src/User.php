@@ -3392,6 +3392,8 @@ JAVASCRIPT;
 
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
+        $prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
+
         if ($isadmin) {
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                                                          = "<i class='fas fa-users'></i>" .
@@ -3406,10 +3408,10 @@ JAVASCRIPT;
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_group_user']
                                                          = "<i class='fas fa-users-cog'></i>" .
                                                            __("Move to group");
+            $actions["{$prefix}delete_emails"] = __("Delete associated emails");
         }
 
         if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-            $prefix                                    = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
             $actions[$prefix . 'change_authtype']        = "<i class='fas fa-user-cog'></i>" .
                                                       _x('button', 'Change the authentication method');
             $actions[$prefix . 'force_user_ldap_update'] = "<i class='fas fa-sync'></i>" .
@@ -3490,6 +3492,28 @@ JAVASCRIPT;
                 } else {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                }
+                return;
+
+            case 'delete_emails':
+                // Check rights
+                if (!self::canUpdate()) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    return;
+                }
+
+                foreach ($ids as $id) {
+                    // Find emails
+                    $emails = (new UserEmail())->find(['users_id' => $id]);
+                    $status = MassiveAction::ACTION_OK;
+                    foreach ($emails as $email) {
+                        // Delete each emails found
+                        if (!(new UserEmail())->delete(['id' => $email['id']])) {
+                            $status = MassiveAction::ACTION_KO;
+                        }
+                    }
+                    $ma->itemDone($item->getType(), $id, $status);
                 }
                 return;
         }
