@@ -250,4 +250,145 @@ class Device extends AbstractInventoryAsset
             $this->integer(count($info_coms))->isIdenticalTo(1);
         }
     }
+
+    public function testInventoryLogOnUpdateMemory()
+    {
+        global $DB;
+        $item_mem = new \Item_DeviceMemory();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MEMORIES>
+      <CAPACITY>8192</CAPACITY>
+      <CAPTION>Bottom-Slot 1(left)</CAPTION>
+      <DESCRIPTION>SODIMM</DESCRIPTION>
+      <MANUFACTURER>Samsung</MANUFACTURER>
+      <MEMORYCORRECTION>None</MEMORYCORRECTION>
+      <NUMSLOTS>1</NUMSLOTS>
+      <SERIALNUMBER>97842456</SERIALNUMBER>
+      <SPEED>2133</SPEED>
+      <TYPE>DDR4</TYPE>
+    </MEMORIES>
+    <MEMORIES>
+      <CAPACITY>8192</CAPACITY>
+      <CAPTION>Bottom-Slot 2(right)</CAPTION>
+      <DESCRIPTION>SODIMM</DESCRIPTION>
+      <MANUFACTURER>Samsung</MANUFACTURER>
+      <MEMORYCORRECTION>None</MEMORYCORRECTION>
+      <NUMSLOTS>1</NUMSLOTS>
+      <SERIALNUMBER>97842457</SERIALNUMBER>
+      <SPEED>2133</SPEED>
+      <TYPE>DDR4</TYPE>
+    </MEMORIES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $computer->getFromDB($computers_id);
+
+        //memories present from the inventory source are dynamic
+        $memories = $item_mem->find(['itemtype' => \Computer::class, 'items_id' => $computers_id, 'is_dynamic' => 1]);
+
+        $this->integer(count($memories))->isIdenticalTo(2);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'WHERE' => [
+                'itemtype' => \Item_DeviceMemory::class
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        //redi inventory and update mémory capacity 8192 => 4096
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MEMORIES>
+      <CAPACITY>4096</CAPACITY>
+      <CAPTION>Bottom-Slot 1(left)</CAPTION>
+      <DESCRIPTION>SODIMM</DESCRIPTION>
+      <MANUFACTURER>Samsung</MANUFACTURER>
+      <MEMORYCORRECTION>None</MEMORYCORRECTION>
+      <NUMSLOTS>1</NUMSLOTS>
+      <SERIALNUMBER>97842456</SERIALNUMBER>
+      <SPEED>2133</SPEED>
+      <TYPE>DDR4</TYPE>
+    </MEMORIES>
+    <MEMORIES>
+      <CAPACITY>4096</CAPACITY>
+      <CAPTION>Bottom-Slot 2(right)</CAPTION>
+      <DESCRIPTION>SODIMM</DESCRIPTION>
+      <MANUFACTURER>Samsung</MANUFACTURER>
+      <MEMORYCORRECTION>None</MEMORYCORRECTION>
+      <NUMSLOTS>1</NUMSLOTS>
+      <SERIALNUMBER>97842457</SERIALNUMBER>
+      <SPEED>2133</SPEED>
+      <TYPE>DDR4</TYPE>
+    </MEMORIES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $computer->getFromDB($computers_id);
+
+        //memories present from the inventory source are dynamic
+        $memories = $item_mem->find(['itemtype' => \Computer::class, 'items_id' => $computers_id, 'is_dynamic' => 1]);
+
+        $this->integer(count($memories))->isIdenticalTo(2);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'WHERE' => [
+                'itemtype' => \Item_DeviceMemory::class,
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(2); //for each memory module
+
+        foreach ($logs as $key => $value) {
+          $this->string($value['old_value'])->isIdenticalTo('8192');
+          $this->string($value['new_value'])->isIdenticalTo('4096');
+          $this->integer($value['id_search_option'])->isIdenticalTo(20); //capacity SO
+          $this->array($memories)->hasKey($value['items_id']); //concerned item_devicememories
+        }
+    }
 }
