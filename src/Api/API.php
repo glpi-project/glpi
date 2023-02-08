@@ -2164,7 +2164,7 @@ abstract class API
         $user = new User();
         if (!isset($params['password_forget_token'])) {
             try {
-                $user->forgetPassword($email);
+                $user->forgetPassword($params['email']);
             } catch (\Glpi\Exception\ForgetPasswordException $e) {
                 $this->returnError($e->getMessage());
             }
