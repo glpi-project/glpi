@@ -3385,11 +3385,7 @@ JAVASCRIPT;
                                 ]
                             ];
                             break;
- 
-                        case "glpi_infocoms.end_warranty":
-                            $options2['with_future'] = true;
-                            break;
-                    }
+                     }
 
                     // Standard datatype usage
                     if (!$display && isset($searchopt['datatype'])) {
