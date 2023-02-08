@@ -41,6 +41,7 @@ use Glpi\Toolbox\Sanitizer;
 use NetworkPortInstantiation;
 use RefusedEquipment;
 use RuleMatchedLog;
+use Toolbox;
 use Transfer;
 
 class Unmanaged extends MainAsset
@@ -319,6 +320,7 @@ class Unmanaged extends MainAsset
      */
     public function getManagementPorts()
     {
+        Toolbox::deprecated();
         return [];
     }
 
@@ -327,6 +329,7 @@ class Unmanaged extends MainAsset
      */
     public function setManagementPorts(array $ports): Unmanaged
     {
+        Toolbox::deprecated();
         return $this;
     }
 }
