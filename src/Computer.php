@@ -293,12 +293,6 @@ class Computer extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
-        //without right, use can't set remote_addr
-        if (isset($input['remote_addr']) && !Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
-            unset($input['remote_addr']);
-        }
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
