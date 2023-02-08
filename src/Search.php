@@ -3384,8 +3384,9 @@ JAVASCRIPT;
                                     'text'  => __('Myself'),
                                 ]
                             ];
+
                             break;
-                     }
+                    }
 
                     // Standard datatype usage
                     if (!$display && isset($searchopt['datatype'])) {
