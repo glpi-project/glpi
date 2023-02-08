@@ -89,6 +89,8 @@ The present file will list all changes made to the project; according to the
 - Usage of `users_id_validate` input in `CommonITILObject`.
 - Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
 - Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
+- `AuthLDAP::dropdownUserDeletedActions()`
+- `AuthLDAP::getOptions()`
 - `CommonITILObject::isValidator()`
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`

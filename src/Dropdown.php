@@ -930,16 +930,13 @@ JAVASCRIPT;
         }
     }
 
-
     /**
-     * Dropdown for GMT selection
+     * Get possible values for a "GMT Dropdown"
      *
-     * @param string $name   select name
-     * @param mixed  $value  default value (default '')
-     **/
-    public static function showGMT($name, $value = '')
+     * @return array
+     */
+    public static function getGMTValues(): array
     {
-
         $elements = [-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
             '+1', '+2', '+3', '+3.5', '+4', '+4.5', '+5', '+5.5', '+6', '+6.5', '+7',
             '+8', '+9', '+9.5', '+10', '+11', '+12', '+13'
@@ -957,10 +954,22 @@ JAVASCRIPT;
                     )
                 );
             } else {
-                $display_value                   = __('GMT');
                 $values[$element * HOUR_TIMESTAMP] = __('GMT');
             }
         }
+
+        return $values;
+    }
+
+    /**
+     * Dropdown for GMT selection
+     *
+     * @param string $name   select name
+     * @param mixed  $value  default value (default '')
+     **/
+    public static function showGMT($name, $value = '')
+    {
+        $values = self::getGMTValues();
         Dropdown::showFromArray($name, $values, ['value' => $value]);
     }
 

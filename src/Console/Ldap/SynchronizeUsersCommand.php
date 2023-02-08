@@ -121,22 +121,29 @@ class SynchronizeUsersCommand extends AbstractCommand
             )
         );
 
-        $deleted_strategies = AuthLDAP::getLdapDeletedUserActionOptions();
+        // Get possible values for deleted user actions
+        $user_actions = AuthLDAP::getLdapDeletedUserActionOptions_User();
+        $groups_actions = AuthLDAP::getLdapDeletedUserActionOptions_Groups();
+        $authorizations_actions = AuthLDAP::getLdapDeletedUserActionOptions_Authorizations();
+
+        // Get current config values of deleted user actions
+        $cfg_value_user = $CFG_GLPI['user_deleted_ldap_user'] ?? __('unknown');
+        $cfg_value_groups = $CFG_GLPI['user_deleted_ldap_groups'] ?? __('unknown');
+        $cfg_value_authorizations = $CFG_GLPI['user_deleted_ldap_authorizations'] ?? __('unknown');
         $description = sprintf(
-            __('Force strategy used for deleted users (current configured action: "%s")'),
-            ($CFG_GLPI['user_deleted_ldap'] ?? __('unknown'))
+            __('Force strategy used for deleted users (default configured actions: "%s")'),
+            "$cfg_value_user,$cfg_value_groups,$cfg_value_authorizations"
         );
-        $description .= "\n" . __('Possible values are:') . "\n";
-        $description .= implode(
-            "\n",
-            array_map(
-                static function ($key, $value) {
-                    return '- ' . sprintf(__('%1$s: %2$s'), $key, $value);
-                },
-                array_keys($deleted_strategies),
-                $deleted_strategies
-            )
-        );
+
+        // Show possible values
+        $description .= "\n" . __('Three comma-separated values are expected.') . "\n";
+        $description .= "\n" . __("1) Actions on the user's account:") . "\n";
+        $description .= $this->formatPossiblesDeletedUserOptions($user_actions);
+        $description .= "\n" . __("2) Actions on the user's associated groups:") . "\n";
+        $description .= $this->formatPossiblesDeletedUserOptions($groups_actions);
+        $description .= "\n" . __("3) Actions on the user's authorizations:") . "\n";
+        $description .= $this->formatPossiblesDeletedUserOptions($authorizations_actions);
+
         $this->addOption(
             'deleted-user-strategy',
             'd',
@@ -146,7 +153,7 @@ class SynchronizeUsersCommand extends AbstractCommand
 
         $restored_strategies = AuthLDAP::getLdapRestoredUserActionOptions();
         $description = sprintf(
-            __('Force strategy used for restored users (current configured action: "%s")'),
+            __('Force strategy used for restored users (current configured action: "%s").'),
             ($CFG_GLPI['user_restored_ldap'] ?? __('unknown'))
         );
         $description .= "\n" . __('Possible values are:') . "\n";
@@ -168,12 +175,33 @@ class SynchronizeUsersCommand extends AbstractCommand
         );
     }
 
+    /**
+     * Format array of options into a list
+     *
+     * @param array $options
+     *
+     * @return string
+     */
+    protected function formatPossiblesDeletedUserOptions(array $options): string
+    {
+        return implode(
+            "\n",
+            array_map(
+                function ($key, $value) {
+                    return '- ' . sprintf(__('%1$s: %2$s'), $key, $value);
+                },
+                array_keys($options),
+                $options
+            )
+        );
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
         global $CFG_GLPI;
 
-        $this->validateInput($input);
+        $this->validateInput($input, $output);
 
         $only_create = $input->getOption('only-create-new');
         $only_update = $input->getOption('only-update-existing');
@@ -198,9 +226,17 @@ class SynchronizeUsersCommand extends AbstractCommand
                 AuthLDAP::ACTION_IMPORT, // Import unexisting users
                 AuthLDAP::ACTION_ALL, // Update existing users and handle deleted ones
             ];
-            $deleted_user_strategy = $input->getOption('deleted-user-strategy');
-            if (null !== $deleted_user_strategy) {
-                $CFG_GLPI['user_deleted_ldap'] = $deleted_user_strategy;
+            $deleted_user_strategies = $input->getOption('deleted-user-strategy');
+            if (null !== $deleted_user_strategies) {
+                if (!preg_match("/^[0-9],[0-9],[0-9]$/", $deleted_user_strategies)) {
+                    // Handle deprecated format
+                    $deleted_user_strategies = $this->convertOldDeletedUserStrategyToNew($deleted_user_strategies);
+                }
+
+                $deleted_user_strategies = explode(",", $deleted_user_strategies);
+                $CFG_GLPI['user_deleted_ldap_user'] = $deleted_user_strategies[0];
+                $CFG_GLPI['user_deleted_ldap_groups'] = $deleted_user_strategies[1];
+                $CFG_GLPI['user_deleted_ldap_authorizations'] = $deleted_user_strategies[2];
             }
             $restored_user_strategy = $input->getOption('restored-user-strategy');
             if (null !== $restored_user_strategy) {
@@ -439,13 +475,14 @@ class SynchronizeUsersCommand extends AbstractCommand
     /**
      * Validate command input.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      *
      * @return void
      *
      * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
      */
-    private function validateInput(InputInterface $input)
+    private function validateInput(InputInterface $input, OutputInterface $ouput)
     {
 
         $only_create = $input->getOption('only-create-new');
@@ -494,10 +531,33 @@ class SynchronizeUsersCommand extends AbstractCommand
             );
         }
 
+        // Handle deleted-user-strategy option
         $deleted_user_strategy = $input->getOption('deleted-user-strategy');
         if (null !== $deleted_user_strategy) {
-            $strategies = AuthLDAP::getLdapDeletedUserActionOptions();
-            if (!in_array($deleted_user_strategy, array_keys($strategies))) {
+            if (in_array($deleted_user_strategy, [0, 1, 2, 3, 4, 5])) {
+                // Old "single integer" format
+                $ouput->writeln("<info>Warning: using deprecated --deleted-user-strategy format</info>");
+                $ouput->writeln('<info>Run "php bin/console ldap:synchronize --help for more details"</info>');
+            } elseif (preg_match("/^[0-9],[0-9],[0-9]$/", $deleted_user_strategy)) {
+                // New format with 3 comma-separated integers
+                $values = explode(",", $deleted_user_strategy);
+                $strategies_user = AuthLDAP::getLdapDeletedUserActionOptions_User();
+                $strategies_groups = AuthLDAP::getLdapDeletedUserActionOptions_Groups();
+                $strategies_authorizations = AuthLDAP::getLdapDeletedUserActionOptions_Authorizations();
+                if (
+                    !in_array($values[0], array_keys($strategies_user))
+                    || !in_array($values[1], array_keys($strategies_groups))
+                    || !in_array($values[2], array_keys($strategies_authorizations))
+                ) {
+                    throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+                        sprintf(
+                            __('--deleted-user-strategy value "%s" is not valid.'),
+                            $deleted_user_strategy
+                        )
+                    );
+                }
+            } else {
+                // Unknown format
                 throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
                     sprintf(
                         __('--deleted-user-strategy value "%s" is not valid.'),
@@ -506,5 +566,64 @@ class SynchronizeUsersCommand extends AbstractCommand
                 );
             }
         }
+    }
+
+    /**
+     * Convert the old "single integer" format for the --deleted-user-strategy
+     * option into the new "3 comma-separated integers" format
+     *
+     * @param int $deleted_user_strategy old format
+     *
+     * @return string new format
+     */
+    protected function convertOldDeletedUserStrategyToNew(int $deleted_user_strategy): string
+    {
+        switch ($deleted_user_strategy) {
+            default:
+            case 0: // AuthLDAP::DELETED_USER_PRESERVE (preserve user)
+                $deleted_user_strategy = [
+                    AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING,
+                    AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING,
+                    AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
+                ];
+                break;
+            case 1: // AuthLDAP::DELETED_USER_DELETE (put user in trashbin)
+                $deleted_user_strategy = [
+                    AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN,
+                    AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING,
+                    AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
+                ];
+                break;
+            case 2: // AuthLDAP::DELETED_USER_WITHDRAWDYNINFO (withdraw dynamic authorizations and groups)
+                $deleted_user_strategy = [
+                    AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING,
+                    AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC,
+                    AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC,
+                ];
+                break;
+            case 3: // AuthLDAP::DELETED_USER_DISABLE (disable user)
+                $deleted_user_strategy = [
+                    AuthLDAP::DELETED_USER_ACTION_USER_DISABLE,
+                    AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING,
+                    AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
+                ];
+                break;
+            case 4: // AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO (disable user and withdraw dynamic authorizations/groups)
+                $deleted_user_strategy = [
+                    AuthLDAP::DELETED_USER_ACTION_USER_DISABLE,
+                    AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC,
+                    AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC,
+                ];
+                break;
+            case 5: // AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS (disable user and withdraw groups)
+                $deleted_user_strategy = [
+                    AuthLDAP::DELETED_USER_ACTION_USER_DISABLE,
+                    AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL,
+                    AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
+                ];
+                break;
+        }
+
+        return implode(",", $deleted_user_strategy);
     }
 }
