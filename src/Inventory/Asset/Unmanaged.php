@@ -320,7 +320,6 @@ class Unmanaged extends MainAsset
      */
     public function getManagementPorts()
     {
-        Toolbox::deprecated();
         return [];
     }
 
@@ -329,7 +328,6 @@ class Unmanaged extends MainAsset
      */
     public function setManagementPorts(array $ports): Unmanaged
     {
-        Toolbox::deprecated();
         return $this;
     }
 }
