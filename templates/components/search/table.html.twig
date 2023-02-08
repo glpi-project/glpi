@@ -129,7 +129,11 @@
                   {% for col in data['data']['cols'] %}
                      {% set colkey = col['itemtype'] ~ '_' ~ col['id'] %}
                      {# showItem function returns "<td ...>...</td>" #}
-                     {{ showItem(0, row[colkey]['displayname'], 0, 0, call('Search::displayConfigItem', [itemtype, col['id'], row]))|raw }}
+                     {% if col['meta'] is defined %}
+                        {{ showItem(0, row[colkey]['displayname'], 0, 0,)|raw }}
+                     {% else %}
+                        {{ showItem(0, row[colkey]['displayname'], 0, 0, call('Search::displayConfigItem', [itemtype, col['id'], row]))|raw }}
+                     {% endif %}
                   {% endfor %}
 
                   {# display itemtype in AllAssets #}
