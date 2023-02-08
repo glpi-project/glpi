@@ -40,6 +40,8 @@
  */
 abstract class CommonITILRecurrent extends CommonDropdown
 {
+    use Glpi\Features\Clonable;
+
     /**
      * @var bool From CommonDBTM
      */
@@ -108,6 +110,11 @@ abstract class CommonITILRecurrent extends CommonDropdown
         }
 
         return '';
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 
     public function defineTabs($options = [])
