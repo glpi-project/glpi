@@ -3496,14 +3496,14 @@ JAVASCRIPT;
                 return;
 
             case 'delete_emails':
-                // Check rights
-                if (!self::canUpdate()) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
-                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-                    return;
-                }
-
                 foreach ($ids as $id) {
+                    // Check rights
+                    if (!$item->can($id, UPDATE)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
                     // Find emails
                     $emails = (new UserEmail())->find(['users_id' => $id]);
                     $status = MassiveAction::ACTION_OK;
