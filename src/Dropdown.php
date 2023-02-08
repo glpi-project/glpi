@@ -151,6 +151,13 @@ class Dropdown
             $params['value'] = 0;
         }
 
+        // Remove selected value from used to prevent current selected value from being hidden from available values
+        if ($params['multiple']) {
+            $params['used'] = array_diff($params['used'], $params['values']);
+        } else {
+            $params['used'] = array_diff($params['used'], [$params['value']]);
+        }
+
         if (!$params['multiple'] && isset($params['toadd'][$params['value']])) {
             $name = $params['toadd'][$params['value']];
         } else if (
