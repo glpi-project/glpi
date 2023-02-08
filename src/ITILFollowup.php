@@ -840,7 +840,7 @@ class ITILFollowup extends CommonDBChild
                 $fup   = new self();
                 foreach ($ids as $id) {
                     if ($item->getFromDB($id)) {
-                        if (in_array($item->fields['status'], $item->getClosedStatusArray())) {
+                        if (in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         } else {
