@@ -561,6 +561,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     unset($query_tab['criteria']);
                     $new_key = 0;
                     foreach ($query_tab_save['criteria'] as $key => $val) {
+                        if (isset($val['itemtype']) && isset($val['meta'])) {
+                            $opt = Search::getCleanedOptions($val['itemtype']);
+                        }
                         if (
                             isset($val['field'])
                             && $val['field'] != 'view'
