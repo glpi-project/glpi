@@ -1113,16 +1113,18 @@ class User extends CommonDBTM
                    //Multiple entities assignation
                     if (is_array($entity[0])) {
                         foreach ($entity[0] as $ent) {
-                             $retrieved_dynamic_profiles[] = [
-                                 'entities_id'  => $ent,
-                                 'profiles_id'  => $entity[1],
-                                 'is_recursive' => $entity[2],
-                                 'users_id'     => $this->fields['id'],
-                                 'is_dynamic'   => 1,
-                             ];
+                            $unicity = $ent . "-" . $entity[1] . "-" . $entity[2];
+                            $retrieved_dynamic_profiles[$unicity] = [
+                                'entities_id'  => $ent,
+                                'profiles_id'  => $entity[1],
+                                'is_recursive' => $entity[2],
+                                'users_id'     => $this->fields['id'],
+                                'is_dynamic'   => 1,
+                            ];
                         }
                     } else {
-                        $retrieved_dynamic_profiles[] = [
+                        $unicity = $entity[0] . "-" . $entity[1] . "-" . $entity[2];
+                        $retrieved_dynamic_profiles[$unicity] = [
                             'entities_id'  => $entity[0],
                             'profiles_id'  => $entity[1],
                             'is_recursive' => $entity[2],
@@ -1147,13 +1149,14 @@ class User extends CommonDBTM
                 ) {
                     foreach ($rights as $right) {
                         foreach ($entities as $entity) {
-                             $retrieved_dynamic_profiles[] = [
-                                 'entities_id'  => $entity[0],
-                                 'profiles_id'  => $right,
-                                 'is_recursive' => $entity[1],
-                                 'users_id'     => $this->fields['id'],
-                                 'is_dynamic'   => 1,
-                             ];
+                            $unicity = $entity[0] . "-" . $right . "-" . $entity[1];
+                            $retrieved_dynamic_profiles[$unicity] = [
+                                'entities_id'  => $entity[0],
+                                'profiles_id'  => $right,
+                                'is_recursive' => $entity[1],
+                                'users_id'     => $this->fields['id'],
+                                'is_dynamic'   => 1,
+                            ];
                         }
                     }
                 }
@@ -1161,13 +1164,10 @@ class User extends CommonDBTM
                // Compare retrived profiles to existing ones : clean arrays to do purge and add
                 if (count($retrieved_dynamic_profiles)) {
                     foreach ($retrieved_dynamic_profiles as $keyretr => $retr_profile) {
-                        $found = false;
-
                         foreach ($dynamic_profiles as $keydb => $db_profile) {
                              // Found existing profile : unset values in array
                             if (
-                                !$found
-                                && ($db_profile['entities_id']  == $retr_profile['entities_id'])
+                                ($db_profile['entities_id']  == $retr_profile['entities_id'])
                                 && ($db_profile['profiles_id']  == $retr_profile['profiles_id'])
                                 && ($db_profile['is_recursive'] == $retr_profile['is_recursive'])
                             ) {
