@@ -1852,7 +1852,7 @@ class User extends CommonDBTM
 
                         case "begin_date":
                         case "end_date":
-                            $this->fields[$k] = AuthLdap::getLdapDateValue($val);
+                            $this->fields[$k] = AuthLDAP::getLdapDateValue($val);
                             break;
 
                         default:
