@@ -565,7 +565,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $available_meta = Search::getMetaItemtypeAvailable($this->fields['itemtype']);
 
                     $new_key = 0;
-                    foreach ($query_tab_save['criteria'] as $key => $val) {
+                    foreach ($query_tab_save['criteria'] as $val) {
                         // Get itemtype search options for current criterion
                         $opt = [];
                         if (!isset($val['meta'])) {
@@ -606,7 +606,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $meta_ok = Search::getMetaItemtypeAvailable($query_tab['itemtype']);
                     unset($query_tab['metacriteria']);
                     $new_key = 0;
-                    foreach ($query_tab_save['metacriteria'] as $key => $val) {
+                    foreach ($query_tab_save['metacriteria'] as $val) {
+                        $opt = [];
                         if (isset($val['itemtype'])) {
                              $opt = Search::getCleanedOptions($val['itemtype']);
                         }
