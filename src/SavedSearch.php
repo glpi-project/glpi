@@ -553,7 +553,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             case self::SEARCH:
             case self::ALERT:
                 // Check if all data are valid
-                $opt            = Search::getCleanedOptions($this->fields['itemtype']);
+                $itemtype_so = [
+                    $this->fields['itemtype'] => Search::getCleanedOptions($this->fields['itemtype'])
+                ];
+
+                $opt = [];
                 $query_tab_save = $query_tab;
                 $partial_load   = false;
                 // Standard search
@@ -561,8 +565,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     unset($query_tab['criteria']);
                     $new_key = 0;
                     foreach ($query_tab_save['criteria'] as $key => $val) {
-                        if (isset($val['itemtype']) && isset($val['meta'])) {
-                            $opt = Search::getCleanedOptions($val['itemtype']);
+                        //load searchoption if meta
+                        if (!isset($val['meta'])) {
+                            $opt = $itemtype_so[$this->fields['itemtype']];
+                        } elseif (isset($val['itemtype'])) {
+                            if (!array_key_exists($val['itemtype'], $itemtype_so)) {
+                                $itemtype_so[$val['itemtype']] = Search::getCleanedOptions($val['itemtype']);
+                            }
+                            $opt = $itemtype_so[$val['itemtype']];
                         }
                         if (
                             isset($val['field'])
