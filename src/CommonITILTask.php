@@ -1418,6 +1418,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'item'               => $options['parent'],
             'subitem'            => $this,
             'has_pending_reason' => PendingReason_Item::getForItem($options['parent']) !== false,
+            'params'             => $options,
         ]);
 
         return true;
