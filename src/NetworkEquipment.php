@@ -196,7 +196,7 @@ class NetworkEquipment extends CommonDBTM
 
     public static function getRemoteAddrLabel()
     {
-        return __('SNMP port remote address');
+        return __('SNMP remote address');
     }
 
 
