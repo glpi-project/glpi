@@ -37,15 +37,15 @@
  * @var DB $DB
  * @var Migration $migration
  */
-$migration->addField('glpi_printers', 'remote_addr', "string");
-$migration->addField('glpi_networkequipments', 'remote_addr', "string");
 $migration->addField('glpi_unmanageds', 'remote_addr', 'string');
-$migration->addField('glpi_computers', 'remote_addr', "string");
-$migration->addField('glpi_phones', 'remote_addr', "string");
 
 $assets = ['Computer', 'Phone', 'Printer', 'NetworkEquipment'];
 
 foreach ($assets as $itemtype) {
+    if ($DB->fieldExists($itemtype::getTable(), 'remote_addr')) {
+        continue;
+    }
+    $migration->addField($itemtype::getTable(), 'remote_addr', 'string');
     //try to find unique NetworkPortAggregate, not dynamic for an asset
     //with NetworkName and then with IPAddress
     $iterator = $DB->request([
