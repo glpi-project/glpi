@@ -103,7 +103,7 @@ class Response implements \ArrayAccess
         return $this->status_code;
     }
 
-    public function offsetExists(mixed $offset)
+    public function offsetExists(mixed $offset): bool
     {
         return property_exists($this, $offset);
     }
@@ -116,12 +116,12 @@ class Response implements \ArrayAccess
         return null;
     }
 
-    public function offsetSet(mixed $offset, mixed $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         //Not supported
     }
 
-    public function offsetUnset(mixed $offset)
+    public function offsetUnset(mixed $offset): void
     {
         //Not supported
     }

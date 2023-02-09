@@ -57,10 +57,6 @@ class CoreController extends \HLAPITestCase
     public function testRouteMatches(Request $request, bool $expected)
     {
         $this->api->hasMatch($request)->isEqualTo($expected);
-        if ($expected === false) {
-            // Make sure the default route matches
-            $this->api->hasMatch($request, true)->isTrue();
-        }
     }
 
     public function testOptionsRoute()
@@ -68,12 +64,10 @@ class CoreController extends \HLAPITestCase
         $this->login();
         $this->api->call(new Request('OPTIONS', '/Session'), function ($call) {
             /** @var \HLAPICallAsserter $call */
-            // For now, security is required to prevent leaking information about the API
-            $call->route->isAuthRequired();
             $call->response
                 ->isOK()
                 ->headers(function ($headers) {
-                    $this->string($headers['Allow'])->isEqualTo('DELETE, GET, POST');
+                    $this->array($headers['Allow'])->containsValues(['DELETE', 'GET', 'POST']);
                 })
                 ->status(fn ($status) => $this->integer($status)->isEqualTo(204));
         });

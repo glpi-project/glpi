@@ -90,7 +90,7 @@ final class SchemaReference implements \ArrayAccess
         return $is_ref_array ? ['type' => 'array', 'items' => $match] : $match;
     }
 
-    public function offsetExists(mixed $offset)
+    public function offsetExists(mixed $offset): bool
     {
         return $offset === 'ref';
     }
@@ -103,14 +103,14 @@ final class SchemaReference implements \ArrayAccess
         return null;
     }
 
-    public function offsetSet(mixed $offset, mixed $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if ($offset === 'ref') {
             $this->ref = $value;
         }
     }
 
-    public function offsetUnset(mixed $offset)
+    public function offsetUnset(mixed $offset): void
     {
         if ($offset === 'ref') {
             $this->ref = '';

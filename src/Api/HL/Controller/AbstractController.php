@@ -346,7 +346,7 @@ abstract class AbstractController
                 $criteria[$join_type] = [];
             }
             $join_table = $join['table'] . ' AS ' . $join_alias;
-            $join_parent = $join['ref_join'] ? "{$join_alias}_ref" : '_';
+            $join_parent = (isset($join['ref_join']) && $join['ref_join']) ? "{$join_alias}_ref" : '_';
             if (isset($join['ref_join'])) {
                 $fn_append_join("{$join_alias}_ref", $join['ref_join'], $join['parent_type'] ?? $parent_type);
             }
