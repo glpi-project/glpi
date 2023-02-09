@@ -2840,21 +2840,7 @@ HTML;
      **/
     public static function getConfigurationValues($context, array $names = [])
     {
-        global $DB, $CFG_GLPI;
-
-        if (!$DB->fieldExists(self::getTable(), 'context')) {
-            if (count($names)) {
-                $results = [];
-                foreach ($names as $name) {
-                    if (isset($CFG_GLPI[$name])) {
-                        $results[$name] = $CFG_GLPI[$name];
-                    }
-                }
-                return $results;
-            } else {
-                return [];
-            }
-        }
+        global $DB;
 
         $query = [
             'FROM'   => self::getTable(),
