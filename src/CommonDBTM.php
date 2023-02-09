@@ -4280,7 +4280,7 @@ class CommonDBTM extends CommonGLPI
                                     "{$value} exceed 255 characters long ({$length}), it will be truncated.",
                                     E_USER_WARNING
                                 );
-                                $this->input[$key] = mb_substr($value, 0, 254, 'UTF-8');
+                                $this->input[$key] = mb_substr($value, 0, 255, 'UTF-8');
                             }
                             break;
 
