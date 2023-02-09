@@ -38,6 +38,7 @@ namespace tests\units\Glpi\RichText;
 use CommonITILActor;
 use CommonITILObject;
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 use Notification;
 use Notification_NotificationTemplate;
 use NotificationTarget;
@@ -241,7 +242,7 @@ HTML
         }
 
        // Create item
-        $item_id = $item->add($input);
+        $item_id = $item->add(Sanitizer::sanitize($input));
         $this->integer($item_id)->isGreaterThan(0);
 
        // Check observers on creation
@@ -266,7 +267,7 @@ HTML
         $this->array($notifications)->hasSize(count($add_expected_notified));
 
        // Update item
-        $update = $item->update(['id' => $item->getID(), 'content' => $update_content]);
+        $update = $item->update(Sanitizer::sanitize(['id' => $item->getID(), 'content' => $update_content]));
         $this->boolean($update)->isTrue();
 
        // Check observers on update
@@ -484,7 +485,7 @@ HTML
             $input['comment_validation'] = $validation_add;
         }
         $ticket_validation = new TicketValidation();
-        $ticket_validation_id = $ticket_validation->add($input);
+        $ticket_validation_id = $ticket_validation->add(Sanitizer::sanitize($input));
         $this->integer($ticket_validation_id)->isGreaterThan(0);
 
        // Check observers on creation
@@ -518,7 +519,7 @@ HTML
         if ($validation_update !== null) {
             $input['comment_validation'] = $validation_update;
         }
-        $update = $ticket_validation->update($input);
+        $update = $ticket_validation->update(Sanitizer::sanitize($input));
         $this->boolean($update)->isTrue();
 
        // Check observers on update
