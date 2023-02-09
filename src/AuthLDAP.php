@@ -188,6 +188,8 @@ class AuthLDAP extends CommonDBTM
         $this->fields['use_bind']                    = 1;
         $this->fields['picture_field']               = '';
         $this->fields['responsible_field']           = '';
+        $this->fields['begin_date_field']            = '';
+        $this->fields['end_date_field']              = '';
     }
 
 
@@ -233,6 +235,8 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['pagesize']                  = '1000';
                 $this->fields['picture_field']             = '';
                 $this->fields['responsible_field']         = 'manager';
+                $this->fields['begin_date_field']          = 'whenCreated';
+                $this->fields['end_date_field']            = 'accountExpires';
                 break;
 
             default:
@@ -529,7 +533,7 @@ class AuthLDAP extends CommonDBTM
                     'group_field', 'group_member_field', 'group_search_type',
                     'mobile_field', 'phone_field', 'phone2_field',
                     'realname_field', 'registration_number_field', 'title_field',
-                    'use_dn', 'use_tls', 'responsible_field'
+                    'use_dn', 'use_tls', 'responsible_field', 'begin_date_field', 'end_date_field'
                 ];
 
                 foreach ($hidden_fields as $hidden_field) {
@@ -893,91 +897,34 @@ class AuthLDAP extends CommonDBTM
      */
     public function showFormUserConfig()
     {
-
-        $ID = $this->getField('id');
-
-        echo "<div class='center'>";
-        echo "<form method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-        echo "<input type='hidden' name='id' value='$ID'>";
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<th class='center' colspan='4'>" . __('Binding to the LDAP directory') . "</th></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __('Surname') . "</td>";
-        echo "<td><input type='text' class='form-control' name='realname_field' value='" .
-                 $this->fields["realname_field"] . "'></td>";
-        echo "<td>" . __('First name') . "</td>";
-        echo "<td><input type='text' class='form-control' name='firstname_field' value='" .
-                 $this->fields["firstname_field"] . "'></td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __('Comments') . "</td>";
-        echo "<td><input type='text' class='form-control' name='comment_field' value='" . $this->fields["comment_field"] . "'>";
-        echo "</td>";
-        echo "<td>" . _x('user', 'Administrative number') . "</td>";
-        echo "<td>";
-        echo "<input type='text' class='form-control' name='registration_number_field' value='" .
-             $this->fields["registration_number_field"] . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . _n('Email', 'Emails', 1) . "</td>";
-        echo "<td><input type='text' class='form-control' name='email1_field' value='" . $this->fields["email1_field"] . "'>";
-        echo "</td>";
-        echo "<td>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '2') . "</td>";
-        echo "<td><input type='text' class='form-control' name='email2_field' value='" . $this->fields["email2_field"] . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '3') . "</td>";
-        echo "<td><input type='text' class='form-control' name='email3_field' value='" . $this->fields["email3_field"] . "'>";
-        echo "</td>";
-        echo "<td>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '4') . "</td>";
-        echo "<td><input type='text' class='form-control' name='email4_field' value='" . $this->fields["email4_field"] . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . _x('ldap', 'Phone') . "</td>";
-        echo "<td><input type='text' class='form-control' name='phone_field'value='" . $this->fields["phone_field"] . "'>";
-        echo "</td>";
-        echo "<td>" .  __('Phone 2') . "</td>";
-        echo "<td><input type='text' class='form-control' name='phone2_field'value='" . $this->fields["phone2_field"] . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __('Mobile phone') . "</td>";
-        echo "<td><input type='text' class='form-control' name='mobile_field'value='" . $this->fields["mobile_field"] . "'>";
-        echo "</td>";
-        echo "<td>" . _x('person', 'Title') . "</td>";
-        echo "<td><input type='text' class='form-control' name='title_field' value='" . $this->fields["title_field"] . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . _n('Category', 'Categories', 1) . "</td>";
-        echo "<td><input type='text' class='form-control' name='category_field' value='" .
-                 $this->fields["category_field"] . "'></td>";
-        echo "<td>" . __('Language') . "</td>";
-        echo "<td><input type='text' class='form-control' name='language_field' value='" .
-                 $this->fields["language_field"] . "'></td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . _n('Picture', 'Pictures', 1) . "</td>";
-        echo "<td><input type='text' class='form-control' name='picture_field' value='" .
-                 $this->fields["picture_field"] . "'></td>";
-        echo "<td>" . Location::getTypeName(1) . "</td>";
-        echo "<td><input type='text' class='form-control' name='location_field' value='" . $this->fields["location_field"] . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __('Supervisor') . "</td>";
-        echo "<td><input type='text' class='form-control' name='responsible_field' value='" .
-           $this->fields["responsible_field"] . "'></td>";
-        echo "<td colspan='2'></td></tr>";
-
-        echo "<tr><td colspan=4 class='center green'>" . __('You can use a field name or an expression using various %{fieldname}') .
-           " <br />" . __('Example for location: %{city} > %{roomnumber}') . "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-        echo "<input type='submit' name='update' class='btn btn-primary' value=\"" . __s('Save') . "\">";
-        echo "</td></tr>";
-        echo "</table>";
-        Html::closeForm();
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('pages/setup/ldap/user_config_form.html.twig', [
+            'item' => $this,
+            'params' => [
+                'formfooter' => false,
+                'candel' => false, // No deletion outside the main tab
+            ],
+            'fields' => [
+                'realname_field'            => __('Surname'),
+                'firstname_field'           => __('First name'),
+                'comment_field'             => __('Comments'),
+                'registration_number_field' => _x('user', 'Administrative number'),
+                'email1_field'              => _n('Email', 'Emails', 1),
+                'email2_field'              => sprintf('%1$s %2$s', _n('Email', 'Emails', 1), '2'),
+                'email3_field'              => sprintf('%1$s %2$s', _n('Email', 'Emails', 1), '3'),
+                'email4_field'              => sprintf('%1$s %2$s', _n('Email', 'Emails', 1), '4'),
+                'phone_field'               => _x('ldap', 'Phone'),
+                'phone2_field'              => __('Phone 2'),
+                'mobile_field'              => __('Mobile phone'),
+                'title_field'               => _x('person', 'Title'),
+                'category_field'            => _n('Category', 'Categories', 1),
+                'language_field'            => __('Language'),
+                'picture_field'             => _n('Picture', 'Pictures', 1),
+                'location_field'            => Location::getTypeName(1),
+                'begin_date_field'          => __('Valid since'),
+                'end_date_field'            => __('Valid until'),
+                'responsible_field'         => __('Supervisor'),
+            ]
+        ]);
     }
 
     /**
@@ -1332,6 +1279,24 @@ class AuthLDAP extends CommonDBTM
             ],
         ];
 
+        $tab[] = [
+            'id'                 => '33',
+            'table'              => $this->getTable(),
+            'field'              => 'begin_date_field',
+            'name'               => __('Valid since'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
+        ];
+
+        $tab[] = [
+            'id'                 => '34',
+            'table'              => $this->getTable(),
+            'field'              => 'end_date_field',
+            'name'               => __('Valid until'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
+        ];
+
         return $tab;
     }
 
@@ -1404,7 +1369,9 @@ class AuthLDAP extends CommonDBTM
             'registration_number_field' => 'registration_number',
             'picture_field'             => 'picture',
             'responsible_field'         => 'users_id_supervisor',
-            'sync_field'                => 'sync_field'
+            'sync_field'                => 'sync_field',
+            'begin_date_field'          => 'begin_date',
+            'end_date_field'            => 'end_date',
         ];
 
         foreach ($fields as $key => $val) {
@@ -4582,5 +4549,32 @@ class AuthLDAP extends CommonDBTM
     public static function getIcon()
     {
         return "far fa-address-book";
+    }
+
+    /**
+     * Get date (Y-m-d H:i:s) from ldap value
+     *
+     * @param string $data Value found in LDAP
+     *
+     * @return string
+     */
+    public static function getLdapDateValue(string $date): string
+    {
+        // See https://www.epochconverter.com/ldap
+
+        if (strlen($date) == 18 && intval($date) > 0) {
+            // 18-digit LDAP/FILETIME timestamps
+            // $date is the number of "100-nanoseconds-intervals" since 01/01/1601
+            // Divide by 10M to convert to seconds (10M nano seconds = 0.01 seconds = 1 "100-nanoseconds-intervals")
+            // Then substract 11644473600  (number of seconds between 01/01/1601
+            // and 01/01/1970) to get an unix timestamp
+            // See https://learn.microsoft.com/en-us/windows/win32/sysinfo/converting-a-time-t-value-to-a-file-time?redirectedfrom=MSDN
+            $time = intval($date) / (10000000) - 11644473600;
+            return $time > 0 ? date('Y-m-d H:i:s', $time) : '';
+        } else {
+            // Ymdhis.0Z LDAP timestamps
+            $date = DateTime::createFromFormat('Ymdhis.0Z', $date);
+            return $date ? $date->format('Y-m-d H:i:s') : '';
+        }
     }
 }

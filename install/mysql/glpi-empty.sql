@@ -113,6 +113,8 @@ CREATE TABLE `glpi_authldaps` (
   `ldap_maxlimit` int NOT NULL DEFAULT '0',
   `can_support_pagesize` tinyint NOT NULL DEFAULT '0',
   `picture_field` varchar(255) DEFAULT NULL,
+  `begin_date_field` varchar(255) DEFAULT NULL,
+  `end_date_field` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `inventory_domain` varchar(255) DEFAULT NULL,
   `tls_certfile` text,
