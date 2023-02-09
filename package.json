@@ -57,6 +57,7 @@
         "masonry-layout": "^4.2.2",
         "photoswipe": "^5.3.6",
         "path-browserify": "^1.0.1",
+        "photoswipe": "^5.3.5",
         "plain-scrollbar": "github:ewya/PlainScrollbar#35221e7c7fa9633d6f61bcd9d7b418b6de6da73b",
         "prismjs": "^1.23.0",
         "process": "^0.11.10",
