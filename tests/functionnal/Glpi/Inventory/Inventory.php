@@ -4574,10 +4574,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $this->doInventory($json);
 
-        //check there is one less vm
-        $nb_vms--;
+        //check there are same count for computers and virtual machines
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($count_vms);
+        //check there is one less vm and computer not marked as deleted
+        $nb_vms--;
+        $this->integer(countElementsInTable(\Computer::getTable(), ['is_deleted' => 0]))->isIdenticalTo($nb_computers + $count_vms - 2);
+        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable(), ['is_deleted' => 0]))->isIdenticalTo($nb_vms);
 
         //check related computer has been put in trashbin
         $iterator = $DB->request([
