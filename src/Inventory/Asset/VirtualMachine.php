@@ -260,7 +260,7 @@ class VirtualMachine extends InventoryAsset
                         }
                     }
                 }
-                $computerVirtualmachine->delete(['id' => $idtmp], true);
+                $computerVirtualmachine->delete(['id' => $idtmp]);
             }
         }
 
