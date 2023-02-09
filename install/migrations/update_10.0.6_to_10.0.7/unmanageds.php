@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,21 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-@import "~@fontsource/inter/scss/mixins";
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-$fontDir: "../css/lib/fontsource/inter/files";
-
-@include fontFace($weight: 100);
-@include fontFace($weight: 200);
-@include fontFace($weight: 300);
-@include fontFace($weight: 400);
-@include fontFace($weight: 500);
-@include fontFace($weight: 600);
-@include fontFace($weight: 700);
-@include fontFace($weight: 800);
-@include fontFace($weight: 900);
-
-$font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
-$ti-font-path: "../css/lib/tabler/icons-webfont/fonts";
-
-@import "~@tabler/icons-webfont/tabler-icons";
+if ($DB->fieldExists(\Unmanaged::getTable(), 'domains_id')) {
+    $iterator = $DB->request([
+        'SELECT' => ['id', 'domains_id'],
+        'FROM'   => \Unmanaged::getTable(),
+        'WHERE'  => ['domains_id' => ['>', 0]]
+    ]);
+    if (count($iterator)) {
+        foreach ($iterator as $row) {
+            $DB->insert("glpi_domains_items", [
+                'domains_id'   => $row['domains_id'],
+                'itemtype'     => 'Unmanaged',
+                'items_id'     => $row['id']
+            ]);
+        }
+    }
+    $migration->dropField(\Unmanaged::getTable(), 'domains_id');
+}

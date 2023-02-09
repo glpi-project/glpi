@@ -273,6 +273,67 @@ class Socket extends CommonDBChild
         return $values;
     }
 
+    /**
+     * Get all Socket already linked to Cable for given asset
+     * @return array Array of linked sockets
+     **/
+    public static function getSocketAlreadyLinked(string $itemtype, int $items_id): array
+    {
+        global $DB;
+        $already_use = [];
+        $sub_query = [];
+
+        $sub_query[] = new \QuerySubQuery([
+            'SELECT' => ['sockets.id AS socket_id'],
+            'FROM'   => Socket::getTable() . ' AS sockets',
+            'LEFT JOIN'   => [
+                Cable::getTable() . ' AS cables' => [
+                    'ON'  => [
+                        'cables'  => 'sockets_id_endpoint_a',
+                        'sockets'  => 'id'
+                    ]
+                ],
+            ],
+            'WHERE'  => [
+                'NOT' => [
+                    'cables.sockets_id_endpoint_a' => 'NULL'
+                ],
+                'sockets.itemtype' => $itemtype,
+                'sockets.items_id' => $items_id
+            ],
+        ]);
+
+        $sub_query[] = new \QuerySubQuery([
+            'SELECT' => ['sockets.id AS socket_id'],
+            'FROM'   => Socket::getTable() . ' AS sockets',
+            'LEFT JOIN'   => [
+                Cable::getTable() . ' AS cables' => [
+                    'ON'  => [
+                        'cables'  => 'sockets_id_endpoint_b',
+                        'sockets'  => 'id'
+                    ]
+                ],
+            ],
+            'WHERE'  => [
+                'NOT' => [
+                    'cables.sockets_id_endpoint_b' => 'NULL'
+                ],
+                'sockets.itemtype' => $itemtype,
+                'sockets.items_id' => $items_id
+            ],
+        ]);
+
+        $sockets_iterator = $DB->request([
+            'FROM' => new \QueryUnion($sub_query)
+        ]);
+
+        foreach ($sockets_iterator as $row) {
+            $already_use[$row['socket_id']] = $row['socket_id'];
+        }
+
+        return $already_use;
+    }
+
 
     /**
      * Dropdown of Wiring Side

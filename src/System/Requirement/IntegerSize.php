@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,21 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-@import "~@fontsource/inter/scss/mixins";
+namespace Glpi\System\Requirement;
 
-$fontDir: "../css/lib/fontsource/inter/files";
+final class IntegerSize extends AbstractRequirement
+{
+    public function __construct()
+    {
+        $this->title = __('PHP maximal integer size');
+        $this->description = __('Support of 64 bits integers is required for IP addresses related operations (network inventory, API clients IP filtering, ...).');
+        $this->optional = true;
+    }
 
-@include fontFace($weight: 100);
-@include fontFace($weight: 200);
-@include fontFace($weight: 300);
-@include fontFace($weight: 400);
-@include fontFace($weight: 500);
-@include fontFace($weight: 600);
-@include fontFace($weight: 700);
-@include fontFace($weight: 800);
-@include fontFace($weight: 900);
-
-$font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
-$ti-font-path: "../css/lib/tabler/icons-webfont/fonts";
-
-@import "~@tabler/icons-webfont/tabler-icons";
+    protected function check()
+    {
+        if (PHP_INT_SIZE < 8) {
+            $this->validated = false;
+            $this->validation_messages[] = __('OS or PHP is not relying on 64 bits integers, operations on IP addresses may produce unexpected results.');
+        } else {
+            $this->validated = true;
+            $this->validation_messages[] = __('OS and PHP are relying on 64 bits integers.');
+        }
+    }
+}

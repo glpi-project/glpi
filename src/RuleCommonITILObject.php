@@ -578,16 +578,10 @@ abstract class RuleCommonITILObject extends Rule
         $criterias['date']['linkfield']                       = 'date';
 
         $criterias['itilcategories_id']['table']              = 'glpi_itilcategories';
-        $criterias['itilcategories_id']['field']              = 'name';
-        $criterias['itilcategories_id']['name']               = _n('Category', 'Categories', 1) . " - " . __('Name');
+        $criterias['itilcategories_id']['field']              = 'completename';
+        $criterias['itilcategories_id']['name']               = _n('Category', 'Categories', 1);
         $criterias['itilcategories_id']['linkfield']          = 'itilcategories_id';
         $criterias['itilcategories_id']['type']               = 'dropdown';
-
-        $criterias['itilcategories_id_cn']['table']           = 'glpi_itilcategories';
-        $criterias['itilcategories_id_cn']['field']           = 'completename';
-        $criterias['itilcategories_id_cn']['name']            = _n('Category', 'Categories', 1) . ' - ' . __('Complete name');
-        $criterias['itilcategories_id_cn']['linkfield']       = 'itilcategories_id';
-        $criterias['itilcategories_id_cn']['type']            = 'dropdown';
 
         $criterias['itilcategories_id_code']['table']           = 'glpi_itilcategories';
         $criterias['itilcategories_id_code']['field']           = 'code';

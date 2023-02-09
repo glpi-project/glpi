@@ -69,6 +69,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return 'id';
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-checkbox';
+    }
 
     public function canViewPrivates()
     {
@@ -1421,6 +1425,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'item'               => $options['parent'],
             'subitem'            => $this,
             'has_pending_reason' => PendingReason_Item::getForItem($options['parent']) !== false,
+            'params'             => $options,
         ]);
 
         return true;

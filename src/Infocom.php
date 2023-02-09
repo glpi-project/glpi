@@ -1342,6 +1342,7 @@ class Infocom extends CommonDBChild
             ],
             'searchunit'         => 'MONTH',
             'delayunit'          => 'MONTH',
+            'maybefuture'        => true,
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => $joinparams

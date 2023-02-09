@@ -110,9 +110,6 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
             }
         }
 
-        if (isset($input['itilcategories_id'])) {
-            $input['itilcategories_id_cn'] = $input['itilcategories_id'];
-        }
         return $input;
     }
 }

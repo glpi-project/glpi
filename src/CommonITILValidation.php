@@ -69,7 +69,6 @@ abstract class CommonITILValidation extends CommonDBChild
         return str_replace('Validation', '', $this->getType());
     }
 
-
     public static function getCreateRights()
     {
         return [CREATE];

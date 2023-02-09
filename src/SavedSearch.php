@@ -553,21 +553,46 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             case self::SEARCH:
             case self::ALERT:
                 // Check if all data are valid
-                $opt            = Search::getCleanedOptions($this->fields['itemtype']);
                 $query_tab_save = $query_tab;
                 $partial_load   = false;
                 // Standard search
                 if (isset($query_tab_save['criteria']) && count($query_tab_save['criteria'])) {
                     unset($query_tab['criteria']);
+
+                    $itemtype_so = [
+                        $this->fields['itemtype'] => Search::getCleanedOptions($this->fields['itemtype'])
+                    ];
+                    $available_meta = Search::getMetaItemtypeAvailable($this->fields['itemtype']);
+
                     $new_key = 0;
-                    foreach ($query_tab_save['criteria'] as $key => $val) {
+                    foreach ($query_tab_save['criteria'] as $val) {
+                        // Get itemtype search options for current criterion
+                        $opt = [];
+                        if (!isset($val['meta'])) {
+                            $opt = $itemtype_so[$this->fields['itemtype']];
+                        } elseif (isset($val['itemtype'])) {
+                            if (!array_key_exists($val['itemtype'], $itemtype_so)) {
+                                $itemtype_so[$val['itemtype']] = Search::getCleanedOptions($val['itemtype']);
+                            }
+                            $opt = $itemtype_so[$val['itemtype']];
+                        }
+
                         if (
-                            isset($val['field'])
-                            && $val['field'] != 'view'
-                            && $val['field'] != 'all'
-                            && (!isset($opt[$val['field']])
-                            || (isset($opt[$val['field']]['nosearch'])
-                              && $opt[$val['field']]['nosearch']))
+                            (
+                                // Check if search option is still available
+                                isset($val['field'])
+                                && $val['field'] != 'view'
+                                && $val['field'] != 'all'
+                                && (
+                                    !isset($opt[$val['field']])
+                                    || (isset($opt[$val['field']]['nosearch']) && $opt[$val['field']]['nosearch'])
+                                )
+                            )
+                            || (
+                                // Check if meta itemtype is still available
+                                isset($val['meta'])
+                                && (!isset($val['itemtype']) || !in_array($val['itemtype'], $available_meta))
+                            )
                         ) {
                             $partial_load = true;
                         } else {
@@ -581,7 +606,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $meta_ok = Search::getMetaItemtypeAvailable($query_tab['itemtype']);
                     unset($query_tab['metacriteria']);
                     $new_key = 0;
-                    foreach ($query_tab_save['metacriteria'] as $key => $val) {
+                    foreach ($query_tab_save['metacriteria'] as $val) {
+                        $opt = [];
                         if (isset($val['itemtype'])) {
                              $opt = Search::getCleanedOptions($val['itemtype']);
                         }
@@ -788,7 +814,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $criteria = [
             'SELECT'    => [
                 "$table.*",
-                "$utable.id AS is_default"
+                new \QueryExpression(
+                    "IF($utable.users_id = " . Session::getLoginUserID() . ", $utable.id, NULL) AS is_default"
+                ),
             ],
             'FROM'      => $table,
             'LEFT JOIN' => [

@@ -1481,6 +1481,7 @@ CREATE TABLE `glpi_contracts` (
   `name` varchar(255) DEFAULT NULL,
   `num` varchar(255) DEFAULT NULL,
   `contracttypes_id` int unsigned NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `begin_date` date DEFAULT NULL,
   `duration` int NOT NULL DEFAULT '0',
   `notice` int NOT NULL DEFAULT '0',
@@ -1509,6 +1510,7 @@ CREATE TABLE `glpi_contracts` (
   KEY `begin_date` (`begin_date`),
   KEY `name` (`name`),
   KEY `contracttypes_id` (`contracttypes_id`),
+  KEY `locations_id` (`locations_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_deleted` (`is_deleted`),
@@ -8952,7 +8954,6 @@ CREATE TABLE `glpi_unmanageds` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   `sysdescr` text,
-  `domains_id` int unsigned NOT NULL DEFAULT '0',
   `agents_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
   `accepted` tinyint NOT NULL DEFAULT '0',
@@ -8978,7 +8979,6 @@ CREATE TABLE `glpi_unmanageds` (
   KEY `otherserial` (`otherserial`),
   KEY `date_creation` (`date_creation`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
-  KEY `domains_id` (`domains_id`),
   KEY `agents_id` (`agents_id`),
   KEY `snmpcredentials_id` (`snmpcredentials_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

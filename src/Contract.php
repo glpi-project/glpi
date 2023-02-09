@@ -393,6 +393,21 @@ class Contract extends CommonDBTM
             'datatype'           => 'specific'
         ];
 
+        $tab[] = [
+            'id'                 => '139',
+            'table'              => 'glpi_locations',
+            'field'              => 'completename',
+            'name'               => Location::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_contracts',
+                    'joinparams'         => $joinparams
+                ]
+            ]
+        ];
+
         return $tab;
     }
 
@@ -568,6 +583,14 @@ class Contract extends CommonDBTM
             'datatype'           => 'number',
             'max'                => 120,
             'unit'               => 'month'
+        ];
+
+        $tab[] = [
+            'id'                 => '8',
+            'table'              => 'glpi_locations',
+            'field'              => 'completename',
+            'name'               => Location::getTypeName(1),
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [

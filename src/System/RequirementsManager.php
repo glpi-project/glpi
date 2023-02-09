@@ -44,6 +44,7 @@ use Glpi\System\Requirement\Extension;
 use Glpi\System\Requirement\ExtensionConstant;
 use Glpi\System\Requirement\ExtensionGroup;
 use Glpi\System\Requirement\InstallationNotOverriden;
+use Glpi\System\Requirement\IntegerSize;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\MysqliMysqlnd;
@@ -138,6 +139,7 @@ class RequirementsManager
        // Below requirements are optionals
 
         $requirements[] = new SessionsSecurityConfiguration();
+        $requirements[] = new IntegerSize();
         $requirements[] = new Extension(
             'exif',
             true,

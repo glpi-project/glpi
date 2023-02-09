@@ -58,6 +58,7 @@ class Unmanaged extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addStandardTab('NetworkPort', $ong, $options)
+         ->addStandardTab('Domain_Item', $ong, $options)
          ->addStandardTab('Lock', $ong, $options)
          ->addStandardTab('RuleMatchedLog', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
@@ -141,15 +142,6 @@ class Unmanaged extends CommonDBTM
             'field'     => 'completename',
             'linkfield' => 'entities_id',
             'name'      => Entity::getTypeName(1),
-            'datatype'  => 'dropdown',
-        ];
-
-        $tab[] = [
-            'id'        => '9',
-            'table'     => 'glpi_domains',
-            'field'     => 'name',
-            'linkfield' => 'domains_id',
-            'name'      => Domain::getTypeName(1),
             'datatype'  => 'dropdown',
         ];
 

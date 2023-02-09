@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,21 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-@import "~@fontsource/inter/scss/mixins";
-
-$fontDir: "../css/lib/fontsource/inter/files";
-
-@include fontFace($weight: 100);
-@include fontFace($weight: 200);
-@include fontFace($weight: 300);
-@include fontFace($weight: 400);
-@include fontFace($weight: 500);
-@include fontFace($weight: 600);
-@include fontFace($weight: 700);
-@include fontFace($weight: 800);
-@include fontFace($weight: 900);
-
-$font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
-$ti-font-path: "../css/lib/tabler/icons-webfont/fonts";
-
-@import "~@tabler/icons-webfont/tabler-icons";
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+$migration->addField('glpi_contracts', 'locations_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", ['after' => 'contracttypes_id']);
+$migration->addKey('glpi_contracts', 'locations_id', 'locations_id');

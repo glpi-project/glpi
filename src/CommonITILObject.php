@@ -3960,7 +3960,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'state'             => $input['state'],
                             'content'           => $input['content']
                         ];
-                        if ($task->can(-1, CREATE, $input2)) {
+                        if ($task->can(-1, CREATE, $input2) && !in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
                             if ($task->add($input2)) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
@@ -6819,7 +6819,7 @@ abstract class CommonITILObject extends CommonDBTM
         $itemtypes['answer'] = [
             'type'          => 'ITILFollowup',
             'class'         => 'ITILFollowup',
-            'icon'          => 'ti ti-message-circle',
+            'icon'          => ITILFollowup::getIcon(),
             'label'         => _x('button', 'Answer'),
             'short_label'   => _x('button', 'Answer'),
             'template'      => 'components/itilobject/timeline/form_followup.html.twig',
@@ -6829,7 +6829,7 @@ abstract class CommonITILObject extends CommonDBTM
         $itemtypes['task'] = [
             'type'          => 'ITILTask',
             'class'         => $task_class,
-            'icon'          => 'ti ti-checkbox',
+            'icon'          => CommonITILTask::getIcon(),
             'label'         => _x('button', 'Create a task'),
             'short_label'   => _x('button', 'Task'),
             'template'      => 'components/itilobject/timeline/form_task.html.twig',
@@ -6839,7 +6839,7 @@ abstract class CommonITILObject extends CommonDBTM
         $itemtypes['solution'] = [
             'type'          => 'ITILSolution',
             'class'         => 'ITILSolution',
-            'icon'          => 'ti ti-check',
+            'icon'          => ITILSolution::getIcon(),
             'label'         => _x('button', 'Add a solution'),
             'short_label'   => _x('button', 'Solution'),
             'template'      => 'components/itilobject/timeline/form_solution.html.twig',
@@ -6860,7 +6860,7 @@ abstract class CommonITILObject extends CommonDBTM
             $itemtypes['validation'] = [
                 'type'          => 'ITILValidation',
                 'class'         => $validation::getType(),
-                'icon'          => 'ti ti-thumb-up',
+                'icon'          => CommonITILValidation::getIcon(),
                 'label'         => _x('button', 'Ask for validation'),
                 'short_label'   => _x('button', 'Validation'),
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',

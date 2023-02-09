@@ -1196,4 +1196,68 @@ class CommonDBTM extends DbTestCase
         $output = $itemtype::getById($nonExistingId);
         $this->boolean($output)->isFalse();
     }
+
+
+    protected function textValueProvider(): iterable
+    {
+        $value = 'This is not a long value';
+        yield [
+            'value'     => $value,
+            'truncated' => $value,
+            'length'    => 24,
+        ];
+
+        // 500 1-byte chars
+        // truncated string should contains 255 1-byte chars
+        yield [
+            'value'     => str_repeat('12345', 100),
+            'truncated' => str_repeat('12345', 51), // 5 * 51 = 255
+            'length'    => 500,
+        ];
+
+        // 253 1-byte chars followed by a 4-bytes char
+        // string should not be truncated because the size in the database is expressed in number of characters and not in bytes
+        $value = str_repeat('x', 253) . '𝄠';
+        yield [
+            'value'     => $value,
+            'truncated' => $value,
+            'length'    => 254,
+        ];
+
+        // 224 (7 * 32) 4-bytes chars
+        // string should not be truncated because the size in the database is expressed in number of characters and not in bytes
+        $value = str_repeat('🂧🂨🂩🂪🂫🂭🂮🂡🂷🂸🂹🂺🂻🂽🂾🂱🃇🃈🃉🃊🃋🃍🃎🃁🃗🃘🃙🃚🃛🃝🃞🃑', 7);
+        yield [
+            'value'     => $value,
+            'truncated' => $value,
+            'length'    => 224,
+        ];
+
+        // 500 4-bytes chars
+        // truncated string should contains 255 4-bytes chars
+        yield [
+            'value'     => str_repeat('🂡🂢🂣🂤🂥', 100),
+            'truncated' => str_repeat('🂡🂢🂣🂤🂥', 51), // 5 * 51 = 255
+            'length'    => 500,
+        ];
+    }
+
+    /**
+     * @dataProvider textValueProvider
+     */
+    public function testTextValueTuncation(string $value, string $truncated, int $length)
+    {
+        $computer = new \Computer();
+
+        $this->when(
+            function () use ($computer, $value) {
+                $this->integer($computer->add(['name' => $value, 'entities_id' => 0]))->isGreaterThan(0);
+            }
+        )->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage(sprintf('%s exceed 255 characters long (%s), it will be truncated.', $value, $length))
+            ->{($value !== $truncated ? 'exists' : 'notExists')};
+
+        $this->string($computer->fields['name'])->isEqualTo($truncated);
+    }
 }

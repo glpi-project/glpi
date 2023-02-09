@@ -1271,7 +1271,8 @@ class Planning extends CommonGLPI
 
     public static function editEventForm($params = [])
     {
-        if (!$params['itemtype'] instanceof CommonDBTM) {
+        $item = getItemForItemtype($params['itemtype']);
+        if ($item instanceof CommonDBTM) {
             echo "<div class='center'>";
             echo "<a href='" . $params['url'] . "' class='btn btn-outline-secondary'>" .
                 "<i class='ti ti-eye'></i>" .
@@ -1289,7 +1290,6 @@ class Planning extends CommonGLPI
                 $options['parent'] = getItemForItemtype($params['parentitemtype']);
                 $options['parent']->getFromDB($params['parentid']);
             }
-            $item = getItemForItemtype($params['itemtype']);
             $item->getFromDB((int) $params['id']);
             $item->showForm((int)$params['id'], $options);
             $callback = "glpi_close_all_dialogs();
