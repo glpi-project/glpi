@@ -45,14 +45,6 @@ if (!isset($_GET["id"])) {
 
 $language = new NotificationTemplateTranslation();
 
-$template = new NotificationTemplate();
-if (!isset($_GET["notificationtemplates_id"]) && $_GET["id"] != '') {
-    $language->getFromDB($_GET["id"]);
-    $_GET["notificationtemplates_id"] = $language->fields["notificationtemplates_id"];
-}
-$template->getFromDB($_GET["notificationtemplates_id"]);
-$_SESSION['glpilisturl'][NotificationTemplateTranslation::getType()] = $template->getLinkURL();
-
 if (isset($_POST["add"])) {
     $language->check(-1, CREATE, $_POST);
     $newID = $language->add($_POST);
@@ -91,6 +83,14 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
+    $template = new NotificationTemplate();
+    if (!isset($_GET["notificationtemplates_id"]) && $_GET["id"] != '') {
+        $language->getFromDB($_GET["id"]);
+        $_GET["notificationtemplates_id"] = $language->fields["notificationtemplates_id"];
+    }
+    $template->getFromDB($_GET["notificationtemplates_id"]);
+    $_SESSION['glpilisturl'][NotificationTemplateTranslation::getType()] = $template->getLinkURL();
+
     if ($_GET["id"] == '') {
         $options = [
             "notificationtemplates_id" => $_GET["notificationtemplates_id"]
