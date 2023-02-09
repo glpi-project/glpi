@@ -897,9 +897,6 @@ class AuthLDAP extends CommonDBTM
      */
     public function showFormUserConfig()
     {
-
-        $ID = $this->getField('id');
-
         TemplateRenderer::getInstance()->display('pages/setup/ldap/user_config_form.html.twig', [
             'item' => $this,
             'params' => [
