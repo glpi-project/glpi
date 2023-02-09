@@ -9609,8 +9609,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Clean new lines before passing to rules
         if (isset($input["content"])) {
-            $input["content"] = preg_replace('/\\r\\n/', "\n", $input['content']);
-            $input["content"] = preg_replace('/\\n/', "\n", $input['content']);
+            $input["content"] = str_replace("\r\n", "\n", $input['content']);
         }
     }
 
