@@ -391,7 +391,11 @@ class Agent extends CommonDBTM
         }
 
         $atype = new AgentType();
-        $atype->getFromDBByCrit(['name' => 'Core']);
+        if (!$atype->getFromDBByCrit(['name' => 'Core'])) {
+            $atype->add([
+                'name' => 'Core',
+            ]);
+        }
 
         $input = [
             'deviceid'     => $deviceid,

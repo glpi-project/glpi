@@ -105,6 +105,23 @@ class Agent extends DbTestCase
         $this->integer($this->testedInstance->fields['use_module_collect_data'])->isIdenticalTo(0);
     }
 
+    public function testHandleAgentWOType()
+    {
+        global $DB;
+
+        //explicitly remove agent type
+        $this->boolean(
+            $DB->delete(
+                \AgentType::getTable(),
+                [
+                    'name' => 'Core'
+                ]
+            )
+        )->isTrue();
+        //then rerun tests
+        $this->testHandleAgent();
+    }
+
     public function testHandleAgentOnUpdate()
     {
         $metadata = [
