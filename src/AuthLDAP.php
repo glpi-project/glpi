@@ -907,10 +907,6 @@ class AuthLDAP extends CommonDBTM
                 'candel' => false, // No deletion outside the main tab
             ]
         ]);
-        return;
-
-        echo "<tr><td colspan=4 class='center green'>" . __('You can use a field name or an expression using various %{fieldname}') .
-           " <br />" . __('Example for location: %{city} > %{roomnumber}') . "</td></tr>";
     }
 
     /**
