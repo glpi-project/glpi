@@ -1979,10 +1979,13 @@ class DBmysql
     public function executeStatement(mysqli_stmt $stmt): void
     {
         if (!$stmt->execute()) {
-            echo $this->current_query;
-            $e = new RuntimeException($stmt->error);
-            echo $e->getTraceAsString();
-            trigger_error($stmt->error, E_USER_ERROR);
+            throw new RuntimeException(
+                sprintf(
+                    'Error executing statement "%s": %s',
+                    $this->current_query,
+                    $stmt->error
+                )
+            );
         }
     }
 
