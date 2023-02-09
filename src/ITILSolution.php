@@ -414,6 +414,6 @@ class ITILSolution extends CommonDBChild
 
     public static function getIcon()
     {
-        return "fas fa-check";
+        return 'ti ti-check';
     }
 }

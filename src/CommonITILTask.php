@@ -69,6 +69,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return 'id';
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-checkbox';
+    }
 
     public function canViewPrivates()
     {
