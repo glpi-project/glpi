@@ -46,6 +46,6 @@ $fontDir: "../css/lib/fontsource/inter/files";
 @include fontFace($weight: 900);
 
 $font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
-$ti-font-path: "../css/lib/tabler/icons/iconfont/fonts";
+$ti-font-path: "../css/lib/tabler/icons-webfont/fonts";
 
-@import "~@tabler/icons/iconfont/tabler-icons";
+@import "~@tabler/icons-webfont/tabler-icons";

@@ -190,8 +190,8 @@ var filesToCopy = [
         to: scssOutputPath,
     },
     {
-        package: '@tabler/icons',
-        from: '{iconfont/fonts/*,iconfont/tabler-icons.scss}',
+        package: '@tabler/icons-webfont',
+        from: '{fonts/*,tabler-icons.scss}',
         to: scssOutputPath,
     },
     {
