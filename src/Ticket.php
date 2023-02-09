@@ -993,11 +993,10 @@ class Ticket extends CommonITILObject
 
        // Clean new lines before passing to rules
         if (isset($input["content"])) {
-            $input["content"] = preg_replace('/\\r\\n/', "\n", $input['content']);
-            $input["content"] = preg_replace('/\\n/', "\n", $input['content']);
+            $input["content"] = str_replace("\r\n", "\n", $input['content']);
         }
 
-       // automatic recalculate if user changes urgence or technician change impact
+       // automatic recalculate if user changes urgency or technician change impact
         $canpriority               = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         if (
             (isset($input['urgency']) && $input['urgency'] != $this->fields['urgency'])
