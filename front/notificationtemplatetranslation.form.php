@@ -46,6 +46,10 @@ if (!isset($_GET["id"])) {
 $language = new NotificationTemplateTranslation();
 
 $template = new NotificationTemplate();
+if (!isset($_GET["notificationtemplates_id"]) && $_GET["id"] != '') {
+    $language->getFromDB($_GET["id"]);
+    $_GET["notificationtemplates_id"] = $language->fields["notificationtemplates_id"];
+}
 $template->getFromDB($_GET["notificationtemplates_id"]);
 $_SESSION['glpilisturl'][NotificationTemplateTranslation::getType()] = $template->getLinkURL();
 
