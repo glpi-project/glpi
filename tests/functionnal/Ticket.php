@@ -2110,7 +2110,7 @@ class Ticket extends DbTestCase
                 ],
                 'expected'  => [
                     'name' => 'This is a content with a carriage return',
-                    'content' => 'This is a content\nwith a carriage return'
+                    'content' => "This is a content\nwith a carriage return"
                 ]
             ], [
                 'input'     => [
@@ -2119,7 +2119,7 @@ class Ticket extends DbTestCase
                 ],
                 'expected'  => [
                     'name' => 'This is a content with a carriage return',
-                    'content' => 'This is a content\nwith a carriage return'
+                    'content' => "This is a content\nwith a carriage return"
                 ]
             ], [
                 'input'     => [
@@ -2137,7 +2137,7 @@ class Ticket extends DbTestCase
                 ],
                 'expected'  => [
                     'name' => 'This is a content with a carriage return',
-                    'content' => '&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;'
+                    'content' => "&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;"
                 ]
             ], [
                 'input'     => [
