@@ -66,6 +66,10 @@ abstract class CommonITILValidation extends CommonDBChild
         return str_replace('Validation', '', $this->getType());
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-thumb-up';
+    }
 
     public static function getCreateRights()
     {

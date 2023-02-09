@@ -81,6 +81,10 @@ class ITILFollowup extends CommonDBChild
         return _n('Followup', 'Followups', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-message-circle';
+    }
 
     /**
      * can read the parent ITIL Object ?

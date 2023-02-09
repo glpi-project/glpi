@@ -2557,20 +2557,23 @@ class Ticket extends CommonITILObject
             }
 
             if (ITILFollowup::canCreate()) {
+                $icon = ITILFollowup::getIcon();
                 $actions['ITILFollowup' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_followup']
-                = "<i class='fa-fw ti ti-message-circle'></i>" .
+                = "<i class='fa-fw $icon'></i>" .
                  __('Add a new followup');
             }
 
             if (TicketTask::canCreate()) {
+                $icon = TicketTask::getIcon();
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
-                = "<i class='fa-fw ti ti-checkbox'></i>" .
+                = "<i class='fa-fw $icon'></i>" .
                  __('Add a new task');
             }
 
             if (TicketValidation::canCreate()) {
+                $icon = TicketValidation::getIcon();
                 $actions['TicketValidation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'submit_validation']
-                = "<i class='fa-fw fas fa-check'></i>" .
+                = "<i class='fa-fw $icon'></i>" .
                  __('Approval request');
             }
 
