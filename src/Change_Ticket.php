@@ -405,7 +405,8 @@ class Change_Ticket extends CommonDBRelation
                     'entity'      => $ticket->getEntityID(),
                     'entity_sons' => $ticket->isRecursive(),
                     'used'        => $used,
-                    'displaywith' => ['id']
+                    'displaywith' => ['id'],
+                    'condition'   => Change::getOpenCriteria(),
                 ],
                 'create_link' => Session::haveRight(Change::$rightname, CREATE)
             ]);

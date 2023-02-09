@@ -170,7 +170,8 @@ class Change_Problem extends CommonDBRelation
                     'entity'      => $problem->getEntityID(),
                     'entity_sons' => $problem->isRecursive(),
                     'used'        => $used,
-                    'displaywith' => ['id']
+                    'displaywith' => ['id'],
+                    'condition'   => Change::getOpenCriteria(),
                 ],
                 'create_link' => Session::haveRight(Change::$rightname, CREATE)
             ]);
