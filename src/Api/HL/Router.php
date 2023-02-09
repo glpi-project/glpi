@@ -58,7 +58,7 @@ use Glpi\Plugin\Hooks;
 use GuzzleHttp\Psr7\Utils;
 use Session;
 
-final class Router
+class Router
 {
     /** @var string */
     public const API_VERSION = '2.0.0';
@@ -180,8 +180,10 @@ EOT;
                         continue;
                     }
                     foreach ($middlewares as $middleware_info) {
-                        if (!isset($middleware_info['middleware']) ||
-                            !is_subclass_of($middleware_info['middleware'], AbstractMiddleware::class, true)) {
+                        if (
+                            !isset($middleware_info['middleware']) ||
+                            !is_subclass_of($middleware_info['middleware'], AbstractMiddleware::class, true)
+                        ) {
                             continue;
                         }
                         $middleware = new $middleware_info['middleware']();

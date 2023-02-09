@@ -112,8 +112,10 @@ final class HLAPIHelper
         $request = $request->withHeader('Glpi-Session-Token', session_id());
         $match = $this->router->match($request);
         $is_default_route = false;
-        if ($match !== null &&
-            ($match->getController() === CoreController::class && $match->getMethod()->getShortName() === 'defaultRoute')) {
+        if (
+            $match !== null &&
+            ($match->getController() === CoreController::class && $match->getMethod()->getShortName() === 'defaultRoute')
+        ) {
             $is_default_route = true;
         }
         return $this->test->boolean($match !== null && !$is_default_route);
