@@ -905,6 +905,27 @@ class AuthLDAP extends CommonDBTM
             'params' => [
                 'formfooter' => false,
                 'candel' => false, // No deletion outside the main tab
+            ],
+            'fields' => [
+                'realname_field'            => __('Surname'),
+                'firstname_field'           => __('First name'),
+                'comment_field'             => __('Comments'),
+                'registration_number_field' => _x('user', 'Administrative number'),
+                'email1_field'              => _n('Email', 'Emails', 1),
+                'email2_field'              => sprintf('%1$s %2$s', _n('Email', 'Emails', 1), '2'),
+                'email3_field'              => sprintf('%1$s %2$s', _n('Email', 'Emails', 1), '3'),
+                'email4_field'              => sprintf('%1$s %2$s', _n('Email', 'Emails', 1), '4'),
+                'phone_field'               => _x('ldap', 'Phone'),
+                'phone2_field'              => __('Phone 2'),
+                'mobile_field'              => __('Mobile phone'),
+                'title_field'               => _x('person', 'Title'),
+                'category_field'            => _n('Category', 'Categories', 1),
+                'language_field'            => __('Language'),
+                'picture_field'             => _n('Picture', 'Pictures', 1),
+                'location_field'            => Location::getTypeName(1),
+                'begin_date_field'          => __('Valid since'),
+                'end_date_field'            => __('Valid until'),
+                'responsible_field'         => __('Supervisor'),
             ]
         ]);
     }

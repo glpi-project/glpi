@@ -37,110 +37,13 @@
 {% block form_fields %}
     <h3 class="text-center mb-3"><i class="ti ti-user me-1"></i>{{ __('Binding to the LDAP directory') }}</h3>
 
-    {{ fields.textField(
-        'realname_field',
-        item.fields.realname_field,
-        __('Surname')
-    ) }}
-    {{ fields.textField(
-        'firstname_field',
-        item.fields.firstname_field,
-        __('First name')
-    ) }}
-
-    {{ fields.textField(
-        'comment_field',
-        item.fields.comment_field,
-        __('Comments')
-    ) }}
-    {{ fields.textField(
-        'registration_number_field',
-        item.fields.registration_number_field,
-        _x('user', 'Administrative number')
-    ) }}
-
-    {{ fields.textField(
-        'email1_field',
-        item.fields.email1_field,
-        _n('Email', 'Emails', 1)
-    ) }}
-    {{ fields.textField(
-        'email2_field',
-        item.fields.email2_field,
-        __('%1$s %2$s')|format(_n('Email', 'Emails', 1), '2')
-    ) }}
-
-    {{ fields.textField(
-        'email3_field',
-        item.fields.email3_field,
-        __('%1$s %2$s')|format(_n('Email', 'Emails', 1), '3')
-    ) }}
-    {{ fields.textField(
-        'email4_field',
-        item.fields.email4_field,
-        __('%1$s %2$s')|format(_n('Email', 'Emails', 1), '4')
-    ) }}
-
-    {{ fields.textField(
-        'phone_field',
-        item.fields.phone_field,
-        _x('ldap', 'Phone')
-    ) }}
-    {{ fields.textField(
-        'phone2_field',
-        item.fields.phone2_field,
-        __('Phone 2')
-    ) }}
-
-    {{ fields.textField(
-        'mobile_field',
-        item.fields.mobile_field,
-        __('Mobile phone')
-    ) }}
-    {{ fields.textField(
-        'title_field',
-        item.fields.title_field,
-        _x('person', 'Title')
-    ) }}
-
-    {{ fields.textField(
-        'category_field',
-        item.fields.category_field,
-        _n('Category', 'Categories', 1)
-    ) }}
-    {{ fields.textField(
-        'language_field',
-        item.fields.language_field,
-        __('Language')
-    ) }}
-
-    {{ fields.textField(
-        'picture_field',
-        item.fields.picture_field,
-        _n('Picture', 'Pictures', 1)
-    ) }}
-    {{ fields.textField(
-        'location_field',
-        item.fields.location_field,
-        call('Location::getTypeName', [1])
-    ) }}
-
-    {{ fields.textField(
-        'begin_date_field',
-        item.fields.begin_date_field,
-        __('Valid since')
-    ) }}
-    {{ fields.textField(
-        'end_date_field',
-        item.fields.end_date_field,
-        __('Valid until')
-    ) }}
-
-    {{ fields.textField(
-        'responsible_field',
-        item.fields.responsible_field,
-        __('Supervisor')
-    ) }}
+    {% for field, label in fields %}
+        {{ fields.textField(
+            field,
+            item.fields[field],
+            label
+        ) }}
+    {% endfor %}
 
     <span class="text-center text-info-emphasis">
         {{ __('You can use a field name or an expression using various %{fieldname}') }}
