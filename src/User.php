@@ -2023,7 +2023,7 @@ class User extends CommonDBTM
                             $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
                             break;
                         case 'users_id_supervisor':
-                            $supervisor_id = self::getIdByField('user_dn', $val, false);
+                            $supervisor_id = self::getIdByField('user_dn', $val);
                             if ($supervisor_id) {
                                 $this->fields[$k] = $supervisor_id;
                             }
@@ -5359,6 +5359,7 @@ JAVASCRIPT;
      * Get user ID from a field
      *
      * @since 0.84
+     * @since 10.1.0 Parameter `$escape` has been removed.
      *
      * @param string $field Field name
      * @param string $value Field value
