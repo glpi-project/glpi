@@ -88,7 +88,7 @@ class ITILSolution extends DbTestCase
             (int)$solution->add([
                 'itemtype'  => $ticket::getType(),
                 'items_id'  => $ticket->getID(),
-                'content'   => 'Current friendly ticket\r\nis solved!'
+                'content'   => "Current friendly ticket\r\nis solved!"
             ])
         );
        //reload from DB
@@ -191,7 +191,7 @@ class ITILSolution extends DbTestCase
             (int)$solution->add([
                 'itemtype'  => $problem::getType(),
                 'items_id'  => $problem->getID(),
-                'content'   => 'Current friendly problem\r\nis solved!'
+                'content'   => "Current friendly problem\r\nis solved!"
             ])
         );
        //reload from DB
@@ -225,7 +225,7 @@ class ITILSolution extends DbTestCase
             (int)$solution->add([
                 'itemtype'  => $change::getType(),
                 'items_id'  => $change->getID(),
-                'content'   => 'Current friendly change\r\nis solved!'
+                'content'   => "Current friendly change\r\nis solved!"
             ])
         );
        //reload from DB
