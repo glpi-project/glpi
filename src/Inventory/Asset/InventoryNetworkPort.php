@@ -46,6 +46,7 @@ use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
 use QueryParam;
+use Toolbox;
 use Unmanaged;
 
 trait InventoryNetworkPort
@@ -116,7 +117,6 @@ trait InventoryNetworkPort
             $this->cleanUnmanageds();
         }
 
-        $this->handleDeletesManagementPorts();
         $this->handleIpNetworks();
         $this->handleUpdates();
         $this->handleCreates();
@@ -631,18 +631,7 @@ trait InventoryNetworkPort
      */
     private function handleDeletesManagementPorts()
     {
-        if (method_exists($this, 'getManagementPorts')) {
-            if (empty($this->getManagementPorts())) {
-                //remove all port management ports
-                $networkport = new NetworkPort();
-                $networkport->deleteByCriteria([
-                    "itemtype"           => $this->itemtype,
-                    "items_id"           => $this->items_id,
-                    "instantiation_type" => NetworkPortAggregate::getType(),
-                    "name"               => "Management"
-                ], 1);
-            }
-        }
+        Toolbox::deprecated();
     }
 
     protected function portCreated(\stdClass $port, int $netports_id)
