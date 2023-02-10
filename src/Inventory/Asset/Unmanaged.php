@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Glpi\Toolbox\Sanitizer;
-use NetworkPortInstantiation;
 use RefusedEquipment;
 use RuleMatchedLog;
 use Toolbox;
@@ -320,6 +319,7 @@ class Unmanaged extends MainAsset
      */
     public function getManagementPorts()
     {
+        Toolbox::deprecated();
         return [];
     }
 
@@ -328,6 +328,7 @@ class Unmanaged extends MainAsset
      */
     public function setManagementPorts(array $ports): Unmanaged
     {
+        Toolbox::deprecated();
         return $this;
     }
 }

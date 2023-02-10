@@ -610,7 +610,6 @@ class NetworkPort extends InventoryAsset
 
     public function handle()
     {
-        $this->ports += $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()]->getManagementPorts();
         $this->handlePorts();
     }
 

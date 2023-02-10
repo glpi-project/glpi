@@ -41,11 +41,10 @@ use Glpi\Toolbox\Sanitizer;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkName;
+use Toolbox;
 
 class NetworkEquipment extends MainAsset
 {
-    private $management_ports = [];
-
     protected $extra_data = [
         'network_device'                          => null,
         'network_components'                      => null,
@@ -182,23 +181,6 @@ class NetworkEquipment extends MainAsset
             }
         }
 
-        if (method_exists($this, 'getManagementPorts')) {
-            $mports = $this->getManagementPorts();
-            $np = new NetworkPort($this->item, $mports);
-            if ($np->checkConf($this->conf)) {
-                $np->setAgent($this->getAgent());
-                $np->setEntityID($this->getEntityID());
-                $np->prepare();
-                $np->handleLinks();
-                if (!isset($this->assets['\Glpi\Inventory\Asset\NetworkPort'])) {
-                    $np->addNetworkPorts($mports);
-                    $this->assets['\Glpi\Inventory\Asset\NetworkPort'] = [$np];
-                } else {
-                    $this->assets['\Glpi\Inventory\Asset\NetworkPort'][0]->addNetworkPorts($np->getNetworkPorts());
-                }
-            }
-        }
-
         parent::rulepassed($items_id, $itemtype, $rules_id, $ports_id);
 
         if (isset($bkp_assets)) {
@@ -240,14 +222,21 @@ class NetworkEquipment extends MainAsset
         }
     }
 
+    /**
+     * @FIXME Remove method in GLPI 10.1.
+     */
     public function getManagementPorts()
     {
-        return $this->management_ports;
+        Toolbox::deprecated();
+        return [];
     }
 
-    public function setManagementPorts(array $ports): NetworkEquipment
+    /**
+     * @FIXME Remove method in GLPI 10.1.
+     */
+    public function setManagementPorts(array $ports): Unmanaged
     {
-        $this->management_ports = $ports;
+        Toolbox::deprecated();
         return $this;
     }
 

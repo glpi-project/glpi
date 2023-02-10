@@ -116,7 +116,6 @@ trait InventoryNetworkPort
             $this->cleanUnmanageds();
         }
 
-        $this->handleDeletesManagementPorts();
         $this->handleIpNetworks();
         $this->handleUpdates();
         $this->handleCreates();
@@ -368,9 +367,6 @@ trait InventoryNetworkPort
         $netname_stmt = null;
 
         $ports = $this->ports;
-        if (method_exists($this, 'getManagementPorts')) {
-            $ports += $this->getManagementPorts();
-        }
         foreach ($ports as $key => $data) {
             foreach ($db_ports as $keydb => $datadb) {
                 $dbdata_copy = [];
@@ -498,12 +494,6 @@ trait InventoryNetworkPort
                 unset($db_ports[$keydb]);
                 unset($this->networks[$key]);
                 unset($this->ports[$key]);
-                if (method_exists($this, 'getManagementPorts') && method_exists($this, 'setManagementPorts')) {
-                    $managements = $this->getManagementPorts();
-                    unset($managements[$key]);
-                    $this->setManagementPorts($managements);
-                }
-
                 $this->portUpdated($data, $keydb);
             }
         }
@@ -606,9 +596,6 @@ trait InventoryNetworkPort
     private function handleCreates()
     {
         $ports = $this->ports;
-        if (method_exists($this, 'getManagementPorts')) {
-            $ports += $this->getManagementPorts();
-        }
         foreach ($ports as $port) {
             $netports_id = $this->addNetworkPort($port);
             if (count(($port->ipaddress ?? []))) {
@@ -621,27 +608,6 @@ trait InventoryNetworkPort
                 $this->handleInstantiation($type, $port, $netports_id, false);
             }
             $this->portCreated($port, $netports_id);
-        }
-    }
-
-    /**
-     * Delete Management Ports if needed
-     *
-     * @return void
-     */
-    private function handleDeletesManagementPorts()
-    {
-        if (method_exists($this, 'getManagementPorts')) {
-            if (empty($this->getManagementPorts())) {
-                //remove all port management ports
-                $networkport = new NetworkPort();
-                $networkport->deleteByCriteria([
-                    "itemtype"           => $this->itemtype,
-                    "items_id"           => $this->items_id,
-                    "instantiation_type" => NetworkPortAggregate::getType(),
-                    "name"               => "Management"
-                ], 1);
-            }
         }
     }
 
