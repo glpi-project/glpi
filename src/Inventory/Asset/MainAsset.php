@@ -779,12 +779,6 @@ abstract class MainAsset extends InventoryAsset
                     unset($val->firmware);
                 }
             }
-
-            //For netinventory NetworkEquipement
-            if (property_exists($val, 'ap_port') && method_exists($this, 'setManagementPorts')) {
-                $this->setManagementPorts(['management' => $val->ap_port]);
-                unset($val->ap_port);
-            }
         }
 
         $input = $this->handleInput($val, $this->item);

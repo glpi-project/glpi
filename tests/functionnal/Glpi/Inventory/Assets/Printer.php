@@ -136,10 +136,7 @@ class Printer extends AbstractInventoryAsset
             'last_pages_counter' => 1802,
         ]);
 
-        //no management port
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-        $this->array($main->getManagementPorts())->hasSize(0);
-
         $pcounter = new \stdClass();
         $pcounter->rectoverso = 831;
         $pcounter->rv_pages = 831;
@@ -509,9 +506,6 @@ class Printer extends AbstractInventoryAsset
             'memory_size' => 256,
             'last_pages_counter' => 800
         ]);
-
-        //get no management port
-        $this->array($main->getManagementPorts())->hasSize(0);
 
         //do real inventory to check dataDB
         $json_str = file_get_contents(self::INV_FIXTURES . 'printer_3.json');

@@ -234,7 +234,7 @@ class NetworkEquipment extends MainAsset
     /**
      * @FIXME Remove method in GLPI 10.1.
      */
-    public function setManagementPorts(array $ports): Unmanaged
+    public function setManagementPorts(array $ports): NetworkEquipment
     {
         Toolbox::deprecated();
         return $this;
