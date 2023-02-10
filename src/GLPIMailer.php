@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Mail\SMTP\OauthConfig;
+use PHPMailer\PHPMailer\OAuth;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
@@ -61,27 +63,51 @@ class GLPIMailer extends PHPMailer
             $this->Mailer = "smtp";
             $this->Host   = $CFG_GLPI['smtp_host'] . ':' . $CFG_GLPI['smtp_port'];
 
-            if ($CFG_GLPI['smtp_username'] != '') {
+            if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPOAUTH) {
+                $this->SMTPSecure = 'tls';
                 $this->SMTPAuth = true;
-                $this->Username = $CFG_GLPI['smtp_username'];
-                $this->Password = (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']);
-            }
+                $this->AuthType = 'XOAUTH2';
+                $provider = OauthConfig::getInstance()->getSmtpOauthProvider();
+                if ($provider !== null) {
+                    $client_id     = $CFG_GLPI['smtp_oauth_client_id'];
+                    $client_secret = (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_client_secret']);
+                    $refresh_token = (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_refresh_token']);
 
-            if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {
-                $this->SMTPSecure = "ssl";
-            } else if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS) {
-                $this->SMTPSecure = "tls";
+                    $this->setOAuth(
+                        new OAuth(
+                            [
+                                'provider'     => $provider,
+                                'clientId'     => $client_id,
+                                'clientSecret' => $client_secret,
+                                'refreshToken' => $refresh_token,
+                                'userName'     => $CFG_GLPI['smtp_username'],
+                            ]
+                        )
+                    );
+                }
             } else {
-               // Don't automatically enable encryption if the GLPI config doesn't specify it
-                $this->SMTPAutoTLS = false;
-            }
+                if ($CFG_GLPI['smtp_username'] != '') {
+                    $this->SMTPAuth = true;
+                    $this->Username = $CFG_GLPI['smtp_username'];
+                    $this->Password = (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']);
+                }
 
-            if (!$CFG_GLPI['smtp_check_certificate']) {
-                $this->SMTPOptions = ['ssl' => ['verify_peer'       => false,
-                    'verify_peer_name'  => false,
-                    'allow_self_signed' => true
-                ]
-                ];
+                if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {
+                    $this->SMTPSecure = "ssl";
+                } else if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS) {
+                    $this->SMTPSecure = "tls";
+                } else {
+                   // Don't automatically enable encryption if the GLPI config doesn't specify it
+                    $this->SMTPAutoTLS = false;
+                }
+
+                if (!$CFG_GLPI['smtp_check_certificate']) {
+                    $this->SMTPOptions = ['ssl' => ['verify_peer'       => false,
+                        'verify_peer_name'  => false,
+                        'allow_self_signed' => true
+                    ]
+                    ];
+                }
             }
             if ($CFG_GLPI['smtp_sender'] != '') {
                 $this->Sender = $CFG_GLPI['smtp_sender'];

@@ -76,6 +76,8 @@ class GLPIKey
             'glpinetwork_registration_key',
             'proxy_passwd',
             'smtp_passwd',
+            'smtp_oauth_client_secret',
+            'smtp_oauth_refresh_token',
         ]
     ];
 
