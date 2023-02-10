@@ -73,6 +73,10 @@ class Config extends CommonDBTM
     public static $undisclosedFields      = [
         'proxy_passwd',
         'smtp_passwd',
+        'smtp_oauth_client_id',
+        'smtp_oauth_client_secret',
+        'smtp_oauth_options',
+        'smtp_oauth_refresh_token',
         'glpinetwork_registration_key',
         'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
     ];
@@ -185,12 +189,7 @@ class Config extends CommonDBTM
             }
         }
 
-        if (isset($input["smtp_passwd"]) && empty($input["smtp_passwd"])) {
-            unset($input["smtp_passwd"]);
-        }
-        if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
-            $input['smtp_passwd'] = '';
-        }
+        $input = $this->handleSmtpInput($input);
 
         if (isset($input["proxy_passwd"]) && empty($input["proxy_passwd"])) {
             unset($input["proxy_passwd"]);
@@ -299,6 +298,71 @@ class Config extends CommonDBTM
         $this->setConfigurationValues('core', $input);
 
         return false;
+    }
+
+    /**
+     * Handle SMTP input values.
+     *
+     * @param array $input
+     *
+     * @return array
+     */
+    private function handleSmtpInput(array $input): array
+    {
+        global $CFG_GLPI;
+
+        if (array_key_exists('smtp_mode', $input) && (int)$input['smtp_mode'] === MAIL_SMTPOAUTH) {
+            $input['smtp_check_certificate'] = 1;
+            $input['smtp_passwd']          = '';
+
+            if (array_key_exists('smtp_oauth_client_secret', $input) && $input['smtp_oauth_client_secret'] === '') {
+                // form does not contains existing password value for security reasons
+                // prevent password to be overriden by an empty value
+                unset($input['smtp_oauth_client_secret']);
+            }
+
+            if (array_key_exists('smtp_oauth_options', $input)) {
+                if (is_array($input['smtp_oauth_options'])) {
+                    $input['smtp_oauth_options'] = json_encode($input['smtp_oauth_options']);
+                } else {
+                    $input['smtp_oauth_options'] = '';
+                }
+            }
+
+            $has_oauth_settings_changed = (array_key_exists('smtp_oauth_provider', $input) && $input['smtp_oauth_provider'] !== $CFG_GLPI['smtp_oauth_provider'])
+                || (array_key_exists('smtp_oauth_client_id', $input) && $input['smtp_oauth_client_id'] !== $CFG_GLPI['smtp_oauth_client_id'])
+                || (array_key_exists('smtp_oauth_options', $input) && $input['smtp_oauth_options'] !== $CFG_GLPI['smtp_oauth_options']);
+
+            if ($has_oauth_settings_changed) {
+                // clean credentials, they will have to be replaced by new ones
+                $input['smtp_oauth_refresh_token'] = '';
+                $input['smtp_username']            = '';
+            }
+
+            // remember whether the SMTP Oauth flow has to be triggered
+            $_SESSION['redirect_to_smtp_oauth'] = (bool)($input['_force_redirect_to_smtp_oauth'] ?? false) === true
+                || $has_oauth_settings_changed
+                || (string)$CFG_GLPI['smtp_oauth_refresh_token'] === '';
+
+            // ensure value is not saved in DB
+            unset($input['_force_redirect_to_smtp_oauth']);
+        } else {
+            if (isset($input['smtp_passwd']) && empty($input['smtp_passwd'])) {
+                unset($input['smtp_passwd']);
+            }
+            if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
+                $input['smtp_passwd'] = '';
+            }
+
+            // clean oauth related information
+            $input['smtp_oauth_provider'] = '';
+            $input['smtp_oauth_client_id'] = '';
+            $input['smtp_oauth_client_secret'] = '';
+            $input['smtp_oauth_options'] = '{}';
+            $input['smtp_oauth_refresh_token'] = '';
+        }
+
+        return $input;
     }
 
     public static function unsetUndisclosedFields(&$fields)
@@ -2219,6 +2283,18 @@ HTML;
             [
                 'name'  => 'symfony/polyfill-php82',
                 'check' => 'Symfony\\Polyfill\\Php82\\SensitiveParameterValue'
+            ],
+            [
+                'name'  => 'league/oauth2-client',
+                'check' => 'League\\OAuth2\\Client\\Provider\\AbstractProvider'
+            ],
+            [
+                'name'  => 'league/oauth2-google',
+                'check' => 'League\\OAuth2\\Client\\Provider\\Google'
+            ],
+            [
+                'name'  => 'thenetworg/oauth2-azure',
+                'check' => 'TheNetworg\\OAuth2\\Client\\Provider\\Azure'
             ],
         ];
         if (Toolbox::canUseCAS()) {

@@ -1997,6 +1997,10 @@ class MailCollector extends CommonDBTM
             case MAIL_SMTPTLS:
                 $msg .= 'SMTP+TLS';
                 break;
+
+            case MAIL_SMTPOAUTH:
+                $msg .= 'SMTP+OAUTH';
+                break;
         }
         if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
             $msg .= " (" . (empty($CFG_GLPI['smtp_username']) ? 'anonymous' : $CFG_GLPI['smtp_username']) .
