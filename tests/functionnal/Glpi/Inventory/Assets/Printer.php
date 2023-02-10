@@ -234,18 +234,9 @@ class Printer extends AbstractInventoryAsset
             'last_pages_counter' => 800
         ]);
 
-        //get one management port only
-        $this->array($mports = $main->getManagementPorts())->hasSize(1)->hasKey('management');
-        $this->array((array)$mports['management'])->isIdenticalTo([
-            'mac' => '00:85:eb:f4:be:20',
-            'name' => 'Management',
-            'netname' => 'internal',
-            'instantiation_type' => 'NetworkPortAggregate',
-            'is_internal' => true,
-            'ipaddress' => [
-                '10.59.29.176'
-            ]
-        ]);
+        //no management port from netinventory
+        //<IP> then remote_addr are not availaible
+        $this->array($mports = $main->getManagementPorts())->hasSize(0);
 
         //do real inventory to check dataDB
         $json_str = file_get_contents(self::INV_FIXTURES . 'printer_2.json');
@@ -256,7 +247,7 @@ class Printer extends AbstractInventoryAsset
         $this->boolean($printer->getFromDbByCrit(['name' => 'MX5970', 'serial' => 'SDFSDF9874']))->isTrue();
 
         $np = new \NetworkPort();
-        $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isTrue();
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isFalse();
         $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']))->isTrue();
 
         //remove printer for other test
@@ -1581,8 +1572,9 @@ class Printer extends AbstractInventoryAsset
             'last_pages_counter' => 1802
         ]);
 
-        //get no management port
-        $this->array($main->getManagementPorts())->hasSize(1);
+        //no management port from netinventory
+        //<IP> then remote_addr are not availaible
+        $this->array($main->getManagementPorts())->hasSize(0);
 
         //do real inventory to check dataDB
         $json = json_decode($json_str);
@@ -1601,15 +1593,7 @@ class Printer extends AbstractInventoryAsset
         )->isIdenticalTo(1);
 
         //1 NetworkPortAggregate
-        $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isTrue();
-
-        //1 NetworkName form NetworkPortAggregate
-        $nm = new \NetworkName();
-        $this->boolean($nm->getFromDbByCrit(["itemtype" => "NetworkPort", "items_id" => $np->fields['id']]))->isTrue();
-
-        //1 IPAdress form NetworkName
-        $ip = new \IPAddress();
-        $this->boolean($ip->getFromDbByCrit(["name" => "10.59.29.208", "itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->isTrue();
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isFalse();
 
         //remove printer for other test
         $printer->delete($printer->fields);
