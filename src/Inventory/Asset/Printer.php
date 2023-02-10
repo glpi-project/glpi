@@ -162,20 +162,21 @@ class Printer extends NetworkEquipment
             }
         }
 
-        //try to know if management port IP is already known as IP port
-        //if yes remove it from management port
+        // try to know if remote_addr IP is already known as IP port
+        // if yes remove it from management port
+        // to prevent twice IP from search
+        //  - one from NetworkPortEthernet
+        //  - another for NetworkPortAggregate
         $known_ports = $port_managment = $this->getManagementPorts();
         if (isset($known_ports['management']) && property_exists($known_ports['management'], 'ipaddress')) {
             foreach ($known_ports['management']->ipaddress as $pa_ip_key => $pa_ip_val) {
                 if (property_exists($this->raw_data->content, 'network_ports')) {
                     foreach ($this->raw_data->content->network_ports as $port_obj) {
                         if (property_exists($port_obj, 'ips')) {
-                            foreach ($port_obj->ips as $port_ip) {
-                                if ($pa_ip_val == $port_ip) {
-                                    unset($port_managment['management']->ipaddress[$pa_ip_key]);
-                                    if (empty($port_managment['management']->ipaddress)) {
-                                        unset($port_managment['management']);
-                                    }
+                            if ($pa_ip_val == $port_obj->remote_addr) {
+                                unset($port_managment['management']->ipaddress[$pa_ip_key]);
+                                if (empty($port_managment['management']->ipaddress)) {
+                                    unset($port_managment['management']);
                                 }
                             }
                         }
