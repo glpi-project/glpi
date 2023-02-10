@@ -7033,6 +7033,18 @@ JAVASCRIPT;
                     }
                     return $out;
 
+                case 'glpi_changevalidations.status':
+                    $out   = '';
+                    for ($k = 0; $k < $data[$ID]['count']; $k++) {
+                        if ($data[$ID][$k]['name']) {
+                             $status  = ChangeValidation::getStatus($data[$ID][$k]['name']);
+                             $bgcolor = ChangeValidation::getStatusColor($data[$ID][$k]['name']);
+                             $out    .= (empty($out) ? '' : self::LBBR) .
+                                 "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
+                        }
+                    }
+                    return $out;
+
                 case 'glpi_cables.color':
                    //do not display 'real' value (#.....)
                     return "";
