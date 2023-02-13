@@ -483,6 +483,7 @@ class NetworkPort extends CommonDBChild
                 'ifoutbytes'      => $this->fields['ifoutbytes'] ?? 0,
                 'ifinerrors'      => $this->fields['ifinerrors'] ?? 0,
                 'ifouterrors'     => $this->fields['ifouterrors'] ?? 0,
+                'is_dynamic'     =>  $this->fields['is_dynamic'] ?? 0,
             ],
             $unicity_input
         );
