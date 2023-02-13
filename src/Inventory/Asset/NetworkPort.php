@@ -543,6 +543,7 @@ class NetworkPort extends InventoryAsset
             $input_db['ifoutbytes']  = $input['ifoutbytes'];
             $input_db['ifinerrors']  = $input['ifinerrors'];
             $input_db['ifouterrors'] = $input['ifouterrors'];
+            $input_db['is_dynamic'] = true;
             $netport->update($input_db);
         }
     }
