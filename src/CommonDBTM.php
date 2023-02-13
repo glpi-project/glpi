@@ -1964,8 +1964,9 @@ class CommonDBTM extends CommonGLPI
      **/
     public function post_updateItem($history = 1)
     {
-
-        UserMention::handleUserMentions($this);
+        if (count($this->updates) > 0) {
+            UserMention::handleUserMentions($this);
+        }
     }
 
 
