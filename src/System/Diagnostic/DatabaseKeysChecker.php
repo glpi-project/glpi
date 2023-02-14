@@ -36,6 +36,7 @@
 namespace Glpi\System\Diagnostic;
 
 use CommonDBTM;
+use CommonTreeDropdown;
 
 /**
  * @since 10.0.0
@@ -59,9 +60,10 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
 
         $columns = $this->getColumnsNames($table_name);
         foreach ($columns as $column_name) {
+            $itemtype = getItemTypeForTable($table_name);
             $column_name_matches = [];
             if (
-                is_a($itemtype = getItemTypeForTable($table_name), CommonDBTM::class, true)
+                is_a($itemtype, CommonDBTM::class, true)
                 && $column_name === $itemtype::getNameField()
                 && preg_match('/text$/', $this->getColumnType($table_name, $column_name)) !== 1
             ) {
@@ -82,8 +84,9 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
                 }
             } else if (
                 isForeignKeyField($column_name)
-                    || preg_match('/^date(_(mod|creation))$/', $column_name)
-                    || preg_match('/^is_(active|deleted|dynamic|recursive|template)$/', $column_name)
+                || preg_match('/^date(_(mod|creation))$/', $column_name)
+                || preg_match('/^is_(active|deleted|dynamic|recursive|template)$/', $column_name)
+                || (is_a($itemtype, CommonTreeDropdown::class, true) && $column_name === 'level')
             ) {
                 $ignored_fields = [
                     'glpi_ipaddresses.mainitems_id', // FIXME Should be renamed to glpi_ipaddresses.items_id_main to fit naming conventions.
