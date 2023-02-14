@@ -73,7 +73,9 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
                 $document_row['filepath']
             );
         };
-        foreach ($this->iterate($data, $progress_message) as $document_row) {
+
+        $count = $this->countDocuments();
+        foreach ($this->iterate($data, $progress_message, $count) as $document_row) {
             $status = $this->validateDocument($document_row);
 
             if ($status != self::DOCUMENT_OK) {
@@ -91,16 +93,35 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
     /**
      * Get all documents from db
      *
-     * @return DBmysqlIterator
+     * @return iterable
      */
-    protected function getDocuments(): DBmysqlIterator
+    protected function getDocuments(): iterable
     {
         global $DB;
 
-        return $DB->request([
-            'SELECT' => ['id', 'name', 'filepath', 'sha1sum', 'filename'],
-            'FROM' => Document::getTable(),
-        ]);
+        $i = 0;
+
+        do {
+            $rows = $DB->request([
+                'SELECT' => ['id', 'name', 'filepath', 'sha1sum', 'filename'],
+                'FROM'   => Document::getTable(),
+                'LIMIT'  => 1000,
+                'OFFSET' => $i * 1000,
+            ]);
+            yield from $rows;
+
+            $i++;
+        } while (count($rows) > 0);
+    }
+
+    /**
+     * Get the number of documents in the database db
+     *
+     * @return int
+     */
+    protected function countDocuments(): int
+    {
+        return countElementsInTable(Document::getTable());
     }
 
     /**
