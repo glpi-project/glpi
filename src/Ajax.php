@@ -360,7 +360,7 @@ JAVASCRIPT;
             }
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
-            $js = "
+            $js = <<<JS
          var loadTabContents = function (tablink, force_reload = false) {
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
@@ -418,7 +418,7 @@ JAVASCRIPT;
                $('#$tabdiv_id li a').eq($(this).val()).tab('show');
             });
          });
-         ";
+JS;
 
             echo Html::scriptBlock($js);
         }
