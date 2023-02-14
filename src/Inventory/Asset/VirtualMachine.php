@@ -294,6 +294,7 @@ class VirtualMachine extends InventoryAsset
             }
             // Define location of physical computer (host)
             $vm->locations_id = $this->item->fields['locations_id'];
+            $vm->last_inventory_update = $_SESSION["glpi_currenttime"];
             $vm->autoupdatesystems_id = $this->item->fields['autoupdatesystems_id'];
             $vm->is_dynamic = 1;
 
