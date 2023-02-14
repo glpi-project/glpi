@@ -42,6 +42,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Toolbox;
 use User;
 
 class SynchronizeUsersCommand extends AbstractCommand
@@ -201,7 +202,7 @@ class SynchronizeUsersCommand extends AbstractCommand
 
         global $CFG_GLPI;
 
-        $this->validateInput($input, $output);
+        $this->validateInput($input);
 
         $only_create = $input->getOption('only-create-new');
         $only_update = $input->getOption('only-update-existing');
@@ -228,11 +229,6 @@ class SynchronizeUsersCommand extends AbstractCommand
             ];
             $deleted_user_strategies = $input->getOption('deleted-user-strategy');
             if (null !== $deleted_user_strategies) {
-                if (!preg_match("/^[0-9],[0-9],[0-9]$/", $deleted_user_strategies)) {
-                    // Handle deprecated format
-                    $deleted_user_strategies = $this->convertOldDeletedUserStrategyToNew($deleted_user_strategies);
-                }
-
                 $deleted_user_strategies = explode(",", $deleted_user_strategies);
                 $CFG_GLPI['user_deleted_ldap_user'] = $deleted_user_strategies[0];
                 $CFG_GLPI['user_deleted_ldap_groups'] = $deleted_user_strategies[1];
@@ -476,13 +472,12 @@ class SynchronizeUsersCommand extends AbstractCommand
      * Validate command input.
      *
      * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @return void
      *
      * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
      */
-    private function validateInput(InputInterface $input, OutputInterface $ouput)
+    private function validateInput(InputInterface $input)
     {
 
         $only_create = $input->getOption('only-create-new');
@@ -534,11 +529,14 @@ class SynchronizeUsersCommand extends AbstractCommand
         // Handle deleted-user-strategy option
         $deleted_user_strategy = $input->getOption('deleted-user-strategy');
         if (null !== $deleted_user_strategy) {
+            // Detect "single integer" old format
             if (in_array($deleted_user_strategy, [0, 1, 2, 3, 4, 5])) {
-                // Old "single integer" format
-                $ouput->writeln("<info>Warning: using deprecated --deleted-user-strategy format</info>");
-                $ouput->writeln('<info>Run "php bin/console ldap:synchronize --help for more details"</info>');
-            } elseif (preg_match("/^[0-9],[0-9],[0-9]$/", $deleted_user_strategy)) {
+                // Fix input by converting the value
+                $deleted_user_strategy = $this->convertOldDeletedUserStrategyToNew($deleted_user_strategy);
+                $this->input->setOption('deleted-user-strategy', $deleted_user_strategy);
+            }
+
+            if (preg_match("/^[0-9],[0-9],[0-9]$/", $deleted_user_strategy)) {
                 // New format with 3 comma-separated integers
                 $values = explode(",", $deleted_user_strategy);
                 $strategies_user = AuthLDAP::getLdapDeletedUserActionOptions_User();
@@ -572,50 +570,56 @@ class SynchronizeUsersCommand extends AbstractCommand
      * Convert the old "single integer" format for the --deleted-user-strategy
      * option into the new "3 comma-separated integers" format
      *
+     * @deprecated
+     *
      * @param int $deleted_user_strategy old format
      *
      * @return string new format
      */
     protected function convertOldDeletedUserStrategyToNew(int $deleted_user_strategy): string
     {
+        Toolbox::deprecated("Usage of a deprecated format for the '--deleted-user-strategy' option.");
+        $this->output->writeln("<info>Warning: using deprecated --deleted-user-strategy format</info>");
+        $this->output->writeln('<info>Run "php bin/console ldap:synchronize --help for more details"</info>');
+
         switch ($deleted_user_strategy) {
             default:
-            case 0: // AuthLDAP::DELETED_USER_PRESERVE (preserve user)
+            case AuthLDAP::DELETED_USER_PRESERVE: // (preserve user)
                 $deleted_user_strategy = [
                     AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING,
                     AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING,
                     AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
                 ];
                 break;
-            case 1: // AuthLDAP::DELETED_USER_DELETE (put user in trashbin)
+            case AuthLDAP::DELETED_USER_DELETE: // (put user in trashbin)
                 $deleted_user_strategy = [
                     AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN,
                     AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING,
                     AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
                 ];
                 break;
-            case 2: // AuthLDAP::DELETED_USER_WITHDRAWDYNINFO (withdraw dynamic authorizations and groups)
+            case AuthLDAP::DELETED_USER_WITHDRAWDYNINFO: // (withdraw dynamic authorizations and groups)
                 $deleted_user_strategy = [
                     AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING,
                     AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC,
                     AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC,
                 ];
                 break;
-            case 3: // AuthLDAP::DELETED_USER_DISABLE (disable user)
+            case AuthLDAP::DELETED_USER_DISABLE: // (disable user)
                 $deleted_user_strategy = [
                     AuthLDAP::DELETED_USER_ACTION_USER_DISABLE,
                     AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING,
                     AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
                 ];
                 break;
-            case 4: // AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO (disable user and withdraw dynamic authorizations/groups)
+            case AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO: // (disable user and withdraw dynamic authorizations/groups)
                 $deleted_user_strategy = [
                     AuthLDAP::DELETED_USER_ACTION_USER_DISABLE,
                     AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC,
                     AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC,
                 ];
                 break;
-            case 5: // AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS (disable user and withdraw groups)
+            case AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS: // (disable user and withdraw groups)
                 $deleted_user_strategy = [
                     AuthLDAP::DELETED_USER_ACTION_USER_DISABLE,
                     AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL,
