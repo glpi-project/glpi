@@ -101,6 +101,7 @@ class Inventory extends InventoryTestCase
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
             'last_boot' => '2020-06-09 07:58:08',
+            'remote_addr' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -885,6 +886,7 @@ class Inventory extends InventoryTestCase
             'last_inventory_update' => $_SESSION['glpi_currenttime'],
             'snmpcredentials_id' => 0,
             'autoupdatesystems_id' => $autoupdatesystems_id,
+            'remote_addr' => null,
             'linkid' => $printer_link['linkid'],
             'glpi_computers_items_is_dynamic' => 1,
             'entity' => 0,
@@ -1289,6 +1291,7 @@ class Inventory extends InventoryTestCase
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
             'last_boot' => "2017-02-20 08:11:53",
+            'remote_addr' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1502,6 +1505,7 @@ class Inventory extends InventoryTestCase
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
             'last_boot' => "2017-02-20 08:11:53",
+            'remote_addr' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1663,6 +1667,7 @@ class Inventory extends InventoryTestCase
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
             'last_boot' => "2017-06-08 07:06:47",
+            'remote_addr' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -4832,6 +4837,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'date_creation' => $phone->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $phone->fields['last_inventory_update'],
+            'remote_addr' => null,
         ];
         $this->array($phone->fields)->isIdenticalTo($expected);
 
