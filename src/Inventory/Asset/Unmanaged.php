@@ -35,6 +35,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Blacklist;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Glpi\Toolbox\Sanitizer;
@@ -90,6 +91,7 @@ class Unmanaged extends MainAsset
     {
         if (isset($this->extra_data['network_device'])) {
             $device = (object)$this->extra_data['network_device'];
+            $blacklist = new Blacklist();
 
             $dev_mapping = [
                 'mac'       => 'mac',
@@ -107,7 +109,7 @@ class Unmanaged extends MainAsset
                 $val->$key = $property;
             }
 
-            if (property_exists($device, 'ips')) {
+            if (property_exists($device, 'remote_addr')) {
                 $portkey = 'management';
                 $port = new \stdClass();
                 if (property_exists($device, 'mac')) {
@@ -117,16 +119,15 @@ class Unmanaged extends MainAsset
                 $port->netname = __('internal');
                 $port->instantiation_type = 'NetworkPortAggregate';
                 $port->is_internal = true;
-                $port->logical_number = 0;
                 $port->ipaddress = [];
 
-               //add internal port(s)
-                foreach ($device->ips as $ip) {
-                    if ($ip != '127.0.0.1' && $ip != '::1' && !in_array($ip, $port->ipaddress)) {
-                        $port->ipaddress[] = $ip;
-                    }
+                //add internal port
+                if (
+                    !in_array($device->remote_addr, $port->ipaddress)
+                    && '' != $blacklist->process(Blacklist::IP, $device->remote_addr)
+                ) {
+                    $port->ipaddress[] = $device->remote_addr;
                 }
-
                 $this->management_ports[$portkey] = $port;
             }
         }

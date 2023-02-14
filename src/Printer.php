@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Conf;
 use Glpi\Socket;
 
 /**
@@ -229,7 +230,7 @@ class Printer extends CommonDBTM
             $input['last_pages_counter'] = $input['init_pages_counter'];
         }
 
-        return $input;
+        return $this->manageInput($input);
     }
 
 
@@ -243,6 +244,22 @@ class Printer extends CommonDBTM
             $input['last_pages_counter'] = intval($input['last_pages_counter']);
         }
 
+        return $this->manageInput($input);
+    }
+
+
+    public static function getRemoteAddrLabel()
+    {
+        return __('SNMP port remote address');
+    }
+
+
+    public function manageInput($input)
+    {
+        //without right, user can't set remote_addr
+        if (isset($input['remote_addr']) && !Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
+            unset($input['remote_addr']);
+        }
         return $input;
     }
 
@@ -366,6 +383,15 @@ class Printer extends CommonDBTM
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'remote_addr',
+            'name'               => self::getRemoteAddrLabel(),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [

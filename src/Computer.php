@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Conf;
 use Glpi\Socket;
 
 /**
@@ -292,14 +293,35 @@ class Computer extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
         unset($input['id']);
         unset($input['withtemplate']);
 
+        return $this->manageInput($input);
+    }
+
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->manageInput($input);
+    }
+
+
+    public function manageInput($input)
+    {
+        //without right, user can't set remote_addr
+        if (isset($input['remote_addr']) && !Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
+            unset($input['remote_addr']);
+        }
         return $input;
+    }
+
+
+    public static function getRemoteAddrLabel()
+    {
+        return __('Public contact address');
     }
 
 
@@ -461,6 +483,15 @@ class Computer extends CommonDBTM
             'field'              => 'last_boot',
             'name'               => __('Last boot date'),
             'datatype'           => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'remote_addr',
+            'name'               => self::getRemoteAddrLabel(),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [

@@ -76,7 +76,7 @@ class Unmanaged extends AbstractInventoryAsset
                             "type": "Unmanaged",
                             "mac": "4c:cc:6a:02:13:a9",
                             "name": "DESKTOP-A3J16LF",
-                            "ip": "192.168.1.20",
+                            "remote_addr": "192.168.1.20",
                             "ips": [
                                 "192.168.1.20"
                             ]

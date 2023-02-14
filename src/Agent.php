@@ -162,7 +162,7 @@ class Agent extends CommonDBTM
                 'id'            => '16',
                 'table'         => $this->getTable(),
                 'field'         => 'remote_addr',
-                'name'          => __('Public contact address'),
+                'name'          => self::getRemoteAddrLabel(),
                 'datatype'      => 'text',
                 'massiveaction' => false,
             ],
@@ -518,6 +518,11 @@ class Agent extends CommonDBTM
     public function prepareInputForUpdate($input)
     {
         return $this->prepareInputs($input);
+    }
+
+    public static function getRemoteAddrLabel()
+    {
+        return __('Public contact address');
     }
 
     /**

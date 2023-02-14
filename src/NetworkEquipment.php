@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Conf;
 use Glpi\Socket;
 
 /**
@@ -173,7 +174,29 @@ class NetworkEquipment extends CommonDBTM
         unset($input['id']);
         unset($input['withtemplate']);
 
+        return $this->manageInput($input);
+    }
+
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->manageInput($input);
+    }
+
+
+    public function manageInput($input)
+    {
+        //without right, user can't set remote_addr
+        if (isset($input['remote_addr']) && !Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
+            unset($input['remote_addr']);
+        }
         return $input;
+    }
+
+
+    public static function getRemoteAddrLabel()
+    {
+        return __('SNMP remote address');
     }
 
 
@@ -300,6 +323,15 @@ class NetworkEquipment extends CommonDBTM
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'remote_addr',
+            'name'               => self::getRemoteAddrLabel(),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [

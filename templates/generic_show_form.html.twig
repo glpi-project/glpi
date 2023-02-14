@@ -655,6 +655,19 @@
                         ) }}
                      {% endif %}
 
+                     {% if item.isField('remote_addr') %}
+                        {% if has_profile_right('inventory', constant('READ')) %}
+                           {{ fields.textField(
+                              "remote_addr",
+                              item.fields['remote_addr'],
+                              item.getRemoteAddrLabel,
+                              field_options|merge({
+                               disabled: not has_profile_right('inventory', constant('Glpi\\Inventory\\Conf::UPDATECONFIG'))
+                              })
+                           ) }}
+                        {% endif %}
+                     {% endif %}
+
                      {# display last_boot data only if item is dynamic and have field #}
                      {% if item.isField('last_boot') and item.isField('is_dynamic') and item.fields['is_dynamic'] %}
                         {{ fields.htmlField('last_boot', item.fields['last_boot']|formatted_datetime(true), __('Last boot date')) }}

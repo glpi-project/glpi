@@ -99,7 +99,7 @@ class NetworkEquipment extends MainAsset
                 $val->$key = $property;
             }
 
-            if (property_exists($device, 'ips')) {
+            if (property_exists($device, 'remote_addr')) {
                 $portkey = 'management';
                 $port = new \stdClass();
                 if (property_exists($device, 'mac')) {
@@ -111,16 +111,13 @@ class NetworkEquipment extends MainAsset
                 $port->is_internal = true;
                 $port->ipaddress = [];
 
-               //add internal port(s)
-                foreach ($device->ips as $ip) {
-                    if (
-                        !in_array($ip, $port->ipaddress)
-                        && '' != $blacklist->process(Blacklist::IP, $ip)
-                    ) {
-                        $port->ipaddress[] = $ip;
-                    }
+                //add internal port
+                if (
+                    !in_array($device->remote_addr, $port->ipaddress)
+                    && '' != $blacklist->process(Blacklist::IP, $device->remote_addr)
+                ) {
+                    $port->ipaddress[] = $device->remote_addr;
                 }
-
                 $this->management_ports[$portkey] = $port;
             }
         }

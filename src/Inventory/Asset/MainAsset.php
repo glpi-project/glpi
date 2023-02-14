@@ -142,6 +142,11 @@ abstract class MainAsset extends InventoryAsset
                 $val->last_boot = $entry->content->operatingsystem->boot_time;
             }
 
+            //for Computer / Phone get remote_addr from agent
+            if ($this->agent instanceof \Agent && isset($this->getAgent()->fields['remote_addr'])) {
+                $val->remote_addr = $this->getAgent()->fields['remote_addr'];
+            }
+
             if (isset($this->extra_data['hardware'])) {
                 $this->prepareForHardware($val);
             }
@@ -743,11 +748,7 @@ abstract class MainAsset extends InventoryAsset
             //do not update to prevents discoveries to remove all ports, IPs and so on found with network inventory
             if (
                 $itemtype == NetworkEquipment::getType()
-                ||
-                (
-                $itemtype == Printer::getType()
-                && !AssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
-                )
+                || $itemtype == Printer::getType()
             ) {
                 //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
                 $input = $this->handleInput($val, $this->item);
@@ -755,6 +756,7 @@ abstract class MainAsset extends InventoryAsset
                     'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
                     'last_inventory_update' => $input['last_inventory_update'],
                     'snmpcredentials_id'    => $input['snmpcredentials_id'],
+                    'remote_addr'           => $input['remote_addr'] ?? '',
                     'is_dynamic'            => true
                 ]));
                 return;

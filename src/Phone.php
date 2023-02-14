@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Conf;
 use Glpi\Socket;
 
 /**
@@ -132,7 +133,29 @@ class Phone extends CommonDBTM
         unset($input['id']);
         unset($input['withtemplate']);
 
+        return $this->manageInput($input);
+    }
+
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->manageInput($input);
+    }
+
+
+    public function manageInput($input)
+    {
+        //without right, user can't set remote_addr
+        if (isset($input['remote_addr']) && !Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
+            unset($input['remote_addr']);
+        }
         return $input;
+    }
+
+
+    public static function getRemoteAddrLabel()
+    {
+        return __('Public contact address');
     }
 
 
@@ -243,6 +266,15 @@ class Phone extends CommonDBTM
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'remote_addr',
+            'name'               => self::getRemoteAddrLabel(),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
