@@ -969,5 +969,4 @@ class Computer extends AbstractInventoryAsset
                 ->string['name']->isIdenticalTo(\Toolbox::slugify($port['name']));
         }
     }
-
 }
