@@ -110,7 +110,7 @@ if ($template->fields['solutiontypes_id']) {
     $entityRestrict = getEntitiesRestrictCriteria(
         getTableForItemType(SolutionType::getType()),
         "",
-        isset($parent->fields['entities_id']) ?? 0,
+        $parent->fields['entities_id'] ?? 0,
         true
     );
 
