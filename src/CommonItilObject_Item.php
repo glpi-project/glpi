@@ -552,13 +552,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
-        if (!static::validateObjectType($item)) {
-            return false;
-        }
-
         global $DB;
 
-        if (static::$itemtype_1::canView()) {
+        if (!static::$itemtype_1::canView()) {
             return false;
         }
 
