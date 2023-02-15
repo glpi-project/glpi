@@ -85,6 +85,15 @@ if (isset($_GET['checkavailability'])) {
                     Session::changeProfile(key($_SESSION['glpiprofiles']));
                 }
             }
+
+            // reset rights as we only need planning view (avoid giving access to other modules)
+            $_SESSION['glpiactiveprofile'] = [
+                'id'        => $_SESSION['glpiactiveprofile']['id'],
+                'name'      => $_SESSION['glpiactiveprofile']['name'],
+                'interface' => $_SESSION['glpiactiveprofile']['interface'],
+                'planning'  => $_SESSION['glpiactiveprofile']['planning'],
+            ];
+
             //// check if the request is valid: rights on uID / gID
             // First check mine : user then groups
             $ismine = false;
