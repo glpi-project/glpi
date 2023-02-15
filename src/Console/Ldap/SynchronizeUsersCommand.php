@@ -532,6 +532,7 @@ class SynchronizeUsersCommand extends AbstractCommand
             // Detect "single integer" old format
             if (in_array($deleted_user_strategy, [0, 1, 2, 3, 4, 5])) {
                 // Fix input by converting the value
+                // @phpstan-ignore-next-line
                 $deleted_user_strategy = $this->convertOldDeletedUserStrategyToNew($deleted_user_strategy);
                 $this->input->setOption('deleted-user-strategy', $deleted_user_strategy);
             }
