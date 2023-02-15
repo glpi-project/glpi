@@ -595,4 +595,47 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->boolean($lockedfield->isHandled($networkport))->isTrue();
         $this->array($lockedfield->getLockedValues($networkport->getType(), $networkport->fields['id']))->isEmpty();
     }
+
+    public function testNetworkPortMacUpdated()
+    {
+        $computer = new \Computer();
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+
+        $inventory = $this->doInventory($json);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        //load computer
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check MAC for enp57s0u1u4
+        $np_firststep = new \NetworkPort();
+        $this->boolean(
+            $np_firststep->getFromDBByCrit(['name' => 'enp57s0u1u4', 'instantiation_type' => 'NetworkPortEthernet', 'mac' => '00:e0:4c:68:01:db'])
+        )->isTrue();
+
+        //change MAC adress
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        //change both (IPV4 and IPV6) because GLPI inventory complete IPV4 NetworkPort with IPV6 information
+        //without this a new NetworkPort (IPV6) is added
+        $json->content->networks[2]->mac = 'bc:ee:7b:8c:72:b2'; //IPV4
+        $json->content->networks[3]->mac = 'bc:ee:7b:8c:72:b2'; //IPV6
+
+        //redo inventory
+        $inventory = $this->doInventory($json);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        //load computer
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check MAC for enp57s0u1u4
+        $np_secondstep = new \NetworkPort();
+        $this->boolean(
+            $np_secondstep->getFromDBByCrit(['name' => 'enp57s0u1u4', 'instantiation_type' => 'NetworkPortEthernet', 'mac' => 'bc:ee:7b:8c:72:b2'])
+        )->isTrue();
+
+        //same port
+        $this->integer($np_firststep->fields['id'])->isIdenticalTo($np_secondstep->fields['id']);
+    }
 }

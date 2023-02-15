@@ -341,9 +341,9 @@ trait InventoryNetworkPort
         $db_ports = [];
         $networkport = new NetworkPort();
 
-        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus'];
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'mac'];
         $iterator = $DB->request([
-            'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
+            'SELECT' => array_merge(['id', 'name', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
             'WHERE'  => [
                 'items_id'     => $this->items_id,
@@ -380,7 +380,7 @@ trait InventoryNetworkPort
                 }
 
                 $comp_data = [];
-                foreach (['name', 'mac'] as $field) {
+                foreach (['name'] as $field) {
                     if (property_exists($data, $field)) {
                         $comp_data[$field] = strtolower($data->$field);
                     } else {
