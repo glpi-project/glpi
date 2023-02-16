@@ -199,6 +199,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
                 this.getElement().trigger('search_refresh', [this.getElement()]);
                 this.hideLoadingSpinner();
                 this.shiftSelectAllCheckbox();
+                this.reloadJS('rateit');
             }, () => {
                 handle_search_failure();
             });
@@ -210,6 +211,14 @@ window.GLPI.Search.Table = class Table extends GenericView {
     // permit to [shift] select checkboxes
     shiftSelectAllCheckbox() {
         $('#'+this.element_id+' tbody input[type="checkbox"]').shiftSelectable();
+    }
+
+    reloadJS(script) {
+        $.each($('script:empty[type="text/javascript"][src*="'+script+'"]'), function(index, el) {
+            var clone = el.cloneNode(true);
+            $(el).remove();
+            $(clone).appendTo('body');
+        });
     }
 
     registerListeners() {
