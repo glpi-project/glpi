@@ -969,4 +969,90 @@ class Computer extends AbstractInventoryAsset
                 ->string['name']->isIdenticalTo(\Toolbox::slugify($port['name']));
         }
     }
+
+    public function testNetworkCards()
+    {
+        global $DB;
+
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <HARDWARE>
+      <NAME>glpixps</NAME>
+      <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+    </HARDWARE>
+    <BIOS>
+      <MSN>640HP72</MSN>
+      <SSN>000</SSN>
+    </BIOS>
+    <NETWORKS>
+      <DESCRIPTION>Carte Intel(R) PRO/1000 MT pour station de travail</DESCRIPTION>
+      <IPADDRESS>172.28.211.63</IPADDRESS>
+      <IPDHCP>172.28.200.22</IPDHCP>
+      <IPGATEWAY>172.28.211.1</IPGATEWAY>
+      <IPMASK>255.255.255.0</IPMASK>
+      <IPSUBNET>172.28.211.0</IPSUBNET>
+      <MACADDR>08:00:27:16:9C:60</MACADDR>
+      <PCIID>8086:100E:001E:8086</PCIID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <NETWORKS>
+      <DESCRIPTION>Carte Intel(R) PRO/1000 MT pour station de travail</DESCRIPTION>
+      <IPADDRESS6>fe80::68bf:3ee8:f221:588d</IPADDRESS6>
+      <IPMASK6>ffff:ffff:ffff:ffff::</IPMASK6>
+      <IPSUBNET6>fe80::</IPSUBNET6>
+      <MACADDR>08:00:27:16:9C:60</MACADDR>
+      <PCIID>8086:100E:001E:8086</PCIID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>";
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check created network cards
+        $networkcards = $DB->request([
+            'FROM' => \NetworkPort::getTable(),
+            'WHERE' => [
+                'itemtype' => \Computer::getType(),
+                'items_id' => $computers_id
+            ]
+        ]);
+        $this->integer(count($networkcards))->isIdenticalTo(1);
+
+        $item_networkcard = $DB->request([
+            'FROM' => \Item_DeviceNetworkCard::getTable(),
+            'WHERE' => [
+                'itemtype' => \Computer::getType(),
+                'items_id' => $computers_id
+            ]
+        ]);
+        $this->integer(count($item_networkcard))->isIdenticalTo(1);
+    }
 }

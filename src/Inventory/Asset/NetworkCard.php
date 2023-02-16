@@ -48,6 +48,7 @@ class NetworkCard extends Device
 
     protected $extra_data = ['controllers' => null];
     protected $ignored = ['controllers' => null];
+    private array $cards_macs = [];
 
     public function prepare(): array
     {
@@ -167,7 +168,7 @@ class NetworkCard extends Device
                 }
             }
 
-           //network ports
+            //network ports
             $ports = [];
             foreach ($mapping_ports as $origin => $dest) {
                 if (property_exists($val_port, $origin)) {
@@ -264,6 +265,16 @@ class NetworkCard extends Device
                     $ports[$val_port->name . '-' . $uniq] = $val_port;
                 }
                 $this->ports += $ports;
+            }
+
+            //check for mac unicity among cards
+            if (property_exists($val, 'mac')) {
+                if (in_array($val->mac, $this->cards_macs)) {
+                    unset($this->data[$k]);
+                    continue;
+                } else {
+                    $this->cards_macs[] = $val->mac;
+                }
             }
         }
         return $this->data;
