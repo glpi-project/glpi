@@ -6594,11 +6594,11 @@ HTML;
                 'WHERE'  => ['is_active' => 1, 'is_deleted' => 0],
             ])
         ]);
-        $authorizations_ids = array_column($super_admin_authorizations, 'users_id');
+        $users_ids = array_column($super_admin_authorizations, 'users_id');
 
         return
-            count($authorizations_ids) == 1 // Only one super admin auth
-            && $authorizations_ids[0] == $this->fields['id'] // Id match our user
+            count($users_ids) == 1 // Only one super admin auth
+            && $users_ids[0] == $this->fields['id'] // Id match our user
         ;
     }
 }
