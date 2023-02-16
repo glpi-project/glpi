@@ -399,6 +399,25 @@ class Profile extends CommonDBTM
             }
         }
 
+
+        // Check if profile edit right was removed
+        $can_edit_profile = $this->fields['profile'] & UPDATE == UPDATE;
+        $updated_value = $input['_profile'][UPDATE . "_0"] ?? null;
+        $update_profiles_right_was_removed = $updated_value !== null && !(bool) $updated_value;
+        if (
+            $can_edit_profile
+            && $update_profiles_right_was_removed
+            && $this->isLastSuperAdminProfile()
+        ) {
+            Session::addMessageAfterRedirect(
+                __("Can't remove update right on this profile as it is the only remaining profile with this right."),
+                false,
+                ERROR
+            );
+            unset($input['_profile']);
+        }
+
+        // KEEP AT THE END
         $this->profileRight = [];
         foreach (array_keys(ProfileRight::getAllPossibleRights()) as $right) {
             if (isset($input['_' . $right])) {
@@ -420,24 +439,6 @@ class Profile extends CommonDBTM
                 }
                 unset($input['_' . $right]);
             }
-        }
-
-       // check if right if the last write profile on Profile object
-        if (
-            ($this->fields['profile'] & UPDATE)
-            && isset($input['profile']) && !($input['profile'] & UPDATE)
-            && (countElementsInTable(
-                "glpi_profilerights",
-                ['name' => 'profile', 'rights' => ['&',  UPDATE]]
-            ))
-        ) {
-            Session::addMessageAfterRedirect(
-                __("This profile is the last with write rights on profiles"),
-                false,
-                ERROR
-            );
-            Session::addMessageAfterRedirect(__("Deletion refused"), false, ERROR);
-            unset($input["profile"]);
         }
         return $input;
     }
@@ -3727,5 +3728,51 @@ class Profile extends CommonDBTM
     public static function getIcon()
     {
         return "ti ti-user-check";
+    }
+
+    /**
+     * Get all super admin profiles ids
+     *
+     * @return array of ids
+     */
+    public static function getSuperAdminProfilesId(): array
+    {
+        $super_admin_profiles = (new self())->find([
+            'id' => new QuerySubQuery([
+                'SELECT' => 'profiles_id',
+                'FROM'   => ProfileRight::getTable(),
+                'WHERE'  => [
+                    'name'   => static::$rightname,
+                    'rights' => ["&", UPDATE],
+                ]
+            ])
+        ]);
+
+        return array_column($super_admin_profiles, 'id');
+    }
+
+    /**
+     * Check if this profile is the last super-admin profile (a "super-admin
+     * profile" is a profile that can edit other profiles)
+     *
+     * @return bool
+     */
+    public function isLastSuperAdminProfile(): bool
+    {
+        $profiles_ids = self::getSuperAdminProfilesId();
+        return
+            count($profiles_ids) == 1 // Only one super admin
+            && $profiles_ids[0] == $this->fields['id'] // Id match this account
+        ;
+    }
+
+    public function canPurgeItem()
+    {
+        // We can't delete the last super admin profile
+        if ($this->isLastSuperAdminProfile()) {
+            return false;
+        }
+
+        return true;
     }
 }

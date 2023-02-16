@@ -92,6 +92,16 @@ class Profile_User extends CommonDBRelation
              && Session::haveAccessToEntity($this->fields['entities_id']);
     }
 
+    public function canPurgeItem()
+    {
+        // We can't delete the last super admin profile authorization
+        if ($this->isLastSuperAdminAuthorization()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function prepareInputForAdd($input)
     {
 
@@ -1181,5 +1191,37 @@ class Profile_User extends CommonDBRelation
             ]
         ];
         return $params;
+    }
+
+    /**
+     * Check if this Profile_User is the last authorization of the last super-admin
+     * profile (a "super-admin profile" is a profile that can edit other profiles)
+     *
+     * @return bool
+     */
+    protected function isLastSuperAdminAuthorization(): bool
+    {
+        $profile = Profile::getById($this->fields["profiles_id"]);
+        if (!$profile->isLastSuperAdminProfile()) {
+            // Can't be the last super admin auth if not targeting the last
+            // super admin profile
+            return false;
+        }
+
+        // Find all active authorizations for the current profile (which is the last super admin profile)
+        $super_admin_authorizations = $this->find([
+            'profiles_id' => $this->fields['profiles_id'],
+            'users_id' => new QuerySubQuery([
+                'SELECT' => 'id',
+                'FROM'   => 'glpi_users',
+                'WHERE'  => ['is_active' => 1, 'is_deleted' => 0],
+            ])
+        ]);
+        $authorizations_ids = array_column($super_admin_authorizations, 'id');
+
+        return
+            count($authorizations_ids) == 1 // Only one super admin auth
+            && $authorizations_ids[0] == $this->fields['id'] // Id match this auth
+        ;
     }
 }
