@@ -836,4 +836,112 @@ class Software extends AbstractInventoryAsset
 
         $computer->deleteByCriteria(['id' => $first_computer['id']]);
     }
+
+    public function testDuplicatedSoft()
+    {
+        global $DB;
+        $this->login();
+
+        $computer = new \Computer();
+        $soft = new \Software();
+        $version = new \SoftwareVersion();
+        $item_version = new \Item_SoftwareVersion();
+
+        //inventory with a software name containing an unbreakable space
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <ARCH>i586</ARCH>
+      <FROM>registry</FROM>
+      <GUID>Office15.STANDARD</GUID>
+      <INSTALLDATE>18/08/2020</INSTALLDATE>
+      <NAME>Microsoft Office Standard 2013</NAME>
+      <NO_REMOVE>0</NO_REMOVE>
+      <PUBLISHER>Microsoft Corporation</PUBLISHER>
+      <SYSTEM_CATEGORY>application</SYSTEM_CATEGORY>
+      <UNINSTALL_STRING>&quot;C:\Program Files (x86)\Common Files\Microsoft Shared\OFFICE15\Office Setup Controller\setup.exe&quot; /uninstall STANDARD /dll OSETUP.DLL</UNINSTALL_STRING>
+      <VERSION>15.0.4569.1506</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //create manually a computer
+        $computers_id = $computer->add([
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        $this->doInventory($xml_source, true);
+
+        $manufacturer = new \Manufacturer();
+        $this->boolean($manufacturer->getFromDBByCrit(['name' => 'Microsoft Corporation']))->isTrue();
+
+        //we have 1 software & versions for Microsoft Office Standard - Microsoft Corporation
+        $softs = $soft->find(['name' => 'Microsoft Office Standard 2013', 'manufacturers_id' => $manufacturer->fields['id']]);
+        $this->integer(count($softs))->isIdenticalTo(1);
+
+        //15.0.4569.1506
+        $versions = $version->find(['name' => '15.0.4569.1506']);
+        $this->integer(count($versions))->isIdenticalTo(1);
+
+        $version_data = array_pop($versions);
+        $this->boolean($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $version_data['id']
+        ]))->isTrue();
+
+        //inventory with two same software: one with name containing an unbreakable space, the other with standard space
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <SOFTWARES>
+              <ARCH>i586</ARCH>
+              <FROM>registry</FROM>
+              <GUID>Office15.STANDARD</GUID>
+              <INSTALLDATE>18/08/2020</INSTALLDATE>
+              <NAME>Microsoft Office Standard 2013</NAME>
+              <NO_REMOVE>0</NO_REMOVE>
+              <PUBLISHER>Microsoft Corporation</PUBLISHER>
+              <SYSTEM_CATEGORY>application</SYSTEM_CATEGORY>
+              <UNINSTALL_STRING>&quot;C:\Program Files (x86)\Common Files\Microsoft Shared\OFFICE15\Office Setup Controller\setup.exe&quot; /uninstall STANDARD /dll OSETUP.DLL</UNINSTALL_STRING>
+              <VERSION>15.0.4569.1506</VERSION>
+            </SOFTWARES>
+            <SOFTWARES>
+              <ARCH>i586</ARCH>
+              <FROM>registry</FROM>
+              <GUID>{90150000-0012-0000-0000-0000000FF1CE}</GUID>
+              <INSTALLDATE>11/01/2023</INSTALLDATE>
+              <NAME>Microsoft Office Standard 2013</NAME>
+              <PUBLISHER>Microsoft Corporation</PUBLISHER>
+              <SYSTEM_CATEGORY>system_component</SYSTEM_CATEGORY>
+              <UNINSTALL_STRING>MsiExec.exe /X{90150000-0012-0000-0000-0000000FF1CE}</UNINSTALL_STRING>
+              <VERSION>15.0.4569.1506</VERSION>
+            </SOFTWARES>
+            <HARDWARE>
+              <NAME>pc002</NAME>
+            </HARDWARE>
+            <BIOS>
+              <SSN>ggheb7ne7</SSN>
+            </BIOS>
+            <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+          </CONTENT>
+          <DEVICEID>test-pc002</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+    }
 }
