@@ -62,6 +62,8 @@ abstract class ITILTemplate extends CommonDropdown
     public $hidden     = [];
    /// Predefined fields
     public $predefined = [];
+   /// Readonly fields
+    public $readonly   = [];
    /// Related ITIL type
 
 
@@ -107,6 +109,23 @@ abstract class ITILTemplate extends CommonDropdown
                 && !isset($this->mandatory['items_id'])
             ) {
                 $this->mandatory['items_id'] = $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'items_id',
+                    $itemstable
+                );
+            }
+
+            // Always get all read only fields
+            $ttm_class = $itiltype . 'TemplateReadonlyField';
+            $ttm             = new $ttm_class();
+            $this->readonly = $ttm->getReadonlyFields($ID);
+
+           // Force items_id if itemtype is defined
+            if (
+                isset($this->readonly['itemtype'])
+                && !isset($this->readonly['items_id'])
+            ) {
+                $this->readonly['items_id'] = $itil_object->getSearchOptionIDByField(
                     'field',
                     'items_id',
                     $itemstable
@@ -409,6 +428,7 @@ abstract class ITILTemplate extends CommonDropdown
         $this->addStandardTab($itiltype . 'TemplateMandatoryField', $ong, $options);
         $this->addStandardTab($itiltype . 'TemplatePredefinedField', $ong, $options);
         $this->addStandardTab($itiltype . 'TemplateHiddenField', $ong, $options);
+        $this->addStandardTab($itiltype . 'TemplateReadonlyField', $ong, $options);
         $this->addStandardTab($itiltype . 'Template', $ong, $options);
         $this->addStandardTab('ITILCategory', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
@@ -520,6 +540,25 @@ abstract class ITILTemplate extends CommonDropdown
     {
 
         if (isset($this->mandatory[$field])) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Is it a read only field ?
+     *
+     * @since 10.1.0
+     *
+     * @param $field string field
+     *
+     * @return bool
+     **/
+    public function isReadonlyField($field)
+    {
+
+        if (isset($this->readonly[$field])) {
             return true;
         }
         return false;

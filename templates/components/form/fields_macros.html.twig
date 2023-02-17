@@ -90,6 +90,9 @@
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
 
    {% set field %}
       <input type="{{ options.type }}" id="%id%"
@@ -109,6 +112,9 @@
 {% macro checkboxField(name, value, label = '', options = {}) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
    {% endif %}
 
    {% set options = {
@@ -133,6 +139,9 @@
       {% set options = {
          'required': true
       }|merge(options) %}
+   {% endif %}
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
    {% endif %}
    {% set options = {
       'no_value': 0,
@@ -161,6 +170,10 @@
    {% if options.step != 'any' and options.step|round(0, 'floor') != options.step %}
       {# Only format number if not a whole number #}
       {% set value = call('Html::formatNumber', [value, true]) %}
+   {% endif %}
+
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
    {% endif %}
 
    {% if value == "" %}
@@ -210,6 +223,9 @@
 
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
    {% endif %}
    {% set id = options.id|length > 0 ? options.id : (name ~ '_' ~ options.rand) %}
 
@@ -281,6 +297,9 @@
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
 
    {% if value == 'NULL' %}
       {% set value = null %}
@@ -316,6 +335,10 @@
    {% set options = {'id': name|slug ~ '_' ~ options.rand}|merge(options) %}
    {% set locale = get_current_locale() %}
 
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
+
    {% set field %}
       {{ _self.flatpickrHtmlInput(name, value, label, options) }}
       <script>
@@ -349,6 +372,10 @@
    {% set options = {'id': name|slug ~ '_' ~ options.rand}|merge(options) %}
    {% set locale = get_current_locale() %}
 
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
+
    {% set field %}
       {{ _self.flatpickrHtmlInput(name, value, label, options) }}
       <script>
@@ -379,6 +406,9 @@
 {% endmacro %}
 
 {% macro colorField(name, value, label = '', options = {}) %}
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
    {% set field %}
       <input id="%id%"
              class="form-control {{ options.input_addclass }}"
@@ -417,6 +447,10 @@
       'clearable': options.clearable is defined ? options.clearable : not options.is_disclosable,
    }|merge(options) %}
 
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
+
    {% set field %}
       <input type="password" id="{{ options.id }}"
              class="form-control {{ options.input_addclass }}"
@@ -447,6 +481,9 @@
 
 {% macro emailField(name, value, label = '', options = {}) %}
    {% set options = {'type': 'email'}|merge(options) %}
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
    {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
 
@@ -456,6 +493,9 @@
       'name': name,
       'simple': false,
    }|merge(options) %}
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
    {% set field %}
       {% if options.simple %}
         <input type="file" id="%id%"
@@ -494,6 +534,9 @@
          {% endif %}
       </div>
    {% endset %}
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
@@ -516,6 +559,10 @@
          'multiple': true,
       }) }}
    {% endset %}
+
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
 
    {% set id = options.id|length > 0 ? options.id : (name ~ '_' ~ options.rand) %}
    {{ _self.label(label, id, options) }}
@@ -548,6 +595,10 @@
         'width': '100%',
     }|merge(options) %}
 
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
+
    {% if options.disabled %}
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
    {% endif %}
@@ -570,6 +621,10 @@
         'rand': random(),
         'width': '100%',
     }|merge(options) %}
+
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
 
    {% if options.disabled %}
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
@@ -598,6 +653,10 @@
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
+
    {% if options.disabled %}
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
    {% endif %}
@@ -619,6 +678,10 @@
     }|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
    {% endif %}
 
    {% if options.disabled %}
@@ -643,6 +706,10 @@
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
+
    {% if options.disabled %}
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
    {% endif %}
@@ -664,6 +731,10 @@
       'rand': random()
    }|merge(options) %}
 
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
+
    {% set field %}
       {% do call('Dropdown::showSelectItemFromItemtypes', [options]) %}
    {% endset %}
@@ -677,6 +748,10 @@
     }|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
    {% endif %}
 
    {% if options.disabled %}
@@ -701,6 +776,10 @@
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
+
    {% if options.disabled %}
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
    {% endif %}
@@ -719,6 +798,10 @@
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
    {% endif %}
 
    {% if options.disabled %}
@@ -753,6 +836,10 @@
       {% set options = {'specific_tags': {'required': true}}|merge(options) %}
    {% endif %}
 
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
+
    {% if options.disabled %}
       {% set options = options|merge({'specific_tags': {'disabled': 'disabled'}}) %}
    {% endif %}
@@ -775,6 +862,10 @@
       {% set value = '&nbsp;' %}
    {% endif %}
 
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
+   {% endif %}
+
    {% set value %}
       <span class="form-control-plaintext">{{ value|raw }}</span>
    {% endset %}
@@ -795,6 +886,10 @@
       {% set options = options|merge({'locked': true, 'locked_value': options.locked_fields[name]}) %}
    {% elseif name in options.locked_fields %}
       {% set options = options|merge({'locked': true}) %}
+   {% endif %}
+
+   {% if options.fields_template.isReadonlyField(name) %}
+      {% set options = options|merge({'disabled': true}) %}
    {% endif %}
 
    {% if not options.include_field %}

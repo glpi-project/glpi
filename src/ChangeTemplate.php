@@ -56,6 +56,7 @@ class ChangeTemplate extends ITILTemplate
             ChangeTemplateHiddenField::class,
             ChangeTemplateMandatoryField::class,
             ChangeTemplatePredefinedField::class,
+            ChangeTemplateReadonlyField::class,
         ];
     }
 

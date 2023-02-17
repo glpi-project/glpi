@@ -7401,6 +7401,39 @@ CREATE TABLE `glpi_problemtemplatehiddenfields` (
   UNIQUE KEY `unicity` (`problemtemplates_id`,`num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_tickettemplatereadonlyfields
+
+DROP TABLE IF EXISTS `glpi_tickettemplatereadonlyfields`;
+CREATE TABLE `glpi_tickettemplatereadonlyfields` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
+  `num` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`tickettemplates_id`,`num`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_changeemplatereadonlyfields
+
+DROP TABLE IF EXISTS `glpi_changetemplatereadonlyfields`;
+CREATE TABLE `glpi_changetemplatereadonlyfields` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `changetemplates_id` int unsigned NOT NULL DEFAULT '0',
+  `num` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`changetemplates_id`,`num`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_problemtemplatereadonlyfields
+
+DROP TABLE IF EXISTS `glpi_problemtemplatereadonlyfields`;
+CREATE TABLE `glpi_problemtemplatereadonlyfields` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `problemtemplates_id` int unsigned NOT NULL DEFAULT '0',
+  `num` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`problemtemplates_id`,`num`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 ### Dump table glpi_tickettemplatemandatoryfields
 
 DROP TABLE IF EXISTS `glpi_tickettemplatemandatoryfields`;

@@ -56,6 +56,7 @@ class TicketTemplate extends ITILTemplate
             TicketTemplateHiddenField::class,
             TicketTemplateMandatoryField::class,
             TicketTemplatePredefinedField::class,
+            TicketTemplateReadonlyField::class,
         ];
     }
 
