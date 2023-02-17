@@ -66,6 +66,8 @@ class NotificationTargetContract extends NotificationTarget
             $tmp                        = [];
             $tmp['##contract.name##']   = $contract['name'];
             $tmp['##contract.number##'] = $contract['num'];
+            $tmp['##contract.comment##'] = $contract['comment'];
+            $tmp['##contract.account##'] = $contract['account_number'];
 
             if ($contract['contracttypes_id']) {
                 $tmp['##contract.type##'] = Dropdown::getDropdownName(
@@ -171,6 +173,8 @@ class NotificationTargetContract extends NotificationTarget
         $tags = ['contract.action'       => _n('Event', 'Events', 1),
             'contract.name'         => __('Name'),
             'contract.number'       => _x('phone', 'Number'),
+            'contract.comment'      => __('Comments'),
+            'contract.account'      => __('Account number'),
             'contract.items.number' => _x('quantity', 'Number of items'),
             'contract.items'        => __('Device list'),
             'contract.type'         => _n('Type', 'Types', 1),
