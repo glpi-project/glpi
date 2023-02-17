@@ -329,7 +329,7 @@ class Notepad extends CommonDBChild
                 $thumbnail_url = User::getThumbnailURLForPicture($note['picture']);
                 $user = new User();
                 $user->getFromDB($note['users_id_lastupdater']);
-                $style = !empty($thumbnail_url) ? "background-image: url('$thumbnail_url')" : ("background-color: " . $user->getUserInitialsBgColor());
+                $style = !empty($thumbnail_url) ? "background-image: url('$thumbnail_url'); background-color: inherit;" : ("background-color: " . $user->getUserInitialsBgColor());
                 echo '<a href="' . $user->getLinkURL() . '">';
                 $user_name = formatUserName(
                     $user->getID(),
