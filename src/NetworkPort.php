@@ -656,14 +656,18 @@ class NetworkPort extends CommonDBChild
         $itemtype = $item->getType();
         $items_id = $item->getField('id');
 
-        //from dynamic asset, deleted items are displayed from lock tab
-        //from manual asset, deleted items are always displayed (with is_deleted column)
-        $deleted_criteria = [];
-        if ($item->isDynamic()) {
-            $deleted_criteria = [
-                "is_deleted" => 0
-            ];
-        }
+        //no matter if the main item is dynamic,
+        //deleted and dynamic networkport are displayed from lock tab
+        //deleted and non dynamic networkport are always displayed (with is_deleted column)
+        $deleted_criteria = [
+            'OR'  => [
+                'AND' => [
+                    "is_deleted" => 0,
+                    "is_dynamic" => 1
+                ],
+                "is_dynamic" => 0
+            ]
+        ];
 
         if (
             !NetworkEquipment::canView()
