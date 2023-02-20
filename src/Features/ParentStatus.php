@@ -39,6 +39,7 @@ use CommonITILActor;
 use CommonITILObject;
 use PendingReason_Item;
 use Session;
+use Toolbox;
 
 /**
  * ParentStatus
@@ -90,11 +91,19 @@ trait ParentStatus
             $parentitem->update($update);
         }
 
-       // Set parent status to pending
-        if ($input['pending'] ?? 0) {
-            $input['_status'] = CommonITILObject::WAITING;
-        } elseif (!isset($input['_no_reopen']) && $parentitem->needReopen()) {
-            $input["_reopen"] = true;
+        if (isset($input['pending'])) {
+            // Pending toggle was explicitly enabled or disabled
+            if ($input['pending']) {
+                $input['_status'] = CommonITILObject::WAITING;
+            } else {
+                $input["_reopen"] = true;
+            }
+        } else {
+            // Pending toggle isn't set (self-service, API, ...)
+            // Try to compute whether or not we need te reopen the ticket or not
+            if (isset($input['_no_reopen']) && $parentitem->needReopen()) {
+                $input["_reopen"] = true;
+            }
         }
 
        //manage reopening of ITILObject
