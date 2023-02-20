@@ -93,7 +93,7 @@ trait ParentStatus
        // Set parent status to pending
         if ($input['pending'] ?? 0) {
             $input['_status'] = CommonITILObject::WAITING;
-        } elseif (!isset($input['_no_reopen']) && $parentitem->fields["status"] == CommonITILObject::WAITING) {
+        } elseif (!isset($input['_no_reopen']) && $parentitem->needReopen()) {
             $input["_reopen"] = true;
         }
 
