@@ -67,7 +67,7 @@ class Unmanaged extends CommonDBTM
 
 
     /**
-     * Print the unmanagemed form
+     * Print the unmanaged form
      *
      * @param $ID integer ID of the item
      * @param $options array
@@ -339,7 +339,7 @@ class Unmanaged extends CommonDBTM
         $this->deleteFromDB(1);
     }
 
-    public static function canDelete()
+    /*public static function canDelete()
     {
         return static::canUpdate();
     }
@@ -347,5 +347,5 @@ class Unmanaged extends CommonDBTM
     public static function canPurge()
     {
         return static::canUpdate();
-    }
+    }*/
 }
