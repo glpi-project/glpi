@@ -35,22 +35,24 @@
 
 <form method='POST' enctype='multipart/form-data'>
     <h2>
-        {{ __("Import inventory file") }}
+        {{ __("Import inventory files") }}
     </h2>
     <div class="alert alert-info" role="alert">
         <p>
-            {{ __("You can use this menu to upload any inventory file. The file must have a known extension (%1\$s).\n")|format(inventory_extensions|join(', ')) }}<br>
+            {{ __("You can use this menu to upload one or several inventory files. Files must have a known extension (%1\$s).\n")|format(inventory_extensions|join(', ')) }}<br>
             {{ __('It is also possible to upload a compressed archive directly with a collection of inventory files.') }}
         </p>
     </div>
     {{ fields.fileField(
-        'inventory_file',
+        'inventory_files[]',
         '',
         '',
         {
             'is_horizontal': true,
             'simple': true,
             'no_label': true,
+            'multiple': true,
+            'required': true,
         }
     ) }}
 
