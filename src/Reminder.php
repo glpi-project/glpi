@@ -73,7 +73,8 @@ class Reminder extends CommonDBVisible implements
     {
 
         return (Session::haveRight(self::$rightname, CREATE)
-              || Session::getCurrentInterface() != 'helpdesk');
+              || Session::haveRight(self::$rightname, self::PERSONAL)
+              && Session::getCurrentInterface() != 'helpdesk');
     }
 
 
@@ -132,7 +133,9 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function canUpdate()
     {
-        return (Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRight(self::$rightname, UPDATE)
+              || Session::haveRight(self::$rightname, self::PERSONAL)
+              && Session::getCurrentInterface() != 'helpdesk');
     }
 
 
@@ -142,7 +145,9 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function canPurge()
     {
-        return (Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRight(self::$rightname, PURGE)
+              || Session::haveRight(self::$rightname, self::PERSONAL)
+              && Session::getCurrentInterface() != 'helpdesk');
     }
 
 
