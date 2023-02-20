@@ -90,6 +90,7 @@ class Transfer extends DbTestCase
                 '/.*Predefined.*/',
                 '/.*Mandatory.*/',
                 '/.*Hidden.*/',
+                '/.*Readonly.*/',
                 'Entity_Reminder',
                 'Document_Item',
                 'Cartridge',
