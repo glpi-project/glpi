@@ -55,3 +55,6 @@ if ($DB->fieldExists(\Unmanaged::getTable(), 'domains_id')) {
     }
     $migration->dropField(\Unmanaged::getTable(), 'domains_id');
 }
+
+//new right value for unmanageds (previously based on config UPDATE)
+$migration->addRight('unmanaged', READ | UPDATE | DELETE | PURGE, ['config' => UPDATE]);
