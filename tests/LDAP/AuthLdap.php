@@ -1614,7 +1614,7 @@ class AuthLDAP extends DbTestCase
         }
 
         // Check expected behavior according to groups config
-        switch ($user_option_value) {
+        switch ($groups_option_value) {
             case \AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING:
                 $this->array($gu->find(['users_id' => $import['id']]))->hasSize(5);
                 $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(2);
@@ -1633,7 +1633,7 @@ class AuthLDAP extends DbTestCase
         }
 
         // Check expected behavior according to authorizations config
-        switch ($user_option_value) {
+        switch ($authorizations_option_value) {
             case \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING:
                 $this->array($pu->find(['users_id' => $import['id']]))->hasSize(4);
                 $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(2);

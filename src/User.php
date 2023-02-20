@@ -5191,7 +5191,7 @@ JAVASCRIPT;
         }
 
         // Handle deleted user's groups
-        switch ($CFG_GLPI['user_deleted_ldap_user']) {
+        switch ($CFG_GLPI['user_deleted_ldap_groups']) {
             default:
             case AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING:
                 break;
@@ -5206,7 +5206,7 @@ JAVASCRIPT;
         }
 
         // Handle deleted user's authorizations
-        switch ($CFG_GLPI['user_deleted_ldap_user']) {
+        switch ($CFG_GLPI['user_deleted_ldap_authorizations']) {
             default:
             case AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING:
                 break;

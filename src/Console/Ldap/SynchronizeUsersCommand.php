@@ -154,7 +154,7 @@ class SynchronizeUsersCommand extends AbstractCommand
 
         $restored_strategies = AuthLDAP::getLdapRestoredUserActionOptions();
         $description = sprintf(
-            __('Force strategy used for restored users (current configured action: "%s").'),
+            __('Force strategy used for restored users (current configured action: "%s")'),
             ($CFG_GLPI['user_restored_ldap'] ?? __('unknown'))
         );
         $description .= "\n" . __('Possible values are:') . "\n";
@@ -580,8 +580,14 @@ class SynchronizeUsersCommand extends AbstractCommand
     protected function convertOldDeletedUserStrategyToNew(int $deleted_user_strategy): string
     {
         Toolbox::deprecated("Usage of a deprecated format for the '--deleted-user-strategy' option.");
-        $this->output->writeln("<info>Warning: using deprecated --deleted-user-strategy format</info>");
-        $this->output->writeln('<info>Run "php bin/console ldap:synchronize --help for more details"</info>');
+        $this->output->writeln('<info>' . sprintf(
+            __('Warning: using deprecated %s format'),
+            '--deleted-user-strategy'
+        ) . '</info>');
+        $this->output->writeln('<info>' . sprintf(
+            __('Run "%s" for more details'),
+            "php bin/console ldap:synchronize --help"
+        ) . '</info>');
 
         switch ($deleted_user_strategy) {
             default:

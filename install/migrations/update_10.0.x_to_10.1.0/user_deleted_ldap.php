@@ -43,6 +43,7 @@ $user_deleted_ldap = Config::getConfigurationValue('core', 'user_deleted_ldap');
 if ($user_deleted_ldap !== null) {
     switch ($user_deleted_ldap) {
         // AuthLDAP::DELETED_USER_PRESERVE (preserve user)
+        default:
         case 0:
             $user_deleted_ldap_user = AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING;
             $user_deleted_ldap_groups = AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING;
@@ -83,14 +84,6 @@ if ($user_deleted_ldap !== null) {
             $user_deleted_ldap_groups = AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL;
             $user_deleted_ldap_authorizations = AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING;
             break;
-
-        default:
-            $error = sprintf(
-                __("Unexpeced configuration value (%s: %s)"),
-                'user_deleted_ldap',
-                $user_deleted_ldap
-            );
-            die($error);
     }
 
     $migration->addConfig([

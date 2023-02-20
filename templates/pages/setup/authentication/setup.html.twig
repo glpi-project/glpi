@@ -32,9 +32,9 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% set session_get_plural = call('Session::getPluralNumber', []) %}
+{% set session_get_plural = get_plural_number() %}
 
-<form name='form' action='{{ action }}' method='post' data-track-changes='true'>
+<form name="form" action="{{ 'Config'|itemtype_form_path }}" method="post" data-track-changes="true">
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
@@ -44,25 +44,25 @@
                 <div class="row">
                     {{ fields.dropdownYesNo(
                         'is_users_auto_add',
-                        CFG_GLPI.is_users_auto_add,
+                        config('is_users_auto_add'),
                         __('Automatically add users from an external authentication source'),
                     ) }}
                     {{ fields.dropdownYesNo(
                         'use_noright_users_add',
-                        CFG_GLPI.use_noright_users_add,
+                        config('use_noright_users_add'),
                         __('Add a user without accreditation from a LDAP directory'),
                     ) }}
 
                     {{ fields.dropdownArrayField(
                         'user_restored_ldap',
-                        CFG_GLPI.user_restored_ldap,
-                        call('AuthLDAP::getLdapRestoredUserActionOptions', []),
+                        config('user_restored_ldap'),
+                        user_restored_ldap_choices,
                         __('Action when a user is restored in the LDAP directory'),
                     ) }}
                     {{ fields.dropdownArrayField(
                         'time_offset',
-                        CFG_GLPI.time_offset,
-                        call("Dropdown::getGMTValues", []),
+                        config('time_offset'),
+                        gmt_values,
                         __('GLPI server time zone'),
                     ) }}
 
@@ -73,27 +73,27 @@
 
                     {{ fields.dropdownArrayField(
                         'user_deleted_ldap_user',
-                        CFG_GLPI.user_deleted_ldap_user,
-                        call('AuthLDAP::getLdapDeletedUserActionOptions_User'),
-                        call('User::getTypeName', [1]),
+                        config('user_deleted_ldap_user'),
+                        user_deleted_ldap_user_choices,
+                        'User'|itemtype_name,
                     ) }}
                     {{ fields.dropdownArrayField(
                         'user_deleted_ldap_groups',
-                        CFG_GLPI.user_deleted_ldap_groups,
-                        call('AuthLDAP::getLdapDeletedUserActionOptions_Groups'),
-                        call('Group::getTypeName', [session_get_plural]),
+                        config('user_deleted_ldap_groups'),
+                        user_deleted_ldap_groups_choices,
+                        'Group'|itemtype_name(session_get_plural),
                     ) }}
 
                     {{ fields.dropdownArrayField(
                         'user_deleted_ldap_authorizations',
-                        CFG_GLPI.user_deleted_ldap_authorizations,
-                        call('AuthLDAP::getLdapDeletedUserActionOptions_Authorizations'),
+                        config('user_deleted_ldap_authorizations'),
+                        user_deleted_ldap_authorizations_choices,
                         _n('Authorization', 'Authorizations', session_get_plural),
                     ) }}
                 </div>
             </div>
             <div class="card-footer d-flex">
-                <input type='submit' name='update_auth' class='btn btn-primary ms-auto' value='{{ _x('button', 'Save') }}'>
+                <input type="submit" name="update_auth" class="btn btn-primary ms-auto" value="{{ _x('button', 'Save') }}">
             </div>
         </div>
     </div>

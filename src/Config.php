@@ -540,9 +540,13 @@ class Config extends CommonDBTM
 
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/setup/authentication/setup.html.twig', [
-            'token'                   => Session::getNewCSRFToken(),
-            'action'                  => Toolbox::getItemTypeFormURL(__CLASS__),
-            'CFG_GLPI'                => $CFG_GLPI,
+            'token'                                    => Session::getNewCSRFToken(),
+            'CFG_GLPI'                                 => $CFG_GLPI,
+            'user_restored_ldap_choices'               => AuthLDAP::getLdapRestoredUserActionOptions(),
+            'gmt_values'                               => Dropdown::getGMTValues(),
+            'user_deleted_ldap_user_choices'           => AuthLDAP::getLdapDeletedUserActionOptions_User(),
+            'user_deleted_ldap_groups_choices'         => AuthLDAP::getLdapDeletedUserActionOptions_Groups(),
+            'user_deleted_ldap_authorizations_choices' => AuthLDAP::getLdapDeletedUserActionOptions_Authorizations(),
         ]);
     }
 
