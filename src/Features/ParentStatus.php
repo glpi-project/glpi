@@ -100,7 +100,7 @@ trait ParentStatus
             }
         } else {
             // Pending toggle isn't set (self-service, API, ...)
-            // Try to compute whether or not we need te reopen the ticket or not
+            // Try to compute whether or not we need te reopen the ticket
             if (isset($input['_no_reopen']) && $parentitem->needReopen()) {
                 $input["_reopen"] = true;
             }
