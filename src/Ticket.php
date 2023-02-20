@@ -207,6 +207,20 @@ class Ticket extends CommonITILObject
     }
 
 
+    public static function assignToMe($ticket_id, $user_id)
+    {
+        $ticket = new Ticket();
+        if ($ticket->getFromDB($ticket_id)) {
+            if ($ticket->canAssignToMe()) {
+                $ticket->update([
+                    'id' => $ticket_id,
+                    '_users_id_assign' => $user_id
+                ]);
+            }
+        }
+    }
+
+
     public static function canUpdate()
     {
 
