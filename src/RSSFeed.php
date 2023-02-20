@@ -71,7 +71,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public static $rightname    = 'rssfeed_public';
 
-
+    const PERSONAL = 128;
 
     public static function getTypeName($nb = 0)
     {
@@ -95,7 +95,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     {
 
         return (Session::haveRight('rssfeed_public', READ)
-              || Session::getCurrentInterface() != 'helpdesk');
+              || Session::haveRight(self::$rightname, self::PERSONAL)
+              && Session::getCurrentInterface() != 'helpdesk');
     }
 
 
@@ -1118,6 +1119,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $values = [READ => __('Read')];
         } else {
             $values = parent::getRights();
+            $values[self::PERSONAL] = __('Show personal when no public rights');
         }
         return $values;
     }

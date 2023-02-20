@@ -57,7 +57,7 @@ class Reminder extends CommonDBVisible implements
 
     public static $rightname    = 'reminder_public';
 
-
+    const PERSONAL = 128;
 
     public static function getTypeName($nb = 0)
     {
@@ -81,7 +81,8 @@ class Reminder extends CommonDBVisible implements
     {
 
         return (Session::haveRight(self::$rightname, READ)
-              || Session::getCurrentInterface() != 'helpdesk');
+              || Session::haveRight(self::$rightname, self::PERSONAL)
+              && Session::getCurrentInterface() != 'helpdesk');
     }
 
 
@@ -1035,6 +1036,7 @@ class Reminder extends CommonDBVisible implements
             $values = [READ => __('Read')];
         } else {
             $values = parent::getRights();
+            $values[self::PERSONAL] = __('Show personal when no public rights');
         }
         return $values;
     }
