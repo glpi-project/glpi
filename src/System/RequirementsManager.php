@@ -70,6 +70,7 @@ class RequirementsManager
         $requirements = [];
 
         $requirements[] = new PhpVersion(GLPI_MIN_PHP, GLPI_MAX_PHP);
+        $requirements[] = new IntegerSize();
 
         $requirements[] = new SessionsConfiguration();
 
@@ -139,7 +140,6 @@ class RequirementsManager
        // Below requirements are optionals
 
         $requirements[] = new SessionsSecurityConfiguration();
-        $requirements[] = new IntegerSize();
         $requirements[] = new Extension(
             'exif',
             true,
