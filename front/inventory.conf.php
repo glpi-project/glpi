@@ -43,12 +43,9 @@ Html::header(__('Inventory'), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inv
 
 $conf = new Conf();
 
-if (isset($_FILES['inventory_file']) && $_FILES['inventory_file']['tmp_name'] != '') {
-    $conf->importFile($_FILES);
-    Html::back();
-}
-
-if (isset($_POST['update'])) {
+if (isset($_FILES['inventory_files'])) {
+    $conf->displayImportFile($_FILES);
+} elseif (isset($_POST['update'])) {
     unset($_POST['update']);
     $conf->saveConf($_POST);
     Session::addMessageAfterRedirect(
@@ -57,8 +54,8 @@ if (isset($_POST['update'])) {
         INFO
     );
     Html::back();
+} else {
+    $conf->display(['id' => 1]);
 }
-
-$conf->display(['id' => 1]);
 
 Html::footer();

@@ -187,6 +187,63 @@ class Conf extends CommonGLPI
     }
 
     /**
+     * Import inventory file
+     *
+     * @param array $files $_FILES
+     *
+     * @return void
+     */
+    public function displayImportFile($files)
+    {
+        $imported_files = [];
+
+        foreach ($files['inventory_files']['name'] as $filekey => $filename) {
+            $path = $files['inventory_files']['tmp_name'][$filekey];
+            $name = $filename;
+
+            $inventory_request = new Request();
+
+            if ($this->isInventoryFile($name)) {
+               //knwon standalone file type, try to import.
+                $contents = file_get_contents($path);
+                if ($import_result = $this->importContentFile($inventory_request, $path, $contents)) {
+                    $imported_files[] = [
+                        'filename' => $name,
+                        'item'   => $import_result->getInventory()->getItem(),
+                    ];
+                }
+            } else {
+                //was not a known file, maybe an archive
+                $archive = UnifiedArchive::open($path);
+                if ($archive === null) {
+                    $imported_files[] = [
+                        'filename' => $name,
+                        'item'   => __('No file to import!'),
+                    ];
+                } else {
+                    //process archive
+                    $files = $archive->getFileNames();
+                    foreach ($files as $file) {
+                        if ($this->isInventoryFile($file)) {
+                            $contents = $archive->getFileContent($file);
+                            if ($import_result = $this->importContentFile($inventory_request, null, $contents)) {
+                                $imported_files[] = [
+                                    'filename' => $name,
+                                    'item'   => $import_result->getInventory()->getItem(),
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_result.html.twig', [
+            'imported_files' => $imported_files
+        ]);
+    }
+
+    /**
      * Is an inventory known file
      *
      * @return boolean
@@ -228,17 +285,9 @@ class Conf extends CommonGLPI
                     $response = $xml->ERROR;
                 }
                 $response = str_replace('&nbsp;', ' ', $response);
-                Session::addMessageAfterRedirect(
-                    __('File has not been imported:') . " " . Sanitizer::encodeHtmlSpecialChars($response),
-                    true,
-                    ERROR
-                );
+                return Sanitizer::encodeHtmlSpecialChars($response);
             } else {
-                Session::addMessageAfterRedirect(
-                    __('File has been successfully imported!'),
-                    true,
-                    INFO
-                );
+                return $inventory_request;
             }
         } catch (\Exception $e) {
             throw $e;
