@@ -66,39 +66,60 @@ class AuthLDAP extends CommonDBTM
 
     /**
      * Deleted user strategy: preserve user.
-     * @var integer
+     * @var int
+     * @deprecated
      */
-    const DELETED_USER_PRESERVE = 0;
+    public const DELETED_USER_PRESERVE = 0;
 
     /**
      * Deleted user strategy: put user in trashbin.
-     * @var integer
+     * @var int
+     * @deprecated
      */
-    const DELETED_USER_DELETE = 1;
+    public const DELETED_USER_DELETE = 1;
 
     /**
      * Deleted user strategy: withdraw dynamic authorizations and groups.
-     * @var integer
+     * @var int
+     * @deprecated
      */
-    const DELETED_USER_WITHDRAWDYNINFO = 2;
+    public const DELETED_USER_WITHDRAWDYNINFO = 2;
 
     /**
      * Deleted user strategy: disable user.
-     * @var integer
+     * @var int
+     * @deprecated
      */
-    const DELETED_USER_DISABLE = 3;
+    public const DELETED_USER_DISABLE = 3;
 
     /**
      * Deleted user strategy: disable user and withdraw dynamic authorizations and groups.
-     * @var integer
+     * @var int
+     * @deprecated
      */
-    const DELETED_USER_DISABLEANDWITHDRAWDYNINFO = 4;
+    public const DELETED_USER_DISABLEANDWITHDRAWDYNINFO = 4;
 
     /**
      * Deleted user strategy: disable user and withdraw groups.
-     * @var integer
+     * @var int
+     * @deprecated
      */
-    const DELETED_USER_DISABLEANDDELETEGROUPS = 5;
+    public const DELETED_USER_DISABLEANDDELETEGROUPS = 5;
+
+    // Deleted user strategies for user
+    public const DELETED_USER_ACTION_USER_DO_NOTHING = 0;
+    public const DELETED_USER_ACTION_USER_DISABLE = 1;
+    public const DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN = 2;
+
+    // Deleted user strategies for groups
+    public const DELETED_USER_ACTION_GROUPS_DO_NOTHING = 0;
+    public const DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC = 1;
+    public const DELETED_USER_ACTION_GROUPS_DELETE_ALL = 2;
+
+    // Deleted user strategies for authorizations
+    public const DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING = 0;
+    public const DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC = 1;
+    public const DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL = 2;
 
     /**
      * Restored user strategy: Make no change to GLPI user
@@ -4022,18 +4043,66 @@ class AuthLDAP extends CommonDBTM
     /**
      * Get LDAP deleted user action options.
      *
+     * @deprecated
      * @return array
      */
     public static function getLdapDeletedUserActionOptions()
     {
-
+        Toolbox::deprecated(
+            'The "user_deleted_ldap" configuration value was removed. '
+            . 'Use getLdapDeletedUserActionOptions_User(), '
+            . 'getLdapDeletedUserActionOptions_Groups(), '
+            . 'and getLdapDeletedUserActionOptions_Authorizations() instead.'
+        );
         return [
             self::DELETED_USER_PRESERVE                  => __('Preserve'),
             self::DELETED_USER_DELETE                    => __('Put in trashbin'),
             self::DELETED_USER_WITHDRAWDYNINFO           => __('Withdraw dynamic authorizations and groups'),
             self::DELETED_USER_DISABLE                   => __('Disable'),
             self::DELETED_USER_DISABLEANDWITHDRAWDYNINFO => __('Disable') . ' + ' . __('Withdraw dynamic authorizations and groups'),
-            self::DELETED_USER_DISABLEANDDELETEGROUPS => __('Disable') . ' + ' . __('Withdraw groups'),
+            self::DELETED_USER_DISABLEANDDELETEGROUPS    => __('Disable') . ' + ' . __('Withdraw groups'),
+        ];
+    }
+
+    /**
+     * Get LDAP deleted user action options regarding the deleted user
+     *
+     * @return array
+     */
+    public static function getLdapDeletedUserActionOptions_User(): array
+    {
+        return [
+            self::DELETED_USER_ACTION_USER_DO_NOTHING       => __('Do nothing'),
+            self::DELETED_USER_ACTION_USER_DISABLE          => __('Disable'),
+            self::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN => __('Move to trashbin'),
+        ];
+    }
+
+    /**
+     * Get LDAP deleted user action options regarding the deleted user's groups
+     *
+     * @return array
+     */
+    public static function getLdapDeletedUserActionOptions_Groups(): array
+    {
+        return [
+            self::DELETED_USER_ACTION_GROUPS_DO_NOTHING     => __('Do nothing'),
+            self::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC => __('Delete dynamic groups'),
+            self::DELETED_USER_ACTION_GROUPS_DELETE_ALL     => __('Delete all groups'),
+        ];
+    }
+
+    /**
+     * Get LDAP deleted user action options regarding the deleted user's authorizations
+     *
+     * @return array
+     */
+    public static function getLdapDeletedUserActionOptions_Authorizations(): array
+    {
+        return [
+            self::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING     => __('Do nothing'),
+            self::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC => __('Delete dynamic authorizations'),
+            self::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL     => __('Delete all authorizations'),
         ];
     }
 
@@ -4055,13 +4124,15 @@ class AuthLDAP extends CommonDBTM
     /**
      * Builds deleted actions dropdown
      *
+     * @deprecated
+     *
      * @param integer $value (default 0)
      *
      * @return string
      */
     public static function dropdownUserDeletedActions($value = 0)
     {
-
+        Toolbox::deprecated('The "user_deleted_ldap" configuration value was removed.');
         $options = self::getLdapDeletedUserActionOptions();
         asort($options);
         return Dropdown::showFromArray('user_deleted_ldap', $options, ['value' => $value]);

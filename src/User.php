@@ -5172,52 +5172,53 @@ JAVASCRIPT;
         ];
         $myuser = new self();
 
-        switch ($CFG_GLPI['user_deleted_ldap']) {
-           //DO nothing
+        // Handle deleted user
+        switch ($CFG_GLPI['user_deleted_ldap_user']) {
             default:
-            case AuthLDAP::DELETED_USER_PRESERVE:
+            case AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING:
                 $myuser->update($tmp);
                 break;
 
-           //Put user in trashbin
-            case AuthLDAP::DELETED_USER_DELETE:
-               // Make sure the `is_deleted_ldap` flag is changed before deleting the user (Used for a potential future restore)
+            case AuthLDAP::DELETED_USER_ACTION_USER_DISABLE:
+                $tmp['is_active'] = 0;
+                $myuser->update($tmp);
+                break;
+
+            case AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN:
                 $myuser->update($tmp);
                 $myuser->delete($tmp);
                 break;
+        }
 
-           //Delete all user dynamic habilitations and groups
-            case AuthLDAP::DELETED_USER_WITHDRAWDYNINFO:
-                Profile_User::deleteRights($users_id, true);
-                Group_User::deleteGroups($users_id, true);
-                $myuser->update($tmp);
+        // Handle deleted user's groups
+        switch ($CFG_GLPI['user_deleted_ldap_groups']) {
+            default:
+            case AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING:
                 break;
 
-           //Deactivate the user
-            case AuthLDAP::DELETED_USER_DISABLE:
-                $tmp['is_active'] = 0;
-                $myuser->update($tmp);
-                break;
-
-           //Deactivate the user+ Delete all user dynamic habilitations and groups
-            case AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO:
-                $tmp['is_active'] = 0;
-                $myuser->update($tmp);
-                Profile_User::deleteRights($users_id, true);
+            case AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC:
                 Group_User::deleteGroups($users_id, true);
                 break;
 
-            case AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS:
-                $tmp['is_active'] = 0;
-                $myuser->update($tmp);
-                Group_User::deleteGroups($users_id, true);
+            case AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL:
+                Group_User::deleteGroups($users_id);
                 break;
         }
-       /*
-       $changes[0] = '0';
-       $changes[1] = '';
-       $changes[2] = __('Deleted user in LDAP directory');
-       Log::history($users_id, 'User', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);*/
+
+        // Handle deleted user's authorizations
+        switch ($CFG_GLPI['user_deleted_ldap_authorizations']) {
+            default:
+            case AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING:
+                break;
+
+            case AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC:
+                Profile_User::deleteRights($users_id, true);
+                break;
+
+            case AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL:
+                Profile_User::deleteRights($users_id);
+                break;
+        }
     }
 
     /**

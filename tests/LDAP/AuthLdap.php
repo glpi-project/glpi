@@ -39,6 +39,7 @@ use DbTestCase;
 use GLPIKey;
 use Group;
 use Group_User;
+use Profile_User;
 use UserTitle;
 
 /* Test for inc/authldap.class.php */
@@ -1425,28 +1426,78 @@ class AuthLDAP extends DbTestCase
     }
 
     /**
-     * Test removed users
+     * Data provider for testRemovedUser
+     *
+     * @return iterable
+     */
+    protected function testRemovedUserProvider(): iterable
+    {
+        $user_options = [
+            \AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING,
+            \AuthLDAP::DELETED_USER_ACTION_USER_DISABLE,
+            \AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN,
+        ];
+
+        $groups_options = [
+            \AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING,
+            \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC,
+            \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL,
+        ];
+
+        $authorizations_options = [
+            \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
+            \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC,
+            \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL,
+        ];
+
+        // Yield all possible combinations
+        foreach ($user_options as $user_option) {
+            foreach ($groups_options as $groups_option) {
+                foreach ($authorizations_options as $authorizations_option) {
+                    yield[$user_option, $groups_option, $authorizations_option];
+                }
+            }
+        }
+    }
+
+    /**
+     * Test expected behaviors when a user is deleted from ldap
      *
      * @extensions ldap
      *
+     * @dataprovider testRemovedUserProvider
+     *
+     * @param int $user_option_value
+     * @param int $groups_option_value
+     * @param int $authorizations_option_value
+     *
      * @return void
      */
-    public function testRemovedUser()
-    {
+    public function testRemovedUser(
+        int $user_option_value,
+        int $groups_option_value,
+        int $authorizations_option_value,
+    ): void {
         global $CFG_GLPI;
 
         $ldap = $this->ldap;
 
-       //put deleted LDAP users in trashbin
-        $CFG_GLPI['user_deleted_ldap'] = 1;
+        // Set config
+        $CFG_GLPI['user_deleted_ldap_user'] = $user_option_value;
+        $CFG_GLPI['user_deleted_ldap_groups'] = $groups_option_value;
+        $CFG_GLPI['user_deleted_ldap_authorizations'] = $authorizations_option_value;
 
-       //add a new user in directory
+        // Unique user for each tests
+        $rand = mt_rand();
+        $uid = "toremovetest$rand";
+
+        // Add a new user in directory
         $this->boolean(
             ldap_add(
                 $ldap->connect(),
-                'uid=toremovetest,ou=people,ou=ldap3,dc=glpi,dc=org',
+                "uid=$uid,ou=people,ou=ldap3,dc=glpi,dc=org",
                 [
-                    'uid'          => 'toremovetest',
+                    'uid'          => $uid,
                     'sn'           => 'A SN',
                     'cn'           => 'A CN',
                     'userpassword' => 'password',
@@ -1458,26 +1509,189 @@ class AuthLDAP extends DbTestCase
             )
         )->isTrue();
 
-       //import the user
+        // Import the user
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
                 'method' => \AuthLDAP::IDENTIFIER_LOGIN,
-                'value'  => 'toremovetest'
+                'value'  => $uid
             ],
             \AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->array($import)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+            ->hasSize(2)
+            ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+            ->integer['id']->isGreaterThan(0);
 
-       //check created user
+        // Check created user
         $user = new \User();
         $this->boolean($user->getFromDB($import['id']))->isTrue();
 
-       //check sync from an non reachable directory
+        // Add groups
+        $this->createItems("Group", [
+            ["name" => "Dyn group 1 $rand"],
+            ["name" => "Dyn group 2 $rand"],
+            ["name" => "Group 1 $rand"],
+            ["name" => "Group 2 $rand"],
+            ["name" => "Group 3 $rand"],
+        ]);
+        $dyn_group_1 = getItemByTypeName("Group", "Dyn group 1 $rand", true);
+        $dyn_group_2 = getItemByTypeName("Group", "Dyn group 2 $rand", true);
+        $group_1 = getItemByTypeName("Group", "Group 1 $rand", true);
+        $group_2 = getItemByTypeName("Group", "Group 2 $rand", true);
+        $group_3 = getItemByTypeName("Group", "Group 3 $rand", true);
+        $this->createItems("Group_User", [
+            ['users_id' => $import['id'], 'groups_id' => $dyn_group_1, "is_dynamic" => true],
+            ['users_id' => $import['id'], 'groups_id' => $dyn_group_2, "is_dynamic" => true],
+            ['users_id' => $import['id'], 'groups_id' => $group_1],
+            ['users_id' => $import['id'], 'groups_id' => $group_2],
+            ['users_id' => $import['id'], 'groups_id' => $group_3],
+        ]);
+
+        // Check groups have been assigned correctly
+        $gu = new Group_User();
+        $this->array($gu->find(['users_id' => $import['id']]))->hasSize(5);
+        $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(2);
+        $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(3);
+
+        // Create profiles
+        $this->createItems("Profile", [
+            ["name" => "Dyn profile 1 $rand"],
+            ["name" => "Profile 1 $rand"],
+            ["name" => "Profile 2 $rand"],
+        ]);
+        $dyn_profile_1 = getItemByTypeName("Profile", "Dyn profile 1 $rand", true);
+        $profile_1 = getItemByTypeName("Profile", "Profile 1 $rand", true);
+        $profile_2 = getItemByTypeName("Profile", "Profile 2 $rand", true);
+        $this->createItems("Profile_User", [
+            ['entities_id' => 0, 'users_id' => $import['id'], 'profiles_id' => $dyn_profile_1, "is_dynamic" => true],
+            ['entities_id' => 0, 'users_id' => $import['id'], 'profiles_id' => $profile_1],
+            ['entities_id' => 0, 'users_id' => $import['id'], 'profiles_id' => $profile_2],
+        ]);
+        // + 1 dyn profile that was already attributed on creation
+
+        // Check profiles have been assigned correctly
+        $pu = new Profile_User();
+        $this->array($pu->find(['users_id' => $import['id']]))->hasSize(4);
+        $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(2);
+        $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(2);
+
+        // Drop test user
+        $this->boolean(
+            ldap_delete(
+                $ldap->connect(),
+                "uid=$uid,ou=people,ou=ldap3,dc=glpi,dc=org"
+            )
+        )->isTrue();
+
+        $synchro = $ldap->forceOneUserSynchronization($user);
+        $this->array($synchro)
+            ->hasSize(2)
+            ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
+            ->variable['id']->isEqualTo($import['id']);
+
+        // Refresh user
+        $user = new \User();
+        $user->getFromDB($import['id']);
+
+        // Check expected behavior according to user config
+        switch ($user_option_value) {
+            case \AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING:
+                $this->boolean((bool)$user->fields['is_active'])->isEqualTo(true);
+                $this->boolean((bool)$user->fields['is_deleted'])->isEqualTo(false);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_USER_DISABLE:
+                $this->boolean((bool)$user->fields['is_active'])->isEqualTo(false);
+                $this->boolean((bool)$user->fields['is_deleted'])->isEqualTo(false);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN:
+                $this->boolean((bool)$user->fields['is_active'])->isEqualTo(true);
+                $this->boolean((bool)$user->fields['is_deleted'])->isEqualTo(true);
+                break;
+        }
+
+        // Check expected behavior according to groups config
+        switch ($groups_option_value) {
+            case \AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING:
+                $this->array($gu->find(['users_id' => $import['id']]))->hasSize(5);
+                $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(2);
+                $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(3);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC:
+                $this->array($gu->find(['users_id' => $import['id']]))->hasSize(3);
+                $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(0);
+                $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(3);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL:
+                $this->array($gu->find(['users_id' => $import['id']]))->hasSize(0);
+                break;
+        }
+
+        // Check expected behavior according to authorizations config
+        switch ($authorizations_option_value) {
+            case \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING:
+                $this->array($pu->find(['users_id' => $import['id']]))->hasSize(4);
+                $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(2);
+                $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(2);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC:
+                $this->array($pu->find(['users_id' => $import['id']]))->hasSize(2);
+                $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(0);
+                $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(2);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL:
+                $this->array($pu->find(['users_id' => $import['id']]))->hasSize(0);
+                break;
+        }
+    }
+
+    public function testUnreachable(): void
+    {
+        $ldap = $this->ldap;
+
+        $this->boolean(
+            ldap_add(
+                $ldap->connect(),
+                'uid=testunreachable,ou=people,ou=ldap3,dc=glpi,dc=org',
+                [
+                    'uid'          => 'testunreachable',
+                    'sn'           => 'A SN',
+                    'cn'           => 'A CN',
+                    'userpassword' => 'password',
+                    'objectClass'  => [
+                        'top',
+                        'inetOrgPerson'
+                    ]
+                ]
+            )
+        )->isTrue();
+
+        $import = \AuthLDAP::ldapImportUserByServerId(
+            [
+                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'value'  => 'testunreachable'
+            ],
+            \AuthLDAP::ACTION_IMPORT,
+            $ldap->getID(),
+            true
+        );
+        $this->array($import)
+            ->hasSize(2)
+            ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+            ->integer['id']->isGreaterThan(0);
+
+        // Check created user
+        $user = new \User();
+        $this->boolean($user->getFromDB($import['id']))->isTrue();
+
+        // Check sync from an non reachable directory
         $host = $ldap->fields['host'];
         $port = $ldap->fields['port'];
         $this->boolean(
@@ -1492,38 +1706,10 @@ class AuthLDAP extends DbTestCase
         $synchro = $ldap->forceOneUserSynchronization($user);
         $this->boolean($synchro)->isFalse();
 
-       //reset directory configuration
-        $this->boolean(
-            $ldap->update([
-                'id'     => $ldap->getID(),
-                'host'   => $host,
-                'port'   => $port
-            ])
-        )->isTrue();
-
-       //check that user still exists
+        // Check that user still exists
         $uid = $import['id'];
         $this->boolean($user->getFromDB($uid))->isTrue();
         $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
-
-       //drop test user
-        $this->boolean(
-            ldap_delete(
-                $ldap->connect(),
-                'uid=toremovetest,ou=people,ou=ldap3,dc=glpi,dc=org'
-            )
-        )->isTrue();
-
-        $synchro = $ldap->forceOneUserSynchronization($user);
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
-         ->variable['id']->isEqualTo($uid);
-        $CFG_GLPI['user_deleted_ldap'] = 0;
-
-       //check that user no longer exists
-        $this->boolean($user->getFromDB($uid))->isTrue();
-        $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
     }
 
     /**
@@ -1539,7 +1725,7 @@ class AuthLDAP extends DbTestCase
 
         $ldap = $this->ldap;
 
-       //add a new user in directory
+        // add a new user in directory
         $this->boolean(
             ldap_add(
                 $ldap->connect(),
@@ -1557,7 +1743,7 @@ class AuthLDAP extends DbTestCase
             )
         )->isTrue();
 
-       //import the user
+        // import the user
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
                 'method' => \AuthLDAP::IDENTIFIER_LOGIN,
@@ -1572,13 +1758,13 @@ class AuthLDAP extends DbTestCase
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
          ->integer['id']->isGreaterThan(0);
 
-       //check created user
+        // check created user
         $user = new \User();
         $this->boolean($user->getFromDB($import['id']))->isTrue();
         $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
         $this->boolean((bool)$user->fields['is_deleted_ldap'])->isFalse();
 
-       // delete the user in LDAP
+        // delete the user in LDAP
         $this->boolean(
             ldap_delete(
                 $ldap->connect(),
@@ -1586,22 +1772,22 @@ class AuthLDAP extends DbTestCase
             )
         )->isTrue();
 
-        $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap'] ?? 0;
-       //put deleted LDAP users in trashbin
-        $CFG_GLPI['user_deleted_ldap'] = 1;
+        $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap_user'] ?? \AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING;
+        // put deleted LDAP users in trashbin
+        $CFG_GLPI['user_deleted_ldap_user'] = \AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN;
         $synchro = $ldap->forceOneUserSynchronization($user);
-        $CFG_GLPI['user_deleted_ldap'] = $user_deleted_ldap_original;
+        $CFG_GLPI['user_deleted_ldap_user'] = $user_deleted_ldap_original;
         $this->array($synchro)
          ->hasSize(2)
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
          ->variable['id']->isEqualTo($import['id']);
 
-       //reload user from DB
+        // reload user from DB
         $this->boolean($user->getFromDB($import['id']))->isTrue();
         $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
         $this->boolean((bool)$user->fields['is_deleted_ldap'])->isTrue();
 
-       // manually re-add the user in LDAP to simulate a restore
+        // manually re-add the user in LDAP to simulate a restore
         $this->boolean(
             ldap_add(
                 $ldap->connect(),
@@ -1628,7 +1814,7 @@ class AuthLDAP extends DbTestCase
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_RESTORED_LDAP)
          ->variable['id']->isEqualTo($import['id']);
 
-       //reload user from DB
+        // reload user from DB
         $this->boolean($user->getFromDB($import['id']))->isTrue();
         $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
     }

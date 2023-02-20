@@ -902,7 +902,7 @@
       {% set extra_attribs = '' %}
    {% endif %}
 
-   <div class="form-field row {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
+   <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {{ _self.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
       {% if options.center %}
          {% set flex_class = "d-flex align-items-center" %}
