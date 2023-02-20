@@ -5306,7 +5306,7 @@ final class SQLProvider implements SearchProviderInterface
                         if ($data[$ID][$k]['name']) {
                              $status  = \ChangeValidation::getStatus($data[$ID][$k]['name']);
                              $bgcolor = \ChangeValidation::getStatusColor($data[$ID][$k]['name']);
-                             $out    .= (empty($out) ? '' : self::LBBR) .
+                             $out    .= (empty($out) ? '' : \Search::LBBR) .
                                  "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
                         }
                     }
