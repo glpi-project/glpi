@@ -902,4 +902,71 @@ class Computer extends AbstractInventoryAsset
         $locks = $lockedfield->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($locks))->isIdenticalTo(0);
     }
+
+    public function testNetworkNames()
+    {
+        global $DB;
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode($json_str);
+
+        //add a new port
+        $newport = new \stdClass();
+        $newport->description = 'any name incorrect for netname';
+        $newport->type = 'ethernet';
+        $newport->ipaddress = '192.168.101.101';
+
+        $json->content->networks[] = $newport;
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check last_boot came from "operatingsystem->boot_time" node.
+        $this->string($computer->fields['last_boot'])->isIdenticalTo('2020-06-09 07:58:08');
+
+        $it = $DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM' => \NetworkPort::getTable(),
+            'WHERE' => [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id
+            ]
+        ]);
+        $this->integer(count($it))->isIdenticalTo(6);
+
+        foreach ($it as $port) {
+            if ($port['name'] === 'virbr0-nic') {
+                //no networkname for this one.
+                continue;
+            }
+
+            $netname_it = $DB->request([
+                'SELECT' => ['id', 'name'],
+                'FROM' => \NetworkName::getTable(),
+                'WHERE' => [
+                    'itemtype' => 'NetworkPort',
+                    'items_id' => $port['id']
+                ]
+            ]);
+
+            $this->integer(count($netname_it))->isIdenticalTo(1);
+
+            $netname = $netname_it->current();
+            $this->array($netname)
+                ->string['name']->isIdenticalTo(\Toolbox::slugify($port['name']));
+        }
+    }
 }

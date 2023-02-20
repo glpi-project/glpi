@@ -453,7 +453,12 @@ trait InventoryNetworkPort
                           $row = $results->fetch_object();
                           $netname_id = $row->id;
                     } else {
-                        $netname_id = $this->addNetworkName($keydb);
+                        if (!empty($datadb['name'])) {
+                            $netname = \Toolbox::slugify($datadb['name']);
+                        } else {
+                            $netname = null;
+                        }
+                        $netname_id = $this->addNetworkName($keydb, $netname);
                     }
 
                     //Handle ipaddresses
@@ -612,7 +617,12 @@ trait InventoryNetworkPort
         foreach ($ports as $port) {
             $netports_id = $this->addNetworkPort($port);
             if (count(($port->ipaddress ?? []))) {
-                $netnames_id = $this->addNetworkName($netports_id, $port->netname ?? null);
+                if (property_exists($port, 'name')) {
+                    $netname = \Toolbox::slugify($port->name);
+                } else {
+                    $netname = null;
+                }
+                $netnames_id = $this->addNetworkName($netports_id, $netname);
                 $this->addIPAddresses($port->ipaddress, $netnames_id);
             }
 
