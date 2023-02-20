@@ -38,6 +38,8 @@
  * @var Migration $migration
  */
 
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
 if ($DB->fieldExists(\Unmanaged::getTable(), 'domains_id')) {
     $iterator = $DB->request([
         'SELECT' => ['id', 'domains_id'],
@@ -54,6 +56,10 @@ if ($DB->fieldExists(\Unmanaged::getTable(), 'domains_id')) {
         }
     }
     $migration->dropField(\Unmanaged::getTable(), 'domains_id');
+}
+
+if (!$DB->fieldExists(\Unmanaged::getTable(), 'users_id_tech')) {
+    $migration->addField(\Unmanaged::getTable(), 'users_id_tech', "int {$default_key_sign} NOT NULL DEFAULT '0'", ['after' => 'states_id']);
 }
 
 //new right value for unmanageds (previously based on config UPDATE)
