@@ -599,9 +599,6 @@ class Plugin extends CommonDBTM
         ) {
             // Plugin known version differs from information or plugin has been renamed,
             // update information in database
-            $input              = $informations;
-            $input['id']        = $plugin->fields['id'];
-            $input['directory'] = $plugin_key;
             if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED, self::NOTUPDATED])) {
                 // mark it as 'updatable' unless it was not installed
                 trigger_error(
@@ -611,8 +608,6 @@ class Plugin extends CommonDBTM
                     ),
                     E_USER_WARNING
                 );
-
-                $input['state']     = self::NOTUPDATED;
 
                 Event::log(
                     '',
@@ -626,7 +621,13 @@ class Plugin extends CommonDBTM
                 );
             }
 
-            $this->update($input);
+            // Update status and all plugin info in case it was changed in a new update (like the license)
+            $this->update(
+                [
+                    'id'    => $plugin->fields['id'],
+                    'state' => self::NOTUPDATED,
+                ] + $informations
+            );
 
             $this->unload($plugin_key);
             // reset menu
