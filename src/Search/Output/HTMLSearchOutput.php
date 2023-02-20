@@ -135,7 +135,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                 \DisplayPreference::PERSONAL,
                 \DisplayPreference::GENERAL
             ]),
-            'may_be_deleted'      => $item instanceof \CommonDBTM && $item->maybeDeleted(),
+            'may_be_deleted'      => $item instanceof \CommonDBTM && $item->maybeDeleted() && !$item->useDeletedToLockIfDynamic(),
             'may_be_located'      => $item instanceof \CommonDBTM && $item->maybeLocated(),
             'may_be_browsed'      => $item !== null && \Toolbox::hasTrait($item, \Glpi\Features\TreeBrowse::class),
             'may_be_unpublished'  => $itemtype == 'KnowbaseItem' && $item->canUpdate(),

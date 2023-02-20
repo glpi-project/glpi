@@ -162,6 +162,20 @@ if (isset($_POST["add"])) {
         $nn->delete($_POST);
     }
     Html::back();
+} else if (isset($_POST["restore"])) {
+    $np->check($_POST["id"], DELETE);
+
+    if ($np->restore($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "networkport",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 } else {
     if (empty($_GET["items_id"])) {
         $_GET["items_id"] = "";

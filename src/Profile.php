@@ -1849,6 +1849,18 @@ class Profile extends CommonDBTM
                     ]
                 ],
             ], [
+                'itemtype'  => 'Unmanaged',
+                'label'     => Unmanaged::getTypeName(Session::getPluralNumber()),
+                'field'     => 'unmanaged',
+                'rights'  => [
+                    READ  => __('Read'),
+                    UPDATE  => __('Update'),
+                    DELETE => __('Delete'),
+                    PURGE   => ['short' => __('Purge'),
+                        'long'  => _x('button', 'Delete permanently')
+                    ]
+                ],
+            ], [
                 'itemtype'  => 'Agent',
                 'label'     => Agent::getTypeName(Session::getPluralNumber()),
                 'field'     => 'agent',

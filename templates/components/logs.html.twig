@@ -82,7 +82,7 @@
                ) }}
             </td>
             <td>
-               <select name="filters[users_names][]" class="form-select logs-filter-select-mulitple" multiple>
+               <select name="filters[users_names][]" class="form-select logs-filter-select-multiple" multiple>
                   {% for value, username in user_names %}
                      <option value="{{ value|verbatim_value }}" {{ filters['users_names'] is defined and value in filters['users_names'] ? 'selected' : '' }}>
                         {{ username|verbatim_value }}
@@ -91,7 +91,7 @@
                </select>
             </td>
             <td>
-               <select name="filters[affected_fields][]" class="form-select logs-filter-select-mulitple" multiple>
+               <select name="filters[affected_fields][]" class="form-select logs-filter-select-multiple" multiple>
                   {% for value, field in affected_fields %}
                      <option value="{{ value }}" {{ filters['affected_fields'] is defined and value in filters['affected_fields'] ? 'selected' : '' }}>
                         {{ field }}
@@ -100,7 +100,7 @@
                </select>
             </td>
             <td colspan="2">
-               <select name="filters[linked_actions][]" class="form-select logs-filter-select-mulitple" multiple>
+               <select name="filters[linked_actions][]" class="form-select logs-filter-select-multiple" multiple>
                   {% for value, action in linked_actions %}
                      <option value="{{ value }}" {{ filters['linked_actions'] is defined and value in filters['linked_actions'] ? 'selected' : '' }}>
                         {{ action }}
@@ -140,6 +140,6 @@
 
 <script type="text/javascript">
 $(function() {
-   $('.logs-filter-select-mulitple').select2();
+   $('.logs-filter-select-multiple').select2();
 });
 </script>

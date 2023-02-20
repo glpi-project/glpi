@@ -45,7 +45,7 @@ class Unmanaged extends CommonDBTM
 
    // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'config';
+    public static $rightname                   = 'unmanaged';
 
     public static function getTypeName($nb = 0)
     {
@@ -67,7 +67,7 @@ class Unmanaged extends CommonDBTM
 
 
     /**
-     * Print the unmanagemed form
+     * Print the unmanaged form
      *
      * @param $ID integer ID of the item
      * @param $options array
@@ -339,13 +339,8 @@ class Unmanaged extends CommonDBTM
         $this->deleteFromDB(1);
     }
 
-    public static function canDelete()
+    public function useDeletedToLockIfDynamic()
     {
-        return static::canUpdate();
-    }
-
-    public static function canPurge()
-    {
-        return static::canUpdate();
+        return false;
     }
 }

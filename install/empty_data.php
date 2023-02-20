@@ -8195,7 +8195,48 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'agent',
                 'rights' => self::RIGHT_NONE,
-            ]
+            ],
+            [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'unmanaged',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'unmanaged',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'unmanaged',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'unmanaged',
+                'rights' => READ | UPDATE | DELETE | PURGE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'unmanaged',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'unmanaged',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'unmanaged',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'unmanaged',
+                'rights' => self::RIGHT_NONE,
+
+            ],
         ];
 
 

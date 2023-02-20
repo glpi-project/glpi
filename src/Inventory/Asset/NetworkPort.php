@@ -40,6 +40,7 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
 use Glpi\Toolbox\Sanitizer;
 use NetworkPort as GlobalNetworkPort;
+use NetworkPortAggregate;
 use NetworkPortType;
 use QueryParam;
 use RuleImportAssetCollection;
@@ -543,6 +544,7 @@ class NetworkPort extends InventoryAsset
             $input_db['ifoutbytes']  = $input['ifoutbytes'];
             $input_db['ifinerrors']  = $input['ifinerrors'];
             $input_db['ifouterrors'] = $input['ifouterrors'];
+            $input_db['is_dynamic'] = true;
             $netport->update($input_db);
         }
     }
@@ -768,17 +770,39 @@ class NetworkPort extends InventoryAsset
     {
         $mainasset = $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()];
 
+        //remove management port for Printer on netinventory
+        //to prevent twice IP (NetworkPortAggregate / NetworkPortEthernet)
+        if ($mainasset instanceof Printer && !$this->item->isNewItem()) {
+            if (empty($this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()]->getManagementPorts())) {
+                //remove all port management ports
+                $networkport = new GlobalNetworkPort();
+                $networkport->deleteByCriteria([
+                    "itemtype"           => $this->item->getType(),
+                    "items_id"           => $this->item->getID(),
+                    "instantiation_type" => NetworkPortAggregate::getType(),
+                    "name"               => "Management"
+                ], 1);
+            }
+        }
+
         //handle ports for stacked switches
         if ($mainasset->isStackedSwitch()) {
             $bkp_ports = $this->ports;
+            $portid_to_chassisid = $mainasset->getStackedPortsMap();
+            $stack_id = $mainasset->getStackId();
             foreach ($this->ports as $k => $val) {
                 $matches = [];
-                if (preg_match('@[\w-]+(\d+)/\d+/\d+@', $val->name, $matches)) {
-                    if ($matches[1] != $mainasset->getStackId()) {
-                        //port attached to another stack entry, remove from here
-                        unset($this->ports[$k]);
-                        continue;
-                    }
+                if (
+                    (property_exists($val, 'ifnumber')
+                    && isset($portid_to_chassisid[$val->ifnumber])
+                    && $portid_to_chassisid[$val->ifnumber] != $stack_id)
+                        ||
+                    (preg_match('@[\w-]+(\d+)/\d+/\d+@', $val->name, $matches)
+                    && $matches[1] != $stack_id)
+                ) {
+                    //port attached to another stack entry, remove from here
+                    unset($this->ports[$k]);
+                    continue;
                 }
             }
         }

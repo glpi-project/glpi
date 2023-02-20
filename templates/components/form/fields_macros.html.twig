@@ -393,7 +393,7 @@
             preferredFormat: "hex",
             type: "text",
             change: function(color) {
-                if (color.getAlpha() !== 1) {
+                if (color !== null && color.getAlpha() !== 1) {
                     let hex = color.toHexString();
                     hex += ("0" + Math.round(parseFloat(color.getAlpha()) * 255).toString(16)).slice(-2);
                     this.value = hex;
@@ -461,7 +461,7 @@
         <input type="file" id="%id%"
                class="form-control {{ options.input_addclass }}"
                name="{{ name }}"
-               {{ options.mulitple ? 'multiple' : '' }}
+               {{ options.multiple ? 'multiple' : '' }}
                {{ options.readonly ? 'readonly' : '' }}
                {{ options.disabled ? 'disabled' : '' }}
                {{ options.required ? 'required' : '' }} />

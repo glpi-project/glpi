@@ -479,6 +479,11 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         ];
         $this->array($db_input)->isIdenticalTo($expected_input);
 
+        //no lock
+        $lockedfield = new \Lockedfield();
+        $this->boolean($lockedfield->isHandled($networkport))->isTrue();
+        $this->array($lockedfield->getLockedValues($networkport->getType(), $networkport->fields['id']))->isEmpty();
+
         //change 'date' to yesterday to get new metric after reimport (2nd step)
         $currentDate = new DateTime(date('Y-m-d'));
         $yesterdayTime = $currentDate->sub(new DateInterval('P1D'));
@@ -533,6 +538,11 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         ];
         $this->array($db_input)->isIdenticalTo($expected_input);
 
+        //no lock
+        $lockedfield = new \Lockedfield();
+        $this->boolean($lockedfield->isHandled($networkport))->isTrue();
+        $this->array($lockedfield->getLockedValues($networkport->getType(), $networkport->fields['id']))->isEmpty();
+
         //Third step : import NetworkEquipement again but with new metrics
         //check that the previous data are updated
 
@@ -579,5 +589,10 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "networkports_id" => $networkport->fields['id'],
         ];
         $this->array($db_input)->isIdenticalTo($expected_input);
+
+        //no lock
+        $lockedfield = new \Lockedfield();
+        $this->boolean($lockedfield->isHandled($networkport))->isTrue();
+        $this->array($lockedfield->getLockedValues($networkport->getType(), $networkport->fields['id']))->isEmpty();
     }
 }

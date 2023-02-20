@@ -53,7 +53,8 @@
          <div class="col-auto">
             {{ fields.dropdownField(primary_dropdown_itemtype, primary_dropdown_itemtype|itemtype_foreign_key, '', '', {
                no_label: true,
-               field_class: ''
+               field_class: '',
+               rand: rand
             }|merge(dropdown_options)) }}
             {% if ajax_dropdown is defined %}
                {% do call('Ajax::updateItemOnSelectEvent', [
@@ -67,7 +68,8 @@
                <span id="{{ ajax_dropdown['toupdate']['id'] }}">
                   {{ fields.dropdownField(ajax_dropdown['toupdate']['itemtype'], (ajax_dropdown['toupdate']['itemtype'])|itemtype_foreign_key, '', '', {
                      no_label: true,
-                     field_class: ''
+                     field_class: '',
+                     rand: rand
                   }|merge(ajax_dropdown['toupdate']['params'])) }}
                </span>
             {% endif %}
