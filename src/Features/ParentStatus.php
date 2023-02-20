@@ -39,7 +39,6 @@ use CommonITILActor;
 use CommonITILObject;
 use PendingReason_Item;
 use Session;
-use Toolbox;
 
 /**
  * ParentStatus
@@ -101,7 +100,7 @@ trait ParentStatus
         } else {
             // Pending toggle isn't set (self-service, API, ...)
             // Try to compute whether or not we need te reopen the ticket
-            if (isset($input['_no_reopen']) && $parentitem->needReopen()) {
+            if (!isset($input['_no_reopen']) && $parentitem->needReopen()) {
                 $input["_reopen"] = true;
             }
         }
