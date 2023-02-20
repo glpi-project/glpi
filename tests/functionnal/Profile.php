@@ -218,7 +218,9 @@ class Profile extends DbTestCase
             '_profile' => [UPDATE . "_0" => true]
         ]);
         $this->boolean($super_admin->isLastSuperAdminProfile())->isFalse();
+        $this->boolean($super_admin->canPurgeItem())->isTrue();
         $this->boolean($super_admin_2->isLastSuperAdminProfile())->isFalse();
+        $this->boolean($super_admin_2->canPurgeItem())->isTrue();
     }
 
     /**
