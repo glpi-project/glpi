@@ -532,8 +532,6 @@ class Config extends CommonDBTM
      **/
     public function showFormAuthentication()
     {
-        global $CFG_GLPI;
-
         if (!Config::canUpdate()) {
             return;
         }
