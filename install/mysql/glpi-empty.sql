@@ -8872,7 +8872,8 @@ CREATE TABLE `glpi_unmanageds` (
   KEY `date_creation` (`date_creation`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
   KEY `agents_id` (`agents_id`),
-  KEY `snmpcredentials_id` (`snmpcredentials_id`)
+  KEY `snmpcredentials_id` (`snmpcredentials_id`),
+  KEY `users_id_tech` (`users_id_tech`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_networkporttypes`;
