@@ -22,6 +22,7 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 - `Glpi\Inventory\Conf::importFile()`
+- `RSSFeed::showDiscoveredFeeds()`
 - `Toolbox::checkValidReferer()`
 
 #### Removed
