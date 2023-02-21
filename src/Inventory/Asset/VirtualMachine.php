@@ -232,10 +232,13 @@ class VirtualMachine extends InventoryAsset
                         'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0
                     ];
 
+                    //strtolower to be the same as getUUIDRestrictCriteria()
+                    $arraydb['uuid'] = strtolower($arraydb['uuid']);
+
                     if ($sinput == $arraydb) {
                         $input = [
                             'id'           => $keydb,
-                            'uuid'         => $handled_input['uuid'] ?? '',
+                            'uuid'         => strtolower($handled_input['uuid']) ?? '', //strtolower
                             'is_dynamic'   => 1
                         ];
 

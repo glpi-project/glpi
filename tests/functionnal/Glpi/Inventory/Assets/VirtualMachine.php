@@ -225,7 +225,7 @@ class VirtualMachine extends AbstractInventoryAsset
               <MEMORY>1024</MEMORY>
               <NAME>SRV-DMZ-EZ</NAME>
               <STATUS>running</STATUS>
-              <UUID>420904fe-6a92-95e8-13f9-a37fc3607c14</UUID>
+              <UUID>420904FE-6a92-95e8-13f9-a37fc3607c14</UUID>
               <VCPU>1</VCPU>
               <VMTYPE>VMware</VMTYPE>
             </VIRTUALMACHINES>
