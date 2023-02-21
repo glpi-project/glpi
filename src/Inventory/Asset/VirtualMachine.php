@@ -225,7 +225,7 @@ class VirtualMachine extends InventoryAsset
                 $handled_input = $this->handleInput($val, $computerVirtualmachine);
 
                 //search ComputervirtualMachine on cleaned UUID if it changed
-                foreach (ComputerVirtualMachine::getUUIDRestrictCriteria($handled_input['uuid']) as $cleaned_uuid) {
+                foreach (ComputerVirtualMachine::getUUIDRestrictCriteria($handled_input['uuid'] ?? '') as $cleaned_uuid) {
                     $sinput = [
                         'name'                     => $handled_input['name'] ?? '',
                         'uuid'                     => $cleaned_uuid ?? '',
