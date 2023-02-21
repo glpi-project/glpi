@@ -727,6 +727,29 @@ class MailCollector extends CommonDBTM
                         break;
                     }
 
+                    $extra_retrieve_limit = 250;
+                    if ($this->fetch_emails >= $this->maxfetch_emails + $extra_retrieve_limit) {
+                        // It was retrieved 250 emails more than the initial limit. It means that there were
+                        // 250 email either already seen, either in error.
+                        // To prevent performances issues, retrieve process is stopped here.
+                        trigger_error(
+                            sprintf(
+                                'More than %d emails in mailbox are either already imported, either errored. To avoid a too long execution time, the retrieval of emails has been stopped after %dth email.',
+                                $extra_retrieve_limit,
+                                $this->fetch_emails
+                            ),
+                            E_USER_WARNING
+                        );
+                        Toolbox::logInFile(
+                            'mailgate',
+                            sprintf(
+                                __('Emails retrieve limit reached. Check in "%s" for more details.') . "\n",
+                                GLPI_LOG_DIR . '/php-errors.log'
+                            )
+                        );
+                        break;
+                    }
+
                     try {
                         $this->fetch_emails++;
                         $message = $this->storage->current();
