@@ -1701,6 +1701,13 @@ abstract class CommonITILObject extends CommonDBTM
         if (isset($input[static::getTemplateFormFieldName()]) && (int) $input[static::getTemplateFormFieldName()] > 0) {
             $tpl_class = static::getTemplateClass();
             $input[$tpl_class::getForeignKeyField()] = (int) $input[static::getTemplateFormFieldName()];
+            $template = new $tpl_class();
+            $template->getFromDBWithData($input[$tpl_class::getForeignKeyField()]);
+            foreach ($input as $key => $val) {
+                if ($template->isReadonlyField($key) || $template->isHiddenField($key)) {
+                    unset($input[$key]);
+                }
+            }
         }
 
         if ($this->getType() !== Ticket::getType()) {

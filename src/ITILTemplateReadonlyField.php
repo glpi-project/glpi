@@ -176,7 +176,7 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
             return false;
         }
         $canedit = $tt->canEdit($ID);
-        $ttm     = new static();
+        $ttr     = new static();
         $fields  = $tt->getAllowedFieldsNames(false);
         $fields  = array_diff_key($fields, self::getExcludedFields());
         $rand    = mt_rand();
@@ -198,7 +198,7 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
         if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                  action='" . $ttm->getFormURL() . "'>";
+                  action='" . $ttr->getFormURL() . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add a read only field') . "</th></tr>";
@@ -216,9 +216,9 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
 
         echo "<div class='spaced'>";
         if ($canedit && $numrows) {
-            Html::openMassiveActionsForm('mass' . $ttm->getType() . $rand);
+            Html::openMassiveActionsForm('mass' . $ttr->getType() . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => 'mass' . $ttm->getType() . $rand
+                'container'     => 'mass' . $ttr->getType() . $rand
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -233,9 +233,9 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
             $header_end    = '';
             if ($canedit) {
                 $header_top    .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . $ttm->getType() . $rand) . "</th>";
+                $header_top    .= Html::getCheckAllAsCheckbox('mass' . $ttr->getType() . $rand) . "</th>";
                 $header_bottom .= "<th width='10'>";
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . $ttm->getType() . $rand) . "</th>";
+                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . $ttr->getType() . $rand) . "</th>";
             }
             $header_end .= "<th>" . __('Name') . "</th>";
             $header_end .= "</tr>";
@@ -244,7 +244,7 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
             foreach ($readonlyfields as $data) {
                 echo "<tr class='tab_bg_2'>";
                 if ($canedit) {
-                    echo "<td>" . Html::getMassiveActionCheckBox($ttm->getType(), $data["id"]) . "</td>";
+                    echo "<td>" . Html::getMassiveActionCheckBox($ttr->getType(), $data["id"]) . "</td>";
                 }
                 echo "<td>" . $fields[$data['num']] . "</td>";
                 echo "</tr>";

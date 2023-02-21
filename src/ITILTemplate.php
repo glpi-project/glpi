@@ -116,9 +116,9 @@ abstract class ITILTemplate extends CommonDropdown
             }
 
             // Always get all read only fields
-            $ttm_class = $itiltype . 'TemplateReadonlyField';
-            $ttm             = new $ttm_class();
-            $this->readonly = $ttm->getReadonlyFields($ID);
+            $ttr_class = $itiltype . 'TemplateReadonlyField';
+            $ttr             = new $ttr_class();
+            $this->readonly = $ttr->getReadonlyFields($ID);
 
            // Force items_id if itemtype is defined
             if (
