@@ -44,7 +44,7 @@
 {% endif %}
 {% if field_options.fields_template.isReadonlyField('urgency') %}
    {% set urgency_options = urgency_options|merge({
-      'disabled': true,
+      'readonly': true,
    }) %}
 {% endif %}
 
@@ -68,7 +68,7 @@
 {% endif %}
 {% if field_options.fields_template.isReadonlyField('impact') %}
    {% set impact_options = impact_options|merge({
-      'disabled': true,
+      'readonly': true,
    }) %}
 {% endif %}
 
@@ -95,7 +95,7 @@
 {% endif %}
 {% if field_options.fields_template.isReadonlyField('priority') %}
    {% set priority_options = priority_options|merge({
-      'disabled': true,
+      'readonly': true,
    }) %}
 {% endif %}
 

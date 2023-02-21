@@ -69,7 +69,8 @@
                'users_id_requester': params['_users_id_requester'] ?? '',
                'right': validation_right,
                'display': false,
-               'disabled': (not canupdate or field_options.fields_template.isReadonlyField('_add_validation')),
+               'disabled': (not canupdate),
+               'readonly': (field_options.fields_template.isReadonlyField('_add_validation')),
             }|merge(required)),
             __('Approval request'),
             field_options

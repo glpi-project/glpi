@@ -74,7 +74,7 @@
          requester_field,
          _n('Requester', 'Requesters', 1),
          actor_options|merge({
-            required: itiltemplate.isMandatoryField('_users_id_requester') or itiltemplate.isMandatoryField('_groups_id_requester'),
+            required: itiltemplate.isMandatoryField('_users_id_requester') or itiltemplate.isMandatoryField('_groups_id_requester')
          })
       ) }}
    {% else %}
