@@ -194,4 +194,51 @@ class Profile extends DbTestCase
             $this->integer(($profile->fields['ticket'] & $right))->isEqualTo($right);
         }
     }
+
+    /**
+     * Tests for Profile->canPurgeItem()
+     *
+     * @return void
+     */
+    public function testCanPurgeItem(): void
+    {
+        // Default: only one super admin account, can't be deleted
+        $super_admin = getItemByTypeName('Profile', 'Super-Admin');
+        $this->boolean($super_admin->isLastSuperAdminProfile())->isTrue();
+        $this->boolean($super_admin->canPurgeItem())->isEqualTo(false);
+
+        $super_admin_2 = $this->createItem("Profile", [
+            "name" => "Super-Admin 2"
+        ]);
+        $this->boolean($super_admin->isLastSuperAdminProfile())->isTrue();
+        $this->boolean($super_admin_2->isLastSuperAdminProfile())->isFalse();
+
+        // Two super admin account, both can be deleted
+        $this->updateItem("Profile", $super_admin_2->getID(), [
+            '_profile' => [UPDATE . "_0" => true]
+        ]);
+        $this->boolean($super_admin->isLastSuperAdminProfile())->isFalse();
+        $this->boolean($super_admin->canPurgeItem())->isTrue();
+        $this->boolean($super_admin_2->isLastSuperAdminProfile())->isFalse();
+        $this->boolean($super_admin_2->canPurgeItem())->isTrue();
+    }
+
+    /**
+     * Tests for Profile->prepareInputForUpdate()
+     *
+     * @return void
+     */
+    public function testprepareInputForUpdate(): void
+    {
+        // Default: only one super admin account, can't remove update rights
+        $super_admin = getItemByTypeName('Profile', 'Super-Admin');
+        $this->boolean($super_admin->isLastSuperAdminProfile())->isTrue();
+        $this->boolean($super_admin->update([
+            'id' => $super_admin->getId(),
+            '_profile' => [UPDATE . "_0" => false]
+        ]))->isEqualTo(true);
+        $this->hasSessionMessages(ERROR, [
+            "Can't remove update right on this profile as it is the only remaining profile with this right."
+        ]);
+    }
 }

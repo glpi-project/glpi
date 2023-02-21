@@ -35,6 +35,9 @@
 
 namespace tests\units;
 
+use Profile_User;
+use QuerySubQuery;
+
 /* Test for inc/user.class.php */
 
 class User extends \DbTestCase
@@ -1009,5 +1012,56 @@ class User extends \DbTestCase
         ];
         $this->integer(countElementsInTable(\User::getTable(), $user_crit))->isEqualTo($expected_lock_count);
         $DB->update(\User::getTable(), ['is_active' => 1], $user_crit); // reset users
+    }
+
+    /**
+     * Tests if the last super admin user can be deleted or disabled
+     *
+     * @return void
+     */
+    public function testLastAdministratorDeleteOrDisable(): void
+    {
+        // Default: only one super admin account
+        $super_admin = getItemByTypeName('Profile', 'Super-Admin');
+        $this->boolean($super_admin->isLastSuperAdminProfile())->isTrue();
+
+        // Default: 3 users with super admin account authorizations
+        $users = (new \User())->find([
+            'id' => new QuerySubQuery([
+                'SELECT' => 'users_id',
+                'FROM'   => Profile_User::getTable(),
+                'WHERE'  => [
+                    'profiles_id' => $super_admin->fields['id']
+                ]
+            ])
+        ]);
+        $this->array($users)->hasSize(3);
+        $this->array(array_column($users, 'name'))->isEqualTo(['glpi', TU_USER, "jsmith123"]);
+
+        $glpi = getItemByTypeName('User', 'glpi');
+        $tu_user = getItemByTypeName('User', TU_USER);
+        $jsmith123 = getItemByTypeName('User', 'jsmith123');
+
+        // Delete 2 users
+        $this->login('glpi', 'glpi');
+        $this->boolean($tu_user->canDeleteItem())->isTrue();
+        $this->boolean($tu_user->delete(['id' => $tu_user->getID()]))->isTrue();
+        $this->boolean($jsmith123->canDeleteItem())->isTrue();
+        $this->boolean($jsmith123->delete(['id' => $jsmith123->getID()]))->isTrue();
+
+        // Last user, can't be deleted or disabled
+        $this->boolean($glpi->update([
+            'id'        => $glpi->getID(),
+            'is_active' => false
+        ]))->isTrue();
+        $this->hasSessionMessages(ERROR, [
+            "Can't set user as inactive as it is the only remaining super administrator."
+        ]);
+        $glpi->getFromDB($glpi->getId());
+        $this->boolean((bool) $glpi->fields['is_active'])->isEqualTo(true);
+        $this->boolean($glpi->canDeleteItem())->isFalse();
+
+        // Can still be deleted by calling delete directly, maybe it should not be possible ?
+        $this->boolean($glpi->delete(['id' => $glpi->getID()]))->isTrue();
     }
 }
