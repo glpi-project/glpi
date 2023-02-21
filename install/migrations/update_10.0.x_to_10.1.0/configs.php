@@ -41,7 +41,9 @@
 $migration->displayMessage('Add new configurations / user preferences');
 $migration->addConfig([
     'password_init_token_delay' => '86400',
-    'toast_location'    => 'bottom-right'
+    'toast_location'    => 'bottom-right',
+    'set_followup_tech' => '0',
+    'set_solution_tech' => '0',
 ]);
 $migration->addField('glpi_users', 'toast_location', 'string');
 
