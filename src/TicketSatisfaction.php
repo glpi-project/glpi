@@ -215,6 +215,9 @@ class TicketSatisfaction extends CommonDBTM
      **/
     public static function displaySatisfaction($value)
     {
+        if (is_null($value)) {
+            return '';
+        }
 
         if ($value < 0) {
             $value = 0;
@@ -223,9 +226,18 @@ class TicketSatisfaction extends CommonDBTM
             $value = 5;
         }
 
-        $out = "<div class='rateit' data-rateit-value='$value' data-rateit-ispreset='true'
-               data-rateit-readonly='true'></div>";
-
+        $rand = mt_rand();
+        $out = "<div id='rateit_$rand' class='rateit'></div>";
+        $out .= Html::scriptBlock("
+            $(function () {
+                $('#rateit_$rand').rateit({
+                    max: 5,
+                    resetable: false,
+                    value: $value,
+                    readonly: true,
+                });
+            });
+        ");
         return $out;
     }
 
