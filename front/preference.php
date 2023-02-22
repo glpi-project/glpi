@@ -68,7 +68,7 @@ if (isset($_POST['disable_2fa'])) {
     } else {
         Session::addMessageAfterRedirect(__('Invalid code'), false, ERROR);
     }
-    Html::redirect(Preference::getSearchURL());
+    Html::redirect(Preference::getSearchURL() . '?regenerate_backup_codes=1');
 }
 
 if (

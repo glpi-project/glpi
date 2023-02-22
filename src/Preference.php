@@ -70,7 +70,10 @@ class Preference extends CommonGLPI
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         $totp = new TOTPManager();
-        $totp->showTOTPConfigForm($_SESSION['glpiID'], isset($_REQUEST['reset_2fa']));
+        $regenerate_backup_codes = isset($_REQUEST['regenerate_backup_codes']) ? filter_var($_REQUEST['regenerate_backup_codes'], FILTER_VALIDATE_BOOLEAN) : false;
+        // Don't allow regenerating the codes from the URL if the user already has some to prevent malicious or accidental regenerations
+        $regenerate_backup_codes = $regenerate_backup_codes && $totp->is2FAEnabled($_SESSION['glpiID']) && !$totp->isBackupCodesAvailable($_SESSION['glpiID']);
+        $totp->showTOTPConfigForm($_SESSION['glpiID'], isset($_REQUEST['reset_2fa']), $regenerate_backup_codes);
         return true;
     }
 
@@ -78,6 +81,9 @@ class Preference extends CommonGLPI
     {
         if (isset($_REQUEST['reset_2fa'])) {
             $options['reset_2fa'] = $_REQUEST['reset_2fa'];
+        }
+        if (isset($_REQUEST['regenerate_backup_codes'])) {
+            $options['regenerate_backup_codes'] = $_REQUEST['regenerate_backup_codes'];
         }
         parent::showTabsContent($options);
     }

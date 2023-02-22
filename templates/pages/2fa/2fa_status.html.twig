@@ -127,6 +127,9 @@
                   }
                });
             });
+            {% if regenerate_backup_codes %}
+             $('button[name="regenerate_backup_codes"]').trigger('click');
+            {% endif %}
          });
       </script>
    </div>

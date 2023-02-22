@@ -38,6 +38,7 @@ namespace Glpi\Security;
 use Glpi\Application\View\TemplateRenderer;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
+use RobThree\Auth\TwoFactorAuthException;
 
 final class TOTPManager
 {
@@ -260,6 +261,27 @@ final class TOTPManager
         return $match;
     }
 
+    public function isBackupCodesAvailable(int $users_id): bool
+    {
+        global $DB;
+
+        $tfa = $DB->request([
+            'SELECT' => ['2fa'],
+            'FROM' => 'glpi_users',
+            'WHERE' => [
+                'id' => $users_id
+            ],
+            'LIMIT' => 1
+        ])->current()['2fa'] ?? null;
+
+        if ($tfa === null) {
+            return false;
+        }
+
+        $tfa = json_decode($tfa, true, 512, JSON_THROW_ON_ERROR);
+        return isset($tfa['backup_codes']) && !empty($tfa['backup_codes']);
+    }
+
     /**
      * Regenerate backup codes for a user.
      * Any previously generated codes are invalidated.
@@ -446,9 +468,13 @@ final class TOTPManager
     /**
      * Show a form to set up TOTP for the current user or manage the settings if it is set up already.
      * @param int $users_id ID of the user
+     * @param bool $force_setup Force the setup form to be shown even if 2FA is already enabled
+     * @param bool $regenerate_backup_codes Regenerate backup codes immedately when showing the status form
      * @return void
+     * @throws \JsonException
+     * @throws TwoFactorAuthException
      */
-    public function showTOTPConfigForm(int $users_id, $force_setup = false): void
+    public function showTOTPConfigForm(int $users_id, bool $force_setup = false, bool $regenerate_backup_codes = false): void
     {
         global $CFG_GLPI;
 
@@ -464,6 +490,7 @@ final class TOTPManager
             TemplateRenderer::getInstance()->display('pages/2fa/2fa_status.html.twig', [
                 'enforcement' => $enforcement,
                 'grace_period_end' => $grace_period_end,
+                'regenerate_backup_codes' => $regenerate_backup_codes,
             ]);
         } else {
             $secret = $this->createSecret();
