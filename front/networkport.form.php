@@ -41,6 +41,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
+Session::checkRight("networking", READ);
 
 $np  = new NetworkPort();
 $nn  = new NetworkPort_NetworkPort();
