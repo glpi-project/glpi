@@ -69,6 +69,28 @@ class URL extends \GLPITestCase
             'url'      => 'javascript:alert(1);" title="XSS!"',
             'expected' => '',
         ];
+        yield [
+            'url'      => 'javascript:alert(1)',
+            'expected' => '',
+        ];
+        yield [
+            'url'      => 'javascript://%0aalert();',
+            'expected' => '',
+        ];
+
+        // Invalid URL
+        yield [
+            'url'      => 'ht tp://www.domain.tld/test',
+            'expected' => '',
+        ];
+        yield [
+            'url'      => 'http:/www.domain.tld/test',
+            'expected' => '',
+        ];
+        yield [
+            'url'      => '15//test',
+            'expected' => '',
+        ];
 
         // Sane URL
         yield [
@@ -76,8 +98,16 @@ class URL extends \GLPITestCase
             'expected' => 'http://www.domain.tld/test',
         ];
         yield [
+            'url'      => '//hostname/path/to/file',
+            'expected' => '//hostname/path/to/file',
+        ];
+        yield [
             'url'      => '/test?abc=12',
             'expected' => '/test?abc=12',
+        ];
+        yield [
+            'url'      => '/',
+            'expected' => '/',
         ];
     }
 
