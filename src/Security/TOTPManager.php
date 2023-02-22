@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 namespace Glpi\Security;
 
 use Glpi\Application\View\TemplateRenderer;

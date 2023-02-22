@@ -2226,6 +2226,14 @@ HTML;
                 'name'  => 'jasig/phpcas',
                 'check' => 'phpCAS'
             ],
+            [
+                'name'  => 'bacon/bacon-qr-code',
+                'check' => 'BaconQrCode\\Writer'
+            ],
+            [
+                'name'  => 'robthree/twofactorauth',
+                'check' => 'RobThree\\Auth\\TwoFactorAuth'
+            ],
         ];
         return $deps;
     }

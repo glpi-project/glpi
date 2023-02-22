@@ -39,7 +39,7 @@ include('../inc/includes.php');
 Session::checkLoginUser();
 
 if (isset($_POST['regenerate_backup_codes'])) {
-   $totp = new \Glpi\Security\TOTPManager();
-   $codes = $totp->regenerateBackupCodes(Session::getLoginUserID());
-   echo json_encode($codes);
+    $totp = new \Glpi\Security\TOTPManager();
+    $codes = $totp->regenerateBackupCodes(Session::getLoginUserID());
+    echo json_encode($codes);
 }
