@@ -42,6 +42,7 @@ use ComputerVirtualMachine;
 use Glpi\Inventory\Conf;
 use Glpi\Toolbox\Sanitizer;
 use RuleImportAssetCollection;
+use Toolbox;
 
 class VirtualMachine extends InventoryAsset
 {
@@ -222,26 +223,36 @@ class VirtualMachine extends InventoryAsset
             $computerVirtualmachine->getFromDB($keydb);
             foreach ($value as $key => $val) {
                 $handled_input = $this->handleInput($val, $computerVirtualmachine);
-                $sinput = [
-                    'name'                     => $handled_input['name'] ?? '',
-                    'uuid'                     => $handled_input['uuid'] ?? '',
-                    'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0
-                ];
-                if ($sinput == $arraydb) {
-                    $input = [
-                        'id'           => $keydb,
-                        'is_dynamic'   => 1
+
+                //search ComputervirtualMachine on cleaned UUID if it changed
+                foreach (ComputerVirtualMachine::getUUIDRestrictCriteria($handled_input['uuid'] ?? '') as $cleaned_uuid) {
+                    $sinput = [
+                        'name'                     => $handled_input['name'] ?? '',
+                        'uuid'                     => $cleaned_uuid ?? '',
+                        'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0
                     ];
 
-                    foreach (['vcpu', 'ram', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
-                        if (property_exists($val, $prop)) {
-                            $input[$prop] = $handled_input[$prop];
+                    //strtolower to be the same as getUUIDRestrictCriteria()
+                    $arraydb['uuid'] = strtolower($arraydb['uuid']);
+
+                    if ($sinput == $arraydb) {
+                        $input = [
+                            'id'           => $keydb,
+                            'uuid'         => strtolower($handled_input['uuid'] ?? ''),
+                            'is_dynamic'   => 1
+                        ];
+
+                        foreach (['vcpu', 'ram', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
+                            if (property_exists($val, $prop)) {
+                                $input[$prop] = $handled_input[$prop];
+                            }
                         }
+
+                        $computerVirtualmachine->update(Sanitizer::sanitize($input));
+                        unset($value[$key]);
+                        unset($db_vms[$keydb]);
+                        break 2;
                     }
-                    $computerVirtualmachine->update(Sanitizer::sanitize($input));
-                    unset($value[$key]);
-                    unset($db_vms[$keydb]);
-                    break;
                 }
             }
         }
