@@ -453,7 +453,7 @@ class CommonDBTM extends CommonGLPI
     {
 
         if (isset($this->fields[static::getIndexName()])) {
-            return $this->fields[static::getIndexName()];
+            return (int)$this->fields[static::getIndexName()];
         }
         return -1;
     }
