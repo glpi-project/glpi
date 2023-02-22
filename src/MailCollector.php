@@ -711,6 +711,7 @@ class MailCollector extends CommonDBTM
             $rejected->deleteByCriteria(['mailcollectors_id' => $this->fields['id']]);
 
             if ($this->storage) {
+                $maxfetch_emails  = $this->maxfetch_emails;
                 $error            = 0;
                 $refused          = 0;
                 $alreadyseen      = 0;
@@ -726,9 +727,43 @@ class MailCollector extends CommonDBTM
                         break;
                     }
 
+                    $extra_retrieve_limit = 250;
+                    if ($this->fetch_emails >= $this->maxfetch_emails + $extra_retrieve_limit) {
+                        // It was retrieved 250 emails more than the initial limit. It means that there were
+                        // 250 email either already seen, either in error.
+                        // To prevent performances issues, retrieve process is stopped here.
+                        trigger_error(
+                            sprintf(
+                                'More than %d emails in mailbox are either already imported, either errored. To avoid a too long execution time, the retrieval of emails has been stopped after %dth email.',
+                                $extra_retrieve_limit,
+                                $this->fetch_emails
+                            ),
+                            E_USER_WARNING
+                        );
+                        Toolbox::logInFile(
+                            'mailgate',
+                            sprintf(
+                                __('Emails retrieve limit reached. Check in "%s" for more details.') . "\n",
+                                GLPI_LOG_DIR . '/php-errors.log'
+                            )
+                        );
+                        break;
+                    }
+
                     try {
                         $this->fetch_emails++;
-                        $messages[$this->storage->getUniqueId($this->storage->key())] = $this->storage->current();
+                        $message = $this->storage->current();
+                        $message_id = $this->storage->getUniqueId($this->storage->key());
+
+                        // prevent loop when message is read but when it's impossible to move / delete
+                        // due to mailbox problem (ie: full)
+                        if ($this->fields['collect_only_unread'] && $message->hasFlag(Storage::FLAG_SEEN)) {
+                            $alreadyseen++;
+                            $maxfetch_emails++; // allow fetching one more email, as this one will not be processed
+                            continue;
+                        }
+
+                        $messages[$message_id] = $message;
                     } catch (\Exception $e) {
                         $GLPI->getErrorHandler()->handleException($e);
                         Toolbox::logInFile(
@@ -739,9 +774,10 @@ class MailCollector extends CommonDBTM
                                 GLPI_LOG_DIR . '/php-errors.log'
                             )
                         );
-                        ++$error;
+                        $error++;
+                        $maxfetch_emails++; // allow fetching one more email, as this one will not be processed
                     }
-                } while ($this->fetch_emails < $this->maxfetch_emails);
+                } while ($this->fetch_emails < $maxfetch_emails);
 
                 foreach ($messages as $uid => $message) {
                     $rejinput = [
@@ -751,13 +787,6 @@ class MailCollector extends CommonDBTM
                         'messageid'         => '',
                         'date'              => $_SESSION["glpi_currenttime"],
                     ];
-
-                  //prevent loop when message is read but when it's impossible to move / delete
-                  //due to mailbox problem (ie: full)
-                    if ($this->fields['collect_only_unread'] && $message->hasFlag(Storage::FLAG_SEEN)) {
-                        ++$alreadyseen;
-                        continue;
-                    }
 
                     try {
                         $tkt = $this->buildTicket(
@@ -1892,7 +1921,7 @@ class MailCollector extends CommonDBTM
             case 'mailgate':
                 return [
                     'description' => __('Retrieve email (Mails receivers)'),
-                    'parameter'   => __('Number of emails to retrieve')
+                    'parameter'   => __('Number of emails to process')
                 ];
 
             case 'mailgateerror':
