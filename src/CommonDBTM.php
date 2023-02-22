@@ -6422,6 +6422,7 @@ class CommonDBTM extends CommonGLPI
         if (isset($menus[Session::getCurrentInterface()])) {
             // Load specific menus for this interface
             $menus = $menus[Session::getCurrentInterface()];
+            $menus = is_array($menus) ? $menus : [];
         }
 
         if (static::isNewID($id)) {
