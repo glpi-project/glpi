@@ -42,24 +42,19 @@
        $(document).ready(function() {
            const input_fields = $('input[name="totp_code[]"]');
            input_fields.first().focus();
-           input_fields.on('keyup', function(e) {
-               // if the key was backspace, do nothing here
+           input_fields.parent().on('keydown', 'input[name="totp_code[]"]', function(e) {
                if (e.which === 8) {
-                   return;
+                   $(this).prev().focus();
                }
-               if ($(this).val().length == 1) {
+               if ($(this).val().length === 1) {
                    // Move to the next input if there is one, otherwise submit the form
-                   if ($(this).next('input[name="totp_code[]"]').length) {
-                       $(this).next('input[name="totp_code[]"]').focus();
+                   const next = $(this).next();
+                   if (next.length) {
+                       next.focus();
                    } else {
                        $(this).closest('form').submit();
                        input_fields.prop('disabled', true);
                    }
-               }
-           });
-           input_fields.on('keydown', function(e) {
-               if (e.which == 8) {
-                   $(this).prev().focus();
                }
            });
            // Pasting in any of the fields will fill all of them
