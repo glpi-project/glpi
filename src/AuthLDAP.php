@@ -517,7 +517,9 @@ class AuthLDAP extends CommonDBTM
                     'group_field', 'group_member_field', 'group_search_type',
                     'mobile_field', 'phone_field', 'phone2_field',
                     'realname_field', 'registration_number_field', 'title_field',
-                    'use_dn', 'use_tls', 'responsible_field'
+                    'use_dn', 'use_tls', 'picture_field', 'responsible_field',
+                    'category_field', 'language_field', 'location_field',
+                    'can_support_pagesize', 'pagesize',
                 ];
 
                 foreach ($hidden_fields as $hidden_field) {
