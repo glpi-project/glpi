@@ -923,11 +923,6 @@ abstract class CommonDBChild extends CommonDBConnexity
         $lower_name = strtolower(get_called_class());
         $div_id     = "add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id;
 
-       // To be sure not to load bad datas from this table
-        if ($items_id == 0) {
-            $items_id = -99;
-        }
-
         $query = [
             'FROM'   => static::getTable(),
             'WHERE'  => [
