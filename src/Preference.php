@@ -71,6 +71,7 @@ class Preference extends CommonGLPI
     {
         $totp = new TOTPManager();
         $totp->showTOTPConfigForm($_SESSION['glpiID'], isset($_REQUEST['reset_2fa']));
+        return true;
     }
 
     public function showTabsContent($options = [])

@@ -994,10 +994,7 @@ class Auth extends CommonGLPI
         // Ok, we have gathered sufficient data, if the first return false the user
         // is not present on the DB, so we add him.
         // if not, we update him.
-        if (empty($mfa_pre_auth) && empty($login_name) && empty($login_password)) {
-            // Bad login
-            return false;
-        }
+
         if ($mfa_pre_auth || $this->validateLogin($login_name, $login_password, $noauto, $login_auth)) {
             // Check MFA
             $totp = new TOTPManager();
