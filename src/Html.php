@@ -573,7 +573,7 @@ class Html
         }
 
         if (!empty($params)) {
-            if (str_contains('?', $dest)) {
+            if (str_contains($dest, '?')) {
                 $dest .= '&' . $params;
             } else {
                 $dest .= '?' . $params;
