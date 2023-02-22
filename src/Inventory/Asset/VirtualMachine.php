@@ -238,7 +238,7 @@ class VirtualMachine extends InventoryAsset
                     if ($sinput == $arraydb) {
                         $input = [
                             'id'           => $keydb,
-                            'uuid'         => strtolower($handled_input['uuid']) ?? '', //strtolower
+                            'uuid'         => strtolower($handled_input['uuid'] ?? ''),
                             'is_dynamic'   => 1
                         ];
 
