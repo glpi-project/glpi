@@ -2220,6 +2220,78 @@ class RuleTicket extends DbTestCase
         ))->isEqualTo(2);
     }
 
+    public function testAssignContract()
+    {
+        $this->login();
+
+       // Create contract1 "zabbix"
+        $contractTest1 = new \Contract();
+        $contracttest1_id = $contractTest1->add($contractTest1_input = [
+            "name"                  => "zabbix",
+            "entities_id"           => 0
+        ]);
+        $this->checkInput($contractTest1, $contracttest1_id, $contractTest1_input);
+
+       // Create rule for create regex action
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add($ruletinput = [
+            'name'         => 'test associate contract with  : glpi',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+       // Create criteria to match regex
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'itilcategories_id',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/(zabbix)/',
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+       // Create action to assign contract1
+        $action_id1 = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'regex_result',
+            'field'       => 'assign_contract',
+            'value'       => '#0',
+        ]);
+        $this->checkInput($ruleaction, $action_id1, $action_input);
+
+       // Create category for ticket
+        $category = new \ITILCategory();
+        $category_id = $category->add($category_input = [
+            "name" => "zabbix"
+        ]);
+        $this->checkInput($category, $category_id, $category_input);
+
+       // Create ticket to match rule on create
+        $ticketCreate = new \Ticket();
+        $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
+            'name'              => 'test zabbix',
+            'content'           => 'test zabbix',
+            'itilcategories_id' => $category_id
+        ]);
+
+        $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
+        $this->integer($ticketsCreate_id)->isGreaterThan(0);
+
+       // Check for one associated element
+        $this->integer(countElementsInTable(
+            \Ticket_Contract::getTable(),
+            ['contracts_id'  => $contracttest1_id,
+                'tickets_id' => $ticketsCreate_id
+            ]
+        ))->isEqualTo(1);
+    }
+
     protected function testMailHeaderCriteriaProvider()
     {
         return [
