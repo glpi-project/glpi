@@ -769,6 +769,49 @@ class Migration extends \GLPITestCase
         $this->integer(count($right4))->isEqualTo(4);
     }
 
+    public function testAddRightByInterface()
+    {
+        global $DB;
+
+        $DB->delete('glpi_profilerights', [
+            'name' => [
+                'testright1', 'testright2', 'testright3', 'testright4'
+            ]
+        ]);
+        //Test adding a READ right on central interface
+        $this->output(
+            function () {
+                $this->migration->addRightByInterface('testright1', READ, ['interface' => 'central']);
+            }
+        )->isEqualTo('Rights has been updated for testright1, you should review ACLs after update');
+
+        //Test adding a READ right on helpdesk interface
+        $this->output(
+            function () {
+                $this->migration->addRightByInterface('testright2', READ, ['interface' => 'helpdesk']);
+            }
+        )->isEqualTo('Rights has been updated for testright2, you should review ACLs after update');
+
+        //Check if rights have been added
+        $right1 = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright1',
+                'rights' => READ
+            ]
+        ]);
+        $this->integer(count($right1))->isEqualTo(7);
+
+        $right2 = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright2',
+                'rights' => READ
+            ]
+        ]);
+        $this->integer(count($right2))->isEqualTo(1);
+    }
+
     public function testRenameTable()
     {
 

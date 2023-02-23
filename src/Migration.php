@@ -1284,6 +1284,14 @@ class Migration
                 sprintf('%1$s update right for %2$s', $this->version, $name)
             );
         }
+
+        $this->displayWarning(
+            sprintf(
+                'Rights has been updated for %1$s, you should review ACLs after update',
+                $name
+            ),
+            true
+        );
     }
 
     /**
