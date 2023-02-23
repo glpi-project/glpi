@@ -254,6 +254,14 @@ class RuleTicket extends Rule
                             $output["items_id"][Appliance::getType()][] = $action->fields["value"];
                         }
 
+                        // special case of contract
+                        if ($action->fields["field"] == "assign_contract") {
+                            if (!array_key_exists("_contracts_id", $output) || $output['_contracts_id'] == '0') {
+                                $output["_contracts_id"] = [];
+                            }
+                            $output["_contracts_id"] = $action->fields["value"];
+                        }
+
                      // Remove values that may have been added by any "append" rule action on same actor field.
                      // Appended actors are stored on `_additional_*` keys.
                         $actions = $this->getActions();
@@ -449,6 +457,28 @@ class RuleTicket extends Rule
 
                                 foreach ($target_appliances as $value) {
                                     $output["items_id"][Appliance::getType()][] = $value['id'];
+                                }
+                            }
+                        }
+
+                        if ($action->fields["field"] == "assign_contract") {
+                            if (isset($this->regex_results[0])) {
+                                $regexvalue = RuleAction::getRegexResultById(
+                                    $action->fields["value"],
+                                    $this->regex_results[0]
+                                );
+                            } else {
+                                $regexvalue = $action->fields["value"];
+                            }
+
+                            if (!is_null($regexvalue)) {
+                                $contracts = new Contract();
+                                $target_contract = $contracts->find(["name" => $regexvalue, "entities_id" => $output['entities_id']]);
+
+                                if ((!array_key_exists("_contracts_id", $output) || $output['_contracts_id'] == '0') && count($target_contract) > 0) {
+                                    $output["_contracts_id"] = array_values($target_contract)[0]['id'];
+                                } else {
+                                    $output["_contracts_id"] = [];
                                 }
                             }
                         }
@@ -951,6 +981,11 @@ class RuleTicket extends Rule
 
         $actions['global_validation']['name']                  = _n('Validation', 'Validations', 1);
         $actions['global_validation']['type']                  = 'dropdown_validation_status';
+
+        $actions['assign_contract']['name']                  = Contract::getTypeName(1);
+        $actions['assign_contract']['type']                  = 'dropdown';
+        $actions['assign_contract']['table']                 = 'glpi_contracts';
+        $actions['assign_contract']['force_actions']         = ['assign','regex_result'];
 
         return $actions;
     }
