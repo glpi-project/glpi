@@ -72,18 +72,14 @@ class Reminder extends CommonDBVisible implements
     public static function canCreate()
     {
 
-        return (Session::haveRight(self::$rightname, CREATE)
-              || Session::haveRight(self::$rightname, self::PERSONAL)
-              && Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [CREATE, self::PERSONAL]));
     }
 
 
     public static function canView()
     {
 
-        return (Session::haveRight(self::$rightname, READ)
-              || Session::haveRight(self::$rightname, self::PERSONAL)
-              && Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [READ, self::PERSONAL]));
     }
 
 
@@ -133,9 +129,7 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function canUpdate()
     {
-        return (Session::haveRight(self::$rightname, UPDATE)
-              || Session::haveRight(self::$rightname, self::PERSONAL)
-              && Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [UPDATE, self::PERSONAL]));
     }
 
 
@@ -145,9 +139,7 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function canPurge()
     {
-        return (Session::haveRight(self::$rightname, PURGE)
-              || Session::haveRight(self::$rightname, self::PERSONAL)
-              && Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [PURGE, self::PERSONAL]));
     }
 
 
@@ -1041,7 +1033,7 @@ class Reminder extends CommonDBVisible implements
             $values = [READ => __('Read')];
         } else {
             $values = parent::getRights();
-            $values[self::PERSONAL] = __('Show personal when no public rights');
+            $values[self::PERSONAL] = __('Manage personal');
         }
         return $values;
     }

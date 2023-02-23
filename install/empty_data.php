@@ -5054,11 +5054,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'reminder_public',
-                'rights' => READ | Reminder::PERSONAL,
+                'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rssfeed_public',
-                'rights' => READ | RSSFeed::PERSONAL,
+                'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'bookmark_public',

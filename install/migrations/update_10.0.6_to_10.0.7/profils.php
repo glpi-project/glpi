@@ -37,5 +37,5 @@
  * @var DB $DB
  * @var Migration $migration
  */
-$migration->updateRight('reminder_public', Reminder::PERSONAL, ['reminder_public' => 0]);
-$migration->updateRight('rssfeed_public', RSSFeed::PERSONAL, ['rssfeed_public' => 0]);
+$migration->addRightByInterface('reminder_public', Reminder::PERSONAL, 'central');
+$migration->addRightByInterface('rssfeed_public', RSSFeed::PERSONAL, 'central');

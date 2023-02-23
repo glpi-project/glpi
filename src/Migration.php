@@ -1232,6 +1232,61 @@ class Migration
     }
 
     /**
+     * Add specific right to profiles that match interface
+     *
+     * @param string  $name      Right name
+     * @param integer $right     Right to add
+     * @param string  $interface Interface to set (defaults to central)
+     *
+     * @return void
+     */
+    public function addRightByInterface($name, $right, $interface = 'central')
+    {
+        global $DB;
+
+        $prof_iterator = $DB->request([
+            'SELECT'    => [
+                'glpi_profiles.id',
+                'glpi_profilerights.rights',
+            ],
+            'FROM'      => 'glpi_profiles',
+            'JOIN'      => [
+                'glpi_profilerights' => [
+                    'FKEY' => [
+                        'glpi_profilerights'      => 'profiles_id',
+                        'glpi_profiles'           => 'id',
+                        [
+                            'AND' => [
+                                'glpi_profilerights.name' => $name
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'interface' => $interface,
+            ]
+        ]);
+
+        foreach ($prof_iterator as $profile) {
+            if (intval($profile['rights']) & $right) {
+                continue;
+            }
+            $DB->updateOrInsert(
+                'glpi_profilerights',
+                [
+                    'rights'       => $profile['rights'] | $right,
+                ],
+                [
+                    'profiles_id'  => $profile['id'],
+                    'name'         => $name
+                ],
+                sprintf('%1$s update right for %2$s', $this->version, $name)
+            );
+        }
+    }
+
+    /**
      * Update right to profiles that match rights requirements
      *    Default is to update rights of profiles with READ and UPDATE rights on config
      *
