@@ -6965,7 +6965,7 @@ CSS;
         if ($ts === null) {
             return __('Never');
         }
-        if (!ctype_digit($ts)) {
+        if (is_string($ts) && !ctype_digit($ts)) {
             $ts = strtotime($ts);
         }
         $ts_date = new DateTime();

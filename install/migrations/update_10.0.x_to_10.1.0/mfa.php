@@ -33,23 +33,36 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\CalDAV\Backend;
-
-use Sabre\DAV\Auth\Backend\AbstractBasic;
-
 /**
- * Basic authentication backend for CalDAV server.
- *
- * @since 9.5.0
+ * @var DB $DB
+ * @var Migration $migration
  */
-class Auth extends AbstractBasic
-{
-    protected $principalPrefix = Principal::PREFIX_USERS . '/';
 
-    protected function validateUserPass($username, $password)
-    {
-        $auth = new \Auth();
-        // TODO Enforce security by accepting here only CalDAV application dedicated password
-        return $auth->validateLogin($username, $password, true);
-    }
+if (!$DB->fieldExists('glpi_users', '2fa')) {
+    $migration->addField('glpi_users', '2fa', 'text');
 }
+if (!$DB->fieldExists('glpi_users', '2fa_unenforced')) {
+    $migration->addField('glpi_users', '2fa_unenforced', 'bool');
+}
+if (!$DB->fieldExists('glpi_entities', '2fa_enforcement_strategy')) {
+    $migration->addField('glpi_entities', '2fa_enforcement_strategy', 'tinyint NOT NULL DEFAULT -2');
+    // Root entity should have this set to 0 by default
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_entities',
+            ['2fa_enforcement_strategy' => 0],
+            ['id' => 0]
+        )
+    );
+}
+if (!$DB->fieldExists('glpi_profiles', '2fa_enforced')) {
+    $migration->addField('glpi_profiles', '2fa_enforced', 'bool');
+}
+if (!$DB->fieldExists('glpi_groups', '2fa_enforced')) {
+    $migration->addField('glpi_groups', '2fa_enforced', 'bool');
+}
+$migration->addConfig([
+    '2fa_enforced' => 0,
+    '2fa_grace_date_start' => null,
+    '2fa_grace_days' => 0,
+]);

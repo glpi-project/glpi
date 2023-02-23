@@ -2397,6 +2397,7 @@ $empty_data_builder = new class
                 'inquest_max_rate_change' => 5,
                 'inquest_default_rate_change' => 3,
                 'inquest_mandatory_comment_change' => 0,
+                '2fa_enforcement_strategy' => 0 // Not enforced at entity level (optional)
             ],
         ];
 

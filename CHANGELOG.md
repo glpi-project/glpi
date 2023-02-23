@@ -24,6 +24,7 @@ The present file will list all changes made to the project; according to the
 - Processes and Environment Variable tabs for automatically inventoried assets.
 - Log viewer for logs in `files/_log` directory.
 - Custom palette/theme support (uses `files/_themes` directory by default).
+- Two-Factor Authentication (2FA) support via Time-based One-time Password (TOTP).
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.

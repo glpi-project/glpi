@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
@@ -90,7 +91,7 @@ class Entity extends CommonTreeDropdown
             'entities_strategy_software', 'entities_id_software', 'level', 'name',
             'completename', 'entities_id',
             'ancestors_cache', 'sons_cache', 'comment', 'transfers_strategy', 'transfers_id',
-            'agent_base_url'
+            'agent_base_url', '2fa_enforcement_strategy'
         ],
       // Inventory
         'infocom' => [
@@ -478,6 +479,7 @@ class Entity extends CommonTreeDropdown
                     if (Session::haveRight(Config::$rightname, UPDATE)) {
                         $ong[7] = self::createTabEntry(__('UI customization'), 0, $item::getType(), 'ti ti-palette');
                     }
+                    $ong[8] = self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock');
 
                     return $ong;
             }
@@ -520,6 +522,9 @@ class Entity extends CommonTreeDropdown
 
                 case 7:
                     self::showUiCustomizationOptions($item);
+                    break;
+                case 8:
+                    self::showSecurityOptions($item);
                     break;
             }
         }
@@ -2639,6 +2644,29 @@ class Entity extends CommonTreeDropdown
         }
 
         echo "</div>";
+    }
+
+    /**
+     * Security configuration form.
+     *
+     * @param Entity $entity The entity
+     * @return void|false
+     * @since 10.1.0
+     */
+    public static function showSecurityOptions(Entity $entity)
+    {
+        $ID = $entity->getField('id');
+        if (!$entity->can($ID, READ)) {
+            return false;
+        }
+
+        $canedit = Session::haveAccessToEntity($ID);
+
+        TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
+            'canedit' => $canedit,
+            'item'   => $entity,
+            'action' => Toolbox::getItemTypeFormURL(__CLASS__)
+        ]);
     }
 
     /**
