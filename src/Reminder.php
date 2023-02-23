@@ -57,7 +57,7 @@ class Reminder extends CommonDBVisible implements
 
     public static $rightname    = 'reminder_public';
 
-
+    const PERSONAL = 128;
 
     public static function getTypeName($nb = 0)
     {
@@ -72,16 +72,14 @@ class Reminder extends CommonDBVisible implements
     public static function canCreate()
     {
 
-        return (Session::haveRight(self::$rightname, CREATE)
-              || Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [CREATE, self::PERSONAL]));
     }
 
 
     public static function canView()
     {
 
-        return (Session::haveRight(self::$rightname, READ)
-              || Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [READ, self::PERSONAL]));
     }
 
 
@@ -131,7 +129,7 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function canUpdate()
     {
-        return (Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [UPDATE, self::PERSONAL]));
     }
 
 
@@ -141,7 +139,7 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function canPurge()
     {
-        return (Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [PURGE, self::PERSONAL]));
     }
 
 
@@ -1035,6 +1033,7 @@ class Reminder extends CommonDBVisible implements
             $values = [READ => __('Read')];
         } else {
             $values = parent::getRights();
+            $values[self::PERSONAL] = __('Manage personal');
         }
         return $values;
     }

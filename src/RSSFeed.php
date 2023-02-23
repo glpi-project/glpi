@@ -71,7 +71,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public static $rightname    = 'rssfeed_public';
 
-
+    const PERSONAL = 128;
 
     public static function getTypeName($nb = 0)
     {
@@ -86,16 +86,14 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public static function canCreate()
     {
 
-        return (Session::haveRight(self::$rightname, CREATE)
-              || Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [CREATE, self::PERSONAL]));
     }
 
 
     public static function canView()
     {
 
-        return (Session::haveRight('rssfeed_public', READ)
-              || Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [READ, self::PERSONAL]));
     }
 
 
@@ -131,7 +129,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public static function canUpdate()
     {
-        return (Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [UPDATE, self::PERSONAL]));
     }
 
 
@@ -141,7 +139,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public static function canPurge()
     {
-        return (Session::getCurrentInterface() != 'helpdesk');
+        return (Session::haveRightsOr(self::$rightname, [PURGE, self::PERSONAL]));
     }
 
 
@@ -1118,6 +1116,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $values = [READ => __('Read')];
         } else {
             $values = parent::getRights();
+            $values[self::PERSONAL] = __('Manage personal');
         }
         return $values;
     }
