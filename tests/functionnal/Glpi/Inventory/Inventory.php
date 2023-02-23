@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Inventory;
 
 use InventoryTestCase;
 use Item_OperatingSystem;
+use Lockedfield;
 use OperatingSystem;
 use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
@@ -5999,5 +6000,82 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $this->boolean($lockedfield->isHandled($computer))->isTrue();
         $this->array($lockedfield->getLockedValues($computer->getType(), $computers_id))->isEmpty();
+    }
+
+
+    public function testDefaultStatesOnAddWithGlobalLock()
+    {
+        global $DB;
+
+        $this->login();
+
+        //create default states to use
+        $default_states = new \State();
+        $default_states_id = $default_states->add([
+            'name' => 'Has been inventoried'
+        ]);
+        $this->integer($default_states_id)->isGreaterThan(0);
+
+        $other_state = new \State();
+        $other_states_id = $other_state->add([
+            'name' => 'Another states'
+        ]);
+        $this->integer($other_states_id)->isGreaterThan(0);
+
+        \Config::setConfigurationValues(
+            'inventory',
+            [
+                'states_id_default' => $default_states_id,
+            ]
+        );
+
+        //create global  lock on Computer states_id
+        $lock = new Lockedfield();
+        $lock_id = $lock->add([
+            'itemtype' => 'Computer',
+            'items_id' => 0,
+            'field' => 'states_id',
+            'is_global' => 1
+        ]);
+        $this->integer($lock_id)->isGreaterThan(0);
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $this->doInventory($json);
+
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $agents_id = $agent['id'];
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id'])
+            ->integer['items_id']->isGreaterThan(0);
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check default states has been set
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($default_states_id);
+
+        //update states
+        $this->boolean($computer->update(['id' => $computers_id, 'states_id' => $other_states_id]))->isTrue();
+
+        //redo inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $this->doInventory($json);
+
+        //reload computer
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        //check is same on update
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($other_states_id);
     }
 }

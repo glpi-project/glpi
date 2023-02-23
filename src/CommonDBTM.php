@@ -1745,8 +1745,13 @@ class CommonDBTM extends CommonGLPI
     {
         if (isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true) {
             $lockedfield = new Lockedfield();
+            $config = Config::getConfigurationValues('inventory');
             $locks = $lockedfield->getLockedNames($this->getType(), 0);
             foreach ($locks as $lock) {
+                //bypass for states_id if default value is define from inventory conf
+                if ($lock == 'states_id' && $config['states_id_default']) {
+                    continue;
+                }
                 if (array_key_exists($lock, $this->input)) {
                     $lockedfield->setLastValue($this->getType(), 0, $lock, $this->input[$lock]);
                     unset($this->input[$lock]);
@@ -1754,6 +1759,7 @@ class CommonDBTM extends CommonGLPI
             }
         }
     }
+
 
     /**
      * Clean locked fields from update, if needed
