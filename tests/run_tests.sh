@@ -40,6 +40,10 @@ WORKING_DIR=$(readlink -f "$(dirname $0)")
 # Declaration order in $TESTS_SUITES corresponds to the execution order
 TESTS_SUITES=(
   "lint"
+  "lint_php"
+  "lint_js"
+  "lint_scss"
+  "lint_twig"
   "install"
   "update"
   "units"
@@ -120,6 +124,10 @@ Available options:
 
 Available tests suites:
  - lint
+ - lint_php
+ - lint_js
+ - lint_scss
+ - lint_twig
  - install
  - update
  - units
@@ -190,6 +198,22 @@ do
       && docker-compose exec -T app .github/actions/lint_js-lint.sh \
       && docker-compose exec -T app .github/actions/lint_scss-lint.sh \
       && docker-compose exec -T app .github/actions/lint_twig-lint.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
+    "lint_php")
+         docker-compose exec -T app .github/actions/lint_php-lint.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
+    "lint_js")
+         docker-compose exec -T app .github/actions/lint_js-lint.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
+    "lint_scss")
+         docker-compose exec -T app .github/actions/lint_scss-lint.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
+    "lint_twig")
+         docker-compose exec -T app .github/actions/lint_twig-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "install")
