@@ -131,6 +131,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         Toolbox::manageRedirect($redirect);
     }
 
+    if (isset($_SESSION['mfa_pre_auth'], $_POST['skip_mfa'])) {
+        Html::redirect($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
+    }
     if (isset($_SESSION['mfa_pre_auth'])) {
         if (isset($_GET['mfa_setup'])) {
             if (isset($_POST['secret'], $_POST['totp_code'])) {
