@@ -42,6 +42,18 @@
        $(document).ready(function() {
            const input_fields = $('input[name="totp_code[]"]');
            input_fields.first().focus();
+           input_fields.parent().on('keyup', 'input[name="totp_code[]"]', function(e) {
+               if (e.which === 8) {
+                   return;
+               }
+               if ($(this).val().length === 1) {
+                   const next = $(this).next();
+                   if (next.length === 0) {
+                       $(this).closest('form').submit();
+                       input_fields.prop('disabled', true);
+                   }
+               }
+           });
            input_fields.parent().on('keydown', 'input[name="totp_code[]"]', function(e) {
                if (e.which === 8) {
                    $(this).prev().focus();
