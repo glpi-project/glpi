@@ -1282,6 +1282,10 @@ class DbUtils extends DbTestCase
         )->isIdenticalTo([]);
 
         $this->array(
+            $this->testedInstance->getDateCriteria('date', '', '')
+        )->isIdenticalTo([]);
+
+        $this->array(
             $this->testedInstance->getDateCriteria('date', '2018-11-09', null)
         )->isIdenticalTo([
             ['date' => ['>=', '2018-11-09']]
@@ -1291,9 +1295,9 @@ class DbUtils extends DbTestCase
         $this->array($result)->hasSize(1);
 
         $this->array($result[0]['date'])
-         ->hasSize(2)
-         ->string[0]->isIdenticalTo('<=')
-         ->object[1]->isInstanceOf('\QueryExpression');
+            ->hasSize(2)
+            ->string[0]->isIdenticalTo('<=')
+            ->object[1]->isInstanceOf('\QueryExpression');
 
         $this->string(
             $result[0]['date'][1]->getValue()
@@ -1304,13 +1308,31 @@ class DbUtils extends DbTestCase
 
         $this->array($result[0])->isIdenticalTo(['date' => ['>=', '2018-11-08']]);
         $this->array($result[1]['date'])
-         ->hasSize(2)
-         ->string[0]->isIdenticalTo('<=')
-         ->object[1]->isInstanceOf('\QueryExpression');
+            ->hasSize(2)
+            ->string[0]->isIdenticalTo('<=')
+            ->object[1]->isInstanceOf('\QueryExpression');
 
         $this->string(
             $result[1]['date'][1]->getValue()
         )->isIdenticalTo("ADDDATE('2018-11-09', INTERVAL 1 DAY)");
+
+        $result = null;
+        $this->when(function () use (&$result) {
+            $result = $this->testedInstance->getDateCriteria('date', '2023-02-19\', INTERVAL 1 DAY)))))', null);
+        })->error
+            ->withType(E_USER_WARNING)
+            ->withMessage('Invalid "2023-02-19\', INTERVAL 1 DAY)))))" date value.')
+            ->exists();
+        $this->array($result)->isIdenticalTo([]);
+
+        $result = null;
+        $this->when(function () use (&$result) {
+            $result = $this->testedInstance->getDateCriteria('date', null, '2021-02-19\', INTERVAL 1 DAY)))))');
+        })->error
+            ->withType(E_USER_WARNING)
+            ->withMessage('Invalid "2021-02-19\', INTERVAL 1 DAY)))))" date value.')
+            ->exists();
+        $this->array($result)->isIdenticalTo([]);
     }
 
     protected function autoNameProvider()
