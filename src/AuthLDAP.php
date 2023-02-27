@@ -166,6 +166,10 @@ class AuthLDAP extends CommonDBTM
         'rootdn_passwd',
     ];
 
+    // Latests error (string and number)
+    public static $last_error = '';
+    public static $last_errno = 0;
+
     public static function getTypeName($nb = 0)
     {
         return _n('LDAP directory', 'LDAP directories', $nb);
@@ -916,37 +920,67 @@ class AuthLDAP extends CommonDBTM
     }
 
     /**
-     * Show ldap test form
+     * Show ldap test form results.
      *
      * @return void
      */
     public function showFormTestLDAP()
     {
 
-        $ID = $this->getField('id');
+        $tests = self::testLDAPServer($this->getField('id'));
 
-        if ($ID > 0) {
-            echo "<div class='center'>";
-            echo "<form method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-            echo "<input type='hidden' name='id' value='$ID'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>" . __('Test of connection to LDAP directory') . "</th></tr>";
+        TemplateRenderer::getInstance()->display('pages/setup/ldap/test_form.html.twig', [
+            'tests' => $tests,
+        ]);
+    }
 
-            if (isset($_SESSION["LDAP_TEST_MESSAGE"])) {
-                echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-                echo $_SESSION["LDAP_TEST_MESSAGE"];
-                echo"</td></tr>";
-                unset($_SESSION["LDAP_TEST_MESSAGE"]);
+    /**
+     * Performs many tests on the specified LDAP server
+     *
+     * @param integer $authldaps_id ID of the authldaps
+     *
+     * @return array result of tests
+     */
+    public static function testLDAPServer($authldaps_id): array
+    {
+        $tests = [
+            'testLDAPSockopen'   => [
+                'title' => __('TCP stream'),
+                'success' => false,
+                'message' => '',
+            ],
+            'testLDAPBaseDN'     => [
+                'title' => __('Base DN'),
+                'success' => false,
+                'message' => '',
+            ],
+            'testLDAPURI'        => [
+                'title' => __('LDAP URI'),
+                'success' => false,
+                'message' => '',
+            ],
+            'testLDAPBind'       => [
+                'title' => __('Bind connection'),
+                'success' => false,
+                'message' => '',
+            ],
+            'testLDAPSearch'     => [
+                'title' => __('Search (50 first entries)'),
+                'success' => false,
+                'message' => '',
+            ],
+        ];
+
+        foreach ($tests as $testFunction => $testLDAP) {
+            $result = self::$testFunction($authldaps_id);
+            $tests[$testFunction]['success'] = $result['success'];
+            $tests[$testFunction]['message'] = $result['message'];
+            if (!$result['success']) {
+                break;
             }
-
-            echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-            echo "<input type='submit' name='test_ldap' class='btn btn-primary' value=\"" .
-                _sx('button', 'Test') . "\">";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
         }
+
+        return $tests;
     }
 
     /**
@@ -1629,11 +1663,196 @@ class AuthLDAP extends CommonDBTM
             $config_ldap->fields['tls_version']
         );
         if ($ds) {
+            self::$conn_cache[$auths_id] = $ds;
             return true;
         }
         return false;
     }
 
+    /**
+     * Test if a socket connection is possible towards the LDAP server.
+     *
+     * @param integer $authldaps_id ID of the LDAP server
+     *
+     * @return array [success => boolean, message => string]
+     */
+    public static function testLDAPSockopen($authldaps_id): array
+    {
+
+        $AuthLDAP = new self();
+
+        if (!$AuthLDAP->getFromDB($authldaps_id)) {
+            return false;
+        }
+
+        $hostname = $AuthLDAP->getField('host');
+        $port_num = intval($AuthLDAP->getField('port'));
+
+        if (preg_match_all("/(ldap:\/\/|ldaps:\/\/)(.*)/", $hostname, $matches)) {
+            $host = $matches[2][0];
+        } else {
+            $host = $hostname;
+        }
+
+        if (fsockopen($host, $port_num, $errno, $errstr, 5)) {
+            return [
+                'success' => true,
+                'message' => sprintf(__('Connection to %s on port %s succeeded'), $host, $port_num)
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => sprintf(__('%s (ERR: %s) to %s on port %s'), $errstr, $errno, $host, $port_num)
+            ];
+        }
+    }
+
+    /**
+     * Test if basedn field is correctly configured.
+     *
+     * @param integer $authldaps_id ID of the LDAP server
+     *
+     * @return array [success => boolean, message => string]
+     */
+    public static function testLDAPBaseDN($authldaps_id): array
+    {
+
+        $AuthLDAP = new self();
+
+        if (!$AuthLDAP->getFromDB($authldaps_id)) {
+            return false;
+        }
+
+        if ($AuthLDAP->getField('basedn')) {
+            return [
+                'success' => true,
+                'message' => sprintf(__('Base DN %s is configured'), $AuthLDAP->getField('basedn'))
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => __('Base DN is not configured')
+            ];
+        }
+    }
+
+    /**
+     * Test if a LDAP connect object initialisation is possible.
+     *
+     * @param integer $authldaps_id ID of the LDAP server
+     *
+     * @return array [success => boolean, message => string]
+     */
+    public static function testLDAPURI($authldaps_id): array
+    {
+
+        $AuthLDAP = new self();
+
+        if (!$AuthLDAP->getFromDB($authldaps_id)) {
+            return false;
+        }
+
+        if (@ldap_connect($AuthLDAP->getField('host'), $AuthLDAP->getField('port'))) {
+            return [
+                'success' => true,
+                'message' => __('LDAP-URI check succeeded')
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => sprintf(__('LDAP-URI was not parseable (%s:%s)'), $AuthLDAP->getField('host'), $AuthLDAP->getField('port'))
+            ];
+        }
+    }
+
+    /**
+     * Test if a LDAP bind is possible.
+     *
+     * @param integer $authldaps_id ID of the LDAP server
+     *
+     * @return array [success => boolean, message => string]
+     */
+    public static function testLDAPBind($authldaps_id): array
+    {
+        $AuthLDAP = new self();
+
+        if (!$AuthLDAP->getFromDB($authldaps_id)) {
+            return false;
+        }
+
+        if ($AuthLDAP->getField('use_bind')) {
+            if ($AuthLDAP->testLDAPConnection($AuthLDAP->getID())) {
+                return [
+                    'success' => true,
+                    'message' => __('Authentication succeeded')
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => sprintf(__('Authentication failed: %s(%s)'), self::getLastError(), self::getLastErrno())
+                ];
+            }
+        } else {
+            return [
+                'success' => true,
+                'message' => __('Bind user / password authentication is disabled.')
+            ];
+        }
+    }
+
+    /**
+     * Test if a LDAP search is possible.
+     *
+     * @param integer $authldaps_id ID of the LDAP server
+     *
+     * @return array [success => boolean, message => string]
+     */
+    public static function testLDAPSearch($authldaps_id): array
+    {
+        $AuthLDAP = new self();
+
+        if (!$AuthLDAP->getFromDB($authldaps_id)) {
+            return false;
+        }
+
+        if (isset(self::$conn_cache[$authldaps_id])) {
+            $ds = self::$conn_cache[$authldaps_id];
+        } else {
+            $ds = $AuthLDAP->connect();
+        }
+        if ($ds) {
+            self::$conn_cache[$authldaps_id] = $ds;
+            $filter = $AuthLDAP->getField('condition');
+            if (empty($filter)) {
+                $filter = '(objectclass=*)';
+            }
+            $sr = @ldap_search($ds, $AuthLDAP->getField('basedn'), $filter, [], 0, 50);
+            if ($sr) {
+                $info = @ldap_get_entries($ds, $sr);
+                if ($info['count'] > 0) {
+                    return [
+                        'success' => true,
+                        'message' => sprintf(__('Search succeeded (%d entries found)'), $info['count'])
+                    ];
+                } else {
+                    return [
+                        'success' => false,
+                        'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($ds), ldap_errno($ds))
+                    ];
+                }
+            } else {
+                return [
+                    'success' => false,
+                    'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($ds), ldap_errno($ds))
+                ];
+            }
+        } else {
+            return [
+                'success' => false,
+                'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($ds), ldap_errno($ds))
+            ];
+        }
+    }
 
     /**
      * Display a warnign about size limit
@@ -3122,6 +3341,7 @@ class AuthLDAP extends CommonDBTM
 
         if ($use_tls) {
             if (!@ldap_start_tls($ds)) {
+                self::setLastError($ds);
                 trigger_error(
                     static::buildError(
                         $ds,
@@ -3163,12 +3383,45 @@ class AuthLDAP extends CommonDBTM
                     E_USER_WARNING
                 );
             }
+            self::setLastError($ds);
             return false;
         }
 
         return $ds;
     }
 
+    /**
+     * Set last error
+     *
+     * @param resource $ds LDAP link identifier
+     *
+     * @return void
+     */
+    public static function setLastError($ds)
+    {
+        self::$last_error = @ldap_error($ds);
+        self::$last_errno = @ldap_errno($ds);
+    }
+
+    /**
+     * Get last error
+     *
+     * @return string
+     */
+    public static function getLastError()
+    {
+        return self::$last_error;
+    }
+
+    /**
+     * Get last error number
+     *
+     * @return integer
+     */
+    public static function getLastErrno()
+    {
+        return self::$last_errno;
+    }
 
     /**
      * Try to connect to a ldap server
