@@ -2796,4 +2796,46 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $unmanaged = new \Unmanaged();
         $this->boolean($unmanaged->getFromDBByCrit(['name' => 'SW_BATA-RdJ-vdi-1']))->isTrue();
     }
+
+
+    public function testAssetTag()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+      <REQUEST>
+        <CONTENT>
+          <DEVICE>
+            <COMPONENTS>
+              <COMPONENT>
+                <CONTAINEDININDEX>0</CONTAINEDININDEX>
+                <INDEX>-1</INDEX>
+                <NAME>Force10 S-series Stack</NAME>
+                <TYPE>stack</TYPE>
+              </COMPONENT>
+            </COMPONENTS>
+            <INFO>
+              <MAC>00:01:e8:d7:c9:1d</MAC>
+              <NAME>sw-s50</NAME>
+              <SERIAL>DL253300100</SERIAL>
+              <ASSETTAG>other_serial</ASSETTAG>
+              <TYPE>NETWORKING</TYPE>
+            </INFO>
+          </DEVICE>
+          <MODULEVERSION>4.1</MODULEVERSION>
+          <PROCESSNUMBER>1</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>foo</DEVICEID>
+        <QUERY>SNMPQUERY</QUERY>
+      </REQUEST>';
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $network_device_id = $inventory->getItem()->fields['id'];
+        $this->integer($network_device_id)->isGreaterThan(0);
+
+        $networkEquipment = new \NetworkEquipment();
+        $this->boolean($networkEquipment->getFromDB($network_device_id))->isTrue();
+
+        $this->string($networkEquipment->fields['otherserial'])->isIdenticalTo('other_serial');
+    }
 }
