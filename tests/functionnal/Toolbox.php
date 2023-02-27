@@ -44,9 +44,9 @@ use Glpi\Features\Kanban;
 use Glpi\Features\PlanningEvent;
 use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
+use Monolog\Level;
 use stdClass;
 use Ticket;
-use Psr\Log\LogLevel;
 
 /* Test for inc/toolbox.class.php */
 
@@ -295,7 +295,7 @@ class Toolbox extends DbTestCase
     {
         $invalid = '"Monitor":"6","Computer":"35"';
         $this->variable(\Toolbox::jsonDecode($invalid, true))->isIdenticalTo($invalid);
-        $this->hasPhpLogRecordThatContains('Unable to decode JSON string! Is this really JSON?', LogLevel::NOTICE);
+        $this->hasPhpLogRecordThatContains('Unable to decode JSON string! Is this really JSON?', Level::Notice);
     }
 
     protected function ucProvider()

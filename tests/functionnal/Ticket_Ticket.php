@@ -36,7 +36,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Psr\Log\LogLevel;
 
 /* Test for inc/ticket_ticket.class.php */
 

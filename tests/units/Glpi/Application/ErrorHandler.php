@@ -35,8 +35,7 @@
 
 namespace tests\units\Glpi\Application;
 
-use Psr\Log\LogLevel;
-
+use Monolog\Level;
 class ErrorHandler extends \GLPITestCase
 {
     /**
@@ -53,7 +52,7 @@ class ErrorHandler extends \GLPITestCase
                 'error_call'           => function () {
                     file_get_contents('this-file-does-not-exists');
                 },
-                'expected_log_level'   => LogLevel::WARNING,
+                'expected_log_level'   => Level::Warning,
                 'expected_msg_pattern' => $log_prefix
                . preg_quote('PHP Warning (' . E_WARNING . '): file_get_contents(this-file-does-not-exists): failed to open stream: No such file or directory', '/')
                . $log_suffix,
@@ -62,7 +61,7 @@ class ErrorHandler extends \GLPITestCase
                 'error_call'           => function () {
                     trigger_error('this is a warning', E_USER_WARNING);
                 },
-                'expected_log_level'   => LogLevel::WARNING,
+                'expected_log_level'   => Level::Warning,
                 'expected_msg_pattern' => $log_prefix
                . preg_quote('PHP User Warning (' . E_USER_WARNING . '): this is a warning', '/')
                . $log_suffix,
@@ -71,7 +70,7 @@ class ErrorHandler extends \GLPITestCase
                 'error_call'           => function () {
                     trigger_error('some notice', E_USER_NOTICE);
                 },
-                'expected_log_level'   => LogLevel::NOTICE,
+                'expected_log_level'   => Level::Notice,
                 'expected_msg_pattern' => $log_prefix
                . preg_quote('PHP User Notice (' . E_USER_NOTICE . '): some notice', '/')
                . $log_suffix,
@@ -80,7 +79,7 @@ class ErrorHandler extends \GLPITestCase
                 'error_call'           => function () {
                     trigger_error('this method is deprecated', E_USER_DEPRECATED);
                 },
-                'expected_log_level'   => LogLevel::NOTICE,
+                'expected_log_level'   => Level::Notice,
                 'expected_msg_pattern' => $log_prefix
                . preg_quote('PHP User deprecated function (' . E_USER_DEPRECATED . '): this method is deprecated', '/')
                . $log_suffix,
@@ -92,7 +91,7 @@ class ErrorHandler extends \GLPITestCase
                 $param = new \ReflectionParameter([\Config::class, 'getTypeName'], 0);
                 $param->isCallable();
             },
-            'expected_log_level'   => LogLevel::NOTICE,
+            'expected_log_level'   => Level::Notice,
             'expected_msg_pattern' => $log_prefix
            . preg_quote('PHP Deprecated function (' . E_DEPRECATED . '): Method ReflectionParameter::isCallable() is deprecated', '/')
            . $log_suffix,
@@ -102,7 +101,7 @@ class ErrorHandler extends \GLPITestCase
     }
 
     /**
-     * Test that errors trigerred are correctly processed by registered error handler.
+     * Test that errors triggered are correctly processed by registered error handler.
      *
      * Nota: Fatal errors cannot be tested that way, as they will result in exiting current execution.
      * Related constants are E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR.
@@ -111,7 +110,7 @@ class ErrorHandler extends \GLPITestCase
      */
     public function testRegisteredErrorHandler(
         callable $error_call,
-        string $expected_log_level,
+        Level $expected_log_level,
         string $expected_msg_pattern
     ) {
         $handler = $this->newMockInstance('Monolog\Handler\TestHandler');
@@ -155,78 +154,78 @@ class ErrorHandler extends \GLPITestCase
         return [
             [
                 'error_code'           => E_ERROR,
-                'expected_log_level'   => LogLevel::CRITICAL,
+                'expected_log_level'   => Level::Critical,
                 'expected_msg_pattern' => $log_prefix . 'PHP Error' . $log_suffix,
                 'is_fatal_error'       => true,
             ],
             [
                 'error_code'           => E_WARNING,
-                'expected_log_level'   => LogLevel::WARNING,
+                'expected_log_level'   => Level::Warning,
                 'expected_msg_pattern' => $log_prefix . 'PHP Warning' . $log_suffix,
             ],
             [
                 'error_code'           => E_PARSE,
-                'expected_log_level'   => LogLevel::ALERT,
+                'expected_log_level'   => Level::Alert,
                 'expected_msg_pattern' => $log_prefix . 'PHP Parsing Error' . $log_suffix,
                 'is_fatal_error'       => true,
             ],
             [
                 'error_code'           => E_NOTICE,
-                'expected_log_level'   => LogLevel::NOTICE,
+                'expected_log_level'   => Level::Notice,
                 'expected_msg_pattern' => $log_prefix . 'PHP Notice' . $log_suffix,
             ],
             [
                 'error_code'           => E_CORE_ERROR,
-                'expected_log_level'   => LogLevel::CRITICAL,
+                'expected_log_level'   => Level::Critical,
                 'expected_msg_pattern' => $log_prefix . 'PHP Core Error' . $log_suffix,
                 'is_fatal_error'       => true,
             ],
             [
                 'error_code'           => E_CORE_WARNING,
-                'expected_log_level'   => LogLevel::WARNING,
+                'expected_log_level'   => Level::Warning,
                 'expected_msg_pattern' => $log_prefix . 'PHP Core Warning' . $log_suffix,
             ],
             [
                 'error_code'           => E_COMPILE_ERROR,
-                'expected_log_level'   => LogLevel::ALERT,
+                'expected_log_level'   => Level::Alert,
                 'expected_msg_pattern' => $log_prefix . 'PHP Compile Error' . $log_suffix,
                 'is_fatal_error'       => true,
             ],
             [
                 'error_code'           => E_COMPILE_WARNING,
-                'expected_log_level'   => LogLevel::WARNING,
+                'expected_log_level'   => Level::Warning,
                 'expected_msg_pattern' => $log_prefix . 'PHP Compile Warning' . $log_suffix,
             ],
             [
                 'error_code'           => E_USER_ERROR,
-                'expected_log_level'   => LogLevel::ERROR,
+                'expected_log_level'   => Level::Error,
                 'expected_msg_pattern' => $log_prefix . 'PHP User Error' . $log_suffix,
                 'is_fatal_error'       => true,
             ],
             [
                 'error_code'           => E_USER_WARNING,
-                'expected_log_level'   => LogLevel::WARNING,
+                'expected_log_level'   => Level::Warning,
                 'expected_msg_pattern' => $log_prefix . 'PHP User Warning' . $log_suffix,
             ],
             [
                 'error_code'           => E_USER_NOTICE,
-                'expected_log_level'   => LogLevel::NOTICE,
+                'expected_log_level'   => Level::Notice,
                 'expected_msg_pattern' => $log_prefix . 'PHP User Notice' . $log_suffix,
             ],
             [
                 'error_code'           => E_RECOVERABLE_ERROR,
-                'expected_log_level'   => LogLevel::ERROR,
+                'expected_log_level'   => Level::Error,
                 'expected_msg_pattern' => $log_prefix . 'PHP Catchable Fatal Error' . $log_suffix,
                 'is_fatal_error'       => true,
             ],
             [
                 'error_code'           => E_DEPRECATED,
-                'expected_log_level'   => LogLevel::NOTICE,
+                'expected_log_level'   => Level::Notice,
                 'expected_msg_pattern' => $log_prefix . 'PHP Deprecated function' . $log_suffix,
             ],
             [
                 'error_code'           => E_USER_DEPRECATED,
-                'expected_log_level'   => LogLevel::NOTICE,
+                'expected_log_level'   => Level::Notice,
                 'expected_msg_pattern' => $log_prefix . 'PHP User deprecated function' . $log_suffix,
             ],
         ];
@@ -239,7 +238,7 @@ class ErrorHandler extends \GLPITestCase
      */
     public function testHandleErrorAndHandleFatalError(
         int $error_code,
-        string $expected_log_level,
+        Level $expected_log_level,
         string $expected_msg_pattern,
         bool $is_fatal_error = false
     ) {
@@ -313,7 +312,7 @@ class ErrorHandler extends \GLPITestCase
         $_SESSION['glpi_use_mode'] = $previous_use_mode;
 
         $this->integer(count($handler->getRecords()))->isEqualTo(1);
-        $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, LogLevel::CRITICAL));
+        $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, Level::Critical));
         $this->output->matches($expected_msg_pattern);
         $handler->reset(); // Remove records
 
@@ -323,7 +322,7 @@ class ErrorHandler extends \GLPITestCase
         $_SESSION['glpi_use_mode'] = $previous_use_mode;
 
         $this->integer(count($handler->getRecords()))->isEqualTo(1);
-        $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, LogLevel::CRITICAL));
+        $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, Level::Critical));
         $this->output->isEmpty();
         $handler->reset(); // Remove records
 
@@ -333,7 +332,7 @@ class ErrorHandler extends \GLPITestCase
         $_SESSION['glpi_use_mode'] = $previous_use_mode;
 
         $this->integer(count($handler->getRecords()))->isEqualTo(1);
-        $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, LogLevel::CRITICAL));
+        $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, Level::Critical));
         $this->output->matches($expected_msg_pattern);
     }
 }

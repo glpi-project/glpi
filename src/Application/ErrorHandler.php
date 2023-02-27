@@ -35,8 +35,8 @@
 
 namespace Glpi\Application;
 
+use Monolog\Level;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
 use Twig\Error\Error;
 
@@ -51,21 +51,21 @@ class ErrorHandler
      * @var array
      */
     const ERROR_LEVEL_MAP = [
-        E_ERROR             => LogLevel::CRITICAL,
-        E_WARNING           => LogLevel::WARNING,
-        E_PARSE             => LogLevel::ALERT,
-        E_NOTICE            => LogLevel::NOTICE,
-        E_CORE_ERROR        => LogLevel::CRITICAL,
-        E_CORE_WARNING      => LogLevel::WARNING,
-        E_COMPILE_ERROR     => LogLevel::ALERT,
-        E_COMPILE_WARNING   => LogLevel::WARNING,
-        E_USER_ERROR        => LogLevel::ERROR,
-        E_USER_WARNING      => LogLevel::WARNING,
-        E_USER_NOTICE       => LogLevel::NOTICE,
-        E_STRICT            => LogLevel::NOTICE,
-        E_RECOVERABLE_ERROR => LogLevel::ERROR,
-        E_DEPRECATED        => LogLevel::NOTICE,
-        E_USER_DEPRECATED   => LogLevel::NOTICE,
+        E_ERROR             => Level::Critical,
+        E_WARNING           => Level::Warning,
+        E_PARSE             => Level::Alert,
+        E_NOTICE            => Level::Notice,
+        E_CORE_ERROR        => Level::Critical,
+        E_CORE_WARNING      => Level::Warning,
+        E_COMPILE_ERROR     => Level::Alert,
+        E_COMPILE_WARNING   => Level::Warning,
+        E_USER_ERROR        => Level::Error,
+        E_USER_WARNING      => Level::Warning,
+        E_USER_NOTICE       => Level::Notice,
+        E_STRICT            => Level::Notice,
+        E_RECOVERABLE_ERROR => Level::Error,
+        E_DEPRECATED        => Level::Notice,
+        E_USER_DEPRECATED   => Level::Notice,
     ];
 
     /**
@@ -463,11 +463,11 @@ class ErrorHandler
      * @param string $type
      * @param string $description
      * @param string $trace
-     * @param string $log_level
+     * @param Level  $log_level
      *
      * @return void
      */
-    private function logErrorMessage(string $type, string $description, string $trace, string $log_level): void
+    private function logErrorMessage(string $type, string $description, string $trace, Level $log_level): void
     {
         if (!($this->logger instanceof LoggerInterface)) {
             return;
@@ -484,12 +484,12 @@ class ErrorHandler
      *
      * @param string  $error_type
      * @param string  $message
-     * @param string  $log_level
+     * @param Level   $log_level
      * @param boolean $force
      *
      * @return void
      */
-    private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false): void
+    private function outputDebugMessage(string $error_type, string $message, Level $log_level, bool $force = false): void
     {
 
         if ($this->output_disabled || $this->output_suspended) {
@@ -506,22 +506,22 @@ class ErrorHandler
         if ($this->output_handler instanceof OutputInterface) {
             $format = 'comment';
             switch ($log_level) {
-                case LogLevel::EMERGENCY:
-                case LogLevel::ALERT:
-                case LogLevel::CRITICAL:
-                case LogLevel::ERROR:
+                case Level::Emergency:
+                case Level::Alert:
+                case Level::Critical:
+                case Level::Error:
                     $format    = 'error';
                     $verbosity = OutputInterface::VERBOSITY_QUIET;
                     break;
-                case LogLevel::WARNING:
+                case Level::Warning:
                     $verbosity = OutputInterface::VERBOSITY_NORMAL;
                     break;
-                case LogLevel::NOTICE:
-                case LogLevel::INFO:
+                case Level::Notice:
+                case Level::Info:
                 default:
                     $verbosity = OutputInterface::VERBOSITY_VERBOSE;
                     break;
-                case LogLevel::DEBUG:
+                case Level::Debug:
                     $verbosity = OutputInterface::VERBOSITY_VERY_VERBOSE;
                     break;
             }

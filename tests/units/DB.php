@@ -35,9 +35,9 @@
 
 namespace tests\units;
 
-use Psr\Log\LogLevel;
-
 /* Test for inc/dbmysql.class.php */
+
+use Monolog\Level;
 
 class DB extends \GLPITestCase
 {
@@ -745,7 +745,7 @@ OTHER EXPRESSION;"
                 ]
             ]
         );
-        $this->hasSqlLogRecordThatContains('1365: Division by 0', LogLevel::WARNING);
+        $this->hasSqlLogRecordThatContains('1365: Division by 0', Level::Warning);
 
         $db->query('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
         $this->array($db->getLastQueryWarnings())->isEqualTo(
@@ -764,7 +764,7 @@ OTHER EXPRESSION;"
         );
         $this->hasSqlLogRecordThatContains(
             '1292: Truncated incorrect INTEGER value: \'1a\'' . "\n" . '1292: Truncated incorrect INTEGER value: \'123b\'',
-            LogLevel::WARNING
+            Level::Warning
         );
     }
 }

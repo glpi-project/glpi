@@ -36,7 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
-use Psr\Log\LogLevel;
+use Monolog\Level;
 
 /* Test for inc/item_operatingsystem.class.php */
 
@@ -105,7 +105,7 @@ class Item_OperatingSystem extends DbTestCase
                 $this->boolean($ios->add($input))->isFalse();
             }
         )->matches($expected_error);
-        $this->hasSqlLogRecordThatMatches($expected_error, LogLevel::ERROR);
+        $this->hasSqlLogRecordThatMatches($expected_error, Level::Error);
 
         $this->integer(
             (int)\Item_OperatingSystem::countForItem($computer)

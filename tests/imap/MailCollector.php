@@ -40,12 +40,12 @@ use DbTestCase;
 use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
 use Laminas\Mail\Storage\Message;
+use Monolog\Level;
 use NotificationTarget;
 use NotificationTargetSoftwareLicense;
 use NotificationTargetTicket;
 use SoftwareLicense;
 use Ticket;
-use Psr\Log\LogLevel;
 
 class MailCollector extends DbTestCase
 {
@@ -589,9 +589,9 @@ class MailCollector extends DbTestCase
 
         $expected_logged_errors = [
             // 05-empty-from.eml
-            'The input is not a valid email address. Use the basic format local-part@hostname' => LogLevel::CRITICAL,
+            'The input is not a valid email address. Use the basic format local-part@hostname' => Level::Critical,
             // 17-malformed-email.eml
-            'Header with Name date or date not found' => LogLevel::CRITICAL,
+            'Header with Name date or date not found' => Level::Critical,
         ];
 
         $msg = null;

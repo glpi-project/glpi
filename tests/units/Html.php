@@ -35,8 +35,8 @@
 
 namespace tests\units;
 
+use Monolog\Level;
 use org\bovigo\vfs\vfsStream;
-use Psr\Log\LogLevel;
 use Glpi\Toolbox\FrontEnd;
 
 /* Test for inc/html.class.php */
@@ -73,7 +73,7 @@ class Html extends \GLPITestCase
                 $this->string(\Html::convDate('not a date', 2))->isIdenticalTo('not a date');
             }
         )->contains($expected_error);
-        $this->hasPhpLogRecordThatContains($expected_error, LogLevel::CRITICAL);
+        $this->hasPhpLogRecordThatContains($expected_error, Level::Critical);
     }
 
     public function testConvDateTime()

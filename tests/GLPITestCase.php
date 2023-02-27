@@ -35,8 +35,8 @@
 
 use atoum\atoum;
 use Glpi\Tests\Log\TestHandler;
+use Monolog\Level;
 use Monolog\Logger;
-use Psr\Log\LogLevel;
 
 // Main GLPI test case. All tests should extends this class.
 
@@ -68,9 +68,9 @@ class GLPITestCase extends atoum
         // Init log handlers
         global $PHPLOGGER, $SQLLOGGER;
         /** @var Monolog\Logger $PHPLOGGER */
-        $this->php_log_handler = new TestHandler(LogLevel::DEBUG);
+        $this->php_log_handler = new TestHandler(Level::Debug);
         $PHPLOGGER->setHandlers([$this->php_log_handler]);
-        $this->sql_log_handler = new TestHandler(LogLevel::DEBUG);
+        $this->sql_log_handler = new TestHandler(Level::Debug);
         $SQLLOGGER->setHandlers([$this->sql_log_handler]);
     }
 

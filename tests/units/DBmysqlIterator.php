@@ -36,7 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
-use Psr\Log\LogLevel;
+use Monolog\Level;
 
 // Generic test classe, to be extended for CommonDBTM Object
 
@@ -72,7 +72,7 @@ class DBmysqlIterator extends DbTestCase
                 $DB->request('fakeTable');
             }
         )->contains($expected_error);
-        $this->hasSqlLogRecordThatContains($expected_error, LogLevel::ERROR);
+        $this->hasSqlLogRecordThatContains($expected_error, Level::Error);
     }
 
 
@@ -150,7 +150,7 @@ class DBmysqlIterator extends DbTestCase
 
         $this->hasSqlLogRecordThatContains(
             'Generated query: SELECT `name` FROM `foo` WHERE (id = ' . $id . ')',
-            LogLevel::DEBUG
+            Level::Debug
         );
     }
 

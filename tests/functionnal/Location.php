@@ -35,8 +35,8 @@
 
 namespace tests\units;
 
-use Psr\Log\LogLevel;
 use DbTestCase;
+use Monolog\Level;
 
 /* Test for inc/location.class.php */
 
@@ -204,7 +204,7 @@ class Location extends DbTestCase
             'id'           => $location2_id,
             'name'         => 'Unique location',
         ]);
-        $this->hasSqlLogRecordThatContains('Unique location\' for key \'', LogLevel::ERROR);
+        $this->hasSqlLogRecordThatContains('Unique location\' for key \'', Level::Error);
 
         $this->boolean($updated)->isFalse();
         $this->boolean($location2->getFromDB($location2_id))->isTrue();
