@@ -168,7 +168,7 @@ class Notification extends CommonDBTM
             $menu['options']['notification']['links']['search'] = Notification::getSearchURL(false);
             //saved search list
             $menu['options']['notification']['links']['lists']  = "";
-            $menu['options']['notification']['option']['lists_itemtype']  = Notification::getType();
+            $menu['options']['notification']['lists_itemtype']  = Notification::getType();
 
             $menu['options']['notificationtemplate']['title']
                         = _n('Notification template', 'Notification templates', Session::getPluralNumber());
@@ -180,7 +180,7 @@ class Notification extends CommonDBTM
                         = NotificationTemplate::getSearchURL(false);
             //saved search list
             $menu['options']['notificationtemplate']['links']['lists']  = "";
-            $menu['options']['notificationtemplate']['option']['lists_itemtype']  = NotificationTemplate::getType();
+            $menu['options']['notificationtemplate']['lists_itemtype']  = NotificationTemplate::getType();
         }
         if (count($menu)) {
             return $menu;
