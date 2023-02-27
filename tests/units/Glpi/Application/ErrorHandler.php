@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Application;
 
 use Monolog\Level;
+
 class ErrorHandler extends \GLPITestCase
 {
     /**
