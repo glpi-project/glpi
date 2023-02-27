@@ -1145,21 +1145,25 @@ HTML;
         $sector = 'none',
         $item = 'none',
         $option = '',
-        bool $add_id = true
+        bool $add_id = true,
+        bool $iframed = false
     ) {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
-       // complete title with id if exist
+        // complete title with id if exist
         if ($add_id && isset($_GET['id']) && $_GET['id']) {
             $title = sprintf(__('%1$s - %2$s'), $title, $_GET['id']);
         }
 
-       // Send UTF8 Headers
+        // Send UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
-       // Allow only frame from same server to prevent click-jacking
-        header('x-frame-options:SAMEORIGIN');
 
-       // Send extra expires header
+        if (!$iframed) {
+            // Allow only frame from same server to prevent click-jacking
+            header('x-frame-options:SAMEORIGIN');
+        }
+
+        // Send extra expires header
         self::header_nocache();
 
         $theme = $_SESSION['glpipalette'] ?? 'auror';
@@ -2128,7 +2132,7 @@ HTML;
         }
         $HEADER_LOADED = true;
 
-        self::includeHeader($title, $sector, $item, $option); // Body
+        self::includeHeader($title, $sector, $item, $option, true, $iframed); // Body
         echo "<body class='" . ($iframed ? "iframed" : "") . "'>";
         self::displayMessageAfterRedirect();
         echo "<div id='page'>"; // Force legacy styles for now
