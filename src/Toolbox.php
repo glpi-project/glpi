@@ -501,7 +501,7 @@ class Toolbox
     {
         global $SQLLOGGER;
         $args = func_get_args();
-        self::log($SQLLOGGER, Logger::WARNING, $args);
+        self::log($SQLLOGGER, Level::Warning, $args);
     }
 
     /**

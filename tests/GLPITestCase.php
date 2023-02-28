@@ -237,12 +237,12 @@ class GLPITestCase extends atoum
     /**
      * Check in PHP log for a record that matches given pattern.
      *
-     * @param string $message
-     * @param string $level
+     * @param string $pattern
+     * @param Level  $level
      *
      * @return void
      */
-    protected function hasPhpLogRecordThatMatches(string $pattern, string $level): void
+    protected function hasPhpLogRecordThatMatches(string $pattern, Level $level): void
     {
         $this->hasLogRecordThatMatches($this->php_log_handler, $pattern, $level);
     }
@@ -250,12 +250,12 @@ class GLPITestCase extends atoum
     /**
      * Check in SQL log for a record that matches given pattern.
      *
-     * @param string $message
-     * @param string $level
+     * @param string $pattern
+     * @param Level  $level
      *
      * @return void
      */
-    protected function hasSqlLogRecordThatMatches(string $pattern, string $level): void
+    protected function hasSqlLogRecordThatMatches(string $pattern, Level $level): void
     {
         $this->hasLogRecordThatMatches($this->sql_log_handler, $pattern, $level);
     }
@@ -263,12 +263,13 @@ class GLPITestCase extends atoum
     /**
      * Check given log handler for a record that matches given pattern.
      *
-     * @param string $message
-     * @param string $level
+     * @param TestHandler $handler
+     * @param string      $pattern
+     * @param Level       $level
      *
      * @return void
      */
-    private function hasLogRecordThatMatches(TestHandler $handler, string $pattern, string $level): void
+    private function hasLogRecordThatMatches(TestHandler $handler, string $pattern, Level $level): void
     {
         $this->has_failed = true;
 
