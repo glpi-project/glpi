@@ -58,7 +58,12 @@ class GLPI
 
         $this->log_level = Level::Warning;
         if (defined('GLPI_LOG_LVL')) {
-            $this->log_level = GLPI_LOG_LVL;
+            if (is_string(GLPI_LOG_LVL)) {
+                $param = ucfirst(strtolower(GLPI_LOG_LVL));
+                $this->log_level = constant('Monolog\Level::' . $param);
+            } else {
+                $this->log_level = GLPI_LOG_LVL;
+            }
         } else if (
             !isset($_SESSION['glpi_use_mode'])
             || ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
