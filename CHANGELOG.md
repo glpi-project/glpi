@@ -142,6 +142,7 @@ The present file will list all changes made to the project; according to the
 - `Search::sylk_clean()`
 - `Toolbox::canUseCas()`
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
+- `GLPI::getLogLevel()`
 
 ## [10.0.7] unreleased
 

@@ -36,6 +36,7 @@
 use Glpi\Application\ErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
 
 /**
@@ -44,7 +45,7 @@ use Monolog\Logger;
 class GLPI
 {
     private $error_handler;
-    private $log_level;
+    private Level $log_level;
 
     /**
      * Init logger
@@ -55,14 +56,14 @@ class GLPI
     {
         global $PHPLOGGER, $SQLLOGGER;
 
-        $this->log_level = Logger::WARNING;
+        $this->log_level = Level::Warning;
         if (defined('GLPI_LOG_LVL')) {
             $this->log_level = GLPI_LOG_LVL;
         } else if (
             !isset($_SESSION['glpi_use_mode'])
             || ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
         ) {
-            $this->log_level = Logger::DEBUG;
+            $this->log_level = Level::Debug;
         }
 
         foreach (['php', 'sql'] as $type) {
@@ -83,17 +84,6 @@ class GLPI
                     break;
             }
         }
-    }
-
-    /**
-     * Get log level
-     *
-     * @return string
-     */
-    public function getLogLevel()
-    {
-        Toolbox::deprecated();
-        return $this->log_level;
     }
 
     /**
