@@ -36,22 +36,23 @@
 namespace Glpi\Tests\Log;
 
 use Monolog\Handler\TestHandler as BaseTestHandler;
+use Monolog\Level;
 use Monolog\Logger;
 
 class TestHandler extends BaseTestHandler
 {
-    public function dropFromRecords(string $message, int $level): void
+    public function dropFromRecords(string $message, Level $level): void
     {
         foreach ($this->records as $index => $record) {
-            if (Logger::toMonologLevel($record['level']) === $level && $record['message'] === $message) {
+            if (Logger::toMonologLevel($record->level) === $level && $record->message === $message) {
                 unset($this->records[$index]);
                 break;
             }
         }
 
-        foreach ($this->recordsByLevel[$level] as $index => $record) {
-            if ($record['message'] === $message) {
-                unset($this->recordsByLevel[$level][$index]);
+        foreach ($this->recordsByLevel[Logger::toMonologLevel($level)->value] as $index => $record) {
+            if ($record->message === $message) {
+                unset($this->recordsByLevel[Logger::toMonologLevel($level)->value][$index]);
                 break;
             }
         }

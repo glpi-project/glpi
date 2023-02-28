@@ -172,11 +172,11 @@ class GLPITestCase extends atoum
      * Check in PHP log for a record that contains given message.
      *
      * @param string $message
-     * @param string $level
+     * @param Level  $level
      *
      * @return void
      */
-    protected function hasPhpLogRecordThatContains(string $message, string $level): void
+    protected function hasPhpLogRecordThatContains(string $message, Level $level): void
     {
         $this->hasLogRecordThatContains($this->php_log_handler, $message, $level);
     }
@@ -185,11 +185,11 @@ class GLPITestCase extends atoum
      * Check in SQL log for a record that contains given message.
      *
      * @param string $message
-     * @param string $level
+     * @param Level  $level
      *
      * @return void
      */
-    protected function hasSqlLogRecordThatContains(string $message, string $level): void
+    protected function hasSqlLogRecordThatContains(string $message, Level $level): void
     {
         $this->hasLogRecordThatContains($this->sql_log_handler, $message, $level);
     }
@@ -197,12 +197,13 @@ class GLPITestCase extends atoum
     /**
      * Check given log handler for a record that contains given message.
      *
-     * @param string $message
-     * @param string $level
+     * @param TestHandler $handler
+     * @param string      $message
+     * @param Level       $level
      *
      * @return void
      */
-    private function hasLogRecordThatContains(TestHandler $handler, string $message, string $level): void
+    private function hasLogRecordThatContains(TestHandler $handler, string $message, Level $level): void
     {
         $this->has_failed = true;
 
@@ -210,8 +211,8 @@ class GLPITestCase extends atoum
             function ($record) {
                 // Keep only usefull info to display a comprehensive dump
                 return [
-                    'level'   => $record['level'],
-                    'message' => $record['message'],
+                    'level'   => $record->level,
+                    'message' => $record->message,
                 ];
             },
             $handler->getRecords()
