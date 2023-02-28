@@ -159,7 +159,7 @@ class Conf extends CommonGLPI
                     $result[$filename] = $this->importContentFile($filepath, file_get_contents($filepath));
                 }
             } else {
-                $unarchived_files = $archive->getFiles();
+                $unarchived_files = $archive->getFileNames();
                 foreach ($unarchived_files as $inventory_file) {
                     if ($this->isInventoryFile($inventory_file)) {
                         $contents = $archive->getFileContent($inventory_file);
