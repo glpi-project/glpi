@@ -948,16 +948,16 @@
         },
         {
             "name": "jasig/phpcas",
-            "version": "1.6.0",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/apereo/phpCAS.git",
-                "reference": "f817c72a961484afef95ac64a9257c8e31f063b9"
+                "reference": "c129708154852656aabb13d8606cd5b12dbbabac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apereo/phpCAS/zipball/f817c72a961484afef95ac64a9257c8e31f063b9",
-                "reference": "f817c72a961484afef95ac64a9257c8e31f063b9",
+                "url": "https://api.github.com/repos/apereo/phpCAS/zipball/c129708154852656aabb13d8606cd5b12dbbabac",
+                "reference": "c129708154852656aabb13d8606cd5b12dbbabac",
                 "shasum": ""
             },
             "require": {
@@ -978,6 +978,9 @@
                 }
             },
             "autoload": {
+                "files": [
+                    "source/CAS.php"
+                ],
                 "classmap": [
                     "source/"
                 ]
@@ -1010,9 +1013,9 @@
             ],
             "support": {
                 "issues": "https://github.com/apereo/phpCAS/issues",
-                "source": "https://github.com/apereo/phpCAS/tree/1.6.0"
+                "source": "https://github.com/apereo/phpCAS/tree/1.6.1"
             },
-            "time": "2022-10-31T20:39:27+00:00"
+            "time": "2023-02-19T19:52:35+00:00"
         },
         {
             "name": "laminas/laminas-i18n",
