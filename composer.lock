@@ -486,16 +486,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.1.26",
+            "version": "1.1.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "140b9aed1abe16e55a9112814b8869414734879c"
+                "reference": "6d51c5099b5614016bf366254f64f6f1d7b9f018"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/140b9aed1abe16e55a9112814b8869414734879c",
-                "reference": "140b9aed1abe16e55a9112814b8869414734879c",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/6d51c5099b5614016bf366254f64f6f1d7b9f018",
+                "reference": "6d51c5099b5614016bf366254f64f6f1d7b9f018",
                 "shasum": ""
             },
             "require": {
@@ -545,7 +545,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2023-01-25T10:44:38+00:00"
+            "time": "2023-02-23T11:07:58+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
