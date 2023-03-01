@@ -581,7 +581,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
-        if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
+        $skip_check = $this->input['_do_not_check_already_planned'] ?? false;
+        if (!$skip_check && isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
             Planning::checkAlreadyPlanned(
                 $this->fields["users_id_tech"],
                 $this->fields["begin"],
@@ -1437,54 +1438,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     public function showMassiveActionAddTaskForm()
     {
-        echo "<table class='tab_cadre_fixe'>";
-        echo '<tr><th colspan=4>' . __('Add a new task') . '</th></tr>';
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . _n('Category', 'Categories', 1) . "</td>";
-        echo "<td>";
-        TaskCategory::dropdown(['condition' => ['is_active' => 1]]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Description') . "</td>";
-        echo "<td><textarea name='content' cols='50' rows='6'></textarea></td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Duration') . "</td>";
-        echo "<td>";
-        $toadd = [];
-        for ($i = 9; $i <= 100; $i++) {
-            $toadd[] = $i * HOUR_TIMESTAMP;
-        }
-        Dropdown::showTimeStamp("actiontime", ['min'             => 0,
-            'max'             => 8 * HOUR_TIMESTAMP,
-            'addfirstminutes' => true,
-            'inhours'         => true,
-            'toadd'           => $toadd
+        $twig = TemplateRenderer::getInstance();
+        $itemtype = $this->getItilObjectItemType();
+        $item = new $itemtype();
+        $item->getEmpty();
+        $twig->display('components/massive_action/add_task.html.twig', [
+            'item'                    => $item,
+            'subitem'                 => $this,
         ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Status') . "</td>";
-        echo "<td>";
-        Planning::dropdownState("state", $_SESSION['glpitask_state']);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td class='center' colspan='2'>";
-        if ($this->maybePrivate()) {
-            echo "<input type='hidden' name='is_private' value='" . $_SESSION['glpitask_private'] . "'>";
-        }
-        echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-        echo "</td>";
-        echo "</tr>";
-
-        echo "</table>";
     }
 
     /**

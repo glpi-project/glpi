@@ -3947,21 +3947,30 @@ abstract class CommonITILObject extends CommonDBTM
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                     break;
                 }
-                $field = $item->getForeignKeyField();
-
-                $input = $ma->getInput();
 
                 foreach ($ids as $id) {
                     if ($item->getFromDB($id)) {
-                        $input2 = [
-                            $field              => $id,
-                            'taskcategories_id' => $input['taskcategories_id'],
-                            'actiontime'        => $input['actiontime'],
-                            'state'             => $input['state'],
-                            'content'           => $input['content']
-                        ];
-                        if ($task->can(-1, CREATE, $input2) && !in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
-                            if ($task->add($input2)) {
+                        $input = $ma->getInput();
+                        unset($input['itemtype']);
+                        unset($input['_glpi_csrf_token']);
+                        $input[$item->getForeignKeyField()] = $id;
+                        if (count($ids) > 1) {
+                            // Avoid the "The user xxx is busy at the selected timeframe"
+                            // warning if planning multiple tasks
+                            $input['_do_not_check_already_planned'] = true;
+                        }
+
+                        if (
+                            $task->can(-1, CREATE, $input)
+                            && !in_array(
+                                $item->fields['status'],
+                                array_merge(
+                                    $item->getSolvedStatusArray(),
+                                    $item->getClosedStatusArray()
+                                )
+                            )
+                        ) {
+                            if ($task->add($input)) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

@@ -3799,13 +3799,20 @@ JS;
      * @param boolean $display       display or get js script (true by default)
      * @param boolean $readonly      editor will be readonly or not
      * @param boolean $enable_images enable image pasting in rich text
+     * @param int     $editor_height editor default height
      *
      * @return void|string
      *    integer if param display=true
      *    string if param display=false (HTML code)
      **/
-    public static function initEditorSystem($id, $rand = '', $display = true, $readonly = false, $enable_images = true)
-    {
+    public static function initEditorSystem(
+        $id,
+        $rand = '',
+        $display = true,
+        $readonly = false,
+        $enable_images = true,
+        int $editor_height = 150,
+    ) {
         global $CFG_GLPI, $DB;
 
        // load tinymce lib
@@ -3887,7 +3894,7 @@ JS;
                body_class: 'rich_text_container',
                content_css: '{$content_css}',
 
-               min_height: 150,
+               min_height: $editor_height,
                resize: true,
 
                // disable path indicator in bottom bar
