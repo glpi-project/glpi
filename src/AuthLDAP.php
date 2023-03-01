@@ -4642,10 +4642,12 @@ class AuthLDAP extends CommonDBTM
             // See https://learn.microsoft.com/en-us/windows/win32/sysinfo/converting-a-time-t-value-to-a-file-time?redirectedfrom=MSDN
             $time = intval($date) / (10000000) - 11644473600;
             return $time > 0 ? date('Y-m-d H:i:s', $time) : '';
-        } else {
+        } elseif (preg_match('/^(\d{14})\.0Z$/', $date, $matches)) {
             // Ymdhis.0Z LDAP timestamps
-            $date = DateTime::createFromFormat('Ymdhis.0Z', $date);
+            $date = DateTime::createFromFormat('YmdHis', $matches[1]);
             return $date ? $date->format('Y-m-d H:i:s') : '';
+        } else {
+            return '';
         }
     }
 }

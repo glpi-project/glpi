@@ -2375,4 +2375,11 @@ class AuthLDAP extends DbTestCase
         ]);
         $this->array($uts)->hasSize(0);
     }
+
+    public function testGetLdapDateValue()
+    {
+        $auth = new \AuthLDAP();
+        $this->string($auth->getLdapDateValue('20230224150800.0Z'))->isIdenticalTo('2023-02-24 15:08:00');
+        $this->string($auth->getLdapDateValue('133217216420000000'))->isIdenticalTo('2023-02-24 14:14:02');
+    }
 }
