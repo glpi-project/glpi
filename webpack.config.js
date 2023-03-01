@@ -36,7 +36,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const glob = require('glob');
+const { globSync } = require('glob');
 const path = require('path');
 
 const libOutputPath = 'public/lib';
@@ -49,12 +49,12 @@ let config = {
     entry: function () {
         // Create an entry per *.js file in lib/bundle directory.
         // Entry name will be name of the file (without ext).
-        var entries = {};
+        let entries = {};
 
-        let files = glob.sync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).js');
-        files.forEach(function (file) {
+        const files = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).js');
+        for (const file of files) {
             entries[path.basename(file, '.js')] = file;
-        });
+        }
 
         return entries;
     },
