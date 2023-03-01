@@ -103,6 +103,17 @@ if [[ $# -gt 0 ]]; then
   done
 elif [[ "$ALL" = true ]]; then
   TESTS_TO_RUN=("${TESTS_SUITES[@]}")
+
+  # Remove specific lint test, because of global "lint" test suite
+  DO_NOT_RUN=("lint_php" "lint_js" "lint_scss" "lint_twig")
+  for TEST_SUITE in "${DO_NOT_RUN[@]}"; do
+    for TEST in "${!TESTS_TO_RUN[@]}"; do
+      if [[ ${TESTS_TO_RUN[TEST]} = $TEST_SUITE ]]; then
+        unset 'TESTS_TO_RUN[TEST]'
+      fi
+    done
+  done
+
   USE_SERVICES_CONTAINERS=1
 fi
 
