@@ -4315,7 +4315,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ->boolean($result[$json_name]['success'])
             ->isTrue()
             ->then
-            ->object($result[$json_name]['asset'])
+            ->object($result[$json_name]['items'][0])
             ->isInstanceOf('Computer');
 
         //1 computer and 1 printer has been inventoried
@@ -4353,7 +4353,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ->boolean($result['to_inventory.zip/computer_1.json']['success'])
             ->isTrue()
             ->then
-            ->object($result['to_inventory.zip/computer_1.json']['asset'])
+            ->object($result['to_inventory.zip/computer_1.json']['items'][0])
             ->isInstanceOf('Computer');
 
         // Expected result for networkequipment_1.json
@@ -4361,7 +4361,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ->boolean($result['to_inventory.zip/networkequipment_1.json']['success'])
             ->isTrue()
             ->then
-            ->object($result['to_inventory.zip/networkequipment_1.json']['asset'])
+            ->object($result['to_inventory.zip/networkequipment_1.json']['items'][0])
             ->isInstanceOf('NetworkEquipment');
 
         // Expected result for printer_1.json
@@ -4369,7 +4369,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ->boolean($result['to_inventory.zip/printer_1.json']['success'])
             ->isTrue()
             ->then
-            ->object($result['to_inventory.zip/printer_1.json']['asset'])
+            ->object($result['to_inventory.zip/printer_1.json']['items'][0])
             ->isInstanceOf('Printer');
 
         //1 computer 2 printers and a network equipment has been inventoried

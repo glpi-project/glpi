@@ -60,11 +60,20 @@
                             <tr>
                                 <td>{{ filename }}</td>
                                 <td>
-                                    {% if result['asset'] is object %}
-                                        <span>
-                                        <i class="{{ result['asset'].getIcon() }}"></i>
-                                        {{ get_item_link(result['asset']) }}
-                                        </span>
+                                    {% if result['items'] is array %}
+                                        {% for item in result['items'] %}
+                                            {% if item is object %}
+                                                <span>
+                                                <i class="{{ item.getIcon() }}"></i>
+                                                {{ get_item_link(item) }}
+                                                </span>
+                                            {% else %}
+                                                <span class="alert-sucess">
+                                                <i class="fas fa-check"></i>
+                                                {{ result['message'] }}
+                                                </span>
+                                            {% endif %}
+                                        {% endfor %}
                                     {% else %}
                                         <span class="alert-danger">
                                         <i class="fas fa-exclamation-triangle"></i>

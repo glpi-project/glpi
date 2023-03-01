@@ -218,13 +218,13 @@ class Conf extends CommonGLPI
                 return [
                     'success' => false,
                     'message' => __('File has not been imported:') . Sanitizer::encodeHtmlSpecialChars($response),
-                    'asset'   => null,
+                    'items'   => null,
                 ];
             } else {
                 return [
                     'success' => true,
                     'message' => __('File has been successfully imported!'),
-                    'asset'   => $inventory_request->getInventory()->getItem(),
+                    'items'   => $inventory_request->getInventory()->getItems(),
                 ];
             }
         } catch (\Exception $e) {
