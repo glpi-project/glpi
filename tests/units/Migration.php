@@ -784,7 +784,7 @@ class Migration extends \GLPITestCase
 
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'testright1', 'testright2', 'testright3', 'testright4'
+                'testright1', 'testright2'
             ]
         ]);
         //Test adding a READ right on central interface
@@ -819,6 +819,12 @@ class Migration extends \GLPITestCase
             ]
         ]);
         $this->integer(count($right2))->isEqualTo(1);
+
+        $DB->delete('glpi_profilerights', [
+            'name' => [
+                'testright1', 'testright2'
+            ]
+        ]);
     }
 
     public function testRenameTable()
