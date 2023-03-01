@@ -93,5 +93,6 @@ if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noA
         'errors'    => $auth->getErrors(),
         'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1' . str_replace("?", "&", $REDIRECT),
     ]);
+    http_response_code(401);
     exit();
 }
