@@ -118,7 +118,7 @@
                         {% elseif item is instanceof('CommonDBTM') and item.maybeRecursive() and not has_access_to_entity(row['entities_id'])  %}
                         {% else %}
 
-                           {% if item is instanceof('CommonDBTM') and item.isMassiveActionAllowed(row['id'])  %}
+                           {% if item is instanceof('CommonDBTM') and call(itemtype ~ '::isMassiveActionAllowed', [row['id']])  %}
                               {% set checked = session('glpimassiveactionselected')[itemtype][row['id']] ?? false %}
                               <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
                                  value="1" aria-label="" {% if checked %}checked="checked"{% endif %}

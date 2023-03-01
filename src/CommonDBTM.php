@@ -6151,7 +6151,7 @@ class CommonDBTM extends CommonGLPI
         return new MassiveAction($params, [], 'initial', $this->getID());
     }
 
-    public function isMassiveActionAllowed(int $items_id): bool
+    public static function isMassiveActionAllowed(int $items_id): bool
     {
         return true;
     }
