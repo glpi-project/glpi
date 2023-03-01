@@ -42,6 +42,7 @@ use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\URL;
+use Psr\Log\InvalidArgumentException;
 use ScssPhp\ScssPhp\Compiler;
 
 /**
@@ -2119,7 +2120,7 @@ HTML;
     public static function popHeader(
         $title,
         $url = '',
-        $iframed = false,
+        $in_modal = false,
         $sector = "none",
         $item = "none",
         $option = ""
@@ -2132,10 +2133,39 @@ HTML;
         }
         $HEADER_LOADED = true;
 
-        self::includeHeader($title, $sector, $item, $option, true, $iframed); // Body
-        echo "<body class='" . ($iframed ? "iframed" : "") . "'>";
+        self::includeHeader($title, $sector, $item, $option); // Body
+        echo "<body class='" . ($in_modal ? "in_modal" : "") . "'>";
         self::displayMessageAfterRedirect();
         echo "<div id='page'>"; // Force legacy styles for now
+    }
+
+
+    /**
+     * Print a nice HTML head for iframed windows
+     *
+     * @since 10.0.7
+     *
+     * @param string  $sector    sector in which the page displayed is (default 'none')
+     * @param string  $item      item corresponding to the page displayed (default 'none')
+     * @param string  $option    option corresponding to the page displayed (default '')
+     * @return void
+     */
+    public static function iframedHeader(
+        string $sector = "none",
+        string $item = "none",
+        string $option = ""
+    ): void {
+        global $HEADER_LOADED;
+
+        if ($HEADER_LOADED) {
+            return;
+        }
+        $HEADER_LOADED = true;
+
+        self::includeHeader('', $sector, $item, $option, true, true);
+        echo "<body class='iframed'>";
+        self::displayMessageAfterRedirect();
+        echo "<div id='page'>";
     }
 
 

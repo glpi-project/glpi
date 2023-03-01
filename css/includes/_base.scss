@@ -83,7 +83,8 @@ $topbar-height: 79px;
 $contextbar-height: 56px;
 $content-margin: 20px;
 
-body.iframed {
+body.iframed,
+body.in_modal {
     background-color: transparent;
     overflow-x: hidden;
 }
