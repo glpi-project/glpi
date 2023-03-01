@@ -1146,7 +1146,7 @@ HTML;
         $item = 'none',
         $option = '',
         bool $add_id = true,
-        bool $iframed = false
+        bool $allow_iframe = false
     ) {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -1158,7 +1158,7 @@ HTML;
         // Send UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
 
-        if (!$iframed) {
+        if (!$allow_iframe) {
             // Allow only frame from same server to prevent click-jacking
             header('x-frame-options:SAMEORIGIN');
         }
