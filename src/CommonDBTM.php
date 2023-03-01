@@ -6151,6 +6151,11 @@ class CommonDBTM extends CommonGLPI
         return new MassiveAction($params, [], 'initial', $this->getID());
     }
 
+    public function isMassiveActionAllowed(int $items_id): bool
+    {
+        return true;
+    }
+
     /**
      * Automatically update 1-N links tables for the current item.
      *

@@ -117,10 +117,13 @@
                         {% elseif itemtype == 'User' and not can_view_all_entities() and not has_access_to_user_entities(row['id']) %}
                         {% elseif item is instanceof('CommonDBTM') and item.maybeRecursive() and not has_access_to_entity(row['entities_id'])  %}
                         {% else %}
-                           {% set checked = session('glpimassiveactionselected')[itemtype][row['id']] ?? false %}
-                           <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
-                              value="1" aria-label="" {% if checked %}checked="checked"{% endif %}
-                              name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]" />
+
+                           {% if item is instanceof('CommonDBTM') and item.isMassiveActionAllowed(row['id'])  %}
+                              {% set checked = session('glpimassiveactionselected')[itemtype][row['id']] ?? false %}
+                              <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
+                                 value="1" aria-label="" {% if checked %}checked="checked"{% endif %}
+                                 name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]" />
+                           {% endif %}
                         {% endif %}
                      </div>
                   </td>

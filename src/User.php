@@ -197,6 +197,13 @@ class User extends CommonDBTM
     }
 
 
+    public function isMassiveActionAllowed(int $items_id): bool
+    {
+        $config = Config::getConfigurationValues('core', ['system_user']);
+        return !($config['system_user'] == $items_id);
+    }
+
+
     /**
      * Compute preferences for the current user mixing config and user data.
      *
