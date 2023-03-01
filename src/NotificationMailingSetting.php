@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Mail\SMTP\OauthConfig;
+
 /**
  *  This class manages the mail settings
  */
@@ -75,6 +77,8 @@ class NotificationMailingSetting extends NotificationSetting
         ) . "</th></tr>";
 
         if ($CFG_GLPI['notifications_mailing']) {
+            $rand = mt_rand();
+
             $out .= "<tr class='tab_bg_2'>";
             $out .= "<td><label for='admin_email'>" . __('Administrator email address') . "</label></td>";
             $out .= "<td><input type='email' class='form-control' name='admin_email' id='admin_email' value='" .
@@ -143,13 +147,12 @@ class NotificationMailingSetting extends NotificationSetting
 
             $out .= "<tr class='tab_bg_2'>";
 
-            $attachrand = mt_rand();
-            $out .= "<td><label for='dropdown_attach_ticket_documents_to_mail$attachrand'>" . __('Add documents into ticket notifications') . "</label></td><td>";
+            $out .= "<td><label for='dropdown_attach_ticket_documents_to_mail$rand'>" . __('Add documents into ticket notifications') . "</label></td><td>";
             $out .= Dropdown::showYesNo(
                 "attach_ticket_documents_to_mail",
                 $CFG_GLPI["attach_ticket_documents_to_mail"],
                 -1,
-                ['display' => false, 'rand' => $attachrand]
+                ['display' => false, 'rand' => $rand]
             );
             $out .= "</td>";
             $out .= "<td colspan='2'></td></tr>";
@@ -160,11 +163,12 @@ class NotificationMailingSetting extends NotificationSetting
                                 $CFG_GLPI["mailing_signature"] . "</textarea></td></tr>";
 
             $out .= "<tr class='tab_bg_2'>";
-            $methodrand = mt_rand();
-            $out .= "<td><label for='dropdown_smtp_mode$methodrand'>" . __('Way of sending emails') . "<label></td><td>";
-            $mail_methods = [MAIL_MAIL    => __('PHP'),
-                MAIL_SMTP => __('SMTP'),
-                MAIL_SMTPS => __('SMTPS'),
+            $out .= "<td><label for='dropdown_smtp_mode$rand'>" . __('Way of sending emails') . "<label></td><td>";
+            $mail_methods = [
+                MAIL_MAIL       => __('PHP'),
+                MAIL_SMTP       => __('SMTP'),
+                MAIL_SMTPS      => __('SMTPS'),
+                MAIL_SMTPOAUTH  => __('SMTP+OAUTH'),
             ];
 
             if (!function_exists('mail')) {
@@ -181,19 +185,33 @@ class NotificationMailingSetting extends NotificationSetting
                 [
                     'value'     => $CFG_GLPI["smtp_mode"],
                     'display'   => false,
-                    'rand'      => $methodrand
+                    'rand'      => $rand
                 ]
             );
-            $out .= Html::scriptBlock("$(function() {
-            $('[name=smtp_mode]').on('change', function() {
-               var _val = $(this).find('option:selected').val();
-               if (_val == '" . MAIL_MAIL . "') {
-                  $('#smtp_config').addClass('starthidden');
-               } else {
-                  $('#smtp_config').removeClass('starthidden');
-               }
-            });
-         });");
+            $out .= Html::scriptBlock("
+                $(function() {
+                    $('[name=smtp_mode]').on('change', function() {
+                        const value = $(this).find('option:selected').val();
+                        const is_mail  = value === '" . MAIL_MAIL . "';
+                        const is_oauth = value === '" . MAIL_SMTPOAUTH . "';
+
+                        $('#smtp_config').toggleClass('starthidden', is_mail);
+
+                        // show/hide elements not related to Oauth
+                        $('#dropdown_smtp_check_certificate{$rand}').closest('tr').toggle(!is_oauth);
+                        $('label[for=\"smtp_passwd\"]').toggle(!is_oauth);
+                        $('#smtp_username').closest('tr').toggle(!is_oauth);
+
+                        // show/hide elements related to Oauth
+                        $('#oauth_redirect_alert{$rand}').toggleClass('d-none', !is_oauth);
+                        $('#dropdown_smtp_oauth_provider$rand').closest('tr').toggle(is_oauth);
+                        $('#smtp_oauth_client_id$rand').closest('tr').toggle(is_oauth);
+                        $('#_force_redirect_to_smtp_oauth$rand').closest('tr').toggle(is_oauth);
+                        $('[name=smtp_oauth_provider]').trigger('change'); // refresh additional params using dedicated method
+                    });
+                    $('[name=smtp_mode]').trigger('change');
+                });
+            ");
             $out .= "</td>";
 
             $out .= "<td><label for='smtp_max_retries'>" . __('Max. delivery retries') . "</label></td>";
@@ -210,21 +228,126 @@ class NotificationMailingSetting extends NotificationSetting
 
             $out .= "</table>";
 
-            $out .= "<table class='tab_cadre_fixe";
-            if ($CFG_GLPI["smtp_mode"] == MAIL_MAIL) {
-                $out .= " starthidden";
-            }
-            $out .= "' id='smtp_config'>";
+            $out .= "<table class='tab_cadre_fixe' id='smtp_config'>";
             $out .= "<tr class='tab_bg_1'><th colspan='4'>" . AuthMail::getTypeName(1) . "</th></tr>";
+
             $out .= "<tr class='tab_bg_2'>";
-            $certrand = mt_rand();
-            $out .= "<td><label for='dropdown_smtp_check_certificate$certrand'>" . __("Check certificate") . "</label></td>";
+            $out .= "<td colspan='4'>";
+            $out .= "<div id='oauth_redirect_alert{$rand}' class='d-flex alert alert-info'>";
+            $out .= "<i class='fas fa-info-circle fa-2x alert-icon'></i>";
+            $out .= __('Once the form has been validated, you will be redirected to your supplierʼs authentication page if necessary.');
+            $out .= "</div>";
+            $out .= "</td>";
+            $out .= "</tr>";
+
+            $out .= "<tr class='tab_bg_2'>";
+            $out .= "<td><label for='dropdown_smtp_oauth_provider$rand'>" . __('Oauth provider') . "</label></td>";
+            $out .= "<td>";
+            $providers_values = [];
+            foreach (OauthConfig::getInstance()->getSupportedProviders() as $provider_class) {
+                $providers_values[$provider_class] = $provider_class::getName();
+            }
+            $out .= Dropdown::showFromArray(
+                'smtp_oauth_provider',
+                $providers_values,
+                [
+                    'display' => false,
+                    'display_emptychoice' => true,
+                    'rand' => $rand,
+                    'value' => $CFG_GLPI['smtp_oauth_provider'],
+                ]
+            );
+            $out .= "</td>";
+            $out .= "<td>";
+            $out .= _x('oauth', 'Callback URL');
+            $out .= "<i class='pointer fa fa-info' title='" . _x('oauth', 'This is the callback URL that you will have to declare in your provider application.') . "'></i>";
+            $out .= "</td>";
+            $out .= "<td>";
+            $out .= "<div class='d-flex align-items-center'>";
+            $out .= "<input class='form-control' readonly='readonly' id='_smtp_oauth_callback_url{$rand}' value='{$CFG_GLPI['url_base']}/front/smtp_oauth2_callback.php'>";
+            $out .= "<i class='fa fa-paste pointer disclose' onclick='$(\"#_smtp_oauth_callback_url{$rand}\").select(); document.execCommand(\"copy\");'></i>";
+            $out .= "</div>";
+            $out .= "</td>";
+            $out .= "</tr>";
+
+            $out .= "<tr class='tab_bg_2'>";
+            $out .= "<td><label for='smtp_oauth_client_id{$rand}'>" . _x('oauth', 'Client ID') . "</label></td>";
+            $out .= "<td>";
+            $out .= "<input class='form-control' name='smtp_oauth_client_id' id='smtp_oauth_client_id{$rand}' value='{$CFG_GLPI["smtp_oauth_client_id"]}'>";
+            $out .= "</td>";
+            $out .= "<td><label for='smtp_oauth_client_secret{$rand}'>" . _x('oauth', 'Client secret') . "</label></td>";
+            $out .= "<td>";
+            $out .= "<input type='password' autocomplete='new-password' class='form-control' name='smtp_oauth_client_secret' id='smtp_oauth_client_secret{$rand}'>";
+            $out .= "</td>";
+            $out .= "</tr>";
+
+            $provider_options = Toolbox::isJSON($CFG_GLPI['smtp_oauth_options'])
+                ? json_decode($CFG_GLPI['smtp_oauth_options'], true)
+                : [];
+            foreach (OauthConfig::getInstance()->getSupportedProviders() as $provider_class) {
+                foreach ($provider_class::getAdditionalParameters() as $param_specs) {
+                    $out .= "<tr class='tab_bg_2'>";
+                    $out .= "<td>";
+                    $out .= "<label for='smtp_oauth_options_{$param_specs['key']}$rand'>{$param_specs['label']}</label>";
+                    if (array_key_exists('helper', $param_specs)) {
+                        $out .= "<i class='pointer fa fa-info' title='{$param_specs['helper']}'></i>";
+                    }
+                    $out .= "</td>";
+                    $out .= "<td>";
+                    $option_value = $CFG_GLPI['smtp_oauth_provider'] === $provider_class
+                        ? ($provider_options[$param_specs['key']] ?? $param_specs['default'] ?? '')
+                        : '';
+                    $out .= "<input class='form-control'
+                                    name='smtp_oauth_options[{$param_specs['key']}]'
+                                    id='smtp_oauth_options_{$param_specs['key']}$rand'
+                                    value='{$option_value}'
+                                    data-oauth_additional_parameter='true'
+                                    data-oauth_provider='{$provider_class}'
+                            >";
+                    $out .= "</td><td colspan='2'></td>";
+                    $out .= "</tr>";
+                }
+            }
+            // display/hide additionnal fields on provider change
+            $out .= Html::scriptBlock(<<<JAVASCRIPT
+                $(function() {
+                    $('[name=smtp_oauth_provider]').on('change', function() {
+                        const value = $(this).find('option:selected').val();
+                        $(this.closest('form')).find('[data-oauth_additional_parameter="true"]').each(
+                            function (key, field) {
+                                const row = $(field).closest('tr');
+                                const matches_current_provider = value === $(field).attr('data-oauth_provider');
+                                row.toggle(matches_current_provider);
+                                row.find('input, select').prop('disabled', !matches_current_provider);
+                            }
+                        );
+
+                    });
+                    $('[name=smtp_oauth_provider]').trigger('change');
+                });
+JAVASCRIPT
+            );
+
+            if ($CFG_GLPI['smtp_oauth_refresh_token'] !== '') {
+                $out .= "<tr class='tab_bg_2'>";
+                $out .= "<td>";
+                $out .= "<label for='_force_redirect_to_smtp_oauth$rand'>" . _x('oauth', 'Force OAuth authentication refresh') . "</label>";
+                $out .= "<i class='pointer fa fa-info' title='" . _x('oauth', 'You can use this option to force redirection to the OAuth authentication process. This will trigger generation of a new OAuth token.') . "'></i>";
+                $out .= "</td>";
+                $out .= "<td>";
+                $out .= "<input type='checkbox' name='_force_redirect_to_smtp_oauth' id='_force_redirect_to_smtp_oauth$rand' value='1'>";
+                $out .= "</td>";
+                $out .= "</tr>";
+            }
+
+            $out .= "<tr class='tab_bg_2'>";
+            $out .= "<td><label for='dropdown_smtp_check_certificate$rand'>" . __("Check certificate") . "</label></td>";
             $out .= "<td>";
             $out .= Dropdown::showYesNo(
                 'smtp_check_certificate',
                 $CFG_GLPI["smtp_check_certificate"],
                 -1,
-                ['display' => false, 'rand' => $certrand]
+                ['display' => false, 'rand' => $rand]
             );
             $out .= "</td><td colspan='2'></td>";
             $out .= "</tr>";

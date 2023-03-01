@@ -173,6 +173,10 @@ class User extends CommonDBTM
 
     public function canDeleteItem()
     {
+        if ($this->isLastSuperAdminUser()) {
+            return false;
+        }
+
         if (
             Session::canViewAllEntities()
             || Session::haveAccessToAllOfEntities($this->getEntities())
@@ -1053,6 +1057,20 @@ class User extends CommonDBTM
 
         if (array_key_exists('timezone', $input) && empty($input['timezone'])) {
             $input['timezone'] = 'NULL';
+        }
+
+        if (
+            $this->fields['is_active'] == true
+            && isset($input['is_active'])
+            && $input['is_active'] == false // User is no longer active
+            && $this->isLastSuperAdminUser()
+        ) {
+            unset($input['is_active']);
+            Session::addMessageAfterRedirect(
+                __("Can't set user as inactive as it is the only remaining super administrator."),
+                false,
+                ERROR
+            );
         }
 
         return $input;
@@ -6956,5 +6974,30 @@ JAVASCRIPT;
 
         // Success if no error found
         return count($errors) === 0;
+    }
+
+    /**
+     * Check if this User is the last super-admin user.
+     * A "super-admin user" is a user that can edit GLPI's profiles.
+     *
+     * @return bool
+     */
+    protected function isLastSuperAdminUser(): bool
+    {
+        // Find all active authorizations for the super admins
+        $super_admin_authorizations = (new Profile_User())->find([
+            'profiles_id' => Profile::getSuperAdminProfilesId(),
+            'users_id' => new QuerySubQuery([
+                'SELECT' => 'id',
+                'FROM'   => 'glpi_users',
+                'WHERE'  => ['is_active' => 1, 'is_deleted' => 0],
+            ])
+        ]);
+        $users_ids = array_column($super_admin_authorizations, 'users_id');
+
+        return
+            count($users_ids) == 1 // Only one super admin auth
+            && $users_ids[0] == $this->fields['id'] // Id match our user
+        ;
     }
 }

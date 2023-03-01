@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\URL;
 
 /** Link Class
@@ -658,13 +659,14 @@ class Link extends CommonDBTM
         $file  = trim($params['data']);
 
         if (empty($file)) {
-           // Generate links
-            $links = $item->generateLinkContents($params['link'], $item, true);
+            // Generate links
+            $link_pattern = Sanitizer::unsanitize($params['link']); // generate links from raw pattern
+            $links = $item->generateLinkContents($link_pattern, $item, true);
             $i     = 1;
             foreach ($links as $key => $val) {
+                $val     = htmlspecialchars($val); // encode special chars as value was generated from a raw pattern
                 $name    = (isset($names[$key]) ? $names[$key] : reset($names));
-                $url     = $val;
-                $newlink = '<a href="' . htmlspecialchars($url) . '"';
+                $newlink = '<a href="' . $val . '"';
                 if ($params['open_window']) {
                     $newlink .= " target='_blank'";
                 }

@@ -33,35 +33,43 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var DB $DB
- * @var Migration $migration
- */
+namespace Glpi\Mail\SMTP\OauthProvider;
 
-$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+final class Google extends \League\OAuth2\Client\Provider\Google implements ProviderInterface
+{
+    public function __construct(array $options = [])
+    {
+        $options['scopes'] = $this->getScopes();
+        $options['accessType'] = 'offline';
 
-if ($DB->fieldExists(\Unmanaged::getTable(), 'domains_id')) {
-    $iterator = $DB->request([
-        'SELECT' => ['id', 'domains_id'],
-        'FROM'   => \Unmanaged::getTable(),
-        'WHERE'  => ['domains_id' => ['>', 0]]
-    ]);
-    if (count($iterator)) {
-        foreach ($iterator as $row) {
-            $DB->insert("glpi_domains_items", [
-                'domains_id'   => $row['domains_id'],
-                'itemtype'     => 'Unmanaged',
-                'items_id'     => $row['id']
-            ]);
-        }
+        parent::__construct($options);
     }
-    $migration->dropField(\Unmanaged::getTable(), 'domains_id');
-}
 
-if (!$DB->fieldExists(\Unmanaged::getTable(), 'users_id_tech')) {
-    $migration->addField(\Unmanaged::getTable(), 'users_id_tech', "int {$default_key_sign} NOT NULL DEFAULT '0'", ['after' => 'states_id']);
-    $migration->addKey(\Unmanaged::getTable(), 'users_id_tech');
-}
+    public function getAuthorizationUrl(array $options = [])
+    {
+        $options = [
+            'prompt' => 'login', // ensure user will have to specify the account to use
+            'scope'  => $this->getScopes(),
+        ];
 
-//new right value for unmanageds (previously based on config UPDATE)
-$migration->addRight('unmanaged', READ | UPDATE | DELETE | PURGE, ['config' => UPDATE]);
+        return parent::getAuthorizationUrl($options);
+    }
+
+    public static function getName(): string
+    {
+        return 'Google';
+    }
+
+    public static function getAdditionalParameters(): array
+    {
+        return [
+        ];
+    }
+
+    private function getScopes(): array
+    {
+        return [
+            'https://mail.google.com/',
+        ];
+    }
+}

@@ -55,7 +55,7 @@
             <div class="row flex-row align-items-start flex-grow-1">
                <div class="row flex-row">
                   {% set field_options = field_options|merge(params) %}
-                  {% set session_get_plural = call('Session::getPluralNumber', []) %}
+                  {% set session_get_plural = get_plural_number() %}
                   {% set rand = random() %}
 
                   {% if ID %}

@@ -712,6 +712,11 @@ class NetworkPort extends InventoryAsset
             if (property_exists($port, 'mac') && !empty($port->mac)) {
                 $input['mac'] = $port->mac;
             }
+
+            if (property_exists($port, 'logical_number') && !empty($port->logical_number)) {
+                $input['logical_number'] = $port->logical_number;
+            }
+
             $ports_id[] = $netport->add(Sanitizer::sanitize($input));
         }
 

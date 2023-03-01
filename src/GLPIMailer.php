@@ -36,6 +36,8 @@
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Glpi\Application\ErrorHandler;
+use Glpi\Mail\SMTP\OauthConfig;
+use League\OAuth2\Client\Grant\RefreshToken;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Address;
@@ -102,13 +104,31 @@ class GLPIMailer
         $dsn = 'native://default';
 
         if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
+            $password = '********';
+            if ($with_clear_password) {
+                if ((int)$CFG_GLPI['smtp_mode'] === MAIL_SMTPOAUTH) {
+                    $provider = OauthConfig::getInstance()->getSmtpOauthProvider();
+                    $refresh_token = (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_refresh_token']);
+                    if ($provider !== null && $refresh_token !== '') {
+                        $token = $provider->getAccessToken(
+                            new RefreshToken(),
+                            [
+                                'refresh_token' => $refresh_token,
+                            ]
+                        );
+                        $password = $token->getToken();
+                    }
+                } else {
+                    $password = (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']);
+                }
+            }
             $dsn = sprintf(
                 '%s://%s%s:%s',
                 (in_array($CFG_GLPI['smtp_mode'], [MAIL_SMTPS, MAIL_SMTPSSL, MAIL_SMTPTLS]) ? 'smtps' : 'smtp'),
                 ($CFG_GLPI['smtp_username'] != '' ? sprintf(
                     '%s:%s@',
-                    $CFG_GLPI['smtp_username'],
-                    $with_clear_password ? (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']) : '********'
+                    urlencode($CFG_GLPI['smtp_username']),
+                    $with_clear_password ? urlencode($password) : '********'
                 ) : ''),
                 $CFG_GLPI['smtp_host'],
                 $CFG_GLPI['smtp_port']

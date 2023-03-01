@@ -2722,4 +2722,120 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->boolean(property_exists($networkPort, 'logical_number'))->isTrue();
         $this->integer($networkPort->logical_number)->isEqualTo(1047);
     }
+
+    public function testUnmanagedNotDuplicatedAtEachInventory()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+      <REQUEST>
+        <CONTENT>
+          <DEVICE>
+            <COMPONENTS>
+              <COMPONENT>
+                <CONTAINEDININDEX>0</CONTAINEDININDEX>
+                <INDEX>-1</INDEX>
+                <NAME>Force10 S-series Stack</NAME>
+                <TYPE>stack</TYPE>
+              </COMPONENT>
+            </COMPONENTS>
+            <INFO>
+              <MAC>00:01:e8:d7:c9:1d</MAC>
+              <NAME>sw-s50</NAME>
+              <SERIAL>DL253300100</SERIAL>
+              <TYPE>NETWORKING</TYPE>
+            </INFO>
+            <PORTS>
+              <PORT>
+                <CONNECTIONS>
+                  <CDP>1</CDP>
+                  <CONNECTION>
+                    <IFNUMBER>52</IFNUMBER>
+                    <IP>10.100.200.10</IP>
+                    <SYSDESCR>ExtremeXOS (X440G2-48p-10G4) version 31.7.1.4 31.7.1.4-patch1-77 by release-manager on Mon Nov 21 08:43:09 EST 2022</SYSDESCR>
+                    <SYSMAC>00:04:96:f5:82:f5</SYSMAC>
+                    <SYSNAME>SW_BATA-RdJ-vdi-1</SYSNAME>
+                  </CONNECTION>
+                </CONNECTIONS>
+                <IFALIAS>BAT-A</IFALIAS>
+                <IFDESCR>X670G2-48x-4q Port 1</IFDESCR>
+                <IFINERRORS>0</IFINERRORS>
+                <IFINOCTETS>2421130293</IFINOCTETS>
+                <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                <IFLASTCHANGE>0:01:51.00</IFLASTCHANGE>
+                <IFMTU>1500</IFMTU>
+                <IFNAME>1:1</IFNAME>
+                <IFNUMBER>1001</IFNUMBER>
+                <IFOUTERRORS>0</IFOUTERRORS>
+                <IFOUTOCTETS>1619061805</IFOUTOCTETS>
+                <IFPORTDUPLEX>3</IFPORTDUPLEX>
+                <IFSPEED>10000000000</IFSPEED>
+                <IFSTATUS>1</IFSTATUS>
+                <IFTYPE>6</IFTYPE>
+                <MAC>00:04:96:98:db:22</MAC>
+              </PORT>
+            </PORTS>
+          </DEVICE>
+          <MODULEVERSION>4.1</MODULEVERSION>
+          <PROCESSNUMBER>1</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>foo</DEVICEID>
+        <QUERY>SNMPQUERY</QUERY>
+      </REQUEST>';
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $network_device_id = $inventory->getItem()->fields['id'];
+        $this->integer($network_device_id)->isGreaterThan(0);
+
+        $unmanaged = new \Unmanaged();
+        $this->boolean($unmanaged->getFromDBByCrit(['name' => 'SW_BATA-RdJ-vdi-1']))->isTrue();
+
+        //redo inventory and check if we still have a single Unmanaged
+        $inventory = $this->doInventory($xml_source, true);
+
+        $unmanaged = new \Unmanaged();
+        $this->boolean($unmanaged->getFromDBByCrit(['name' => 'SW_BATA-RdJ-vdi-1']))->isTrue();
+    }
+
+
+    public function testAssetTag()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+      <REQUEST>
+        <CONTENT>
+          <DEVICE>
+            <COMPONENTS>
+              <COMPONENT>
+                <CONTAINEDININDEX>0</CONTAINEDININDEX>
+                <INDEX>-1</INDEX>
+                <NAME>Force10 S-series Stack</NAME>
+                <TYPE>stack</TYPE>
+              </COMPONENT>
+            </COMPONENTS>
+            <INFO>
+              <MAC>00:01:e8:d7:c9:1d</MAC>
+              <NAME>sw-s50</NAME>
+              <SERIAL>DL253300100</SERIAL>
+              <ASSETTAG>other_serial</ASSETTAG>
+              <TYPE>NETWORKING</TYPE>
+            </INFO>
+          </DEVICE>
+          <MODULEVERSION>4.1</MODULEVERSION>
+          <PROCESSNUMBER>1</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>foo</DEVICEID>
+        <QUERY>SNMPQUERY</QUERY>
+      </REQUEST>';
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $network_device_id = $inventory->getItem()->fields['id'];
+        $this->integer($network_device_id)->isGreaterThan(0);
+
+        $networkEquipment = new \NetworkEquipment();
+        $this->boolean($networkEquipment->getFromDB($network_device_id))->isTrue();
+
+        $this->string($networkEquipment->fields['otherserial'])->isIdenticalTo('other_serial');
+    }
 }

@@ -259,6 +259,41 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['begin_date_field']          = 'whenCreated';
                 $this->fields['end_date_field']            = 'accountExpires';
                 break;
+            case 'OpenLDAP':
+                $this->fields['port']                      = "389";
+                $this->fields['condition']
+                 = '(&(objectClass=inetOrgPerson))';
+                $this->fields['login_field']               = 'uid';
+                $this->fields['sync_field']                = 'entryuuid';
+                $this->fields['use_tls']                   = 0;
+                $this->fields['group_field']               = '';
+                $this->fields['group_condition']
+                 = '(&(objectClass=inetOrgPerson))';
+                $this->fields['group_search_type']         = self::GROUP_SEARCH_GROUP;
+                $this->fields['group_member_field']        = 'member';
+                $this->fields['email1_field']              = 'mail';
+                $this->fields['email2_field']              = '';
+                $this->fields['email3_field']              = '';
+                $this->fields['email4_field']              = '';
+                $this->fields['realname_field']            = 'sn';
+                $this->fields['firstname_field']           = 'givenname';
+                $this->fields['phone_field']               = 'telephonenumber';
+                $this->fields['phone2_field']              = 'homephone';
+                $this->fields['mobile_field']              = 'mobile';
+                $this->fields['registration_number_field'] = 'employeenumber';
+                $this->fields['comment_field']             = 'description';
+                $this->fields['title_field']               = 'title';
+                $this->fields['entity_field']              = 'ou';
+                $this->fields['entity_condition']          = '(objectClass=organizationalUnit)';
+                $this->fields['use_dn']                    = 1;
+                $this->fields['can_support_pagesize']      = 1;
+                $this->fields['pagesize']                  = '1000';
+                $this->fields['picture_field']             = 'jpegphoto';
+                $this->fields['responsible_field']         = 'manager';
+                $this->fields['category_field']            = 'businesscategory';
+                $this->fields['language_field']            = 'preferredlanguage';
+                $this->fields['location_field']            = 'l';
+                break;
 
             default:
                 $this->post_getEmpty();
@@ -445,6 +480,8 @@ class AuthLDAP extends CommonDBTM
                 echo "<td colspan='3'>";
                 echo "<a href='$target?preconfig=AD'>" . __('Active Directory') . "</a>";
                 echo "&nbsp;&nbsp;/&nbsp;&nbsp;";
+                echo "<a href='$target?preconfig=OpenLDAP'>" . __('OpenLDAP') . "</a>";
+                echo "&nbsp;&nbsp;/&nbsp;&nbsp;";
                 echo "<a href='$target?preconfig=default'>" . __('Default values');
                 echo "</a></td></tr>";
             }
@@ -554,7 +591,9 @@ class AuthLDAP extends CommonDBTM
                     'group_field', 'group_member_field', 'group_search_type',
                     'mobile_field', 'phone_field', 'phone2_field',
                     'realname_field', 'registration_number_field', 'title_field',
-                    'use_dn', 'use_tls', 'responsible_field', 'begin_date_field', 'end_date_field'
+                    'use_dn', 'use_tls', 'picture_field', 'responsible_field', 'begin_date_field', 'end_date_field',
+                    'category_field', 'language_field', 'location_field',
+                    'can_support_pagesize', 'pagesize',
                 ];
 
                 foreach ($hidden_fields as $hidden_field) {

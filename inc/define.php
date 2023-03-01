@@ -164,6 +164,7 @@ define("MAIL_SMTP", 1);
 define("MAIL_SMTPS", 2);
 define("MAIL_SMTPSSL", 2);
 define("MAIL_SMTPTLS", 3);
+define("MAIL_SMTPOAUTH", 4);
 
 // MESSAGE TYPE
 define("INFO", 0);

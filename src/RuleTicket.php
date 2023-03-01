@@ -66,6 +66,14 @@ class RuleTicket extends RuleCommonITILObject
                         ) {
                             $output['_' . $action->fields["field"]] = $action->fields["value"];
                         }
+
+                        // special case of contract
+                        if ($action->fields["field"] == "assign_contract") {
+                            if (!array_key_exists("_contracts_id", $output) || $output['_contracts_id'] == '0') {
+                                $output["_contracts_id"] = [];
+                            }
+                            $output["_contracts_id"] = $action->fields["value"];
+                        }
                         break;
 
                     case 'fromuser':
@@ -80,6 +88,30 @@ class RuleTicket extends RuleCommonITILObject
                     case 'fromitem':
                         if ($action->fields['field'] == 'locations_id' && isset($output['_locations_id_of_item'])) {
                             $output['locations_id'] = $output['_locations_id_of_item'];
+                        }
+                        break;
+
+                    case 'regex_result':
+                        if ($action->fields["field"] == "assign_contract") {
+                            if (isset($this->regex_results[0])) {
+                                $regexvalue = RuleAction::getRegexResultById(
+                                    $action->fields["value"],
+                                    $this->regex_results[0]
+                                );
+                            } else {
+                                $regexvalue = $action->fields["value"];
+                            }
+
+                            if (!is_null($regexvalue)) {
+                                $contracts = new Contract();
+                                $target_contract = $contracts->find(["name" => $regexvalue, "entities_id" => $output['entities_id']]);
+
+                                if ((!array_key_exists("_contracts_id", $output) || $output['_contracts_id'] == '0') && count($target_contract) > 0) {
+                                    $output["_contracts_id"] = array_values($target_contract)[0]['id'];
+                                } else {
+                                    $output["_contracts_id"] = [];
+                                }
+                            }
                         }
                         break;
                 }
@@ -262,6 +294,11 @@ class RuleTicket extends RuleCommonITILObject
         $actions['locations_id']['type']                            = 'dropdown';
         $actions['locations_id']['table']                           = 'glpi_locations';
         $actions['locations_id']['force_actions']                   = ['assign', 'fromuser', 'fromitem'];
+
+        $actions['assign_contract']['name']                  = Contract::getTypeName(1);
+        $actions['assign_contract']['type']                  = 'dropdown';
+        $actions['assign_contract']['table']                 = 'glpi_contracts';
+        $actions['assign_contract']['force_actions']         = ['assign','regex_result'];
 
         return $actions;
     }

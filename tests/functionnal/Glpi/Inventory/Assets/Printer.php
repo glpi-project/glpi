@@ -1937,4 +1937,92 @@ class Printer extends AbstractInventoryAsset
         //remove printer for other test
         $printer->delete($printer->fields);
     }
+
+    public function testSnmpPrinterAssetTag()
+    {
+
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <CARTRIDGES>
+                <TONERBLACK>20</TONERBLACK>
+                <TONERCYAN>20</TONERCYAN>
+                <TONERMAGENTA>40</TONERMAGENTA>
+                <TONERYELLOW>20</TONERYELLOW>
+                <WASTETONER>100</WASTETONER>
+              </CARTRIDGES>
+              <INFO>
+                <COMMENTS>RICOH MP C5503 1.38 / RICOH Network Printer C model / RICOH Network Scanner C model / RICOH Network Facsimile C model</COMMENTS>
+                <ID>1</ID>
+                <IPS>
+                  <IP>10.100.51.207</IP>
+                </IPS>
+                <LOCATION>Location</LOCATION>
+                <MAC>00:26:73:12:34:56</MAC>
+                <MANUFACTURER>Ricoh</MANUFACTURER>
+                <MEMORY>1</MEMORY>
+                <MODEL>MP C5503</MODEL>
+                <NAME>CLPSF99</NAME>
+                <RAM>1973</RAM>
+                <SERIAL>E1234567890</SERIAL>
+                <ASSETTAG>other_serial</ASSETTAG>
+                <TYPE>PRINTER</TYPE>
+                <UPTIME>33 days, 22:19:01.00</UPTIME>
+              </INFO>
+              <PAGECOUNTERS>
+                <TOTAL>1164615</TOTAL>
+              </PAGECOUNTERS>
+              <PORTS>
+                <PORT>
+                  <IFDESCR>ncmac0</IFDESCR>
+                  <IFINERRORS>0</IFINERRORS>
+                  <IFINOCTETS>2656604236</IFINOCTETS>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFLASTCHANGE>33 days, 22:19:01.00</IFLASTCHANGE>
+                  <IFMTU>1500</IFMTU>
+                  <IFNAME>ncmac0</IFNAME>
+                  <IFNUMBER>1</IFNUMBER>
+                  <IFOUTERRORS>0</IFOUTERRORS>
+                  <IFOUTOCTETS>1271117255</IFOUTOCTETS>
+                  <IFSPEED>100000000</IFSPEED>
+                  <IFSTATUS>1</IFSTATUS>
+                  <IFTYPE>6</IFTYPE>
+                  <IP>10.100.51.207</IP>
+                  <IPS>
+                    <IP>10.100.51.207</IP>
+                  </IPS>
+                  <MAC>00:26:73:12:34:56</MAC>
+                </PORT>
+              </PORTS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>7</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>
+        ';
+
+        $converter = new \Glpi\Inventory\Converter();
+        $source = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($source);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //do a inventory
+        $inventory->doInventory($xml_source, true);
+
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDbByCrit(['name' => 'CLPSF99', 'serial' => 'E1234567890']))->isTrue();
+
+        $this->string($printer->fields['otherserial'])->isIdenticalTo('other_serial');
+
+        //remove printer for other test
+        $printer->delete($printer->fields);
+    }
 }

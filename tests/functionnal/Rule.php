@@ -249,7 +249,7 @@ class Rule extends DbTestCase
         $this->array($rule->criterias)->hasSize(2);
         $this->array($rule->actions)->hasSize(1);
 
-        $this->boolean($rule->getRuleWithCriteriasAndActions(100))->isFalse();
+        $this->boolean($rule->getRuleWithCriteriasAndActions(10000))->isFalse();
     }
 
     public function testMaxActionsCount()
@@ -258,7 +258,7 @@ class Rule extends DbTestCase
         $this->integer($rule->maxActionsCount())->isIdenticalTo(1);
 
         $rule = new \RuleTicket();
-        $this->integer($rule->maxActionsCount())->isIdenticalTo(39);
+        $this->integer($rule->maxActionsCount())->isIdenticalTo(40);
 
         $rule = new \RuleDictionnarySoftware();
         $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
