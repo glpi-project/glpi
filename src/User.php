@@ -174,6 +174,11 @@ class User extends CommonDBTM
             return false;
         }
 
+        //prevent delete / purge from API
+        if (!self::isMassiveActionAllowed($this->fields['id'])) {
+            return false;
+        }
+
         if (
             Session::canViewAllEntities()
             || Session::haveAccessToAllOfEntities($this->getEntities())
