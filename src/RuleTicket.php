@@ -246,12 +246,20 @@ class RuleTicket extends Rule
                             $output['_solutiontemplates_id'] = $action->fields["value"];
                         }
 
-                     // special case of appliance
+                        // special case of appliance
                         if ($action->fields["field"] == "assign_appliance") {
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
                             $output["items_id"][Appliance::getType()][] = $action->fields["value"];
+                        }
+
+                        // special case of project
+                        if ($action->fields["field"] == "assign_project") {
+                            if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
+                                $output["items_id"] = [];
+                            }
+                            $output["items_id"][Project::getType()][] = $action->fields["value"];
                         }
 
                         // special case of contract
@@ -288,12 +296,22 @@ class RuleTicket extends Rule
                             = $action->fields["value"];
                         }
 
-                     // special case of appliance
+                        // special case of appliance
                         if ($action->fields["field"] === "assign_appliance") {
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
                             $output["items_id"][Appliance::getType()][] = $value;
+                        } else {
+                            $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
+                        }
+
+                        // special case of project
+                        if ($action->fields["field"] === "assign_project") {
+                            if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
+                                $output["items_id"] = [];
+                            }
+                            $output["items_id"][Project::getType()][] = $value;
                         } else {
                             $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
                         }
@@ -457,6 +475,30 @@ class RuleTicket extends Rule
 
                                 foreach ($target_appliances as $value) {
                                     $output["items_id"][Appliance::getType()][] = $value['id'];
+                                }
+                            }
+                        }
+
+                        if ($action->fields["field"] == "assign_project") {
+                            if (isset($this->regex_results[0])) {
+                                 $regexvalue = RuleAction::getRegexResultById(
+                                     $action->fields["value"],
+                                     $this->regex_results[0]
+                                 );
+                            } else {
+                                  $regexvalue = $action->fields["value"];
+                            }
+
+                            if (!is_null($regexvalue)) {
+                                $projects = new Project();
+                                $target_projects = $projects->find(["name" => $regexvalue]);
+
+                                if ((!array_key_exists("items_id", $output) || $output['items_id'] == '0') && count($target_projects) > 0) {
+                                    $output["items_id"] = [];
+                                }
+
+                                foreach ($target_projects as $value) {
+                                    $output["items_id"][Project::getType()][] = $value['id'];
                                 }
                             }
                         }
@@ -857,6 +899,13 @@ class RuleTicket extends Rule
         $actions['assign_appliance']['permitseveral']         = ['append'];
         $actions['assign_appliance']['force_actions']         = ['assign','regex_result', 'append'];
         $actions['assign_appliance']['appendto']              = 'items_id';
+
+        $actions['assign_project']['name']                  = _n('Associated element', 'Associated elements', Session::getPluralNumber()) . " : " . Project::getTypeName(1);
+        $actions['assign_project']['type']                  = 'dropdown';
+        $actions['assign_project']['table']                 = 'glpi_projects';
+        $actions['assign_project']['permitseveral']         = ['append'];
+        $actions['assign_project']['force_actions']         = ['assign','regex_result', 'append'];
+        $actions['assign_project']['appendto']              = 'items_id';
 
         $actions['slas_id_ttr']['table']                      = 'glpi_slas';
         $actions['slas_id_ttr']['field']                      = 'name';
