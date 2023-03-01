@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Security;
 
+use RobThree\Auth\Algorithm;
 use RobThree\Auth\TwoFactorAuth;
 
 class TOTPManager extends \DbTestCase
@@ -128,7 +129,7 @@ class TOTPManager extends \DbTestCase
             '',
             $tfa::CODE_LENGTH_DIGITS,
             $tfa::CODE_VALIDITY_SECONDS,
-            'sha1',
+            Algorithm::Sha1,
         );
 
         $code = $tfa_internal->getCode('G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB');

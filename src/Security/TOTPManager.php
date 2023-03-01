@@ -36,6 +36,7 @@
 namespace Glpi\Security;
 
 use Glpi\Application\View\TemplateRenderer;
+use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
@@ -114,7 +115,7 @@ final class TOTPManager
                 self::$brand_label,
                 self::CODE_LENGTH_DIGITS,
                 self::CODE_VALIDITY_SECONDS,
-                $algorithm,
+                Algorithm::from($algorithm),
                 new BaconQrCodeProvider(4, '#ffffff', '#000000', 'svg')
             );
         }
