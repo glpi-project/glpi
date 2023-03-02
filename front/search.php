@@ -43,6 +43,7 @@ if (!$CFG_GLPI['allow_search_global']) {
 }
 if (isset($_GET["globalsearch"])) {
     $searchtext = trim($_GET["globalsearch"]);
+    $all_data = [];
 
     echo "<div class='search_page search_page_global flex-row flex-wrap'>";
     foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
@@ -61,10 +62,19 @@ if (isset($_GET["globalsearch"])) {
             $params["criteria"][$count]["searchtype"]  = 'contains';
             $params["criteria"][$count]["value"]       = $searchtext;
 
-            echo "<div class='search-container w-100 disable-overflow-y'>";
-            Search::showList($itemtype, $params);
-            echo "</div>";
+            $all_data[] = Search::getDatas($itemtype, $params);
         }
+    }
+    uasort(
+        $all_data,
+        function ($a, $b) {
+            return $b['data']['count'] - $a['data']['count'];
+        }
+    );
+    foreach ($all_data as $data) {
+        echo "<div class='search-container w-100 disable-overflow-y' counter='" . $data['data']['count'] . "'>";
+        Search::displayData($data);
+        echo "</div>";
     }
     echo "</div>";
 }
