@@ -4273,7 +4273,7 @@ HTML
         $this->array($team)->isEmpty();
 
        // Add team members
-        $this->boolean($ticket->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
+        $this->boolean($ticket->addTeamMember(\Group::class, 2, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
 
        // Reload ticket from DB
         $ticket->getFromDB($tickets_id);
@@ -4283,7 +4283,7 @@ HTML
         $this->array($team)->hasSize(1);
         $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
         $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
-        $this->integer($team[0]['items_id'])->isEqualTo(5);
+        $this->integer($team[0]['items_id'])->isEqualTo(2);
         $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_ASSIGNED);
     }
 
