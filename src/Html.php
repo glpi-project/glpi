@@ -1216,6 +1216,10 @@ HTML;
                 Html::requireJs('planning');
             }
 
+            if (in_array('save_forms', $jslibs)) {
+                Html::requireJs('save_forms');
+            }
+
             if (in_array('fullcalendar', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/fullcalendar.css'];
                 Html::requireJs('fullcalendar');
@@ -6196,6 +6200,9 @@ HTML;
             return;
         }
         switch ($name) {
+            case 'save_forms':
+                $_SESSION['glpi_js_toload'][$name][] = 'js/save_forms.js';
+                break;
             case 'glpi_dialog':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/glpi_dialog.js';
                 break;
