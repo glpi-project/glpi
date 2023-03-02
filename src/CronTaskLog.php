@@ -46,7 +46,7 @@ class CronTaskLog extends CommonDBTM
 
     public static function getIcon()
     {
-        return CronTask::getIcon();
+        return "ti ti-news";
     }
 
     /**
@@ -83,7 +83,7 @@ class CronTaskLog extends CommonDBTM
             switch ($item->getType()) {
                 case 'CronTask':
                     $ong    = [];
-                    $ong[1] = self::createTabEntry(__('Statistics'));
+                    $ong[1] = self::createTabEntry(__('Statistics'), 0, $item::getType(), 'ti ti-report-analytics');
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb =  countElementsInTable(
                             $this->getTable(),

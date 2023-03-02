@@ -100,6 +100,11 @@ class RuleAction extends CommonDBChild
         return _n('Action', 'Actions', $nb);
     }
 
+    public static function getIcon()
+    {
+        return "ti ti-circle-chevrons-right";
+    }
+
     protected function computeFriendlyName()
     {
 
