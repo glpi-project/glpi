@@ -140,47 +140,19 @@ class SlaLevel_Ticket extends DbTestCase
         $this->checkInput($scrit, $scrit_id, $scrit_in);
         $this->checkInput($saction, $saction_id, $saction_in);
 
-       // ## 2 - test using sla in tickets
-
-       // add rules for using sla
-        $ruleticket = new \RuleTicket();
-        $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
-
-        $ruletid = $ruleticket->add($ruleinput = [
-            'name'         => $this->method,
-            'match'        => 'AND',
-            'is_active'    => 1,
-            'sub_type'     => 'RuleTicket',
-            'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
-            'is_recursive' => 1
-        ]);
-        $this->checkInput($ruleticket, $ruletid, $ruleinput);
-        $crit_id = $rulecrit->add($crit_input = [
-            'rules_id'  => $ruletid,
-            'criteria'  => 'name',
-            'condition' => 2,
-            'pattern'   => $this->method
-        ]);
-        $this->checkInput($rulecrit, $crit_id, $crit_input);
-        $act_id = $ruleaction->add($act_input = [
-            'rules_id'    => $ruletid,
-            'action_type' => 'assign',
-            'field'       => 'slas_id_tto',
-            'value'       => $sla1_id
-        ]);
-        $this->checkInput($ruleaction, $act_id, $act_input);
-
         // test create ticket
         $ticket = new \Ticket();
-        $start_date = date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP);
+        //$start_date = date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
-            'date'    => $start_date,
+            //'date'    => $start_date,
             'name'    => $this->method,
-            'content' => $this->method
+            'content' => $this->method,
+            'slas_id_tto' => $sla1_id,
+            'slalevels_id_ttr' => $slm_id,
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
+        $this->integer((int)$ticket->getField('slalevels_id_ttr'))->isEqualTo($slm_id);
         $this->integer((int)$ticket->getField('itilcategories_id'))->isEqualTo(0);
         $this->integer((int)$ticket->getField('status'))->isEqualTo(CommonITILObject::INCOMING);
 
@@ -190,11 +162,17 @@ class SlaLevel_Ticket extends DbTestCase
         $itil_project_id = $itil_project->add($itil_project_input);
         $this->checkInput($itil_project, $itil_project_id, $itil_project_input);
 
-        //fake glpi_slalevels_tickets.date
+        //get SlaLevel_Ticket related to this ticket and SLM
         $slalevels_tickets = new \SlaLevel_Ticket();
-        $slalevels_tickets_input = ['tickets_id' => $tickets_id, 'slalevels_id' => $slm_id, 'date' => date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP) ];
-        $slalevels_tickets_id = $slalevels_tickets->add($slalevels_tickets_input);
-        $this->checkInput($slalevels_tickets, $slalevels_tickets_id, $slalevels_tickets_input);
+        $this->boolean($slalevels_tickets->getFromDBByCrit([
+            'tickets_id' => $tickets_id, 'slalevels_id' => $slm_id
+        ]))->isTrue();
+
+        //fake glpi_slalevels_tickets.date to run crontask
+        $this->boolean($slalevels_tickets->update([
+            'id' => $slalevels_tickets->fields['id'], 'date' => date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP)
+        ]))->isTrue();
+
 
         //run automatique action
         //run crontask
