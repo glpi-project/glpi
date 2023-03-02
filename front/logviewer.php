@@ -43,7 +43,11 @@ Session::checkRight("logs", READ);
 
 $filepath = $_REQUEST['filepath'] ?? null;
 
-if ($filepath === null || !file_exists(GLPI_LOG_DIR . '/' . $filepath) || is_dir(GLPI_LOG_DIR . '/' . $filepath)) {
+if ($filepath === null) {
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/logs.php");
+}
+
+if (!file_exists(GLPI_LOG_DIR . '/' . $filepath) || is_dir(GLPI_LOG_DIR . '/' . $filepath)) {
     Response::sendError(404, 'Not found', Response::CONTENT_TYPE_TEXT_HTML);
 }
 
@@ -59,7 +63,7 @@ if (($_GET['action'] ?? '') === 'download') {
     Session::checkRight('config', UPDATE);
     $logparser = new LogParser();
     $logparser->delete($filepath);
-    Html::back();
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/logs.php");
 } else {
     Html::header(
         LogViewer::getTypeName(Session::getPluralNumber()),
