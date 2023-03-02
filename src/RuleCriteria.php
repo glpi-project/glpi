@@ -99,7 +99,7 @@ class RuleCriteria extends CommonDBChild
 
     public static function getIcon()
     {
-        return "ti ti-adjustments";
+        return "ti ti-list-check";
     }
 
     protected function computeFriendlyName()
