@@ -33,6 +33,7 @@
 
 /* global tinymce */
 
+let fields_to_save = {};
 $(function () {
     $('main').on('glpi.tab.loaded', function () {
         // save itil object form data
@@ -67,6 +68,18 @@ $(function () {
             });
         }
     });
+});
+
+// save and restore data on page change
+window.addEventListener('pageshow', function() {
+    const raw_fields_to_save = JSON.parse(sessionStorage.getItem('fields_to_save'));
+    if (raw_fields_to_save) {
+        fields_to_save = raw_fields_to_save;
+    }
+    sessionStorage.removeItem('fields_to_save');
+});
+window.addEventListener('pagehide', function() {
+    sessionStorage.setItem('fields_to_save', JSON.stringify(fields_to_save));
 });
 
 const trackSubForm = function(form, store_index_prefix) {
@@ -107,7 +120,7 @@ const saveFormData = function (store_index, form, debounce = false) {
             'expiry': new Date().getTime() + ttl,
         };
 
-        localStorage.setItem(store_index, JSON.stringify(form_data));
+        fields_to_save[store_index] = form_data;
     };
 
     if (debounce) {
@@ -123,7 +136,7 @@ const saveFormData = function (store_index, form, debounce = false) {
 
 
 var restoreFormData = function (store_index, form) {
-    const form_data = JSON.parse(localStorage.getItem(store_index));
+    const form_data = fields_to_save[store_index];
 
     if (form_data) {
         if (form_data.expiry < new Date().getTime()) {
