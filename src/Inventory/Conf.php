@@ -157,9 +157,10 @@ class Conf extends CommonGLPI
         $path = $files['inventory_files']['tmp_name'][0];
         $name = $files['inventory_files']['name'][0];
 
-        $result = $this->importFiles([$name => $path]);
+        $results = $this->importFiles([$name => $path]);
+        $result  = array_pop($results);
 
-        return $result[$name]['request'];
+        return $result['request'];
     }
 
     /**
