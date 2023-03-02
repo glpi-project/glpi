@@ -95,7 +95,7 @@
             <i class="{{ icon }}"></i>
          {% endif %}
          {% if withtemplate == 1 and item.id > 0 %}
-            {{ __('Template') }} - {{ nametype }} - {{ template_name }}
+            {{ _n('Template', 'Templates', 1) }} - {{ nametype }} - {{ template_name }}
          {% elseif item.id > 0 %}
             {{ nametype }} - {{ friendlyname }}
          {% else %}
