@@ -958,6 +958,9 @@ class CommonGLPI implements CommonGLPIInterface
 
         if (is_array($options) && count($options)) {
             $cleanoptions = $options;
+            if (isset($options['withtemplate'])) {
+                unset($cleanoptions['withtemplate']);
+            }
             foreach (array_keys($cleanoptions) as $key) {
                // Do not include id options
                 if (($key[0] == '_') || ($key == 'id')) {
