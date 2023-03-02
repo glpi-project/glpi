@@ -40,7 +40,6 @@ use DbTestCase;
 
 class SlaLevel_Ticket extends DbTestCase
 {
-
     private $method;
 
     public function beforeTestMethod($method)
