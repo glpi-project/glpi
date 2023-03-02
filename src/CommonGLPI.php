@@ -955,12 +955,10 @@ class CommonGLPI implements CommonGLPIInterface
         }
         $target         = $_SERVER['PHP_SELF'];
         $extraparamhtml = "";
-        $withtemplate   = "";
 
         if (is_array($options) && count($options)) {
             $cleanoptions = $options;
             if (isset($options['withtemplate'])) {
-                $withtemplate = $options['withtemplate'];
                 unset($cleanoptions['withtemplate']);
             }
             foreach (array_keys($cleanoptions) as $key) {
@@ -973,8 +971,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         if (
-            empty($withtemplate)
-            && !$this->isNewID($ID)
+            !$this->isNewID($ID)
             && $this->getType()
             && $this->displaylist
         ) {
