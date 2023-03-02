@@ -296,18 +296,13 @@ class RuleTicket extends Rule
                             = $action->fields["value"];
                         }
 
-                        // special case of appliance
+                        // special case of appliance / project
                         if ($action->fields["field"] === "assign_appliance") {
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
                             $output["items_id"][Appliance::getType()][] = $value;
-                        } else {
-                            $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
-                        }
-
-                        // special case of project
-                        if ($action->fields["field"] === "assign_project") {
+                        } else if ($action->fields["field"] === "assign_project") {
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
@@ -316,7 +311,7 @@ class RuleTicket extends Rule
                             $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
                         }
 
-                  // Special case of users_id_requester
+                        // Special case of users_id_requester
                         if ($action->fields["field"] === '_users_id_requester') {
                          // Add groups of requester
                             if (!isset($output['_groups_id_of_requester'])) {
