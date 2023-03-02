@@ -1596,7 +1596,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                 $tmptimelineitem['##timelineitems.type##']        = $timeline_data['type']::getType();
                 $tmptimelineitem['##timelineitems.typename##']    = $tmptimelineitem['##timelineitems.type##']::getTypeName(0);
-                $tmptimelineitem['##timelineitems.date##']        = $timeline_data['item']['date'];
+                $tmptimelineitem['##timelineitems.date##']        = Html::convDateTime($timeline_data['item']['date']);
                 $tmptimelineitem['##timelineitems.description##'] = $timeline_data['item']['content'];
                 $tmptimelineitem['##timelineitems.position##']    = $this->getUserPositionFromTimelineItemPosition($timeline_data['item']['timeline_position']);
 
