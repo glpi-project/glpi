@@ -110,7 +110,7 @@
                <div class="dropdown-divider"></div>
 
                <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
-                  <i class="ti fa-fw ti-adjustments-alt"></i>
+                  <i class="fas fa-user-cog"></i>
                   {{ __('My settings') }}
                </a>
                <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item" title="{{ __('Logout') }}">

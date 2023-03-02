@@ -3461,12 +3461,14 @@ class Rule extends CommonDBTM
                         $ong[1] = self::createTabEntry(
                             RuleCriteria::getTypeName(Session::getPluralNumber()),
                             $nbcriteria,
-                            $item::getType()
+                            $item::getType(),
+                            RuleCriteria::getIcon()
                         );
                         $ong[2] = self::createTabEntry(
                             RuleAction::getTypeName(Session::getPluralNumber()),
                             $nbaction,
-                            $item::getType()
+                            $item::getType(),
+                            RuleAction::getIcon()
                         );
                         return $ong;
                     }

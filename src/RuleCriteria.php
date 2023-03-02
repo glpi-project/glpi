@@ -97,6 +97,11 @@ class RuleCriteria extends CommonDBChild
         return _n('Criterion', 'Criteria', $nb);
     }
 
+    public static function getIcon()
+    {
+        return "ti ti-list-check";
+    }
+
     protected function computeFriendlyName()
     {
 

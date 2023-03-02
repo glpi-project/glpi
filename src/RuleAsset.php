@@ -48,6 +48,10 @@ class RuleAsset extends Rule
         return __('Business rules for assets');
     }
 
+    public static function getIcon()
+    {
+        return "ti ti-package";
+    }
 
     public function maybeRecursive()
     {
