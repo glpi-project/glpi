@@ -204,8 +204,8 @@ class User extends CommonDBTM
 
     public static function isMassiveActionAllowed(int $items_id): bool
     {
-        $config = Config::getConfigurationValues('core', ['system_user']);
-        return !($config['system_user'] == $items_id);
+        global $CFG_GLPI;
+        return !($CFG_GLPI['system_user'] == $items_id);
     }
 
 
