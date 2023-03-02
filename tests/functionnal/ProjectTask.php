@@ -231,7 +231,7 @@ class ProjectTask extends DbTestCase
         $this->array($team)->isEmpty();
 
        // Add team members
-        $this->boolean($project_task->addTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]))->isTrue();
+        $this->boolean($project_task->addTeamMember(\User::class, 4, ['role' => Team::ROLE_MEMBER]))->isTrue();
 
        // Reload ticket from DB
         $project_task->getFromDB($projecttasks_id);
@@ -241,11 +241,11 @@ class ProjectTask extends DbTestCase
         $this->array($team)->hasSize(1);
         $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
         $this->string($team[0]['itemtype'])->isEqualTo(\User::class);
-        $this->integer($team[0]['items_id'])->isEqualTo(1);
+        $this->integer($team[0]['items_id'])->isEqualTo(4);
         $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
 
        // Delete team members
-        $this->boolean($project_task->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]))->isTrue();
+        $this->boolean($project_task->deleteTeamMember(\User::class, 4, ['role' => Team::ROLE_MEMBER]))->isTrue();
 
        //Reload ticket from DB
         $project_task->getFromDB($projecttasks_id);

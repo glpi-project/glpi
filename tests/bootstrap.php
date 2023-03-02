@@ -109,7 +109,7 @@ function loadDataset()
    // Unit test data definition
     $data = [
       // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.9',
+        '_version' => '4.10',
 
       // Type => array of entries
         'Entity' => [
@@ -351,6 +351,14 @@ function loadDataset()
                 'fax'          => '0123456787',
                 'email'        => 'info@_supplier01_name.com',
                 'comment'      => 'Comment for supplier _suplier01_name',
+                'entities_id'  => '_test_root_entity'
+            ],
+            [
+                'name'         => '_suplier02_name',
+                'phonenumber'  => '0123456788',
+                'fax'          => '0123456786',
+                'email'        => 'info@_supplier02_name.com',
+                'comment'      => 'Comment for supplier _suplier02_name',
                 'entities_id'  => '_test_root_entity'
             ]
         ], 'Location' => [
