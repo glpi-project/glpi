@@ -100,7 +100,7 @@ class SlaLevel_Ticket extends DbTestCase
         $sla1_id = $sla->add($sla1_in);
         $this->checkInput($sla, $sla1_id, $sla1_in);
 
-        // prepare levels input for each ola/sla
+        // prepare levels input for sla
         $slal1_in = [
             'name'           => $this->method,
             'execution_time' => 0, //TIME TO OWN
@@ -172,7 +172,6 @@ class SlaLevel_Ticket extends DbTestCase
         $this->boolean($slalevels_tickets->update([
             'id' => $slalevels_tickets->fields['id'], 'date' => date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP)
         ]))->isTrue();
-
 
         //run automatique action
         //run crontask
