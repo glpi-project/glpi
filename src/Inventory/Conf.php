@@ -142,27 +142,6 @@ class Conf extends CommonGLPI
     }
 
     /**
-     * Import inventory file
-     *
-     * @param array $files $_FILES
-     *
-     * @return Request
-     *
-     * @deprecated
-     */
-    public function importFile($files): Request
-    {
-        \Toolbox::deprecated();
-
-        $path = $files['inventory_files']['tmp_name'][0];
-        $name = $files['inventory_files']['name'][0];
-
-        $result = $this->importFiles([$name => $path]);
-
-        return $result[$name]['request'];
-    }
-
-    /**
      * Import inventory files
      *
      * @param array $files[filename => filepath] Files to import
@@ -214,12 +193,6 @@ class Conf extends CommonGLPI
     protected function importContentFile($path, $contents): array
     {
         $inventory_request = new Request();
-        $result = [
-            'success' => false,
-            'message' => null,
-            'items'   => null,
-            'request' => null
-        ];
 
         try {
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
@@ -242,9 +215,13 @@ class Conf extends CommonGLPI
                     $response = $xml->ERROR;
                 }
                 $response = str_replace('&nbsp;', ' ', $response);
-                $result['message'] = __('File has not been imported:') . Sanitizer::encodeHtmlSpecialChars($response);
+                return [
+                    'success' => false,
+                    'message' => __('File has not been imported:') . Sanitizer::encodeHtmlSpecialChars($response),
+                    'items'   => null,
+                ];
             } else {
-                $result = [
+                return [
                     'success' => true,
                     'message' => __('File has been successfully imported!'),
                     'items'   => $inventory_request->getInventory()->getItems(),
@@ -253,9 +230,6 @@ class Conf extends CommonGLPI
         } catch (\Exception $e) {
             throw $e;
         }
-
-        $result['request'] = $inventory_request;
-        return $result;
     }
 
     /**
