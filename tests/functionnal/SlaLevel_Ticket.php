@@ -148,11 +148,9 @@ class SlaLevel_Ticket extends DbTestCase
             'name'    => $this->method,
             'content' => $this->method,
             'slas_id_tto' => $sla1_id,
-            'slalevels_id_ttr' => $slm_id,
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
-        $this->integer((int)$ticket->getField('slalevels_id_ttr'))->isEqualTo($slm_id);
         $this->integer((int)$ticket->getField('itilcategories_id'))->isEqualTo(0);
         $this->integer((int)$ticket->getField('status'))->isEqualTo(CommonITILObject::INCOMING);
 
@@ -165,7 +163,7 @@ class SlaLevel_Ticket extends DbTestCase
         //get SlaLevel_Ticket related to this ticket and SLM
         $slalevels_tickets = new \SlaLevel_Ticket();
         $this->boolean($slalevels_tickets->getFromDBByCrit([
-            'tickets_id' => $tickets_id, 'slalevels_id' => $slm_id
+            'tickets_id' => $tickets_id, 'slalevels_id' => $slal1_id
         ]))->isTrue();
 
         //fake glpi_slalevels_tickets.date to run crontask
