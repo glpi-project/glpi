@@ -939,6 +939,6 @@ class SLM extends DbTestCase
         //check ticket category change
         //reload ticket
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->integer((int)$ticket->getField('itilcategories_id'))->isEqualTo($category_id);
+        $this->integer($ticket->fields['itilcategories_id'])->isEqualTo($category_id);
     }
 }
