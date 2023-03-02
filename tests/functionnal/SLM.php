@@ -927,7 +927,7 @@ class SLM extends DbTestCase
 
         //fake glpi_slalevels_tickets.date
         $slalevels_tickets = new \SlaLevel_Ticket();
-        $slalevels_tickets_input = ['tickets_id' => $tickets_id, 'slalevels_id' => $sla1_id, 'date' => date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP) ];
+        $slalevels_tickets_input = ['tickets_id' => $tickets_id, 'slalevels_id' => $slm_id, 'date' => date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP) ];
         $slalevels_tickets_id = $slalevels_tickets->add($slalevels_tickets_input);
         $this->checkInput($slalevels_tickets, $slalevels_tickets_id, $slalevels_tickets_input);
 
