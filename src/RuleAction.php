@@ -102,7 +102,7 @@ class RuleAction extends CommonDBChild
 
     public static function getIcon()
     {
-        return "ti ti-circle-chevrons-right";
+        return "ti ti-player-play";
     }
 
     protected function computeFriendlyName()
