@@ -697,7 +697,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'ticket.item.locationstate'    => sprintf(
                 __('%1$s: %2$s'),
                 _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-                __('State')
+                _x('location', 'State')
             ),
             'ticket.item.locationcountry'  => sprintf(
                 __('%1$s: %2$s'),
