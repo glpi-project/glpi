@@ -1324,6 +1324,7 @@ class CommonDBTM extends CommonGLPI
 
             if ($this->checkUnicity(true, $options)) {
                 if ($this->addToDB() !== false) {
+                    $_SESSION['clear_saved_fields_js'] = true;
                     $this->post_addItem();
                     if ($this instanceof CacheableListInterface) {
                         $this->invalidateListCache();

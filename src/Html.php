@@ -6460,7 +6460,9 @@ HTML;
 
         $session_glpi = "var SESSION_GLPI = {
             'glpiID': '" . Session::getLoginUserID() . "',
+            'clear_saved_fields_js': " . (($_SESSION['clear_saved_fields_js'] ?? false) ? "true": "false") . ",
         };";
+        $_SESSION['clear_saved_fields_js'] = false;
 
         return self::scriptBlock("
             $cfg_glpi

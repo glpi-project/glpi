@@ -72,10 +72,13 @@ $(function () {
 
 // save and restore data on page change
 window.addEventListener('pageshow', function() {
-    const raw_fields_to_save = JSON.parse(sessionStorage.getItem('fields_to_save'));
-    const global_store_index = getGlobalStoreIndex();
-    if (raw_fields_to_save && raw_fields_to_save[global_store_index]) {
-        fields_to_save = raw_fields_to_save[global_store_index];
+    fields_to_save = {};
+    if (!SESSION_GLPI.clear_saved_fields_js) {
+        const raw_fields_to_save = JSON.parse(sessionStorage.getItem('fields_to_save'));
+        const global_store_index = getGlobalStoreIndex();
+        if (raw_fields_to_save && raw_fields_to_save[global_store_index]) {
+            fields_to_save = raw_fields_to_save[global_store_index];
+        }
     }
     sessionStorage.removeItem('fields_to_save');
 });
