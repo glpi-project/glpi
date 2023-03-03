@@ -186,6 +186,8 @@ final class ProxyRouter
             '\.(eot|otf|ttf|woff2?)$',
             // JSON files in plugins (except `composer.json`, `package.json` and `package-lock.json` located on root)
             '^\/(marketplace|plugins)\/[^\/]+\/(?!composer\.json|package\.json|package-lock\.json).+\.json$',
+            // favicon
+            '(^|\/)favicon\.ico$',
         ];
         if (preg_match('/(' . implode('|', $allowed_path_pattern) . ')/i', $this->path) === 1) {
             return true;
