@@ -35,7 +35,6 @@
 
 namespace tests\units;
 
-use CommonITILObject;
 use DbTestCase;
 
 class SLM extends DbTestCase
