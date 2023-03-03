@@ -928,6 +928,25 @@ class AuthLDAP extends CommonDBTM
     {
 
         $tests = self::testLDAPServer($this->getField('id'));
+        $keys  = array_keys($tests);
+
+        $index = 0;
+        foreach ($tests as $test => $result) {
+            // break if message is empty (leave all next result as active false)
+            if (empty($result['message'])) {
+                continue;
+            }
+
+            // set current active result as true
+            $tests[$test]['active'] = true;
+
+            // set previous active result as false
+            if (array_key_exists($index - 1, $keys)) {
+                $tests[$keys[$index - 1]]['active'] = false;
+            }
+
+            $index++;
+        }
 
         TemplateRenderer::getInstance()->display('pages/setup/ldap/test_form.html.twig', [
             'servername' => Sanitizer::sanitize($this->getField('name')),
