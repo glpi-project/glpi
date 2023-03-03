@@ -6458,9 +6458,14 @@ HTML;
         }
         $plugins_path = 'var GLPI_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
 
+        $session_glpi = "var SESSION_GLPI = {
+            'glpiID': '" . Session::getLoginUserID() . "',
+        };";
+
         return self::scriptBlock("
             $cfg_glpi
             $plugins_path
+            $session_glpi
         ");
     }
 

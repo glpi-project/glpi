@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global tinymce */
+/* global tinymce, SESSION_GLPI */
 
 let fields_to_save = {};
 $(function () {
@@ -73,20 +73,21 @@ $(function () {
 // save and restore data on page change
 window.addEventListener('pageshow', function() {
     const raw_fields_to_save = JSON.parse(sessionStorage.getItem('fields_to_save'));
-    if (raw_fields_to_save && raw_fields_to_save[getPageID()]) {
-        fields_to_save = raw_fields_to_save[getPageID()];
+    const global_store_index = getGlobalStoreIndex();
+    if (raw_fields_to_save && raw_fields_to_save[global_store_index]) {
+        fields_to_save = raw_fields_to_save[global_store_index];
     }
     sessionStorage.removeItem('fields_to_save');
 });
 window.addEventListener('pagehide', function() {
     const fields_to_save_on_page = {};
-    fields_to_save_on_page[getPageID()] = fields_to_save;
+    fields_to_save_on_page[getGlobalStoreIndex()] = fields_to_save;
     sessionStorage.setItem('fields_to_save', JSON.stringify(fields_to_save_on_page));
 });
 
 
-const getPageID = function() {
-    return window.location.pathname;
+const getGlobalStoreIndex = function() {
+    return window.location.pathname + "_" + SESSION_GLPI.glpiID;
 };
 
 
