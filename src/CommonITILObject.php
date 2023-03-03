@@ -188,12 +188,13 @@ abstract class CommonITILObject extends CommonDBTM
                         );
                         $email = UserEmail::getDefaultForUser($users_id_default);
                         $actors[] = [
-                            'items_id'          => $users_id_default,
-                            'itemtype'          => 'User',
-                            'text'              => $name,
-                            'title'             => $name,
-                            'use_notification'  => $email === '' ? false : $default_use_notif,
-                            'alternative_email' => $email,
+                            'items_id'              => $users_id_default,
+                            'itemtype'              => 'User',
+                            'text'                  => $name,
+                            'title'                 => $name,
+                            'use_notification'      => $email === '' || !$userobj->fields['allow_notification'] ? false : $default_use_notif,
+                            'allow_notification'    => $userobj->fields['allow_notification'],
+                            'alternative_email'     => $email,
                         ];
                     }
                 }
@@ -215,12 +216,13 @@ abstract class CommonITILObject extends CommonDBTM
                         );
                         $email = UserEmail::getDefaultForUser($users_id);
                         $actors[] = [
-                            'items_id'          => $users_id,
-                            'itemtype'          => 'User',
-                            'text'              => $name,
-                            'title'             => $name,
-                            'use_notification'  => $email === '' ? false : $default_use_notif,
-                            'alternative_email' => $email,
+                            'items_id'              => $users_id,
+                            'itemtype'              => 'User',
+                            'text'                  => $name,
+                            'title'                 => $name,
+                            'use_notification'      => $email === '' || $userobj->fields['allow_notification'] ? false : $default_use_notif,
+                            'allow_notification'    => $userobj->fields['allow_notification'],
+                            'alternative_email'     => $email,
                         ];
                     }
                 }
@@ -243,12 +245,13 @@ abstract class CommonITILObject extends CommonDBTM
                     $supplier_obj = new Supplier();
                     if ($supplier_obj->getFromDB($suppliers_id)) {
                         $actors[] = [
-                            'items_id'          => $supplier_obj->fields['id'],
-                            'itemtype'          => 'Supplier',
-                            'text'              => $supplier_obj->fields['name'],
-                            'title'             => $supplier_obj->fields['name'],
-                            'use_notification'  => $supplier_obj->fields['email'] === '' ? false : $default_use_notif,
-                            'alternative_email' => $supplier_obj->fields['email'],
+                            'items_id'              => $supplier_obj->fields['id'],
+                            'itemtype'              => 'Supplier',
+                            'text'                  => $supplier_obj->fields['name'],
+                            'title'                 => $supplier_obj->fields['name'],
+                            'use_notification'      => $supplier_obj->fields['email'] === '' || $userobj->fields['allow_notification'] ? false : $default_use_notif,
+                            'allow_notification'    => $supplier_obj->fields['allow_notification'],
+                            'alternative_email'     => $supplier_obj->fields['email'],
                         ];
                     }
                 }
@@ -308,15 +311,22 @@ abstract class CommonITILObject extends CommonDBTM
        // load existing actors (from existing itilobject)
         if (isset($this->users[$actortype])) {
             foreach ($this->users[$actortype] as $user) {
+                $allow_notification = true;
+                $user_obj = new User();
+                //check load user (for anonymous user)
+                if ($user_obj->getFromDB($user['users_id'])) {
+                    $allow_notification = $user_obj->fields['allow_notification'];
+                }
                 $name = getUserName($user['users_id']);
                 $actors[] = [
-                    'id'                => $user['id'],
-                    'items_id'          => $user['users_id'],
-                    'itemtype'          => 'User',
-                    'text'              => $name,
-                    'title'             => $name,
-                    'use_notification'  => $user['use_notification'],
-                    'alternative_email' => $user['alternative_email'],
+                    'id'                    => $user['id'],
+                    'items_id'              => $user['users_id'],
+                    'itemtype'              => 'User',
+                    'text'                  => $name,
+                    'title'                 => $name,
+                    'use_notification'      => $user['use_notification'],
+                    'allow_notification'    => $allow_notification,
+                    'alternative_email'     => $user['alternative_email'],
                 ];
             }
         }

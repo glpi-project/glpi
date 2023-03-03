@@ -330,6 +330,8 @@ class User extends CommonDBTM
         } else {
             $this->fields['language'] = "en_GB";
         }
+
+        $this->fields['allow_notification'] = 1;
     }
 
 
@@ -2683,6 +2685,20 @@ HTML;
         echo "</tr>";
 
         if (empty($ID)) {
+            echo "<tr class='tab_bg_1'><th colspan='4'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) . "</th></tr>";
+
+            echo "<tr class='tab_bg_1'><td>";
+            echo __("Receive notifications from GLPI");
+            echo "</td><td colspan='2'>";
+
+            echo "</td><td>";
+            Dropdown::showYesNo(
+                'allow_notification',
+                $this->fields['allow_notification'],
+            );
+
+            echo "</td></tr>";
+
             echo "<tr class='tab_bg_1'>";
             echo "<th colspan='2'>" . _n('Authorization', 'Authorizations', 1) . "</th>";
             $recurrand = mt_rand();
@@ -2786,6 +2802,21 @@ HTML;
                 echo "</td>";
                 echo "</tr>";
             }
+
+            echo "<tr class='tab_bg_1'><th colspan='4'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) . "</th></tr>";
+
+            echo "<tr class='tab_bg_1'><td>";
+            echo __("Receive notifications from GLPI");
+            echo "</td><td colspan='2'>";
+
+            echo "</td><td>";
+            Dropdown::showYesNo(
+                'allow_notification',
+                $this->fields['allow_notification'],
+            );
+
+            echo "</td></tr>";
+
 
             if ($this->can($ID, UPDATE)) {
                 echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
@@ -3197,6 +3228,20 @@ HTML;
                 echo "</td>";
                 echo "</tr>";
             }
+
+            echo "<tr class='tab_bg_1'><th colspan='4'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) . "</th></tr>";
+
+            echo "<tr class='tab_bg_1'><td>";
+            echo __("Receive notifications from GLPI");
+            echo "</td><td colspan='2'>";
+
+            echo "</td><td>";
+            Dropdown::showYesNo(
+                'allow_notification',
+                $this->fields['allow_notification'],
+            );
+
+            echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
 

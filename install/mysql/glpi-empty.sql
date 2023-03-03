@@ -7634,6 +7634,7 @@ CREATE TABLE `glpi_users` (
   `nickname` varchar(255) DEFAULT NULL,
   `timeline_action_btn_layout` tinyint DEFAULT '0',
   `timeline_date_format` tinyint DEFAULT '0',
+  `allow_notification` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
   KEY `firstname` (`firstname`),

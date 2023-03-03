@@ -361,6 +361,16 @@ abstract class CommonITILActor extends CommonDBRelation
             }
         }
 
+        //disable notification if explicitly refused by actor
+        if (isset($input['users_id']) && $input['users_id']) {
+            $user = new User();
+            if ($user->getFromDB($input['users_id'])) {
+                if (!$user->fields['allow_notification'] && $input['use_notification']) {
+                    $input['use_notification'] = false;
+                }
+            }
+        }
+
         if (!isset($input['alternative_email']) || is_null($input['alternative_email'])) {
             $input['alternative_email'] = '';
         } else if ($input['alternative_email'] != '' && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {

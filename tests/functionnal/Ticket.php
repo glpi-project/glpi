@@ -5500,4 +5500,56 @@ HTML
             $this->boolean($found)->isTrue(json_encode($expected_actor));
         }
     }
+
+    public function testNotificationDisabled()
+    {
+        //setup
+        $this->login();
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                "_users_id_requester" => \Session::getLoginUserID(),
+            ] + $ticket->getDefaultValues(getItemByTypeName('Entity', '_test_root_entity', true)),
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //load ticket actor
+        $ticket_user = new \Ticket_User();
+        $actors = $ticket_user->find([
+            "tickets_id" => $ticket_id,
+            "type" => CommonITILActor::REQUESTER,
+        ]);
+        $this->integer(count($actors))->isIdenticalTo(1);
+        $this->integer(reset($actors)['use_notification'])->isEqualTo(1);
+
+        //update user to refuse explicitly notification
+        $user = new \User();
+        $this->boolean($user->update([
+            'id' => \Session::getLoginUserID(),
+            'allow_notification' => 0
+        ]))->isTrue();
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'other ticket title',
+                'content'     => 'other description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            ] + $ticket->getDefaultValues(getItemByTypeName('Entity', '_test_root_entity', true)),
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //load ticket actor
+        $ticket_user = new \Ticket_User();
+        $actors = $ticket_user->find([
+            "tickets_id" => $ticket_id,
+            "type" => CommonITILActor::REQUESTER,
+        ]);
+        $this->integer(count($actors))->isIdenticalTo(1);
+        $this->integer(reset($actors)['use_notification'])->isEqualTo(0);
+    }
 }

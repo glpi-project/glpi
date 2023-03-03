@@ -544,6 +544,7 @@ class NotificationTarget extends CommonDBChild
             if (
                 !$user->getFromDB($data['users_id'])
                 || ($user->getField('is_deleted') == 1)
+                || ($user->getField('allow_notification') == 0) //notification explicitly refused bu yser
                 || ($user->getField('is_active') == 0)
                 || (!is_null($user->getField('begin_date'))
                   && ($user->getField('begin_date') > $_SESSION["glpi_currenttime"]))
