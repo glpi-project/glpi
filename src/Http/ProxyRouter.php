@@ -252,18 +252,18 @@ final class ProxyRouter
             return;
         }
 
+        $target_file = $this->getTargetFile();
+
+        if ($target_file === null) {
+            http_response_code(404);
+            return;
+        }
+
         if ($this->isTargetAPhpScript()) {
             // PHP specific case.
             // Requested file has to be included in global scope so is done in `/public/index.php` script.
             // Anyway, this check has to be kept to ensure that PHP scripts are not served as static files.
             http_response_code(500); // 500 error as this is a bug if such case happen
-            return;
-        }
-
-        $target_file = $this->getTargetFile();
-
-        if ($target_file === null) {
-            http_response_code(404);
             return;
         }
 
