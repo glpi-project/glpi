@@ -66,63 +66,80 @@ class ProxyRouter extends \GLPITestCase
                         ],
                     ],
                 ],
+                'apirest.php' => '',
             ]
         );
 
         // Path to an existing directory that does not have a `index.php` script.
         yield [
-            'path'          => '/ajax',
-            'target_path'   => '/ajax',
-            'target_file'   => null,
-            'is_php_script' => false,
+            'path'            => '/ajax',
+            'target_path'     => '/ajax',
+            'target_pathinfo' => null,
+            'target_file'     => null,
+            'is_php_script'   => false,
         ];
 
         // Path to an invalid PHP script.
         yield [
-            'path'          => '/is/not/valid.php',
-            'target_path'   => '/is/not/valid.php',
-            'target_file'   => null,
-            'is_php_script' => true,
+            'path'            => '/is/not/valid.php',
+            'target_path'     => '/is/not/valid.php',
+            'target_pathinfo' => null,
+            'target_file'     => null,
+            'is_php_script'   => true,
         ];
 
         // Path to a `index.php` script.
         yield [
-            'path'          => '/front/index.php',
-            'target_path'   => '/front/index.php',
-            'target_file'   => vfsStream::url('glpi/front/index.php'),
-            'is_php_script' => true,
+            'path'            => '/front/index.php',
+            'target_path'     => '/front/index.php',
+            'target_pathinfo' => null,
+            'target_file'     => vfsStream::url('glpi/front/index.php'),
+            'is_php_script'   => true,
+        ];
+
+        // Path to an existing file, but containing an extra PathInfo
+        yield [
+            'path'            => '/apirest.php/initSession/',
+            'target_path'     => '/apirest.php',
+            'target_pathinfo' => '/initSession/',
+            'target_file'     => vfsStream::url('glpi/apirest.php'),
+            'is_php_script'   => true,
         ];
 
         // Path to an existing directory that have a `index.php` script.
         yield [
-            'path'          => '/front',
-            'target_path'   => '/front/index.php',
-            'target_file'   => vfsStream::url('glpi/front/index.php'),
-            'is_php_script' => true,
+            'path'            => '/front',
+            'target_path'     => '/front/index.php',
+            'target_pathinfo' => null,
+            'target_file'     => vfsStream::url('glpi/front/index.php'),
+            'is_php_script'   => true,
         ];
 
         // Path to a JS file
         yield [
-            'path'          => '/js/common.js',
-            'target_path'   => '/js/common.js',
-            'target_file'   => vfsStream::url('glpi/js/common.js'),
-            'is_php_script' => false,
+            'path'            => '/js/common.js',
+            'target_path'     => '/js/common.js',
+            'target_pathinfo' => null,
+            'target_file'     => vfsStream::url('glpi/js/common.js'),
+            'is_php_script'   => false,
         ];
 
         // Path to a `.php5` script.
         yield [
-            'path'          => '/marketplace/mystaleplugin/front/page.php5',
-            'target_path'   => '/marketplace/mystaleplugin/front/page.php5',
-            'target_file'   => vfsStream::url('glpi/marketplace/mystaleplugin/front/page.php5'),
-            'is_php_script' => true,
+            'path'            => '/marketplace/mystaleplugin/front/page.php5',
+            'target_path'     => '/marketplace/mystaleplugin/front/page.php5',
+            'target_pathinfo' => null,
+            'target_file'     => vfsStream::url('glpi/marketplace/mystaleplugin/front/page.php5'),
+            'is_php_script'   => true,
         ];
 
         // Path to a PHP script hidden in a CSS file
         yield [
-            'path'          => '/marketplace/mimehack/css/style.css',
-            'target_path'   => '/marketplace/mimehack/css/style.css',
-            'target_file'   => vfsStream::url('glpi/marketplace/mimehack/css/style.css'),
-            'is_php_script' => true,
+            'path'            => '/marketplace/mimehack/css/style.css',
+            'target_path'     => '/marketplace/mimehack/css/style.css',
+            'target_pathinfo' => null,
+            'target_file'     => vfsStream::url('glpi/marketplace/mimehack/css/style.css'),
+            'is_php_script'   => true,
         ];
     }
 
@@ -132,11 +149,13 @@ class ProxyRouter extends \GLPITestCase
     public function testTarget(
         string $path,
         string $target_path,
+        ?string $target_pathinfo,
         ?string $target_file,
         bool $is_php_script
     ) {
         $this->newTestedInstance(vfsStream::url('glpi'), $path);
         $this->string($this->testedInstance->getTargetPath())->isEqualTo($target_path, $path);
+        $this->variable($this->testedInstance->getTargetPathInfo())->isEqualTo($target_pathinfo, $path);
         $this->variable($this->testedInstance->getTargetFile())->isEqualTo($target_file, $path);
         $this->boolean($this->testedInstance->isTargetAPhpScript())->isEqualTo($is_php_script, $path);
     }

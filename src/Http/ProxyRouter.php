@@ -52,29 +52,38 @@ final class ProxyRouter
      */
     private string $path;
 
+    /**
+     * PathInfo (extra information added next to path).
+     * @var string
+     */
+    private ?string $pathinfo;
+
     public function __construct(string $root_dir, string $path)
     {
         $this->root_dir = $root_dir;
-        $this->path     = $this->normalizePath($path);
-    }
 
-    /**
-     * Normalize URI path into a path relative to GLPI web root.
-     *
-     * @param string $path
-     * @return string
-     */
-    private function normalizePath(string $path): string
-    {
-        // Clean trailing `/`.
-        $path = rtrim($path, '/');
+        $path_matches = [];
+        if (
+            preg_match('/^(?<path>.+\.[^\/]+)(?<pathinfo>\/.*)$/', $path, $path_matches) === 1
+            && is_file($this->root_dir . $path_matches['path'])
+        ) {
+            // Separate path and pathinfo.
+            $path     = $path_matches['path'];
+            $pathinfo = $path_matches['pathinfo'];
+        } else {
+            // Clean trailing `/`.
+            $path = rtrim($path, '/');
 
-        // If URI matches a directory path, consider `index.php` is the requested script.
-        if (is_dir($this->root_dir . $path) && is_file($this->root_dir . $path . '/index.php')) {
-            $path .= '/index.php';
+            // If URI matches a directory path, consider `index.php` is the requested script.
+            if (is_dir($this->root_dir . $path) && is_file($this->root_dir . $path . '/index.php')) {
+                $path .= '/index.php';
+            }
+
+            $pathinfo = null;
         }
 
-        return $path;
+        $this->path     = $path;
+        $this->pathinfo = $pathinfo;
     }
 
     /**
@@ -85,6 +94,16 @@ final class ProxyRouter
     public function getTargetPath(): string
     {
         return $this->path;
+    }
+
+    /**
+     * Return target PathInfo.
+     *
+     * @return string|null
+     */
+    public function getTargetPathInfo(): ?string
+    {
+        return $this->pathinfo;
     }
 
     /**

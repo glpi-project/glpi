@@ -68,10 +68,12 @@ if ($proxy->isTargetAPhpScript() && $proxy->isPathAllowed()) {
 
     // Redefine some $_SERVER variables to have same values whenever scripts are called directly
     // or through current router.
-    $target_path = $uri_prefix . $proxy->getTargetPath();
+    $target_path     = $uri_prefix . $proxy->getTargetPath();
+    $target_pathinfo = $proxy->getTargetPathInfo();
+    $_SERVER['PATH_INFO']       = $target_pathinfo;
     $_SERVER['PHP_SELF']        = $target_path;
-    $_SERVER['SCRIPT_NAME']     = $target_path;
     $_SERVER['SCRIPT_FILENAME'] = $target_file;
+    $_SERVER['SCRIPT_NAME']     = $target_path;
 
     // Execute target script.
     require($target_file);
