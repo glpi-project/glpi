@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * ITILTemplateReadonlyField Class
  *
@@ -196,22 +198,16 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
         }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                  action='" . $ttr->getFormURL() . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add a read only field') . "</th></tr>";
-            echo "<tr class='tab_bg_2'><td class='right'>";
-            echo "<input type='hidden' name='" . static::$items_id . "' value='$ID'>";
-            Dropdown::showFromArray('num', $fields, ['used' => $used]);
-            echo "</td><td class='center'>";
-            echo "&nbsp;<input type='submit' name='add' value=\"" . _sx('button', 'Add') .
-                        "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            echo TemplateRenderer::getInstance()->render('components/form/add_field.html.twig', [
+                'rand'              => $rand,
+                'form_url'          => $ttr->getFormURL(),
+                'form_title'        => __('Add a read only field'),
+                'itemtype'          => __CLASS__,
+                'items_name'        => static::$items_id,
+                'items_id'          => $ID,
+                'readonlyfields'    => $fields,
+                'used'              => $used,
+            ]);
         }
 
         echo "<div class='spaced'>";
