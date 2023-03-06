@@ -20,6 +20,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- `Toolbox::checkValidReferer()`
 
 #### Removed
 

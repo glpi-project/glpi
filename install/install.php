@@ -540,8 +540,6 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     header_html(__("Select your language"));
     choose_language();
 } else {
-   // Check valid Referer :
-    Toolbox::checkValidReferer();
    // Check CSRF: ensure nobody strap first page that checks if config file exists ...
     Session::checkCSRF($_POST);
 
