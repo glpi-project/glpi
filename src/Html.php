@@ -42,7 +42,6 @@ use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\URL;
-use Psr\Log\InvalidArgumentException;
 use ScssPhp\ScssPhp\Compiler;
 
 /**
