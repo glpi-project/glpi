@@ -2754,14 +2754,16 @@ JAVASCRIPT;
                     $swhere = [
                         "$table.completename" => ['LIKE', $search],
                     ];
-                    if ($table == Location::getTable()) {
-                        $swhere = [
-                            "OR" => [
-                                "$table.completename" => ['LIKE', $search],
-                                "$table.code"         => ['LIKE', $search],
-                                "$table.alias"        => ['LIKE', $search],
-                            ]
-                        ];
+                    $swhere = [
+                        "OR" => [
+                            "$table.completename" => ['LIKE', $search]
+                        ]
+                    ];
+                    if ($item->getField('code') !== NOT_AVAILABLE) {
+                        $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                    }
+                    if ($item->getField('alias') !== NOT_AVAILABLE) {
+                        $swhere["OR"]["$table.alias"] = ['LIKE', $search];
                     }
                     if (Session::haveTranslations($post['itemtype'], 'completename')) {
                         $swhere["namet.value"] = ['LIKE', $search];

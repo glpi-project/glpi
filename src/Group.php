@@ -240,9 +240,15 @@ class Group extends CommonTreeDropdown
         echo "<td>";
         echo Html::input('name', ['value' => $this->fields['name']]);
         echo "</td>";
-        echo "<td rowspan='12' class='middle'>" . __('Comments') . "</td>";
-        echo "<td class='middle' rowspan='12'>";
+        echo "<td rowspan='15' class='middle'>" . __('Comments') . "</td>";
+        echo "<td class='middle' rowspan='15'>";
         echo "<textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Code') . "</td>";
+        echo "<td>";
+        echo Html::input('code', ['value' => $this->fields['code']]);
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
@@ -594,6 +600,15 @@ class Group extends CommonTreeDropdown
             'field'              => 'recursive_membership',
             'name'               => __('Recursive membership'),
             'datatype'           => 'bool'
+        ];
+
+        $tab[] = [
+            'id'                 => '74',
+            'table'              => $this->getTable(),
+            'field'              => 'code',
+            'name'               => __('Group code'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
         ];
 
         return $tab;
