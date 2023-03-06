@@ -2142,6 +2142,9 @@ HTML;
 
     /**
      * Print a nice HTML head for iframed windows
+     * This header remove any security for iframe (NO SAMEORIGIN, etc)
+     * And should be used ONLY for iframing windows in other applications.
+     * It should NOT be used for GLPI internal iframing.
      *
      * @since 10.0.7
      *
@@ -2150,7 +2153,7 @@ HTML;
      * @param string  $option    option corresponding to the page displayed (default '')
      * @return void
      */
-    public static function iframedHeader(
+    public static function zeroSecurityIframedHeader(
         string $sector = "none",
         string $item = "none",
         string $option = ""

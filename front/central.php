@@ -39,7 +39,7 @@ include('../inc/includes.php');
 if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
     $grid      = new Glpi\Dashboard\Grid($_GET["dashboard"]);
     $dashboard = $grid->getDashboard();
-    Html::iframedHeader('central', 'central');
+    Html::zeroSecurityIframedHeader('central', 'central');
     echo $grid->embed($_REQUEST);
     Html::popFooter();
     exit;
