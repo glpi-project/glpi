@@ -2492,9 +2492,13 @@ class Toolbox
      * @since 0.84.2
      *
      * @return void  display error if not permit
+     *
+     * @deprecated 10.0.7
      **/
     public static function checkValidReferer()
     {
+        Toolbox::deprecated('Checking `HTTP_REFERER` does not provide any security.');
+
         global $CFG_GLPI;
 
         $isvalidReferer = true;
