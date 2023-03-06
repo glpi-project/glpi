@@ -3556,7 +3556,12 @@ HTML;
             $item->getFromDB($id);
         }
 
-        $tabs = $item->defineAllTabs();
+        $options = [];
+        if (isset($_GET['withtemplate'])) {
+            $options['withtemplate'] = $_GET['withtemplate'];
+        }
+
+        $tabs = $item->defineAllTabs($options);
         if (isset($tabs['no_all_tab'])) {
             unset($tabs['no_all_tab']);
         }
