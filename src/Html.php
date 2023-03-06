@@ -1145,21 +1145,25 @@ HTML;
         $sector = 'none',
         $item = 'none',
         $option = '',
-        bool $add_id = true
+        bool $add_id = true,
+        bool $allow_insecured_iframe = false
     ) {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
-       // complete title with id if exist
+        // complete title with id if exist
         if ($add_id && isset($_GET['id']) && $_GET['id']) {
             $title = sprintf(__('%1$s - %2$s'), $title, $_GET['id']);
         }
 
-       // Send UTF8 Headers
+        // Send UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
-       // Allow only frame from same server to prevent click-jacking
-        header('x-frame-options:SAMEORIGIN');
 
-       // Send extra expires header
+        if (!$allow_insecured_iframe) {
+            // Allow only frame from same server to prevent click-jacking
+            header('x-frame-options:SAMEORIGIN');
+        }
+
+        // Send extra expires header
         self::header_nocache();
 
         $theme = $_SESSION['glpipalette'] ?? 'auror';
@@ -2115,7 +2119,7 @@ HTML;
     public static function popHeader(
         $title,
         $url = '',
-        $iframed = false,
+        $in_modal = false,
         $sector = "none",
         $item = "none",
         $option = ""
@@ -2129,9 +2133,41 @@ HTML;
         $HEADER_LOADED = true;
 
         self::includeHeader($title, $sector, $item, $option); // Body
-        echo "<body class='" . ($iframed ? "iframed" : "") . "'>";
+        echo "<body class='" . ($in_modal ? "in_modal" : "") . "'>";
         self::displayMessageAfterRedirect();
         echo "<div id='page'>"; // Force legacy styles for now
+    }
+
+
+    /**
+     * Print a nice HTML head for iframed windows
+     * This header remove any security for iframe (NO SAMEORIGIN, etc)
+     * And should be used ONLY for iframing windows in other applications.
+     * It should NOT be used for GLPI internal iframing.
+     *
+     * @since 10.0.7
+     *
+     * @param string  $sector    sector in which the page displayed is (default 'none')
+     * @param string  $item      item corresponding to the page displayed (default 'none')
+     * @param string  $option    option corresponding to the page displayed (default '')
+     * @return void
+     */
+    public static function zeroSecurityIframedHeader(
+        string $sector = "none",
+        string $item = "none",
+        string $option = ""
+    ): void {
+        global $HEADER_LOADED;
+
+        if ($HEADER_LOADED) {
+            return;
+        }
+        $HEADER_LOADED = true;
+
+        self::includeHeader('', $sector, $item, $option, true, true);
+        echo "<body class='iframed'>";
+        self::displayMessageAfterRedirect();
+        echo "<div id='page'>";
     }
 
 
