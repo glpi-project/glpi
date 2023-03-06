@@ -2752,9 +2752,6 @@ JAVASCRIPT;
                     $search = Search::makeTextSearchValue($post['searchText']);
 
                     $swhere = [
-                        "$table.completename" => ['LIKE', $search],
-                    ];
-                    $swhere = [
                         "OR" => [
                             "$table.completename" => ['LIKE', $search]
                         ]
