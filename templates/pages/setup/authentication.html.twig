@@ -52,11 +52,9 @@
                      <span>{{ 'AuthLDAP'|itemtype_name }}</span>
                   </a>
                {% else %}
-                  <div class="list-group-item">
-                     <div class="list-group-item alert alert-important alert-warning m-3">
-                        <i class="fa-fw fa fa-exclamation-triangle me-2"></i>
-                        {{ __('The LDAP extension of your PHP parser isn’t installed') }}
-                     </div>
+                  <div class="alert alert-important alert-warning m-3">
+                    <i class="fa-fw fa fa-exclamation-triangle me-2"></i>
+                    {{ __('The LDAP extension of your PHP parser isn’t installed') }}
                   </div>
                {% endif %}
 
