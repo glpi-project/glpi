@@ -144,16 +144,23 @@ class AuthLDAP extends DbTestCase
     public function testPreconfig()
     {
         $ldap = new \AuthLDAP();
-       //Use Active directory preconfiguration :
-       //login_field and sync_field must be filled
+        //Use Active directory preconfiguration :
+        //login_field and sync_field must be filled
         $ldap->preconfig('AD');
         $this->array($ldap->fields)
          ->string['login_field']->isIdenticalTo('samaccountname')
          ->string['sync_field']->isIdenticalTo('objectguid');
 
-       //No preconfiguration model
+        //Use OpenLDAP preconfiguration :
+        //login_field and sync_field must be filled
+        $ldap->preconfig('OpenLDAP');
+        $this->array($ldap->fields)
+         ->string['login_field']->isIdenticalTo('uid')
+         ->string['sync_field']->isIdenticalTo('entryuuid');
+
+        //No preconfiguration model
         $ldap->preconfig('');
-       //Login_field is set to uid (default)
+        //Login_field is set to uid (default)
         $this->string($ldap->fields['login_field'])->isIdenticalTo('uid');
         $this->variable($ldap->fields['sync_field'])->isNull();
     }
