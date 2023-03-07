@@ -201,10 +201,14 @@ class Report extends CommonGLPI
                 'COUNT'  => 'cpt',
                 'FROM'   => $table_item,
                 'WHERE'  => [
-                    "$table_item.is_deleted"   => 0,
-                    "$table_item.is_template"  => 0
+                    "$table_item.is_deleted"   => 0
                 ] + getEntitiesRestrictCriteria($table_item)
             ];
+
+            $itemtype_object = new $itemtype();
+            if ($itemtype_object->maybeTemplate()) {
+                $criteria["WHERE"]["$table_item.is_template"] = 0;
+            }
 
             if (in_array($itemtype, $linkitems)) {
                 $criteria['LEFT JOIN'] = [
@@ -245,7 +249,7 @@ class Report extends CommonGLPI
                     ]
                 ]
             ],
-            'WHERE'     => ['is_deleted' => 0],
+            'WHERE'     => ['is_deleted' => 0] + getEntitiesRestrictCriteria('glpi_items_operatingsystems'),
             'GROUPBY'   => 'glpi_operatingsystems.name'
         ]);
 
@@ -265,6 +269,11 @@ class Report extends CommonGLPI
         foreach ($items as $itemtype) {
             echo "<tr class='tab_bg_1'><td colspan='2' class='b'>" . $itemtype::getTypeName(Session::getPluralNumber()) .
               "</td></tr>";
+
+            //no type for unmanaged
+            if ($itemtype == Unmanaged::class) {
+                continue;
+            }
 
             $table_item = getTableForItemType($itemtype);
             $typeclass  = $itemtype . "Type";
@@ -286,11 +295,15 @@ class Report extends CommonGLPI
                     ]
                 ],
                 'WHERE'     => [
-                    "$table_item.is_deleted"   => 0,
-                    "$table_item.is_template"  => 0
+                    "$table_item.is_deleted"   => 0
                 ] + getEntitiesRestrictCriteria($table_item),
                 'GROUPBY'   => "$type_table.name"
             ];
+
+            $itemtype_object = new $itemtype();
+            if ($itemtype_object->maybeTemplate()) {
+                $criteria["WHERE"]["$table_item.is_template"] = 0;
+            }
 
             if (in_array($itemtype, $linkitems)) {
                 $criteria['LEFT JOIN']['glpi_computers_items'] = [
