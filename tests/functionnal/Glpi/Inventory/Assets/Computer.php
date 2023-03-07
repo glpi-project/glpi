@@ -1101,4 +1101,88 @@ class Computer extends AbstractInventoryAsset
 
         $this->string($computer->fields['otherserial'])->isIdenticalTo('other_serial');
     }
+
+    public function testTransferNotAllowed()
+    {
+        global $DB;
+        $computer = new \Computer();
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check created agent itemtype / deviceid / entities_id
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['entities_id']->isIdenticalTo(0);
+
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        //load computer
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        //test entities_id root
+        $this->integer($computer->fields['entities_id'])->isEqualTo(0);
+
+
+        //transer to another entity
+        $doTransfer = \Entity::getUsedConfig('transfers_strategy', $computer->fields['entities_id'], 'transfers_id', 0);
+        $transfer = new \Transfer();
+        $transfer->getFromDB($doTransfer);
+
+        $item_to_transfer = ["Computer" => [$computers_id => $computers_id]];
+        $transfer->moveItems($item_to_transfer, 1, $transfer->fields);
+
+        //reload computer
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        //test computer entities_id
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1);
+        //test agent entities_id
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1);
+
+        //prohibit the transfer from this entity
+        $entity = new \Entity();
+        $entity->getFromDB(1);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "transfers_id" => 0, //no transfert
+        ]))->isTrue();
+
+        //redo inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        //load computer
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        //test entities_id sub
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1);
+
+
+        //check created agent itemtype / deviceid / entities_id
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['entities_id']->isIdenticalTo(1);
+    }
 }
