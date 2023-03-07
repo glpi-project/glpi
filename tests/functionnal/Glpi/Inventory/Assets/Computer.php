@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Agent;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/computer.class.php */
@@ -1131,14 +1133,13 @@ class Computer extends AbstractInventoryAsset
         $this->array($agent)
             ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
             ->string['itemtype']->isIdenticalTo('Computer')
-            ->integer['entities_id']->isIdenticalTo(0);
+            ->integer['entities_id']->isIdenticalTo(0); //root entity
 
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
-        //load computer
+        //load / test computer entities_id root
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
-        //test entities_id root
         $this->integer($computer->fields['entities_id'])->isEqualTo(0);
 
 
@@ -1150,12 +1151,14 @@ class Computer extends AbstractInventoryAsset
         $item_to_transfer = ["Computer" => [$computers_id => $computers_id]];
         $transfer->moveItems($item_to_transfer, 1, $transfer->fields);
 
-        //reload computer
+        //reload / test computer entities_id
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
-        //test computer entities_id
-        $this->integer($computer->fields['entities_id'])->isEqualTo(1);
-        //test agent entities_id
-        $this->integer($computer->fields['entities_id'])->isEqualTo(1);
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1); //another entity
+        //reload / test agent entities_id
+        $reloaded_agent = new \Agent();
+        $reloaded_agent->getFromDB($agent['id']);
+        $this->integer($reloaded_agent->fields['entities_id'])->isEqualTo(0); //always root (only pc is transfered)
+
 
         //prohibit the transfer from this entity
         $entity = new \Entity();
@@ -1168,21 +1171,14 @@ class Computer extends AbstractInventoryAsset
         //redo inventory
         $inventory = $this->doInventory($xml_source, true);
 
+        //reload / test computer entities_id
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
-        //load computer
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
-        //test entities_id sub
-        $this->integer($computer->fields['entities_id'])->isEqualTo(1);
-
-
-        //check created agent itemtype / deviceid / entities_id
-        $agents = $DB->request(['FROM' => \Agent::getTable()]);
-        $this->integer(count($agents))->isIdenticalTo(1);
-        $agent = $agents->current();
-        $this->array($agent)
-            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
-            ->string['itemtype']->isIdenticalTo('Computer')
-            ->integer['entities_id']->isIdenticalTo(1);
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1); //another entity
+        //reload / test agent entities_id
+        $reloaded_agent = new \Agent();
+        $reloaded_agent->getFromDB($agent['id']);
+        $this->integer($reloaded_agent->fields['entities_id'])->isEqualTo(1); //another entity
     }
 }
