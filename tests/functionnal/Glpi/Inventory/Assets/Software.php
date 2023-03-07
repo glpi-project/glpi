@@ -944,4 +944,146 @@ class Software extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
     }
+
+    public function testSameSoft()
+    {
+        global $DB;
+        $this->login();
+
+        $computer = new \Computer();
+        $soft = new \Software();
+        $version = new \SoftwareVersion();
+        $item_version = new \Item_SoftwareVersion();
+
+        //inventory with a software name containing an unbreakable space
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <ARCH>i586</ARCH>
+      <COMMENTS>A SmartNET contract is required for support - Cisco AnyConnect Secure Mobility Client.</COMMENTS>
+      <FROM>registry</FROM>
+      <GUID>{F4BACC43-70D3-4CCF-A0C6-89512F64CBB4}</GUID>
+      <HELPLINK>http://www.cisco.com/TAC/</HELPLINK>
+      <INSTALLDATE>12/01/2022</INSTALLDATE>
+      <NAME>Cisco AnyConnect Secure Mobility Client</NAME>
+      <PUBLISHER>Cisco Systems, Inc.</PUBLISHER>
+      <SYSTEM_CATEGORY>system_component</SYSTEM_CATEGORY>
+      <UNINSTALL_STRING>MsiExec.exe /X{F4BACC43-70D3-4CCF-A0C6-89512F64CBB4}</UNINSTALL_STRING>
+      <URL_INFO_ABOUT>http://www.cisco.com</URL_INFO_ABOUT>
+      <VERSION>4.10.01075</VERSION>
+    </SOFTWARES>
+    <SOFTWARES>
+      <ARCH>i586</ARCH>
+      <COMMENTS>A SmartNET contract is required for support - Cisco AnyConnect Secure Mobility Client.</COMMENTS>
+      <FROM>registry</FROM>
+      <GUID>Cisco AnyConnect Secure Mobility Client</GUID>
+      <HELPLINK>http://www.cisco.com/TAC/</HELPLINK>
+      <INSTALLDATE>12/01/2022</INSTALLDATE>
+      <NAME>Cisco AnyConnect Secure Mobility Client </NAME>
+      <PUBLISHER>Cisco Systems, Inc.</PUBLISHER>
+      <SYSTEM_CATEGORY>application</SYSTEM_CATEGORY>
+      <UNINSTALL_STRING>C:\Program Files (x86)\Cisco\Cisco AnyConnect Secure Mobility Client\Uninstall.exe -remove</UNINSTALL_STRING>
+      <URL_INFO_ABOUT>http://www.cisco.com</URL_INFO_ABOUT>
+      <VERSION>4.10.01075</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //create manually a computer
+        $computers_id = $computer->add([
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        $this->doInventory($xml_source, true);
+
+        //we have 1 software & versions for Cisco AnyConnect Secure Mobility Client
+        $softs = $soft->find(['name' => 'Cisco AnyConnect Secure Mobility Client']);
+        $this->integer(count($softs))->isIdenticalTo(1);
+
+        //4.10.01075
+        $versions = $version->find(['name' => '4.10.01075']);
+        $this->integer(count($versions))->isIdenticalTo(1);
+
+        $version_data = array_pop($versions);
+        $this->boolean($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $version_data['id']
+        ]))->isTrue();
+
+        //inventory with Cisco soft updated
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <ARCH>i586</ARCH>
+      <COMMENTS>A SmartNET contract is required for support - Cisco AnyConnect Secure Mobility Client.</COMMENTS>
+      <FROM>registry</FROM>
+      <GUID>{F4BACC43-70D3-4CCF-A0C6-89512F64CBB4}</GUID>
+      <HELPLINK>http://www.cisco.com/TAC/</HELPLINK>
+      <INSTALLDATE>14/02/2023</INSTALLDATE>
+      <NAME>Cisco AnyConnect Secure Mobility Client</NAME>
+      <PUBLISHER>Cisco Systems, Inc.</PUBLISHER>
+      <SYSTEM_CATEGORY>system_component</SYSTEM_CATEGORY>
+      <UNINSTALL_STRING>MsiExec.exe /X{F4BACC43-70D3-4CCF-A0C6-89512F64CBB4}</UNINSTALL_STRING>
+      <URL_INFO_ABOUT>http://www.cisco.com</URL_INFO_ABOUT>
+      <VERSION>4.10.06079</VERSION>
+    </SOFTWARES>
+    <SOFTWARES>
+      <ARCH>i586</ARCH>
+      <COMMENTS>A SmartNET contract is required for support - Cisco AnyConnect Secure Mobility Client.</COMMENTS>
+      <FROM>registry</FROM>
+      <GUID>Cisco AnyConnect Secure Mobility Client</GUID>
+      <HELPLINK>http://www.cisco.com/TAC/</HELPLINK>
+      <INSTALLDATE>14/02/2023</INSTALLDATE>
+      <NAME>Cisco AnyConnect Secure Mobility Client </NAME>
+      <PUBLISHER>Cisco Systems, Inc.</PUBLISHER>
+      <SYSTEM_CATEGORY>application</SYSTEM_CATEGORY>
+      <UNINSTALL_STRING>C:\Program Files (x86)\Cisco\Cisco AnyConnect Secure Mobility Client\Uninstall.exe -remove</UNINSTALL_STRING>
+      <URL_INFO_ABOUT>http://www.cisco.com</URL_INFO_ABOUT>
+      <VERSION>4.10.06079</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //we have 1 software & versions for Cisco AnyConnect Secure Mobility Client
+        $softs = $soft->find(['name' => 'Cisco AnyConnect Secure Mobility Client']);
+        $this->integer(count($softs))->isIdenticalTo(1);
+
+        //4.10.06079
+        $versions = $version->find(['name' => '4.10.06079']);
+        $this->integer(count($versions))->isIdenticalTo(1);
+
+        $version_data = array_pop($versions);
+        $this->boolean($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $version_data['id']
+        ]))->isTrue();
+
+    }
 }
