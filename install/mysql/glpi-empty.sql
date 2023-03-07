@@ -2986,6 +2986,7 @@ CREATE TABLE `glpi_groups` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL,
   `comment` text,
   `ldap_field` varchar(255) DEFAULT NULL,
   `ldap_value` text,

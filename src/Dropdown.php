@@ -2752,16 +2752,15 @@ JAVASCRIPT;
                     $search = Search::makeTextSearchValue($post['searchText']);
 
                     $swhere = [
-                        "$table.completename" => ['LIKE', $search],
+                        "OR" => [
+                            "$table.completename" => ['LIKE', $search]
+                        ]
                     ];
-                    if ($table == Location::getTable()) {
-                        $swhere = [
-                            "OR" => [
-                                "$table.completename" => ['LIKE', $search],
-                                "$table.code"         => ['LIKE', $search],
-                                "$table.alias"        => ['LIKE', $search],
-                            ]
-                        ];
+                    if ($item->isField('code')) {
+                        $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                    }
+                    if ($item->isField('alias')) {
+                        $swhere["OR"]["$table.alias"] = ['LIKE', $search];
                     }
                     if (Session::haveTranslations($post['itemtype'], 'completename')) {
                         $swhere["namet.value"] = ['LIKE', $search];
