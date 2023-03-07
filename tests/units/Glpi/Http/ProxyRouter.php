@@ -46,13 +46,13 @@ class ProxyRouter extends \GLPITestCase
             null,
             [
                 'ajax'  => [
-                    'thereisnoindex.php' => '',
+                    'thereisnoindex.php' => '<php echo(1);',
                 ],
                 'front' => [
-                    'index.php' => '',
+                    'index.php' => '<php echo(1);',
                 ],
                 'js' => [
-                    'common.js' => '',
+                    'common.js' => 'console.log("ok");',
                 ],
                 'marketplace' => [
                     'mystaleplugin' => [
@@ -66,7 +66,8 @@ class ProxyRouter extends \GLPITestCase
                         ],
                     ],
                 ],
-                'apirest.php' => '',
+                'apirest.php' => '<php echo(1);',
+                'index.php' => '<php echo(1);',
             ]
         );
 
@@ -430,6 +431,13 @@ class ProxyRouter extends \GLPITestCase
                 yield [
                     'path'      => $path,
                     'http_code' => 403,
+                    'body'      => '',
+                ];
+            } elseif (file_exists(vfsStream::url('glpi' . $path)) === false) {
+                // Non existing files should result in 404 error
+                yield [
+                    'path'      => $path,
+                    'http_code' => 404,
                     'body'      => '',
                 ];
             } elseif (preg_match('/\.php$/', $path) === 1) {
