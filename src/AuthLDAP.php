@@ -4049,6 +4049,10 @@ class AuthLDAP extends CommonDBTM
             $input['is_default'] = 1;
         }
 
+        if (empty($input['can_support_pagesize'] ?? '')) {
+            $input['can_support_pagesize'] = 0;
+        }
+
         if (isset($input["rootdn_passwd"]) && !empty($input["rootdn_passwd"])) {
             $input["rootdn_passwd"] = (new GLPIKey())->encrypt($input["rootdn_passwd"]);
         }
