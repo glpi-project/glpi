@@ -443,9 +443,10 @@ abstract class MainAsset extends InventoryAsset
                 $this->ports += $netports;
                 foreach ($netports as $network) {
                     if (
-                        property_exists($network, 'virtualdev')
-                        && $network->virtualdev != 1
-                        || !property_exists($network, 'virtualdev')
+                        (property_exists($network, 'virtualdev')
+                        //if not virtualdev or is it and inventory conf allow networkcardvirtual import
+                        && ($network->virtualdev != 1  || $network->virtualdev == 1 && $this->conf->component_networkcardvirtual))
+                        || !property_exists($network, 'virtualdev') //if not virtual
                     ) {
                         if (property_exists($network, 'mac') && !empty($network->mac)) {
                             $input['mac'][] = $network->mac;
