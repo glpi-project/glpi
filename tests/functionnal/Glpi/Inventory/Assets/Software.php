@@ -1084,6 +1084,5 @@ class Software extends AbstractInventoryAsset
             "items_id" => $computers_id,
             "softwareversions_id" => $version_data['id']
         ]))->isTrue();
-
     }
 }
