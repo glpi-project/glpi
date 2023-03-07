@@ -438,6 +438,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if (isset($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'])) {
+            $blacklist = new Blacklist();
             foreach ($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'] as $networkcard) {
                 $netports = $networkcard->getNetworkPorts();
                 $this->ports += $netports;
@@ -449,10 +450,12 @@ abstract class MainAsset extends InventoryAsset
                         || !property_exists($network, 'virtualdev') //if not virtual
                     ) {
                         if (property_exists($network, 'mac') && !empty($network->mac)) {
-                            $input['mac'][] = $network->mac;
+                            if ('' != $blacklist->process(Blacklist::MAC, $network->mac)) {
+                                $input['mac'][] = $network->mac;
+                            }
                         }
                         foreach ($network->ipaddress as $ip) {
-                            if ($ip != '127.0.0.1' && $ip != '::1') {
+                            if ('' != $blacklist->process(Blacklist::IP, $ip)) {
                                 $input['ip'][] = $ip;
                             }
                         }
