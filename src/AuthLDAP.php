@@ -1714,7 +1714,12 @@ class AuthLDAP extends CommonDBTM
             $host = $hostname;
         }
 
-        if (fsockopen($host, $port_num, $errno, $errstr, 5)) {
+        if (empty($hostname)) {
+            $errno = 0;
+            $errstr = __('No hostname provided');
+        }
+
+        if (!empty($hostname) && fsockopen($host, $port_num, $errno, $errstr, 5)) {
             return [
                 'success' => true,
                 'message' => sprintf(__('Connection to %s on port %s succeeded'), $host, $port_num)
