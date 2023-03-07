@@ -1142,7 +1142,7 @@ class Computer extends AbstractInventoryAsset
         $this->integer($computer->fields['entities_id'])->isEqualTo(0);
 
 
-        //transer to another entity
+        //transfer to another entity
         $doTransfer = \Entity::getUsedConfig('transfers_strategy', $computer->fields['entities_id'], 'transfers_id', 0);
         $transfer = new \Transfer();
         $transfer->getFromDB($doTransfer);
