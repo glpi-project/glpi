@@ -44,11 +44,7 @@ $glpi_root  = realpath(dirname(__FILE__, 2));
 // `$_SERVER['SCRIPT_NAME']` corresponds to the script path relative to server document root.
 // -> if server document root is `/public`, then `$_SERVER['SCRIPT_NAME']` will be equal to `/index.php`
 // -> if script is located into a `/glpi-alias` alias directory, then `$_SERVER['SCRIPT_NAME']` will be equal to `/glpi-alias/index.php`
-$uri_prefix = preg_replace(
-    '/\/index.php$/',
-    '',
-    str_replace('\\', '/', $_SERVER['SCRIPT_NAME'])
-);
+$uri_prefix = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 // Get URI path relative to GLPI (i.e. without alias directory prefix).
 $path       = preg_replace(
     '/^' . preg_quote($uri_prefix, '/') . '/',
