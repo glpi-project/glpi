@@ -2756,10 +2756,10 @@ JAVASCRIPT;
                             "$table.completename" => ['LIKE', $search]
                         ]
                     ];
-                    if ($item->getField('code') !== NOT_AVAILABLE) {
+                    if ($item->isField('code')) {
                         $swhere["OR"]["$table.code"] = ['LIKE', $search];
                     }
-                    if ($item->getField('alias') !== NOT_AVAILABLE) {
+                    if ($item->isField('alias')) {
                         $swhere["OR"]["$table.alias"] = ['LIKE', $search];
                     }
                     if (Session::haveTranslations($post['itemtype'], 'completename')) {
