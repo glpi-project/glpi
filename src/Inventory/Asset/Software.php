@@ -55,6 +55,8 @@ class Software extends InventoryAsset
     /** @var array */
     private $versions = [];
     /** @var array */
+    private $items_versions = [];
+    /** @var array */
     private $current_versions = [];
     /** @var array */
     private $added_versions   = [];
@@ -846,6 +848,11 @@ class Software extends InventoryAsset
             );
             $versions_id = $this->versions[$vkey];
 
+            if (isset($this->items_versions[$this->item->fields['id'] . '-' . $versions_id])) {
+                //same softwareversion listed twice in inventory file
+                continue;
+            }
+
             if ($stmt === null) {
                 $insert_query = $DB->buildInsert(
                     'glpi_items_softwareversions',
@@ -876,6 +883,9 @@ class Software extends InventoryAsset
                 $input['date_install']
             );
             $DB->executeStatement($stmt);
+
+            //store link
+            $this->items_versions[$this->item->fields['id'] . '-' . $versions_id] = true;
 
             // log the new installation into software history
             $version_name = $val->version;
