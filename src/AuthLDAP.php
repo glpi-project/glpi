@@ -224,14 +224,12 @@ class AuthLDAP extends CommonDBTM
                 break;
             case 'OpenLDAP':
                 $this->fields['port']                      = "389";
-                $this->fields['condition']
-                 = '(&(objectClass=inetOrgPerson))';
+                $this->fields['condition']                 = '(objectClass=inetOrgPerson)';
                 $this->fields['login_field']               = 'uid';
                 $this->fields['sync_field']                = 'entryuuid';
                 $this->fields['use_tls']                   = 0;
                 $this->fields['group_field']               = '';
-                $this->fields['group_condition']
-                 = '(&(objectClass=inetOrgPerson))';
+                $this->fields['group_condition']           = '(objectClass=inetOrgPerson)';
                 $this->fields['group_search_type']         = self::GROUP_SEARCH_GROUP;
                 $this->fields['group_member_field']        = 'member';
                 $this->fields['email1_field']              = 'mail';
