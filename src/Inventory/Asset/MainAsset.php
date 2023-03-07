@@ -696,23 +696,6 @@ abstract class MainAsset extends InventoryAsset
             $this->setNew();
         }
 
-        if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
-            $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
-        } else {
-            $this->agent->fields['items_id'] = $items_id;
-            $this->agent->fields['entities_id'] = $entities_id;
-        }
-
-        //check for any old agent to remove
-        $agent = new \Agent();
-        $agent->deleteByCriteria([
-            'itemtype' => $this->item->getType(),
-            'items_id' => $items_id,
-            'NOT' => [
-                'id' => $this->agent->fields['id']
-            ]
-        ]);
-
         $val->id = $this->item->fields['id'];
 
         if ($entities_id == -1) {
@@ -734,8 +717,26 @@ abstract class MainAsset extends InventoryAsset
             } else {
                 //no transfert so revert to old entities_id
                 $val->entities_id = $this->item->fields['entities_id'];
+                $this->agent->fields['entities_id'] = $this->item->fields['entities_id'];
             }
         }
+
+        if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
+            $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $val->entities_id]);
+        } else {
+            $this->agent->fields['items_id'] = $items_id;
+            $this->agent->fields['entities_id'] = $entities_id;
+        }
+
+        //check for any old agent to remove
+        $agent = new \Agent();
+        $agent->deleteByCriteria([
+            'itemtype' => $this->item->getType(),
+            'items_id' => $items_id,
+            'NOT' => [
+                'id' => $this->agent->fields['id']
+            ]
+        ]);
 
         if ($this->is_discovery === true && !$this->isNew()) {
             //if NetworkEquipement
