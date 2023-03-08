@@ -136,7 +136,7 @@ class Controller extends CommonGLPI
 
             try {
                 // copy files
-                $archive->extractFiles(GLPI_MARKETPLACE_DIR) !== false;
+                $archive->extract(GLPI_MARKETPLACE_DIR) !== false;
             } catch (\wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException $e) {
                 $error = true;
             }
