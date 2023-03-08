@@ -1,0 +1,187 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+{% set rand_field = rand|default(random()) %}
+
+{% block form_fields %}
+   {% block more_fields %}
+       <div class="tab-content p-2 flex-grow-1 card " style="min-height: 150px">
+           <div class="card-body d-flex flex-wrap">
+               <div class="col-12 col-xxl-12 flex-column">
+                   <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+                       <div class="row flex-row align-items-start flex-grow-1">
+                           <div class="row flex-row">
+
+                               {{ fields.dropdownArrayField(
+                                   'itemtype',
+                                   item.fields['itemtype'],
+                                   item.getItemtypesDropdownValues(),
+                                   __('Itemtype'),
+                                   field_options|merge({
+                                       display_emptychoice: true,
+                                       rand: rand_field,
+                                       disabled: true,
+                                   })
+                               ) }}
+
+                               {{ fields.dropdownArrayField(
+                                   'event',
+                                   item.fields['event'],
+                                   item.getGlpiEventsList(item.fields['itemtype']),
+                                   _n('Event', 'Events', 1),
+                                   field_options|merge({
+                                       display_emptychoice: true,
+                                       container_id: 'show_event_field',
+                                       disabled: true,
+                                   })
+                               ) }}
+
+                               {{ fields.dropdownArrayField(
+                                   'items_id',
+                                   '',
+                                   [],
+                                   _n('Item', 'Items', 1),
+                                   field_options|merge({
+                                       display_emptychoice: true,
+                                       container_id: 'show_items_field',
+                                   })
+                               ) }}
+
+                               {% do call('Ajax::updateItemOnSelectEvent', [
+                                   'dropdown_itemtype' ~ rand_field,
+                                   'show_items_field',
+                                   config('root_doc') ~ '/ajax/webhook.php',
+                                   {
+                                   'itemtype': '__VALUE__',
+                                   'action': 'get_items_from_itemtype'
+                                   }
+                               ]) %}
+
+                               {{ fields.nullField() }}
+
+                               {% set cra_btn %}
+                                   <button class="btn btn-primary me-2" type="button" name="get_webhook_response" value="1">
+                                       <i class="ti ti-bolt"></i>
+                                       <span>{{ _x('button', 'See result') }}</span>
+                                   </button>
+                               {% endset %}
+
+                               {{ fields.htmlField(
+                                   '',
+                                   cra_btn,
+                                   '',
+                                   field_options
+                               ) }}
+
+                               {% set raw_output_field %}
+                                   <div class="row flex-row justify-content-center">
+                                       <div class="tab-content p-2 flex-grow-1 card">
+                                           <pre class="bg-white text-dark" name="webhook_result"></pre>
+                                       </div>
+                                   </div>
+                               {% endset %}
+                               {{ fields.nullField() }}
+                               {{ fields.htmlField(
+                                   '',
+                                   raw_output_field,
+                                   __('Complete output from the API'), {
+                                     is_horizontal: false,
+                                  }
+                               ) }}
+
+                               {% set payload_output_field %}
+                                   <div class="row flex-row justify-content-center">
+                                       <div class="tab-content p-2 flex-grow-1 card">
+                                           <pre class="bg-white text-dark" name="webhook_payload_result"></pre>
+                                       </div>
+                                   </div>
+                               {% endset %}
+                               {{ fields.htmlField(
+                                   '',
+                                   payload_output_field,
+                                   __('Payload output'), {
+                                     is_horizontal: false,
+                                  }
+                               ) }}
+
+                               <script>
+                                   $(() => {
+                                       $('select[name="itemtype"]').trigger('change');
+                                   });
+                                   $('button[name="get_webhook_response"]').click(() => {
+                                       const itemtype = $('select[name="itemtype"]').val();
+                                       const items_id = $('select[name="items_id"]').val();
+                                       const event = $('select[name="event"]').val();
+
+                                       $.ajax({
+                                           type: 'POST',
+                                           url: '{{ path('/ajax/webhook.php') }}',
+                                           data: {
+                                               action: 'get_webhook_body',
+                                               itemtype : itemtype,
+                                               items_id: items_id,
+                                               event: event,
+                                               raw_output: true
+                                           },
+                                           success: function(response) {
+                                               $('pre[name="webhook_result"]').text(response);
+                                           },
+                                       });
+
+                                       $.ajax({
+                                           type: 'POST',
+                                           url: '{{ path('/ajax/webhook.php') }}',
+                                           data: {
+                                               action: 'get_webhook_body',
+                                               itemtype: itemtype,
+                                               items_id: items_id,
+                                               event: event,
+                                               webhook_id: {{ item.fields['id'] }},
+                                           },
+                                           success: function(response) {
+                                               $('pre[name="webhook_payload_result"]').text(response);
+                                           },
+                                       });
+                                   });
+                               </script>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+   {% endblock %}
+{% endblock %}

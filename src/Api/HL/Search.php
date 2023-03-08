@@ -599,7 +599,7 @@ final class Search
      * @param array $request_params
      * @return array
      */
-    protected static function getInputParamsBySchema(array $schema, array $request_params): array
+    public static function getInputParamsBySchema(array $schema, array $request_params): array
     {
         $params = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);

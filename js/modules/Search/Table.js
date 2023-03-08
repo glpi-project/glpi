@@ -39,11 +39,21 @@ window.GLPI.Search = window.GLPI.Search || {};
 
 window.GLPI.Search.Table = class Table extends GenericView {
 
-    constructor(result_view_element_id, push_history = true) {
+    constructor(result_view_element_id, push_history = true, forced_params = {}) {
         const element_id = $('#'+result_view_element_id).find('table.search-results').attr('id');
         super(element_id);
 
         this.push_history = push_history;
+        this.forced_params = forced_params;
+
+        const search_container = this.getElement().closest('.search-container');
+        this.embedded_mode = !(search_container.length > 0 && search_container.find('form.search-form-container').length > 0);
+
+        if (!this.embedded_mode) {
+            // Remove 'criteria' from the forced params as we want it to be determined by the form
+            delete this.forced_params.criteria;
+        }
+
         this.shiftSelectAllCheckbox();
     }
 
@@ -183,7 +193,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
                     search_data['order'] = sort_state['order'];
                 }
 
-                search_data = Object.assign(search_data, search_criteria, search_overrides);
+                search_data = Object.assign(search_data, search_criteria, this.forced_params, search_overrides);
             }
 
             if (this.push_history) {

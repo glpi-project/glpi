@@ -46,6 +46,12 @@ class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMidd
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
+        if (!isAPI()) {
+            // If someone uses the Router in a non-API context, we don't want to mess with the body formatting or do anything else.
+            // See Webhooks feature for an example of this non-API context usage.
+            $next($input);
+            return;
+        }
         $use_mode = isset($_SESSION['glpi_use_mode']) ? (int) $_SESSION['glpi_use_mode'] : \Session::NORMAL_MODE;
         if ($use_mode !== \Session::DEBUG_MODE) {
             $next($input);

@@ -9,6 +9,7 @@
         "npm": ">= 8.0"
     },
     "dependencies": {
+        "@algolia/autocomplete-js": "^1.10.0",
         "@codemirror/lang-css": "^6.2.0",
         "@codemirror/lang-json": "^6.0.1",
         "@codemirror/lang-sql": "^6.5.2",
@@ -59,6 +60,7 @@
         "leaflet.markercluster": "^1.4.1",
         "lodash": "^4.17.21",
         "masonry-layout": "^4.2.2",
+        "monaco-editor": "^0.39.0",
         "path-browserify": "^1.0.1",
         "photoswipe": "^5.3.7",
         "plain-scrollbar": "github:ewya/PlainScrollbar#35221e7c7fa9633d6f61bcd9d7b418b6de6da73b",
@@ -91,6 +93,7 @@
         "jest-environment-jsdom": "^29.5.0",
         "jest-extended": "^4.0.0",
         "mini-css-extract-plugin": "^2.7.6",
+        "monaco-editor-webpack-plugin": "^7.0.1",
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
         "stylelint": "^15.10.1",

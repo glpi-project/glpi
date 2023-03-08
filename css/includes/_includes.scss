@@ -37,6 +37,7 @@ $is-dark: false !default;
 @import "mixins/badges_fixes";
 @import "global-variables";
 @import "highcontrast";
+@import "components/autocomplete";
 @import "components/asset-form";
 @import "components/buttons-group";
 @import "components/callout";

@@ -378,7 +378,11 @@ class ITILSolution extends CommonDBChild
                 $statuses = self::getStatuses();
 
                 return (isset($statuses[$value]) ? $statuses[$value] : $value);
-            break;
+            case 'itemtype':
+                if (in_array($values['itemtype'], ['Ticket', 'Change', 'Problem'])) {
+                    return $values['itemtype']::getTypeName(1);
+                }
+                return $values['itemtype'];
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -400,7 +404,12 @@ class ITILSolution extends CommonDBChild
                 $options['display'] = false;
                 $options['value'] = $values[$field];
                 return Dropdown::showFromArray($name, self::getStatuses(), $options);
-            break;
+            case 'itemtype':
+                return Dropdown::showFromArray($field, [
+                    'Ticket' => Ticket::getTypeName(1),
+                    'Change' => Change::getTypeName(1),
+                    'Problem' => Problem::getTypeName(1),
+                ], $options);
         }
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -424,5 +433,64 @@ class ITILSolution extends CommonDBChild
     public static function getIcon()
     {
         return 'ti ti-check';
+    }
+
+    public function rawSearchOptions()
+    {
+
+        $tab = [];
+
+        $tab[] = [
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
+        ];
+
+        $tab[] = [
+            'id'                 => 1,
+            'table'              => self::getTable(),
+            'field'              => 'content',
+            'name'               => __('Description'),
+            'datatype'           => 'text',
+            'htmltext'           => true,
+        ];
+
+        $tab[] = [
+            'id'                 => 2,
+            'table'              => self::getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'datatype'           => 'number',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => 3,
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => User::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'right'              => 'all'
+        ];
+
+        $tab[] = [
+            'id'                 => 4,
+            'table'              => self::getTable(),
+            'field'              => 'itemtype',
+            'name'               => __('Itemtype'),
+            'datatype'           => 'specific',
+            'searchtype'         => 'equals',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                => 5,
+            'table'             => SolutionType::getTable(),
+            'field'             => 'name',
+            'name'              => SolutionType::getTypeName(1),
+            'datatype'          => 'dropdown',
+            'searchtype'        => 'equals',
+        ];
+
+        return $tab;
     }
 }

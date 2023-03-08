@@ -961,6 +961,7 @@ class CronTask extends CommonDBTM
      * @param integer $frequency execution frequency
      * @param array   $options   optional options
      *       (state, mode, allowmode, hourmin, hourmax, logs_lifetime, param, comment)
+     * @phpstan-param array{state: CronTask::STATE_*, mode: CronTask::MODE_*, allowmode: int, hourmin: int, hourmax: int, logs_lifetime: int, param: int, comment: string} $options
      *
      * @return boolean
      **/

@@ -892,6 +892,30 @@ $empty_data_builder = new class
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
                 'hourmax' => 6,
+            ], [
+                'id' => 46,
+                'itemtype' => 'QueuedWebhook',
+                'name' => 'queuedwebhook',
+                'frequency' => MINUTE_TIMESTAMP,
+                'param' => 50,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ], [
+                'id' => 47,
+                'itemtype' => 'QueuedWebhook',
+                'name' => 'queuedwebhookclean',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => 30,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ],
         ];
 
@@ -1959,6 +1983,8 @@ $empty_data_builder = new class
         $ADDTODISPLAYPREF[Socket::class] = [5, 6, 9, 8, 7];
         $ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
         $ADDTODISPLAYPREF[KnowbaseItem::class] = [79, 131, 13];
+        $ADDTODISPLAYPREF[Webhook::class] = [3, 4, 5];
+        $ADDTODISPLAYPREF[QueuedWebhook::class] = [80, 2, 22, 20, 21, 7, 30, 16];
 
         foreach ($ADDTODISPLAYPREF as $type => $options) {
             $rank = 1;

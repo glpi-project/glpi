@@ -502,6 +502,22 @@ final class ITILController extends AbstractController
     }
 
     /**
+     * @param class-string<\CommonDBTM> $subtype
+     * @return string
+     */
+    public static function getFriendlyNameForSubtype(string $subtype): string
+    {
+        return match (true) {
+            is_subclass_of($subtype, \CommonITILTask::class) => 'Task',
+            $subtype === \ITILFollowup::class => 'Followup',
+            $subtype === \Document_Item::class => 'Document',
+            $subtype === \ITILSolution::class => 'Solution',
+            is_subclass_of($subtype, \CommonITILValidation::class) => 'Validation',
+            default => $subtype,
+        };
+    }
+
+    /**
      * @param string $subitem_schema_name
      * @param class-string<CommonITILObject> $itemtype
      * @return array
@@ -730,7 +746,7 @@ final class ITILController extends AbstractController
         return new JSONResponse($timeline);
     }
 
-    private function getSubitemType(CommonITILObject $parent_item, string $friendly_name): string
+    public function getSubitemType(CommonITILObject $parent_item, string $friendly_name): string
     {
         return match ($friendly_name) {
             'Followup' => 'ITILFollowup',
@@ -743,7 +759,7 @@ final class ITILController extends AbstractController
         };
     }
 
-    private function getSubitemFriendlyType(CommonITILObject $parent_item, string $itemtype): string
+    public function getSubitemFriendlyType(CommonITILObject $parent_item, string $itemtype): string
     {
         return match ($itemtype) {
             'ITILFollowup' => 'Followup',
