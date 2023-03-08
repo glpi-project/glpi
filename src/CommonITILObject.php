@@ -4129,6 +4129,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => _n('Requester', 'Requesters', 1),
             'forcegroupby'       => true,
             'massiveaction'      => false,
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->userlinkclass),
@@ -4157,6 +4158,7 @@ abstract class CommonITILObject extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'condition'          => ['is_requester' => 1],
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->grouplinkclass),
@@ -4211,6 +4213,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => _n('Watcher', 'Watchers', 1),
             'forcegroupby'       => true,
             'massiveaction'      => false,
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->userlinkclass),
@@ -4231,6 +4234,7 @@ abstract class CommonITILObject extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'condition'          => ['is_watcher' => 1],
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->grouplinkclass),
@@ -4256,6 +4260,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Technician'),
             'forcegroupby'       => true,
             'massiveaction'      => false,
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->userlinkclass),
@@ -4275,6 +4280,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Assigned to a supplier'),
             'forcegroupby'       => true,
             'massiveaction'      => false,
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->supplierlinkclass),
@@ -4295,6 +4301,7 @@ abstract class CommonITILObject extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'condition'          => ['is_assign' => 1],
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->grouplinkclass),
