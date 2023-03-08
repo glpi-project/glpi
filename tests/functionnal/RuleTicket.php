@@ -2964,6 +2964,5 @@ class RuleTicket extends DbTestCase
                 'items_id' => $ticketsUpdate_id
             ]
         ))->isEqualTo(1);
-
     }
 }
