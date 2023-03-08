@@ -6150,7 +6150,9 @@ class CommonDBTM extends CommonGLPI
 
         return new MassiveAction($params, [], 'initial', $this->getID());
     }
-
+    /**
+     * Check whether actions are allowed for given item.
+     */
     public static function isMassiveActionAllowed(int $items_id): bool
     {
         return true;

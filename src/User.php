@@ -175,7 +175,8 @@ class User extends CommonDBTM
         }
 
         //prevent delete / purge from API
-        if (!self::isMassiveActionAllowed($this->fields['id'])) {
+        global $CFG_GLPI;
+        if ($this->fields['id'] == $CFG_GLPI['system_user']) {
             return false;
         }
 
