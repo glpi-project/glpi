@@ -256,7 +256,7 @@ class RuleTicket extends Rule
 
                         // special case of project
                         if ($action->fields["field"] == "assign_project") {
-                            if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
+                            if (!array_key_exists("_projects_id", $output)) {
                                 $output["_projects_id"] = [];
                             }
                             $output["_projects_id"][] = $action->fields["value"];
@@ -303,10 +303,10 @@ class RuleTicket extends Rule
                             }
                             $output["items_id"][Appliance::getType()][] = $value;
                         } else if ($action->fields["field"] === "assign_project") {
-                            if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
-                                $output["items_id"] = [];
+                            if (!array_key_exists("_projects_id", $output)) {
+                                $output["_projects_id"] = [];
                             }
-                            $output["items_id"][Project::getType()][] = $value;
+                            $output["_projects_id"][] = $value;
                         } else {
                             $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
                         }
@@ -488,7 +488,7 @@ class RuleTicket extends Rule
                                 $projects = new Project();
                                 $target_projects = $projects->find(["name" => $regexvalue]);
 
-                                if ((!array_key_exists("_projects_id", $output) || $output['_projects_id'] == '0') && count($target_projects) > 0) {
+                                if (!array_key_exists("_projects_id", $output) && count($target_projects) > 0) {
                                     $output["_projects_id"] = [];
                                 }
 
