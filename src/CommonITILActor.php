@@ -352,6 +352,14 @@ abstract class CommonITILActor extends CommonDBRelation
         if (isset($input[$fk_field]) && $input[$fk_field] > 0) {
             $current_type    = $input['type'] ?? 0;
             $actor_id        = $input[$fk_field];
+
+            // check if the actor exists in database
+            $itemtype = getItemtypeForForeignKeyField($fk_field);
+            $actor = new $itemtype();
+            if (!$actor->getFromDB($actor_id)) {
+                return false;
+            }
+
             $existing_actors = $this->getActors($input[static::getItilObjectForeignKey()] ?? 0);
             $existing_ids    = array_column($existing_actors[$current_type] ?? [], $fk_field);
 
