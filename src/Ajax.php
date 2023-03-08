@@ -323,6 +323,7 @@ JAVASCRIPT;
             $html_tabs = "";
             $html_sele = "";
             $i = 0;
+            $withtemplate = (int) $_GET['withtemplate'] ?? 0;
 
             // Hide tabs if only one single tab on item creation form
             $display_class = "";
@@ -369,7 +370,7 @@ JAVASCRIPT;
                      itemtype: '" . addslashes($type) . "',
                      id: '$ID',
                      tab: index,
-                     withtemplate: " . ($_GET['withtemplate'] ?? 0) . "
+                     withtemplate: '$withtemplate'
                   }
                );
             }
