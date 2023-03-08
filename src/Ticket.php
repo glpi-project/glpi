@@ -1762,14 +1762,16 @@ class Ticket extends CommonITILObject
         }
 
         // Add linked project
-        $projects_id = $this->input['_projects_id'] ?? 0;
-        if ($projects_id) {
-            $item_project = new Item_Project();
-            $item_project->add([
-                'projects_id' => $projects_id,
-                'itemtype'   => Ticket::class,
-                'items_id'   => $this->getID(),
-            ]);
+        $projects_ids = $this->input['_projects_id'] ?? [];
+        foreach ($projects_ids as $projects_id) {
+            if ($projects_id) {
+                $item_project = new Item_Project();
+                $item_project->add([
+                    'projects_id' => $projects_id,
+                    'itemtype'   => Ticket::class,
+                    'items_id'   => $this->getID(),
+                ]);
+            }
         }
     }
 
@@ -2175,16 +2177,17 @@ class Ticket extends CommonITILObject
         }
 
         // Add linked project
-        $projects_id = $this->input['_projects_id'] ?? 0;
-        if ($projects_id) {
-            $item_project = new Item_Project();
-            $item_project->add([
-                'projects_id' => $projects_id,
-                'itemtype'   => Ticket::class,
-                'items_id'   => $this->getID(),
-            ]);
+        $projects_ids = $this->input['_projects_id'] ?? [];
+        foreach ($projects_ids as $projects_id) {
+            if ($projects_id) {
+                $item_project = new Item_Project();
+                $item_project->add([
+                    'projects_id' => $projects_id,
+                    'itemtype'   => Ticket::class,
+                    'items_id'   => $this->getID(),
+                ]);
+            }
         }
-
         $this->handleItemsIdInput();
 
         parent::post_addItem();
