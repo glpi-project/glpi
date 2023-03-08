@@ -58,6 +58,7 @@
       <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
             data-use-notification="{{ actor['use_notification'] }}"
+            data-allow-notification="{{ actor['allow_notification'] }}"
             data-alternative-email="{{ actor['alternative_email'] }}"
             {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype)) %}
                disabled="disabled" style="display: none;"
@@ -84,6 +85,7 @@
          var text      = escapeMarkupText(element.data('text') ?? option.text ?? '');
          var title     = escapeMarkupText(element.data('title') ?? option.title ?? '');
          var use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
+         var allow_notif = element.data('allow-notification') ?? option.allow_notification ?? 1;
          var alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
 
          var icon = "";
@@ -124,15 +126,23 @@
          {% if canupdate %}
          if (['User', 'Supplier', 'Email'].includes(itemtype)
             && is_selection) {
-            var fa_class = "far";
-            if (use_notif) {
-               fa_class = "fas";
+            var fa_class = "far fa-bell";
+
+            //notification allowed
+            if (use_notif && allow_notif) {
+               fa_class = "fas fa-bell";
             }
+
+            //notification explicitly refuse
+            if (!allow_notif) {
+               fa_class = "fas fa-bell-slash";
+            }
+
             actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
                               data-bs-toggle="tooltip" data-bs-placement="top"
                               title="{{ __('Email followup') }}"
                               type="button">
-               <i class="${fa_class} fa-bell notify-icon"></i>
+               <i class="${fa_class} notify-icon"></i>
             </button>`;
          }
          {% endif %}

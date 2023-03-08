@@ -118,6 +118,11 @@ $empty_data_builder = new class
             ];
         }
 
+        $mode = [
+            Notification_NotificationTemplate::MODE_MAIL,
+            Notification_NotificationTemplate::MODE_AJAX
+        ];
+
         $default_prefs = [
             'version' => 'FILLED AT INSTALL',
             'show_jobs_at_login' => '0',
@@ -354,6 +359,7 @@ $empty_data_builder = new class
             '2fa_enforced' => 0,
             '2fa_grace_date_start' => null,
             '2fa_grace_days' => 0,
+            'allow_notifications_type' => exportArrayToDB($mode),
         ];
 
         $tables['glpi_configs'] = [];
@@ -8649,6 +8655,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
+        $mode = [
+            Notification_NotificationTemplate::MODE_MAIL,
+            Notification_NotificationTemplate::MODE_AJAX
+        ];
+
         $tables['glpi_users'] = [
             [
                 'id' => self::USER_GLPI,
@@ -8658,6 +8669,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => null,
                 'list_limit' => '20',
                 'authtype' => '1',
+                'allow_notifications_type' => exportArrayToDB($mode),
             ], [
                 'id' => self::USER_POST_ONLY,
                 'name' => 'post-only',
@@ -8666,6 +8678,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
+                'allow_notifications_type' => exportArrayToDB($mode),
             ], [
                 'id' => self::USER_TECH,
                 'name' => 'tech',
@@ -8674,6 +8687,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
+                'allow_notifications_type' => exportArrayToDB($mode),
             ], [
                 'id' => self::USER_NORMAL,
                 'name' => 'normal',
@@ -8682,6 +8696,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
+                'allow_notifications_type' => exportArrayToDB($mode),
             ], [
                 'id' => self::USER_SYSTEM,
                 'name' => 'glpi-system',
@@ -8690,6 +8705,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => null,
                 'list_limit' => null,
                 'authtype' => 1,
+                'allow_notifications_type' => exportArrayToDB($mode),
             ],
         ];
 

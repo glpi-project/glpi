@@ -110,4 +110,36 @@ class NotificationMailing extends DbTestCase
              'mode'                     => 'mailing'
          ]);
     }
+
+    public function testAddRecipient()
+    {
+        //setup
+        $this->login();
+
+        $notification = new \NotificationTarget();
+        $notification->setEvent("NotificationEventMailing");
+        $notification->addToRecipientsList([
+            'users_id' => \Session::getLoginUserID()
+        ]);
+
+        $targets = $notification->getTargets();
+        $this->array($targets)->hasSize(1);
+
+
+        //update user to refuse explicitly email notification
+        $user = new \User();
+        $this->boolean($user->update([
+            'id' => \Session::getLoginUserID(),
+            'allow_notifications_type' => '[]'
+        ]))->isTrue();
+
+        $notification = new \NotificationTarget();
+        $notification->setEvent("NotificationEventMailing");
+        $notification->addToRecipientsList([
+            'users_id' => \Session::getLoginUserID()
+        ]);
+
+        $targets = $notification->getTargets();
+        $this->array($targets)->hasSize(0);
+    }
 }

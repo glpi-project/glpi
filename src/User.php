@@ -708,7 +708,15 @@ class User extends CommonDBTM
             $input["auths_id"] = 0;
         }
 
-       // Check if user does not exists
+        if (!isset($input["allow_notifications_type"])) {
+            $mode = [
+                Notification_NotificationTemplate::MODE_MAIL,
+                Notification_NotificationTemplate::MODE_AJAX
+            ];
+            $input["allow_notifications_type"] = exportArrayToDB($mode);
+        }
+
+        // Check if user does not exists
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
@@ -1041,6 +1049,14 @@ class User extends CommonDBTM
         ) {
             $input['api_token']      = self::getUniqueToken('api_token');
             $input['api_token_date'] = $_SESSION['glpi_currenttime'];
+        }
+
+        // notifications
+        if (isset($input["_allow_notifications_types"])) {
+            if ((!isset($input["allow_notifications_type"])) || (!is_array($input["allow_notifications_type"]))) {
+                $input["allow_notifications_type"] = [];
+            }
+            $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
         }
 
        // Manage preferences fields
@@ -2790,6 +2806,7 @@ JAVASCRIPT;
             echo "</td>";
         }
         echo "</tr>";
+
 
         if (empty($ID)) {
             echo "<tr class='tab_bg_1'>";
@@ -7045,5 +7062,15 @@ JAVASCRIPT;
             count($users_ids) == 1 // Only one super admin auth
             && $users_ids[0] == $this->fields['id'] // Id match our user
         ;
+    }
+
+    /**
+     * Check if this User refused notification from specific mode
+     *
+     * @return bool
+     */
+    public function isRefusedNotificationMode(string $mode): bool
+    {
+        return (!in_array($mode, importArrayFromDB($this->fields['allow_notifications_type'])));
     }
 }

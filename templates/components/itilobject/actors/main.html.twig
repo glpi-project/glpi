@@ -165,6 +165,7 @@
             <div class="form-check form-switch">
                <input class="form-check-input" type="checkbox" id="use_notification" name="_notifications_use_notification" />
                <label class="form-check-label" for="use_notification">{{ __('Email followup') }}</label>
+               <label class="form-check-label center invisible text-danger" id="label_user_refuse_notification">{{ __('The user has explicitly refused the notifications') }}</label>
             </div>
             <input type="email" class="form-control" id="alternative_email" name="_notifications_alternative_email" />
          </div>
@@ -204,6 +205,7 @@
                itemtype: "{{ actor['itemtype'] }}",
                items_id: "{{ actor['items_id'] }}",
                use_notification: {{ actor['use_notification'] ? "1" : "0" }},
+               allow_notification: "{{ actor['allow_notification'] }}",
                {% if actor['alternative_email'] is defined %}
                   alternative_email: "{{ actor['alternative_email'] }}",
                {% endif %}
@@ -230,7 +232,19 @@
       modal.find("input[name=_notifications_actortype]").val(actortype);
       modal.find("input[name=_notifications_actorindex]").val(actorIndex);
       modal.find("input[name=_notifications_actorname]").removeAttr('readonly').val(text).attr('readonly', 'true');
-      modal.find("input[name=_notifications_use_notification]").prop('checked', parseInt(actor.use_notification));
+
+      if (parseInt(actor.use_notification) && parseInt(actor.allow_notification)) {
+         modal.find("input[name=_notifications_use_notification]").prop('checked', 1);
+      } else {
+         if (!parseInt(actor.allow_notification)) {
+            modal.find("#label_user_refuse_notification").removeClass('invisible');
+            modal.find("input[name=_notifications_use_notification]").prop('checked', 0);
+            modal.find("#use_notification").attr("disabled", true);
+            modal.find("#alternative_email").attr("disabled", true);
+            modal.find("#saveActorNotifySettings").addClass('invisible');
+         }
+      }
+
       modal.find("input[name=_notifications_alternative_email]").val(actor.alternative_email);
 
       editActorNotifySettings_modal.show();

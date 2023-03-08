@@ -3890,15 +3890,22 @@ JAVASCRIPT;
     {
         global $CFG_GLPI;
 
+        $allow_notification = 1; //default from user pref
         if (is_numeric(Session::getLoginUserID(false))) {
             $users_id_requester = Session::getLoginUserID();
             $users_id_assign    = Session::getLoginUserID();
+
+            $user = new User();
+            $user->getFromDB(Session::getLoginUserID());
+            $allow_notification = !$user->isRefusedNotificationMode(Notification_NotificationTemplate::MODE_MAIL);
            // No default requester if own ticket right = tech and update_ticket right to update requester
             if (Session::haveRightsOr(self::$rightname, [UPDATE, self::OWN]) && !$_SESSION['glpiset_default_requester']) {
                 $users_id_requester = 0;
+                $allow_notification = 1; //reset to true
             }
             if (!Session::haveRight(self::$rightname, self::OWN) || !$_SESSION['glpiset_default_tech']) {
                 $users_id_assign = 0;
+                $allow_notification = 1; //reset to true
             }
             $entity      = $_SESSION['glpiactive_entity'];
             $requesttype = $_SESSION['glpidefault_requesttypes_id'];
@@ -3914,12 +3921,12 @@ JAVASCRIPT;
 
        // Set default values...
         return  ['_users_id_requester'       => $users_id_requester,
-            '_users_id_requester_notif' => ['use_notification'  => [$default_use_notif],
+            '_users_id_requester_notif' => ['use_notification'  => [(string) ($default_use_notif & $allow_notification)],
                 'alternative_email' => ['']
             ],
             '_groups_id_requester'      => 0,
             '_users_id_assign'          =>  $users_id_assign,
-            '_users_id_assign_notif'    => ['use_notification'  => [$default_use_notif],
+            '_users_id_assign_notif'    => ['use_notification'  => [(string) ($default_use_notif & $allow_notification)],
                 'alternative_email' => ['']
             ],
             '_groups_id_assign'         => 0,

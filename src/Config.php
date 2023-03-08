@@ -1438,6 +1438,22 @@ JAVASCRIPT
             echo "</td></tr>";
         }
 
+        if ($userpref) {
+            echo "<tr class='tab_bg_1'><th colspan='4'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) . "</th></tr>";
+
+            echo "<tr class='tab_bg_2'>";
+            echo "<td>" . __("Receive notifications from GLPI") . "</td><td>";
+
+            $data['allow_notifications_type'] = importArrayFromDB($data['allow_notifications_type']);
+            echo "<input type='hidden' name='_allow_notifications_types' value='1'>";
+            Notification_NotificationTemplate::dropdownMode([
+                'values' => $data['allow_notifications_type'],
+                'name' => 'allow_notifications_type',
+                'multiple' => true
+            ]);
+            echo "</td></tr>";
+        }
+
         echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>" . __('Notification popups') . "</th></tr>";
 
         echo "<tr class='tab_bg_2'>";
