@@ -488,7 +488,7 @@ class RuleTicket extends Rule
                                 $projects = new Project();
                                 $target_projects = $projects->find(["name" => $regexvalue]);
 
-                                if ((!array_key_exists("items_id", $output) || $output['items_id'] == '0') && count($target_projects) > 0) {
+                                if ((!array_key_exists("_projects_id", $output) || $output['_projects_id'] == '0') && count($target_projects) > 0) {
                                     $output["_projects_id"] = [];
                                 }
 
