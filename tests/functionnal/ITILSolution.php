@@ -500,4 +500,88 @@ HTML
         $this->boolean($ticket->getFromDB($ticket->fields['id']))->isTrue();
         $this->integer($ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
     }
+
+    public function testTicketSolutionValidation()
+    {
+        $tech_id     = getItemByTypeName('User', 'tech', true);
+        $postonly_id = getItemByTypeName('User', 'post-only', true);
+
+        // create ticket
+        $this->login('post-only', 'postonly');
+        $ticket = new Ticket();
+        $ticket_id = (int)$ticket->add([
+            'name'               => 'ticket title',
+            'description'        => 'a description',
+            'content'            => '',
+            '_users_id_requester' => $postonly_id,
+            '_users_id_assign'    => $tech_id,
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        $this->boolean($ticket->isNewItem())->isFalse();
+        $this->variable($ticket->getField('status'))->isIdenticalTo($ticket::ASSIGNED);
+
+        // add solution
+        $this->login('tech', 'tech');
+        $solution = new \ITILSolution();
+        $solution_id = (int)$solution->add([
+            'itemtype'           => $ticket::getType(),
+            'items_id'           => $ticket->getID(),
+            'content'            => 'a solution',
+        ]);
+        $this->integer($solution_id)->isGreaterThan(0);
+
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->variable((int)$solution->getField('status'))->isIdenticalTo(\CommonITILValidation::WAITING);
+        $this->variable((int)$ticket->getField('status'))->isIdenticalTo($ticket::SOLVED);
+
+        //refuse solution
+        $this->login('post-only', 'postonly');
+        $follow = new \ITILFollowup();
+        $follow_id = (int)$follow->add([
+            'itemtype'  => $ticket::getType(),
+            'items_id'   => $ticket->getID(),
+            'add_reopen'   => '1',
+            'content'      => 'This is required'
+        ]);
+        $this->integer($follow_id)->isGreaterThan(0);
+
+        $this->boolean($follow->getFromDB($follow_id))->isTrue();
+        $this->boolean($solution->getFromDB($solution_id))->isTrue();
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::REFUSED);
+        $this->integer((int)$ticket->fields['status'])->isIdenticalTo($ticket::ASSIGNED);
+
+        // add solution
+        $this->login('tech', 'tech');
+        $solution = new \ITILSolution();
+        $solution_id = (int)$solution->add([
+            'itemtype'           => $ticket::getType(),
+            'items_id'           => $ticket->getID(),
+            'content'            => 'a solution',
+        ]);
+        $this->integer($solution_id)->isGreaterThan(0);
+
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->variable((int)$solution->getField('status'))->isIdenticalTo(\CommonITILValidation::WAITING);
+        $this->variable((int)$ticket->getField('status'))->isIdenticalTo($ticket::SOLVED);
+
+        //approve solution
+        $this->login('post-only', 'postonly');
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->boolean((bool)$ticket->needReopen())->isTrue();
+        $follow = new \ITILFollowup();
+        $follow_id = (int)$follow->add([
+            'itemtype'  => $ticket::getType(),
+            'items_id'   => $ticket->getID(),
+            'add_close'    => '1'
+        ]);
+        $this->integer($follow_id)->isGreaterThan(0);
+
+        $this->boolean($follow->getFromDB($follow_id))->isTrue();
+        $this->boolean($solution->getFromDB($solution_id))->isTrue();
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::ACCEPTED);
+        $this->integer((int)$ticket->fields['status'])->isIdenticalTo($ticket::CLOSED);
+    }
 }
