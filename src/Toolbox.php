@@ -41,7 +41,8 @@ use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\VersionParser;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -358,13 +359,13 @@ class Toolbox
     /**
      * Log in 'php-errors' all args
      *
-     * @param Logger  $logger Logger instance, if any
-     * @param integer $level  Log level (defaults to warning)
-     * @param array   $args   Arguments (message to log, ...)
+     * @param LoggerInterface   $logger Logger instance, if any
+     * @param integer           $level  Log level (defaults to warning)
+     * @param array             $args   Arguments (message to log, ...)
      *
      * @return void
      **/
-    private static function log($logger = null, $level = Logger::WARNING, $args = null)
+    private static function log(LoggerInterface $logger = null, $level = LogLevel::WARNING, $args = null)
     {
         static $tps = 0;
 
@@ -422,7 +423,7 @@ class Toolbox
         }
 
         global $SQLLOGGER;
-        if (isCommandLine() && $level >= Logger::WARNING && $logger !== $SQLLOGGER) {
+        if (isCommandLine() && $level >= LogLevel::WARNING && $logger !== $SQLLOGGER) {
            // Do not output related messages to $SQLLOGGER as they are redundant with
            // output made by "ErrorHandler::handleSql*()" methods.
             echo $msg;
@@ -434,7 +435,7 @@ class Toolbox
      */
     public static function logDebug()
     {
-        self::log(null, Logger::DEBUG, func_get_args());
+        self::log(null, LogLevel::DEBUG, func_get_args());
     }
 
     /**
@@ -447,7 +448,7 @@ class Toolbox
             . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
             . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
         );
-        self::log(null, Logger::NOTICE, func_get_args());
+        self::log(null, LogLevel::NOTICE, func_get_args());
     }
 
     /**
@@ -455,7 +456,7 @@ class Toolbox
      */
     public static function logInfo()
     {
-        self::log(null, Logger::INFO, func_get_args());
+        self::log(null, LogLevel::INFO, func_get_args());
     }
 
     /**
@@ -468,7 +469,7 @@ class Toolbox
             . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
             . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
         );
-        self::log(null, Logger::WARNING, func_get_args());
+        self::log(null, LogLevel::WARNING, func_get_args());
     }
 
     /**
@@ -481,7 +482,7 @@ class Toolbox
             . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
             . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
         );
-        self::log(null, Logger::ERROR, func_get_args());
+        self::log(null, LogLevel::ERROR, func_get_args());
     }
 
     /**
@@ -491,7 +492,7 @@ class Toolbox
     {
         global $SQLLOGGER;
         $args = func_get_args();
-        self::log($SQLLOGGER, Logger::DEBUG, $args);
+        self::log($SQLLOGGER, LogLevel::DEBUG, $args);
     }
 
     /**
@@ -501,7 +502,7 @@ class Toolbox
     {
         global $SQLLOGGER;
         $args = func_get_args();
-        self::log($SQLLOGGER, Logger::WARNING, $args);
+        self::log($SQLLOGGER, LogLevel::WARNING, $args);
     }
 
     /**
@@ -511,7 +512,7 @@ class Toolbox
     {
         global $SQLLOGGER;
         $args = func_get_args();
-        self::log($SQLLOGGER, Logger::ERROR, $args);
+        self::log($SQLLOGGER, LogLevel::ERROR, $args);
     }
 
 
@@ -2836,7 +2837,7 @@ class Toolbox
     public static function jsonDecode($encoded, $assoc = false)
     {
         if (!is_string($encoded)) {
-            self::log(null, Logger::NOTICE, ['Only strings can be json to decode!']);
+            self::log(null, LogLevel::NOTICE, ['Only strings can be json to decode!']);
             return $encoded;
         }
 
@@ -2852,7 +2853,7 @@ class Toolbox
         }
 
         if ($json_data === null) {
-            self::log(null, Logger::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
+            self::log(null, LogLevel::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
             return $encoded;
         }
 
