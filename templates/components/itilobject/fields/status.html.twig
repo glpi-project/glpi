@@ -33,6 +33,10 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% if itiltemplate.isReadonlyField('status') %}
+   {% set field_options = field_options|merge({'readonly': true}) %}
+{% endif %}
+
 {% if canupdate %}
    {% set status_field %}
       {{ item.dropdownStatus({

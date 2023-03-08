@@ -70,3 +70,36 @@ foreach ($itiltemplate_tables as $table => $all_statuses) {
         ]);
     }
 }
+
+if (!$DB->tableExists('glpi_tickettemplatereadonlyfields')) {
+    $query = "CREATE TABLE `glpi_tickettemplatereadonlyfields` (
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+        `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
+        `num` int NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `unicity` (`tickettemplates_id`,`num`)
+   ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->queryOrDie($query, "add table glpi_tickettemplatereadonlyfields");
+}
+
+if (!$DB->tableExists('glpi_changetemplatereadonlyfields')) {
+    $query = "CREATE TABLE `glpi_changetemplatereadonlyfields` (
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+        `changetemplates_id` int unsigned NOT NULL DEFAULT '0',
+        `num` int NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `unicity` (`changetemplates_id`,`num`)
+   ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->queryOrDie($query, "add table glpi_changetemplatereadonlyfields");
+}
+
+if (!$DB->tableExists('glpi_problemtemplatereadonlyfields')) {
+    $query = "CREATE TABLE `glpi_problemtemplatereadonlyfields` (
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+        `problemtemplates_id` int unsigned NOT NULL DEFAULT '0',
+        `num` int NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `unicity` (`problemtemplates_id`,`num`)
+   ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->queryOrDie($query, "add table glpi_problemtemplatereadonlyfields");
+}

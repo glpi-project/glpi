@@ -33,40 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Problem template class
- *
- * since version 9.5.0
- **/
-class ProblemTemplate extends ITILTemplate
+/// Readonly fields for ticket template class
+/// since version 10.1.0
+class TicketTemplateReadonlyField extends ITILTemplateReadonlyField
 {
-    use Glpi\Features\Clonable;
-
-    public $second_level_menu         = "problem";
-    public $third_level_menu          = "ProblemTemplate";
-
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Problem template', 'Problem templates', $nb);
-    }
-
-    public function getCloneRelations(): array
-    {
-        return [
-            ProblemTemplateHiddenField::class,
-            ProblemTemplateMandatoryField::class,
-            ProblemTemplatePredefinedField::class,
-            ProblemTemplateReadonlyField::class,
-        ];
-    }
-
-    public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0)
-    {
-        $problem = new Problem();
-        return [
-            $problem->getSearchOptionIDByField('field', 'impactcontent', 'glpi_problems')  => 'impactcontent',
-            $problem->getSearchOptionIDByField('field', 'causecontent', 'glpi_problems')   => 'causecontent',
-            $problem->getSearchOptionIDByField('field', 'symptomcontent', 'glpi_problems') => 'symptomcontent',
-        ];
-    }
+   // From CommonDBChild
+    public static $itemtype  = 'TicketTemplate';
+    public static $items_id  = 'tickettemplates_id';
+    public static $itiltype = 'Ticket';
 }

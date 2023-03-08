@@ -1922,6 +1922,7 @@ JAVASCRIPT;
         $params['display_emptychoice'] = true;
         $params['width']               = '';
         $params['class']               = 'form-select';
+        $params['readonly']            = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -2025,6 +2026,7 @@ JAVASCRIPT;
             'rand'                => $params['rand'],
             'emptylabel'          => $params['emptylabel'],
             'class'               => $params['class'],
+            'readonly'            => $params['readonly'],
         ]);
     }
 

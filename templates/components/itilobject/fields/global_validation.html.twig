@@ -70,6 +70,7 @@
                'right': validation_right,
                'display': false,
                'disabled': (not canupdate),
+               'readonly': (field_options.fields_template.isReadonlyField('_add_validation')),
             }|merge(required)),
             __('Approval request'),
             field_options
