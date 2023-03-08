@@ -2880,9 +2880,6 @@ class RuleTicket extends DbTestCase
         ]);
         $this->checkInput($projectTest1, $projecttest1_id, $projectTest1_input);
 
-       //add project to ticket type
-        $CFG_GLPI["ticket_types"][] = \Project::getType();
-
        // Add rule for create / update trigger (and assign action)
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
@@ -2926,10 +2923,10 @@ class RuleTicket extends DbTestCase
 
        //check for one associated element
         $this->integer(countElementsInTable(
-            \Item_Ticket::getTable(),
-            ['itemtype'  =>  \Project::getType(),
-                'items_id'   => $projecttest1_id,
-                'tickets_id' => $ticketsCreate_id
+            \Item_Project::getTable(),
+            ['itemtype'  =>  \Ticket::getType(),
+                'projects_id'   => $projecttest1_id,
+                'items_id' => $ticketsCreate_id
             ]
         ))->isEqualTo(1);
 
@@ -2941,12 +2938,12 @@ class RuleTicket extends DbTestCase
         ]);
         $this->checkInput($ticketUpdate, $ticketsUpdate_id, $ticketUpdate_input);
 
-       //no project associated
+        //no project associated
         $this->integer(countElementsInTable(
-            \Item_Ticket::getTable(),
-            ['itemtype'  =>  \Project::getType(),
-                'items_id'   => $projecttest1_id,
-                'tickets_id' => $ticketsUpdate_id
+            \Item_Project::getTable(),
+            ['itemtype'  =>  \Ticket::getType(),
+                'projects_id'   => $projecttest1_id,
+                'items_id' => $ticketsUpdate_id
             ]
         ))->isEqualTo(0);
 
@@ -2961,11 +2958,12 @@ class RuleTicket extends DbTestCase
 
        //check for one associated element
         $this->integer(countElementsInTable(
-            \Item_Ticket::getTable(),
-            ['itemtype'  =>  \Project::getType(),
-                'items_id'   => $projecttest1_id,
-                'tickets_id' => $ticketsUpdate_id
+            \Item_Project::getTable(),
+            ['itemtype'  =>  \Ticket::getType(),
+                'projects_id'   => $projecttest1_id,
+                'items_id' => $ticketsUpdate_id
             ]
         ))->isEqualTo(1);
+
     }
 }

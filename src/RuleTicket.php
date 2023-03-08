@@ -259,7 +259,7 @@ class RuleTicket extends Rule
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
-                            $output["items_id"][Project::getType()][] = $action->fields["value"];
+                            $output["_projects_id"] = $action->fields["value"];
                         }
 
                         // special case of contract
@@ -493,7 +493,7 @@ class RuleTicket extends Rule
                                 }
 
                                 foreach ($target_projects as $value) {
-                                    $output["items_id"][Project::getType()][] = $value['id'];
+                                    $output["projects_id"] = $value['id'];
                                 }
                             }
                         }
