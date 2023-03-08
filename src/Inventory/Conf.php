@@ -192,7 +192,7 @@ class Conf extends CommonGLPI
                         __('File has not been imported: `%s`.'),
                         sprintf('`%s` format is not supported', pathinfo($filepath, PATHINFO_EXTENSION))
                     ),
-                    'items'   => null,
+                    'items'   => [],
                     'request' => null
                 ];
             }
@@ -225,7 +225,7 @@ class Conf extends CommonGLPI
         $result = [
             'success' => false,
             'message' => null,
-            'items'   => null,
+            'items'   => [],
             'request' => null
         ];
 
