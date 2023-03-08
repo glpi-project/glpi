@@ -3624,7 +3624,7 @@ JS;
             'contentid'     => '',
             'link'          => '',
             'linkid'        => '',
-            'linktarget'    => '',
+            'linktarget'    => '_top',
             'awesome-class' => 'fa-info',
             'popup'         => '',
             'ajax'          => '',
