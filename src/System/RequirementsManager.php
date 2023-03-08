@@ -49,6 +49,7 @@ use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\MysqliMysqlnd;
 use Glpi\System\Requirement\PhpVersion;
+use Glpi\System\Requirement\SafeDocumentRoot;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
@@ -132,12 +133,15 @@ class RequirementsManager
             )
         );
 
-        $requirements[] = new DataDirectoriesProtectedPath(Variables::getDataDirectoriesConstants());
-
         $requirements[] = new SeLinux();
 
-       // Below requirements are optionals
+        // Below requirements are optionals
 
+        $safe_doc_root_requirement = new SafeDocumentRoot();
+        $requirements[] = $safe_doc_root_requirement;
+        if (!$safe_doc_root_requirement->isValidated()) {
+            $requirements[] = new DataDirectoriesProtectedPath(Variables::getDataDirectoriesConstants());
+        }
         $requirements[] = new SessionsSecurityConfiguration();
         $requirements[] = new IntegerSize();
         $requirements[] = new Extension(
