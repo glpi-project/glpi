@@ -1760,6 +1760,19 @@ class Ticket extends CommonITILObject
                 ]
             );
         }
+
+        // Add linked project
+        $projects_ids = $this->input['_projects_id'] ?? [];
+        foreach ($projects_ids as $projects_id) {
+            if ($projects_id) {
+                $item_project = new Item_Project();
+                $item_project->add([
+                    'projects_id' => $projects_id,
+                    'itemtype'   => Ticket::class,
+                    'items_id'   => $this->getID(),
+                ]);
+            }
+        }
     }
 
 
@@ -2153,7 +2166,7 @@ class Ticket extends CommonITILObject
             );
         }
 
-       // Add linked contract
+        // Add linked contract
         $contracts_id = $this->input['_contracts_id'] ?? 0;
         if ($contracts_id) {
             $ticketcontract = new Ticket_Contract();
@@ -2163,6 +2176,18 @@ class Ticket extends CommonITILObject
             ]);
         }
 
+        // Add linked project
+        $projects_ids = $this->input['_projects_id'] ?? [];
+        foreach ($projects_ids as $projects_id) {
+            if ($projects_id) {
+                $item_project = new Item_Project();
+                $item_project->add([
+                    'projects_id' => $projects_id,
+                    'itemtype'   => Ticket::class,
+                    'items_id'   => $this->getID(),
+                ]);
+            }
+        }
         $this->handleItemsIdInput();
 
         parent::post_addItem();
