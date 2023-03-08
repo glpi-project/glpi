@@ -286,6 +286,7 @@ abstract class AbstractController
         ], $status, ['Location' => $api_path]);
     }
 
+
     public static function getAPIPathForRouteFunction(string $controller, string $function, array $params = [], bool $allow_invalid = false): string
     {
         $route_paths = Router::getInstance()->getAllRoutes();

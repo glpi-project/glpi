@@ -665,6 +665,7 @@ $RELATION = [
         'glpi_users'                       => 'entities_id',
         'glpi_vlans'                       => 'entities_id',
         'glpi_wifinetworks'                => 'entities_id',
+        'glpi_webhooks'                    => 'entities_id',
     ],
 
     'glpi_filesystems' => [
@@ -1634,6 +1635,9 @@ $RELATION = [
 
     'glpi_wifinetworks' => [
         'glpi_networkportwifis' => 'wifinetworks_id',
+    ],
+    'glpi_webhooks' => [
+        'glpi_queuedwebhooks' => 'webhooks_id',
     ],
 
 ];

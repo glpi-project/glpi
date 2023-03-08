@@ -9550,4 +9550,63 @@ CREATE TABLE `glpi_searches_criteriafilters` (
   KEY `search_itemtype` (`search_itemtype`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_webhooks`;
+CREATE TABLE `glpi_webhooks` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `itemtype` varchar(255) DEFAULT NULL,
+  `event` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `secret` text,
+  `use_cra_challenge` tinyint NOT NULL DEFAULT '0',
+  `is_cra_challenge_valid` tinyint NOT NULL DEFAULT '0',
+  `http_method` varchar(255) DEFAULT 'POST',
+  `sent_try` tinyint NOT NULL DEFAULT '3',
+  `expiration` int NOT NULL DEFAULT '0',
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  `is_active` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `is_active` (`is_active`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `use_cra_challenge` (`use_cra_challenge`),
+  KEY `is_cra_challenge_valid` (`is_cra_challenge_valid`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_queuedwebhooks`;
+CREATE TABLE `glpi_queuedwebhooks` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) DEFAULT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  `sent_try` int NOT NULL DEFAULT '0',
+  `webhooks_id` int unsigned NOT NULL DEFAULT '0',
+  `url` varchar(255) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT NULL,
+  `send_time` timestamp NULL DEFAULT NULL,
+  `sent_time` timestamp NULL DEFAULT NULL,
+  `headers` text,
+  `body` longtext,
+  `event` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `webhooks_id` (`webhooks_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `sent_try` (`sent_try`),
+  KEY `create_time` (`create_time`),
+  KEY `send_time` (`send_time`),
+  KEY `sent_time` (`sent_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;

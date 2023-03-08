@@ -15,6 +15,7 @@
         "ext-curl": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
+        "ext-hash": "*",
         "ext-iconv": "*",
         "ext-intl": "*",
         "ext-json": "*",
