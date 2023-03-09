@@ -162,12 +162,22 @@ class Entity extends CommonTreeDropdown
     {
         global $GLPI_CACHE;
 
-       // Security do not delete root entity
+        // Security do not delete root entity
         if ($this->input['id'] == 0) {
             return false;
         }
 
-       //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
+        // Security do not delete entity with children
+        if (countElementsInTable($this->getTable(), ['entities_id' => $this->input['id']])) {
+            Session::addMessageAfterRedirect(
+                __('You cannot delete an entity which contains sub-entities.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
         $this->cleanParentsSons();
         $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $this->getID();
         $GLPI_CACHE->delete($ckey);
