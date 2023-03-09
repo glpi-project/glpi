@@ -287,9 +287,7 @@ class Conf extends CommonGLPI
             'imported_files' => $this->importFiles($to_import)
         ]);
 
-        TemplateRenderer::getInstance()->display('components/messages_after_redirect_toasts.html.twig', [
-            'display_container' => true
-        ]);
+        Html::displayMessageAfterRedirect(true);
     }
 
     /**
