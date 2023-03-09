@@ -882,6 +882,7 @@ class Inventory
         foreach ($existing_types as $existing_type) {
             /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = str_replace(GLPI_INVENTORY_DIR . '/', '', $existing_type);
+            // use `getItemForItemtype` to fix classname case (i.e. `refusedequipement` -> `RefusedEquipement`)
             $itemtype = getItemForItemtype($itemtype)::getType();
             $inventory_files = new \RegexIterator(
                 new \RecursiveIteratorIterator(
