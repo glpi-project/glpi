@@ -919,9 +919,22 @@ class Inventory
             );
 
             foreach ($orphans as $orphan) {
-                 $dropfile = $ids[$orphan]->getFileName();
-                 @unlink($dropfile);
-                 $message = sprintf(__('File %1$s has been removed'), $dropfile);
+                $dropfile = $ids[$orphan];
+                $res = @unlink($dropfile->getRealPath());
+                if (!$res) {
+                    trigger_error(sprintf(__('Unable to remove file %1$s'), $dropfile->getRealPath()), E_USER_WARNING);
+                    $message = sprintf(
+                        __('File %1$s %2$s has not been removed'),
+                        $itemtype,
+                        $dropfile->getFileName()
+                    );
+                } else {
+                    $message = sprintf(
+                        __('File %1$s %2$s has been removed'),
+                        $itemtype,
+                        $dropfile->getFileName()
+                    );
+                }
                 if ($task) {
                     $task->log($message);
                     $task->addVolume(1);
