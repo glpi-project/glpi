@@ -320,6 +320,10 @@ class Entity extends DbTestCase
         );
         $this->integer($entity_id)->isGreaterThan(0);
 
+        //make sure parent entity cannot be removed
+        $this->boolean($entity->delete(['id' => $root_id]))->isFalse();
+        $this->hasSessionMessages(ERROR, ["You cannot delete an entity which contains sub-entities."]);
+
         $user_id = getItemByTypeName('User', 'normal', true);
         $profile_id = getItemByTypeName('Profile', 'Admin', true);
 
