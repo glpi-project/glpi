@@ -720,8 +720,9 @@ abstract class MainAsset extends InventoryAsset
                 $_SESSION['glpiactive_entity']         = $entities_id;
             } else {
                 //no transfert so revert to old entities_id
-                $val->entities_id = $this->item->fields['entities_id'];
-                $this->agent->fields['entities_id'] = $this->item->fields['entities_id'];
+                $val->entities_id = $this->item->fields['entities_id']; //for GLPI item
+                $this->entities_id = $val->entities_id; //for this class (usefull for handleAsset step)
+                $this->agent->fields['entities_id'] = $this->item->fields['entities_id']; //for Agent
             }
         }
 
