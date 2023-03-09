@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Application;
 
+use Monolog\Handler\TestHandler;
 use Monolog\Level;
 
 class ErrorHandler extends \GLPITestCase
@@ -114,7 +115,7 @@ class ErrorHandler extends \GLPITestCase
         Level $expected_log_level,
         string $expected_msg_pattern
     ) {
-        $handler = $this->newMockInstance('Monolog\Handler\TestHandler');
+        $handler = new TestHandler();
         $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
        // Force session in debug mode (to get debug output)
@@ -243,7 +244,7 @@ class ErrorHandler extends \GLPITestCase
         string $expected_msg_pattern,
         bool $is_fatal_error = false
     ) {
-        $handler = $this->newMockInstance('Monolog\Handler\TestHandler');
+        $handler = new TestHandler();
         $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
        // Force session in debug mode (to get debug output)
@@ -293,7 +294,7 @@ class ErrorHandler extends \GLPITestCase
      */
     public function testHandleException()
     {
-        $handler = $this->newMockInstance('Monolog\Handler\TestHandler');
+        $handler = new TestHandler();
         $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
         $exception = new \RuntimeException('Something went wrong');
