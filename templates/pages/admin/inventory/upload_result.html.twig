@@ -63,15 +63,19 @@
                                     {% if result['items'] is array %}
                                         {% for item in result['items'] %}
                                             {% if item is object %}
+                                             <div>
                                                 <span>
                                                 <i class="{{ item.getIcon() }}"></i>
                                                 {{ get_item_link(item) }}
                                                 </span>
+                                            </div>
                                             {% else %}
-                                                <span class="alert-sucess">
-                                                <i class="fas fa-check"></i>
-                                                {{ result['message'] }}
-                                                </span>
+                                                <div>
+                                                    <span class="alert-sucess">
+                                                    <i class="fas fa-check"></i>
+                                                    {{ result['message'] }}
+                                                    </span>
+                                                </div>
                                             {% endif %}
                                         {% endfor %}
                                     {% else %}

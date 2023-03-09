@@ -286,6 +286,8 @@ class Conf extends CommonGLPI
         TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_result.html.twig', [
             'imported_files' => $this->importFiles($to_import)
         ]);
+
+        Html::displayMessageAfterRedirect(true);
     }
 
     /**
