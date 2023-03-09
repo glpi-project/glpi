@@ -35,7 +35,7 @@
 
 use atoum\atoum;
 use Glpi\Tests\Log\TestHandler;
-use Monolog\Logger;
+use Monolog\Level;
 use Psr\Log\LogLevel;
 
 // Main GLPI test case. All tests should extends this class.
@@ -67,7 +67,7 @@ class GLPITestCase extends atoum
 
         // Init log handlers
         global $PHPLOGGER, $SQLLOGGER;
-        /** @var Monolog\Logger $PHPLOGGER */
+        /** @var \Monolog\Logger $PHPLOGGER */
         $this->php_log_handler = new TestHandler(LogLevel::DEBUG);
         $PHPLOGGER->setHandlers([$this->php_log_handler]);
         $this->sql_log_handler = new TestHandler(LogLevel::DEBUG);
@@ -219,7 +219,10 @@ class GLPITestCase extends atoum
 
         $matching = null;
         foreach ($records as $record) {
-            if ($record['level'] === Logger::toMonologLevel($level) && strpos($record['message'], $message) !== false) {
+            if (
+                Level::fromValue($record['level']) === Level::fromName($level)
+                && strpos($record['message'], $message) !== false
+            ) {
                 $matching = $record;
                 break;
             }
@@ -273,7 +276,10 @@ class GLPITestCase extends atoum
 
         $matching = null;
         foreach ($handler->getRecords() as $record) {
-            if ($record['level'] === Logger::toMonologLevel($level) && preg_match($pattern, $record['message']) === 1) {
+            if (
+                Level::fromValue($record['level']) === Level::fromName($level)
+                && preg_match($pattern, $record['message']) === 1
+            ) {
                 $matching = $record;
                 break;
             }
