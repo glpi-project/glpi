@@ -882,7 +882,7 @@ class Inventory
         foreach ($existing_types as $existing_type) {
             /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = str_replace(GLPI_INVENTORY_DIR . '/', '', $existing_type);
-           //$invnetoryfiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('path/to/folder'));
+            $itemtype = getItemForItemtype($itemtype)::getType();
             $inventory_files = new \RegexIterator(
                 new \RecursiveIteratorIterator(
                     new \RecursiveDirectoryIterator($existing_type)
@@ -911,7 +911,7 @@ class Inventory
                  return;
             }
 
-           //find missing assets
+            //find missing assets
             $orphans = array_diff(
                 array_keys($ids),
                 array_keys(iterator_to_array($iterator))
