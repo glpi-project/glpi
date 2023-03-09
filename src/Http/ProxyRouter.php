@@ -280,6 +280,12 @@ final class ProxyRouter
             case 'js':
                 $mime = 'application/javascript';
                 break;
+            case 'woff':
+                $mime = 'font/woff';
+                break;
+            case 'woff2':
+                $mime = 'font/woff2';
+                break;
             default:
                 $mime = mime_content_type($target_file);
 
