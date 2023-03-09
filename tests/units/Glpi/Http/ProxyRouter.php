@@ -368,6 +368,7 @@ class ProxyRouter extends \GLPITestCase
             ],
             'docs' => [
                 'index.html' => '<html><head><title>Home</head><body>...</body>',
+                'page.htm' => '<html><head><title>Page</head><body>...</body>',
             ],
             'js' => [
                 'scripts.js' => 'console.log("ok");',
@@ -416,6 +417,9 @@ class ProxyRouter extends \GLPITestCase
             'public' => [
                 'fonts' => [
                     // see https://en.wikipedia.org/wiki/List_of_file_signatures
+                    'myfont.eot'   => hex2bin('4F54544F'),
+                    'myfont.otf'   => hex2bin('4F54544F'),
+                    'myfont.woff'  => hex2bin('774F4646'),
                     'myfont.woff2' => hex2bin('774F4632'),
                 ],
             ],
@@ -459,6 +463,18 @@ class ProxyRouter extends \GLPITestCase
                 'Etag: b745c5b25a44dff8d077fdfa738c1db7',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
                 'Content-Disposition: attachment; filename="index.html"',
+                'Content-type: text/html',
+                'Content-Length: 46'
+            ],
+        ];
+        yield [
+            'path'      => '/docs/page.htm',
+            'http_code' => 200,
+            'body'      => $structure['docs']['page.htm'],
+            'headers'   => [
+                'Etag: bca9de082cdae3763da4de1e6503279b',
+                'Cache-Control: public, max-age=2592000, must-revalidate',
+                'Content-Disposition: attachment; filename="page.htm"',
                 'Content-type: text/html',
                 'Content-Length: 46'
             ],
@@ -559,6 +575,46 @@ class ProxyRouter extends \GLPITestCase
                 'Content-Disposition: attachment; filename="resources.json"',
                 'Content-type: application/json',
                 'Content-Length: 13'
+            ],
+        ];
+
+        // EOT/OTF file
+        yield [
+            'path'      => '/public/fonts/myfont.eot',
+            'http_code' => 200,
+            'body'      => $structure['public']['fonts']['myfont.eot'],
+            'headers'   => [
+                'Etag: 5bebcd707b47130cf923e8c7519d11e6',
+                'Cache-Control: public, max-age=2592000, must-revalidate',
+                'Content-Disposition: attachment; filename="myfont.eot"',
+                'Content-type: application/vnd.ms-opentype',
+                'Content-Length: 4'
+            ],
+        ];
+        yield [
+            'path'      => '/public/fonts/myfont.otf',
+            'http_code' => 200,
+            'body'      => $structure['public']['fonts']['myfont.otf'],
+            'headers'   => [
+                'Etag: 5bebcd707b47130cf923e8c7519d11e6',
+                'Cache-Control: public, max-age=2592000, must-revalidate',
+                'Content-Disposition: attachment; filename="myfont.otf"',
+                'Content-type: application/vnd.ms-opentype',
+                'Content-Length: 4'
+            ],
+        ];
+
+        // WOFF file
+        yield [
+            'path'      => '/public/fonts/myfont.woff',
+            'http_code' => 200,
+            'body'      => $structure['public']['fonts']['myfont.woff'],
+            'headers'   => [
+                'Etag: e8a117b651db0ef1acb30eb66459feb6',
+                'Cache-Control: public, max-age=2592000, must-revalidate',
+                'Content-Disposition: attachment; filename="myfont.woff"',
+                'Content-type: font/woff',
+                'Content-Length: 4'
             ],
         ];
 
