@@ -409,35 +409,33 @@ class Transfer extends DbTestCase
         $tranfer->moveItems($items, $entities_id_destination, $transfer_options);
 
         foreach ($items as $itemtype => $ids) {
-            if ($itemtype == \Computer::class) {
-                foreach ($ids as $id) {
-                    //check item_software
-                    $item_softwareversion = new Item_SoftwareVersion();
-                    $data = $item_softwareversion->find([
-                        'items_id' => $id,
-                        'itemtype' => $itemtype
-                    ]);
+            foreach ($ids as $id) {
+                //check item_software
+                $item_softwareversion = new Item_SoftwareVersion();
+                $data = $item_softwareversion->find([
+                    'items_id' => $id,
+                    'itemtype' => $itemtype
+                ]);
 
-                    $found_ids = array_column($data, 'id');
-                    $this->array($found_ids)->isEqualTo($expected_softwares_after_transfer[$itemtype][$id]);
+                $found_ids = array_column($data, 'id');
+                $this->array($found_ids)->isEqualTo($expected_softwares_after_transfer[$itemtype][$id]);
 
-                    if (!empty($data)) {
-                        foreach ($data as $db_field) {
-                            //check entity foreach Item_SoftwareVersion
-                            $this->integer($db_field['entities_id'])->isEqualTo($entities_id_destination);
+                if (!empty($data)) {
+                    foreach ($data as $db_field) {
+                        //check entity foreach Item_SoftwareVersion
+                        $this->integer($db_field['entities_id'])->isEqualTo($entities_id_destination);
 
-                            //check SoftwareVersion attached to Item_SoftwareVersion
-                            $softwareversion = new SoftwareVersion();
-                            $softwareversion->getFromDB($db_field['softwareversions_id']);
+                        //check SoftwareVersion attached to Item_SoftwareVersion
+                        $softwareversion = new SoftwareVersion();
+                        $softwareversion->getFromDB($db_field['softwareversions_id']);
 
-                            $softversion_id = $softwareversion->fields['id'];
-                            $soft_id = $softwareversion->fields['softwares_id'];
+                        $softversion_id = $softwareversion->fields['id'];
+                        $soft_id = $softwareversion->fields['softwares_id'];
 
-                            //check SoftwareVersion exist from expected
-                            $this->array($expected_softwares_version_after_transfer['Software'][$soft_id])->contains($softversion_id);
-                            //check entity for SoftwareVersion
-                            $this->integer($softwareversion->fields['entities_id'])->isEqualTo($entities_id_destination);
-                        }
+                        //check SoftwareVersion exist from expected
+                        $this->array($expected_softwares_version_after_transfer['Software'][$soft_id])->contains($softversion_id);
+                        //check entity for SoftwareVersion
+                        $this->integer($softwareversion->fields['entities_id'])->isEqualTo($entities_id_destination);
                     }
                 }
             }
