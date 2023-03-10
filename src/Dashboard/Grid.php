@@ -280,7 +280,7 @@ HTML;
 
         // Force clear the cards cache in debug mode
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            $GLPI_CACHE->delete('getAllDasboardCards');
+            $GLPI_CACHE->delete(self::getAllDashboardCardsCacheKey());
         }
 
         // prepare all available cards
@@ -1098,6 +1098,31 @@ HTML;
     }
 
     /**
+     * Get cache key for the "getAllDasboardCards" function data.
+     * The data will contain some translated strings and thus must be kept in a
+     * separate cache entry for each languages
+     *
+     * @return string
+     */
+    public static function getAllDashboardCardsCacheKey(): string
+    {
+        $language = Session::getLanguage();
+
+        if (!$language) {
+            // Keep a log trace in case of unexpected session value
+            // This may help with debugging in the future
+            trigger_error(
+                "Unable to get current language, will default to 'getAllDashboardCards' key",
+                E_USER_WARNING
+            );
+
+            return "getAllDashboardCards";
+        }
+
+        return "getAllDashboardCards_$language";
+    }
+
+    /**
      * Construct catalog of all possible cards addable in a dashboard.
      *
      * @param bool $force Force rebuild the catalog of cards
@@ -1108,7 +1133,7 @@ HTML;
     {
         global $CFG_GLPI, $GLPI_CACHE;
 
-        $cards = $GLPI_CACHE->get('getAllDasboardCards');
+        $cards = $GLPI_CACHE->get(self::getAllDashboardCardsCacheKey());
 
         if ($cards === null || $force) {
             // anonymous fct for adding relevant filters to cards
@@ -1449,7 +1474,7 @@ HTML;
                     'content' => __("Toggle edit mode to edit content"),
                 ]
             ];
-            $GLPI_CACHE->set('getAllDasboardCards', $cards);
+            $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
         }
 
         $more_cards = Plugin::doHookFunction(Hooks::DASHBOARD_CARDS);
