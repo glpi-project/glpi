@@ -5337,7 +5337,7 @@ JAVASCRIPT;
                 //     FROM `glpi_groups_tickets`
                 //     WHERE `groups_id` = '4' AND `glpi_groups_tickets`.`type` = '3'
                 // )
-                if ($val == 0) {
+                if (is_numeric($val) && (int)$val === 0) {
                     // Special case, search criteria is empty
                     $subquery_operator = $subquery_operator == "IN" ? "NOT IN" : "IN";
                     $out = " $link `$main_table`.`id` $subquery_operator (
