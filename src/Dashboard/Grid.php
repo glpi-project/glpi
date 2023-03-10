@@ -1112,14 +1112,14 @@ HTML;
             // Keep a log trace in case of unexpected session value
             // This may help with debugging in the future
             trigger_error(
-                "Unable to get current language, will default to 'getAllDasboardCards' key",
+                "Unable to get current language, will default to 'getAllDashboardCards' key",
                 E_USER_WARNING
             );
 
-            return "getAllDasboardCards";
+            return "getAllDashboardCards";
         }
 
-        return "getAllDasboardCards_$language";
+        return "getAllDashboardCards_$language";
     }
 
     /**
