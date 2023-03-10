@@ -294,6 +294,7 @@ class Transfer extends DbTestCase
         }
 
        // Create test software versions
+        $softwareversion_ids = [];
         $software_versions_to_create = [
             'test_transfer_software_1' => ['V1', 'V2'],
             'test_transfer_software_2' => ['V1', 'V2'],
@@ -308,6 +309,7 @@ class Transfer extends DbTestCase
                     'entities_id'  => $test_entity,
                 ]);
                 $this->integer($softwareversions_id)->isGreaterThan(0);
+                $softwareversion_ids[] = $softwareversions_id;
             }
         }
 
@@ -354,6 +356,18 @@ class Transfer extends DbTestCase
                             $item_softwareversion_ids[3]
                         ],
                     ]
+                ],
+                'expected_softwares_version_after_transfer' => [
+                    'Software' => [
+                        getItemByTypeName('Software', 'test_transfer_software_1', true) => [
+                            $softwareversion_ids[0],
+                            $softwareversion_ids[1],
+                        ],
+                        getItemByTypeName('Software', 'test_transfer_software_2', true) => [
+                            $softwareversion_ids[2],
+                            $softwareversion_ids[3]
+                        ],
+                    ]
                 ]
             ],
             [
@@ -370,6 +384,12 @@ class Transfer extends DbTestCase
                         getItemByTypeName('Computer', 'test_transfer_pc_3', true) => [],
                         getItemByTypeName('Computer', 'test_transfer_pc_4', true) => [],
                     ]
+                ],
+                'expected_softwares_version_after_transfer' => [
+                    'Software' => [
+                        getItemByTypeName('Software', 'test_transfer_software_1', true) => [],
+                        getItemByTypeName('Software', 'test_transfer_software_2', true) => [],
+                    ]
                 ]
             ]
         ];
@@ -382,20 +402,42 @@ class Transfer extends DbTestCase
         array $items,
         int $entities_id_destination,
         array $transfer_options,
-        array $expected_softwares_after_transfer
+        array $expected_softwares_after_transfer,
+        array $expected_softwares_version_after_transfer
     ): void {
         $tranfer = new \Transfer();
         $tranfer->moveItems($items, $entities_id_destination, $transfer_options);
 
         foreach ($items as $itemtype => $ids) {
             foreach ($ids as $id) {
+                //check item_software
                 $item_softwareversion = new Item_SoftwareVersion();
                 $data = $item_softwareversion->find([
                     'items_id' => $id,
                     'itemtype' => $itemtype
                 ]);
+
                 $found_ids = array_column($data, 'id');
                 $this->array($found_ids)->isEqualTo($expected_softwares_after_transfer[$itemtype][$id]);
+
+                if (!empty($data)) {
+                    foreach ($data as $db_field) {
+                        //check entity foreach Item_SoftwareVersion
+                        $this->integer($db_field['entities_id'])->isEqualTo($entities_id_destination);
+
+                        //check SoftwareVersion attached to Item_SoftwareVersion
+                        $softwareversion = new SoftwareVersion();
+                        $softwareversion->getFromDB($db_field['softwareversions_id']);
+
+                        $softversion_id = $softwareversion->fields['id'];
+                        $soft_id = $softwareversion->fields['softwares_id'];
+
+                        //check SoftwareVersion exist from expected
+                        $this->array($expected_softwares_version_after_transfer['Software'][$soft_id])->contains($softversion_id);
+                        //check entity for SoftwareVersion
+                        $this->integer($softwareversion->fields['entities_id'])->isEqualTo($entities_id_destination);
+                    }
+                }
             }
         }
     }

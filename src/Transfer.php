@@ -1711,7 +1711,10 @@ class Transfer extends CommonDBTM
                     unset($vers->fields['id']);
                     $input                 = $vers->fields;
                     $vers->fields = [];
-                   // entities_id and is_recursive from new software are set in prepareInputForAdd
+                    // entities_id and is_recursive from new software are set in prepareInputForAdd
+                    // they must be emptied to be computed
+                    unset($input['entities_id']);
+                    unset($input['is_recursive']);
                     $input['softwares_id'] = $newsoftID;
                     $newversID             = $vers->add(Toolbox::addslashes_deep($input));
                 }
