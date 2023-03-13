@@ -1694,6 +1694,7 @@ foreach ($CFG_GLPI['planning_types'] as $planning_itemtype) {
 }
 
 $specifically_managed_types = [
+    Agent::class, // FIXME Agent should be a CommonDBChild with $mustBeAttached=true
     Consumable::class, // Consumables are handled manually to redefine `date_out` to `null`
     Item_Cluster::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
     Item_Enclosure::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
