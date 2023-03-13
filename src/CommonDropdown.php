@@ -567,6 +567,10 @@ abstract class CommonDropdown extends CommonDBTM
                 }
             }
 
+            if (count($or_criteria) === 0) {
+                return false;
+            }
+
             $row = $DB->request([
                 'FROM'   => $tablename,
                 'COUNT'  => 'cpt',
