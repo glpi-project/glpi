@@ -1019,6 +1019,14 @@ class CommonDBTM extends CommonGLPI
     {
         global $CFG_GLPI, $DB;
 
+        if (in_array($this->getType(), $CFG_GLPI['itemdevices_types'])) {
+            Item_Devices::cleanItemDeviceDBOnItemDelete(
+                $this->getType(),
+                $this->getID(),
+                !empty($this->input['keep_devices'])
+            );
+        }
+
         if (in_array($this->getType(), $CFG_GLPI['networkport_types'])) {
             // Manage networkportmigration if exists
             if ($DB->tableExists('glpi_networkportmigrations')) {

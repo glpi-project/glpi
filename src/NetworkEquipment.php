@@ -97,21 +97,6 @@ class NetworkEquipment extends CommonDBTM
 
 
     /**
-     * @since 0.84
-     *
-     * @see CommonDBTM::cleanDBonPurge()
-     **/
-    public function cleanDBonPurge()
-    {
-        Item_Devices::cleanItemDeviceDBOnItemDelete(
-            $this->getType(),
-            $this->fields['id'],
-            (!empty($this->input['keep_devices']))
-        );
-    }
-
-
-    /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()
      *
      * @since 0.84

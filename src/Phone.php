@@ -136,16 +136,6 @@ class Phone extends CommonDBTM
     }
 
 
-    public function cleanDBonPurge()
-    {
-        Item_Devices::cleanItemDeviceDBOnItemDelete(
-            $this->getType(),
-            $this->fields['id'],
-            (!empty($this->input['keep_devices']))
-        );
-    }
-
-
     /**
      * Print the phone form
      *

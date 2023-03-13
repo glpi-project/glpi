@@ -135,16 +135,6 @@ class Peripheral extends CommonDBTM
     }
 
 
-    public function cleanDBonPurge()
-    {
-        Item_Devices::cleanItemDeviceDBOnItemDelete(
-            $this->getType(),
-            $this->fields['id'],
-            (!empty($this->input['keep_devices']))
-        );
-    }
-
-
     /**
      * Return the linked items (in computers_items)
      *

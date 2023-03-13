@@ -267,12 +267,6 @@ class Printer extends CommonDBTM
                 PrinterLog::class,
             ]
         );
-
-        Item_Devices::cleanItemDeviceDBOnItemDelete(
-            $this->getType(),
-            $this->fields['id'],
-            (!empty($this->input['keep_devices']))
-        );
     }
 
 
