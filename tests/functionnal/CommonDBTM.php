@@ -1097,7 +1097,7 @@ class CommonDBTM extends DbTestCase
         $this->boolean($relation_item->getFromDB($relation_item_2_id))->isTrue();
     }
 
-    public function testCleanRelationDataForPolymorphicRelations()
+    public function testCleanItemDeviceDBOnItemDelete()
     {
         $this->login();
 
@@ -1126,7 +1126,6 @@ class CommonDBTM extends DbTestCase
         );
         $device_battery_2_id = $device_battery_2->getID();
 
-        // Attach both softwares to items
         $items = [
             [
                 'itemtype' => \Computer::class,
@@ -1155,6 +1154,9 @@ class CommonDBTM extends DbTestCase
 
         // Check that only created relations exists
         $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable())
+        )->isEqualTo(6);
+        $this->integer(
             countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_1])
         )->isEqualTo(2);
         $this->integer(
@@ -1164,18 +1166,39 @@ class CommonDBTM extends DbTestCase
             countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Phone::class, 'items_id' => $phone_id])
         )->isEqualTo(2);
 
-        $computer_1->cleanRelationData();
+        $computer_1->delete(['id' => $computer_id_1, 'keep_devices' => 1], true);
 
         // Check that only relations to computer were cleaned
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable())
+        )->isEqualTo(6); // item devices were preserved but detached
         $this->integer(
             countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_1])
         )->isEqualTo(0);
         $this->integer(
-            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => null, 'items_id' => 0])
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => '', 'items_id' => 0])
         )->isEqualTo(2);
         $this->integer(
             countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_2])
         )->isEqualTo(2);
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Phone::class, 'items_id' => $phone_id])
+        )->isEqualTo(2);
+
+        $computer_2->delete(['id' => $computer_id_2], true);
+        // Check that only relations to computer were cleaned
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable())
+        )->isEqualTo(4); // item devices were deleted
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_1])
+        )->isEqualTo(0);
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => '', 'items_id' => 0])
+        )->isEqualTo(2);
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_2])
+        )->isEqualTo(0);
         $this->integer(
             countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Phone::class, 'items_id' => $phone_id])
         )->isEqualTo(2);
