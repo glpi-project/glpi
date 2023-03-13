@@ -477,7 +477,6 @@ $RELATION = [
     'glpi_domains'    => [
         '_glpi_domainrecords' => 'domains_id',
         '_glpi_domains_items' => 'domains_id',
-        'glpi_unmanageds'     => 'domains_id',
     ],
 
     'glpi_domaintypes' => [
@@ -718,29 +717,32 @@ $RELATION = [
             'groups_id',
         ],
         'glpi_planningexternalevents' => 'groups_id',
-        'glpi_phones'                => [
+        'glpi_phones'                 => [
             'groups_id_tech',
             'groups_id',
         ],
-        'glpi_printers'              => [
+        'glpi_printers'               => [
             'groups_id_tech',
             'groups_id',
         ],
-        'glpi_problemtasks'          => 'groups_id_tech',
-        'glpi_projects'              => 'groups_id',
-        'glpi_racks'                 => 'groups_id_tech',
-        'glpi_softwarelicenses'      => [
+        'glpi_problemtasks'           => 'groups_id_tech',
+        'glpi_projects'               => 'groups_id',
+        'glpi_racks'                  => 'groups_id_tech',
+        'glpi_softwarelicenses'       => [
             'groups_id_tech',
             'groups_id',
         ],
-        'glpi_softwares'             => [
+        'glpi_softwares'              => [
             'groups_id_tech',
             'groups_id',
         ],
-        'glpi_tasktemplates'         => 'groups_id_tech',
-        'glpi_tickettasks'           => 'groups_id_tech',
-        'glpi_unmanageds'            => 'groups_id',
-        'glpi_users'                 => 'groups_id',
+        'glpi_tasktemplates'          => 'groups_id_tech',
+        'glpi_tickettasks'            => 'groups_id_tech',
+        'glpi_unmanageds'             => [
+            'groups_id_tech',
+            'groups_id',
+        ],
+        'glpi_users'                  => 'groups_id',
     ],
 
     'glpi_holidays' => [
@@ -848,6 +850,7 @@ $RELATION = [
         'glpi_cartridgeitems'            => 'locations_id',
         'glpi_certificates'              => 'locations_id',
         'glpi_computers'                 => 'locations_id',
+        'glpi_contracts'                 => 'locations_id',
         'glpi_consumableitems'           => 'locations_id',
         'glpi_databaseinstances'         => 'locations_id',
         'glpi_datacenters'               => 'locations_id',
@@ -1574,7 +1577,10 @@ $RELATION = [
             'users_id',
             'users_id_validate',
         ],
-        'glpi_unmanageds'               => 'users_id',
+        'glpi_unmanageds'               => [
+            'users_id_tech',
+            'users_id',
+        ],
         '_glpi_useremails'              => 'users_id',
         'glpi_users'                    => 'users_id_supervisor',
     ],
