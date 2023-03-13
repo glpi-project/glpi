@@ -43,6 +43,7 @@ class Ticket extends \FrontBaseClass
     public function testTicketCreate()
     {
         $this->logIn();
+        $this->addToCleanup(\Ticket::class, ['name' => ['LIKE', '%thetestuuidtoremove']]);
 
         //load computer form
         $crawler = $this->http_client->request('GET', $this->base_uri . 'front/ticket.form.php');

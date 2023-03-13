@@ -43,6 +43,7 @@ class Computer extends \FrontBaseClass
     public function testComputerCreate()
     {
         $this->logIn();
+        $this->addToCleanup(\Computer::class, ['uuid' => 'thetestuuidtoremove']);
 
         //load computer form
         $crawler = $this->http_client->request('GET', $this->base_uri . 'front/computer.form.php');

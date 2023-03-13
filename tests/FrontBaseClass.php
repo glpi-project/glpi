@@ -41,6 +41,7 @@ class FrontBaseClass extends \GLPITestCase
     protected HttpBrowser $http_client;
     protected string $base_uri;
 
+    private array $items_to_cleanup = [];
     public function beforeTestMethod($method)
     {
         global $CFG_GLPI, $DB;
@@ -48,7 +49,12 @@ class FrontBaseClass extends \GLPITestCase
         $this->http_client = new HttpBrowser();
         $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
 
-        $DB->delete(\Computer::getTable(), ['uuid' => 'thetestuuidtoremove']);
+        foreach ($this->items_to_cleanup as $itemtype => $criteria) {
+            $DB->delete(
+                $itemtype::getTable(),
+                $criteria
+            );
+        }
         $DB->delete(\Ticket::getTable(), ['name' => ['LIKE', '%thetestuuidtoremove']]);
 
         parent::beforeTestMethod($method);
@@ -77,5 +83,10 @@ class FrontBaseClass extends \GLPITestCase
         //once logged in, we reach standard interface
         $page_title = $crawler->filter('title')->text();
         $this->string($page_title)->isIdenticalTo('Standard interface - GLPI');
+    }
+
+    protected function addToCleanup(string $itemtype, array $criteria)
+    {
+        $this->items_to_cleanup[$itemtype][] = $criteria;
     }
 }
