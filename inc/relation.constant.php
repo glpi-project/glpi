@@ -1650,6 +1650,13 @@ $define_mapping_entry = static function (string $source_table, string $target_ta
 
 // Add polymorphic relations based on configuration.
 global $CFG_GLPI;
+$specifically_managed_types = [
+    Agent::class, // FIXME Agent should be a CommonDBChild with $mustBeAttached=true
+    Consumable::class, // Consumables are handled manually to redefine `date_out` to `null`
+    Item_Cluster::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
+    Item_Enclosure::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
+    Item_Rack::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
+];
 $polymorphic_types_mapping = [
     Agent::class                   => $CFG_GLPI['agent_types'],
     Appliance_Item::class          => $CFG_GLPI['appliance_types'],
@@ -1685,6 +1692,7 @@ foreach ($CFG_GLPI['itemdevices'] as $itemdevice_itemtype) {
         $source_itemtypes = $CFG_GLPI['itemdevices_types'];
     }
     $polymorphic_types_mapping[$itemdevice_itemtype] = $source_itemtypes;
+    $specifically_managed_types[] = $itemdevice_itemtype; // Item_Devices is handled manually to take care of `keep_devices` option
 }
 $polymorphic_types_mapping[\VObject::class] = [];
 foreach ($CFG_GLPI['planning_types'] as $planning_itemtype) {
@@ -1692,14 +1700,6 @@ foreach ($CFG_GLPI['planning_types'] as $planning_itemtype) {
         $polymorphic_types_mapping[\VObject::class][] = $planning_itemtype;
     }
 }
-
-$specifically_managed_types = [
-    Agent::class, // FIXME Agent should be a CommonDBChild with $mustBeAttached=true
-    Consumable::class, // Consumables are handled manually to redefine `date_out` to `null`
-    Item_Cluster::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
-    Item_Enclosure::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
-    Item_Rack::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
-];
 
 foreach ($polymorphic_types_mapping as $target_itemtype => $source_itemtypes) {
     foreach ($source_itemtypes as $source_itemtype) {
