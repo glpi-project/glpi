@@ -235,6 +235,10 @@ body.in_modal {
 }
 
 table {
+    tbody:not(:has(tr)) {
+        display: none; // hide empty `tbody`
+    }
+
     td.active,
     td.tab_bg_4 {
         background-color: $table-active-bg;
