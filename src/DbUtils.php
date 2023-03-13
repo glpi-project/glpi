@@ -2008,13 +2008,6 @@ final class DbUtils
 
         $normalized_relations = [];
         foreach ($RELATION as $source_table => $table_relations) {
-            if ($source_table === '_virtual_device') {
-                // '_virtual_device' special case, not normalized for now.
-                // FIXME Add some checks on it
-                $normalized_relations['_virtual_device'] = $table_relations;
-                continue;
-            }
-
             $source_itemtype = getItemTypeForTable($source_table);
             if (!is_a($source_itemtype, CommonDBTM::class, true)) {
                 trigger_error(

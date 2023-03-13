@@ -71,8 +71,6 @@ use Glpi\Socket;
  *
  * /!\ Table's names are in alphabetic order - Please respect it
  *
- * /!\ "_virtual_device" mapping is a special mapping used on CommonDBTM::CanUnrecurs().
- *
  * @var array $RELATION
  */
 $RELATION = [
@@ -1609,29 +1607,6 @@ $RELATION = [
 
     'glpi_wifinetworks' => [
         'glpi_networkportwifis' => 'wifinetworks_id',
-    ],
-
-    '_virtual_device' => [
-        'glpi_appliances_items' => [
-            'items_id',
-            'itemtype'
-        ],
-        'glpi_contracts_items'  => [
-            'items_id',
-            'itemtype',
-        ],
-        'glpi_databaseinstances' => [
-            'items_id',
-            'itemtype'
-        ],
-        'glpi_documents_items'  => [
-            'items_id',
-            'itemtype',
-        ],
-        'glpi_infocoms'         => [
-            'items_id',
-            'itemtype',
-        ],
     ],
 
 ];

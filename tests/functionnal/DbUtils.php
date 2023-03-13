@@ -1054,13 +1054,9 @@ class DbUtils extends DbTestCase
 
         $mapping = $this->testedInstance->getDbRelations();
 
-        // Check that '_virtual_device' is declared
-        $this->array($mapping)->hasKey('_virtual_device');
-        $this->array($mapping['_virtual_device']);
-
         // Check that target fields exists in database
         foreach ($mapping as $source_table => $relations) {
-            $this->boolean($source_table === '_virtual_device' || $DB->tableExists($source_table))
+            $this->boolean($DB->tableExists($source_table))
                 ->isTrue(sprintf('Invalid table "%s" in relation mapping.', $source_table));
 
             foreach ($relations as $target_table_key => $target_fields) {
@@ -1085,13 +1081,10 @@ class DbUtils extends DbTestCase
                         $fields_to_check = array_merge($fields_to_check, $target_field);
                     } else {
                         // Ensure polymorphic relations are correctly declared in an array with both fields names.
-                        if ($source_table !== '_virtual_device') {
-                            // FIXME '_virtual_device' should respect same format
-                            $msg = sprintf('Invalid table field "%s.%s" in "%s" mapping.', $target_table, $target_field, $source_table);
-                            $this->string($target_field)
-                                ->notMatches('/^itemtype/', $msg)
-                                ->notMatches('/^items_id/', $msg);
-                        }
+                        $msg = sprintf('Invalid table field "%s.%s" in "%s" mapping.', $target_table, $target_field, $source_table);
+                        $this->string($target_field)
+                            ->notMatches('/^itemtype/', $msg)
+                            ->notMatches('/^items_id/', $msg);
 
                         $fields_to_check[] = $target_field;
                     }

@@ -2529,103 +2529,98 @@ class CommonDBTM extends CommonGLPI
         }
 
         if (isset($RELATION[$this->getTable()])) {
-            foreach ($RELATION[$this->getTable()] as $tablename => $field) {
+            foreach ($RELATION[$this->getTable()] as $tablename => $fields) {
                 if ($tablename[0] != '_') {
                     $itemtype = getItemTypeForTable($tablename);
                     $item     = new $itemtype();
 
-                    if ($item->isEntityAssign()) {
-                      // 1->N Relation
+                    $or_criteria = [];
+                    foreach ($fields as $field) {
+                        // 1->N Relation
                         if (is_array($field)) {
-                            foreach ($field as $f) {
-                                if (
-                                    countElementsInTable(
-                                        $tablename,
-                                        [ $f => $ID, 'NOT' => [ 'entities_id' => $entities ]]
-                                    ) > 0
-                                ) {
-                                       return false;
-                                }
+                            // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
+                            if ($item instanceof IPAddress && in_array('mainitemtype', $field) && in_array('mainitems_id', $field)) {
+                                // glpi_ipaddresses relationship that does not respect naming conventions
+                                $itemtype_field = 'mainitemtype';
+                                $items_id_field = 'mainitems_id';
+                            } else {
+                                $itemtype_matches = preg_grep('/^itemtype/', $field);
+                                $items_id_matches = preg_grep('/^items_id/', $field);
+                                $itemtype_field = reset($itemtype_matches);
+                                $items_id_field = reset($items_id_matches);
                             }
+                            $or_criteria[] = [
+                                $itemtype_field => $this->getType(),
+                                $items_id_field => $this->getID(),
+                            ];
                         } else {
-                            if (
-                                countElementsInTable(
-                                    $tablename,
-                                    [ $field => $ID, 'NOT' => [ 'entities_id' => $entities ]]
-                                ) > 0
-                            ) {
-                                return false;
-                            }
+                            // Relation based on single foreign key
+                            $or_criteria[] = [
+                                $field => $this->getID(),
+                            ];
+                        }
+                    }
+                    if (count($or_criteria) === 0) {
+                        continue; // Empty fields mapping
+                    }
+
+                    $item_criteria = ['OR' => $or_criteria];
+
+                    if ($item->isEntityAssign()) {
+                        // 1->N Relation
+                        if (
+                            countElementsInTable(
+                                $tablename,
+                                [ $item_criteria, 'NOT' => [ 'entities_id' => $entities ]]
+                            ) > 0
+                        ) {
+                            return false;
                         }
                     } else {
                         foreach ($RELATION as $othertable => $rel) {
-                          // Search for a N->N Relation with devices
+                            // Search for a N->N Relation
                             if (
-                                ($othertable == "_virtual_device")
-                                && isset($rel[$tablename])
-                            ) {
-                                $devfield  = $rel[$tablename][0]; // items_id...
-                                $typefield = $rel[$tablename][1]; // itemtype...
-
-                                $iterator = $DB->request([
-                                    'SELECT'          => $typefield,
-                                    'DISTINCT'        => true,
-                                    'FROM'            => $tablename,
-                                    'WHERE'           => [$field => $ID]
-                                ]);
-
-                                  // Search linked device of each type
-                                foreach ($iterator as $data) {
-                                    $itemtype  = $data[$typefield];
-                                    $itemtable = getTableForItemType($itemtype);
-                                    $item      = new $itemtype();
-
-                                    if ($item->isEntityAssign()) {
-                                        if (
-                                            countElementsInTable(
-                                                [$tablename, $itemtable],
-                                                ["$tablename.$field"     => $ID,
-                                                    "$tablename.$typefield" => $itemtype,
-                                                    'FKEY' => [$tablename => $devfield, $itemtable => 'id'],
-                                                    'NOT'  => [$itemtable . '.entities_id' => $entities ]
-                                                ]
-                                            ) > '0'
-                                        ) {
-                                            return false;
-                                        }
-                                    }
-                                }
-                            } else if (
                                 ($othertable != $this->getTable())
                                 && isset($rel[$tablename])
                             ) {
-                                 // Search for another N->N Relation
-                                 $itemtype = getItemTypeForTable($othertable);
-                                 $item     = new $itemtype();
+                                $otheritemtype = getItemTypeForTable($othertable);
+                                $otheritem     = new $otheritemtype();
 
-                                if ($item->isEntityAssign()) {
-                                    if (is_array($rel[$tablename])) {
-                                        foreach ($rel[$tablename] as $otherfield) {
-                                            if (
-                                                countElementsInTable(
-                                                    [$tablename, $othertable],
-                                                    ["$tablename.$field" => $ID,
-                                                        'FKEY' => [$tablename => $otherfield, $othertable => 'id'],
-                                                        'NOT'  => [$othertable . '.entities_id' => $entities ]
-                                                    ]
-                                                ) > '0'
-                                            ) {
-                                                return false;
+                                if ($otheritem->isEntityAssign()) {
+                                    foreach ($rel[$tablename] as $otherfield) {
+                                        if (is_array($otherfield)) {
+                                            // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
+                                            if ($item instanceof IPAddress && in_array('mainitemtype', $otherfield) && in_array('mainitems_id', $otherfield)) {
+                                                // glpi_ipaddresses relationship that does not respect naming conventions
+                                                $otheritemtype_field = 'mainitemtype';
+                                                $otheritems_id_field = 'mainitems_id';
+                                            } else {
+                                                $otheritemtype_matches = preg_grep('/^itemtype/', $otherfield);
+                                                $otheritems_id_matches = preg_grep('/^items_id/', $otherfield);
+                                                $otheritemtype_field = reset($otheritemtype_matches);
+                                                $otheritems_id_field = reset($otheritems_id_matches);
                                             }
+                                            $fkey = [
+                                                $tablename  => $otheritems_id_field,
+                                                $othertable => 'id',
+                                                [
+                                                    'AND' => [$tablename . '.' . $otheritemtype_field => $this->getType()],
+                                                ],
+                                            ];
+                                        } else {
+                                            // Relation based on single foreign key
+                                            $fkey = [
+                                                $tablename  => $otherfield,
+                                                $othertable => 'id',
+                                            ];
                                         }
-                                    } else {
-                                        $otherfield = $rel[$tablename];
                                         if (
                                             countElementsInTable(
                                                 [$tablename, $othertable],
-                                                ["$tablename.$field" => $ID,
-                                                    'FKEY' => [$tablename => $otherfield, $othertable => 'id'],
-                                                    'NOT'  => [ $othertable . '.entities_id' => $entities ]
+                                                [
+                                                    $item_criteria,
+                                                    'FKEY' => $fkey,
+                                                    'NOT'  => [$othertable . '.entities_id' => $entities ]
                                                 ]
                                             ) > '0'
                                         ) {
