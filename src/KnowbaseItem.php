@@ -1596,8 +1596,35 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 if (strlen($params["contains"]) > 0) {
                     $search  = Sanitizer::unsanitize($params["contains"]);
 
-                   // Replace all non word characters with spaces (see: https://stackoverflow.com/a/26537463)
-                    $search_wilcard = preg_replace('/[^\p{L}\p{N}_+\-<>~()"* ]/u', ' ', $search);
+                    $search_wilcard = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
+                    #Remove all symbols except allowed operators and space. @distance is not included, since it's unlikely a human will be using it through UI form
+                    $search_wilcard = preg_replace('/[^\p{L}\p{N}_+\-<>~()"* ]/u', '', $search_wilcard);
+                    #Remove all operators, that can only precede a text and that are not preceded by either beginning of string or space
+                    $search_wilcard = preg_replace('/(?<!^| )[+\-<>~]/u', '', $search_wilcard);
+                    #Remove all double quotes and asterisks, that are not preceded by either beginning of string, letter, number or space
+                    $search_wilcard = preg_replace('/(?<![\p{L}\p{N}_ ]|^)[*"]/u', '', $search_wilcard);
+                    #Remove all double quotes and asterisks, that are inside text
+                    $search_wilcard = preg_replace('/([\p{L}\p{N}_])([*"])([\p{L}\p{N}_])/u', '', $search_wilcard);
+                    #Remove all opening parenthesis which are not preceded by beginning of string or space
+                    $search_wilcard = preg_replace('/(?<!^| )\(/u', '', $search_wilcard);
+                    #Remove all closing parenthesis which are not preceded by beginning of string or space or are not followed by end of string or space
+                    $search_wilcard = preg_replace('/(?<![\p{L}\p{N}_])\)|\)(?! |$)/u', '', $search_wilcard);
+                    #Remove all double quotes if the count is not even
+                    if (substr_count($search_wilcard, '"') % 2 !== 0) {
+                        $search_wilcard = preg_replace('/"/u', '', $search_wilcard);
+                    }
+                    #Remove all parenthesis if count of closing does not match count of opening ones
+                    if (substr_count($search_wilcard, '(') !== substr_count($search_wilcard, ')')) {
+                        $search_wilcard = preg_replace('/[()]/u', '', $search_wilcard);
+                    }
+                    #Remove all operators, that can only precede a text and that do not have text after them (at the end of string). Do this for any possible combinations
+                    $search_wilcard = preg_replace('/[+\-<>~]+$/u', '', $search_wilcard);
+                    #Remove asterisk operator at the beginning of string
+                    $search_wilcard = preg_replace('/^\*/u', '', $search_wilcard);
+                    #Check if the new value is just the set of operators and if it is - set the value to an empty string
+                    if (preg_match('/^[+\-<>~()"*]+$/u', $search_wilcard)) {
+                        $search_wilcard = '';
+                    }
 
                    // Remove last space to avoid illegal syntax with " *"
                     $search_wilcard = trim($search_wilcard);
