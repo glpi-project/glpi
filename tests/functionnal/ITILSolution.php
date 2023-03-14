@@ -458,7 +458,7 @@ HTML
         ]);
         $this->integer($solutions_id)->isGreaterThan(0);
 
-        $this->string($solution->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->string($solution->fields['content'])->isEqualTo('<p>test template</p>');
 
         //Reset ticket status
         $ticket->update([

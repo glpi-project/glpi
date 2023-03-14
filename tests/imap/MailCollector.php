@@ -37,7 +37,6 @@ namespace tests\units;
 
 use Config;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
 use Laminas\Mail\Storage\Message;
 use NotificationTarget;
@@ -704,7 +703,7 @@ class MailCollector extends DbTestCase
                     '25 - Test attachment with invalid chars for OS',
                     '26 Illegal char in body',
                     '28 Multiple attachments no extension',
-                    '30 - &#60;GLPI&#62; Special &#38; chars',
+                    '30 - <GLPI> Special & chars',
                     '31 - HTML message without body',
                     '32 - HTML message with attributes on body tag',
                     '33 - HTML message with unwanted tags inside body tag',
@@ -836,7 +835,7 @@ PLAINTEXT,
                 $name = $data['name'];
 
                 if (array_key_exists($name, $tickets_contents)) {
-                    $this->string(Sanitizer::unsanitize($data['content']))->isEqualTo($tickets_contents[$name]);
+                    $this->string($data['content'])->isEqualTo($tickets_contents[$name]);
                 }
 
                 $this->string($data['content'])->notContains('cid:'); // check that image were correctly imported
@@ -970,7 +969,7 @@ PLAINTEXT,
         ];
 
         foreach ($expected_followups as $expected_followup) {
-            $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup)))
+            $this->integer(countElementsInTable(ITILFollowup::getTable(), $expected_followup))
                 ->isEqualTo(1, sprintf("Followup not found:\n> %s", $expected_followup['content']));
         }
     }

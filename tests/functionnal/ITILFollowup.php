@@ -551,7 +551,7 @@ HTML
         ]);
         $this->integer($fups_id)->isGreaterThan(0);
 
-        $this->string($fup->fields['content'])->isEqualTo(Sanitizer::sanitize('<p>test template</p>', false));
+        $this->string($fup->fields['content'])->isEqualTo('<p>test template</p>');
         $this->integer($fup->fields['is_private'])->isEqualTo(1);
 
         $fups_id = $fup->add([
