@@ -1597,7 +1597,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                     $search  = Sanitizer::unsanitize($params["contains"]);
 
                    // Replace all non word characters with spaces (see: https://stackoverflow.com/a/26537463)
-                    $search_wilcard = preg_replace('/[^\p{L}\p{N}_]+/u', ' ', $search);
+                    $search_wilcard = preg_replace('/[^\p{L}\p{N}_+\-<>~()"* ]/u', ' ', $search);
 
                    // Remove last space to avoid illegal syntax with " *"
                     $search_wilcard = trim($search_wilcard);
