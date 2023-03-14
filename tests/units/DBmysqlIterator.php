@@ -1456,4 +1456,71 @@ class DBmysqlIterator extends DbTestCase
         $expected = $DB::quoteName('id') . " NOT IN " . $to_sql_array($criteria['id'][1]);
         $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
     }
+
+    protected function resultProvider(): iterable
+    {
+        // Data from GLPI 9.5- (autosanitized)
+        yield [
+            'db_data' => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '&lt;p&gt;Test&lt;/p&gt;',
+            ],
+            'result'  => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ]
+        ];
+
+        // Data from GLPI 10.0.x (autosanitized)
+        yield [
+            'db_data' => [
+                'id'      => 1,
+                'name'    => 'A&#38;B',
+                'content' => '&#60;p&#62;Test&#60;/p&#62;',
+            ],
+            'result'  => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ]
+        ];
+
+        // Data from GLPI 10.1+ (not autosanitized)
+        yield [
+            'db_data' => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ],
+            'result'  => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider resultProvider
+     */
+    public function testAutoUnsanitize(array $db_data, array $result): void
+    {
+
+        $this->mockGenerator->orphanize('__construct');
+        $mysqli_result = new \mock\mysqli_result();
+        $this->calling($mysqli_result)->fetch_assoc = $db_data;
+        $this->calling($mysqli_result)->data_seek   = true;
+        $this->calling($mysqli_result)->free        = true;
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DB();
+        $this->calling($db)->query = $mysqli_result;
+        $this->calling($db)->numrows = 1;
+
+        $iterator = $db->request(['FROM' => 'glpi_mocks']);
+
+        $this->array($iterator->current())->isEqualTo($result);
+    }
 }

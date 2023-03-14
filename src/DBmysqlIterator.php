@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  *  Database iterator class for Mysql
  **/
@@ -839,7 +841,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
         }
 
         $this->position = $position;
-        $this->row = $this->conn->fetchAssoc($this->res);
+
+        $data = $this->conn->fetchAssoc($this->res);
+        if ($data !== null) {
+            $data = Sanitizer::decodeHtmlSpecialCharsRecursive($data);
+        }
+
+        $this->row = $data;
     }
 
     /**
