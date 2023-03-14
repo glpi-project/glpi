@@ -781,7 +781,7 @@ class Auth extends CommonGLPI
                 $ldapservers = [];
                //if LDAP enabled too, get user's infos from LDAP
                 if (Toolbox::canUseLdap()) {
-                   //User has already authenticate, at least once : it's ldap server if filled
+                   //User has already authenticated, at least once: it's ldap server if filled
                     if (
                         isset($this->user->fields["auths_id"])
                         && ($this->user->fields["auths_id"] > 0)
@@ -794,7 +794,7 @@ class Auth extends CommonGLPI
                         ) {
                             $ldapservers[] = $authldap->fields;
                         }
-                    } else { // User has never been authenticated : try all active ldap server to find the right one
+                    } else { // User has never been authenticated: try all active ldap server to find the right one
                         foreach (getAllDataFromTable('glpi_authldaps', ['is_active' => 1]) as $ldap_config) {
                             $ldapservers[] = $ldap_config;
                         }
