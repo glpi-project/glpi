@@ -123,10 +123,12 @@ The present file will list all changes made to the project; according to the
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.
+- `X-GLPI-Sanitized-Content` REST API header support.
 - `regenerateTreeCompleteName()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
 - `Config::getCurrentDBVersion()`
 - `DbUtils::regenerateTreeCompleteName()`
+- `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`

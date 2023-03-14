@@ -652,15 +652,4 @@ class APIRest extends API
         }
         exit;
     }
-
-    /**
-     * Read X-GLPI-Sanitized-Content header value (default: true)
-     *
-     * @return bool
-     */
-    public function returnSanitizedContent(): bool
-    {
-        $sanitized_content = $_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT'] ?? true;
-        return filter_var($sanitized_content, FILTER_VALIDATE_BOOLEAN);
-    }
 }

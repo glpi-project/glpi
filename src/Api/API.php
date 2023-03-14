@@ -1028,14 +1028,6 @@ abstract class API
             );
         }
 
-        // Decode HTML
-        if (!$this->returnSanitizedContent()) {
-            $fields = array_map(
-                fn ($f) => is_string($f) ? Sanitizer::decodeHtmlSpecialChars($f) : $f,
-                $fields
-            );
-        }
-
         return $fields;
     }
 
@@ -1303,14 +1295,6 @@ abstract class API
                         'href' => self::$api_url . "/$itemtype/" . $fields['id'] . "/$hclass/"
                     ];
                 }
-            }
-
-            // Decode HTML
-            if (!$this->returnSanitizedContent()) {
-                $fields = array_map(
-                    fn ($f) => is_string($f) ? Sanitizer::decodeHtmlSpecialChars($f) : $f,
-                    $fields
-                );
             }
         }
        // Break reference
@@ -1850,11 +1834,6 @@ abstract class API
                     }
 
                     $message = $this->getGlpiLastMessage();
-                    if (!$this->returnSanitizedContent()) {
-                        // Message may contains the created item name, which may
-                        // contains some encoded html
-                        $message = Sanitizer::decodeHtmlSpecialChars($message);
-                    }
                     $current_res = ['id'      => $new_id,
                         'message' => $message
                     ];
@@ -3382,15 +3361,5 @@ abstract class API
             "changeActiveEntities",
             "changeActiveProfile",
         ];
-    }
-
-    /**
-     * Will the API content be sanitized ?
-     *
-     * @return bool
-     */
-    public function returnSanitizedContent(): bool
-    {
-        return true;
     }
 }
