@@ -36,7 +36,6 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\Clonable;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Saved searches class
@@ -296,7 +295,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public function prepareSearchUrlForDB(array $input): array
     {
-        $taburl = parse_url(Sanitizer::unsanitize($input['url']));
+        $taburl = parse_url($input['url']);
 
         $query_tab = [];
 

@@ -40,7 +40,6 @@ use DBmysqlIterator;
 use Dropdown;
 use Entity;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use QueryParam;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
@@ -585,10 +584,10 @@ class Software extends InventoryAsset
             }
 
             $mkey = md5('manufacturers_id' . $val->manufacturers_id);
-            $input = Sanitizer::encodeHtmlSpecialCharsRecursive([
+            $input = [
                 'name'             => $val->name,
                 'manufacturers_id' => $this->known_links[$mkey] ?? 0
-            ]);
+            ];
 
             $stmt->bind_param(
                 'ssss',
@@ -660,12 +659,12 @@ class Software extends InventoryAsset
                 continue;
             }
 
-            $input = Sanitizer::encodeHtmlSpecialCharsRecursive([
+            $input = [
                 'version'      => $val->version,
                 'arch'         => $val->arch ?? '',
                 'softwares_id' => $softwares_id,
                 'osid'         => $this->getOsForKey($val),
-            ]);
+            ];
 
             $stmt->bind_param(
                 'sssss',
@@ -718,7 +717,7 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                $stmt_values = Sanitizer::encodeHtmlSpecialCharsRecursive(array_values($stmt_columns));
+                $stmt_values = array_values($stmt_columns);
                 $stmt->bind_param($stmt_types, ...$stmt_values);
                 $DB->executeStatement($stmt);
                 $softwares_id = $DB->insertId();
@@ -783,7 +782,7 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                 $stmt_values = Sanitizer::encodeHtmlSpecialCharsRecursive(array_values($stmt_columns));
+                 $stmt_values = array_values($stmt_columns);
                  $stmt->bind_param($stmt_types, ...$stmt_values);
                  $DB->executeStatement($stmt);
                  $versions_id = $DB->insertId();
@@ -872,12 +871,12 @@ class Software extends InventoryAsset
                  $stmt = $DB->prepare($insert_query);
             }
 
-            $input = Sanitizer::encodeHtmlSpecialCharsRecursive([
+            $input = [
                 'softwareversions_id'   => $versions_id,
                 'is_dynamic'            => 1,
                 'entities_id'           => $this->item->fields['entities_id'],
                 'date_install'          => $val->date_install ?? null
-            ]);
+            ];
 
             $itemtype = $this->item->getType();
             $stmt->bind_param(
@@ -1002,11 +1001,6 @@ class Software extends InventoryAsset
      */
     final protected function getNormalizedComparisonKey(array $data): string
     {
-        $normalized_data = [];
-        foreach ($data as $key => $value) {
-            // Ensure value is not sanitize, to prevent bad reconciliation when quotes or special chars are present
-            $normalized_data[$key] = Sanitizer::unsanitize($value);
-        }
-        return json_encode($normalized_data);
+        return json_encode($data);
     }
 }

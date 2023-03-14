@@ -35,7 +35,6 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  *  Class used to manage Auth LDAP config
@@ -1480,7 +1479,7 @@ class AuthLDAP extends CommonDBTM
         }
 
         if (!isset($_SESSION[$filter_var]) || ($_SESSION[$filter_var] == '')) {
-            $_SESSION[$filter_var] = Sanitizer::unsanitize($config_ldap->fields[$filter_name1]);
+            $_SESSION[$filter_var] = $config_ldap->fields[$filter_name1];
         }
 
         echo "<div class='card'>";
@@ -1497,7 +1496,7 @@ class AuthLDAP extends CommonDBTM
             && ($config_ldap->fields["group_search_type"] == self::GROUP_SEARCH_BOTH)
         ) {
             if (!isset($_SESSION["ldap_group_filter2"]) || ($_SESSION["ldap_group_filter2"] == '')) {
-                $_SESSION["ldap_group_filter2"] = Sanitizer::unsanitize($config_ldap->fields[$filter_name2]);
+                $_SESSION["ldap_group_filter2"] = $config_ldap->fields[$filter_name2];
             }
             echo "</td></tr>";
 
@@ -1893,7 +1892,6 @@ class AuthLDAP extends CommonDBTM
         $count    = 0;  //Store the number of results ldap_search
 
         do {
-            $filter = Sanitizer::unsanitize($filter);
             if (self::isLdapPageSizeAvailable($config_ldap)) {
                 $controls = [
                     [
@@ -2066,7 +2064,7 @@ class AuthLDAP extends CommonDBTM
             if ($values['ldap_filter'] == '') {
                 $filter = "(" . $field_for_sync . "=*)";
                 if (!empty($config_ldap->fields['condition'])) {
-                    $filter = "(& $filter " . Sanitizer::unsanitize($config_ldap->fields['condition']) . ")";
+                    $filter = "(& $filter " . $config_ldap->fields['condition'] . ")";
                 }
             } else {
                 $filter = $values['ldap_filter'];
@@ -2565,16 +2563,15 @@ class AuthLDAP extends CommonDBTM
         if ($filter == '') {
             if ($search_in_groups) {
                 $filter = (!empty($config_ldap->fields['group_condition'])
-                       ? Sanitizer::unsanitize($config_ldap->fields['group_condition']) : "(objectclass=*)");
+                       ? $config_ldap->fields['group_condition'] : "(objectclass=*)");
             } else {
                 $filter = (!empty($config_ldap->fields['condition'])
-                       ? Sanitizer::unsanitize($config_ldap->fields['condition']) : "(objectclass=*)");
+                       ? $config_ldap->fields['condition'] : "(objectclass=*)");
             }
         }
         $cookie = '';
         $count  = 0;
         do {
-            $filter = Sanitizer::unsanitize($filter);
             if (self::isLdapPageSizeAvailable($config_ldap)) {
                 $controls = [
                     [
@@ -2818,7 +2815,7 @@ class AuthLDAP extends CommonDBTM
                 'login_field'       => $search_parameters['fields'][$search_parameters['method']],
                 'search_parameters' => $search_parameters,
                 'user_params'       => $params,
-                'condition'         => Sanitizer::unsanitize($config_ldap->fields['condition'])
+                'condition'         => $config_ldap->fields['condition'],
             ];
 
             try {
@@ -3435,7 +3432,7 @@ class AuthLDAP extends CommonDBTM
         $filter = "(" . $values['login_field'] . "=" . $filter_value . ")";
 
         if (!empty($values['condition'])) {
-            $filter = "(& $filter " . Sanitizer::unsanitize($values['condition']) . ")";
+            $filter = "(& $filter " . $values['condition'] . ")";
         }
 
         if ($result = ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
@@ -3845,7 +3842,7 @@ class AuthLDAP extends CommonDBTM
                         $field_counter++;
                         $field_value = '';
                         if (isset($_SESSION['ldap_import']['criterias'][$field])) {
-                            $field_value = Html::entities_deep(Sanitizer::unsanitize($_SESSION['ldap_import']['criterias'][$field]));
+                            $field_value = htmlspecialchars($_SESSION['ldap_import']['criterias'][$field]);
                         }
                         echo "<input type='text' class='form-control' id='criterias$field' name='criterias[$field]' value='$field_value'>";
                         echo "</td>";
@@ -3950,7 +3947,7 @@ class AuthLDAP extends CommonDBTM
                      && !empty($_SESSION['ldap_import']['end_date'])
                         ? $_SESSION['ldap_import']['end_date'] : null);
         $filter    .= self::addTimestampRestrictions($begin_date, $end_date);
-        $ldap_condition = Sanitizer::unsanitize($authldap->getField('condition'));
+        $ldap_condition = $authldap->getField('condition');
        //Add entity filter and filter filled in directory's configuration form
         return  "(&" . (isset($_SESSION['ldap_import']['entity_filter'])
                     ? $_SESSION['ldap_import']['entity_filter']

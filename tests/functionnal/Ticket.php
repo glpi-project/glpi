@@ -2132,15 +2132,6 @@ class Ticket extends DbTestCase
             ], [
                 'input'     => [
                     'name'      => '',
-                    'content'   => "&lt;p&gt;This is a content\r\nwith a carriage return&lt;/p&gt;"
-                ],
-                'expected'  => [
-                    'name' => 'This is a content with a carriage return',
-                    'content' => "&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;"
-                ]
-            ], [
-                'input'     => [
-                    'name'      => '',
                     'content'   => 'Test for buggy &#039; character'
                 ],
                 'expected'  => [

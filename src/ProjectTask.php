@@ -37,7 +37,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\IntegerValue;
@@ -1509,7 +1508,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         $interv[$key]["end"]   = $data["plan_end_date"];
                     }
 
-                    $interv[$key]["name"]     = Sanitizer::unsanitize($task->fields["name"]); // name is re-encoded on JS side
+                    $interv[$key]["name"]     = $task->fields["name"];
                     $interv[$key]["content"]  = $task->fields["content"] !== null
                     ? RichText::getSafeHtml($task->fields["content"])
                     : '';

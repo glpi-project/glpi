@@ -38,7 +38,6 @@ use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * CommonITILObject Class
@@ -2598,17 +2597,13 @@ abstract class CommonITILObject extends CommonDBTM
         if (empty($input["name"])) {
             // Build name based on content
 
-            // Unsanitize
-            $content = Sanitizer::unsanitize($input['content']);
-
             // Get unformatted text
-            $name = RichText::getTextFromHtml($content, false);
+            $name = RichText::getTextFromHtml($input['content'], false);
 
             // Shorten result
             $name = Toolbox::substr(preg_replace('/\s{2,}/', ' ', $name), 0, 70);
 
-            // Sanitize result
-            $input['name'] = Sanitizer::sanitize($name);
+            $input['name'] = $name;
         }
 
        // Set default dropdown
@@ -2649,7 +2644,7 @@ abstract class CommonITILObject extends CommonDBTM
                                             preg_replace(
                                                 "/\r?\n/",
                                                 "",
-                                                Html::cleanPostForTextArea($input[$key])
+                                                $input[$key]
                                             ),
                                             preg_replace(
                                                 "/\r?\n/",

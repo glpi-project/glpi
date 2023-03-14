@@ -43,7 +43,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
-use Glpi\Toolbox\Sanitizer;
 use Group;
 use ITILFollowup;
 use Problem;
@@ -70,8 +69,10 @@ final class SQLProvider implements SearchProviderInterface
 
     private static function buildSelect(array $data, string $itemtable): string
     {
+        global $DB;
+
         // request currentuser for SQL supervision, not displayed
-        $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '" . \Toolbox::addslashes_deep($_SESSION['glpiname'] ?? '') . "' AS currentuser,
+        $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, " . $DB->quote($_SESSION['glpiname'] ?? '') . " AS currentuser,
                         " . \Search::addDefaultSelect($data['itemtype']);
 
         // Add select for all toview item
@@ -1292,7 +1293,6 @@ final class SQLProvider implements SearchProviderInterface
                 return $criteria;
 
             case "glpi_ipaddresses.name":
-                $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                 if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
                     if ($nott) {
                         if ($regs[1] == '<') {
@@ -1564,7 +1564,6 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         return $criteria;
                     }
-                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
                         if (is_numeric($regs[2])) {
                             return [
@@ -1626,7 +1625,6 @@ final class SQLProvider implements SearchProviderInterface
                 case "timestamp":
                 case "progressbar":
                     $decimal_contains = $searchopt[$ID]["datatype"] === 'decimal' && $searchtype === 'contains';
-                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
 
                     if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
@@ -3185,7 +3183,6 @@ final class SQLProvider implements SearchProviderInterface
                 case "number":
                 case "decimal":
                 case "timestamp":
-                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                         if ($NOT) {
                             if ($regs[1] === '<') {
@@ -3615,7 +3612,7 @@ final class SQLProvider implements SearchProviderInterface
             $count = "count(DISTINCT `$itemtable`.`id`)";
             // request currentuser for SQL supervision, not displayed
             $query_num = "SELECT $count,
-                              '" . \Toolbox::addslashes_deep($_SESSION['glpiname']) . "' AS currentuser
+                              " . $DB->quote($_SESSION['glpiname']) . " AS currentuser
                        FROM `$itemtable`" .
                 $COMMONLEFTJOIN;
 
@@ -4474,10 +4471,10 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function makeTextSearchValue($val)
     {
-        // `$val` will mostly comes from sanitized input, but may also be raw value.
-        // 1. Unsanitize value to be sure to use raw value.
-        // 2. Escape raw value to protect SQL special chars.
-        $val = Sanitizer::dbEscape(Sanitizer::unsanitize($val));
+        global $DB;
+
+        // Escape raw value to protect SQL special chars.
+        $val = $DB->escape($val);
 
         // escape _ char used as wildcard in mysql likes
         $val = str_replace('_', '\\_', $val);
@@ -5822,14 +5819,12 @@ HTML;
                     if (isset($field_data['trans']) && !empty($field_data['trans'])) {
                         $out .= $field_data['trans'];
                     } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
-                        $out .= \CommonTreeDropdown::sanitizeSeparatorInCompletename($field_data['trans_completename']);
+                        $out .= $field_data['trans_completename'];
                     } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
                         $out .= $field_data['trans_name'];
                     } else {
                         $value = $field_data['name'];
-                        $out .= $so['field'] === 'completename'
-                            ? \CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
-                            : $value;
+                        $out .= $value;
                     }
                 }
             }

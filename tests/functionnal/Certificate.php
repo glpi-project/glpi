@@ -41,26 +41,13 @@ use DbTestCase;
 
 class Certificate extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
     public function testAdd()
     {
         $this->login();
         $obj = new \Certificate();
 
        // Add
-        $in = $this->getIn($this->method);
+        $in = $this->getIn(__METHOD__);
         $id = $obj->add($in);
         $this->integer((int)$id)->isGreaterThan(0);
         $this->boolean($obj->getFromDB($id))->isTrue();
@@ -86,7 +73,7 @@ class Certificate extends DbTestCase
 
        // Update
         $id = $obj->getID();
-        $in = array_merge(['id' => $id], $this->getIn($this->method));
+        $in = array_merge(['id' => $id], $this->getIn(__METHOD__));
         $this->boolean($obj->update($in))->isTrue();
         $this->boolean($obj->getFromDB($id))->isTrue();
 
@@ -103,7 +90,7 @@ class Certificate extends DbTestCase
 
        // Add
         $id = $obj->add([
-            'name' => $this->method,
+            'name' => __METHOD__,
             'entities_id' => 0
         ]);
         $this->integer($id)->isGreaterThan(0);
@@ -129,7 +116,7 @@ class Certificate extends DbTestCase
 
        // Update
         $id = $certificate->getID();
-        $in = array_merge(['id' => $id], $this->getIn($this->method));
+        $in = array_merge(['id' => $id], $this->getIn(__METHOD__));
         $this->boolean($certificate->update($in))->isTrue();
         $this->boolean($certificate->getFromDB($id))->isTrue();
 

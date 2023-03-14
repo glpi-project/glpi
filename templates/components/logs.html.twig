@@ -84,8 +84,8 @@
             <td>
                <select name="filters[users_names][]" class="form-select logs-filter-select-multiple" multiple>
                   {% for value, username in user_names %}
-                     <option value="{{ value|verbatim_value }}" {{ filters['users_names'] is defined and value in filters['users_names'] ? 'selected' : '' }}>
-                        {{ username|verbatim_value }}
+                     <option value="{{ value }}" {{ filters['users_names'] is defined and value in filters['users_names'] ? 'selected' : '' }}>
+                        {{ username }}
                      </option>
                   {% endfor %}
                </select>
@@ -120,8 +120,8 @@
             <tr>
                <td>{{ entry['id'] }}</td>
                <td>{{ entry['date_mod'] }}</td>
-               <td>{{ entry['user_name']|verbatim_value }}</td>
-               <td>{{ entry['field']|verbatim_value }}</td>
+               <td>{{ entry['user_name'] }}</td>
+               <td>{{ entry['field'] }}</td>
                <td colspan="2" style="width: 60%">{{ entry['change']|raw }}</td>
             </tr>
          {% endfor %}

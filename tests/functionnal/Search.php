@@ -39,7 +39,6 @@ use CommonDBTM;
 use CommonITILActor;
 use DBConnection;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 use Ticket;
 
 /* Test for inc/search.class.php */
@@ -1692,10 +1691,8 @@ class Search extends DbTestCase
             ['^ exactval $', 'exactval'],
             ['snake_case', '%snake\\_case%'], // _ is a wildcard that must be escaped
             ['quot\'ed', '%quot\\\'ed%'],
-            ['quot\\\'ed', '%quot\\\'ed%'], // already escaped value should not produce double escaping
-            ['^&#60;PROD-15&#62;', '<PROD-15>%'],
+            ['quot\\\'ed', '%quot\\\\\\\'ed%'], // already escaped value should produce double escaping
             ['<PROD-15>$', '%<PROD-15>'],
-            ['A&#38;B', '%A&B%'],
             ['A&B', '%A&B%'],
         ];
     }
@@ -1767,7 +1764,7 @@ class Search extends DbTestCase
                 'itemtype' => \Computer::class,
                 'ID' => 121, // Search ID 121 (date_creation field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('>2022-10-25'),
+                'val' => '>2022-10-25',
                 'meta' => false,
                 'expected' => "AND CONVERT(`glpi_computers`.`date_creation` USING utf8mb4) > '2022-10-25'",
             ],
@@ -1777,7 +1774,7 @@ class Search extends DbTestCase
                 'itemtype' => \Computer::class,
                 'ID' => 121, // Search ID 121 (date_creation field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('<2022-10-25'),
+                'val' => '<2022-10-25',
                 'meta' => false,
                 'expected' => "AND CONVERT(`glpi_computers`.`date_creation` USING utf8mb4) < '2022-10-25'",
             ],
@@ -1787,7 +1784,7 @@ class Search extends DbTestCase
                 'itemtype' => \Computer::class,
                 'ID' => 151, // Search ID 151 (Item_Disk freesize field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('>100'),
+                'val' => '>100',
                 'meta' => false,
                 'expected' => "AND `glpi_items_disks`.`freesize` > 100",
             ],
@@ -1797,7 +1794,7 @@ class Search extends DbTestCase
                 'itemtype' => \Computer::class,
                 'ID' => 151, // Search ID 151 (Item_Disk freesize field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('<10000'),
+                'val' => '<10000',
                 'meta' => false,
                 'expected' => "AND `glpi_items_disks`.`freesize` < 10000",
             ],
@@ -1807,7 +1804,7 @@ class Search extends DbTestCase
                 'itemtype' => \NetworkName::class,
                 'ID' => 13, // Search ID 13 (IPAddress name field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('< 192.168.1.10'),
+                'val' => '< 192.168.1.10',
                 'meta' => false,
                 'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) < INET_ATON('192.168.1.10'))",
             ],
@@ -1817,7 +1814,7 @@ class Search extends DbTestCase
                 'itemtype' => \NetworkName::class,
                 'ID' => 13, // Search ID 13 (IPAddress name field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('> 192.168.1.10'),
+                'val' => '> 192.168.1.10',
                 'meta' => false,
                 'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) > INET_ATON('192.168.1.10'))",
             ],

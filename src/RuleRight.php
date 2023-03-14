@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * RuleRight Class
  *
@@ -169,7 +167,6 @@ class RuleRight extends Rule
                                                 break;
 
                                             case "_affect_entity_by_completename":
-                                                $res          = Sanitizer::unsanitize($res);
                                                 $entity_found = Entity::getEntityIDByCompletename($res);
                                                 break;
 

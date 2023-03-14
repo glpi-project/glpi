@@ -37,7 +37,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Project Class
@@ -1593,7 +1592,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'name',
             [
                 'value' => autoName(
-                    Sanitizer::decodeHtmlSpecialChars($this->fields['name']),
+                    $this->fields['name'],
                     'name',
                     $from_template,
                     $this->getType(),

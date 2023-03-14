@@ -35,7 +35,6 @@
 
 use Glpi\Inventory\Conf;
 use Glpi\Socket;
-use Glpi\Toolbox\Sanitizer;
 
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
@@ -8709,7 +8708,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
         $tables[DomainRecordType::getTable()] = DomainRecordType::getDefaults();
         $tables[DomainRelation::getTable()] = DomainRelation::getDefaults();
-        $tables[NetworkPortType::getTable()] = Sanitizer::encodeHtmlSpecialCharsRecursive(NetworkPortType::getDefaults());
+        $tables[NetworkPortType::getTable()] = NetworkPortType::getDefaults();
 
         $tables['glpi_agenttypes'] = [
             [

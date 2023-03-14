@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /// Criteria Rule class
 class RuleCriteria extends CommonDBChild
 {
@@ -381,11 +379,7 @@ class RuleCriteria extends CommonDBChild
      **/
     public static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result)
     {
-        if (is_array($field)) {
-            $field = Sanitizer::decodeHtmlSpecialCharsRecursive($field);
-        } else {
-            $field = Sanitizer::decodeHtmlSpecialChars($field ?? '');
-        }
+        $field = $field ?? '';
 
         $condition = $criterion->fields['condition'];
         $pattern   = $criterion->fields['pattern'];
@@ -499,8 +493,6 @@ class RuleCriteria extends CommonDBChild
 
             case Rule::REGEX_MATCH:
                 $results = [];
-                // Permit use < and >
-                $pattern = Sanitizer::unsanitize($pattern);
                 $match_result = @preg_match_all($pattern . "i", $field, $results);
                 if ($match_result === false) {
                     trigger_error(
@@ -524,8 +516,6 @@ class RuleCriteria extends CommonDBChild
                 return false;
 
             case Rule::REGEX_NOT_MATCH:
-               // Permit use < and >
-                $pattern = Sanitizer::unsanitize($pattern);
                 $match_result = @preg_match($pattern . "i", $field);
                 if ($match_result === false) {
                     trigger_error(

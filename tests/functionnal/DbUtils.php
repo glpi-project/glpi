@@ -243,26 +243,6 @@ class DbUtils extends DbTestCase
         }
     }
 
-    public function testGetItemForItemtypeSanitized()
-    {
-        require_once __DIR__ . '/../fixtures/pluginbarfoo.php';
-
-        $this
-         ->if($this->newTestedInstance)
-         ->when(function () {
-               $this->object($this->testedInstance->getItemForItemtype(addslashes('Glpi\Event')))->isInstanceOf('Glpi\Event');
-         })->error
-            ->withType(E_USER_WARNING)
-            ->withMessage('Unexpected sanitized itemtype "Glpi\\\\Event" encountered.')
-            ->exists()
-         ->when(function () {
-               $this->object($this->testedInstance->getItemForItemtype(addslashes('GlpiPlugin\Bar\Foo')))->isInstanceOf('GlpiPlugin\Bar\Foo');
-         })->error
-            ->withType(E_USER_WARNING)
-            ->withMessage('Unexpected sanitized itemtype "GlpiPlugin\\\\Bar\\\\Foo" encountered.')
-            ->exists();
-    }
-
     public function testGetItemForItemtypeAbstract()
     {
         require_once __DIR__ . '/../fixtures/pluginbarabstractstuff.php';
@@ -1326,51 +1306,6 @@ class DbUtils extends DbTestCase
                 'entities_id'  => -1, //default
                 'expected'     => 'Computer 1'
             ], [
-            //not a template
-                'name'         => '&lt;abc&gt;',
-                'field'        => 'name',
-                'is_template'  => false,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '&lt;abc&gt;',
-                'deprecated'   => false, // is_template=false result in exiting before deprecation warning
-            ], [
-            //does not match pattern
-                'name'         => '&lt;abc&gt;',
-                'field'        => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '&lt;abc&gt;',
-                'deprecated'   => true,
-            ], [
-            //first added
-                'name'         => '&lt;####&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '0001',
-                'deprecated'   => true,
-            ], [
-            //existing
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '_test_pc23',
-                'deprecated'   => true,
-            ], [
-            //not existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 0,
-                'expected'     => '_test_pc01',
-                'deprecated'   => true,
-            ], [
             // not existing on entity, with multibyte strings
                 'name'         => '<自動名稱測試_##>',
                 'field'       => 'name',
@@ -1387,49 +1322,13 @@ class DbUtils extends DbTestCase
                 'entities_id'  => 0,
                 'expected'     => '自動名稱—0001—測試'
             ], [
-            //existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 1,
-                'expected'     => '_test_pc04',
-                'deprecated'   => true,
-            ], [
-            //existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => '_test_pc14',
-                'deprecated'   => true,
-            ], [
-            // existing on entity, new XSS clean output
-                'name'         => '&#60;_test_pc##&#62;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => '_test_pc14',
-                'deprecated'   => true,
-            ], [
-            // existing on entity, not sanitized
+            // existing on entity
                 'name'         => '<_test_pc##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => 2,
                 'expected'     => '_test_pc14'
-            ], [
-            // not existing on entity, new XSS clean output, and containing a special char
-                'name'         => '&#60;pc_&#60;_##&#62;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => 'pc_&#60;_01',
-                'deprecated'   => true,
             ], [
             // not existing on entity, not sanitized, and containing a special char
                 'name'         => '<pc_>_##>',
@@ -1445,29 +1344,17 @@ class DbUtils extends DbTestCase
     /**
      * @dataProvider autoNameProvider
      */
-    public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected, bool $deprecated = false)
+    public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected)
     {
         $this->newTestedInstance;
 
-        $call = function () use ($name, $field, $is_template, $itemtype, $entities_id) {
-            return $this->testedInstance->autoName(
-                $name,
-                $field,
-                $is_template,
-                $itemtype,
-                $entities_id
-            );
-        };
-        if (!$deprecated) {
-            $autoname = $call();
-        } else {
-            $autoname = null;
-            $this->when($autoname = $call())
-            ->error()
-               ->withType(E_USER_DEPRECATED)
-               ->withMessage('Handling of encoded/escaped value in autoName() is deprecated.')
-               ->exists();
-        }
+        $autoname = $this->testedInstance->autoName(
+            $name,
+            $field,
+            $is_template,
+            $itemtype,
+            $entities_id
+        );
         $this->string($autoname)->isIdenticalTo($expected);
     }
 

@@ -36,7 +36,6 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Entity class
@@ -4144,14 +4143,7 @@ class Entity extends CommonTreeDropdown
      */
     public static function badgeCompletename(string $entity_string = ""): string
     {
-        // `completename` is expected to be received as it is stored in DB,
-        // meaning that `>` separator is not encoded, but `<`, `>` and `&` from self or parent names are encoded.
         $names  = explode(' > ', trim($entity_string));
-
-        // Convert the whole completename into decoded HTML.
-        foreach ($names as &$name) {
-            $name = Sanitizer::decodeHtmlSpecialChars($name);
-        }
 
         // Construct HTML with special chars encoded.
         $title = htmlspecialchars(implode(' > ', $names));
@@ -4194,13 +4186,7 @@ class Entity extends CommonTreeDropdown
      */
     public static function badgeCompletenameLink(object $entity): string
     {
-        // `completename` is expected to be received as it is stored in DB,
-        // meaning that `>` separator is not encoded, but `<`, `>` and `&` from self or parent names are encoded.
         $names = explode(' > ', trim($entity->fields['completename']));
-        // Convert the whole completename into decoded HTML.
-        foreach ($names as &$name) {
-            $name = Sanitizer::decodeHtmlSpecialChars($name);
-        }
 
         // Construct HTML with special chars encoded.
         $title       = htmlspecialchars(implode(' > ', $names));

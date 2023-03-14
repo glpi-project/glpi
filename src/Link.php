@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\URL;
 
 /** Link Class
@@ -660,8 +659,7 @@ class Link extends CommonDBTM
 
         if (empty($file)) {
             // Generate links
-            $link_pattern = Sanitizer::unsanitize($params['link']); // generate links from raw pattern
-            $links = $item->generateLinkContents($link_pattern, $item, true);
+            $links = $item->generateLinkContents($params['link'], $item, true);
             $i     = 1;
             foreach ($links as $key => $val) {
                 $val     = htmlspecialchars($val); // encode special chars as value was generated from a raw pattern

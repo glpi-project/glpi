@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use DBmysqlIterator;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use IPAddress;
 use IPNetwork;
 use Item_DeviceNetworkCard;
@@ -174,7 +173,7 @@ trait InventoryNetworkPort
                          'name'            => $port->name,
                      ];
 
-                     $networkport->update(Sanitizer::sanitize($input));
+                     $networkport->update($input);
                      $unmanaged->delete(['id' => $unmanageds_id], true);
                 }
             }
@@ -247,7 +246,7 @@ trait InventoryNetworkPort
                      'gateway'      => $port->gateway,
                      'entities_id'  => $this->entities_id
                  ];
-                 $ipnetwork->add(Sanitizer::sanitize($input));
+                 $ipnetwork->add($input);
             }
         }
     }
@@ -283,7 +282,7 @@ trait InventoryNetworkPort
             $input['trunk'] = 0;
         }
 
-        $netports_id = $networkport->add(Sanitizer::sanitize($input));
+        $netports_id = $networkport->add($input);
         return $netports_id;
     }
 
@@ -310,7 +309,7 @@ trait InventoryNetworkPort
             $input['name'] = $name;
         }
 
-        $netname_id = $networkname->add(Sanitizer::sanitize($input));
+        $netname_id = $networkname->add($input);
         return $netname_id;
     }
 
@@ -332,7 +331,7 @@ trait InventoryNetworkPort
                 'name'         => $ip,
                 'is_dynamic'   => 1
             ];
-            $ipaddress->add(Sanitizer::sanitize($input));
+            $ipaddress->add($input);
         }
     }
 
@@ -410,7 +409,7 @@ trait InventoryNetworkPort
                 if (count($criteria)) {
                     $criteria['id'] = $keydb;
                     $criteria['is_dynamic'] = 1;
-                    $networkport->update(Sanitizer::sanitize($criteria));
+                    $networkport->update($criteria);
                 }
 
                 //check for instantiation_type switch for NetworkPort
@@ -606,9 +605,9 @@ trait InventoryNetworkPort
 
        //store instance
         if ($instance->isNewItem()) {
-            $instance->add(Sanitizer::sanitize($input));
+            $instance->add($input);
         } else {
-            $instance->update(Sanitizer::sanitize($input));
+            $instance->update($input);
         }
     }
 

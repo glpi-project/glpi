@@ -39,7 +39,6 @@ use CommonITILActor;
 use CommonITILValidation;
 use DbTestCase;
 use Generator;
-use Glpi\Toolbox\Sanitizer;
 use Group;
 use Group_Ticket;
 use Group_User;
@@ -550,10 +549,10 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->boolean($itilSolution->getFromDBByCrit([
             'items_id' => $itil_id,
             'itemtype' => $itil::getType(),
-            'content'  => Sanitizer::encodeHtmlSpecialChars("<p>content of solution template  white ' quote</p>")
         ]))->isTrue();
 
         $this->integer((int)$itilSolution->getID())->isGreaterThan(0);
+        $this->string($itilSolution->fields['content'])->isEqualTo("<p>content of solution template  white ' quote</p>");
 
         //reload and check ITIL Object status
         $itil->getFromDB($itil_id);
@@ -1204,7 +1203,6 @@ abstract class RuleCommonITILObject extends DbTestCase
             'condition' => \Rule::REGEX_MATCH,
             'pattern'   => '/(.+\([^()]*\))/',   //retrieve group with '(' and ')'
         ]);
-        //change value because of addslashes
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
         //create action to put group matching on criteria

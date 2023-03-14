@@ -38,7 +38,6 @@ use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Filter;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject;
 
 class User extends CommonDBTM
@@ -737,7 +736,7 @@ class User extends CommonDBTM
                     $password_errors = [];
                     if ($this->validatePassword($input["password"], $password_errors)) {
                         $input["password"]
-                        = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
+                        = Auth::getPasswordHash($input["password"]);
 
                         $input['password_last_update'] = $_SESSION['glpi_currenttime'];
                     } else {
@@ -955,7 +954,7 @@ class User extends CommonDBTM
                            && (strtotime($_SESSION["glpi_currenttime"]) < strtotime($this->fields['password_forget_token_date']))))
                     ) {
                         $input["password"]
-                        = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
+                        = Auth::getPasswordHash($input["password"]);
 
                         $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                     } else {
@@ -1781,7 +1780,7 @@ class User extends CommonDBTM
             $ldap_connection,
             $ldap_method["basedn"],
             $user_tmp,
-            Sanitizer::unsanitize($ldap_method["group_condition"]),
+            $ldap_method["group_condition"],
             $ldap_method["group_member_field"],
             $ldap_method["use_dn"],
             $ldap_method["login_field"]
@@ -2087,7 +2086,6 @@ class User extends CommonDBTM
        //Only retrive cn and member attributes from groups
         $attrs = ['dn'];
 
-        $group_condition = Sanitizer::unsanitize($group_condition);
         if (!$use_dn) {
             $filter = "(& $group_condition (|($group_member_field=$user_dn)
                                           ($group_member_field=$login_field=$user_dn)))";
@@ -2222,7 +2220,6 @@ class User extends CommonDBTM
                     // encoding issues (see #12898).
                     $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
                 }
-                $value = Sanitizer::sanitize($value); // $_SERVER is not automatically sanitized
                 switch ($field) {
                     case "email1":
                     case "email2":
@@ -6027,14 +6024,11 @@ JAVASCRIPT;
     {
         global $CFG_GLPI;
 
-       // prevent xss
-        $picture = Html::cleanInputText($picture);
-
         if (!empty($picture)) {
             $tmp = explode(".", $picture);
             if (count($tmp) == 2) {
-                return $CFG_GLPI["root_doc"] . "/front/document.send.php?file=_pictures/" . $tmp[0] .
-                   "_min." . $tmp[1];
+                return $CFG_GLPI["root_doc"] . "/front/document.send.php?file=_pictures/" . htmlspecialchars($tmp[0]) .
+                   "_min." . htmlspecialchars($tmp[1]);
             }
         }
 
@@ -6136,7 +6130,6 @@ JAVASCRIPT;
     private static function getLdapFieldValue($map, array $res)
     {
 
-        $map = Sanitizer::unsanitize($map);
         $ret = preg_replace_callback(
             '/%{(.*)}/U',
             function ($matches) use ($res) {

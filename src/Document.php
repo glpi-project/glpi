@@ -34,7 +34,6 @@
  */
 
 use Glpi\Event;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Document class
@@ -1590,7 +1589,7 @@ class Document extends CommonDBTM
         ]);
 
         foreach ($iterator as $data) {
-            if (preg_match(Sanitizer::unsanitize($data['ext']) . "i", $ext, $results) > 0) {
+            if (preg_match($data['ext'] . "i", $ext, $results) > 0) {
                 return Toolbox::strtoupper($ext);
             }
         }

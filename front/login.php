@@ -38,7 +38,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 include('../inc/includes.php');
 
@@ -63,7 +62,7 @@ if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
     $login = '';
 }
 if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
-    $password = Sanitizer::unsanitize($_POST[$_SESSION['pwdfield']]);
+    $password = $_POST[$_SESSION['pwdfield']];
 } else {
     $password = '';
 }

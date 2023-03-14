@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * @since 10.0.0
  */
@@ -360,11 +358,8 @@ JAVASCRIPT
 
         $html = '';
 
-        // decode `&` to prevent doube encoding when value will be printed using `htmlspecialchars()`
-        $raw_url = Sanitizer::decodeHtmlSpecialChars($fields['url']);
-
         $target = $fields['open_window'] == 1 ? '_blank' : '_self';
-        $html .= '<a href="' . htmlspecialchars($raw_url) . '" target="' . $target . '">';
+        $html .= '<a href="' . htmlspecialchars($fields['url']) . '" target="' . $target . '">';
         if (!empty($fields['icon'])) {
             // Forces font family values to fallback on ".fab" family font if char is not available in ".fas" family.
             $html .= '<i class="fa-lg fa-fw fa ' . htmlspecialchars($fields['icon']) . '"'

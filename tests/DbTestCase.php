@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 // Generic test classe, to be extended for CommonDBTM Object
 
 class DbTestCase extends \GLPITestCase

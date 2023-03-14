@@ -35,8 +35,6 @@
 
 namespace tests\units\Glpi\RichText;
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * Test class for src/Glpi/RichText/richtext.class.php
  */
@@ -56,13 +54,6 @@ class RichText extends \GLPITestCase
             'expected_result'        => '',
         ];
 
-       // Handling of sanitized content
-        yield [
-            'content'                => Sanitizer::sanitize('<p>This HTML is safe !</p>'),
-            'encode_output_entities' => false,
-            'expected_result'        => '<p>This HTML is safe !</p>',
-        ];
-
        // Handling of encoded result (to be used in textarea for instance)
         yield [
             'content'                => '<p>Some HTML content with special chars like &gt; &amp; &lt;.</p>',
@@ -70,7 +61,7 @@ class RichText extends \GLPITestCase
             'expected_result'        => '&lt;p&gt;Some HTML content with special chars like &amp;gt; &amp;amp; &amp;lt;.&lt;/p&gt;',
         ];
 
-       // Handling of special chars (<, > and &) through sanitizing process
+       // Handling of special chars (<, > and &)
         $xml_sample = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
@@ -80,12 +71,7 @@ class RichText extends \GLPITestCase
 XML;
         $content = '<h1>XML example</h1>' . "\n" . htmlentities($xml_sample);
         yield [
-            'content'                => Sanitizer::encodeHtmlSpecialChars($content), // Without quotes escaping
-            'encode_output_entities' => false,
-            'expected_result'        => $content,
-        ];
-        yield [
-            'content'                => Sanitizer::sanitize($content), // With quotes escaping
+            'content'                => $content,
             'encode_output_entities' => false,
             'expected_result'        => $content,
         ];
@@ -357,9 +343,9 @@ HTML,
 
     protected function getTextFromHtmlProvider(): iterable
     {
-        // Handling of sanitized content
+        // Handling of basic content
         yield [
-            'content'                => Sanitizer::sanitize('<p>Some HTML text</p>'),
+            'content'                => '<p>Some HTML text</p>',
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => false,
@@ -377,7 +363,7 @@ HTML,
             'expected_result'        => 'Some HTML content with special chars like &gt; &amp; &lt;.',
         ];
 
-        // Handling of special chars (<, > and &) through sanitizing process
+        // Handling of special chars (<, > and &)
         $xml_sample = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
@@ -390,15 +376,7 @@ XML;
 XML example <?xml version="1.0" encoding="UTF-8"?> <root> <desc><![CDATA[Some CDATA content]]></desc> <url>http://www.glpi-project.org/void?test=1&amp;debug=1</url> </root>
 PLAINTEXT;
         yield [
-            'content'                => Sanitizer::encodeHtmlSpecialChars($content), // Without quotes escaping
-            'keep_presentation'      => false,
-            'compact'                => false,
-            'encode_output_entities' => false,
-            'preserve_case'          => false,
-            'expected_result'        => $result,
-        ];
-        yield [
-            'content'                => Sanitizer::sanitize($content), // With quotes escaping
+            'content'                => $content,
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => false,
