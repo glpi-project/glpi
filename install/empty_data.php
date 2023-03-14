@@ -360,6 +360,9 @@ $empty_data_builder = new class
             'initialized_rules_collections' => '[]',
             'timeline_action_btn_layout' => 0,
             'timeline_date_format' => 0,
+            '2fa_enforced' => 0,
+            '2fa_grace_date_start' => null,
+            '2fa_grace_days' => 0,
         ];
 
         $tables['glpi_configs'] = [];
