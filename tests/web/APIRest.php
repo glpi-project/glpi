@@ -1330,7 +1330,7 @@ class APIRest extends APIBaseClass
             'headers' => $headers,
             'verb'    => $method,
         ], 200);
-        $this->string($data['comment'])->isEqualTo("&#60;&#62;");
+        $this->string($data['comment'])->isEqualTo("<>");
 
         // Add additional header
         $headers['X-GLPI-Sanitized-Content'] = "false";

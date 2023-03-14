@@ -42,7 +42,6 @@ use Computer;
 use DbTestCase;
 use Entity;
 use Glpi\Team\Team;
-use Glpi\Toolbox\Sanitizer;
 use Group;
 use Group_Ticket;
 use ITILCategory;
@@ -671,7 +670,7 @@ class Ticket extends DbTestCase
 
        // 6.1 -> check first task
         $taskA = array_shift($found_tasks);
-        $this->string($taskA['content'])->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars('<p>my task template A</p>'));
+        $this->string($taskA['content'])->isIdenticalTo('<p>my task template A</p>');
         $this->variable($taskA['taskcategories_id'])->isEqualTo($taskcat_id);
         $this->variable($taskA['actiontime'])->isEqualTo(60);
         $this->variable($taskA['is_private'])->isEqualTo(1);
@@ -681,7 +680,7 @@ class Ticket extends DbTestCase
 
        // 6.2 -> check second task
         $taskB = array_shift($found_tasks);
-        $this->string($taskB['content'])->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars('<p>my task template B</p>'));
+        $this->string($taskB['content'])->isIdenticalTo('<p>my task template B</p>');
         $this->variable($taskB['taskcategories_id'])->isEqualTo($taskcat_id);
         $this->variable($taskB['actiontime'])->isEqualTo(120);
         $this->variable($taskB['is_private'])->isEqualTo(0);
@@ -3591,11 +3590,10 @@ class Ticket extends DbTestCase
         $instance = new \Ticket();
         $input = [
             'name'    => 'a ticket',
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (add)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -3618,11 +3616,10 @@ HTML
         copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $instance->update([
             'id' => $instance->getID(),
-            'content' => Sanitizer::encodeHtmlSpecialChars(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (update)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],

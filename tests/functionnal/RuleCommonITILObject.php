@@ -819,7 +819,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->array($itil_tasks)->hasSize(1);
         $task_data = array_pop($itil_tasks);
         $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo(Sanitizer::encodeHtmlSpecialChars('<p>test content</p>'));
+        $this->string($task_data['content'])->isEqualTo('<p>test content</p>');
 
         // Test on update
         $itil_em = $this->getITILObjectInstance();
@@ -848,9 +848,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->array($itil_tasks)->hasSize(1);
         $task_data = array_pop($itil_tasks);
         $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test content</p>')
-        );
+        $this->string($task_data['content'])->isEqualTo('<p>test content</p>');
 
         // Add a second action to the rule (test multiple creation)
         $this->createItem('TaskTemplate', [
@@ -878,15 +876,11 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         $task_data = array_pop($itil_tasks);
         $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test content 2</p>')
-        );
+        $this->string($task_data['content'])->isEqualTo('<p>test content 2</p>');
 
         $task_data = array_pop($itil_tasks);
         $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test content</p>')
-        );
+        $this->string($task_data['content'])->isEqualTo('<p>test content</p>');
     }
 
     public function testFollowupTemplateAssignFromRule()
@@ -953,9 +947,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->array($itil_followups)->hasSize(1);
         $itil_followups_data = array_pop($itil_followups);
         $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test testFollowupTemplateAssignFromRule</p>')
-        );
+        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule</p>');
 
         // Test on update
         $itil = $this->getITILObjectInstance();
@@ -988,9 +980,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->array($itil_followups)->hasSize(1);
         $itil_followups_data = array_pop($itil_followups);
         $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test testFollowupTemplateAssignFromRule</p>')
-        );
+        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule</p>');
 
         // Add a second action to the rule (test multiple creation)
         $this->createItem('ITILFollowupTemplate', [
@@ -1020,15 +1010,11 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         $itil_followups_data = array_pop($itil_followups);
         $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test testFollowupTemplateAssignFromRule 2</p>')
-        );
+        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule 2</p>');
 
         $itil_followups_data = array_pop($itil_followups);
         $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test testFollowupTemplateAssignFromRule</p>')
-        );
+        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule</p>');
     }
 
     public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdateITILContent()

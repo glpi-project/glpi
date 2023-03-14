@@ -182,7 +182,7 @@ class NotificationEventAjax extends DbTestCase
             'body_html' => null,
             'body_text' => <<<TEXT
  
-  URL : {$GLPI_URI}/index.php?redirect=ticket_{$ticket->getID()}&#38;noAUTO=1 
+  URL : {$GLPI_URI}/index.php?redirect=ticket_{$ticket->getID()}&noAUTO=1 
 
  Ticket: Description
 

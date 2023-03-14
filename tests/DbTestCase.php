@@ -231,7 +231,6 @@ class DbTestCase extends \GLPITestCase
     {
         $item = new $itemtype();
         $input['id'] = $id;
-        $input = Sanitizer::sanitize($input);
         $success = $item->update($input);
         $this->boolean($success)->isTrue();
 
