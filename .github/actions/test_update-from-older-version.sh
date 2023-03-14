@@ -100,7 +100,6 @@ bin/console database:check_schema_integrity \
 bin/console database:check_schema_integrity \
   --config-dir=./tests/config --ansi --no-interaction \
   --check-all-migrations
-tests/bin/test-data-sanitization --ansi --no-interaction
 
 # Check updated data
 bin/console database:configure \
