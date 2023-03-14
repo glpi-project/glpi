@@ -78,7 +78,8 @@ class NotificationAjax extends DbTestCase
             'content_text'                => "Hello, this is a test notification.",
             'to'                          => \Session::getLoginUserID(),
             'from'                        => 'glpi@tests',
-            'toname'                      => ''
+            'toname'                      => '',
+            'event'                       => 'test_notification'
         ]);
         $this->boolean($res)->isTrue();
 
@@ -128,7 +129,8 @@ class NotificationAjax extends DbTestCase
             'fromname'                    => 'TEST',
             'subject'                     => 'Test notification',
             'content_text'                => "Hello, this is a test notification.",
-            'to'                          => \Session::getLoginUserID()
+            'to'                          => \Session::getLoginUserID(),
+            'event'                       => 'test_notification',
         ]);
         $this->boolean($res)->isTrue();
 

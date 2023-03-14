@@ -403,4 +403,75 @@ class NotificationTarget extends DbTestCase
 
         $this->string($this->testedInstance->formatUrl($usertype, $redirect))->isEqualTo($expected);
     }
+
+    protected function messageItemProvider(): iterable
+    {
+        //set UUID
+        $uuid = \Toolbox::getRandomString(40);
+        \Config::setConfigurationValues('core', ['notification' . '_uuid' => $uuid]);
+        $uname = php_uname('n');
+
+        return [
+            [
+                "itemtype" => "Ticket",
+                "items_id" => 1,
+                "event" => "new",
+                "expected" => "/^GLPI_{$uuid}-Ticket-1\/new@{$uname}$/",
+            ],
+            [
+                "itemtype" => "Ticket",
+                "items_id" => 1,
+                "event" => "update",
+                "expected" => "/^GLPI_{$uuid}-Ticket-1\/update\.\d+\.\d+@{$uname}$/",
+            ],
+            [
+                "itemtype" => "Certificate",
+                "items_id" => 1,
+                "event" => 'alert',
+                "expected" => "/^GLPI_{$uuid}-Certificate-1\/alert\.\d+\.\d+@{$uname}$/",
+            ],
+            [
+                "itemtype" => "User",
+                "items_id" => 7,
+                "event" => 'new',
+                "expected" => "/^GLPI_{$uuid}-User-7\/new@{$uname}$/",
+            ],
+            [
+                "itemtype" => "User",
+                "items_id" => 7,
+                "event" => 'passwordexpires',
+                "expected" => "/^GLPI_{$uuid}-User-7\/passwordexpires\.\d+\.\d+@{$uname}$/",
+            ],
+            [
+                // no item
+                "itemtype" => null,
+                "items_id" => null,
+                "event" => "some_event",
+                "expected" => "/^GLPI_{$uuid}\/some_event\.\d+\.\d+@{$uname}$/",
+            ],
+            [
+                // invalid itemtype
+                "itemtype" => "Other",
+                "items_id" => 1,
+                "event" => "update",
+                "expected" => "/^GLPI_{$uuid}\/update\.\d+\.\d+@{$uname}$/",
+            ],
+            [
+                // no event
+                "itemtype" => null,
+                "items_id" => null,
+                "event" => null,
+                "expected" => "/^GLPI_{$uuid}\/none\.\d+\.\d+@{$uname}$/",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider messageItemProvider
+     */
+    public function testGetMessageIdForEvent(?string $itemtype, ?int $items_id, ?string $event, string $expected)
+    {
+        $messageid = $this->newTestedInstance()->getMessageIdForEvent($itemtype, $items_id, $event);
+        $this->string($messageid)->matches($expected);
+    }
 }
