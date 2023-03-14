@@ -74,7 +74,8 @@ class NotificationMailing extends DbTestCase
             'content_text'                => "Hello, this is a test notification.",
             'to'                          => \Session::getLoginUserID(),
             'from'                        => 'glpi@tests',
-            'toname'                      => ''
+            'toname'                      => '',
+            'event'                       => 'test_notification'
         ]);
         $this->boolean($res)->isTrue();
 
@@ -107,7 +108,8 @@ class NotificationMailing extends DbTestCase
              'body_text'                => 'Hello, this is a test notification.',
              'messageid'                => null,
              'documents'                => '',
-             'mode'                     => 'mailing'
+             'mode'                     => 'mailing',
+             'event'                    => 'test_notification'
          ]);
     }
 }

@@ -6076,6 +6076,7 @@ CREATE TABLE `glpi_queuednotifications` (
   `messageid` text,
   `documents` text,
   `mode` varchar(20) NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
+  `event` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`,`notificationtemplates_id`),
   KEY `is_deleted` (`is_deleted`),
