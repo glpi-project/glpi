@@ -1275,43 +1275,11 @@ class APIRest extends APIBaseClass
     }
 
     /**
-     * Unit test for the "returnSanitizedContent" method
-     *
-     * @dataProvider testReturnSanitizedContentUnitProvider
-     *
-     * @param string $header_value    Header value to be tested
-     * @param bool   $expected_output Expected output for this header
+     * Functional test to ensure returned content is not sanitized.
      *
      * @return void
      */
-    public function testReturnSanitizedContentUnit(
-        ?string $header_value,
-        bool $expected_output
-    ): void {
-        $api = new \Glpi\Api\APIRest();
-
-        if ($header_value === null) {
-            // Simulate missing header
-            unset($_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT']);
-        } else {
-            $_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT'] = $header_value;
-        }
-
-        // Run test
-        $this->boolean(
-            $api->returnSanitizedContent()
-        )->isEqualTo($expected_output);
-
-        // Clean header
-        unset($_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT']);
-    }
-
-    /**
-     * Functional test for the "returnSanitizedContent" method
-     *
-     * @return void
-     */
-    public function testReturnSanitizedContentFunctional(): void
+    public function testContentEncoding(): void
     {
         // Get computer with encoded comment
         $computers_id = getItemByTypeName(
@@ -1325,17 +1293,6 @@ class APIRest extends APIBaseClass
         $method = "GET";
         $headers = ['Session-Token' => $this->session_token];
 
-        // Execute first test (keep encoded content)
-        $data = $this->query($url, [
-            'headers' => $headers,
-            'verb'    => $method,
-        ], 200);
-        $this->string($data['comment'])->isEqualTo("<>");
-
-        // Add additional header
-        $headers['X-GLPI-Sanitized-Content'] = "false";
-
-        // Execute second test (expect decoded content)
         $data = $this->query($url, [
             'headers' => $headers,
             'verb'    => $method,
