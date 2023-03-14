@@ -1298,11 +1298,9 @@ class Change extends CommonITILObject
         $iterator = $DB->request($criteria);
 
         $total_row_count = count($iterator);
-        $displayed_row_count = (int)$_SESSION['glpidisplay_count_on_home'] > 0
-         ? min((int)$_SESSION['glpidisplay_count_on_home'], $total_row_count)
-         : $total_row_count;
+        $displayed_row_count = min((int)$_SESSION['glpidisplay_count_on_home'], $total_row_count);
 
-        if ($displayed_row_count > 0) {
+        if ($total_row_count > 0) {
             $options  = [
                 'criteria' => [],
                 'reset'    => 'reset',
@@ -1417,98 +1415,100 @@ class Change extends CommonITILObject
                             'content'   => $main_header
                         ]
                     ],
-                    [
-                        [
-                            'content'   => __('ID'),
-                            'style'     => 'width: 75px'
-                        ],
-                        [
-                            'content'   => _n('Requester', 'Requesters', 1),
-                            'style'     => 'width: 20%'
-                        ],
-                        __('Description')
-                    ]
                 ],
                 'rows'         => []
             ];
             $i = 0;
-            foreach ($iterator as $data) {
-                $change   = new self();
-                $rand      = mt_rand();
-                $row = [
-                    'values' => []
+            if ($displayed_row_count > 0) {
+                $twig_params['header_rows'][] = [
+                    [
+                        'content'   => __('ID'),
+                        'style'     => 'width: 75px'
+                    ],
+                    [
+                        'content'   => _n('Requester', 'Requesters', 1),
+                        'style'     => 'width: 20%'
+                    ],
+                    __('Description')
                 ];
-
-                if ($change->getFromDBwithData($data['id'], 0)) {
-                    $bgcolor = $_SESSION["glpipriority_" . $change->fields["priority"]];
-                    $name    = sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]);
-                    $row['values'][] = [
-                        'class'   => 'priority_block',
-                        'content' => "<span style='background: $bgcolor'></span>&nbsp;$name"
+                foreach ($iterator as $data) {
+                    $change = new self();
+                    $rand = mt_rand();
+                    $row = [
+                        'values' => []
                     ];
 
-                    $requesters = [];
-                    if (
-                        isset($change->users[CommonITILActor::REQUESTER])
-                        && count($change->users[CommonITILActor::REQUESTER])
-                    ) {
-                        foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
-                            if ($d["users_id"] > 0) {
-                                $userdata = getUserName($d["users_id"], 2);
-                                $name     = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
-                                    $userdata['name'];
-                                $requesters[] = $name;
-                            } else {
-                                $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
-                                       $d['alternative_email'];
+                    if ($change->getFromDBwithData($data['id'], 0)) {
+                        $bgcolor = $_SESSION["glpipriority_" . $change->fields["priority"]];
+                        $name = sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]);
+                        $row['values'][] = [
+                            'class' => 'priority_block',
+                            'content' => "<span style='background: $bgcolor'></span>&nbsp;$name"
+                        ];
+
+                        $requesters = [];
+                        if (
+                            isset($change->users[CommonITILActor::REQUESTER])
+                            && count($change->users[CommonITILActor::REQUESTER])
+                        ) {
+                            foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
+                                if ($d["users_id"] > 0) {
+                                    $userdata = getUserName($d["users_id"], 2);
+                                    $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
+                                        $userdata['name'];
+                                    $requesters[] = $name;
+                                } else {
+                                    $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
+                                        $d['alternative_email'];
+                                }
                             }
                         }
-                    }
 
-                    if (
-                        isset($change->groups[CommonITILActor::REQUESTER])
-                        && count($change->groups[CommonITILActor::REQUESTER])
-                    ) {
-                        foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
-                            $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
-                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                        if (
+                            isset($change->groups[CommonITILActor::REQUESTER])
+                            && count($change->groups[CommonITILActor::REQUESTER])
+                        ) {
+                            foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
+                                $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
+                                    Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                            }
                         }
-                    }
-                    $row['values'][] = implode('<br>', $requesters);
+                        $row['values'][] = implode('<br>', $requesters);
 
-                    $link = "<a id='change" . $change->fields["id"] . $rand . "' href='" .
-                    Change::getFormURLWithID($change->fields["id"]);
-                    if ($forcetab != '') {
-                        $link .= "&amp;forcetab=" . $forcetab;
-                    }
-                    $link .= "'>";
-                    $link .= "<span class='b'>" . $change->fields["name"] . "</span></a>";
-                    $link = sprintf(
-                        __('%1$s %2$s'),
-                        $link,
-                        Html::showToolTip(
-                            RichText::getEnhancedHtml($change->fields['content']),
-                            ['applyto' => 'change' . $change->fields["id"] . $rand,
-                                'display' => false
+                        $link = "<a id='change" . $change->fields["id"] . $rand . "' href='" .
+                            Change::getFormURLWithID($change->fields["id"]);
+                        if ($forcetab != '') {
+                            $link .= "&amp;forcetab=" . $forcetab;
+                        }
+                        $link .= "'>";
+                        $link .= "<span class='b'>" . $change->fields["name"] . "</span></a>";
+                        $link = sprintf(
+                            __('%1$s %2$s'),
+                            $link,
+                            Html::showToolTip(
+                                RichText::getEnhancedHtml($change->fields['content']),
+                                ['applyto' => 'change' . $change->fields["id"] . $rand,
+                                    'display' => false
+                                ]
+                            )
+                        );
+
+                        $row['values'][] = $link;
+                    } else {
+                        $row['class'] = 'tab_bg_2';
+                        $row['values'] = [
+                            [
+                                'colspan' => 6,
+                                'content' => "<i>" . __('No ticket in progress.') . "</i>"
                             ]
-                        )
-                    );
+                        ];
+                    }
+                    $twig_params['rows'][] = $row;
 
-                    $row['values'][] = $link;
-                } else {
-                    $row['class'] = 'tab_bg_2';
-                    $row['values'] = [
-                        [
-                            'colspan'   => 6,
-                            'content'   => "<i>" . __('No ticket in progress.') . "</i>"
-                        ]
-                    ];
-                }
-                $twig_params['rows'][] = $row;
-
-                $i++;
-                if ($i == $displayed_row_count) {
-                    break;
+                    $i++;
+                    if ($i == $displayed_row_count) {
+                        break;
+                    }
                 }
             }
             TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);

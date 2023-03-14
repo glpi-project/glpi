@@ -1673,6 +1673,19 @@ class Ticket extends CommonITILObject
         }
 
         $this->handleSatisfactionSurveyOnUpdate();
+
+        // Add linked project
+        $projects_ids = $this->input['_projects_id'] ?? [];
+        foreach ($projects_ids as $projects_id) {
+            if ($projects_id) {
+                $item_project = new Item_Project();
+                $item_project->add([
+                    'projects_id' => $projects_id,
+                    'itemtype'   => Ticket::class,
+                    'items_id'   => $this->getID(),
+                ]);
+            }
+        }
     }
 
 
@@ -2036,7 +2049,7 @@ class Ticket extends CommonITILObject
             );
         }
 
-       // Add linked contract
+        // Add linked contract
         $contracts_id = $this->input['_contracts_id'] ?? 0;
         if ($contracts_id) {
             $ticketcontract = new Ticket_Contract();
@@ -2044,6 +2057,19 @@ class Ticket extends CommonITILObject
                 'contracts_id' => $this->input['_contracts_id'],
                 'tickets_id'   => $this->getID(),
             ]);
+        }
+
+        // Add linked project
+        $projects_ids = $this->input['_projects_id'] ?? [];
+        foreach ($projects_ids as $projects_id) {
+            if ($projects_id) {
+                $item_project = new Item_Project();
+                $item_project->add([
+                    'projects_id' => $projects_id,
+                    'itemtype'   => Ticket::class,
+                    'items_id'   => $this->getID(),
+                ]);
+            }
         }
 
         parent::post_addItem();
@@ -4449,11 +4475,9 @@ JAVASCRIPT;
 
         $iterator = $DB->request($criteria);
         $total_row_count = count($iterator);
-        $displayed_row_count = (int)$_SESSION['glpidisplay_count_on_home'] > 0
-         ? min((int)$_SESSION['glpidisplay_count_on_home'], $total_row_count)
-         : $total_row_count;
+        $displayed_row_count = min((int)$_SESSION['glpidisplay_count_on_home'], $total_row_count);
 
-        if ($displayed_row_count > 0) {
+        if ($total_row_count > 0) {
             $options  = [
                 'criteria' => [],
                 'reset'    => 'reset',
@@ -4771,128 +4795,130 @@ JAVASCRIPT;
                             'colspan'   => 4,
                             'content'   => $main_header
                         ]
-                    ],
-                    [
-                        [
-                            'content'   => __('ID'),
-                            'style'     => 'width: 75px'
-                        ],
-                        [
-                            'content'   => _n('Requester', 'Requesters', 1),
-                            'style'     => 'width: 20%'
-                        ],
-                        [
-                            'content'   => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-                            'style'     => 'width: 20%'
-                        ],
-                        __('Description')
                     ]
                 ],
                 'rows'         => []
             ];
 
             $i = 0;
-            foreach ($iterator as $data) {
-                $showprivate = false;
-                if (Session::haveRight('followup', ITILFollowup::SEEPRIVATE)) {
-                    $showprivate = true;
-                }
-
-                $job  = new self();
-                $rand = mt_rand();
-                $row = [
-                    'values' => []
+            if ($displayed_row_count > 0) {
+                $twig_params['header_rows'][] = [
+                    [
+                        'content'   => __('ID'),
+                        'style'     => 'width: 75px'
+                    ],
+                    [
+                        'content'   => _n('Requester', 'Requesters', 1),
+                        'style'     => 'width: 20%'
+                    ],
+                    [
+                        'content'   => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                        'style'     => 'width: 20%'
+                    ],
+                    __('Description')
                 ];
-                if ($job->getFromDBwithData($data['id'], 0)) {
-                    $bgcolor = $_SESSION["glpipriority_" . $job->fields["priority"]];
-                    $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
-                    $row['values'][] = [
-                        'content' => "<div class='priority_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;$name</div>"
+                foreach ($iterator as $data) {
+                    $showprivate = false;
+                    if (Session::haveRight('followup', ITILFollowup::SEEPRIVATE)) {
+                        $showprivate = true;
+                    }
+
+                    $job = new self();
+                    $rand = mt_rand();
+                    $row = [
+                        'values' => []
                     ];
+                    if ($job->getFromDBwithData($data['id'], 0)) {
+                        $bgcolor = $_SESSION["glpipriority_" . $job->fields["priority"]];
+                        $name = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
+                        $row['values'][] = [
+                            'content' => "<div class='priority_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;$name</div>"
+                        ];
 
-                    $requesters = [];
-                    if (
-                        isset($job->users[CommonITILActor::REQUESTER])
-                        && count($job->users[CommonITILActor::REQUESTER])
-                    ) {
-                        foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
-                            if ($d["users_id"] > 0) {
-                                $userdata = getUserName($d["users_id"], 2);
-                                $name     = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
-                                    $userdata['name'];
-                                $requesters[] = $name;
-                            } else {
-                                $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
-                                       $d['alternative_email'];
+                        $requesters = [];
+                        if (
+                            isset($job->users[CommonITILActor::REQUESTER])
+                            && count($job->users[CommonITILActor::REQUESTER])
+                        ) {
+                            foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
+                                if ($d["users_id"] > 0) {
+                                    $userdata = getUserName($d["users_id"], 2);
+                                    $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
+                                        $userdata['name'];
+                                    $requesters[] = $name;
+                                } else {
+                                    $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
+                                        $d['alternative_email'];
+                                }
                             }
                         }
-                    }
 
-                    if (
-                        isset($job->groups[CommonITILActor::REQUESTER])
-                        && count($job->groups[CommonITILActor::REQUESTER])
-                    ) {
-                        foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-                            $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
-                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
-                        }
-                    }
-                    $row['values'][] = implode('<br>', $requesters);
-
-                    $associated_elements = [];
-                    if (!empty($job->hardwaredatas)) {
-                        foreach ($job->hardwaredatas as $hardwaredatas) {
-                            if ($hardwaredatas->canView()) {
-                                $associated_elements[] = $hardwaredatas->getTypeName() . " - " . "<span class='b'>" . $hardwaredatas->getLink() . "</span>";
-                            } else if ($hardwaredatas) {
-                                $associated_elements[] = $hardwaredatas->getTypeName() . " - " . "<span class='b'>" . $hardwaredatas->getNameID() . "</span>";
+                        if (
+                            isset($job->groups[CommonITILActor::REQUESTER])
+                            && count($job->groups[CommonITILActor::REQUESTER])
+                        ) {
+                            foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
+                                $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
+                                    Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                             }
                         }
+                        $row['values'][] = implode('<br>', $requesters);
+
+                        $associated_elements = [];
+                        if (!empty($job->hardwaredatas)) {
+                            foreach ($job->hardwaredatas as $hardwaredatas) {
+                                if ($hardwaredatas->canView()) {
+                                    $associated_elements[] = $hardwaredatas->getTypeName() . " - " . "<span class='b'>" . $hardwaredatas->getLink() . "</span>";
+                                } else if ($hardwaredatas) {
+                                    $associated_elements[] = $hardwaredatas->getTypeName() . " - " . "<span class='b'>" . $hardwaredatas->getNameID() . "</span>";
+                                }
+                            }
+                        } else {
+                            $associated_elements[] = __('General');
+                        }
+                        $row['values'][] = implode('<br>', $associated_elements);
+
+                        $link = "<a id='ticket" . $job->fields["id"] . $rand . "' href='" . Ticket::getFormURLWithID($job->fields["id"]);
+                        if ($forcetab != '') {
+                            $link .= "&amp;forcetab=" . $forcetab;
+                        }
+                        $link .= "'>";
+                        $link .= "<span class='b'>" . $job->getNameID() . "</span></a>";
+                        $link = sprintf(
+                            __('%1$s (%2$s)'),
+                            $link,
+                            sprintf(
+                                __('%1$s - %2$s'),
+                                $job->numberOfFollowups($showprivate),
+                                $job->numberOfTasks($showprivate)
+                            )
+                        );
+                        $link = sprintf(
+                            __('%1$s %2$s'),
+                            $link,
+                            Html::showToolTip(
+                                RichText::getEnhancedHtml($job->fields['content']),
+                                ['applyto' => 'ticket' . $job->fields["id"] . $rand,
+                                    'display' => false
+                                ]
+                            )
+                        );
+                        $row['values'][] = $link;
                     } else {
-                        $associated_elements[] = __('General');
-                    }
-                    $row['values'][] = implode('<br>', $associated_elements);
-
-                    $link = "<a id='ticket" . $job->fields["id"] . $rand . "' href='" . Ticket::getFormURLWithID($job->fields["id"]);
-                    if ($forcetab != '') {
-                        $link .= "&amp;forcetab=" . $forcetab;
-                    }
-                    $link   .= "'>";
-                    $link   .= "<span class='b'>" . $job->getNameID() . "</span></a>";
-                    $link    = sprintf(
-                        __('%1$s (%2$s)'),
-                        $link,
-                        sprintf(
-                            __('%1$s - %2$s'),
-                            $job->numberOfFollowups($showprivate),
-                            $job->numberOfTasks($showprivate)
-                        )
-                    );
-                    $link    = sprintf(
-                        __('%1$s %2$s'),
-                        $link,
-                        Html::showToolTip(
-                            RichText::getEnhancedHtml($job->fields['content']),
-                            ['applyto' => 'ticket' . $job->fields["id"] . $rand,
-                                'display' => false
+                        $row['class'] = 'tab_bg_2';
+                        $row['values'] = [
+                            [
+                                'colspan' => 6,
+                                'content' => "<i>" . __('No ticket in progress.') . "</i>"
                             ]
-                        )
-                    );
-                    $row['values'][] = $link;
-                } else {
-                    $row['class'] = 'tab_bg_2';
-                    $row['values'] = [
-                        [
-                            'colspan'   => 6,
-                            'content'   => "<i>" . __('No ticket in progress.') . "</i>"
-                        ]
-                    ];
-                }
-                $twig_params['rows'][] = $row;
+                        ];
+                    }
+                    $twig_params['rows'][] = $row;
 
-                $i++;
-                if ($i == $displayed_row_count) {
-                    break;
+                    $i++;
+                    if ($i == $displayed_row_count) {
+                        break;
+                    }
                 }
             }
             $output = TemplateRenderer::getInstance()->render('components/table.html.twig', $twig_params);

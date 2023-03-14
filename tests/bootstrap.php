@@ -92,6 +92,7 @@ include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
 include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/APIBaseClass.php';
+include_once __DIR__ . '/FrontBaseClass.php';
 include_once __DIR__ . '/InventoryTestCase.php';
 include_once __DIR__ . '/functionnal/CommonITILRecurrent.php';
 include_once __DIR__ . '/functionnal/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
@@ -357,6 +358,14 @@ function loadDataset()
                 'fax'          => '0123456787',
                 'email'        => 'info@_supplier01_name.com',
                 'comment'      => 'Comment for supplier _suplier01_name',
+                'entities_id'  => '_test_root_entity'
+            ],
+            [
+                'name'         => '_suplier02_name',
+                'phonenumber'  => '0123456788',
+                'fax'          => '0123456786',
+                'email'        => 'info@_supplier02_name.com',
+                'comment'      => 'Comment for supplier _suplier02_name',
                 'entities_id'  => '_test_root_entity'
             ]
         ], 'Location' => [

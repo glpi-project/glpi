@@ -9118,7 +9118,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Replace category ids with category names in items metadata
         foreach ($columns as &$column) {
-            foreach ($column['items'] as &$item) {
+            foreach (($column['items'] ?? []) as &$item) {
                 $item['_metadata']['category'] = $categories[$item['_metadata']['category']] ?? '';
             }
         }

@@ -53,6 +53,7 @@ $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
 $ckey    = 'entity_selector';
 $subckey = sha1(json_encode($_SESSION['glpiactiveprofile']['entities']));
+$subckey .= sha1($base_path); // cached value contains links based on `$base_path`, so cache key should change when `$base_path` changes
 $all_entitiestree = $GLPI_CACHE->get($ckey, []);
 
 /* calculates the tree to save it in the cache if it is not already there */

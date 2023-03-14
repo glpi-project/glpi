@@ -166,7 +166,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         $data['##ticket.urlvalidation##']
                         = $this->formatURL(
                             $options['additionnaloption']['usertype'],
-                            "ticket_" . $item->getField("id") . "_TicketValidation$1"
+                            "ticket_" . $item->getField("id") . '_Ticket$main'
                         );
         $data['##ticket.globalvalidation##']
                         = TicketValidation::getStatus($item->getField('global_validation'));
@@ -257,6 +257,21 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             if ($locations->getField('altitude')) {
                 $data['##ticket.location.altitude##'] = $locations->getField('altitude');
             }
+            if ($locations->getField('address')) {
+                $data['##ticket.location.address##'] = $locations->getField('address');
+            }
+            if ($locations->getField('postcode')) {
+                $data['##ticket.location.postcode##'] = $locations->getField('postcode');
+            }
+            if ($locations->getField('town')) {
+                $data['##ticket.location.town##'] = $locations->getField('town');
+            }
+            if ($locations->getField('state')) {
+                $data['##ticket.location.state##'] = $locations->getField('state');
+            }
+            if ($locations->getField('country')) {
+                $data['##ticket.location.country##'] = $locations->getField('country');
+            }
         }
 
        // is ticket deleted
@@ -274,6 +289,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         $data['##ticket.item.locationlatitude##']    = '';
         $data['##ticket.item.locationlongitude##']   = '';
         $data['##ticket.item.locationaltitude##']    = '';
+        $data['##ticket.item.locationaddress##']     = '';
+        $data['##ticket.item.locationpostcode##']    = '';
+        $data['##ticket.item.locationtown##']        = '';
+        $data['##ticket.item.locationstate##']       = '';
+        $data['##ticket.item.locationcountry##']     = '';
         $data['##ticket.item.contact##']             = '';
         $data['##ticket.item.contactnumber##']       = '';
         $data['##ticket.item.user##']                = '';
@@ -344,6 +364,21 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                         }
                         if ($hardware->getField('altitude')) {
                             $data['##ticket.item.locationaltitude##'] = $locations->getField('altitude');
+                        }
+                        if ($hardware->getField('address')) {
+                            $data['##ticket.item.locationaddress##'] = $locations->getField('address');
+                        }
+                        if ($hardware->getField('postcode')) {
+                            $data['##ticket.item.locationpostcode##'] = $locations->getField('postcode');
+                        }
+                        if ($hardware->getField('town')) {
+                            $data['##ticket.item.locationtown##'] = $locations->getField('town');
+                        }
+                        if ($hardware->getField('state')) {
+                            $data['##ticket.item.locationstate##'] = $locations->getField('state');
+                        }
+                        if ($hardware->getField('country')) {
+                            $data['##ticket.item.locationcountry##'] = $locations->getField('country');
                         }
                     }
 
@@ -576,6 +611,31 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 __('%1$s: %2$s'),
                 _n('Associated element', 'Associated elements', Session::getPluralNumber()),
                 __('Altitude')
+            ),
+            'ticket.item.locationaddress'  => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('Address')
+            ),
+            'ticket.item.locationpostcode' => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('Postal code')
+            ),
+            'ticket.item.locationcity'     => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('City')
+            ),
+            'ticket.item.locationstate'    => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                _x('location', 'State')
+            ),
+            'ticket.item.locationcountry'  => sprintf(
+                __('%1$s: %2$s'),
+                _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                __('Country')
             ),
             'ticket.item.model'            => _n('Model', 'Models', 1),
             'ticket.item.contact'          => __('Alternate username'),

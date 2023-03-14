@@ -2044,4 +2044,14 @@ class Session
         //Remove cookie to allow new login
         Auth::setRememberMeCookie('');
     }
+
+    /**
+     * Get the current language
+     *
+     * @return null|string
+     */
+    public static function getLanguage(): ?string
+    {
+        return $_SESSION['glpilanguage'] ?? null;
+    }
 }

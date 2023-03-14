@@ -148,43 +148,58 @@ class Conf extends CommonGLPI
      * @param array $files $_FILES
      *
      * @return Request
+     *
+     * @deprecated
      */
     public function importFile($files): Request
     {
-        $path = $files['inventory_file']['tmp_name'];
-        $name = $files['inventory_file']['name'];
+        \Toolbox::deprecated();
 
-        $inventory_request = new Request();
+        $path = $files['inventory_files']['tmp_name'];
+        $name = $files['inventory_files']['name'];
 
-        if ($this->isInventoryFile($name)) {
-           //knwon standalone file type, try to import.
-            $contents = file_get_contents($path);
-            $this->importContentFile($inventory_request, $path, $contents);
-            return $inventory_request;
-        }
+        $results = $this->importFiles([$name => $path]);
+        $result  = array_pop($results);
 
-       //was not a known file, maybe an archive
-        $archive = UnifiedArchive::open($path);
-        if ($archive === null) {
-           //nay, not an archive neither
-            Session::addMessageAfterRedirect(
-                __('No file to import!'),
-                false,
-                ERROR
-            );
-            return $inventory_request;
-        }
+        return $result['request'];
+    }
 
-       //process archive
-        $files = $archive->getFiles();
-        foreach ($files as $file) {
-            if ($this->isInventoryFile($file)) {
-                $contents = $archive->getFileContent($file);
-                $this->importContentFile($inventory_request, null, $contents);
+    /**
+     * Import inventory files
+     *
+     * @param array $files[filename => filepath] Files to import
+     *
+     * @return array [filename => [success => bool, message => string, asset => CommonDBTM]]
+     */
+    public function importFiles($files): array
+    {
+        $result = [];
+
+        foreach ($files as $filename => $filepath) {
+            if (UnifiedArchive::canOpen($filepath) && $archive = UnifiedArchive::open($filepath)) {
+                $unarchived_files = $archive->getFiles();
+                foreach ($unarchived_files as $inventory_file) {
+                    if ($this->isInventoryFile($inventory_file)) {
+                        $contents = $archive->getFileContent($inventory_file);
+                        $result[$filename . '/' . basename($inventory_file)] = $this->importContentFile(null, $contents);
+                    }
+                }
+            } elseif ($this->isInventoryFile($filename)) {
+                $result[$filename] = $this->importContentFile($filepath, file_get_contents($filepath));
+            } else {
+                $result[$filename] = [
+                    'success' => false,
+                    'message' => sprintf(
+                        __('File has not been imported: `%s`.'),
+                        sprintf('`%s` format is not supported', pathinfo($filepath, PATHINFO_EXTENSION))
+                    ),
+                    'items'   => [],
+                    'request' => null
+                ];
             }
         }
 
-        return $inventory_request;
+        return $result;
     }
 
     /**
@@ -200,14 +215,21 @@ class Conf extends CommonGLPI
     /**
      * Import contents of a file
      *
-     * @param Request $inventory_request Inventory request instance
      * @param string  $path              File path
      * @param string  $contents          File contents
      *
-     * @return void
+     * @return array [success => bool, message => ?string, items => CommonDBTM[], request => Glpi\Inventory\Request]
      */
-    protected function importContentFile(Request $inventory_request, $path, $contents)
+    protected function importContentFile($path, $contents): array
     {
+        $inventory_request = new Request();
+        $result = [
+            'success' => false,
+            'message' => null,
+            'items'   => [],
+            'request' => null
+        ];
+
         try {
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $mime = ($path === null ? $finfo->buffer($contents) : $finfo->file($path));
@@ -229,21 +251,44 @@ class Conf extends CommonGLPI
                     $response = $xml->ERROR;
                 }
                 $response = str_replace('&nbsp;', ' ', $response);
-                Session::addMessageAfterRedirect(
-                    __('File has not been imported:') . " " . Sanitizer::encodeHtmlSpecialChars($response),
-                    true,
-                    ERROR
-                );
+                $result['message'] = sprintf(__('File has not been imported: `%s`.'), $response);
             } else {
-                Session::addMessageAfterRedirect(
-                    __('File has been successfully imported!'),
-                    true,
-                    INFO
-                );
+                $result = [
+                    'success' => true,
+                    'message' => __('File has been successfully imported.'),
+                    'items'   => $inventory_request->getInventory()->getItems(),
+                ];
             }
         } catch (\Exception $e) {
             throw $e;
         }
+
+        $result['request'] = $inventory_request;
+        return $result;
+    }
+
+    /**
+     * Import inventory files and display result.
+     *
+     * @param array $files $_FILES
+     *
+     * @return void
+     */
+    public function displayImportFiles($files)
+    {
+        $to_import = [];
+
+        foreach ($files['inventory_files']['name'] as $filekey => $filename) {
+            if ($files['inventory_files']['error'][$filekey] == 0) {
+                $to_import[$filename] = $files['inventory_files']['tmp_name'][$filekey];
+            }
+        }
+
+        TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_result.html.twig', [
+            'imported_files' => $this->importFiles($to_import)
+        ]);
+
+        Html::displayMessageAfterRedirect(true);
     }
 
     /**

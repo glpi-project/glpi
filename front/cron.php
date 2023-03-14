@@ -37,7 +37,6 @@
 chdir(__DIR__);
 
 
-define('DO_NOT_CHECK_HTTP_REFERER', 1);
 include('../inc/includes.php');
 
 if (!is_writable(GLPI_LOCK_DIR)) {

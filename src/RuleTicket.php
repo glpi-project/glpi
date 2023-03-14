@@ -67,6 +67,14 @@ class RuleTicket extends RuleCommonITILObject
                             $output['_' . $action->fields["field"]] = $action->fields["value"];
                         }
 
+                        // special case of project
+                        if ($action->fields["field"] == "assign_project") {
+                            if (!array_key_exists("_projects_id", $output)) {
+                                $output["_projects_id"] = [];
+                            }
+                            $output["_projects_id"][] = $action->fields["value"];
+                        }
+
                         // special case of contract
                         if ($action->fields["field"] == "assign_contract") {
                             if (!array_key_exists("_contracts_id", $output) || $output['_contracts_id'] == '0') {
@@ -74,6 +82,19 @@ class RuleTicket extends RuleCommonITILObject
                             }
                             $output["_contracts_id"] = $action->fields["value"];
                         }
+
+                        break;
+
+                    case "append":
+                        $value   = $action->fields["value"];
+
+                        if ($action->fields["field"] === "assign_project") {
+                            if (!array_key_exists("_projects_id", $output)) {
+                                $output["_projects_id"] = [];
+                            }
+                            $output["_projects_id"][] = $value;
+                        }
+
                         break;
 
                     case 'fromuser':
@@ -92,6 +113,30 @@ class RuleTicket extends RuleCommonITILObject
                         break;
 
                     case 'regex_result':
+                        if ($action->fields["field"] == "assign_project") {
+                            if (isset($this->regex_results[0])) {
+                                 $regexvalue = RuleAction::getRegexResultById(
+                                     $action->fields["value"],
+                                     $this->regex_results[0]
+                                 );
+                            } else {
+                                  $regexvalue = $action->fields["value"];
+                            }
+
+                            if (!is_null($regexvalue)) {
+                                $projects = new Project();
+                                $target_projects = $projects->find(["name" => $regexvalue]);
+
+                                if (!array_key_exists("_projects_id", $output) && count($target_projects) > 0) {
+                                    $output["_projects_id"] = [];
+                                }
+
+                                foreach ($target_projects as $value) {
+                                    $output["_projects_id"][] = $value['id'];
+                                }
+                            }
+                        }
+
                         if ($action->fields["field"] == "assign_contract") {
                             if (isset($this->regex_results[0])) {
                                 $regexvalue = RuleAction::getRegexResultById(
@@ -245,6 +290,13 @@ class RuleTicket extends RuleCommonITILObject
         $actions['type']['name']                              = _n('Type', 'Types', 1);
         $actions['type']['table']                             = 'glpi_tickets';
         $actions['type']['type']                              = 'dropdown_tickettype';
+
+        $actions['assign_project']['name']                  = Project::getTypeName(1);
+        $actions['assign_project']['type']                  = 'dropdown';
+        $actions['assign_project']['table']                 = 'glpi_projects';
+        $actions['assign_project']['permitseveral']         = ['append'];
+        $actions['assign_project']['force_actions']         = ['assign','regex_result', 'append'];
+        $actions['assign_project']['appendto']              = '_projects_id';
 
         $actions['slas_id_ttr']['table']                      = 'glpi_slas';
         $actions['slas_id_ttr']['field']                      = 'name';

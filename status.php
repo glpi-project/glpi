@@ -35,7 +35,6 @@
 
 use Glpi\System\Status\StatusChecker;
 
-define('DO_NOT_CHECK_HTTP_REFERER', 1);
 include('./inc/includes.php');
 
 // Force in normal mode

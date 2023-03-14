@@ -83,7 +83,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
         $data['##change.urlvalidation##']
                      = $this->formatURL(
                          $options['additionnaloption']['usertype'],
-                         "change_" . $item->getField("id") . "_ChangeValidation$1"
+                         "change_" . $item->getField("id") . '_Change$main'
                      );
         $data['##change.globalvalidation##']
                      = ChangeValidation::getStatus($item->getField('global_validation'));

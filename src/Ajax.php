@@ -373,6 +373,7 @@ JAVASCRIPT;
                      itemtype: '" . addslashes($type) . "',
                      id: '$ID',
                      tab: index,
+                     withtemplate: " . (int)($_GET['withtemplate'] ?? 0) . "
                   }
                );
             }

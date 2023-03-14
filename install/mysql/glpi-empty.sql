@@ -365,7 +365,8 @@ CREATE TABLE `glpi_businesscriticities` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -2554,7 +2555,8 @@ CREATE TABLE `glpi_documentcategories` (
   UNIQUE KEY `unicity` (`documentcategories_id`,`name`),
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -2824,7 +2826,8 @@ CREATE TABLE `glpi_entities` (
   KEY `authldaps_id` (`authldaps_id`),
   KEY `calendars_id` (`calendars_id`),
   KEY `entities_id_software` (`entities_id_software`),
-  KEY `contracts_id_default` (`contracts_id_default`)
+  KEY `contracts_id_default` (`contracts_id_default`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -3024,7 +3027,8 @@ CREATE TABLE `glpi_groups` (
   KEY `is_itemgroup` (`is_itemgroup`),
   KEY `is_usergroup` (`is_usergroup`),
   KEY `is_manager` (`is_manager`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -3303,7 +3307,8 @@ CREATE TABLE `glpi_ipnetworks` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `ipnetworks_id` (`ipnetworks_id`)
+  KEY `ipnetworks_id` (`ipnetworks_id`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -3902,7 +3907,8 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `is_problem` (`is_problem`),
   KEY `is_change` (`is_change`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -3942,7 +3948,8 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
+  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -4185,7 +4192,8 @@ CREATE TABLE `glpi_locations` (
   KEY `name` (`name`),
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -6644,7 +6652,8 @@ CREATE TABLE `glpi_softwarecategories` (
   `sons_cache` longtext,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `softwarecategories_id` (`softwarecategories_id`)
+  KEY `softwarecategories_id` (`softwarecategories_id`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -6710,7 +6719,8 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `states_id` (`states_id`),
   KEY `allow_overquota` (`allow_overquota`),
-  KEY `softwarelicenses_id` (`softwarelicenses_id`)
+  KEY `softwarelicenses_id` (`softwarelicenses_id`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -6736,7 +6746,8 @@ CREATE TABLE `glpi_softwarelicensetypes` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `softwarelicensetypes_id` (`softwarelicensetypes_id`)
+  KEY `softwarelicensetypes_id` (`softwarelicensetypes_id`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -6977,7 +6988,8 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_cable` (`is_visible_cable`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7078,7 +7090,8 @@ CREATE TABLE `glpi_taskcategories` (
   KEY `is_helpdeskvisible` (`is_helpdeskvisible`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
+  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

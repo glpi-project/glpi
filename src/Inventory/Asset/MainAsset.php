@@ -438,20 +438,24 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if (isset($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'])) {
+            $blacklist = new Blacklist();
             foreach ($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'] as $networkcard) {
                 $netports = $networkcard->getNetworkPorts();
                 $this->ports += $netports;
                 foreach ($netports as $network) {
                     if (
-                        property_exists($network, 'virtualdev')
-                        && $network->virtualdev != 1
-                        || !property_exists($network, 'virtualdev')
+                        (property_exists($network, 'virtualdev')
+                        //if not virtualdev or is it and inventory conf allow networkcardvirtual import
+                        && ($network->virtualdev != 1  || $network->virtualdev == 1 && $this->conf->component_networkcardvirtual))
+                        || !property_exists($network, 'virtualdev') //if not virtual
                     ) {
                         if (property_exists($network, 'mac') && !empty($network->mac)) {
-                            $input['mac'][] = $network->mac;
+                            if ('' != $blacklist->process(Blacklist::MAC, $network->mac)) {
+                                $input['mac'][] = $network->mac;
+                            }
                         }
                         foreach ($network->ipaddress as $ip) {
-                            if ($ip != '127.0.0.1' && $ip != '::1') {
+                            if ('' != $blacklist->process(Blacklist::IP, $ip)) {
                                 $input['ip'][] = $ip;
                             }
                         }
@@ -696,23 +700,6 @@ abstract class MainAsset extends InventoryAsset
             $this->setNew();
         }
 
-        if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
-            $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
-        } else {
-            $this->agent->fields['items_id'] = $items_id;
-            $this->agent->fields['entities_id'] = $entities_id;
-        }
-
-        //check for any old agent to remove
-        $agent = new \Agent();
-        $agent->deleteByCriteria([
-            'itemtype' => $this->item->getType(),
-            'items_id' => $items_id,
-            'NOT' => [
-                'id' => $this->agent->fields['id']
-            ]
-        ]);
-
         $val->id = $this->item->fields['id'];
 
         if ($entities_id == -1) {
@@ -733,9 +720,28 @@ abstract class MainAsset extends InventoryAsset
                 $_SESSION['glpiactive_entity']         = $entities_id;
             } else {
                 //no transfert so revert to old entities_id
-                $val->entities_id = $this->item->fields['entities_id'];
+                $val->entities_id = $this->item->fields['entities_id']; //for GLPI item
+                $this->entities_id = $val->entities_id; //for this class (usefull for handleAsset step)
+                $this->agent->fields['entities_id'] = $this->item->fields['entities_id']; //for Agent
             }
         }
+
+        if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
+            $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $val->entities_id]);
+        } else {
+            $this->agent->fields['items_id'] = $items_id;
+            $this->agent->fields['entities_id'] = $entities_id;
+        }
+
+        //check for any old agent to remove
+        $agent = new \Agent();
+        $agent->deleteByCriteria([
+            'itemtype' => $this->item->getType(),
+            'items_id' => $items_id,
+            'NOT' => [
+                'id' => $this->agent->fields['id']
+            ]
+        ]);
 
         if ($this->is_discovery === true && !$this->isNew()) {
             //if NetworkEquipement

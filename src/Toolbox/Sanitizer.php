@@ -90,10 +90,11 @@ class Sanitizer
      * Unsanitize a value. Reverts self::sanitize() transformation.
      *
      * @param mixed $value
+     * @param bool  $db_unescape
      *
      * @return mixed
      */
-    public static function unsanitize($value)
+    public static function unsanitize($value, bool $db_unescape = true)
     {
         if (is_array($value)) {
             return array_map(
@@ -108,7 +109,9 @@ class Sanitizer
         }
 
         $value = self::decodeHtmlSpecialChars($value);
-        $value = self::dbUnescape($value);
+        if ($db_unescape === true) {
+            $value = self::dbUnescape($value);
+        }
 
         return $value;
     }

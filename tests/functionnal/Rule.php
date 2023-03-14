@@ -258,7 +258,7 @@ class Rule extends DbTestCase
         $this->integer($rule->maxActionsCount())->isIdenticalTo(1);
 
         $rule = new \RuleTicket();
-        $this->integer($rule->maxActionsCount())->isIdenticalTo(40);
+        $this->integer($rule->maxActionsCount())->isIdenticalTo(41);
 
         $rule = new \RuleDictionnarySoftware();
         $this->integer($rule->maxActionsCount())->isIdenticalTo(4);

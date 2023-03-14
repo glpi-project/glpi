@@ -139,15 +139,6 @@ if (isset($_REQUEST['glpilist_limit'])) {
     $_SESSION['glpilist_limit'] = $_REQUEST['glpilist_limit'];
 }
 
-// Security : Check HTTP_REFERRER : need to be in GLPI.
-if (
-    !defined('DO_NOT_CHECK_HTTP_REFERER')
-    && !isCommandLine()
-    && isset($_POST) && is_array($_POST) && count($_POST)
-) {
-    Toolbox::checkValidReferer();
-}
-
 // Security : check CSRF token
 if (!isAPI() && isset($_POST) && is_array($_POST) && count($_POST)) {
     if (preg_match(':' . $CFG_GLPI['root_doc'] . '(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {

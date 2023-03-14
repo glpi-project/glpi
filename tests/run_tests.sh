@@ -103,6 +103,14 @@ if [[ $# -gt 0 ]]; then
   done
 elif [[ "$ALL" = true ]]; then
   TESTS_TO_RUN=("${TESTS_SUITES[@]}")
+
+  # Remove specific lint test, because of global "lint" test suite
+  for TEST in "${!TESTS_TO_RUN[@]}"; do
+    if [[ "${TESTS_TO_RUN[TEST]}" =~ ^lint_.+ ]]; then
+      unset 'TESTS_TO_RUN[TEST]'
+    fi
+  done
+
   USE_SERVICES_CONTAINERS=1
 fi
 

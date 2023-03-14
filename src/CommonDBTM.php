@@ -6155,6 +6155,14 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
+     * Check whether actions are allowed for given item.
+     */
+    public static function isMassiveActionAllowed(int $items_id): bool
+    {
+        return true;
+    }
+
+    /**
      * Automatically update 1-N links tables for the current item.
      *
      * @param string $commondb_relation Valid class extending CommonDBRelation

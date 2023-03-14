@@ -103,6 +103,7 @@ if (!empty($_POST['totp_code'])) {
 if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth, $mfa_params)) {
     Auth::redirectIfAuthenticated();
 } else {
+    http_response_code(401);
     TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
         'errors'    => $auth->getErrors(),
         'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1' . str_replace("?", "&", $REDIRECT),

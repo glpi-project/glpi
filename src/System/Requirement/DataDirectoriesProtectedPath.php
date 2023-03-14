@@ -55,11 +55,11 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
     private $var_root_constant;
 
     /**
-     * Web root directory.
+     * GLPI root directory.
      *
      * @var string
      */
-    private $web_root_directory;
+    private $glpi_root_directory;
 
     /**
      * @param array $directories_constants  Constants defining directories to check.
@@ -69,7 +69,7 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
     public function __construct(
         array $directories_constants,
         string $var_root_constant = 'GLPI_VAR_DIR',
-        string $web_root_directory = GLPI_ROOT
+        string $glpi_root_directory = GLPI_ROOT
     ) {
         $this->title = __('Safe path for data directories');
         $this->description = __('GLPI data directories should be placed outside web root directory. It can be achieved by redefining corresponding constants. See installation documentation for more details.');
@@ -77,12 +77,12 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
 
         $this->directories_constants = $directories_constants;
         $this->var_root_constant     = $var_root_constant;
-        $this->web_root_directory    = $web_root_directory;
+        $this->glpi_root_directory   = $glpi_root_directory;
     }
 
     protected function check()
     {
-        $web_root_directory = realpath($this->web_root_directory);
+        $glpi_root_directory = realpath($this->glpi_root_directory);
 
         $missing_directories = [];
         $unsafe_directories  = [];
@@ -90,7 +90,7 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
         $var_root_directory = constant($this->var_root_constant);
         if (!is_dir($var_root_directory)) {
             $missing_directories[$this->var_root_constant] = $var_root_directory;
-        } elseif (str_starts_with(realpath($var_root_directory), $web_root_directory)) {
+        } elseif (str_starts_with(realpath($var_root_directory), $glpi_root_directory)) {
             $unsafe_directories[$this->var_root_constant] = $var_root_directory;
         }
 
@@ -110,7 +110,7 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
                 continue;
             }
 
-            if (str_starts_with(realpath($directory_path), $web_root_directory)) {
+            if (str_starts_with(realpath($directory_path), $glpi_root_directory)) {
                 $unsafe_directories[$directory_constant] = $directory_path;
             }
         }
@@ -129,13 +129,16 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
             if (count($unsafe_directories) > 0) {
                 $this->validation_messages[] = sprintf(
                     __('The following directories should be placed outside "%s":'),
-                    $web_root_directory
+                    $glpi_root_directory
                 );
                 foreach ($unsafe_directories as $constant => $path) {
                     $this->validation_messages[] = sprintf('‣ "%s" ("%s")', $path, $constant);
                 }
             }
-            $this->validation_messages[] = __('You can ignore this suggestion if you are certain that these directories are not accessible through your web server.');
+            $this->validation_messages[] = sprintf(
+                __('You can ignore this suggestion if your web server root directory is "%s".'),
+                sprintf('%s/public', $glpi_root_directory)
+            );
         }
     }
 }

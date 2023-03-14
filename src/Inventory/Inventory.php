@@ -886,7 +886,8 @@ class Inventory
         foreach ($existing_types as $existing_type) {
             /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = str_replace(GLPI_INVENTORY_DIR . '/', '', $existing_type);
-           //$invnetoryfiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('path/to/folder'));
+            // use `getItemForItemtype` to fix classname case (i.e. `refusedequipement` -> `RefusedEquipement`)
+            $itemtype = getItemForItemtype($itemtype)::getType();
             $inventory_files = new \RegexIterator(
                 new \RecursiveIteratorIterator(
                     new \RecursiveDirectoryIterator($existing_type)
@@ -915,16 +916,29 @@ class Inventory
                  return;
             }
 
-           //find missing assets
+            //find missing assets
             $orphans = array_diff(
                 array_keys($ids),
                 array_keys(iterator_to_array($iterator))
             );
 
             foreach ($orphans as $orphan) {
-                 $dropfile = $ids[$orphan]->getFileName();
-                 @unlink($dropfile);
-                 $message = sprintf(__('File %1$s has been removed'), $dropfile);
+                $dropfile = $ids[$orphan];
+                $res = @unlink($dropfile->getRealPath());
+                if (!$res) {
+                    trigger_error(sprintf(__('Unable to remove file %1$s'), $dropfile->getRealPath()), E_USER_WARNING);
+                    $message = sprintf(
+                        __('File %1$s %2$s has not been removed'),
+                        $itemtype,
+                        $dropfile->getFileName()
+                    );
+                } else {
+                    $message = sprintf(
+                        __('File %1$s %2$s has been removed'),
+                        $itemtype,
+                        $dropfile->getFileName()
+                    );
+                }
                 if ($task) {
                     $task->log($message);
                     $task->addVolume(1);

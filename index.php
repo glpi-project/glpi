@@ -50,8 +50,6 @@ use Glpi\Toolbox\Sanitizer;
 define('GLPI_ROOT', __DIR__);
 include(GLPI_ROOT . "/inc/based_config.php");
 
-define('DO_NOT_CHECK_HTTP_REFERER', 1);
-
 // If config_db doesn't exist -> start installation
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     if (file_exists(GLPI_ROOT . '/install/install.php')) {

@@ -644,4 +644,101 @@ class RuleTicket extends RuleCommonITILObject
         $ticket->getFromDB($tickets_id);
         $this->integer($ticket->fields['locations_id'])->isEqualTo($locations_id);
     }
+
+    public function testAssignProject()
+    {
+        $this->login();
+
+       //create project "project"
+        $projectTest1 = new \Project();
+        $projecttest1_id = $projectTest1->add($projectTest1_input = [
+            "name"                  => "project"
+        ]);
+        $this->checkInput($projectTest1, $projecttest1_id, $projectTest1_input);
+
+       // Add rule for create / update trigger (and assign action)
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add($ruletinput = [
+            'name'         => 'test associated element : project',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONUPDATE + \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+       // Create criteria to check if content contain key word
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'content',
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern'   => 'project',
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+       // Create action to add project
+        $action_id = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'assign_project',
+            'value'       => $projecttest1_id,
+        ]);
+        $this->checkInput($ruleaction, $action_id, $action_input);
+
+       //create ticket to match rule on create
+        $ticketCreate = new \Ticket();
+        $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
+            'name'              => 'test project',
+            'content'           => 'test project'
+        ]);
+        $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
+
+       //check for one associated element
+        $this->integer(countElementsInTable(
+            \Item_Project::getTable(),
+            ['itemtype'  =>  \Ticket::getType(),
+                'projects_id'   => $projecttest1_id,
+                'items_id' => $ticketsCreate_id
+            ]
+        ))->isEqualTo(1);
+
+       //create ticket to match rule on update
+        $ticketUpdate = new \Ticket();
+        $ticketsUpdate_id = $ticketUpdate->add($ticketUpdate_input = [
+            'name'              => 'test',
+            'content'           => 'test'
+        ]);
+        $this->checkInput($ticketUpdate, $ticketsUpdate_id, $ticketUpdate_input);
+
+        //no project associated
+        $this->integer(countElementsInTable(
+            \Item_Project::getTable(),
+            ['itemtype'  =>  \Ticket::getType(),
+                'projects_id'   => $projecttest1_id,
+                'items_id' => $ticketsUpdate_id
+            ]
+        ))->isEqualTo(0);
+
+       //update ticket content to match rule
+        $ticketUpdate->update(
+            [
+                'id'      => $ticketsUpdate_id,
+                'name'    => 'test erp',
+                'content' => 'project'
+            ]
+        );
+
+       //check for one associated element
+        $this->integer(countElementsInTable(
+            \Item_Project::getTable(),
+            ['itemtype'  =>  \Ticket::getType(),
+                'projects_id'   => $projecttest1_id,
+                'items_id' => $ticketsUpdate_id
+            ]
+        ))->isEqualTo(1);
+    }
 }

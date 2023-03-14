@@ -169,12 +169,22 @@ class Entity extends CommonTreeDropdown
     {
         global $GLPI_CACHE;
 
-       // Security do not delete root entity
+        // Security do not delete root entity
         if ($this->input['id'] == 0) {
             return false;
         }
 
-       //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
+        // Security do not delete entity with children
+        if (countElementsInTable($this->getTable(), ['entities_id' => $this->input['id']])) {
+            Session::addMessageAfterRedirect(
+                __('You cannot delete an entity which contains sub-entities.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
         $this->cleanParentsSons();
         $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $this->getID();
         $GLPI_CACHE->delete($ckey);
@@ -1953,10 +1963,13 @@ class Entity extends CommonTreeDropdown
         $params = [
             'name'       => 'transfers_id',
             'value'      => $entity->fields['transfers_id'],
-            'emptylabel' => __('No automatic transfer')
+            'display_emptychoice' => false
         ];
         if ($entity->fields['id'] > 0) {
-            $params['toadd'] = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+            $params['toadd'] = [
+                self::CONFIG_NEVER => __('No automatic transfer'),
+                self::CONFIG_PARENT => __('Inheritance of the parent entity')
+            ];
         }
         Dropdown::show('Transfer', $params);
         if ($entity->fields['transfers_strategy'] == self::CONFIG_PARENT) {

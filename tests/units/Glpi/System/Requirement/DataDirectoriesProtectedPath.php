@@ -96,7 +96,7 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
                  sprintf('‣ "%s" ("%s")', $unsecure_var_root_path, $unsecure_var_root_constant),
                  // $unsecure_dir_constant1 and $unsecure_dir_constant2 are ignored as they are nested in var root
                  sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
-                 'You can ignore this suggestion if you are certain that these directories are not accessible through your web server.',
+                 sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
              ]
          );
     }
@@ -127,13 +127,14 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
                  sprintf('‣ "%s/files/_cache" ("%s")', $root_path, $unsecure_dir_constant1),
                  sprintf('‣ "%s/files/_log" ("%s")', $root_path, $unsecure_dir_constant2),
                  sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
-                 'You can ignore this suggestion if you are certain that these directories are not accessible through your web server.',
+                 sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
              ]
          );
     }
 
     public function testCheckOnMissingDirs()
     {
+        $root_path = realpath(GLPI_ROOT);
         $tmp_dir = sys_get_temp_dir();
 
         $secure_var_root_constant = sprintf('GLPI_TEST_%08x', rand());
@@ -154,7 +155,7 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
                  'The following directories do not exist and cannot be tested:',
                  sprintf('‣ "/this/dir/not/exists" ("%s")', $missing_dir_constant1),
                  sprintf('‣ "%s/not/exists" ("%s")', $tmp_dir, $missing_dir_constant2),
-                 'You can ignore this suggestion if you are certain that these directories are not accessible through your web server.',
+                 sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
              ]
          );
     }
@@ -174,7 +175,7 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
              [
                  sprintf('The following directories should be placed outside "%s":', $root_path),
                  sprintf('‣ "%s" ("%s")', $root_path, $unsecure_var_root_constant),
-                 'You can ignore this suggestion if you are certain that these directories are not accessible through your web server.',
+                 sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
              ]
          );
     }

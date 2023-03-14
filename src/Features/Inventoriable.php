@@ -92,10 +92,10 @@ trait Inventoriable
         $items_id = $this->agent->fields['items_id'] ?? $this->fields['id'];
 
         $conf = new Conf();
-       //most files will be XML for now
-        $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'xml');
+        //Check for JSON file, and the XML if JSON does not exists
+        $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'json');
         if (!file_exists($inventory_dir_path . $filename)) {
-            $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'json');
+            $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'xml');
             if (!file_exists($inventory_dir_path . $filename)) {
                 return null;
             }

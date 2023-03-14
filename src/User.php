@@ -177,6 +177,12 @@ class User extends CommonDBTM
             return false;
         }
 
+        //prevent delete / purge from API
+        global $CFG_GLPI;
+        if ($this->fields['id'] == $CFG_GLPI['system_user']) {
+            return false;
+        }
+
         if (
             Session::canViewAllEntities()
             || Session::haveAccessToAllOfEntities($this->getEntities())
@@ -197,6 +203,13 @@ class User extends CommonDBTM
     {
        // glpi_users.entities_id is only a pref.
         return false;
+    }
+
+
+    public static function isMassiveActionAllowed(int $items_id): bool
+    {
+        global $CFG_GLPI;
+        return !($CFG_GLPI['system_user'] == $items_id);
     }
 
 

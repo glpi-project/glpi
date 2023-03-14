@@ -4113,8 +4113,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name' => 'glpixps',
             'itemtype' => 'Computer',
             'entities_id' => 0,
-            'ip' => '["192.168.1.142","fe80::b283:4fa3:d3f2:96b1","192.168.1.118","fe80::92a4:26c6:99dd:2d60"]',
-            'mac' => '["00:e0:4c:68:01:db","44:85:00:2b:90:bc"]',
+            'ip' => '["192.168.1.142","fe80::b283:4fa3:d3f2:96b1","192.168.1.118","fe80::92a4:26c6:99dd:2d60","192.168.122.1"]',
+            'mac' => '["00:e0:4c:68:01:db","44:85:00:2b:90:bc","52:54:00:fa:20:0e","52:54:00:fa:20:0e"]',
             'rules_id' => $result['rules_id'],
             'method' => null,
             'serial' => '640HP72',
@@ -4285,8 +4285,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name' => '',
             'itemtype' => 'Computer',
             'entities_id' => 0,
-            'ip' => '["192.168.1.142","fe80::b283:4fa3:d3f2:96b1","192.168.1.118","fe80::92a4:26c6:99dd:2d60"]',
-            'mac' => '["00:e0:4c:68:01:db","44:85:00:2b:90:bc"]',
+            'ip' => '["192.168.1.142","fe80::b283:4fa3:d3f2:96b1","192.168.1.118","fe80::92a4:26c6:99dd:2d60","192.168.122.1"]',
+            'mac' => '["00:e0:4c:68:01:db","44:85:00:2b:90:bc","52:54:00:fa:20:0e","52:54:00:fa:20:0e"]',
             'rules_id' => $result['rules_id'],
             'method' => null,
             'serial' => '',
@@ -4305,25 +4305,18 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $nbcomputers = countElementsInTable(\Computer::getTable());
         $nbprinters = countElementsInTable(\Printer::getTable());
 
-        $json_path = self::INV_FIXTURES . 'computer_1.json';
-        $files = [
-            'inventory_file' => [
-                'name' => 'computer_1.json',
-                'type' => 'application/json',
-                'tmp_name' => $json_path,
-                'error' => 0,
-                'size' => filesize($json_path)
-            ]
-        ];
-
+        $json_name = 'computer_1.json';
+        $json_path = self::INV_FIXTURES . $json_name;
         $conf = new \Glpi\Inventory\Conf();
-        $conf->importFile($files);
-        $this->hasSessionMessages(
-            INFO,
-            [
-                'File has been successfully imported!'
-            ]
-        );
+        $result = $conf->importFiles([$json_name => $json_path]);
+        $this
+            ->array($result[$json_name])
+            ->then
+            ->boolean($result[$json_name]['success'])
+            ->isTrue()
+            ->then
+            ->object($result[$json_name]['items'][0])
+            ->isInstanceOf('Computer');
 
         //1 computer and 1 printer has been inventoried
         $nbcomputers++;
@@ -4350,24 +4343,34 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         UnifiedArchive::archiveFiles($json_paths, self::INVENTORY_ARCHIVE_PATH);
 
-        $files = [
-            'inventory_file' => [
-                'name' => 'to_inventory.zip',
-                'type' => 'application/zip',
-                'tmp_name' => self::INVENTORY_ARCHIVE_PATH,
-                'error' => 0,
-                'size' => filesize(self::INVENTORY_ARCHIVE_PATH)
-            ]
-        ];
-
         $conf = new \Glpi\Inventory\Conf();
-        $conf->importFile($files);
-        $this->hasSessionMessages(
-            INFO,
-            [
-                'File has been successfully imported!'
-            ]
-        );
+        $result = $conf->importFiles(['to_inventory.zip' => self::INVENTORY_ARCHIVE_PATH]);
+
+        $this->array($result)->hasSize(3);
+
+        // Expected result for computer_1.json
+        $this
+            ->boolean($result['to_inventory.zip/computer_1.json']['success'])
+            ->isTrue()
+            ->then
+            ->object($result['to_inventory.zip/computer_1.json']['items'][0])
+            ->isInstanceOf('Computer');
+
+        // Expected result for networkequipment_1.json
+        $this
+            ->boolean($result['to_inventory.zip/networkequipment_1.json']['success'])
+            ->isTrue()
+            ->then
+            ->object($result['to_inventory.zip/networkequipment_1.json']['items'][0])
+            ->isInstanceOf('NetworkEquipment');
+
+        // Expected result for printer_1.json
+        $this
+            ->boolean($result['to_inventory.zip/printer_1.json']['success'])
+            ->isTrue()
+            ->then
+            ->object($result['to_inventory.zip/printer_1.json']['items'][0])
+            ->isInstanceOf('Printer');
 
         //1 computer 2 printers and a network equipment has been inventoried
         $nbcomputers++;

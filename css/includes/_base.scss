@@ -83,7 +83,8 @@ $topbar-height: 79px;
 $contextbar-height: 56px;
 $content-margin: 20px;
 
-body.iframed {
+body.iframed,
+body.in_modal {
     background-color: transparent;
     overflow-x: hidden;
 }
@@ -253,6 +254,10 @@ body.iframed {
 }
 
 table {
+    tbody:not(:has(tr)) {
+        display: none; // hide empty `tbody`
+    }
+
     td.active,
     td.tab_bg_4 {
         background-color: $table-active-bg;

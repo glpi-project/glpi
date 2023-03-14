@@ -1101,4 +1101,214 @@ class Computer extends AbstractInventoryAsset
 
         $this->string($computer->fields['otherserial'])->isIdenticalTo('other_serial');
     }
+
+    public function testTransferNotAllowed()
+    {
+        global $DB;
+        $computer = new \Computer();
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check created agent itemtype / deviceid / entities_id
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['entities_id']->isIdenticalTo(0); //root entity
+
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        //load / test computer entities_id root
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['entities_id'])->isEqualTo(0);
+
+
+        //transfer to another entity
+        $doTransfer = \Entity::getUsedConfig('transfers_strategy', $computer->fields['entities_id'], 'transfers_id', 0);
+        $transfer = new \Transfer();
+        $transfer->getFromDB($doTransfer);
+
+        $item_to_transfer = ["Computer" => [$computers_id => $computers_id]];
+        $transfer->moveItems($item_to_transfer, 1, $transfer->fields);
+
+        //reload / test computer entities_id
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1); //another entity
+        //reload / test agent entities_id
+        $reloaded_agent = new \Agent();
+        $reloaded_agent->getFromDB($agent['id']);
+        $this->integer($reloaded_agent->fields['entities_id'])->isEqualTo(0); //always root (only pc is transfered)
+
+
+        //prohibit the transfer from this entity
+        $entity = new \Entity();
+        $entity->getFromDB(1);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "transfers_id" => 0, //no transfert
+        ]))->isTrue();
+
+        //redo inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //reload / test computer entities_id
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1); //another entity
+        //reload / test agent entities_id
+        $reloaded_agent = new \Agent();
+        $reloaded_agent->getFromDB($agent['id']);
+        $this->integer($reloaded_agent->fields['entities_id'])->isEqualTo(1); //another entity
+    }
+
+    public function testTransferNotAllowedForSoftware()
+    {
+        global $DB;
+        $computer = new \Computer();
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+          <SOFTWARES>
+          <ARCH>i586</ARCH>
+          <FROM>registry</FROM>
+          <GUID>Office15.STANDARD</GUID>
+          <INSTALLDATE>18/08/2020</INSTALLDATE>
+          <NAME>Microsoft Office Standard 2013</NAME>
+          <NO_REMOVE>0</NO_REMOVE>
+          <PUBLISHER>Microsoft Corporation</PUBLISHER>
+          <SYSTEM_CATEGORY>application</SYSTEM_CATEGORY>
+          <UNINSTALL_STRING>&quot;C:\Program Files (x86)\Common Files\Microsoft Shared\OFFICE15\Office Setup Controller\setup.exe&quot; /uninstall STANDARD /dll OSETUP.DLL</UNINSTALL_STRING>
+          <VERSION>15.0.4569.1506</VERSION>
+        </SOFTWARES>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check created agent itemtype / deviceid / entities_id
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['entities_id']->isIdenticalTo(0); //root entity
+
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        //load / test computer entities_id root
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['entities_id'])->isEqualTo(0);
+
+        //load / test software entities_id root
+        $item_software = new \Item_SoftwareVersion();
+        $item_softwares = $item_software->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($item_softwares))->isIdenticalTo(1);
+        $this->integer(reset($item_softwares)['entities_id'])->isEqualTo(0);
+        //load softwareversion entities_id root
+        $softwareversion = new \SoftwareVersion();
+        $this->boolean($softwareversion->getFromDB(reset($item_softwares)['softwareversions_id']))->isTrue();
+        $this->integer($softwareversion->fields['entities_id'])->isEqualTo(0);
+        //load software entities_id root
+        $software = new \Software();
+        $this->boolean($software->getFromDB($softwareversion->fields['softwares_id']))->isTrue();
+        $this->integer($software->fields['entities_id'])->isEqualTo(0);
+
+
+
+        //transfer to another entity
+        $transfer = new \Transfer();
+        $transfer->getFromDB(1);
+
+        $item_to_transfer = ["Computer" => [$computers_id => $computers_id]];
+        $transfer->moveItems($item_to_transfer, 1, $transfer->fields);
+
+        //reload / test computer entities_id sub
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1); //another entity
+        //reload / test agent entities_id
+        $reloaded_agent = new \Agent();
+        $reloaded_agent->getFromDB($agent['id']);
+        $this->integer($reloaded_agent->fields['entities_id'])->isEqualTo(0); //always root (only pc is transfered)
+
+        //reload / test software entities_id sub
+        $item_software = new \Item_SoftwareVersion();
+        $item_softwares = $item_software->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($item_softwares))->isIdenticalTo(1);
+        $this->integer(reset($item_softwares)['entities_id'])->isEqualTo(1);
+        //load sofware version entities_id sub
+        $softwareversion = new \SoftwareVersion();
+        $this->boolean($softwareversion->getFromDB(reset($item_softwares)['softwareversions_id']))->isTrue();
+        $this->integer($softwareversion->fields['entities_id'])->isEqualTo(1);
+        //load software entities_id sub
+        $software = new \Software();
+        $this->boolean($software->getFromDB($softwareversion->fields['softwares_id']))->isTrue();
+        $this->integer($software->fields['entities_id'])->isEqualTo(1);
+
+        //prohibit the transfer from this entity
+        $entity = new \Entity();
+        $entity->getFromDB(1);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "transfers_strategy" => 0, //no transfert for computer
+            "entities_strategy_software" => 0, //no transfert for software
+        ]))->isTrue();
+
+        //redo inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //reload / test computer entities_id
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1); //another entity
+        //reload / test agent entities_id
+        $reloaded_agent = new \Agent();
+        $reloaded_agent->getFromDB($agent['id']);
+        $this->integer($reloaded_agent->fields['entities_id'])->isEqualTo(1); //another entity
+
+        //reload / test software entities_id sub
+        $item_software = new \Item_SoftwareVersion();
+        $item_softwares = $item_software->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($item_softwares))->isIdenticalTo(1);
+        $this->integer(reset($item_softwares)['entities_id'])->isEqualTo(1);
+        //load sofware version entities_id sub
+        $softwareversion = new \SoftwareVersion();
+        $this->boolean($softwareversion->getFromDB(reset($item_softwares)['softwareversions_id']))->isTrue();
+        $this->integer($softwareversion->fields['entities_id'])->isEqualTo(1);
+        //load software entities_id sub
+        $software = new \Software();
+        $this->boolean($software->getFromDB($softwareversion->fields['softwares_id']))->isTrue();
+        $this->integer($software->fields['entities_id'])->isEqualTo(1);
+    }
 }

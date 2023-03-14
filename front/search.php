@@ -43,6 +43,7 @@ if (!$CFG_GLPI['allow_search_global']) {
 }
 if (isset($_GET["globalsearch"])) {
     $searchtext = trim($_GET["globalsearch"]);
+    $no_result = [];
 
     echo "<div class='search_page search_page_global flex-row flex-wrap'>";
     foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
@@ -61,11 +62,31 @@ if (isset($_GET["globalsearch"])) {
             $params["criteria"][$count]["searchtype"]  = 'contains';
             $params["criteria"][$count]["value"]       = $searchtext;
 
-            echo "<div class='search-container w-100 disable-overflow-y'>";
-            Search::showList($itemtype, $params);
-            echo "</div>";
+            $data = Search::getDatas($itemtype, $params);
+            if ($data['data']['count'] > 0) {
+                echo "<div class='search-container w-100 disable-overflow-y' counter='" . $data['data']['count'] . "'>";
+                Search::displayData($data);
+                echo "</div>";
+            } else {
+                $no_result[] = $itemtype::getTypeName(1);
+            }
         }
     }
+
+    echo "<div class='search-container w-100 disable-overflow-y' counter='" . $data['data']['count'] . "'>";
+    echo "<div class='ajax-container search-display-data'>";
+    echo "<div class='card card-sm mt-0 search-card'>";
+    echo "<div class='card-header d-flex justify-content-between search-header pe-0'>";
+    echo "<h2>" . __('Other searches with no item found') . "</h2>";
+    echo "</div>";
+    echo '<ul>';
+    foreach ($no_result as $itemtype) {
+        echo "<li>" . $itemtype . "</li>";
+    }
+    echo '</ul>';
+    echo "</div>";
+    echo "</div>";
+    echo "</div>";
     echo "</div>";
 }
 
