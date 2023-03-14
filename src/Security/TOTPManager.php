@@ -495,7 +495,7 @@ final class TOTPManager
         } else {
             $secret = $this->createSecret();
             $tfa = $this->getTwoFactorAuth();
-            $qr = $tfa->getQRCodeImageAsDataUri(self::$brand_label, $secret);
+            $qr = $tfa->getQRCodeImageAsDataUri($_SESSION['glpiname'], $secret);
             TemplateRenderer::getInstance()->display('pages/2fa/2fa_new_secret.html.twig', [
                 'qrcode' => $qr,
                 'secret' => $secret,
@@ -512,7 +512,13 @@ final class TOTPManager
     {
         $secret = $this->createSecret();
         $tfa = $this->getTwoFactorAuth();
-        $qr = $tfa->getQRCodeImageAsDataUri(self::$brand_label, $secret);
+        $name = self::$brand_label;
+        if (isset($_SESSION['mfa_pre_auth'])) {
+            $name = $_SESSION['mfa_pre_auth']['user']['name'];
+        } else if (isset($_SESSION['glpiname'])) {
+            $name = $_SESSION['glpiname'];
+        }
+        $qr = $tfa->getQRCodeImageAsDataUri($name, $secret);
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_enforced_setup.html.twig', [
             'qrcode' => $qr,
             'secret' => $secret,
