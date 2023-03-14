@@ -718,11 +718,6 @@ HTML;
             $list_cards[$group][$index] = $data['label'] ?? $data['itemtype']::getTypeName();
         });
 
-       // manage autoescaping
-        if (isset($cardopt['markdown_content'])) {
-            $cardopt['markdown_content'] = Html::cleanPostForTextArea($cardopt['markdown_content']);
-        }
-
         TemplateRenderer::getInstance()->display('components/dashboard/widget_form.html.twig', [
             'gridstack_id' => $gridstack_id,
             'old_id'       => $old_id,

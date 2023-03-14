@@ -36,7 +36,6 @@
 namespace Glpi\RichText;
 
 use Document;
-use Glpi\Toolbox\Sanitizer;
 use Html;
 use Html2Text\Html2Text;
 use Toolbox;
@@ -210,9 +209,6 @@ final class RichText
      */
     private static function normalizeHtmlContent(string $content)
     {
-
-        $content = Sanitizer::getVerbatimValue($content);
-
         if (self::isRichTextHtmlContent($content)) {
            // Remove contentless HTML tags
            // Remove also surrounding spaces:
@@ -422,12 +418,6 @@ HTML;
             $out .= "</figure>";
         }
         $out .= "</div>";
-
-        // Unsanitize images urls
-        $imgs = array_map(function ($img) {
-            $img['src'] = Sanitizer::decodeHtmlSpecialChars($img['src']);
-            return $img;
-        }, $imgs);
 
         $items_json = json_encode($imgs);
         $close_json = json_encode($p['controls']['close'] ?? false);

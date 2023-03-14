@@ -35,7 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\URL;
 use SimplePie\SimplePie;
 
@@ -924,10 +923,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
         global $GLPI_CACHE;
-
-        if (Sanitizer::isHtmlEncoded($url)) {
-            $url = Sanitizer::decodeHtmlSpecialChars($url);
-        }
 
         // Fetch feed data, unless it is already cached
         $cache_key = sha1($url);

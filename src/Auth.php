@@ -37,7 +37,6 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  *  Identification class used to login
@@ -279,7 +278,7 @@ class Auth extends CommonGLPI
                         'method' => AuthLDAP::IDENTIFIER_LOGIN,
                         'value'  => $login
                     ],
-                    'condition'         => Sanitizer::unsanitize($ldap_method['condition']),
+                    'condition'         => $ldap_method['condition'],
                     'user_dn'           => $this->user_dn
                 ]);
             } catch (\Throwable $e) {
@@ -830,7 +829,7 @@ class Auth extends CommonGLPI
                                     'basedn'            => $ldap_method["basedn"],
                                     'login_field'       => $ldap_method['login_field'],
                                     'search_parameters' => $params,
-                                    'condition'         => Sanitizer::unsanitize($ldap_method["condition"]),
+                                    'condition'         => $ldap_method["condition"],
                                     'user_params'       => [
                                         'method' => AuthLDAP::IDENTIFIER_LOGIN,
                                         'value'  => $login_name
@@ -1052,7 +1051,7 @@ class Auth extends CommonGLPI
                     if (isset($this->user_email)) {
                         $this->user->fields['_useremails'] = $this->user_email;
                     }
-                    $this->user->update(Sanitizer::sanitize($this->user->fields));
+                    $this->user->update($this->user->fields);
                 } else if ($CFG_GLPI["is_users_auto_add"]) {
                     // Auto add user
                     $input = $this->user->fields;
@@ -1060,7 +1059,7 @@ class Auth extends CommonGLPI
                     if ($this->auth_type == self::EXTERNAL && !isset($input["authtype"])) {
                         $input["authtype"] = $this->auth_type;
                     }
-                    $this->user->add(Sanitizer::sanitize($input));
+                    $this->user->add($input);
                 } else {
                     // Auto add not enable so auth failed
                     $this->addToError(__('User not authorized to connect in GLPI'));
@@ -1072,9 +1071,7 @@ class Auth extends CommonGLPI
         // Log Event (if possible)
         if (!$DB->isSlave()) {
             // GET THE IP OF THE CLIENT
-            $ip = getenv("HTTP_X_FORWARDED_FOR") ?
-                Sanitizer::encodeHtmlSpecialChars(getenv("HTTP_X_FORWARDED_FOR")) :
-                getenv("REMOTE_ADDR");
+            $ip = getenv("HTTP_X_FORWARDED_FOR") ?? getenv("REMOTE_ADDR");
 
             if ($this->auth_succeded) {
                 if (GLPI_DEMO_MODE) {
@@ -1492,7 +1489,7 @@ class Auth extends CommonGLPI
             } else if (isset($_GET['redirect']) && strlen($_GET['redirect']) > 0) {
                 $redirect = $_GET['redirect'];
             }
-            $redirect = $redirect ? Sanitizer::unsanitize($redirect) : '';
+            $redirect = $redirect ?? '';
         }
 
        //Direct redirect

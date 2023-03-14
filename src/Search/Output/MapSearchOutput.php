@@ -35,8 +35,6 @@
 
 namespace Glpi\Search\Output;
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
@@ -92,8 +90,8 @@ final class MapSearchOutput extends HTMLSearchOutput
             ];
             $globallinkto = \Toolbox::append_params(
                 [
-                    'criteria'     => Sanitizer::unsanitize($criteria),
-                    'metacriteria' => Sanitizer::unsanitize($data['search']['metacriteria'])
+                    'criteria'     => $criteria,
+                    'metacriteria' => $data['search']['metacriteria'],
                 ],
                 '&amp;'
             );

@@ -39,7 +39,6 @@ use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Event;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Ticket Class
@@ -3746,12 +3745,6 @@ JAVASCRIPT;
             $options = $_POST;
         }
 
-        if (isset($options['name'])) {
-            $order           = ["\\'", '\\"', "\\\\"];
-            $replace         = ["'", '"', "\\"];
-            $options['name'] = str_replace($order, $replace, $options['name']);
-        }
-
         $this->restoreInputAndDefaults($ID, $options, $default_values, true);
 
        // Check category / type validity
@@ -3996,17 +3989,6 @@ JAVASCRIPT;
         }
 
         $this->restoreInputAndDefaults($ID, $options, null, true);
-
-        if (isset($options['content'])) {
-            $order              = ["\\'", '\\"', "\\\\"];
-            $replace            = ["'", '"', "\\"];
-            $options['content'] = str_replace($order, $replace, $options['content']);
-        }
-        if (isset($options['name'])) {
-            $order           = ["\\'", '\\"', "\\\\"];
-            $replace         = ["'", '"', "\\"];
-            $options['name'] = str_replace($order, $replace, $options['name']);
-        }
 
         if (!isset($options['_skip_promoted_fields'])) {
             $options['_skip_promoted_fields'] = false;
@@ -6159,7 +6141,7 @@ JAVASCRIPT;
                     $input = [
                         'itemtype'        => 'Ticket',
                         'items_id'        => $merge_target_id,
-                        'content'         => $ticket->fields['name'] . Sanitizer::encodeHtmlSpecialChars("<br /><br />") . $ticket->fields['content'],
+                        'content'         => $ticket->fields['name'] . "<br /><br />" . $ticket->fields['content'],
                         'users_id'        => $ticket->fields['users_id_recipient'],
                         'date_creation'   => $ticket->fields['date_creation'],
                         'date_mod'        => $ticket->fields['date_mod'],

@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Database utilities
@@ -416,18 +415,6 @@ final class DbUtils
     {
         if (empty($itemtype)) {
             return false;
-        }
-
-       // If itemtype starts with "Glpi\" or "GlpiPlugin\" followed by a "\",
-       // then it is a namespaced itemtype that has been "sanitized".
-       // Strip slashes to get its actual value.
-        $sanitized_namespaced_pattern = '/^'
-         . '(' . preg_quote(NS_GLPI, '/') . '|' . preg_quote(NS_PLUG, '/') . ')' // start with GLPI core or plugin namespace
-         . preg_quote('\\', '/') // followed by an additionnal \
-         . '/';
-        if (preg_match($sanitized_namespaced_pattern, $itemtype)) {
-            trigger_error(sprintf('Unexpected sanitized itemtype "%s" encountered.', $itemtype), E_USER_WARNING);
-            $itemtype = stripslashes($itemtype);
         }
 
         $itemtype = $this->fixItemtypeCase($itemtype);
@@ -1301,13 +1288,11 @@ final class DbUtils
                 $name = $result['completename'];
             }
 
-            $name = CommonTreeDropdown::sanitizeSeparatorInCompletename($name);
-
             if ($tooltip) {
                 $comment  = sprintf(
                     __('%1$s: %2$s') . "<br>",
                     "<span class='b'>" . __('Complete name') . "</span>",
-                    $name
+                    htmlspecialchars($name)
                 );
                 if ($table == Location::getTable()) {
                     $acomment = '';
@@ -1716,12 +1701,6 @@ final class DbUtils
 
         $base_name = $objectName;
 
-        $objectName = Sanitizer::decodeHtmlSpecialChars($objectName);
-        $was_sanitized = $objectName !== $base_name;
-        if ($was_sanitized) {
-            Toolbox::deprecated('Handling of encoded/escaped value in autoName() is deprecated.');
-        }
-
         $matches = [];
         if (preg_match('/^<[^#]*(#{1,10})[^#]*>$/', $objectName, $matches) !== 1) {
             return $base_name;
@@ -1858,10 +1837,6 @@ final class DbUtils
             ],
             $autoNum
         );
-
-        if ($was_sanitized) {
-            $objectName = Sanitizer::encodeHtmlSpecialChars($objectName);
-        }
 
         return $objectName;
     }

@@ -37,7 +37,6 @@ use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Session Class
@@ -1692,10 +1691,7 @@ class Session
                 }
             };
 
-            // Check also unsanitized data, as sanitizing process may alter expected data.
-            $unsanitized_data = Sanitizer::unsanitize($data);
-
-            return $match_expected($idor_data, $data) || $match_expected($idor_data, $unsanitized_data);
+            return $match_expected($idor_data, $data);
         }
 
         return false;

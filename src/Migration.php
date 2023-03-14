@@ -424,7 +424,7 @@ class Migration
         $format = $this->fieldFormat($type, $params['value'], $params['nodefault']);
 
         if (!empty($params['comment'])) {
-            $params['comment'] = " COMMENT '" . addslashes($params['comment']) . "'";
+            $params['comment'] = " COMMENT " . $DB->quote($params['comment']);
         }
 
         if (!empty($params['after'])) {
@@ -493,7 +493,7 @@ class Migration
         $format = $this->fieldFormat($type, $params['value'], $params['nodefault']);
 
         if ($params['comment']) {
-            $params['comment'] = " COMMENT '" . addslashes($params['comment']) . "'";
+            $params['comment'] = " COMMENT " . $DB->quote($params['comment']);
         }
 
         if (!empty($params['after'])) {

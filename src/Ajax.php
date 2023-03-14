@@ -370,7 +370,7 @@ JAVASCRIPT;
                 $.get(
                   '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
                   {
-                     itemtype: '" . addslashes($type) . "',
+                     itemtype: " . json_encode($type) . ",
                      id: '$ID',
                      tab: index,
                      withtemplate: " . (int)($_GET['withtemplate'] ?? 0) . "

@@ -37,7 +37,6 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
-use Glpi\Toolbox\Sanitizer;
 use KnowbaseItem;
 
 /**
@@ -74,9 +73,7 @@ class KnowbaseItemParameters extends AbstractParameters
 
     protected function defineValues(CommonDBTM $kbi): array
     {
-
-       // Output "unsanitized" values
-        $fields = Sanitizer::unsanitize($kbi->fields);
+        $fields = $kbi->fields;
 
         return [
             'id'     => $fields['id'],

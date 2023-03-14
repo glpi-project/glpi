@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 include('../inc/includes.php');
 $AJAX_INCLUDE = 1;
 
@@ -52,7 +50,6 @@ if (!($CFG_GLPI["use_public_faq"] && str_ends_with($_GET["_target"], '/front/hel
 if (!isset($_GET['_glpi_tab'])) {
     exit();
 }
-$_GET['_glpi_tab'] = Sanitizer::unsanitize($_GET['_glpi_tab']);
 
 if (!isset($_GET['_itemtype']) || empty($_GET['_itemtype'])) {
     exit();

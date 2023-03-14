@@ -51,7 +51,6 @@ use Contract;
 use Document;
 use Dropdown;
 use Glpi\Search\SearchOption;
-use Glpi\Toolbox\Sanitizer;
 use Html;
 use Infocom;
 use Item_Devices;
@@ -283,7 +282,7 @@ abstract class API
 
         $noAuto = true;
         if (isset($params['user_token']) && !empty($params['user_token'])) {
-            $_REQUEST['user_token'] = Sanitizer::dbEscape($params['user_token']);
+            $_REQUEST['user_token'] = $params['user_token'];
             $noAuto = false;
         } else if (!$CFG_GLPI['enable_api_login_credentials']) {
             $this->returnError(
@@ -1827,7 +1826,6 @@ abstract class API
                     $object["_add"] = true;
 
                    //add current item
-                    $object = Sanitizer::sanitize($object);
                     $new_id = $item->add($object);
                     if ($new_id === false) {
                         $failed++;
@@ -1963,7 +1961,7 @@ abstract class API
                         }
 
                      //update item
-                        $object = Sanitizer::sanitize($this->inputObjectToArray($object));
+                        $object = $this->inputObjectToArray($object);
                         $update_return = $item->update($object);
                         if ($update_return === false) {
                              $failed++;

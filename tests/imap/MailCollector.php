@@ -578,7 +578,7 @@ class MailCollector extends DbTestCase
         $this->integer(
             $doctype->add([
                 'name'   => 'Type test',
-                'ext'    => '/^1234567890(_\\\d+)?$/'
+                'ext'    => '/^1234567890(_\d+)?$/'
             ])
         )->isGreaterThan(0);
 

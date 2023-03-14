@@ -38,7 +38,6 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\Conf;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
 
@@ -779,7 +778,7 @@ class Agent extends CommonDBTM
 
         switch ($request) {
             case self::ACTION_STATUS:
-                $data['answer'] = Sanitizer::encodeHtmlSpecialChars(preg_replace('/status: /', '', $raw_content));
+                $data['answer'] = preg_replace('/status: /', '', $raw_content);
                 break;
             case self::ACTION_INVENTORY:
                 $now = new DateTime();

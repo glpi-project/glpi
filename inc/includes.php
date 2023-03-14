@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__DIR__));
 }
@@ -108,7 +106,7 @@ if (isset($_REQUEST['forcetab'])) {
 }
 // Manage tabs
 if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
-    Session::setActiveTab($_REQUEST['itemtype'], Sanitizer::unsanitize($_REQUEST['glpi_tab']));
+    Session::setActiveTab($_REQUEST['itemtype'], $_REQUEST['glpi_tab']);
 }
 // Override list-limit if choosen
 if (isset($_REQUEST['glpilist_limit'])) {

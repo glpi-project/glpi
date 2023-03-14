@@ -39,7 +39,6 @@ use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use Glpi\Toolbox\Sanitizer;
 use Item_Ticket;
 use KnowbaseItem;
 use KnowbaseItem_Item;
@@ -95,8 +94,8 @@ class TicketParameters extends CommonITILObjectParameters
     {
         /** @var Ticket $ticket  */
         global $CFG_GLPI;
-       // Output "unsanitized" values
-        $fields = Sanitizer::unsanitize($ticket->fields);
+
+        $fields = $ticket->fields;
 
         $values = parent::defineValues($ticket);
 

@@ -95,17 +95,28 @@ The present file will list all changes made to the project; according to the
 - Usage of `users_id_validate` input in `CommonITILObject`.
 - Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
 - Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
+- Usage of `verbatim_value` Twig filter.
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::getOptions()`
 - `CommonITILObject::isValidator()`
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
 - `Config::validatePassword()`
+- `Glpi\Application\View\Extension::getVerbatimValue()`
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
 - `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
 - `Glpi\Features\DCBreadcrumb::isRackPart()`
+- `Glpi\Toolbox\Sanitizer::dbEscape()`
+- `Glpi\Toolbox\Sanitizer::dbEscapeRecursive()`
+- `Glpi\Toolbox\Sanitizer::encodeHtmlSpecialChars()`
+- `Glpi\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()`
+- `Glpi\Toolbox\Sanitizer::getVerbatimValue()`
+- `Glpi\Toolbox\Sanitizer::isNsClassOrCallableIdentifier()`
+- `Glpi\Toolbox\Sanitizer::sanitize()`
+- `Html::cleanInputText()`
+- `Html::cleanPostForTextArea()`
 - `Html::displayAjaxMessageAfterRedirect()`
 - `Item_Ticket::showForTicket()`
 - `HookManager::enableCSRF()`
@@ -119,7 +130,9 @@ The present file will list all changes made to the project; according to the
 - `Ticket_Ticket::countOpenChildren()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
 - `Ticket_Ticket::manageLinkedTicketsOnSolved()`
+- `Toolbox::addslashes_deep()`
 - `Toolbox::seems_utf8()`
+- `Toolbox::stripslashes_deep()`
 - `Search::getOptions()` no longer returns a reference
 
 #### Removed
@@ -127,8 +140,10 @@ The present file will list all changes made to the project; according to the
 - Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.
 - `X-GLPI-Sanitized-Content` REST API header support.
+- Handling of encoded/escaped value in `autoName()`.
 - `regenerateTreeCompleteName()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
+- `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
 - `Config::getCurrentDBVersion()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `Glpi\Api\API::returnSanitizedContent()`
@@ -147,6 +162,9 @@ The present file will list all changes made to the project; according to the
 - `Search::outputData()`
 - `Search::sylk_clean()`
 - `Toolbox::canUseCas()`
+- `Toolbox::clean_cross_side_scripting_deep()`
+- `Toolbox::getHtmlToDisplay()`
+- `Toolbox::unclean_cross_side_scripting_deep()`
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
 
 ## [10.0.7] unreleased

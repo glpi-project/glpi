@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Profile class
@@ -538,7 +537,7 @@ class Profile extends CommonDBTM
         $input_arrays = ['helpdesk_item_type', 'managed_domainrecordtypes', 'ticket_status', 'problem_status', 'change_status'];
         foreach ($input_arrays as $array_field) {
             if (isset($input[$array_field])) {
-                $input[$array_field] = importArrayFromDB(Sanitizer::dbUnescape($input[$array_field]));
+                $input[$array_field] = importArrayFromDB($input[$array_field]);
             }
         }
         return $input;

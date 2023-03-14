@@ -118,8 +118,8 @@
                                     <i class="ti ti-x"></i>
                                 </button>
                             </div>
-                            <div class="entitynote" role="alert" id='contentread{{ id }}'>{{ note['content']|verbatim_value }}</div>
-                            <textarea name='content' class='form-control d-none' rows='5' id='content{{ id }}'>{{ note['content']|verbatim_value }}</textarea>
+                            <div class="entitynote" role="alert" id='contentread{{ id }}'>{{ note['content'] }}</div>
+                            <textarea name='content' class='form-control d-none' rows='5' id='content{{ id }}'>{{ note['content'] }}</textarea>
                             <br>
                             <label id='visible{{ id }}' class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0 d-none"
                                     data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Visible on tickets') }}">

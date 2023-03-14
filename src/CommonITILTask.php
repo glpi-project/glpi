@@ -37,7 +37,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject\Component\VCalendar;
 
 /// TODO extends it from CommonDBChild
@@ -488,7 +487,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $input['tasktemplates_id']  = $input['_tasktemplates_id'];
             $input = array_replace(
                 [
-                    'content'           => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'content'           => $template->getRenderedContent($parent_item),
                     'taskcategories_id' => $template->fields['taskcategories_id'],
                     'actiontime'        => $template->fields['actiontime'],
                     'state'             => $template->fields['state'],
@@ -1273,7 +1272,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                             $interv[$key]["end"] = $data["end"];
                         }
 
-                        $interv[$key]["name"]     = Sanitizer::unsanitize($parentitem->fields['name']); // name is re-encoded on JS side
+                        $interv[$key]["name"]     = $parentitem->fields['name'];
                         $interv[$key]["content"]  = RichText::getSafeHtml($item->fields['content']);
                         $interv[$key]["status"]   = $parentitem->fields["status"];
                         $interv[$key]["priority"] = $parentitem->fields["priority"];

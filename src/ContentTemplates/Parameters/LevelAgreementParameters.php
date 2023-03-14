@@ -37,7 +37,6 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
-use Glpi\Toolbox\Sanitizer;
 use LevelAgreement;
 
 /**
@@ -60,9 +59,7 @@ abstract class LevelAgreementParameters extends AbstractParameters
 
     protected function defineValues(CommonDBTM $sla): array
     {
-
-       // Output "unsanitized" values
-        $fields = Sanitizer::unsanitize($sla->fields);
+        $fields = $sla->fields;
 
         return [
             'id'       => $fields['id'],

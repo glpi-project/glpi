@@ -35,7 +35,6 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\System\Requirement\DbTimezones;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  *  Database class for Mysql
@@ -1124,8 +1123,8 @@ class DBmysql
      */
     public function getLock($name)
     {
-        $name          = addslashes($this->dbdefault . '.' . $name);
-        $query         = "SELECT GET_LOCK('$name', 0)";
+        $name          = $this->quote($this->dbdefault . '.' . $name);
+        $query         = "SELECT GET_LOCK($name, 0)";
         $result        = $this->doQuery($query);
         list($lock_ok) = $this->fetchRow($result);
 
@@ -1143,8 +1142,8 @@ class DBmysql
      */
     public function releaseLock($name)
     {
-        $name          = addslashes($this->dbdefault . '.' . $name);
-        $query         = "SELECT RELEASE_LOCK('$name')";
+        $name          = $this->quote($this->dbdefault . '.' . $name);
+        $query         = "SELECT RELEASE_LOCK($name)";
         $result        = $this->doQuery($query);
         list($lock_ok) = $this->fetchRow($result);
 

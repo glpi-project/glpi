@@ -53,8 +53,8 @@
                      <a href="{{ linked['itemtype']|itemtype_form_path(linked['items_id']) }}" class="col-9 overflow-hidden text-nowrap">
                         <i class="{{ linked['itemtype']|itemtype_icon }}" title="{{ linked['itemtype']|itemtype_name }}" data-bs-toggle="tootlip"></i>
                         {{ new_itilobject.getStatusIcon(new_itilobject.fields['status'])|raw }}
-                        <span title="{{ new_itilobject.fields['name']|verbatim_value }}" data-bs-toggle="tooltip">
-                     {{ new_itilobject.fields['name']|verbatim_value }}
+                        <span title="{{ new_itilobject.fields['name'] }}" data-bs-toggle="tooltip">
+                     {{ new_itilobject.fields['name'] }}
                   </span>
                         ({{ new_itilobject.fields['id'] }})
                      </a>
