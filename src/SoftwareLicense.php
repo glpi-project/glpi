@@ -551,6 +551,27 @@ class SoftwareLicense extends CommonTreeDropdown
             'datatype'           => 'string',
         ];
 
+        $tab[] = [
+            'id'                 => '163',
+            'table'              => 'glpi_items_softwarelicenses',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of installations'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'   => 'child',
+                'beforejoin' => [
+                    'table'      => 'glpi_softwarelicenses',
+                    'joinparams' => ['jointype' => 'child'],
+                ],
+                'condition'  => [
+                    'NEWTABLE.is_deleted'          => 0
+                ]
+            ]
+        ];
+
        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
