@@ -33,6 +33,18 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set params = params|default({}) %}
+{% set candedit = candedit|default(item.maySolve()) %}
+{% set can_read_kb = can_read_kb|default(
+    has_profile_right('knowbase', constant('READ'))
+    or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ'))
+)%}
+{% set can_update_kb = can_update_kb|default(has_profile_right('knowbase', constant('UPDATE'))) %}
+{% set nokb = nokb|default(params['nokb'] is defined or params['nokb'] == true) %}
+{% set rand = rand|default(random()) %}
+{% set formoptions = formoptions|default(params['formoptions'] ?? '') %}
+{% set kb_id_toload = kb_id_toload|default(0) %}
+
 {# In some cases, we may already have an HTML form (massive actions) #}
 {% set add_html_form = no_form is not defined or no_form == false %}
 
@@ -291,47 +303,49 @@
         </div>
     </div>
 
-    {% set pending_reasons %}
-        {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason %}
-        <span
-            class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
-            id="pending-reasons-control-{{ rand }}"
-        >
+    {% if disable_pending_reasons is not defined or disable_pending_reasons == false %}
+        {% set pending_reasons %}
+            {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason %}
             <span
-                class="d-inline-flex align-items-center"
-                title="{{ __("Set the status to pending") }}"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                role="button"
+                class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
+                id="pending-reasons-control-{{ rand }}"
             >
-                <i class="fas fa-pause me-2"></i>
-                <label class="form-check form-switch pt-2">
-                <input type="hidden" name="pending" value="0"/>
-                <input
-                    type="checkbox"
-                    name="pending"
-                    value="1"
-                    class="form-check-input"
-                    id="enable-pending-reasons-{{ rand }}"
+                <span
+                    class="d-inline-flex align-items-center"
+                    title="{{ __("Set the status to pending") }}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
                     role="button"
-                    {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
-                    data-bs-toggle="collapse"
-                    data-bs-target="#pending-reasons-setup-{{ rand }}"
-                />
-                </label>
-            </span>
-
-            {% if not has_pending_reason %}
-                <div
-                    class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
-                    aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
-                    id="pending-reasons-setup-{{ rand }}"
                 >
-                    {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
-                </div>
-            {% endif %}
-        </span>
-    {% endset %}
+                    <i class="fas fa-pause me-2"></i>
+                    <label class="form-check form-switch pt-2">
+                    <input type="hidden" name="pending" value="0"/>
+                    <input
+                        type="checkbox"
+                        name="pending"
+                        value="1"
+                        class="form-check-input"
+                        id="enable-pending-reasons-{{ rand }}"
+                        role="button"
+                        {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
+                        data-bs-toggle="collapse"
+                        data-bs-target="#pending-reasons-setup-{{ rand }}"
+                    />
+                    </label>
+                </span>
+
+                {% if not has_pending_reason %}
+                    <div
+                        class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
+                        aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
+                        id="pending-reasons-setup-{{ rand }}"
+                    >
+                        {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
+                    </div>
+                {% endif %}
+            </span>
+        {% endset %}
+    {% endif %}
 
     {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
     <div class="d-flex card-footer mx-n3 mb-n3">
@@ -359,7 +373,9 @@
                 <span>{{ _x('button', 'Delete permanently') }}</span>
                 </button>
             {% endif %}
-            {{ pending_reasons|raw }}
+            {% if disable_pending_reasons is not defined or disable_pending_reasons == false %}
+                {{ pending_reasons|raw }}
+            {% endif %}
         {% endif %}
     </div>
 
