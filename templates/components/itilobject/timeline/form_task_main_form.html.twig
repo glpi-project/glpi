@@ -36,9 +36,8 @@
 {% set params = params|default({}) %}
 {% set candedit = candedit|default(item.maySolve()) %}
 {% set can_read_kb = can_read_kb|default(
-    has_profile_right('knowbase', constant('READ'))
-    or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ'))
-)%}
+    has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ'))
+) %}
 {% set can_update_kb = can_update_kb|default(has_profile_right('knowbase', constant('UPDATE'))) %}
 {% set nokb = nokb|default(params['nokb'] is defined or params['nokb'] == true) %}
 {% set rand = rand|default(random()) %}
