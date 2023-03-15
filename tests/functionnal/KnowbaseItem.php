@@ -345,22 +345,198 @@ HTML
 
     protected function testGetListRequestProvider(): array
     {
+
+        /*[
+            'name'     => '_knowbaseitem01',
+            'answer'   => 'Answer for Knowledge base entry _knowbaseitem01 apple juice turnover',
+            'is_faq'   => 0,
+            'users_id' => TU_USER,
+            'date'     => '2016-11-17 12:27:48',
+        ],
+        [
+            'name'     => '_knowbaseitem02',
+            'answer'   => 'Answer for Knowledge base entry _knowbaseitem02 apple macintosh strudel',
+            'is_faq'   => 0,
+            'users_id' => TU_USER,
+            'date'     => '2016-11-17 12:27:48',
+        ]*/
+
         return [
             [
                 'params' => [
                     'knowbaseitemcategories_id' => 0,
                     'faq' => false,
-                    'contains' => "test1 ",
+                    'contains' => "+macintosh",
+                    //Find rows that contain the word 'macintosh'
                 ],
-                'type' => 'search'
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
             ],
             [
                 'params' => [
                     'knowbaseitemcategories_id' => 0,
                     'faq' => false,
-                    'contains' => "test1 / test2 ( test3 )",
+                    'contains' => "+apple",
+                    //Find rows that contain the word 'apple'
                 ],
-                'type' => 'search'
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "apple macintosh",
+                    //Find rows that contain at least one of the two words.
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem02', '_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "base entry _knowbaseitem02",
+                    //Find rows that contain at least one of the three words.
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem02', '_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "apple",
+                    //Find rows that contain at least 'apple'
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "macintosh",
+                    //Find rows that contain at least 'macintosh'
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "Knowledge",
+                    //Find rows that contain at least 'macintosh'
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "+juice +macintosh",
+                    //Find rows that contain both words.
+                ],
+                'type' => 'search',
+                'count' => 0,
+                'sort' => null,
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "+apple -macintosh",
+                    //Find rows that contain the word “apple” but not “macintosh”.
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "+apple ~macintosh",
+                    //Find rows that contain the word “apple”, but if the row also contains the word “macintosh”, rate it lower than if row does not.
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "+apple macintosh",
+                    //Find rows that contain the word “apple”, but rank rows higher if they also contain “macintosh”.
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem02', '_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "+apple +(>macintosh <juice)",
+                    //Find rows that contain the words “apple” and "juice", or “apple” and "macintosh" (in any order), but rank “apple macintosh" higher than “apple juice".
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem02', '_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "Know*",
+                    //Find rows that contain "Know" such as "Knowledge"
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "turn*",
+                    //Find rows that contain "turn" such as "turnover"
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => '"macintosh strudel"',
+                    //Find rows that contain the exact phrase “macintosh strudel”
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => '"base entry _knowbaseitem02"',
+                    //Find rows that contain the exact phrase “base entry _knowbaseitem02”
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
             ]
         ];
     }
@@ -368,16 +544,29 @@ HTML
     /**
      * @dataprovider testGetListRequestProvider
      */
-    public function testGetListRequest(array $params, string $type): void
+    public function testGetListRequest(array $params, string $type, int $count, mixed $sort): void
     {
         global $DB;
+        $this->login(); //to prevent KnowBaseItem entity restrict criteria for anonymous user
 
-       // Build criteria array
+        // Build criteria array
         $criteria = \KnowbaseItem::getListRequest($params, $type);
         $this->array($criteria);
 
-       // Check that the request is valid
-        $DB->request($criteria);
+        // Check that the request is valid
+        $iterator = $DB->request($criteria);
+
+        //count KnowBaseItem found
+        $this->integer($iterator->numrows())->isEqualTo($count);
+
+        // check order if needed
+        if ($sort != null) {
+            $this->string($sort[0])->isEqualTo($iterator->current()['name']);
+            $iterator->next();
+            if (isset($sort[1])) {
+                $this->string($sort[1])->isEqualTo($iterator->current()['name']);
+            }
+        }
     }
 
     public function testGetAnswerAnchors(): void
