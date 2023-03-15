@@ -561,11 +561,8 @@ HTML
 
         // check order if needed
         if ($sort != null) {
-            $this->string($sort[0])->isEqualTo($iterator->current()['name']);
-            $iterator->next();
-            if (isset($sort[1])) {
-                $this->string($sort[1])->isEqualTo($iterator->current()['name']);
-            }
+            $names = array_column(iterator_to_array($iterator), 'name');
+            $this->array($names)->isEqualTo($sort);
         }
     }
 
