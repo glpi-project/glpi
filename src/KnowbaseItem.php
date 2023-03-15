@@ -1477,10 +1477,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $criteria = [
             'SELECT' => [
                 'glpi_knowbaseitems.*',
-                'glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id',
-                new QueryExpression(
-                    'GROUP_CONCAT(DISTINCT ' . $DB->quoteName('glpi_knowbaseitemcategories.completename') . ') AS category'
-                ),
                 new QueryExpression(
                     'COUNT(' . $DB->quoteName('glpi_knowbaseitems_users.id') . ')' .
                     ' + COUNT(' . $DB->quoteName('glpi_groups_knowbaseitems.id') . ')' .
@@ -1683,6 +1679,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                     $search_where =  $criteria['WHERE']; // Visibility restrict criteria
 
                     $search_where[] = ['OR' => $ors];
+                    $criteria['GROUPBY'][] = 'SCORE';
 
                    // Add visibility date
                     $visibility_crit = [
@@ -1764,20 +1761,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 $criteria['ORDERBY'] = ['glpi_knowbaseitems.name ASC'];
                 break;
         }
-
-        $criteria['LEFT JOIN']['glpi_knowbaseitems_knowbaseitemcategories'] = [
-            'ON'  => [
-                'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitems_id',
-                'glpi_knowbaseitems'             => 'id'
-            ]
-        ];
-
-        $criteria['LEFT JOIN']['glpi_knowbaseitemcategories'] = [
-            'ON'  => [
-                'glpi_knowbaseitemcategories'    => 'id',
-                'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitemcategories_id'
-            ]
-        ];
 
         return $criteria;
     }
@@ -1999,18 +1982,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                         $item_num,
                         $row_num
                     );
-                }
-
-                $categ = $data["category"];
-                $inst = new KnowbaseItemCategory();
-                if (DropdownTranslation::canBeTranslated($inst)) {
-                    $tcateg = DropdownTranslation::getTranslatedValue(
-                        $data["knowbaseitemcategories_id"],
-                        $inst->getType()
-                    );
-                    if (!empty($tcateg)) {
-                          $categ = $tcateg;
-                    }
                 }
 
                 if ($output_type == Search::HTML_OUTPUT) {
