@@ -350,9 +350,7 @@ class DBmysql
      */
     public function query($query)
     {
-        $e = new \RuntimeException('Executing direct queries is not allowed!');
-        var_export($e->getTraceAsString());
-        throw $e;
+        trigger_error('Executing direct queries is not allowed!', E_USER_ERROR);
     }
 
     /**
