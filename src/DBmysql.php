@@ -350,6 +350,22 @@ class DBmysql
      */
     public function query($query)
     {
+        trigger_error('Executing direct queries is not allowed!', E_USER_ERROR);
+    }
+
+    /**
+     * Execute a MySQL query
+     *
+     * @param string $query Query to execute
+     *
+     * @var array   $CFG_GLPI
+     * @var array   $DEBUG_SQL
+     * @var integer $SQL_TOTAL_REQUEST
+     *
+     * @return mysqli_result|boolean Query result handler
+     */
+    public function doQuery($query)
+    {
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
         $is_debug = isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
@@ -369,7 +385,7 @@ class DBmysql
             // no translation for error logs
             $error = "  *** MySQL query error:\n  SQL: " . $query . "\n  Error: " .
                    $this->dbh->error . "\n";
-            $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
+            $error .= Toolbox::backtrace(false, 'DBmysql->doQuery()', ['Toolbox::backtrace()']);
 
             Toolbox::logSqlError($error);
 
@@ -404,7 +420,7 @@ class DBmysql
                     )
                 )
             );
-            $message .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
+            $message .= Toolbox::backtrace(false, 'DBmysql->doQuery()', ['Toolbox::backtrace()']);
             Toolbox::logSqlWarning($message);
 
             ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
@@ -429,7 +445,7 @@ class DBmysql
      */
     public function queryOrDie($query, $message = '')
     {
-        $res = $this->query($query);
+        $res = $this->doQuery($query);
         if (!$res) {
             //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
@@ -891,7 +907,7 @@ class DBmysql
         if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
             return $this->field_cache[$table];
         }
-        $result = $this->query("SHOW COLUMNS FROM `$table`");
+        $result = $this->doQuery("SHOW COLUMNS FROM `$table`");
         if ($result) {
             if ($this->numrows($result) > 0) {
                 $this->field_cache[$table] = [];
@@ -1012,7 +1028,7 @@ class DBmysql
             $query = trim($query);
             if ($query != '') {
                 $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
-                if (!$this->query($query)) {
+                if (!$this->doQuery($query)) {
                     return false;
                 }
                 if (!isCommandLine()) {
@@ -1110,7 +1126,7 @@ class DBmysql
     {
         $name          = addslashes($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK('$name', 0)";
-        $result        = $this->query($query);
+        $result        = $this->doQuery($query);
         list($lock_ok) = $this->fetchRow($result);
 
         return (bool)$lock_ok;
@@ -1129,7 +1145,7 @@ class DBmysql
     {
         $name          = addslashes($this->dbdefault . '.' . $name);
         $query         = "SELECT RELEASE_LOCK('$name')";
-        $result        = $this->query($query);
+        $result        = $this->doQuery($query);
         list($lock_ok) = $this->fetchRow($result);
 
         return $lock_ok;
@@ -1322,7 +1338,7 @@ class DBmysql
      */
     public function insert($table, $params)
     {
-        $result = $this->query(
+        $result = $this->doQuery(
             $this->buildInsert($table, $params)
         );
         return $result;
@@ -1451,7 +1467,7 @@ class DBmysql
     public function update($table, $params, $where, array $joins = [])
     {
         $query = $this->buildUpdate($table, $params, $where, $joins);
-        $result = $this->query($query);
+        $result = $this->doQuery($query);
         return $result;
     }
 
@@ -1561,7 +1577,7 @@ class DBmysql
     public function delete($table, $where, array $joins = [])
     {
         $query = $this->buildDelete($table, $where, $joins);
-        $result = $this->query($query);
+        $result = $this->doQuery($query);
         return $result;
     }
 
@@ -1631,7 +1647,7 @@ class DBmysql
     public function truncateOrDie($table, $message = '')
     {
         $table_name = $this::quoteName($table);
-        $res = $this->query("TRUNCATE $table_name");
+        $res = $this->doQuery("TRUNCATE $table_name");
         if (!$res) {
            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
@@ -1724,7 +1740,7 @@ class DBmysql
     protected function rollbackTo($name)
     {
         // No proper rollback to savepoint support in mysqli extension?
-        $result = $this->query('ROLLBACK TO ' . self::quoteName($name));
+        $result = $this->doQuery('ROLLBACK TO ' . self::quoteName($name));
         return $result !== false;
     }
 

@@ -566,7 +566,7 @@ class DBConnection extends CommonDBTM
     {
 
         if ($DBconnection->connected) {
-            $result = $DBconnection->query("SELECT UNIX_TIMESTAMP(MAX(`date_mod`)) AS max_date
+            $result = $DBconnection->doQuery("SELECT UNIX_TIMESTAMP(MAX(`date_mod`)) AS max_date
                                          FROM `glpi_logs`");
             if ($DBconnection->numrows($result) > 0) {
                  return $DBconnection->result($result, 0, "max_date");
