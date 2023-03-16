@@ -695,6 +695,7 @@ abstract class AbstractController
         // This shouldn't have much if any unneeded overhead as the filter would be mapped to a SQL condition.
         $request_params['filter'] = $field . '==' . $request_attrs[$field];
         $request_params['limit'] = 1;
+        unset($request_params['start']);
         $results = $this->getSearchResultsBySchema($schema, $request_params);
         if (count($results['results']) === 0) {
             return self::getNotFoundErrorResponse();
