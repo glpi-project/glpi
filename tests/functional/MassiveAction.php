@@ -55,8 +55,8 @@ class MassiveAction extends DbTestCase
             [
                 'itemtype'     => 'Computer',
                 'items_id'     => '_test_pc01',
-                'allcount'     => 26,
-                'singlecount'  => 17
+                'allcount'     => 27,
+                'singlecount'  => 18
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
@@ -70,8 +70,8 @@ class MassiveAction extends DbTestCase
             ], [
                 'itemtype'     => 'NetworkEquipment',
                 'items_id'     => '_test_networkequipment_1',
-                'allcount'     => 21,
-                'singlecount'  => 15
+                'allcount'     => 22,
+                'singlecount'  => 16
             ], [
                 'itemtype'     => 'Peripheral',
                 'items_id'     => '_test_peripheral_1',
