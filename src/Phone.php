@@ -140,24 +140,13 @@ class Phone extends CommonDBTM
         return $input;
     }
 
-
     public function cleanDBonPurge()
     {
-
         $this->deleteChildrenAndRelationsFromDb(
             [
-                Computer_Item::class,
-                Item_Project::class,
-                Item_SoftwareVersion::class,
+                Item_Environment::class,
                 Item_Process::class,
-                Item_Environment::class
             ]
-        );
-
-        Item_Devices::cleanItemDeviceDBOnItemDelete(
-            $this->getType(),
-            $this->fields['id'],
-            (!empty($this->input['keep_devices']))
         );
     }
 

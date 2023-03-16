@@ -112,4 +112,16 @@ class TicketRecurrent extends CommonITILRecurrent
         ];
         return $tab;
     }
+
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Item_TicketRecurrent::class,
+            ]
+        );
+
+        parent::cleanDBonPurge();
+    }
 }

@@ -176,7 +176,6 @@ class Software extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-                Item_Project::class,
                 SoftwareVersion::class,
             ]
         );

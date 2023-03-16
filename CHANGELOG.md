@@ -163,6 +163,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- Itemtype that can be linked to a disk are now declared in `$CFG_GLPI['disk_types']`.
 
 #### Deprecated
 - `Glpi\Inventory\Conf::importFile()`

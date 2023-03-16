@@ -35,6 +35,9 @@
 
 /**
  * Store ports connections log
+ *
+ * FIXME This class should inherit from CommonDBRelation, as it is linked
+ * to both 'networkports_id_source' and 'networkports_id_destination'
  */
 class NetworkPortConnectionLog extends CommonDBChild
 {

@@ -973,6 +973,7 @@ class Ticket extends CommonITILObject
                 Problem_Ticket::class,
                 ProjectTask_Ticket::class,
                 TicketCost::class,
+                Ticket_Contract::class,
                 Ticket_Ticket::class,
                 TicketValidation::class,
             ]

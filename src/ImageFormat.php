@@ -47,4 +47,11 @@ class ImageFormat extends CommonDropdown
     {
         return "far fa-file-image";
     }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb([
+            Item_DeviceCamera_ImageFormat::class,
+        ]);
+    }
 }

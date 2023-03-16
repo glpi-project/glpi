@@ -264,17 +264,9 @@ class Printer extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-                Certificate_Item::class,
-                Computer_Item::class,
-                Item_Project::class,
-                Printer_CartridgeInfo::class
+                Printer_CartridgeInfo::class,
+                PrinterLog::class,
             ]
-        );
-
-        Item_Devices::cleanItemDeviceDBOnItemDelete(
-            $this->getType(),
-            $this->fields['id'],
-            (!empty($this->input['keep_devices']))
         );
     }
 

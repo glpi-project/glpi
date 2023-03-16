@@ -681,7 +681,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $this->deleteChildrenAndRelationsFromDb(
             [
                 PlanningRecall::class,
-                VObject::class,
             ]
         );
     }

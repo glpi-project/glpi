@@ -41,4 +41,11 @@ class ImageResolution extends CommonDropdown
     {
         return _nx('image', 'Resolution', 'Resolutions', $nb);
     }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb([
+            Item_DeviceCamera_ImageResolution::class,
+        ]);
+    }
 }

@@ -521,6 +521,8 @@ $CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment',
 
 $CFG_GLPI['software_types']      = $CFG_GLPI['operatingsystem_types'];
 
+$CFG_GLPI['disk_types'] = ['Computer', 'NetworkEquipment', 'Phone', 'Printer'];
+
 $CFG_GLPI['kanban_types']        = ['Project'];
 
 $CFG_GLPI['domain_types']        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
