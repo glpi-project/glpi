@@ -1725,6 +1725,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return $criteria;
     }
 
+    /**
+     * Clean search for Boolean FullText
+     *
+     * @since 10.0.7
+     * @param $search string
+     *
+     * @return string : cleaned search for Boolean FullText
+     **/
     public static function computeBooleanFullTextSearch(string $search): string
     {
         $search_wilcard = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
