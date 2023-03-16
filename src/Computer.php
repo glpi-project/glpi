@@ -348,9 +348,6 @@ class Computer extends CommonDBTM
 
         if ($isadmin) {
             $actions += [
-                'Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete'
-               => "<i class='fa-fw ti ti-server-off'></i>" .
-                  _x('button', 'Remove from a rack'),
                 'Item_OperatingSystem' . MassiveAction::CLASS_ACTION_SEPARATOR . 'update'
                => OperatingSystem::getTypeName(),
                 'Computer_Item' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
@@ -369,12 +366,6 @@ class Computer extends CommonDBTM
         }
 
         return $actions;
-    }
-
-
-    public function getWhitelistedSingleMassiveActions()
-    {
-        return ['Item_Rack:delete'];
     }
 
 

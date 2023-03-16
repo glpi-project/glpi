@@ -246,9 +246,6 @@ class NetworkEquipment extends CommonDBTM
 
         if ($isadmin) {
             $actions += [
-                'Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete'
-               => "<i class='fa-fw ti ti-server-off'></i>" .
-                  _x('button', 'Remove from a rack'),
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                => "<i class='ma-icon fas fa-key'></i>" .
                   _x('button', 'Add a license')
@@ -257,12 +254,6 @@ class NetworkEquipment extends CommonDBTM
         }
 
         return $actions;
-    }
-
-
-    public function getWhitelistedSingleMassiveActions()
-    {
-        return ['Item_Rack:delete'];
     }
 
 

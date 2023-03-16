@@ -60,8 +60,8 @@ class MassiveAction extends DbTestCase
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
-                'allcount'     => 23,
-                'singlecount'  => 15
+                'allcount'     => 24,
+                'singlecount'  => 16
             ], [
                 'itemtype'     => 'SoftwareLicense',
                 'items_id'     => '_test_softlic_1',
@@ -75,8 +75,8 @@ class MassiveAction extends DbTestCase
             ], [
                 'itemtype'     => 'Peripheral',
                 'items_id'     => '_test_peripheral_1',
-                'allcount'     => 23,
-                'singlecount'  => 16
+                'allcount'     => 24,
+                'singlecount'  => 17
             ], [
                 'itemtype'     => 'Printer',
                 'items_id'     => '_test_printer_all',
