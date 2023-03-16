@@ -39,6 +39,7 @@ use Glpi\Features\CacheableListInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
+use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -849,73 +850,88 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Clean data in the tables which have linked the deleted item
-     * Clear 1/N Relation
+     * Detach items related to current item.
+     * Related items will be either:
+     * - attached to replacement item having ID specified in `_replace_by` input;
+     * - detached from the item (foreign key field will be set to empty).
+     *
+     * @FIXME Method should be renamed to reflect its precise role (e.g. `detachRelatedItems()`).
      *
      * @return void
      **/
     public function cleanRelationData()
     {
-        global $DB, $CFG_GLPI;
+        global $DB;
 
         $RELATION = getDbRelations();
         if (isset($RELATION[$this->getTable()])) {
-            $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+            $newval = (isset($this->input['_replace_by']) ? (int)$this->input['_replace_by'] : 0);
 
-            foreach ($RELATION[$this->getTable()] as $tablename => $field) {
-                if ($tablename[0] != '_') {
-                    $itemtype = getItemTypeForTable($tablename);
-
-                   // Code factorization : we transform the singleton to an array
-                    if (!is_array($field)) {
-                        $field = [$field];
-                    }
-
-                    foreach ($field as $f) {
-                        $result = $DB->request(
-                            [
-                                'FROM'  => $tablename,
-                                'WHERE' => [$f => $this->getID()],
-                            ]
-                        );
-                        foreach ($result as $data) {
-                             // Be carefull : we must use getIndexName because self::update rely on that !
-                            if ($object = getItemForItemtype($itemtype)) {
-                                $idName = $object->getIndexName();
-                          // And we must ensure that the index name is not the same as the field
-                          // we try to modify. Otherwise we will loose this element because all
-                          // will be set to $newval ...
-                                if ($idName != $f) {
-                                      $object->update([$idName          => $data[$idName],
-                                          $f               => $newval,
-                                          '_disablenotif'  => true
-                                      ]); // Disable notifs
-                                }
-                            }
-                        }
-                    }
+            foreach ($RELATION[$this->getTable()] as $tablename => $fields) {
+                if ($tablename[0] == '_') {
+                    // Relation in tables prefixed by `_` are manualy handled.
+                    continue;
                 }
-            }
-        }
 
-       // Clean ticket open against the item
-        if (in_array($this->getType(), $CFG_GLPI["ticket_types"])) {
-            $job         = new Ticket();
-            $itemsticket = new Item_Ticket();
+                $itemtype = getItemTypeForTable($tablename);
+                if (!is_a($itemtype, CommonDBTM::class, true)) {
+                    trigger_error(
+                        sprintf('Unable to update relations between %s and %s tables.', $this->getTable(), $tablename),
+                        E_USER_WARNING
+                    );
+                    continue;
+                }
 
-            $iterator = $DB->request([
-                'FROM'   => 'glpi_items_tickets',
-                'WHERE'  => [
-                    'items_id'  => $this->getID(),
-                    'itemtype'  => $this->getType()
-                ]
-            ]);
+                $id_field = $itemtype::getIndexName();
 
-            foreach ($iterator as $data) {
-                $cnt = countElementsInTable('glpi_items_tickets', ['tickets_id' => $data['tickets_id']]);
-                $itemsticket->delete(["id" => $data["id"]]);
-                if ($cnt == 1 && !$CFG_GLPI["keep_tickets_on_delete"]) {
-                    $job->delete(["id" => $data["tickets_id"]]);
+                foreach ($fields as $field) {
+                    if (is_array($field)) {
+                        // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
+                        if ($this instanceof IPAddress && in_array('mainitemtype', $field) && in_array('mainitems_id', $field)) {
+                            // glpi_ipaddresses relationship that does not respect naming conventions
+                            $itemtype_field = 'mainitemtype';
+                            $items_id_field = 'mainitems_id';
+                        } else {
+                            $itemtype_matches = preg_grep('/^itemtype/', $field);
+                            $items_id_matches = preg_grep('/^items_id/', $field);
+                            $itemtype_field = reset($itemtype_matches);
+                            $items_id_field = reset($items_id_matches);
+                        }
+                        $criteria = [
+                            $itemtype_field => $this->getType(),
+                            $items_id_field => $this->getID(),
+                        ];
+                        $update = [
+                            $items_id_field => $newval,
+                        ];
+                        if ($newval === 0) {
+                            $update[$itemtype_field] = 'NULL';
+                        }
+                    } else {
+                        // Relation based on single foreign key
+                        $criteria = [
+                            $field => $this->getID(),
+                        ];
+                        $update = [
+                            $field => $newval,
+                        ];
+                    }
+
+                    $result = $DB->request(
+                        [
+                            'FROM'  => $tablename,
+                            'WHERE' => $criteria,
+                        ]
+                    );
+                    foreach ($result as $data) {
+                        $item = new $itemtype();
+                        $item->update(
+                            [
+                                $id_field       => $data[$id_field],
+                                '_disablenotif' => true,
+                            ] + $update
+                        );
+                    }
                 }
             }
         }
@@ -993,53 +1009,36 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Clean the data in the relation tables for the deleted item
-     * Clear N/N Relation
+     * Purge items related to current item.
+     *
+     * @FIXME Method should be renamed to reflect its precise role (e.g. `purgeRelatedItems()`).
      *
      * @return void
-     **/
+     */
     public function cleanRelationTable()
     {
         global $CFG_GLPI, $DB;
 
-       // If this type have INFOCOM, clean one associated to purged item
-        if (Infocom::canApplyOn($this)) {
-            $infocom = new Infocom();
-
-            if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
-                $infocom->delete(['id' => $infocom->fields['id']]);
-            }
+        if (in_array($this->getType(), $CFG_GLPI['agent_types'])) {
+           // Agent does not extends CommonDBConnexity
+            $agent = new Agent();
+            $agent->deleteByCriteria(['itemtype' => $this->getType(), 'items_id' => $this->getID()]);
         }
 
-       // If this type have NETPORT, clean one associated to purged item
+        if (in_array($this->getType(), $CFG_GLPI['itemdevices_types'])) {
+            Item_Devices::cleanItemDeviceDBOnItemDelete(
+                $this->getType(),
+                $this->getID(),
+                !empty($this->input['keep_devices'])
+            );
+        }
+
         if (in_array($this->getType(), $CFG_GLPI['networkport_types'])) {
-           // If we don't use delete, then cleanDBonPurge() is not call and the NetworkPorts are not
-           // clean properly
-            $networkPortObject = new NetworkPort();
-            $networkPortObject->cleanDBonItemDelete($this->getType(), $this->getID());
-           // Manage networkportmigration if exists
+            // Manage networkportmigration if exists
             if ($DB->tableExists('glpi_networkportmigrations')) {
                 $networkPortMigObject = new NetworkPortMigration();
                 $networkPortMigObject->cleanDBonItemDelete($this->getType(), $this->getID());
             }
-        }
-
-       // If this type is RESERVABLE clean one associated to purged item
-        if (in_array($this->getType(), $CFG_GLPI['reservation_types'])) {
-            $rr = new ReservationItem();
-            $rr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-        }
-
-       // If this type have CONTRACT, clean one associated to purged item
-        if (in_array($this->getType(), $CFG_GLPI['contract_types'])) {
-            $ci = new Contract_Item();
-            $ci->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-        }
-
-       // If this type have DOCUMENT, clean one associated to purged item
-        if (Document::canApplyOn($this)) {
-            $di = new Document_Item();
-            $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
         }
 
        // If this type have NOTEPAD, clean one associated to purged item
@@ -1048,78 +1047,70 @@ class CommonDBTM extends CommonGLPI
             $note->cleanDBonItemDelete($this->getType(), $this->fields['id']);
         }
 
-       // Delete relations with KB
-        if (in_array($this->getType(), $CFG_GLPI['kb_types'])) {
-            $kbitem_item = new KnowbaseItem_Item();
-            $kbitem_item->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-        }
-
         if (in_array($this->getType(), $CFG_GLPI['ticket_types'])) {
-           //delete relation beetween item and changes/problems
-            $this->deleteChildrenAndRelationsFromDb(
-                [
-                    Change_Item::class,
-                    Item_Problem::class,
+            // Clean ticket open against the item
+            $job         = new Ticket();
+            $itemsticket = new Item_Ticket();
+
+            $iterator = $DB->request([
+                'FROM'   => 'glpi_items_tickets',
+                'WHERE'  => [
+                    'items_id'  => $this->getID(),
+                    'itemtype'  => $this->getType()
                 ]
-            );
-        }
-
-        if (in_array($this->getType(), $CFG_GLPI['rackable_types'])) {
-           //delete relation beetween rackable type and its rack
-            $item_rack = new Item_Rack();
-            $item_rack->deleteByCriteria(
-                [
-                    'itemtype' => $this->getType(),
-                    'items_id' => $this->fields['id']
-                ]
-            );
-
-            $item_enclosure = new Item_Enclosure();
-            $item_enclosure->deleteByCriteria(
-                [
-                    'itemtype' => $this->getType(),
-                    'items_id' => $this->fields['id']
-                ]
-            );
-        }
-
-        if (in_array($this->getType(), $CFG_GLPI['cluster_types'])) {
-           //delete relation beetween clusterable elements type and their cluster
-            $this->deleteChildrenAndRelationsFromDb(
-                [
-                    Item_Cluster::class,
-                ]
-            );
-        }
-
-        if (in_array($this->getType(), $CFG_GLPI['operatingsystem_types'])) {
-            $this->deleteChildrenAndRelationsFromDb([
-                Item_OperatingSystem::class
             ]);
-        }
 
-        if (in_array($this->getType(), $CFG_GLPI['software_types'])) {
-            $this->deleteChildrenAndRelationsFromDb([
-                Item_SoftwareVersion::class
-            ]);
-        }
-
-        if (in_array($this->getType(), $CFG_GLPI['kanban_types'])) {
-            $this->deleteChildrenAndRelationsFromDb([
-                Item_Kanban::class
-            ]);
-        }
-
-        if (in_array($this->getType(), $CFG_GLPI['domain_types'])) {
-            $this->deleteChildrenAndRelationsFromDb([
-                Domain_Item::class
-            ]);
+            foreach ($iterator as $data) {
+                $cnt = countElementsInTable('glpi_items_tickets', ['tickets_id' => $data['tickets_id']]);
+                $itemsticket->delete(["id" => $data["id"]]);
+                if ($cnt == 1 && !$CFG_GLPI["keep_tickets_on_delete"]) {
+                    $job->delete(["id" => $data["tickets_id"]]);
+                }
+            }
         }
 
         $lockedfield = new Lockedfield();
         if ($lockedfield->isHandled($this)) {
             $lockedfield->itemDeleted();
         }
+
+        // Delete relation items and child items from DB
+        $polymorphic_types_mapping = [
+            Appliance_Item::class          => $CFG_GLPI['appliance_types'],
+            Appliance_Item_Relation::class => $CFG_GLPI['appliance_relation_types'],
+            Certificate_Item::class        => $CFG_GLPI['certificate_types'],
+            Change_Item::class             => $CFG_GLPI['ticket_types'],
+            Computer_Item::class           => $CFG_GLPI['directconnect_types'],
+            Consumable::class              => $CFG_GLPI['consumables_types'],
+            Contract_Item::class           => $CFG_GLPI['contract_types'],
+            Document_Item::class           => \Document::getItemtypesThatCanHave(),
+            Domain_Item::class             => $CFG_GLPI['domain_types'],
+            Infocom::class                 => \Infocom::getItemtypesThatCanHave(),
+            Item_Cluster::class            => $CFG_GLPI['cluster_types'],
+            Item_Disk::class               => $CFG_GLPI['disk_types'],
+            Item_Enclosure::class          => $CFG_GLPI['rackable_types'],
+            Item_Kanban::class             => $CFG_GLPI['kanban_types'],
+            Item_OperatingSystem::class    => $CFG_GLPI['operatingsystem_types'],
+            Item_Problem::class            => $CFG_GLPI['ticket_types'],
+            Item_Project::class            => $CFG_GLPI['project_asset_types'],
+            Item_Rack::class               => $CFG_GLPI['rackable_types'],
+            Item_SoftwareLicense::class    => $CFG_GLPI['software_types'],
+            Item_SoftwareVersion::class    => $CFG_GLPI['software_types'],
+            // specific case, see above Item_Ticket::class             => $CFG_GLPI['ticket_types'],
+            KnowbaseItem_Item::class       => $CFG_GLPI['kb_types'],
+            NetworkPort::class             => $CFG_GLPI['networkport_types'],
+            ReservationItem::class         => $CFG_GLPI['reservation_types'],
+            Socket::class                   => $CFG_GLPI['socket_types'],
+            VObject::class                 => $CFG_GLPI['planning_types'],
+        ];
+
+        $to_delete = [];
+        foreach ($polymorphic_types_mapping as $target_itemtype => $source_itemtypes) {
+            if (in_array($this->getType(), $source_itemtypes)) {
+                $to_delete[] = $target_itemtype;
+            }
+        }
+        $this->deleteChildrenAndRelationsFromDb($to_delete);
     }
 
 
@@ -2538,103 +2529,98 @@ class CommonDBTM extends CommonGLPI
         }
 
         if (isset($RELATION[$this->getTable()])) {
-            foreach ($RELATION[$this->getTable()] as $tablename => $field) {
+            foreach ($RELATION[$this->getTable()] as $tablename => $fields) {
                 if ($tablename[0] != '_') {
                     $itemtype = getItemTypeForTable($tablename);
                     $item     = new $itemtype();
 
-                    if ($item->isEntityAssign()) {
-                      // 1->N Relation
+                    $or_criteria = [];
+                    foreach ($fields as $field) {
+                        // 1->N Relation
                         if (is_array($field)) {
-                            foreach ($field as $f) {
-                                if (
-                                    countElementsInTable(
-                                        $tablename,
-                                        [ $f => $ID, 'NOT' => [ 'entities_id' => $entities ]]
-                                    ) > 0
-                                ) {
-                                       return false;
-                                }
+                            // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
+                            if ($item instanceof IPAddress && in_array('mainitemtype', $field) && in_array('mainitems_id', $field)) {
+                                // glpi_ipaddresses relationship that does not respect naming conventions
+                                $itemtype_field = 'mainitemtype';
+                                $items_id_field = 'mainitems_id';
+                            } else {
+                                $itemtype_matches = preg_grep('/^itemtype/', $field);
+                                $items_id_matches = preg_grep('/^items_id/', $field);
+                                $itemtype_field = reset($itemtype_matches);
+                                $items_id_field = reset($items_id_matches);
                             }
+                            $or_criteria[] = [
+                                $itemtype_field => $this->getType(),
+                                $items_id_field => $this->getID(),
+                            ];
                         } else {
-                            if (
-                                countElementsInTable(
-                                    $tablename,
-                                    [ $field => $ID, 'NOT' => [ 'entities_id' => $entities ]]
-                                ) > 0
-                            ) {
-                                return false;
-                            }
+                            // Relation based on single foreign key
+                            $or_criteria[] = [
+                                $field => $this->getID(),
+                            ];
+                        }
+                    }
+                    if (count($or_criteria) === 0) {
+                        continue; // Empty fields mapping
+                    }
+
+                    $item_criteria = ['OR' => $or_criteria];
+
+                    if ($item->isEntityAssign()) {
+                        // 1->N Relation
+                        if (
+                            countElementsInTable(
+                                $tablename,
+                                [ $item_criteria, 'NOT' => [ 'entities_id' => $entities ]]
+                            ) > 0
+                        ) {
+                            return false;
                         }
                     } else {
                         foreach ($RELATION as $othertable => $rel) {
-                          // Search for a N->N Relation with devices
+                            // Search for a N->N Relation
                             if (
-                                ($othertable == "_virtual_device")
-                                && isset($rel[$tablename])
-                            ) {
-                                $devfield  = $rel[$tablename][0]; // items_id...
-                                $typefield = $rel[$tablename][1]; // itemtype...
-
-                                $iterator = $DB->request([
-                                    'SELECT'          => $typefield,
-                                    'DISTINCT'        => true,
-                                    'FROM'            => $tablename,
-                                    'WHERE'           => [$field => $ID]
-                                ]);
-
-                                  // Search linked device of each type
-                                foreach ($iterator as $data) {
-                                    $itemtype  = $data[$typefield];
-                                    $itemtable = getTableForItemType($itemtype);
-                                    $item      = new $itemtype();
-
-                                    if ($item->isEntityAssign()) {
-                                        if (
-                                            countElementsInTable(
-                                                [$tablename, $itemtable],
-                                                ["$tablename.$field"     => $ID,
-                                                    "$tablename.$typefield" => $itemtype,
-                                                    'FKEY' => [$tablename => $devfield, $itemtable => 'id'],
-                                                    'NOT'  => [$itemtable . '.entities_id' => $entities ]
-                                                ]
-                                            ) > '0'
-                                        ) {
-                                            return false;
-                                        }
-                                    }
-                                }
-                            } else if (
                                 ($othertable != $this->getTable())
                                 && isset($rel[$tablename])
                             ) {
-                                 // Search for another N->N Relation
-                                 $itemtype = getItemTypeForTable($othertable);
-                                 $item     = new $itemtype();
+                                $otheritemtype = getItemTypeForTable($othertable);
+                                $otheritem     = new $otheritemtype();
 
-                                if ($item->isEntityAssign()) {
-                                    if (is_array($rel[$tablename])) {
-                                        foreach ($rel[$tablename] as $otherfield) {
-                                            if (
-                                                countElementsInTable(
-                                                    [$tablename, $othertable],
-                                                    ["$tablename.$field" => $ID,
-                                                        'FKEY' => [$tablename => $otherfield, $othertable => 'id'],
-                                                        'NOT'  => [$othertable . '.entities_id' => $entities ]
-                                                    ]
-                                                ) > '0'
-                                            ) {
-                                                return false;
+                                if ($otheritem->isEntityAssign()) {
+                                    foreach ($rel[$tablename] as $otherfield) {
+                                        if (is_array($otherfield)) {
+                                            // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
+                                            if ($item instanceof IPAddress && in_array('mainitemtype', $otherfield) && in_array('mainitems_id', $otherfield)) {
+                                                // glpi_ipaddresses relationship that does not respect naming conventions
+                                                $otheritemtype_field = 'mainitemtype';
+                                                $otheritems_id_field = 'mainitems_id';
+                                            } else {
+                                                $otheritemtype_matches = preg_grep('/^itemtype/', $otherfield);
+                                                $otheritems_id_matches = preg_grep('/^items_id/', $otherfield);
+                                                $otheritemtype_field = reset($otheritemtype_matches);
+                                                $otheritems_id_field = reset($otheritems_id_matches);
                                             }
+                                            $fkey = [
+                                                $tablename  => $otheritems_id_field,
+                                                $othertable => 'id',
+                                                [
+                                                    'AND' => [$tablename . '.' . $otheritemtype_field => $this->getType()],
+                                                ],
+                                            ];
+                                        } else {
+                                            // Relation based on single foreign key
+                                            $fkey = [
+                                                $tablename  => $otherfield,
+                                                $othertable => 'id',
+                                            ];
                                         }
-                                    } else {
-                                        $otherfield = $rel[$tablename];
                                         if (
                                             countElementsInTable(
                                                 [$tablename, $othertable],
-                                                ["$tablename.$field" => $ID,
-                                                    'FKEY' => [$tablename => $otherfield, $othertable => 'id'],
-                                                    'NOT'  => [ $othertable . '.entities_id' => $entities ]
+                                                [
+                                                    $item_criteria,
+                                                    'FKEY' => $fkey,
+                                                    'NOT'  => [$othertable . '.entities_id' => $entities ]
                                                 ]
                                             ) > '0'
                                         ) {

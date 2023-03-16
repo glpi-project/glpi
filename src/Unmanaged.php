@@ -187,16 +187,6 @@ class Unmanaged extends CommonDBTM
         return $tab;
     }
 
-    public function cleanDBonPurge()
-    {
-
-        $this->deleteChildrenAndRelationsFromDb(
-            [
-                NetworkPort::class
-            ]
-        );
-    }
-
     public static function getIcon()
     {
         return "ti ti-question-mark";

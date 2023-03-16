@@ -52,4 +52,12 @@ class Item_DeviceCamera extends Item_Devices
     {
         return [];
     }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb([
+            Item_DeviceCamera_ImageFormat::class,
+            Item_DeviceCamera_ImageResolution::class,
+        ]);
+    }
 }

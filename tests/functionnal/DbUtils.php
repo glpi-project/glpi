@@ -1048,50 +1048,224 @@ class DbUtils extends DbTestCase
      */
     public function testRelationsValidity()
     {
-
         global $DB;
 
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-         ->array($mapping = $this->testedInstance->getDbRelations())
-         ->hasKey('_virtual_device');
+        $this->newTestedInstance();
 
-        $virtual_mapping = $mapping['_virtual_device'];
-        unset($mapping['_virtual_device']);
+        $mapping = $this->testedInstance->getDbRelations();
 
-        foreach ($mapping as $tablename => $relations) {
-            $this->boolean($DB->tableExists($tablename))
-            ->isTrue(sprintf('Invalid table "%s" in relation mapping.', $tablename));
+        // Check that target fields exists in database
+        foreach ($mapping as $source_table => $relations) {
+            $this->boolean($DB->tableExists($source_table))
+                ->isTrue(sprintf('Invalid table "%s" in relation mapping.', $source_table));
 
-            foreach ($relations as $relation_tablename => $fields) {
-                if (strpos($relation_tablename, '_') === 0) {
-                    $relation_tablename = substr($relation_tablename, 1);
+            foreach ($relations as $target_table_key => $target_fields) {
+                $target_table = preg_replace('/^_/', '', $target_table_key);
+
+                $this->boolean($DB->tableExists($target_table))
+                    ->isTrue(sprintf('Invalid table "%s" in "%s" mapping.', $target_table, $source_table));
+
+                $this->array($target_fields);
+
+                $fields_to_check = [];
+                foreach ($target_fields as $target_field) {
+                    if (is_array($target_field)) {
+                        // Polymorphic relation
+                        $this->array($target_field)->size->isEqualTo(2); // has only `itemtype*` and `items_id*` fields
+                        if ($target_table === 'glpi_ipaddresses') {
+                            $this->array($target_field)->containsValues(['mainitemtype', 'mainitems_id']);
+                        } else {
+                            $this->integer(count(preg_grep('/^itemtype/', $target_field)))->isEqualTo(1);
+                            $this->integer(count(preg_grep('/^items_id/', $target_field)))->isEqualTo(1);
+                        }
+                        $fields_to_check = array_merge($fields_to_check, $target_field);
+                    } else {
+                        // Ensure polymorphic relations are correctly declared in an array with both fields names.
+                        $msg = sprintf('Invalid table field "%s.%s" in "%s" mapping.', $target_table, $target_field, $source_table);
+                        $this->string($target_field)
+                            ->notMatches('/^itemtype/', $msg)
+                            ->notMatches('/^items_id/', $msg);
+
+                        $fields_to_check[] = $target_field;
+                    }
                 }
-
-                $this->boolean($DB->tableExists($relation_tablename))
-                ->isTrue(sprintf('Invalid table "%s" in relation mapping.', $relation_tablename));
-
-                if (!is_array($fields)) {
-                    $fields = [$fields];
-                }
-
-                foreach ($fields as $field) {
-                    $this->boolean($DB->fieldExists($relation_tablename, $field))
-                    ->isTrue(sprintf('Invalid table field "%s.%s" in relation mapping.', $relation_tablename, $field));
+                foreach ($fields_to_check as $field_to_check) {
+                    $this->boolean($DB->fieldExists($target_table, $field_to_check))
+                        ->isTrue(sprintf('Invalid table field "%s.%s" in "%s" mapping.', $target_table, $field_to_check, $source_table));
                 }
             }
         }
 
-        foreach ($virtual_mapping as $tablename => $fields) {
-            $this->boolean($DB->tableExists($tablename))
-            ->isTrue(sprintf('Invalid table "%s" in _virtual_device mapping.', $tablename));
+        // Check for duplicated relations declaration
+        $already_known_relations = [];
+        $duplicated_relations    = [];
+        $mixed_relations         = [];
+        foreach ($mapping as $source_table => $relations) {
+            foreach ($relations as $target_table_key => $target_fields) {
+                $is_table_key_prefixed = str_starts_with($target_table_key, '_');
 
-            foreach ($fields as $field) {
-                $this->boolean($DB->fieldExists($tablename, $field))
-                ->isTrue(sprintf('Invalid table field "%s.%s" in _virtual_device mapping.', $tablename, $field));
+                $unprefixed_table_key = $is_table_key_prefixed ? preg_replace('/^_/', '', $target_table_key) : $target_table_key;
+                $prefixed_table_key   = $is_table_key_prefixed ? $target_table_key : '_' . $target_table_key;
+
+                foreach ($target_fields as $target_field) {
+                    $relation            = sprintf('‣ "%s" > "%s" > %s', $source_table, $target_table_key, json_encode($target_field));
+                    $unprefixed_relation = sprintf('‣ "%s" > "%s" > %s', $source_table, $unprefixed_table_key, json_encode($target_field));
+                    $prefixed_relation   = sprintf('‣ "%s" > "%s" > %s', $source_table, $prefixed_table_key, json_encode($target_field));
+
+                    if (in_array($relation, $already_known_relations)) {
+                        $duplicated_relations[] = $relation;
+                    } elseif (
+                        ($is_table_key_prefixed && in_array($unprefixed_relation, $already_known_relations))
+                        || (!$is_table_key_prefixed && in_array($prefixed_relation, $already_known_relations))
+                    ) {
+                        $mixed_relations[] = $relation;
+                    }
+
+                    $already_known_relations[] = $relation;
+                }
             }
         }
+
+        // Check that relations are all declared (and correctly declared)
+        $expected_mapping = [];
+
+        // Compute expected relations based on foreign keys in tables
+        foreach ($DB->listTables() as $table_specs) {
+            $target_table = $table_specs['TABLE_NAME'];
+            $target_itemtype = getItemTypeForTable($target_table);
+            if (!is_a($target_itemtype, \CommonDBTM::class, true)) {
+                continue;
+            }
+
+            foreach ($DB->listFields($target_table) as $field_specs) {
+                $target_field = $field_specs['Field'];
+                if (!isForeignKeyField($target_field) || preg_match('/^int([ (].+)*$/', $field_specs['Type']) !== 1) {
+                    continue;
+                }
+
+                $source_itemtype = getItemtypeForForeignKeyField($target_field);
+                if (!is_a($source_itemtype, \CommonDBTM::class, true)) {
+                    continue;
+                }
+                $source_table = $source_itemtype::getTable();
+
+                $target_table_key_prefix = '';
+                if (
+                    (
+                        is_a($target_itemtype, \CommonDBChild::class, true)
+                        && $target_itemtype::$itemtype === $source_itemtype
+                        && $target_itemtype::$items_id === $target_field
+                        && $target_itemtype::$mustBeAttached === true
+                    )
+                    || (
+                        is_a($target_itemtype, \CommonDBRelation::class, true)
+                        && (
+                            (
+                                $target_itemtype::$itemtype_1 === $source_itemtype
+                                && $target_itemtype::$items_id_1 === $target_field
+                                && $target_itemtype::$mustBeAttached_1 === true
+                            )
+                            || (
+                                $target_itemtype::$itemtype_2 === $source_itemtype
+                                && $target_itemtype::$items_id_2 === $target_field
+                                && $target_itemtype::$mustBeAttached_2 === true
+                            )
+                        )
+                    )
+                ) {
+                    // If item must be attached, target table key has to be prefixed by "_"
+                    // to be ignored by `CommonDBTM::cleanRelationData()`. Indeed, without usage of this prefix,
+                    // related item will be preserved with its foreign key defined to 0, making it an unwanted orphaned item.
+                    $target_table_key_prefix = '_';
+                } elseif ($target_itemtype::getIndexName() === $target_field) {
+                    // Automatic update will not be possible due to the way automatic update is done in `CommonDBTM::cleanRelationData()`.
+                    $target_table_key_prefix = '_';
+                }
+                $target_table_key = $target_table_key_prefix . $target_table;
+
+                if (!array_key_exists($source_table, $expected_mapping)) {
+                    $expected_mapping[$source_table] = [];
+                }
+                if (!array_key_exists($target_table_key, $expected_mapping[$source_table])) {
+                    $expected_mapping[$source_table][$target_table_key] = [];
+                }
+
+                $expected_mapping[$source_table][$target_table_key][] = $target_field;
+            }
+        }
+
+        // FIXME Try to automatize computation of expected polymorphic relations mapping (not sure it is possible).
+
+        // Check for missing relation
+        $missing_relations = [];
+        $forbiddenly_prefixed_relations = [];
+        foreach ($expected_mapping as $expected_source_table => $expected_relations) {
+            foreach ($expected_relations as $expected_target_table_key => $expected_target_fields) {
+                foreach ($expected_target_fields as $expected_target_field) {
+                    $is_expected_key_prefixed = str_starts_with($expected_target_table_key, '_');
+
+                    $unprefixed_table_key = $is_expected_key_prefixed ? preg_replace('/^_/', '', $expected_target_table_key) : $expected_target_table_key;
+                    $prefixed_table_key   = $is_expected_key_prefixed ? $expected_target_table_key : '_' . $expected_target_table_key;
+
+                    $is_declared_without_prefix = isset($mapping[$expected_source_table][$unprefixed_table_key])
+                        && in_array($expected_target_field, $mapping[$expected_source_table][$unprefixed_table_key]);
+                    $is_declared_with_prefix    = isset($mapping[$expected_source_table][$prefixed_table_key])
+                        && in_array($expected_target_field, $mapping[$expected_source_table][$prefixed_table_key]);
+
+                    if ($is_declared_without_prefix && $is_expected_key_prefixed) {
+                        // If "_" prefix is present in expected mapping, it means that computation
+                        // states that relation has to be handled specifically.
+                        // In this case, having this declaration without "_" prefix in result mapping is forbidden.
+                        $forbiddenly_prefixed_relations[] = sprintf(
+                            '‣ "%s" > "%s" > %s',
+                            $expected_source_table,
+                            $unprefixed_table_key,
+                            json_encode($expected_target_field)
+                        );
+                    } elseif (!$is_declared_without_prefix && !$is_declared_with_prefix) {
+                        $missing_relations[] = sprintf(
+                            '‣ "%s" > "%s" > %s',
+                            $expected_source_table,
+                            $expected_target_table_key,
+                            json_encode($expected_target_field)
+                        );
+                    }
+                }
+            }
+        }
+
+        sort($forbiddenly_prefixed_relations);
+        sort($missing_relations);
+        sort($duplicated_relations);
+        sort($mixed_relations);
+
+        $msg = PHP_EOL;
+        if (!empty($forbiddenly_prefixed_relations)) {
+            $msg .= 'Following relations are declared without "_" prefix but should not:'
+                . PHP_EOL
+                . implode(PHP_EOL, $forbiddenly_prefixed_relations)
+                . PHP_EOL;
+        }
+        if (!empty($missing_relations)) {
+            $msg .= 'Following relations are missing:'
+                . PHP_EOL
+                . implode(PHP_EOL, $missing_relations)
+                . PHP_EOL;
+        }
+        if (!empty($duplicated_relations)) {
+            $msg .= 'Following relations are duplicated:'
+                . PHP_EOL
+                . implode(PHP_EOL, $duplicated_relations)
+                . PHP_EOL;
+        }
+        if (!empty($mixed_relations)) {
+            $msg .= 'Following relations are mixed (declared twice with and without "_" prefix):'
+                . PHP_EOL
+                . implode(PHP_EOL, $mixed_relations)
+                . PHP_EOL;
+        }
+        $this->boolean(empty($forbiddenly_prefixed_relations) && empty($missing_relations) && empty($duplicated_relations) && empty($mixed_relations))
+            ->isTrue($msg);
     }
 
     /**

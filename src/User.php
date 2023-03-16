@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Dashboard\Dashboard;
+use Glpi\Dashboard\Filter;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
@@ -393,6 +395,8 @@ class User extends CommonDBTM
        // Reminder does not extends CommonDBConnexity
         $r = new Reminder();
         $r->deleteByCriteria(['users_id' => $this->fields['id']]);
+        $reminder_translation = new ReminderTranslation();
+        $reminder_translation->deleteByCriteria(['users_id' => $this->fields['id']]);
 
        // Delete private bookmark
         $ss = new SavedSearch();
@@ -430,9 +434,9 @@ class User extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-                Certificate_Item::class,
                 Change_User::class,
                 Group_User::class,
+                Item_Kanban::class,
                 KnowbaseItem_User::class,
                 Problem_User::class,
                 Profile_User::class,
@@ -450,6 +454,12 @@ class User extends CommonDBTM
             // DisplayPreference does not extends CommonDBConnexity
             $dp = new DisplayPreference();
             $dp->deleteByCriteria(['users_id' => $this->fields['id']]);
+
+            // Delete private dashboards and private dashboard filters
+            $dashboard = new Dashboard();
+            $dashboard->deleteByCriteria(['users_id' => $this->fields['id']]);
+            $dashboard_filters = new Filter();
+            $dashboard_filters->deleteByCriteria(['users_id' => $this->fields['id']]);
         }
 
         $this->dropPictureFiles($this->fields['picture']);

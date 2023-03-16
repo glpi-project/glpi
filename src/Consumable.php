@@ -83,17 +83,6 @@ class Consumable extends CommonDBChild
     }
 
 
-    public function cleanDBonPurge()
-    {
-
-        $this->deleteChildrenAndRelationsFromDb(
-            [
-                Infocom::class,
-            ]
-        );
-    }
-
-
     public function prepareInputForAdd($input)
     {
 
