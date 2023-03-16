@@ -85,6 +85,42 @@ class Item_Rack extends CommonDBRelation
         return $forbidden;
     }
 
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
+        switch ($ma->getAction()) {
+            case 'delete':
+                $input = $ma->getInput();
+                $item_rack = new Item_Rack();
+                foreach ($ids as $id) {
+                    if ($item->can($id, UPDATE, $input)) {
+                        if (
+                            $item_rack->getFromDBByCrit([
+                                'itemtype' => $item->getType(),
+                                'items_id' => $item->getID()
+                            ])
+                        ) {
+                            if ($item_rack->delete(['id' => $item_rack->getID()])) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            }
+                        } else {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                        }
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    }
+                }
+                break;
+        }
+    }
+
     /**
      * Print racks items
      * @param  Rack   $rack the current rack instance
