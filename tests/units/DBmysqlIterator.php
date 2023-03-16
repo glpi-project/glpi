@@ -1515,8 +1515,8 @@ class DBmysqlIterator extends DbTestCase
         $this->calling($mysqli_result)->free        = true;
 
         $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DB();
-        $this->calling($db)->query = $mysqli_result;
+        $db = new \mock\DBMysql();
+        $this->calling($db)->doQuery = $mysqli_result;
         $this->calling($db)->numrows = 1;
 
         $iterator = $db->request(['FROM' => 'glpi_mocks']);

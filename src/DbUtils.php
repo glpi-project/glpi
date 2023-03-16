@@ -622,7 +622,7 @@ final class DbUtils
             return false;
         }
 
-        $result = $DB->query("SHOW INDEX FROM `$table`");
+        $result = $DB->doQuery("SHOW INDEX FROM `$table`");
 
         if ($result && $DB->numrows($result)) {
             while ($data = $DB->fetchAssoc($result)) {

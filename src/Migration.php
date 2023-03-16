@@ -557,7 +557,7 @@ class Migration
         global $DB;
 
         if ($DB->tableExists($table)) {
-            $DB->query("DROP TABLE `$table`");
+            $DB->doQuery("DROP TABLE `$table`");
         }
     }
 
@@ -724,7 +724,7 @@ class Migration
         ) {
            // Try to do a flush tables if RELOAD privileges available
            // $query = "FLUSH TABLES `$oldtable`, `$newtable`";
-           // $DB->query($query);
+           // $DB->doQuery($query);
 
             $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
             $DB->queryOrDie($query, $this->version . " create $newtable");
@@ -872,7 +872,7 @@ class Migration
         $sql = "SELECT MAX(`ranking`) AS `rank`
               FROM `glpi_rules`
               WHERE `sub_type` = '" . $rule['sub_type'] . "'";
-        $result = $DB->query($sql);
+        $result = $DB->doQuery($sql);
 
         $ranking = 1;
         if ($DB->numrows($result) > 0) {
