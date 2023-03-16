@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e -u -x -o pipefail
 
-php -S localhost:8088 tests/router.php &>/dev/null &
+php -S localhost:8088 -t public tests/router.php &>/dev/null &
 bin/console config:set --config-dir=./tests/config --context=inventory enabled_inventory 1
 vendor/bin/atoum \
   -p 'php -d memory_limit=512M' \

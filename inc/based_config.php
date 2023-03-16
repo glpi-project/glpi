@@ -47,6 +47,25 @@ if (!empty($tz)) {
 
 include_once(GLPI_ROOT . "/inc/autoload.function.php");
 
+// Check if web root is configured correctly
+if (!isCommandLine()) {
+    $included_files = array_filter(
+        get_included_files(),
+        function (string $included_file) {
+            // prevent `tests/router.php` to be considered as initial script
+            return realpath($included_file) !== realpath(sprintf('%s/tests/router.php', GLPI_ROOT));
+        }
+    );
+    $initial_script = reset($included_files) ?? __FILE__;
+    if (realpath($initial_script) !== realpath(sprintf('%s/public/index.php', GLPI_ROOT))) {
+        echo sprintf(
+            'Web server root directory configuration is incorrect, it should be "%s". See installation documentation for more details.' . PHP_EOL,
+            realpath(sprintf('%s/public', GLPI_ROOT))
+        );
+        exit(1);
+    }
+}
+
 (function () {
    // Define GLPI_* constants that can be customized by admin.
    //

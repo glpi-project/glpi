@@ -79,6 +79,7 @@ The present file will list all changes made to the project; according to the
 - `CommonGLPI::createTabEntry()` signature changed.
 - All types of rules are now sortable and ordered by ranking.
 - Plugins console commands must now use the normalized prefix `plugins:XXX` where `XXX` is the plugin key.
+- GLPI web root is now the `/public` directory and all web request to PHP scripts are proxified by `public/index.php` script.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
@@ -128,6 +129,9 @@ The present file will list all changes made to the project; according to the
 - `Config::getCurrentDBVersion()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
+- `Glpi\System\Requirement\DataDirectoriesProtectedPath` class.
+- `Glpi\System\Requirement\ProtectedWebAccess` class.
+- `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`

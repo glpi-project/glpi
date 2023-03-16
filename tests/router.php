@@ -52,4 +52,8 @@ $DEBUG_SQL = [
 
 ini_set("log_error", 1);
 
+// Forward to GLPI router
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+require(__DIR__ . '/../public/index.php');
+
 return false;
