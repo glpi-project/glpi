@@ -343,6 +343,128 @@ HTML
          ->contains(-1);
     }
 
+    protected function testComputeBooleanFullTextSearchProvider(): array
+    {
+        return [
+            [
+                'search' => "+macintosh",
+                'expected' => "+macintosh", //no change -> boolean FullText search
+            ],
+            [
+                'search' => "+apple",
+                'expected' => "+apple", //no change -> boolean FullText search
+            ],
+            [
+                'search' => "apple macintosh",
+                'expected' => "apple macintosh", //no change -> boolean FullText search
+            ],
+            [
+                'search' => "base entry _knowbaseitem02",
+                'expected' => "base entry _knowbaseitem02", //no change -> boolean FullText search
+            ],
+            [
+                'search' => "apple",
+                'expected' => "apple*", //wildcard added
+            ],
+            [
+                'search' => "macintosh",
+                'expected' => "macintosh*", //wildcard added
+            ],
+            [
+                'search' => "Knowledge",
+                'expected' => "Knowledge*", //wildcard added
+            ],
+            [
+                'search' => "+juice +macintosh",
+                'expected' => "+juice +macintosh", //no change -> boolean FullText search
+            ],
+            [
+                'search' => "+apple -macintosh",
+                'expected' => "+apple -macintosh", //no change -> boolean FullText search
+            ],
+            [
+                'search' => "+apple ~macintosh",
+                'expected' => "+apple ~macintosh", //no change -> boolean FullText search
+            ],
+            [
+                'search' => "+apple macintosh",
+                'expected' => "+apple macintosh", //no change -> boolean FullText search
+            ],
+            [
+                'search' => "+apple +(>macintosh <juice)",
+                'expected' => "+apple +(>macintosh <juice)", //no change -> boolean FullText search
+            ],
+            [
+                'search' => "Know*",
+                'expected' => "Know*", //no change -> boolean FullText search
+            ],
+            [
+                'search' => "turn*",
+                'expected' => "turn*", //no change -> boolean FullText search
+            ],
+            [
+                'search' => '"macintosh strudel"',
+                'expected' => '"macintosh strudel"', //no change -> boolean FullText search
+            ],
+            [
+                'search' => '"base entry _knowbaseitem02"',
+                'expected' => '"base entry _knowbaseitem02"', //no change -> boolean FullText search
+            ],
+            [
+                'search' => "+apple +(>macintosh <juice",
+                'expected' => "+apple +>macintosh <juice", //bad parentheses they are all removed
+            ],
+            [
+                'search' => "apple \"\"",
+                'expected' => "apple*", //double quote removed if without string inside
+            ],
+            [
+                'search' => "apple ''",
+                'expected' => "apple*", //single quote removed if without string inside
+            ],
+            [
+                'search' => "apple()",
+                'expected' => "apple*", //parenthesis removed if without string inside
+            ],
+            [
+                'search' => "apple\"",
+                'expected' => "apple*", //Remove all double quote if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "apple'",
+                'expected' => "apple*", //Remove all asterisks if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "apple(",
+                'expected' => "apple*", //Remove all parenthesis if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "*apple",
+                'expected' => "apple*", //remove asterisk operator at the beginning of string
+            ],
+            [
+                'search' => "apple ",
+                'expected' => "apple*", //remove last space
+            ],
+            [
+                'search' => "apple  macintosh",
+                'expected' => "apple macintosh", //merged space
+            ],
+        ];
+    }
+
+    /**
+     * @dataprovider testComputeBooleanFullTextSearchProvider
+     */
+    public function testComputeBooleanFullTextSearch(string $search, string $expected): void
+    {
+
+        // Build criteria array
+        $search = \KnowbaseItem::computeBooleanFullTextSearch($search);
+        $this->string($search)->isEqualTo($expected);
+
+    }
+
     protected function testGetListRequestProvider(): array
     {
 
