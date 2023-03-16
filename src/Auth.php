@@ -999,7 +999,11 @@ class Auth extends CommonGLPI
             // Check MFA
             $totp = new TOTPManager();
             $web_access = !isAPI() && !isCommandLine();
-            if ($web_access) {
+
+            // In some cases, the session is restored from a remember me cookie.
+            // This results in a redirect loop because there is no mfa_pre_auth session variable, but the login is revalidated when the username and password passed here are empty.
+            // In this case, since the user is technically still logged in, we can just say the login is valid and not process any MFA stuff.
+            if ($web_access && $this->auth_type !== self::COOKIE) {
                 $enforcement = $totp->get2FAEnforcement($this->user->fields['id']);
                 if ($totp->is2FAEnabled($this->user->fields['id'])) {
                     if (!isset($mfa_params['totp_code']) && !isset($mfa_params['backup_code'])) {
