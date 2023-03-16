@@ -458,11 +458,8 @@ HTML
      */
     public function testComputeBooleanFullTextSearch(string $search, string $expected): void
     {
-
-        // Build criteria array
         $search = \KnowbaseItem::computeBooleanFullTextSearch($search);
         $this->string($search)->isEqualTo($expected);
-
     }
 
     protected function testGetListRequestProvider(): array
