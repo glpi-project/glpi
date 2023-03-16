@@ -79,6 +79,9 @@ The present file will list all changes made to the project; according to the
 - `CommonGLPI::createTabEntry()` signature changed.
 - All types of rules are now sortable and ordered by ranking.
 - Plugins console commands must now use the normalized prefix `plugins:XXX` where `XXX` is the plugin key.
+- Usage of `DBmysql::query()` method is prohibited to ensure that legacy unsafe DB are no more executed. To execute DB queries,
+  either `DBmysql::request()` can be used to craft query using the GLPI query builder,
+  either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
