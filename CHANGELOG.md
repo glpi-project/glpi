@@ -146,6 +146,7 @@ The present file will list all changes made to the project; according to the
 - `Search::outputData()`
 - `Search::sylk_clean()`
 - `Toolbox::canUseCas()`
+- `XML` class.
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
 
 ## [10.0.7] unreleased
