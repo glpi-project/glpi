@@ -1758,8 +1758,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         if (mb_substr_count($search_wilcard, '(') !== mb_substr_count($search_wilcard, ')')) {
             $search_wilcard = preg_replace('/[()]/u', '', $search_wilcard);
         }
-        //Remove all operators, that can only precede a text and that do not have text after them (at the end of string). Do this for any possible combinations
-        $search_wilcard = preg_replace('/[+\-<>~]+$/u', '', $search_wilcard);
+        //Remove all operators, that can only precede a text and that do not have text after them (at the end of string, or followed by space)
+        $search_wilcard = preg_replace('/[+\-<>~]+( |$)/u', '', $search_wilcard);
         //Remove asterisk operator at the beginning of string
         $search_wilcard = preg_replace('/^\*/u', '', $search_wilcard);
         //Check if the new value is just the set of operators and if it is - set the value to an empty string
