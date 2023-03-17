@@ -4471,13 +4471,8 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function makeTextSearchValue($val)
     {
-        global $DB;
-
-        // Escape raw value to protect SQL special chars.
-        $val = $DB->escape($val);
-
         // escape _ char used as wildcard in mysql likes
-        $val = str_replace('_', '\\_', $val);
+        $val = str_replace('_', '\_', $val);
 
         if ($val === 'NULL' || $val === 'null') {
             return null;

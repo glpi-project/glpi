@@ -1689,9 +1689,8 @@ class Search extends DbTestCase
             ['rtim this   $', '%rtim this'],
             ['  extra spaces ', '%extra spaces%'],
             ['^ exactval $', 'exactval'],
-            ['snake_case', '%snake\\_case%'], // _ is a wildcard that must be escaped
-            ['quot\'ed', '%quot\\\'ed%'],
-            ['quot\\\'ed', '%quot\\\\\\\'ed%'], // already escaped value should produce double escaping
+            ['snake_case', '%snake\_case%'], // _ is a wildcard that must be escaped
+            ['quot\'ed', '%quot\'ed%'], // quotes should not be escaped by this method
             ['<PROD-15>$', '%<PROD-15>'],
             ['A&B', '%A&B%'],
         ];
