@@ -1742,6 +1742,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         //Remove all operators, that can only precede a text and that are not preceded by either beginning of string, either by a space
         $search_wilcard = preg_replace('/(?<!^| )[+\-<>~]/u', '', $search_wilcard);
         //Remove all double quotes and asterisks, that are not preceded by either beginning of string, letter, number or space
+        //It remove thoose that are preceded by an operator char
         $search_wilcard = preg_replace('/(?<![\p{L}\p{N}_ ]|^)[*"]/u', '', $search_wilcard);
         //Remove all double quotes and asterisks, that are inside text
         $search_wilcard = preg_replace('/([\p{L}\p{N}_])([*"])([\p{L}\p{N}_])/u', '', $search_wilcard);
