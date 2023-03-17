@@ -128,7 +128,8 @@ let config = {
     ],
     resolve: {
         fallback: {
-            'process/browser': require.resolve('process/browser'), // required by @lezer/lr (codemirror dependency)
+            'process/browser': require.resolve('process/browser.js'), // required by @lezer/lr (codemirror dependency)
+            "path": require.resolve("path-browserify"),
         },
         // Use only main file in requirement resolution as we do not yet handle modules correctly
         mainFields: [

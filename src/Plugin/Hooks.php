@@ -35,6 +35,8 @@
 
 namespace Glpi\Plugin;
 
+use Glpi\Api\HL as HL_API;
+
 class Hooks
 {
    // Boolean hooks
@@ -146,6 +148,28 @@ class Hooks
     const DASHBOARD_FILTERS  = 'dashboard_filters';
     const DASHBOARD_PALETTES = 'dashboard_palettes';
     const DASHBOARD_TYPES    = 'dashboard_types';
+
+    // HL API hooks
+    /**
+     * The hook function to call to redefine schemas.
+     * Each time a controller's schemas are retrieved, the hook is called with a $data parameter.
+     * The $data parameter will contain the Controller class name in the 'controller' key and an array of schemas in the 'schemas' key.
+     * The function should return the modified $data array.
+     * The controller value should not be changed as it would result in undefined behavior.
+     */
+    const REDEFINE_API_SCHEMAS          = 'redefine_api_schemas';
+    /**
+     * This hook should provide an array of the plugin's API controller class names.
+     */
+    const API_CONTROLLERS               = 'api_controllers';
+    /**
+     * This hook should provide an array of arrays containing a 'middlware' value that is the class name.
+     * The middleware classes should extend {@link HL_API\Middleware\AbstractMiddleware} and
+     * implement either {@link HL_API\Middleware\RequestMiddlewareInterface{ or {@link HL_API\Middleware\ResponseMiddlewareInterface}.
+     * The arrays may also contain values for 'priority' and 'condition' where priority is an integer (higher is more important) and condition is a callable.
+     * If a condition is provided, that callable will be called with the current controller as a parameter and it must return true for the middleware to be used, or false to not be.
+     */
+    const API_MIDDLEWARE                = 'api_middleware';
 
     /**
      * Get file hooks

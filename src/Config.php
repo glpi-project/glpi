@@ -2320,6 +2320,10 @@ HTML;
                 'name'  => 'robthree/twofactorauth',
                 'check' => 'RobThree\\Auth\\TwoFactorAuth'
             ],
+            [
+                'name'  => 'ralouphie/getallheaders',
+                'check' => 'getallheaders'
+            ],
         ];
         return $deps;
     }

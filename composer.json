@@ -47,6 +47,7 @@
         "psr/cache": "^3.0",
         "psr/log": "^3.0",
         "psr/simple-cache": "^3.0",
+        "ralouphie/getallheaders": "^3.0",
         "ramsey/uuid": "^4.7",
         "rlanvin/php-rrule": "^2.4",
         "robthree/twofactorauth": "^2.0",

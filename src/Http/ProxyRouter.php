@@ -155,7 +155,7 @@ final class ProxyRouter
                 // install/update scripts
                 'install\/(install|update)\.php$',
                 // endpoints located on root directory
-                '(apirest|apixmlrpc|caldav|index|status)\.php',
+                '(api|apirest|apixmlrpc|caldav|index|status)\.php',
             ];
 
             $plugins_path_patterns = [

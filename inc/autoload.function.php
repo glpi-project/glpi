@@ -71,6 +71,9 @@ function isAPI()
     }
 
     $script = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
+    if (strpos($script, 'api.php') !== false) {
+        return true;
+    }
     if (strpos($script, 'apirest.php') !== false) {
         return true;
     }
