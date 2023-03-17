@@ -528,32 +528,13 @@ class APIRest extends API
         }
 
        // retrieve HTTP headers
-        $headers = [];
-        if (function_exists('getallheaders')) {
-           //apache specific
-            $headers = getallheaders();
-            if (false !== $headers && count($headers) > 0) {
-                $fixedHeaders = [];
-                foreach ($headers as $key => $value) {
-                    $fixedHeaders[ucwords(strtolower($key), '-')] = $value;
-                }
-                $headers = $fixedHeaders;
+        $headers = getallheaders();
+        if (false !== $headers && count($headers) > 0) {
+            $fixedHeaders = [];
+            foreach ($headers as $key => $value) {
+                $fixedHeaders[ucwords(strtolower($key), '-')] = $value;
             }
-        } else {
-           // other servers
-            foreach ($_SERVER as $server_key => $server_value) {
-                if (substr($server_key, 0, 5) == 'HTTP_') {
-                    $headers[str_replace(
-                        ' ',
-                        '-',
-                        ucwords(strtolower(str_replace(
-                            '_',
-                            ' ',
-                            substr($server_key, 5)
-                        )))
-                    )] = $server_value;
-                }
-            }
+            $headers = $fixedHeaders;
         }
 
        // try to retrieve basic auth

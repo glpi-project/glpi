@@ -18,9 +18,6 @@
     "// GLPI config classes",
     "DB", "DBSlave",
 
-    "// apache function",
-    "getallheaders",
-
     "// OPCache extension (not installed on testing env)",
     "opcache_get_status", "opcache_invalidate", "opcache_reset",
 
