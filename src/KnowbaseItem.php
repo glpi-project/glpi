@@ -1760,8 +1760,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         }
         //Remove all operators, that can only precede a text and that do not have text after them (at the end of string, or followed by space)
         $search_wilcard = preg_replace('/[+\-<>~]+( |$)/u', '', $search_wilcard);
-        //Remove asterisk operator at the beginning of string
-        $search_wilcard = preg_replace('/^\*/u', '', $search_wilcard);
+        //Remove asterisk operator not located at the end of a word
+        $search_wilcard = preg_replace('/\*(?! |$)/u', '', $search_wilcard);
         //Check if the new value is just the set of operators and if it is - set the value to an empty string
         if (preg_match('/^[+\-<>~()"*]+$/u', $search_wilcard)) {
             $search_wilcard = '';
