@@ -277,7 +277,7 @@ JAVASCRIPT;
             );
             if (count($relations_iterator) > 0) {
                 $conditions = ['OR' => []];
-                $itemtypes_ids = [];
+                $itemtype_ids = [];
                 foreach ($relations_iterator as $relation_data) {
                     if (!isset($itemtype_ids[$relation_data['itemtype']])) {
                         $itemtype_ids[$relation_data['itemtype']] = [];
