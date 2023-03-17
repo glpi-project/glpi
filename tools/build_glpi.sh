@@ -98,6 +98,7 @@ dev_nodes=(
     "vendor/glpi-project/inventory_format/source_files"
     "vendor/htmlawed/htmlawed/htmLawedTest.php"
     "vendor/html2text/html2text/test"
+    "vendor/league/oauth2-google/examples"
     "vendor/mexitek/phpcolors/demo"
     "vendor/mexitek/phpcolors/tests"
     "vendor/michelf/php-markdown/test"
@@ -117,7 +118,6 @@ dev_nodes=(
     "vendor/tecnickcom/tcpdf/tools"
     "vendor/wapmorgan/unified-archive/bin"
     "vendor/wapmorgan/unified-archive/tests"
-    "webpack.config.js"
 )
 for node in "${dev_nodes[@]}"
 do
