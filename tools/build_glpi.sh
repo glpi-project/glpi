@@ -98,6 +98,7 @@ dev_nodes=(
     "vendor/glpi-project/inventory_format/source_files"
     "vendor/htmlawed/htmlawed/htmLawedTest.php"
     "vendor/html2text/html2text/test"
+    "vendor/league/oauth2-google/examples"
     "vendor/mexitek/phpcolors/demo"
     "vendor/mexitek/phpcolors/tests"
     "vendor/michelf/php-markdown/test"
