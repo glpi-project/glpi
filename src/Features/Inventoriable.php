@@ -270,15 +270,27 @@ JAVASCRIPT;
                 [
                     'SELECT' => ['itemtype', 'items_id'],
                     'FROM'   => Computer_Item::getTable(),
+                    'WHERE'  => [
+                        'computers_id' => $this->getID()
+                    ]
                 ]
             );
             if (count($relations_iterator) > 0) {
                 $conditions = ['OR' => []];
+                $itemtype_ids = [];
                 foreach ($relations_iterator as $relation_data) {
-                    $conditions['OR'][] = [
-                        'itemtype' => $relation_data['itemtype'],
-                        'items_id' => $relation_data['items_id'],
-                    ];
+                    if (!isset($itemtype_ids[$relation_data['itemtype']])) {
+                        $itemtype_ids[$relation_data['itemtype']] = [];
+                    }
+                    $itemtype_ids[$relation_data['itemtype']][] = $relation_data['items_id'];
+                }
+                foreach ($itemtype_ids as $itemtype => $ids) {
+                    if (count($ids) > 0) {
+                        $conditions['OR'][] = [
+                            'itemtype' => $itemtype,
+                            'items_id' => $ids
+                        ];
+                    }
                 }
                 $agent = $this->getMostRecentAgent($conditions);
             }
