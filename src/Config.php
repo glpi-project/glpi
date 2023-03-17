@@ -2277,13 +2277,6 @@ HTML;
             [ 'name'    => 'symfony/polyfill-mbstring',
                 'check'   => 'mb_list_encodings'
             ],
-            [ 'name'    => 'symfony/polyfill-php80',
-                'check'   => 'str_contains'
-            ],
-            [
-                'name'  => 'symfony/polyfill-php81',
-                'check' => 'array_is_list'
-            ],
             [
                 'name'  => 'symfony/polyfill-php82',
                 'check' => 'Symfony\\Polyfill\\Php82\\SensitiveParameterValue'
