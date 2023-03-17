@@ -270,6 +270,9 @@ JAVASCRIPT;
                 [
                     'SELECT' => ['itemtype', 'items_id'],
                     'FROM'   => Computer_Item::getTable(),
+                    'WHERE'  => [
+                        'computers_id' => $this->getID()
+                    ]
                 ]
             );
             if (count($relations_iterator) > 0) {
