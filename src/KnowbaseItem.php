@@ -1751,7 +1751,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         //Remove all closing parenthesis which are not preceded by letter or number or are not followed by end of string or space
         $search_wilcard = preg_replace('/(?<![\p{L}\p{N}_])\)|\)(?! |$)/u', '', $search_wilcard);
         //Remove all double quotes if the count is not even
-        if (substr_count($search_wilcard, '"') % 2 !== 0) {
+        if (mb_substr_count($search_wilcard, '"') % 2 !== 0) {
             $search_wilcard = preg_replace('/"/u', '', $search_wilcard);
         }
         //Remove all parenthesis if count of closing does not match count of opening ones
