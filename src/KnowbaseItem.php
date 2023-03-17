@@ -1735,6 +1735,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public static function computeBooleanFullTextSearch(string $search): string
     {
+        // Remove any whitespace from begin/end
         $search_wilcard = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
         //Remove all symbols except allowed operators and space. @distance is not included, since it's unlikely a human will be using it through UI form
         $search_wilcard = preg_replace('/[^\p{L}\p{N}_+\-<>~()*" ]/u', '', $search_wilcard);
