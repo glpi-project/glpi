@@ -61,7 +61,7 @@ $cache_manager = new CacheManager();
 $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
 $method = $_SERVER['REQUEST_METHOD'];
-$relative_uri = $_SERVER['PATH_INFO'];
+$relative_uri = $_SERVER['PATH_INFO'] ?? '';
 // Ensure uri starts with slash but does not end with a slash
 $relative_uri = '/' . trim($relative_uri, '/');
 
