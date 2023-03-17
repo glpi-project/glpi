@@ -365,7 +365,7 @@ EOT;
     private function getPathSecuritySchema(RoutePath $route_path, string $route_method): array
     {
         // Handle special Session case
-        if ($route_method === 'POST' && $route_path->getRoutePath() === '/session') {
+        if ($route_method === 'POST' && $route_path->getRoutePath() === '/Session') {
             return [
                 [
                     'basicAuth' => []
