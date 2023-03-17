@@ -117,7 +117,6 @@ dev_nodes=(
     "vendor/tecnickcom/tcpdf/tools"
     "vendor/wapmorgan/unified-archive/bin"
     "vendor/wapmorgan/unified-archive/tests"
-    "webpack.config.js"
 )
 for node in "${dev_nodes[@]}"
 do
