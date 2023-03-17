@@ -1767,9 +1767,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $search_wilcard = '';
         }
 
-       // Remove last space to avoid illegal syntax with " *"
+        // Remove last space to avoid illegal syntax with " *"
         $search_wilcard = trim($search_wilcard);
-       // Merge spaces since we are using them to split the string later
+        // Merge spaces since we are using them to split the string later
         $search_wilcard = preg_replace('!\s+!', ' ', $search_wilcard);
         //add * foreach word on non boolean mode
         if (!preg_match('/[^\p{L}\p{N}_ ]/u', $search_wilcard)) {
