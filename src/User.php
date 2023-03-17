@@ -3608,7 +3608,7 @@ JAVASCRIPT;
                 $can_update_auth = Session::haveRight(self::$rightname, self::UPDATEAUTHENT);
                 $totp = new \Glpi\Security\TOTPManager();
                 foreach ($ids as $id) {
-                    if (!$item->can($id, UPDATE)) {
+                    if (!$can_update_auth || !$item->can($id, UPDATE)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;
