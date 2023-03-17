@@ -1738,16 +1738,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         // Remove any whitespace from begin/end
         $search_wilcard = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
         //Remove all symbols except allowed operators and space. @distance is not included, since it's unlikely a human will be using it through UI form
-        $search_wilcard = preg_replace('/[^\p{L}\p{N}_+\-<>~()*" ]/u', '', $search_wilcard);
+        $search_wilcard = preg_replace('/[^\p{L}\p{N}_+\-<>~()²" ]/u', '', $search_wilcard);
         //Remove all operators, that can only precede a text and that are not preceded by either beginning of string, either by a space
-        $search_wilcard = preg_replace('/(?<!^|)[+\-<>~]/u', '', $search_wilcard);
+        $search_wilcard = preg_replace('/(?<!^| |\+|-|<|>|~|\()[+\-<>~]/u', '', $search_wilcard);
         //Remove all double quotes and asterisks, that are not preceded by either beginning of string, letter, number
         //It remove thoose that are preceded by an operator char
         $search_wilcard = preg_replace('/(?<![\p{L}\p{N}_ ]|^)[*"]/u', '', $search_wilcard);
         //Remove all double quotes and asterisks, that are inside text
         $search_wilcard = preg_replace('/([\p{L}\p{N}_])([*"])([\p{L}\p{N}_])/u', '', $search_wilcard);
         //Remove all opening parenthesis which are not preceded by beginning of string or a space
-        $search_wilcard = preg_replace('/(?<!^|)\(/u', '', $search_wilcard);
+        $search_wilcard = preg_replace('/(?<!^| |\+|-|<|>|~|\()\(/u', '', $search_wilcard);
         //Remove all closing parenthesis which are not preceded by letter or number or are not followed by end of string
         $search_wilcard = preg_replace('/(?<![\p{L}\p{N}_])\)|\)(?! |$)/u', '', $search_wilcard);
         //Remove all double quotes if the count is not even
@@ -1771,9 +1771,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $search_wilcard = trim($search_wilcard);
        // Merge spaces since we are using them to split the string later
         $search_wilcard = preg_replace('!\s+!', ' ', $search_wilcard);
-
         //add * foreach word on non boolean mode
-        if (!preg_match('/[^\p{L}\p{N}_]/u', $search_wilcard)) {
+        if (!preg_match('/[^\p{L}\p{N}_ ]/u', $search_wilcard)) {
+            //var_dump($search_wilcard);
             $search_wilcard = explode(' ', $search_wilcard);
             $search_wilcard = implode('* ', $search_wilcard) . '*';
         }

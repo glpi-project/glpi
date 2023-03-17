@@ -356,11 +356,11 @@ HTML
             ],
             [
                 'search' => "apple macintosh",
-                'expected' => "apple macintosh", //no change -> boolean FullText search
+                'expected' => "apple* macintosh*", //Find rows that contain at least and derivatives
             ],
             [
                 'search' => "base entry _knowbaseitem02",
-                'expected' => "base entry _knowbaseitem02", //no change -> boolean FullText search
+                'expected' => "base* entry* _knowbaseitem02*",  //Find rows that contain at least and derivatives
             ],
             [
                 'search' => "apple",
@@ -432,11 +432,67 @@ HTML
             ],
             [
                 'search' => "apple'",
-                'expected' => "apple*", //Remove all asterisks if count of closing does not match count of opening ones
+                'expected' => "apple*", //Remove all quote if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "'apple",
+                'expected' => "apple*", //Remove all quote if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "ap'ple",
+                'expected' => "apple*", //Remove all quote if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "ap ' ple",
+                'expected' => "ap* ple*", //Remove all quote if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "apple''",
+                'expected' => "apple*", //Remove all quote if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "''apple",
+                'expected' => "apple*", //Remove all quote if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "ap '' ple",
+                'expected' => "ap* ple*", //Remove all quote if count of closing does not match count of opening ones
             ],
             [
                 'search' => "apple(",
                 'expected' => "apple*", //Remove all parenthesis if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "(apple",
+                'expected' => "apple*", //Remove all parenthesis if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "app(le",
+                'expected' => "apple*", //Remove all parenthesis if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "app ( le",
+                'expected' => "app* le*", //Remove all parenthesis if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "app (le",
+                'expected' => "app* le*", //Remove all parenthesis if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "app( le",
+                'expected' => "app* le*", //Remove all parenthesis if count of closing does not match count of opening ones
+            ],
+            [
+                'search' => "()apple",
+                'expected' => "apple*", //Remove empty parenthesis at begin
+            ],
+            [
+                'search' => "apple()",
+                'expected' => "apple*", //Remove empty parenthesis at end
+            ],
+            [
+                'search' => "app () le",
+                'expected' => "app* le*", //Remove empty parenthesis and double space merged in one
             ],
             [
                 'search' => "*apple",
@@ -448,7 +504,31 @@ HTML
             ],
             [
                 'search' => "apple  macintosh",
-                'expected' => "apple macintosh", //merged space
+                'expected' => "apple* macintosh*", //merged space
+            ],
+            [
+                'search' => "*keyword",
+                'expected' => "keyword*", //asteriks at begin removed and added at end
+            ],
+            [
+                'search' => "key* word",
+                'expected' => "key* word*",
+            ],
+            [
+                'search' => "key * word",
+                'expected' => "key* word*", //asteriks surrounded by space removed and added at end of each word
+            ],
+            [
+                'search' => " keyword",
+                'expected' => "keyword*", //space at begin removed
+            ],
+            [
+                'search' => "keyword ",
+                'expected' => "keyword*", //space at end removed
+            ],
+            [
+                'search' => "[^.,%$=°^¨%§#@?^!&'|/\\\\~\\[\\]{}+=\"-]*",
+                'expected' => "*", //all spacial char are removed
             ],
         ];
     }
