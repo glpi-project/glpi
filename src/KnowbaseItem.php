@@ -1738,7 +1738,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         // Remove any whitespace from begin/end
         $search_wilcard = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
         //Remove all symbols except allowed operators and space. @distance is not included, since it's unlikely a human will be using it through UI form
-        $search_wilcard = preg_replace('/[^\p{L}\p{N}_+\-<>~()²" ]/u', '', $search_wilcard);
+        $search_wilcard = preg_replace('/[^\p{L}\p{N}_+\-<>~()" ]/u', '', $search_wilcard);
         //Remove all operators, that can only precede a text and that are not preceded by either beginning of string, either by a space
         $search_wilcard = preg_replace('/(?<!^| |\+|-|<|>|~|\()[+\-<>~]/u', '', $search_wilcard);
         //Remove all double quotes and asterisks, that are not preceded by either beginning of string, letter, number
