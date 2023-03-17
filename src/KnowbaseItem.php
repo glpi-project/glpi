@@ -1755,7 +1755,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $search_wilcard = preg_replace('/"/u', '', $search_wilcard);
         }
         //Remove all parenthesis if count of closing does not match count of opening ones
-        if (substr_count($search_wilcard, '(') !== substr_count($search_wilcard, ')')) {
+        if (mb_substr_count($search_wilcard, '(') !== mb_substr_count($search_wilcard, ')')) {
             $search_wilcard = preg_replace('/[()]/u', '', $search_wilcard);
         }
         //Remove all operators, that can only precede a text and that do not have text after them (at the end of string). Do this for any possible combinations
