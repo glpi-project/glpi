@@ -2704,6 +2704,12 @@ JAVASCRIPT;
                 }
                 if ($this->fields['2fa'] !== null) {
                     echo '<br>' . __('2FA enabled');
+                    if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
+                        echo "<button type='submit' name='disable_2fa' class='btn btn-outline-danger btn-sm ms-1' data-bs-toggle='tooltip' title='"
+                            . __('If 2FA is mandatory for this user, they will be required to set it back up the next time they log in.') . "'>"
+                            . __('Disable')
+                            . "</button>";
+                    }
                 }
 
                 echo "</td>";
@@ -3488,6 +3494,8 @@ JAVASCRIPT;
                                                       _x('button', 'Change the authentication method');
             $actions[$prefix . 'force_user_ldap_update'] = "<i class='fas fa-sync'></i>" .
                                                       __('Force synchronization');
+            $actions[$prefix . 'disable_2fa']           = "<i class='fas fa-user-lock'></i>" .
+                                                      __('Disable 2FA');
         }
         return $actions;
     }
@@ -3509,6 +3517,13 @@ JAVASCRIPT;
                 );
                 echo "<span id='show_massiveaction_field'><br><br>";
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']) . "</span>";
+                return true;
+            case 'disable_2fa':
+                echo "<span id='show_massiveaction_field'>";
+                echo __('If 2FA is mandatory for this user, they will be required to set it back up the next time they log in.');
+                echo "<br><br>";
+                echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                echo "</span>";
                 return true;
         }
         return parent::showMassiveActionsSubForm($ma);
@@ -3588,6 +3603,19 @@ JAVASCRIPT;
                     $ma->itemDone($item->getType(), $id, $status);
                 }
                 return;
+
+            case 'disable_2fa':
+                $can_update_auth = Session::haveRight(self::$rightname, self::UPDATEAUTHENT);
+                $totp = new \Glpi\Security\TOTPManager();
+                foreach ($ids as $id) {
+                    if (!$can_update_auth || !$item->can($id, UPDATE)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+                    $totp->disable2FAForUser($id);
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                }
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
@@ -6085,11 +6113,11 @@ JAVASCRIPT;
         ];
        //TRANS: short for : Read method for user authentication and synchronization
         $values[self::READAUTHENT]        = ['short' => __('Read auth'),
-            'long'  => __('Read user authentication and synchronization method')
+            'long'  => __('Read user authentication, synchronization method and 2FA')
         ];
        //TRANS: short for : Update method for user authentication and synchronization
-        $values[self::UPDATEAUTHENT]      = ['short' => __('Update auth and sync'),
-            'long'  => __('Update method for user authentication and synchronization')
+        $values[self::UPDATEAUTHENT]      = ['short' => __('Update auth, sync and 2FA'),
+            'long'  => __('Update method for user authentication, synchronization and 2FA')
         ];
         $values[self::IMPERSONATE]      = ['short' => __('Impersonate'),
             'long'  => __('Impersonate users with the same or less rights')
