@@ -1639,7 +1639,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                     $search_where =  $criteria['WHERE']; // Visibility restrict criteria
 
                     $search_where[] = ['OR' => $ors];
-                    $criteria['GROUPBY'][] = 'SCORE';
 
                    // Add visibility date
                     $visibility_crit = [
