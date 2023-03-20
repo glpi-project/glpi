@@ -455,14 +455,14 @@ function loadDataset()
         ], 'KnowbaseItem' => [
             [
                 'name'     => '_knowbaseitem01',
-                'answer'   => 'Answer for Knowledge base entry _knowbaseitem01',
+                'answer'   => 'Answer for Knowledge base entry _knowbaseitem01 apple juice turnover',
                 'is_faq'   => 0,
                 'users_id' => TU_USER,
                 'date'     => '2016-11-17 12:27:48',
             ],
             [
                 'name'     => '_knowbaseitem02',
-                'answer'   => 'Answer for Knowledge base entry _knowbaseitem02',
+                'answer'   => 'Answer for Knowledge base entry _knowbaseitem02 apple macintosh strudel',
                 'is_faq'   => 0,
                 'users_id' => TU_USER,
                 'date'     => '2016-11-17 12:27:48',
