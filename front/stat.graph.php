@@ -382,13 +382,12 @@ Html::showDateField("date2", ['value' => $_POST["date2"]]);
 echo "</td></tr>";
 echo "</table></div>";
 
-// form using GET method : CRSF not needed
 Html::closeForm();
 
 $stat_params = [
     'itemtype' => $_GET['itemtype'],
-    'date1'    => $_GET['date1'],
-    'date2'    => $_GET['date2'],
+    'date1'    => $_POST['date1'],
+    'date2'    => $_POST['date2'],
     'type'     => $_GET['type'],
     'val1'     => $val1,
     'val2'     => $val2,
