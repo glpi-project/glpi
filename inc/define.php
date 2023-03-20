@@ -565,7 +565,7 @@ $CFG_GLPI['javascript'] = [
         'ticket'    => ['rateit', 'tinymce', 'kanban', 'dashboard'],
         'problem'   => ['tinymce', 'kanban', 'sortable'],
         'change'    => ['tinymce', 'kanban', 'sortable'],
-        'stat'      => ['charts']
+        'stat'      => ['charts', 'rateit']
     ],
     'tools'     => [
         'project'                 => ['kanban', 'tinymce', 'sortable'],
