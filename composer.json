@@ -87,6 +87,7 @@
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^1.11",
         "phpstan/phpstan-deprecation-rules": "^1.2",
+        "phpunit/phpunit": "^9.6",
         "squizlabs/php_codesniffer": "^3.10",
         "symfony/browser-kit": "^5.4",
         "symfony/http-client": "^5.4",
