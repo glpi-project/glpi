@@ -692,7 +692,7 @@ HTML
     /**
      * @dataprovider testGetListRequestProvider
      */
-    public function testGetListRequest(array $params, string $type, int $count, mixed $sort): void
+    public function testGetListRequest(array $params, string $type, int $count, ?array $sort): void
     {
         global $DB;
         $this->login(); //to prevent KnowBaseItem entity restrict criteria for anonymous user
