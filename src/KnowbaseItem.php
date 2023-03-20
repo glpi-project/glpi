@@ -1729,56 +1729,71 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      * Clean search for Boolean FullText
      *
      * @since 10.0.7
-     * @param $search string
+     * @param string $search
      *
-     * @return string : cleaned search for Boolean FullText
+     * @return string
      **/
-    public static function computeBooleanFullTextSearch(string $search): string
+    private static function computeBooleanFullTextSearch(string $search): string
     {
+        $word_chars        = '\p{L}\p{N}_';
+        $ponderation_chars = '+\-<>~';
+
         // Remove any whitespace from begin/end
-        $search_wilcard = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
-        //Remove all symbols except allowed operators and space. @distance is not included, since it's unlikely a human will be using it through UI form
-        $search_wilcard = preg_replace('/[^\p{L}\p{N}_+\-<>~()" ]/u', '', $search_wilcard);
-        //Remove all operators, that can only precede a text and that are not preceded by either beginning of string, either by a space
-        $search_wilcard = preg_replace('/(?<!^| |\+|-|<|>|~|\()[+\-<>~]/u', '', $search_wilcard);
-        //Remove all double quotes and asterisks, that are not preceded by either beginning of string, letter, number
-        //It remove thoose that are preceded by an operator char
-        $search_wilcard = preg_replace('/(?<![\p{L}\p{N}_ ]|^)[*"]/u', '', $search_wilcard);
-        //Remove all double quotes and asterisks, that are inside text
-        $search_wilcard = preg_replace('/([\p{L}\p{N}_])([*"])([\p{L}\p{N}_])/u', '', $search_wilcard);
-        //Remove all opening parenthesis which are not preceded by beginning of string or a space
-        $search_wilcard = preg_replace('/(?<!^| |\+|-|<|>|~|\()\(/u', '', $search_wilcard);
-        //Remove all closing parenthesis which are not preceded by letter or number or are not followed by end of string
-        $search_wilcard = preg_replace('/(?<![\p{L}\p{N}_])\)|\)(?! |$)/u', '', $search_wilcard);
-        //Remove all double quotes if the count is not even
-        if (mb_substr_count($search_wilcard, '"') % 2 !== 0) {
-            $search_wilcard = preg_replace('/"/u', '', $search_wilcard);
-        }
-        //Remove all parenthesis if count of closing does not match count of opening ones
-        if (mb_substr_count($search_wilcard, '(') !== mb_substr_count($search_wilcard, ')')) {
-            $search_wilcard = preg_replace('/[()]/u', '', $search_wilcard);
-        }
-        //Remove all operators, that can only precede a text and that do not have text after them (at the end of string, or followed by space)
-        $search_wilcard = preg_replace('/[+\-<>~]+( |$)/u', '', $search_wilcard);
-        //Remove asterisk operator not located at the end of a word
-        $search_wilcard = preg_replace('/\*(?! |$)/u', '', $search_wilcard);
-        //Check if the new value is just the set of operators and if it is - set the value to an empty string
-        if (preg_match('/^[+\-<>~()"*]+$/u', $search_wilcard)) {
-            $search_wilcard = '';
+        $search = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
+
+        // Remove all symbols except word chars, ponderation chars, parenthesis, quotes, wildcards and spaces.
+        // @distance is not included, since it's unlikely a human will be using it through UI form
+        $search = preg_replace("/[^{$word_chars}{$ponderation_chars}()\"* ]/u", '', $search);
+
+        // Remove all ponderation chars, that can only precede a word and that are not preceded by either beginning of string, a space or an opening parenthesis
+        $search = preg_replace("/(?<!^| |\()[{$ponderation_chars}]/u", '', $search);
+        // Remove all ponderation chars that are not followed by a search term
+        // (they are followed by a space, a closing parenthesis or end fo string)
+        $search = preg_replace("/[{$ponderation_chars}]+( |\)|$)/u", '', $search);
+
+        // Remove all opening parenthesis that are located inside a searched term
+        // (they are preceded by a word char or a quote)
+        $search = preg_replace("/(?<=[{$word_chars}\"])\(/u", '', $search);
+        // Remove all closing parenthesis that are located inside a searched term
+        // (they are followed by a word char or a quote)
+        $search = preg_replace("/\)(?=[{$word_chars}\")])/u", '', $search);
+        // Remove empty parenthesis
+        $search = preg_replace("/\(\)/u", '', $search);
+        // Remove all parenthesis if count of closing does not match count of opening ones
+        if (mb_substr_count($search, '(') !== mb_substr_count($search, ')')) {
+            $search = preg_replace("/[()]/u", '', $search);
         }
 
-        // Remove last space to avoid illegal syntax with " *"
-        $search_wilcard = trim($search_wilcard);
-        // Merge spaces since we are using them to split the string later
-        $search_wilcard = preg_replace('!\s+!', ' ', $search_wilcard);
-        //add * foreach word on non boolean mode
-        if (!preg_match('/[^\p{L}\p{N}_ ]/u', $search_wilcard)) {
-            //var_dump($search_wilcard);
-            $search_wilcard = explode(' ', $search_wilcard);
-            $search_wilcard = implode('* ', $search_wilcard) . '*';
+        // Remove all asterisks that are not located at the end of a word
+        // (can be followed by a space, a closing parenthesis or end of string, and must be preceded by a word char)
+        $search = preg_replace("/(?<=[{$word_chars}])\*(?! |\)|$)/u", '', $search);
+
+        // Remove all double quotes
+        // - that are not located before a searched term
+        //   (can be preceded by beginning of string, an operator, a space or an opening parenthesis, and must be followed by a word char)
+        $search = preg_replace("/(?<=^|[{$ponderation_chars} (])\"(?![{$word_chars}])/u", '', $search);
+        // - that are not located after a searched term
+        //   (can be followed by a space, a closing parenthesis or end of string, and must be preceded by a word char)
+        $search = preg_replace("/(?<=[{$word_chars}])\"(?! |\)|$)/u", '', $search);
+        // - if the count is not even
+        if (mb_substr_count($search, '"') % 2 !== 0) {
+            $search = preg_replace("/\"/u", '', $search);
         }
 
-        return $search_wilcard;
+        // Check if the new value is just the set of operators and spaces and if it is - set the value to an empty string
+        if (preg_match("/^[{$ponderation_chars}()\"* ]+$/u", $search)) {
+            $search = '';
+        }
+
+        // Remove extra spaces
+        $search = preg_replace('/\s+/u', ' ', trim($search));
+
+        // Add * foreach word when no boolean operator is used
+        if (!preg_match('/[^\p{L}\p{N}_ ]/u', $search)) {
+            $search = implode('* ', explode(' ', $search)) . '*';
+        }
+
+        return $search;
     }
 
 

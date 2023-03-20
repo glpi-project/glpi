@@ -343,234 +343,167 @@ HTML
          ->contains(-1);
     }
 
-    protected function testComputeBooleanFullTextSearchProvider(): array
+    protected function fullTextSearchProvider(): iterable
     {
-        return [
-            [
-                'search' => "+macintosh",
-                'expected' => "+macintosh", //no change -> boolean FullText search
-            ],
-            [
-                'search' => "+apple",
-                'expected' => "+apple", //no change -> boolean FullText search
-            ],
-            [
-                'search' => "apple macintosh",
-                'expected' => "apple* macintosh*", //Find rows that contain at least and derivatives
-            ],
-            [
-                'search' => "base entry _knowbaseitem02",
-                'expected' => "base* entry* _knowbaseitem02*",  //Find rows that contain at least and derivatives
-            ],
-            [
-                'search' => "apple",
-                'expected' => "apple*", //wildcard added
-            ],
-            [
-                'search' => "macintosh",
-                'expected' => "macintosh*", //wildcard added
-            ],
-            [
-                'search' => "Knowledge",
-                'expected' => "Knowledge*", //wildcard added
-            ],
-            [
-                'search' => "+juice +macintosh",
-                'expected' => "+juice +macintosh", //no change -> boolean FullText search
-            ],
-            [
-                'search' => "+apple -macintosh",
-                'expected' => "+apple -macintosh", //no change -> boolean FullText search
-            ],
-            [
-                'search' => "+apple ~macintosh",
-                'expected' => "+apple ~macintosh", //no change -> boolean FullText search
-            ],
-            [
-                'search' => "+apple macintosh",
-                'expected' => "+apple macintosh", //no change -> boolean FullText search
-            ],
-            [
-                'search' => "+apple +(>macintosh <juice)",
-                'expected' => "+apple +(>macintosh <juice)", //no change -> boolean FullText search
-            ],
-            [
-                'search' => "Know*",
-                'expected' => "Know*", //no change -> boolean FullText search
-            ],
-            [
-                'search' => "turn*",
-                'expected' => "turn*", //no change -> boolean FullText search
-            ],
-            [
-                'search' => '"macintosh strudel"',
-                'expected' => '"macintosh strudel"', //no change -> boolean FullText search
-            ],
-            [
-                'search' => '"base entry _knowbaseitem02"',
-                'expected' => '"base entry _knowbaseitem02"', //no change -> boolean FullText search
-            ],
-            [
-                'search' => "+apple +(>macintosh <juice",
-                'expected' => "+apple +>macintosh <juice", //bad parentheses they are all removed
-            ],
-            [
-                'search' => "apple \"\"",
-                'expected' => "apple*", //double quote removed if without string inside
-            ],
-            [
-                'search' => "apple ''",
-                'expected' => "apple*", //single quote removed if without string inside
-            ],
-            [
-                'search' => "apple()",
-                'expected' => "apple*", //parenthesis removed if without string inside
-            ],
-            [
-                'search' => "apple\"",
-                'expected' => "apple*", //Remove all double quote if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "apple'",
-                'expected' => "apple*", //Remove all quote if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "'apple",
-                'expected' => "apple*", //Remove all quote if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "ap'ple",
-                'expected' => "apple*", //Remove all quote if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "ap ' ple",
-                'expected' => "ap* ple*", //Remove all quote if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "apple''",
-                'expected' => "apple*", //Remove all quote if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "''apple",
-                'expected' => "apple*", //Remove all quote if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "ap '' ple",
-                'expected' => "ap* ple*", //Remove all quote if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "apple(",
-                'expected' => "apple*", //Remove all parenthesis if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "(apple",
-                'expected' => "apple*", //Remove all parenthesis if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "app(le",
-                'expected' => "apple*", //Remove all parenthesis if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "app ( le",
-                'expected' => "app* le*", //Remove all parenthesis if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "app (le",
-                'expected' => "app* le*", //Remove all parenthesis if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "app( le",
-                'expected' => "app* le*", //Remove all parenthesis if count of closing does not match count of opening ones
-            ],
-            [
-                'search' => "()apple",
-                'expected' => "apple*", //Remove empty parenthesis at begin
-            ],
-            [
-                'search' => "apple()",
-                'expected' => "apple*", //Remove empty parenthesis at end
-            ],
-            [
-                'search' => "app () le",
-                'expected' => "app* le*", //Remove empty parenthesis and double space merged in one
-            ],
-            [
-                'search' => "*apple",
-                'expected' => "apple*", //remove asterisk operator at the beginning of string
-            ],
-            [
-                'search' => "apple ",
-                'expected' => "apple*", //remove last space
-            ],
-            [
-                'search' => "apple  macintosh",
-                'expected' => "apple* macintosh*", //merged space
-            ],
-            [
-                'search' => "*keyword",
-                'expected' => "keyword*", //asteriks at begin removed and added at end
-            ],
-            [
-                'search' => "key* word",
-                'expected' => "key* word*",
-            ],
-            [
-                'search' => "key * word",
-                'expected' => "key* word*", //asteriks surrounded by space removed and added at end of each word
-            ],
-            [
-                'search' => " keyword",
-                'expected' => "keyword*", //space at begin removed
-            ],
-            [
-                'search' => "keyword ",
-                'expected' => "keyword*", //space at end removed
-            ],
-            [
-                'search' => "[^.,%$=°^¨%§#@?^!&'|/\\\\~\\[\\]{}+=\"-]*",
-                'expected' => "*", //all spacial char are removed
-            ],
-            [
-                'search' => "😃 😅 😂 🫠 unicode",
-                'expected' => "unicode*", //all spacial char are removed
-            ],
-            [
-                'search' => "unicode 😃 😅 😂 🫠 unicode",
-                'expected' => "unicode* unicode*", //all spacial char are removed
-            ],
-            [
-                'search' => "unicode😃unicode",
-                'expected' => "unicodeunicode*", //all spacial char are removed
-            ],
-            [
-                'search' => "Бесплатное программное обеспечение",
-                'expected' => "Бесплатное* программное* обеспечение*",
-            ],
-            [
-                'search' => "+Бесплатное +обеспечение",
-                'expected' => "+Бесплатное +обеспечение",
-            ],
-            [
-                'search' => "+Бесплатное -обеспечение",
-                'expected' => "+Бесплатное -обеспечение",
-            ],
-            [
-                'search' => "+Бесплатное обеспечение",
-                'expected' => "+Бесплатное обеспечение",
-            ],
-            [
-                'search' => "+программное +(>Бесплатное <обеспечение)",
-                'expected' => "+программное +(>Бесплатное <обеспечение)", //no change -> boolean FullText search
-            ],
+        // Spaces around search terms are trimmed
+        yield [
+            'search'   => ' keyword',
+            'expected' => 'keyword*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => 'keyword ',
+            'expected' => 'keyword*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => "\t +smtp",
+            'expected' => "+smtp",
+        ];
+        yield [
+            'search'   => "+smtp\r\n",
+            'expected' => "+smtp",
+        ];
+        yield [
+            'search'   => " \t +Бесплатное -программное ",
+            'expected' => "+Бесплатное -программное",
+        ];
+
+        // Non word/letter/_ chars are removed
+        yield [
+            'search'   => '[^.,%$=°^¨%§#@?^!&\'|/\\\\~\\[\\]{}+="-]*',
+            'expected' => '*',
+        ];
+        yield [
+            'search'   => '😃 😅 😂 🫠 +unicode',
+            'expected' => '+unicode',
+        ];
+        yield [
+            'search'   => 'unicode😃unicode',
+            'expected' => 'unicodeunicode*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => '+underscore -_',
+            'expected' => '+underscore -_',
+        ];
+        yield [
+            'search'   => 'Бесплатное программное обеспечение',
+            'expected' => 'Бесплатное* программное* обеспечение*', // * added when there is no boolean operators
+        ];
+
+        // Ponderation chars are preserved only when they are located before a search term
+        yield [
+            'search'   => '+(>IMAP <auth) -test ~unit',
+            'expected' => '+(>IMAP <auth) -test ~unit',
+        ];
+        yield [
+            'search'   => '+программное +(>Бесплатное <обеспечение)',
+            'expected' => '+программное +(>Бесплатное <обеспечение)',
+        ];
+        yield [
+            'search'   => 'search wi+th ope-rators in~side t<ext>s',
+            'expected' => 'search* with* operators* inside* texts*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => '++search --with +~-surnumerous >><<+operators',
+            'expected' => '+search -with +surnumerous >operators',
+        ];
+        yield [
+            'search'   => '+collector IMAP+OAuth',
+            'expected' => '+collector IMAPOAuth',
+        ];
+        yield [
+            'search'   => '+прогр~аммное Беспл>атное обесп<ечение',
+            'expected' => '+программное Бесплатное обеспечение',
+        ];
+
+        // Parenthesis are removed when inside texts, when odd or when empty
+        yield [
+            'search'   => 'search <(+knowbase -item)',
+            'expected' => 'search <(+knowbase -item)',
+        ];
+        yield [
+            'search'   => '+search empty () parenthesis',
+            'expected' => '+search empty parenthesis',
+        ];
+        yield [
+            'search'   => '(search with) odd (count of parenthesis',
+            'expected' => 'search* with* odd* count* of* parenthesis*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => '+search -(with many) +(parenthesis in) ~(search terms) >(surrounded by) <(search operators) ("and around parenthesis")',
+            'expected' => '+search -(with many) +(parenthesis in) ~(search terms) >(surrounded by) <(search operators) ("and around parenthesis")',
+        ];
+        yield [
+            'search'   => '+tìm kiếm -(với nhiều) +(dấu ngoặc đơn trong) ~(cụm từ tìm kiếm) >(được bao quanh bởi) <(toán tử tìm kiếm) ("và xung quanh dấu ngoặc đơn")',
+            'expected' => '+tìm kiếm -(với nhiều) +(dấu ngoặc đơn trong) ~(cụm từ tìm kiếm) >(được bao quanh bởi) <(toán tử tìm kiếm) ("và xung quanh dấu ngoặc đơn")',
+        ];
+        yield [
+            'search'   => 'search with paren(thesis inside wor)ds "(or quotes)"',
+            'expected' => 'search with parenthesis inside words "or quotes"', // * added when there is no boolean operators
+        ];
+
+        // Asterisks are removed when not at end of a text
+        yield [
+            'search'   => '+search* wildcard*',
+            'expected' => '+search* wildcard*',
+        ];
+        yield [
+            'search'   => '+search "with misplaced*" wild*card',
+            'expected' => '+search "with misplaced" wildcard',
+        ];
+        yield [
+            'search'   => 'misplaced wild*card',
+            'expected' => 'misplaced* wildcard*', // * added when there is no boolean operators
+        ];
+
+        // Double quotes are removed when inside texts, when odd or when empty
+        yield [
+            'search'   => '+search "knowbase item"',
+            'expected' => '+search "knowbase item"',
+        ];
+        yield [
+            'search'   => '+search empty "" quotes',
+            'expected' => '+search empty quotes',
+        ];
+        yield [
+            'search'   => '"search with" odd "count of quotes',
+            'expected' => 'search* with* odd* count* of* quotes*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => '+search -"with many" +"quotes in" ~"search terms" >"surrounded by" <"search operators" ("and parenthesis")',
+            'expected' => '+search -"with many" +"quotes in" ~"search terms" >"surrounded by" <"search operators" ("and parenthesis")',
+        ];
+        yield [
+            'search'   => '+търсене -"с много" +"кавички в" ~"терми за търсене" >"заобиколен от" <"оператори за търсене" ("и скоби")',
+            'expected' => '+търсене -"с много" +"кавички в" ~"терми за търсене" >"заобиколен от" <"оператори за търсене" ("и скоби")',
+        ];
+        yield [
+            'search'   => 'search with qu"otes inside wor"ds',
+            'expected' => 'search* with* quotes* inside* words*', // * added when there is no boolean operators
+        ];
+
+        // Search with only operators is considered as searching anything
+        yield [
+            'search'   => '+() ~() -() >() <()',
+            'expected' => '*',
+        ];
+
+        // Extra spaces are merged
+        yield [
+            'search'   => '+search  -with  >many   <spaces',
+            'expected' => '+search -with >many <spaces',
+        ];
+        yield [
+            'search'   => 'որոնում   շատ   բացատներով',
+            'expected' => 'որոնում* շատ* բացատներով*',  // * added when there is no boolean operators
         ];
     }
 
     /**
-     * @dataprovider testComputeBooleanFullTextSearchProvider
+     * @dataprovider fullTextSearchProvider
      */
     public function testComputeBooleanFullTextSearch(string $search, string $expected): void
     {
-        $search = \KnowbaseItem::computeBooleanFullTextSearch($search);
+        $search = $this->callPrivateMethod($this->newTestedInstance(), 'computeBooleanFullTextSearch', $search);
         $this->string($search)->isEqualTo($expected);
     }
 
