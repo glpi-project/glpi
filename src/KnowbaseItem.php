@@ -2015,26 +2015,27 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                     );
                 }
 
-                if ($output_type == Search::HTML_OUTPUT) {
-                    $tmp = [];
-                    $ki->getFromDB($data["id"]);
-                    $categories = KnowbaseItem_KnowbaseItemCategory::getItems($ki);
-                    foreach ($categories as $category) {
-                        $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
-                        $fullcategoryname          = getTreeValueCompleteName(
-                            "glpi_knowbaseitemcategories",
-                            $knowbaseitemcategories_id
-                        );
+                $categories_names = [];
+                $ki->getFromDB($data["id"]);
+                $categories = KnowbaseItem_KnowbaseItemCategory::getItems($ki);
+                foreach ($categories as $category) {
+                    $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
+                    $fullcategoryname          = getTreeValueCompleteName(
+                        "glpi_knowbaseitemcategories",
+                        $knowbaseitemcategories_id
+                    );
+                    if ($output_type == Search::HTML_OUTPUT) {
                         $cathref = $ki->getSearchURL() . "?knowbaseitemcategories_id=" .
                               $knowbaseitemcategories_id . '&amp;forcetab=Knowbase$2';
-                        $tmp[] = "<a class='kb-category'"
-                         . " href='$cathref'"
-                         . " data-category-id='" . $knowbaseitemcategories_id . "'"
-                         . ">" . $fullcategoryname . '</a>';
+                        $categories_names[] = "<a class='kb-category'"
+                            . " href='$cathref'"
+                            . " data-category-id='" . $knowbaseitemcategories_id . "'"
+                            . ">" . $fullcategoryname . '</a>';
+                    } else {
+                        $categories_names[] = $fullcategoryname;
                     }
-                    $categ = implode(', ', $tmp);
                 }
-                echo Search::showItem($output_type, $categ, $item_num, $row_num);
+                echo Search::showItem($output_type, implode(', ', $categories_names), $item_num, $row_num);
 
                 if ($output_type == Search::HTML_OUTPUT) {
                     echo "<td class='center'>";
