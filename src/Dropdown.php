@@ -1754,9 +1754,12 @@ JAVASCRIPT;
         }
 
         $field_id = Html::cleanId("dropdown_" . $myname . $p['rand']);
-        if (!isset($p['toadd'][$p['value']])) {
+        if(\is_float($p['value'])){
             $decimals = Toolbox::isFloat($p['value']) ? Toolbox::getDecimalNumbers($p['step']) : 0;
-            $valuename = self::getValueWithUnit($p['value'], $p['unit'], $decimals);
+            $p['value'] = self::getValueWithUnit($p['value'], $p['unit'], $decimals);
+        }
+        if (!isset($p['toadd'][$p['value']])) {
+            $valuename = $p['value'];
         } else {
             $valuename = $p['toadd'][$p['value']];
         }
