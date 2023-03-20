@@ -8558,9 +8558,20 @@ abstract class CommonITILObject extends CommonDBTM
         $WHERE = ['is_deleted' => 0];
         $WHERE += $criteria;
         $WHERE += getEntitiesRestrictCriteria();
+        // visibility check hack so we don't have to load the complete DB info for every item
+        $visiblity_criteria = Search::addDefaultWhere(static::class);
+        if (!empty($visiblity_criteria)) {
+            $WHERE[] = new QueryExpression(Search::addDefaultWhere(static::class));
+        }
 
         $request = [
-            'SELECT' => [$itil_table . '.id'],
+            'SELECT' => [
+                $itil_table . '.id',
+                $itil_table . '.name',
+                $itil_table . '.status',
+                $itil_table . '.itilcategories_id',
+                $itil_table . '.content',
+            ],
             'FROM'   => $itil_table,
             'WHERE'  => $WHERE
         ];
@@ -8569,17 +8580,15 @@ abstract class CommonITILObject extends CommonDBTM
         foreach ($iterator as $data) {
             // Create a fake item to get just the actors without loading all other information about items.
             $temp_item = new static();
-            $temp_item->getFromDB($data['id']);
+            $temp_item->fields['id'] = $data['id'];
+            $temp_item->loadActors();
             $data = [
-                'id'      => $temp_item->fields['id'],
-                'name'    => $temp_item->fields['name'],
-                'category' => $temp_item->fields['itilcategories_id'],
-                'content' => $temp_item->fields['content'],
-                'status'  => $temp_item->fields['status'],
+                'id'      => $data['id'],
+                'name'    => $data['name'],
+                'category' => $data['itilcategories_id'],
+                'content' => $data['content'],
+                'status'  => $data['status'],
             ];
-            if (!$temp_item->canViewItem()) {
-                continue;
-            }
 
             // Build team member data
             $supported_teamtypes = [
@@ -8683,7 +8692,8 @@ abstract class CommonITILObject extends CommonDBTM
             } else {
                 $data['_steps'] = [];
             }
-            $data['_readonly'] = !static::canUpdate() || !$temp_item->canUpdateItem();
+            // Only use global update right here because checking item right is too expensive (need to load full item just to check right)
+            $data['_readonly'] = !static::canUpdate();
             $items[$data['id']] = $data;
         }
 
