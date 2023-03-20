@@ -1116,4 +1116,63 @@ class Entity extends DbTestCase
         $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 3)', true))->isGreaterThan(0);
         $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 4)', true))->isGreaterThan(0);
     }
+
+    /**
+     * Data provider for testGetRelationByIds
+     *
+     * return iterable
+     */
+    protected function testGetRelationByIdsProvider(): iterable
+    {
+        $root = getItemByTypeName("Entity", "Root entity", true);
+        $test_root = getItemByTypeName("Entity", "_test_root_entity", true);
+        $test_child_1 = getItemByTypeName("Entity", "_test_child_1", true);
+        $test_child_2 = getItemByTypeName("Entity", "_test_child_2", true);
+
+        return [
+            // Same entities
+            [$root, $root, \Entity::RELATION_SELF],
+            [$test_root, $test_root, \Entity::RELATION_SELF],
+            [$test_child_1, $test_child_1, \Entity::RELATION_SELF],
+            [$test_child_2, $test_child_2, \Entity::RELATION_SELF],
+
+            // Parent entities
+            [$root, $test_root, \Entity::RELATION_PARENT],
+            [$root, $test_child_1, \Entity::RELATION_PARENT],
+            [$root, $test_child_2, \Entity::RELATION_PARENT],
+            [$test_root, $test_child_1, \Entity::RELATION_PARENT],
+            [$test_root, $test_child_2, \Entity::RELATION_PARENT],
+
+            // Children entities
+            [$test_root, $root, \Entity::RELATION_CHILD],
+            [$test_child_1, $root, \Entity::RELATION_CHILD],
+            [$test_child_2, $root, \Entity::RELATION_CHILD],
+            [$test_child_1, $test_root, \Entity::RELATION_CHILD],
+            [$test_child_2, $test_root, \Entity::RELATION_CHILD],
+
+            // Unrelated entities
+            [$test_child_1, $test_child_2, \Entity::RELATION_UNRELATED],
+        ];
+    }
+
+    /**
+     * Tests for Entity::getRelationByIds
+     *
+     * @dataprovider testGetRelationByIdsProvider
+     *
+     * @param int $entity_1 First entity id
+     * @param int $entity_2 Second entity id
+     * @param int $expected Expected relation
+     *
+     * @return void
+     */
+    public function testGetRelationByIds(
+        int $entity_1,
+        int $entity_2,
+        int $expected
+    ): void {
+        $this->integer(
+            \Entity::getRelationByIds($entity_1, $entity_2)
+        )->isEqualTo($expected);
+    }
 }

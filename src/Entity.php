@@ -65,6 +65,14 @@ class Entity extends CommonTreeDropdown
     const AUTO_ASSIGN_CATEGORY_HARDWARE  = 2;
 
     /**
+     * Possible relations between entities
+     */
+    public const RELATION_SELF      = 0;
+    public const RELATION_PARENT    = 1;
+    public const RELATION_CHILD     = 2;
+    public const RELATION_UNRELATED = 3;
+
+    /**
      * Possible values for "anonymize_support_agents" setting
      */
     const ANONYMIZE_DISABLED            = 0;
@@ -4054,5 +4062,38 @@ class Entity extends CommonTreeDropdown
             return self::badgeCompletenameLink($entity);
         }
         return null;
+    }
+
+    /**
+     * Compute the relation between two entities using their ids
+     * -> Entity 1 (is / is parent of / is a child of / is unrelated to) entity 2
+     *
+     * @param int $entity_1_id
+     * @param int $entity_2_id
+     *
+     * @return int Constant defining the relation (e.g. self::RELATION_SELF)
+     */
+    final public static function getRelationByIds(
+        int $entity_1_id,
+        int $entity_2_id,
+    ): int {
+        // Same entity
+        if ($entity_1_id == $entity_2_id) {
+            return self::RELATION_SELF;
+        }
+
+        $entity_1_sons = getSonsOf(self::getTable(), $entity_1_id);
+        $entity_1_parents = getAncestorsOf(self::getTable(), $entity_1_id);
+
+        if (in_array($entity_2_id, $entity_1_sons)) {
+            // Entity 1 is parent of entity 2
+            return self::RELATION_PARENT;
+        } elseif (in_array($entity_2_id, $entity_1_parents)) {
+            // Entity 1 is a child of entity 2
+            return self::RELATION_CHILD;
+        } else {
+            // No relation between these entities
+            return self::RELATION_UNRELATED;
+        }
     }
 }

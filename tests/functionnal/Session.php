@@ -35,6 +35,8 @@
 
 namespace tests\units;
 
+use Profile_User;
+
 /* Test for inc/session.class.php */
 
 class Session extends \DbTestCase
@@ -449,5 +451,211 @@ class Session extends \DbTestCase
             'right'       => 'all'
         ]);
         $this->boolean($result)->isTrue();
+    }
+
+    /**
+     * Data provider for testInitEntityProfiles
+     *
+     * @return iterable
+     */
+    protected function testInitEntityProfilesProvider(): iterable
+    {
+        // Test entities
+        $root = getItemByTypeName("Entity", "Root entity", true);
+        $test_root = getItemByTypeName("Entity", "_test_root_entity", true);
+        $test_child_1 = getItemByTypeName("Entity", "_test_child_1", true);
+        $test_child_2 = getItemByTypeName("Entity", "_test_child_2", true);
+
+        // Create a test user
+        $login = "testInitEntityProfiles";
+        $password = "password";
+        $profile = getItemByTypeName("Profile", "Super-Admin", true);
+        $user = $this->createItem('User', [
+            'name' => $login,
+            'password' => $password,
+            'password2' => $password,
+        ], ['password', 'password2'])->getID();
+
+        // No auth
+        $this->login($login, $password);
+        yield [$user, $profile, []];
+
+        // Add a auth on root
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $root,
+            "is_recursive" => false,
+        ]);
+        yield [
+            $user,
+            $profile,
+            [
+                ['entities_id' => $root, 'is_recursive' => false]
+            ]
+        ];
+
+        // Add multiple auth on root, only one with recursion should remain
+        // the previous one
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $root,
+            "is_recursive" => true,
+        ]);
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $root,
+            "is_recursive" => false,
+        ]);
+        yield [
+            $user,
+            $profile,
+            [
+                ['entities_id' => $root, 'is_recursive' => true]
+            ]
+        ];
+
+        // Add auth on subentities
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $test_root,
+            "is_recursive" => true,
+        ]);
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $test_child_1,
+            "is_recursive" => true,
+        ]);
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $test_child_2,
+            "is_recursive" => true,
+        ]);
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $test_root,
+            "is_recursive" => false,
+        ]);
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $test_child_1,
+            "is_recursive" => false,
+        ]);
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $test_child_2,
+            "is_recursive" => false,
+        ]);
+        yield [
+            $user,
+            $profile,
+            [
+                // Still only the root recursive one should be active
+                ['entities_id' => $root, 'is_recursive' => true]
+            ]
+        ];
+
+        // CLear auths
+        foreach ((new Profile_User())->find(['users_id' => $user]) as $pu_row) {
+            (new Profile_User())->delete(['id' => $pu_row['id']]);
+        }
+        yield [$user, $profile, []];
+
+        // Add distinct non-recursive auths on each levels
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $root,
+            "is_recursive" => false,
+        ]);
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $test_root,
+            "is_recursive" => false,
+        ]);
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $test_child_1,
+            "is_recursive" => false,
+        ]);
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $test_child_2,
+            "is_recursive" => false,
+        ]);
+        yield [
+            $user,
+            $profile,
+            [
+                // All entites must be present as none of them are recursive
+                ['entities_id' => $root, 'is_recursive' => false],
+                ['entities_id' => $test_root, 'is_recursive' => false],
+                ['entities_id' => $test_child_1, 'is_recursive' => false],
+                ['entities_id' => $test_child_2, 'is_recursive' => false],
+            ]
+        ];
+
+        // Enable recursion on $test_root
+        $this->createItem("Profile_User", [
+            "users_id"     => $user,
+            "profiles_id"  => $profile,
+            "entities_id"  => $test_root,
+            "is_recursive" => true,
+        ]);
+        yield [
+            $user,
+            $profile,
+            [
+                // Entites below $test_root should be gone
+                ['entities_id' => $root, 'is_recursive' => false],
+                ['entities_id' => $test_root, 'is_recursive' => true],
+            ]
+        ];
+    }
+
+    /**
+     * Tests for Session::initEntityProfiles()
+     *
+     * @dataProvider testInitEntityProfilesProvider
+     *
+     * @param int    $users_id Test user
+     * @param string $profile  Tested profile
+     * @param array  $expected Array of expected session data (entity + is_recursive)
+     *
+     * @return void
+     */
+    public function testInitEntityProfiles(
+        int $users_id,
+        string $profile,
+        array $expected,
+    ): void {
+        \Session::initEntityProfiles($users_id);
+
+        // Special case: no authorization for this profile
+        if (!isset($_SESSION['glpiprofiles'][$profile])) {
+            $this->array($expected)->isEqualTo([]);
+            return;
+        }
+
+        // Reduce to entities_id + is_recursive
+        $session_data = [];
+        foreach ($_SESSION['glpiprofiles'][$profile]['entities'] as $entity_data) {
+            $session_data[] = [
+                'entities_id'  => $entity_data['id'],
+                'is_recursive' => $entity_data['is_recursive'],
+            ];
+        }
+        $this->array($session_data)->isEqualTo($expected);
     }
 }

@@ -578,22 +578,81 @@ class Session
                 ]);
 
                 foreach ($entities_iterator as $data) {
-                     // Do not override existing entity if define as recursive
-                    if (
-                        !isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
-                         || $data['is_recursive']
-                    ) {
-                        $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']] = [
-                            'id'           => $data['eID'],
-                            'name'         => $data['name'],
-                            'is_recursive' => $data['is_recursive']
-                        ];
-                    }
+                    self::addEntityToProfileSessionData($key, $data);
                 }
             }
         }
     }
 
+    /**
+     * Add data to $_SESSION['glpiprofiles'][$profile]['entities'], taking care
+     * of avoiding uneeded "obsolete" data
+     *
+     * @param string $profile         Current profile
+     * @param array  $new_entity_data Entity authorizaion being loaded into the sesion
+     *
+     * @return void
+     */
+    private static function addEntityToProfileSessionData(
+        string $profile,
+        array $new_entity_data
+    ): void {
+        // For each already defined entity, build a relation map
+        $relations = [
+            Entity::RELATION_SELF      => [],
+            Entity::RELATION_PARENT    => [],
+            Entity::RELATION_CHILD     => [],
+            Entity::RELATION_UNRELATED => [],
+        ];
+        foreach ($_SESSION['glpiprofiles'][$profile]['entities'] ?? [] as $defined_entity) {
+            $relation = Entity::getRelationByIds(
+                $new_entity_data['eID'],
+                $defined_entity['id']
+            );
+
+            $relations[$relation][] = $defined_entity;
+        }
+
+        // Step one: is the new entity a child of an already defined recursive
+        // entity ?
+        // If thats the case, we can stop procesing this entity, as it is
+        // obsolete and must be added
+        foreach ($relations[Entity::RELATION_CHILD] as $defined_entity) {
+            if ($defined_entity['is_recursive']) {
+                return;
+            }
+        }
+
+        // Step two: is the new entity recursive and a parent of an one or
+        // multiple already defined entities ?
+        // If thats the case, these defined entities are obsolete and must be
+        // removed
+        if ($new_entity_data['is_recursive']) {
+            foreach ($relations[Entity::RELATION_PARENT] as $defined_entity) {
+                unset($_SESSION['glpiprofiles'][$profile]['entities'][$defined_entity['id']]);
+            }
+            // We do not return here as the new entity must be added
+        }
+
+        // Step three: is the new entity already defined with more rights ?
+        // If so, we must stop here as it should not be overriden with lesser
+        // rights
+        foreach ($relations[Entity::RELATION_SELF] as $defined_entity) {
+            // Note: we are iterating here but we can assume that this array
+            // can't contain more than one entry
+            if (!$new_entity_data['is_recursive'] && $defined_entity['is_recursive']) {
+                // Do not override this entity
+                return;
+            }
+        }
+
+        // Add or override entity
+        $_SESSION['glpiprofiles'][$profile]['entities'][$new_entity_data['eID']] = [
+            'id'           => $new_entity_data['eID'],
+            'name'         => $new_entity_data['name'],
+            'is_recursive' => $new_entity_data['is_recursive']
+        ];
+    }
 
     /**
      * Load current user's group on active entity
