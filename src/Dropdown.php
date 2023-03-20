@@ -1754,7 +1754,7 @@ JAVASCRIPT;
         }
 
         $field_id = Html::cleanId("dropdown_" . $myname . $p['rand']);
-        if(\is_float($p['value'])){
+        if (\is_float($p['value'])) {
             $decimals = Toolbox::isFloat($p['value']) ? Toolbox::getDecimalNumbers($p['step']) : 0;
             $p['value'] = self::getValueWithUnit($p['value'], $p['unit'], $decimals);
         }
