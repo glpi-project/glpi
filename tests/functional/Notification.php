@@ -36,6 +36,8 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Search\Item_Filter;
+use QueuedNotification;
 
 /* Test for inc/notification.class.php */
 
@@ -94,5 +96,70 @@ class Notification extends DbTestCase
         $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_parent");
         $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("signature_child_1");
         $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_child_2");
+    }
+
+    /**
+     * Functionnal test on filtering a notification's target
+     *
+     * @return void
+     */
+    public function testFilter(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $target_notification = "New Ticket";
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        $this->login();
+        $this->integer(countElementsInTable(QueuedNotification::getTable()))->isEqualTo(0);
+
+        // Enable notifications
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+
+        // Activate only new followup notification
+        $success = $DB->update(\Notification::getTable(), ['is_active' => false], [
+            'name' => ['<>', $target_notification]
+        ]);
+        $this->boolean($success)->isTrue();
+        $this->integer(
+            countElementsInTable(
+                \Notification::getTable(),
+                ['is_active' => true]
+            )
+        )->isEqualTo(1);
+
+        // Create categories
+        $cat_A = $this->createItem("ITILCategory", ["name" => "cat A"]);
+        $cat_B = $this->createItem("ITILCategory", ["name" => "cat B"]);
+
+        // Filter notification on category
+        $notification = getItemByTypeName("Notification", $target_notification);
+        $success = Item_Filter::saveFilter($notification, $notification->getItemtypeToFilter(), [
+            [
+                "link"       => "and",
+                "field"      => 7,                      // Category
+                "searchtype" => "equals",
+                "value"      => $cat_B->fields['id'],
+            ]
+        ]);
+        $this->boolean($success)->isTrue();
+
+        // Create tickets
+        $this->createItem("Ticket", [
+            "name"              => "Test",
+            "content"           => "Test",
+            "itilcategories_id" => $cat_A->fields['id'],
+            "entities_id"       => $entity,
+        ]);
+        $this->integer(countElementsInTable(QueuedNotification::getTable()))->isEqualTo(0);
+
+        $this->createItem("Ticket", [
+            "name"              => "Test",
+            "content"           => "Test",
+            "itilcategories_id" => $cat_B->fields['id'],
+            "entities_id"       => $entity,
+        ]);
+        $this->integer(countElementsInTable(QueuedNotification::getTable()))->isEqualTo(1);
     }
 }

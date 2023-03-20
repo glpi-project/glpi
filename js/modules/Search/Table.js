@@ -39,10 +39,11 @@ window.GLPI.Search = window.GLPI.Search || {};
 
 window.GLPI.Search.Table = class Table extends GenericView {
 
-    constructor(result_view_element_id) {
+    constructor(result_view_element_id, push_history = true) {
         const element_id = $('#'+result_view_element_id).find('table.search-results').attr('id');
         super(element_id);
 
+        this.push_history = push_history;
         this.shiftSelectAllCheckbox();
     }
 
@@ -185,7 +186,10 @@ window.GLPI.Search.Table = class Table extends GenericView {
                 search_data = Object.assign(search_data, search_criteria, search_overrides);
             }
 
-            history.pushState('', '', '?' + $.param(Object.assign(search_criteria, sort_state, search_overrides)));
+            if (this.push_history) {
+                history.pushState('', '', '?' + $.param(Object.assign(search_criteria, sort_state, search_overrides)));
+            }
+
             $.ajax({
                 url: CFG_GLPI.root_doc + '/ajax/search.php',
                 method: 'GET',

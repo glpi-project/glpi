@@ -378,7 +378,7 @@ class DropdownTranslation extends CommonDBChild
         $canedit = $item->can($item->getID(), UPDATE);
 
        //Remove namespace separators
-        $normalized_itemtype = str_replace('\\', '', $item->getType());
+        $normalized_itemtype = Toolbox::getNormalizedItemtype($item->getType());
         if ($canedit) {
             echo "<div id='viewtranslation" . $normalized_itemtype . $item->getID() . "$rand'></div>\n";
 

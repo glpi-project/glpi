@@ -3674,4 +3674,16 @@ HTML;
         }
         return $size;
     }
+
+    /**
+     * Get itemtype name used in JS function names, etc
+     *
+     * @param string $itemtype
+     *
+     * @return string
+     */
+    final public static function getNormalizedItemtype(string $itemtype)
+    {
+        return strtolower(str_replace('\\', '', $itemtype));
+    }
 }

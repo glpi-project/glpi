@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -31,31 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
-// Explicitly bind to window so Jest tests work properly
-window.GLPI = window.GLPI || {};
-window.GLPI.Search = window.GLPI.Search || {};
+namespace Glpi\Search;
 
-window.GLPI.Search.ResultsView = class ResultsView {
+/**
+ * Must be implemented by classes that wish to enable search engine based filters
+ */
+interface Filterable
+{
+    /**
+     * Get itemtype to be used as a filter by the search engine
+     *
+     * @return string
+     */
+    public function getItemtypeToFilter(): string;
 
-    constructor(element_id, view_class, push_history = true) {
-        this.element_id = element_id;
-
-        if (this.getElement()) {
-            this.getAJAXContainer().data('js_class', this);
-            this.view = new view_class(this.element_id, push_history);
-        }
-    }
-
-    getElement() {
-        return $('#'+this.element_id);
-    }
-
-    getAJAXContainer() {
-        return this.getElement().closest('div.ajax-container.search-display-data');
-    }
-
-    getView() {
-        return this.view;
-    }
-};
-export default window.GLPI.Search.ResultsView;
+    /**
+     * Must be specified if getItemtypeToFilter() rely on a dynamic database column.
+     * This will allow to invalidate filters when the target itemtype change
+     *
+     * If getItemtypeToFilter() use a fixed value instead, this function must
+     * return null
+     *
+     * @return string|null
+     */
+    public function getItemtypeField(): ?string;
+}

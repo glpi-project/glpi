@@ -1059,10 +1059,11 @@ class Search extends DbTestCase
             'sort'         => 1,
             'is_deleted'   => 0,
             'criteria'     => [
-                0 => [
-                    'field' => 'view',
-                    'link'  => 'contains',
-                    'value' => '',
+                [
+                    'link'       => 'and',
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
                 ]
             ],
             'metacriteria' => [],

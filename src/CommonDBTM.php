@@ -39,6 +39,8 @@ use Glpi\Features\CacheableListInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
+use Glpi\Search\Filterable;
+use Glpi\Search\Item_Filter;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
@@ -1961,6 +1963,15 @@ class CommonDBTM extends CommonGLPI
     {
         if (count($this->updates) > 0) {
             UserMention::handleUserMentions($this);
+        }
+
+        // Clear filter on itemtype change
+        if (
+            $this instanceof Filterable
+            && !is_null($this->getItemtypeField())
+            && in_array($this->getItemtypeField(), $this->updates)
+        ) {
+            Item_Filter::deleteFilter($this);
         }
     }
 
@@ -6570,5 +6581,24 @@ class CommonDBTM extends CommonGLPI
         }
 
         return $is_global;
+    }
+
+    /**
+     * Default search request
+     *
+     * @return array
+     */
+    public static function getDefaultSearchRequest()
+    {
+        return [
+            'criteria' => [
+                [
+                    'link'       => 'and',
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ]
+            ]
+        ];
     }
 }

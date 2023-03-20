@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\Item_Filter;
+
 /**
  * Class which manages notification events
  **/
@@ -133,17 +135,23 @@ class NotificationEvent extends CommonDBTM
 
             $processed = []; // targets list
             foreach ($notifications as $data) {
-                 $notificationtarget->clearAddressesList();
-                 $notificationtarget->setMode($data['mode']);
-                 $notificationtarget->setAllowResponse($data['allow_response']);
+                // Check notification filter
+                $notification = Notification::getById($data['id']);
+                if (!Item_Filter::itemMatchFilter($item, $notification)) {
+                    continue;
+                }
 
-                 //Get template's information
-                 $template = new NotificationTemplate();
-                 $template->getFromDB($data['notificationtemplates_id']);
-                 $template->resetComputedTemplates();
+                $notificationtarget->clearAddressesList();
+                $notificationtarget->setMode($data['mode']);
+                $notificationtarget->setAllowResponse($data['allow_response']);
 
-                 $notify_me = false;
-                 $emitter = null;
+                // Get template's information
+                $template = new NotificationTemplate();
+                $template->getFromDB($data['notificationtemplates_id']);
+                $template->resetComputedTemplates();
+
+                $notify_me = false;
+                $emitter = null;
 
                 if (Session::isCron()) {
                    // Cron notify me

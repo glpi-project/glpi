@@ -337,15 +337,16 @@ class Search
     /**
      * Display datas extracted from DB
      *
-     * @param array $data Array of search datas prepared to get datas
+     * @param array $data   Array of search datas prepared to get datas
+     * @param array $params Array of parameters
      *
      * @return void
      **/
-    public static function displayData(array $data)
+    public static function displayData(array $data, array $params = [])
     {
         /** @var HTMLSearchOutput $output */
         $output = SearchEngine::getOutputForLegacyKey($data['display_type'], $data);
-        return $output::displayData($data);
+        return $output::displayData($data, $params);
     }
 
     /**
