@@ -44,4 +44,8 @@ if (!$DB->fieldExists(\Domain_Item::getTable(), 'is_dynamic')) {
         'is_dynamic',
         'bool'
     );
+    $migration->addKey(
+        \Domain_Item::getTable(),
+        'is_dynamic'
+    );
 }
