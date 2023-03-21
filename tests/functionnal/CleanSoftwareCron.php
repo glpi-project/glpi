@@ -39,7 +39,6 @@ use DbTestCase;
 
 class CleanSoftwareCron extends DbTestCase
 {
-
     public function testRun()
     {
         global $DB;
