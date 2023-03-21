@@ -722,6 +722,7 @@ abstract class MainAsset extends InventoryAsset
             }
 
             $ditem = new \Domain_Item();
+
             $criteria = [
                 'domains_id' => $domain->getID(),
                 'itemtype' => $itemtype,
@@ -729,8 +730,21 @@ abstract class MainAsset extends InventoryAsset
                 'domainrelations_id' => \DomainRelation::BELONGS
             ];
             if (!$ditem->getFromDBByCrit($criteria)) {
-                $ditem->add($criteria, [], false);
+                $ditem->add($criteria + ['is_dynamic' => 1], [], false);
             }
+
+            //cleanup old dynamic relations
+            $ditem->deleteByCriteria(
+                [
+                    'itemtype' => $itemtype,
+                    'items_id' => $items_id,
+                    'domainrelations_id' => \DomainRelation::BELONGS,
+                    'is_dynamic' => 1,
+                    ['NOT' => ['domains_id' => $domain->getID()]]
+                ],
+                1,
+                0
+            );
         }
 
 

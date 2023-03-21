@@ -1349,5 +1349,25 @@ class Computer extends AbstractInventoryAsset
         $this->string($domain_item->fields['itemtype'])->isIdenticalTo('Computer');
         $this->integer($domain_item->fields['items_id'])->isIdenticalTo($computers_id);
         $this->integer($domain_item->fields['domainrelations_id'])->isIdenticalTo(\DomainRelation::BELONGS);
+
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode($json_str);
+
+        //add another workgroup
+        $json->content->hardware->workgroup = "workgroup'ed another time";
+        $this->doInventory($json);
+
+        //check domain has been created
+        $first_id = $domain->fields['id'];
+        $domain = new \Domain();
+        $this->boolean($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed another time")]))->isTrue();
+
+        //check relation has been created - and there is only one remaining
+        $domain_item = new \Domain_Item();
+        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $domain->fields['id']]))->isTrue();
+        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $first_id]))->isFalse();
+
+        //TODO: check if one has been added non dynamic?
+
     }
 }
