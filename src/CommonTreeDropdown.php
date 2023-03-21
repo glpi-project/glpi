@@ -403,7 +403,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $newParentNameID = '';
 
             $parent = clone $this;
-            if ($oldParentID > 0) {
+            if (!$this->isNewID($oldParentID)) {
                 $this->cleanParentsSons($oldParentID);
                 if ($history) {
                     if ($parent->getFromDB($oldParentID)) {
@@ -424,7 +424,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 }
             }
 
-            if ($newParentID > 0) {
+            if (!$this->isNewID($newParentID)) {
                 $this->cleanParentsSons(null, false);
                 $this->addSonInParents();
                 if ($history) {
