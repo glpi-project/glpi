@@ -6802,9 +6802,13 @@ JAVASCRIPT;
                             $linkid = (int) $linkid;
                         }
                         if ((is_int($linkid) && $linkid > 0) && !isset($displayed[$linkid])) {
-                             $text  = "<a ";
-                             $text .= "href=\"" . Ticket::getFormURLWithID($linkid) . "\">";
-                             $text .= Dropdown::getDropdownName('glpi_tickets', $linkid) . "</a>";
+                            $link_text = Dropdown::getDropdownName('glpi_tickets', $linkid);
+                            if ($_SESSION["glpiis_ids_visible"] || empty($link_text)) {
+                                $link_text = sprintf(__('%1$s (%2$s)'), $link_text, $linkid);
+                            }
+                            $text  = "<a ";
+                            $text .= "href=\"" . Ticket::getFormURLWithID($linkid) . "\">";
+                            $text .= $link_text . "</a>";
                             if (count($displayed)) {
                                 $out .= self::LBBR;
                             }
