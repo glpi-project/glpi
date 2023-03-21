@@ -8612,6 +8612,7 @@ CREATE TABLE `glpi_domains_items` (
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `domainrelations_id` int unsigned NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`domains_id`,`itemtype`,`items_id`),
   KEY `domainrelations_id` (`domainrelations_id`),

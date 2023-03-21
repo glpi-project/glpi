@@ -1367,7 +1367,39 @@ class Computer extends AbstractInventoryAsset
         $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $domain->fields['id']]))->isTrue();
         $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $first_id]))->isFalse();
 
-        //TODO: check if one has been added non dynamic?
+        //check if one has been added non dynamic
+        $ndyn_domain = new \Domain();
+        $this->integer(
+            $ndyn_domain->add([
+                'name' => 'not dynamic',
+            ])
+        )->isGreaterThan(0);
 
+        $ndyn_item = new \Domain_Item();
+        $this->integer(
+            $ndyn_item->add([
+                'domains_id' => $ndyn_domain->fields['id'],
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'is_dynamic' => 0,
+            ])
+        )->isGreaterThan(0);
+
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode($json_str);
+
+        //add another workgroup
+        $json->content->hardware->workgroup = "workgroup'ed another time";
+        $this->doInventory($json);
+
+        //check domain has been created
+        $first_id = $domain->fields['id'];
+        $domain = new \Domain();
+        $this->boolean($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed another time")]))->isTrue();
+
+        //check relation is still present - and non dynamic one as well
+        $domain_item = new \Domain_Item();
+        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $domain->fields['id']]))->isTrue();
+        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $ndyn_domain->fields['id']]))->isTrue();
     }
 }
