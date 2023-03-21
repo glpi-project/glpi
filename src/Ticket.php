@@ -4251,7 +4251,7 @@ JAVASCRIPT;
                 $pt = new ProjectTask();
                 if ($pt->getFromDB($options['_projecttasks_id'])) {
                     $options['name'] = $pt->getField('name');
-                    $options['content'] = $pt->getField('name');
+                    $options['content'] = $pt->getField('content');
                 }
             }
             // Override defaut values from followup if needed
