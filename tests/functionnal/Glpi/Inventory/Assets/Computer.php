@@ -1311,4 +1311,43 @@ class Computer extends AbstractInventoryAsset
         $this->boolean($software->getFromDB($softwareversion->fields['softwares_id']))->isTrue();
         $this->integer($software->fields['entities_id'])->isEqualTo(1);
     }
+
+    public function testWorkgroup()
+    {
+        global $DB;
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode($json_str);
+
+        //add workgroup
+        $json->content->hardware->workgroup = "workgroup'ed";
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check domain has been created
+        $domain = new \Domain();
+        $this->boolean($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed")]))->isTrue();
+
+        //check relation has been created
+        $domain_item = new \Domain_Item();
+        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $domain->fields['id']]))->isTrue();
+
+        $this->string($domain_item->fields['itemtype'])->isIdenticalTo('Computer');
+        $this->integer($domain_item->fields['items_id'])->isIdenticalTo($computers_id);
+        $this->integer($domain_item->fields['domainrelations_id'])->isIdenticalTo(\DomainRelation::BELONGS);
+    }
 }

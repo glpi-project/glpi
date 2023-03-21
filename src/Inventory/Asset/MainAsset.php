@@ -707,6 +707,33 @@ abstract class MainAsset extends InventoryAsset
         }
         $val->entities_id = $entities_id;
 
+        //handle domains
+        if (property_exists($val, 'domains_id')) {
+            $domain = new \Domain();
+            if (!$domain->getFromDBByCrit(Sanitizer::sanitize(['name' => $val->domains_id]))) {
+                $domain->add(
+                    Sanitizer::sanitize([
+                        'name' => $val->domains_id,
+                        'entities_id' => $entities_id,
+                    ]),
+                    [],
+                    false
+                );
+            }
+
+            $ditem = new \Domain_Item();
+            $criteria = [
+                'domains_id' => $domain->getID(),
+                'itemtype' => $itemtype,
+                'items_id' => $items_id,
+                'domainrelations_id' => \DomainRelation::BELONGS
+            ];
+            if (!$ditem->getFromDBByCrit($criteria)) {
+                $ditem->add($criteria, [], false);
+            }
+        }
+
+
         if ($entities_id != $this->item->fields['entities_id']) {
             //asset entity has changed in rules; do transfer
             $doTransfer = \Entity::getUsedConfig('transfers_strategy', $this->item->fields['entities_id'], 'transfers_id', 0);
