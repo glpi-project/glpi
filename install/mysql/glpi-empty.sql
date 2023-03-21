@@ -8616,7 +8616,8 @@ CREATE TABLE `glpi_domains_items` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`domains_id`,`itemtype`,`items_id`),
   KEY `domainrelations_id` (`domainrelations_id`),
-  KEY `item` (`itemtype`,`items_id`)
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_domainrecordtypes`;
