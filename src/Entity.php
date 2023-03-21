@@ -4075,7 +4075,7 @@ class Entity extends CommonTreeDropdown
      */
     final public static function getRelationByIds(
         int $entity_1_id,
-        int $entity_2_id,
+        int $entity_2_id
     ): int {
         // Same entity
         if ($entity_1_id == $entity_2_id) {

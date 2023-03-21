@@ -638,7 +638,7 @@ class Session extends \DbTestCase
     public function testInitEntityProfiles(
         int $users_id,
         string $profile,
-        array $expected,
+        array $expected
     ): void {
         \Session::initEntityProfiles($users_id);
 
