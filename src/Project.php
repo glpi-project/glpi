@@ -1635,7 +1635,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'type'      => 'checkbox',
             'name'      => 'auto_percent_done',
             'title'     => __('Automatically calculate'),
-            'onclick'   => "$(\"select[name='percent_done']\").prop('disabled', !$(\"input[name='auto_percent_done']\").prop('checked'));"
+            'onclick'   => "$(\"select[name='percent_done']\").prop('disabled', $(\"input[type='checkbox'][name='auto_percent_done']\").prop('checked'));"
         ];
         if ($this->fields['auto_percent_done']) {
             $auto_percent_done_params['checked'] = 'checked';
