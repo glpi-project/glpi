@@ -203,27 +203,7 @@ abstract class CommonITILObject extends CommonDBTM
             // we find this key on the first load of template (when opening form)
             // or when the template change (by category loading)
             if (isset($params['_template_changed'])) {
-                $users_id = (int) ($params['_predefined_fields']['_users_id_' . $actortypestring] ?? 0);
-                if ($users_id > 0) {
-                    $userobj  = new User();
-                    if ($userobj->getFromDB($users_id)) {
-                        $name = formatUserName(
-                            $userobj->fields["id"],
-                            $userobj->fields["name"],
-                            $userobj->fields["realname"],
-                            $userobj->fields["firstname"]
-                        );
-                        $email = UserEmail::getDefaultForUser($users_id);
-                        $actors[] = [
-                            'items_id'          => $users_id,
-                            'itemtype'          => 'User',
-                            'text'              => $name,
-                            'title'             => $name,
-                            'use_notification'  => $email === '' ? false : $default_use_notif,
-                            'alternative_email' => $email,
-                        ];
-                    }
-                }
+                // Predefined users are handled in the previous block (Already part of the main $params array)
 
                 $groups_id = (int) ($params['_predefined_fields']['_groups_id_' . $actortypestring] ?? 0);
                 if ($groups_id > 0) {
