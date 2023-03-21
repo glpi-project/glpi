@@ -48,4 +48,14 @@ if (!$DB->fieldExists(\Domain_Item::getTable(), 'is_dynamic')) {
         \Domain_Item::getTable(),
         'is_dynamic'
     );
+
+    $migration->addField(
+        \Domain_Item::getTable(),
+        'is_deleted',
+        'bool'
+    );
+    $migration->addKey(
+        \Domain_Item::getTable(),
+        'is_deleted'
+    );
 }
