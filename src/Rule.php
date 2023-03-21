@@ -713,9 +713,9 @@ class Rule extends CommonDBTM
 
     public function getForbiddenSingleMassiveActions()
     {
-        $exlcuded = parent::getForbiddenSingleMassiveActions();
-        $exlcuded[] = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule';
-        return $exlcuded;
+        $excluded = parent::getForbiddenSingleMassiveActions();
+        $excluded[] = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule';
+        return $excluded;
     }
 
     public function rawSearchOptions()
