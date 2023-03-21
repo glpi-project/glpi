@@ -711,6 +711,12 @@ class Rule extends CommonDBTM
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
+    public function getForbiddenSingleMassiveActions()
+    {
+        $exlcuded = parent::getForbiddenSingleMassiveActions();
+        $exlcuded[] = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule';
+        return $exlcuded;
+    }
 
     public function rawSearchOptions()
     {
