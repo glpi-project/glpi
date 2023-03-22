@@ -6582,6 +6582,8 @@ CREATE TABLE `glpi_softwarelicenses` (
   `softwarelicenses_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
+  `ancestors_cache` longtext,
+  `sons_cache` longtext,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `number` int NOT NULL DEFAULT '0',

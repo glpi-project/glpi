@@ -52,6 +52,15 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
         $missing_columns = [];
 
         $columns = $this->getColumnsNames($table_name);
+        $itemtype = getItemTypeForTable($table_name);
+
+        if (is_subclass_of($itemtype, \CommonTreeDropdown::class)) {
+            foreach (['level', 'ancestors_cache', 'sons_cache'] as $expected_col) {
+                if (!in_array($expected_col, $columns)) {
+                    $missing_columns[] = $expected_col;
+                }
+            }
+        }
         foreach ($columns as $column_name) {
             switch ($column_name) {
                 case 'date_creation':
