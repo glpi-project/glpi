@@ -2517,7 +2517,7 @@ class AuthLDAP extends CommonDBTM
     public static function getGroupCNByDn($ldap_connection, $group_dn)
     {
 
-        $sr = @ ldap_read($ldap_connection, $group_dn, "objectClass=*", ["cn"]);
+        $sr = ldap_read($ldap_connection, $group_dn, "objectClass=*", ["cn"]);
         if ($sr === false) {
            //group does not exists
             return false;
@@ -3005,32 +3005,32 @@ class AuthLDAP extends CommonDBTM
         $timeout = 0
     ) {
 
-        $ds = @ldap_connect($host, intval($port));
+        $ds = ldap_connect($host, intval($port));
         if ($ds) {
-            @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-            @ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
-            @ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
-            @ldap_set_option($ds, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
+            ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+            ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+            ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
+            ldap_set_option($ds, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
 
             if (!empty($tls_certfile) && file_exists($tls_certfile)) {
-                @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
+                ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
             }
 
             if (!empty($tls_keyfile) && file_exists($tls_keyfile)) {
-                @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
+                ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
             }
 
             if ($use_tls) {
-                if (!@ldap_start_tls($ds)) {
+                if (!ldap_start_tls($ds)) {
                     return false;
                 }
             }
            // Auth bind
             if ($use_bind) {
                 if ($login != '') {
-                    $b = @ldap_bind($ds, $login, $password);
+                    $b = ldap_bind($ds, $login, $password);
                 } else { // Anonymous bind
-                    $b = @ldap_bind($ds);
+                    $b = ldap_bind($ds);
                 }
             } else {
                 $b = true;
@@ -3453,7 +3453,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function getObjectByDn($ds, $condition, $dn, $attrs = [], $clean = true)
     {
-        if ($result = @ ldap_read($ds, $dn, $condition, $attrs)) {
+        if ($result = ldap_read($ds, $dn, $condition, $attrs)) {
             if ($clean) {
                 $info = self::get_entries_clean($ds, $result);
             } else {

@@ -1639,7 +1639,7 @@ class User extends CommonDBTM
             sort($group_fields);
 
            // If the groups must be retrieve from the ldap user object
-            $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
+            $sr = ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
             $v  = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
             for ($i = 0; $i < $v['count']; $i++) {
@@ -1797,7 +1797,7 @@ class User extends CommonDBTM
             $fields  = array_filter($fields);
             $f       = self::getLdapFieldNames($fields);
 
-            $sr      = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
+            $sr      = ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
             $v       = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
             if (

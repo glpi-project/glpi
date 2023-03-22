@@ -249,7 +249,7 @@ class RuleRightCollection extends RuleCollection
             $rule_fields = $this->getFieldsToLookFor();
 
            //Get all the datas we need from ldap to process the rules
-            $sz         = @ldap_read(
+            $sz         = ldap_read(
                 $params_lower["connection"],
                 $params_lower["userdn"],
                 "objectClass=*",
