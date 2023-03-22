@@ -879,7 +879,7 @@ class Lock extends CommonGLPI
             echo "<td class='center' width='10'>";
             if ($domain_item->can($row['id'], UPDATE) || $domain_item->can($row['id'], PURGE)) {
                 $header = true;
-                echo "<input type='checkbox' name='DatabaseInstance[" . $row['id'] . "]'>";
+                echo "<input type='checkbox' name='Domain_Item[" . $row['id'] . "]'>";
             }
             echo "</td>";
             echo "<td class='left'>" . $link . "</td>";
