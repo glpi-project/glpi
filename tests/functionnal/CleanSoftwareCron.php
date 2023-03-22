@@ -120,7 +120,10 @@ class CleanSoftwareCron extends DbTestCase
         // All versions should be deleted now and 45 software should be deleted as well
         $this->integer((int) $DB->request([
             'COUNT' => 'cpt',
-            'FROM' => \Software::getTable()
+            'FROM' => \Software::getTable(),
+            'WHERE' => [
+                'is_deleted' => 0 // cleanup only trashes software, not purges them
+            ]
         ])->current()['cpt'])->isIdenticalTo(55);
         $this->integer((int) $DB->request([
             'COUNT' => 'cpt',
