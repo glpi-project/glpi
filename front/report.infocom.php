@@ -35,7 +35,8 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("reports", READ);
+Session::checkRight(Report::$rightname, READ);
+Session::checkRight(Infocom::$rightname, READ);
 
 Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
 
@@ -327,6 +328,10 @@ echo "<table><tr><td class='top'>";
 
 while (count($types) > 0) {
     $type = array_shift($types);
+
+    if (!is_a($type, CommonDBTM::class, true) || !$type::canView()) {
+        continue;
+    }
 
     if (display_infocoms_report($type, $_POST["date1"], $_POST["date2"])) {
         echo "</td>";
