@@ -2454,6 +2454,13 @@ abstract class CommonITILObject extends CommonDBTM
                                     ($key == 'content')
                                     && isset($tt->predefined['content'])
                                 ) {
+                                    // Decode then re-encode predefine content to be sure to have it encoded using the same
+                                    // entities.
+                                    // Without this, predefined content created prior to GLPI 10.0 will never match
+                                    // sanitized input, as entities used for encoding will be different in both.
+                                    $predefined_content = Sanitizer::encodeHtmlSpecialChars(
+                                        Sanitizer::decodeHtmlSpecialChars($tt->predefined['content'])
+                                    );
                                  // Clean new lines to be fix encoding
                                     if (
                                         strcmp(
@@ -2465,7 +2472,7 @@ abstract class CommonITILObject extends CommonDBTM
                                             preg_replace(
                                                 "/\r?\n/",
                                                 "",
-                                                $tt->predefined['content']
+                                                $predefined_content
                                             )
                                         ) == 0
                                     ) {
