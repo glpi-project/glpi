@@ -168,7 +168,8 @@ function display_infocoms_report($itemtype, $begin, $end)
 
         echo "<th>" . _x('price', 'Value') . "</th><th>" . __('ANV') . "</th>";
         echo "<th>" . __('TCO') . "</th><th>" . __('Date of purchase') . "</th>";
-        echo "<th>" . __('Startup date') . "</th><th>" . __('Warranty expiration date') . "</th></tr>";
+        echo "<th>" . __('Startup date') . "</th><th>" . __('Start date of warranty') . "</th>";
+        echo "<th>" . __('Warranty expiration date') . "</th></tr>";
 
         $valeursoustot      = 0;
         $valeurnettesoustot = 0;
@@ -244,7 +245,8 @@ function display_infocoms_report($itemtype, $begin, $end)
               "<td class='right'>" . Infocom::showTco($line["ticket_tco"], $line["value"]) . "</td>" .
               "<td>" . Html::convDate($line["buy_date"]) . "</td>" .
               "<td>" . Html::convDate($line["use_date"]) . "</td>" .
-              "<td>" . Infocom::getWarrantyExpir($line["buy_date"], $line["warranty_duration"]) .
+              "<td>" . Html::convDate($line["warranty_date"]) . "</td>" .
+              "<td>" . Infocom::getWarrantyExpir($line["warranty_date"], $line["warranty_duration"]) .
               "</td></tr>";
         }
 
