@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 /// Rule collection class for Rights management
 class RuleRightCollection extends RuleCollection
 {
@@ -249,12 +251,16 @@ class RuleRightCollection extends RuleCollection
             $rule_fields = $this->getFieldsToLookFor();
 
            //Get all the datas we need from ldap to process the rules
-            $sz         = @ldap_read(
+            $sz = ldap_read(
                 $params_lower["connection"],
                 $params_lower["userdn"],
                 "objectClass=*",
                 $rule_fields
             );
+            if ($sz === false) {
+                return [];
+            }
+
             $rule_input = AuthLDAP::get_entries_clean($params_lower["connection"], $sz);
 
             if (count($rule_input)) {
@@ -313,5 +319,15 @@ class RuleRightCollection extends RuleCollection
             }
         }
         return $fields;
+    }
+
+    public function testAllRules($input = [], $output = [], $params = [], $condition = 0)
+    {
+        if (array_key_exists('userdn', $params)) {
+            // Connection to LDAP must be done with unsanitized input
+            $params['userdn'] = Sanitizer::unsanitize($params['userdn']);
+        }
+
+        return parent::testAllRules($input, $output, $params, $condition);
     }
 }
