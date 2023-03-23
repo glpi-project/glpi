@@ -77,7 +77,8 @@ switch ($action) {
              'display_emptychoice' => true,
              'condition'           => ['items_id' => $_GET['items_id'],
                  'itemtype' => $_GET['itemtype']
-             ]
+             ],
+             'comments' => false
          ]);
         break;
 
