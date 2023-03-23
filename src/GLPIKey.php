@@ -61,8 +61,10 @@ class GLPIKey
      * @var array
      */
     protected $fields = [
+        'glpi_authldaps.rootdn_passwd',
         'glpi_mailcollectors.passwd',
-        'glpi_authldaps.rootdn_passwd'
+        'glpi_snmpcredentials.auth_passphrase',
+        'glpi_snmpcredentials.priv_passphrase',
     ];
 
     /**

@@ -49,23 +49,13 @@ class FrontBaseClass extends \GLPITestCase
         $this->http_client = new HttpBrowser();
         $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
 
-        foreach ($this->items_to_cleanup as $itemtype => $criteria) {
-            $DB->delete(
-                $itemtype::getTable(),
-                $criteria
-            );
-        }
-        $DB->delete(\Ticket::getTable(), ['name' => ['LIKE', '%thetestuuidtoremove']]);
-
+        $this->doCleanup();
         parent::beforeTestMethod($method);
     }
 
     public function afterTestMethod($method)
     {
-        global $DB;
-        $DB->delete(\Computer::getTable(), ['uuid' => 'thetestuuidtoremove']);
-        $DB->delete(\Ticket::getTable(), ['name' => ['LIKE', '%thetestuuidtoremove']]);
-
+        $this->doCleanup();
         parent::afterTestMethod($method);
     }
 
@@ -88,5 +78,16 @@ class FrontBaseClass extends \GLPITestCase
     protected function addToCleanup(string $itemtype, array $criteria)
     {
         $this->items_to_cleanup[$itemtype][] = $criteria;
+    }
+
+    protected function doCleanup()
+    {
+        global $DB;
+        foreach ($this->items_to_cleanup as $itemtype => $criteria) {
+            $DB->delete(
+                $itemtype::getTable(),
+                $criteria
+            );
+        }
     }
 }
