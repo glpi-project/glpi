@@ -169,6 +169,7 @@
             autoExpand: true, // if results found in children, auto-expand parent
             nodata: '{{ __("No entity found") }}', // message when no data found
             highlight: false, // do not highlight matches by wrapping inside tags (when true, this strip the a tag)
+            counter: false, // do not show counters when filtering entity tree
          },
 
          // load 3rd party scrollbar extension for viewport mode
@@ -209,7 +210,7 @@
 
       var searchTree = function() {
          var search_text = $("#entsearchtext{{ rand }}").val();
-         $.ui.fancytree.getTree("#tree_entity{{ rand }}").filterNodes(search_text);
+         $.ui.fancytree.getTree("#tree_entity{{ rand }}").filterBranches(search_text);
       }
 
       $('#entsearchform{{ rand }}').submit(function(event) {
