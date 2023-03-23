@@ -519,7 +519,7 @@ class Central extends CommonGLPI
 
         $safe_doc_root_requirement = new SafeDocumentRoot();
         if (!$safe_doc_root_requirement->isValidated()) {
-            $messages['warnings'] = array_merge($messages['warnings'], $safe_doc_root_requirement->getValidationMessages());
+            $messages['warnings'] = array_merge(($messages['warnings'] ?? []), $safe_doc_root_requirement->getValidationMessages());
         }
 
         if ($DB->isSlave() && !$DB->first_connection) {
