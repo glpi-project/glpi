@@ -150,7 +150,6 @@ class Socket extends CommonDBChild
             'condition'           => ['items_id' => $items_id,
                 'itemtype' => $itemtype
             ],
-            'comments' => false
         ]);
         echo "</span>";
 
