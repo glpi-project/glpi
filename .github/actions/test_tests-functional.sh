@@ -18,6 +18,6 @@ vendor/bin/atoum \
   --fail-if-skipped-methods \
   $ATOUM_ADDITIONNAL_OPTIONS \
   --max-children-number 1 \
-  -d tests/functionnal
+  -d tests/functional
 
 unset COVERAGE_DIR
