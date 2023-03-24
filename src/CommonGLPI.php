@@ -1081,7 +1081,7 @@ class CommonGLPI implements CommonGLPIInterface
                         data-bs-toggle='tooltip'>
                         <i class='ti ti-trash'></i>";
                     if ($this->isField('date_mod')) {
-                        echo sprintf(('Deleted on %1$s'), Html::convDateTime($this->fields['date_mod']));
+                        echo sprintf(__s('Deleted on %1$s'), Html::convDateTime($this->fields['date_mod']));
                     } else {
                         echo __s('This item is deleted!');
                     }
