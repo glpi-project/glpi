@@ -650,17 +650,29 @@ class Notification extends CommonDBTM
      * @param string $itemtype Item type
      * @param int    $entity   Restrict to entity
      *
-     * @return ResultSet
-     **/
+     * @return array
+     */
     public static function getNotificationsByEventAndType($event, $itemtype, $entity)
     {
         global $DB, $CFG_GLPI;
+
+        $modes = Notification_NotificationTemplate::getModes();
+        $restrict_modes = [];
+        foreach (array_keys($modes) as $mode) {
+            if ($CFG_GLPI['notifications_' . $mode]) {
+                $restrict_modes[] = $mode;
+            }
+        }
+        if (count($restrict_modes) === 0) {
+            return [];
+        }
 
         $criteria = [
             'SELECT'    => [
                 Notification::getTable() . '.*',
                 Notification_NotificationTemplate::getTable() . '.mode',
-                Notification_NotificationTemplate::getTable() . '.notificationtemplates_id'
+                Notification_NotificationTemplate::getTable() . '.notificationtemplates_id',
+                Entity::getTable() . '.level',
             ],
             'FROM'      => Notification::getTable(),
             'LEFT JOIN' => [
@@ -678,8 +690,9 @@ class Notification extends CommonDBTM
                 ]
             ],
             'WHERE'     => [
-                Notification::getTable() . '.itemtype' => $itemtype,
-                Notification::getTable() . '.event'    => $event,
+                Notification_NotificationTemplate::getTable() . '.mode' => $restrict_modes,
+                Notification::getTable() . '.itemtype'  => $itemtype,
+                Notification::getTable() . '.event'     => $event,
                 Notification::getTable() . '.is_active' => 1,
             ] + getEntitiesRestrictCriteria(
                 Notification::getTable(),
@@ -690,18 +703,17 @@ class Notification extends CommonDBTM
             'ORDER'     => Entity::getTable() . '.level DESC'
         ];
 
-        $modes = Notification_NotificationTemplate::getModes();
-        $restrict_modes = [];
-        foreach ($modes as $mode => $conf) {
-            if ($CFG_GLPI['notifications_' . $mode]) {
-                $restrict_modes[] = $mode;
-            }
-        }
-        if (count($restrict_modes)) {
-            $criteria['WHERE'][Notification_NotificationTemplate::getTable() . '.mode'] = $restrict_modes;
+        $result = $DB->request($criteria);
+        if ($result->count() === 0) {
+            return [];
         }
 
-        return $DB->request($criteria);
+        $notifications = iterator_to_array($result);
+        $max_level = max(array_column($notifications, 'level'));
+        return array_filter(
+            $notifications,
+            fn($notification) => $notification['level'] === $max_level
+        );
     }
 
 

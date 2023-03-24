@@ -57,9 +57,9 @@ class UserMention extends DbTestCase
         $tech_id = getItemByTypeName('User', 'tech', true);
         $normal_id = getItemByTypeName('User', 'normal', true);
 
-       // Delete existing notifications targets (to prevent sending of notifications not related to user_mention)
-        $notification_targets = new NotificationTarget();
-        $notification_targets->deleteByCriteria(['NOT' => ['items_id' => Notification::MENTIONNED_USER]]);
+        // Disable default notifications
+        global $DB;
+        $DB->update(\Notification::getTable(), ['is_active' => 0], ['is_active' => '1']);
 
        // Add email to users for notifications
         $user = new User();
@@ -298,9 +298,12 @@ HTML
         $tech_id = getItemByTypeName('User', 'tech', true);
         $normal_id = getItemByTypeName('User', 'normal', true);
 
-       // Delete existing notifications targets (to prevent sending of notifications not related to user_mention)
-        $notification_targets = new NotificationTarget();
-        $notification_targets->deleteByCriteria(['NOT' => ['items_id' => Notification::MENTIONNED_USER]]);
+        // Disable default notifications
+        global $DB;
+        $DB->update(\Notification::getTable(), ['is_active' => 0], ['is_active' => '1']);
+
+        // Create test notification
+        $this->createNotification(\Ticket::class);
 
        // Add email to users for notifications
         $user = new User();

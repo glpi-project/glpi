@@ -63,12 +63,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
         global $CFG_GLPI, $DB;
         if ($CFG_GLPI['notifications_' . $options['mode']]) {
             $entity = $notificationtarget->getEntity();
-            if (isset($options['processed'])) {
-                $processed = &$options['processed'];
-                unset($options['processed']);
-            } else { // Compat with GLPI < 9.4.2 TODO: remove in 9.5
-                $processed = [];
-            }
+            $processed = &$options['processed'] ?? [];
 
             $targets = getAllDataFromTable(
                 'glpi_notificationtargets',
@@ -85,13 +80,13 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                 'notify_me'          => $notify_me
             ]);
 
-           // get original timezone
+            // get original timezone
             $orig_tz = $DB->guessTimezone();
 
-           //Foreach notification targets
+            //Foreach notification targets
             foreach ($targets as $target) {
-                 //Get all users affected by this notification
-                 $notificationtarget->addForTarget($target, $options);
+                //Get all users affected by this notification
+                $notificationtarget->addForTarget($target, $options);
 
                 foreach ($notificationtarget->getTargets() as $users_infos) {
                     $key = $users_infos[static::getTargetFieldName()];
@@ -99,13 +94,12 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                         $label
                         || $notificationtarget->validateSendTo($event, $users_infos, $notify_me, $emitter)
                     ) {
-                        //If the user have not yet been notified
-                        if (!isset($processed[$users_infos['language']][$key])) {
-                            //If ther user's language is the same as the template's one
+                        //If the user have not yet been notified with current template
+                        if (!isset($processed[$users_infos['language']][$template->getID()][$key])) {
                             $options['item'] = $item;
 
-                      // set timezone from user
-                      // as we work on a copy of the item object, no reload is required after
+                            // set timezone from user
+                            // as we work on a copy of the item object, no reload is required after
                             if (isset($users_infos['additionnaloption']['timezone'])) {
                                  $DB->setTimezone($users_infos['additionnaloption']['timezone']);
                                  // reload object for get timezone correct dates
@@ -153,8 +147,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     echo "<td>" . $key . "</td>";
                                     echo "</tr>";
                                 }
-                                $processed[$users_infos['language']][$key]
-                                                                  = $users_infos;
+                                $processed[$users_infos['language']][$template->getID()][$key] = $users_infos;
                             }
                         }
                     }
