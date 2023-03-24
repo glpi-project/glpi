@@ -137,7 +137,7 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
             }
             $this->validation_messages[] = sprintf(
                 __('You can ignore this suggestion if your web server root directory is "%s".'),
-                sprintf('%s/public', $glpi_root_directory)
+                $glpi_root_directory . DIRECTORY_SEPARATOR . 'public'
             );
         }
     }

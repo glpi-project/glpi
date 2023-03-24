@@ -45,7 +45,7 @@ final class SafeDocumentRoot extends AbstractRequirement
         $this->title = __('Safe configuration of web root directory');
         $this->description = sprintf(
             __('Web server root directory should be `%s` to ensure non-public files cannot be accessed.'),
-            sprintf('%s/public', realpath(GLPI_ROOT))
+            realpath(GLPI_ROOT) . DIRECTORY_SEPARATOR . 'public'
         );
         $this->optional = true;
     }
