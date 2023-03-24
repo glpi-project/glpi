@@ -108,13 +108,10 @@
       </span>
       {% endif %}
       {% if in_navheader and item.isField('is_deleted') and item.fields['is_deleted'] %}
-      <span class="mx-1 bg-danger status rounded-1" title="{{ __('This item is deleted!') }}" data-bs-toggle="tooltip">
+      {% set title = item.isField('date_mod') ? __('Item has been deleted on %s')|format(item.fields['date_mod']) : __('Deleted') %}
+      <span class="mx-1 bg-danger status rounded-1" title="{{ title }}" data-bs-toggle="tooltip">
          <i class="ti ti-trash"></i>
-         {% if item.isField('date_mod') and item.fields['date_mod'] != 'NULL' %}
-            {{ __('Deleted on %s')|format(item.fields['date_mod']) }}
-         {% else %}
-            {{ __('This item is deleted!') }}
-         {% endif %}
+         {{ __('Deleted') }}
       </span>
       {% endif %}
 
