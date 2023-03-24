@@ -107,6 +107,16 @@
          <i class="{{ call('Agent::getIcon') }}"></i>
       </span>
       {% endif %}
+      {% if in_navheader and item.isField('is_deleted') and item.fields['is_deleted'] %}
+      <span class="mx-1 bg-danger status rounded-1" title="{{ __('This item is deleted!') }}" data-bs-toggle="tooltip">
+         <i class="ti ti-trash"></i>
+         {% if item.isField('date_mod') and item.fields['date_mod'] != 'NULL' %}
+            {{ __('Deleted on %s')|format(item.fields['date_mod']) }}
+         {% else %}
+            {{ __('This item is deleted!') }}
+         {% endif %}
+      </span>
+      {% endif %}
 
       {% if header_toolbar %}
          <div class="d-inline-block toolbar ms-2">
