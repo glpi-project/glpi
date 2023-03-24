@@ -227,6 +227,11 @@ class Computer_Item extends CommonDBRelation
 
                         if (count($updates)) {
                             $updates['id'] = $this->fields['items_id'];
+                            //propage is_dynamic value if needed to prevent locked fields
+                            if (isset($device->fields['is_dynamic'])) {
+                                $updates['is_dynamic'] = $device->fields['is_dynamic'];
+                            }
+
                             $device->update($updates);
                         }
                     }
