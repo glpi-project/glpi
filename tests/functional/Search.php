@@ -2211,7 +2211,7 @@ class Search extends DbTestCase
     }
 
     /**
-     * Functionnal test for the 'myself' search criteria.
+     * Functional test for the 'myself' search criteria.
      * We use the output type "Search::NAMES_OUTPUT" during the test as it make
      * it easy to parse the results.
      *

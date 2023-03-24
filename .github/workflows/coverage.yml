@@ -65,7 +65,7 @@ jobs:
       - name: "Unit tests"
         run: |
           docker-compose exec -T app .github/actions/test_tests-units.sh
-      - name: "Functionnal tests"
+      - name: "Functional tests"
         run: |
           docker-compose exec -T app .github/actions/test_tests-functional.sh
       - name: "LDAP tests"

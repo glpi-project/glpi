@@ -174,7 +174,7 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_tests-units.sh
-      - name: "Functionnal tests"
+      - name: "Functional tests"
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_tests-functional.sh
