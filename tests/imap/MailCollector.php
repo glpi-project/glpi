@@ -712,7 +712,10 @@ class MailCollector extends DbTestCase
                     '36 - Microsoft specific code',
                     '37 - Image using application/octet-steam content-type',
                     '38 - E-mail address too long',
-                    '39 - Link in content'
+                    '39 - Link in content',
+                    '40.1 - Empty content (multipart)',
+                    '40.2 - Empty content (html)',
+                    '40.3 - Empty content (plain text)',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -807,7 +810,9 @@ HTML,
             '39 - Link in content' => <<<PLAINTEXT
 This HTML message has a link  <https://glpi-project.org>.
 PLAINTEXT,
-
+            '40.1 - Empty content (multipart)' => '',
+            '40.2 - Empty content (html)' => '',
+            '40.3 - Empty content (plain text)' => '',
         ];
 
         foreach ($actors_specs as $actor_specs) {
