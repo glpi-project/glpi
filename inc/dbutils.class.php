@@ -1745,16 +1745,30 @@ final class DbUtils {
     * @return array
     */
    public function getDateCriteria($field, $begin, $end) {
+      global $DB;
+
+      $date_pattern = '/^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$/'; // `YYYY-mm-dd` optionaly followed by ` HH:ii:ss`
+
       $criteria = [];
-      if (!empty($begin)) {
+      if (is_string($begin) && preg_match($date_pattern, $begin) === 1) {
          $criteria[] = [$field => ['>=', $begin]];
+      } else if ($begin !== null && $begin !== '') {
+         trigger_error(
+            sprintf('Invalid %s date value.', json_encode($begin)),
+            E_USER_WARNING
+         );
       }
 
-      if (!empty($end)) {
+      if (is_string($end) && preg_match($date_pattern, $end) === 1) {
          $end_expr = new QueryExpression(
-            'ADDDATE(\''.$end.'\', INTERVAL 1 DAY)'
+            'ADDDATE(' . $DB->quoteValue($end) . ', INTERVAL 1 DAY)'
          );
          $criteria[] = [$field => ['<=', $end_expr]];
+      } else if ($end !== null && $end !== '') {
+         trigger_error(
+            sprintf('Invalid %s date value.', json_encode($end)),
+            E_USER_WARNING
+         );
       }
 
       return $criteria;
