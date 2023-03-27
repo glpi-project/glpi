@@ -159,15 +159,11 @@ class RequirementsManager
             true,
             __('Enable email sending using SSL/TLS.')
         );
-        $requirements[] = new Extension(
-            'zip',
+        $requirements[] = new ExtensionGroup(
+            __('PHP extensions for marketplace'),
+            ['bz2', 'Phar', 'zip'],
             true,
-            __('Enable installation of zip packages from marketplace.')
-        );
-        $requirements[] = new Extension(
-            'bz2',
-            true,
-            __('Enable installation of bz2 packages from marketplace.')
+            __('Enable support of most common packages formats in marketplace.')
         );
         $requirements[] = new Extension(
             'Zend OPcache',
