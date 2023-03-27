@@ -584,6 +584,8 @@ HTML;
       $edit_label    = __("Edit this card");
       $delete_label  = __("Delete this card");
 
+      $gridstack_id = htmlspecialchars($gridstack_id);
+
       $this->items[] = <<<HTML
          <div class="grid-stack-item"
                data-gs-id="{$gridstack_id}"
