@@ -982,4 +982,118 @@ class User extends \DbTestCase {
       $this->integer(countElementsInTable(\User::getTable(), $user_crit))->isEqualTo($expected_lock_count);
       $DB->update(\User::getTable(), ['is_active' => 1], $user_crit); // reset users
    }
+
+   public function testUpdateEmail() {
+      // Create a user with some emails
+      $user1 = new \User();
+      $uid1 = (int)$user1->add([
+         'name'   => 'test_email 1',
+         '_useremails'  => [
+            -1 => 'email1@test.com',
+            -2 => 'email2@test.com',
+            -3 => 'email3@test.com',
+         ]
+      ]);
+      $this->integer($uid1)->isGreaterThan(0);
+
+      // Emails are all attached to user 1
+      $user1_email1_id = current(
+         getAllDataFromTable(\UserEmail::getTable(), ['users_id' => $uid1, 'email' => 'email1@test.com'])
+      )['id'] ?? 0;
+      $this->integer($user1_email1_id)->isGreaterThan(0);
+
+      $this->string($user1->getDefaultEmail())->isIdenticalTo('email1@test.com');
+
+      $this->boolean($user1->getFromDB($uid1))->isTrue();
+      $user1_emails = $user1->getAllEmails();
+      asort($user1_emails);
+      $this->array(array_values($user1_emails))->isEqualTo(
+         [
+            'email1@test.com',
+            'email2@test.com',
+            'email3@test.com',
+         ]
+      );
+
+      // Create another user
+      $user2 = new \User();
+      $uid2 = (int)$user2->add([
+         'name'   => 'test_email 2',
+         '_useremails'  => [
+            -1 => 'anotheremail1@test.com',
+            $user1_email1_id => 'anotheremail2@test.com', // try to change email from user 1
+            -3 => 'anotheremail3@test.com',
+         ]
+      ]);
+      $this->integer($uid2)->isGreaterThan(0);
+
+      // Emails are all attached to user 2
+      $user2_email1_id = current(
+         getAllDataFromTable(\UserEmail::getTable(), ['users_id' => $uid2, 'email' => 'anotheremail1@test.com'])
+      )['id'] ?? 0;
+      $this->integer($user2_email1_id)->isGreaterThan(0);
+
+      $this->string($user2->getDefaultEmail())->isIdenticalTo('anotheremail1@test.com');
+
+      $this->boolean($user2->getFromDB($uid2))->isTrue();
+      $user2_emails = $user2->getAllEmails();
+      asort($user2_emails);
+      $this->array(array_values($user2_emails))->isEqualTo(
+         [
+            'anotheremail1@test.com',
+            'anotheremail2@test.com',
+            'anotheremail3@test.com',
+         ]
+      );
+
+      // User 1 emails did not changed
+      $this->boolean($user1->getFromDB($uid1))->isTrue();
+      $user1_emails = $user1->getAllEmails();
+      asort($user1_emails);
+      $this->array(array_values($user1_emails))->isEqualTo(
+         [
+            'email1@test.com',
+            'email2@test.com',
+            'email3@test.com',
+         ]
+      );
+
+      // Update the second user
+      $update = $user2->update([
+         'id'     => $uid2,
+         '_useremails'  => [
+            $user1_email1_id => 'email1-updated@test.com', // try to change email from user 1
+            $user2_email1_id => 'anotheremail1-update@test.com',
+         ],
+         '_default_email' => $user1_email1_id,
+      ]);
+      $this->boolean($update)->isTrue();
+
+      // Emails are all attached to user 2
+      $this->boolean($user2->getFromDB($uid2))->isTrue();
+      $user2_emails = $user2->getAllEmails();
+      asort($user2_emails);
+      $this->array(array_values($user2_emails))->isEqualTo(
+         [
+            'anotheremail1-update@test.com',
+            'anotheremail2@test.com',
+            'anotheremail3@test.com',
+            'email1-updated@test.com',
+         ]
+      );
+
+      $this->string($user2->getDefaultEmail())->isIdenticalTo('email1-updated@test.com');
+
+      // User 1 emails did not changed
+      $this->boolean($user1->getFromDB($uid1))->isTrue();
+      $user1_emails = $user1->getAllEmails();
+      asort($user1_emails);
+      $this->array(array_values($user1_emails))->isEqualTo(
+         [
+            'email1@test.com',
+            'email2@test.com',
+            'email3@test.com',
+         ]
+      );
+   }
 }
