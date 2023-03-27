@@ -501,6 +501,7 @@ class Update extends CommonGLPI {
          case "9.5.9":
          case "9.5.10":
          case "9.5.11":
+         case "9.5.12":
             // no schema update since 9.5.7
 
          case GLPI_VERSION:
