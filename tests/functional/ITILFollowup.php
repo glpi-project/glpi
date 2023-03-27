@@ -245,7 +245,7 @@ class ITILFollowup extends DbTestCase
         $this->integer($ITILFollowUp->add([
             'date'                            => $_SESSION['glpi_currenttime'],
             'users_id'                        => \Session::getLoginUserID(),
-            'content'                         => "Functionnal test",
+            'content'                         => "Functional test",
             'items_id'                        => $ticketID,
             'itemtype'                        => \Ticket::class,
         ]));
@@ -262,7 +262,7 @@ class ITILFollowup extends DbTestCase
         $this->integer($ITILFollowUp->add([
             'date'                            => $_SESSION['glpi_currenttime'],
             'users_id'                        => \Session::getLoginUserID(),
-            'content'                         => "Functionnal test",
+            'content'                         => "Functional test",
             '_do_not_compute_takeintoaccount' => true,
             'items_id'                        => $ticketID,
             'itemtype'                        => \Ticket::class,

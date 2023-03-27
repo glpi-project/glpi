@@ -100,7 +100,7 @@ class HookManager
     }
 
     /**
-     * Add a functionnal hook
+     * Add a functional hook
      *
      * @param string $hook
      * @param string $file
@@ -111,7 +111,7 @@ class HookManager
     ): void {
         global $PLUGIN_HOOKS;
 
-        // Check if the given hook is a valid functionnal hook
+        // Check if the given hook is a valid functional hook
         $allowed_file_hooks = Hooks::getFunctionalHooks();
         if (!in_array($hook, $allowed_file_hooks)) {
             trigger_error("Invalid functional hook: '$hook'", E_USER_ERROR);

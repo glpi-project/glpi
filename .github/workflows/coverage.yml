@@ -65,9 +65,9 @@ jobs:
       - name: "Unit tests"
         run: |
           docker-compose exec -T app .github/actions/test_tests-units.sh
-      - name: "Functionnal tests"
+      - name: "Functional tests"
         run: |
-          docker-compose exec -T app .github/actions/test_tests-functionnal.sh
+          docker-compose exec -T app .github/actions/test_tests-functional.sh
       - name: "LDAP tests"
         run: |
           .github/actions/init_initialize-ldap-fixtures.sh
@@ -79,7 +79,7 @@ jobs:
       - name: "Codecov"
         uses: "codecov/codecov-action@v3.1.1"
         with:
-          files: ./tests/coverage-unit/clover.xml,./tests/coverage-functionnal/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml
+          files: ./tests/coverage-unit/clover.xml,./tests/coverage-functional/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml
           override_branch: ${{ matrix.branch }}
       - name: "Cleanup containers"
         if: always()

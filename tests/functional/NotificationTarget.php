@@ -291,7 +291,7 @@ class NotificationTarget extends DbTestCase
     }
 
     /**
-     * Functionnals tests for the getSender method
+     * Functionals tests for the getSender method
      *
      * @dataprovider getSenderProvider
      *
