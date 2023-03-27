@@ -79,9 +79,6 @@ if [[ $# -gt 0 ]]; then
 
   for KEY in "${ARGS[@]}"; do
     INDEX=0
-    if [[ "$KEY" == "functionnal" ]]; then
-      KEY="functional"
-    fi
     for VALID_KEY in "${TESTS_SUITES[@]}"; do
       if [[ "$VALID_KEY" == "$KEY" ]]; then
         TESTS_TO_RUN[$INDEX]=$KEY
