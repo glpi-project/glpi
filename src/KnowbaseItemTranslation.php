@@ -366,7 +366,7 @@ class KnowbaseItemTranslation extends CommonDBChild
 
 
     /**
-     * Is kb item translation functionnality active
+     * Is kb item translation functionality active
      *
      * @return true if active, false if not
      **/

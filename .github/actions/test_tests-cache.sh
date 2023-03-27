@@ -28,6 +28,6 @@ for CONFIG in {"--use-default","--dsn=memcached://memcached","--dsn=redis://redi
     --fail-if-skipped-methods \
     --no-code-coverage \
     --max-children-number 1 \
-    -d tests/functionnal \
+    -d tests/functional \
     -t cache
 done

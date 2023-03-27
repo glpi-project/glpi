@@ -89,12 +89,14 @@ class CleanSoftwareCron extends CommonDBTM
             $max
         );
 
-       // Move software with no versions in the thrashbin
-        $total += self::deleteItems(
-            self::getSoftwareWithNoVersionsCriteria(),
-            new Software(),
-            $max - $total
-        );
+        if ($total < $max) {
+            // Move software with no versions in the thrashbin
+            $total += self::deleteItems(
+                self::getSoftwareWithNoVersionsCriteria(),
+                new Software(),
+                $max - $total
+            );
+        }
 
         return $total;
     }
@@ -204,7 +206,7 @@ class CleanSoftwareCron extends CommonDBTM
             }
 
            // Stop if no items found
-        } while ($count > 0);
+        } while ($count > 0 && $total < $max);
 
         return $total;
     }

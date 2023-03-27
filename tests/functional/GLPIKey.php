@@ -496,8 +496,10 @@ class GLPIKey extends \DbTestCase
 
         $this->array($fields)->isEqualTo(
             [
-                'glpi_mailcollectors.passwd',
                 'glpi_authldaps.rootdn_passwd',
+                'glpi_mailcollectors.passwd',
+                'glpi_snmpcredentials.auth_passphrase',
+                'glpi_snmpcredentials.priv_passphrase',
                 'glpi_plugin_myplugin_remote.key',
                 'glpi_plugin_myplugin_remote.secret',
                 'glpi_plugin_anotherplugin_link.pass',

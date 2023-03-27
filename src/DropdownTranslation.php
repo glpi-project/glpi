@@ -719,7 +719,7 @@ class DropdownTranslation extends CommonDBChild
 
 
     /**
-     * Is dropdown item translation functionnality active
+     * Is dropdown item translation functionality active
      *
      * @return true if active, false if not
      **/

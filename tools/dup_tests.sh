@@ -34,7 +34,7 @@
 #
 
 units_dir=./tests/units
-func_dir=./tests/functionnal
+func_dir=./tests/functional
 
 find "$units_dir" -type f -name "*.php" | while read i;do
     filename="$(basename "${i}")"

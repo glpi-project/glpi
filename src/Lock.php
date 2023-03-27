@@ -845,6 +845,55 @@ class Lock extends CommonGLPI
             echo "</tr>\n";
         }
 
+        // Show deleted Domain_Item
+        $data = $DB->request([
+            'SELECT' => '*',
+            'FROM' => Domain_Item::getTable(),
+            'WHERE' => [
+                Domain_Item::getTableField('is_dynamic') => 1,
+                Domain_Item::getTableField('is_deleted') => 1,
+                Domain_Item::getTableField('items_id')   =>  $ID,
+                Domain_Item::getTableField('itemtype')   => $itemtype,
+            ]
+        ]);
+        if (count($data)) {
+            // Print header
+            echo "<tr>";
+            echo "<th width='10'></th>";
+            echo "<th>" . Domain::getTypeName(Session::getPluralNumber()) . "</th>";
+            echo "<th>" . DomainRelation::getTypeName(1) . "</th>";
+            echo "<th></th><th></th>";
+            echo "</tr>";
+        }
+
+        foreach ($data as $row) {
+            $domain_item = new Domain_Item();
+            $domain = new Domain();
+            $domain_relation = new DomainRelation();
+
+            if ($domain->getFromDB($row['domains_id'])) {
+                $link = $domain->getLink();
+            }
+
+            $relation_name = "";
+            if ($domain_relation->getFromDB($row['domainrelations_id'])) {
+                $relation_name = $domain_relation->getName();
+            }
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td class='center' width='10'>";
+            if ($domain_item->can($row['id'], UPDATE) || $domain_item->can($row['id'], PURGE)) {
+                $header = true;
+                echo "<input type='checkbox' name='Domain_Item[" . $row['id'] . "]'>";
+            }
+            echo "</td>";
+            echo "<td class='left'>" . $link . "</td>";
+            echo "<td class='left'>" . $relation_name . "</td>";
+            echo "<td></td>";
+            echo "<td></td>";
+            echo "</tr>\n";
+        }
+
         if ($header) {
             echo "<tr><th>";
             echo "</th><th colspan='4'>&nbsp</th></tr>\n";

@@ -73,7 +73,8 @@ class BlacklistedMailContent extends CommonDropdown
             'label' => __('Content'),
             'type'  => 'textarea',
             'rows'  => 20,
-            'list'  => true
+            'list'  => true,
+            'enable_richtext' => false
         ]
         ];
     }

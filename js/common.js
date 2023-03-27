@@ -1346,7 +1346,7 @@ function tableToDetails(table) {
     section_els.each((i, e) => {
         if (e.classList.contains('section-header')) {
             if (in_details) {
-                details += '</details>';
+                details += '</pre></details>';
             }
             details += `<details><summary>${e.innerText}</summary><pre>`;
             in_details = true;

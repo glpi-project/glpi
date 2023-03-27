@@ -52,7 +52,7 @@ class KnowbaseItem_Comment extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (!$item->canUpdateItem()) {
+        if (!($item instanceof KnowbaseItem) || !$item->canComment()) {
             return '';
         }
 

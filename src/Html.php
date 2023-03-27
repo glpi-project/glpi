@@ -5694,6 +5694,8 @@ HTML;
                   $('#{$p['filecontainer']}'),
                   '{$p['editor_id']}'
                );
+               // remove required
+                $('#fileupload{$p['rand']}').removeAttr('required');
             },
             fail: function (e, data) {
                const err = 'responseText' in data.jqXHR && data.jqXHR.responseText.length > 0

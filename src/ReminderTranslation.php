@@ -293,7 +293,7 @@ class ReminderTranslation extends CommonDBChild
 
 
     /**
-     * Is kb item translation functionnality active
+     * Is reminder translation functionality active
      *
      * @return boolean
      **/

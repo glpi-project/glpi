@@ -95,8 +95,8 @@ include_once __DIR__ . '/APIBaseClass.php';
 include_once __DIR__ . '/FrontBaseClass.php';
 include_once __DIR__ . '/HLAPITestCase.php';
 include_once __DIR__ . '/InventoryTestCase.php';
-include_once __DIR__ . '/functionnal/CommonITILRecurrent.php';
-include_once __DIR__ . '/functionnal/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
+include_once __DIR__ . '/functional/CommonITILRecurrent.php';
+include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
 include_once __DIR__ . '/units/AbstractRightsDropdown.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
@@ -478,14 +478,14 @@ function loadDataset()
         ], 'KnowbaseItem' => [
             [
                 'name'     => '_knowbaseitem01',
-                'answer'   => 'Answer for Knowledge base entry _knowbaseitem01',
+                'answer'   => 'Answer for Knowledge base entry _knowbaseitem01 apple juice turnover',
                 'is_faq'   => 0,
                 'users_id' => TU_USER,
                 'date'     => '2016-11-17 12:27:48',
             ],
             [
                 'name'     => '_knowbaseitem02',
-                'answer'   => 'Answer for Knowledge base entry _knowbaseitem02',
+                'answer'   => 'Answer for Knowledge base entry _knowbaseitem02 apple macintosh strudel',
                 'is_faq'   => 0,
                 'users_id' => TU_USER,
                 'date'     => '2016-11-17 12:27:48',

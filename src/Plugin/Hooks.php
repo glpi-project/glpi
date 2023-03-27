@@ -185,7 +185,7 @@ class Hooks
     }
 
     /**
-     * Get functionnals hooks
+     * Get functionals hooks
      *
      * @return array
      */

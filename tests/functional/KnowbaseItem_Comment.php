@@ -150,6 +150,16 @@ class KnowbaseItem_Comment extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kbcom->getTabNameForItem($kb1);
         $this->string($name)->isIdenticalTo("<span><i class='ti ti-message-circle me-2'></i>Comments</span>");
+
+        // Change knowbase rights to be empty
+        $_SESSION['glpiactiveprofile']['knowbase'] = 0;
+        // Tab name should be empty
+        $this->string($kbcom->getTabNameForItem($kb1))->isEmpty();
+
+        // Add comment and read right
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | \KnowbaseItem::COMMENTS;
+        // Tab name should be filled
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-message-circle me-2'></i>Comments</span>");
     }
 
     public function testDisplayComments()

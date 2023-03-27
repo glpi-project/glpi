@@ -1475,10 +1475,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $criteria = [
             'SELECT' => [
                 'glpi_knowbaseitems.*',
-                'glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id',
-                new QueryExpression(
-                    'GROUP_CONCAT(DISTINCT ' . $DB->quoteName('glpi_knowbaseitemcategories.completename') . ') AS category'
-                ),
                 new QueryExpression(
                     'COUNT(' . $DB->quoteName('glpi_knowbaseitems_users.id') . ')' .
                     ' + COUNT(' . $DB->quoteName('glpi_groups_knowbaseitems.id') . ')' .
@@ -1593,18 +1589,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             case 'search':
                 if (strlen($params["contains"]) > 0) {
                     $search  = Sanitizer::unsanitize($params["contains"]);
-
-                   // Replace all non word characters with spaces (see: https://stackoverflow.com/a/26537463)
-                    $search_wilcard = preg_replace('/[^\p{L}\p{N}_]+/u', ' ', $search);
-
-                   // Remove last space to avoid illegal syntax with " *"
-                    $search_wilcard = trim($search_wilcard);
-
-                   // Merge spaces since we are using them to split the string later
-                    $search_wilcard = preg_replace('!\s+!', ' ', $search_wilcard);
-
-                    $search_wilcard = explode(' ', $search_wilcard);
-                    $search_wilcard = implode('* ', $search_wilcard) . '*';
+                    $search_wilcard = self::computeBooleanFullTextSearch($search);
 
                     $addscore = [];
                     if (
@@ -1734,21 +1719,78 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 break;
         }
 
-        $criteria['LEFT JOIN']['glpi_knowbaseitems_knowbaseitemcategories'] = [
-            'ON'  => [
-                'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitems_id',
-                'glpi_knowbaseitems'             => 'id'
-            ]
-        ];
-
-        $criteria['LEFT JOIN']['glpi_knowbaseitemcategories'] = [
-            'ON'  => [
-                'glpi_knowbaseitemcategories'    => 'id',
-                'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitemcategories_id'
-            ]
-        ];
-
         return $criteria;
+    }
+
+    /**
+     * Clean search for Boolean FullText
+     *
+     * @since 10.0.7
+     * @param string $search
+     *
+     * @return string
+     **/
+    private static function computeBooleanFullTextSearch(string $search): string
+    {
+        $word_chars        = '\p{L}\p{N}_';
+        $ponderation_chars = '+\-<>~';
+
+        // Remove any whitespace from begin/end
+        $search = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
+
+        // Remove all symbols except word chars, ponderation chars, parenthesis, quotes, wildcards and spaces.
+        // @distance is not included, since it's unlikely a human will be using it through UI form
+        $search = preg_replace("/[^{$word_chars}{$ponderation_chars}()\"* ]/u", '', $search);
+
+        // Remove all ponderation chars, that can only precede a word and that are not preceded by either beginning of string, a space or an opening parenthesis
+        $search = preg_replace("/(?<!^| |\()[{$ponderation_chars}]/u", '', $search);
+        // Remove all ponderation chars that are not followed by a search term
+        // (they are followed by a space, a closing parenthesis or end fo string)
+        $search = preg_replace("/[{$ponderation_chars}]+( |\)|$)/u", '', $search);
+
+        // Remove all opening parenthesis that are located inside a searched term
+        // (they are preceded by a word char or a quote)
+        $search = preg_replace("/(?<=[{$word_chars}\"])\(/u", '', $search);
+        // Remove all closing parenthesis that are located inside a searched term
+        // (they are followed by a word char or a quote)
+        $search = preg_replace("/\)(?=[{$word_chars}\")])/u", '', $search);
+        // Remove empty parenthesis
+        $search = preg_replace("/\(\)/u", '', $search);
+        // Remove all parenthesis if count of closing does not match count of opening ones
+        if (mb_substr_count($search, '(') !== mb_substr_count($search, ')')) {
+            $search = preg_replace("/[()]/u", '', $search);
+        }
+
+        // Remove all asterisks that are not located at the end of a word
+        // (can be followed by a space, a closing parenthesis or end of string, and must be preceded by a word char)
+        $search = preg_replace("/(?<=[{$word_chars}])\*(?! |\)|$)/u", '', $search);
+
+        // Remove all double quotes
+        // - that are not located before a searched term
+        //   (can be preceded by beginning of string, an operator, a space or an opening parenthesis, and must be followed by a word char)
+        $search = preg_replace("/(?<=^|[{$ponderation_chars} (])\"(?![{$word_chars}])/u", '', $search);
+        // - that are not located after a searched term
+        //   (can be followed by a space, a closing parenthesis or end of string, and must be preceded by a word char)
+        $search = preg_replace("/(?<=[{$word_chars}])\"(?! |\)|$)/u", '', $search);
+        // - if the count is not even
+        if (mb_substr_count($search, '"') % 2 !== 0) {
+            $search = preg_replace("/\"/u", '', $search);
+        }
+
+        // Check if the new value is just the set of operators and spaces and if it is - set the value to an empty string
+        if (preg_match("/^[{$ponderation_chars}()\"* ]+$/u", $search)) {
+            $search = '';
+        }
+
+        // Remove extra spaces
+        $search = preg_replace('/\s+/u', ' ', trim($search));
+
+        // Add * foreach word when no boolean operator is used
+        if (!preg_match('/[^\p{L}\p{N}_ ]/u', $search)) {
+            $search = implode('* ', explode(' ', $search)) . '*';
+        }
+
+        return $search;
     }
 
 
@@ -1970,38 +2012,27 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                     );
                 }
 
-                $categ = $data["category"];
-                $inst = new KnowbaseItemCategory();
-                if (DropdownTranslation::canBeTranslated($inst)) {
-                    $tcateg = DropdownTranslation::getTranslatedValue(
-                        $data["knowbaseitemcategories_id"],
-                        $inst->getType()
+                $categories_names = [];
+                $ki->getFromDB($data["id"]);
+                $categories = KnowbaseItem_KnowbaseItemCategory::getItems($ki);
+                foreach ($categories as $category) {
+                    $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
+                    $fullcategoryname          = getTreeValueCompleteName(
+                        "glpi_knowbaseitemcategories",
+                        $knowbaseitemcategories_id
                     );
-                    if (!empty($tcateg)) {
-                          $categ = $tcateg;
-                    }
-                }
-
-                if ($output_type == Search::HTML_OUTPUT) {
-                    $tmp = [];
-                    $ki->getFromDB($data["id"]);
-                    $categories = KnowbaseItem_KnowbaseItemCategory::getItems($ki);
-                    foreach ($categories as $category) {
-                        $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
-                        $fullcategoryname          = getTreeValueCompleteName(
-                            "glpi_knowbaseitemcategories",
-                            $knowbaseitemcategories_id
-                        );
+                    if ($output_type == Search::HTML_OUTPUT) {
                         $cathref = $ki->getSearchURL() . "?knowbaseitemcategories_id=" .
                               $knowbaseitemcategories_id . '&amp;forcetab=Knowbase$2';
-                        $tmp[] = "<a class='kb-category'"
-                         . " href='$cathref'"
-                         . " data-category-id='" . $knowbaseitemcategories_id . "'"
-                         . ">" . $fullcategoryname . '</a>';
+                        $categories_names[] = "<a class='kb-category'"
+                            . " href='$cathref'"
+                            . " data-category-id='" . $knowbaseitemcategories_id . "'"
+                            . ">" . $fullcategoryname . '</a>';
+                    } else {
+                        $categories_names[] = $fullcategoryname;
                     }
-                    $categ = implode(', ', $tmp);
                 }
-                echo Search::showItem($output_type, $categ, $item_num, $row_num);
+                echo Search::showItem($output_type, implode(', ', $categories_names), $item_num, $row_num);
 
                 if ($output_type == Search::HTML_OUTPUT) {
                     echo "<td class='center'>";

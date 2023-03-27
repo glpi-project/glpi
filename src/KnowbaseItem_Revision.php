@@ -40,6 +40,8 @@
  */
 class KnowbaseItem_Revision extends CommonDBTM
 {
+    public static $rightname   = 'knowbase';
+
     public static function getTypeName($nb = 0)
     {
         return _n('Revision', 'Revisions', $nb);

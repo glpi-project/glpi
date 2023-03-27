@@ -4491,7 +4491,7 @@ HTML
     }
 
     /**
-     * Functionnal tests for update1NTableData and load1NTableData
+     * Functional tests for update1NTableData and load1NTableData
      *
      * @dataProvider testUpdateLoad1NTableDataProvider
      */

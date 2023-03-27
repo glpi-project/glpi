@@ -35,8 +35,12 @@
 
 include('../inc/includes.php');
 
-
-Session::checkLoginUser();
+// Cannot use `Session::checkLoginUser()` as it block users that have their password expired to be able to change it.
+// Indeed, when password expired, sessions is loaded without profiles nor rights, and `Session::checkLoginUser()`
+// considers it as an invalid session.
+if (Session::getLoginUserID() === false) {
+    Html::redirectToLogin();
+}
 
 switch (Session::getCurrentInterface()) {
     case 'central':

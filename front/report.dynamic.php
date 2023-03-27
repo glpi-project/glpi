@@ -43,7 +43,11 @@ $itemtype = $_GET['item_type'];
 if ($itemtype === 'AllAssets') {
     Session::checkCentralAccess();
 } else {
-    Session::checkRight($itemtype::$rightname, READ);
+    Session::checkValidSessionId();
+    $item = new $itemtype();
+    if (!$item->canView()) {
+        Html::displayRightError();
+    }
 }
 
 if (isset($_GET["display_type"])) {

@@ -343,6 +343,170 @@ HTML
          ->contains(-1);
     }
 
+    protected function fullTextSearchProvider(): iterable
+    {
+        // Spaces around search terms are trimmed
+        yield [
+            'search'   => ' keyword',
+            'expected' => 'keyword*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => 'keyword ',
+            'expected' => 'keyword*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => "\t +smtp",
+            'expected' => "+smtp",
+        ];
+        yield [
+            'search'   => "+smtp\r\n",
+            'expected' => "+smtp",
+        ];
+        yield [
+            'search'   => " \t +Бесплатное -программное ",
+            'expected' => "+Бесплатное -программное",
+        ];
+
+        // Non word/letter/_ chars are removed
+        yield [
+            'search'   => '[^.,%$=°^¨%§#@?^!&\'|/\\\\~\\[\\]{}+="-]*',
+            'expected' => '*',
+        ];
+        yield [
+            'search'   => '😃 😅 😂 🫠 +unicode',
+            'expected' => '+unicode',
+        ];
+        yield [
+            'search'   => 'unicode😃unicode',
+            'expected' => 'unicodeunicode*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => '+underscore -_',
+            'expected' => '+underscore -_',
+        ];
+        yield [
+            'search'   => 'Бесплатное программное обеспечение',
+            'expected' => 'Бесплатное* программное* обеспечение*', // * added when there is no boolean operators
+        ];
+
+        // Ponderation chars are preserved only when they are located before a search term
+        yield [
+            'search'   => '+(>IMAP <auth) -test ~unit',
+            'expected' => '+(>IMAP <auth) -test ~unit',
+        ];
+        yield [
+            'search'   => '+программное +(>Бесплатное <обеспечение)',
+            'expected' => '+программное +(>Бесплатное <обеспечение)',
+        ];
+        yield [
+            'search'   => 'search wi+th ope-rators in~side t<ext>s',
+            'expected' => 'search* with* operators* inside* texts*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => '++search --with +~-surnumerous >><<+operators',
+            'expected' => '+search -with +surnumerous >operators',
+        ];
+        yield [
+            'search'   => '+collector IMAP+OAuth',
+            'expected' => '+collector IMAPOAuth',
+        ];
+        yield [
+            'search'   => '+прогр~аммное Беспл>атное обесп<ечение',
+            'expected' => '+программное Бесплатное обеспечение',
+        ];
+
+        // Parenthesis are removed when inside texts, when odd or when empty
+        yield [
+            'search'   => 'search <(+knowbase -item)',
+            'expected' => 'search <(+knowbase -item)',
+        ];
+        yield [
+            'search'   => '+search empty () parenthesis',
+            'expected' => '+search empty parenthesis',
+        ];
+        yield [
+            'search'   => '(search with) odd (count of parenthesis',
+            'expected' => 'search* with* odd* count* of* parenthesis*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => '+search -(with many) +(parenthesis in) ~(search terms) >(surrounded by) <(search operators) ("and around parenthesis")',
+            'expected' => '+search -(with many) +(parenthesis in) ~(search terms) >(surrounded by) <(search operators) ("and around parenthesis")',
+        ];
+        yield [
+            'search'   => '+tìm kiếm -(với nhiều) +(dấu ngoặc đơn trong) ~(cụm từ tìm kiếm) >(được bao quanh bởi) <(toán tử tìm kiếm) ("và xung quanh dấu ngoặc đơn")',
+            'expected' => '+tìm kiếm -(với nhiều) +(dấu ngoặc đơn trong) ~(cụm từ tìm kiếm) >(được bao quanh bởi) <(toán tử tìm kiếm) ("và xung quanh dấu ngoặc đơn")',
+        ];
+        yield [
+            'search'   => 'search with paren(thesis inside wor)ds "(or quotes)"',
+            'expected' => 'search with parenthesis inside words "or quotes"', // * added when there is no boolean operators
+        ];
+
+        // Asterisks are removed when not at end of a text
+        yield [
+            'search'   => '+search* wildcard*',
+            'expected' => '+search* wildcard*',
+        ];
+        yield [
+            'search'   => '+search "with misplaced*" wild*card',
+            'expected' => '+search "with misplaced" wildcard',
+        ];
+        yield [
+            'search'   => 'misplaced wild*card',
+            'expected' => 'misplaced* wildcard*', // * added when there is no boolean operators
+        ];
+
+        // Double quotes are removed when inside texts, when odd or when empty
+        yield [
+            'search'   => '+search "knowbase item"',
+            'expected' => '+search "knowbase item"',
+        ];
+        yield [
+            'search'   => '+search empty "" quotes',
+            'expected' => '+search empty quotes',
+        ];
+        yield [
+            'search'   => '"search with" odd "count of quotes',
+            'expected' => 'search* with* odd* count* of* quotes*', // * added when there is no boolean operators
+        ];
+        yield [
+            'search'   => '+search -"with many" +"quotes in" ~"search terms" >"surrounded by" <"search operators" ("and parenthesis")',
+            'expected' => '+search -"with many" +"quotes in" ~"search terms" >"surrounded by" <"search operators" ("and parenthesis")',
+        ];
+        yield [
+            'search'   => '+търсене -"с много" +"кавички в" ~"терми за търсене" >"заобиколен от" <"оператори за търсене" ("и скоби")',
+            'expected' => '+търсене -"с много" +"кавички в" ~"терми за търсене" >"заобиколен от" <"оператори за търсене" ("и скоби")',
+        ];
+        yield [
+            'search'   => 'search with qu"otes inside wor"ds',
+            'expected' => 'search* with* quotes* inside* words*', // * added when there is no boolean operators
+        ];
+
+        // Search with only operators is considered as searching anything
+        yield [
+            'search'   => '+() ~() -() >() <()',
+            'expected' => '*',
+        ];
+
+        // Extra spaces are merged
+        yield [
+            'search'   => '+search  -with  >many   <spaces',
+            'expected' => '+search -with >many <spaces',
+        ];
+        yield [
+            'search'   => 'որոնում   շատ   բացատներով',
+            'expected' => 'որոնում* շատ* բացատներով*',  // * added when there is no boolean operators
+        ];
+    }
+
+    /**
+     * @dataprovider fullTextSearchProvider
+     */
+    public function testComputeBooleanFullTextSearch(string $search, string $expected): void
+    {
+        $search = $this->callPrivateMethod($this->newTestedInstance(), 'computeBooleanFullTextSearch', $search);
+        $this->string($search)->isEqualTo($expected);
+    }
+
     protected function testGetListRequestProvider(): array
     {
         return [
@@ -350,17 +514,177 @@ HTML
                 'params' => [
                     'knowbaseitemcategories_id' => 0,
                     'faq' => false,
-                    'contains' => "test1 ",
+                    'contains' => "+macintosh",
+                    //Find rows that contain the word 'macintosh'
                 ],
-                'type' => 'search'
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
             ],
             [
                 'params' => [
                     'knowbaseitemcategories_id' => 0,
                     'faq' => false,
-                    'contains' => "test1 / test2 ( test3 )",
+                    'contains' => "+apple",
+                    //Find rows that contain the word 'apple'
                 ],
-                'type' => 'search'
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "apple macintosh",
+                    //Find rows that contain at least one of the two words.
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem02', '_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "base entry _knowbaseitem02",
+                    //Find rows that contain at least one of the three words.
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem02', '_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "apple",
+                    //Find rows that contain at least 'apple'
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "macintosh",
+                    //Find rows that contain at least 'macintosh'
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "Knowledge",
+                    //Find rows that contain at least 'macintosh'
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "+juice +macintosh",
+                    //Find rows that contain both words.
+                ],
+                'type' => 'search',
+                'count' => 0,
+                'sort' => null,
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "+apple -macintosh",
+                    //Find rows that contain the word “apple” but not “macintosh”.
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "+apple ~macintosh",
+                    //Find rows that contain the word “apple”, but if the row also contains the word “macintosh”, rate it lower than if row does not.
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "+apple macintosh",
+                    //Find rows that contain the word “apple”, but rank rows higher if they also contain “macintosh”.
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem02', '_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "+apple +(>macintosh <juice)",
+                    //Find rows that contain the words “apple” and "juice", or “apple” and "macintosh" (in any order), but rank “apple macintosh" higher than “apple juice".
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem02', '_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "Know*",
+                    //Find rows that contain "Know" such as "Knowledge"
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => "turn*",
+                    //Find rows that contain "turn" such as "turnover"
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem01'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => '"macintosh strudel"',
+                    //Find rows that contain the exact phrase “macintosh strudel”
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => '"base entry _knowbaseitem02"',
+                    //Find rows that contain the exact phrase “base entry _knowbaseitem02”
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
             ]
         ];
     }
@@ -368,16 +692,26 @@ HTML
     /**
      * @dataprovider testGetListRequestProvider
      */
-    public function testGetListRequest(array $params, string $type): void
+    public function testGetListRequest(array $params, string $type, int $count, ?array $sort): void
     {
         global $DB;
+        $this->login(); //to prevent KnowBaseItem entity restrict criteria for anonymous user
 
-       // Build criteria array
+        // Build criteria array
         $criteria = \KnowbaseItem::getListRequest($params, $type);
         $this->array($criteria);
 
-       // Check that the request is valid
-        $DB->request($criteria);
+        // Check that the request is valid
+        $iterator = $DB->request($criteria);
+
+        //count KnowBaseItem found
+        $this->integer($iterator->numrows())->isEqualTo($count);
+
+        // check order if needed
+        if ($sort != null) {
+            $names = array_column(iterator_to_array($iterator), 'name');
+            $this->array($names)->isEqualTo($sort);
+        }
     }
 
     public function testGetAnswerAnchors(): void

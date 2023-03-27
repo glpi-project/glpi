@@ -559,6 +559,7 @@ class GLPIDashboard {
 
         var args = form_data.card_options;
         args.force = true;
+        args.apply_filters = this.getFiltersFromDB();
 
         // add the new widget
         var widget = this.addWidget(form_data);
