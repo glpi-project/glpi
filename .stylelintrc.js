@@ -42,20 +42,20 @@ module.exports = {
         "indentation": 4,
         "max-line-length": null,
 
-        // DISABLED pure naming rules, no functionnal impact
+        // DISABLED pure naming rules, no functional impact
         "scss/at-function-pattern": null, // DISABLE Expected function name to be kebab-case
         "scss/dollar-variable-pattern": null, // DISABLE: Expected variable to be kebab-case
         "selector-class-pattern": null, // DISABLE: Expected class selector to be kebab-case
         "selector-id-pattern": null, // DISABLE: Expected id selector to be kebab-case
 
-        // DISABLED pure coding style rules, no functionnal impact
+        // DISABLED pure coding style rules, no functional impact
         "color-function-notation": null, // DISABLE: Expected modern color-function notation
         "declaration-block-no-redundant-longhand-properties": null, // DISABLE Expected shorthand property "flex-flow"
         "selector-not-notation": "simple", //DISABLE Expected complex :not() pseudo-class notation
         "scss/at-rule-conditional-no-parentheses": null,
         "scss/no-global-function-names": null, // scssphp do not support usage of SASS modules
 
-        // ALTERED/DISABLED code quality rules, may have a functionnal impact, override should be removed
+        // ALTERED/DISABLED code quality rules, may have a functional impact, override should be removed
         "font-family-no-missing-generic-family-keyword": [
             true,
             {

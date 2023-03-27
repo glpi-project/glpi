@@ -243,7 +243,7 @@ do
       || LAST_EXIT_CODE=$?
       ;;
     "functional")
-         docker-compose exec -T app .github/actions/test_tests-functionnal.sh \
+         docker-compose exec -T app .github/actions/test_tests-functional.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "cache")
