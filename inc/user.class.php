@@ -2439,7 +2439,7 @@ JAVASCRIPT;
             echo "</td></tr>";
          }
 
-         if ($this->can($ID, UPDATE)) {
+         if ($caneditpassword) {
             echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access keys') ."</th></tr>";
 
             echo "<tr class='tab_bg_1'><td>";
