@@ -116,7 +116,7 @@ class Link extends DbTestCase {
             'link'     => '[LOCATION] > [SERIAL] ([USER])',
             'item'     => $item,
             'safe_url' => $safe_url,
-            'expected' => ['_location01 > ABC0004E6 (glpi)'],
+            'expected' => [$safe_url ? '#' : '_location01 > ABC0004E6 (glpi)'],
          ];
 
          // Link that is actually a long text (it is a normal usage!)
@@ -133,7 +133,9 @@ TEXT
             'item'     => $item,
             'safe_url' => $safe_url,
             'expected' => [
-               <<<TEXT
+               $safe_url
+                  ? '#'
+                  : <<<TEXT
 id:       {$item->getID()}
 name:     Test computer
 serial:   ABC0004E6/X0000015

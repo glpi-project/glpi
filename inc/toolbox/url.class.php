@@ -39,8 +39,9 @@ final class URL
 {
    /**
     * Sanitize URL to prevent XSS.
-    * /!\ This method only prevent links on javascript scheme. To be sure that no XSS is possible, value have to be
-    * HTML encoded when it is printed in a HTML page.
+    * /!\ This method only ensure that links are corresponding to a valid URL
+    * (i.e. an absolute URL with a scheme or something that correspond to a path).
+    * To be sure that no XSS is possible, value have to be HTML encoded when it is printed in a HTML page.
     *
     * @param null|string $url
     *
@@ -53,7 +54,19 @@ final class URL
 
       $url = trim($url);
 
-      $js_pattern = '/^' . implode('\s*', str_split('javascript:')) . '/i';
+      $url_begin_patterns = [
+         // scheme followed by `//` and a hostname (absolute URL)
+         '[a-z]+:\/\/.+',
+         // `/` that corresponds to either start of a network path (e.g. `//host/path/to/file`)
+         // or a relative URL (e.g. `/`, `/path/to/page`, or `//anothersite.org/`)
+         '\/',
+      ];
+      $url_pattern = '/^(' . implode('|', $url_begin_patterns) . ')/i';
+      if (preg_match($url_pattern, $url) !== 1) {
+         return '';
+      }
+
+      $js_pattern = '/^javascript:/i';
       if (preg_match($js_pattern, $url)) {
          return '';
       }
