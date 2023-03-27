@@ -47,7 +47,6 @@ TESTS_SUITES=(
   "install"
   "update"
   "units"
-  "functionnal"
   "functional"
   "cache"
   "ldap"
@@ -80,6 +79,9 @@ if [[ $# -gt 0 ]]; then
 
   for KEY in "${ARGS[@]}"; do
     INDEX=0
+    if [[ "$KEY" == "functionnal" ]]; then
+      KEY="functional"
+    fi
     for VALID_KEY in "${TESTS_SUITES[@]}"; do
       if [[ "$VALID_KEY" == "$KEY" ]]; then
         TESTS_TO_RUN[$INDEX]=$KEY
@@ -240,7 +242,7 @@ do
          docker-compose exec -T app .github/actions/test_tests-units.sh \
       || LAST_EXIT_CODE=$?
       ;;
-    "functionnal" | "functional")
+    "functional")
          docker-compose exec -T app .github/actions/test_tests-functionnal.sh \
       || LAST_EXIT_CODE=$?
       ;;
