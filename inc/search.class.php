@@ -2384,7 +2384,7 @@ class Search {
 
       if ($p['mainform']) {
          // Display submit button
-         echo "<input type='submit' name='".$p['actionname']."' value=\"".$p['actionvalue']."\" class='submit' >";
+         echo '<input type="submit" name="' . htmlspecialchars($p['actionname']) . '" value="' . htmlspecialchars($p['actionvalue']) . '" class="submit">';
          if ($p['showbookmark'] || $p['showreset']) {
             if ($p['showbookmark']) {
                //TODO: change that!
