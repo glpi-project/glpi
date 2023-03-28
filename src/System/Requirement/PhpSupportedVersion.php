@@ -51,7 +51,7 @@ class PhpSupportedVersion extends AbstractRequirement
     public function __construct()
     {
         $this->title = __('PHP supported version');
-        $this->description = __('An officially supported PHP version should be used to get benefits of security and bug fixes.');
+        $this->description = __('An officially supported PHP version should be used to get the benefits of security and bug fixes.');
         $this->optional = true;
     }
 
@@ -61,13 +61,12 @@ class PhpSupportedVersion extends AbstractRequirement
 
         if (version_compare($php_version, self::MIN_SUPPORTED_VERSION, '>=')) {
             $this->validated = true;
-            $this->validation_messages[] = sprintf(__('PHP version %s still receive security fixes.'), $php_version);
+            // No validation message as we cannot be sure that PHP is up-to-date.
         } else {
             $this->validated = false;
             $this->validation_messages[] = sprintf(
-                __('PHP %s official support has ended. An upgrade to PHP %s is recommended.'),
-                $php_version,
-                self::MIN_SUPPORTED_VERSION
+                __('PHP %s official support has ended. An upgrade to a most recent PHP version is recommended.'),
+                $php_version
             );
         }
     }

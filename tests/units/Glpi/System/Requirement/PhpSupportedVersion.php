@@ -42,37 +42,37 @@ class PhpSupportedVersion extends \GLPITestCase
         yield [
             'phpversion' => '7.4.0-rc1',
             'validated'  => false,
-            'messages'   => ['PHP 7.4 official support has ended. An upgrade to PHP 8.0 is recommended.'],
+            'messages'   => ['PHP 7.4 official support has ended. An upgrade to a most recent PHP version is recommended.'],
         ];
 
         yield [
             'phpversion' => '7.4.3',
             'validated'  => false,
-            'messages'   => ['PHP 7.4 official support has ended. An upgrade to PHP 8.0 is recommended.'],
+            'messages'   => ['PHP 7.4 official support has ended. An upgrade to a most recent PHP version is recommended.'],
         ];
 
         yield [
             'phpversion' => '7.4.99',
             'validated'  => false,
-            'messages'   => ['PHP 7.4 official support has ended. An upgrade to PHP 8.0 is recommended.'],
+            'messages'   => ['PHP 7.4 official support has ended. An upgrade to a most recent PHP version is recommended.'],
         ];
 
         yield [
             'phpversion' => '8.0.0-rc1',
             'validated'  => true,
-            'messages'   => ['PHP version 8.0 still receive security fixes.'],
+            'messages'   => [],
         ];
 
         yield [
             'phpversion' => '8.0.15',
             'validated'  => true,
-            'messages'   => ['PHP version 8.0 still receive security fixes.'],
+            'messages'   => [],
         ];
 
         yield [
             'phpversion' => '8.2.34',
             'validated'  => true,
-            'messages'   => ['PHP version 8.2 still receive security fixes.'],
+            'messages'   => [],
         ];
     }
 
