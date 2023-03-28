@@ -48,6 +48,7 @@ use Glpi\System\Requirement\IntegerSize;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\MysqliMysqlnd;
+use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\SafeDocumentRoot;
 use Glpi\System\Requirement\SeLinux;
@@ -136,6 +137,8 @@ class RequirementsManager
         $requirements[] = new SeLinux();
 
         // Below requirements are optionals
+
+        $requirements[] = new PhpSupportedVersion();
 
         $safe_doc_root_requirement = new SafeDocumentRoot();
         $requirements[] = $safe_doc_root_requirement;
