@@ -65,7 +65,7 @@ class PhpSupportedVersion extends AbstractRequirement
         } else {
             $this->validated = false;
             $this->validation_messages[] = sprintf(
-                __('PHP %s official support has ended. An upgrade to a most recent PHP version is recommended.'),
+                __('PHP %s official support has ended. An upgrade to a more recent PHP version is recommended.'),
                 $php_version
             );
         }
