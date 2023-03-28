@@ -48,6 +48,10 @@ echo "Installing dependencies..."
 # PHP dev dependencies are usefull at this point as they are used by some build operations
 $WORKING_DIR/bin/console dependencies install --composer-options="--ignore-platform-reqs --prefer-dist --no-progress"
 
+echo "Building hardware JSON files using up-to-date sources..."
+$WORKING_DIR/vendor/bin/refresh_hw_sources
+$WORKING_DIR/vendor/bin/build_hw_jsons
+
 echo "Compiling locale files..."
 $WORKING_DIR/bin/console locales:compile
 

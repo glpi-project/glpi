@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a3abc5bccb413abb8058003c685c6bd",
+    "content-hash": "9baa673cab592973c84efc1c7ae81e6f",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -344,27 +344,29 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.1.28",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "6d51c5099b5614016bf366254f64f6f1d7b9f018"
+                "reference": "b66fa00176a14dad1cde2fc597a620ab7020503c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/6d51c5099b5614016bf366254f64f6f1d7b9f018",
-                "reference": "6d51c5099b5614016bf366254f64f6f1d7b9f018",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/b66fa00176a14dad1cde2fc597a620ab7020503c",
+                "reference": "b66fa00176a14dad1cde2fc597a620ab7020503c",
                 "shasum": ""
             },
             "require": {
-                "seld/jsonlint": "^1.7",
-                "swaggest/json-schema": "^0.12.31",
+                "php": ">=7.4",
+                "seld/jsonlint": "^1.9",
+                "swaggest/json-schema": "^0.12.41",
                 "symfony/polyfill-php81": "^1.26"
             },
             "require-dev": {
-                "atoum/atoum": "^4.0",
-                "squizlabs/php_codesniffer": "^3.5"
+                "phpunit/phpunit": "^9.6",
+                "squizlabs/php_codesniffer": "^3.7"
             },
+            "default-branch": true,
             "bin": [
                 "bin/convert",
                 "bin/build_hw_jsons",
@@ -374,7 +376,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.x-dev"
                 }
             },
             "autoload": {
@@ -403,7 +405,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2023-02-23T11:07:58+00:00"
+            "time": "2023-03-29T11:52:32+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -6366,7 +6368,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "glpi-project/inventory_format": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
