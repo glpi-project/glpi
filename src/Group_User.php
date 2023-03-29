@@ -857,6 +857,8 @@ class Group_User extends CommonDBRelation
     {
         global $DB;
 
+        parent::post_addItem();
+
        // add new user to plannings
         $groups_id  = $this->fields['groups_id'];
         $planning_k = 'group_' . $groups_id . '_users';
@@ -915,6 +917,8 @@ class Group_User extends CommonDBRelation
     public function post_purgeItem()
     {
         global $DB;
+
+        parent::post_purgeItem();
 
        // remove user from plannings
         $groups_id  = $this->fields['groups_id'];
