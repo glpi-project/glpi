@@ -1064,4 +1064,33 @@ class User extends \DbTestCase
         // Can still be deleted by calling delete directly, maybe it should not be possible ?
         $this->boolean($glpi->delete(['id' => $glpi->getID()]))->isTrue();
     }
+
+    public function testUserPreferences()
+    {
+        global $CFG_GLPI;
+
+        $user = new \User();
+        $users_id = $user->add([
+            'name' => 'for preferences',
+            'login' => 'for preferences',
+            'password' => 'for preferences',
+            'password2' => 'for preferences',
+            'profiles_id' => 4
+        ]);
+        $this->integer($users_id)->isGreaterThan(0);
+
+        $this->login('for preferences', 'for preferences');
+        $this->integer((int)$_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+
+        $this->boolean(
+            $user->update([
+                'id' => $users_id,
+                'show_count_on_tabs' => 0
+            ])
+        )->isTrue();
+
+        $this->logOut();
+        $this->login('for preferences', 'for preferences');
+        $this->integer((int)$_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+    }
 }
