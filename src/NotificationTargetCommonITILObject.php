@@ -1302,6 +1302,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         $data["##$objettype.solution.type##"] = '';
         $data["##$objettype.solution.description##"] = '';
+        $data["##$objettype.solution.author##"] = '';
 
         $itilsolution = new ITILSolution();
         $solution = $itilsolution->getFromDBByRequest([
@@ -1322,6 +1323,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 );
             }
 
+            $data["##$objettype.solution.author##"] = getUserName($itilsolution->getField('users_id'));
             $data["##$objettype.solution.description##"] = $itilsolution->getField('content');
         }
 
@@ -1796,6 +1798,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.assigntogroups'        => __('Assigned to groups'),
             $objettype . '.solution.type'         => SolutionType::getTypeName(1),
             $objettype . '.solution.description'  => ITILSolution::getTypeName(1),
+            $objettype . '.solution.author'       => __('Writer'),
             $objettype . '.observerusers'         => _n('Watcher', 'Watchers', Session::getPluralNumber()),
             $objettype . '.action'                => _n('Event', 'Events', 1),
             'followup.date'                     => __('Opening date'),
