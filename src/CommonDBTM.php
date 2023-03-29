@@ -1636,7 +1636,7 @@ class CommonDBTM extends CommonGLPI
                             }
                         } else {
                          // No searchoption case
-                            $ischanged = ($DB->escape($this->fields[$key]) !== $this->input[$key]);
+                            $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
                         }
                         if ($ischanged) {
                             if ($key != "id") {
