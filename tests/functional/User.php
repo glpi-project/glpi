@@ -1082,25 +1082,25 @@ class User extends \DbTestCase
         $this->login('for preferences', 'for preferences');
         $this->boolean($user->getFromDB($users_id))->isTrue();
         $this->variable($user->fields['show_count_on_tabs'])->isNull();
-        $this->integer((int)$_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
 
         $this->boolean(
             $user->update([
                 'id' => $users_id,
-                'show_count_on_tabs' => 0
+                'show_count_on_tabs' => '0'
             ])
         )->isTrue();
 
         $this->logOut();
         $this->login('for preferences', 'for preferences');
         $this->boolean($user->getFromDB($users_id))->isTrue();
-        $this->integer((int)$user->fields['show_count_on_tabs'])->isEqualTo(0);
-        //$this->integer((int)$_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+        $this->variable($user->fields['show_count_on_tabs'])->isEqualTo(0);
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
 
         $this->boolean(
             $user->update([
                 'id' => $users_id,
-                'show_count_on_tabs' => 1
+                'show_count_on_tabs' => '1'
             ])
         )->isTrue();
 
@@ -1108,6 +1108,6 @@ class User extends \DbTestCase
         $this->login('for preferences', 'for preferences');
         $this->boolean($user->getFromDB($users_id))->isTrue();
         $this->variable($user->fields['show_count_on_tabs'])->isNull();
-        $this->integer((int)$_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
     }
 }
