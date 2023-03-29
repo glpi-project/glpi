@@ -87,7 +87,7 @@ then
     fi
 fi
 
-echo "Copying to $WORKING_DIR directory"
+echo "Copying to $WORKING_DIR directory..."
 if [ -e $WORKING_DIR ]
 then
     rm -rf $WORKING_DIR
@@ -108,13 +108,13 @@ then
     fi
 fi
 
-echo "Building application"
+echo "Building application..."
 $WORKING_DIR/glpi/tools/build_glpi.sh
 
-echo "Creating tarball";
+echo "Creating tarball..."
 tar -c -z -f $TARBALL_PATH -C $WORKING_DIR glpi
 
-echo "Deleting temp directory"
+echo "Deleting temp directory..."
 rm -rf $WORKING_DIR
 
 echo "The Tarball path is $TARBALL_PATH"

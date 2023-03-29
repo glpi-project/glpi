@@ -44,25 +44,25 @@ then
     exit 1
 fi
 
-echo "Install dependencies"
+echo "Installing dependencies..."
 # PHP dev dependencies are usefull at this point as they are used by some build operations
 $WORKING_DIR/bin/console dependencies install --composer-options="--ignore-platform-reqs --prefer-dist --no-progress"
 
-echo "Compile locale files"
+echo "Compiling locale files..."
 $WORKING_DIR/bin/console locales:compile
 
-echo "Minify stylesheets and javascripts"
+echo "Minifying stylesheets..."
 find $WORKING_DIR/css $WORKING_DIR/lib $WORKING_DIR/public/lib \( -iname "*.css" ! -iname "*.min.css" \) \
     -exec sh -c 'echo "> {}" && '"$WORKING_DIR"'/node_modules/.bin/csso {} --output $(dirname {})/$(basename {} ".css").min.css' \;
 
-echo "Minify javascripts"
+echo "Minifying javascripts..."
 find $WORKING_DIR/js $WORKING_DIR/lib $WORKING_DIR/public/lib \( -iname "*.js" ! -iname "*.min.js" \) \
     -exec sh -c 'echo "> {}" && '"$WORKING_DIR"'/node_modules/.bin/terser {} --mangle --output $(dirname {})/$(basename {} ".js").min.js' \;
 
-echo "Compile SCSS"
+echo "Compiling SCSS..."
 $WORKING_DIR/bin/console build:compile_scss
 
-echo "Remove dev files and directories"
+echo "Removing dev files and directories..."
 # Remove PHP dev dependencies that are not anymore used
 composer update nothing --ansi --no-interaction --ignore-platform-reqs --no-dev --no-scripts --working-dir=$WORKING_DIR
 
