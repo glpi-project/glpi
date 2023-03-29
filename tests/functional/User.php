@@ -1065,10 +1065,11 @@ class User extends \DbTestCase
         $this->boolean($glpi->delete(['id' => $glpi->getID()]))->isTrue();
     }
 
+    /**
+     * @php 8.0
+     */
     public function testUserPreferences()
     {
-        global $CFG_GLPI;
-
         $user = new \User();
         $users_id = $user->add([
             'name' => 'for preferences',
