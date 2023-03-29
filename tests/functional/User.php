@@ -1080,6 +1080,8 @@ class User extends \DbTestCase
         $this->integer($users_id)->isGreaterThan(0);
 
         $this->login('for preferences', 'for preferences');
+        $this->boolean($user->getFromDB($users_id))->isTrue();
+        $this->integer((int)$user->fields['show_count_on_tabs'])->isEqualTo(0);
         $this->integer((int)$_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
 
         $this->boolean(
@@ -1091,6 +1093,8 @@ class User extends \DbTestCase
 
         $this->logOut();
         $this->login('for preferences', 'for preferences');
+        $this->boolean($user->getFromDB($users_id))->isTrue();
+        $this->integer((int)$user->fields['show_count_on_tabs'])->isEqualTo(0);
         $this->integer((int)$_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
     }
 }
