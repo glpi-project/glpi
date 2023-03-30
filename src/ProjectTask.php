@@ -1427,14 +1427,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ", INTERVAL " . $DB->quoteName($ttask->getTable() . '.planned_duration') . " SECOND)";
             $SELECT[] = new QueryExpression($edate . ' AS ' . $DB->quoteName('notp_edate'));
 
-            $WHERE += [
+            $WHERE = array_merge($WHERE, [
                 $ttask->getTable() . '.plan_start_date'   => null,
                 $ttask->getTable() . '.plan_end_date'     => null,
                 $ttask->getTable() . '.planned_duration'  => ['>', 0],
-            //begin is replaced with creation tim minus duration
+                //begin is replaced with creation tim minus duration
                 new QueryExpression($edate . " >= '" . $begin . "'"),
                 new QueryExpression($bdate . " <= '" . $end . "'")
-            ];
+            ]);
         } else {
            //std case: get tasks for current view dates
             $WHERE[$ttask->getTable() . '.plan_end_date'] = ['>=', $begin];
