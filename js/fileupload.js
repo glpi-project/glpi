@@ -130,8 +130,8 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
  * @param      {String}  input_name    Name of generated input hidden (default filename)
  * @param      {Object}  container     The fileinfo container
  */
-var fileindex = 0;
 var displayUploadedFile = function(file, tag, editor, input_name, filecontainer) {
+    var fileindex = $('input[name^="_'+input_name+'["]').length;
     var ext = file.name.split('.').pop();
 
     var p = $('<p></p>')
@@ -169,8 +169,6 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
     $('<span class="ti ti-circle-x pointer"></span>').click(function() {
         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
     }).appendTo(p);
-
-    fileindex++;
 };
 
 /**
