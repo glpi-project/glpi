@@ -80,7 +80,7 @@ class EnableTimezonesCommand extends AbstractCommand
         if (!$timezones_requirement->isValidated()) {
             $message = '<error>' . __('Timezones usage cannot be activated due to following errors:') . '</error>';
             foreach ($timezones_requirement->getValidationMessages() as $validation_message) {
-                $message .= PHP_EOL . ' - <error>' .$validation_message . '</error>';
+                $message .= PHP_EOL . ' - <error>' . $validation_message . '</error>';
             }
             throw new \Glpi\Console\Exception\EarlyExitException(
                 $message,
