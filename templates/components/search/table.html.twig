@@ -41,9 +41,9 @@
             {% if showmassiveactions %}
             <th style="width: 30px;">
                <div>
-                  <input class="form-check-input" type="checkbox" id="checkall_{{ rand }}"
+                  <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ rand }}"
                         value="" aria-label="{{ __('Check all as') }}"
-                        onclick="checkAsCheckboxes(this, '{{ searchform_id }}');" />
+                        onclick="checkAsCheckboxes(this, '{{ searchform_id }}', '.massive_action_checkbox');" />
                </div>
             </th>
             {% endif %}
