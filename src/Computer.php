@@ -155,6 +155,28 @@ class Computer extends CommonDBTM
         global $DB, $CFG_GLPI;
 
         $changes = [];
+
+        if ($CFG_GLPI['is_contact_autoupdate']) {
+            $this->updates[] = 'contact';
+            $this->updates[] = 'contact_num';
+        }
+
+        if ($CFG_GLPI['is_user_autoupdate']) {
+            $this->updates[] = 'users_id';
+        }
+
+        if ($CFG_GLPI['is_group_autoupdate']) {
+            $this->updates[] = 'groups_id';
+        }
+
+        if ($CFG_GLPI['state_autoupdate_mode'] < 0) {
+            $this->updates[] = 'states_id';
+        }
+
+        if ($CFG_GLPI['is_location_autoupdate']) {
+            $this->updates[] = 'locations_id';
+        }
+
         $update_count = count($this->updates ?? []);
         $input = Toolbox::addslashes_deep($this->fields);
         for ($i = 0; $i < $update_count; $i++) {
