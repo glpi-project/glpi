@@ -157,7 +157,7 @@ function displayOtherSelectOptions(select_object, other_option_name) {
 **/
 function checkAsCheckboxes(reference, container_id) {
     reference = typeof(reference) === 'string' ? document.getElementById(reference) : reference;
-    $('#' + container_id + ' input[type="checkbox"]:enabled')
+    $('#' + container_id + ' input.' + reference.className + '[type="checkbox"]:enabled')
         .prop('checked', $(reference).is(':checked'));
 
     return true;
