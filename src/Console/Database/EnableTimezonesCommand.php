@@ -78,12 +78,12 @@ class EnableTimezonesCommand extends AbstractCommand
         $timezones_requirement = new DbTimezones($this->db);
 
         if (!$timezones_requirement->isValidated()) {
-            $message = __('Timezones usage cannot be activated due to following errors:');
+            $message = '<error>' . __('Timezones usage cannot be activated due to following errors:') . '</error>';
             foreach ($timezones_requirement->getValidationMessages() as $validation_message) {
-                $message .= "\n - " . $validation_message;
+                $message .= PHP_EOL . ' - <error>' . $validation_message . '</error>';
             }
             throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . $message . '</error>',
+                $message,
                 self::ERROR_MISSING_PREREQUISITES
             );
         }
