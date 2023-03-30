@@ -1065,11 +1065,15 @@ class User extends \DbTestCase
         $this->boolean($glpi->delete(['id' => $glpi->getID()]))->isTrue();
     }
 
-    /**
-     * @php 8.0
-     */
     public function testUserPreferences()
     {
+        if (version_compare(PHP_VERSION, '8.0', '<')) {
+            // Cannot use `@php 8.0` to skip test as we want to ensure that test suite fails if methods are skipped
+            // (to detect missing extensions for instance).
+            $this->boolean(true)->isTrue();
+            return;
+        }
+
         $user = new \User();
         $users_id = $user->add([
             'name' => 'for preferences',
