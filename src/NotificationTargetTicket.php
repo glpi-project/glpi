@@ -164,23 +164,14 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
         // Specific data
         $anchor = "";
-        //try to load waiting approval for notified user
-        $ticket_validation = new TicketValidation();
-        if (
-            isset($options['users_id_validate'])
-            && $ticket_validation->getFromDBByCrit([
-                'users_id' => $options['users_id_validate'],
-                'status' => TicketValidation::WAITING,
-                'tickets_id' => $item->getField("id")
-            ])
-        ) {
-            $anchor = "&redirect_anchor=TicketValidation_" . $ticket_validation->fields['id'];
+        if (isset($options['validation_id'])) {
+            $anchor = "&anchor=TicketValidation_" . $options['validation_id'];
         }
         $data['##ticket.urlvalidation##']
                         = $this->formatURL(
                             $options['additionnaloption']['usertype'],
-                            "ticket_" . $item->getField("id") . '_Ticket$main' . $anchor
-                        );
+                            "ticket_" . $item->getField("id") . '_Ticket$main'
+                        ) . $anchor;
         $data['##ticket.globalvalidation##']
                         = TicketValidation::getStatus($item->getField('global_validation'));
         $data['##ticket.type##']

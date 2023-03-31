@@ -70,23 +70,14 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
 
         // Specific data
         $anchor = "";
-        //try to load waiting approval for notified user
-        $change_validation = new ChangeValidation();
-        if (
-            isset($options['users_id_validate'])
-            && $change_validation->getFromDBByCrit([
-                'users_id' => $options['users_id_validate'],
-                'status' => TicketValidation::WAITING,
-                'changes_id' => $item->getField("id")
-            ])
-        ) {
-            $anchor = "&redirect_anchor=ChangeValidation_" . $change_validation->fields['id'];
+        if (isset($options['validation_id'])) {
+            $anchor = "&anchor=ChangeValidation_" . $options['validation_id'];
         }
         $data['##change.urlvalidation##']
                      = $this->formatURL(
                          $options['additionnaloption']['usertype'],
-                         "change_" . $item->getField("id") . '_Change$main' . $anchor
-                     );
+                         "change_" . $item->getField("id") . '_Change$main'
+                     ) . $anchor;
         $data['##change.globalvalidation##']
                      = ChangeValidation::getStatus($item->getField('global_validation'));
 
