@@ -371,7 +371,11 @@ JAVASCRIPT;
                      tab: index,
                      withtemplate: " . (int)($_GET['withtemplate'] ?? 0) . "
                   }
-               );
+                );
+
+                if (location.hash){
+                    location.href=location.hash; //move to hanchor if needed
+                }
             }
             if ($(target).html() && !force_reload) {
                 updateCurrentTab();

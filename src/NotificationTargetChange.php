@@ -68,11 +68,23 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
        // Common ITIL data
         $data = parent::getDataForObject($item, $options, $simple);
 
-       // Specific data
+        // Specific data
+        $anchor = "";
+        //try to load waiting approval for notified user
+        $change_validation = new ChangeValidation();
+        if (
+            $change_validation->getFromDBByCrit([
+                'users_id' => $options['users_id'],
+                'status' => TicketValidation::WAITING,
+                'tickets_id' => $item->getField("id")
+            ])
+        ) {
+            $anchor = "#ChangeValidation_" . $change_validation->fields['id'];
+        }
         $data['##change.urlvalidation##']
                      = $this->formatURL(
                          $options['additionnaloption']['usertype'],
-                         "change_" . $item->getField("id") . '_Change$main'
+                         "change_" . $item->getField("id") . '_Change$main' . $anchor
                      );
         $data['##change.globalvalidation##']
                      = ChangeValidation::getStatus($item->getField('global_validation'));
