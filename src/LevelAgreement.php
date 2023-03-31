@@ -1015,16 +1015,16 @@ abstract class LevelAgreement extends CommonDBChild
             $toadd = [];
 
             // Compute start date
-            if ($pre == "ola") {
+            if ($pre === "ola") {
                 // OLA have their own start date which is set when the OLA is added to the ticket
                 if (
-                    $this->fields['type'] == SLM::TTO
-                    && !is_null($ticket->fields['ola_tto_begin_date'])
+                    (int) $this->fields['type'] === SLM::TTO
+                    && $ticket->fields['ola_tto_begin_date'] !== null
                 ) {
                     $date_field = "ola_tto_begin_date";
                 } elseif (
-                    $this->fields['type'] == SLM::TTR
-                    && !is_null($ticket->fields['ola_ttr_begin_date'])
+                    (int) $this->fields['type'] === SLM::TTR
+                    && $ticket->fields['ola_ttr_begin_date'] !== null
                 ) {
                     $date_field = "ola_ttr_begin_date";
                 } else {
