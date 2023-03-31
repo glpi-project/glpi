@@ -135,16 +135,12 @@ class Provider
         $result   = $iterator->current();
         $nb_items = $result['cpt'];
 
-        $search_criteria = [
-            [
-                self::getSearchFiltersCriteria($i_table, $params['apply_filters'], true)
-            ]
-        ];
+        $search_criteria = self::getSearchFiltersCriteria($i_table, $params['apply_filters'], true)['criteria'] ?? [];
 
         $search_url = $item::getSearchURL();
         $url = $search_url . (str_contains($search_url, '?') ? '&' : '?') . Toolbox::append_params([
-            $search_criteria,
-            'reset' => 'reset',
+            'criteria' => $search_criteria,
+            'reset'    => 'reset',
         ]);
 
         return [
@@ -279,7 +275,8 @@ class Provider
             case 'late':
                 $params['icon']  = "far fa-clock";
                 $params['label']  = __("Late tickets");
-                $search_criteria = array_merge([$notold], [
+                $search_criteria = [
+                    $notold,
                     [
                         'link'       => 'AND',
                         'criteria'   => [
@@ -305,7 +302,7 @@ class Provider
                             ]
                         ]
                     ]
-                ]);
+                ];
                 $query_criteria['WHERE']["$table.status"] = Ticket::getNotSolvedStatusArray();
                 $query_criteria['WHERE'][] = [
                     'OR' => [
@@ -424,7 +421,12 @@ class Provider
                 break;
         }
 
-        $search_criteria['criteria'] = self::getSearchFiltersCriteria($table, $params['apply_filters'], count($search_criteria) === 0);
+        $filter_criteria = self::getSearchFiltersCriteria($table, $params['apply_filters'], count($search_criteria) === 0);
+
+        $search_criteria = array_merge(
+            $search_criteria,
+            $filter_criteria['criteria'] ?? [],
+        );
 
         $url = Ticket::getSearchURL() . "?" . Toolbox::append_params([
             'criteria' => $search_criteria,
@@ -841,20 +843,14 @@ class Provider
         );
         $iterator = $DB->request($criteria);
 
-        $search_criteria = [
-            'criteria' => [
-                [
-                    'field'      => $params['searchoption_id'],
-                    'searchtype' => 'equals',
-                    'value'      => 0
-                ],
-                self::getSearchFiltersCriteria($fk_table, $params['apply_filters'])
-            ],
-            'reset' => 'reset',
+        $search_criteria = self::getSearchFiltersCriteria($fk_table, $params['apply_filters'])['criteria'] ?? [];
+        $search_criteria[] = [
+            'field'      => $params['searchoption_id'],
+            'searchtype' => 'equals',
+            'value'      => 0
         ];
 
         $url = $item::getSearchURL();
-        $url .= (strpos($url, '?') !== false ? '&' : '?') . 'reset';
 
         $data = [];
         foreach ($iterator as $result) {
@@ -862,7 +858,10 @@ class Provider
             $data[] = [
                 'number' => $result['cpt'],
                 'label'  => $result['fk_name'] ?? __("without"),
-                'url'    => $url . '&' . Toolbox::append_params($search_criteria),
+                'url'    => $url . '&' . Toolbox::append_params([
+                    'criteria' => $search_criteria,
+                    'reset' => 'reset',
+                ]),
             ];
         }
 
@@ -1053,86 +1052,100 @@ class Provider
 
         $t_table   = Ticket::getTable();
 
+        $base_search_criteria = self::getSearchFiltersCriteria($t_table, $params['apply_filters'])['criteria'] ?? [];
+
         $series = [
 
             'inter_total' => [
                 'name'   => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
                 'search' => [
-                    'criteria' => [
+                    'criteria' => array_merge(
                         [
-                            'link'       => 'AND',
-                            'field'      => 15, // creation date
-                            'searchtype' => 'morethan',
-                            'value'      => null
-                        ], [
-                            'link'       => 'AND',
-                            'field'      => 15, // creation date
-                            'searchtype' => 'lessthan',
-                            'value'      => null
-                        ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
-                    ],
+                            [
+                                'link'       => 'AND',
+                                'field'      => 15, // creation date
+                                'searchtype' => 'morethan',
+                                'value'      => null
+                            ], [
+                                'link'       => 'AND',
+                                'field'      => 15, // creation date
+                                'searchtype' => 'lessthan',
+                                'value'      => null
+                            ],
+                        ],
+                        $base_search_criteria
+                    ),
                     'reset' => 'reset'
                 ]
             ],
             'inter_solved' => [
                 'name'   => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
                 'search' => [
-                    'criteria' => [
+                    'criteria' => array_merge(
                         [
-                            'link'       => 'AND',
-                            'field'      => 17, // solve date
-                            'searchtype' => 'morethan',
-                            'value'      => null
-                        ], [
-                            'link'       => 'AND',
-                            'field'      => 17, // solve date
-                            'searchtype' => 'lessthan',
-                            'value'      => null
-                        ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
-                    ],
+                            [
+                                'link'       => 'AND',
+                                'field'      => 17, // solve date
+                                'searchtype' => 'morethan',
+                                'value'      => null
+                            ], [
+                                'link'       => 'AND',
+                                'field'      => 17, // solve date
+                                'searchtype' => 'lessthan',
+                                'value'      => null
+                            ],
+                        ],
+                        $base_search_criteria
+                    ),
                     'reset' => 'reset'
                 ]
             ],
             'inter_solved_late' => [
                 'name'   => __('Late'),
                 'search' => [
-                    'criteria' => [
+                    'criteria' => array_merge(
                         [
-                            'link'       => 'AND',
-                            'field'      => 17, // solve date
-                            'searchtype' => 'morethan',
-                            'value'      => null
-                        ], [
-                            'link'       => 'AND',
-                            'field'      => 17, // solve date
-                            'searchtype' => 'lessthan',
-                            'value'      => null
-                        ], [
-                            'link'       => 'AND',
-                            'field'      => 82, // time_to_resolve exceed solve date
-                            'searchtype' => 'equals',
-                            'value'      => 1
-                        ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
-                    ],
+                            [
+                                'link'       => 'AND',
+                                'field'      => 17, // solve date
+                                'searchtype' => 'morethan',
+                                'value'      => null
+                            ], [
+                                'link'       => 'AND',
+                                'field'      => 17, // solve date
+                                'searchtype' => 'lessthan',
+                                'value'      => null
+                            ], [
+                                'link'       => 'AND',
+                                'field'      => 82, // time_to_resolve exceed solve date
+                                'searchtype' => 'equals',
+                                'value'      => 1
+                            ],
+                        ],
+                        $base_search_criteria
+                    ),
                     'reset' => 'reset'
                 ]
             ],
             'inter_closed' => [
                 'name'   => __('Closed'),
                 'search' => [
-                    'criteria' => [
+                    'criteria' => array_merge(
                         [
-                            'link'       => 'AND',
-                            'field'      => 16, // close date
-                            'searchtype' => 'morethan',
-                            'value'      => null
-                        ], [
-                            'link'       => 'AND',
-                            'field'      => 16, // close date
-                            'searchtype' => 'lessthan',
-                            'value'      => null
-                        ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
-                    ],
+                            [
+                                'link'       => 'AND',
+                                'field'      => 16, // close date
+                                'searchtype' => 'morethan',
+                                'value'      => null
+                            ], [
+                                'link'       => 'AND',
+                                'field'      => 16, // close date
+                                'searchtype' => 'lessthan',
+                                'value'      => null
+                            ],
+                        ],
+                        $base_search_criteria
+                    ),
                     'reset' => 'reset'
                 ]
             ],
@@ -1263,26 +1276,28 @@ class Provider
 
         $iterator = $DB->request($criteria);
 
-        $s_criteria = [
-            'criteria' => [
+        $s_params = [
+            'criteria' => array_merge(
                 [
-                    'link'       => 'AND',
-                    'field'      => 12, // status
-                    'searchtype' => 'equals',
-                    'value'      => null
-                ], [
-                    'link'       => 'AND',
-                    'field'      => 15, // creation date
-                    'searchtype' => 'morethan',
-                    'value'      => null
-                ], [
-                    'link'       => 'AND',
-                    'field'      => 15, // creation date
-                    'searchtype' => 'lessthan',
-                    'value'      => null
+                    [
+                        'link'       => 'AND',
+                        'field'      => 12, // status
+                        'searchtype' => 'equals',
+                        'value'      => null
+                    ], [
+                        'link'       => 'AND',
+                        'field'      => 15, // creation date
+                        'searchtype' => 'morethan',
+                        'value'      => null
+                    ], [
+                        'link'       => 'AND',
+                        'field'      => 15, // creation date
+                        'searchtype' => 'lessthan',
+                        'value'      => null
+                    ],
                 ],
-                self::getSearchFiltersCriteria($t_table, $params['apply_filters'])
-            ],
+                self::getSearchFiltersCriteria($t_table, $params['apply_filters'])['criteria'] ?? []
+            ),
             'reset' => 'reset'
         ];
 
@@ -1292,8 +1307,8 @@ class Provider
         ];
         foreach ($iterator as $result) {
             list($start_day, $end_day) = self::formatMonthyearDates($result['period']);
-            $s_criteria['criteria'][1]['value'] = $start_day;
-            $s_criteria['criteria'][2]['value'] = $end_day;
+            $s_params['criteria'][1]['value'] = $start_day;
+            $s_params['criteria'][2]['value'] = $end_day;
 
             $data['labels'][] = $result['period'];
             $tmp = $result;
@@ -1302,12 +1317,12 @@ class Provider
             $i = 0;
             foreach ($tmp as $label2 => $value) {
                 $status_key = array_search($label2, $statuses);
-                $s_criteria['criteria'][0]['value'] = $status_key;
+                $s_params['criteria'][0]['value'] = $status_key;
 
                 $data['series'][$i]['name'] = $label2;
                 $data['series'][$i]['data'][] = [
                     'value' => (int) $value,
-                    'url'   => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_criteria),
+                    'url'   => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_params),
                 ];
                 $i++;
             }
@@ -1438,25 +1453,27 @@ class Provider
         );
         $iterator = $DBread->request($criteria);
 
-        $s_criteria = [
-            'criteria' => [
+        $s_params = [
+            'criteria' => array_merge(
                 [
-                    'link'       => 'AND',
-                    'field'      => $soption,
-                    'searchtype' => 'equals',
-                    'value'      => null
+                    [
+                        'link'       => 'AND',
+                        'field'      => $soption,
+                        'searchtype' => 'equals',
+                        'value'      => null
+                    ],
                 ],
-                self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
-            ],
+                self::getSearchFiltersCriteria($t_table, $params['apply_filters'])['criteria'] ?? []
+            ),
             'reset' => 'reset'
         ];
         $data = [];
         foreach ($iterator as $result) {
-            $s_criteria['criteria'][0]['value'] = $result['actor_id'];
+            $s_params['criteria'][0]['value'] = $result['actor_id'];
             $data[] = [
                 'number' => $result['nb_tickets'],
                 'label'  => $result['first'] . " " . ($result['second'] ?? ""),
-                'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_criteria),
+                'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_params),
             ];
         }
         return [
