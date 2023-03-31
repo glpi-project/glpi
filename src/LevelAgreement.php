@@ -1013,8 +1013,33 @@ abstract class LevelAgreement extends CommonDBChild
 
         if ($levels_id) {
             $toadd = [];
+
+            // Compute start date
+            if ($pre == "ola") {
+                // OLA have their own start date which is set when the OLA is added to the ticket
+                if (
+                    $this->fields['type'] == SLM::TTO
+                    && !is_null($ticket->fields['ola_tto_begin_date'])
+                ) {
+                    $date_field = "ola_tto_begin_date";
+                } elseif (
+                    $this->fields['type'] == SLM::TTR
+                    && !is_null($ticket->fields['ola_ttr_begin_date'])
+                ) {
+                    $date_field = "ola_ttr_begin_date";
+                } else {
+                    // Fall back to default date in case the specific date fields
+                    // are not set (which may be the case for tickets created
+                    // before their addition)
+                    $date_field = 'date';
+                }
+            } else {
+                // SLA are based on the ticket opening date
+                $date_field = 'date';
+            }
+
             $date = $this->computeExecutionDate(
-                $ticket->fields['date'],
+                $ticket->fields[$date_field],
                 $levels_id,
                 $ticket->fields[$pre . '_waiting_duration']
             );

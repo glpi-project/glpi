@@ -7149,6 +7149,7 @@ CREATE TABLE `glpi_tickets` (
   `olas_id_tto` int unsigned NOT NULL DEFAULT '0',
   `olas_id_ttr` int unsigned NOT NULL DEFAULT '0',
   `olalevels_id_ttr` int unsigned NOT NULL DEFAULT '0',
+  `ola_tto_begin_date` timestamp NULL DEFAULT NULL,
   `ola_ttr_begin_date` timestamp NULL DEFAULT NULL,
   `internal_time_to_resolve` timestamp NULL DEFAULT NULL,
   `internal_time_to_own` timestamp NULL DEFAULT NULL,

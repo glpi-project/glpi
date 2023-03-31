@@ -36,6 +36,8 @@
 namespace tests\units;
 
 use DbTestCase;
+use OlaLevel_Ticket;
+use SlaLevel_Ticket;
 
 class SLM extends DbTestCase
 {
@@ -785,5 +787,127 @@ class SLM extends DbTestCase
 
         $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))
          ->isEqualTo(strtotime($ticket->fields['date_mod']));
+    }
+
+    /**
+     * Functional tests to ensure all SLA and OLA target dates are set properly
+     * in a ticket, as well as their escalation date
+     *
+     * @return void
+     */
+    public function testDatesAndEscalation(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        // Create parent SLM
+        $slm = $this->createItem("SLM", [
+            "name"         => "Test SLM",
+            "entities_id"  => $entity,
+            "calendars_id" => 0, // No specific calendar
+        ]);
+
+        // Create SLAs
+        $sla_tto = $this->createItem("SLA", [
+            "slms_id"         => $slm->getID(),
+            "name"            => "Test SLA tto",
+            "entities_id"     => $entity,
+            "type"            => \SLM::TTO,
+            "number_time"     => 4,
+            "definition_time" => "hour",
+        ]);
+        $sla_ttr = $this->createItem("SLA", [
+            "slms_id"         => $slm->getID(),
+            "name"            => "Test SLA ttr",
+            "entities_id"     => $entity,
+            "type"            => \SLM::TTR,
+            "number_time"     => 12,
+            "definition_time" => "hour",
+        ]);
+
+        // Create OLAs
+        $ola_tto = $this->createItem("OLA", [
+            "slms_id"         => $slm->getID(),
+            "name"            => "Test OLA tto",
+            "entities_id"     => $entity,
+            "type"            => \SLM::TTO,
+            "number_time"     => 2,
+            "definition_time" => "hour",
+        ]);
+        $ola_ttr = $this->createItem("OLA", [
+            "slms_id"         => $slm->getID(),
+            "name"            => "Test OLA ttr",
+            "entities_id"     => $entity,
+            "type"            => \SLM::TTR,
+            "number_time"     => 8,
+            "definition_time" => "hour",
+        ]);
+
+        // Create one escalation level for each SLA and OLA (1 hour before)
+        foreach ([$sla_tto, $sla_ttr, $ola_tto, $ola_ttr] as $la) {
+            $class = $la instanceof \SLA ? "SlaLevel" : "OlaLevel";
+            $this->createItem($class, [
+                $la->getForeignKeyField() => $la->getID(),
+                "name"                    => "Test escalation level",
+                "entities_id"             => $entity,
+                "execution_time"          => -3600,
+                "is_active"               => true,
+            ]);
+        }
+
+        // Create a ticket 1 hour ago without any SLA
+        $date_1_hour_ago = date('Y-m-d H:i:s', strtotime('-1 hour'));
+        $ticket = $this->createItem("Ticket", [
+            "name"        => "Test ticket",
+            "content"     => "Test ticket",
+            "entities_id" => $entity,
+            "date"        => $date_1_hour_ago,
+        ]);
+
+        // Add SLA and OLA to the ticket
+        $now = date('Y-m-d H:i:s'); // Keep track of when the OLA where set
+        $this->updateItem("Ticket", $ticket->getID(), [
+            "slas_id_tto" => $sla_tto->getID(),
+            "slas_id_ttr" => $sla_ttr->getID(),
+            "olas_id_tto" => $ola_tto->getID(),
+            "olas_id_ttr" => $ola_ttr->getID(),
+        ]);
+        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
+
+        // Check SLA, must be calculated from the ticket start date
+        $tto_expected_date = date('Y-m-d H:i:s', strtotime($date_1_hour_ago) + 3600 * 4); // 4 hours TTO
+        $ttr_expected_date = date('Y-m-d H:i:s', strtotime($date_1_hour_ago) + 3600 * 12); // 12 hours TTR
+        $this->string($ticket->fields['time_to_own'])->isEqualTo($tto_expected_date);
+        $this->string($ticket->fields['time_to_resolve'])->isEqualTo($ttr_expected_date);
+
+        // Check escalation levels
+        $sla_levels = (new SlaLevel_Ticket())->find([
+            'tickets_id' => $ticket->getID(),
+        ]);
+        $this->array($sla_levels)->hasSize(2);
+        $tto_level = array_shift($sla_levels);
+        $ttr_level = array_shift($sla_levels);
+        $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 3600); // 1 hour escalation level
+        $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 3600); // 1 hour escalation level
+        $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
+        $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
+
+        // Check OLA, must be calculated from the date at which it was added to the ticket
+        $tto_expected_date = date('Y-m-d H:i:s', strtotime($now) + 3600 * 2); // 2 hours TTO
+        $ttr_expected_date = date('Y-m-d H:i:s', strtotime($now) + 3600 * 8); // 8 hours TTR
+        $this->string($ticket->fields['internal_time_to_own'])->isEqualTo($tto_expected_date);
+        $this->string($ticket->fields['internal_time_to_resolve'])->isEqualTo($ttr_expected_date);
+
+        // Check escalation levels
+        $ola_levels = (new OlaLevel_Ticket())->find([
+            'tickets_id' => $ticket->getID(),
+        ]);
+        $this->array($ola_levels)->hasSize(2);
+        $tto_level = array_shift($ola_levels);
+        $ttr_level = array_shift($ola_levels);
+        $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 3600); // 1 hour escalation level
+        $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 3600); // 1 hour escalation level
+        $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
+        $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
     }
 }
