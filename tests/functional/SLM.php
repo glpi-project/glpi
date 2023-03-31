@@ -909,8 +909,8 @@ class SLM extends DbTestCase
         $this->array($sla_levels)->hasSize(2);
         $tto_level = array_shift($sla_levels);
         $ttr_level = array_shift($sla_levels);
-        $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 900); // 1 hour escalation level
-        $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 1800); // 1 hour escalation level
+        $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 900); // 15 minutes escalation level
+        $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 1800); // 30 minutes escalation level
         $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
         $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
 
@@ -927,8 +927,8 @@ class SLM extends DbTestCase
         $this->array($ola_levels)->hasSize(2);
         $tto_level = array_shift($ola_levels);
         $ttr_level = array_shift($ola_levels);
-        $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 2700); // 1 hour escalation level
-        $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 3600); // 1 hour escalation level
+        $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 2700); // 45 minutes escalation level
+        $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 3600); // 60 minutes escalation level
         $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
         $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
     }
