@@ -190,7 +190,7 @@ class Conf extends CommonGLPI
                     'success' => false,
                     'message' => sprintf(
                         __('File has not been imported: `%s`.'),
-                        sprintf('`%s` format is not supported', pathinfo($filepath, PATHINFO_EXTENSION))
+                        sprintf('`%s` format is not supported', pathinfo($filename, PATHINFO_EXTENSION))
                     ),
                     'items'   => [],
                     'request' => null

@@ -383,6 +383,10 @@ class Inventory
      */
     public function getItems(): array
     {
+        if ($this->mainasset === null) {
+            return [];
+        }
+
         $items = $this->mainasset->getInventoried();
 
         foreach ($this->mainasset->getRefused() as $refused) {

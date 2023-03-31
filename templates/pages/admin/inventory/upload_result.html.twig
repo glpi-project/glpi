@@ -54,36 +54,27 @@
                         <thead>
                             <th>{{ __('Filename') }}</th>
                             <th>{{ __('Result') }}</th>
+                            <th>{{ _n('Item', 'Items', get_plural_number()) }}</th>
                         </thead>
                         <tbody>
                             {% for filename, result in imported_files %}
                             <tr>
                                 <td>{{ filename }}</td>
                                 <td>
-                                    {% if result['items'] is array %}
-                                        {% for item in result['items'] %}
-                                            {% if item is object %}
-                                             <div>
-                                                <span>
-                                                <i class="{{ item.getIcon() }}"></i>
-                                                {{ get_item_link(item) }}
-                                                </span>
-                                            </div>
-                                            {% else %}
-                                                <div>
-                                                    <span class="alert-sucess">
-                                                    <i class="fas fa-check"></i>
-                                                    {{ result['message'] }}
-                                                    </span>
-                                                </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        <span class="alert-danger">
-                                        <i class="fas fa-exclamation-triangle"></i>
+                                    <span class="{{ result['success'] ? 'text-success' : 'text-danger' }}">
+                                        <i class="fas {{ result['success'] ? 'fa-check' : 'fa-exclamation-triangle' }}"></i>
                                         {{ result['message'] }}
-                                        </span>
-                                    {% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% for item in result['items'] %}
+                                        <div>
+                                            <span>
+                                            <i class="{{ item.getIcon() }}"></i>
+                                            {{ get_item_link(item) }}
+                                            </span>
+                                        </div>
+                                    {% endfor %}
                                 </td>
                             </tr>
                             {% endfor %}
