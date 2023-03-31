@@ -4070,6 +4070,8 @@ HTML;
 
                 if (count($users)) {
                     $WHERE = ['glpi_users.id' => $users];
+                } else {
+                    $WHERE = ['0'];
                 }
                 break;
 
@@ -4107,6 +4109,8 @@ HTML;
 
                 if (count($users)) {
                     $WHERE = ['glpi_users.id' => $users];
+                } else {
+                    $WHERE = ['0'];
                 }
 
                 break;
