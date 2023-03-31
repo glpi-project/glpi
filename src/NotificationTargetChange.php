@@ -70,7 +70,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
 
         // Specific data
         $anchor = "";
-        if (isset($options['validation_id'])) {
+        if (isset($options['validation_id']) && $options['validation_id']) {
             $anchor = "&anchor=ChangeValidation_" . $options['validation_id'];
         }
         $data['##change.urlvalidation##']

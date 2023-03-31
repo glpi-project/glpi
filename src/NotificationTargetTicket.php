@@ -164,7 +164,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
         // Specific data
         $anchor = "";
-        if (isset($options['validation_id'])) {
+        if (isset($options['validation_id']) && $options['validation_id']) {
             $anchor = "&anchor=TicketValidation_" . $options['validation_id'];
         }
         $data['##ticket.urlvalidation##']

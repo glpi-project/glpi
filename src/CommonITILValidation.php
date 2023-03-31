@@ -340,8 +340,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
             if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
                 $options = ['validation_id'     => $this->fields["id"],
-                    'validation_status' => $this->fields["status"],
-                    'users_id_validate' => $this->fields["users_id_validate"]
+                    'validation_status' => $this->fields["status"]
                 ];
                 $mailsend = NotificationEvent::raiseEvent('validation', $item, $options);
             }
