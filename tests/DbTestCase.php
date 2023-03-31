@@ -257,4 +257,20 @@ class DbTestCase extends \GLPITestCase
             $this->createItem($itemtype, $input);
         }
     }
+
+    /**
+     * Compare two date with an acceptable detla (to account for tests execution
+     * times that may push a date one second later than expected)
+     *
+     * @param string $date1                    Any format supported by strtotime
+     * @param string $date2                    Any format supported by strtotime
+     * @param int    $acceptable_seconds_delta 1 second by fault
+     */
+    protected function areDateEquals(
+        string $date1,
+        string $date2,
+        int $acceptable_seconds_delta = 1
+    ): bool {
+        return abs(strtotime($date1) - strtotime($date2)) <= $acceptable_seconds_delta;
+    }
 }

@@ -899,8 +899,18 @@ class SLM extends DbTestCase
         // Check SLA, must be calculated from the ticket start date
         $tto_expected_date = date('Y-m-d H:i:s', strtotime($date_1_hour_ago) + 3600 * 4); // 4 hours TTO
         $ttr_expected_date = date('Y-m-d H:i:s', strtotime($date_1_hour_ago) + 3600 * 12); // 12 hours TTR
-        $this->string($ticket->fields['time_to_own'])->isEqualTo($tto_expected_date);
-        $this->string($ticket->fields['time_to_resolve'])->isEqualTo($ttr_expected_date);
+        $this->boolean(
+            $this->areDateEquals(
+                $ticket->fields['time_to_own'],
+                $tto_expected_date,
+            )
+        )->isTrue();
+        $this->boolean(
+            $this->areDateEquals(
+                $ticket->fields['time_to_resolve'],
+                $ttr_expected_date,
+            )
+        )->isTrue();
 
         // Check escalation levels
         $sla_levels = (new SlaLevel_Ticket())->find([
@@ -911,14 +921,34 @@ class SLM extends DbTestCase
         $ttr_level = array_shift($sla_levels);
         $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 900); // 15 minutes escalation level
         $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 1800); // 30 minutes escalation level
-        $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
-        $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
+        $this->boolean(
+            $this->areDateEquals(
+                $tto_level['date'],
+                $tto_level_expected_date,
+            )
+        )->isTrue();
+        $this->boolean(
+            $this->areDateEquals(
+                $ttr_level['date'],
+                $ttr_level_expected_date,
+            )
+        )->isTrue();
 
         // Check OLA, must be calculated from the date at which it was added to the ticket
         $tto_expected_date = date('Y-m-d H:i:s', strtotime($now) + 3600 * 2); // 2 hours TTO
         $ttr_expected_date = date('Y-m-d H:i:s', strtotime($now) + 3600 * 8); // 8 hours TTR
-        $this->string($ticket->fields['internal_time_to_own'])->isEqualTo($tto_expected_date);
-        $this->string($ticket->fields['internal_time_to_resolve'])->isEqualTo($ttr_expected_date);
+        $this->boolean(
+            $this->areDateEquals(
+                $ticket->fields['internal_time_to_own'],
+                $tto_expected_date,
+            )
+        )->isTrue();
+        $this->boolean(
+            $this->areDateEquals(
+                $ticket->fields['internal_time_to_resolve'],
+                $ttr_expected_date,
+            )
+        )->isTrue();
 
         // Check escalation levels
         $ola_levels = (new OlaLevel_Ticket())->find([
@@ -929,7 +959,17 @@ class SLM extends DbTestCase
         $ttr_level = array_shift($ola_levels);
         $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 2700); // 45 minutes escalation level
         $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 3600); // 60 minutes escalation level
-        $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
-        $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
+        $this->boolean(
+            $this->areDateEquals(
+                $tto_level['date'],
+                $tto_level_expected_date,
+            )
+        )->isTrue();
+        $this->boolean(
+            $this->areDateEquals(
+                $ttr_level['date'],
+                $ttr_level_expected_date,
+            )
+        )->isTrue();
     }
 }
