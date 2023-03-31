@@ -38,6 +38,7 @@ namespace tests\units;
 use DbTestCase;
 use Glpi\Toolbox\Sanitizer;
 use NotificationTarget;
+use TicketValidation;
 
 /* Test for inc/notificationtargetticket.class.php */
 
@@ -142,7 +143,34 @@ class NotificationTargetTicket extends DbTestCase
 
         $this->array($ret['tasks'])->isIdenticalTo($expected);
 
-       // switch back to default language
+        //add validation for TU_USER
+        $ticket_validation = new TicketValidation();
+        $ticket_validation_id = $ticket_validation->add([
+            "tickets_id" => $tkt->getID(),
+            "status" => \CommonITILValidation::WAITING,
+            "users_id_validate" => getItemByTypeName('User', TU_USER, true)
+        ]);
+
+        $basic_options['validation_id'] = $ticket_validation_id;
+        $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
+
+        //no need to check the beginning of the url (no computed from TU)
+        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo('&anchor=TicketValidation_' . $ticket_validation_id);
+
+        //add another validation for jsmith123
+        $ticket_validation = new TicketValidation();
+        $ticket_validation_id = $ticket_validation->add([
+            "tickets_id" => $tkt->getID(),
+            "status" => \CommonITILValidation::WAITING,
+            "users_id_validate" => getItemByTypeName('User', 'jsmith123', true)
+        ]);
+
+        $basic_options['validation_id'] = $ticket_validation_id;
+        $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
+
+        //no need to check the beginning of the url (no computed from TU)
+        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo('&anchor=TicketValidation_' . $ticket_validation_id);
+        // switch back to default language
         $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
     }
 
