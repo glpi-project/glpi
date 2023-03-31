@@ -843,17 +843,39 @@ class SLM extends DbTestCase
             "definition_time" => "hour",
         ]);
 
-        // Create one escalation level for each SLA and OLA (1 hour before)
-        foreach ([$sla_tto, $sla_ttr, $ola_tto, $ola_ttr] as $la) {
-            $class = $la instanceof \SLA ? "SlaLevel" : "OlaLevel";
-            $this->createItem($class, [
-                $la->getForeignKeyField() => $la->getID(),
-                "name"                    => "Test escalation level",
-                "entities_id"             => $entity,
-                "execution_time"          => -3600,
-                "is_active"               => true,
-            ]);
-        }
+        // Create one escalation level for each SLA and OLA
+        $this->createItems("SlaLevel", [
+            [
+                "slas_id"        => $sla_tto->getID(),
+                "name"           => "Test escalation level (SLA/TTO)",
+                "entities_id"    => $entity,
+                "execution_time" => -900, // 15 minutes
+                "is_active"      => true,
+            ],
+            [
+                "slas_id"        => $sla_ttr->getID(),
+                "name"           => "Test escalation level (SLA/TTR)",
+                "entities_id"    => $entity,
+                "execution_time" => -1800, // 30 minutes
+                "is_active"      => true,
+            ],
+        ]);
+        $this->createItems("OlaLevel", [
+            [
+                "olas_id"        => $ola_tto->getID(),
+                "name"           => "Test escalation level (OLA/TTO)",
+                "entities_id"    => $entity,
+                "execution_time" => -2700, // 45 minutes
+                "is_active"      => true,
+            ],
+            [
+                "olas_id"        => $ola_ttr->getID(),
+                "name"           => "Test escalation level (OLA/TTR)",
+                "entities_id"    => $entity,
+                "execution_time" => -3600, // 60 minutes
+                "is_active"      => true,
+            ],
+        ]);
 
         // Create a ticket 1 hour ago without any SLA
         $date_1_hour_ago = date('Y-m-d H:i:s', strtotime('-1 hour'));
@@ -887,8 +909,8 @@ class SLM extends DbTestCase
         $this->array($sla_levels)->hasSize(2);
         $tto_level = array_shift($sla_levels);
         $ttr_level = array_shift($sla_levels);
-        $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 3600); // 1 hour escalation level
-        $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 3600); // 1 hour escalation level
+        $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 900); // 1 hour escalation level
+        $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 1800); // 1 hour escalation level
         $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
         $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
 
@@ -905,7 +927,7 @@ class SLM extends DbTestCase
         $this->array($ola_levels)->hasSize(2);
         $tto_level = array_shift($ola_levels);
         $ttr_level = array_shift($ola_levels);
-        $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 3600); // 1 hour escalation level
+        $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 2700); // 1 hour escalation level
         $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 3600); // 1 hour escalation level
         $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
         $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
