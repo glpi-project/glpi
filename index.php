@@ -104,6 +104,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     }
 
     $redirect = array_key_exists('redirect', $_GET) ? Sanitizer::unsanitize($_GET['redirect']) : '';
+    $anchor = array_key_exists('redirect_anchor', $_GET) ? Sanitizer::unsanitize($_GET['redirect_anchor']) : false;
 
     Auth::checkAlternateAuthSystems(true, $redirect);
 
@@ -128,7 +129,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
     // redirect to ticket
     if ($redirect !== '') {
-        Toolbox::manageRedirect($redirect);
+        Toolbox::manageRedirect($redirect, $anchor);
     }
 
     TemplateRenderer::getInstance()->display('pages/login.html.twig', [
@@ -137,6 +138,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         'title'               => __('Authentication'),
         'noAuto'              => $_GET["noAUTO"] ?? 0,
         'redirect'            => $redirect,
+        'anchor'              => $anchor,
         'text_login'          => $CFG_GLPI['text_login'],
         'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
         'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),

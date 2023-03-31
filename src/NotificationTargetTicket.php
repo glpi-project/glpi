@@ -173,7 +173,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 'tickets_id' => $item->getField("id")
             ])
         ) {
-            $anchor = "#TicketValidation_" . $ticket_validation->fields['id'];
+            $anchor = "&redirect_anchor=TicketValidation_" . $ticket_validation->fields['id'];
         }
         $data['##ticket.urlvalidation##']
                         = $this->formatURL(

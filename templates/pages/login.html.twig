@@ -37,6 +37,7 @@
    <form action="{{ path('front/login.php') }}" method="post" autocomplete="off"  data-submit-once>
       <input type="hidden" name="noAUTO" value="{{ noAuto }}" />
       <input type="hidden" name="redirect" value="{{ redirect }}" />
+      <input type="hidden" name="anchor" value="{{ anchor }}" />
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
       <div class="row justify-content-center">

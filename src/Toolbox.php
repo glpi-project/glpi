@@ -1583,7 +1583,7 @@ class Toolbox
      *
      * @return void
      **/
-    public static function manageRedirect($where)
+    public static function manageRedirect($where, $anchor = '')
     {
         global $CFG_GLPI;
 
@@ -1619,6 +1619,11 @@ class Toolbox
                 // forcetab for simple items
                 if (isset($data[2])) {
                     $forcetab = 'forcetab=' . $data[2];
+                }
+
+                //readd anchor if needed
+                if (!empty($anchor)) {
+                    $forcetab .= '#' . $anchor;
                 }
 
                 switch (Session::getCurrentInterface()) {

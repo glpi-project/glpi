@@ -79,7 +79,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                 'tickets_id' => $item->getField("id")
             ])
         ) {
-            $anchor = "#ChangeValidation_" . $change_validation->fields['id'];
+            $anchor = "&redirect_anchor=ChangeValidation_" . $change_validation->fields['id'];
         }
         $data['##change.urlvalidation##']
                      = $this->formatURL(

@@ -1404,7 +1404,7 @@ class Auth extends CommonGLPI
      *
      * @return void|boolean nothing if redirect is true, else false
      */
-    public static function redirectIfAuthenticated($redirect = null)
+    public static function redirectIfAuthenticated($redirect = null, $anchor = null)
     {
         global $CFG_GLPI;
 
@@ -1425,9 +1425,19 @@ class Auth extends CommonGLPI
             $redirect = $redirect ? Sanitizer::unsanitize($redirect) : '';
         }
 
+        if (!$anchor) {
+            if (isset($_POST['anchor']) && (strlen($_POST['anchor']) > 0)) {
+                $anchor = $_POST['anchor'];
+            } else if (isset($_GET['anchor']) && strlen($_GET['anchor']) > 0) {
+                $anchor = $_GET['anchor'];
+            }
+            $anchor = $anchor ? Sanitizer::unsanitize($anchor) : '';
+        }
+
+
        //Direct redirect
         if ($redirect) {
-            Toolbox::manageRedirect($redirect);
+            Toolbox::manageRedirect($redirect, $anchor);
         }
 
        // Redirect to Command Central if not post-only
