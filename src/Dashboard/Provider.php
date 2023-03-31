@@ -137,7 +137,7 @@ class Provider
 
         $search_criteria = [
             [
-                self::getSearchFiltersCriteria($i_table, $params['apply_filters'])
+                self::getSearchFiltersCriteria($i_table, $params['apply_filters'], true)
             ]
         ];
 
@@ -424,7 +424,7 @@ class Provider
                 break;
         }
 
-        $search_criteria['criteria'] = self::getSearchFiltersCriteria($table, $params['apply_filters']);
+        $search_criteria['criteria'] = self::getSearchFiltersCriteria($table, $params['apply_filters'], count($search_criteria) === 0);
 
         $url = Ticket::getSearchURL() . "?" . Toolbox::append_params([
             'criteria' => $search_criteria,
@@ -1637,7 +1637,18 @@ class Provider
         return array_search($name . "-" . $tableToSearch, $sort);
     }
 
-    final public static function getSearchFiltersCriteria(string $table = "", array $apply_filters = [])
+    /**
+     * Get search criteria based on given filters.
+     *
+     * @param string $table                     Related itemtype table.
+     * @param array $apply_filters              Dashboard filters.
+     * @param bool $default_criteria_on_empty   Return default criteria if filters are not producing any criteria.
+     *
+     * @return array An empty array, or an array containing a `criteria` key that contains search criteria.
+     *
+     * @FIXME Remove `criteria` key encapsulation. It cannot be done in 10.0 as some plugins are relying on current signature.
+     */
+    final public static function getSearchFiltersCriteria(string $table = "", array $apply_filters = [], bool $default_criteria_on_empty = false)
     {
         $DB = DBConnection::getReadConnection();
         $s_criteria = [];
@@ -1813,6 +1824,10 @@ class Provider
                 'searchtype' => 'equals',
                 'value'      => (int) $apply_filters['tickettype']
             ];
+        }
+
+        if ($default_criteria_on_empty === true && count($s_criteria) === 0) {
+            $s_criteria['criteria'] = Search::getDefaultCriteria();
         }
 
         return $s_criteria;
