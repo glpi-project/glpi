@@ -386,7 +386,7 @@ class Agent extends CommonDBTM
         $deviceid = $metadata['deviceid'];
 
         $aid = false;
-        if ($this->getFromDBByCrit(['deviceid' => $deviceid])) {
+        if ($this->getFromDBByCrit(Sanitizer::dbEscapeRecursive(['deviceid' => $deviceid]))) {
             $aid = $this->fields['id'];
         }
 
@@ -457,7 +457,7 @@ class Agent extends CommonDBTM
             return 0;
         }
 
-        $input = Toolbox::addslashes_deep($input);
+        $input = Sanitizer::sanitize($input);
         if ($aid) {
             $input['id'] = $aid;
             // We should not update itemtype in db if not an expected one
