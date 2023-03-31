@@ -878,7 +878,7 @@ class SLM extends DbTestCase
         ]);
 
         // Create a ticket 1 hour ago without any SLA
-        $date_1_hour_ago = date('Y-m-d H:i:s', strtotime('-1 hour'));
+        $date_1_hour_ago = date('Y-m-d H:i:s', strtotime('-1 hour', strtotime($_SESSION['glpi_currenttime'])));
         $ticket = $this->createItem("Ticket", [
             "name"        => "Test ticket",
             "content"     => "Test ticket",
@@ -887,7 +887,7 @@ class SLM extends DbTestCase
         ]);
 
         // Add SLA and OLA to the ticket
-        $now = date('Y-m-d H:i:s'); // Keep track of when the OLA where set
+        $now = $_SESSION['glpi_currenttime']; // Keep track of when the OLA where set
         $this->updateItem("Ticket", $ticket->getID(), [
             "slas_id_tto" => $sla_tto->getID(),
             "slas_id_ttr" => $sla_ttr->getID(),
