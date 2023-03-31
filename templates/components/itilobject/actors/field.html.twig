@@ -68,7 +68,7 @@
    {% endfor %}
    </select>
 
-   {% if not item.isNewItem() and not params['template_preview'] and not disable_assign_to_me and canupdate %}
+   {% if not item.isNewItem() and not params['template_preview'] and canassigntome %}
       {{ include('components/itilobject/actors/assign_to_me.html.twig') }}
    {% endif %}
 
@@ -202,7 +202,7 @@
          return option_element;
       };
 
-      var select2_width = "{{ not disable_assign_to_me ? 'calc(100% - 30px)' : '100%' }}";
+      var select2_width = "{{ canassigntome ? 'calc(100% - 30px)' : '100%' }}";
 
       const actor_select = $("#actor_{{ rand }}");
       actor_select.select2({
