@@ -6557,8 +6557,20 @@ JAVASCRIPT;
             $linkfield = $so["linkfield"];
 
            /// TODO try to clean all specific cases using SpecificToDisplay
-
             switch ($table . '.' . $field) {
+                case "glpi_locations.completename":
+                case "glpi_groups.completename":
+                case "glpi_itilcategories.completename":
+                    if (
+                        $itemtype == Ticket::class // only for helpdesk
+                        && $data[$ID][0]['name'] != null //column have value in DB
+                        && !$_SESSION['glpiuse_flat_dropdowntree_on_display'] //user doesn't want the completename
+                    ) {
+                        $split_name = explode(">", $data[$ID][0]['name']);
+                        return trim(end($split_name));
+                    }
+
+                    break;
                 case "glpi_users.name":
                     // USER search case
                     if (
@@ -6771,7 +6783,15 @@ JAVASCRIPT;
                         }
                         return $out;
                     } else if (($so["datatype"] ?? "") != "itemlink" && !empty($data[$ID][0]['name'])) {
-                        return Entity::badgeCompletename($data[$ID][0]['name']);
+                        $entity_name = $data[$ID][0]['name'];
+                        if (
+                            $itemtype == Ticket::class // only for helpdesk
+                            && !$_SESSION['glpiuse_flat_dropdowntree_on_display'] //user doesn't want the completename
+                        ) {
+                            $split_name = explode(">", $data[$ID][0]['name']);
+                            $entity_name = trim(end($split_name));
+                        }
+                        return Entity::badgeCompletename($entity_name);
                     }
                     break;
 

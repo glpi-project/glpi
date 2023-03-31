@@ -7586,6 +7586,7 @@ CREATE TABLE `glpi_users` (
   `csv_delimiter` char(1) DEFAULT NULL,
   `is_ids_visible` tinyint DEFAULT NULL,
   `use_flat_dropdowntree` tinyint DEFAULT NULL,
+  `use_flat_dropdowntree_on_display` tinyint DEFAULT 1,
   `show_jobs_at_login` tinyint DEFAULT NULL,
   `priority_1` char(20) DEFAULT NULL,
   `priority_2` char(20) DEFAULT NULL,
