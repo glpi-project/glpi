@@ -42,10 +42,9 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-
 if (isset($_POST['action']) && isset($_POST['id'])) {
     $agent = new Agent();
-    if (!$agent->getFromDB($_POST['id'])) {
+    if (!$agent->getFromDB($_POST['id']) || !$agent->canView()) {
         Response::sendError(404, 'Unable to load agent #' . $_POST['id']);
         return;
     }
