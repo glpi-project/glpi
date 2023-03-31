@@ -54,7 +54,7 @@
                         <thead>
                             <th>{{ __('Filename') }}</th>
                             <th>{{ __('Result') }}</th>
-                            <th>{{ _n('Item', 'Items', result['items']|length) }}</th>
+                            <th>{{ _n('Item', 'Items', get_plural_number()) }}</th>
                         </thead>
                         <tbody>
                             {% for filename, result in imported_files %}
