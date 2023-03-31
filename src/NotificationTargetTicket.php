@@ -167,8 +167,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         //try to load waiting approval for notified user
         $ticket_validation = new TicketValidation();
         if (
-            $ticket_validation->getFromDBByCrit([
-                'users_id' => $options['users_id'],
+            isset($options['users_id_validate'])
+            && $ticket_validation->getFromDBByCrit([
+                'users_id' => $options['users_id_validate'],
                 'status' => TicketValidation::WAITING,
                 'tickets_id' => $item->getField("id")
             ])
