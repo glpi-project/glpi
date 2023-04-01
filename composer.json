@@ -33,7 +33,7 @@
         "html2text/html2text": "^4.3",
         "htmlawed/htmlawed": "^1.2",
         "jasig/phpcas": "^1.6",
-        "laminas/laminas-i18n": "^2.21",
+        "laminas/laminas-i18n": "^2.22",
         "laminas/laminas-json": "^3.5",
         "laminas/laminas-mail": "^2.22",
         "laminas/laminas-mime": "^2.9",
