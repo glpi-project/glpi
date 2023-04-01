@@ -335,7 +335,14 @@ abstract class AbstractController
                     if (!str_contains($sql_field, '.')) {
                         $sql_field = "_.$sql_field";
                     }
-                    $criteria['SELECT'][] = new QueryExpression($DB::quoteName($sql_field) . ' AS ' . $DB::quoteValue($prop_name));
+                    $expression = $DB::quoteName($sql_field);
+                    if (str_contains($sql_field, '.')) {
+                        $join_name = explode('.', $sql_field, 2)[0];
+                        if (array_key_exists($join_name, $joins) && $joins[$join_name]['parent_type'] === 'array') {
+                            $expression = "GROUP_CONCAT($expression SEPARATOR 0x1D)";
+                        }
+                    }
+                    $criteria['SELECT'][] = new QueryExpression($expression . ' AS ' . $DB::quoteValue(str_replace('.', chr(0x1F), $prop_name)));
                 }
             }
         }
@@ -384,6 +391,7 @@ abstract class AbstractController
         // Schema must have a table "x-table" or an itemtype "x-itemtype"
         $tables = [];
         $tables_schemas = [];
+
         if (isset($schema['x-table'])) {
             $tables = [$schema['x-table']];
             $tables_schemas = [$schema['x-table'] => $schema];
@@ -453,12 +461,64 @@ abstract class AbstractController
         } else {
             $criteria['LIMIT'] = $_SESSION['glpilist_limit'];
         }
+        $full_select = $criteria['SELECT'];
+        $criteria['SELECT'] = ['_.id'];
+        if ($union_search_mode) {
+            $criteria['SELECT'][] = '_itemtype';
+        }
+        // First request just to get the ids/union itemtypes
         $iterator = $DB->request($criteria);
 
-        // There may be multiple rows for the same id, if there are joins
-        // All fields returned with a name containing a dot are considered to be from a join
-        // Those joined fields will need expanded. If the join parent_type is an array ($joins[$parent_key]['parent_type, the joined field will be added to the array
-        // FOr example, if two rows from the iterator with id=4 have "emails.id" and "emails.email", the $result[$id]['emails'] will be an array with two items with an id and email field
+        $ids = [];
+        if ($union_search_mode) {
+            // group by _itemtype
+            foreach ($iterator as $row) {
+                if (!isset($ids[$row['_itemtype']])) {
+                    $ids[$row['_itemtype']] = [];
+                }
+                if (!in_array($row['id'], $ids[$row['_itemtype']])) {
+                    $ids[$row['_itemtype']][] = $row['id'];
+                }
+            }
+        } else {
+            foreach ($iterator as $row) {
+                $ids[] = $row['id'];
+            }
+            $ids = array_unique($ids);
+        }
+        //Append the ids to the criteria
+        $replacement_criteria = [
+            'OR' => []
+        ];
+        if ($union_search_mode) {
+            foreach ($ids as $itemtype => $itemtype_ids) {
+                if (empty($itemtype_ids)) {
+                    continue;
+                }
+                $replacement_criteria['OR'][] = [
+                    '_itemtype' => $itemtype,
+                    '_.id' => $itemtype_ids,
+                ];
+            }
+        } else {
+            if (empty($ids)) {
+                return [];
+            }
+            $replacement_criteria['OR'] = [
+                '_.id' => $ids,
+            ];
+        }
+        $original_criteria = $criteria['WHERE'] ?? [];
+        $criteria['WHERE'] = $replacement_criteria;
+
+        // Restore the full select
+        unset($criteria['START'], $criteria['LIMIT']);
+        $criteria['SELECT'] = $full_select;
+
+        $criteria['GROUPBY'] = $union_search_mode ? ['_itemtype', '_.id'] : ['_.id'];
+
+        // Second request to get the full data
+        $iterator = $DB->request($criteria);
 
         $results = [];
         $record_ids = [];
@@ -479,13 +539,20 @@ abstract class AbstractController
                 $results[$record_id] = [];
             }
             foreach ($row as $k => $v) {
+                $k = str_replace(chr(0x1F), '.', $k);
                 if (str_contains($k, '.')) {
                     $path = explode('.', $k);
                     $parent_key = $path[count($path) - 2];
                     $leaf_key = $path[count($path) - 1];
                     $parent_type = $joins[$parent_key]['parent_type'] ?? null;
-                    if ($parent_type === Doc\Schema::TYPE_ARRAY) {
-                        $results[$record_id][$parent_key][$record_ids[$record_id]][$leaf_key] = $v;
+                    if ($parent_type === Doc\Schema::TYPE_ARRAY && $v !== null) {
+                        $v_exploded = explode(chr(0x1D), $v);
+                        foreach ($v_exploded as $v_i => $v_exploded_item) {
+                            if (!isset($results[$record_id][$parent_key][$v_i])) {
+                                $results[$record_id][$parent_key][$v_i] = [];
+                            }
+                            $results[$record_id][$parent_key][$v_i][$leaf_key] = $v_exploded_item;
+                        }
                     } else {
                         $results[$record_id][$parent_key][$leaf_key] = $v;
                     }
@@ -529,8 +596,9 @@ abstract class AbstractController
 
         // Count the total number of results with the same criteria, but without the offset and limit
         $count_criteria = $criteria;
-        unset($count_criteria['SELECT'], $count_criteria['START'], $count_criteria['LIMIT']);
-        $count_criteria['COUNT'] = 'cpt';
+        unset($count_criteria['SELECT'], $count_criteria['START'], $count_criteria['LIMIT'], $count_criteria['GROUPBY']);
+        $count_criteria['SELECT'] = ['COUNT DISTINCT' => '_.id AS cpt'];
+        $count_criteria['WHERE'] = $original_criteria;
         $count_iterator = $DB->request($count_criteria);
         $total_count = $count_iterator->current()['cpt'];
 
