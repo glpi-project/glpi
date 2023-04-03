@@ -68,6 +68,7 @@ class ItemtypeExtension extends AbstractExtension
     {
         return [
             new TwigFunction('get_item', [$this, 'getItem']),
+            new TwigFunction('set_item_attribute', [$this, 'setItemAttribute']),
             new TwigFunction('get_item_comment', [$this, 'getItemComment']),
             new TwigFunction('get_item_link', [$this, 'getItemLink'], ['is_safe' => ['html']]),
             new TwigFunction('get_item_name', [$this, 'getItemName']),
@@ -274,4 +275,24 @@ class ItemtypeExtension extends AbstractExtension
         }
         return null;
     }
+    
+    /**
+     * Return Object with modified property given
+     * 
+     * @param object $item 
+     * @param string $attribute 
+     * @param mixed $value 
+     * 
+     * @return object
+     */
+    public function setItemAttribute(object $item, string $attribute, $value) 
+    {
+        if (is_array($item->$attribute) || is_array($value) ) {
+            $item->$attribute = array_merge($item->$attribute, $value);
+        } else {
+           $item->$attribute = $value;
+        }
+        return $item;
+    }
+
 }
