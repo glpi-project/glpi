@@ -485,6 +485,8 @@ class Ticket extends CommonITILObject
             if ($ola->fields['type'] == SLM::TTR) {
                 $data["olalevels_id_ttr"] = OlaLevel::getFirstOlaLevel($olas_id);
                 $data['ola_ttr_begin_date'] = $date;
+            } elseif ($ola->fields['type'] == SLM::TTO) {
+                $data['ola_tto_begin_date'] = $date;
             }
            // Compute time_to_resolve
             $data[$dateField]             = $ola->computeDate($date);
