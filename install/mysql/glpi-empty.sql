@@ -2049,12 +2049,12 @@ CREATE TABLE `glpi_imageresolutions` (
 DROP TABLE IF EXISTS `glpi_items_devicecameras_imageformats`;
 CREATE TABLE `glpi_items_devicecameras_imageformats` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `item_devicecameras_id` int unsigned NOT NULL DEFAULT '0',
+  `items_devicecameras_id` int unsigned NOT NULL DEFAULT '0',
   `imageformats_id` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `item_devicecameras_id` (`item_devicecameras_id`),
+  KEY `items_devicecameras_id` (`items_devicecameras_id`),
   KEY `imageformats_id` (`imageformats_id`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `is_deleted` (`is_deleted`)
@@ -2063,12 +2063,12 @@ CREATE TABLE `glpi_items_devicecameras_imageformats` (
 DROP TABLE IF EXISTS `glpi_items_devicecameras_imageresolutions`;
 CREATE TABLE `glpi_items_devicecameras_imageresolutions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `item_devicecameras_id` int unsigned NOT NULL DEFAULT '0',
+  `items_devicecameras_id` int unsigned NOT NULL DEFAULT '0',
   `imageresolutions_id` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `item_devicecameras_id` (`item_devicecameras_id`),
+  KEY `items_devicecameras_id` (`items_devicecameras_id`),
   KEY `imageresolutions_id` (`imageresolutions_id`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `is_deleted` (`is_deleted`)
