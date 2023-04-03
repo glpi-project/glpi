@@ -1383,4 +1383,108 @@ class APIRest extends APIBaseClass
         $this->integer($data[0]['tickets_id'])->isEqualTo($tickets_id);
         $this->integer($data[0]['groups_id'])->isEqualTo($groups_id);
     }
+
+    /**
+     * test update items endpoint
+     * using application/x-www-form-urlencoded
+     *
+     * @return void
+     */
+    public function testUpdateItemFormEncodedBody()
+    {
+        $computer = $this->createComputer();
+        $computers_id = $computer->getID();
+
+        try {
+            $response = $this->http_client->put(
+                $this->base_uri . 'Computer/' . $computers_id,
+                [
+                    'headers' => [
+                        'Session-Token' => $this->session_token,
+                        'Content-Type'  => 'application/x-www-form-urlencoded',
+                    ],
+                    'body' => http_build_query(
+                        [
+                            'input' => [
+                                'serial' => 'abcdefg',
+                                'comment' => 'This computer has been updated.',
+                            ]
+                        ],
+                        '',
+                        '&'
+                    )
+                ]
+            );
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $response = $e->getResponse();
+        }
+
+        // Check response
+        $this->object($response)->isInstanceOf(\Psr\Http\Message\ResponseInterface::class);
+        $this->integer($response->getStatusCode())->isEqualTo(200);
+        $this->object($response)->isInstanceOf(\Psr\Http\Message\ResponseInterface::class);
+        $body = $response->getBody()->getContents();
+        $this->array(json_decode($body, true))->isEqualTo([
+            [
+                (string)$computers_id => true,
+                'message'             => '',
+            ]
+        ]);
+
+        // Check computer is updated
+        $computer = new \Computer();
+        $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
+        $this->string($computer->fields['serial'])->isIdenticalTo('abcdefg');
+        $this->string($computer->fields['comment'])->isIdenticalTo('This computer has been updated.');
+    }
+
+    /**
+     * test delete items endpoint
+     * using application/x-www-form-urlencoded
+     *
+     * @return void
+     */
+    public function testDeleteItemFormEncodedBody()
+    {
+        $computer = $this->createComputer();
+        $computers_id = $computer->getID();
+
+        try {
+            $response = $this->http_client->delete(
+                $this->base_uri . 'Computer',
+                [
+                    'headers' => [
+                        'Session-Token' => $this->session_token,
+                        'Content-Type'  => 'application/x-www-form-urlencoded',
+                    ],
+                    'body' => http_build_query(
+                        [
+                            'input' => [
+                                'id' => $computers_id
+                            ]
+                        ]
+                    )
+                ]
+            );
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $response = $e->getResponse();
+        }
+
+        // Check response
+        $this->object($response)->isInstanceOf(\Psr\Http\Message\ResponseInterface::class);
+        $this->integer($response->getStatusCode())->isEqualTo(200);
+        $this->object($response)->isInstanceOf(\Psr\Http\Message\ResponseInterface::class);
+        $body = $response->getBody()->getContents();
+        $this->array(json_decode($body, true))->isEqualTo([
+            [
+                (string)$computers_id => true,
+                'message'             => '',
+            ]
+        ]);
+
+        // Check computer is updated
+        $computer = new \Computer();
+        $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
+        $this->boolean((bool)$computer->getField('is_deleted'))->isTrue();
+    }
 }
