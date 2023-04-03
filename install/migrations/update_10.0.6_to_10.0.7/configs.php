@@ -39,6 +39,6 @@
 
 $migration->displayMessage('Add new configurations / user preferences');
 $migration->addConfig([
-    'use_flat_dropdowntree_on_display'   => 0,
+    'use_flat_dropdowntree_on_display'   => 1,
 ]);
-$migration->addField('glpi_users', 'use_flat_dropdowntree_on_display', 'tinyint DEFAULT 0');
+$migration->addField('glpi_users', 'use_flat_dropdowntree_on_display', 'tinyint DEFAULT 1');
