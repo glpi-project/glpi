@@ -742,5 +742,4 @@ final class Search
         }
         return new JSONResponse(null, 204);
     }
-
 }
