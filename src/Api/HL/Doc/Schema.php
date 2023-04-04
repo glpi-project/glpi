@@ -280,6 +280,9 @@ class Schema implements \ArrayAccess
             $path_arr = explode('.', $sk);
             $current = $content;
             foreach ($path_arr as $path) {
+                if (!is_array($current)) {
+                    continue;
+                }
                 if (array_key_exists($path, $current)) {
                     $current = $current[$path];
                 } else {

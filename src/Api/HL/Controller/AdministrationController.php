@@ -38,6 +38,7 @@ namespace Glpi\Api\HL\Controller;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -299,7 +300,7 @@ final class AdministrationController extends AbstractController
     )]
     public function searchUsers(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('User'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('User'), $request->getParameters());
     }
 
     #[Route(path: '/Group', methods: ['GET'])]
@@ -311,7 +312,7 @@ final class AdministrationController extends AbstractController
     )]
     public function searchGroups(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Group'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Group'), $request->getParameters());
     }
 
     #[Route(path: '/Entity', methods: ['GET'])]
@@ -323,7 +324,7 @@ final class AdministrationController extends AbstractController
     )]
     public function searchEntities(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Entity'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Entity'), $request->getParameters());
     }
 
     #[Route(path: '/Profile', methods: ['GET'])]
@@ -335,7 +336,7 @@ final class AdministrationController extends AbstractController
     )]
     public function searchProfiles(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Profile'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Profile'), $request->getParameters());
     }
 
     /**
@@ -360,7 +361,7 @@ final class AdministrationController extends AbstractController
                 'is_default' => (int) $data['is_default'],
                 '_links' => [
                     'self' => [
-                        'href' => $this->getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $data['id']]),
+                        'href' => self::getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $data['id']]),
                     ],
                 ],
             ];
@@ -378,7 +379,7 @@ final class AdministrationController extends AbstractController
     public function me(Request $request): Response
     {
         $my_user_id = $this->getMyUserID();
-        return $this->getOneBySchema($this->getKnownSchema('User'), ['id' => $my_user_id], $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('User'), ['id' => $my_user_id], $request->getParameters());
     }
 
     #[Route(path: '/User/me/emails', methods: ['GET'])]
@@ -436,7 +437,7 @@ final class AdministrationController extends AbstractController
                     self::getErrorResponseBody(self::ERROR_ALREADY_EXISTS, 'The provided email address is already associated with this user'),
                     409,
                     [
-                        'Location' => $this->getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $email['id']])
+                        'Location' => self::getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $email['id']])
                     ]
                 );
             }
@@ -449,7 +450,7 @@ final class AdministrationController extends AbstractController
             'email' => $new_email,
             'is_default' => $request->hasParameter('is_default') ? $request->getParameter('is_default') : false,
         ]);
-        return self::getCRUDCreateResponse($emails_id, $this->getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $emails_id]));
+        return self::getCRUDCreateResponse($emails_id, self::getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $emails_id]));
     }
 
     #[Route(path: '/User/me/emails/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -481,7 +482,7 @@ final class AdministrationController extends AbstractController
     ])]
     public function createUser(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('User'), $request->getParameters(), 'getUserByID');
+        return Search::createBySchema($this->getKnownSchema('User'), $request->getParameters(), [self::class, 'getUserByID']);
     }
 
     #[Route(path: '/User/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -493,7 +494,7 @@ final class AdministrationController extends AbstractController
     )]
     public function getUserByID(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/User/username/{username}', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
@@ -505,7 +506,7 @@ final class AdministrationController extends AbstractController
     )]
     public function getUserByUsername(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
+        return Search::getOneBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
     }
 
     #[Route(path: '/User/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -525,7 +526,7 @@ final class AdministrationController extends AbstractController
     )]
     public function updateUserByID(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/User/username/{username}', methods: ['PATCH'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
@@ -545,14 +546,14 @@ final class AdministrationController extends AbstractController
     )]
     public function updateUserByUsername(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
+        return Search::updateBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
     }
 
     #[Route(path: '/User/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a user by ID')]
     public function deleteUserByID(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/User/username/{username}', methods: ['DELETE'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
@@ -563,7 +564,7 @@ final class AdministrationController extends AbstractController
      */
     public function deleteUserByUsername(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
+        return Search::deleteBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
     }
 
     #[Route(path: '/Group', methods: ['POST'])]
@@ -577,7 +578,7 @@ final class AdministrationController extends AbstractController
     ])]
     public function createGroup(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Group'), $request->getParameters(), 'getGroupByID');
+        return Search::createBySchema($this->getKnownSchema('Group'), $request->getParameters(), [self::class, 'getGroupByID']);
     }
 
     #[Route(path: '/Group/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -589,7 +590,7 @@ final class AdministrationController extends AbstractController
     )]
     public function getGroupByID(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Group'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Group'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Group/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -609,14 +610,14 @@ final class AdministrationController extends AbstractController
     )]
     public function updateGroupByID(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Group'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Group'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Group/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a group by ID')]
     public function deleteGroupByID(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Group'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Group'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Entity', methods: ['POST'])]
@@ -630,7 +631,7 @@ final class AdministrationController extends AbstractController
     ])]
     public function createEntity(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Entity'), $request->getParameters(), 'getEntityByID');
+        return Search::createBySchema($this->getKnownSchema('Entity'), $request->getParameters(), [self::class, 'getEntityByID']);
     }
 
     #[Route(path: '/Entity/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -642,7 +643,7 @@ final class AdministrationController extends AbstractController
     )]
     public function getEntityByID(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Entity'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Entity'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Entity/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -662,14 +663,14 @@ final class AdministrationController extends AbstractController
     )]
     public function updateEntityByID(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Entity'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Entity'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Entity/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete an entity by ID')]
     public function deleteEntityByID(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Entity'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Entity'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Profile', methods: ['POST'])]
@@ -683,7 +684,7 @@ final class AdministrationController extends AbstractController
     ])]
     public function createProfile(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Profile'), $request->getParameters(), 'getProfileByID');
+        return Search::createBySchema($this->getKnownSchema('Profile'), $request->getParameters(), [self::class, 'getProfileByID']);
     }
 
     #[Route(path: '/Profile/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -695,7 +696,7 @@ final class AdministrationController extends AbstractController
     )]
     public function getProfileByID(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Profile'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Profile'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Profile/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -715,13 +716,13 @@ final class AdministrationController extends AbstractController
     )]
     public function updateProfileByID(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Profile'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Profile'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Profile/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a profile by ID')]
     public function deleteProfileByID(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Profile'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Profile'), $request->getAttributes(), $request->getParameters());
     }
 }

@@ -53,6 +53,7 @@ use Domain;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Search;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group;
@@ -204,7 +205,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchBudgets(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Budget'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Budget'), $request->getParameters());
     }
 
     #[Route(path: '/Budget/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -216,7 +217,7 @@ final class ManagementController extends AbstractController
     )]
     public function getBudget(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Budget'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Budget'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Budget', methods: ['POST'])]
@@ -230,7 +231,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createBudget(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Budget'), $request->getParameters(), 'getBudget');
+        return Search::createBySchema($this->getKnownSchema('Budget'), $request->getParameters(), [self::class, 'getBudget']);
     }
 
     #[Route(path: '/Budget/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -242,14 +243,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateBudget(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Budget'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Budget'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Budget/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a budget by ID')]
     public function deleteBudget(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Budget'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Budget'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/License', methods: ['GET'])]
@@ -261,7 +262,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchLicenses(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('License'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('License'), $request->getParameters());
     }
 
     #[Route(path: '/License/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -273,7 +274,7 @@ final class ManagementController extends AbstractController
     )]
     public function getLicense(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('License'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('License'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/License', methods: ['POST'])]
@@ -287,7 +288,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createLicense(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('License'), $request->getParameters(), 'getLicense');
+        return Search::createBySchema($this->getKnownSchema('License'), $request->getParameters(), [self::class, 'getLicense']);
     }
 
     #[Route(path: '/License/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -299,14 +300,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateLicense(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('License'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('License'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/License/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a license by ID')]
     public function deleteLicense(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('License'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('License'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Supplier', methods: ['GET'])]
@@ -318,7 +319,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchSuppliers(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Supplier'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Supplier'), $request->getParameters());
     }
 
     #[Route(path: '/Supplier/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -330,7 +331,7 @@ final class ManagementController extends AbstractController
     )]
     public function getSupplier(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Supplier'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Supplier'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Supplier', methods: ['POST'])]
@@ -344,7 +345,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createSupplier(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Supplier'), $request->getParameters(), 'getSupplier');
+        return Search::createBySchema($this->getKnownSchema('Supplier'), $request->getParameters(), [self::class, 'getSupplier']);
     }
 
     #[Route(path: '/Supplier/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -364,14 +365,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateSupplier(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Supplier'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Supplier'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Supplier/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a supplier by ID')]
     public function deleteSupplier(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Supplier'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Supplier'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Contact', methods: ['GET'])]
@@ -383,7 +384,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchContacts(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Contact'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Contact'), $request->getParameters());
     }
 
     #[Route(path: '/Contact/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -395,7 +396,7 @@ final class ManagementController extends AbstractController
     )]
     public function getContact(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Contact'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Contact'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Contact', methods: ['POST'])]
@@ -409,7 +410,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createContact(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Contact'), $request->getParameters(), 'getContact');
+        return Search::createBySchema($this->getKnownSchema('Contact'), $request->getParameters(), [self::class, 'getContact']);
     }
 
     #[Route(path: '/Contact/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -421,14 +422,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateContact(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Contact'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Contact'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Contact/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a contact by ID')]
     public function deleteContact(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Contact'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Contact'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Contract', methods: ['GET'])]
@@ -440,7 +441,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchContracts(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Contract'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Contract'), $request->getParameters());
     }
 
     #[Route(path: '/Contract/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -452,7 +453,7 @@ final class ManagementController extends AbstractController
     )]
     public function getContract(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Contract'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Contract'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Contract', methods: ['POST'])]
@@ -466,7 +467,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createContract(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Contract'), $request->getParameters(), 'getContract');
+        return Search::createBySchema($this->getKnownSchema('Contract'), $request->getParameters(), [self::class, 'getContract']);
     }
 
     #[Route(path: '/Contract/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -478,14 +479,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateContract(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Contract'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Contract'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Contract/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a contract by ID')]
     public function deleteContract(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Contract'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Contract'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Document', methods: ['GET'])]
@@ -497,7 +498,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchDocuments(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Document'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Document'), $request->getParameters());
     }
 
     #[Route(path: '/Document/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -509,7 +510,7 @@ final class ManagementController extends AbstractController
     )]
     public function getDocument(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Document', methods: ['POST'])]
@@ -523,7 +524,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createDocument(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Document'), $request->getParameters(), 'getDocument');
+        return Search::createBySchema($this->getKnownSchema('Document'), $request->getParameters(), [self::class, 'getDocument']);
     }
 
     #[Route(path: '/Document/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -535,14 +536,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateDocument(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Document/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a document by ID')]
     public function deleteDocument(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Line', methods: ['GET'])]
@@ -554,7 +555,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchLines(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Line'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Line'), $request->getParameters());
     }
 
     #[Route(path: '/Line/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -566,7 +567,7 @@ final class ManagementController extends AbstractController
     )]
     public function getLine(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Line'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Line'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Line', methods: ['POST'])]
@@ -580,7 +581,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createLine(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Line'), $request->getParameters(), 'getLine');
+        return Search::createBySchema($this->getKnownSchema('Line'), $request->getParameters(), [self::class, 'getLine']);
     }
 
     #[Route(path: '/Line/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -592,14 +593,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateLine(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Line'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Line'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Line/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a line by ID')]
     public function deleteLine(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Line'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Line'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Certificate', methods: ['GET'])]
@@ -611,7 +612,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchCertificates(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Certificate'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Certificate'), $request->getParameters());
     }
 
     #[Route(path: '/Certificate/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -623,7 +624,7 @@ final class ManagementController extends AbstractController
     )]
     public function getCertificate(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Certificate'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Certificate'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Certificate', methods: ['POST'])]
@@ -637,7 +638,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createCertificate(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Certificate'), $request->getParameters(), 'getCertificate');
+        return Search::createBySchema($this->getKnownSchema('Certificate'), $request->getParameters(), [self::class, 'getCertificate']);
     }
 
     #[Route(path: '/Certificate/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -649,14 +650,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateCertificate(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Certificate'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Certificate'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Certificate/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a certificate by ID')]
     public function deleteCertificate(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Certificate'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Certificate'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/DataCenter', methods: ['GET'])]
@@ -668,7 +669,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchDatacenters(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('DataCenter'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('DataCenter'), $request->getParameters());
     }
 
     #[Route(path: '/DataCenter/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -680,7 +681,7 @@ final class ManagementController extends AbstractController
     )]
     public function getDataCenter(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('DataCenter'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('DataCenter'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/DataCenter', methods: ['POST'])]
@@ -694,7 +695,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createDataCenter(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('DataCenter'), $request->getParameters(), 'getDataCenter');
+        return Search::createBySchema($this->getKnownSchema('DataCenter'), $request->getParameters(), [self::class, 'getDataCenter']);
     }
 
     #[Route(path: '/DataCenter/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -706,14 +707,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateDataCenter(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('DataCenter'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('DataCenter'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/DataCenter/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a data center by ID')]
     public function deleteDataCenter(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('DataCenter'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('DataCenter'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cluster', methods: ['GET'])]
@@ -725,7 +726,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchClusters(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Cluster'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Cluster'), $request->getParameters());
     }
 
     #[Route(path: '/Cluster/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -737,7 +738,7 @@ final class ManagementController extends AbstractController
     )]
     public function getCluster(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Cluster'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Cluster'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cluster', methods: ['POST'])]
@@ -751,7 +752,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createCluster(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Cluster'), $request->getParameters(), 'getCluster');
+        return Search::createBySchema($this->getKnownSchema('Cluster'), $request->getParameters(), [self::class, 'getCluster']);
     }
 
     #[Route(path: '/Cluster/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -763,14 +764,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateCluster(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Cluster'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Cluster'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cluster/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a cluster by ID')]
     public function deleteCluster(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Cluster'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Cluster'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Domain', methods: ['GET'])]
@@ -782,7 +783,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchDomains(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Domain'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Domain'), $request->getParameters());
     }
 
     #[Route(path: '/Domain/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -794,7 +795,7 @@ final class ManagementController extends AbstractController
     )]
     public function getDomain(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Domain'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Domain'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Domain', methods: ['POST'])]
@@ -808,7 +809,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createDomain(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Domain'), $request->getParameters(), 'getDomain');
+        return Search::createBySchema($this->getKnownSchema('Domain'), $request->getParameters(), [self::class, 'getDomain']);
     }
 
     #[Route(path: '/Domain/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -820,14 +821,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateDomain(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Domain'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Domain'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Domain/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a domain by ID')]
     public function deleteDomain(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Domain'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Domain'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Appliance', methods: ['GET'])]
@@ -839,7 +840,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchAppliances(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Appliance'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Appliance'), $request->getParameters());
     }
 
     #[Route(path: '/Appliance/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -851,7 +852,7 @@ final class ManagementController extends AbstractController
     )]
     public function getAppliance(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Appliance'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Appliance'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Appliance', methods: ['POST'])]
@@ -865,7 +866,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createAppliance(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Appliance'), $request->getParameters(), 'getAppliance');
+        return Search::createBySchema($this->getKnownSchema('Appliance'), $request->getParameters(), [self::class, 'getAppliance']);
     }
 
     #[Route(path: '/Appliance/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -877,14 +878,14 @@ final class ManagementController extends AbstractController
     )]
     public function updateAppliance(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Appliance'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Appliance'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Appliance/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a appliance by ID')]
     public function deleteAppliance(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Appliance'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Appliance'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Database', methods: ['GET'])]
@@ -896,7 +897,7 @@ final class ManagementController extends AbstractController
     )]
     public function searchDatabases(Request $request): Response
     {
-        return $this->searchBySchema($this->getKnownSchema('Database'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Database'), $request->getParameters());
     }
 
     #[Route(path: '/Database/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -908,7 +909,7 @@ final class ManagementController extends AbstractController
     )]
     public function getDatabase(Request $request): Response
     {
-        return $this->getOneBySchema($this->getKnownSchema('Database'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Database'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Database', methods: ['POST'])]
@@ -922,7 +923,7 @@ final class ManagementController extends AbstractController
     ])]
     public function createDatabase(Request $request): Response
     {
-        return $this->createBySchema($this->getKnownSchema('Database'), $request->getParameters(), 'getDatabase');
+        return Search::createBySchema($this->getKnownSchema('Database'), $request->getParameters(), [self::class, 'getDatabase']);
     }
 
     #[Route(path: '/Database/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -934,13 +935,13 @@ final class ManagementController extends AbstractController
     )]
     public function updateDatabase(Request $request): Response
     {
-        return $this->updateBySchema($this->getKnownSchema('Database'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Database'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Database/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a database by ID')]
     public function deleteDatabase(Request $request): Response
     {
-        return $this->deleteBySchema($this->getKnownSchema('Database'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Database'), $request->getAttributes(), $request->getParameters());
     }
 }
