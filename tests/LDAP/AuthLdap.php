@@ -130,7 +130,7 @@ class AuthLDAP extends DbTestCase
     {
         $ldap = new \AuthLDAP();
         $ldap->post_getEmpty();
-        $this->array($ldap->fields)->hasSize(25);
+        $this->array($ldap->fields)->hasSize(28);
     }
 
     public function testUnsetUndisclosedFields()

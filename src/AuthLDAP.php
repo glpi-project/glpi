@@ -176,6 +176,9 @@ class AuthLDAP extends CommonDBTM
         $this->fields['use_bind']                    = 1;
         $this->fields['picture_field']               = '';
         $this->fields['responsible_field']           = '';
+        $this->fields['can_support_pagesize']        = 0;
+        $this->fields['pagesize']                    = 0;
+        $this->fields['ldap_maxlimit']               = 0;
     }
 
 
