@@ -59,6 +59,8 @@ class Schema implements \ArrayAccess
     public const FORMAT_NUMBER_FLOAT = 'float';
     public const FORMAT_BOOLEAN_BOOLEAN = 'boolean';
 
+    public const PATTERN_UUIDV4 = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
+
     public function __construct(
         private string $type,
         private ?string $format = null,
@@ -67,7 +69,8 @@ class Schema implements \ArrayAccess
         /** @var ?Schema $items */
         private ?Schema $items = null,
         /** @var array|null $enum */
-        private ?array $enum = null
+        private ?array $enum = null,
+        private ?string $pattern = null
     ) {
         if ($this->format === null) {
             $this->format = $this->getDefaultFormatForType($this->type);
@@ -108,6 +111,14 @@ class Schema implements \ArrayAccess
     }
 
     /**
+     * @return string|null
+     */
+    public function getPattern(): ?string
+    {
+        return $this->pattern;
+    }
+
+    /**
      * @return array<string, array{type: string, format?: string, properties?: array, items?: array}>
      */
     public function getProperties(): array
@@ -135,6 +146,9 @@ class Schema implements \ArrayAccess
         if ($this->getFormat()) {
             $r['format'] = $this->getFormat();
         }
+        if ($this->getPattern()) {
+            $r['pattern'] = $this->getPattern();
+        }
         if ($this->getType() === self::TYPE_OBJECT) {
             $r['properties'] = $this->getProperties();
         } else if ($this->getType() === self::TYPE_ARRAY) {
@@ -152,6 +166,7 @@ class Schema implements \ArrayAccess
     {
         $type = $schema['type'] ?? self::TYPE_STRING;
         $format = $schema['format'] ?? null;
+        $pattern = $schema['pattern'] ?? null;
         $properties = [];
         if ($type === self::TYPE_OBJECT) {
             foreach ($schema['properties'] as $name => $prop) {

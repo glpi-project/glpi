@@ -188,8 +188,16 @@ final class ManagementController extends AbstractController
 
             if ($m_class === Budget::class) {
                 $schemas[$m_name]['properties']['value'] = ['type' => Doc\Schema::TYPE_NUMBER];
-                $schemas[$m_name]['properties']['begin_date'] = ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE];
-                $schemas[$m_name]['properties']['end_date'] = ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE];
+                $schemas[$m_name]['properties']['date_begin'] = [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'x-field' => 'begin_date',
+                ];
+                $schemas[$m_name]['properties']['date_end'] = [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'x-field' => 'end_date',
+                ];
             }
         }
 

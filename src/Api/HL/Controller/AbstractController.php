@@ -123,7 +123,7 @@ abstract class AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'x-readonly' => $class !== \Entity::class,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
             ]

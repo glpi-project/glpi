@@ -408,4 +408,79 @@ class ITILController extends \HLAPITestCase
             }
         }
     }
+
+    public function testCRUDRecurringITIL()
+    {
+        $this->login();
+        $func_name = __FUNCTION__;
+
+        foreach (['Ticket', 'Change'] as $itil_type) {
+            // Create a ITIL template
+            $template_class = $itil_type . 'Template';
+            $template = new $template_class();
+            $this->integer($templates_id = $template->add([
+                'name' => __FUNCTION__,
+                'content' => 'test',
+                'is_recursive' => 1,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]))->isGreaterThan(0);
+
+            // Create a recurring ITIL item
+            $request = new Request('POST', '/Assistance/Recurring' . $itil_type);
+            $request->setParameter('name', $func_name);
+            $request->setParameter('template', $templates_id);
+            $request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+            $new_item_location = null;
+            $this->api->call($request, function ($call) use (&$new_item_location) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->headers(function ($headers) use (&$new_item_location) {
+                        $this->array($headers)->hasKey('Location');
+                        $this->string($headers['Location'])->isNotEmpty();
+                        $new_item_location = $headers['Location'];
+                    });
+            });
+
+            // Get
+            $this->api->call(new Request('GET', $new_item_location), function ($call) use ($func_name) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($func_name) {
+                        $this->string($content['name'])->isIdenticalTo($func_name);
+                    });
+            });
+
+            // Update
+            $request = new Request('PATCH', $new_item_location);
+            $request->setParameter('name', $func_name . '2');
+            $this->api->call($request, function ($call) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response->isOK();
+            });
+
+            // Verify update
+            $this->api->call(new Request('GET', $new_item_location), function ($call) use ($func_name) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($func_name) {
+                        $this->string($content['name'])->isIdenticalTo($func_name . '2');
+                    });
+            });
+
+            // Delete
+            $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response->isOK();
+            });
+
+            // Verify not found
+            $this->api->call(new Request('GET', $new_item_location), function ($call) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response->isNotFoundError();
+            });
+        }
+    }
 }
