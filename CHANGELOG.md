@@ -24,7 +24,7 @@ The present file will list all changes made to the project; according to the
 #### Removed
 
 
-## [10.0.7] unreleased
+## [10.0.7] 2023-04-05
 
 ### Added
 
