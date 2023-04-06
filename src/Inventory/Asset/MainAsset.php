@@ -710,7 +710,15 @@ abstract class MainAsset extends InventoryAsset
         //handle domains
         if (property_exists($val, 'domains_id')) {
             $domain = new \Domain();
-            if (!$domain->getFromDBByCrit(Sanitizer::sanitize(['name' => $val->domains_id]))) {
+            if (
+                !$domain->getFromDBByCrit(Sanitizer::sanitize(
+                    [
+                        'name' => $val->domains_id,
+                        'is_deleted' => 0,
+                        'entities_id' => $entities_id,
+                    ]
+                ))
+            ) {
                 $domain->add(
                     Sanitizer::sanitize([
                         'name' => $val->domains_id,
