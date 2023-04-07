@@ -1187,28 +1187,7 @@ class Ticket extends CommonITILObject
             foreach ($existing_actors as $actor_itemtype => $actors) {
                 $field = getForeignKeyFieldForItemType($actor_itemtype);
                 $input_key = '_' . $field . '_' . $t;
-                $deleted_key = $input_key . '_deleted';
-                $deleted_actors = array_key_exists($deleted_key, $input) && is_array($input[$deleted_key]) ? array_column($input[$deleted_key], 'items_id') : [];
-                foreach ($actors as $actor) {
-                    if (
-                        !isset($input[$input_key])
-                        || (is_array($input[$input_key]) && !in_array($actor[$field], $input[$input_key]))
-                        || (is_numeric($input[$input_key]) && $actor[$field] !== $input[$input_key])
-                    ) {
-                        if (
-                            !array_key_exists($input_key, $input)
-                            || (!is_array($input[$input_key]) && !is_numeric($input[$input_key]) && empty($input[$input_key]))
-                        ) {
-                            $input[$input_key] = [];
-                        } elseif (!is_array($input[$input_key])) {
-                            $input[$input_key] = [$input[$input_key]];
-                        }
-                        if (!in_array($actor[$field], $deleted_actors)) {
-                            $input[$input_key][]             = $actor[$field];
-                            $tocleanafterrules[$input_key][] = $actor[$field];
-                        }
-                    }
-                }
+                $input[$input_key] = array_diff($input[$input_key] ?? [], array_column($actors, $field));
             }
         }
 
@@ -1270,25 +1249,6 @@ class Ticket extends CommonITILObject
                 ]
             );
             $input = Toolbox::stripslashes_deep($input);
-        }
-
-       // Clean actors fields added for rules
-        foreach ($tocleanafterrules as $key => $values_to_drop) {
-            if (!array_key_exists($key, $input) || !is_array($input[$key])) {
-                // Assign rules may remove input key or replace array by a single value.
-                // In such case, as values were completely redefined by rules, there is no need to filter them.
-                continue;
-            }
-
-            $input[$key] = array_filter(
-                $input[$key],
-                function ($value) use ($values_to_drop) {
-                    return !in_array($value, $values_to_drop);
-                }
-            );
-            if (in_array($key, $post_added) && empty($input[$key])) {
-                unset($input[$key]);
-            }
         }
 
         if (isset($input['_link'])) {
