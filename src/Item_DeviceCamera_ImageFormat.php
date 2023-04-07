@@ -36,7 +36,7 @@
 class Item_DeviceCamera_ImageFormat extends CommonDBRelation
 {
     public static $itemtype_1 = 'Item_DeviceCamera';
-    public static $items_id_1 = 'item_devicecameras_id';
+    public static $items_id_1 = 'items_devicecameras_id';
 
     public static $itemtype_2 = 'ImageFormat';
     public static $items_id_2 = 'imageformats_id';
@@ -55,7 +55,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
                     $nb = countElementsInTable(
                         self::getTable(),
                         [
-                            'item_devicecameras_id' => $item->getID()
+                            'items_devicecameras_id' => $item->getID()
                         ]
                     );
                 }
@@ -103,7 +103,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
         $items = $DB->request([
             'FROM'   => Item_DeviceCamera_ImageFormat::getTable(),
             'WHERE'  => [
-                'item_devicecameras_id' => $camera->getID()
+                'items_devicecameras_id' => $camera->getID()
             ]
         ]);
         $link = new self();

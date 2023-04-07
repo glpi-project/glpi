@@ -47,6 +47,7 @@ use Glpi\System\Requirement\IntegerSize;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\MysqliMysqlnd;
+use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
@@ -135,6 +136,8 @@ class RequirementsManager
         $requirements[] = new SeLinux();
 
         // Below requirements are optionals
+
+        $requirements[] = new PhpSupportedVersion();
 
         $requirements[] = new SessionsSecurityConfiguration();
         $requirements[] = new Extension(

@@ -2356,10 +2356,10 @@ HTML;
             $rand = mt_rand();
         }
 
-        $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input'
+        $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input massive_action_checkbox'
                       title='" . __s('Check all as') . "'
                       name='_checkall_$rand' id='checkall_$rand'
-                      onclick= \"if ( checkAsCheckboxes(this, '$container_id')) {return true;}\">";
+                      onclick= \"if ( checkAsCheckboxes(this, '$container_id', '.massive_action_checkbox')) {return true;}\">";
 
        // permit to shift select checkboxes
         $out .= Html::scriptBlock("\$(function() {\$('#$container_id input[type=\"checkbox\"]').shiftSelectable();});");
@@ -2458,6 +2458,7 @@ HTML;
         $params['zero_on_empty']   = true;
         $params['specific_tags']   = [];
         $params['criterion']       = [];
+        $params['class']           = '';
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -2471,7 +2472,7 @@ HTML;
             $out .= '<input type="hidden" name="' . $params['name'] . '" value="0" />';
         }
 
-        $out .= "<input type='checkbox' class='form-check-input' title=\"" . $params['title'] . "\" ";
+        $out .= "<input type='checkbox' class='form-check-input " . $params['class'] . "' title=\"" . $params['title'] . "\" ";
         if (isset($params['onclick'])) {
             $params['onclick'] = htmlspecialchars($params['onclick'], ENT_QUOTES);
             $out .= " onclick='{$params['onclick']}'";
@@ -2561,6 +2562,7 @@ HTML;
             $options['name'] = "item[$itemtype][" . $id . "]";
         }
 
+        $options['class']         = 'massive_action_checkbox';
         $options['zero_on_empty'] = false;
 
         return self::getCheckbox($options);

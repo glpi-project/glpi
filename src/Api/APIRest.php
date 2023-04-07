@@ -520,6 +520,10 @@ class APIRest extends API
             /** @var array $postvars */
             parse_str($body, $postvars);
             foreach ($postvars as $field => $value) {
+                // $parameters['input'] needs to be an object when process API Request
+                if ($field === 'input') {
+                    $value = (object) $value;
+                }
                 $parameters[$field] = $value;
             }
             $this->format = "html";

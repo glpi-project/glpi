@@ -33,45 +33,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Toolbox;
+namespace Glpi\System\Requirement;
 
-final class URL
+/**
+ * @since 10.0.7
+ */
+class PhpSupportedVersion extends AbstractRequirement
 {
     /**
-     * Sanitize URL to prevent XSS.
-     * /!\ This method only ensure that links are corresponding to a valid URL
-     * (i.e. an absolute URL with a scheme or something that correspond to a path).
-     * To be sure that no XSS is possible, value have to be HTML encoded when it is printed in a HTML page.
+     * Minimal supported version of PHP version.
      *
-     * @param null|string $url
-     *
-     * @return string|null
+     * @var string
+     * @see https://www.php.net/supported-versions
      */
-    final public static function sanitizeURL(?string $url): string
+    private const MIN_SUPPORTED_VERSION = '8.0';
+
+    public function __construct()
     {
-        if ($url === null) {
-            return '';
+        $this->title = __('PHP supported version');
+        $this->description = __('An officially supported PHP version should be used to get the benefits of security and bug fixes.');
+        $this->optional = true;
+    }
+
+    protected function check()
+    {
+        $php_version =  preg_replace('/^(\d+\.\d+)\..*$/', '$1', phpversion());
+
+        if (version_compare($php_version, self::MIN_SUPPORTED_VERSION, '>=')) {
+            $this->validated = true;
+            // No validation message as we cannot be sure that PHP is up-to-date.
+        } else {
+            $this->validated = false;
+            $this->validation_messages[] = sprintf(
+                __('PHP %s official support has ended. An upgrade to a more recent PHP version is recommended.'),
+                $php_version
+            );
         }
-
-        $url = trim($url);
-
-        $url_begin_patterns = [
-            // scheme followed by `//` and a hostname (absolute URL)
-            '[a-z]+:\/\/.+',
-            // `/` that corresponds to either start of a network path (e.g. `//host/path/to/file`)
-            // or a relative URL (e.g. `/`, `/path/to/page`, or `//anothersite.org/`)
-            '\/',
-        ];
-        $url_pattern = '/^(' . implode('|', $url_begin_patterns) . ')/i';
-        if (preg_match($url_pattern, $url) !== 1) {
-            return '';
-        }
-
-        $js_pattern = '/^javascript:/i';
-        if (preg_match($js_pattern, $url)) {
-            return '';
-        }
-
-        return $url;
     }
 }

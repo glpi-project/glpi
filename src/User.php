@@ -1482,26 +1482,28 @@ class User extends CommonDBTM
         $userUpdated = false;
 
         if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
-            $useremail = new UserEmail();
             foreach ($this->input['_useremails'] as $id => $email) {
                 $email = trim($email);
 
-                // existing email
-                if ($id > 0) {
+                $useremail = new UserEmail();
+                if ($id > 0 && $useremail->getFromDB($id) && $useremail->fields['users_id'] === $this->getID()) {
+                    // Existing email attached to current user
+
                     $params = ['id' => $id];
 
-                   // empty email : delete
-                    if (strlen($email) == 0) {
+                    if (strlen($email) === 0) {
+                        // Empty email, delete it
                         $deleted = $useremail->delete($params);
                         $userUpdated = $userUpdated || $deleted;
-                    } else { // Update email
+                    } else {
+                        // Update email
                         $params['email'] = $email;
                         $params['is_default'] = $this->input['_default_email'] == $id ? 1 : 0;
 
                         $existingUserEmail = new UserEmail();
-                        $existingUserEmail->getFromDB($id);
                         if (
-                            $params['email'] == $existingUserEmail->fields['email']
+                            $existingUserEmail->getFromDB($id)
+                            && $params['email'] == $existingUserEmail->fields['email']
                             && $params['is_default'] == $existingUserEmail->fields['is_default']
                         ) {
                              // Do not update if email has not changed
@@ -1511,8 +1513,10 @@ class User extends CommonDBTM
                         $updated = $useremail->update($params);
                         $userUpdated = $userUpdated || $updated;
                     }
-                } else { // New email
-                    $email_input = ['email'    => $email,
+                } else {
+                    // New email
+                    $email_input = [
+                        'email'    => $email,
                         'users_id' => $this->fields['id']
                     ];
                     if (
@@ -2897,7 +2901,7 @@ JAVASCRIPT;
                 echo "</tr>";
             }
 
-            if ($this->can($ID, UPDATE)) {
+            if ($caneditpassword) {
                 echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
 
                 echo "<tr class='tab_bg_1'><td>";
@@ -4232,6 +4236,8 @@ JAVASCRIPT;
 
                 if (count($users)) {
                     $WHERE = ['glpi_users.id' => $users];
+                } else {
+                    $WHERE = ['0'];
                 }
                 break;
 
@@ -4269,6 +4275,8 @@ JAVASCRIPT;
 
                 if (count($users)) {
                     $WHERE = ['glpi_users.id' => $users];
+                } else {
+                    $WHERE = ['0'];
                 }
 
                 break;

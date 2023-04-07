@@ -33,33 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+/**
+ * @var Migration $migration
+ */
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
-Html::header_nocache();
+$migration->dropKey('glpi_items_devicecameras_imageformats', 'item_devicecameras_id');
+$migration->changeField(
+    'glpi_items_devicecameras_imageformats',
+    'item_devicecameras_id',
+    'items_devicecameras_id',
+    "int {$default_key_sign} NOT NULL DEFAULT '0'"
+);
+$migration->addKey('glpi_items_devicecameras_imageformats', 'items_devicecameras_id');
 
-Session::checkLoginUser();
-
-if (isset($_POST['action']) && isset($_POST['id'])) {
-    $agent = new Agent();
-    if (!$agent->getFromDB($_POST['id']) || !$agent->canView()) {
-        Response::sendError(404, 'Unable to load agent #' . $_POST['id']);
-        return;
-    }
-    $answer = [];
-
-    session_write_close();
-    switch ($_POST['action']) {
-        case Agent::ACTION_INVENTORY:
-            $answer = $agent->requestInventory();
-            break;
-
-        case Agent::ACTION_STATUS:
-            $answer = $agent->requestStatus();
-            break;
-    }
-
-    echo json_encode($answer);
-}
+$migration->dropKey('glpi_items_devicecameras_imageresolutions', 'item_devicecameras_id');
+$migration->changeField(
+    'glpi_items_devicecameras_imageresolutions',
+    'item_devicecameras_id',
+    'items_devicecameras_id',
+    "int {$default_key_sign} NOT NULL DEFAULT '0'"
+);
+$migration->addKey('glpi_items_devicecameras_imageresolutions', 'items_devicecameras_id');

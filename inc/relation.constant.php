@@ -786,8 +786,8 @@ $RELATION = [
     ],
 
     'glpi_items_devicecameras' => [
-        '_glpi_items_devicecameras_imageformats' => 'item_devicecameras_id',
-        '_glpi_items_devicecameras_imageresolutions' => 'item_devicecameras_id',
+        '_glpi_items_devicecameras_imageformats' => 'items_devicecameras_id',
+        '_glpi_items_devicecameras_imageresolutions' => 'items_devicecameras_id',
     ],
 
     'glpi_items_devicenetworkcards' => [

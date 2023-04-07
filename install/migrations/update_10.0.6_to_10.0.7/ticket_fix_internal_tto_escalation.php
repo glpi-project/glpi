@@ -33,33 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
-Html::header_nocache();
-
-Session::checkLoginUser();
-
-if (isset($_POST['action']) && isset($_POST['id'])) {
-    $agent = new Agent();
-    if (!$agent->getFromDB($_POST['id']) || !$agent->canView()) {
-        Response::sendError(404, 'Unable to load agent #' . $_POST['id']);
-        return;
-    }
-    $answer = [];
-
-    session_write_close();
-    switch ($_POST['action']) {
-        case Agent::ACTION_INVENTORY:
-            $answer = $agent->requestInventory();
-            break;
-
-        case Agent::ACTION_STATUS:
-            $answer = $agent->requestStatus();
-            break;
-    }
-
-    echo json_encode($answer);
-}
+$migration->addField("glpi_tickets", "ola_tto_begin_date", "datetime");

@@ -1806,7 +1806,6 @@ abstract class API
         $itemtype = $this->handleDepreciation($itemtype);
 
         $input    = isset($params['input']) ? $params["input"] : null;
-        $item     = new $itemtype();
 
         if (is_object($input)) {
             $input = [$input];
@@ -1826,6 +1825,8 @@ abstract class API
             $failed       = 0;
             $index        = 0;
             foreach ($input as $object) {
+                // Use a new instance each time to avoid side effects with data from a previous item (See #14490)
+                $item     = new $itemtype();
                 $object      = $this->inputObjectToArray($object);
                 $current_res = [];
 
@@ -1934,9 +1935,7 @@ abstract class API
     protected function updateItems($itemtype, $params = [])
     {
         $itemtype = $this->handleDepreciation($itemtype);
-
         $input    = isset($params['input']) ? $params["input"] : null;
-        $item     = new $itemtype();
 
         if (is_object($input)) {
             $input = [$input];
@@ -1956,6 +1955,8 @@ abstract class API
             $failed       = 0;
             $index        = 0;
             foreach ($input as $object) {
+                // Use a new instance each time to avoid side effects with data from a previous item (See #14490)
+                $item     = new $itemtype();
                 $current_res = [];
                 if (isset($object->id)) {
                     if (!$item->getFromDB($object->id)) {

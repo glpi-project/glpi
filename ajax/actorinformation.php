@@ -43,243 +43,91 @@ if (strpos($_SERVER['PHP_SELF'], "actorinformation.php")) {
 
 Session::checkLoginUser();
 
+// save value and force boolval for security of $_REQUEST['only_number]
 $only_number = boolval($_REQUEST['only_number'] ?? false);
 
-if (isset($_REQUEST['users_id_requester']) && ($_REQUEST['users_id_requester'] > 0)) {
-    $ticket = new Ticket();
+// check if only one actor key is set
+$actor_keys = preg_grep('/^(users|groups|suppliers)_id_(.*)$/', array_keys($_REQUEST));
+if (count($actor_keys) !== 1) {
+    // Unexpected request
+    return;
+}
 
-    $options2 = [
-        'criteria' => [
-            [
-                'field'      => 4, // users_id_requester
-                'searchtype' => 'equals',
-                'value'      => $_REQUEST['users_id_requester'],
-                'link'       => 'AND',
-            ],
-            [
-                'field'      => 12, // status
-                'searchtype' => 'equals',
-                'value'      => 'notold',
-                'link'       => 'AND',
-            ],
-        ],
-        'reset' => 'reset',
-    ];
+$actor_key = reset($actor_keys);
+$actor_id  = (int)$_REQUEST[$actor_key];
 
-    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-    $nb  = $ticket->countActiveObjectsForUser($_REQUEST['users_id_requester']);
-
-    if ($only_number) {
-        if ($nb > 0) {
-            echo "<a href='$url'>" . $nb . "</a>";
-        }
-    } else {
-        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-        printf(__('%1$s: %2$s'), __('Processing'), $nb);
-        echo ")</a>";
+// check if user is allowed to see the item (only if not current connected user)
+if ($actor_id != Session::getLoginUserID()) {
+    $itemtype = getItemtypeForForeignKeyField($actor_key);
+    $item     = new $itemtype();
+    if (!$item->getFromDB($actor_id) || !$item->canView()) {
+        // Unable to get item or no rights to see the item
+        return;
     }
-} else if (isset($_REQUEST['users_id_observer']) && ($_REQUEST['users_id_observer'] > 0)) {
-    $user_id = (int)$_REQUEST['users_id_observer'];
+}
 
-    $ticket = new Ticket();
+// compute field searchoption number value according to the type of actor
+switch ($actor_key) {
+    case 'users_id_requester':
+        $field = 4;
+        $method = 'countActiveObjectsForUser';
+        break;
+    case 'users_id_observer':
+        $field = 66;
+        $method = 'countActiveObjectsForObserverUser';
+        break;
+    case 'users_id_assign':
+        $field = 5;
+        $method = 'countActiveObjectsForTech';
+        break;
+    case 'groups_id_requester':
+        $field = 71;
+        $method = 'countActiveObjectsForRequesterGroup';
+        break;
+    case 'groups_id_observer':
+        $field = 65;
+        $method = 'countActiveObjectsForObserverGroup';
+        break;
+    case 'groups_id_assign':
+        $field = 8;
+        $method = 'countActiveObjectsForTechGroup';
+        break;
+    case 'suppliers_id_assign':
+        $field = 6;
+        $method = 'countActiveObjectsForSupplier';
+        break;
+    default:
+        // Unexpected request
+        return;
+}
 
-    $options2 = [
-        'criteria' => [
-            [
-                'field'      => 66, // users_id observer
-                'searchtype' => 'equals',
-                'value'      => $user_id,
-                'link'       => 'AND',
-            ],
-            [
-                'field'      => 12, // status
-                'searchtype' => 'equals',
-                'value'      => 'notold',
-                'link'       => 'AND',
-            ],
+$options2 = [
+    'criteria' => [
+        [
+            'field'      => $field,
+            'searchtype' => 'equals',
+            'value'      => $actor_id,
+            'link'       => 'AND',
         ],
-        'reset' => 'reset',
-    ];
-
-    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-    $nb  = $ticket->countActiveObjectsForObserverUser($user_id);
-
-    if ($only_number) {
-        if ($nb > 0) {
-            echo "<a href='$url'>" . $nb . "</a>";
-        }
-    } else {
-        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-        printf(__('%1$s: %2$s'), __('Processing'), $nb);
-        echo ")</a>";
-    }
-} else if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
-    $ticket = new Ticket();
-
-    $options2 = [
-        'criteria' => [
-            [
-                'field'      => 5, // users_id assign
-                'searchtype' => 'equals',
-                'value'      => $_REQUEST['users_id_assign'],
-                'link'       => 'AND',
-            ],
-            [
-                'field'      => 12, // status
-                'searchtype' => 'equals',
-                'value'      => 'notold',
-                'link'       => 'AND',
-            ],
+        [
+            'field'      => 12, // status
+            'searchtype' => 'equals',
+            'value'      => 'notold',
+            'link'       => 'AND',
         ],
-        'reset' => 'reset',
-    ];
+    ],
+    'reset' => 'reset',
+];
 
-    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-    $nb  = $ticket->countActiveObjectsForTech($_REQUEST['users_id_assign']);
+$ticket = new Ticket();
 
-    if ($only_number) {
-        if ($nb > 0) {
-            echo "<a href='$url'>" . $nb . "</a>";
-        }
-    } else {
-        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-        printf(__('%1$s: %2$s'), __('Processing'), $nb);
-        echo ")</a>";
-    }
-} else if (isset($_REQUEST['groups_id_requester']) && ($_REQUEST['groups_id_requester'] > 0)) {
-    $group_id = (int)$_REQUEST['groups_id_requester'];
+$url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
+$nb  = $ticket->{$method}($actor_id);
 
-    $ticket = new Ticket();
-
-    $options2 = [
-        'criteria' => [
-            [
-                'field'      => 71, // groups_id requester
-                'searchtype' => 'equals',
-                'value'      => $group_id,
-                'link'       => 'AND',
-            ],
-            [
-                'field'      => 12, // status
-                'searchtype' => 'equals',
-                'value'      => 'notold',
-                'link'       => 'AND',
-            ],
-        ],
-        'reset' => 'reset',
-    ];
-
-    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-    $nb  = $ticket->countActiveObjectsForRequesterGroup($group_id);
-
-    if ($only_number) {
-        if ($nb > 0) {
-            echo "<a href='$url'>" . $nb . "</a>";
-        }
-    } else {
-        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-        printf(__('%1$s: %2$s'), __('Processing'), $nb);
-        echo ")</a>";
-    }
-} else if (isset($_REQUEST['groups_id_observer']) && ($_REQUEST['groups_id_observer'] > 0)) {
-    $group_id = (int)$_REQUEST['groups_id_observer'];
-
-    $ticket = new Ticket();
-
-    $options2 = [
-        'criteria' => [
-            [
-                'field'      => 65, // groups_id observer
-                'searchtype' => 'equals',
-                'value'      => $group_id,
-                'link'       => 'AND',
-            ],
-            [
-                'field'      => 12, // status
-                'searchtype' => 'equals',
-                'value'      => 'notold',
-                'link'       => 'AND',
-            ],
-        ],
-        'reset' => 'reset',
-    ];
-
-    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-    $nb  = $ticket->countActiveObjectsForObserverGroup($group_id);
-
-    if ($only_number) {
-        if ($nb > 0) {
-            echo "<a href='$url'>" . $nb . "</a>";
-        }
-    } else {
-        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-        printf(__('%1$s: %2$s'), __('Processing'), $nb);
-        echo ")</a>";
-    }
-} else if (isset($_REQUEST['groups_id_assign']) && ($_REQUEST['groups_id_assign'] > 0)) {
-    $ticket = new Ticket();
-
-    $options2 = [
-        'criteria' => [
-            [
-                'field'      => 8, // groups_id assign
-                'searchtype' => 'equals',
-                'value'      => $_REQUEST['groups_id_assign'],
-                'link'       => 'AND',
-            ],
-            [
-                'field'      => 12, // status
-                'searchtype' => 'equals',
-                'value'      => 'notold',
-                'link'       => 'AND',
-            ],
-        ],
-        'reset' => 'reset',
-    ];
-
-    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-    $nb  = $ticket->countActiveObjectsForTechGroup($_REQUEST['groups_id_assign']);
-
-    if ($only_number) {
-        if ($nb > 0) {
-            echo "<a href='$url'>" . $nb . "</a>";
-        }
-    } else {
-        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-        printf(__('%1$s: %2$s'), __('Processing'), $nb);
-        echo ")</a>";
-    }
-} else if (isset($_REQUEST['suppliers_id_assign']) && ($_REQUEST['suppliers_id_assign'] > 0)) {
-    $ticket = new Ticket();
-
-    $options2 = [
-        'criteria' => [
-            [
-                'field'      => 6, // suppliers_id assign
-                'searchtype' => 'equals',
-                'value'      => $_REQUEST['suppliers_id_assign'],
-                'link'       => 'AND',
-            ],
-            [
-                'field'      => 12, // status
-                'searchtype' => 'equals',
-                'value'      => 'notold',
-                'link'       => 'AND',
-            ],
-        ],
-        'reset' => 'reset',
-    ];
-
-    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-    $nb  = $ticket->countActiveObjectsForSupplier($_REQUEST['suppliers_id_assign']);
-
-    if ($only_number) {
-        if ($nb > 0) {
-            echo "<a href='$url'>" . $nb . "</a>";
-        }
-    } else {
-        echo "<a href='$url' title=\"" . __s('Processing') . "\" class='badge rounded-pill bg-secondary'>
-         $nb
-      </a>";
-    }
+if ($only_number) {
+    echo "<a href='$url'>" . $nb . "</a>";
+} else {
+    echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
+    printf(__('%1$s: %2$s'), __('Processing'), $nb);
+    echo ")</a>";
 }

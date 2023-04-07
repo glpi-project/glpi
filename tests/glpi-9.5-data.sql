@@ -62,7 +62,7 @@ INSERT INTO `glpi_changetemplates` (`id`, `name`, `entities_id`, `is_recursive`,
 (1,	'Default',	0,	1,	NULL);
 
 INSERT INTO `glpi_configs` (`id`, `context`, `name`, `value`) VALUES
-(1,	'core',	'version',	'9.5.12'),
+(1,	'core',	'version',	'9.5.13'),
 (2,	'core',	'show_jobs_at_login',	'0'),
 (3,	'core',	'cut',	'250'),
 (4,	'core',	'list_limit',	'15'),

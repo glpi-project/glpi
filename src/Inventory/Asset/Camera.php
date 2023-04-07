@@ -108,7 +108,7 @@ class Camera extends Device
 
             $cam_resolutions = new \Item_DeviceCamera_ImageResolution();
             $data = [
-                'item_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
+                'items_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
                 'imageresolutions_id' => $resolution->fields['id'],
                 'is_dynamic' => 1
             ];
@@ -142,7 +142,7 @@ class Camera extends Device
 
             $cam_formats = new \Item_DeviceCamera_ImageFormat();
             $data = [
-                'item_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
+                'items_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
                 'imageformats_id' => $format->fields['id'],
                 'is_dynamic' => 1
             ];

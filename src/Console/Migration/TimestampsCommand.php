@@ -203,25 +203,19 @@ class TimestampsCommand extends AbstractCommand
             DBConnection::PROPERTY_ALLOW_DATETIME => false,
         ];
 
-        $timezones_requirement = new DbTimezones($this->db);
-        if ($timezones_requirement->isValidated()) {
-            $properties_to_update[DBConnection::PROPERTY_USE_TIMEZONES] = true;
-        } else {
-            $output->writeln(
-                '<error>' . __('Timezones usage cannot be activated due to following errors:') . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
-            foreach ($timezones_requirement->getValidationMessages() as $validation_message) {
+        if ($this->db->use_timezones !== true) {
+            $timezones_requirement = new DbTimezones($this->db);
+            if ($timezones_requirement->isValidated()) {
+                $properties_to_update[DBConnection::PROPERTY_USE_TIMEZONES] = true;
+            } else {
                 $output->writeln(
-                    '<error> - ' . $validation_message . '</error>',
+                    [
+                        '<comment>' . __('Timezones usage cannot be activated due to missing requirements.') . '</comment>',
+                        '<comment>' . sprintf(__('Run the "%1$s" command for more details.'), 'php bin/console database:enable_timezones') . '</comment>',
+                    ],
                     OutputInterface::VERBOSITY_QUIET
                 );
             }
-            $message = sprintf(
-                __('Fix them and run the "%1$s" command to enable timezones.'),
-                'php bin/console database:enable_timezones'
-            );
-            $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
         }
 
         if (!DBConnection::updateConfigProperties($properties_to_update)) {

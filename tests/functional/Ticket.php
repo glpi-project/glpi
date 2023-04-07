@@ -5665,4 +5665,58 @@ HTML
             $this->integer($output->getID())->isEqualTo($expected);
         }
     }
+
+    public function testGetEntitiesForRequesters()
+    {
+        $this->login();
+
+        // Create entities
+        $entity = new Entity();
+        $entity1_id = $entity->add([
+            'name' => __METHOD__ . '1',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->integer($entity1_id)->isGreaterThan(0);
+
+        $entity2_id = $entity->add([
+            'name' => __METHOD__ . '2',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->integer($entity2_id)->isGreaterThan(0);
+        $this->integer($entity2_id)->isGreaterThan($entity1_id);
+
+        $profile_id = getItemByTypeName('Profile', 'Self-Service', true);
+
+        // Create user with 1 profile and 1 entity as default entity
+        $rand = mt_rand();
+        $user = new User();
+        $user_id = $user->add([
+            'name' => "testGetEntitiesForRequesters$rand",
+            'password' => "testGetEntitiesForRequesters",
+            'password2' => "testGetEntitiesForRequesters",
+            '_profiles_id' => $profile_id,
+            '_entities_id' => $entity2_id,
+            'entities_id' => $entity2_id,
+        ]);
+        $this->integer($user_id)->isGreaterThan(0);
+
+        $ticket = new \Ticket();
+        $entities = $ticket->getEntitiesForRequesters(["_users_id_requester" => $user_id]);
+        $this->array($entities)->isIdenticalTo([$entity2_id]);
+
+        // Add user to another entity
+        $profile_user = new \Profile_User();
+        $profile_user_id = (int)$profile_user->add(
+            [
+                'entities_id' => $entity1_id,
+                'profiles_id' => $profile_id,
+                'users_id'    => $user_id,
+            ]
+        );
+        $this->integer($profile_user_id)->isGreaterThan(0);
+
+        // Chek that default entity is first in the list
+        $entities = $ticket->getEntitiesForRequesters(["_users_id_requester" => $user_id]);
+        $this->array($entities)->isIdenticalTo([$entity2_id, $entity1_id]);
+    }
 }

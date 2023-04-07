@@ -641,7 +641,7 @@ abstract class CommonITILObject extends CommonDBTM
         $entities = $_SESSION['glpiactiveentities'] ?? [];
         foreach ($requesters as $users_id) {
             $user_entities = Profile_User::getUserEntities($users_id, true, true);
-            $entities = array_intersect($entities, $user_entities);
+            $entities = array_intersect($user_entities, $entities);
         }
 
         $entities = array_values($entities); // Ensure keys are starting at 0
