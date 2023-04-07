@@ -715,8 +715,7 @@ abstract class MainAsset extends InventoryAsset
                 'WHERE' => [
                     'name' => $val->domains_id,
                     'is_deleted' => 0,
-                    'entities_id' => getEntitiesRestrictCriteria($domain->getTable(), '', $entities_id, true),
-                ],
+                ] + getEntitiesRestrictCriteria($domain->getTable(), '', $entities_id, true),
                 'LIMIT' => 1, // Get the first domain, as we assume that a domain should not be declared multiple times in the same entity scope
             ]);
             if ($matching_domains->count() > 0) {
