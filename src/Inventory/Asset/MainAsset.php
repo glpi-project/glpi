@@ -711,12 +711,15 @@ abstract class MainAsset extends InventoryAsset
         if (property_exists($val, 'domains_id')) {
             $domain = new \Domain();
             $matching_domains = $DB->request([
-                'name' => $val->domains_id,
-                'is_deleted' => 0,
-                'entities_id' => getEntitiesRestrictCriteria($domain->getTable(), '', $entities_id, true),
+                'FROM' => $domain->getTable(),
+                'WHERE' => [
+                    'name' => $val->domains_id,
+                    'is_deleted' => 0,
+                    'entities_id' => getEntitiesRestrictCriteria($domain->getTable(), '', $entities_id, true),
+                ],
+                'LIMIT' => 1, // Get the first domain, as we assume that a domain should not be declared multiple times in the same entity scope
             ]);
             if ($matching_domains->count() > 0) {
-                // Get the first domain, as we assume that a domain should not be declared multiple times in the same entity scope.
                 $domain->getFromResultSet($matching_domains->current());
             } else {
                 $domain->add(
