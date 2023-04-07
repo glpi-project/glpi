@@ -648,7 +648,7 @@ abstract class MainAsset extends InventoryAsset
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         $key = $this->current_key;
         $val = &$this->data[$key];
@@ -710,15 +710,15 @@ abstract class MainAsset extends InventoryAsset
         //handle domains
         if (property_exists($val, 'domains_id')) {
             $domain = new \Domain();
-            if (
-                !$domain->getFromDBByCrit(Sanitizer::sanitize(
-                    [
-                        'name' => $val->domains_id,
-                        'is_deleted' => 0,
-                        'entities_id' => $entities_id,
-                    ]
-                ))
-            ) {
+            $matching_domains = $DB->request([
+                'name' => $val->domains_id,
+                'is_deleted' => 0,
+                'entities_id' => getEntitiesRestrictCriteria($domain->getTable(), '', $entities_id, true),
+            ]);
+            if ($matching_domains->count() > 0) {
+                // Get the first domain, as we assume that a domain should not be declared multiple times in the same entity scope.
+                $domain->getFromResultSet($matching_domains->current());
+            } else {
                 $domain->add(
                     Sanitizer::sanitize([
                         'name' => $val->domains_id,
