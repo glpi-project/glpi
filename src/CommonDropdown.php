@@ -975,16 +975,22 @@ abstract class CommonDropdown extends CommonDBTM
                     $ret .= "</div>"; // .faqadd_block_content
                 } else {
                     $ret .= Html::scriptBlock("
-                  var getKnowbaseItemAnswer$rand = function() {
-                     var knowbaseitems_id = $('#dropdown_knowbaseitems_id$rand').val();
-                     $('#faqadd_block_content$rand').load(
-                        '" . $CFG_GLPI['root_doc'] . "/ajax/getKnowbaseItemAnswer.php',
-                        {
-                           'knowbaseitems_id': knowbaseitems_id
+                        var getKnowbaseItemAnswer$rand = function() {
+                            var knowbaseitems_id = $('#dropdown_knowbaseitems_id$rand').val();
+                            $('#faqadd_block_content$rand').load(
+                                '" . $CFG_GLPI['root_doc'] . "/ajax/getKnowbaseItemAnswer.php',
+                                {
+                                    'knowbaseitems_id': knowbaseitems_id
+                                }
+                            );
+                        };
+                        var setMaxWidth = function() {
+                            var maxWidth = $('#faqadd_block_content$rand').closest('.form-field').width();
+                            $('.faqadd_entries').css('max-width', maxWidth);
                         }
-                     );
-                  };
-               ");
+                        $(window).resize(setMaxWidth);
+                        setMaxWidth();
+                    ");
                     $ret .= "<label for='dropdown_knowbaseitems_id$rand'>" .
                     KnowbaseItem::getTypeName() . "</label>&nbsp;";
                     $ret .= KnowbaseItem::dropdown([
