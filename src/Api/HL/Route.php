@@ -56,7 +56,7 @@ class Route
         public string $path,
         /** @var string[] $methods */
         public array $methods = [],
-        /** @var array<string, string> $requirements */
+        /** @var array<string, string|array> $requirements */
         public array $requirements = [],
         public int $priority = self::DEFAULT_PRIORITY,
         public int $security_level = self::SECURITY_AUTHENTICATED,

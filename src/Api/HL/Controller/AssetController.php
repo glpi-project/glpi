@@ -41,6 +41,7 @@ use Computer;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -174,6 +175,83 @@ final class AssetController extends AbstractController
             }
         }
 
+        $schemas['Cartridge'] = [
+            'x-itemtype' => \Cartridge::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'entities_id' => self::getDropdownTypeSchema(Entity::class),
+                'cartridgeitems_id' => self::getDropdownTypeSchema(\CartridgeItem::class),
+                'pages' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'date_in' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_use' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_out' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ]
+        ];
+
+        $schemas['CartridgeItem'] = [
+            'x-itemtype' => \CartridgeItem::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'printer_models' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'description' => 'List of printer models that can use this cartridge',
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-join' => [
+                            'table' => \PrinterModel::getTable(),
+                            'fkey' => 'printermodels_id',
+                            'field' => 'id',
+                            'ref_join' => [
+                                'table' => \CartridgeItem_PrinterModel::getTable(),
+                                'fkey' => 'id', // The ID field of the main table used to refer to the cartridgeitems_id of the joined table
+                                'field' => \CartridgeItem::getForeignKeyField(),
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'x-readonly' => true,
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                            'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
+                'cartridges' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'description' => 'List of cartridges',
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-join' => [
+                            'table' => \Cartridge::getTable(),
+                            'fkey' => 'id',
+                            'field' => \CartridgeItem::getForeignKeyField(),
+                        ],
+                        'properties' => array_filter($schemas['Cartridge']['properties'], static function ($key) {
+                            return !in_array($key, [\CartridgeItem::getForeignKeyField(), Entity::getForeignKeyField()], true);
+                        }, ARRAY_FILTER_USE_KEY)
+                    ]
+                ]
+            ]
+        ];
+
         return $schemas;
     }
 
@@ -229,7 +307,7 @@ final class AssetController extends AbstractController
             $asset_paths[] = [
                 'itemtype'  => $asset_type,
                 'name'      => $asset_name,
-                'href'      => $this->getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $asset_type]),
+                'href'      => self::getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $asset_type]),
             ];
         }
         return new JSONResponse($asset_paths);
@@ -238,8 +316,9 @@ final class AssetController extends AbstractController
     private function getGlobalAssetSchema()
     {
         $asset_schemas = self::getKnownSchemas();
-        $asset_schemas = array_filter($asset_schemas, static function ($key) {
-            return !str_starts_with($key, '_');
+        $asset_types = self::getAssetTypes();
+        $asset_schemas = array_filter($asset_schemas, static function ($key) use ($asset_types) {
+            return !str_starts_with($key, '_') && in_array($key, $asset_types, true);
         }, ARRAY_FILTER_USE_KEY);
 
         $shared_properties = [];
@@ -280,7 +359,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Global', methods: ['GET'], tags: ['Assets'])]
     public function searchAll(Request $request): Response
     {
-        return $this->searchBySchema($this->getGlobalAssetSchema(), $request->getParameters());
+        return Search::searchBySchema($this->getGlobalAssetSchema(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: ['itemtype' => [self::class, 'getAssetTypes']], tags: ['Assets'])]
@@ -290,7 +369,7 @@ final class AssetController extends AbstractController
     public function search(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return $this->searchBySchema($this->getKnownSchema($itemtype), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema($itemtype), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
@@ -303,7 +382,7 @@ final class AssetController extends AbstractController
     public function getItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return $this->getOneBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
@@ -315,7 +394,7 @@ final class AssetController extends AbstractController
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return $this->createBySchema($this->getKnownSchema($itemtype), $request->getParameters() + ['itemtype' => $itemtype], 'getItem');
+        return Search::createBySchema($this->getKnownSchema($itemtype), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
@@ -328,7 +407,7 @@ final class AssetController extends AbstractController
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return $this->updateBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
@@ -341,6 +420,99 @@ final class AssetController extends AbstractController
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return $this->deleteBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Cartridge', methods: ['GET'], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'List or search cartridges models'
+    )]
+    public function searchCartidgeItems(Request $request): Response
+    {
+        return Search::searchBySchema($this->getKnownSchema('CartridgeItem'), $request->getParameters());
+    }
+
+    #[Route(path: '/Cartridge/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+'
+    ], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Get a cartridge model by ID',
+    )]
+    public function getCartidgeItems(Request $request): Response
+    {
+        return Search::getOneBySchema($this->getKnownSchema('CartridgeItem'), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Cartridge', methods: ['POST'], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Create a cartridge model',
+    )]
+    public function createCartidgeItems(Request $request): Response
+    {
+        return Search::createBySchema($this->getKnownSchema('CartridgeItem'), $request->getParameters(), [self::class, 'getCartridgeItems']);
+    }
+
+    #[Route(path: '/Cartridge/{id}', methods: ['PATCH'], requirements: [
+        'id' => '\d+'
+    ], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Update a cartridge model by ID',
+    )]
+    public function updateCartidgeItems(Request $request): Response
+    {
+        return Search::updateBySchema($this->getKnownSchema('CartridgeItem'), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Cartridge/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+'
+    ], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Delete a cartridge model by ID',
+    )]
+    public function deleteCartidgeItems(Request $request): Response
+    {
+        return Search::deleteBySchema($this->getKnownSchema('CartridgeItem'), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+'
+    ], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Get a cartridge by ID',
+    )]
+    public function getCartidges(Request $request): Response
+    {
+        return Search::getOneBySchema($this->getKnownSchema('Cartridge'), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Create a cartridge',
+    )]
+    public function createCartidges(Request $request): Response
+    {
+        return Search::createBySchema($this->getKnownSchema('Cartridge'), $request->getParameters(), [self::class, 'getCartridges']);
+    }
+
+    #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['PATCH'], requirements: [
+        'id' => '\d+'
+    ], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Update a cartridge by ID',
+    )]
+    public function updateCartidges(Request $request): Response
+    {
+        return Search::updateBySchema($this->getKnownSchema('Cartridge'), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+'
+    ], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Delete a cartridge by ID',
+    )]
+    public function deleteCartidges(Request $request): Response
+    {
+        return Search::deleteBySchema($this->getKnownSchema('Cartridge'), $request->getAttributes(), $request->getParameters());
     }
 }

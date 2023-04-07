@@ -41,6 +41,7 @@ use CommonITILObject;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -199,7 +200,7 @@ final class ITILController extends AbstractController
     public function search(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return $this->searchBySchema($this->getKnownSchema($itemtype), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema($itemtype), $request->getParameters());
     }
 
     #[Route(path: '/{id}', methods: ['GET'])]
@@ -217,7 +218,7 @@ final class ITILController extends AbstractController
     public function getItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return $this->getOneBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/', methods: ['POST'])]
@@ -227,7 +228,7 @@ final class ITILController extends AbstractController
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return $this->createBySchema($this->getKnownSchema($itemtype), $request->getParameters() + ['itemtype' => $itemtype], 'getItem');
+        return Search::createBySchema($this->getKnownSchema($itemtype), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[Route(path: '/{id}', methods: ['PATCH'])]
@@ -245,7 +246,7 @@ final class ITILController extends AbstractController
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return $this->updateBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{id}', methods: ['DELETE'])]
@@ -263,7 +264,7 @@ final class ITILController extends AbstractController
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return $this->deleteBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 
     /**
