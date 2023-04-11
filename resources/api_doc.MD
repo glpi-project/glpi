@@ -3,7 +3,7 @@
 ## Introduction
 
 The GLPI API is a RESTful API. This version of the API is referred to as the "High-level API".
-The original API is now referred to as the "legacy API" but it is still available and in some cases, allows more advanced functionality at the cost of user-friendliness.
+The original API is now referred to as the "legacy API" but it is still available and in some cases, allows more functionality at the cost of user-friendliness.
 
 For more information on the legacy API, see the [legacy API documentation](../apirest.md).
 
@@ -70,25 +70,25 @@ The GLPI supports "REST Query Language" (RSQL) filtering for certain endpoints t
 RSQL itself is a super-set of the "Feed Item Query Language" (FIQL).
 It allows for an intuitive and easy to use syntax for filtering collections of items.
 
-The basic syntax is as follows: `<field><operator><value>`.
+The basic syntax is as follows: `<field><operator><value>`. For some operators, there is no value, so the syntax is just `<field><operator>`.
 
 ### Operators
-| Operator | Description | Example |
-|----------|-------------|---------|
-| `==` | Equal to | `name==John` |
-| `!=` | Not equal to | `name!=John` |
-| `=in=` | In | `name=in=(John,Paul)` |
-| `=out=` | Not in | `name=out=(John,Paul)` |
- | `=lt=` | Less than | `age=lt=18` |
- | `=le=` | Less than or equal to | `age=le=18` |
- | `=gt=` | Greater than | `age=gt=18` |
- | `=ge=` | Greater than or equal to | `age=ge=18` |
- | `=like=` | Like | `name=like=John` |
-| `=ilike=` | Case insensitive like | `name=ilike=John` |
-| `=isnull=` | Is null | `name=isnull=` |
-| `=isnotnull=` | Is not null | `name=isnotnull=` |
-| `=empty=` | Is empty | `name=empty=` |
-| `=notempty=` | Is not empty | `name=notempty=` |
+| Operator      | Description              | Example                |
+|---------------|--------------------------|------------------------|
+| `==`          | Equal to                 | `name==John`           |
+| `!=`          | Not equal to             | `name!=John`           |
+| `=in=`        | In                       | `name=in=(John,Paul)`  |
+| `=out=`       | Not in                   | `name=out=(John,Paul)` |
+ | `=lt=`        | Less than                | `age=lt=18`            |
+ | `=le=`        | Less than or equal to    | `age=le=18`            |
+ | `=gt=`        | Greater than             | `age=gt=18`            |
+ | `=ge=`        | Greater than or equal to | `age=ge=18`            |
+ | `=like=`      | Like                     | `name=like=John`       |
+| `=ilike=`     | Case insensitive like    | `name=ilike=John`      |
+| `=isnull=`    | Is null                  | `name=isnull=`         |
+| `=isnotnull=` | Is not null              | `name=isnotnull=`      |
+| `=empty=`     | Is empty                 | `name=empty=`          |
+| `=notempty=`  | Is not empty             | `name=notempty=`       |
 
 The fields available for filtering are dependent on the endpoint. Everything that is returned by the endpoint can be filtered on in the exact same format that they are returned from the server.
 For example, if an endpoint returns a collection of items and each item has an `emails` property with an array of email addresses which each contain an `email` property, you can filter using `emails.email` as the field name in the filter.
