@@ -9089,6 +9089,8 @@ HTML;
         // 2. Escape raw value to protect SQL special chars.
         $val = Sanitizer::dbEscape(Sanitizer::unsanitize($val));
 
+        $val = str_replace('\\\\', '\\\\\\\\', $val);
+
        // escape _ char used as wildcard in mysql likes
         $val = str_replace('_', '\\_', $val);
 
