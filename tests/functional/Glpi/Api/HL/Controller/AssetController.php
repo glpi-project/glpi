@@ -285,7 +285,7 @@ class AssetController extends \HLAPITestCase
         });
 
         // Get and verify
-        $this->api->call(new Request('GET', $new_item_location), function ($call)  {
+        $this->api->call(new Request('GET', $new_item_location), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()

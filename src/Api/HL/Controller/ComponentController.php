@@ -91,7 +91,7 @@ class ComponentController extends AbstractController
             'serial' => ['type' => Doc\Schema::TYPE_STRING],
             'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
             'location' => self::getDropdownTypeSchema(\Location::class),
-            'state' => self::getDropdownTypeSchema(\State::class),
+            'status' => self::getDropdownTypeSchema(\State::class),
             'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
         ];
@@ -271,7 +271,7 @@ class ComponentController extends AbstractController
                 'x-itemtype' => \Item_DeviceBattery::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'battery' => self::getDropdownTypeSchema(\DeviceBattery::class),
+                    'battery' => self::getDropdownTypeSchema(\DeviceBattery::class, null, 'designation'),
                     'date_manufacture' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_DATE,
@@ -283,22 +283,22 @@ class ComponentController extends AbstractController
             'CameraItem' => [
                 'x-itemtype' => \Item_DeviceCamera::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
-                'properties' => $common_item_device_properties + [
-                    'camera' => self::getDropdownTypeSchema(\DeviceCamera::class),
-                ]
+                'properties' => array_filter($common_item_device_properties + [
+                    'camera' => self::getDropdownTypeSchema(\DeviceCamera::class, null, 'designation'),
+                ], static fn($key) => !in_array($key, ['status', 'location', 'serial', 'otherserial']), ARRAY_FILTER_USE_KEY) // Cameras don't follow the general schema of the others
             ],
             'CaseItem' => [
                 'x-itemtype' => \Item_DeviceCase::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'case' => self::getDropdownTypeSchema(\DeviceCase::class),
+                    'case' => self::getDropdownTypeSchema(\DeviceCase::class, null, 'designation'),
                 ]
             ],
             'ControllerItem' => [
                 'x-itemtype' => \Item_DeviceControl::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'controller' => self::getDropdownTypeSchema(\DeviceControl::class),
+                    'controller' => self::getDropdownTypeSchema(\DeviceControl::class, null, 'designation'),
                     'busID' => ['type' => Doc\Schema::TYPE_STRING],
                 ]
             ],
@@ -306,7 +306,7 @@ class ComponentController extends AbstractController
                 'x-itemtype' => \Item_DeviceDrive::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'drive' => self::getDropdownTypeSchema(\DeviceDrive::class),
+                    'drive' => self::getDropdownTypeSchema(\DeviceDrive::class, null, 'designation'),
                     'busID' => ['type' => Doc\Schema::TYPE_STRING],
                 ]
             ],
@@ -314,21 +314,21 @@ class ComponentController extends AbstractController
                 'x-itemtype' => \Item_DeviceFirmware::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'firmware' => self::getDropdownTypeSchema(\DeviceFirmware::class),
+                    'firmware' => self::getDropdownTypeSchema(\DeviceFirmware::class, null, 'designation'),
                 ]
             ],
             'GenericDeviceItem' => [
                 'x-itemtype' => \Item_DeviceGeneric::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'generic_device' => self::getDropdownTypeSchema(\DeviceGeneric::class),
+                    'generic_device' => self::getDropdownTypeSchema(\DeviceGeneric::class, null, 'designation'),
                 ]
             ],
             'GraphicCardItem' => [
                 'x-itemtype' => \Item_DeviceGraphicCard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'graphic_card' => self::getDropdownTypeSchema(\DeviceGraphicCard::class),
+                    'graphic_card' => self::getDropdownTypeSchema(\DeviceGraphicCard::class, null, 'designation'),
                     'busID' => ['type' => Doc\Schema::TYPE_STRING],
                     'memory' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 ]
@@ -337,7 +337,7 @@ class ComponentController extends AbstractController
                 'x-itemtype' => \Item_DeviceHardDrive::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'hard_drive' => self::getDropdownTypeSchema(\DeviceHardDrive::class),
+                    'hard_drive' => self::getDropdownTypeSchema(\DeviceHardDrive::class, null, 'designation'),
                     'busID' => ['type' => Doc\Schema::TYPE_STRING],
                     'capacity' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 ]
@@ -346,7 +346,7 @@ class ComponentController extends AbstractController
                 'x-itemtype' => \Item_DeviceMemory::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'memory' => self::getDropdownTypeSchema(\DeviceMemory::class),
+                    'memory' => self::getDropdownTypeSchema(\DeviceMemory::class, null, 'designation'),
                     'busID' => ['type' => Doc\Schema::TYPE_STRING],
                     'size' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 ]
@@ -355,7 +355,7 @@ class ComponentController extends AbstractController
                 'x-itemtype' => \Item_DeviceNetworkCard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'network_card' => self::getDropdownTypeSchema(\DeviceNetworkCard::class),
+                    'network_card' => self::getDropdownTypeSchema(\DeviceNetworkCard::class, null, 'designation'),
                     'busID' => ['type' => Doc\Schema::TYPE_STRING],
                     'mac' => ['type' => Doc\Schema::TYPE_STRING],
                 ]
@@ -364,7 +364,7 @@ class ComponentController extends AbstractController
                 'x-itemtype' => \Item_DevicePci::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'pci_device' => self::getDropdownTypeSchema(\DevicePci::class),
+                    'pci_device' => self::getDropdownTypeSchema(\DevicePci::class, null, 'designation'),
                     'busID' => ['type' => Doc\Schema::TYPE_STRING],
                 ]
             ],
@@ -372,33 +372,32 @@ class ComponentController extends AbstractController
                 'x-itemtype' => \Item_DevicePowerSupply::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'power_supply' => self::getDropdownTypeSchema(\DevicePowerSupply::class),
+                    'power_supply' => self::getDropdownTypeSchema(\DevicePowerSupply::class, null, 'designation'),
                 ]
             ],
             'ProcessorItem' => [
                 'x-itemtype' => \Item_DeviceProcessor::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'processor' => self::getDropdownTypeSchema(\DeviceProcessor::class),
+                    'processor' => self::getDropdownTypeSchema(\DeviceProcessor::class, null, 'designation'),
                     'busID' => ['type' => Doc\Schema::TYPE_STRING],
                     'frequency' => ['type' => Doc\Schema::TYPE_STRING],
                     'nbcores' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                     'nbthreads' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
-                    'model' => self::getDropdownTypeSchema(\DeviceProcessorModel::class),
                 ]
             ],
             'SensorItem' => [
                 'x-itemtype' => \Item_DeviceSensor::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'sensor' => self::getDropdownTypeSchema(\DeviceSensor::class),
+                    'sensor' => self::getDropdownTypeSchema(\DeviceSensor::class, null, 'designation'),
                 ]
             ],
             'SIMCardItem' => [
                 'x-itemtype' => \Item_DeviceSimcard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'sim_card' => self::getDropdownTypeSchema(\DeviceSimcard::class),
+                    'sim_card' => self::getDropdownTypeSchema(\DeviceSimcard::class, null, 'designation'),
                     'pin' => ['type' => Doc\Schema::TYPE_STRING],
                     'pin2' => ['type' => Doc\Schema::TYPE_STRING],
                     'puk' => ['type' => Doc\Schema::TYPE_STRING],
@@ -413,7 +412,7 @@ class ComponentController extends AbstractController
                 'x-itemtype' => \Item_DeviceSoundCard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'sound_card' => self::getDropdownTypeSchema(\DeviceSoundCard::class),
+                    'sound_card' => self::getDropdownTypeSchema(\DeviceSoundCard::class, null, 'designation'),
                     'busID' => ['type' => Doc\Schema::TYPE_STRING],
                 ]
             ],
@@ -421,7 +420,7 @@ class ComponentController extends AbstractController
                 'x-itemtype' => \Item_DeviceMotherboard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
-                    'systemboard' => self::getDropdownTypeSchema(\DeviceMotherboard::class),
+                    'systemboard' => self::getDropdownTypeSchema(\DeviceMotherboard::class, null, 'designation'),
                 ]
             ],
         ];
@@ -463,7 +462,7 @@ class ComponentController extends AbstractController
                 $supported_types[] = [
                     'itemtype' => $device_type,
                     'name' => $device_type::getTypeName(1),
-                    'href' => $CFG_GLPI['root_doc'] . '/apirest.php/Components/' . $device_type,
+                    'href' => self::getAPIPathForRouteFunction(self::class, 'getComponentTypes', ['component_type' => $device_type]),
                 ];
             }
         }
@@ -483,9 +482,36 @@ class ComponentController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema($component_type), $request->getParameters());
     }
 
-    #[Route(path: '/Components/{component_type}/{component_id}', methods: ['GET'], requirements: [
+    #[Route(path: '/Components/{component_type}/{id}', methods: ['GET'], requirements: [
         'component_type' => '\w*',
-        'component_id' => '\d+'
+        'id' => '\d+'
+    ], tags: ['Components'])]
+    #[Doc\Route(
+        description: 'Get a specific component definition',
+    )]
+    public function getComponentType(Request $request): Response
+    {
+        $component_type = $request->getAttribute('component_type');
+        return Search::getOneBySchema($this->getKnownSchema($component_type), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Components/{component_type}', methods: ['POST'], requirements: [
+        'component_type' => '\w*'
+    ], tags: ['Components'])]
+    #[Doc\Route(
+        description: 'Create a component definition of the specified type',
+    )]
+    public function createComponentType(Request $request): Response
+    {
+        $component_type = $request->getAttribute('component_type');
+        // Needed to determine the correct URL for getComponentsOfType route
+        $request->setParameter('component_type', $component_type);
+        return Search::createBySchema($this->getKnownSchema($component_type), $request->getParameters(), [self::class, 'getComponentType']);
+    }
+
+    #[Route(path: '/Components/{component_type}/{id}/Items', methods: ['GET'], requirements: [
+        'component_type' => '\w*',
+        'id' => '\d+'
     ], tags: ['Components'])]
     #[Doc\Route(
         description: 'Get the components of a specific component definition',
@@ -493,7 +519,7 @@ class ComponentController extends AbstractController
     public function getComponentsOfType(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
-        $component_id = $request->getAttribute('component_id');
+        $component_id = $request->getAttribute('id');
         $item_schema = $this->getKnownSchema($component_type . 'Item');
         // Find property that links to the component type
         $component_property = null;
@@ -512,6 +538,32 @@ class ComponentController extends AbstractController
 
         $request->setParameter($component_property, $component_id);
         return Search::searchBySchema($item_schema, $request->getParameters());
+    }
+
+    #[Route(path: '/Components/{component_type}/{id}', methods: ['PATCH'], requirements: [
+        'component_type' => '\w*',
+        'id' => '\d+'
+    ], tags: ['Components'])]
+    #[Doc\Route(
+        description: 'Update a component definition of the specified type',
+    )]
+    public function updateComponentType(Request $request): Response
+    {
+        $component_type = $request->getAttribute('component_type');
+        return Search::updateBySchema($this->getKnownSchema($component_type), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Components/{component_type}/{id}', methods: ['DELETE'], requirements: [
+        'component_type' => '\w*',
+        'id' => '\d+'
+    ], tags: ['Components'])]
+    #[Doc\Route(
+        description: 'Delete a component definition of the specified type',
+    )]
+    public function deleteComponentType(Request $request): Response
+    {
+        $component_type = $request->getAttribute('component_type');
+        return Search::deleteBySchema($this->getKnownSchema($component_type), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}/Items/{id}', methods: ['GET'], requirements: [
