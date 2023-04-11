@@ -984,12 +984,6 @@ abstract class CommonDropdown extends CommonDBTM
                                 }
                             );
                         };
-                        var setMaxWidth = function() {
-                            var maxWidth = $('#faqadd_block_content$rand').closest('.form-field').width();
-                            $('.faqadd_entries').css('max-width', maxWidth);
-                        }
-                        $(window).resize(setMaxWidth);
-                        setMaxWidth();
                     ");
                     $ret .= "<label for='dropdown_knowbaseitems_id$rand'>" .
                     KnowbaseItem::getTypeName() . "</label>&nbsp;";
@@ -1004,6 +998,14 @@ abstract class CommonDropdown extends CommonDBTM
                     $ret .= $kbitem->showFull(['display' => false]);
                     $ret .= "</div>"; // .faqadd_block_content
                 }
+                $ret .= Html::scriptBlock("
+                        var setMaxWidth = function() {
+                            var maxWidth = $('#faqadd_block_content$rand').closest('.form-field').width();
+                            $('.faqadd_entries').css('max-width', maxWidth);
+                        }
+                        $(window).resize(setMaxWidth);
+                        setMaxWidth();
+                    ");
                 $ret .= "</div>"; // .faqadd_entries
                 $ret .= "</div>"; // .faqadd_block
             }
