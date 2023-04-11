@@ -9089,6 +9089,12 @@ HTML;
         // 2. Escape raw value to protect SQL special chars.
         $val = Sanitizer::dbEscape(Sanitizer::unsanitize($val));
 
+        // Backslashes must be doubled in LIKE clause, according to MySQL documentation:
+        // https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html
+        // > To search for \, specify it as \\\\; this is because the backslashes are stripped once by the parser
+        // > and again when the pattern match is made, leaving a single backslash to be matched against.
+        //
+        // At this point, backslashes are already escaped, so escaped backslashes (\\) have to be transformed to \\\\.
         $val = str_replace('\\\\', '\\\\\\\\', $val);
 
        // escape _ char used as wildcard in mysql likes
