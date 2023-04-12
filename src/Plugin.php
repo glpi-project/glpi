@@ -129,7 +129,7 @@ class Plugin extends CommonDBTM
      *
      * @var array
      */
-    private array $plugins_informations;
+    private ?array $plugins_informations = null;
 
     public static function getTypeName($nb = 0)
     {
@@ -495,7 +495,29 @@ class Plugin extends CommonDBTM
         // Prevent duplicated checks
         $directories = array_unique($directories);
 
-        // Build plugin info data once before iterating to save performances
+        // Check all directories from the checklist
+        foreach ($directories as $directory) {
+            if (in_array($directory, $excluded_plugins)) {
+                continue;
+            }
+            $this->checkPluginState($directory);
+        }
+
+        self::$plugins_state_checked = true;
+    }
+
+    /**
+     * Build plugin info data once to save performances
+     *
+     * @return void
+     */
+    private function loadPluginInformations(): void
+    {
+        // Run once
+        if ($this->plugins_informations !== null) {
+            return;
+        }
+
         $plugins_informations = [];
         $plugins_directories = new DirectoryIterator(GLPI_ROOT . '/plugins');
         foreach ($plugins_directories as $plugin_directory) {
@@ -512,18 +534,7 @@ class Plugin extends CommonDBTM
             $plugins_informations[$plugin_name] = $info;
         }
         $this->plugins_informations = $plugins_informations;
-
-        // Check all directories from the checklist
-        foreach ($directories as $directory) {
-            if (in_array($directory, $excluded_plugins)) {
-                continue;
-            }
-            $this->checkPluginState($directory);
-        }
-
-        self::$plugins_state_checked = true;
     }
-
 
     /**
      * Check plugin state.
@@ -534,7 +545,7 @@ class Plugin extends CommonDBTM
      */
     public function checkPluginState($plugin_key)
     {
-
+        $this->loadPluginInformations();
         $plugin = new self();
 
         $informations = $this->plugins_informations[$plugin_key] ?? [];
