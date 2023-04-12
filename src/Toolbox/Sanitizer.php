@@ -230,7 +230,7 @@ class Sanitizer
         $class_match = [];
 
         return preg_match(
-            '/^(?<class>(([a-zA-Z0-9_]+\\\)+[a-zA-Z0-9_]+))(:?:[a-zA-Z0-9_]+)?(\$[0-9]+)*$/',
+            '/^(?<class>(([a-zA-Z0-9_]+\\\)+[a-zA-Z0-9_]+))(:?:[a-zA-Z0-9_]+)?(\$[0-9]+)?$/',
             $value,
             $class_match
         ) && class_exists($class_match['class']);
