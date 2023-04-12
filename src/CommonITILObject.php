@@ -3976,6 +3976,27 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
+        $location_so = Location::rawSearchOptionsToAdd();
+        foreach ($location_so as &$so) {
+           //duplicated search options :(
+            switch ($so['id']) {
+                case 3:
+                    $so['id'] = 83;
+                    break;
+                case 91:
+                    $so['id'] = 84;
+                    break;
+                case 92:
+                    $so['id'] = 85;
+                    break;
+                case 93:
+                    $so['id'] = 86;
+                    break;
+            }
+        }
+
+        $tab = array_merge($tab, $location_so);
+
         $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
 
         return $tab;
