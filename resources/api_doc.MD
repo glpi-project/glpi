@@ -11,6 +11,7 @@ For more information on the legacy API, see the [legacy API documentation](../ap
 
 Authentication for the API is all done via OAuth2.
 The following OAuth2 grant types are supported:
+
 - Password: Authenticate with a client ID, secret, and username/password. This is the recommended method for automated scripts.
 - Authorization Code: Interactive authentication. This is the recommended method for user-facing applications.
 
@@ -29,6 +30,7 @@ There will also be a field to specify the allowed grant types.
 ### Password Grant
 
 To authenticate with the password grant, you will need to make a POST request to the `/api.php/token` endpoint with the following parameters in the request body:
+
 - `grant_type`: `password`
 - `client_id`: The client ID of the client you are using
 - `client_secret`: The client secret of the client you are using
@@ -37,6 +39,7 @@ To authenticate with the password grant, you will need to make a POST request to
 - `scope`: The scope of the request. This must be supplied but is not currently used. It can be an empty string.
 
 The endpoint will respond (if successful) with a JSON object containing the following fields:
+
 - `token_type`: `Bearer`
 - `expires_in`: The number of seconds until the token expires. By default, this is set to 1 hour, but it can be controlled by defining the `GLPI_OAUTH_ACCESS_TOKEN_EXPIRES` in your `config/local_define.php` file (See the [installation documentation](https://glpi-install.readthedocs.io/en/latest/install/index.html#files-and-directories-locations) for more information on configuring GLPI config constants).
 - `access_token`: The access token that can be used to authenticate future requests.
@@ -46,6 +49,7 @@ For API requests, you should include the access token in the `Authorization` hea
 ### Authorization Code Grant
 
 To authenticate with the authorization code grant, you will need to make a GET request to the `/api.php/authorize` endpoint with the following parameters in the query string:
+
 - `response_type`: `code`
 - `client_id`: The client ID of the client you are using
 - `scope`: The scope of the request. This must be supplied but is not currently used. It can be an empty string.
@@ -53,12 +57,14 @@ To authenticate with the authorization code grant, you will need to make a GET r
 The endpoint will respond with a redirect to the GLPI login page.
 If successful, the user will be redirected back to the client with a `code` parameter in the query string.
 This code can be used to get an access token by making a POST request to the `/api.php/token` endpoint with the following parameters in the request body:
+
 - `grant_type`: `authorization_code`
 - `client_id`: The client ID of the client you are using
 - `client_secret`: The client secret of the client you are using
 - `code`: The code returned by the `/api.php/authorize` endpoint
 
 The endpoint will respond (if successful) with a JSON object containing the following fields:
+
 - `token_type`: `Bearer`
 - `expires_in`: The number of seconds until the token expires. By default, this is set to 1 hour, but it can be controlled by defining the `GLPI_OAUTH_ACCESS_TOKEN_EXPIRES` in your `config/local_define.php` file (See the [installation documentation](https://glpi-install.readthedocs.io/en/latest/install/index.html#files-and-directories-locations) for more information on configuring GLPI config constants).
 - `access_token`: The access token that can be used to authenticate future requests.

@@ -44,10 +44,10 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\OAuth\Server;
-use Glpi\OAuth\UserRepository;
 use Glpi\System\Status\StatusChecker;
-use GuzzleHttp\Psr7\ServerRequest;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Glpi\UI\ThemeManager;
+use Michelf\MarkdownExtra;
 use Session;
 
 final class CoreController extends AbstractController
@@ -216,6 +216,65 @@ HTML;
         }
         $schema = $generator->getSchema();
         return new JSONResponse($schema);
+    }
+
+    #[Route(path: '/getting-started{ext}', methods: ['GET'], requirements: ['ext' => '(.md)?'], security_level: Route::SECURITY_NONE)]
+    #[Doc\Route(
+        description: 'Displays the general API documentation to get started.',
+        parameters: [
+            [
+                'name' => 'ext',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'description' => 'An optional ".md" extension. Does not change the output format',
+                'schema' => ['type' => 'string']
+            ]
+        ],
+    )]
+    public function showGettingStarted(Request $request): Response
+    {
+        $documentation_file = GLPI_ROOT . '/resources/api_doc.MD';
+        $documentation = file_get_contents($documentation_file);
+        // Markdown to HTML
+        $html_docs = MarkdownExtra::defaultTransform($documentation);
+
+        // Some very basic replacements to make the HTML look better (Use Tabler/Bootstrap classes)
+        // Place tables in a flex column where on lg screens, they take 75% of the width and on xl screens, they take 50% of the width
+        $html_docs = preg_replace(
+            '/<table>(.*?)<\/table>/s',
+            '<div class="d-flex flex-column"><div class="col-12 col-md-8 col-xl-6"><table class="table table-bordered">$1</table></div></div>',
+            $html_docs
+        );
+
+        $twig_params = [
+            'title' => __('API Getting Started'),
+            'css_files' => [],
+        ];
+        $twig_params['css_files'][] = ['path' => ThemeManager::getInstance()->getCurrentTheme()->getPath()];
+
+        $content = TemplateRenderer::getInstance()->render('layout/parts/head.html.twig', $twig_params);
+        $content .= '<body><div class="container py-2">';
+        // If not logged in, inject some basic CSS in case the browser says they prefer a dark color scheme
+        if (!Session::getLoginUserID()) {
+            $content .= <<<HTML
+                <style>
+                    @media (prefers-color-scheme: dark) {
+                        body {
+                            --tblr-body-bg: #000000;
+                            --tblr-body-color: #ffffff;
+                            --tblr-code-bg: #404040;
+                            --tblr-code-color: #ffffff;
+                        }
+                    }
+                </style>
+HTML;
+
+        }
+        $content .= $html_docs;
+        $content .= '</div></body>';
+
+        return new Response(200, [
+            'Content-Type' => 'text/html',
+        ], $content);
     }
 
     private function getAllowedMethodsForMatchedRoute(Request $request): array
