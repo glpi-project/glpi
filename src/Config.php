@@ -653,26 +653,49 @@ class Config extends CommonDBTM
         }
         echo "<table class='tab_cadre_fixe'>";
 
-        echo "<tr><th colspan='4'>" . __('API') . "</th></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
-        echo "<td colspan='3'><input type='url' name='url_base_api' id='url_base_api' value='" . $CFG_GLPI["url_base_api"] . "' class='form-control'></td>";
-        echo "</tr>";
+        echo "<tr><th colspan='4'>" . __('General API') . "</th></tr>";
+        // Option to enable API (affects legacy and newer API)
         echo "<tr class='tab_bg_2'>";
         echo "<td><label for='dropdown_enable_api$rand'>" . __("Enable Rest API") . "</label></td>";
         echo "<td>";
         Dropdown::showYesNo("enable_api", $CFG_GLPI["enable_api"], -1, ['rand' => $rand]);
         echo "</td>";
+        echo "</tr>";
+
+        echo "<tr><th colspan='4'>" . __('API') . "</th></tr>";
+        // Options just for new API
+        $api_versions = \Glpi\Api\HL\Router::getAPIVersions();
+        $current_version = array_filter($api_versions, static fn ($version) => $version['version'] === \Glpi\Api\HL\Router::API_VERSION);
+        $current_version = reset($current_version);
+        $getting_started_doc = $current_version['endpoint'] . '/getting-started';
+        $endpoint_doc = $current_version['endpoint'] . '/doc';
+        if ($CFG_GLPI["enable_api"]) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td colspan='2'>";
+            echo "<a href='$getting_started_doc'>" . __("API Getting Started") . "</a>";
+            echo "</td>";
+            echo "<td colspan='2'>";
+            echo "<a href='$endpoint_doc'>" . __("API Endpoints") . "</a>";
+            echo "</td>";
+            echo "</tr>";
+        }
+        echo "<tr class='tab_bg_2'>";
+        echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
+        echo "<td colspan='3'><input type='url' name='url_base_api' id='url_base_api' value='" . $CFG_GLPI["url_base_api"] . "' class='form-control'></td>";
+        echo "</tr>";
+
+        echo "<tr><th colspan='4'>" . __('Legacy API') . "</th></tr>";
+        // Options just for legacy API
+        echo "<tr class='tab_bg_2'>";
         if ($CFG_GLPI["enable_api"]) {
             echo "<td colspan='2'>";
             $inline_doc_api = trim($CFG_GLPI['url_base_api'], '/') . "/";
             echo "<a href='$inline_doc_api'>" . __("API inline Documentation") . "</a>";
             echo "</td>";
         }
+        echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
+        echo "<td colspan='3'><input type='url' name='url_base_api' id='url_base_api' value='" . $CFG_GLPI["url_base_api"] . "' class='form-control'></td>";
         echo "</tr>";
-
-        echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
 
         echo "<tr class='tab_bg_2'>";
         echo "<td><label for='dropdown_enable_api_login_credentials$rand'>";
