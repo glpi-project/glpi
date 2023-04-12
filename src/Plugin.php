@@ -505,7 +505,6 @@ class Plugin extends CommonDBTM
                 in_array($plugin_name, ['.svn', '.', '..'])
                 || !is_dir($plugin_directory->getRealPath())
             ) {
-
                 continue;
             }
 
@@ -513,6 +512,7 @@ class Plugin extends CommonDBTM
             $plugins_informations[$plugin_name] = $info;
         }
         $this->plugins_informations = $plugins_informations;
+
         // Check all directories from the checklist
         foreach ($directories as $directory) {
             if (in_array($directory, $excluded_plugins)) {
