@@ -1666,6 +1666,7 @@ class Search extends DbTestCase
             ['<PROD-15>$', '%<PROD-15>'],
             ['A&#38;B', '%A&B%'],
             ['A&B', '%A&B%'],
+            ["backslashes \\ \\\\ are twice escaped when not used in ', \n, \r, ... ", "%backslashes \\\\\\\\ \\\\\\\\\\\\\\\\ are twice escaped when not used in \', \\n, \\r, ...%"],
         ];
     }
 
