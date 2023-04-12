@@ -103,8 +103,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         Auth::redirectIfAuthenticated();
     }
 
-    $redirect = array_key_exists('redirect', $_GET) ? Sanitizer::unsanitize($_GET['redirect']) : '';
-    $anchor = array_key_exists('anchor', $_GET) ? Sanitizer::unsanitize($_GET['anchor']) : false;
+    $redirect = Sanitizer::unsanitize($_GET['redirect'] ?? '');
+    $anchor = Sanitizer::unsanitize($_GET['anchor'] ?? null);
 
     Auth::checkAlternateAuthSystems(true, $redirect);
 

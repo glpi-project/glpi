@@ -1583,7 +1583,7 @@ class Toolbox
      *
      * @return void
      **/
-    public static function manageRedirect($where, $anchor = '')
+    public static function manageRedirect($where, ?string $anchor = null)
     {
         global $CFG_GLPI;
 

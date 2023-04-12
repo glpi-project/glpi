@@ -648,7 +648,7 @@ class NotificationTarget extends CommonDBChild
      * @param $usertype
      * @param $redirect
      **/
-    public function formatURL($usertype, $redirect)
+    public function formatURL($usertype, $redirect, ?string $anchor = null)
     {
         global $CFG_GLPI;
 
@@ -660,16 +660,20 @@ class NotificationTarget extends CommonDBChild
             $redirect = rawurlencode($redirect);
         }
 
+        if (!empty($anchor)) {
+            $anchor = '&anchor=' . $anchor;
+        }
+
         switch ($usertype) {
             case self::EXTERNAL_USER:
-                return $CFG_GLPI["url_base"] . "/index.php?redirect=$redirect";
+                return $CFG_GLPI["url_base"] . "/index.php?redirect={$redirect}{$anchor}";
 
             case self::ANONYMOUS_USER:
                // No URL
                 return '';
 
             case self::GLPI_USER:
-                return $CFG_GLPI["url_base"] . "/index.php?redirect=$redirect&noAUTO=1";
+                return $CFG_GLPI["url_base"] . "/index.php?redirect={$redirect}{$anchor}&noAUTO=1";
         }
     }
 

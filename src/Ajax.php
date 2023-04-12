@@ -373,8 +373,8 @@ JAVASCRIPT;
                   }
                 );
 
-                if (location.hash){
-                    location.href=location.hash; //move to hanchor if needed
+                if (location.hash) {
+                    location.href = location.hash; // move to hanchor if needed
                 }
             }
             if ($(target).html() && !force_reload) {

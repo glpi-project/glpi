@@ -108,7 +108,7 @@ class NotificationTargetTicket extends DbTestCase
 
         $basic_options = [
             'additionnaloption' => [
-                'usertype' => ''
+                'usertype' => \NotificationTarget::GLPI_USER,
             ]
         ];
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
@@ -154,8 +154,14 @@ class NotificationTargetTicket extends DbTestCase
         $basic_options['validation_id'] = $ticket_validation_id;
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
-        //no need to check the beginning of the url (no computed from TU)
-        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo('&anchor=TicketValidation_' . $ticket_validation_id);
+        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo(
+            sprintf(
+                '%s/index.php?redirect=ticket_%d_Ticket%%24main&anchor=TicketValidation_%d&noAUTO=1',
+                $CFG_GLPI['url_base'],
+                $tkt->getID(),
+                $ticket_validation_id
+            )
+        );
 
         //add another validation for jsmith123
         $ticket_validation = new TicketValidation();
@@ -168,8 +174,14 @@ class NotificationTargetTicket extends DbTestCase
         $basic_options['validation_id'] = $ticket_validation_id;
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
-        //no need to check the beginning of the url (no computed from TU)
-        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo('&anchor=TicketValidation_' . $ticket_validation_id);
+        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo(
+            sprintf(
+                '%s/index.php?redirect=ticket_%d_Ticket%%24main&anchor=TicketValidation_%d&noAUTO=1',
+                $CFG_GLPI['url_base'],
+                $tkt->getID(),
+                $ticket_validation_id
+            )
+        );
         // switch back to default language
         $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
     }
