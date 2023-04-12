@@ -519,7 +519,9 @@ class Plugin extends CommonDBTM
         }
 
         $plugins_informations = [];
-        $plugins_directories = new DirectoryIterator(GLPI_ROOT . '/plugins');
+        $plugins_directories = new AppendIterator();
+        $plugins_directories->append(new DirectoryIterator(GLPI_ROOT . '/plugins'));
+        $plugins_directories->append(new DirectoryIterator(GLPI_ROOT . '/marketplace'));
         foreach ($plugins_directories as $plugin_directory) {
             $plugin_name = $plugin_directory->getFilename();
 
