@@ -40,7 +40,7 @@ use Glpi\Toolbox\Sanitizer;
 use LogicException;
 
 /**
- * Helper trait to interract with filters
+ * Helper trait to ease interaction with filters
  */
 trait FilterableTrait
 {
