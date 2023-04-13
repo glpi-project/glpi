@@ -207,7 +207,7 @@ class Notification extends CommonDBTM implements Filterable
 
         // Main tab shoud be first, then the most relevants tabs, then inherited common tabs and finish with the history
         $tabs = [
-            // Main tab retrived from parents
+            // Main tab retrieved from parents
             array_keys($parent_tabs)[0] => array_shift($parent_tabs)
         ];
 
