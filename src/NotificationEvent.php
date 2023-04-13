@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Search\Item_Filter;
-
 /**
  * Class which manages notification events
  **/

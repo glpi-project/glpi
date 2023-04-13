@@ -40,7 +40,7 @@ use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
-use Glpi\Search\Item_Filter;
+use Glpi\Search\FilterableTrait;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
@@ -1968,10 +1968,12 @@ class CommonDBTM extends CommonGLPI
         // Clear filter on itemtype change
         if (
             $this instanceof FilterableInterface
+            && in_array(FilterableTrait::class, class_uses($this))
             && $this->getItemtypeField() !== null
             && in_array($this->getItemtypeField(), $this->updates)
         ) {
-            Item_Filter::deleteFilter($this);
+            /** @var FilterableTrait $this */
+            $this->deleteFilter();
         }
     }
 
