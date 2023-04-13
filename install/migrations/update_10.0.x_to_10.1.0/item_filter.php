@@ -45,9 +45,9 @@ $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 $table = "glpi_searches_items_filters";
 if (!$DB->tableExists($table)) {
     $query = "CREATE TABLE `$table` (
-        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `itemtype` varchar(100) DEFAULT NULL,
-        `items_id` int unsigned NOT NULL DEFAULT '0',
+        `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `search_itemtype` varchar(255) DEFAULT NULL,
         `search_criteria` longtext DEFAULT NULL,
         PRIMARY KEY (`id`),
