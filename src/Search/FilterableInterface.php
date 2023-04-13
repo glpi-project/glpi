@@ -38,7 +38,7 @@ namespace Glpi\Search;
 /**
  * Must be implemented by classes that wish to enable search engine based filters
  */
-interface Filterable
+interface FilterableInterface
 {
     /**
      * Get itemtype to be used as a filter by the search engine

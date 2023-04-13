@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Search\Filterable;
+use Glpi\Search\FilterableInterface;
 
 /**
  * Notification Class
  **/
-class Notification extends CommonDBTM implements Filterable
+class Notification extends CommonDBTM implements FilterableInterface
 {
    // MAILING TYPE
    //Notification to a user (sse mailing users type below)

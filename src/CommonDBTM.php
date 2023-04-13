@@ -39,7 +39,7 @@ use Glpi\Features\CacheableListInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
-use Glpi\Search\Filterable;
+use Glpi\Search\FilterableInterface;
 use Glpi\Search\Item_Filter;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
@@ -1967,7 +1967,7 @@ class CommonDBTM extends CommonGLPI
 
         // Clear filter on itemtype change
         if (
-            $this instanceof Filterable
+            $this instanceof FilterableInterface
             && $this->getItemtypeField() !== null
             && in_array($this->getItemtypeField(), $this->updates)
         ) {

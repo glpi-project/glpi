@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
-use Glpi\Search\Filterable;
+use Glpi\Search\FilterableInterface;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -307,7 +307,7 @@ class CommonGLPI implements CommonGLPIInterface
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
 
-        if ($this instanceof Filterable) {
+        if ($this instanceof FilterableInterface) {
             $this->addStandardTab('Glpi\Search\Item_Filter', $ong, $options);
         }
 

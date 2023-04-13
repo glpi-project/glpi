@@ -58,7 +58,7 @@ final class Item_Filter extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         // Only on filterable items
-        if (!$item instanceof CommonDBTM || !$item instanceof Filterable) {
+        if (!$item instanceof CommonDBTM || !$item instanceof FilterableInterface) {
             return false;
         }
 
@@ -76,7 +76,7 @@ final class Item_Filter extends CommonDBChild
         $withtemplate = 0
     ) {
         // Only on filterable commondbtm
-        if (!$item instanceof CommonDBTM || !$item instanceof Filterable) {
+        if (!$item instanceof CommonDBTM || !$item instanceof FilterableInterface) {
             return false;
         }
 
@@ -121,14 +121,14 @@ final class Item_Filter extends CommonDBChild
     /**
      * Check that the given item match a filterable item restrictions
      *
-     * @param CommonDBTM            $item       Given item
-     * @param CommonDBTM&Filterable $filterable Filterable
+     * @param CommonDBTM                     $item       Given item
+     * @param CommonDBTM&FilterableInterface $filterable Filterable
      *
      * @return bool
      */
     public static function itemMatchFilter(
         CommonDBTM $item,
-        CommonDBTM&Filterable $filterable
+        CommonDBTM&FilterableInterface $filterable
     ): bool {
         $filter = self::getForItem($filterable);
 
@@ -176,11 +176,11 @@ final class Item_Filter extends CommonDBChild
     /**
      * Get filter for a given item
      *
-     * @param CommonDBTM&Filterable $item Given item
+     * @param CommonDBTM&FilterableInterface $item Given item
      *
      * @return null|self Null if no filter are defined for the given item
      */
-    public static function getForItem(CommonDBTM&Filterable $item): ?self
+    public static function getForItem(CommonDBTM&FilterableInterface $item): ?self
     {
         $filter = new self();
         $filter_exist = $filter->getFromDBByCrit([
@@ -194,11 +194,11 @@ final class Item_Filter extends CommonDBChild
     /**
      * Delete filter for a given item
      *
-     * @param CommonDBTM&Filterable $item Target item
+     * @param CommonDBTM&FilterableInterface $item Target item
      *
      * @return bool
      */
-    public static function deleteFilter(CommonDBTM&Filterable $item): bool
+    public static function deleteFilter(CommonDBTM&FilterableInterface $item): bool
     {
         $filter = self::getForItem($item);
 
@@ -214,14 +214,14 @@ final class Item_Filter extends CommonDBChild
     /**
      * Create or update filter for a given item
      *
-     * @param CommonDBTM&Filterable $item            Target item
+     * @param CommonDBTM&FilterableInterface $item            Target item
      * @param string                $search_itemtype Itemtype to filte
      * @param array                 $search_criteria Search criterias used as filter
      *
      * @return bool
      */
     public static function saveFilter(
-        CommonDBTM&Filterable $item,
+        CommonDBTM&FilterableInterface $item,
         string $search_itemtype,
         array $search_criteria
     ): bool {

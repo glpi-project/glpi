@@ -34,7 +34,7 @@
  */
 
 use Glpi\Http\Response;
-use Glpi\Search\Filterable;
+use Glpi\Search\FilterableInterface;
 use Glpi\Search\Item_Filter;
 
 include('../inc/includes.php');
@@ -58,7 +58,7 @@ switch ($action) {
         // Validate itemtype
         if (
             !is_a($itemtype, CommonDBTM::class, true)
-            || !is_a($itemtype, Filterable::class, true)
+            || !is_a($itemtype, FilterableInterface::class, true)
         ) {
             Response::sendError(400, 'Invalid or missing value: item_itemtype');
         }
@@ -101,7 +101,7 @@ switch ($action) {
         // Validate itemtype
         if (
             !is_a($itemtype, CommonDBTM::class, true)
-            || !is_a($itemtype, Filterable::class, true)
+            || !is_a($itemtype, FilterableInterface::class, true)
         ) {
             Response::sendError(400, 'Invalid or missing value: itemtype');
         }
