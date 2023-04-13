@@ -50,10 +50,10 @@ switch ($action) {
 
     case "save_filter":
         // Default values for this endpoint
-        $itemtype = $_POST['item_itemtype'] ?? false; // Note: "item_" prefix because the search engine already use the itemtype key
-        $items_id = $_POST['item_items_id'] ?? false;
+        $itemtype = $_POST['item_itemtype'] ?? null; // Note: "item_" prefix because the search engine already use the itemtype key
+        $items_id = $_POST['item_items_id'] ?? null;
         $search_criteria = $_UPOST['criteria'] ?? []; // Note: criteria may be missing in a valid form + must be UPOST (see Item_Filter::saveFilter)
-        $search_itemtype = $_POST['itemtype'] ?? false;
+        $search_itemtype = $_POST['itemtype'] ?? null;
 
         // Validate itemtype
         if (
@@ -95,8 +95,8 @@ switch ($action) {
 
     case "delete_filter":
         // Default values for this endpoint
-        $itemtype = $_POST['itemtype'] ?? false;
-        $items_id = $_POST['items_id'] ?? false;
+        $itemtype = $_POST['itemtype'] ?? null;
+        $items_id = $_POST['items_id'] ?? null;
 
         // Validate itemtype
         if (
