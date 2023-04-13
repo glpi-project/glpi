@@ -34,12 +34,15 @@
  */
 
 use Glpi\Search\FilterableInterface;
+use Glpi\Search\FilterableTrait;
 
 /**
  * Notification Class
  **/
 class Notification extends CommonDBTM implements FilterableInterface
 {
+    use FilterableTrait;
+
    // MAILING TYPE
    //Notification to a user (sse mailing users type below)
     const USER_TYPE             = 1;

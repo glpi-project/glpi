@@ -39,7 +39,6 @@ use CommonDBChild;
 use CommonDBTM;
 use CommonGLPI;
 use Glpi\Search\Input\QueryBuilder;
-use Glpi\Toolbox\Sanitizer;
 use Session;
 
 /**
@@ -118,50 +117,6 @@ final class Item_Filter extends CommonDBChild
         return true;
     }
 
-    /**
-     * Check that the given item match a filterable item restrictions
-     *
-     * @param CommonDBTM                     $item       Given item
-     * @param CommonDBTM&FilterableInterface $filterable Filterable
-     *
-     * @return bool
-     */
-    public static function itemMatchFilter(
-        CommonDBTM $item,
-        CommonDBTM&FilterableInterface $filterable
-    ): bool {
-        $filter = self::getForItem($filterable);
-
-        // No filter defined
-        if (!$filter) {
-            return true;
-        }
-
-        // Intersect current item's id with the filter
-        $criteria = [
-            [
-                'link' => 'AND',
-                'criteria' => $filter->fields['search_criteria'],
-            ],
-            [
-                'link' => 'AND',
-                // Id field
-                'field' => 2,
-                // Search engine seems to expect "contains" here, even if the
-                // real search will be done with "equals
-                'searchtype' => "contains",
-                'value' => $item->fields['id'],
-            ],
-        ];
-
-        // Execute search
-        $data = SearchEngine::getData($item::getType(), [
-            'criteria' => $criteria,
-        ]);
-
-        return $data['data']['totalcount'] > 0;
-    }
-
     public function post_getFromDB()
     {
         parent::post_getFromDB();
@@ -171,6 +126,15 @@ final class Item_Filter extends CommonDBChild
             $this->fields['search_criteria'],
             JSON_OBJECT_AS_ARRAY
         );
+    }
+
+    public function getHistoryChangeWhenUpdateField($field)
+    {
+        // Don't show json changes in history
+        if ($field == "search_criteria") {
+            return ['0', '', ''];
+        }
+        return parent::getHistoryChangeWhenUpdateField($field);
     }
 
     /**
@@ -189,88 +153,5 @@ final class Item_Filter extends CommonDBChild
         ]);
 
         return $filter_exist ? $filter : null;
-    }
-
-    /**
-     * Delete filter for a given item
-     *
-     * @param CommonDBTM&FilterableInterface $item Target item
-     *
-     * @return bool
-     */
-    public static function deleteFilter(CommonDBTM&FilterableInterface $item): bool
-    {
-        $filter = self::getForItem($item);
-
-        // No filter, nothing to be done
-        if (!$filter) {
-            return true;
-        }
-
-        // Delete existing filter
-        return $filter->delete(['id' => $filter->fields['id']]);
-    }
-
-    /**
-     * Create or update filter for a given item
-     *
-     * @param CommonDBTM&FilterableInterface $item            Target item
-     * @param string                $search_itemtype Itemtype to filte
-     * @param array                 $search_criteria Search criterias used as filter
-     *
-     * @return bool
-     */
-    public static function saveFilter(
-        CommonDBTM&FilterableInterface $item,
-        string $search_itemtype,
-        array $search_criteria
-    ): bool {
-        $filter = self::getForItem($item);
-
-        // Build data
-        // JSON fields must only be sanitized AFTER being encoded to avoid \'
-        // being encoded as \\' where both antislashes cancel each others
-        // -> $search_criteria should come from $_UPOST not $_POST
-        $search_criteria = json_encode($search_criteria);
-        $search_criteria = Sanitizer::sanitize($search_criteria);
-
-        if ($filter) {
-            // Override existing filter
-            $success = $filter->update([
-                'id'              => $filter->fields['id'],
-                'search_itemtype' => $search_itemtype,
-                'search_criteria' => $search_criteria,
-            ]);
-        } else {
-            // Create a new filter
-            $filter = new self();
-            $id = $filter->add([
-                'itemtype'        => $item::getType(),
-                'items_id'        => $item->getID(),
-                'search_itemtype' => $search_itemtype,
-                'search_criteria' => $search_criteria,
-            ]);
-
-            $success = $id != false;
-        }
-
-        // Log unexpected errors
-        if (!$success) {
-            trigger_error(
-                "Failed to save data: $search_itemtype, $search_criteria",
-                E_USER_WARNING
-            );
-        }
-
-        return $success;
-    }
-
-    public function getHistoryChangeWhenUpdateField($field)
-    {
-        // Don't show json changes in history
-        if ($field == "search_criteria") {
-            return ['0', '', ''];
-        }
-        return parent::getHistoryChangeWhenUpdateField($field);
     }
 }

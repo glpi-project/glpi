@@ -35,7 +35,6 @@
 
 use Glpi\Http\Response;
 use Glpi\Search\FilterableInterface;
-use Glpi\Search\Item_Filter;
 use Glpi\Toolbox\Sanitizer;
 
 include('../inc/includes.php');
@@ -86,7 +85,7 @@ switch ($action) {
         }
 
         // Save filters
-        if (!Item_Filter::saveFilter($item, $search_itemtype, $search_criteria)) {
+        if (!$item->saveFilter($search_itemtype, $search_criteria)) {
             Response::sendError(422, 'Unable to process data');
         }
 
@@ -119,7 +118,7 @@ switch ($action) {
         }
 
         // Delete filters
-        if (!Item_Filter::deleteFilter($item)) {
+        if (!$item->deleteFilter()) {
             Response::sendError(422, 'Unable to process data');
         }
 
