@@ -341,7 +341,7 @@ const glpi_toast = (title, message, css_class, options = {}) => {
         animation_extra_classes: 'animate__delay-2s animate__slow'
     }, options);
 
-    const animation_classes = options.animated ? `animate__animated ${options.animation} ${options.animation_extra_classes}` : '';
+    const animation_classes = options.animated ? `animate_animated ${options.animation} ${options.animation_extra_classes}` : '';
     let location = CFG_GLPI.toast_location || 'bottom-right';
     const valid_locations = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
     // If location is not valid, change it to bottom-right
@@ -349,8 +349,8 @@ const glpi_toast = (title, message, css_class, options = {}) => {
         location = 'bottom-right';
     }
     const html = `<div class='toast-container ${location} p-3 messages_after_redirect'>
-      <div id='toast_js_${toast_id}' class='toast border-0 ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
-         <div class='toast-header ${css_class}'>
+      <div id='toast_js_${toast_id}' class='toast ${css_class} ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
+         <div class='toast-header'>
             <strong class='me-auto'>${title}</strong>
             <button type='button' class='btn-close' data-bs-dismiss='toast' aria-label='${__('Close')}'></button>
          </div>
