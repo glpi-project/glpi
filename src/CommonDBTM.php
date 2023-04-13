@@ -1968,7 +1968,7 @@ class CommonDBTM extends CommonGLPI
         // Clear filter on itemtype change
         if (
             $this instanceof Filterable
-            && !is_null($this->getItemtypeField())
+            && $this->getItemtypeField() !== null
             && in_array($this->getItemtypeField(), $this->updates)
         ) {
             Item_Filter::deleteFilter($this);
