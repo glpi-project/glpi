@@ -52,8 +52,7 @@ switch ($action) {
         // Default values for this endpoint
         $itemtype = $_POST['item_itemtype'] ?? null; // Note: "item_" prefix because the search engine already use the itemtype key
         $items_id = $_POST['item_items_id'] ?? null;
-        $search_criteria = Sanitizer::unsanitize($_POST['criteria'] ?? []); // Note: criteria may be missing in a valid form + must be unsanitized (see Item_Filter::saveFilter)
-        $search_itemtype = $_POST['itemtype'] ?? null;
+        $search_criteria = Sanitizer::unsanitize($_POST['criteria'] ?? []); // Note: criteria may be missing in a valid form + must be unsanitized
 
         // Validate itemtype
         if (
@@ -74,18 +73,13 @@ switch ($action) {
             Response::sendError(400, 'Invalid value: criteria');
         }
 
-        // Validate search itemtype
-        if (!is_a($search_itemtype, CommonDBTM::class, true)) {
-            Response::sendError(400, 'Invalid or missing value: itemtype');
-        }
-
         // Check rights, must be able to update parent item
         if (!$item->canUpdateItem()) {
             Response::sendError(403, 'You are not allowed to update this item');
         }
 
         // Save filters
-        if (!$item->saveFilter($search_itemtype, $search_criteria)) {
+        if (!$item->saveFilter($search_criteria)) {
             Response::sendError(422, 'Unable to process data');
         }
 

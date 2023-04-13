@@ -36,7 +36,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Glpi\Search\Item_Filter;
 use QueuedNotification;
 
 /* Test for inc/notification.class.php */
@@ -134,8 +133,9 @@ class Notification extends DbTestCase
         $cat_B = $this->createItem("ITILCategory", ["name" => "cat B"]);
 
         // Filter notification on category
+        /** @var \Notification $notification */
         $notification = getItemByTypeName("Notification", $target_notification);
-        $success = Item_Filter::saveFilter($notification, $notification->getItemtypeToFilter(), [
+        $success = $notification->saveFilter([
             [
                 "link"       => "and",
                 "field"      => 7,                      // Category

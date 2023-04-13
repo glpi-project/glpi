@@ -1973,7 +1973,7 @@ class CommonDBTM extends CommonGLPI
             && in_array($this->getItemtypeField(), $this->updates)
         ) {
             /** @var FilterableTrait $this */
-            $this->deleteFilter();
+            $this->deleteFilter(); /** @phpstan-ignore-line (can't type hint traits so phpstan doens't like it)*/
         }
     }
 

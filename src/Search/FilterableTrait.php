@@ -93,13 +93,11 @@ trait FilterableTrait
     /**
      * Create or update filter for a given item
      *
-     * @param string $search_itemtype Itemtype to filter
      * @param array  $search_criteria Search criterias used as filter
      *
      * @return bool
      */
     public function saveFilter(
-        string $search_itemtype,
         array $search_criteria
     ): bool {
         // Should only be used by FilterableInterface items
@@ -107,6 +105,7 @@ trait FilterableTrait
             return new LogicException("Not filterable");
         }
 
+        $search_itemtype = $this->getItemtypeToFilter();
         $filter = Item_Filter::getForItem($this);
 
         // Build data
