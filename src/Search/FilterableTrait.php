@@ -51,7 +51,8 @@ trait FilterableTrait
      *
      * @return bool
      */
-    public function itemMatchFilter(CommonDBTM $item): bool {
+    public function itemMatchFilter(CommonDBTM $item): bool
+    {
         // Should only be used by FilterableInterface items
         if (!($this instanceof FilterableInterface)) {
             return new LogicException("Not filterable");
