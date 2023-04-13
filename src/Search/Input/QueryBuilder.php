@@ -77,7 +77,7 @@ final class QueryBuilder implements SearchInputInterface
         $p['actionname']                    = 'search';
         $p['actionvalue']                   = _sx('button', 'Search');
         $p['unpublished']                   = 1;
-        $p['readonly']                      = false;
+        $p['hide_controls']                 = false;
         $p['showmassiveactions']            = true;
         $p['extra_actions_templates']       = [];
 

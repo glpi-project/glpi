@@ -123,7 +123,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             'prehref'             => $prehref,
             'posthref'            => $globallinkto,
             'push_history'        => $params['push_history'] ?? true,
-            'readonly'            => $params['readonly'] ?? false,
+            'hide_controls'       => $params['hide_controls'] ?? false,
             'showmassiveactions'  => ($params['showmassiveactions'] ?? $search['showmassiveactions'] ?? true)
                 && $data['display_type'] != \Search::GLOBAL_SEARCH
                 && ($itemtype == \AllAssets::getType()

@@ -97,7 +97,7 @@ final class Item_Filter extends CommonDBChild
             'criteria'                => $criteria,
             'metacriteria'            => [],
             'push_history'            => false,
-            'readonly'                => true,
+            'hide_controls'           => true,
             'showmassiveactions'      => false,
             'showbookmark'            => false,
             'showreset'               => false,
