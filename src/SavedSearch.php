@@ -874,7 +874,37 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $searches[$data['id']] = $data;
         }
 
-        return $searches;
+        // get personal order
+        $user               = new User();
+        $personalorderfield = $this->getPersonalOrderField();
+        $ordered            = [];
+
+        $personalorder = [];
+        if ($user->getFromDB(Session::getLoginUserID())) {
+            $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
+        }
+        if (!is_array($personalorder)) {
+            $personalorder = [];
+        }
+
+        // Add on personal order
+        if (count($personalorder)) {
+            foreach ($personalorder as $id) {
+                if (isset($searches[$id])) {
+                    $ordered[$id] = $searches[$id];
+                    unset($searches[$id]);
+                }
+            }
+        }
+
+        // Add unsaved in order
+        if (count($searches)) {
+            foreach ($searches as $id => $val) {
+                $ordered[$id] = $val;
+            }
+        }
+
+        return $ordered;
     }
 
     /**

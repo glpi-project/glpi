@@ -167,3 +167,24 @@ body.horizontal-layout {
         min-width: 200px;
     }
 }
+
+.sortable-savedsearches {
+    .sortable-placeholder {
+        background: #e7f06367;
+        border: 1px dashed #ccc;
+        min-height: 80px;
+        min-width: 50px;
+        padding: 10px;
+        margin: 10px;
+        opacity: 0.5;
+    }
+
+    .grip-savedsearch {
+        cursor: pointer;
+        cursor: grab;
+
+        &:active {
+            cursor: grabbing;
+        }
+    }
+}

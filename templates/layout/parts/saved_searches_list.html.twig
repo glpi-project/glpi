@@ -37,27 +37,55 @@
    </div>
 {% endif %}
 
+<table class='table table-striped table-hover card-table'>
+<tbody class='sortable-savedsearches'>
 {% for search in saved_searches %}
-   <div class="savedsearches-item list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
-         data-id="{{ search['id'] }}">
-      <a href="{{ 'SavedSearch'|itemtype_search_path }}?action=load&amp;id={{ search['id'] }}"
-         class="d-block saved-searches-link text-truncate">
-         {{ search['name']|verbatim_value }}
-      </a>
-      <div class="{{ search['is_default'] > 0 ? '' : 'list-group-item-actions' }} ms-auto default-ctrl">
-         <i class="{{ search['is_default'] > 0 ? 'fas' : 'far' }} fa-star fa-xs mark-default me-1"
-            title="{{ search['is_default'] > 0 ? __('Default search') : __('mark as default') }}"
-            data-bs-toggle="tooltip" data-bs-placement="right"
-            role="button"></i>
-      </div>
-      <div class="d-flex flex-nowrap align-items-center">
-         {% if search['is_private'] == 1 %}
-         <i class="ti ti-lock fa-xs text-muted me-1" title="{{ __('private') }}"
-            data-bs-toggle="tooltip" data-bs-placement="right"></i>
-         {% endif %}
-         <span class="badge">
-            {{ search['count']|raw }}
-         </span>
-      </div>
-   </div>
+   <tr class='tab_bg_1 savedsearch' data-id="{{ search['id'] }}">
+      <td><i class='fas fa-grip-horizontal grip-savedsearch'></i></td>
+      <td class="savedsearches-item list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
+            data-id="{{ search['id'] }}">
+         <a href="{{ 'SavedSearch'|itemtype_search_path }}?action=load&amp;id={{ search['id'] }}"
+            class="d-block saved-searches-link text-truncate">
+            {{ search['name']|verbatim_value }}
+         </a>
+         <div class="{{ search['is_default'] > 0 ? '' : 'list-group-item-actions' }} ms-auto default-ctrl">
+            <i class="{{ search['is_default'] > 0 ? 'fas' : 'far' }} fa-star fa-xs mark-default me-1"
+               title="{{ search['is_default'] > 0 ? __('Default search') : __('mark as default') }}"
+               data-bs-toggle="tooltip" data-bs-placement="right"
+               role="button"></i>
+         </div>
+         <div class="d-flex flex-nowrap align-items-center">
+            {% if search['is_private'] == 1 %}
+            <i class="ti ti-lock fa-xs text-muted me-1" title="{{ __('private') }}"
+               data-bs-toggle="tooltip" data-bs-placement="right"></i>
+            {% endif %}
+            <span class="badge">
+               {{ search['count']|raw }}
+            </span>
+         </div>
+      </td>
+   </tr>
 {% endfor %}
+</tbody>
+</table>
+
+<script type="text/javascript">
+$(function() {
+   sortable('.sortable-savedsearches', {
+      handle: '.grip-savedsearch',
+      placeholder: '<tr><td class="sortable-placeholder">&nbsp;</td></tr>'
+   })
+   $('.sortable-savedsearches').on('sortupdate', function(e) {
+      var _ids = $('tr.savedsearch').map(function(idx, ele) {
+         return $(ele).data('id');
+      }).get();
+
+      $.post(CFG_GLPI['root_doc']+'/ajax/savedsearch.php', {
+         'action': 'reorder',
+         'ids': _ids,
+      });
+
+      displayAjaxMessageAfterRedirect();
+   });
+});
+</script>
