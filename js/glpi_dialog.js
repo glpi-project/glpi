@@ -341,10 +341,10 @@ const glpi_toast = (title, message, css_class, options = {}) => {
         animation_extra_classes: 'animate__delay-2s animate__slow'
     }, options);
 
-    const animation_classes = options.animated ? `animate_animated ${options.animation} ${options.animation_extra_classes}` : '';
+    const animation_classes = options.animated ? `animate__animated ${options.animation} ${options.animation_extra_classes}` : '';
     const html = `<div class='toast-container bottom-0 end-0 p-3 messages_after_redirect'>
-      <div id='toast_js_${toast_id}' class='toast ${css_class} ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
-         <div class='toast-header'>
+      <div id='toast_js_${toast_id}' class='toast ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
+         <div class='toast-header ${css_class}'>
             <strong class='me-auto'>${title}</strong>
             <button type='button' class='btn-close' data-bs-dismiss='toast' aria-label='${__('Close')}'></button>
          </div>
