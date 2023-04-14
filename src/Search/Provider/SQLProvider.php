@@ -43,6 +43,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
+use Glpi\Toolbox\Sanitizer;
 use Group;
 use ITILFollowup;
 use Problem;
@@ -4327,6 +4328,11 @@ final class SQLProvider implements SearchProviderInterface
 
             while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
                 $row = $DBread->fetchAssoc($result);
+                if ($row !== null) {
+                    // Decode special chars in content that was stored prior to GLPI 10.1.
+                    $row = Sanitizer::decodeHtmlSpecialCharsRecursive($row);
+                }
+
                 $newrow        = [];
                 $newrow['raw'] = $row;
 
