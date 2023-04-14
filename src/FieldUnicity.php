@@ -294,7 +294,7 @@ class FieldUnicity extends CommonDropdown
        //Search option for this type
         if ($target = getItemForItemtype($itemtype)) {
            //Do not check unicity on fields in DB with theses types
-            $blacklisted_types = ['longtext', 'text'];
+            $blacklisted_types = ['longtext'];
 
            //Construct list
             $values = [];
