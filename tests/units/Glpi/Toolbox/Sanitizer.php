@@ -618,6 +618,10 @@ TXT;
             'value'    => 'Glpi\\\\Socket',
             'is_class' => false, // namespace separator are escaped, so it is not considered as a valid classname
         ];
+        yield [
+            'value'    => 'Glpi\Dashboard\Dashboard$1',
+            'is_class' => true, // special format for tab names
+        ];
     }
 
     /**
