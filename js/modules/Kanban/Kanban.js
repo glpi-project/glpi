@@ -1432,7 +1432,6 @@ class GLPIKanbanRights {
                     let user_img = null;
                     $.ajax({
                         url: (self.ajax_root + "getUserPicture.php"),
-                        async: false,
                         data: {
                             users_id: [items_id],
                             size: self.team_image_size,
