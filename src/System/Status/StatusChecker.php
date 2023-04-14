@@ -272,7 +272,7 @@ final class StatusChecker
                         $ldap = null;
                         try {
                             if (
-                                AuthLDAP::tryToConnectToServer(
+                                @AuthLDAP::tryToConnectToServer(
                                     $method,
                                     $method['rootdn'],
                                     (new \GLPIKey())->decrypt($method['rootdn_passwd'])

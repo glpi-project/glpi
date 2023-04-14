@@ -22,6 +22,8 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 
+- Usage of parameter `$clean` in `AuthLDAP::getObjectByDn()` and `AuthLDAP::getUserByDn()`.
+
 #### Removed
 
 
