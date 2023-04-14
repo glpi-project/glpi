@@ -97,9 +97,13 @@ class Sanitizer
      * @param bool  $db_unescape
      *
      * @return mixed
+     *
+     * @deprecated 10.1.0
      */
     public static function unsanitize($value, bool $db_unescape = true)
     {
+        \Toolbox::deprecated();
+
         if (is_array($value)) {
             return array_map(
                 function ($val) {
@@ -126,9 +130,13 @@ class Sanitizer
      * @param string $value
      *
      * @return bool
+     *
+     * @deprecated 10.1.0
      */
     public static function isHtmlEncoded(string $value): bool
     {
+        \Toolbox::deprecated();
+
        // A value is Html Encoded if it does not contains
        // - `<`;
        // - `>`;
@@ -152,9 +160,13 @@ class Sanitizer
      * @param string $value
      *
      * @return string
+     *
+     * @deprecated 10.1.0
      */
     public static function isDbEscaped(string $value): bool
     {
+        \Toolbox::deprecated();
+
         $value_length = strlen($value);
 
        // Search for unprotected control chars `NULL`, `\n`, `\r` and `EOF`.
@@ -317,9 +329,13 @@ class Sanitizer
      * @param string $value
      *
      * @return string
+     *
+     * @deprecated 10.1.0
      */
     public static function decodeHtmlSpecialChars(string $value): string
     {
+        \Toolbox::deprecated();
+
         if (!self::isHtmlEncoded($value)) {
             return $value;
         }
@@ -356,9 +372,13 @@ class Sanitizer
      * @return array
      *
      * @see self::decodeHtmlSpecialChars
+     *
+     * @deprecated 10.1.0
      */
     public static function decodeHtmlSpecialCharsRecursive(array $values): array
     {
+        \Toolbox::deprecated();
+
         return array_map(
             function ($value) {
                 if (is_array($value)) {
@@ -432,9 +452,13 @@ class Sanitizer
      * @param string $value
      *
      * @return string
+     *
+     * @deprecated 10.1.0
      */
     public static function dbUnescape(string $value): string
     {
+        \Toolbox::deprecated();
+
        // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".
 
         if (!(str_contains($value, '\\') && self::isDbEscaped($value))) {
@@ -497,9 +521,13 @@ class Sanitizer
      * @return array
      *
      * @see self::dbUnescape
+     *
+     * @deprecated 10.1.0
      */
     public static function dbUnescapeRecursive(array $values): array
     {
+        \Toolbox::deprecated();
+
         return array_map(
             function ($value) {
                 if (is_array($value)) {

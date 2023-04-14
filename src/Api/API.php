@@ -51,7 +51,6 @@ use Contract;
 use Document;
 use Dropdown;
 use Glpi\Search\SearchOption;
-use Glpi\Toolbox\Sanitizer;
 use Html;
 use Infocom;
 use Item_Devices;
@@ -1246,9 +1245,6 @@ abstract class API
                 LIMIT " . (int)$params['start'] . ", " . (int)$params['list_limit'];
         if ($result = $DB->doQuery($query)) {
             while ($data = $DB->fetchAssoc($result)) {
-                // Decode special chars in content that was stored prior to GLPI 10.1.
-                $data = Sanitizer::decodeHtmlSpecialCharsRecursive($data);
-
                 if ($add_keys_names) {
                     // Insert raw names into the data row
                     $data["_keys_names"] = $this->getFriendlyNames(

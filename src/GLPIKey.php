@@ -34,7 +34,6 @@
  */
 
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  *  GLPI security key
@@ -468,8 +467,8 @@ class GLPIKey
             $result .= $char;
         }
 
-        // In legacy paswword encrytion logic, a sanitized value of password was sometimes stored
-        $result = Sanitizer::unsanitize($result);
+        // In legacy password encrytion logic, an HTML encoded value of password was sometimes stored
+        $result = str_replace(['<', '>'], ['&lt;', '&gt;'], $result);
 
         return $result;
     }

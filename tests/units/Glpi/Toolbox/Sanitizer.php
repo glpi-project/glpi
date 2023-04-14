@@ -304,10 +304,10 @@ class Sanitizer extends \GLPITestCase
         $dbescaped_value = null
     ) {
         $sanitizer = $this->newTestedInstance();
-        $this->variable($sanitizer->unsanitize($value))->isEqualTo($unsanitized_value);
+        $this->variable(@$sanitizer->unsanitize($value))->isEqualTo($unsanitized_value);
 
         // Calling unsanitize multiple times should not corrupt unsanitized value
-        $this->variable($sanitizer->unsanitize($unsanitized_value))->isEqualTo($unsanitized_value);
+        $this->variable(@$sanitizer->unsanitize($unsanitized_value))->isEqualTo($unsanitized_value);
     }
 
     /**
@@ -324,10 +324,10 @@ class Sanitizer extends \GLPITestCase
         }
 
         $sanitizer = $this->newTestedInstance();
-        $this->variable($sanitizer->dbUnescape($dbescaped_value))->isEqualTo($unsanitized_value);
+        $this->variable(@$sanitizer->dbUnescape($dbescaped_value))->isEqualTo($unsanitized_value);
 
         // Calling dbUnescape multiple times should not corrupt value
-        $this->variable($sanitizer->dbUnescape($unsanitized_value))->isEqualTo($unsanitized_value);
+        $this->variable(@$sanitizer->dbUnescape($unsanitized_value))->isEqualTo($unsanitized_value);
     }
 
     /**
@@ -344,10 +344,10 @@ class Sanitizer extends \GLPITestCase
         }
 
         $sanitizer = $this->newTestedInstance();
-        $this->variable($sanitizer->dbUnescapeRecursive($dbescaped_value))->isEqualTo($unsanitized_value);
+        $this->variable(@$sanitizer->dbUnescapeRecursive($dbescaped_value))->isEqualTo($unsanitized_value);
 
         // Calling dbUnescapeRecursive multiple times should not corrupt value
-        $this->variable($sanitizer->dbUnescapeRecursive($unsanitized_value))->isEqualTo($unsanitized_value);
+        $this->variable(@$sanitizer->dbUnescapeRecursive($unsanitized_value))->isEqualTo($unsanitized_value);
     }
 
     /**
@@ -364,10 +364,10 @@ class Sanitizer extends \GLPITestCase
         }
 
         $sanitizer = $this->newTestedInstance();
-        $this->variable($sanitizer->decodeHtmlSpecialChars($htmlencoded_value))->isEqualTo($unsanitized_value);
+        $this->variable(@$sanitizer->decodeHtmlSpecialChars($htmlencoded_value))->isEqualTo($unsanitized_value);
 
         // Calling decodeHtmlSpecialChars multiple times should not corrupt value
-        $this->variable($sanitizer->decodeHtmlSpecialChars($unsanitized_value))->isEqualTo($unsanitized_value);
+        $this->variable(@$sanitizer->decodeHtmlSpecialChars($unsanitized_value))->isEqualTo($unsanitized_value);
     }
 
     /**
@@ -384,10 +384,10 @@ class Sanitizer extends \GLPITestCase
         }
 
         $sanitizer = $this->newTestedInstance();
-        $this->variable($sanitizer->decodeHtmlSpecialCharsRecursive($htmlencoded_value))->isEqualTo($unsanitized_value);
+        $this->variable(@$sanitizer->decodeHtmlSpecialCharsRecursive($htmlencoded_value))->isEqualTo($unsanitized_value);
 
         // Calling decodeHtmlSpecialCharsRecursive multiple times should not corrupt value
-        $this->variable($sanitizer->decodeHtmlSpecialCharsRecursive($unsanitized_value))->isEqualTo($unsanitized_value);
+        $this->variable(@$sanitizer->decodeHtmlSpecialCharsRecursive($unsanitized_value))->isEqualTo($unsanitized_value);
     }
 
     protected function isHtmlEncodedValueProvider(): iterable
@@ -428,7 +428,7 @@ class Sanitizer extends \GLPITestCase
     public function testIsHtmlEncoded(string $value, bool $is_encoded)
     {
         $sanitizer = $this->newTestedInstance();
-        $this->boolean($sanitizer->isHtmlEncoded($value))->isEqualTo($is_encoded);
+        $this->boolean(@$sanitizer->isHtmlEncoded($value))->isEqualTo($is_encoded);
     }
 
     protected function isDbEscapedValueProvider(): iterable
@@ -591,7 +591,7 @@ TXT;
     {
         $sanitizer = $this->newTestedInstance();
 
-        $this->boolean($sanitizer->isDbEscaped($value))->isEqualTo($is_escaped, $value);
+        $this->boolean(@$sanitizer->isDbEscaped($value))->isEqualTo($is_escaped, $value);
     }
 
     /**
@@ -607,10 +607,10 @@ TXT;
         $sanitizer = $this->newTestedInstance();
 
         // Value should stay the same if it has been sanitized then unsanitized
-        $this->variable($sanitizer->unsanitize(@$sanitizer->sanitize($value, $db_escape)))->isEqualTo($value);
+        $this->variable(@$sanitizer->unsanitize(@$sanitizer->sanitize($value, $db_escape)))->isEqualTo($value);
 
         // Re-sanitize a value provide the same result as first sanitization
-        $this->variable(@$sanitizer->sanitize($sanitizer->unsanitize($value), $db_escape))->isEqualTo($sanitized_value);
+        $this->variable(@$sanitizer->sanitize(@$sanitizer->unsanitize($value), $db_escape))->isEqualTo($sanitized_value);
     }
 
     protected function isNsClassOrCallableIdentifierProvider(): iterable

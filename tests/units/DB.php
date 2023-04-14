@@ -767,4 +767,87 @@ OTHER EXPRESSION;"
             LogLevel::WARNING
         );
     }
+
+    protected function fetchResultProvider(): iterable
+    {
+        foreach (['fetchArray', 'fetchRow', 'fetchAssoc', 'fetchObject'] as $method) {
+            // No more results => null.
+            yield [
+                'method'   => $method,
+                'row'      => null,
+                'expected' => null,
+            ];
+
+            // Fetch failed => false.
+            yield [
+                'method'   => $method,
+                'row'      => false,
+                'expected' => false,
+            ];
+
+            // Data produced by GLPI <= 10.0 XSS cleaning process.
+            yield [
+                'method'   => $method,
+                'row'      => [
+                    'id'      => 10,
+                    'content' => '&lt;strong&gt;string&lt;/strong&gt;',
+                    'extra'   => null,
+                ],
+                'expected' => [
+                    'id'      => 10,
+                    'content' => '<strong>string</strong>',
+                    'extra'   => null,
+                ],
+            ];
+
+            // Data produced by GLPI 10.0 XSS cleaning process.
+            yield [
+                'method'   => $method,
+                'row'      => [
+                    'id'      => 10,
+                    'content' => '&#60;p&#62;HTML containing a code snippet&#60;/p&#62;&#60;pre&#62;&#38;lt;a href=&#38;quot;/test&#38;quot;&#38;gt;link&#38;lt;/a&#38;gt;&#60;/pre&#62;',
+                    'extra'   => null,
+                ],
+                'expected' => [
+                    'id'      => 10,
+                    'content' => '<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>',
+                    'extra'   => null,
+                ],
+            ];
+
+            // Data produced by GLPI 10.1.
+            yield [
+                'method'   => $method,
+                'row'      => [
+                    'id'      => 10,
+                    'content' => '<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>',
+                    'extra'   => null,
+                ],
+                'expected' => [
+                    'id'      => 10,
+                    'content' => '<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>',
+                    'extra'   => null,
+                ],
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider fetchResultProvider
+     */
+    public function testDecodeFetchResult(string $method, mixed $row, mixed $expected)
+    {
+        if ($method === 'fetchObject') {
+            $row = is_array($row) ? (object)$row : $row;
+            $expected = is_array($expected) ? (object)$expected : $expected;
+        }
+
+        $this->mockGenerator->orphanize('__construct');
+        $mysqli_result = new \mock\mysqli_result();
+        $mysqli_method = strtolower(preg_replace('/[A-Z]/', '_$0', $method)); // e.g. fetchArray -> fetch_array
+        $this->calling($mysqli_result)->{$mysqli_method} = $row;
+
+        $this->newTestedInstance();
+        $this->variable($this->testedInstance->{$method}($mysqli_result))->isEqualTo($expected);
+    }
 }
