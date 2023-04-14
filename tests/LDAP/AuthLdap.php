@@ -1494,10 +1494,18 @@ class AuthLDAP extends DbTestCase
         )->isTrue();
         $ldap::$conn_cache = [];
 
-        $synchro = $ldap->forceOneUserSynchronization($user);
-        $this->boolean($synchro)->isFalse();
+        $this->when(
+            function () use ($ldap, $user) {
+                $synchro = $ldap->forceOneUserSynchronization($user);
+                $this->boolean($synchro)->isFalse();
+            }
+        )
+            ->error()
+                ->withType(E_USER_WARNING)
+                ->withMessage("Unable to bind with login `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)")
+            ->exists();
 
-       //reset directory configuration
+        //reset directory configuration
         $this->boolean(
             $ldap->update([
                 'id'     => $ldap->getID(),
