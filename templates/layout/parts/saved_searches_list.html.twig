@@ -37,13 +37,12 @@
    </div>
 {% endif %}
 
-<table class='table table-striped table-hover card-table' style='table-layout:fixed;'>
-<tbody class='sortable-savedsearches'>
+<div class='sortable-savedsearches'>
 {% for search in saved_searches %}
-   <tr class='tab_bg_1 savedsearch' data-id="{{ search['id'] }}">
-      <td class="col-2"><i class='fas fa-grip-horizontal grip-savedsearch'></i></td>
-      <td class="col-12 savedsearches-item list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
+   <div class='savedsearch' data-id="{{ search['id'] }}">
+      <div class="savedsearches-item list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
             data-id="{{ search['id'] }}">
+         <i class='fas fa-grip-horizontal grip-savedsearch' style="display: none;"></i>
          <a href="{{ 'SavedSearch'|itemtype_search_path }}?action=load&amp;id={{ search['id'] }}"
             class="d-block saved-searches-link text-truncate">
             {{ search['name']|verbatim_value }}
@@ -63,20 +62,19 @@
                {{ search['count']|raw }}
             </span>
          </div>
-      </td>
-   </tr>
+      </div>
+   </div>
 {% endfor %}
-</tbody>
-</table>
+</div>
 
 <script type="text/javascript">
 $(function() {
    sortable('.sortable-savedsearches', {
       handle: '.grip-savedsearch',
-      placeholder: '<tr><td colspan="2" class="sortable-placeholder">&nbsp;</td></tr>'
+      placeholder: '<div class="sortable-placeholder">&nbsp;</div>'
    })
    $('.sortable-savedsearches').on('sortupdate', function(e) {
-      var _ids = $('tr.savedsearch').map(function(idx, ele) {
+      var _ids = $('.savedsearch').map(function(idx, ele) {
          return $(ele).data('id');
       }).get();
 
@@ -87,5 +85,16 @@ $(function() {
 
       displayAjaxMessageAfterRedirect();
    });
+   var sorting_mode = function() {
+      if ($('.sorting-mode').is(":checked")) {
+         $('.grip-savedsearch').show();
+      } else {
+         $('.grip-savedsearch').hide();
+      }
+   };
+   $('.sorting-mode').on('change', function(e) {
+      sorting_mode();
+   });
+   sorting_mode();
 });
 </script>

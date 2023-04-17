@@ -172,8 +172,6 @@ body.horizontal-layout {
     .sortable-placeholder {
         background: #e7f06367;
         border: 1px dashed #ccc;
-        min-height: 80px;
-        min-width: 50px;
         padding: 10px;
         margin: 10px;
         opacity: 0.5;
@@ -182,6 +180,7 @@ body.horizontal-layout {
     .grip-savedsearch {
         cursor: pointer;
         cursor: grab;
+        padding-right: 10px;
 
         &:active {
             cursor: grabbing;

@@ -45,6 +45,15 @@
       </span>
 
       <li class="ms-auto btn-list me-1 flex-nowrap">
+         <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+               data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
+               title="{{ __('Toggle sorting mode') }}">
+            <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 sorting-mode" role="button"
+                  {{ session('glpisorting_mode') ? 'checked' : '' }} autocomplete="off" />
+            <span class="form-check-label mb-1 mb-sm-0">
+               <i class="fa-solid fa-sort"></i>
+            </span>
+         </label>
          <a href="{{ path('front/savedsearch.php') }}" class="btn btn-sm btn-icon btn-ghost-secondary"
             data-bs-toggle="tooltip" data-bs-placement="bottom"
             title="{{ __('Manage all saved searches') }}">
