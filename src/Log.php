@@ -578,7 +578,7 @@ class Log extends CommonDBTM
                         $tmp['field']   = NOT_AVAILABLE;
                         if ($linktype_field = explode('#', $data["itemtype_link"])) {
                             $linktype     = $linktype_field[0];
-                            $tmp['field'] = $linktype::getTypeName();
+                            $tmp['field'] = is_a($linktype, CommonGLPI::class, true) ? $linktype::getTypeName() : $linktype;
                         }
                         $tmp['change'] = sprintf(
                             __('%1$s: %2$s'),
