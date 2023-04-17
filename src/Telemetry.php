@@ -139,7 +139,9 @@ class Telemetry extends CommonGLPI
     }
 
     /**
-     * Grab web server part information
+     * Grab web server part information.
+     * As we cannot rely on `$_SERVER` information on CLI context, we have to get to do a request to the GLPI webserver
+     * and get the information from its response, if it is available.
      *
      * @return array
      */
@@ -153,7 +155,7 @@ class Telemetry extends CommonGLPI
         ];
 
         if (!filter_var(gethostbyname(parse_url($CFG_GLPI['url_base'], PHP_URL_HOST)), FILTER_VALIDATE_IP)) {
-           // Do not try to get headers if hostname cannot be resolved
+            // Do not try to get headers if hostname cannot be resolved
             return $server;
         }
 
@@ -163,16 +165,25 @@ class Telemetry extends CommonGLPI
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 1);
 
-       // Issue #3180 - disable SSL certificate validation (wildcard, self-signed)
+        // Issue #3180 - disable SSL certificate validation (wildcard, self-signed)
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         if ($response = curl_exec($ch)) {
             $headers = substr($response, 0, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
             $header_matches = [];
-            if (preg_match('/^Server: (?<engine>[^ ]+)\/(?<version>[^ ]+)/im', $headers, $header_matches)) {
+            // see RFC2616
+            //
+            // `Server` header may contains multiple values (e.g. Apache/2.4.46 (Debian) mod_fcgid/2.3.9 OpenSSL/1.1.1d).
+            // We only get the first value, assuming it corresponds to the server engine.
+            $separators = '\/() ';
+            $server_string_pattern = "(?<engine>[^{$separators}]+)" // mandatory `product`
+                . "(\/(?<version>[^$separators]+))?" // optional `/version`
+                . "( (?<comment>\([^$separators]+\)))?" // optional ` (comment)`
+            ;
+            if (preg_match("/^Server: {$server_string_pattern}/im", $headers, $header_matches) === 1) {
                 $server['engine']  = $header_matches['engine'];
-                $server['version'] = $header_matches['version'];
+                $server['version'] = $header_matches['version'] ?? null;
             }
         }
 
