@@ -375,6 +375,9 @@ JAVASCRIPT;
 
                 if (location.hash) {
                     location.href = location.hash; // move to hanchor if needed
+                    //unset hash
+                    history.pushState('', document.title, window.location.pathname
+                                                       + window.location.search);
                 }
             }
             if ($(target).html() && !force_reload) {
