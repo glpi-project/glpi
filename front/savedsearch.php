@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
-}
+include('../inc/includes.php');
+
+Session::checkLoginUser();
 
 if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
