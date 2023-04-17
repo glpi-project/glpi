@@ -219,8 +219,8 @@ class ITILTemplate extends DbTestCase
                     13 => 'Associated elements',
                     -2 => 'Approval request',
                     142 => 'Documents',
-                    9 => 'Request source',
                     83 => 'Location',
+                    9 => 'Request source',
                     37 => 'SLA&nbsp;Time to own',
                     30 => 'SLA&nbsp;Time to resolve',
                     190 => 'OLA&nbsp;Internal time to own',
@@ -254,11 +254,12 @@ class ITILTemplate extends DbTestCase
                     13 => 'Associated elements',
                     -2 => 'Approval request',
                     142 => 'Documents',
+                    83 => 'Location',
                     60 => 'Analysis impact',
                     61 => 'Control list',
                     62 => 'Deployment plan',
                     63 => 'Backup plan',
-                    67 => 'Checklist'
+                    67 => 'Checklist',
                 ]
             ], [
                 'Problem',
@@ -283,6 +284,7 @@ class ITILTemplate extends DbTestCase
                     13 => 'Associated elements',
                     -2 => 'Approval request',
                     142 => 'Documents',
+                    83 => 'Location',
                     60 => 'Impacts',
                     61 => 'Causes',
                     62 => 'Symptoms',
