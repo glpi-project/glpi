@@ -4343,7 +4343,7 @@ class AuthLDAP extends CommonDBTM
         global $DB;
         $user = new User();
 
-        if ($sync !== null && $user->getFromDBbySyncField($sync)) {
+        if ($sync !== null && $user->getFromDBbySyncField($DB->escape($sync))) {
             return $user;
         }
 
