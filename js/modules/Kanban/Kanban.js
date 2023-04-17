@@ -1432,6 +1432,7 @@ class GLPIKanbanRights {
                     let user_img = null;
                     $.ajax({
                         url: (self.ajax_root + "getUserPicture.php"),
+                        async: false,
                         data: {
                             users_id: [items_id],
                             size: self.team_image_size,
@@ -1978,11 +1979,11 @@ class GLPIKanbanRights {
                         column_field: self.column_field.id
                     }
                 }).done(function(columns, textStatus, jqXHR) {
+                    clearColumns();
+                    self.columns = columns;
                     preloadBadgeCache({
                         trim_cache: true
                     });
-                    clearColumns();
-                    self.columns = columns;
                     fillColumns();
                     // Re-filter kanban
                     self.filter();
