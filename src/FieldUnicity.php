@@ -293,16 +293,12 @@ class FieldUnicity extends CommonDropdown
 
        //Search option for this type
         if ($target = getItemForItemtype($itemtype)) {
-           //Do not check unicity on fields in DB with theses types
-            $blacklisted_types = ['longtext', 'text'];
-
            //Construct list
             $values = [];
             foreach ($DB->listFields(getTableForItemType($itemtype)) as $field) {
                 $searchOption = $target->getSearchOptionByField('field', $field['Field']);
                 if (
                     !empty($searchOption)
-                    && !in_array($field['Type'], $blacklisted_types)
                     && !in_array($field['Field'], $target->getUnallowedFieldsForUnicity())
                 ) {
                     $values[$field['Field']] = $searchOption['name'];
