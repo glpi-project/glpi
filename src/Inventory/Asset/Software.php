@@ -101,6 +101,9 @@ class Software extends InventoryAsset
                 }
             }
 
+            if (property_exists($val, 'manufacturers_id')) {
+                $val->manufacturers_id = $this->cleanName($val->manufacturers_id);
+            }
             if (
                 !property_exists($val, 'name')
                 || $val->name == ''
@@ -112,7 +115,7 @@ class Software extends InventoryAsset
 
             //If the software name exists and is defined
             if (property_exists($val, 'name') && $val->name != '') {
-                $val->name = trim(preg_replace('/\s+/u', ' ', $val->name));
+                $val->name = $this->cleanName($val->name);
 
                 $res_rule       = [];
 

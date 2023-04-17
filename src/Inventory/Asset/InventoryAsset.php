@@ -450,4 +450,19 @@ abstract class InventoryAsset
     }
 
     abstract public function getItemtype(): string;
+
+    protected function cleanName(string $string): string
+    {
+        return trim(
+            preg_replace(
+                '/\s+/u',
+                ' ',
+                preg_replace(
+                    '/[\x00-\x1F\x80-\xFF]/',
+                    '',
+                    $string
+                )
+            )
+        );
+    }
 }
