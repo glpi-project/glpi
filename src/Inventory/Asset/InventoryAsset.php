@@ -454,13 +454,14 @@ abstract class InventoryAsset
     protected function cleanName(string $string): string
     {
         return trim(
-            trim(
+            preg_replace(
+                '/[\x{200B}-\x{200D}\x{FEFF}]/u',
+                '',
                 preg_replace(
                     '/\s+/u',
                     ' ',
                     $string
-                ),
-                "\xEF\xBB\xBF"
+                )
             )
         );
     }

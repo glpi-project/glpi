@@ -1101,14 +1101,14 @@ class Software extends AbstractInventoryAsset
 <REQUEST>
   <CONTENT>
     <SOFTWARES>
-      <NAME>AVEVA Application Server 2020</NAME>
+      <NAME>ÀVEVA Application Server 2020</NAME>
       <VERSION>20.0.000</VERSION>
-      <PUBLISHER>﻿AVEVA Software, LLC</PUBLISHER>
+      <PUBLISHER>﻿ÀVEVA Software, LLC</PUBLISHER>
     </SOFTWARES>
     <SOFTWARES>
-      <NAME>AVEVA Application Server 2020</NAME>
+      <NAME>ÀVEVA Application Server 2020</NAME>
       <VERSION>20.0.000</VERSION>
-      <PUBLISHER>AVEVA Software, LLC</PUBLISHER>
+      <PUBLISHER>ÀVEVA Software, LLC</PUBLISHER>
       <INSTALLDATE>03/12/2020</INSTALLDATE>
     </SOFTWARES>
     <HARDWARE>
@@ -1133,8 +1133,8 @@ class Software extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-        //we have 1 software & versions for AVEVA Application Server 2020
-        $softs = $soft->find(['name' => 'AVEVA Application Server 2020']);
+        //we have 1 software & versions for ÀVEVA Application Server 2020
+        $softs = $soft->find(['name' => 'ÀVEVA Application Server 2020']);
         $this->integer(count($softs))->isIdenticalTo(1);
 
         //20.0.000
@@ -1151,8 +1151,89 @@ class Software extends AbstractInventoryAsset
         //same inventory again
         $this->doInventory($xml_source, true);
 
-        //we have 1 software & versions for AVEVA Application Server 2020
-        $softs = $soft->find(['name' => 'AVEVA Application Server 2020']);
+        //we have 1 software & versions for ÀVEVA Application Server 2020
+        $softs = $soft->find(['name' => 'ÀVEVA Application Server 2020']);
+        $this->integer(count($softs))->isIdenticalTo(1);
+
+        //20.0.000
+        $versions = $version->find(['name' => '20.0.000']);
+        $this->integer(count($versions))->isIdenticalTo(1);
+
+        $version_data = array_pop($versions);
+        $this->boolean($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $version_data['id']
+        ]))->isTrue();
+    }
+
+    public function testSameSoftManufacturer2()
+    {
+        global $DB;
+        $this->login();
+
+        $computer = new \Computer();
+        $soft = new \Software();
+        $version = new \SoftwareVersion();
+        $item_version = new \Item_SoftwareVersion();
+
+        //inventory with a software manufacturer name containing an unbreakable space
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <NAME>ÀVEVA Application Server 2020</NAME>
+      <VERSION>20.0.000</VERSION>
+      <PUBLISHER>TEST ﻿ÀVEVA Software, LLC</PUBLISHER>
+    </SOFTWARES>
+    <SOFTWARES>
+      <NAME>ÀVEVA Application Server 2020</NAME>
+      <VERSION>20.0.000</VERSION>
+      <PUBLISHER>TEST ÀVEVA Software, LLC</PUBLISHER>
+      <INSTALLDATE>03/12/2020</INSTALLDATE>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //create manually a computer
+        $computers_id = $computer->add([
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        $this->doInventory($xml_source, true);
+
+        //we have 1 software & versions for ÀVEVA Application Server 2020
+        $softs = $soft->find(['name' => 'ÀVEVA Application Server 2020']);
+        $this->integer(count($softs))->isIdenticalTo(1);
+
+        //20.0.000
+        $versions = $version->find(['name' => '20.0.000']);
+        $this->integer(count($versions))->isIdenticalTo(1);
+
+        $version_data = array_pop($versions);
+        $this->boolean($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $version_data['id']
+        ]))->isTrue();
+
+        //same inventory again
+        $this->doInventory($xml_source, true);
+
+        //we have 1 software & versions for ÀVEVA Application Server 2020
+        $softs = $soft->find(['name' => 'ÀVEVA Application Server 2020']);
         $this->integer(count($softs))->isIdenticalTo(1);
 
         //20.0.000
