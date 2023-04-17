@@ -267,6 +267,7 @@ function step4($databasename, $newdatabasename)
 
    //Check if the port is in url
     $hostport = explode(":", $host);
+    mysqli_report(MYSQLI_REPORT_OFF);
     if (count($hostport) < 2) {
         $link = new mysqli($hostport[0], $user, $password);
     } else {
