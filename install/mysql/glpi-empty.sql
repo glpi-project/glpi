@@ -675,6 +675,7 @@ CREATE TABLE `glpi_changes` (
   `close_delay_stat` int NOT NULL DEFAULT '0',
   `solve_delay_stat` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -693,7 +694,8 @@ CREATE TABLE `glpi_changes` (
   KEY `time_to_resolve` (`time_to_resolve`),
   KEY `global_validation` (`global_validation`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `locations_id` (`locations_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -5545,6 +5547,7 @@ CREATE TABLE `glpi_problems` (
   `close_delay_stat` int NOT NULL DEFAULT '0',
   `solve_delay_stat` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -5562,7 +5565,8 @@ CREATE TABLE `glpi_problems` (
   KEY `impact` (`impact`),
   KEY `time_to_resolve` (`time_to_resolve`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `locations_id` (`locations_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
