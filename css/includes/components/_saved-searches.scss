@@ -180,10 +180,18 @@ body.horizontal-layout {
     .grip-savedsearch {
         cursor: pointer;
         cursor: grab;
-        padding-right: 10px;
 
         &:active {
             cursor: grabbing;
+        }
+
+        &::before {
+            content: "\ec01";
+            font-family: "tabler-icons";
+            font-weight: 900;
+            color: $secondary;
+            margin-left: -1rem;
+            width: 1rem;
         }
     }
 }
