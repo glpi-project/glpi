@@ -2111,6 +2111,7 @@ class GLPIKanbanRights {
             }
 
             refreshSortables();
+            self.filter();
         };
 
         /**
