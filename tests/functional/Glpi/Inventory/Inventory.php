@@ -6084,7 +6084,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
     }
 
 
-    public function testOrgerSerialFromTag()
+    public function testOtherSerialFromTag()
     {
         global $DB;
 
