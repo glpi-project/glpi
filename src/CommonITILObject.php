@@ -1894,20 +1894,20 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function post_updateItem($history = 1)
     {
-       // Handle "_tasktemplates_id" special input
-        $this->handleTaskTemplateInput();
-
-       // Handle "_itilfollowuptemplates_id" special input
-        $this->handleITILFollowupTemplateInput();
-
-       // Handle "_solutiontemplates_id" special input
-        $this->handleSolutionTemplateInput();
-
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
-       // handle actors changes
+        // handle actors changes
         $this->updateActors();
+
+        // Handle "_tasktemplates_id" special input
+        $this->handleTaskTemplateInput();
+
+        // Handle "_itilfollowuptemplates_id" special input
+        $this->handleITILFollowupTemplateInput();
+
+        // Handle "_solutiontemplates_id" special input
+        $this->handleSolutionTemplateInput();
 
         // Send validation requests
         $this->manageValidationAdd($this->input);
@@ -2626,16 +2626,6 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function post_addItem()
     {
-
-       // Handle "_tasktemplates_id" special input
-        $this->handleTaskTemplateInput();
-
-       // Handle "_itilfollowuptemplates_id" special input
-        $this->handleITILFollowupTemplateInput();
-
-       // Handle "_solutiontemplates_id" special input
-        $this->handleSolutionTemplateInput();
-
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
@@ -2655,8 +2645,17 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // handle actors changes
+        // handle actors changes
         $this->updateActors(true);
+
+        // Handle "_tasktemplates_id" special input
+        $this->handleTaskTemplateInput();
+
+        // Handle "_itilfollowuptemplates_id" special input
+        $this->handleITILFollowupTemplateInput();
+
+        // Handle "_solutiontemplates_id" special input
+        $this->handleSolutionTemplateInput();
 
         // Send validation requests
         $this->manageValidationAdd($this->input);
