@@ -1260,8 +1260,8 @@ class Ticket extends CommonITILObject
             }
 
             $input = $rules->processAllRules(
-                $input,
-                $input,
+                Toolbox::stripslashes_deep($input),
+                Toolbox::stripslashes_deep($input),
                 ['recursive'   => true,
                     'entities_id' => $entid
                 ],
@@ -1269,7 +1269,7 @@ class Ticket extends CommonITILObject
                     'only_criteria' => $changes
                 ]
             );
-            $input = Toolbox::stripslashes_deep($input);
+            // $input = Toolbox::stripslashes_deep($input);
         }
 
        // Clean actors fields added for rules
@@ -1929,12 +1929,12 @@ class Ticket extends CommonITILObject
             }
 
             $input = $rules->processAllRules(
-                $input,
-                $input,
+                Toolbox::stripslashes_deep($input),
+                Toolbox::stripslashes_deep($input),
                 ['recursive' => true],
                 ['condition' => RuleTicket::ONADD]
             );
-            $input = Toolbox::stripslashes_deep($input);
+            // $input = Toolbox::stripslashes_deep($input);
 
            // Recompute default values based on values computed by rules
             $input = $this->computeDefaultValuesForAdd($input);
