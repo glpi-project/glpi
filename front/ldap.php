@@ -45,6 +45,7 @@ if (isset($_SESSION["ldap_sortorder"])) {
     unset($_SESSION["ldap_sortorder"]);
 }
 
+# If you update or migrate your GLPI system, make sure to reconfigure the LDAP through your GLPI site in order for it to work (blank page error).
 AuthLDAP::manageValuesInSession([], true);
 
 echo TemplateRenderer::getInstance()->render(
