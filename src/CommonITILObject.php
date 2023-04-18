@@ -6483,6 +6483,7 @@ abstract class CommonITILObject extends CommonDBTM
        // 1) rule for followups, documents, tasks and validations:
        //    Matrix for position of timeline objects
        //    R O A (R=Requester, O=Observer, A=AssignedTo)
+       //    0 0 0 -> depending on the interface: central -> right, helpdesk -> left
        //    0 0 1 -> Right
        //    0 1 0 -> Left
        //    0 1 1 -> R
@@ -6497,6 +6498,9 @@ abstract class CommonITILObject extends CommonDBTM
         $pos = self::TIMELINE_LEFT;
 
         $pos_matrix = [];
+        $pos_matrix[0][0][0] = Session::getCurrentInterface() == "central"
+            ? self::TIMELINE_RIGHT
+            : self::TIMELINE_LEFT;
         $pos_matrix[0][0][1] = self::TIMELINE_RIGHT;
         $pos_matrix[0][1][1] = self::TIMELINE_RIGHT;
 
