@@ -1075,6 +1075,16 @@ class CommonGLPI implements CommonGLPIInterface
                 echo $this->getNameID([
                     'forceid' => $this instanceof CommonITILObject
                 ]);
+                if ($this->isField('is_deleted') && $this->fields['is_deleted']) {
+                    $title = $this->isField('date_mod')
+                                ? sprintf(__s('Item has been deleted on %1$s'), Html::convDateTime($this->fields['date_mod']))
+                                : __s('Deleted');
+                    echo "<span class='mx-2 bg-danger status rounded-1' title=\"" . $title . "\"
+                        data-bs-toggle='tooltip'>
+                        <i class='ti ti-trash'></i>";
+                        echo __s('Deleted');
+                    echo "</span>";
+                }
                 echo "</h3>";
             } else {
                 echo TemplateRenderer::getInstance()->render('components/form/header_content.html.twig', [
