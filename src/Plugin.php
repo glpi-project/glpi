@@ -129,7 +129,7 @@ class Plugin extends CommonDBTM
      *
      * @var array
      */
-    private ?array $plugins_informations = null;
+    private ?array $plugins_information = null;
 
     public static function getTypeName($nb = 0)
     {
@@ -514,11 +514,11 @@ class Plugin extends CommonDBTM
     private function loadPluginInformations(): void
     {
         // Run once
-        if ($this->plugins_informations !== null) {
+        if ($this->plugins_information !== null) {
             return;
         }
 
-        $plugins_informations = [];
+        $plugins_information = [];
         $plugins_directories = new AppendIterator();
         $plugins_directories->append(new DirectoryIterator(GLPI_ROOT . '/plugins'));
         $plugins_directories->append(new DirectoryIterator(GLPI_ROOT . '/marketplace'));
@@ -533,9 +533,9 @@ class Plugin extends CommonDBTM
             }
 
             $info = $this->getInformationsFromDirectory($plugin_name);
-            $plugins_informations[$plugin_name] = $info;
+            $plugins_information[$plugin_name] = $info;
         }
-        $this->plugins_informations = $plugins_informations;
+        $this->plugins_information = $plugins_information;
     }
 
     /**
@@ -550,7 +550,7 @@ class Plugin extends CommonDBTM
         $this->loadPluginInformations();
         $plugin = new self();
 
-        $informations = $this->plugins_informations[$plugin_key] ?? [];
+        $informations = $this->plugins_information[$plugin_key] ?? [];
         $new_specs    = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
         $is_loadable      = !empty($informations);
@@ -768,7 +768,7 @@ class Plugin extends CommonDBTM
      */
     private function getNewInfoAndDirBasedOnOldName($oldname)
     {
-        foreach ($this->plugins_informations as $plugin_name => $informations) {
+        foreach ($this->plugins_information as $plugin_name => $informations) {
             if (array_key_exists('oldname', $informations) && $informations['oldname'] === $oldname) {
                // Return information if oldname specified in parsed directory matches passed value
                 return [
