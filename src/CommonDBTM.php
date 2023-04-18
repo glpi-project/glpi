@@ -5678,7 +5678,10 @@ class CommonDBTM extends CommonGLPI
             }
 
             //if agent exist pass the 'tag' to RuleAssetCollection
-            if (Toolbox::hasTrait($this, \Glpi\Features\Inventoriable::class)) {
+            if (
+                Toolbox::hasTrait($this, \Glpi\Features\Inventoriable::class)
+                && method_exists($this, 'getInventoryAgent')
+            ) {
                 $agent = $this->getInventoryAgent();
                 if ($agent !== null) {
                     $input['tag'] = $agent->fields['tag'];
