@@ -8756,6 +8756,10 @@ abstract class CommonITILObject extends CommonDBTM
         if (empty($column_ids)) {
             return [];
         }
+        // Fill columns with empty arrays for each column id to avoid missing columns in the kanban
+        foreach ($column_ids as $column_id) {
+            $columns[$column_id] = [];
+        }
         // Never try getting cards in drop-only columns
         $columns_defined = self::getAllKanbanColumns('status');
         $statuses_from_db = array_filter($column_ids, static function ($id) use ($columns_defined) {
@@ -8767,11 +8771,14 @@ abstract class CommonITILObject extends CommonDBTM
                 'status' => $statuses_from_db
             ];
         }
-        if (!isset($criteria['status'])) {
-            // Avoid fetching everything when nothing is needed
-            return [];
+
+        // Avoid fetching everything when nothing is needed
+        if (isset($criteria['status'])) {
+            $items = self::getDataToDisplayOnKanban($ID, $criteria);
+        } else {
+            $items = [];
         }
-        $items      = self::getDataToDisplayOnKanban($ID, $criteria);
+
 
         $extracolumns = self::getAllKanbanColumns($column_field, $column_ids, $get_default);
         foreach ($extracolumns as $column_id => $column) {
