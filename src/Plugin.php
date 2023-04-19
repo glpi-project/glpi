@@ -550,7 +550,11 @@ class Plugin extends CommonDBTM
         $this->loadPluginInformations();
         $plugin = new self();
 
-        $informations = $this->plugins_information[$plugin_key] ?? [];
+        // Fallback on $this->getInformationsFromDirectory is needed for unit
+        // tests with fake "tester" plugin, as the plugin does not have a real
+        // directory so $this->loadPluginInformations wont be able to find it
+        // by iterating on /plugins and /marketplace
+        $informations = $this->plugins_information[$plugin_key] ?? $this->getInformationsFromDirectory($plugin_key);
         $new_specs    = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
         $is_loadable      = !empty($informations);
