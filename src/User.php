@@ -1643,7 +1643,18 @@ class User extends CommonDBTM
             sort($group_fields);
 
            // If the groups must be retrieve from the ldap user object
-            $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
+            $sr = @ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
+            if ($sr === false) {
+                $errno = ldap_errno($ldap_connection);
+                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                if ($errno !== 32) {
+                    trigger_error(
+                        sprintf('LDAP search failed with error (%s) %s', $errno, ldap_error($ldap_connection)),
+                        E_USER_WARNING
+                    );
+                }
+                return;
+            }
             $v  = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
             for ($i = 0; $i < $v['count']; $i++) {
@@ -1801,7 +1812,18 @@ class User extends CommonDBTM
             $fields  = array_filter($fields);
             $f       = self::getLdapFieldNames($fields);
 
-            $sr      = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
+            $sr      = @ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
+            if ($sr === false) {
+                $errno = ldap_errno($ldap_connection);
+                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                if ($errno !== 32) {
+                    trigger_error(
+                        sprintf('LDAP search failed with error (%s) %s', $errno, ldap_error($ldap_connection)),
+                        E_USER_WARNING
+                    );
+                }
+                return false;
+            }
             $v       = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
             if (
@@ -2054,7 +2076,19 @@ class User extends CommonDBTM
         }
 
        //Perform the search
-        $sr     = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
+        $sr = @ldap_search($ds, $ldap_base_dn, $filter, $attrs);
+
+        if ($sr === false) {
+            $errno = ldap_errno($ds);
+            // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+            if ($errno !== 32) {
+                trigger_error(
+                    sprintf('LDAP search failed with error (%s) %s', $errno, ldap_error($ds)),
+                    E_USER_WARNING
+                );
+            }
+            return $groups;
+        }
 
        //Get the result of the search as an array
         $info = AuthLDAP::get_entries_clean($ds, $sr);

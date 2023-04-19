@@ -1904,12 +1904,16 @@ class AuthLDAP extends CommonDBTM
                         ]
                     ]
                 ];
-                $sr = ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+                $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 if ($sr === false) {
-                    trigger_error(
-                        sprintf('LDAP search failed with error (%s) %s', ldap_errno($ds), ldap_error($ds)),
-                        E_USER_WARNING
-                    );
+                    $errno = ldap_errno($ds);
+                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                    if ($errno !== 32) {
+                        trigger_error(
+                            sprintf('LDAP search failed with error (%s) %s', $errno, ldap_error($ds)),
+                            E_USER_WARNING
+                        );
+                    }
                     return false;
                 }
                 ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
@@ -1919,7 +1923,18 @@ class AuthLDAP extends CommonDBTM
                     $cookie = '';
                 }
             } else {
-                $sr = ldap_search($ds, $values['basedn'], $filter, $attrs);
+                $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
+                if ($sr === false) {
+                    $errno = ldap_errno($ds);
+                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                    if ($errno !== 32) {
+                        trigger_error(
+                            sprintf('LDAP search failed with error (%s) %s', $errno, ldap_error($ds)),
+                            E_USER_WARNING
+                        );
+                    }
+                    return false;
+                }
             }
 
             if ($sr) {
@@ -2585,7 +2600,18 @@ class AuthLDAP extends CommonDBTM
                         ]
                     ]
                 ];
-                $sr = ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+                $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+                if ($sr === false) {
+                    $errno = ldap_errno($ldap_connection);
+                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                    if ($errno !== 32) {
+                        trigger_error(
+                            sprintf('LDAP search failed with error (%s) %s', $errno, ldap_error($ldap_connection)),
+                            E_USER_WARNING
+                        );
+                    }
+                    return $groups;
+                }
                 ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
                 if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
                     $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
@@ -2593,7 +2619,18 @@ class AuthLDAP extends CommonDBTM
                     $cookie = '';
                 }
             } else {
-                $sr = ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs);
+                $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs);
+                if ($sr === false) {
+                    $errno = ldap_errno($ldap_connection);
+                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                    if ($errno !== 32) {
+                        trigger_error(
+                            sprintf('LDAP search failed with error (%s) %s', $errno, ldap_error($ldap_connection)),
+                            E_USER_WARNING
+                        );
+                    }
+                    return $groups;
+                }
             }
 
             if ($sr) {
@@ -3423,23 +3460,33 @@ class AuthLDAP extends CommonDBTM
             $filter = "(& $filter " . Sanitizer::unsanitize($values['condition']) . ")";
         }
 
-        if ($result = ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
-           //search has been done, let's check for found results
-            $info = self::get_entries_clean($ds, $result);
-
-            if (is_array($info) && ($info['count'] == 1)) {
-                $ret = [
-                    'dn'        => $info[0]['dn'],
-                    $login_attr => $info[0][$login_attr][0]
-                ];
-                if ($sync_attr !== null && isset($info[0][$sync_attr])) {
-                    $ret['sync_field'] = self::getFieldValue($info[0], $sync_attr);
-                }
-                return $ret;
+        $result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters);
+        if ($result === false) {
+            $errno = ldap_errno($ds);
+            // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+            if ($errno !== 32) {
+                trigger_error(
+                    sprintf('LDAP search failed with error (%s) %s', $errno, ldap_error($ds)),
+                    E_USER_WARNING
+                );
             }
             return false;
         }
-        throw new \RuntimeException('Something went wrong searching in LDAP directory');
+
+        //search has been done, let's check for found results
+        $info = self::get_entries_clean($ds, $result);
+
+        if (is_array($info) && ($info['count'] == 1)) {
+            $ret = [
+                'dn'        => $info[0]['dn'],
+                $login_attr => $info[0][$login_attr][0]
+            ];
+            if ($sync_attr !== null && isset($info[0][$sync_attr])) {
+                $ret['sync_field'] = self::getFieldValue($info[0], $sync_attr);
+            }
+            return $ret;
+        }
+        return false;
     }
 
 

@@ -255,6 +255,17 @@ class RuleRightCollection extends RuleCollection
                 "objectClass=*",
                 $rule_fields
             );
+            if ($sz === false) {
+                $errno = ldap_errno($params_lower["connection"]);
+                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                if ($errno !== 32) {
+                    trigger_error(
+                        sprintf('LDAP search failed with error (%s) %s', $errno, ldap_error($params_lower["connection"])),
+                        E_USER_WARNING
+                    );
+                }
+                return $rule_parameters;
+            }
             $rule_input = AuthLDAP::get_entries_clean($params_lower["connection"], $sz);
 
             if (count($rule_input)) {
