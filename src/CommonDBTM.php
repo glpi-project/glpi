@@ -5684,7 +5684,7 @@ class CommonDBTM extends CommonGLPI
             ) {
                 $agent = $this->getInventoryAgent();
                 if ($agent !== null) {
-                    $input['tag'] = $agent->fields['tag'];
+                    $input['_tag'] = $agent->fields['tag'];
                 }
             }
 
