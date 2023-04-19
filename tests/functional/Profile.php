@@ -241,4 +241,39 @@ class Profile extends DbTestCase
             "Can't remove update right on this profile as it is the only remaining profile with this right."
         ]);
     }
+
+    /**
+     * Test that core profile rights have a search option in the Profile class to ensure that changes are recorded in the profile's history.
+     */
+    public function testProfileRightsHaveSearchOptions()
+    {
+        $forms = ['tracking', 'tools', 'assets', 'management', 'admin', 'setup'];
+        $interfaces = ['helpdesk', 'central'];
+
+        $search_opts = \Search::getOptions(\Profile::class);
+        // We can keep only the options that have 'right' as the field
+        $search_opts = array_filter($search_opts, static function ($opt) {
+            return is_array($opt) && isset($opt['field']) && $opt['field'] === 'rights';
+        });
+        $failures = [];
+        foreach ($forms as $form) {
+            foreach ($interfaces as $interface) {
+                $rights = \Profile::getRightsForForm($form, $interface);
+                foreach ($rights as $right) {
+                    $search_opt_matches = array_filter($search_opts, static function ($opt) use ($right) {
+                        return $opt['rightname'] === $right['field'];
+                    });
+                    if (!count($search_opt_matches)) {
+                        $failures[] = $right['field'];
+                    }
+                }
+            }
+        }
+        $failures = array_unique($failures);
+        if (count($failures)) {
+            echo sprintf('The following rights do not have a search option: %s', implode(', ', $failures));
+            ob_flush();
+        }
+        $this->array($failures)->isEmpty();
+    }
 }
