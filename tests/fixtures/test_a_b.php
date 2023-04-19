@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Namespace;
+namespace Glpi\Test;
 
 class A_B extends \CommonDBTM
 {

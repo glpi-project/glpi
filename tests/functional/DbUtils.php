@@ -147,7 +147,7 @@ class DbUtils extends DbTestCase
         require_once __DIR__ . '/../fixtures/pluginfooservice.php';
         require_once __DIR__ . '/../fixtures/pluginfoo_search_item_filter.php';
         require_once __DIR__ . '/../fixtures/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
-        require_once __DIR__ . '/../fixtures/namespace_a_b.php';
+        require_once __DIR__ . '/../fixtures/test_a_b.php';
 
         return [
             ['glpi_dbmysqls', 'DBmysql', false], // not a CommonGLPI, should not be valid
@@ -162,7 +162,7 @@ class DbUtils extends DbTestCase
             ['glpi_plugin_foo_bazs', 'PluginFooBaz', false], // class not exists
             ['glpi_plugin_foo_services', 'PluginFooService', false], // not a CommonGLPI should not be valid
             ['glpi_plugin_foo_searches_items_filters', 'GlpiPlugin\Foo\Search\Item_Filter', true], // Namespace + CommonDBRelation
-            ['glpi_namespaces_as_bs', 'Glpi\Namespace\A_B', true], // Namespace + CommonDBRelation
+            ['glpi_tests_as_bs', 'Glpi\Test\A_B', true], // Namespace + CommonDBRelation
             ['glpi_plugin_foo_as_bs_cs_ds_es_fs_gs_bars', 'GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar', true], // Long name space
         ];
     }
