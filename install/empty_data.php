@@ -119,8 +119,7 @@ $empty_data_builder = new class
         }
 
         $mode = [
-            Notification_NotificationTemplate::MODE_MAIL,
-            Notification_NotificationTemplate::MODE_AJAX
+            Notification_NotificationTemplate::MODE_ALL,
         ];
 
         $default_prefs = [
@@ -8656,8 +8655,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         ];
 
         $mode = [
-            Notification_NotificationTemplate::MODE_MAIL,
-            Notification_NotificationTemplate::MODE_AJAX
+            Notification_NotificationTemplate::MODE_ALL,
         ];
 
         $tables['glpi_users'] = [

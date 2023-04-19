@@ -56,6 +56,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
     const MODE_SMS       = 'sms';
     const MODE_XMPP      = 'xmpp';
     const MODE_IRC       = 'irc';
+    const MODE_ALL       = 'all';
 
     public static function getTypeName($nb = 0)
     {

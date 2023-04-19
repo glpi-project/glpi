@@ -173,8 +173,7 @@ class Config extends CommonDBTM
 
         if (!isset($input["allow_notifications_type"])) {
             $mode = [
-                Notification_NotificationTemplate::MODE_MAIL,
-                Notification_NotificationTemplate::MODE_AJAX
+                Notification_NotificationTemplate::MODE_ALL,
             ];
             $input["allow_notifications_type"] = exportArrayToDB($mode);
         } else {
@@ -1454,6 +1453,13 @@ JAVASCRIPT
 
         $data['allow_notifications_type'] = importArrayFromDB($data['allow_notifications_type']);
         echo "<input type='hidden' name='_allow_notifications_types' value='1'>";
+
+        $CFG_GLPI['notifications_modes'] = [
+            Notification_NotificationTemplate::MODE_ALL => [
+                'label'  => __('All'),
+                'from'   => 'core'
+            ]
+        ];
         Notification_NotificationTemplate::dropdownMode([
             'values' => $data['allow_notifications_type'],
             'name' => 'allow_notifications_type',

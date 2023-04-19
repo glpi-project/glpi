@@ -711,7 +711,8 @@ class User extends CommonDBTM
         if (!isset($input["allow_notifications_type"])) {
             $mode = [
                 Notification_NotificationTemplate::MODE_MAIL,
-                Notification_NotificationTemplate::MODE_AJAX
+                Notification_NotificationTemplate::MODE_AJAX,
+                Notification_NotificationTemplate::MODE_ALL
             ];
             $input["allow_notifications_type"] = exportArrayToDB($mode);
         }
@@ -7071,6 +7072,11 @@ JAVASCRIPT;
      */
     public function isRefusedNotificationMode(string $mode): bool
     {
-        return (!in_array($mode, importArrayFromDB($this->fields['allow_notifications_type'])));
+        $user_pref = importArrayFromDB($this->fields['allow_notifications_type']);
+        if (in_array(Notification_NotificationTemplate::MODE_ALL, $user_pref)) {
+            return false;
+        } else {
+            return (!in_array($mode, $user_pref));
+        }
     }
 }
