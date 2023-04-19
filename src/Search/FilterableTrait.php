@@ -37,27 +37,14 @@ namespace Glpi\Search;
 
 use CommonDBTM;
 use Glpi\Toolbox\Sanitizer;
-use LogicException;
 
 /**
  * Helper trait to ease interaction with filters
  */
 trait FilterableTrait
 {
-    /**
-     * Check that the given item match the filters defined for the current item
-     *
-     * @param CommonDBTM $item Given item
-     *
-     * @return bool
-     */
     public function itemMatchFilter(CommonDBTM $item): bool
     {
-        // Should only be used by FilterableInterface items
-        if (!($this instanceof FilterableInterface)) {
-            return new LogicException("Not filterable");
-        }
-
         $filter = Item_Filter::getForItem($this);
 
         // No filter defined
@@ -90,21 +77,9 @@ trait FilterableTrait
         return $data['data']['totalcount'] > 0;
     }
 
-    /**
-     * Create or update filter for a given item
-     *
-     * @param array  $search_criteria Search criterias used as filter
-     *
-     * @return bool
-     */
     public function saveFilter(
         array $search_criteria
     ): bool {
-        // Should only be used by FilterableInterface items
-        if (!($this instanceof FilterableInterface)) {
-            return new LogicException("Not filterable");
-        }
-
         $search_itemtype = $this->getItemtypeToFilter();
         $filter = Item_Filter::getForItem($this);
 
@@ -146,18 +121,8 @@ trait FilterableTrait
         return $success;
     }
 
-    /**
-     * Delete filter for a given item
-     *
-     * @return bool
-     */
     public function deleteFilter(): bool
     {
-        // Should only be used by FilterableInterface items
-        if (!($this instanceof FilterableInterface)) {
-            return new LogicException("Not filterable");
-        }
-
         $filter = Item_Filter::getForItem($this);
 
         // No filter, nothing to be done

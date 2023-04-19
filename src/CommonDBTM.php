@@ -1968,12 +1968,10 @@ class CommonDBTM extends CommonGLPI
         // Clear filter on itemtype change
         if (
             $this instanceof FilterableInterface
-            && in_array(FilterableTrait::class, class_uses($this))
             && $this->getItemtypeField() !== null
             && in_array($this->getItemtypeField(), $this->updates)
         ) {
-            /** @var FilterableTrait $this */
-            $this->deleteFilter(); /** @phpstan-ignore-line (can't type hint traits so phpstan doens't like it)*/
+            $this->deleteFilter();
         }
     }
 

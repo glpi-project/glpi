@@ -57,4 +57,29 @@ interface FilterableInterface
      * @return string|null
      */
     public function getItemtypeField(): ?string;
+
+    /**
+     * Check that the given item match the filters defined for the current item
+     *
+     * @param CommonDBTM $item Given item
+     *
+     * @return bool
+     */
+    public function itemMatchFilter(): bool;
+
+    /**
+     * Create or update filter for the current item
+     *
+     * @param array  $search_criteria Search criterias used as filter
+     *
+     * @return bool
+     */
+    public function saveFilter(array $search_criteria): bool;
+
+    /**
+     * Delete filter for a given item
+     *
+     * @return bool
+     */
+    public function deleteFilter(): bool;
 }
