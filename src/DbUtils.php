@@ -264,24 +264,8 @@ final class DbUtils
             } else {
                 $table = Toolbox::ucfirst($this->getSingular($table));
             }
+
             $base_itemtype = $this->fixItemtypeCase($prefix . $table);
-
-            // Tables with namespace name
-            $namespace = "Glpi";
-            $base_itemtype_parts = explode("_", $base_itemtype);
-            foreach ($base_itemtype_parts as $base_itemtype_part) {
-                // Build namespace
-                $namespace .= "\\$base_itemtype_part";
-
-                // Rebuild class name from remaining part and current namespace level
-                $level = substr_count($namespace, "\\");
-                $remainings_parts = array_slice($base_itemtype_parts, $level);
-                $itemtype = "$namespace\\" . implode("_", $remainings_parts);
-
-                if (class_exists($itemtype)) {
-                    return $itemtype;
-                }
-            }
 
             $itemtype = null;
             if (class_exists($base_itemtype)) {
