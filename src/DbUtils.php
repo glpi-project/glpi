@@ -279,10 +279,36 @@ final class DbUtils
                     $itemtype = $base_itemtype;
                 }
             }
+
+            // Handle namespaces
             if ($itemtype === null) {
                 $namespaced_itemtype = $this->fixItemtypeCase($pref2 . str_replace('_', '\\', $table));
+
                 if (class_exists($namespaced_itemtype)) {
                     $itemtype = $namespaced_itemtype;
+                }
+
+                // Handle namespace + db relation
+                // On the previous step we converted all '_' into '\'
+                // However some '_' must be kept in case of an item relation
+                // For example, with the `glpi_namespace1_namespace2_items_filters` table
+                // the expected itemtype is Glpi\Namespace1\Namespace2\Item_Filter
+                // NOT Glpi\Namespace1\Namespace2\Item\Filter
+                // To avoid this, we can revert the last '_' and check if the itemtype exists
+                $last_backslash_position = strrpos($namespaced_itemtype, "\\");
+                // Only compute on table with two or more '_'
+                if (substr_count($table, "_") > 1 && $last_backslash_position) {
+                    // Replace last '\' into '_'
+                    $alternative_namespaced_itemtype = substr_replace(
+                        $namespaced_itemtype,
+                        "_",
+                        $last_backslash_position,
+                        1
+                    );
+
+                    if (class_exists($alternative_namespaced_itemtype)) {
+                        $itemtype = $alternative_namespaced_itemtype;
+                    }
                 }
             }
 
