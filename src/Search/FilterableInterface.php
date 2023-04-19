@@ -35,6 +35,8 @@
 
 namespace Glpi\Search;
 
+use CommonDBTM;
+
 /**
  * Must be implemented by classes that wish to enable search engine based filters
  */
@@ -65,7 +67,7 @@ interface FilterableInterface
      *
      * @return bool
      */
-    public function itemMatchFilter(): bool;
+    public function itemMatchFilter(CommonDBTM $item): bool;
 
     /**
      * Create or update filter for the current item
