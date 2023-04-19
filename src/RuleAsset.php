@@ -136,7 +136,7 @@ class RuleAsset extends Rule
         $criterias['users_id']['type']            = 'dropdown_users';
         $criterias['users_id']['table']           = 'glpi_users';
 
-        $criterias['tag']['name']            = sprintf('%s > %s', Agent::getTypeName(1), __('Inventory tag'));
+        $criterias['_tag']['name']            = sprintf('%s > %s', Agent::getTypeName(1), __('Inventory tag'));
 
         $criterias['_locations_id_of_user']['table']     = 'glpi_locations';
         $criterias['_locations_id_of_user']['field']     = 'completename';
