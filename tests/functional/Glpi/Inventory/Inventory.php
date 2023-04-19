@@ -42,6 +42,7 @@ use OperatingSystem;
 use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
+use RuleCriteria;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class Inventory extends InventoryTestCase
@@ -6080,5 +6081,112 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
         //check is same on update
         $this->integer($computer->fields['states_id'])->isIdenticalTo($other_states_id);
+    }
+
+
+    public function testOtherSerialFromTag()
+    {
+        global $DB;
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'use TAG as otherserial',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_tag',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern' => '/(.*)/'
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'regex_result',
+            'field' => 'otherserial',
+            'value' => '#0'
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        $tag = 'a_tag';
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_otherserial_from_tag</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        <TAG>" . $tag . "</TAG>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_otherserial_from_tag']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->string($agent['tag'])->isIdenticalTo($tag);
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->string($computer->fields['otherserial'])->isIdenticalTo($tag);
+
+
+        //redo inventory by updating tag
+        $tag = 'other_tag';
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_otherserial_from_tag</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        <TAG>" . $tag . "</TAG>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+
+        //check agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_otherserial_from_tag']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->string($agent['tag'])->isIdenticalTo($tag);
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->string($computer->fields['otherserial'])->isIdenticalTo($tag);
     }
 }
