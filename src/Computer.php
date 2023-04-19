@@ -164,36 +164,37 @@ class Computer extends CommonDBTM
         $input = Toolbox::addslashes_deep($this->fields);
         for ($i = 0; $i < $update_count; $i++) {
            // Update contact of attached items
-            if ($this->updates[$i] == 'contact_num' && $CFG_GLPI['is_contact_autoupdate']) {
+            if ($this->updates[$i] == 'contact_num' && Entity::getUsedConfig('is_contact_autoupdate', $this->getField('entities_id'))) {
                 $changes['contact_num'] = $input['contact_num'];
             }
-            if ($this->updates[$i] == 'contact' && $CFG_GLPI['is_contact_autoupdate']) {
+            if ($this->updates[$i] == 'contact' && Entity::getUsedConfig('is_contact_autoupdate', $this->getField('entities_id'))) {
                 $changes['contact'] = $input['contact'];
             }
            // Update users and groups of attached items
             if (
                 $this->updates[$i] == 'users_id'
-                && $CFG_GLPI['is_user_autoupdate']
+                && Entity::getUsedConfig('is_user_autoupdate', $this->getField('entities_id'))
             ) {
                 $changes['users_id'] = $input['users_id'];
             }
             if (
                 $this->updates[$i] == 'groups_id'
-                && $CFG_GLPI['is_group_autoupdate']
+                && Entity::getUsedConfig('is_group_autoupdate', $this->getField('entities_id'))
             ) {
                 $changes['groups_id'] = $input['groups_id'];
             }
            // Update state of attached items
+            $t = Entity::getUsedConfig('state_autoupdate_mode', $this->getField('entities_id'));
             if (
                 ($this->updates[$i] == 'states_id')
-                && ($CFG_GLPI['state_autoupdate_mode'] < 0)
+                && (Entity::getUsedConfig('state_autoupdate_mode', $this->getField('entities_id')) < 0)
             ) {
                 $changes['states_id'] = $input['states_id'];
             }
            // Update loction of attached items
             if (
                 $this->updates[$i] == 'locations_id'
-                && $CFG_GLPI['is_location_autoupdate']
+                && Entity::getUsedConfig('is_location_autoupdate', $this->getField('entities_id'))
             ) {
                 $changes['locations_id'] = $input['locations_id'];
             }

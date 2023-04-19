@@ -113,7 +113,7 @@ class Computer_Item extends CommonDBRelation
             $updates = [];
 
             if (
-                $CFG_GLPI["is_location_autoupdate"]
+                Entity::getUsedConfig('is_location_autoupdate', $comp->getField('entities_id'))
                 && ($comp->fields['locations_id'] != $item->getField('locations_id'))
             ) {
                 $updates['locations_id'] = addslashes($comp->fields['locations_id']);
@@ -123,15 +123,15 @@ class Computer_Item extends CommonDBRelation
                 );
             }
             if (
-                ($CFG_GLPI["is_user_autoupdate"]
+                (Entity::getUsedConfig('is_user_autoupdate', $comp->getField('entities_id'))
                 && ($comp->fields['users_id'] != $item->getField('users_id')))
-                || ($CFG_GLPI["is_group_autoupdate"]
+                || (Entity::getUsedConfig('is_group_autoupdate', $comp->getField('entities_id'))
                  && ($comp->fields['groups_id'] != $item->getField('groups_id')))
             ) {
-                if ($CFG_GLPI["is_user_autoupdate"]) {
+                if (Entity::getUsedConfig('is_user_autoupdate', $comp->getField('entities_id'))) {
                     $updates['users_id'] = $comp->fields['users_id'];
                 }
-                if ($CFG_GLPI["is_group_autoupdate"]) {
+                if (Entity::getUsedConfig('is_group_autoupdate', $comp->getField('entities_id'))) {
                     $updates['groups_id'] = $comp->fields['groups_id'];
                 }
                 Session::addMessageAfterRedirect(
@@ -141,7 +141,7 @@ class Computer_Item extends CommonDBRelation
             }
 
             if (
-                $CFG_GLPI["is_contact_autoupdate"]
+                Entity::getUsedConfig('is_contact_autoupdate', $item->getField('entities_id'))
                 && (($comp->fields['contact'] != $item->getField('contact'))
                  || ($comp->fields['contact_num'] != $item->getField('contact_num')))
             ) {
@@ -154,8 +154,9 @@ class Computer_Item extends CommonDBRelation
                 );
             }
 
+            $state_autoupdate_mode = Entity::getUsedConfig('state_autoupdate_mode', $item->getField('entities_id'));
             if (
-                ($CFG_GLPI["state_autoupdate_mode"] < 0)
+                ($state_autoupdate_mode < 0)
                 && ($comp->fields['states_id'] != $item->getField('states_id'))
             ) {
                 $updates['states_id'] = $comp->fields['states_id'];
@@ -166,10 +167,10 @@ class Computer_Item extends CommonDBRelation
             }
 
             if (
-                ($CFG_GLPI["state_autoupdate_mode"] > 0)
-                && ($item->getField('states_id') != $CFG_GLPI["state_autoupdate_mode"])
+                ($state_autoupdate_mode > 0)
+                && ($item->getField('states_id') != $state_autoupdate_mode)
             ) {
-                $updates['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
+                $updates['states_id'] = $state_autoupdate_mode;
             }
 
             if (count($updates)) {
@@ -199,34 +200,36 @@ class Computer_Item extends CommonDBRelation
                 if ($device->getFromDB($this->fields['items_id'])) {
                     if (!$device->getField('is_global')) {
                         $updates = [];
-                        if ($CFG_GLPI["is_location_autoclean"] && $device->isField('locations_id')) {
+                        if (Entity::getUsedConfig('is_location_autoclean', $device->getField('entities_id')) && $device->isField('locations_id')) {
                             $updates['locations_id'] = 0;
                         }
-                        if ($CFG_GLPI["is_user_autoclean"] && $device->isField('users_id')) {
+                        if (Entity::getUsedConfig('is_user_autoclean', $device->getField('entities_id')) && $device->isField('users_id')) {
                             $updates['users_id'] = 0;
                         }
-                        if ($CFG_GLPI["is_group_autoclean"] && $device->isField('groups_id')) {
+                        if (Entity::getUsedConfig('is_group_autoclean', $device->getField('entities_id')) && $device->isField('groups_id')) {
                              $updates['groups_id'] = 0;
                         }
-                        if ($CFG_GLPI["is_contact_autoclean"] && $device->isField('contact')) {
+                        if (Entity::getUsedConfig('is_contact_autoclean', $device->getField('entities_id')) && $device->isField('contact')) {
                              $updates['contact'] = "";
                         }
-                        if ($CFG_GLPI["is_contact_autoclean"] && $device->isField('contact_num')) {
+                        if (Entity::getUsedConfig('is_contact_autoclean', $device->getField('entities_id')) && $device->isField('contact_num')) {
                             $updates['contact_num'] = "";
                         }
+
+                        $state_autoclean_mode = Entity::getUsedConfig('state_autoclean_mode', $device->getField('entities_id'));
                         if (
-                            ($CFG_GLPI["state_autoclean_mode"] < 0)
+                            ($state_autoclean_mode < 0)
                             && $device->isField('states_id')
                         ) {
                             $updates['states_id'] = 0;
                         }
 
                         if (
-                            ($CFG_GLPI["state_autoclean_mode"] > 0)
+                            ($state_autoclean_mode > 0)
                             && $device->isField('states_id')
-                            && ($device->getField('states_id') != $CFG_GLPI["state_autoclean_mode"])
+                            && ($device->getField('states_id') != $state_autoclean_mode)
                         ) {
-                            $updates['states_id'] = $CFG_GLPI["state_autoclean_mode"];
+                            $updates['states_id'] = $state_autoclean_mode;
                         }
 
                         if (count($updates)) {

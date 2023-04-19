@@ -91,7 +91,10 @@ class Entity extends CommonTreeDropdown
             'entities_strategy_software', 'entities_id_software', 'level', 'name',
             'completename', 'entities_id',
             'ancestors_cache', 'sons_cache', 'comment', 'transfers_strategy', 'transfers_id',
-            'agent_base_url', '2fa_enforcement_strategy'
+            'agent_base_url', '2fa_enforcement_strategy',
+         // Automatically update of the elements related to the computers
+            'is_contact_autoupdate', 'is_user_autoupdate', 'is_group_autoupdate', 'is_location_autoupdate', 'state_autoupdate_mode',
+            'is_contact_autoclean', 'is_user_autoclean', 'is_group_autoclean', 'is_location_autoclean', 'state_autoclean_mode'
         ],
       // Inventory
         'infocom' => [
@@ -1991,6 +1994,93 @@ class Entity extends CommonTreeDropdown
             self::inheritedValue(self::getUsedConfig('agent_base_url', $ID, '', ''));
         }
         echo "</td><td colspan='2'></td></tr>";
+
+        echo "</table>";
+
+        echo "<br><table class='tab_cadre_fixe'>";
+        echo "<tr>";
+        echo "<th colspan='4'>" . __('Automatically update of the elements related to the computers');
+        echo "</th><th colspan='2'>" . __('Unit management') . "</th></tr>";
+
+        echo "<tr><th>&nbsp;</th>";
+        echo "<th>" . __('Alternate username') . "</th>";
+        echo "<th>" . User::getTypeName(1) . "</th>";
+        echo "<th>" . Group::getTypeName(1) . "</th>";
+        echo "<th>" . Location::getTypeName(1) . "</th>";
+        echo "<th>" . __('Status') . "</th>";
+        echo "</tr>";
+
+        $fields = ["contact", "user", "group", "location"];
+        echo "<tr class='tab_bg_2'>";
+        echo "<td> " . __('When connecting or updating') . "</td>";
+        $values = [
+            __('Do not copy'),
+            __('Copy')
+        ];
+
+        if ($entity->fields['id'] > 0) {
+            $values[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+        }
+
+        foreach ($fields as $field) {
+            echo "<td>";
+            $fieldname = "is_" . $field . "_autoupdate";
+            Dropdown::showFromArray($fieldname, $values, ['value' => $entity->fields[$fieldname]]);
+            if ($entity->fields[$fieldname] == self::CONFIG_PARENT) {
+                $inherited_value = self::getUsedConfig($fieldname, $entity->fields['entities_id']);
+                self::inheritedValue(self::getSpecificValueToDisplay($fieldname, $inherited_value));
+            }
+            echo "</td>";
+        }
+
+        echo "<td>";
+        State::dropdownBehaviour(
+            "state_autoupdate_mode",
+            __('Copy computer status'),
+            $entity->fields["state_autoupdate_mode"],
+            ($entity->fields['id'] > 0)
+        );
+        if ($entity->fields["state_autoupdate_mode"] == self::CONFIG_PARENT) {
+            $inherited_value = self::getUsedConfig("state_autoupdate_mode", $entity->fields['entities_id']);
+            self::inheritedValue(self::getSpecificValueToDisplay("state_autoupdate_mode", $inherited_value));
+        }
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_2'>";
+        echo "<td> " . __('When disconnecting') . "</td>";
+        $values = [
+            __('Do not delete'),
+            __('Clear'),
+            self::CONFIG_PARENT => __('Inheritance of the parent entity')
+        ];
+
+        if ($entity->fields['id'] > 0) {
+            $values[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+        }
+
+        foreach ($fields as $field) {
+            echo "<td>";
+            $fieldname = "is_" . $field . "_autoclean";
+            Dropdown::showFromArray($fieldname, $values, ['value' => $entity->fields[$fieldname]]);
+            if ($entity->fields[$fieldname] == self::CONFIG_PARENT) {
+                $inherited_value = self::getUsedConfig($fieldname, $entity->fields['entities_id']);
+                self::inheritedValue(self::getSpecificValueToDisplay($fieldname, $inherited_value));
+            }
+            echo "</td>";
+        }
+
+        echo "<td>";
+        State::dropdownBehaviour(
+            "state_autoclean_mode",
+            __('Clear status'),
+            $entity->fields["state_autoclean_mode"],
+            ($entity->fields['id'] > 0)
+        );
+        if ($entity->fields["state_autoclean_mode"] == self::CONFIG_PARENT) {
+            $inherited_value = self::getUsedConfig("state_autoclean_mode", $entity->fields['entities_id']);
+            self::inheritedValue(self::getSpecificValueToDisplay("state_autoclean_mode", $inherited_value));
+        }
+        echo "</td></tr>";
 
         Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
@@ -3892,6 +3982,31 @@ class Entity extends CommonTreeDropdown
                     return __('No automatic transfer');
                 }
                 return Dropdown::getDropdownName('glpi_transfers', $values[$field]);
+
+            case 'is_contact_autoupdate':
+            case 'is_user_autoupdate':
+            case 'is_group_autoupdate':
+            case 'is_location_autoupdate':
+            case 'is_contact_autoclean':
+            case 'is_user_autoclean':
+            case 'is_group_autoclean':
+            case 'is_location_autoclean':
+                if ($values[$field] == self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                } elseif ($values[$field]) {
+                    return __('Copy');
+                }
+                return __('Do not copy');
+
+            case 'state_autoupdate_mode':
+            case 'state_autoclean_mode':
+                if ($values[$field] == self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                }
+                $states = State::getBehaviours(
+                    __('Clear status'),
+                );
+                return $states[$values[$field]];
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

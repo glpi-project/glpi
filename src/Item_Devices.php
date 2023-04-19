@@ -1523,17 +1523,16 @@ class Item_Devices extends CommonDBRelation
 
         if ($computer instanceof CommonDBTM) {
             if (
-                isset($CFG_GLPI['is_location_autoupdate'])
-                && $CFG_GLPI["is_location_autoupdate"]
+                Entity::getUsedConfig('is_location_autoupdate', $computer->getField('entities_id'))
                 && (!isset($input['locations_id'])
                 || $computer->fields['locations_id'] != $input['locations_id'])
             ) {
                 $input['locations_id'] = $computer->fields['locations_id'];
             }
 
+            $state_autoupdate_mode = Entity::getUsedConfig('state_autoupdate_mode', $computer->getField('entities_id'));
             if (
-                (isset($CFG_GLPI['state_autoupdate_mode'])
-                && $CFG_GLPI["state_autoupdate_mode"] < 0)
+                $state_autoupdate_mode < 0
                 && (!isset($input['states_id'])
                 || $computer->fields['states_id'] != $input['states_id'])
             ) {
@@ -1541,12 +1540,11 @@ class Item_Devices extends CommonDBRelation
             }
 
             if (
-                (isset($CFG_GLPI['state_autoupdate_mode'])
-                && $CFG_GLPI["state_autoupdate_mode"] > 0)
+                $state_autoupdate_mode > 0
                 && (!isset($input['states_id'])
-                || $input['states_id'] != $CFG_GLPI["state_autoupdate_mode"])
+                || $input['states_id'] != $state_autoupdate_mode)
             ) {
-                $input['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
+                $input['states_id'] = $state_autoupdate_mode;
             }
         }
 

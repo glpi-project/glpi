@@ -326,9 +326,17 @@ class Agent extends DbTestCase
         $json->content->versionclient = 'GLPI-Agent_v1';
         $json->deviceid = 'glpixps-2022-01-17-11-36-53';
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($json);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 1,
+        ]))->isTrue();
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
