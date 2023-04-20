@@ -185,7 +185,7 @@ body.horizontal-layout {
             cursor: grabbing;
         }
 
-        &::before {
+        &:hover::before {
             content: "\ec01";
             font-family: tabler-icons;
             font-weight: 900;

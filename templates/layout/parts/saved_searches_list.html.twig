@@ -39,7 +39,7 @@
 
 <div class='sortable-savedsearches'>
 {% for search in saved_searches %}
-   <div class="savedsearches-item list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
+   <div class="savedsearches-item grip-savedsearch list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
          data-id="{{ search['id'] }}">
       <a href="{{ 'SavedSearch'|itemtype_search_path }}?action=load&amp;id={{ search['id'] }}"
          class="d-block saved-searches-link text-truncate">
@@ -81,18 +81,5 @@ $(function() {
 
       displayAjaxMessageAfterRedirect();
    });
-   var sorting_mode = function() {
-      var _mode = $('.sorting-mode').is(":checked");
-      $('.savedsearches-item').toggleClass('grip-savedsearch', _mode);
-      if (_mode) {
-         sortable('.sortable-savedsearches', 'enable');
-      } else {
-         sortable('.sortable-savedsearches', 'disable');
-      }
-   };
-   $('.sorting-mode').on('change', function(e) {
-      sorting_mode();
-   });
-   sorting_mode();
 });
 </script>
