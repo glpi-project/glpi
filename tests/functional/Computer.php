@@ -74,9 +74,6 @@ class Computer extends DbTestCase
 
     public function testUpdate()
     {
-        global $CFG_GLPI;
-        $saveconf = $CFG_GLPI;
-
         $this->login();
 
         $computer = $this->getNewComputer();
@@ -171,7 +168,6 @@ class Computer extends DbTestCase
 
        // Restore configuration
         $computer = $this->getNewComputer();
-        $CFG_GLPI = $saveconf;
 
        //update devices
         $cpu = new \DeviceProcessor();
@@ -254,9 +250,6 @@ class Computer extends DbTestCase
            // Check the printer and test propagation DOES NOT occurs
             $this->variable($link->getField($k))->isEqualTo($in[$k]);
         }
-
-       // Restore configuration
-        $CFG_GLPI = $saveconf;
     }
 
     /**
@@ -266,12 +259,9 @@ class Computer extends DbTestCase
      */
     public function testCreateLinks()
     {
-        global $CFG_GLPI;
-
         $this->login();
 
         $computer = $this->getNewComputer();
-        $saveconf = $CFG_GLPI;
 
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -356,9 +346,6 @@ class Computer extends DbTestCase
            // Check the printer and test propagation occurs
             $this->variable($link->getField($k))->isEqualTo($v);
         }
-
-       // Restore configuration
-        $CFG_GLPI = $saveconf;
     }
 
     public function testGetFromIter()
