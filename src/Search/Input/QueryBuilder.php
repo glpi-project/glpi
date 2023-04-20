@@ -560,7 +560,10 @@ final class QueryBuilder implements SearchInputInterface
 
         if ($itemtype != \AllAssets::getType() && class_exists($itemtype)) {
             // retrieve default values for current itemtype
-            $itemtype_default_values = $itemtype::getDefaultSearchRequest();
+            $itemtype_default_values = [];
+            if (method_exists($itemtype, 'getDefaultSearchRequest')) {
+                $itemtype_default_values = call_user_func([$itemtype, 'getDefaultSearchRequest']);
+            }
 
             // retrieve default values for the current user
             $user_default_values = \SavedSearch_User::getDefault(\Session::getLoginUserID(), $itemtype);
@@ -674,7 +677,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return array Criteria
      */
-    private static function getDefaultCriteria($itemtype = ''): array
+    public static function getDefaultCriteria($itemtype = ''): array
     {
         global $CFG_GLPI;
 

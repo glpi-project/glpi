@@ -6582,23 +6582,4 @@ class CommonDBTM extends CommonGLPI
 
         return $is_global;
     }
-
-    /**
-     * Default search request
-     *
-     * @return array
-     */
-    public static function getDefaultSearchRequest()
-    {
-        return [
-            'criteria' => [
-                [
-                    'link'       => 'and',
-                    'field'      => 'view',
-                    'searchtype' => 'contains',
-                    'value'      => '',
-                ]
-            ]
-        ];
-    }
 }

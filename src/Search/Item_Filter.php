@@ -82,7 +82,7 @@ final class Item_Filter extends CommonDBChild
         // Load saved filters
         $filter = self::getForItem($item);
         $itemtype = $item->getItemtypeToFilter();
-        $criteria = $filter ? $filter->fields['search_criteria'] : $itemtype::getDefaultSearchRequest()['criteria'];
+        $criteria = $filter ? $filter->fields['search_criteria'] : self::getDefaultSearch($itemtype);
         $can_edit = $item->canUpdateItem();
 
         // Force criteria into session
@@ -153,5 +153,28 @@ final class Item_Filter extends CommonDBChild
         ]);
 
         return $filter_exist ? $filter : null;
+    }
+
+    /**
+     * Compute the default search criteria to display for an itemtype
+     *
+     * @param string $itemtype
+     *
+     * @return array
+     */
+    private static function getDefaultSearch(string $itemtype): array
+    {
+        // Some item may define a getDefaultSearchRequest method
+        if (method_exists($itemtype, 'getDefaultSearchRequest')) {
+            $default_search_request = $itemtype::getDefaultSearchRequest();
+
+            // Not all search request define search criteria
+            if (isset($default_search_request['criteria'])) {
+                return $default_search_request['criteria'];
+            }
+        }
+
+        // Fallback to getDefaultCriteria
+        return QueryBuilder::getDefaultCriteria($itemtype);
     }
 }
