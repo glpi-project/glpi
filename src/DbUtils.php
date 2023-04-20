@@ -246,12 +246,14 @@ final class DbUtils
             $table     = str_replace("glpi_", "", $table);
             $prefix    = "";
             $pref2     = NS_GLPI;
+            $is_plugin = false;
 
             $matches = [];
             if (preg_match('/^plugin_([a-z0-9]+)_/', $table, $matches)) {
                 $table  = preg_replace('/^plugin_[a-z0-9]+_/', '', $table);
                 $prefix = "Plugin" . Toolbox::ucfirst($matches[1]);
                 $pref2  = NS_PLUG . ucfirst($matches[1]) . '\\';
+                $is_plugin = true;
             }
 
             if (strstr($table, '_')) {
@@ -286,28 +288,32 @@ final class DbUtils
 
                 if (class_exists($namespaced_itemtype)) {
                     $itemtype = $namespaced_itemtype;
-                }
+                } else {
+                    // Handle namespace + db relation
+                    // On the previous step we converted all '_' into '\'
+                    // However some '_' must be kept in case of an item relation
+                    // For example, with the `glpi_namespace1_namespace2_items_filters` table
+                    // the expected itemtype is Glpi\Namespace1\Namespace2\Item_Filter
+                    // NOT Glpi\Namespace1\Namespace2\Item\Filter
+                    // To avoid this, we can revert the last '_' and check if the itemtype exists
+                    $check_alternative = $is_plugin
+                        ? substr_count($table, '_') > 1 // for plugin classes, always keep the first+second namespace levels (GlpiPlugin\\PluginName\\)
+                        : substr_count($table, '_') > 0 // for GLPI classes, always keep the first namespace level (Glpi\\)
+                    ;
+                    if ($check_alternative) {
+                        $last_backslash_position = strrpos($namespaced_itemtype, "\\");
+                        // Replace last '\' into '_'
+                        $alternative_namespaced_itemtype = substr_replace(
+                            $namespaced_itemtype,
+                            '_',
+                            $last_backslash_position,
+                            1
+                        );
+                        $alternative_namespaced_itemtype = $this->fixItemtypeCase($alternative_namespaced_itemtype);
 
-                // Handle namespace + db relation
-                // On the previous step we converted all '_' into '\'
-                // However some '_' must be kept in case of an item relation
-                // For example, with the `glpi_namespace1_namespace2_items_filters` table
-                // the expected itemtype is Glpi\Namespace1\Namespace2\Item_Filter
-                // NOT Glpi\Namespace1\Namespace2\Item\Filter
-                // To avoid this, we can revert the last '_' and check if the itemtype exists
-                $last_backslash_position = strrpos($namespaced_itemtype, "\\");
-                // Only compute on table with two or more '_'
-                if (substr_count($table, "_") > 1 && $last_backslash_position) {
-                    // Replace last '\' into '_'
-                    $alternative_namespaced_itemtype = substr_replace(
-                        $namespaced_itemtype,
-                        "_",
-                        $last_backslash_position,
-                        1
-                    );
-
-                    if (class_exists($alternative_namespaced_itemtype)) {
-                        $itemtype = $alternative_namespaced_itemtype;
+                        if (class_exists($alternative_namespaced_itemtype)) {
+                            $itemtype = $alternative_namespaced_itemtype;
+                        }
                     }
                 }
             }
