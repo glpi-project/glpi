@@ -1047,14 +1047,6 @@ class User extends CommonDBTM
             $input['api_token_date'] = $_SESSION['glpi_currenttime'];
         }
 
-        // notifications
-        if (isset($input["_allow_notifications_types"])) {
-            if ((!isset($input["allow_notifications_type"])) || (!is_array($input["allow_notifications_type"]))) {
-                $input["allow_notifications_type"] = [];
-            }
-            $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
-        }
-
        // Manage preferences fields
         if (Session::getLoginUserID() == $input['id']) {
             if (
