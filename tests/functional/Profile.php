@@ -259,20 +259,26 @@ class Profile extends DbTestCase
         foreach ($forms as $form) {
             foreach ($interfaces as $interface) {
                 $rights = \Profile::getRightsForForm($form, $interface);
+                $previous_right = null;
                 foreach ($rights as $right) {
+                    if (empty($right['field'])) {
+                        echo 'A right is missing a field name. Please check that the class has the rightname property set or the right is otherwise defined with the field property in the array';
+                        echo 'The previous right was: ' . print_r($previous_right, true);
+                        continue;
+                    }
                     $search_opt_matches = array_filter($search_opts, static function ($opt) use ($right) {
-                        return $opt['rightname'] === $right['field'];
+                        return array_key_exists('rightname', $opt) && $opt['rightname'] === $right['field'];
                     });
                     if (!count($search_opt_matches)) {
                         $failures[] = $right['field'];
                     }
+                    $previous_right = $right;
                 }
             }
         }
         $failures = array_unique($failures);
         if (count($failures)) {
             echo sprintf('The following rights do not have a search option: %s', implode(', ', $failures));
-            ob_flush();
         }
         $this->array($failures)->isEmpty();
     }

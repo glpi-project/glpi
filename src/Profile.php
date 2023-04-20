@@ -911,7 +911,14 @@ class Profile extends CommonDBTM
                 $fn_get_rights(__CLASS__, 'central', null, ['group' => 'admin', 'scope' => 'global']),
                 $fn_get_rights(QueuedNotification::class, 'central', null, ['group' => 'admin', 'scope' => 'global']),
                 $fn_get_rights(Log::class, 'central', null, ['group' => 'admin', 'scope' => 'global']),
-                $fn_get_rights(\Glpi\Inventory\Conf::class, 'central', null, ['group' => 'inventory', 'scope' => 'global']),
+                [
+                    'itemtype'  => 'Glpi\Inventory\Conf',
+                    'label'     => __('Inventory'),
+                    'field'     => 'inventory',
+                    'interface' => 'central',
+                    'group'     => 'inventory',
+                    'scope'     => 'global'
+                ],
                 [
                     'itemtype'  => 'LockedField',
                     'label'     => Lockedfield::getTypeName(Session::getPluralNumber()),
@@ -1054,7 +1061,7 @@ class Profile extends CommonDBTM
                 ]
             ];
 
-            $dropdown_rights = (new Profile)->getRights();
+            $dropdown_rights = (new Profile())->getRights();
             unset($dropdown_rights[DELETE]);
             unset($dropdown_rights[UNLOCK]);
 
@@ -2350,6 +2357,147 @@ class Profile extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '142',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => SoftwareLicense::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => SoftwareLicense::class,
+            'rightname'          => SoftwareLicense::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => SoftwareLicense::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '143',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / " .
+                _n('Supplier', 'Suppliers', Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Contact::class,
+            'rightname'          => 'contact_enterprise',
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => 'contact_enterprise']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '144',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Line::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Line::class,
+            'rightname'          => Line::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Line::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '145',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Certificate::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Certificate::class,
+            'rightname'          => Certificate::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Certificate::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '146',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Datacenter::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Datacenter::class,
+            'rightname'          => Datacenter::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Datacenter::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '147',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Cluster::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Cluster::class,
+            'rightname'          => Cluster::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Cluster::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '148',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Domain::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Domain::class,
+            'rightname'          => Domain::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Domain::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '149',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Appliance::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Appliance::class,
+            'rightname'          => Appliance::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Appliance::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '150',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => DatabaseInstance::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => DatabaseInstance::class,
+            'rightname'          => DatabaseInstance::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => DatabaseInstance::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '151',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Cable::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Cable::class,
+            'rightname'          => Cable::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Cable::$rightname]
+            ]
+        ];
+
+        $tab[] = [
             'id'                 => 'tools',
             'name'               => __('Tools')
         ];
@@ -2394,6 +2542,34 @@ class Profile extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => 'reports']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '140',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Project::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Project::class,
+            'rightname'          => Project::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Project::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '141',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => ProjectTask::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => ProjectTask::class,
+            'rightname'          => ProjectTask::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => ProjectTask::$rightname]
             ]
         ];
 
@@ -2533,6 +2709,132 @@ class Profile extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '162',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => __('All dashboards'),
+            'datatype'           => 'right',
+            'rightclass'         => Glpi\Dashboard\Grid::class,
+            'rightname'          => 'dashboard',
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => 'dashboard']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '163',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Location::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Location::class,
+            'rightname'          => Location::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Location::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '164',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => ITILCategory::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => ITILCategory::class,
+            'rightname'          => ITILCategory::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => ITILCategory::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '165',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => KnowbaseItemCategory::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => KnowbaseItemCategory::class,
+            'rightname'          => KnowbaseItemCategory::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => KnowbaseItemCategory::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '166',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => TaskCategory::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => TaskCategory::class,
+            'rightname'          => TaskCategory::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => TaskCategory::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '167',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => State::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => State::class,
+            'rightname'          => State::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => State::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '168',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => ITILFollowupTemplate::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => ITILFollowupTemplate::class,
+            'rightname'          => ITILFollowupTemplate::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => ITILFollowupTemplate::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '169',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => SolutionTemplate::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => SolutionTemplate::class,
+            'rightname'          => SolutionTemplate::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => SolutionTemplate::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '170',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => __('SLM'),
+            'datatype'           => 'right',
+            'rightclass'         => SLM::class,
+            'rightname'          => 'slm',
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => 'slm']
+            ]
+        ];
+
+        $tab[] = [
             'id'                 => 'admin',
             'name'               => __('Administration')
         ];
@@ -2609,6 +2911,34 @@ class Profile extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '159',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => RuleLocation::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => RuleLocation::class,
+            'rightname'          => RuleLocation::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => RuleLocation::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '160',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => RuleAsset::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => RuleAsset::class,
+            'rightname'          => RuleAsset::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => RuleAsset::$rightname]
+            ]
+        ];
+
+        $tab[] = [
             'id'                 => '90',
             'table'              => 'glpi_profilerights',
             'field'              => 'rights',
@@ -2633,6 +2963,20 @@ class Profile extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => 'rule_dictionnary_dropdown']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '161',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => RuleDictionnaryPrinter::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => RuleDictionnaryPrinter::class,
+            'rightname'          => RuleDictionnaryPrinter::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => RuleDictionnaryPrinter::$rightname]
             ]
         ];
 
@@ -2718,6 +3062,104 @@ class Profile extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => 'logs']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '152',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => QueuedNotification::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => QueuedNotification::class,
+            'rightname'          => QueuedNotification::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => QueuedNotification::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '153',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => __('Inventory'),
+            'datatype'           => 'right',
+            'rightclass'         => \Glpi\Inventory\Conf::class,
+            'rightname'          => \Glpi\Inventory\Conf::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => \Glpi\Inventory\Conf::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '154',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Lockedfield::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Lockedfield::class,
+            'rightname'          => Lockedfield::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Lockedfield::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '155',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => SNMPCredential::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => SNMPCredential::class,
+            'rightname'          => SNMPCredential::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => SNMPCredential::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '156',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => RefusedEquipment::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => RefusedEquipment::class,
+            'rightname'          => RefusedEquipment::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => RefusedEquipment::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '157',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Unmanaged::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Unmanaged::class,
+            'rightname'          => Unmanaged::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Unmanaged::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '158',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Agent::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Agent::class,
+            'rightname'          => Agent::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Agent::$rightname]
             ]
         ];
 
@@ -2904,6 +3346,132 @@ class Profile extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => 'change']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '131',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => ITILFollowup::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => ITILFollowup::class,
+            'rightname'          => ITILFollowup::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => ITILFollowup::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '132',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => TicketTask::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => TicketTask::class,
+            'rightname'          => TicketTask::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => TicketTask::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '133',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => TicketValidation::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => TicketValidation::class,
+            'rightname'          => TicketValidation::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => TicketValidation::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '134',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => _n('Template', 'Templates', Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => TicketTemplate::class,
+            'rightname'          => 'itiltemplate',
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => 'itiltemplate']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '135',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => PendingReason::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => PendingReason::class,
+            'rightname'          => PendingReason::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => PendingReason::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '136',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => TicketRecurrent::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => TicketRecurrent::class,
+            'rightname'          => TicketRecurrent::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => TicketRecurrent::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '137',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => PlanningExternalEvent::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => PlanningExternalEvent::class,
+            'rightname'          => PlanningExternalEvent::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => PlanningExternalEvent::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '138',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => ChangeValidation::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => ChangeValidation::class,
+            'rightname'          => ChangeValidation::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => ChangeValidation::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '139',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => RecurrentChange::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => RecurrentChange::class,
+            'rightname'          => RecurrentChange::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => RecurrentChange::$rightname]
             ]
         ];
 
