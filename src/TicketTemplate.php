@@ -72,11 +72,6 @@ class TicketTemplate extends ITILTemplate
                                                        => 'requesttypes_id',
             $itil_object->getSearchOptionIDByField(
                 'field',
-                'completename',
-                'glpi_locations'
-            ) => 'locations_id',
-            $itil_object->getSearchOptionIDByField(
-                'field',
                 'slas_id_tto',
                 'glpi_slas'
             )      => 'slas_id_tto',

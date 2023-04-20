@@ -112,7 +112,8 @@ class OlaLevel extends LevelAgreementLevel
             self::dropdownExecutionTime(
                 'execution_time',
                 ['max_time' => $delay,
-                    'used'     => self::getAlreadyUsedExecutionTime($ola->fields['id'])
+                    'used'     => self::getAlreadyUsedExecutionTime($ola->fields['id']),
+                    'type'     => $ola->fields['type'],
                 ]
             );
 
@@ -262,6 +263,7 @@ class OlaLevel extends LevelAgreementLevel
             'execution_time',
             ['max_time'  => $delay,
                 'used'      => self::getAlreadyUsedExecutionTime($ola->fields['id']),
+                'type'      => $ola->fields['type'],
                 'value'     => $this->fields['execution_time']
             ]
         );

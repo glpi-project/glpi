@@ -67,7 +67,7 @@ class NotificationTargetContract extends NotificationTarget
             $tmp['##contract.name##']   = $contract['name'];
             $tmp['##contract.number##'] = $contract['num'];
             $tmp['##contract.comment##'] = $contract['comment'];
-            $tmp['##contract.account##'] = $contract['account_number'];
+            $tmp['##contract.account##'] = $contract['accounting_number'];
 
             if ($contract['contracttypes_id']) {
                 $tmp['##contract.type##'] = Dropdown::getDropdownName(

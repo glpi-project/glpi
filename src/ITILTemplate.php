@@ -338,6 +338,14 @@ abstract class ITILTemplate extends CommonDropdown
                    TaskTemplate::getTable()
                )] = '_tasktemplates_id';
 
+            // Add location
+            $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
+                [$itil_object->getSearchOptionIDByField(
+                    'field',
+                    'completename',
+                    'glpi_locations'
+                )] = 'locations_id';
+
            //add specific itil type fields
             $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields($withtypeandcategory, $withitemtype);
         }

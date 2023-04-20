@@ -33,26 +33,18 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-Session::checkLoginUser();
-
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-} else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'tools', 'savedsearch');
-}
-
-$savedsearch = new SavedSearch();
-
-if (
-    isset($_GET['action']) && $_GET["action"] == "load"
-    && isset($_GET["id"]) && ($_GET["id"] > 0)
-) {
-    $savedsearch->check($_GET["id"], READ);
-    $savedsearch->load($_GET["id"]);
-    return;
-}
-
-Search::show('SavedSearch');
-Html::footer();
+$DB->updateOrDie(
+    'glpi_rulecriterias',
+    [
+        'criteria' => '_locations_id_of_item'
+    ],
+    [
+        'criteria' => 'items_locations'
+    ],
+    '10.0.8 replace old rule criteria items_locations'
+);

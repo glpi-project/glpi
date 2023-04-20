@@ -33,26 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
-Session::checkLoginUser();
-
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-} else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'tools', 'savedsearch');
-}
-
-$savedsearch = new SavedSearch();
-
-if (
-    isset($_GET['action']) && $_GET["action"] == "load"
-    && isset($_GET["id"]) && ($_GET["id"] > 0)
-) {
-    $savedsearch->check($_GET["id"], READ);
-    $savedsearch->load($_GET["id"]);
-    return;
-}
-
-Search::show('SavedSearch');
-Html::footer();
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+$migration->addField('glpi_problems', 'locations_id', "int {$default_key_sign} NOT NULL DEFAULT '0'");
+$migration->addKey('glpi_problems', 'locations_id', 'locations_id');

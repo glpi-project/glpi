@@ -19,7 +19,7 @@
             <pattern>1</pattern>
         </rulecriteria>
         <rulecriteria>
-            <criteria>items_locations</criteria>
+            <criteria>_locations_id_of_item</criteria>
             <condition>8</condition>
             <pattern>1</pattern>
         </rulecriteria>

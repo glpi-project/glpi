@@ -2059,22 +2059,23 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function post_updateItem($history = 1)
     {
-        $this->handleItemsIdInput();
-
-       // Handle "_tasktemplates_id" special input
-        $this->handleTaskTemplateInput();
-
-       // Handle "_itilfollowuptemplates_id" special input
-        $this->handleITILFollowupTemplateInput();
-
-       // Handle "_solutiontemplates_id" special input
-        $this->handleSolutionTemplateInput();
-
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
-       // handle actors changes
+        // handle actors changes
         $this->updateActors();
+
+        // handle items linking
+        $this->handleItemsIdInput();
+
+        // Handle "_tasktemplates_id" special input
+        $this->handleTaskTemplateInput();
+
+        // Handle "_itilfollowuptemplates_id" special input
+        $this->handleITILFollowupTemplateInput();
+
+        // Handle "_solutiontemplates_id" special input
+        $this->handleSolutionTemplateInput();
 
         // Send validation requests
         $this->manageValidationAdd($this->input);
@@ -2843,18 +2844,6 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function post_addItem()
     {
-
-        $this->handleItemsIdInput();
-
-       // Handle "_tasktemplates_id" special input
-        $this->handleTaskTemplateInput();
-
-       // Handle "_itilfollowuptemplates_id" special input
-        $this->handleITILFollowupTemplateInput();
-
-       // Handle "_solutiontemplates_id" special input
-        $this->handleSolutionTemplateInput();
-
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
@@ -2874,8 +2863,20 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // handle actors changes
+        // handle actors changes
         $this->updateActors(true);
+
+        // handle items linking
+        $this->handleItemsIdInput();
+
+        // Handle "_tasktemplates_id" special input
+        $this->handleTaskTemplateInput();
+
+        // Handle "_itilfollowuptemplates_id" special input
+        $this->handleITILFollowupTemplateInput();
+
+        // Handle "_solutiontemplates_id" special input
+        $this->handleSolutionTemplateInput();
 
         // Send validation requests
         $this->manageValidationAdd($this->input);
@@ -4256,6 +4257,27 @@ abstract class CommonITILObject extends CommonDBTM
             'datatype'           => 'dropdown',
             'linkfield'          => $this->getTemplateClass()::getForeignKeyField(),
         ];
+
+        $location_so = Location::rawSearchOptionsToAdd();
+        foreach ($location_so as &$so) {
+           //duplicated search options :(
+            switch ($so['id']) {
+                case 3:
+                    $so['id'] = 83;
+                    break;
+                case 91:
+                    $so['id'] = 84;
+                    break;
+                case 92:
+                    $so['id'] = 85;
+                    break;
+                case 93:
+                    $so['id'] = 86;
+                    break;
+            }
+        }
+
+        $tab = array_merge($tab, $location_so);
 
         $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
 
@@ -6757,6 +6779,7 @@ abstract class CommonITILObject extends CommonDBTM
        // 1) rule for followups, documents, tasks and validations:
        //    Matrix for position of timeline objects
        //    R O A (R=Requester, O=Observer, A=AssignedTo)
+       //    0 0 0 -> depending on the interface: central -> right, helpdesk -> left
        //    0 0 1 -> Right
        //    0 1 0 -> Left
        //    0 1 1 -> R
@@ -6771,6 +6794,9 @@ abstract class CommonITILObject extends CommonDBTM
         $pos = self::TIMELINE_LEFT;
 
         $pos_matrix = [];
+        $pos_matrix[0][0][0] = Session::getCurrentInterface() == "central"
+            ? self::TIMELINE_RIGHT
+            : self::TIMELINE_LEFT;
         $pos_matrix[0][0][1] = self::TIMELINE_RIGHT;
         $pos_matrix[0][1][1] = self::TIMELINE_RIGHT;
 
@@ -7026,6 +7052,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $followup_obj->getFromDB($followups_id);
                 if ($followup_obj->canViewItem() || $params['bypass_rights']) {
                     $followup['can_edit'] = $followup_obj->canUpdateItem();
+                    $followup['can_promote'] = Session::getCurrentInterface() === 'central' && $this instanceof Ticket && Ticket::canCreate();
                     $timeline["ITILFollowup_" . $followups_id] = [
                         'type' => ITILFollowup::class,
                         'item' => $followup,
@@ -7042,6 +7069,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $task_obj->getFromDB($tasks_id);
                 if ($task_obj->canViewItem() || $params['bypass_rights']) {
                     $task['can_edit'] = $task_obj->canUpdateItem();
+                    $task['can_promote'] = Session::getCurrentInterface() === 'central' && $this instanceof Ticket && Ticket::canCreate();
                     $timeline[$task_obj::getType() . "_" . $tasks_id] = [
                         'type' => $taskClass,
                         'item' => $task,
@@ -9007,6 +9035,10 @@ abstract class CommonITILObject extends CommonDBTM
         if (empty($column_ids)) {
             return [];
         }
+        // Fill columns with empty arrays for each column id to avoid missing columns in the kanban
+        foreach ($column_ids as $column_id) {
+            $columns[$column_id] = [];
+        }
         // Never try getting cards in drop-only columns
         $columns_defined = self::getAllKanbanColumns('status');
         $statuses_from_db = array_filter($column_ids, static function ($id) use ($columns_defined) {
@@ -9018,11 +9050,14 @@ abstract class CommonITILObject extends CommonDBTM
                 'status' => $statuses_from_db
             ];
         }
-        if (!isset($criteria['status'])) {
-            // Avoid fetching everything when nothing is needed
-            return [];
+
+        // Avoid fetching everything when nothing is needed
+        if (isset($criteria['status'])) {
+            $items = self::getDataToDisplayOnKanban($ID, $criteria);
+        } else {
+            $items = [];
         }
-        $items      = self::getDataToDisplayOnKanban($ID, $criteria);
+
 
         $extracolumns = self::getAllKanbanColumns($column_field, $column_ids, $get_default);
         foreach ($extracolumns as $column_id => $column) {

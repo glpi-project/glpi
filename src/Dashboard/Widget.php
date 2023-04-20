@@ -427,7 +427,6 @@ HTML;
         $class = $p['class'];
         $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-        $alphabet = range('a', 'z');
         $numbers_html = "";
         $i = 0;
         foreach ($p['data'] as $entry) {
@@ -451,7 +450,7 @@ HTML;
             $formatted_number = Toolbox::shortenNumber($entry['number']);
 
             $numbers_html .= <<<HTML
-            <a {$href} class="line line-{$alphabet[$i]}">
+            <a {$href} class="line line-{$i}">
                <span class="content" {$color}>$formatted_number</span>
                <i class="icon {$entry['icon']}" {$color2}></i>
                <span class="label" {$color2}>{$entry['label']}</span>
@@ -1912,13 +1911,6 @@ JAVASCRIPT;
             ];
         }
 
-        // aaa - can generate max 702 colors
-        $alphabet = [];
-        $letter = 'a';
-        while ($letter !== 'aaa' && count($alphabet) <= $nb_series) {
-            $alphabet[] = $letter++;
-        }
-
         $min_l = 20; // min for luminosity
         $max_l = 20; // max ...
         $min_s = 30; // min for saturation
@@ -1933,7 +1925,7 @@ JAVASCRIPT;
         $colors = [];
 
         for ($i = 1; $i <= $nb_series; $i++) {
-            $names[$i - 1] = $alphabet[$i - 1];
+            $names[$i - 1] = $i - 1;
 
            // adjust luminosity
             $i_l_step = $i * $step_l + $min_l / 100;

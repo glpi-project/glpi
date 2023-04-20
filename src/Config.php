@@ -364,20 +364,20 @@ class Config extends CommonDBTM
 
             // ensure value is not saved in DB
             unset($input['_force_redirect_to_smtp_oauth']);
-        } else {
-            if (isset($input['smtp_passwd']) && empty($input['smtp_passwd'])) {
-                unset($input['smtp_passwd']);
-            }
-            if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
-                $input['smtp_passwd'] = '';
-            }
-
+        } elseif (array_key_exists('smtp_mode', $input) && (int)$input['smtp_mode'] !== MAIL_SMTPOAUTH) {
             // clean oauth related information
             $input['smtp_oauth_provider'] = '';
             $input['smtp_oauth_client_id'] = '';
             $input['smtp_oauth_client_secret'] = '';
             $input['smtp_oauth_options'] = '{}';
             $input['smtp_oauth_refresh_token'] = '';
+        }
+
+        if (isset($input['smtp_passwd']) && empty($input['smtp_passwd'])) {
+            unset($input['smtp_passwd']);
+        }
+        if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
+            $input['smtp_passwd'] = '';
         }
 
         return $input;

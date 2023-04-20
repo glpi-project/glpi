@@ -224,6 +224,7 @@ class InstallCommand extends AbstractConfigureCommand
             return self::ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE;
         }
 
+        mysqli_report(MYSQLI_REPORT_OFF);
         $mysqli = new \mysqli();
         if (intval($db_port) > 0) {
            // Network port

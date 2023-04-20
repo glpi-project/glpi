@@ -2025,11 +2025,11 @@ class GLPIKanbanRights {
                         column_field: self.column_field.id
                     }
                 }).done(function(columns, textStatus, jqXHR) {
+                    clearColumns();
+                    self.columns = columns;
                     preloadBadgeCache({
                         trim_cache: true
                     });
-                    clearColumns();
-                    self.columns = columns;
                     fillColumns();
                     // Re-filter kanban
                     self.filter();
@@ -2157,6 +2157,7 @@ class GLPIKanbanRights {
             }
 
             refreshSortables();
+            self.filter();
         };
 
         /**

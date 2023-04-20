@@ -61,7 +61,7 @@ class Widget extends DbTestCase
                 'nb_series' => 4,
                 'revert'    => true,
                 'expected'  => [
-                    'names'  => ['a', 'b', 'c', 'd'],
+                    'names'  => [0, 1, 2, 3],
                     'colors' => [
                         '#a6a6a6',
                         '#808080',
@@ -74,7 +74,7 @@ class Widget extends DbTestCase
                 'nb_series' => 4,
                 'revert'    => false,
                 'expected'  => [
-                    'names'  => ['a', 'b', 'c', 'd'],
+                    'names'  => [0, 1, 2, 3],
                     'colors' => [
                         '#595959',
                         '#808080',
