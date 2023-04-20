@@ -36,7 +36,7 @@
  * Quick and easy way to make some text pop off
  */
 
-.bd-callout {
+.callout {
     padding: 1.25rem;
     margin-top: 1.25rem;
     margin-bottom: 1.25rem;
@@ -58,7 +58,7 @@
     }
 }
 
-.bd-callout + .bd-callout {
+.callout + .callout {
     margin-top: -0.25rem;
 }
 
@@ -71,14 +71,14 @@
     }
 }
 
-.bd-callout-info {
+.callout-info {
     @include bs-callout-variant($info);
 }
 
-.bd-callout-warning {
+.callout-warning {
     @include bs-callout-variant($warning);
 }
 
-.bd-callout-danger {
+.callout-danger {
     @include bs-callout-variant($danger);
 }
