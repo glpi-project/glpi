@@ -6568,8 +6568,8 @@ JAVASCRIPT;
                         $split_name = explode(">", $data[$ID][0]['name']);
                         return trim(end($split_name));
                     }
-
                     break;
+
                 case "glpi_users.name":
                     // USER search case
                     if (
