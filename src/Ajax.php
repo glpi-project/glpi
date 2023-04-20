@@ -357,7 +357,8 @@ JAVASCRIPT;
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
             $js = "
-         var loadTabContents = function (tablink, force_reload = false) {
+         var initialHash     = location.hash;
+         var loadTabContents = function (tablink, force_reload = false, anchor = '') {
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
             var index = tablink.closest('.nav-item').index();
@@ -373,11 +374,9 @@ JAVASCRIPT;
                   }
                 );
 
-                if (location.hash) {
-                    location.href = location.hash; // move to hanchor if needed
-                    //unset hash
-                    history.pushState('', document.title, window.location.pathname
-                                                       + window.location.search);
+                if (initialHash) {
+                    location.href = initialHash; // move to anchor if needed
+                    initialHash   = ''; // unset hash
                 }
             }
             if ($(target).html() && !force_reload) {
