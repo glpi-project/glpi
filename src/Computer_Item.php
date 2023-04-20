@@ -203,7 +203,7 @@ class Computer_Item extends CommonDBRelation
                         if (Entity::getUsedConfig('is_location_autoclean', $device->getEntityID()) && $device->isField('locations_id')) {
                             $updates['locations_id'] = 0;
                         }
-                        if (Entity::getUsedConfig('is_user_autoclean', $device->getField('entities_id')) && $device->getEntityID()) {
+                        if (Entity::getUsedConfig('is_user_autoclean', $device->getEntityID()) && $device->isField('users_id')) {
                             $updates['users_id'] = 0;
                         }
                         if (Entity::getUsedConfig('is_group_autoclean', $device->getEntityID()) && $device->isField('groups_id')) {

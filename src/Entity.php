@@ -3986,20 +3986,32 @@ class Entity extends CommonTreeDropdown
             case 'is_user_autoupdate':
             case 'is_group_autoupdate':
             case 'is_location_autoupdate':
+                if ($values[$field] == self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                } elseif ($values[$field]) {
+                    return __('Copy');
+                }
+                return __('Do not copy');
+
             case 'is_contact_autoclean':
             case 'is_user_autoclean':
             case 'is_group_autoclean':
             case 'is_location_autoclean':
                 if ($values[$field] == self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
-                } elseif ($values[$field] == self::CONFIG_AUTO) {
-                    return __('Copy computer status');
                 } elseif ($values[$field]) {
                     return __('Clear');
                 }
-                return __('Do not clear');
+                return __('Do not delete');
 
             case 'state_autoupdate_mode':
+                if ($values[$field] == self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                }
+                $states = State::getBehaviours(
+                    __('Copy computer status'),
+                );
+                return $states[$values[$field]];
             case 'state_autoclean_mode':
                 if ($values[$field] == self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
