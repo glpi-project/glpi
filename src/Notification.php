@@ -145,6 +145,7 @@ class Notification extends CommonDBTM implements FilterableInterface
 
     public static $rightname = 'notification';
 
+    // Filterable implementation
     public function getItemtypeToFilter(): string
     {
         return $this->fields['itemtype'];
@@ -153,6 +154,16 @@ class Notification extends CommonDBTM implements FilterableInterface
     public function getItemtypeField(): string
     {
         return 'itemtype';
+    }
+
+    public function getInfoTitle(): string
+    {
+        return __("Notification target filter");
+    }
+
+    public function getInfoDescription(): string
+    {
+        return __("Notifications will only be sent for items that match the defined filter.");
     }
 
     public static function getTypeName($nb = 0)

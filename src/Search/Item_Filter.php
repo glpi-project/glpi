@@ -38,6 +38,7 @@ namespace Glpi\Search;
 use CommonDBChild;
 use CommonDBTM;
 use CommonGLPI;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\Input\QueryBuilder;
 use Session;
 
@@ -90,8 +91,7 @@ final class Item_Filter extends CommonDBChild
         // account and GLPI relies on session data instead
         $_SESSION['glpisearch'][$itemtype]['criteria'] = $criteria;
 
-        // Print page
-        echo "<div class='col search-container'>";
+        // Set search engine parameters
         $params = [
             'criteria'                => $criteria,
             'metacriteria'            => [],
@@ -110,9 +110,16 @@ final class Item_Filter extends CommonDBChild
                 ],
             ],
         ];
-        QueryBuilder::showGenericSearch($itemtype, $params);
-        SearchEngine::showOutput($itemtype, $params);
-        echo "</div>";
+
+        // Print page
+        $twig = TemplateRenderer::getInstance();
+        $twig->display("components/search/item_filter.html.twig", [
+            'info_title'       => $item->getInfoTitle(),
+            'info_description' => $item->getInfoDescription(),
+            'itemtype'         => $itemtype,
+            'params'           => $params,
+            'filter_enabled'   => $filter !== null,
+        ]);
 
         return true;
     }
