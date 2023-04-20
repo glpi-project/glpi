@@ -438,8 +438,17 @@ abstract class CommonITILCost extends CommonDBChild
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Duration') . "</td>";
         echo "<td>";
+
+        $toadd = [];
+        $max = max(DAY_TIMESTAMP, 10 * MINUTE_TIMESTAMP);
+        for ($i = MINUTE_TIMESTAMP; $i < $max; $i += MINUTE_TIMESTAMP) {
+            $toadd[] = $i;
+        }
         Dropdown::showTimeStamp('actiontime', ['value'           => $this->fields['actiontime'],
-            'addfirstminutes' => true
+            'min'                  => DAY_TIMESTAMP,
+            'max'                  => DAY_TIMESTAMP * 50,
+            'step'                 => DAY_TIMESTAMP,
+            'toadd'                => $toadd
         ]);
         echo "</td>";
         echo "<td>" . __('End date') . "</td>";
