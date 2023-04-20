@@ -3984,11 +3984,10 @@ class Entity extends CommonTreeDropdown
         }
 
         // Construct HTML with special chars encoded.
-        if (empty($title)) {
-            $title = htmlspecialchars(implode(' > ', $names));
-        } else {
-            $title = htmlspecialchars($title);
+        if ($title === null) {
+            $title = implode(' > ', $names);
         }
+        $title = htmlspecialchars($title);
         $breadcrumbs = implode(
             '<i class="fas fa-caret-right mx-1"></i>',
             array_map(
