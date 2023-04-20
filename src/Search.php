@@ -6564,7 +6564,7 @@ JAVASCRIPT;
                     if (
                         $itemtype == Ticket::class // only for helpdesk
                         && $data[$ID][0]['name'] != null //column have value in DB
-                        && $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user want the short name
+                        && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                     ) {
                         $split_name = explode(">", $data[$ID][0]['name']);
                         return trim(end($split_name));
