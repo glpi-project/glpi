@@ -6561,7 +6561,6 @@ JAVASCRIPT;
                 case $table . "completename":
                     if (
                         $table != "glpi_entities" //handle later
-                        && $itemtype == Ticket::class // only for helpdesk
                         && $data[$ID][0]['name'] != null //column have value in DB
                         && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                     ) {
