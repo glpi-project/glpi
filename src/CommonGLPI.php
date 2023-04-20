@@ -308,7 +308,7 @@ class CommonGLPI implements CommonGLPIInterface
         $this->addImpactTab($ong, $options);
 
         if ($this instanceof FilterableInterface) {
-            $this->addStandardTab('Glpi\Search\Item_Filter', $ong, $options);
+            $this->addStandardTab('Glpi\Search\CriteriaFilter', $ong, $options);
         }
 
         return $ong;

@@ -45,7 +45,7 @@ trait FilterableTrait
 {
     public function itemMatchFilter(CommonDBTM $item): bool
     {
-        $filter = Item_Filter::getForItem($this);
+        $filter = CriteriaFilter::getForItem($this);
 
         // No filter defined
         if (!$filter) {
@@ -81,7 +81,7 @@ trait FilterableTrait
         array $search_criteria
     ): bool {
         $search_itemtype = $this->getItemtypeToFilter();
-        $filter = Item_Filter::getForItem($this);
+        $filter = CriteriaFilter::getForItem($this);
 
         // Build data
         // JSON fields must only be sanitized AFTER being encoded to avoid \'
@@ -99,7 +99,7 @@ trait FilterableTrait
             ]);
         } else {
             // Create a new filter
-            $filter = new Item_Filter();
+            $filter = new CriteriaFilter();
             $id = $filter->add([
                 'itemtype'        => self::getType(),
                 'items_id'        => $this->getID(),
@@ -123,7 +123,7 @@ trait FilterableTrait
 
     public function deleteFilter(): bool
     {
-        $filter = Item_Filter::getForItem($this);
+        $filter = CriteriaFilter::getForItem($this);
 
         // No filter, nothing to be done
         if (!$filter) {

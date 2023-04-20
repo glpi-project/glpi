@@ -42,7 +42,7 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-$table = "glpi_searches_items_filters";
+$table = "glpi_searches_criteriafilters";
 if (!$DB->tableExists($table)) {
     $query = "CREATE TABLE `$table` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,

@@ -85,7 +85,7 @@
             // Send data to backend
             $.ajax({
                 type: "POST",
-                url: CFG_GLPI.root_doc + "/ajax/items_filter.php",
+                url: CFG_GLPI.root_doc + "/ajax/criteria_filter.php",
                 data: form_data,
                 processData: false, // Needed when using FormData object
                 contentType: false, // Needed when using FormData object
@@ -96,7 +96,7 @@
                 $("#{{ delete_action_id }}").removeClass('d-none');
 
                 // Add badge to menu to hint that a filter have been set
-                const tab = $("a.nav-link[href*='Item_Filter']");
+                const tab = $("a.nav-link[href*='CriteriaFilter']");
                 if (tab.find('span.badge').length == 0) {
                     tab.append('<span class="badge">1</span>');
                 }
@@ -125,7 +125,7 @@
 
             $.ajax({
                 type: "POST",
-                url: CFG_GLPI.root_doc + "/ajax/items_filter.php",
+                url: CFG_GLPI.root_doc + "/ajax/criteria_filter.php",
                 data: {
                     'action': 'delete_filter',
                     'itemtype': '{{ itemtype }}',

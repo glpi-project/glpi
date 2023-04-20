@@ -45,7 +45,7 @@ use Session;
 /**
  * Define filters for a given itemtype, using the search engine UI
  */
-final class Item_Filter extends CommonDBChild
+final class CriteriaFilter extends CommonDBChild
 {
     public static $itemtype = "itemtype";
     public static $items_id = "items_id";
@@ -102,7 +102,7 @@ final class Item_Filter extends CommonDBChild
             'showreset'               => false,
             'actionvalue'             => __("Preview results"),
             'extra_actions_templates' => [
-                "components/search/items_filter_actions.html.twig" => [
+                "components/search/criteria_filter_actions.html.twig" => [
                     'itemtype'    => $item->getType(),
                     'items_id'    => $item->getID(),
                     'show_save'   => $can_edit,
@@ -113,7 +113,7 @@ final class Item_Filter extends CommonDBChild
 
         // Print page
         $twig = TemplateRenderer::getInstance();
-        $twig->display("components/search/item_filter.html.twig", [
+        $twig->display("components/search/criteria_filter.html.twig", [
             'info_title'       => $item->getInfoTitle(),
             'info_description' => $item->getInfoDescription(),
             'itemtype'         => $itemtype,
