@@ -45,12 +45,12 @@
         <div id="manage_filter_ux" class="{{ filter_enabled ? "" : "d-none" }}">
 
             {# Display search UX #}
-            {{ call('Glpi\\Search\\Input\\QueryBuilder::showGenericSearch', [itemtype, params]) }}
+            {% call('Glpi\\Search\\Input\\QueryBuilder::showGenericSearch', [itemtype, params]) %}
 
             {# Display search results, hidden until a search is executed #}
             <div id="item_filter_preview" class="d-none">
                 <h2>{{ __("Preview") }}</h2>
-                {{ call('Glpi\\Search\\SearchEngine::showOutput', [itemtype, params]) }}
+                {% call('Glpi\\Search\\SearchEngine::showOutput', [itemtype, params]) %}
             </div>
         </div>
 
