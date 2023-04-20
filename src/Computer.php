@@ -164,37 +164,36 @@ class Computer extends CommonDBTM
         $input = Toolbox::addslashes_deep($this->fields);
         for ($i = 0; $i < $update_count; $i++) {
            // Update contact of attached items
-            if ($this->updates[$i] == 'contact_num' && Entity::getUsedConfig('is_contact_autoupdate', $this->getField('entities_id'))) {
+            if ($this->updates[$i] == 'contact_num' && Entity::getUsedConfig('is_contact_autoupdate', $this->getEntityID())) {
                 $changes['contact_num'] = $input['contact_num'];
             }
-            if ($this->updates[$i] == 'contact' && Entity::getUsedConfig('is_contact_autoupdate', $this->getField('entities_id'))) {
+            if ($this->updates[$i] == 'contact' && Entity::getUsedConfig('is_contact_autoupdate', $this->getEntityID())) {
                 $changes['contact'] = $input['contact'];
             }
            // Update users and groups of attached items
             if (
                 $this->updates[$i] == 'users_id'
-                && Entity::getUsedConfig('is_user_autoupdate', $this->getField('entities_id'))
+                && Entity::getUsedConfig('is_user_autoupdate', $this->getEntityID())
             ) {
                 $changes['users_id'] = $input['users_id'];
             }
             if (
                 $this->updates[$i] == 'groups_id'
-                && Entity::getUsedConfig('is_group_autoupdate', $this->getField('entities_id'))
+                && Entity::getUsedConfig('is_group_autoupdate', $this->getEntityID())
             ) {
                 $changes['groups_id'] = $input['groups_id'];
             }
            // Update state of attached items
-            $t = Entity::getUsedConfig('state_autoupdate_mode', $this->getField('entities_id'));
             if (
                 ($this->updates[$i] == 'states_id')
-                && (Entity::getUsedConfig('state_autoupdate_mode', $this->getField('entities_id')) < 0)
+                && (Entity::getUsedConfig('state_autoupdate_mode', $this->getEntityID()) < 0)
             ) {
                 $changes['states_id'] = $input['states_id'];
             }
            // Update loction of attached items
             if (
                 $this->updates[$i] == 'locations_id'
-                && Entity::getUsedConfig('is_location_autoupdate', $this->getField('entities_id'))
+                && Entity::getUsedConfig('is_location_autoupdate', $this->getEntityID())
             ) {
                 $changes['locations_id'] = $input['locations_id'];
             }

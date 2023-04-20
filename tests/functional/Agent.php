@@ -333,10 +333,6 @@ class Agent extends DbTestCase
             "is_contact_autoupdate" => 0,
         ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($json);
-        $this->boolean($entity->update([
-            "id" => $entity->fields['id'],
-            "is_contact_autoupdate" => 1,
-        ]))->isTrue();
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {

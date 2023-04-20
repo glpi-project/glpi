@@ -94,7 +94,7 @@ class State extends CommonTreeDropdown
      *
      * @param $lib    string   to add for -1 value (default '')
      */
-    public static function getBehaviours($lib = "", $is_inheritable = false)
+    final public static function getBehaviours(string $lib = "", bool $is_inheritable = false): array
     {
         global $DB;
 

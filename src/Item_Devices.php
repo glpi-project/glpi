@@ -1523,14 +1523,14 @@ class Item_Devices extends CommonDBRelation
 
         if ($computer instanceof CommonDBTM) {
             if (
-                Entity::getUsedConfig('is_location_autoupdate', $computer->getField('entities_id'))
+                Entity::getUsedConfig('is_location_autoupdate', $computer->getEntityID())
                 && (!isset($input['locations_id'])
                 || $computer->fields['locations_id'] != $input['locations_id'])
             ) {
                 $input['locations_id'] = $computer->fields['locations_id'];
             }
 
-            $state_autoupdate_mode = Entity::getUsedConfig('state_autoupdate_mode', $computer->getField('entities_id'));
+            $state_autoupdate_mode = Entity::getUsedConfig('state_autoupdate_mode', $computer->getEntityID());
             if (
                 $state_autoupdate_mode < 0
                 && (!isset($input['states_id'])

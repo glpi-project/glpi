@@ -94,7 +94,7 @@ class Entity extends CommonTreeDropdown
             'agent_base_url', '2fa_enforcement_strategy',
          // Automatically update of the elements related to the computers
             'is_contact_autoupdate', 'is_user_autoupdate', 'is_group_autoupdate', 'is_location_autoupdate', 'state_autoupdate_mode',
-            'is_contact_autoclean', 'is_user_autoclean', 'is_group_autoclean', 'is_location_autoclean', 'state_autoclean_mode'
+            'is_contact_autoclean', 'is_user_autoclean', 'is_group_autoclean', 'is_location_autoclean', 'state_autoclean_mode',
         ],
       // Inventory
         'infocom' => [
@@ -2014,8 +2014,8 @@ class Entity extends CommonTreeDropdown
         echo "<tr class='tab_bg_2'>";
         echo "<td> " . __('When connecting or updating') . "</td>";
         $values = [
-            __('Do not copy'),
-            __('Copy')
+            0 => __('Do not copy'),
+            1 => __('Copy')
         ];
 
         if ($entity->fields['id'] > 0) {
@@ -2049,9 +2049,8 @@ class Entity extends CommonTreeDropdown
         echo "<tr class='tab_bg_2'>";
         echo "<td> " . __('When disconnecting') . "</td>";
         $values = [
-            __('Do not delete'),
-            __('Clear'),
-            self::CONFIG_PARENT => __('Inheritance of the parent entity')
+            0 => __('Do not delete'),
+            1 => __('Clear'),
         ];
 
         if ($entity->fields['id'] > 0) {

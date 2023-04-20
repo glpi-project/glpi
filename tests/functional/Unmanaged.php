@@ -118,12 +118,6 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             "is_contact_autoupdate" => 0,
         ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $entity = new \Entity();
-        $entity->getFromDB(0);
-        $this->boolean($entity->update([
-            "id" => $entity->fields['id'],
-            "is_contact_autoupdate" => 1,
-        ]))->isTrue(); //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -176,10 +170,6 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             "is_contact_autoupdate" => 0,
         ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($source);
-        $this->boolean($entity->update([
-            "id" => $entity->fields['id'],
-            "is_contact_autoupdate" => 1,
-        ]))->isTrue(); //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {

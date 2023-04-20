@@ -61,7 +61,7 @@ foreach ($fields as $field) {
         $migration->addField(
             'glpi_entities',
             $field,
-            "tinyint NOT NULL DEFAULT '" . \Entity::CONFIG_PARENT . "'"
+            "tinyint NOT NULL DEFAULT '-2'"
         );
     }
     $migration->addPostQuery(
@@ -83,7 +83,7 @@ foreach ($fields as $field) {
         $migration->addField(
             'glpi_entities',
             $field,
-            "int NOT NULL DEFAULT '" . \Entity::CONFIG_PARENT . "'"
+            "int NOT NULL DEFAULT '-2'"
         );
     }
     $migration->addPostQuery(
