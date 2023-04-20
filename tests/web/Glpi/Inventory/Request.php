@@ -36,6 +36,9 @@
 namespace tests\units\Glpi\Inventory;
 
 use GuzzleHttp;
+use Psr\Http\Client\RequestExceptionInterface;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Response;
 
 class Request extends \GLPITestCase
 {
@@ -73,31 +76,39 @@ class Request extends \GLPITestCase
     {
         $this->exception(
             function () {
-                $res = $this->http_client->request(
+                $this->http_client->request(
                     'GET',
                     $this->base_uri . 'front/inventory.php'
                 );
             }
-        )->hasCode(405)->message->contains('405 Method Not Allowed');
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(405);
+        $this->string((string)$response->getBody())->isEqualTo('');
     }
 
     public function testUnsupportedLegacyRequest()
     {
         $this->exception(
             function () {
-                $res = $this->http_client->request(
+                $this->http_client->request(
                     'GET',
                     $this->base_uri . 'front/inventory.php?action=getConfig'
                 );
             }
-        )->hasCode(400)->message->contains('{"status":"error","message":"Protocol not supported","expiration":24}');
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(400);
+        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Protocol not supported","expiration":24}');
     }
 
     public function testRequestInvalidContent()
     {
         $this->exception(
             function () {
-                $res = $this->http_client->request(
+                $this->http_client->request(
                     'POST',
                     $this->base_uri . 'front/inventory.php',
                     [
@@ -107,14 +118,22 @@ class Request extends \GLPITestCase
                     ]
                 );
             }
-        )->hasCode(400)->message->contains('<ERROR><![CDATA[XML not well formed!]]></ERROR>');
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(400);
+        $this->string((string)$response->getBody())->isEqualTo(<<<XML
+<?xml version="1.0"?>
+<REPLY><ERROR><![CDATA[XML not well formed!]]></ERROR></REPLY>
+XML
+        );
     }
 
     public function testRequestInvalidJSONContent()
     {
         $this->exception(
             function () {
-                $res = $this->http_client->request(
+                $this->http_client->request(
                     'POST',
                     $this->base_uri . 'front/inventory.php',
                     [
@@ -124,11 +143,15 @@ class Request extends \GLPITestCase
                     ]
                 );
             }
-        )->hasCode(400)->message->contains('{"status":"error","message":"JSON not well formed!","expiration":24}');
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(400);
+        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"JSON not well formed!","expiration":24}');
 
         $this->exception(
             function () {
-                $res = $this->http_client->request(
+                $this->http_client->request(
                     'POST',
                     $this->base_uri . 'front/inventory.php',
                     [
@@ -139,11 +162,15 @@ class Request extends \GLPITestCase
                     ]
                 );
             }
-        )->hasCode(400)->message->contains('{"status":"error","message":"JSON not well formed!","expiration":24}');
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(400);
+        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"JSON not well formed!","expiration":24}');
 
         $this->exception(
             function () {
-                $res = $this->http_client->request(
+                $this->http_client->request(
                     'POST',
                     $this->base_uri . 'front/inventory.php',
                     [
@@ -155,7 +182,11 @@ class Request extends \GLPITestCase
                     ]
                 );
             }
-        )->hasCode(400)->message->contains(gzcompress('{"status":"error","message":"JSON not well formed!","expiration":24}'));
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(400);
+        $this->string((string)$response->getBody())->isEqualTo(gzcompress('{"status":"error","message":"JSON not well formed!","expiration":24}'));
     }
 
     public function testPrologRequest()
