@@ -117,8 +117,9 @@ class Item_Rack extends CommonDBRelation
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
-                break;
+                return;
         }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
     /**
