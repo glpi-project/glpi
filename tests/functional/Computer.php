@@ -74,8 +74,7 @@ class Computer extends DbTestCase
 
     public function testUpdate()
     {
-        global $CFG_GLPI;
-        $saveconf = $CFG_GLPI;
+        $this->login();
 
         $computer = $this->getNewComputer();
         $printer  = $this->getNewPrinter();
@@ -89,11 +88,16 @@ class Computer extends DbTestCase
         $this->integer((int)$link->add($in))->isGreaterThan(0);
 
        // Change the computer
-        $CFG_GLPI['is_contact_autoupdate']  = 1;
-        $CFG_GLPI['is_user_autoupdate']     = 1;
-        $CFG_GLPI['is_group_autoupdate']    = 1;
-        $CFG_GLPI['state_autoupdate_mode']  = -1;
-        $CFG_GLPI['is_location_autoupdate'] = 1;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'is_contact_autoupdate'  => 1,
+            'is_user_autoupdate'     => 1,
+            'is_group_autoupdate'    => 1,
+            'state_autoupdate_mode'  => -1,
+            'is_location_autoupdate' => 1,
+        ]))->isTrue();
         $in = ['id'           => $computer->getField('id'),
             'contact'      => $this->getUniqueString(),
             'contact_num'  => $this->getUniqueString(),
@@ -134,11 +138,15 @@ class Computer extends DbTestCase
         }
 
        // Change the computer again
-        $CFG_GLPI['is_contact_autoupdate']  = 0;
-        $CFG_GLPI['is_user_autoupdate']     = 0;
-        $CFG_GLPI['is_group_autoupdate']    = 0;
-        $CFG_GLPI['state_autoupdate_mode']  = 0;
-        $CFG_GLPI['is_location_autoupdate'] = 0;
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'is_contact_autoupdate'  => 0,
+            'is_user_autoupdate'     => 0,
+            'is_group_autoupdate'    => 0,
+            'state_autoupdate_mode'  => 0,
+            'is_location_autoupdate' => 0,
+        ]))->isTrue();
+        $this->login();
         $in2 = ['id'          => $computer->getField('id'),
             'contact'      => $this->getUniqueString(),
             'contact_num'  => $this->getUniqueString(),
@@ -160,7 +168,6 @@ class Computer extends DbTestCase
 
        // Restore configuration
         $computer = $this->getNewComputer();
-        $CFG_GLPI = $saveconf;
 
        //update devices
         $cpu = new \DeviceProcessor();
@@ -187,8 +194,11 @@ class Computer extends DbTestCase
         $this->integer((int)$linkid)->isGreaterThan(0);
 
        // Change the computer
-        $CFG_GLPI['state_autoupdate_mode']  = -1;
-        $CFG_GLPI['is_location_autoupdate'] = 1;
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'state_autoupdate_mode'  => -1,
+            'is_location_autoupdate' => 1,
+        ]))->isTrue();
         $in = ['id'           => $computer->getField('id'),
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
@@ -221,8 +231,11 @@ class Computer extends DbTestCase
         }
 
        // Change the computer again
-        $CFG_GLPI['state_autoupdate_mode']  = 0;
-        $CFG_GLPI['is_location_autoupdate'] = 0;
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'state_autoupdate_mode'  => 0,
+            'is_location_autoupdate' => 0,
+        ]))->isTrue();
         $in2 = ['id'          => $computer->getField('id'),
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
@@ -237,9 +250,6 @@ class Computer extends DbTestCase
            // Check the printer and test propagation DOES NOT occurs
             $this->variable($link->getField($k))->isEqualTo($in[$k]);
         }
-
-       // Restore configuration
-        $CFG_GLPI = $saveconf;
     }
 
     /**
@@ -249,16 +259,20 @@ class Computer extends DbTestCase
      */
     public function testCreateLinks()
     {
-        global $CFG_GLPI;
+        $this->login();
 
         $computer = $this->getNewComputer();
-        $saveconf = $CFG_GLPI;
 
-        $CFG_GLPI['is_contact_autoupdate']  = 1;
-        $CFG_GLPI['is_user_autoupdate']     = 1;
-        $CFG_GLPI['is_group_autoupdate']    = 1;
-        $CFG_GLPI['state_autoupdate_mode']  = -1;
-        $CFG_GLPI['is_location_autoupdate'] = 1;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'is_contact_autoupdate'  => 1,
+            'is_user_autoupdate'     => 1,
+            'is_group_autoupdate'    => 1,
+            'state_autoupdate_mode'  => -1,
+            'is_location_autoupdate' => 1,
+        ]))->isTrue();
 
        // Change the computer
         $in = ['id'           => $computer->getField('id'),
@@ -332,9 +346,6 @@ class Computer extends DbTestCase
            // Check the printer and test propagation occurs
             $this->variable($link->getField($k))->isEqualTo($v);
         }
-
-       // Restore configuration
-        $CFG_GLPI = $saveconf;
     }
 
     public function testGetFromIter()

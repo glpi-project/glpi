@@ -90,13 +90,11 @@ class State extends CommonTreeDropdown
 
 
     /**
-     * Dropdown of states for behaviour config
+     * States for behavious config
      *
-     * @param $name            select name
      * @param $lib    string   to add for -1 value (default '')
-     * @param $value           default value (default 0)
-     **/
-    public static function dropdownBehaviour($name, $lib = "", $value = 0)
+     */
+    final public static function getBehaviours(string $lib = "", bool $is_inheritable = false): array
     {
         global $DB;
 
@@ -104,6 +102,10 @@ class State extends CommonTreeDropdown
 
         if ($lib) {
             $elements["-1"] = $lib;
+        }
+
+        if ($is_inheritable) {
+            $elements["-2"] = __('Inheritance of the parent entity');
         }
 
         $iterator = $DB->request([
@@ -115,6 +117,20 @@ class State extends CommonTreeDropdown
         foreach ($iterator as $data) {
             $elements[$data["id"]] = sprintf(__('Set status: %s'), $data["name"]);
         }
+
+        return $elements;
+    }
+
+    /**
+     * Dropdown of states for behaviour config
+     *
+     * @param $name            select name
+     * @param $lib    string   to add for -1 value (default '')
+     * @param $value           default value (default 0)
+     **/
+    public static function dropdownBehaviour($name, $lib = "", $value = 0, $is_inheritable = false)
+    {
+        $elements = self::getBehaviours($lib, $is_inheritable);
         Dropdown::showFromArray($name, $elements, ['value' => $value]);
     }
 
