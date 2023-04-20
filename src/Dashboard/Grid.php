@@ -1057,12 +1057,15 @@ HTML;
             return call_user_func("Glpi\Dashboard\Filter::$filter_id", $filter_values);
         }
 
-        $front_filter = Plugin::doHookFunction(Hooks::DASHBOARD_FRONT_FILTERS, $filter_values);
-        if(is_array($front_filter) && isset($front_filter[$filter_id])) {
-            return $front_filter[$filter_id];
-        }
+        $hook_params = [
+            'filter_id' => $filter_id,
+            'filter_values' => $filter_values,
+        ];
 
-        return "";
+        $hook_response = Plugin::doHookFunction(Hooks::DASHBOARD_HTML_FILTER, $hook_params);
+
+        return $hook_response!==$hook_params ? $hook_response : "";
+
     }
 
 
