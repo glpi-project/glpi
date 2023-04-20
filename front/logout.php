@@ -78,25 +78,21 @@ if (
     phpCAS::logout();
 }
 
-$toADD = "";
-
 // Redirect management
-if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
-    $toADD = "?redirect=" . $_POST['redirect'];
-} else if (isset($_GET['redirect']) && (strlen($_GET['redirect']) > 0)) {
-    $toADD = "?redirect=" . $_GET['redirect'];
+$url_params = [];
+$redirect = $_POST['redirect'] ?? $_GET['redirect'] ?? '';
+if (strlen($redirect) > 0) {
+    $url_params['redirect'] = $redirect;
 }
-
+$anchor = $_POST['anchor'] ?? $_GET['anchor'] ?? '';
+if (strlen($anchor) > 0) {
+    $url_params['anchor'] = $anchor;
+}
 if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
-    if (empty($toADD)) {
-        $toADD .= "?";
-    } else {
-        $toADD .= "&";
-    }
-    $toADD .= "noAUTO=1";
+    $url_params['noAUTO'] = 1;
 }
 
 Session::cleanOnLogout();
 
 // Redirect to the login-page
-Html::redirect($CFG_GLPI["root_doc"] . "/index.php" . $toADD);
+Html::redirect($CFG_GLPI["root_doc"] . "/index.php?" . http_build_query($url_params));

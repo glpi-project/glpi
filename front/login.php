@@ -74,25 +74,29 @@ if (isset($_POST['auth'])) {
 
 $remember = isset($_SESSION['rmbfield']) && isset($_POST[$_SESSION['rmbfield']]) && $CFG_GLPI["login_remember_time"];
 
-// Redirect management
-$REDIRECT = "";
-if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
-    $REDIRECT = "?redirect=" . rawurlencode($_POST['redirect']);
-} else if (isset($_GET['redirect']) && strlen($_GET['redirect']) > 0) {
-    $REDIRECT = "?redirect=" . rawurlencode($_GET['redirect']);
-}
-
 $auth = new Auth();
-
 
 // now we can continue with the process...
 if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth)) {
     Auth::redirectIfAuthenticated();
 } else {
+    // Redirect management
+    $url_params = [
+        'noAUTO' => 1,
+    ];
+    $redirect = $_POST['redirect'] ?? $_GET['redirect'] ?? '';
+    if (strlen($redirect) > 0) {
+        $url_params['redirect'] = $redirect;
+    }
+    $anchor = $_POST['anchor'] ?? $_GET['anchor'] ?? '';
+    if (strlen($anchor) > 0) {
+        $url_params['anchor'] = $anchor;
+    }
+
     http_response_code(401);
     TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
         'errors'    => $auth->getErrors(),
-        'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1' . str_replace("?", "&", $REDIRECT),
+        'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?' . http_build_query($url_params),
     ]);
     exit();
 }
