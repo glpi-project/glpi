@@ -148,6 +148,7 @@ class NotificationAjax extends DbTestCase
 
         $notification = new \NotificationTarget();
         $notification->setEvent("NotificationEventAjax");
+        $notification->setMode(\Notification_NotificationTemplate::MODE_AJAX);
         $notification->addToRecipientsList([
             'users_id' => \Session::getLoginUserID()
         ]);
@@ -165,6 +166,7 @@ class NotificationAjax extends DbTestCase
 
         $notification = new \NotificationTarget();
         $notification->setEvent("NotificationEventAjax");
+        $notification->setMode(\Notification_NotificationTemplate::MODE_AJAX);
         $notification->addToRecipientsList([
             'users_id' => \Session::getLoginUserID()
         ]);

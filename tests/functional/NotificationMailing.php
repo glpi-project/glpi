@@ -118,6 +118,7 @@ class NotificationMailing extends DbTestCase
 
         $notification = new \NotificationTarget();
         $notification->setEvent("NotificationEventMailing");
+        $notification->setMode(\Notification_NotificationTemplate::MODE_MAIL);
         $notification->addToRecipientsList([
             'users_id' => \Session::getLoginUserID()
         ]);
@@ -135,6 +136,7 @@ class NotificationMailing extends DbTestCase
 
         $notification = new \NotificationTarget();
         $notification->setEvent("NotificationEventMailing");
+        $notification->setMode(\Notification_NotificationTemplate::MODE_MAIL);
         $notification->addToRecipientsList([
             'users_id' => \Session::getLoginUserID()
         ]);
