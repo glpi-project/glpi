@@ -96,21 +96,17 @@ class Item_Rack extends CommonDBRelation
                 $item_rack = new Item_Rack();
                 foreach ($ids as $id) {
                     if ($item->can($id, UPDATE, $input)) {
-                        if (
-                            $item_rack->getFromDBByCrit([
-                                'itemtype' => $item->getType(),
-                                'items_id' => $item->getID()
-                            ])
-                        ) {
-                            if ($item_rack->delete(['id' => $item_rack->getID()])) {
+                        $relation_criteria = [
+                            'itemtype' => $item->getType(),
+                            'items_id' => $item->getID()
+                        ];
+                        if (countElementsInTable(Item_Rack::getTable(), $relation_criteria) > 0) {
+                            if ($item_rack->deleteByCriteria($relation_criteria)) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
-                        } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                            $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         }
                     } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
