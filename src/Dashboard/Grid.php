@@ -1064,8 +1064,7 @@ HTML;
 
         $hook_response = Plugin::doHookFunction(Hooks::DASHBOARD_HTML_FILTER, $hook_params);
 
-        return $hook_response!==$hook_params ? $hook_response : "";
-
+        return $hook_response !== $hook_params ? $hook_response : "";
     }
 
 
