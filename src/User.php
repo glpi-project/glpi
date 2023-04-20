@@ -709,12 +709,7 @@ class User extends CommonDBTM
         }
 
         if (!isset($input["allow_notifications_type"])) {
-            $mode = [
-                Notification_NotificationTemplate::MODE_MAIL,
-                Notification_NotificationTemplate::MODE_AJAX,
-                Notification_NotificationTemplate::MODE_ALL
-            ];
-            $input["allow_notifications_type"] = exportArrayToDB($mode);
+            $input["allow_notifications_type"] = exportArrayToDB([Notification_NotificationTemplate::MODE_ALL]);
         }
 
         // Check if user does not exists

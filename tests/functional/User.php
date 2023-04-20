@@ -320,10 +320,6 @@ class User extends \DbTestCase
             'name'   => 'prepare_for_add'
         ];
 
-        $mode = [
-            \Notification_NotificationTemplate::MODE_MAIL,
-            \Notification_NotificationTemplate::MODE_AJAX
-        ];
         $expected = [
             'name'         => 'prepare_for_add',
             'authtype'     => 1,
@@ -332,7 +328,7 @@ class User extends \DbTestCase
             'is_deleted'   => 0,
             'entities_id'  => 0,
             'profiles_id'  => 0,
-            'allow_notifications_type' => exportArrayToDB($mode),
+            'allow_notifications_type' => exportArrayToDB([\Notification_NotificationTemplate::MODE_ALL]),
         ];
         $this->array($user->prepareInputForAdd($input))->isEqualTo($expected);
 
@@ -364,11 +360,6 @@ class User extends \DbTestCase
             'password2' => 'nomatch'
         ];
 
-        $mode = [
-            \Notification_NotificationTemplate::MODE_MAIL,
-            \Notification_NotificationTemplate::MODE_AJAX
-        ];
-
         $expected = [
             'name'         => 'user_pass',
             'password2'    => 'nomatch',
@@ -378,7 +369,7 @@ class User extends \DbTestCase
             'is_deleted'   => 0,
             'entities_id'  => 0,
             'profiles_id'  => 0,
-            'allow_notifications_type' => exportArrayToDB($mode),
+            'allow_notifications_type' => exportArrayToDB([\Notification_NotificationTemplate::MODE_ALL]),
         ];
         $this->array($user->prepareInputForAdd($input))->isEqualTo($expected);
 
@@ -394,11 +385,6 @@ class User extends \DbTestCase
         $input['password2'] = 'mypass';
         $input['_extauth'] = 1;
 
-        $mode = [
-            \Notification_NotificationTemplate::MODE_MAIL,
-            \Notification_NotificationTemplate::MODE_AJAX
-        ];
-
         $expected = [
             'name'                 => 'user_pass',
             'password'             => '',
@@ -410,7 +396,7 @@ class User extends \DbTestCase
             'is_deleted'           => 0,
             'entities_id'          => 0,
             'profiles_id'          => 0,
-            'allow_notifications_type' => exportArrayToDB($mode),
+            'allow_notifications_type' => exportArrayToDB([\Notification_NotificationTemplate::MODE_ALL]),
         ];
         $this->array($user->prepareInputForAdd($input))->isEqualTo($expected);
     }
