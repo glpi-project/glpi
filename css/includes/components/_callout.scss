@@ -41,12 +41,12 @@
     margin-top: 1.25rem;
     margin-bottom: 1.25rem;
     border: 1px solid #eee;
-    border-left-width: .25rem;
-    border-radius: .25rem;
+    border-left-width: 0.25rem;
+    border-radius: 0.25rem;
 
     h2 {
         margin-top: 0;
-        margin-bottom: .25rem;
+        margin-bottom: 0.25rem;
     }
 
     p:last-child {
@@ -67,17 +67,18 @@
     border-left-color: $color;
 
     h2 {
-        color: $color
+        color: $color;
     }
 }
 
 .bd-callout-info {
     @include bs-callout-variant($info);
 }
+
 .bd-callout-warning {
     @include bs-callout-variant($warning);
 }
+
 .bd-callout-danger {
     @include bs-callout-variant($danger);
 }
-
