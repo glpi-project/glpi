@@ -6786,7 +6786,7 @@ JAVASCRIPT;
                         $completename = $data[$ID][0]['name'];
                         if (
                             $itemtype == Ticket::class // only for helpdesk
-                            && $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user want the short name
+                            && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                         ) {
                             $split_name = explode(">", $data[$ID][0]['name']);
                             $entity_name = trim(end($split_name));
