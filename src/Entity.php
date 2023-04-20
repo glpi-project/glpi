@@ -3972,7 +3972,7 @@ class Entity extends CommonTreeDropdown
      *
      * @return string|null
      */
-    public static function badgeCompletename(string $entity_string = "", string $title = ""): string
+    public static function badgeCompletename(string $entity_string = "", ?string $title = null): string
     {
         // `completename` is expected to be received as it is stored in DB,
         // meaning that `>` separator is not encoded, but `<`, `>` and `&` from self or parent names are encoded.
