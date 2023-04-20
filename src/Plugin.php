@@ -511,7 +511,7 @@ class Plugin extends CommonDBTM
      *
      * @return void
      */
-    private function loadPluginInformations(): void
+    private function loadPluginInformation(): void
     {
         // Run once
         if ($this->plugins_information !== null) {
@@ -547,14 +547,14 @@ class Plugin extends CommonDBTM
      */
     public function checkPluginState($plugin_key)
     {
-        $this->loadPluginInformations();
+        $this->loadPluginInformation();
         $plugin = new self();
 
         // Fallback on $this->getInformationsFromDirectory is needed for unit
         // tests with fake "tester" plugin, as the plugin does not have a real
-        // directory so $this->loadPluginInformations wont be able to find it
+        // directory so $this->loadPluginInformation wont be able to find it
         // by iterating on /plugins and /marketplace
-        $informations = $this->plugins_information[$plugin_key] ?? $this->getInformationsFromDirectory($plugin_key);
+        $information = $this->plugins_information[$plugin_key] ?? $this->getInformationsFromDirectory($plugin_key);
         $new_specs    = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
         $is_loadable      = !empty($informations);
@@ -772,8 +772,8 @@ class Plugin extends CommonDBTM
      */
     private function getNewInfoAndDirBasedOnOldName($oldname)
     {
-        foreach ($this->plugins_information as $plugin_name => $informations) {
-            if (array_key_exists('oldname', $informations) && $informations['oldname'] === $oldname) {
+        foreach ($this->plugins_information as $plugin_name => $information) {
+            if (array_key_exists('oldname', $information) && $information['oldname'] === $oldname) {
                // Return information if oldname specified in parsed directory matches passed value
                 return [
                     'directory'    => $plugin_name,
