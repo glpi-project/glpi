@@ -191,7 +191,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'              => 'User',
                             'text'                  => $name,
                             'title'                 => $name,
-                            'use_notification'      => $email === '' || !$userobj->isRefusedNotificationMode(Notification_NotificationTemplate::MODE_MAIL) ? false : $default_use_notif,
+                            'use_notification'      => $email === '' ? false : $default_use_notif,
                             'allow_notification'    => !$userobj->isRefusedNotificationMode(Notification_NotificationTemplate::MODE_MAIL),
                             'alternative_email'     => $email,
                         ];
@@ -219,7 +219,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'              => 'User',
                             'text'                  => $name,
                             'title'                 => $name,
-                            'use_notification'      => $email === '' || !$userobj->isRefusedNotificationMode(Notification_NotificationTemplate::MODE_MAIL) ? false : $default_use_notif,
+                            'use_notification'      => $email === '' ? false : $default_use_notif,
                             'allow_notification'    => !$userobj->isRefusedNotificationMode(Notification_NotificationTemplate::MODE_MAIL),
                             'alternative_email'     => $email,
                         ];
@@ -248,7 +248,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'              => 'Supplier',
                             'text'                  => $supplier_obj->fields['name'],
                             'title'                 => $supplier_obj->fields['name'],
-                            'use_notification'      => $email === '' || !$userobj->isRefusedNotificationMode(Notification_NotificationTemplate::MODE_MAIL) ? false : $default_use_notif,
+                            'use_notification'      => $supplier_obj->fields['email'] === '' ? false : $default_use_notif,
                             'allow_notification'    => !$userobj->isRefusedNotificationMode(Notification_NotificationTemplate::MODE_MAIL),
                             'alternative_email'     => $supplier_obj->fields['email'],
                         ];
