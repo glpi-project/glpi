@@ -141,10 +141,14 @@ class DbUtils extends DbTestCase
     protected function dataTableType()
     {
        // Pseudo plugin class for test
+        require_once __DIR__ . '/../fixtures/another_test.php';
         require_once __DIR__ . '/../fixtures/pluginbarabstractstuff.php';
         require_once __DIR__ . '/../fixtures/pluginbarfoo.php';
         require_once __DIR__ . '/../fixtures/pluginfoobar.php';
         require_once __DIR__ . '/../fixtures/pluginfooservice.php';
+        require_once __DIR__ . '/../fixtures/pluginfoo_search_item_filter.php';
+        require_once __DIR__ . '/../fixtures/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
+        require_once __DIR__ . '/../fixtures/test_a_b.php';
 
         return [
             ['glpi_dbmysqls', 'DBmysql', false], // not a CommonGLPI, should not be valid
@@ -158,6 +162,10 @@ class DbUtils extends DbTestCase
             ['glpi_plugin_foo_bars', 'PluginFooBar', true],
             ['glpi_plugin_foo_bazs', 'PluginFooBaz', false], // class not exists
             ['glpi_plugin_foo_services', 'PluginFooService', false], // not a CommonGLPI should not be valid
+            ['glpi_plugin_foo_searches_items_filters', 'GlpiPlugin\Foo\Search\Item_Filter', true], // Multi-level namespace + CommonDBRelation
+            ['glpi_anothers_tests', 'Glpi\Another_Test', true], // Single level namespace + CommonDBRelation
+            ['glpi_tests_as_bs', 'Glpi\Test\A_B', true], // Multi-level namespace + CommonDBRelation
+            ['glpi_plugin_foo_as_bs_cs_ds_es_fs_gs_bars', 'GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar', true], // Long namespace
         ];
     }
 
@@ -1510,12 +1518,20 @@ class DbUtils extends DbTestCase
                 'expected' => 'Glpi\\Application\\Console\\MyCommand',
             ],
             [
+                'itemtype' => 'Glpi\\Something\\Item_filter',
+                'expected' => 'Glpi\\Something\\Item_Filter',
+            ],
+            [
                 'itemtype' => 'PluginFooBaritem',
                 'expected' => 'PluginFooBarItem',
             ],
             [
                 'itemtype' => 'GlpiPluGin\\Foo\\Namespacedbar',
                 'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
+            ],
+            [
+                'itemtype' => 'glpiplugin\\foo\\models\\foo\\bar_item',
+                'expected' => 'GlpiPlugin\\Foo\\Models\\Foo\\Bar_Item',
             ],
          // Good case (should not be altered)
             [
@@ -1560,12 +1576,20 @@ class DbUtils extends DbTestCase
                             'MyCommand.php' => '',
                         ],
                     ],
+                    'Something' => [
+                        'Item_Filter.php' => '',
+                    ],
                     'MyClass.php' => '',
                     'NamespacedClass.php' => '',
                 ],
                 'plugins' => [
                     'foo' => [
                         'src' => [
+                            'Models' => [
+                                'Foo' => [
+                                    'Bar_Item.php' => '',
+                                ],
+                            ],
                             'NamespacedBar.php' => '',
                             'PluginFooBarItem.php' => '',
                         ],
