@@ -1332,16 +1332,24 @@ class Auth extends CommonGLPI
      *
      * @return void|integer nothing if redirect is true, else Auth system ID
      */
-    public static function checkAlternateAuthSystems($redirect = false, $redirect_string = '')
+    public static function checkAlternateAuthSystems($redirect = false, $redirect_string = '', ?string $anchor = null)
     {
         global $CFG_GLPI;
 
         if (isset($_GET["noAUTO"]) || isset($_POST["noAUTO"])) {
             return false;
         }
+
+        $redirect_params = [];
+        if (strlen($redirect_string) > 0) {
+            $redirect_params['redirect'] = $redirect_string;
+        }
+        if ($anchor !== null && strlen($anchor) > 0) {
+            $redirect_params['anchor'] = $anchor;
+        }
         $redir_string = "";
-        if (!empty($redirect_string)) {
-            $redir_string = "?redirect=" . rawurlencode($redirect_string);
+        if (count($redirect_params) > 0) {
+            $redir_string = '?' . http_build_query($redirect_params);
         }
        // Using x509 server
         if (

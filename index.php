@@ -106,7 +106,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     $redirect = Sanitizer::unsanitize($_GET['redirect'] ?? '');
     $anchor = Sanitizer::unsanitize($_GET['anchor'] ?? null);
 
-    Auth::checkAlternateAuthSystems(true, $redirect);
+    Auth::checkAlternateAuthSystems(true, $redirect, $anchor);
 
     $theme = $_SESSION['glpipalette'] ?? 'auror';
 
