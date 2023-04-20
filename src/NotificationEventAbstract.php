@@ -94,7 +94,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                  $notificationtarget->addForTarget($target, $options);
 
                 foreach ($notificationtarget->getTargets() as $users_infos) {
-
                     $user = new User();
                     //do not notify if explicitly refused by actor
                     if (isset($users_infos['users_id']) && $user->getFromDB($users_infos['users_id']) && $user->isRefusedNotificationMode($options['mode'])) {
