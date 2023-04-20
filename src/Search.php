@@ -6558,11 +6558,10 @@ JAVASCRIPT;
 
            /// TODO try to clean all specific cases using SpecificToDisplay
             switch ($table . '.' . $field) {
-                case "glpi_locations.completename":
-                case "glpi_groups.completename":
-                case "glpi_itilcategories.completename":
+                case $table . "completename":
                     if (
-                        $itemtype == Ticket::class // only for helpdesk
+                        $table != "glpi_entities" //handle later
+                        && $itemtype == Ticket::class // only for helpdesk
                         && $data[$ID][0]['name'] != null //column have value in DB
                         && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                     ) {
