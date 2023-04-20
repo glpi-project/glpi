@@ -1060,9 +1060,9 @@ class Search extends DbTestCase
             'is_deleted'   => 0,
             'criteria'     => [
                 [
-                    'field'      => 'view',
-                    'searchtype' => 'contains',
-                    'value'      => '',
+                    'field' => 'view',
+                    'link'  => 'contains',
+                    'value' => '',
                 ]
             ],
             'metacriteria' => [],
