@@ -6782,10 +6782,7 @@ JAVASCRIPT;
                         return $out;
                     } else if (($so["datatype"] ?? "") != "itemlink" && !empty($data[$ID][0]['name'])) {
                         $completename = $data[$ID][0]['name'];
-                        if (
-                            $itemtype == Ticket::class // only for helpdesk
-                            && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
-                        ) {
+                        if (!$_SESSION['glpiuse_flat_dropdowntree_on_search_result']) {
                             $split_name = explode(">", $data[$ID][0]['name']);
                             $entity_name = trim(end($split_name));
                             return Entity::badgeCompletename($entity_name, $completename);
