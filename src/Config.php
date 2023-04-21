@@ -1084,13 +1084,13 @@ class Config extends CommonDBTM
             echo "<td><label for='dropdown_use_flat_dropdowntree$rand'>" . __('Display the tree dropdown complete name in dropdown inputs') . "</label></td><td>";
             Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"], -1, ['rand' => $rand]);
             echo "</td>";
+
+            echo "<td><label for='dropdown_use_flat_dropdowntree_on_search_result$rand'>" . __('Display the tree dropdown complete name on search result') . "</label></td><td>";
+            Dropdown::showYesNo('use_flat_dropdowntree_on_search_result', $data["use_flat_dropdowntree_on_search_result"], -1, ['rand' => $rand]);
+            echo "</td>";
         } else {
             echo "<td colspan='2'>&nbsp;</td>";
         }
-
-        echo "<td><label for='dropdown_use_flat_dropdowntree_on_search_result$rand'>" . __('Display the tree dropdown complete name on search result') . "</label></td><td>";
-        Dropdown::showYesNo('use_flat_dropdowntree_on_search_result', $data["use_flat_dropdowntree_on_search_result"], -1, ['rand' => $rand]);
-        echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_2'>";
