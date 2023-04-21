@@ -1,0 +1,146 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+{% set save_action_id = "save_filters_" ~ rand %}
+{% set save_action_icon_id = "save_filters_icon" ~ rand %}
+{% set delete_action_id = "delete_filters_" ~ rand %}
+
+<button
+    id="{{ save_action_id }}"
+    class="btn btn-sm btn-primary me-1 {{ show_save ? "" : "d-none" }}"
+    type="submit"
+    name="save_filters"
+>
+    <i id="{{ save_action_icon_id }}" class="ti ti-device-floppy"></i>
+    <span class="d-none d-sm-block">{{ __("Save") }}</span>
+</button>
+
+<button
+    id="{{ delete_action_id }}"
+    class="btn btn-sm btn-outline-danger me-1 {{ show_delete ? "" : "d-none" }}"
+    name="delete_filters"
+>
+    <i id="{{ save_action_icon_id }}" class="ti ti-trash"></i>
+    <span class="d-none d-sm-block">{{ __("Delete") }}</span>
+</button>
+
+<script>
+    (function () {
+        // Save action
+        $("#{{ save_action_id }}").on("click", function(e) {
+            // Prevent form submit
+            e.preventDefault();
+
+            // Find form
+            const form = $("#{{ save_action_id }}").closest('form');
+
+            // Set loading icon and disable buttons
+            $("#{{ save_action_icon_id }}").removeClass('ti ti-device-floppy');
+            $("#{{ save_action_icon_id }}").addClass('fa-solid fa-spinner fa-spin');
+            $("#{{ save_action_id }}").prop('disabled', true);
+            $("#{{ delete_action_id }}").prop('disabled', true);
+
+            // Save results
+            const form_data = new FormData(form[0]);
+
+            // Add references to parent item, must be prefixed by "item_" because
+            // "itemtype" will already be set by the search's form
+            form_data.append('item_itemtype', "{{ itemtype }}");
+            form_data.append('item_items_id', {{ items_id }});
+
+            // Endpoint
+            form_data.append('action', "save_filter");
+
+            // Send data to backend
+            $.ajax({
+                type: "POST",
+                url: CFG_GLPI.root_doc + "/ajax/criteria_filter.php",
+                data: form_data,
+                processData: false, // Needed when using FormData object
+                contentType: false, // Needed when using FormData object
+            }).done(function() {
+                glpi_toast_info("{{ __("Filter saved") }}");
+
+                // Show delete button if it wasn't already enabled
+                $("#{{ delete_action_id }}").removeClass('d-none');
+
+                // Add badge to menu to hint that a filter have been set
+                const tab = $("a.nav-link[href*='CriteriaFilter']");
+                if (tab.find('span.badge').length == 0) {
+                    tab.append('<span class="badge">1</span>');
+                }
+            }).fail(function() {
+                glpi_toast_error("{{ __("Unable to save filter") }}");
+            }).always(function() {
+                // Restore original icon and button
+                $("#{{ save_action_icon_id }}").addClass('ti ti-device-floppy');
+                $("#{{ save_action_icon_id }}").removeClass('fa-solid fa-spinner fa-spin');
+                $("#{{ save_action_id }}").prop('disabled', false);
+                $("#{{ delete_action_id }}").prop('disabled', false);
+            });
+
+            // Trigger preview
+            form.find('button[name=search]').click();
+        });
+
+        // Delete action
+        $("#{{ delete_action_id }}").on("click", function(e) {
+            // Prevent form submit
+            e.preventDefault();
+
+            // Disable actions
+            $("#{{ save_action_id }}").prop('disabled', true);
+            $("#{{ delete_action_id }}").prop('disabled', true);
+
+            $.ajax({
+                type: "POST",
+                url: CFG_GLPI.root_doc + "/ajax/criteria_filter.php",
+                data: {
+                    'action': 'delete_filter',
+                    'itemtype': '{{ itemtype }}',
+                    'items_id': {{ items_id }},
+                },
+            }).done(function() {
+                // Reload page, easiest way to clear search UI
+                location.reload();
+            }).fail(function() {
+                // Restore actions
+                $("#{{ save_action_id }}").prop('disabled', false);
+                $("#{{ delete_action_id }}").prop('disabled', false);
+
+                glpi_toast_error("{{ __("Failed to delete filter") }}");
+            });
+        });
+    })();
+</script>

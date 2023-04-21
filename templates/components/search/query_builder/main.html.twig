@@ -35,6 +35,9 @@
 {% set mainform = mainform is not defined ? true : mainform %}
 {% set main_block_class = mainform ? '' : 'sub_criteria' %}
 {% set card_class = mainform ? 'search-form card card-sm mb-4' : 'border d-inline-block ms-1' %}
+{% set extra_actions_templates = p.extra_actions_templates|default([]) %}
+{% set hide_controls = p.hide_controls is defined and p.hide_controls %}
+{% set showmassiveactions = not p.showmassiveactions is defined or p.showmassiveactions %}
 
 {% if mainform and showaction %}
    <form name="searchform{{ normalized_itemtype }}" class="search-form-container" method="get" action="{{ p['target'] }}">
@@ -60,6 +63,11 @@
       {% if _get['savedsearches_id'] is defined %}
          <input type="hidden" name="savedsearches_id" value="{{ _get['savedsearches_id'] }}">
       {% endif %}
+
+      {# Keep track of display params affecting the results, they must be kept on refresh #}
+      <input type="hidden" name="params[hide_controls]" value="{{ hide_controls ? "1" : "0" }}">
+      <input type="hidden" name="params[showmassiveactions]" value="{{ showmassiveactions ? "1" : "0" }}">
+
       <div class="card-footer d-flex search_actions">
          <button id="addsearchcriteria{{ rand }}" class="btn btn-sm btn-outline-secondary me-1" type="button">
             <i class="ti ti-square-plus"></i>
@@ -93,6 +101,9 @@
                </a>
             {% endif %}
          {% endif %}
+         {% for template, params in extra_actions_templates %}
+            {% include template with params %}
+         {% endfor %}
       </div>
 
       {# TODO These tokens could be data attributes on the related elements #}

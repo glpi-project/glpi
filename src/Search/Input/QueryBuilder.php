@@ -39,6 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
+use Toolbox;
 
 final class QueryBuilder implements SearchInputInterface
 {
@@ -54,8 +55,6 @@ final class QueryBuilder implements SearchInputInterface
      **/
     public static function showGenericSearch($itemtype, array $params)
     {
-        global $CFG_GLPI;
-
         // Default values of parameters
         $p['sort']         = '';
         $p['is_deleted']   = 0;
@@ -68,25 +67,27 @@ final class QueryBuilder implements SearchInputInterface
         } else {
             $p['target']       = \Toolbox::getItemTypeSearchURL($itemtype);
         }
-        $p['showreset']    = true;
-        $p['showbookmark'] = true;
-        $p['showfolding']  = true;
-        $p['mainform']     = true;
-        $p['prefix_crit']  = '';
-        $p['addhidden']    = [];
-        $p['showaction']   = true;
-        $p['actionname']   = 'search';
-        $p['actionvalue']  = _sx('button', 'Search');
-        $p['unpublished'] = 1;
+        $p['showreset']                     = true;
+        $p['showbookmark']                  = true;
+        $p['showfolding']                   = true;
+        $p['mainform']                      = true;
+        $p['prefix_crit']                   = '';
+        $p['addhidden']                     = [];
+        $p['showaction']                    = true;
+        $p['actionname']                    = 'search';
+        $p['actionvalue']                   = _sx('button', 'Search');
+        $p['unpublished']                   = 1;
+        $p['hide_controls']                 = false;
+        $p['showmassiveactions']            = true;
+        $p['extra_actions_templates']       = [];
 
         foreach ($params as $key => $val) {
             $p[$key] = $val;
         }
 
         // Itemtype name used in JS function names, etc
-        $normalized_itemtype = strtolower(str_replace('\\', '', $itemtype));
+        $normalized_itemtype = Toolbox::getNormalizedItemtype($itemtype);
         $linked = SearchEngine::getMetaItemtypeAvailable($itemtype);
-
 
         TemplateRenderer::getInstance()->display('components/search/query_builder/main.html.twig', [
             'mainform'            => $p['mainform'],
@@ -150,8 +151,7 @@ final class QueryBuilder implements SearchInputInterface
             unset($tmp);
         }
 
-        $rands = -1;
-        $normalized_itemtype = strtolower(str_replace('\\', '', $request["itemtype"]));
+        $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
         $dropdownname = \Html::cleanId("spansearchtype$fieldname" .
             $normalized_itemtype .
             $prefix .
@@ -342,9 +342,8 @@ final class QueryBuilder implements SearchInputInterface
         $p           = $request['p'];
         $options     = \Search::getCleanedOptions($request["itemtype"]);
         $randrow     = mt_rand();
-        $normalized_itemtype = strtolower(str_replace('\\', '', $request["itemtype"]));
+        $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
         $rowid       = 'searchrow' . $normalized_itemtype . $randrow;
-        $addclass    = $num == 0 ? ' headerRow' : '';
         $prefix      = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
         $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
         $criteria    = [];
@@ -473,6 +472,7 @@ final class QueryBuilder implements SearchInputInterface
             'num'         => $num,
             'itemtype'    => $itemtype,
             'linked'      => $linked,
+            'p'           => $p,
         ]);
     }
 

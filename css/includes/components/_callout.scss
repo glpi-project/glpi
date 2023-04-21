@@ -1,4 +1,4 @@
-/**
+/*!
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,31 +31,54 @@
  * ---------------------------------------------------------------------
  */
 
-// Explicitly bind to window so Jest tests work properly
-window.GLPI = window.GLPI || {};
-window.GLPI.Search = window.GLPI.Search || {};
+/**
+ * Callouts used by bootstrap 4 in their documentation
+ * Quick and easy way to make some text pop off
+ */
 
-window.GLPI.Search.ResultsView = class ResultsView {
+.callout {
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #eee;
+    border-left-width: 0.25rem;
+    border-radius: 0.25rem;
 
-    constructor(element_id, view_class, push_history = true) {
-        this.element_id = element_id;
-
-        if (this.getElement()) {
-            this.getAJAXContainer().data('js_class', this);
-            this.view = new view_class(this.element_id, push_history);
-        }
+    h2 {
+        margin-top: 0;
+        margin-bottom: 0.25rem;
     }
 
-    getElement() {
-        return $('#'+this.element_id);
+    p:last-child {
+        margin-bottom: 0;
     }
 
-    getAJAXContainer() {
-        return this.getElement().closest('div.ajax-container.search-display-data');
+    code {
+        border-radius: 0.25rem;
     }
+}
 
-    getView() {
-        return this.view;
+.callout + .callout {
+    margin-top: -0.25rem;
+}
+
+// Variations
+@mixin bs-callout-variant($color) {
+    border-left-color: $color;
+
+    h2 {
+        color: $color;
     }
-};
-export default window.GLPI.Search.ResultsView;
+}
+
+.callout-info {
+    @include bs-callout-variant($info);
+}
+
+.callout-warning {
+    @include bs-callout-variant($warning);
+}
+
+.callout-danger {
+    @include bs-callout-variant($danger);
+}

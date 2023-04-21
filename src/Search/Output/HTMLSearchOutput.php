@@ -122,7 +122,9 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             'href'                => $href,
             'prehref'             => $prehref,
             'posthref'            => $globallinkto,
-            'showmassiveactions'  => ($search['showmassiveactions'] ?? true)
+            'push_history'        => $params['push_history'] ?? true,
+            'hide_controls'       => $params['hide_controls'] ?? false,
+            'showmassiveactions'  => ($params['showmassiveactions'] ?? $search['showmassiveactions'] ?? true)
                 && $data['display_type'] != \Search::GLOBAL_SEARCH
                 && ($itemtype == \AllAssets::getType()
                     || count(\MassiveAction::getAllMassiveActions($item, $is_deleted))

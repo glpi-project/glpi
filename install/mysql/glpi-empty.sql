@@ -9484,4 +9484,16 @@ CREATE TABLE `glpi_validatorsubstitutes` (
   KEY `users_id_substitute` (`users_id_substitute`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_searches_criteriafilters`;
+CREATE TABLE `glpi_searches_criteriafilters` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) DEFAULT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `search_itemtype` varchar(255) DEFAULT NULL,
+  `search_criteria` longtext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `item` (`itemtype`, `items_id`),
+  KEY `search_itemtype` (`search_itemtype`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;

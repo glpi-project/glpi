@@ -33,11 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\FilterableInterface;
+use Glpi\Search\FilterableTrait;
+
 /**
  * Notification Class
  **/
-class Notification extends CommonDBTM
+class Notification extends CommonDBTM implements FilterableInterface
 {
+    use FilterableTrait;
+
    // MAILING TYPE
    //Notification to a user (sse mailing users type below)
     const USER_TYPE             = 1;
@@ -140,13 +145,31 @@ class Notification extends CommonDBTM
 
     public static $rightname = 'notification';
 
+    // Filterable implementation
+    public function getItemtypeToFilter(): string
+    {
+        return $this->fields['itemtype'];
+    }
 
+    public function getItemtypeField(): string
+    {
+        return 'itemtype';
+    }
+
+    public function getInfoTitle(): string
+    {
+        return __("Notification target filter");
+    }
+
+    public function getInfoDescription(): string
+    {
+        return __("Notifications will only be sent for items that match the defined filter.");
+    }
 
     public static function getTypeName($nb = 0)
     {
         return _n('Notification', 'Notifications', $nb);
     }
-
 
     /**
      *  @see CommonGLPI::getMenuContent()
@@ -193,15 +216,26 @@ class Notification extends CommonDBTM
 
     public function defineTabs($options = [])
     {
+        // Get parents tabs
+        $parent_tabs = parent::defineTabs();
 
-        $ong = [];
-        $this->addDefaultFormTab($ong);
-        $this->addImpactTab($ong, $options);
-        $this->addStandardTab('Notification_NotificationTemplate', $ong, $options);
-        $this->addStandardTab('NotificationTarget', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        // Main tab shoud be first, then the most relevants tabs, then inherited common tabs and finish with the history
+        $tabs = [
+            // Main tab retrieved from parents
+            array_keys($parent_tabs)[0] => array_shift($parent_tabs)
+        ];
 
-        return $ong;
+        // Most relevant tabs first
+        $this->addStandardTab('Notification_NotificationTemplate', $tabs, $options);
+        $this->addStandardTab('NotificationTarget', $tabs, $options);
+
+        // Add common tabs
+        $tabs = array_merge($tabs, $parent_tabs);
+
+        // Keep log at the end
+        $this->addStandardTab('Log', $tabs, $options);
+
+        return $tabs;
     }
 
 
