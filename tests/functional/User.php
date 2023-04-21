@@ -328,7 +328,7 @@ class User extends \DbTestCase
             'is_deleted'   => 0,
             'entities_id'  => 0,
             'profiles_id'  => 0,
-            'allow_notifications_type' => exportArrayToDB([\Notification_NotificationTemplate::MODE_ALL]),
+            'allow_notifications_type' => null,
         ];
         $this->array($user->prepareInputForAdd($input))->isEqualTo($expected);
 
@@ -369,7 +369,7 @@ class User extends \DbTestCase
             'is_deleted'   => 0,
             'entities_id'  => 0,
             'profiles_id'  => 0,
-            'allow_notifications_type' => exportArrayToDB([\Notification_NotificationTemplate::MODE_ALL]),
+            'allow_notifications_type' => null,
         ];
         $this->array($user->prepareInputForAdd($input))->isEqualTo($expected);
 
@@ -396,7 +396,7 @@ class User extends \DbTestCase
             'is_deleted'           => 0,
             'entities_id'          => 0,
             'profiles_id'          => 0,
-            'allow_notifications_type' => exportArrayToDB([\Notification_NotificationTemplate::MODE_ALL]),
+            'allow_notifications_type' => null,
         ];
         $this->array($user->prepareInputForAdd($input))->isEqualTo($expected);
     }

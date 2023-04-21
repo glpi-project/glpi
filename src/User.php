@@ -708,9 +708,12 @@ class User extends CommonDBTM
             $input["auths_id"] = 0;
         }
 
-        if (!isset($input["allow_notifications_type"])) {
-            $input["allow_notifications_type"] = exportArrayToDB([Notification_NotificationTemplate::MODE_ALL]);
+        if (isset($input['allow_notifications_type']) && is_array($input['allow_notifications_type']) && count($input['allow_notifications_type'])) {
+            $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
+        } else {
+            $input["allow_notifications_type"] = null;
         }
+
 
         // Check if user does not exists
         $iterator = $DB->request([
@@ -1047,10 +1050,13 @@ class User extends CommonDBTM
             $input['api_token_date'] = $_SESSION['glpi_currenttime'];
         }
 
-        if (isset($input['allow_notifications_type']) && is_array($input['allow_notifications_type']) && count($input['allow_notifications_type'])) {
-            $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
-        } else {
-            $input["allow_notifications_type"] = exportArrayToDB([]);
+
+        if (isset($input["_allow_notifications_types"])) {
+            if (isset($input['allow_notifications_type']) && is_array($input['allow_notifications_type']) && count($input['allow_notifications_type'])) {
+                $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
+            } else {
+                $input["allow_notifications_type"] = exportArrayToDB([]);
+            }
         }
 
         // Manage preferences fields
@@ -7065,7 +7071,14 @@ JAVASCRIPT;
      */
     public function isRefusedNotificationMode(string $mode): bool
     {
-        $user_pref = importArrayFromDB($this->fields['allow_notifications_type']);
+        global $CFG_GLPI;
+
+        $user_pref = $this->fields['allow_notifications_type'];
+        if ($this->fields['allow_notifications_type'] == null) {
+            $user_pref = $CFG_GLPI['allow_notifications_type'];
+        }
+
+        $user_pref = importArrayFromDB($user_pref);
         if (in_array(Notification_NotificationTemplate::MODE_ALL, $user_pref)) {
             return false;
         } else {

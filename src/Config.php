@@ -1455,6 +1455,7 @@ JAVASCRIPT
                 'from'   => 'core'
             ]
         ];
+        echo "<input type='hidden' name='_allow_notifications_types' value='1'>";
         Notification_NotificationTemplate::dropdownMode([
             'values' => importArrayFromDB($data['allow_notifications_type']),
             'name' => 'allow_notifications_type',
