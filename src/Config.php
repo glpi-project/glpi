@@ -1089,7 +1089,7 @@ class Config extends CommonDBTM
             Dropdown::showYesNo('use_flat_dropdowntree_on_search_result', $data["use_flat_dropdowntree_on_search_result"], -1, ['rand' => $rand]);
             echo "</td>";
         } else {
-            echo "<td colspan='2'>&nbsp;</td>";
+            echo "<td colspan='4'>&nbsp;</td>";
         }
         echo "</tr>";
 
