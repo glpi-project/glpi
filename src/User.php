@@ -1048,7 +1048,7 @@ class User extends CommonDBTM
         }
 
         if (!isset($input["allow_notifications_type"])) {
-            $input["allow_notifications_type"] = exportArrayToDB([]);
+            $input["allow_notifications_type"] = null;
         } else {
             $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
         }

@@ -46,16 +46,7 @@ if (!$DB->fieldExists(\User::getTable(), 'allow_notifications_type')) {
         Notification_NotificationTemplate::MODE_ALL
     ];
 
-    $migration->addField(
-        \User::getTable(),
-        'allow_notifications_type',
-        "text",
-        [
-            'value' => '',
-            'update' => $DB->quote(exportArrayToDB($mode))
-        ]
-    );
-
+    $migration->addField('glpi_users', 'allow_notifications_type', 'text DEFAULT NULL');
     $migration->addConfig(['allow_notifications_type' => exportArrayToDB($mode)]);
 
     /** /Notification type config */
