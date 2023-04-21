@@ -1081,7 +1081,7 @@ class Config extends CommonDBTM
 
         echo "<tr class='tab_bg_2'>";
         if ($oncentral) {
-            echo "<td><label for='dropdown_use_flat_dropdowntree$rand'>" . __('Display the complete name in tree dropdowns') . "</label></td><td>";
+            echo "<td><label for='dropdown_use_flat_dropdowntree$rand'>" . __('Display the tree dropdown complete name in dropdown inputs') . "</label></td><td>";
             Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"], -1, ['rand' => $rand]);
             echo "</td>";
         } else {
