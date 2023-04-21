@@ -1088,6 +1088,12 @@ class Config extends CommonDBTM
             echo "<td colspan='2'>&nbsp;</td>";
         }
 
+        echo "<td><label for='dropdown_use_flat_dropdowntree_on_search_result$rand'>" . __('Display the tree dropdown complete name on search result') . "</label></td><td>";
+        Dropdown::showYesNo('use_flat_dropdowntree_on_search_result', $data["use_flat_dropdowntree_on_search_result"], -1, ['rand' => $rand]);
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_2'>";
         if (
             !$userpref
             || ($CFG_GLPI['show_count_on_tabs'] != -1)
@@ -1402,12 +1408,6 @@ class Config extends CommonDBTM
             echo "</tr></table>";
 
             echo "</td></tr>";
-
-            echo "<tr class='tab_bg_2'>";
-            echo "<td><label for='dropdown_use_flat_dropdowntree_on_search_result$rand'>" . __('Display the tree dropdown complete name on search results') . "</label></td><td>";
-            Dropdown::showYesNo('use_flat_dropdowntree_on_search_result', $data["use_flat_dropdowntree_on_search_result"], -1, ['rand' => $rand]);
-            echo "</td>";
-            echo "</tr>";
         }
 
         echo "<tr><th colspan='4'>" . __('Due date progression') . "</th></tr>";
