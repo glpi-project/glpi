@@ -6780,7 +6780,6 @@ JAVASCRIPT;
                     }
                     break;
                 case $table . ".completename":
-                    Toolbox::logDebug($table . ".completename");
                     if (
                         $itemtype = getItemTypeForTable($table)
                         && $data[$ID][0]['name'] != null //column have value in DB
