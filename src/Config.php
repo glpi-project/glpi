@@ -172,10 +172,7 @@ class Config extends CommonDBTM
         }
 
         if (!isset($input["allow_notifications_type"])) {
-            $mode = [
-                Notification_NotificationTemplate::MODE_ALL,
-            ];
-            $input["allow_notifications_type"] = exportArrayToDB($mode);
+            $input["allow_notifications_type"] = exportArrayToDB([]);
         } else {
             $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
         }
@@ -315,6 +312,8 @@ class Config extends CommonDBTM
                 $input['2fa_grace_date_start'] = null;
             }
         }
+
+        Toolbox::logError($input);
         $this->setConfigurationValues('core', $input);
 
         return false;
@@ -1451,9 +1450,6 @@ JAVASCRIPT
         echo "<tr class='tab_bg_2'>";
         echo "<td>" . __("Receive notifications from GLPI") . "</td><td>";
 
-        $data['allow_notifications_type'] = importArrayFromDB($data['allow_notifications_type']);
-        echo "<input type='hidden' name='_allow_notifications_types' value='1'>";
-
         $CFG_GLPI['notifications_modes'] = [
             Notification_NotificationTemplate::MODE_ALL => [
                 'label'  => __('All'),
@@ -1461,7 +1457,7 @@ JAVASCRIPT
             ]
         ];
         Notification_NotificationTemplate::dropdownMode([
-            'values' => $data['allow_notifications_type'],
+            'values' => importArrayFromDB($data['allow_notifications_type']),
             'name' => 'allow_notifications_type',
             'multiple' => true
         ]);
