@@ -6781,7 +6781,7 @@ JAVASCRIPT;
                     break;
                 case $table . ".completename":
                     if (
-                        $itemtype = getItemTypeForTable($table)
+                        $itemtype != getItemTypeForTable($table)
                         && $data[$ID][0]['name'] != null //column have value in DB
                         && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                     ) {
