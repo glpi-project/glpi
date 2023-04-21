@@ -211,7 +211,12 @@ class Ticket extends CommonITILObject
     {
         $ticket = new Ticket();
         if ($ticket->getFromDB($ticket_id)) {
-            if ($ticket->canAssignToMe()) {
+            $ticket_user = new \Ticket_User();
+            $ticket_user = $ticket_user->find([
+                'tickets_id' => $ticket_id,
+                'users_id'   => $user_id,
+            ]);
+            if (!count($ticket_user) && $ticket->canAssignToMe()) {
                 $ticket->update([
                     'id' => $ticket_id,
                     '_users_id_assign' => $user_id

@@ -410,7 +410,7 @@ class ITILFollowup extends CommonDBChild
 
         $itemtype = $input['itemtype'];
 
-        if ($itemtype == 'Ticket' && $_SESSION['glpiset_followup_tech']) {
+        if ($itemtype == 'Ticket' && $_SESSION['glpiset_followup_tech'] && !$input['is_private']) {
             Ticket::assignToMe($this->input["items_id"], $input["users_id"]);
         }
 
