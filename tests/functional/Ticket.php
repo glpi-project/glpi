@@ -5725,8 +5725,11 @@ HTML
         $this->login();
         $entity_id = 0;
 
-        //create a ticket
         $ticket = new \Ticket();
+        $fup = new \ITILFollowup();
+        $sol = new \ITILSolution();
+
+        //create a ticket
         $ticket_id = $ticket->add([
             'name'                  => __METHOD__,
             'content'               => __METHOD__,
@@ -5736,15 +5739,13 @@ HTML
         ]);
         $this->integer($ticket_id)->isGreaterThan(0);
 
+        //add a followup to the ticket without assigning to me (tech)
+        $this->login('tech', 'tech');
         $_SESSION['glpiset_followup_tech'] = 0;
-
-        //add a followup to the ticket without assigning to me
-        $fup = new \ITILFollowup();
         $this->integer(
             (int)$fup->add([
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
-                'users_id'  => getItemByTypeName('User', 'tech', true),
                 'content'   => 'A simple followup'
             ])
         )->isGreaterThan(0);
@@ -5753,15 +5754,12 @@ HTML
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->array($actors)->hasSize(0);
 
+        //add a private followup to the ticket and NOT assign to me (tech)
         $_SESSION['glpiset_followup_tech'] = 1;
-
-        //add a private followup to the ticket and NOT assign to me
-        $fup = new \ITILFollowup();
         $this->integer(
             (int)$fup->add([
                 'itemtype'      => 'Ticket',
                 'items_id'      => $ticket_id,
-                'users_id'      => getItemByTypeName('User', 'tech', true),
                 'content'       => 'A simple followup',
                 'is_private'    => 1
             ])
@@ -5771,13 +5769,11 @@ HTML
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->array($actors)->hasSize(0);
 
-        //add a followup to the ticket and assign to me
-        $fup = new \ITILFollowup();
+        //add a followup to the ticket and assign to me (tech)
         $this->integer(
             (int)$fup->add([
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
-                'users_id'  => getItemByTypeName('User', 'tech', true),
                 'content'   => 'A simple followup'
             ])
         )->isGreaterThan(0);
@@ -5786,15 +5782,13 @@ HTML
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->array($actors)->hasSize(1);
 
-        $_SESSION['glpiset_solution_tech'] = 1;
-
         //add a solution to the ticket and assign to me
-        $sol = new \ITILSolution();
+        $this->login('glpi', 'glpi');
+        $_SESSION['glpiset_solution_tech'] = 1;
         $this->integer(
             (int)$sol->add([
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
-                'users_id'  => getItemByTypeName('User', 'glpi', true),
                 'content'   => 'A simple solution'
             ])
         )->isGreaterThan(0);
@@ -5813,15 +5807,13 @@ HTML
         ]);
         $this->integer($ticket_id)->isGreaterThan(0);
 
-        $_SESSION['glpiset_solution_tech'] = 0;
-
         //add a solution to the ticket without assigning to me
-        $sol = new \ITILSolution();
+        $this->login('tech', 'tech');
+        $_SESSION['glpiset_solution_tech'] = 0;
         $this->integer(
             (int)$sol->add([
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
-                'users_id'  => getItemByTypeName('User', 'tech', true),
                 'content'   => 'A simple solution'
             ])
         )->isGreaterThan(0);
@@ -5844,24 +5836,24 @@ HTML
         $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
         $this->array($actors)->hasSize(1);
 
-        $_SESSION['glpiset_followup_tech'] = 1;
-
         //add a followup to the ticket without assigning to me
-        $fup = new \ITILFollowup();
+        $this->login('glpi', 'glpi');
+        $_SESSION['glpiset_followup_tech'] = 1;
         $this->integer(
             (int)$fup->add([
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
-                'users_id'  => getItemByTypeName('User', 'glpi', true),
                 'content'   => 'A simple followup'
             ])
         )->isGreaterThan(0);
 
+        //add a followup to the ticket without assigning to me
+        $this->login('tech', 'tech');
+        $_SESSION['glpiset_followup_tech'] = 1;
         $this->integer(
             (int)$fup->add([
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
-                'users_id'  => getItemByTypeName('User', 'tech', true),
                 'content'   => 'A simple followup'
             ])
         )->isGreaterThan(0);
@@ -5870,15 +5862,13 @@ HTML
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->array($actors)->hasSize(0);
 
-        $_SESSION['glpiset_solution_tech'] = 1;
-
         //add a solution to the ticket without assigning to me
-        $sol = new \ITILSolution();
+        $this->login('glpi', 'glpi');
+        $_SESSION['glpiset_solution_tech'] = 1;
         $this->integer(
             (int)$sol->add([
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
-                'users_id'  => getItemByTypeName('User', 'glpi', true),
                 'content'   => 'A simple solution'
             ])
         )->isGreaterThan(0);
