@@ -1190,6 +1190,9 @@ class Ticket extends CommonITILObject
                 $input_key = '_' . $field . '_' . $t;
                 $deleted_key = $input_key . '_deleted';
                 $deleted_actors = array_key_exists($deleted_key, $input) && is_array($input[$deleted_key]) ? array_column($input[$deleted_key], 'items_id') : [];
+                if (!is_array($input[$input_key] ?? [])) {
+                    $input[$input_key] = [$input[$input_key]];
+                }
                 $added_actors = array_diff($input[$input_key] ?? [], array_column($actors, $field));
                 if (empty($added_actors) && empty($deleted_actors)) {
                     $unchanged[] = $input_key;
