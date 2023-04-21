@@ -313,7 +313,6 @@ class Config extends CommonDBTM
             }
         }
 
-        Toolbox::logError($input);
         $this->setConfigurationValues('core', $input);
 
         return false;
