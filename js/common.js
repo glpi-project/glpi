@@ -37,6 +37,21 @@
 
 var timeoutglobalvar;
 
+if (navigator.userAgent.indexOf('AppleWebKit') !== -1) {
+    // Workaround for select2 dropdownAutowidth not applying until the second time the dropdown is opened
+    // See: https://github.com/glpi-project/glpi/issues/13433 and https://github.com/select2/select2/issues/4678
+    const original_select2_fn = $.fn.select2;
+    $.fn.select2 = function (options) {
+        const result = original_select2_fn.apply(this, arguments);
+        if (typeof options === 'object') {
+            // open and close the dropdown after initialization
+            this.select2('open');
+            this.select2('close');
+        }
+        return result;
+    };
+}
+
 /**
  * modifier la propriete display d'un element
  *
