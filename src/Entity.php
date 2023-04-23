@@ -1250,6 +1250,20 @@ class Entity extends CommonTreeDropdown
         ];
 
         $tab[] = [
+            'id'                 => '71',
+            'table'              => self::getTable(),
+            'field'              => 'contracts_id_default',
+            'name'               => __('Default contract'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'additionalfields'   => ['contracts_strategy_default'],
+            'toadd'              => [
+                self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                self::CONFIG_AUTO   => __('Contract in ticket entity'),
+            ]
+        ];
+
+        $tab[] = [
             'id'                 => 'assets',
             'name'               => _n('Asset', 'Assets', Session::getPluralNumber())
         ];
@@ -3724,6 +3738,17 @@ class Entity extends CommonTreeDropdown
                     return __('No automatic transfer');
                 }
                 return Dropdown::getDropdownName('glpi_transfers', $values[$field]);
+
+            case 'contracts_id_default':
+                $strategy = $values['contracts_strategy_default'] ?? $values[$field];
+                if ($strategy === self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                }
+                if ($strategy === self::CONFIG_AUTO) {
+                    return __('Contract in ticket entity');
+                }
+
+                return Dropdown::getDropdownName(Contract::getTable(), $values[$field]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
