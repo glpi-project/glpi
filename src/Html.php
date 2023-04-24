@@ -5003,7 +5003,7 @@ JAVASCRIPT
         }
 
         if (!isset($options['alt'])) {
-            $options['alt'] = $options['title'];
+            $options['alt'] = Html::resume_text($options['title'], 30);
         }
 
         if (
