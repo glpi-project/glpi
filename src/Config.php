@@ -1085,7 +1085,7 @@ class Config extends CommonDBTM
             Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"], -1, ['rand' => $rand]);
             echo "</td>";
 
-            echo "<td><label for='dropdown_use_flat_dropdowntree_on_search_result$rand'>" . __('Display the tree dropdown complete name on search result') . "</label></td><td>";
+            echo "<td><label for='dropdown_use_flat_dropdowntree_on_search_result$rand'>" . __('Display the complete name of tree dropdown in search results') . "</label></td><td>";
             Dropdown::showYesNo('use_flat_dropdowntree_on_search_result', $data["use_flat_dropdowntree_on_search_result"], -1, ['rand' => $rand]);
             echo "</td>";
             echo "</tr>";
