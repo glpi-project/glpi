@@ -64,6 +64,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 - `chartist` library has been replaced by `echarts`.
 - `codemirror` library has been upgraded to version 6.x.
+- `htmLawed` library has been replaced by `symfony/html-sanitizer`.
 - `monolog/monolog` has been upgraded to version 3.3.
 - `photoswipe` library has been upgraded to version 5.x.
 - `phpmailer/phpmailer` library has been replaced by `symfony/mailer`.
@@ -159,6 +160,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\DataDirectoriesProtectedPath` class.
 - `Glpi\System\Requirement\ProtectedWebAccess` class.
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
+- `Html::clean()`
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
@@ -174,6 +176,7 @@ The present file will list all changes made to the project; according to the
 - `Search::sylk_clean()`
 - `Toolbox::canUseCas()`
 - `Toolbox::clean_cross_side_scripting_deep()`
+- `Toolbox::getHtmLawedSafeConfig()`
 - `Toolbox::getHtmlToDisplay()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `XML` class.

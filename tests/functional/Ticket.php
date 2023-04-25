@@ -3567,7 +3567,7 @@ class Ticket extends DbTestCase
                 $instance = new \Ticket();
                 $instance->showForm('-1');
             }
-        )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
+        )->contains('src&amp;#61;&amp;#34;data:image/png;base64,' . str_replace(['+', '='], ['&amp;#43;', '&amp;#61;'], $base64Image) . '&amp;#34;');
     }
 
     public function testScreenshotConvertedIntoDocument()

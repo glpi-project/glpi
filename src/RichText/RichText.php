@@ -38,7 +38,8 @@ namespace Glpi\RichText;
 use Document;
 use Html;
 use Html2Text\Html2Text;
-use Toolbox;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 final class RichText
 {
@@ -61,22 +62,9 @@ final class RichText
 
         $content = self::normalizeHtmlContent($content);
 
-       // Remove unsafe HTML using htmLawed
-        $config = Toolbox::getHtmLawedSafeConfig();
-        $config['keep_bad'] = 6; // remove invalid/disallowed tag but keep content intact
-        $content = htmLawed($content, $config);
+        $content = self::getHtmlSanitizer()->sanitize($content);
 
-       // Special case : remove the 'denied:' for base64 img in case the base64 have characters
-       // combinaison introduce false positive
-        foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
-            $content = str_replace(
-                sprintf('src="denied:data:image/%s;base64,', $imgtype),
-                sprintf('src="data:image/%s;base64,', $imgtype),
-                $content
-            );
-        }
-
-       // Remove extra lines
+        // Remove extra lines
         $content = trim($content, "\r\n");
 
         if ($encode_output_entities) {
@@ -115,7 +103,7 @@ final class RichText
             } else {
                 $options = ['width' => 0];
 
-               // Convert domain relative links to absolute links
+                // Convert domain relative links to absolute links
                 $content = preg_replace(
                     '/((?:href|src)=[\'"])(\/[^\/].*)([\'"])/',
                     '$1' . $CFG_GLPI['url_base'] . '$2$3',
@@ -137,20 +125,17 @@ final class RichText
             };
             $content = $html->getText();
         } else {
-           // Remove HTML tags using htmLawed
-            $config = Toolbox::getHtmLawedSafeConfig();
-            $config['elements'] = 'none';
-            $config['keep_bad'] = 6; // remove invalid/disallowed tag but keep content intact
-            $content = htmLawed($content, $config);
+            // Remove HTML tags
+            $content = strip_tags($content);
 
-           // Remove supernumeraries whitespaces chars
+            // Remove supernumeraries whitespaces chars
             $content = preg_replace('/\s+/', ' ', trim($content));
 
-           // Content is no more considered as HTML, decode its entities
+            // Content is no more considered as HTML, decode its entities
             $content = Html::entity_decode_deep($content);
         }
 
-       // Remove extra lines
+        // Remove extra lines
         $content = trim($content, "\r\n");
 
         if ($encode_output_entities) {
@@ -170,7 +155,7 @@ final class RichText
     public static function isRichTextHtmlContent(string $content): bool
     {
         $html_tags = [
-         // Most common inlined tag (handle manual HTML input, usefull for $CFG_GLPI['text_login'])
+            // Most common inlined tag (handle manual HTML input, usefull for $CFG_GLPI['text_login'])
             'a',
             'b',
             'em',
@@ -179,11 +164,11 @@ final class RichText
             'span',
             'strong',
 
-         // Content separators
+            // Content separators
             'br',
             'hr',
 
-         // Main blocks
+            // Main blocks
             'blockquote',
             'div',
             'h1',
@@ -210,10 +195,10 @@ final class RichText
     private static function normalizeHtmlContent(string $content)
     {
         if (self::isRichTextHtmlContent($content)) {
-           // Remove contentless HTML tags
-           // Remove also surrounding spaces:
-           // - only horizontal spacing chars leading the tag in its line (\h*),
-           // - any spacing char that follow the tag unless they are preceded by a newline (\s*\n+?).
+            // Remove contentless HTML tags
+            // Remove also surrounding spaces:
+            // - only horizontal spacing chars leading the tag in its line (\h*),
+            // - any spacing char that follow the tag unless they are preceded by a newline (\s*\n+?).
             $leading_spaces = '\h*';
             $following_spaces = '\s*\n+?';
             $content = preg_replace(
@@ -227,19 +212,19 @@ final class RichText
                 $content
             );
         } else {
-           // If content is not rich text content, convert it to HTML.
-           // Required to correctly render content that came:
-           // - from "simple text mode" from GLPI prior to 9.4.0;
-           // - from a basic textarea;
-           // - from an external input (API, CalDAV client, ...).
+            // If content is not rich text content, convert it to HTML.
+            // Required to correctly render content that came:
+            // - from "simple text mode" from GLPI prior to 9.4.0;
+            // - from a basic textarea;
+            // - from an external input (API, CalDAV client, ...).
 
             if (preg_match('/(<|>)/', $content)) {
-               // Input was not HTML, and special chars were not saved as HTML entities.
-               // We have to encode them into HTML entities.
+                // Input was not HTML, and special chars were not saved as HTML entities.
+                // We have to encode them into HTML entities.
                 $content = Html::entities_deep($content);
             }
 
-           // Plain text line breaks have to be transformed into <br /> tags.
+            // Plain text line breaks have to be transformed into <br /> tags.
             $content = '<p>' . nl2br($content) . '</p>';
         }
 
@@ -268,7 +253,7 @@ final class RichText
 
         $content_size = strlen($content);
 
-       // Sanitize content first (security and to decode HTML entities)
+        // Sanitize content first (security and to decode HTML entities)
         $content = self::getSafeHtml($content);
 
         if ($p['user_mentions']) {
@@ -468,5 +453,83 @@ JAVASCRIPT;
         $out .= Html::scriptBlock($js);
 
         return $out;
+    }
+
+    private static function getHtmlSanitizer(): HtmlSanitizer
+    {
+        $config = (new HtmlSanitizerConfig())
+            ->allowSafeElements()
+            ->allowLinkSchemes([
+                'aim',
+                'app',
+                'feed',
+                'file',
+                'ftp',
+                'gopher',
+                'http',
+                'https',
+                'irc',
+                'mailto',
+                'news',
+                'nntp',
+                'sftp',
+                'ssh',
+                'tel',
+                'telnet',
+                'notes',
+            ])
+            ->allowRelativeLinks()
+            ->allowRelativeMedias()
+            ->withMaxInputLength(pow(2, 24)) // 2^24 corresponds to MySQL MEDIUMTEXT max length
+        ;
+
+        // Block some elements (tag is removed but contents is preserved)
+        $blocked_elements = [
+            'html',
+            'body',
+
+            // form elements
+            'form',
+            'button',
+            'input',
+            'select',
+            'datalist',
+            'option',
+            'optgroup',
+            'textarea',
+        ];
+        foreach ($blocked_elements as $blocked_element) {
+            $config = $config->blockElement($blocked_element);
+        }
+
+        // Drop some elements (tag and contents are removed)
+        $dropped_elements = [
+            'head',
+            'script',
+
+            // header elements used to link external resources
+            'link',
+            'meta',
+
+            // elements used to embed potential malicious external application
+            'applet',
+            'canvas',
+            'embed',
+            'object',
+        ];
+        foreach ($dropped_elements as $dropped_element) {
+            $config = $config->dropElement($dropped_element);
+        }
+
+        // Allow styling attributes
+        foreach (['style', 'height', 'width'] as $allowed_attribute) {
+            $config = $config->allowAttribute($allowed_attribute, '*');
+        }
+
+        if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
+            $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');
+        }
+
+        return new HtmlSanitizer($config);
     }
 }

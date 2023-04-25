@@ -94,7 +94,7 @@ class TemplateManager extends GLPITestCase
             [
                 'content'   => "<p>Test HTML template {% if count > 5 %}<b>++</b>{% endif %}</p>",
                 'params'    => ['count' => 25],
-                'expected'  => "<p>Test HTML template <b>++</b></p>",
+                'expected'  => "<p>Test HTML template <b>&#43;&#43;</b></p>",
                 'error'     => null,
             ],
             [

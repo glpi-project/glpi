@@ -552,7 +552,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]))->isTrue();
 
         $this->integer((int)$itilSolution->getID())->isGreaterThan(0);
-        $this->string($itilSolution->fields['content'])->isEqualTo("<p>content of solution template  white ' quote</p>");
+        $this->string($itilSolution->fields['content'])->isEqualTo("<p>content of solution template  white &#039; quote</p>");
 
         //reload and check ITIL Object status
         $itil->getFromDB($itil_id);
