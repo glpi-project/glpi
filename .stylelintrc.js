@@ -39,7 +39,6 @@ module.exports = {
         "css/lib/**/*",
     ],
     "rules": {
-        "indentation": 4,
         "max-line-length": null,
 
         // DISABLED pure naming rules, no functional impact
@@ -51,6 +50,7 @@ module.exports = {
         // DISABLED pure coding style rules, no functional impact
         "color-function-notation": null, // DISABLE: Expected modern color-function notation
         "declaration-block-no-redundant-longhand-properties": null, // DISABLE Expected shorthand property "flex-flow"
+        "media-feature-range-notation": "prefix",
         "selector-not-notation": "simple", //DISABLE Expected complex :not() pseudo-class notation
         "scss/at-rule-conditional-no-parentheses": null,
         "scss/no-global-function-names": null, // scssphp do not support usage of SASS modules
