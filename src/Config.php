@@ -1279,6 +1279,22 @@ JAVASCRIPT
                 echo Dropdown::getYesNo(0);
             }
 
+            echo "<tr class='tab_bg_2'><td><label for='dropdown_set_followup_tech$rand'>" . __('Add me as a technician when adding a ticket follow-up') .
+              "</label></td><td>";
+            if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
+                Dropdown::showYesNo("set_followup_tech", $data["set_followup_tech"], -1, ['rand' => $rand]);
+            } else {
+                echo Dropdown::getYesNo(0);
+            }
+
+            echo "</td><td><label for='dropdown_set_solution_tech$rand'>" . __('Add me as a technician when adding a ticket solution') .
+              "</label></td><td>";
+            if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
+                Dropdown::showYesNo("set_solution_tech", $data["set_solution_tech"], -1, ['rand' => $rand]);
+            } else {
+                echo Dropdown::getYesNo(0);
+            }
+
             echo "<tr class='tab_bg_2'><td><label for='timeline_action_btn_layout$rand'>" . __('Action button layout') .
               "</label></td><td>";
             Dropdown::showFromArray('timeline_action_btn_layout', [

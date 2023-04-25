@@ -410,6 +410,10 @@ class ITILFollowup extends CommonDBChild
 
         $itemtype = $input['itemtype'];
 
+        if ($itemtype == 'Ticket' && $_SESSION['glpiset_followup_tech'] && !$input['is_private']) {
+            Ticket::assignToMe($this->input["items_id"], $input["users_id"]);
+        }
+
        // Only calculate timeline_position if not already specified in the input
         if (!isset($input['timeline_position'])) {
             $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], $this->getType(), $input["users_id"]);

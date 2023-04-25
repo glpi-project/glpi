@@ -5719,4 +5719,162 @@ HTML
         $entities = $ticket->getEntitiesForRequesters(["_users_id_requester" => $user_id]);
         $this->array($entities)->isIdenticalTo([$entity2_id, $entity1_id]);
     }
+
+    public function testAssignToMe()
+    {
+        $this->login();
+        $entity_id = 0;
+
+        $ticket = new \Ticket();
+        $fup = new \ITILFollowup();
+        $sol = new \ITILSolution();
+
+        //create a ticket
+        $ticket_id = $ticket->add([
+            'name'                  => __METHOD__,
+            'content'               => __METHOD__,
+            'entities_id'           => $entity_id,
+            '_skip_auto_assign'     => true,
+            '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //add a followup to the ticket without assigning to me (tech)
+        $this->login('tech', 'tech');
+        $_SESSION['glpiset_followup_tech'] = 0;
+        $this->integer(
+            (int)$fup->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple followup'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(0);
+
+        //add a private followup to the ticket and NOT assign to me (tech)
+        $_SESSION['glpiset_followup_tech'] = 1;
+        $this->integer(
+            (int)$fup->add([
+                'itemtype'      => 'Ticket',
+                'items_id'      => $ticket_id,
+                'content'       => 'A simple followup',
+                'is_private'    => 1
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(0);
+
+        //add a followup to the ticket and assign to me (tech)
+        $this->integer(
+            (int)$fup->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple followup'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(1);
+
+        //add a solution to the ticket and assign to me
+        $this->login('glpi', 'glpi');
+        $_SESSION['glpiset_solution_tech'] = 1;
+        $this->integer(
+            (int)$sol->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple solution'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(2);
+
+        //create a new ticket
+        $ticket_id = $ticket->add([
+            'name'                  => __METHOD__,
+            'content'               => __METHOD__,
+            'entities_id'           => $entity_id,
+            '_skip_auto_assign'     => true,
+            '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //add a solution to the ticket without assigning to me
+        $this->login('tech', 'tech');
+        $_SESSION['glpiset_solution_tech'] = 0;
+        $this->integer(
+            (int)$sol->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple solution'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(0);
+
+        //create a new ticket
+        $ticket_id = $ticket->add([
+            'name'                  => __METHOD__,
+            'content'               => __METHOD__,
+            'entities_id'           => $entity_id,
+            '_skip_auto_assign'     => true,
+            '_users_id_requester'   => getItemByTypeName('User', 'glpi', true),
+            '_users_id_observer'    => getItemByTypeName('User', 'tech', true),
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->array($actors)->hasSize(1);
+
+        //add a followup to the ticket without assigning to me
+        $this->login('glpi', 'glpi');
+        $_SESSION['glpiset_followup_tech'] = 1;
+        $this->integer(
+            (int)$fup->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple followup'
+            ])
+        )->isGreaterThan(0);
+
+        //add a followup to the ticket without assigning to me
+        $this->login('tech', 'tech');
+        $_SESSION['glpiset_followup_tech'] = 1;
+        $this->integer(
+            (int)$fup->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple followup'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(0);
+
+        //add a solution to the ticket without assigning to me
+        $this->login('glpi', 'glpi');
+        $_SESSION['glpiset_solution_tech'] = 1;
+        $this->integer(
+            (int)$sol->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple solution'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(0);
+    }
 }

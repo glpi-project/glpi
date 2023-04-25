@@ -7752,6 +7752,8 @@ CREATE TABLE `glpi_users` (
   `show_count_on_tabs` tinyint DEFAULT NULL,
   `refresh_views` int DEFAULT NULL,
   `set_default_tech` tinyint DEFAULT NULL,
+  `set_followup_tech` tinyint DEFAULT NULL,
+  `set_solution_tech` tinyint DEFAULT NULL,
   `personal_token` varchar(255) DEFAULT NULL,
   `personal_token_date` timestamp NULL DEFAULT NULL,
   `api_token` varchar(255) DEFAULT NULL,

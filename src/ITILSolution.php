@@ -324,6 +324,10 @@ class ITILSolution extends CommonDBChild
             ]);
         }
 
+        if ($this->input["itemtype"] == 'Ticket' && $_SESSION['glpiset_solution_tech']) {
+            Ticket::assignToMe($this->input["items_id"], $this->input["users_id"]);
+        }
+
         parent::post_addItem();
     }
 
