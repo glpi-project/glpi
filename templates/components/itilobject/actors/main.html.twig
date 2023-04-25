@@ -201,6 +201,7 @@
             {
                itemtype: "{{ actor['itemtype'] }}",
                items_id: "{{ actor['items_id'] }}",
+               title: "{{ actor['title'] }}",
                use_notification: {{ actor['use_notification'] ? "1" : "0" }},
                {% if actor['alternative_email'] is defined %}
                   alternative_email: "{{ actor['alternative_email'] }}",
