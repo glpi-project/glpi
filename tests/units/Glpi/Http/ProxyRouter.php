@@ -190,7 +190,7 @@ class ProxyRouter extends \GLPITestCase
             '/src/Computer.php',
             '/tests/bootstrap.php',
             '/tools/psr4.php',
-            '/vendor/htmlawed/htmlawed/htmLawed.php',
+            '/vendor/donatj/phpuseragentparser/tests/bootstrap.php',
         ];
         $allowed_glpi_static_paths = [
             '/css/lib/fontsource/inter/files/inter-latin-100-normal.woff2',

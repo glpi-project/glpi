@@ -2098,10 +2098,7 @@ HTML;
     public static function getLibraries($all = false)
     {
        // use same name that in composer.json
-        $deps = [[ 'name'    => 'htmlawed/htmlawed',
-            'version' => hl_version() ,
-            'check'   => 'hl_version'
-        ],
+        $deps = [
             [ 'name'    => 'symfony/mailer',
                 'check'   => 'Symfony/Mailer'
             ],
@@ -2264,6 +2261,10 @@ HTML;
             [
                 'name'  => 'ralouphie/getallheaders',
                 'check' => 'getallheaders'
+            ],
+            [
+                'name'    => 'symfony/html-sanitizer',
+                'check'   => 'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizer'
             ],
         ];
         return $deps;

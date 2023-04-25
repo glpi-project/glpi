@@ -96,7 +96,6 @@ dev_nodes=(
     "vendor/donatj/phpuseragentparser/tests"
     "vendor/glpi-project/inventory_format/examples"
     "vendor/glpi-project/inventory_format/source_files"
-    "vendor/htmlawed/htmlawed/htmLawedTest.php"
     "vendor/html2text/html2text/test"
     "vendor/league/oauth2-google/examples"
     "vendor/mexitek/phpcolors/demo"

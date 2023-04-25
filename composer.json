@@ -31,7 +31,6 @@
         "guzzlehttp/guzzle": "^7.5",
         "guzzlehttp/psr7": "^2.5",
         "html2text/html2text": "^4.3",
-        "htmlawed/htmlawed": "^1.2",
         "jasig/phpcas": "^1.6",
         "laminas/laminas-i18n": "^2.22",
         "laminas/laminas-json": "^3.5",
@@ -62,6 +61,7 @@
         "symfony/console": "^6.2",
         "symfony/css-selector": "^6.2",
         "symfony/dom-crawler": "^6.2",
+        "symfony/html-sanitizer": "^6.2",
         "symfony/mailer": "^6.2",
         "symfony/mime": "^6.2",
         "symfony/polyfill-ctype": "^1.27",
@@ -150,11 +150,5 @@
         "build": [
             "bin/console dependencies install && bin/console locales:compile"
         ]
-    },
-    "repositories": {
-        "htmlawed": {
-            "type": "composer",
-            "url": "https://www.bioinformatics.org/phplabware/downloads/"
-        }
     }
 }
