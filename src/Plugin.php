@@ -176,7 +176,7 @@ class Plugin extends CommonDBTM
             $classic     => Plugin::getSearchURL(false),
         ];
         if (MarketplaceController::isWebAllowed()) {
-            $links[$marketplace] = MarketplaceController::getSearchURL(false);
+            $links[$marketplace] = MarketplaceView::getSearchURL(false);
         }
         return $links;
     }
