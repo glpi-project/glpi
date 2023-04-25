@@ -316,7 +316,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'text'              => $name,
                     'title'             => $name,
                     'use_notification'  => $user['use_notification'],
-                    'alternative_email' => $user['alternative_email'],
+                    'alternative_email' => UserEmail::getDefaultForUser($user['users_id']),
                 ];
             }
         }
