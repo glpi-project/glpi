@@ -509,19 +509,20 @@ class Plugin extends CommonDBTM
     /**
      * Build plugin info data once to save performances
      *
-     * @return void
+     * @return array
      */
-    private function loadPluginInformation(): void
+    private function getPluginInformation(): array
     {
         // Run once
         if ($this->plugins_information !== null) {
-            return;
+            return $this->plugins_information;
         }
 
         $plugins_information = [];
         $plugins_directories = new AppendIterator();
-        $plugins_directories->append(new DirectoryIterator(GLPI_ROOT . '/plugins'));
-        $plugins_directories->append(new DirectoryIterator(GLPI_ROOT . '/marketplace'));
+        foreach (PLUGINS_DIRECTORIES as $base_dir) {
+            $plugins_directories->append(new DirectoryIterator($base_dir));
+        }
         foreach ($plugins_directories as $plugin_directory) {
             $plugin_name = $plugin_directory->getFilename();
 
@@ -536,6 +537,8 @@ class Plugin extends CommonDBTM
             $plugins_information[$plugin_name] = $info;
         }
         $this->plugins_information = $plugins_information;
+
+        return $this->plugins_information;
     }
 
     /**
@@ -547,14 +550,9 @@ class Plugin extends CommonDBTM
      */
     public function checkPluginState($plugin_key)
     {
-        $this->loadPluginInformation();
         $plugin = new self();
 
-        // Fallback on $this->getInformationsFromDirectory is needed for unit
-        // tests with fake "tester" plugin, as the plugin does not have a real
-        // directory so $this->loadPluginInformation wont be able to find it
-        // by iterating on /plugins and /marketplace
-        $information = $this->plugins_information[$plugin_key] ?? $this->getInformationsFromDirectory($plugin_key);
+        $information = $this->getPluginInformation()[$plugin_key];
         $new_specs    = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
         $is_loadable      = !empty($information);
