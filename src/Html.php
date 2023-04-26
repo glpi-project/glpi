@@ -739,74 +739,11 @@ class Html
      * @param boolean $ajax         If we're called from ajax (false by default)
      *
      * @return void
+     * @deprecated 10.0.0
      **/
     public static function displayDebugInfos($with_session = true, $ajax = false, $rand = null)
     {
-        global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $TIMER_DEBUG, $PLUGIN_HOOKS;
-
-       // Only for debug mode so not need to be translated
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
-            if ($rand === null) {
-                $rand = mt_rand();
-            }
-
-            $plugin_tabs = [];
-            if (isset($PLUGIN_HOOKS[Hooks::DEBUG_TABS])) {
-                foreach ($PLUGIN_HOOKS[Hooks::DEBUG_TABS] as $tabs) {
-                    $plugin_tabs = array_merge($plugin_tabs, $tabs);
-                }
-            }
-
-            $queries_duration = $CFG_GLPI["debug_sql"] ? array_sum($DEBUG_SQL['times']) : 0;
-            $execution_time = $TIMER_DEBUG->getTime();
-            $summary = [
-                'execution_time'    => sprintf(_n('%s second', '%s seconds', $execution_time), $execution_time),
-                'memory_usage'      => memory_get_usage(),
-                'sql_queries_count'     => $CFG_GLPI["debug_sql"] ? $SQL_TOTAL_REQUEST : 0,
-                'sql_queries_duration'  => $CFG_GLPI["debug_sql"] ? sprintf(_n('%s second', '%s seconds', $queries_duration), $queries_duration) : 0,
-            ];
-            $sql_info = [];
-
-            if ($CFG_GLPI['debug_sql']) {
-                $sql_info['total_requests'] = $summary['sql_queries_count'];
-                $sql_info['total_duration'] = $summary['sql_queries_duration'];
-                $sql_info['queries'] = [];
-                foreach ($DEBUG_SQL['queries'] as $num => $query) {
-                    $info = [
-                        'num'       => $num,
-                        'query'     => $query,
-                        'time'      => $DEBUG_SQL['times'][$num] ?? '',
-                        'rows'      => $DEBUG_SQL['rows'][$num] ?? 0,
-                        'errors'    => $DEBUG_SQL['errors'][$num] ?? '',
-                        'warnings'  => '',
-                    ];
-                    if (isset($DEBUG_SQL['warnings'][$num])) {
-                        foreach ($DEBUG_SQL['warnings'][$num] as $warning) {
-                            $info['warnings'] .= sprintf('%s: %s', $warning['Code'], $warning['Message']) . "\n";
-                        }
-                    }
-                    $sql_info['queries'][] = $info;
-                }
-            }
-            $vars_info = [
-                'get'      => $_GET ?? [],
-                'post'     => $_POST ?? [],
-                'session'  => $_SESSION ?? [],
-                'server'   => $_SERVER ?? [],
-            ];
-
-            TemplateRenderer::getInstance()->display('debug_panel.html.twig', [
-                'summary'       => $summary,
-                'sql_info'      => $sql_info,
-                'vars_info'     => $vars_info,
-                'with_session'  => $with_session,
-                'debug_sql'     => $CFG_GLPI['debug_sql'],
-                'debug_vars'    => $CFG_GLPI['debug_vars'],
-                'ajax'          => $ajax,
-                'rand'          => $rand,
-                'plugin_tabs'   => $plugin_tabs,
-            ]);
-        }
+        Toolbox::deprecated('Html::displayDebugInfo is not used anymore. It was replaced by a unified debug bar.');
     }
 
 
@@ -1342,6 +1279,10 @@ HTML;
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
+
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            $tpl_vars['js_modules'][] = ['path' => 'js/modules/Debug/Debug.js'];
+        }
 
        // Search
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/ResultsView.js'];
@@ -1879,7 +1820,7 @@ HTML;
 
         TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
 
-        self::displayDebugInfos();
+        (new Glpi\Debug\Toolbar())->show();
 
         if (!$keepDB && function_exists('closeDBConnections')) {
             closeDBConnections();
@@ -1910,7 +1851,6 @@ HTML;
             </a>";
             }
             echo "</div>";
-            self::displayDebugInfos(false, true, $rand);
             echo "</div>";
         }
     }

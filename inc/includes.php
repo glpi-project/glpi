@@ -62,6 +62,11 @@ if (
     isset($_SESSION['glpi_use_mode'])
     && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
 ) {
+    // Start the debug profile
+    $profile = \Glpi\Debug\Profile::getCurrent();
+    if (!defined('GLPI_REQUEST_ID')) {
+        define('GLPI_REQUEST_ID', $profile->getId());
+    }
     $SQL_TOTAL_REQUEST    = 0;
     $DEBUG_SQL = [
         'queries' => [],

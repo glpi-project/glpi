@@ -31,12 +31,25 @@
  * ---------------------------------------------------------------------
  */
 
-.debug-panel {
-    font-size: $font-size-sm;
+#debug-toolbar {
     z-index: 9999;
-    display: none;
 
-    .card-body {
-        height: 300px;
+    .debug-toolbar-widget {
+        .dropdown-menu {
+            max-width: calc(100vw - 10px);
+            margin-left: 5px;
+            max-height: 25vh;
+            overflow: auto;
+            .dropdown-item.active, .dropdown-item:active {
+                color: inherit;
+                text-decoration: inherit;
+                background-color: inherit;
+            }
+        }
     }
+}
+
+#debug-toolbar-expanded-content {
+    height: 30vh;
+    overflow: auto;
 }
