@@ -342,6 +342,8 @@ class GLPIKanbanRights {
 
         this.display_initials = true;
 
+        this.user_pictures_to_load = new Set([]);
+
         /**
        * Parse arguments and assign them to the object's properties
        * @since 9.5.0
@@ -1426,47 +1428,68 @@ class GLPIKanbanRights {
             const itemtype = teammember["itemtype"];
             const items_id = teammember["id"];
 
-            if (self.team_badge_cache[itemtype] === undefined ||
-                 self.team_badge_cache[itemtype][items_id] === undefined) {
-                if (itemtype === 'User') {
-                    let user_img = null;
-                    $.ajax({
-                        url: (self.ajax_root + "getUserPicture.php"),
-                        async: false,
-                        data: {
-                            users_id: [items_id],
-                            size: self.team_image_size,
-                        }
-                    }).done(function(data) {
-                        if (data[items_id] !== undefined) {
-                            user_img = data[items_id];
-                        } else {
-                            user_img = null;
-                        }
-                    });
+            // If the picture is already cached, return cache value
+            if (
+                self.team_badge_cache[itemtype] !== undefined &&
+                self.team_badge_cache[itemtype][items_id] !== undefined
+            ) {
+                return self.team_badge_cache[itemtype][items_id];
+            }
 
-                    if (user_img) {
-                        self.team_badge_cache[itemtype][items_id] = "<span>" + user_img + "</span>";
-                    } else {
-                        self.team_badge_cache[itemtype][items_id] = generateUserBadge(teammember);
-                    }
-                } else {
-                    switch (itemtype) {
-                        case 'Group':
-                            self.team_badge_cache[itemtype][items_id] = generateOtherBadge(teammember, 'fa-users');
-                            break;
-                        case 'Supplier':
-                            self.team_badge_cache[itemtype][items_id] = generateOtherBadge(teammember, 'fa-briefcase');
-                            break;
-                        case 'Contact':
-                            self.team_badge_cache[itemtype][items_id] = generateOtherBadge(teammember, 'fa-user');
-                            break;
-                        default:
-                            self.team_badge_cache[itemtype][items_id] = generateOtherBadge(teammember, 'fa-user');
-                    }
-                }
+            // Pictures from users
+            if (itemtype === 'User') {
+                // Display a placeholder and keep track of the image to load it later
+                self.user_pictures_to_load.add(items_id);
+                self.team_badge_cache[itemtype][items_id] = generateUserBadge(teammember);
+
+                return self.team_badge_cache[itemtype][items_id];
+            }
+
+            // Pictures from groups, supplier, contact
+            switch (itemtype) {
+                case 'Group':
+                    self.team_badge_cache[itemtype][items_id] = generateOtherBadge(teammember, 'fa-users');
+                    break;
+                case 'Supplier':
+                    self.team_badge_cache[itemtype][items_id] = generateOtherBadge(teammember, 'fa-briefcase');
+                    break;
+                case 'Contact':
+                    self.team_badge_cache[itemtype][items_id] = generateOtherBadge(teammember, 'fa-user');
+                    break;
+                default:
+                    self.team_badge_cache[itemtype][items_id] = generateOtherBadge(teammember, 'fa-user');
             }
             return self.team_badge_cache[itemtype][items_id];
+        };
+
+        const fetchUserPicturesToLoad = function() {
+            // Get user ids for which we must load their pictures
+            const users_ids = Array.from(self.user_pictures_to_load.values());
+
+            // Clear "to load" list
+            self.user_pictures_to_load.clear();
+
+            $.ajax({
+                url: (self.ajax_root + "getUserPicture.php"),
+                async: false,
+                data: {
+                    users_id: users_ids,
+                    size: self.team_image_size,
+                }
+            }).done(function(data) {
+                // For each users, apply the image found
+                Object.keys(users_ids).forEach(function(user_id) {
+                    if (data[user_id] !== undefined) {
+                        // Store new image in cache
+                        self.team_badge_cache['User'][user_id] = "<span>" + data[user_id] + "</span>";
+
+                        // Replace placeholders
+                        $("[data-placeholder-users-id=" + user_id + "]").each(function() {
+                            $(this).parent().html(self.team_badge_cache['User'][user_id]);
+                        });
+                    }
+                });
+            });
         };
 
         /**
@@ -1639,7 +1662,7 @@ class GLPIKanbanRights {
             context.fillText(initials, self.team_image_size / 2, self.team_image_size / 2);
             const src = canvas.toDataURL("image/png");
             const name = teammember['name'].replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-            return "<span><img src='" + src + "' title='" + name + "' data-bs-toggle='tooltip'/></span>";
+            return "<span><img src='" + src + "' title='" + name + "' data-bs-toggle='tooltip' data-placeholder-users-id='" + teammember["id"] + "'/></span>";
         };
 
         /**
@@ -1991,6 +2014,7 @@ class GLPIKanbanRights {
                         success(columns, textStatus, jqXHR);
                         $(self.element).trigger('kanban:refresh');
                     }
+                    fetchUserPicturesToLoad();
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     if (fail) {
                         fail(jqXHR, textStatus, errorThrown);
