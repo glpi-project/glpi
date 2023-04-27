@@ -133,9 +133,6 @@ class Hooks
 
     const STALE_AGENT_CONFIG = 'stale_agent_config';
 
-   // Debug / Development hooks
-    const DEBUG_TABS = 'debug_tabs';
-
     // Helpdesk Menu Hooks
     const HELPDESK_MENU_ENTRY = 'helpdesk_menu_entry';
     const HELPDESK_MENU_ENTRY_ICON = 'helpdesk_menu_entry_icon';
