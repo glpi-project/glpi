@@ -35,10 +35,7 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use Glpi\Dashboard\Filters\AbstractFilter;
-use Glpi\Dashboard\Filters\DatesFilter;
 use Html;
-
 
 class DatesModFilter extends AbstractFilter
 {
