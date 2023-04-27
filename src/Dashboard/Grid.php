@@ -761,7 +761,11 @@ HTML;
         $params = array_merge($default_params, $params);
 
         $used         = array_flip($params['used']);
-        $list_filters = array_diff_key(Filter::getAll(), $used);
+        $filters      = [];
+        foreach (Filter::getAll() as $filter) {
+            $filters[$filter::getId()] = $filter::getName();
+        }
+        $list_filters = array_diff_key($filters, $used);
 
         $rand = mt_rand();
         echo "<form class='display-filter-form'>";
@@ -1033,7 +1037,6 @@ HTML;
     public function getFiltersSetHtml(array $filters = []): string
     {
         $html = "";
-
         foreach ($filters as $filter_id => $filter_values) {
             $html .= $this->getFilterHtml($filter_id, $filter_values);
         }
@@ -1053,18 +1056,13 @@ HTML;
      */
     public function getFilterHtml(string $filter_id = "", $filter_values = ""): string
     {
-        if (method_exists("Glpi\Dashboard\Filter", $filter_id)) {
-            return call_user_func("Glpi\Dashboard\Filter::$filter_id", $filter_values);
+        foreach(Filter::getAll() as $filter) {
+            if($filter::getId()==$filter_id) {
+                return $filter::getHtml($filter_values);
+            }
         }
 
-        $hook_params = [
-            'filter_id' => $filter_id,
-            'filter_values' => $filter_values,
-        ];
-
-        $hook_response = Plugin::doHookFunction(Hooks::DASHBOARD_HTML_FILTER, $hook_params);
-
-        return $hook_response !== $hook_params ? $hook_response : "";
+        return "";
     }
 
 
