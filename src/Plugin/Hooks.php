@@ -143,7 +143,6 @@ class Hooks
     // Dashboard hooks
     const DASHBOARD_CARDS   = 'dashboard_cards';
     const DASHBOARD_FILTERS = 'dashboard_filters';
-    const DASHBOARD_HTML_FILTER = 'dashboard_html_filter';
     const DASHBOARD_TYPES   = 'dashboard_types';
 
     /**
