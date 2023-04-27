@@ -1471,6 +1471,11 @@ class GLPIKanbanRights {
             // Get user ids for which we must load their pictures
             const users_ids = Array.from(self.user_pictures_to_load.values());
 
+            if (users_ids.length === 0) {
+                // Nothing to be loaded
+                return;
+            }
+
             // Clear "to load" list
             self.user_pictures_to_load.clear();
 
@@ -1494,66 +1499,6 @@ class GLPIKanbanRights {
                         });
                     }
                 });
-            });
-        };
-
-        /**
-       * Attempt to get and cache user badges in a single AJAX request to reduce time wasted when using multiple requests.
-       * Most time spent on the request is latency, so it takes about the same amount of time for 1 or 50 users.
-       * If no image is returned from the server, a badge is generated based on the user's initials.
-       * @since 9.5.0
-       * @param {Object} options Object of options for this function. Supports:
-       *    trim_cache - boolean indicating if unused user images should be removed from the cache.
-       *       This is useful for refresh scenarios.
-       * @see generateUserBadge()
-      **/
-        const preloadBadgeCache = function(options) {
-            let users = [];
-            $.each(self.columns, function(column_id, column) {
-                if (column['items'] !== undefined) {
-                    $.each(column['items'], function(card_id, card) {
-                        if (card["_team"] !== undefined) {
-                            Object.values(card["_team"]).slice(0, self.max_team_images).forEach(function(teammember) {
-                                if (teammember['itemtype'] === 'User') {
-                                    if (self.team_badge_cache['User'][teammember['id']] === undefined) {
-                                        users[teammember['id']] = teammember;
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-            if (users.length === 0) {
-                return;
-            }
-            $.ajax({
-                type: 'POST', // Too much data may break GET limit
-                url: (self.ajax_root + "getUserPicture.php"),
-                async: false,
-                data: {
-                    users_id: Object.keys(users),
-                    size: self.team_image_size
-                }
-            }).done(function(data) {
-                Object.keys(users).forEach(function(user_id) {
-                    const teammember = users[user_id];
-                    if (data[user_id] !== undefined) {
-                        self.team_badge_cache['User'][user_id] = "<span>" + data[user_id] + "</span>";
-                    } else {
-                        self.team_badge_cache['User'][user_id] = generateUserBadge(teammember);
-                    }
-                });
-                if (options !== undefined && options['trim_cache'] !== undefined) {
-                    let cached_colors = JSON.parse(window.sessionStorage.getItem('badge_colors'));
-                    Object.keys(self.team_badge_cache['User']).forEach(function(user_id) {
-                        if (users[user_id] === undefined) {
-                            delete self.team_badge_cache['User'][user_id];
-                            delete cached_colors['User'][user_id];
-                        }
-                    });
-                    window.sessionStorage.setItem('badge_colors', JSON.stringify(cached_colors));
-                }
             });
         };
 
@@ -1903,7 +1848,6 @@ class GLPIKanbanRights {
 
                 $.ajax({
                     method: 'POST',
-                    //async: false,
                     url: (self.ajax_root + "kanban.php"),
                     data: data
                 }).done(function() {
@@ -1999,7 +1943,6 @@ class GLPIKanbanRights {
             const _refresh = function() {
                 $.ajax({
                     method: 'GET',
-                    //async: false,
                     url: (self.ajax_root + "kanban.php"),
                     data: {
                         action: "refresh",
@@ -2010,9 +1953,6 @@ class GLPIKanbanRights {
                 }).done(function(columns, textStatus, jqXHR) {
                     clearColumns();
                     self.columns = columns;
-                    preloadBadgeCache({
-                        trim_cache: true
-                    });
                     fillColumns();
                     // Re-filter kanban
                     self.filter();
