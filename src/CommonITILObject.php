@@ -488,7 +488,7 @@ abstract class CommonITILObject extends CommonDBTM
             $options['impact']              = $ticket->fields['impact'];
             $options['urgency']             = $ticket->fields['urgency'];
             $options['priority']            = $ticket->fields['priority'];
-            if (isset($options['tickets_id'])) {
+            if (isset($options['_tickets_id']) && !isset($options['_saved']['itilcategories_id'])) {
                 //page is reloaded on category change, we only want category on the very first load
                 $category = new ITILCategory();
                 $options['itilcategories_id'] = 0;
