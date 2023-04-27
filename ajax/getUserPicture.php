@@ -44,29 +44,29 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (!isset($_GET['users_id'])) {
+if (!isset($_REQUEST['users_id'])) {
     Response::sendError(400, "Missing users_id parameter");
-} else if (!is_array($_GET['users_id'])) {
-    $_GET['users_id'] = [$_GET['users_id']];
+} else if (!is_array($_REQUEST['users_id'])) {
+    $_REQUEST['users_id'] = [$_REQUEST['users_id']];
 }
 
-$_GET['users_id'] = array_unique($_GET['users_id']);
+$_REQUEST['users_id'] = array_unique($_REQUEST['users_id']);
 
-if (!isset($_GET['size'])) {
-    $_GET['size'] = '100%';
+if (!isset($_REQUEST['size'])) {
+    $_REQUEST['size'] = '100%';
 }
 
-if (!isset($_GET['allow_blank'])) {
-    $_GET['allow_blank'] = false;
+if (!isset($_REQUEST['allow_blank'])) {
+    $_REQUEST['allow_blank'] = false;
 }
 
 $user = new User();
 $imgs = [];
 
-foreach ($_GET['users_id'] as $user_id) {
+foreach ($_REQUEST['users_id'] as $user_id) {
     if ($user->getFromDB($user_id)) {
-        if (!empty($user->fields['picture']) || $_GET['allow_blank']) {
-            if (isset($_GET['type']) && $_GET['type'] == 'thumbnail') {
+        if (!empty($user->fields['picture']) || $_REQUEST['allow_blank']) {
+            if (isset($_REQUEST['type']) && $_REQUEST['type'] == 'thumbnail') {
                 $path = User::getThumbnailURLForPicture($user->fields['picture']);
             } else {
                 $path = User::getURLForPicture($user->fields['picture']);
@@ -74,11 +74,11 @@ foreach ($_GET['users_id'] as $user_id) {
             $img = Html::image($path, [
                 'title'          => getUserName($user_id),
                 'data-bs-toggle' => 'tooltip',
-                'width'          => $_GET['size'],
-                'height'         => $_GET['size'],
-                'class'          => $_GET['class'] ?? ''
+                'width'          => $_REQUEST['size'],
+                'height'         => $_REQUEST['size'],
+                'class'          => $_REQUEST['class'] ?? ''
             ]);
-            if (isset($_GET['link']) && $_GET['link']) {
+            if (isset($_REQUEST['link']) && $_REQUEST['link']) {
                  $imgs[$user_id] = Html::link($img, User::getFormURLWithID($user_id));
             } else {
                 $imgs[$user_id] = $img;

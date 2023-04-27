@@ -342,6 +342,11 @@ class GLPIKanbanRights {
 
         this.display_initials = true;
 
+        /**
+         * Keep track of users pictures that need to be loaded later on
+         *
+         * @type {Set}
+         */
         this.user_pictures_to_load = new Set([]);
 
         /**
@@ -1470,8 +1475,8 @@ class GLPIKanbanRights {
             self.user_pictures_to_load.clear();
 
             $.ajax({
+                type: 'POST', // Too much data may break GET limit
                 url: (self.ajax_root + "getUserPicture.php"),
-                async: false,
                 data: {
                     users_id: users_ids,
                     size: self.team_image_size,
@@ -1523,6 +1528,7 @@ class GLPIKanbanRights {
                 return;
             }
             $.ajax({
+                type: 'POST', // Too much data may break GET limit
                 url: (self.ajax_root + "getUserPicture.php"),
                 async: false,
                 data: {
