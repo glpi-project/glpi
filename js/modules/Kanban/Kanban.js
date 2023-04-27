@@ -2357,7 +2357,7 @@ class GLPIKanbanRights {
        *    This is useful if an item is changed in another tab or by another user to be in the new column after the original column was added.
        * @param {function} callback Function to call after the column is loaded (or fails to load).
        */
-        const loadColumn = function(column_id, nosave, revalidate, callback = undefined) {
+        const loadColumn = async function(column_id, nosave, revalidate, callback = undefined) {
             nosave = nosave !== undefined ? nosave : false;
 
             let skip_load = false;
@@ -2376,27 +2376,28 @@ class GLPIKanbanRights {
                 return;
             }
 
-            $.ajax({
-                method: 'GET',
-                url: (self.ajax_root + "kanban.php"),
-                async: false,
-                data: {
-                    action: "get_column",
-                    itemtype: self.item.itemtype,
-                    items_id: self.item.items_id,
-                    column_field: self.column_field.id,
-                    column_id: column_id
-                }
-            }).done(function(column) {
+            try {
+                const column = await $.ajax({
+                    method: 'GET',
+                    url: (self.ajax_root + "kanban.php"),
+                    data: {
+                        action: "get_column",
+                        itemtype: self.item.itemtype,
+                        items_id: self.item.items_id,
+                        column_field: self.column_field.id,
+                        column_id: column_id
+                    }
+                });
+
                 if (column !== undefined && Object.keys(column).length > 0) {
                     self.columns[column_id] = column[column_id];
                     appendColumn(column_id, self.columns[column_id], null, revalidate);
                 }
-            }).always(function() {
+            } finally {
                 if (callback) {
                     callback();
                 }
-            });
+            }
         };
 
         /**
@@ -2627,7 +2628,7 @@ class GLPIKanbanRights {
                     items_id: self.item.items_id,
                     last_load: self.last_refresh
                 }
-            }).done(function(state) {
+            }).done(async function(state) {
                 if (state['state'] === undefined || state['state'] === null || Object.keys(state['state']).length === 0) {
                     if (callback) {
                         callback(false);
@@ -2640,18 +2641,20 @@ class GLPIKanbanRights {
                 };
 
                 const indices = Object.keys(state['state']);
+                const promises = [];
                 for (let i = 0; i < indices.length; i++) {
                     const index = indices[i];
                     const entry = state['state'][index];
                     const element = $('#column-' + self.column_field.id + "-" + entry.column);
                     if (element.length === 0) {
-                        loadColumn(entry.column, true, false);
+                        promises.push(loadColumn(entry.column, true, false));
                     }
                     $(self.element + ' .kanban-columns .kanban-column:nth-child(' + index + ')').after(element);
                     if (entry.folded === 'true') {
                         element.addClass('collapsed');
                     }
                 }
+                await Promise.all(promises);
                 self.last_refresh = state['timestamp'];
 
                 if (callback) {
