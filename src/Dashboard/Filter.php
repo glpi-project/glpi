@@ -36,16 +36,18 @@
 namespace Glpi\Dashboard;
 use Glpi\Plugin\Hooks;
 use Session;
-use Glpi\Dashboard\Filters\DatesFilter;
-use Glpi\Dashboard\Filters\ItilCategoryFilter;
-use Glpi\Dashboard\Filters\LocationFilter;
-use Glpi\Dashboard\Filters\ManufacturerFilter;
-use Glpi\Dashboard\Filters\RequestTypeFilter;
-use Glpi\Dashboard\Filters\StateFilter;
-use Glpi\Dashboard\Filters\TicketTypeFilter;
-use Glpi\Dashboard\Filters\GroupTechFilter;
-use Glpi\Dashboard\Filters\UserTechFilter;
-use Glpi\Dashboard\Filters\DatesModFilter;
+use Glpi\Dashboard\Filters\{
+    DatesFilter,
+    ItilCategoryFilter,
+    LocationFilter,
+    ManufacturerFilter,
+    RequestTypeFilter,
+    StateFilter,
+    TicketTypeFilter,
+    GroupTechFilter,
+    UserTechFilter,
+    DatesModFilter
+};
 
 /**
  * Filter class
