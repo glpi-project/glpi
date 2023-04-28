@@ -36,6 +36,10 @@
 namespace Glpi\Dashboard\Filters;
 
 use Html;
+use DBConnection;
+use Ticket;
+use Change;
+use Problem;
 
 class DatesFilter extends AbstractFilter
 {
@@ -57,6 +61,112 @@ class DatesFilter extends AbstractFilter
     public static function getId() : string
     {
         return "dates";
+    }
+
+    /**
+     * Get the filter criteria
+     * 
+     * @return array
+     */
+    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [];
+
+        if (
+            ($DB->fieldExists($table, 'date'))
+            && isset($apply_filters[self::getId()])
+            && count($apply_filters[self::getId()]) == 2
+        ) {
+            $criteria[] = self::getDatesCriteria("$table.date", $apply_filters[self::getId()]);
+        }
+
+       //exclude itilobject already processed with 'date'
+        if (
+            (!in_array($table, [
+                Ticket::getTable(),
+                Change::getTable(),
+                Problem::getTable(),
+            ]) && $DB->fieldExists($table, 'date_creation'))
+            && isset($apply_filters[self::getId()])
+            && count($apply_filters[self::getId()]) == 2
+        ) {
+            $criteria[] = self::getDatesCriteria("$table.date_creation", $apply_filters[self::getId()]);
+        }
+
+        return $criteria;
+    }
+
+    private static function getDatesCriteria(string $field = "", array $dates = []): array
+    {
+        $begin = strtotime($dates[0]);
+        $end   = strtotime($dates[1]);
+
+        return [
+            [$field => ['>=', date('Y-m-d', $begin)]],
+            [$field => ['<=', date('Y-m-d', $end)]],
+        ];
+    }
+
+     /**
+     * Get the search filter criteria
+     *
+     * @return array
+     */
+    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [
+            "WHERE" => [],
+            "JOIN"  => [],
+        ];
+
+        if (
+            $DB->fieldExists($table, 'date')
+            && isset($apply_filters[self::getId()])
+            && count($apply_filters[self::getId()]) == 2
+        ) {
+            $criteria["WHERE"] += self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters[DatesFilter::getId()], 'begin');
+            $criteria["WHERE"] += self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters[DatesFilter::getId()], 'end');
+        }
+
+        //exclude itilobject already processed with 'date'
+        if (
+            !in_array($table, [
+                Ticket::getTable(),
+                Change::getTable(),
+                Problem::getTable(),
+            ]) && $DB->fieldExists($table, 'date_creation')
+            && isset($apply_filters[self::getId()])
+            && count($apply_filters[self::getId()]) == 2
+        ) {
+            $criteria["WHERE"] += self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $apply_filters[DatesFilter::getId()], 'begin');
+            $criteria["WHERE"] += self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $apply_filters[DatesFilter::getId()], 'end');
+        }
+
+        return $criteria;
+    }
+
+    private static function getDatesSearchCriteria(int $searchoption_id, array $dates = [], $when = 'begin'): array
+    {
+
+        if ($when == "begin") {
+            $begin = strtotime($dates[0]);
+            return [
+                'link'       => 'AND',
+                'field'      => $searchoption_id, // creation date
+                'searchtype' => 'morethan',
+                'value'      => date('Y-m-d 00:00:00', $begin)
+            ];
+        } else {
+            $end   = strtotime($dates[1]);
+            return [
+                'link'       => 'AND',
+                'field'      => $searchoption_id, // creation date
+                'searchtype' => 'lessthan',
+                'value'      => date('Y-m-d 00:00:00', $end)
+            ];
+        }
     }
 
     /**

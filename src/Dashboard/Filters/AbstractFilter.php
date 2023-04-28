@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard\Filters;
 use Html;
+use Search;
 
 abstract class AbstractFilter
 {
@@ -58,6 +59,41 @@ abstract class AbstractFilter
      * @return string
      */
     public static abstract function getId() : string;
+
+    /**
+     * Get the filter criteria
+     * 
+     * @return array
+     */
+    public static abstract function getCriteria(string $table = "", array $apply_filters = []) : array;
+
+
+    /**
+     * Get the search filter criteria
+     * 
+     * example : 
+     * [
+     * 'link'       => 'AND',
+     * 'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'), // itilcategory
+     * 'searchtype' => 'under',
+     * 'value'      => (int) $apply_filters[ItilCategoryFilter::getId()]
+     * ]
+     *
+     * @return array
+     */
+    public static abstract function getSearchCriteria(string $table = "", array $apply_filters = []) : array;
+
+    protected static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
+    {
+        $data = Search::getOptions(getItemTypeForTable($table), true);
+        $sort = [];
+        foreach ($data as $ref => $opt) {
+            if (isset($opt['field'])) {
+                $sort[$ref] = $opt['linkfield'] . "-" . $opt['table'];
+            }
+        }
+        return array_search($name . "-" . $tableToSearch, $sort);
+    }
     
     /**
      * Get generic HTML for a filter

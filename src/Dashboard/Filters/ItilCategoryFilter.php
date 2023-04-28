@@ -37,6 +37,7 @@ namespace Glpi\Dashboard\Filters;
 
 use Session;
 use ITILCategory;
+use DBConnection;
 
 class ItilcategoryFilter extends AbstractFilter
 {
@@ -58,6 +59,58 @@ class ItilcategoryFilter extends AbstractFilter
     public static function getId() : string
     {
         return "itilcategory";
+    }
+
+    /**
+     * Get the filter criteria
+     * 
+     * @return array
+     */
+    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [
+            "WHERE" => [],
+            "JOIN"  => [],
+        ];
+
+        if (
+            $DB->fieldExists($table, 'itilcategories_id')
+            && isset($apply_filters[self::getId()])
+            && (int) $apply_filters[self::getId()] > 0
+        ) {
+            $criteria["WHERE"] += [
+                "$table.itilcategories_id" => getSonsOf(ITILCategory::getTable(), (int) $apply_filters[self::getId()])
+            ];
+        }
+
+        return $criteria;
+    }
+
+    /**
+     * Get the search filter criteria
+     *
+     * @return array
+     */
+    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [];
+
+        if (
+            $DB->fieldExists($table, 'itilcategories_id')
+            && isset($apply_filters[self::getId()])
+            && (int) $apply_filters[self::getId()] > 0
+        ) {
+            $criteria[] = [
+                'link'       => 'AND',
+                'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'), // itilcategory
+                'searchtype' => 'under',
+                'value'      => (int) $apply_filters[self::getId()]
+            ];
+        }
+
+        return $criteria;
     }
 
     /**

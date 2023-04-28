@@ -37,7 +37,7 @@ namespace Glpi\Dashboard\Filters;
 
 use Session;
 use Manufacturer;
-use Html;
+use DBConnection;
 
 class ManufacturerFilter extends AbstractFilter
 {
@@ -59,6 +59,58 @@ class ManufacturerFilter extends AbstractFilter
     public static function getId() : string
     {
         return "manufacturer";
+    }
+
+    /**
+     * Get the filter criteria
+     * 
+     * @return array
+     */
+    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [
+            "WHERE" => [],
+            "JOIN"  => [],
+        ];
+
+        if (
+            $DB->fieldExists($table, 'manufacturers_id')
+            && isset($apply_filters[self::getId()])
+            && (int) $apply_filters[self::getId()] > 0
+        ) {
+            $criteria["WHERE"] += [
+                "$table.manufacturers_id" => (int) $apply_filters[self::getId()]
+            ];
+        }
+
+        return $criteria;
+    }
+
+    /**
+     * Get the search filter criteria
+     *
+     * @return array
+     */
+    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [];
+
+        if (
+            $DB->fieldExists($table, 'manufacturers_id')
+            && isset($apply_filters[self::getId()])
+            && (int) $apply_filters[self::getId()] > 0
+        ) {
+            $criteria[] = [
+                'link'       => 'AND',
+                'field'      => self::getSearchOptionID($table, 'manufacturers_id', 'glpi_manufacturers'), // manufacturer
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters[self::getId()]
+            ];
+        }
+
+        return $criteria;
     }
 
     /**

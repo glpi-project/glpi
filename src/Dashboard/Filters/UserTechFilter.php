@@ -36,7 +36,11 @@
 namespace Glpi\Dashboard\Filters;
 
 use User;
-use Html;
+use DBConnection;
+use Ticket;
+use Change;
+use Problem;
+use Session;
 
 class UserTechFilter extends AbstractFilter
 {
@@ -58,6 +62,106 @@ class UserTechFilter extends AbstractFilter
     public static function getId() : string
     {
         return "user_tech";
+    }
+
+    /**
+     * Get the filter criteria
+     * 
+     * @return array
+     */
+    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [
+            "WHERE" => [],
+            "JOIN"  => [],
+        ];
+
+        if (isset($apply_filters[self::getId()])) {
+            $users_id = null;
+            if ((int) $apply_filters[self::getId()] > 0) {
+                $users_id = (int) $apply_filters[self::getId()];
+            } else if ($apply_filters[self::getId()] === 'myself') {
+                $users_id = $_SESSION['glpiID'];
+            }
+
+            if ($users_id !== null) {
+                if ($DB->fieldExists($table, 'users_id_tech')) {
+                    $criteria["WHERE"] += [
+                        "$table.users_id_tech" => $users_id,
+                    ];
+                } else if (
+                    in_array($table, [
+                        Ticket::getTable(),
+                        Change::getTable(),
+                        Problem::getTable(),
+                    ])
+                ) {
+                    $itemtype  = getItemTypeForTable($table);
+                    $main_item = getItemForItemtype($itemtype);
+                    $userlink  = $main_item->userlinkclass;
+                    $ul_table  = $userlink::getTable();
+                    $fk        = $main_item->getForeignKeyField();
+
+                    $criteria["JOIN"] += [
+                        "$ul_table as ul" => [
+                            'ON' => [
+                                'ul'   => $fk,
+                                $table => 'id',
+                            ]
+                        ]
+                    ];
+                    $criteria["WHERE"] += [
+                        "ul.type"     => \CommonITILActor::ASSIGN,
+                        "ul.users_id" => $users_id,
+                    ];
+                }
+            }
+        }
+
+        return $criteria;
+    }
+
+    /**
+     * Get the search filter criteria
+     *
+     * @return array
+     */
+    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [];
+
+        if (
+            isset($apply_filters[self::getId()])
+            && (
+                (int) $apply_filters[self::getId()] > 0
+                || $apply_filters[self::getId()] === 'myself'
+            )
+        ) {
+            if ($DB->fieldExists($table, 'users_id_tech')) {
+                $criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),// tech
+                    'searchtype' => 'equals',
+                    'value'      =>  $apply_filters[self::getId()] === 'myself' ? (int) Session::getLoginUserID() : (int) $apply_filters[self::getId()]
+                ];
+            } elseif (
+                in_array($table, [
+                    Ticket::getTable(),
+                    Change::getTable(),
+                    Problem::getTable(),
+                ])
+            ) {
+                $criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => 5,// tech
+                    'searchtype' => 'equals',
+                    'value'      =>  is_numeric($apply_filters[self::getId()]) ? (int) $apply_filters[self::getId()] : $apply_filters[self::getId()]
+                ];
+            }
+        }
+        return $criteria;
     }
 
     /**

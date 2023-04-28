@@ -37,6 +37,7 @@ namespace Glpi\Dashboard\Filters;
 
 use Session;
 use Ticket;
+use DBConnection;
 
 class TicketTypeFilter extends AbstractFilter
 {
@@ -58,6 +59,57 @@ class TicketTypeFilter extends AbstractFilter
     public static function getId() : string
     {
         return "tickettype";
+    }
+
+    /**
+     * Get the filter criteria
+     * 
+     * @return array
+     */
+    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [
+            "WHERE" => [],
+            "JOIN"  => [],
+        ];
+
+        if (
+            $DB->fieldExists($table, 'type')
+            && isset($apply_filters[self::getId()])
+            && (int) $apply_filters[self::getId()] > 0
+        ) {
+            $criteria["WHERE"] += [
+                "$table.type" => (int) $apply_filters[self::getId()]
+            ];
+        }
+
+        return $criteria;
+    }
+
+     /**
+     * Get the search filter criteria
+     *
+     * @return array
+     */
+    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [];
+
+        if (
+            $DB->fieldExists($table, 'type')
+            && isset($apply_filters[self::getId()])
+            && (int) $apply_filters[self::getId()] > 0
+        ) {
+            $criteria[] = [
+                'link'       => 'AND',
+                'field'      => self::getSearchOptionID($table, 'type', $table),
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters[self::getId()]
+            ];
+        }
+        return $criteria;
     }
 
     /**

@@ -36,8 +36,10 @@
 namespace Glpi\Dashboard\Filters;
 
 use Group;
-use Html;
-
+use DBConnection;
+use Ticket;
+use Change;
+use Problem;
 class GroupTechFilter extends AbstractFilter
 {
     /**
@@ -58,6 +60,110 @@ class GroupTechFilter extends AbstractFilter
     public static function getId() : string
     {
         return "group_tech";
+    }
+
+    /**
+     * Get the filter criteria
+     * 
+     * @return array
+     */
+    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [
+            "WHERE" => [],
+            "JOIN"  => [],
+        ];
+
+        if (isset($apply_filters[self::getId()])) {
+            $groups_id = null;
+            if ((int) $apply_filters[self::getId()] > 0) {
+                $groups_id =  (int) $apply_filters[self::getId()];
+            } else if ($apply_filters[self::getId()] == 'mygroups') {
+                $groups_id =  $_SESSION['glpigroups'];
+            }
+
+            if ($groups_id != null) {
+                if ($DB->fieldExists($table, 'groups_id_tech')) {
+                    $criteria["WHERE"] += [
+                        "$table.groups_id_tech" => $groups_id
+                    ];
+                } else if (
+                    in_array($table, [
+                        Ticket::getTable(),
+                        Change::getTable(),
+                        Problem::getTable(),
+                    ])
+                ) {
+                    $itemtype  = getItemTypeForTable($table);
+                    $main_item = getItemForItemtype($itemtype);
+                    $grouplink = $main_item->grouplinkclass;
+                    $gl_table  = $grouplink::getTable();
+                    $fk        = $main_item->getForeignKeyField();
+
+                    $criteria["JOIN"] += [
+                        "$gl_table as gl" => [
+                            'ON' => [
+                                'gl'   => $fk,
+                                $table => 'id',
+                            ]
+                        ]
+                    ];
+                    $criteria["WHERE"] += [
+                        "gl.type"      => \CommonITILActor::ASSIGN,
+                        "gl.groups_id" => $groups_id
+                    ];
+                }
+            }
+        }
+
+        return $criteria;
+    }
+
+    /**
+     * Get the search filter criteria
+     *
+     * @return array
+     */
+    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [];
+
+        if (isset($apply_filters[self::getId()])) {
+            $groups_id = null;
+            if ((int) $apply_filters[self::getId()] > 0) {
+                $groups_id =  (int) $apply_filters[self::getId()];
+            } else if ($apply_filters[self::getId()] == 'mygroups') {
+                $groups_id =  'mygroups';
+            }
+
+            if ($groups_id != null) {
+                if ($DB->fieldExists($table, 'groups_id_tech')) {
+                    $criteria[] = [
+                        'link'       => 'AND',
+                        'field'      => self::getSearchOptionID($table, 'groups_id_tech', 'glpi_groups'), // group tech
+                        'searchtype' => 'equals',
+                        'value'      => $groups_id
+                    ];
+                } else if (
+                    in_array($table, [
+                        Ticket::getTable(),
+                        Change::getTable(),
+                        Problem::getTable(),
+                    ])
+                ) {
+                    $criteria[] = [
+                        'link'       => 'AND',
+                        'field'      => 8, // group tech
+                        'searchtype' => 'equals',
+                        'value'      => $groups_id
+                    ];
+                }
+            }
+        }
+
+        return $criteria;
     }
 
     /**

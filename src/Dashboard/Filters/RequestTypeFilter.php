@@ -37,6 +37,7 @@ namespace Glpi\Dashboard\Filters;
 
 use Session;
 use RequestType;
+use DBConnection;
 
 class RequestTypeFilter extends AbstractFilter
 {
@@ -58,6 +59,59 @@ class RequestTypeFilter extends AbstractFilter
     public static function getId() : string
     {
         return "requesttype";
+    }
+
+    /**
+     * Get the filter criteria
+     * 
+     * @return array
+     */
+    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [
+            "WHERE" => [],
+            "JOIN"  => [],
+        ];
+
+        if (
+            $DB->fieldExists($table, 'requesttypes_id')
+            && isset($apply_filters[self::getId()])
+            && (int) $apply_filters[self::getId()] > 0
+        ) {
+            $criteria["WHERE"] += [
+                "$table.requesttypes_id" => (int) $apply_filters[self::getId()]
+            ];
+        }
+
+        return $criteria;
+    }
+
+
+     /**
+     * Get the search filter criteria
+     *
+     * @return array
+     */
+    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    {
+        $DB = DBConnection::getReadConnection();
+        $criteria = [];
+
+        if (
+            $DB->fieldExists($table, 'requesttypes_id')
+            && isset($apply_filters[self::getId()])
+            && (int) $apply_filters[self::getId()] > 0
+        ) {
+            $criteria[] = [
+                'link'       => 'AND',
+                'field'      => self::getSearchOptionID($table, 'requesttypes_id', 'glpi_requesttypes'), // request type
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters[self::getId()]
+            ];
+        }
+
+        return $criteria;
     }
 
     /**
