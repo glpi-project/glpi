@@ -1,5 +1,38 @@
 <?php
 
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
 namespace Glpi\Debug;
 
 class Profile
@@ -19,6 +52,8 @@ class Profile
      * @var array|null Debug info for this profile. This is only set for loaded/readonly profiles.
      */
     private ?array $debug_info = null;
+
+    private array $additional_info = [];
 
     private static ?self $current = null;
 
@@ -49,19 +84,25 @@ class Profile
 
             // If this is a sub-request, we can send the $_SERVER global data back in a header now to avoid having to save it later.
             if ($parent_id !== null) {
-                $debug_info_header = json_encode([
-                    'globals' => [
-                        'server' => $_SERVER ?? [],
-                    ]
-                ], JSON_THROW_ON_ERROR);
-                $header_len = strlen($debug_info_header);
-                if ($header_len < self::DEBUG_INFO_HEADER_THRESHOLD) {
-                    header('X-GLPI-Debug-Server-Global: ' . $debug_info_header);
+                try {
+                    $debug_info_header = json_encode([
+                        'globals' => [
+                            'server' => $_SERVER ?? [],
+                        ]
+                    ], JSON_THROW_ON_ERROR);
+                    $header_len = strlen($debug_info_header);
+                    if ($header_len < self::DEBUG_INFO_HEADER_THRESHOLD) {
+                        header('X-GLPI-Debug-Server-Global: ' . $debug_info_header);
+                    }
+                } catch (\Exception $e) {
+                    // Ignore
                 }
             }
 
             // Register a shutdown function to save the profile
             register_shutdown_function(static function () {
+                // Stop all profiler timers (should just be the main php_request one unless something died)
+                Profiler::stopAll();
                 self::getCurrent()->save();
             });
         }
@@ -103,6 +144,14 @@ class Profile
         return $this->parent_id;
     }
 
+    public function addData(string $widget, $data)
+    {
+        if (!array_key_exists($widget, $this->additional_info)) {
+            $this->additional_info[$widget] = [];
+        }
+        $this->additional_info[$widget][] = $data;
+    }
+
     public function getDebugInfo()
     {
         if ($this->is_readonly) {
@@ -127,7 +176,7 @@ class Profile
             ],
             'sql' => [
                 'total_requests' => $CFG_GLPI["debug_sql"] ? $SQL_TOTAL_REQUEST : 0,
-                'total_duration' => $CFG_GLPI["debug_sql"] ? sprintf(_n('%s second', '%s seconds', $queries_duration), $queries_duration) : 0,
+                'total_duration' => $CFG_GLPI["debug_sql"] ? $queries_duration : 0,
                 'queries' => [],
             ],
             'globals' => []
@@ -157,6 +206,10 @@ class Profile
                 }
             }
             $debug_info['sql']['queries'][] = $info;
+        }
+
+        foreach ($this->additional_info as $widget => $data) {
+            $debug_info[$widget] = $data;
         }
 
         return $debug_info;

@@ -39,9 +39,11 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
-   http_response_code(403);
-   die();
+    http_response_code(403);
+    die();
 }
+
+\Glpi\Debug\Profiler::$disabled = true;
 
 // We don't need to modify the session, so we can close the session file to avoid blocking other requests
 session_write_close();

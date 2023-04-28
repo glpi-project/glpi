@@ -113,7 +113,9 @@ if (isset($options['locked'])) {
     ObjectLock::setReadOnlyProfile();
 }
 
+\Glpi\Debug\Profiler::start('displayStandardTab');
 CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], $_GET["withtemplate"], $options);
+\Glpi\Debug\Profiler::stop('displayStandardTab');
 
 
 if (isset($_GET['full_page_tab'])) {

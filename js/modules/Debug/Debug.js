@@ -31,7 +31,18 @@
  * ---------------------------------------------------------------------
  */
 
-/* global initSortableTable, escapeMarkupText */
+/* global initSortableTable, escapeMarkupText, luminance, hexToRgb */
+
+/**
+ * @typedef ProfilerSection
+ * @property {string} id
+ * @property {string|null} parent_id
+ * @property {string} category
+ * @property {string} name
+ * @property {number} start
+ * @property {number} end
+ */
+
 /**
  * @typedef Profile
  * @property {string} id
@@ -56,9 +67,7 @@
  *     }
  * }} sql
  * @property {Object.<string, any>} globals
- * @property {{
- *
- * }} client_performance
+ * @property {ProfilerSection[]} [profiler]
  */
 
 /**
@@ -268,6 +277,11 @@ window.GLPI.Debug = new class Debug {
             case 'client_performance':
                 this.showClientPerformance(content_area);
                 break;
+            case 'profiler':
+                this.showProfiler(content_area);
+                break;
+            default:
+                content_area.append(`<h1>Content for widget ${widget_id} not found</h1>`);
         }
     }
 
@@ -431,7 +445,7 @@ window.GLPI.Debug = new class Debug {
 
         // Add all AJAX request IDs to the select
         this.ajax_requests.forEach((request) => {
-            content_area.find('select[name="request_id"]').append(`<option value="${request.id}">${request.id}</option>`);
+            content_area.find('select[name="request_id"]').append(`<option value="${request.id}">${request.id} (${request.url})</option>`);
         });
         const selected_request_id = content_area.data('globals_request_id') || this.initial_request.id;
         // Make sure the selected request ID is actually selected
@@ -528,5 +542,161 @@ window.GLPI.Debug = new class Debug {
                 </tr>
             `);
         }
+    }
+
+    getProfilerCategoryColor(category) {
+        const predefined_colors = {
+            core: '#526dad',
+            db: '#9252ad',
+            twig: '#64ad52'
+        };
+        let bg_color = '';
+        if (predefined_colors[category] !== undefined) {
+            bg_color = predefined_colors[category];
+        } else {
+            let hash = 0;
+            for (let i = 0; i < category.length; i++) {
+                hash = category.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            let color = '#';
+            for (let i = 0; i < 3; i++) {
+                const value = (hash >> (i * 8)) & 0xFF;
+                color += ('00' + value.toString(16)).substr(-2);
+            }
+            bg_color = color;
+        }
+
+        const rgb = hexToRgb(bg_color);
+        const text_color = luminance([rgb['r'], rgb['g'], rgb['b']]) > 0.5 ? 'var(--dark)' : 'var(--light)';
+
+        return {
+            bg_color: bg_color,
+            text_color: text_color
+        };
+    }
+
+    getProfilerTable(profiler_sections, is_nested = false, parent_duration = 0) {
+        let table = `
+            <table class="table table-striped card-table table-hover">
+                <thead>
+                    <tr>
+                       ${is_nested ? '<th style="min-width: 2rem"></th>' : ''}
+                       <th>Category</th>
+                       <th>Name</th>
+                       <th>Start</th>
+                       <th>End</th>
+                       <th>Duration</th>
+                       <th>Percent of parent</th>
+                   </tr>
+                </thead>
+                <tbody>
+        `;
+
+        const sections = profiler_sections.sort((a, b) => a.start - b.start);
+        const top_level_parent_id = sections[0].parent_id;
+        const top_level_sections = sections.filter((section) => section.parent_id === top_level_parent_id);
+
+        top_level_sections.forEach((section) => {
+            const cat_colors = this.getProfilerCategoryColor(section.category);
+            const duration = section.end - section.start;
+
+            let percent_of_parent = 100;
+            if (is_nested) {
+                percent_of_parent = (duration / parent_duration) * 100;
+            }
+            percent_of_parent = percent_of_parent.toFixed(2);
+
+            table += `
+                <tr data-profiler-section-id="${section.id}">
+                    ${is_nested ? '<td style="min-width: 2rem"></td>' : ''}
+                    <td>
+                        <span style='padding: 5px; border-radius: 25%; background-color: ${cat_colors.bg_color}; color: ${cat_colors.text_color}'>
+                            ${section.category}
+                        </span>
+                    </td>
+                    <td>${section.name}</td><td>${section.start}</td><td>${section.end}</td>
+                    <td data-column="duration" data-duration-raw="${duration}">${duration.toFixed(0)}ms</td>
+                    <td>${percent_of_parent}%</td>
+                </tr>
+            `;
+
+            const children = sections.filter((child) => child.parent_id === section.id);
+            if (children.length > 0) {
+                const children_table = this.getProfilerTable(children, true, duration);
+                table += `<tr>${children_table}</tr>`;
+            }
+        });
+
+        table += '</tbody></table>';
+
+        return table;
+    }
+
+    showProfiler(content_area) {
+        content_area.append(`
+            <div>
+                <label>
+                  Request:
+                  <select name="request_id">
+                     <option value="${this.initial_request.id}">${this.initial_request.id} (Initial Request)</option>
+                  </select>
+               </label>
+               <label>
+                 Hide near-instant sections (<=1ms):
+                 <input type="checkbox" name="hide_instant_sections">
+               </label>
+            </div>
+        `);
+
+        const request_select = content_area.find('select[name="request_id"]');
+
+        // Add the AJAX requests to the select
+        this.ajax_requests.forEach((request) => {
+            request_select.append(`<option value="${request.id}">${request.id} (${request.url})</option>`);
+        });
+
+        const selected_request_id = content_area.data('profiler_request_id') || this.initial_request.id;
+        // Make sure the selected request ID is actually selected
+        request_select.find(`option[value="${selected_request_id}"]`).prop('selected', true);
+
+        request_select.off('change').on('change', (e) => {
+            content_area.data('profiler_request_id', $(e.target).val());
+            this.showWidget('profiler');
+        });
+
+        const hide_instant_sections_box = content_area.find('input[name="hide_instant_sections"]');
+        const hide_instant_sections = content_area.data('profiler_hide_instant_sections') || true;
+        hide_instant_sections_box.prop('checked', hide_instant_sections);
+
+        hide_instant_sections_box.off('change').on('change', (e) => {
+            const hide = $(e.target).prop('checked');
+            content_area.data('profiler_hide_instant_sections', hide);
+            const table_rows = content_area.find('table tbody tr');
+
+            // Start by un-hiding all rows
+            table_rows.removeClass('d-none');
+
+            if (hide) {
+                // hide all rows in the table that have the duration column set less than 1ms
+                table_rows.each((index, row) => {
+                    const duration_cell = $(row).find('td[data-column="duration"]');
+                    const duration_value = parseFloat(duration_cell.attr('data-duration-raw'));
+                    if (duration_value <= 1.0) {
+                        $(row).addClass('d-none');
+                    }
+                });
+            }
+        });
+
+
+        const matching_profile = this.getProfile(selected_request_id);
+        const profiler = matching_profile.profiler || {};
+
+        // get profiler entries and sort them by start time
+        // Logically, child entries should remain under their parent since everything is done synchronously
+        const profiler_sections = Object.values(profiler);
+
+        content_area.find('> div').append(this.getProfilerTable(profiler_sections));
+        hide_instant_sections_box.trigger('change');
     }
 };
