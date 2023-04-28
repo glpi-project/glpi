@@ -44,7 +44,7 @@ class Profiler
 
     public static function start(string $name, string $category = 'core'): void
     {
-        $debug_mode_or_pre_session = !isset($_SESSION) || $_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE;
+        $debug_mode_or_pre_session = !isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE;
         if (self::$disabled || !$debug_mode_or_pre_session) {
             return;
         }
