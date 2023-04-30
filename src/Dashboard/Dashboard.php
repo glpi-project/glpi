@@ -63,7 +63,6 @@ class Dashboard extends \CommonDBTM
         return "key";
     }
 
-
     /**
      * Retrieve the current dashboard from the DB (or from cache)
      * with its rights and items

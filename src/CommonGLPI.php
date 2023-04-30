@@ -507,6 +507,7 @@ class CommonGLPI implements CommonGLPIInterface
             $newmenu['is_multi_entries'] = true;
             $menu = $newmenu;
         }
+
         if (count($menu)) {
             return $menu;
         }

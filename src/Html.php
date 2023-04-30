@@ -1446,7 +1446,8 @@ HTML;
             foreach ($menu as $category => $entries) {
                 if (isset($entries['types']) && count($entries['types'])) {
                     foreach ($entries['types'] as $type) {
-                        if ($data = $type::getMenuContent()) {
+                        $data = $type::getMenuContent();
+                        if ($data) {
                           // Multi menu entries management
                             if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
                                 if (!isset($menu[$category]['content'])) {
@@ -1666,7 +1667,9 @@ HTML;
         $sector = strtolower($sector);
         $item   = strtolower($item);
 
+        \Glpi\Debug\Profiler::start('Html::includeHeader');
         self::includeHeader($title, $sector, $item, $option, $add_id);
+        \Glpi\Debug\Profiler::stop('Html::includeHeader');
 
         $tmp_active_item = explode("/", $item);
         $active_item     = array_pop($tmp_active_item);
@@ -1820,7 +1823,7 @@ HTML;
 
         TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
 
-        \Glpi\Debug\Profiler::stop('php_request');
+        \Glpi\Debug\Profiler::stopAll();
         (new Glpi\Debug\Toolbar())->show();
 
         if (!$keepDB && function_exists('closeDBConnections')) {
@@ -1834,26 +1837,7 @@ HTML;
      **/
     public static function ajaxFooter()
     {
-
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
-            $rand = mt_rand();
-            echo "<div class='center d-none d-md-block btn-group' id='debugajax'>";
-            echo "<a class='btn btn-sm btn-danger debug-float' href=\"javascript:showHideDiv('debugpanel$rand','','','');\">
-            <i class='fas fa-bug'></i>
-            <span>AJAX DEBUG</span>
-         </a>";
-            if (
-                !isset($_GET['full_page_tab'])
-                && strstr($_SERVER['REQUEST_URI'], '/ajax/common.tabs.php')
-            ) {
-                echo "<a href='" . $_SERVER['REQUEST_URI'] . "&full_page_tab=1' class='btn btn-sm btn-danger'>
-               <i class='fas fa-external-link-alt'></i>
-               <span>Display only tab for debug</span>
-            </a>";
-            }
-            echo "</div>";
-            echo "</div>";
-        }
+        // Not currently used. Old debug stuff is now in the new debug bar.
     }
 
 

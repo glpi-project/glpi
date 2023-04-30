@@ -460,7 +460,11 @@ window.GLPI.Debug = new class Debug {
         const globals = matching_profile.globals;
         content_area.find(`#debugpost${rand}`).html(getCleanArray(globals['post'], 0, true));
         content_area.find(`#debugget${rand}`).html(getCleanArray(globals['get'], 0, true));
-        content_area.find(`#debusession${rand}`).html(getCleanArray(globals['session'], 0, true));
+        if (selected_request_id === this.initial_request.id) {
+            content_area.find(`#debugsession${rand}`).html(getCleanArray(globals['session'], 0, true));
+        } else {
+            content_area.find(`#debugsession${rand}`).html(`<div class="alert alert-warning">Session data is only available for the initial request</div>`);
+        }
         content_area.find(`#debugserver${rand}`).html(getCleanArray(globals['server'], 0, true));
     }
 
@@ -575,12 +579,12 @@ window.GLPI.Debug = new class Debug {
         };
     }
 
-    getProfilerTable(profiler_sections, is_nested = false, parent_duration = 0) {
+    getProfilerTable(parent_id, profiler_sections, nest_level = 0, parent_duration = 0) {
         let table = `
-            <table class="table table-striped card-table table-hover">
+            <table class="table table-striped card-table">
                 <thead>
                     <tr>
-                       ${is_nested ? '<th style="min-width: 2rem"></th>' : ''}
+                       ${'<th style="min-width: 2rem"></th>'.repeat(nest_level)}
                        <th>Category</th>
                        <th>Name</th>
                        <th>Start</th>
@@ -592,23 +596,23 @@ window.GLPI.Debug = new class Debug {
                 <tbody>
         `;
 
-        const sections = profiler_sections.sort((a, b) => a.start - b.start);
-        const top_level_parent_id = sections[0].parent_id;
-        const top_level_sections = sections.filter((section) => section.parent_id === top_level_parent_id);
+        const col_count = 6 + nest_level;
+
+        const top_level_sections = profiler_sections.filter((section) => section.parent_id === parent_id);
 
         top_level_sections.forEach((section) => {
             const cat_colors = this.getProfilerCategoryColor(section.category);
             const duration = section.end - section.start;
 
             let percent_of_parent = 100;
-            if (is_nested) {
+            if (nest_level > 0) {
                 percent_of_parent = (duration / parent_duration) * 100;
             }
             percent_of_parent = percent_of_parent.toFixed(2);
 
             table += `
                 <tr data-profiler-section-id="${section.id}">
-                    ${is_nested ? '<td style="min-width: 2rem"></td>' : ''}
+                    ${'<td style="min-width: 2rem"></td>'.repeat(nest_level)}
                     <td>
                         <span style='padding: 5px; border-radius: 25%; background-color: ${cat_colors.bg_color}; color: ${cat_colors.text_color}'>
                             ${section.category}
@@ -620,10 +624,10 @@ window.GLPI.Debug = new class Debug {
                 </tr>
             `;
 
-            const children = sections.filter((child) => child.parent_id === section.id);
+            const children = profiler_sections.filter((child) => child.parent_id === section.id);
             if (children.length > 0) {
-                const children_table = this.getProfilerTable(children, true, duration);
-                table += `<tr>${children_table}</tr>`;
+                const children_table = this.getProfilerTable(section.id, profiler_sections, nest_level + 1, duration);
+                table += `<tr><td colspan="${col_count}">${children_table}</td></tr>`;
             }
         });
 
@@ -671,7 +675,7 @@ window.GLPI.Debug = new class Debug {
         hide_instant_sections_box.off('change').on('change', (e) => {
             const hide = $(e.target).prop('checked');
             content_area.data('profiler_hide_instant_sections', hide);
-            const table_rows = content_area.find('table tbody tr');
+            const table_rows = content_area.find('tr');
 
             // Start by un-hiding all rows
             table_rows.removeClass('d-none');
@@ -679,13 +683,32 @@ window.GLPI.Debug = new class Debug {
             if (hide) {
                 // hide all rows in the table that have the duration column set less than 1ms
                 table_rows.each((index, row) => {
-                    const duration_cell = $(row).find('td[data-column="duration"]');
-                    const duration_value = parseFloat(duration_cell.attr('data-duration-raw'));
-                    if (duration_value <= 1.0) {
-                        $(row).addClass('d-none');
+                    const duration_cell = $(row).find('> td[data-column="duration"]');
+                    if (duration_cell.length > 0) {
+                        const duration_value = parseFloat(duration_cell.attr('data-duration-raw'));
+                        if (duration_value <= 1.0) {
+                            $(row).addClass('d-none');
+                        }
                     }
                 });
             }
+
+            // If any table has no visible rows, hide the whole table
+            content_area.find('table').each((index, table) => {
+                const table_el = $(table);
+                const table_parent = table_el.parent();
+                if (table_el.find('> tbody > tr:not(.d-none)').length === 0) {
+                    table_el.addClass('d-none');
+                    if (table_parent.prop('tagName') === 'TD') {
+                        table_parent.addClass('d-none');
+                    }
+                } else {
+                    table_el.removeClass('d-none');
+                    if (table_parent.prop('tagName') === 'TD') {
+                        table_parent.removeClass('d-none');
+                    }
+                }
+            });
         });
 
 
@@ -694,9 +717,9 @@ window.GLPI.Debug = new class Debug {
 
         // get profiler entries and sort them by start time
         // Logically, child entries should remain under their parent since everything is done synchronously
-        const profiler_sections = Object.values(profiler);
+        const profiler_sections = Object.values(profiler).sort((a, b) => a.start - b.start);
 
-        content_area.find('> div').append(this.getProfilerTable(profiler_sections));
+        content_area.find('> div').append(this.getProfilerTable(null, profiler_sections));
         hide_instant_sections_box.trigger('change');
     }
 };

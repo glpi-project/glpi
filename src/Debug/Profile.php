@@ -85,14 +85,10 @@ class Profile
             // If this is a sub-request, we can send the $_SERVER global data back in a header now to avoid having to save it later.
             if ($parent_id !== null) {
                 try {
-                    $debug_info_header = json_encode([
-                        'globals' => [
-                            'server' => $_SERVER ?? [],
-                        ]
-                    ], JSON_THROW_ON_ERROR);
-                    $header_len = strlen($debug_info_header);
+                    $server_global = json_encode($_SERVER ?? [], JSON_THROW_ON_ERROR);
+                    $header_len = strlen($server_global);
                     if ($header_len < self::DEBUG_INFO_HEADER_THRESHOLD) {
-                        header('X-GLPI-Debug-Server-Global: ' . $debug_info_header);
+                        header('X-GLPI-Debug-Server-Global: ' . $server_global);
                     }
                 } catch (\Exception $e) {
                     // Ignore

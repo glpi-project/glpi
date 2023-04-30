@@ -6439,6 +6439,7 @@ class CommonDBTM extends CommonGLPI
         ?array $menus = null,
         array $options = []
     ): void {
+        \Glpi\Debug\Profiler::start('displayFullPageForItem');
         $id = (int) $id;
         $item = new static();
 
@@ -6455,6 +6456,7 @@ class CommonDBTM extends CommonGLPI
             // New item, check create rights
             if (!static::canCreate()) {
                 static::displayAccessDeniedPage($menus, 'Missing CREATE right. Cannot view the new item form.');
+                \Glpi\Debug\Profiler::stop('displayFullPageForItem');
                 return;
             }
 
@@ -6464,11 +6466,13 @@ class CommonDBTM extends CommonGLPI
             // Existing item, try to load it and check read rights
             if (!$item->getFromDB($id)) {
                 static::displayItemNotFoundPage($menus);
+                \Glpi\Debug\Profiler::stop('displayFullPageForItem');
                 return;
             }
 
             if (!$item->can($id, READ)) {
                 static::displayAccessDeniedPage($menus, 'Missing READ right. Cannot view the item.');
+                \Glpi\Debug\Profiler::stop('displayFullPageForItem');
                 return;
             }
 
@@ -6478,7 +6482,9 @@ class CommonDBTM extends CommonGLPI
 
         // Show header
         if ($interface == 'central') {
+            \Glpi\Debug\Profiler::start('displayCentralHeader');
             static::displayCentralHeader($title, $menus);
+            \Glpi\Debug\Profiler::stop('displayCentralHeader');
         } else {
             static::displayHelpdeskHeader($title, $menus);
         }
@@ -6488,7 +6494,9 @@ class CommonDBTM extends CommonGLPI
         }
         // Show item
         $options['loaded'] = true;
+        \Glpi\Debug\Profiler::start('display');
         $item->display($options);
+        \Glpi\Debug\Profiler::stop('display');
 
         // Display extra html if needed
         if (!empty($options['after_display'] ?? "")) {
@@ -6497,6 +6505,7 @@ class CommonDBTM extends CommonGLPI
 
         // Show footer
         if ($interface == 'central') {
+            // No need to stop profiler here. The footer ends every section still running.
             Html::footer();
         } else {
             Html::helpFooter();
@@ -6520,6 +6529,7 @@ class CommonDBTM extends CommonGLPI
             $title = static::getTypeName(1);
         }
 
+        \Glpi\Debug\Profiler::start('Html::header');
         Html::header(
             $title,
             $_SERVER['PHP_SELF'],
@@ -6528,6 +6538,7 @@ class CommonDBTM extends CommonGLPI
             $menus[2] ?? '',
             false
         );
+        \Glpi\Debug\Profiler::stop('Html::header');
     }
 
     /**
