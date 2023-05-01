@@ -90,6 +90,6 @@
         "stylelint-config-standard-scss": "^9.0.0",
         "terser": "^5.16.8",
         "webpack": "^5.77.0",
-        "webpack-cli": "^5.0.1"
+        "webpack-cli": "^5.0.2"
     }
 }
