@@ -507,11 +507,11 @@ class Plugin extends CommonDBTM
     }
 
     /**
-     * Build plugin info data once to save performances
+     * Get information for all plugins found on filesystem.
      *
      * @return array
      */
-    private function getPluginInformation(): array
+    private function getPluginsInformation(): array
     {
         // Run once
         if ($this->plugins_information !== null) {
@@ -552,7 +552,7 @@ class Plugin extends CommonDBTM
     {
         $plugin = new self();
 
-        $information = $this->getPluginInformation()[$plugin_key];
+        $information = $this->getPluginsInformation()[$plugin_key] ?? [];
         $new_specs    = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
         $is_loadable      = !empty($information);
@@ -770,7 +770,7 @@ class Plugin extends CommonDBTM
      */
     private function getNewInfoAndDirBasedOnOldName($oldname)
     {
-        foreach ($this->plugins_information as $plugin_name => $information) {
+        foreach ($this->getPluginsInformation() as $plugin_name => $information) {
             if (array_key_exists('oldname', $information) && $information['oldname'] === $oldname) {
                // Return information if oldname specified in parsed directory matches passed value
                 return [
