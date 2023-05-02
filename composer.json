@@ -43,7 +43,7 @@
         "mexitek/phpcolors": "^1.0",
         "michelf/php-markdown": "^2.0",
         "monolog/monolog": "^3.3",
-        "paragonie/sodium_compat": "^1.17",
+        "paragonie/sodium_compat": "^1.20",
         "psr/cache": "^3.0",
         "psr/log": "^3.0",
         "psr/simple-cache": "^3.0",
