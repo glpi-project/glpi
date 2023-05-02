@@ -1250,7 +1250,7 @@ class Entity extends CommonTreeDropdown
         ];
 
         $tab[] = [
-            'id'                 => '71',
+            'id'                 => '75',
             'table'              => self::getTable(),
             'field'              => 'contracts_id_default',
             'name'               => __('Default contract'),
