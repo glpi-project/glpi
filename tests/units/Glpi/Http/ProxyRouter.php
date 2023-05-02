@@ -462,7 +462,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: b745c5b25a44dff8d077fdfa738c1db7',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="index.html"',
                 'Content-type: text/html',
                 'Content-Length: 46'
             ],
@@ -474,7 +473,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: bca9de082cdae3763da4de1e6503279b',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="page.htm"',
                 'Content-type: text/html',
                 'Content-Length: 46'
             ],
@@ -488,7 +486,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: 3b6bc56f81f3a3f94e38e1bb2ac392a2',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="test.css"',
                 'Content-type: text/css',
                 'Content-Length: 20'
             ],
@@ -502,7 +499,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: 3d7266fa7f019a62fdf08b68ff8279aa',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="scripts.js"',
                 'Content-type: application/javascript',
                 'Content-Length: 18'
             ],
@@ -516,7 +512,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: b4491705564909da7f9eaf749dbbfbb1',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="Blank.gif"',
                 'Content-type: image/gif',
                 'Content-Length: 43'
             ],
@@ -530,7 +525,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: d68e763c825dc0e388929ae1b375ce18',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="Blank.jpeg"',
                 'Content-type: image/jpeg',
                 'Content-Length: 631'
             ],
@@ -544,7 +538,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: c9477b1f1820f9acfb93eebb2e6679c2',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="Empty.png"',
                 'Content-type: image/png',
                 'Content-Length: 142'
             ],
@@ -558,7 +551,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: 634ea49fe1aac547655c289003d0e83b',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="Sq_blank.svg"',
                 'Content-type: image/svg+xml',
                 'Content-Length: 162'
             ],
@@ -572,7 +564,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: c29a5747d698b2f95cdfd5ed6502f19d',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="resources.json"',
                 'Content-type: application/json',
                 'Content-Length: 13'
             ],
@@ -586,7 +577,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: 5bebcd707b47130cf923e8c7519d11e6',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="myfont.eot"',
                 'Content-type: application/vnd.ms-opentype',
                 'Content-Length: 4'
             ],
@@ -598,7 +588,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: 5bebcd707b47130cf923e8c7519d11e6',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="myfont.otf"',
                 'Content-type: application/vnd.ms-opentype',
                 'Content-Length: 4'
             ],
@@ -612,7 +601,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: e8a117b651db0ef1acb30eb66459feb6',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="myfont.woff"',
                 'Content-type: font/woff',
                 'Content-Length: 4'
             ],
@@ -626,7 +614,6 @@ class ProxyRouter extends \GLPITestCase
             'headers'   => [
                 'Etag: a27fb479f580fd2628de4df27ba45137',
                 'Cache-Control: public, max-age=2592000, must-revalidate',
-                'Content-Disposition: attachment; filename="myfont.woff2"',
                 'Content-type: font/woff2',
                 'Content-Length: 4'
             ],
