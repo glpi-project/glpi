@@ -2838,4 +2838,53 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $this->string($networkEquipment->fields['otherserial'])->isIdenticalTo('other_serial');
     }
+
+    /**
+     * Test stacked Dell S50 switch
+     *
+     */
+    public function testStackedDellSwitchN3048P()
+    {
+        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/dell_n3048p.xml');
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $networkEquipment = new \NetworkEquipment();
+        $networkPort      = new \NetworkPort();
+
+        $server_serial = [
+            'GFH351FGH654FGH354FGH',
+            'SDF15SD5F1SD56F1SD1FSD6F1',
+            'SDFSDFSDF5414687897SDF',
+            'SDFSDF564897DFG5CVB1FGH',
+            'SDFSDF564894DFS5D1FSD5F1',
+            'SDFDF546SD64SDF84SDF1',
+        ];
+
+        foreach ($server_serial as $serial) {
+            $this->boolean(
+                $networkEquipment->getFromDBByCrit(['serial' => $serial])
+            )->isTrue("Switch s/n $serial doesn't exist");
+
+            $found_np = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ]);
+            //53 because XML have 312 port with iftype 6 -> 52 port
+            //and one management port, so 53 port per switch
+            $this->integer(count($found_np))->isIdenticalTo(53, 'Must have 53 ports');
+        }
+    }
 }
