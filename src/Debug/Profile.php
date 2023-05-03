@@ -171,8 +171,6 @@ class Profile
                 'memory_limit' => \Toolbox::getMemoryLimit(),
             ],
             'sql' => [
-                'total_requests' => $CFG_GLPI["debug_sql"] ? $SQL_TOTAL_REQUEST : 0,
-                'total_duration' => $CFG_GLPI["debug_sql"] ? $queries_duration : 0,
                 'queries' => [],
             ],
             'globals' => []
@@ -191,7 +189,7 @@ class Profile
             $info = [
                 'num' => $num,
                 'query' => $query,
-                'time' => $DEBUG_SQL['times'][$num] ?? '',
+                'time' => ((float) $DEBUG_SQL['times'][$num] * 1000) ?? -1.0,
                 'rows' => $DEBUG_SQL['rows'][$num] ?? 0,
                 'errors' => $DEBUG_SQL['errors'][$num] ?? '',
                 'warnings' => '',

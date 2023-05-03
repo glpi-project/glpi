@@ -38,7 +38,6 @@ namespace Glpi\Dashboard;
 use DateInterval;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Debug\Profiler;
 use Glpi\Plugin\Hooks;
 use Html;
 use Plugin;

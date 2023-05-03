@@ -1533,6 +1533,12 @@ function initSortableTable(element_id) {
         const sorted_rows = rows.sort((a, b) => {
             let a_value = $(a).find('td').eq(column_index).text();
             let b_value = $(b).find('td').eq(column_index).text();
+
+            // special case for durations
+            if (a_value.endsWith('ms') && b_value.endsWith('ms')) {
+                a_value = a_value.replace('ms', '').trim();
+                b_value = b_value.replace('ms', '').trim();
+            }
             // if the values are numberic, cast them to numbers to sort them correctly
             if (!isNaN(a_value) && !isNaN(b_value)) {
                 a_value = Number(a_value);

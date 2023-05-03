@@ -5769,25 +5769,20 @@ HTML;
     {
         global $DB;
 
-        $passwords = [
-            'glpi'      => 'glpi',
+        $passwords = ['glpi'      => 'glpi',
             'tech'      => 'tech',
             'normal'    => 'normal',
             'post-only' => 'postonly'
         ];
         $default_password_set = [];
 
-        $it = $DB->request([
-            'SELECT' => ['name', 'password'],
-            'FROM'  => 'glpi_users',
-            'WHERE' => [
-                'name'       => array_keys($passwords),
-                'is_active' => 1,
-                'is_deleted' => 0,
-            ]
-        ]);
+        $crit = ['FIELDS'     => ['name', 'password'],
+            'is_active'  => 1,
+            'is_deleted' => 0,
+            'name'       => array_keys($passwords)
+        ];
 
-        foreach ($it as $data) {
+        foreach ($DB->request('glpi_users', $crit) as $data) {
             if (Auth::checkPassword($passwords[strtolower($data['name'])], $data['password'])) {
                 $default_password_set[] = $data['name'];
             }

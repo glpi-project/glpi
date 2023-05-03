@@ -160,7 +160,7 @@ window.GLPI.Debug = new class Debug {
                         ajax_request.profile = data;
                         const content_area = $('#debug-toolbar-expanded-content');
                         if (content_area.data('active-widget') !== undefined) {
-                            this.showWidget(content_area.data('active-widget'));
+                            this.showWidget(content_area.data('active-widget'), true);
                         }
                         // Move server global to the profile
                         if (ajax_request.server_global !== undefined) {
@@ -201,7 +201,7 @@ window.GLPI.Debug = new class Debug {
             // update the total counters
             data.forEach((query) => {
                 sql_data.total_requests += 1;
-                sql_data.total_duration += parseFloat(query['time'].match(/(\d+)(\.\d+)?/)[0]);
+                sql_data.total_duration += parseFloat(query['time']);
             });
         });
 
@@ -254,38 +254,60 @@ window.GLPI.Debug = new class Debug {
 
         const ajax_requests_button = this.getWidgetButton('ajax_requests');
         ajax_requests_button.find('.debug-text').text(this.ajax_requests.length);
+
+        this.getWidgetButton('requests').find('.debug-text').text('Requests');
     }
 
-    showWidget(widget_id) {
-        const content_area = $('#debug-toolbar-expanded-content');
-        content_area.empty();
+    showWidget(widget_id, refresh = false, content_area = undefined, data = {}) {
+        if (content_area === undefined) {
+            content_area = $('#debug-toolbar-expanded-content');
+        }
         content_area.data('active-widget', widget_id);
+
+        $.each(data, (key, value) => {
+            content_area.data(key, value);
+        });
 
         switch (widget_id) {
             case 'server_performance':
-                this.showServerPerformance(content_area);
+                this.showServerPerformance(content_area, refresh);
                 break;
             case 'sql':
-                this.showSQLRequests(content_area);
+                this.showSQLRequests(content_area, refresh);
                 break;
             case 'globals':
                 this.showGlobals(content_area);
                 break;
-            case 'ajax_requests':
-                this.showAJAXRequests(content_area);
-                break;
             case 'client_performance':
-                this.showClientPerformance(content_area);
+                this.showClientPerformance(content_area, refresh);
                 break;
             case 'profiler':
-                this.showProfiler(content_area);
+                this.showProfiler(content_area, refresh);
+                break;
+            case 'requests':
+                this.showRequests(content_area, refresh);
+                break;
+            case 'request_summary':
+                this.showRequestSummary(content_area);
                 break;
             default:
+                content_area.empty();
                 content_area.append(`<h1>Content for widget ${widget_id} not found</h1>`);
         }
     }
 
-    showServerPerformance(content_area) {
+    showServerPerformance(content_area, refresh = false) {
+        if (!refresh) {
+            content_area.empty();
+
+            content_area.append(`
+                <h1>Server performance</h1>
+                <table class="table">
+                    <tbody></tbody>
+                </table>
+            `);
+        }
+
         const server_perf = this.initial_request.server_performance;
         const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
         const memory_peak_mio = (server_perf.memory_peak / 1024 / 1024).toFixed(2);
@@ -297,47 +319,59 @@ window.GLPI.Debug = new class Debug {
             }
         });
         total_execution_time = total_execution_time.toFixed(2);
-        content_area.append(`
-            <h1>Server performance</h1>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>
-                            Initial Execution Time: ${this.initial_request.server_performance.execution_time}s
-                            <br>
-                            Total Execution Time: ${total_execution_time}s
-                        </td>
-                        <td>
-                            Memory Usage: ${memory_usage_mio}mio / ${memory_limit_mio}mio
-                            <br>
-                            Memory Peak: ${memory_peak_mio}mio / ${memory_limit_mio}mio
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+
+        content_area.find('table tbody').empty().append(`
+            <tr>
+                <td>
+                    Initial Execution Time: ${this.initial_request.server_performance.execution_time}s
+                    <br>
+                    Total Execution Time: ${total_execution_time}s
+                </td>
+                <td>
+                    Memory Usage: ${memory_usage_mio}mio / ${memory_limit_mio}mio
+                    <br>
+                    Memory Peak: ${memory_peak_mio}mio / ${memory_limit_mio}mio
+                </td>
+            </tr>
         `);
     }
 
-    showSQLRequests(content_area) {
-        content_area.append(`
-            <div>
-               <h1></h1>
-               <table id="debug-sql-request-table" class="table card-table">
-                  <thead>
-                  <tr>
-                     <th>Request ID</th><th>N°</th><th>Query</th><th>Time</th><th>Rows</th><th>Warnings</th><th>Errors</th>
-                  </tr>
-                  </thead>
-                  <tbody></tbody>
-               </table>
-            </div>
-        `);
+    showSQLRequests(content_area, refresh = false) {
+        if (!refresh) {
+            content_area.empty();
+            content_area.append(`
+                <div>
+                   <h1></h1>
+                   <table id="debug-sql-request-table" class="table card-table">
+                      <thead>
+                      <tr>
+                         <th>Request ID</th><th>N°</th><th>Query</th><th>Time</th><th>Rows</th><th>Warnings</th><th>Errors</th>
+                      </tr>
+                      </thead>
+                      <tbody></tbody>
+                   </table>
+                </div>
+            `);
+            initSortableTable('debug-sql-request-table');
+        }
+
         const sql_table = content_area.find('table').first();
         const sql_table_body = sql_table.find('tbody').first();
 
+        // get all the request IDs present in the SQL data (first column values)
+        let request_ids_present = new Set();
+        sql_table_body.find('tr').each((index, row) => {
+            request_ids_present.add($(row).find('td').first().text());
+        });
+
         const sql_data = this.getCombinedSQLData();
+        const filtered_request_id = content_area.data('request_id');
 
         $.each(sql_data['queries'], (request_id, queries) => {
+            if (request_ids_present.has(request_id) ||
+                (filtered_request_id !== undefined && filtered_request_id !== request_id)) {
+                return;
+            }
             queries.forEach((query) => {
                 const clean_sql = query['query']
                     .replace('>', `&gt;`)
@@ -354,7 +388,7 @@ window.GLPI.Debug = new class Debug {
                         <td>${request_id}</td>
                         <td>${query['num']}</td>
                         <td style="max-width: 50vw; white-space: break-spaces;">${clean_sql}</td>
-                        <td>${query['time']}</td>
+                        <td>${query['time']}ms</td>
                         <td>${query['rows']}</td>
                         <td>${query['warnings']}</td>
                         <td>${query['errors']}</td>
@@ -363,10 +397,27 @@ window.GLPI.Debug = new class Debug {
             });
         });
 
-        content_area.find('h1').first()
-            .text(`${sql_data.total_requests} Queries took ${sql_data.total_duration.toFixed(3)} seconds`);
+        if (filtered_request_id !== undefined) {
+            let total_requests = 0;
+            let total_duration = 0;
+            $.each(sql_data['queries'], (request_id, queries) => {
+                if (request_id === filtered_request_id) {
+                    total_requests += queries.length;
+                    queries.forEach((query) => {
+                        total_duration += parseFloat(query['time']);
+                    });
+                }
+            });
+            content_area.find('h1').first()
+                .text(`${total_requests} Queries took ${total_duration}ms`);
+        } else {
+            content_area.find('h1').first()
+                .text(`${sql_data.total_requests} Queries took ${sql_data.total_duration}ms`);
+        }
 
-        initSortableTable('debug-sql-request-table');
+        if (sql_table.data('sort')) {
+            sql_table.find('thead th').eq(sql_table.data('sort')).click().click();
+        }
     }
 
     showGlobals(content_area) {
@@ -415,14 +466,9 @@ window.GLPI.Debug = new class Debug {
         };
 
         const rand = Math.floor(Math.random() * 1000000);
+        content_area.empty();
         content_area.append(`
             <div>
-               <label>
-                  Request:
-                  <select name="request_id">
-                     <option value="${this.initial_request.id}">${this.initial_request.id} (Initial Request)</option>
-                  </select>
-               </label>
                <div id="debugpanel${rand}" class="container-fluid card p-0" style="min-width: 400px; max-width: 90vw">
                   <ul class="nav nav-tabs" data-bs-toggle="tabs">
                      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#debugpost${rand}">POST</a></li>
@@ -443,18 +489,7 @@ window.GLPI.Debug = new class Debug {
             </div>
         `);
 
-        // Add all AJAX request IDs to the select
-        this.ajax_requests.forEach((request) => {
-            content_area.find('select[name="request_id"]').append(`<option value="${request.id}">${request.id} (${request.url})</option>`);
-        });
-        const selected_request_id = content_area.data('globals_request_id') || this.initial_request.id;
-        // Make sure the selected request ID is actually selected
-        content_area.find(`select[name="request_id"] option[value="${selected_request_id}"]`).prop('selected', true);
-
-        content_area.find('select[name="request_id"]').off('change').on('change', (e) => {
-            content_area.data('globals_request_id', $(e.target).val());
-            this.showWidget('globals');
-        });
+        const selected_request_id = content_area.data('request_id');
 
         const matching_profile = this.getProfile(selected_request_id);
         const globals = matching_profile.globals;
@@ -468,34 +503,10 @@ window.GLPI.Debug = new class Debug {
         content_area.find(`#debugserver${rand}`).html(getCleanArray(globals['server'], 0, true));
     }
 
-    showAJAXRequests(content_area) {
-        content_area.append(`
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Status</th>
-                        <th>Time</th>
-                        <th>Type</th>
-                        <th style="max-width: 50vw">URL</th>
-                        <th>ID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${this.ajax_requests.map((request) => `
-                        <tr>
-                            <td class="alert alert-${request.status_type}">${request.status}</td>
-                            <td>${request.time !== undefined ? request.time + 'ms' : 'pending'}</td>
-                            <td>${request.type}</td>
-                            <td style="max-width: 50vw; white-space: pre-wrap">${request.url}</td>
-                            <td>${request.id}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        `);
-    }
-
-    showClientPerformance(content_area) {
+    showClientPerformance(content_area, refresh = false) {
+        if (!refresh) {
+            content_area.empty();
+        }
         const perf = window.performance;
         const nav_timings = window.performance.getEntriesByType('navigation')[0];
         const paint_timings = window.performance.getEntriesByType('paint');
@@ -636,15 +647,12 @@ window.GLPI.Debug = new class Debug {
         return table;
     }
 
-    showProfiler(content_area) {
+    showProfiler(content_area, refresh = false) {
+        if (!refresh) {
+            content_area.empty();
+        }
         content_area.append(`
             <div>
-                <label>
-                  Request:
-                  <select name="request_id">
-                     <option value="${this.initial_request.id}">${this.initial_request.id} (Initial Request)</option>
-                  </select>
-               </label>
                <label>
                  Hide near-instant sections (<=1ms):
                  <input type="checkbox" name="hide_instant_sections">
@@ -652,21 +660,8 @@ window.GLPI.Debug = new class Debug {
             </div>
         `);
 
-        const request_select = content_area.find('select[name="request_id"]');
+        const selected_request_id = content_area.data('request_id');
 
-        // Add the AJAX requests to the select
-        this.ajax_requests.forEach((request) => {
-            request_select.append(`<option value="${request.id}">${request.id} (${request.url})</option>`);
-        });
-
-        const selected_request_id = content_area.data('profiler_request_id') || this.initial_request.id;
-        // Make sure the selected request ID is actually selected
-        request_select.find(`option[value="${selected_request_id}"]`).prop('selected', true);
-
-        request_select.off('change').on('change', (e) => {
-            content_area.data('profiler_request_id', $(e.target).val());
-            this.showWidget('profiler');
-        });
 
         const hide_instant_sections_box = content_area.find('input[name="hide_instant_sections"]');
         const hide_instant_sections = content_area.data('profiler_hide_instant_sections') || true;
@@ -721,5 +716,167 @@ window.GLPI.Debug = new class Debug {
 
         content_area.find('> div').append(this.getProfilerTable(null, profiler_sections));
         hide_instant_sections_box.trigger('change');
+    }
+
+    showRequests(content_area, refresh = false) {
+        if (!refresh) {
+            content_area.empty();
+            const rand = Math.floor(Math.random() * 1000000);
+            content_area.append(`
+                <div class="d-flex flex-row h-100">
+                    <div class="overflow-auto" style="flex: 0 0 33%; border-right: 1px solid #808080; min-width: 100px;">
+                        <table id="debug-requests-table" class="table table-sm table-striped table-hover mb-1">
+                            <thead>
+                                <tr>
+                                    <th>Number</th>
+                                    <th style="max-width: 200px; white-space: pre-wrap; position: sticky; top: 0;">URL</th>
+                                    <th style="position: sticky; top: 0;">Status</th>
+                                    <th style="position: sticky; top: 0;">Type</th>
+                                    <th style="position: sticky; top: 0;">Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody style="white-space: nowrap">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="resize-handle mx-n2" style="cursor: col-resize; width: 10px; z-index: 1030"></div>
+                    <div class="overflow-auto ms-3 flex-grow-1">
+                        <div id="debugpanel${rand}" class="p-0">
+                            <ul class="nav nav-tabs" data-bs-toggle="tabs">
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="request_summary">Summary</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="sql"">SQL</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="globals">Globals</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="profiler">Profiler</button>
+                                </li>
+                            </ul>
+                
+                            <div class="card-body overflow-auto">
+                                <div class="tab-content request-details-content-area">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `);
+            content_area.find('#debug-requests-table tbody').append(`
+                <tr data-request-id="${this.initial_request.id}" class="cursor-pointer">
+                    <td>0</td>
+                    <td style="max-width: 200px; white-space: pre-wrap;">${window.location.pathname}</td>
+                    <td>-</td>
+                    <td>${this.initial_request.globals.server['REQUEST_METHOD'] || '-'}</td>
+                    <td>${this.initial_request.server_performance.execution_time * 1000}ms</td>
+                </tr>
+            `);
+            const resize_handle = content_area.find('.resize-handle');
+            // Make the resize handle draggable to resize the left column
+            let is_dragging = false;
+            resize_handle.on('mousedown', (e) => {
+                if (e.buttons === 1) {
+                    is_dragging = true;
+                    e.preventDefault();
+                }
+            });
+            content_area.on('mousemove', (e) => {
+                if (is_dragging && e.buttons === 1) {
+                    const left_column = content_area.find('> div > div:first-child');
+                    const new_width = e.pageX - left_column.offset().left;
+                    left_column.css('flex', `0 0 ${new_width}px`);
+                }
+            });
+            content_area.on('mouseup', () => {
+                is_dragging = false;
+            });
+            content_area.on('click', 'button[data-glpi-debug-widget-id]', (e) => {
+                const widget_id = $(e.currentTarget).attr('data-glpi-debug-widget-id');
+                content_area.data('requests_active_widget', widget_id);
+                this.showWidget(widget_id, false, content_area.find('.request-details-content-area'), {
+                    request_id: content_area.data('requests_request_id') || this.initial_request.id,
+                });
+            });
+            content_area.on('click', '#debug-requests-table tbody tr', (e) => {
+                content_area.data('requests_request_id', $(e.currentTarget).attr('data-request-id'));
+                this.showWidget(content_area.data('requests_active_widget') || 'request_summary', false, content_area.find('.request-details-content-area'), {
+                    request_id: content_area.data('requests_request_id') || this.initial_request.id,
+                });
+            });
+            if (content_area.data('requests_request_id') === undefined) {
+                content_area.data('requests_request_id', this.initial_request.id);
+            }
+            if (content_area.find('.request-details-content-area').data('request_id') === undefined) {
+                content_area.find('.request-details-content-area').data('request_id', this.initial_request.id);
+            }
+            initSortableTable('debug-requests-table');
+        }
+
+        // Add all AJAX requests to the list that aren't already there
+        this.ajax_requests.forEach((request) => {
+            const row = content_area.find(`tr[data-request-id="${request.id}"]`);
+            if (row.length === 0) {
+                const next_number = content_area.find('#debug-requests-table tbody tr').length;
+                content_area.find('#debug-requests-table tbody').append(`
+                    <tr data-request-id="${request.id}" class="cursor-pointer">
+                        <td>${next_number}</td>
+                        <td style="max-width: 200px; white-space: pre-wrap;">${request.url}</td>
+                        <td>${request.status}</td>
+                        <td>${request.type}</td>
+                        <td>${request.time}ms</td>
+                    </tr>
+                `);
+            } else {
+                row.find('> td:nth-child(3)').text(request.status);
+                row.find('> td:nth-child(5)').text(`${request.time}ms`);
+            }
+        });
+    }
+
+    showRequestSummary(content_area) {
+        content_area.empty();
+        const profile = this.getProfile(content_area.data('request_id'));
+
+        const server_perf = profile.server_performance;
+        const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
+        const memory_peak_mio = (server_perf.memory_peak / 1024 / 1024).toFixed(2);
+        const memory_limit_mio = (server_perf.memory_limit / 1024 / 1024).toFixed(2);
+        let total_execution_time = profile.server_performance.execution_time;
+
+        let total_sql_duration = 0;
+        let total_sql_queries = 0;
+        $.each(profile.sql['queries'], (i, query) => {
+            total_sql_queries++;
+            total_sql_duration += parseFloat(query['time']);
+        });
+        content_area.append(`
+            <h1>Request Summary</h1>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>
+                            Initial Execution Time: ${this.initial_request.server_performance.execution_time}s
+                            <br>
+                            Total Execution Time: ${total_execution_time}s
+                        </td>
+                        <td>
+                            Memory Usage: ${memory_usage_mio}mio / ${memory_limit_mio}mio
+                            <br>
+                            Memory Peak: ${memory_peak_mio}mio / ${memory_limit_mio}mio
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            SQL Queries: ${total_sql_queries}
+                            <br>
+                            SQL Duration: ${total_sql_duration}ms
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        `);
     }
 };
