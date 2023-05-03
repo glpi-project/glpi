@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c731224091a0ba671fcc5cafc68b103e",
+    "content-hash": "c1e81e094281276a42411cd68a986fe1",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -6190,16 +6190,16 @@
         },
         {
             "name": "phpstan/extension-installer",
-            "version": "1.2.0",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/extension-installer.git",
-                "reference": "f06dbb052ddc394e7896fcd1cfcd533f9f6ace40"
+                "reference": "f5e02d40f277d28513001976f444d9ff1dc15e9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/f06dbb052ddc394e7896fcd1cfcd533f9f6ace40",
-                "reference": "f06dbb052ddc394e7896fcd1cfcd533f9f6ace40",
+                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/f5e02d40f277d28513001976f444d9ff1dc15e9a",
+                "reference": "f5e02d40f277d28513001976f444d9ff1dc15e9a",
                 "shasum": ""
             },
             "require": {
@@ -6214,7 +6214,12 @@
             },
             "type": "composer-plugin",
             "extra": {
-                "class": "PHPStan\\ExtensionInstaller\\Plugin"
+                "class": "PHPStan\\ExtensionInstaller\\Plugin",
+                "phpstan/extension-installer": {
+                    "ignore": [
+                        "phpstan/phpstan-phpunit"
+                    ]
+                }
             },
             "autoload": {
                 "psr-4": {
@@ -6228,22 +6233,22 @@
             "description": "Composer plugin for automatic installation of PHPStan extensions",
             "support": {
                 "issues": "https://github.com/phpstan/extension-installer/issues",
-                "source": "https://github.com/phpstan/extension-installer/tree/1.2.0"
+                "source": "https://github.com/phpstan/extension-installer/tree/1.3.0"
             },
-            "time": "2022-10-17T12:59:16+00:00"
+            "time": "2023-04-18T13:08:02+00:00"
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.10",
+            "version": "1.10.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "f1e22c9b17a879987f8743d81533250a5fff47f9"
+                "reference": "d232901b09e67538e5c86a724be841bea5768a7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/f1e22c9b17a879987f8743d81533250a5fff47f9",
-                "reference": "f1e22c9b17a879987f8743d81533250a5fff47f9",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d232901b09e67538e5c86a724be841bea5768a7c",
+                "reference": "d232901b09e67538e5c86a724be841bea5768a7c",
                 "shasum": ""
             },
             "require": {
@@ -6292,7 +6297,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-04-01T17:06:15+00:00"
+            "time": "2023-04-19T13:47:27+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -6596,16 +6601,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v6.2.7",
+            "version": "v6.2.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "0a5be6cbc570ae23b51b49d67341f378629d78e4"
+                "reference": "3f5545a91c8e79dedd1a06c4b04e1682c80c42f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/0a5be6cbc570ae23b51b49d67341f378629d78e4",
-                "reference": "0a5be6cbc570ae23b51b49d67341f378629d78e4",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/3f5545a91c8e79dedd1a06c4b04e1682c80c42f9",
+                "reference": "3f5545a91c8e79dedd1a06c4b04e1682c80c42f9",
                 "shasum": ""
             },
             "require": {
@@ -6660,8 +6665,11 @@
             ],
             "description": "Provides powerful methods to fetch HTTP resources synchronously or asynchronously",
             "homepage": "https://symfony.com",
+            "keywords": [
+                "http"
+            ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v6.2.7"
+                "source": "https://github.com/symfony/http-client/tree/v6.2.10"
             },
             "funding": [
                 {
@@ -6677,7 +6685,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-21T10:54:55+00:00"
+            "time": "2023-04-20T13:12:48+00:00"
         },
         {
             "name": "symfony/http-client-contracts",

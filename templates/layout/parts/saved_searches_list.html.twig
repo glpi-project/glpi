@@ -37,8 +37,9 @@
    </div>
 {% endif %}
 
+<div class='sortable-savedsearches'>
 {% for search in saved_searches %}
-   <div class="savedsearches-item list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
+   <div class="savedsearches-item grip-savedsearch list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
          data-id="{{ search['id'] }}">
       <a href="{{ 'SavedSearch'|itemtype_search_path }}?action=load&amp;id={{ search['id'] }}"
          class="d-block saved-searches-link text-truncate">
@@ -61,3 +62,24 @@
       </div>
    </div>
 {% endfor %}
+</div>
+
+<script type="text/javascript">
+$(function() {
+   sortable('.sortable-savedsearches', {
+      placeholder: '<div class="sortable-placeholder">&nbsp;</div>',
+   })
+   $('.sortable-savedsearches').on('sortupdate', function(e) {
+      var _ids = $('.savedsearches-item').map(function(idx, ele) {
+         return $(ele).data('id');
+      }).get();
+
+      $.post(CFG_GLPI['root_doc']+'/ajax/savedsearch.php', {
+         'action': 'reorder',
+         'ids': _ids,
+      });
+
+      displayAjaxMessageAfterRedirect();
+   });
+});
+</script>

@@ -1323,6 +1323,10 @@ class MassiveAction
      **/
     public function updateProgressBars()
     {
+        if (isAPI()) {
+            // No progress bar on API
+            return;
+        }
 
         if ($this->timer->getTime() > 1) {
            // If the action's delay is more than one second, the display progress bars

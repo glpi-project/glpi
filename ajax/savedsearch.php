@@ -92,7 +92,7 @@ if ($action == 'display_mine') {
 }
 
 if ($action == 'reorder') {
-    $savedsearch->saveOrder($_GET['ids']);
+    $savedsearch->saveOrder($_POST['ids']);
     header("Content-Type: application/json; charset=UTF-8");
     echo json_encode(['res' => true]);
 }

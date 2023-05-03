@@ -167,3 +167,31 @@ body.horizontal-layout {
         min-width: 200px;
     }
 }
+
+.sortable-savedsearches {
+    .sortable-placeholder {
+        background: #e7f06367;
+        border: 1px dashed #ccc;
+        padding: 10px;
+        margin: 10px;
+        opacity: 0.5;
+    }
+
+    .grip-savedsearch {
+        cursor: pointer;
+        cursor: grab;
+
+        &:active {
+            cursor: grabbing;
+        }
+
+        &:hover::before {
+            content: "\ec01";
+            font-family: tabler-icons;
+            font-weight: 900;
+            color: $secondary;
+            margin-left: -1rem;
+            width: 1rem;
+        }
+    }
+}

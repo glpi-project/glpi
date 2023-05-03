@@ -4043,7 +4043,15 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getWhitelistedSingleMassiveActions()
     {
-        return ['MassiveAction:add_transfer_list'];
+        global $CFG_GLPI;
+
+        $actions = ['MassiveAction:add_transfer_list'];
+
+        if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
+            $actions[] = 'Item_Rack:delete';
+        }
+
+        return $actions;
     }
 
 
@@ -4060,7 +4068,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getSpecificMassiveActions($checkitem = null)
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         $actions = [];
        // test if current profile has rights to unlock current item type
@@ -4068,13 +4076,21 @@ class CommonDBTM extends CommonGLPI
             $actions['ObjectLock' . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock']
                         = _x('button', 'Unlock items');
         }
-        if ($DB->fieldExists(static::getTable(), 'entities_id') && static::canUpdate()) {
-            MassiveAction::getAddTransferList($actions);
-        }
 
-        if (in_array(static::getType(), Appliance::getTypes(true)) && static::canUpdate()) {
-            $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
-            "<i class='fa-fw " . Appliance::getIcon() . "'></i>" . _x('button', 'Associate to an appliance');
+        if (static::canUpdate()) {
+            if ($DB->fieldExists(static::getTable(), 'entities_id')) {
+                MassiveAction::getAddTransferList($actions);
+            }
+
+            if (in_array(static::getType(), Appliance::getTypes(true))) {
+                $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
+                "<i class='fa-fw " . Appliance::getIcon() . "'></i>" . _x('button', 'Associate to an appliance');
+            }
+
+            if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
+                $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete'] =
+                "<i class='fa-fw ti ti-server-off'></i>" . _x('button', 'Remove from a rack');
+            }
         }
 
         return $actions;

@@ -862,28 +862,28 @@ class Socket extends CommonDBChild
                 ])
             ) {
                 echo "<td><a href='" . $cable->getLinkURL() . "'>" . $cable->getName() . "</a></td>";
-            } else {
-                echo "<td></td>";
-            }
+                if (
+                    $cable->fields['itemtype_endpoint_a'] === $item->getType()
+                    && $cable->fields['items_id_endpoint_a'] === $item->getID()
+                ) {
+                    $itemtype = $cable->fields['itemtype_endpoint_b'];
+                    $item_id = $cable->fields['items_id_endpoint_b'];
+                } else {
+                    $itemtype = $cable->fields['itemtype_endpoint_a'];
+                    $item_id = $cable->fields['items_id_endpoint_a'];
+                }
 
-            if (
-                $cable->fields['itemtype_endpoint_a'] === $item->getType()
-                && $cable->fields['items_id_endpoint_a'] === $item->getID()
-            ) {
-                $itemtype = $cable->fields['itemtype_endpoint_b'];
-                $item_id = $cable->fields['items_id_endpoint_b'];
+                $endpoint = getItemForItemtype($itemtype);
+                if ($endpoint !== false && $item_id !== 0 && $endpoint->getFromDB($item_id)) {
+                    echo "<td>" . $endpoint->getType() . "</td>";
+                    echo "<td><a href='" . $endpoint->getLinkURL() . "'>" . $endpoint->getName() . "</a></td>";
+                } else {
+                    echo "<td></td>";
+                    echo "<td></td>";
+                }
             } else {
-                $itemtype = $cable->fields['itemtype_endpoint_a'];
-                $item_id = $cable->fields['items_id_endpoint_a'];
-            }
-
-            $endpoint = getItemForItemtype($itemtype);
-            if ($endpoint !== false && $item_id !== 0 && $endpoint->getFromDB($item_id)) {
-                echo "<td>" . $endpoint->getType() . "</td>";
-                echo "<td><a href='" . $endpoint->getLinkURL() . "'>" . $endpoint->getName() . "</a></td>";
-            } else {
-                echo "<td></td>";
-                echo "<td></td>";
+                // No cable, so empty columns for Cable, Itemtype and Item Name
+                echo "<td></td><td></td><td></td>";
             }
 
             echo "</tr>\n";
