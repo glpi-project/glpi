@@ -202,7 +202,6 @@ window.GLPI.Debug = new class Debug {
 
         $('#debug-toolbar').on('click', '.debug-toolbar-widget', (e) => {
             const widget_id = $(e.currentTarget).attr('data-glpi-debug-widget-id');
-            $(e.currentTarget).addClass('active').siblings().removeClass('active');
             this.showWidget(widget_id);
             this.toggleExtraContentArea(true);
         });
@@ -234,7 +233,7 @@ window.GLPI.Debug = new class Debug {
             // Show the requests widget and select the request
             this.showWidget('requests');
             // Find the request in the table and select it
-            const request_row = $(`#debug-toolbar-expanded-content .requests-table tr[data-request-id="${request_id}"]`);
+            const request_row = $(`#debug-toolbar-expanded-content #debug-requests-table tr[data-request-id="${request_id}"]`);
             if (request_row.length > 0) {
                 request_row[0].scrollIntoView();
                 request_row.click();
@@ -331,6 +330,12 @@ window.GLPI.Debug = new class Debug {
     showWidget(widget_id, refresh = false, content_area = undefined, data = {}) {
         if (content_area === undefined) {
             content_area = $('#debug-toolbar-expanded-content');
+            // if there is a button in the toolbar for this widget, make it active
+            const widget_button = this.getWidgetButton(widget_id);
+            if (widget_button.length > 0) {
+                $('#debug-toolbar .debug-toolbar-widgets .debug-toolbar-widget button').removeClass('active');
+                widget_button.find('button').addClass('active');
+            }
         }
         content_area.data('active-widget', widget_id);
 
