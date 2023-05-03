@@ -171,9 +171,7 @@ class Config extends CommonDBTM
             return false;
         }
 
-        if (!isset($input["allow_notifications_type"])) {
-            $input["allow_notifications_type"] = exportArrayToDB([]);
-        } else {
+        if (isset($input["allow_notifications_type"])) {
             $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
         }
 
@@ -1445,21 +1443,18 @@ JAVASCRIPT
         }
 
         echo "<tr class='tab_bg_1'><th colspan='4'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) . "</th></tr>";
-
         echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __("Receive notifications from GLPI") . "</td><td>";
-
-        $CFG_GLPI['notifications_modes'] = [
-            Notification_NotificationTemplate::MODE_ALL => [
-                'label'  => __('All'),
-                'from'   => 'core'
-            ]
-        ];
-        echo "<input type='hidden' name='_allow_notifications_types' value='1'>";
+        echo "<td>" . __("Allowed GLPI notifications types") . "</td><td>";
         Notification_NotificationTemplate::dropdownMode([
             'values' => importArrayFromDB($data['allow_notifications_type']),
             'name' => 'allow_notifications_type',
-            'multiple' => true
+            'multiple' => true,
+            'toadd' => [
+                Notification_NotificationTemplate::MODE_ALL => [
+                    'label'  => __('All'),
+                    'from'   => 'core'
+                ]
+            ]
         ]);
         echo "</td></tr>";
 

@@ -8659,7 +8659,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => null,
                 'list_limit' => '20',
                 'authtype' => '1',
-                'allow_notifications_type' => null,
             ], [
                 'id' => self::USER_POST_ONLY,
                 'name' => 'post-only',
@@ -8668,7 +8667,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
-                'allow_notifications_type' => null,
             ], [
                 'id' => self::USER_TECH,
                 'name' => 'tech',
@@ -8677,7 +8675,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
-                'allow_notifications_type' => null,
             ], [
                 'id' => self::USER_NORMAL,
                 'name' => 'normal',
@@ -8686,7 +8683,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
-                'allow_notifications_type' => null,
             ], [
                 'id' => self::USER_SYSTEM,
                 'name' => 'glpi-system',
@@ -8695,7 +8691,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => null,
                 'list_limit' => null,
                 'authtype' => 1,
-                'allow_notifications_type' => null,
             ],
         ];
 

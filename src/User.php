@@ -708,12 +708,9 @@ class User extends CommonDBTM
             $input["auths_id"] = 0;
         }
 
-        if (isset($input['allow_notifications_type']) && is_array($input['allow_notifications_type']) && count($input['allow_notifications_type'])) {
+        if (isset($input['allow_notifications_type'])) {
             $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
-        } else {
-            $input["allow_notifications_type"] = null;
         }
-
 
         // Check if user does not exists
         $iterator = $DB->request([
@@ -1050,13 +1047,8 @@ class User extends CommonDBTM
             $input['api_token_date'] = $_SESSION['glpi_currenttime'];
         }
 
-
-        if (isset($input["_allow_notifications_types"])) {
-            if (isset($input['allow_notifications_type']) && is_array($input['allow_notifications_type']) && count($input['allow_notifications_type'])) {
-                $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
-            } else {
-                $input["allow_notifications_type"] = exportArrayToDB([]);
-            }
+        if (isset($input['allow_notifications_type'])) {
+            $input["allow_notifications_type"] = exportArrayToDB($input["allow_notifications_type"]);
         }
 
         // Manage preferences fields
@@ -2806,7 +2798,6 @@ JAVASCRIPT;
             echo "</td>";
         }
         echo "</tr>";
-
 
         if (empty($ID)) {
             echo "<tr class='tab_bg_1'>";
