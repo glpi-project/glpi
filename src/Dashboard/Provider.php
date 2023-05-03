@@ -1630,11 +1630,12 @@ class Provider
 
     final public static function getSearchFiltersCriteria(string $table = "", array $apply_filters = [])
     {
+        $DBread = DBConnection::getReadConnection();
         $s_criteria = [];
         $filters = Filter::getAll();
 
         foreach ($filters as $filter) {
-            $filter_criteria = $filter::getSearchCriteria($table, $apply_filters);
+            $filter_criteria = $filter::getSearchCriteria($DBread, $table, $apply_filters);
             if(!empty($filter_criteria)){
                 $s_criteria = array_merge($s_criteria, $filter_criteria);
             }
@@ -1645,13 +1646,14 @@ class Provider
 
     public static function getFiltersCriteria(string $table = "", array $apply_filters = [])
     {
+        $DBread = DBConnection::getReadConnection();
         $where = [];
         $join  = [];
 
         $filters = Filter::getAll();
 
         foreach ($filters as $filter) {
-            $filter_criteria = $filter::getCriteria($table, $apply_filters);
+            $filter_criteria = $filter::getCriteria($DBread, $table, $apply_filters);
             if(isset($filter_criteria['WHERE'])){
                 $where = array_merge($where, $filter_criteria['WHERE']);
             }

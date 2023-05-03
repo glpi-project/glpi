@@ -37,7 +37,7 @@ namespace Glpi\Dashboard\Filters;
 
 use Session;
 use RequestType;
-use DBConnection;
+use DBmysql;
 
 class RequestTypeFilter extends AbstractFilter
 {
@@ -66,9 +66,8 @@ class RequestTypeFilter extends AbstractFilter
      * 
      * @return array
      */
-    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $DB = DBConnection::getReadConnection();
         $criteria = [
             "WHERE" => [],
             "JOIN"  => [],
@@ -93,9 +92,8 @@ class RequestTypeFilter extends AbstractFilter
      *
      * @return array
      */
-    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $DB = DBConnection::getReadConnection();
         $criteria = [];
 
         if (

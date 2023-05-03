@@ -36,7 +36,7 @@
 namespace Glpi\Dashboard\Filters;
 
 use Html;
-use DBConnection;
+use DBmysql;
 use Ticket;
 use Change;
 use Problem;
@@ -68,9 +68,8 @@ class DatesFilter extends AbstractFilter
      * 
      * @return array
      */
-    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $DB = DBConnection::getReadConnection();
         $criteria = [];
 
         if (
@@ -113,9 +112,8 @@ class DatesFilter extends AbstractFilter
      *
      * @return array
      */
-    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $DB = DBConnection::getReadConnection();
         $criteria = [
             "WHERE" => [],
             "JOIN"  => [],

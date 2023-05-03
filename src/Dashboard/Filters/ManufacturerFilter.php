@@ -37,7 +37,7 @@ namespace Glpi\Dashboard\Filters;
 
 use Session;
 use Manufacturer;
-use DBConnection;
+use DBmysql;
 
 class ManufacturerFilter extends AbstractFilter
 {
@@ -66,9 +66,8 @@ class ManufacturerFilter extends AbstractFilter
      * 
      * @return array
      */
-    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $DB = DBConnection::getReadConnection();
         $criteria = [
             "WHERE" => [],
             "JOIN"  => [],
@@ -92,9 +91,8 @@ class ManufacturerFilter extends AbstractFilter
      *
      * @return array
      */
-    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $DB = DBConnection::getReadConnection();
         $criteria = [];
 
         if (

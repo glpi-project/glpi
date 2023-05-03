@@ -36,7 +36,7 @@
 namespace Glpi\Dashboard\Filters;
 
 use Group;
-use DBConnection;
+use DBmysql;
 use Ticket;
 use Change;
 use Problem;
@@ -67,9 +67,8 @@ class GroupTechFilter extends AbstractFilter
      * 
      * @return array
      */
-    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $DB = DBConnection::getReadConnection();
         $criteria = [
             "WHERE" => [],
             "JOIN"  => [],
@@ -125,9 +124,8 @@ class GroupTechFilter extends AbstractFilter
      *
      * @return array
      */
-    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $DB = DBConnection::getReadConnection();
         $criteria = [];
 
         if (isset($apply_filters[self::getId()])) {

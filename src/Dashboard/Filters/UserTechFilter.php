@@ -36,7 +36,7 @@
 namespace Glpi\Dashboard\Filters;
 
 use User;
-use DBConnection;
+use DBmysql;
 use Ticket;
 use Change;
 use Problem;
@@ -69,9 +69,8 @@ class UserTechFilter extends AbstractFilter
      * 
      * @return array
      */
-    public static function getCriteria(string $table = "", array $apply_filters = []) : array
+    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $DB = DBConnection::getReadConnection();
         $criteria = [
             "WHERE" => [],
             "JOIN"  => [],
@@ -127,9 +126,8 @@ class UserTechFilter extends AbstractFilter
      *
      * @return array
      */
-    public static function getSearchCriteria(string $table = "", array $apply_filters = []) : array
+    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $DB = DBConnection::getReadConnection();
         $criteria = [];
 
         if (

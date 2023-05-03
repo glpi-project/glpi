@@ -36,6 +36,7 @@
 namespace Glpi\Dashboard\Filters;
 use Html;
 use Search;
+use DBmysql;
 
 abstract class AbstractFilter
 {
@@ -65,7 +66,7 @@ abstract class AbstractFilter
      * 
      * @return array
      */
-    public static abstract function getCriteria(string $table = "", array $apply_filters = []) : array;
+    public static abstract function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array;
 
 
     /**
@@ -81,7 +82,7 @@ abstract class AbstractFilter
      *
      * @return array
      */
-    public static abstract function getSearchCriteria(string $table = "", array $apply_filters = []) : array;
+    public static abstract function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array;
 
     protected static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
     {
