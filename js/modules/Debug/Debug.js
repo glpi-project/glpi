@@ -375,7 +375,7 @@ window.GLPI.Debug = new class Debug {
         if (!refresh) {
             content_area.empty();
             content_area.append(`
-                <div>
+                <div class="overflow-auto">
                    <h1></h1>
                    <table id="debug-sql-request-table" class="table card-table">
                       <thead>
