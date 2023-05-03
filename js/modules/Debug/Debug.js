@@ -194,6 +194,7 @@ window.GLPI.Debug = new class Debug {
                         } else {
                             ajax_request.profile.globals['get'] = ajax_request.data;
                         }
+                        this.refreshWidgetButtons();
                     });
                 }
             }
