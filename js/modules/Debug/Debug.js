@@ -782,7 +782,7 @@ window.GLPI.Debug = new class Debug {
                                     <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="request_summary">Summary</button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="sql"">SQL</button>
+                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="sql">SQL</button>
                                 </li>
                                 <li class="nav-item">
                                     <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="globals">Globals</button>
