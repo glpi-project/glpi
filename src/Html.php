@@ -1823,8 +1823,10 @@ HTML;
 
         TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
 
-        \Glpi\Debug\Profiler::stopAll();
-        (new Glpi\Debug\Toolbar())->show();
+        if (!str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
+            \Glpi\Debug\Profiler::stopAll();
+            (new Glpi\Debug\Toolbar())->show();
+        }
 
         if (!$keepDB && function_exists('closeDBConnections')) {
             closeDBConnections();
