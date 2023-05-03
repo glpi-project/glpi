@@ -1414,7 +1414,7 @@ function blockFormSubmit(form, e) {
 
     // if submitter is not a button, find the first submit button with add or update as the name
     if (submitter === null || !submitter.is('button')) {
-        submitter = submitter.find('button[name="add"]:first, button[name="update"]:first');
+        submitter = form.find('button[name="add"]:first, button[name="update"]:first');
         // If no submit button was found, use the first submit button
         if (submitter.length === 0) {
             submitter = form.find('button[type="submit"]:first');
