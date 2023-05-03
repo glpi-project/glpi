@@ -525,7 +525,7 @@ window.GLPI.Debug = new class Debug {
                      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugserver${rand}">SERVER</a></li>
                   </ul>
             
-                  <div class="card-body overflow-auto">
+                  <div class="card-body overflow-auto p-1">
                      <div class="tab-content">
                         <div id="debugpost${rand}" class="tab-pane active"></div>
                         <div id="debugget${rand}" class="tab-pane"></div>
@@ -805,7 +805,7 @@ window.GLPI.Debug = new class Debug {
                                 </li>
                             </ul>
                 
-                            <div class="card-body overflow-auto">
+                            <div class="card-body overflow-auto p-1">
                                 <div class="tab-content request-details-content-area">
                                 </div>
                             </div>
