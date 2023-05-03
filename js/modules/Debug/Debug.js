@@ -407,6 +407,7 @@ window.GLPI.Debug = new class Debug {
     }
 
     showSQLRequests(content_area, refresh = false) {
+        const filtered_request_id = content_area.data('request_id');
         if (!refresh) {
             content_area.empty();
             content_area.append(`
@@ -415,7 +416,8 @@ window.GLPI.Debug = new class Debug {
                    <table id="debug-sql-request-table" class="table card-table">
                       <thead>
                       <tr>
-                         <th>Request ID</th><th>N°</th><th>Query</th><th>Time</th><th>Rows</th><th>Warnings</th><th>Errors</th>
+                         ${filtered_request_id === undefined ? '<th>Request ID</th>' : ''}
+                         <th>N°</th><th>Query</th><th>Time</th><th>Rows</th><th>Warnings</th><th>Errors</th>
                       </tr>
                       </thead>
                       <tbody></tbody>
@@ -435,7 +437,6 @@ window.GLPI.Debug = new class Debug {
         });
 
         const sql_data = this.getCombinedSQLData();
-        const filtered_request_id = content_area.data('request_id');
 
         let rows_to_append = '';
         $.each(sql_data['queries'], (request_id, queries) => {
@@ -446,7 +447,7 @@ window.GLPI.Debug = new class Debug {
             queries.forEach((query) => {
                 rows_to_append += `
                     <tr>
-                        <td><button class="btn btn-link request-link">${request_id}</button></td>
+                        ${filtered_request_id === undefined ? `<td><button class="btn btn-link request-link">${request_id}</button></td>` : ''}
                         <td>${query['num']}</td>
                         <td style="max-width: 50vw; white-space: break-spaces;">${query['query']}</td>
                         <td>${query['time']}ms</td>
