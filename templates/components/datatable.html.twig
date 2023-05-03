@@ -41,10 +41,22 @@
         'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order
     }) }}
 
-    <div class="table-responsive">
+    <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
+        {% if showmassiveactions %}
+            {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+        {% endif %}
         <table class="table table-hover">
             <thead>
                 <tr>
+                    {% if showmassiveactions %}
+                        <th style="width: 30px;">
+                            <div>
+                                <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
+                                    value="" aria-label="{{ __('Check all as') }}"
+                                    onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
+                            </div>
+                        </th>
+                    {% endif %}
                     {% for colkey, colum in columns %}
                         {% set sort_icon = '' %}
                         {% set new_order = "DESC" %}
@@ -128,6 +140,13 @@
             <tbody>
                 {% for entry in entries %}
                     <tr>
+                        {% if showmassiveactions %}
+                            <td width='10'>
+                                <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
+                                    value="1" aria-label=""
+                                    name="item[{{ itemtype }}][{{ entry['id'] }}]" />
+                            </td>
+                        {% endif %}
                         {% for colkey, colum in columns %}
                             <td>
                                 {% if colkey in entry|keys %}

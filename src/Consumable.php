@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 
 //!  Consumable Class
@@ -679,6 +680,105 @@ class Consumable extends CommonDBChild
     }
 
 
+    public static function showForUser(User $user)
+    {
+        global $DB;
+
+        $itemtype = $user->getType();
+        $items_id = $user->getField('id');
+
+        $start       = intval($_GET["start"] ?? 0);
+        $sort        = $_GET["sort"] ?? "";
+        $order       = strtoupper($_GET["order"] ?? "");
+        $filters     = $_GET['filters'] ?? [];
+        $is_filtered = count($filters) > 0;
+        $sql_filters = getEntitiesRestrictCriteria('glpi_consumableitems', '', '', true);
+
+        if (strlen($sort) == 0) {
+            $sort = "name";
+        }
+        if (strlen($order) == 0) {
+            $order = "ASC";
+        }
+
+        $query = [
+            'SELECT' => [
+                'glpi_consumables.*',
+                'glpi_consumableitems.name AS itemname',
+                'glpi_consumableitems.ref AS ref',
+                'glpi_consumableitems.entities_id AS entities_id',
+                'glpi_consumableitems.is_recursive AS is_recursive'
+            ],
+            'FROM' => self::getTable(),
+            'LEFT JOIN' => [
+                'glpi_consumableitems' => [
+                    'ON' => [
+                        'glpi_consumableitems' => 'id',
+                        'glpi_consumables'     => 'consumableitems_id'
+                    ]
+                ]
+            ],
+            'WHERE'  => [
+                'glpi_consumables.items_id' => $items_id,
+                'glpi_consumables.itemtype' => $itemtype,
+                'NOT' => ['glpi_consumables.date_out' => 'NULL'],
+            ] + $sql_filters
+        ];
+
+        $all_data = $DB->request($query);
+        $all_data = iterator_to_array($all_data);
+        $filtered_data = $DB->request($query + [
+            'LIMIT' => $_SESSION['glpilist_limit'],
+            'START' => $start,
+            'ORDER' => "$sort $order",
+        ]);
+
+        $total_number = count($all_data);
+        $filtered_number = count(getAllDataFromTable(self::getTable(), [
+            'items_id' => $items_id,
+            'itemtype' => $itemtype,
+            'NOT' => ['glpi_consumables.date_out' => 'NULL'],
+        ] + $sql_filters));
+
+        $envs = [];
+        foreach ($filtered_data as $env) {
+            $envs[$env['id']] = $env;
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'sort' => $sort,
+            'order' => $order,
+            'additional_params' => $is_filtered ? http_build_query([
+                'filters' => $filters
+            ]) : "",
+            'is_tab' => true,
+            'itemtype' => self::getType(),
+            'items_id' => $items_id,
+            'filters' => $filters,
+            'columns' => [
+                'id' => __('ID'),
+                'itemname' => __('Name'),
+                'ref' => __('Reference'),
+                'date_in' => __('Add date'),
+                'date_out' => __('Use date'),
+            ],
+            'entries' => $envs,
+            'total_number' => $total_number,
+            'filtered_number' => $filtered_number,
+            'showmassiveactions' => true,
+            'massiveactionparams' => [
+                'num_displayed'    => min($_SESSION['glpilist_limit'], $filtered_number),
+                'container'        => 'mass' . __CLASS__ . mt_rand(),
+                'specific_actions' => [
+                    'delete' => __('Delete permanently'),
+                    'Consumable' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock'),
+                ]
+            ],
+        ]);
+    }
+
+
     /**
      * Show the usage summary of consumables by user
      *
@@ -826,6 +926,11 @@ class Consumable extends CommonDBChild
                         $nb =  self::countForConsumableItem($item);
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                case 'User':
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = self::countForUser($item);
+                    }
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';
@@ -844,6 +949,22 @@ class Consumable extends CommonDBChild
     }
 
 
+    /**
+     * @param User $item
+     *
+     * @return integer
+     **/
+    public static function countForUser(User $item)
+    {
+
+        return countElementsInTable(['glpi_consumables'], [
+            'glpi_consumables.itemtype' => 'User',
+            'glpi_consumables.items_id' => $item->getField('id'),
+            'NOT' => ['glpi_consumables.date_out' => 'NULL'],
+        ]);
+    }
+
+
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -852,6 +973,9 @@ class Consumable extends CommonDBChild
                 self::showAddForm($item);
                 self::showForConsumableItem($item);
                 self::showForConsumableItem($item, 1);
+                break;
+            case 'User':
+                self::showForUser($item);
                 break;
         }
         return true;
