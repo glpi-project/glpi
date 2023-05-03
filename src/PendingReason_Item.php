@@ -180,12 +180,26 @@ class PendingReason_Item extends CommonDBRelation
             return false;
         }
 
-        if ($this->fields['followups_before_resolution'] > 0 && $this->fields['followups_before_resolution'] <= $this->fields['bump_count']) {
+        if (
+            $this->fields['followups_before_resolution'] != 0
+            && $this->fields['followups_before_resolution'] <= $this->fields['bump_count']
+        ) {
             return false;
         }
 
+        $pending_reason = PendingReason::getById($this->fields['pendingreasons_id']);
+        $calendar = Calendar::getById($pending_reason->fields['calendars_id']);
         $date = new DateTime($this->fields['last_bump_date']);
-        $date->setTimestamp($date->getTimestamp() + $this->fields['followup_frequency']);
+        $frequency = $this->fields['followup_frequency'] > 86400 ? 86400 : $this->fields['followup_frequency'];
+        for ($i = 0; $i < ceil($this->fields['followup_frequency'] / 86400.0); $i++) {
+            do {
+                $date->setTimestamp($date->getTimestamp() + $frequency);
+            } while (
+                $calendar && ($calendar->isHoliday($date->format('Y-m-d H:i:s'))
+                    || !$calendar->isAWorkingDay($date->getTimestamp()))
+            );
+        }
+
         return $date->format("Y-m-d H:i:s");
     }
 
@@ -201,8 +215,19 @@ class PendingReason_Item extends CommonDBRelation
         }
 
        // If there was a bump, calculate from last_bump_date
+        $pending_reason = PendingReason::getById($this->fields['pendingreasons_id']);
+        $calendar = Calendar::getById($pending_reason->fields['calendars_id']);
         $date = new DateTime($this->fields['last_bump_date']);
-        $date->setTimestamp($date->getTimestamp() + $this->fields['followup_frequency'] * ($this->fields['followups_before_resolution'] + 1 - $this->fields['bump_count']));
+        $frequency = $this->fields['followup_frequency'] > 86400 ? 86400 : $this->fields['followup_frequency'];
+        $remaining_bumps = abs($this->fields['followups_before_resolution']) - $this->fields['bump_count'];
+        for ($i = 0; $i < ceil($this->fields['followup_frequency'] / 86400.0) * ($remaining_bumps + 1); $i++) {
+            do {
+                $date->setTimestamp($date->getTimestamp() + $frequency);
+            } while (
+                $calendar && ($calendar->isHoliday($date->format('Y-m-d H:i:s'))
+                    || !$calendar->isAWorkingDay($date->getTimestamp()))
+            );
+        }
 
         return $date->format("Y-m-d H:i:s");
     }

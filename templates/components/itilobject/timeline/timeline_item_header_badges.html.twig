@@ -69,6 +69,8 @@
       {% endset %}
 
       {{ __('Created: %1$s by %2$s for the group %3$s')|format(date_span, creator_span, group_span)|raw }}
+   {% elseif entry['type'] == 'ITILAutoBump' %}
+      {{ __('%1$s')|format(date_span)|raw }}
    {% else %}
       {% if users_id > 0 %}
          {% set creator_span %}

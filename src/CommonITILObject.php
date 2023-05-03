@@ -7290,6 +7290,34 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
+        // add autobumps to timeline
+        $autobump_obj = new ITILAutoBump();
+        $autobumps = $autobump_obj->find(['items_id'  => $this->getID()]);
+        foreach ($autobumps as $autobump_id => $autobump) {
+            $autobump_obj->getFromDB($autobump_id);
+            $pending_reason = $autobump_obj->getPendinReason();
+            $followup_template = ITILFollowupTemplate::getById($pending_reason->fields['itilfollowuptemplates_id']);
+            $content = sprintf(
+                '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
+                '<i id="aaaa" class="ti ti-reload text-primary me-1"></i>',
+                __('Auto bump'),
+                htmlspecialchars($followup_template->fields['content']),
+                $autobump_obj->getPendinReason()->fields['name']
+            );
+
+            $timeline["ITILAutoBump_" . $autobump_id] = [
+                'type' => ITILAutoBump::class,
+                'item' => [
+                    'id' => $autobump_id,
+                    'content' => $content,
+                    'date' => $autobump['date_creation'],
+                    'users_id' => 0,
+                    'can_edit' => false,
+                    'timeline_position' => self::TIMELINE_LEFT,
+                ]
+            ];
+        }
+
         Plugin::doHook(Hooks::SHOW_IN_TIMELINE, ['item' => $this, 'timeline' => &$timeline]);
 
        //sort timeline items by date

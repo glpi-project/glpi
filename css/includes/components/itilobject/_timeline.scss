@@ -287,7 +287,8 @@
         }
     }
 
-    &.Log {
+    &.Log,
+    &.ITILAutoBump {
         width: 100%;
 
         .user-part {

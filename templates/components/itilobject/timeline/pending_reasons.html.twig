@@ -33,8 +33,9 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set default_pending = call('PendingReason::getDefault') %}
 {% set pending_item = call('PendingReason_Item::getForItem', [subitem, true]) %}
-{% if subitem.isNewItem() or pending_item or call('PendingReason_Item::isLastTimelineItem', [subitem])  %}
+{% if subitem.isNewItem() or pending_item or call('PendingReason_Item::isLastTimelineItem', [subitem]) %}
    <div class="row">
       <div class="col-12 col-sm-4" title="{{ "PendingReason"|itemtype_name }}"
            data-bs-toggle="tooltip" data-bs-placement="top">
@@ -55,7 +56,7 @@
          {{ fields.dropdownField(
             'PendingReason',
             'pendingreasons_id',
-            subitem.fields['pendingreasons_id'],
+            subitem.fields['pendingreasons_id'] ?? default_pending.fields['id'],
             pendingreasons_lbl,
             {
                'label_class': 'col-1',
@@ -93,6 +94,8 @@
                   $('#pending-reasons-more_options_{{ rand }}').removeClass('show');
                }
             });
+
+            $('#dropdown_pendingreasons_id{{ rand }}').trigger('change');
          </script>
       </div>
 

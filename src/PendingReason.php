@@ -54,7 +54,55 @@ class PendingReason extends CommonDropdown
 
     public function getAdditionalFields()
     {
+        $defaultPendingReason = self::getDefault();
+
         return [
+            [
+                'name' => 'is_default',
+                'label' => __('Default pending reason'),
+                'type' => 'bool',
+                'params' => [
+                    'add_field_html' => ($defaultPendingReason && $defaultPendingReason->getID() != $this->getID() ?
+                        '<span id="is_default_warning" class="text-warning d-none">'
+                        . \Html::showToolTip(
+                            sprintf(
+                                __('If you set this as the default pending reason, the previous default pending reason (%s) will no longer default.'),
+                                '<a href="' . PendingReason::getFormURLWithID($defaultPendingReason->getID()) . '">' . $defaultPendingReason->fields['name'] . '</a>'
+                            ),
+                            [
+                                'display' => false,
+                                'awesome-class' => 'fa fa-exclamation-triangle fa-lg',
+                            ]
+                        )
+                        . '</span>'
+                        : '')
+                        . '<script>'
+                        . '$("select[name=\'is_default\']").on("change", function() {'
+                        . 'if ($(this).val() == 1) {'
+                        . '$("#is_default_warning").removeClass("d-none");'
+                        . '$("select[name=\'is_pending_per_default\']").parent().parent().removeClass("d-none");'
+                        . '} else {'
+                        . '$("#is_default_warning").addClass("d-none");'
+                        . '$("select[name=\'is_pending_per_default\']").parent().parent().addClass("d-none");'
+                        . '}'
+                        . '});'
+                        . '</script>',
+                ],
+            ],
+            [
+                'name' => 'is_pending_per_default',
+                'label' => __('Pending per default'),
+                'type' => 'bool',
+                'params' => [
+                    'add_field_class' => $this->fields['is_default'] ? '' : 'd-none',
+                ],
+            ],
+            [
+                'name' => 'calendars_id',
+                'label' => Calendar::getTypeName(1),
+                'type' => 'dropdownValue',
+                'list' => true
+            ],
             [
                 'name'  => 'followup_frequency',
                 'label' => __('Automatic follow-up frequency'),
@@ -242,6 +290,7 @@ class PendingReason extends CommonDropdown
     public static function getFollowupsBeforeResolutionValues(): array
     {
         return [
+            -1 => __("No follow-up"),
             1 => __("After one follow-up"),
             2 => __("After two follow-ups"),
             3 => __("After three follow-ups"),
@@ -294,5 +343,59 @@ class PendingReason extends CommonDropdown
                 PendingReason_Item::class,
             ]
         );
+    }
+
+    public static function getDefault()
+    {
+        $pending_reason = new PendingReason();
+        if (
+            $pending_reason->getFromDBByCrit([
+                'is_default' => 1,
+            ])
+        ) {
+            return $pending_reason;
+        }
+
+        return null;
+    }
+
+    public static function isDefaultPending()
+    {
+        $default_pending = self::getDefault();
+
+        return $default_pending && $default_pending->fields['is_pending_per_default'];
+    }
+
+    public function prepareInput(array $input)
+    {
+        if (isset($input['is_default']) && $input['is_default']) {
+            global $DB;
+
+            $DB->update(
+                $this->getTable(),
+                [
+                    'is_default' => 0,
+                ],
+                [
+                    'is_default' => 1,
+                ]
+            );
+        }
+
+        if (isset($input['is_pending_per_default']) && $input['is_pending_per_default']) {
+            $input['is_pending_per_default'] = $input['is_default'] ?? 0;
+        }
+
+        return $input;
+    }
+
+    public function add(array $input, $options = [], $history = true)
+    {
+        return parent::add($this->prepareInput($input), $options, $history);
+    }
+
+    public function update(array $input, $options = [], $history = true)
+    {
+        return parent::update($this->prepareInput($input), $options, $history);
     }
 }

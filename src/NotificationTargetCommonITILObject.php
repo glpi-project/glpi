@@ -142,6 +142,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'update_followup'   => __('Update of a followup'),
             'delete_followup'   => __('Deletion of a followup'),
             'user_mention'      => __('User mentionned'),
+            'auto_bump'         => __('Automatic reminder'),
         ];
 
         asort($events);
@@ -1378,6 +1379,39 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.solution.description##"] = $itilsolution->getField('content');
         }
 
+        $itilautobump = new ITILAutoBump();
+        if (
+            $itilautobump->getFromDBByRequest([
+                'WHERE'  => [
+                    'itemtype'  => $objettype,
+                    'items_id'  => $item->fields['id'],
+                ],
+                'ORDER'  => 'date_creation DESC',
+                'LIMIT'  => 1
+            ])
+        ) {
+            $pending_reason = PendingReason::getById($itilautobump->getField('pendingreasons_id'));
+            $pending_reason_item = new PendingReason_Item();
+            $followup_template = ITILFollowupTemplate::getById($pending_reason->getField('itilfollowuptemplates_id'));
+            if (
+                $pending_reason && $followup_template && $pending_reason_item->getFromDBByRequest([
+                    'WHERE'  => [
+                        'itemtype'  => $objettype,
+                        'items_id'  => $item->fields['id'],
+                        'pendingreasons_id' => $pending_reason->getID(),
+                    ],
+                    'ORDER'  => 'last_bump_date DESC',
+                    'LIMIT'  => 1
+                ])
+            ) {
+                $data["##$objettype.autobump.bumpcounter##"]   = $pending_reason_item->getField('bump_count');
+                $data["##$objettype.autobump.bumpremaining##"] = $pending_reason_item->getField('followups_before_resolution') - $pending_reason_item->getField('bump_count');
+                $data["##$objettype.autobump.bumptotal##"]     = $pending_reason_item->getField('followups_before_resolution');
+                $data["##$objettype.autobump.deadline##"]      = $pending_reason_item->getAutoResolvedate();
+                $data["##$objettype.autobump.bumptext##"]      = $followup_template->getField('content');
+            }
+        }
+
        // Complex mode
         if (!$simple) {
             $linked = CommonITILObject_CommonITILObject::getAllLinkedTo($item->getType(), $item->getField('id'));
@@ -2079,7 +2113,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
             $objettype . '.numberoflinkedchanges' => _x('quantity', 'Number of linked changes'),
             $objettype . '.numberoflinkedproblems' => _x('quantity', 'Number of linked problems'),
-
+            $objettype . '.autobump.bumpcounter' => __('Number of bumps'),
+            $objettype . '.autobump.bumpremaining' => __('Number of remaining bumps'),
+            $objettype . '.autobump.bumptotal'  => __('Total number of bumps'),
+            $objettype . '.autobump.deadline'   => __('Deadline'),
+            $objettype . '.autobump.bumptext'   => __('Bump text'),
         ];
 
         foreach ($tags as $tag => $label) {

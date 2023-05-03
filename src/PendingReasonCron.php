@@ -113,28 +113,27 @@ class PendingReasonCron extends CommonDBTM
                 continue;
             }
 
+            // Load pending reason
+            $pending_reason = PendingReason::getById($pending_item->fields['pendingreasons_id']);
+            if (!$pending_reason) {
+                trigger_error("Failed to load PendingReason", E_USER_WARNING);
+                continue;
+            }
+
+            // Skip if the day is a non-working day or a holliday
+            $calendar = Calendar::getById($pending_reason->fields['calendars_id']);
+            if ($calendar && ($calendar->isHoliday($now) || !$calendar->isAWorkingDay(time()))) {
+                continue;
+            }
+
             $next_bump = $pending_item->getNextFollowupDate();
             $resolve = $pending_item->getAutoResolvedate();
 
             if ($next_bump && $now > $next_bump) {
-               // Load pending reason
-                $pending_reason = PendingReason::getById($pending_item->fields['pendingreasons_id']);
-                if (!$pending_reason) {
-                    trigger_error("Failed to load PendingReason", E_USER_WARNING);
-                    continue;
-                }
-
                 $template_id = $pending_reason->fields['itilfollowuptemplates_id'];
 
                 // No template defined; can't bump
                 if (!$template_id) {
-                    continue;
-                }
-
-                // Load followup template
-                $fup_template = ITILFollowupTemplate::getById($template_id);
-                if (!$fup_template) {
-                    trigger_error("Failed to load ITILFollowupTemplate::{$pending_reason->fields['itilfollowuptemplates_id']}", E_USER_WARNING);
                     continue;
                 }
 
@@ -145,39 +144,30 @@ class PendingReasonCron extends CommonDBTM
                 ]);
 
                 if (!$success) {
-                     trigger_error("Can't bump, unable to update pending item", E_USER_WARNING);
-                     continue;
-                }
-
-               // Add bump (new followup from template)
-                $fup = new ITILFollowup();
-                $fup->add([
-                    'itemtype' => $item::getType(),
-                    'items_id' => $item->getID(),
-                    'users_id' => $config['system_user'],
-                    'content' => $fup_template->getRenderedContent($item),
-                    'is_private' => $fup_template->fields['is_private'],
-                    'requesttypes_id' => $fup_template->fields['requesttypes_id'],
-                    'timeline_position' => CommonITILObject::TIMELINE_RIGHT,
-                    '_no_reopen' => 1,
-                ]);
-                $task->addVolume(1);
-            } else if ($resolve && $now > $resolve) {
-               // Load pending reason
-                $pending_reason = PendingReason::getById($pending_item->fields['pendingreasons_id']);
-                if (!$pending_reason) {
-                    trigger_error("Failed to load PendingReason", E_USER_WARNING);
+                    trigger_error("Can't bump, unable to update pending item", E_USER_WARNING);
                     continue;
                 }
 
-               // Load solution template
+                // Add bump (new ITILAutoBump)
+                $autoBump = new ITILAutoBump();
+                $autoBump->add([
+                    'itemtype' => $item::getType(),
+                    'items_id' => $item->getID(),
+                    'pendingreasons_id' => $pending_reason->getID(),
+                ]);
+                $task->addVolume(1);
+
+                // Send notification
+                \NotificationEvent::raiseEvent('auto_bump', $item);
+            } else if ($resolve && $now > $resolve) {
+                // Load solution template
                 $solution_template = SolutionTemplate::getById($pending_reason->fields['solutiontemplates_id']);
                 if (!$solution_template) {
                     trigger_error("Failed to load SolutionTemplate::{$pending_reason->fields['solutiontemplates_id']}", E_USER_WARNING);
                     continue;
                 }
 
-               // Add solution
+                // Add solution
                 $solution = new ITILSolution();
                 $solution->add([
                     'itemtype'         => $item::getType(),

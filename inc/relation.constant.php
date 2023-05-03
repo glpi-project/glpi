@@ -163,6 +163,7 @@ $RELATION = [
         'glpi_slms'                => 'calendars_id',
         'glpi_recurrentchanges'    => 'calendars_id',
         'glpi_ticketrecurrents'    => 'calendars_id',
+        '_glpi_pendingreasons'     => 'calendars_id',
     ],
 
     'glpi_cartridgeitems' => [
@@ -1068,6 +1069,7 @@ $RELATION = [
 
     'glpi_pendingreasons' => [
         '_glpi_pendingreasons_items' => 'pendingreasons_id',
+        '_glpi_itilautobumps' => 'pendingreasons_id',
     ],
 
     'glpi_pdumodels' => [
