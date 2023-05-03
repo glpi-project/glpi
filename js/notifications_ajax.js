@@ -61,7 +61,7 @@
                 });
 
                 if (typeof(url) != 'undefined' && url != null) {
-                    notification.url_item = CFG_GLPI.url_base + '/' + (url);
+                    notification.url_item = url;
 
                     notification.onclick = function (event) {
                         event.preventDefault(); // prevent the browser from focusing the Notification's tab

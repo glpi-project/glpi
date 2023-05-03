@@ -134,12 +134,9 @@ class NotificationAjax implements NotificationInterface
             if ($iterator->numrows()) {
                 foreach ($iterator as $row) {
                     $url = null;
-                    if (
-                        $row['itemtype'] != 'NotificationAjax' &&
-                        method_exists($row['itemtype'], 'getFormURL')
-                    ) {
+                    if (is_a($row['itemtype'], CommonGLPI::class, true)) {
                         $item = new $row['itemtype']();
-                        $url = $item->getFormURL(false) . "?id={$row['items_id']}";
+                        $url = $item->getFormURLWithID($row['items_id'], true);
                     }
 
                     $return[] = [
