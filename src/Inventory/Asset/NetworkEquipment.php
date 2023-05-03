@@ -345,60 +345,6 @@ class NetworkEquipment extends MainAsset
     }
 
     /**
-     * Returns a mapping of port indexes to chassis id
-     *
-     * @return array
-     */
-    public function getStackedPortsMap(): array
-    {
-        $components = $this->extra_data['network_components'] ?? [];
-        foreach ($components as $i => $component) {
-            foreach (['type', 'contained_index', 'index'] as $prop) {
-                if (!property_exists($component, $prop)) {
-                    unset($components[$i]);
-                    continue 2;
-                }
-            }
-        }
-        if (!count($components)) {
-            return [];
-        }
-
-        $map = [];
-        foreach ($components as $component) {
-            if ($component->type == 'port') {
-                $chassis_id = $this->traverseComponents($components, $component->contained_index);
-                if ($chassis_id) {
-                    $map[$component->index] = $chassis_id;
-                }
-            }
-        }
-
-        return $map;
-    }
-
-    private function traverseComponents(array $components, int $index, int $depth = 0): ?int
-    {
-        // max level of recursion
-        if ($depth > 5) {
-            return null;
-        }
-
-        foreach ($components as $component) {
-            if ($component->index == $index) {
-                if ($component->type == 'chassis') {
-                    return $component->index;
-                } else {
-                    $depth++;
-                    return $this->traverseComponents($components, $component->contained_index, $depth);
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Is device a wireless controller
      * Relies on level/dependencies of network_components
      *
