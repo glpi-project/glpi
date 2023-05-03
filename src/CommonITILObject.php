@@ -4912,7 +4912,7 @@ abstract class CommonITILObject extends CommonDBTM
            // set last updater if interactive user
             if (!Session::isCron()) {
                 $update['users_id_lastupdater'] = Session::getLoginUserID();
-            } else if ($users_id_lastupdater > 0) {
+            } else {
                 $update['users_id_lastupdater'] = $users_id_lastupdater;
             }
 
