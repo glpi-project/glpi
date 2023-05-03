@@ -305,7 +305,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
     'DatabaseInstanceType', SocketModel::class, 'CableType'
 ];
 
-$CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'Database'];
+$CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'DatabaseInstance'];
 
 $CFG_GLPI["networkport_types"]            = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
     'Phone', 'Printer', 'Enclosure', 'PDU', 'Cluster', 'Unmanaged'
