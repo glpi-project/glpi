@@ -1537,4 +1537,25 @@ class Session extends \DbTestCase
             }
         )->isInstanceOf(AccessDeniedHttpException::class);
     }
+
+    public function testRightCheckBypass()
+    {
+        $this->login();
+        $this->boolean(\Session::isRightChecksDisabled())->isFalse();
+        $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isFalse();
+        \Session::callAsSystem(function () {
+            $this->boolean(\Session::isRightChecksDisabled())->isTrue();
+            $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isTrue();
+        });
+        $this->boolean(\Session::isRightChecksDisabled())->isFalse();
+        $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isFalse();
+        // Try throwing an exception inside the callAsSystem callable to make sure right checks are still re-enabled after it runs
+        $this->exception(function () {
+            \Session::callAsSystem(function () {
+                throw new \Exception('test');
+            });
+        })->hasMessage('test');
+        $this->boolean(\Session::isRightChecksDisabled())->isFalse();
+        $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isFalse();
+    }
 }
