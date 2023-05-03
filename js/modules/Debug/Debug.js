@@ -118,12 +118,25 @@ window.GLPI.Debug = new class Debug {
             if (parent_id !== undefined) {
                 xhr.setRequestHeader('X-Glpi-Ajax-Parent-ID', parent_id);
             }
+
+            let data = settings.data;
+            if (settings.type !== 'POST' && data === undefined) {
+                // get data from query string
+                data = {};
+                const query_string = settings.url.split('?')[1];
+                if (query_string !== undefined) {
+                    query_string.split('&').forEach((pair) => {
+                        const [key, value] = pair.split('=');
+                        data[key] = value;
+                    });
+                }
+            }
             this.ajax_requests.push({
                 'id': ajax_id,
                 'status': '...',
                 'status_type': 'info',
                 'type': settings.type,
-                'data': settings.data,
+                'data': data,
                 'url': settings.url,
                 'start': new Date(),
             });
