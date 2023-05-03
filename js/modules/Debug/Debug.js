@@ -180,8 +180,43 @@ window.GLPI.Debug = new class Debug {
 
         $('#debug-toolbar').on('click', '.debug-toolbar-widget', (e) => {
             const widget_id = $(e.currentTarget).attr('data-glpi-debug-widget-id');
+            $(e.currentTarget).addClass('active').siblings().removeClass('active');
             this.showWidget(widget_id);
             this.toggleExtraContentArea(true);
+        });
+
+        const resize_handle = $('#debug-toolbar > .resize-handle');
+        const expanded_content_area = $('#debug-toolbar-expanded-content');
+
+        let is_dragging = false;
+        resize_handle.on('mousedown', (e) => {
+            if (e.buttons === 1) {
+                is_dragging = true;
+                e.preventDefault();
+            }
+        });
+        $(document).on('mousemove', (e) => {
+            if (is_dragging && e.buttons === 1) {
+                const page_height = $(window).height();
+                let new_height = page_height - e.pageY;
+                new_height = Math.max(new_height, 200);
+                expanded_content_area.css('height', `${new_height}px`);
+            }
+        });
+        $(document).on('mouseup', () => {
+            is_dragging = false;
+        });
+
+        expanded_content_area.on('click', 'button.request-link', (e) => {
+            const request_id = $(e.currentTarget).text();
+            // Show the requests widget and select the request
+            this.showWidget('requests');
+            // Find the request in the table and select it
+            const request_row = $(`#debug-toolbar-expanded-content .requests-table tr[data-request-id="${request_id}"]`);
+            if (request_row.length > 0) {
+                request_row[0].scrollIntoView();
+                request_row.click();
+            }
         });
     }
 
@@ -385,7 +420,7 @@ window.GLPI.Debug = new class Debug {
                     .replace('SORT', `</br>SORT`);
                 sql_table_body.append(`
                     <tr>
-                        <td>${request_id}</td>
+                        <td><button class="btn btn-link request-link">${request_id}</button></td>
                         <td>${query['num']}</td>
                         <td style="max-width: 50vw; white-space: break-spaces;">${clean_sql}</td>
                         <td>${query['time']}ms</td>
@@ -470,7 +505,7 @@ window.GLPI.Debug = new class Debug {
         content_area.append(`
             <div>
                <div id="debugpanel${rand}" class="container-fluid card p-0" style="min-width: 400px; max-width: 90vw">
-                  <ul class="nav nav-tabs" data-bs-toggle="tabs">
+                  <ul class="nav nav-pills" data-bs-toggle="tabs">
                      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#debugpost${rand}">POST</a></li>
                      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugget${rand}">GET</a></li>
                      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugsession${rand}">SESSION</a></li>
@@ -725,7 +760,7 @@ window.GLPI.Debug = new class Debug {
             content_area.append(`
                 <div class="d-flex flex-row h-100">
                     <div class="overflow-auto" style="flex: 0 0 33%; border-right: 1px solid #808080; min-width: 100px;">
-                        <table id="debug-requests-table" class="table table-sm table-striped table-hover mb-1">
+                        <table id="debug-requests-table" class="table table-hover mb-1">
                             <thead>
                                 <tr>
                                     <th>Number</th>
@@ -740,8 +775,8 @@ window.GLPI.Debug = new class Debug {
                         </table>
                     </div>
                     <div class="resize-handle mx-n2" style="cursor: col-resize; width: 10px; z-index: 1030"></div>
-                    <div class="overflow-auto ms-3 flex-grow-1">
-                        <div id="debugpanel${rand}" class="p-0">
+                    <div class="overflow-auto ms-2 flex-grow-1">
+                        <div id="debugpanel${rand}" class="p-0 mt-n1">
                             <ul class="nav nav-tabs" data-bs-toggle="tabs">
                                 <li class="nav-item">
                                     <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="request_summary">Summary</button>
@@ -766,7 +801,7 @@ window.GLPI.Debug = new class Debug {
                 </div>
             `);
             content_area.find('#debug-requests-table tbody').append(`
-                <tr data-request-id="${this.initial_request.id}" class="cursor-pointer">
+                <tr data-request-id="${this.initial_request.id}" class="cursor-pointer table-active">
                     <td>0</td>
                     <td style="max-width: 200px; white-space: pre-wrap;">${window.location.pathname}</td>
                     <td>-</td>
@@ -802,6 +837,7 @@ window.GLPI.Debug = new class Debug {
             });
             content_area.on('click', '#debug-requests-table tbody tr', (e) => {
                 content_area.data('requests_request_id', $(e.currentTarget).attr('data-request-id'));
+                $(e.currentTarget).addClass('table-active').siblings().removeClass('table-active');
                 this.showWidget(content_area.data('requests_active_widget') || 'request_summary', false, content_area.find('.request-details-content-area'), {
                     request_id: content_area.data('requests_request_id') || this.initial_request.id,
                 });
@@ -812,6 +848,8 @@ window.GLPI.Debug = new class Debug {
             if (content_area.find('.request-details-content-area').data('request_id') === undefined) {
                 content_area.find('.request-details-content-area').data('request_id', this.initial_request.id);
             }
+
+            content_area.find('button[data-glpi-debug-widget-id="request_summary"]').click();
             initSortableTable('debug-requests-table');
         }
 
@@ -853,14 +891,12 @@ window.GLPI.Debug = new class Debug {
             total_sql_duration += parseFloat(query['time']);
         });
         content_area.append(`
-            <h1>Request Summary</h1>
+            <h1>Request Summary (${profile.id})</h1>
             <table class="table">
                 <tbody>
                     <tr>
                         <td>
-                            Initial Execution Time: ${this.initial_request.server_performance.execution_time}s
-                            <br>
-                            Total Execution Time: ${total_execution_time}s
+                            Initial Execution Time: ${total_execution_time}s
                         </td>
                         <td>
                             Memory Usage: ${memory_usage_mio}mio / ${memory_limit_mio}mio

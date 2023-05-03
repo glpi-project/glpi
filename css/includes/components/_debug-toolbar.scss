@@ -33,6 +33,18 @@
 
 #debug-toolbar {
     z-index: 9999;
+
+    .debug-toolbar-badge button {
+        box-shadow: none;
+    }
+
+    .debug-toolbar-widgets .debug-toolbar-widget > button {
+        box-shadow: none;
+
+        &.active {
+            color: $primary;
+        }
+    }
 }
 
 #debug-toolbar-expanded-content {
