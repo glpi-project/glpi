@@ -62,6 +62,8 @@ final class ProxyRouter
     {
         $this->root_dir = $root_dir;
 
+        $path = preg_replace('/\/{2,}/', '/', $path); // remove duplicates `/`
+
         $path_matches = [];
         if (
             preg_match('/^(?<path>.+\.[^\/]+)(?<pathinfo>\/.*)$/', $path, $path_matches) === 1

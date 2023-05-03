@@ -79,6 +79,13 @@ class ProxyRouter extends \GLPITestCase
             'target_file'     => null,
             'is_php_script'   => false,
         ];
+        yield [
+            'path'            => '///ajax', // triple `/` in URL
+            'target_path'     => '/ajax',
+            'target_pathinfo' => null,
+            'target_file'     => null,
+            'is_php_script'   => false,
+        ];
 
         // Path to an invalid PHP script.
         yield [
@@ -97,10 +104,24 @@ class ProxyRouter extends \GLPITestCase
             'target_file'     => vfsStream::url('glpi/front/index.php'),
             'is_php_script'   => true,
         ];
+        yield [
+            'path'            => '//front/index.php', // double `/` in URL
+            'target_path'     => '/front/index.php',
+            'target_pathinfo' => null,
+            'target_file'     => vfsStream::url('glpi/front/index.php'),
+            'is_php_script'   => true,
+        ];
 
         // Path to an existing file, but containing an extra PathInfo
         yield [
             'path'            => '/apirest.php/initSession/',
+            'target_path'     => '/apirest.php',
+            'target_pathinfo' => '/initSession/',
+            'target_file'     => vfsStream::url('glpi/apirest.php'),
+            'is_php_script'   => true,
+        ];
+        yield [
+            'path'            => '/apirest.php//initSession/', // double `/` in URL
             'target_path'     => '/apirest.php',
             'target_pathinfo' => '/initSession/',
             'target_file'     => vfsStream::url('glpi/apirest.php'),
@@ -239,10 +260,18 @@ class ProxyRouter extends \GLPITestCase
                 'path'            => $path,
                 'is_path_allowed' => true,
             ];
+            yield [
+                'path'            => '/' . $path, // extra leading slash should not change result
+                'is_path_allowed' => true,
+            ];
         }
         foreach (array_merge($disallowed_glpi_php_paths, $disallowed_glpi_static_paths) as $path) {
             yield [
                 'path'            => $path,
+                'is_path_allowed' => false,
+            ];
+            yield [
+                'path'            => '/' . $path, // extra leading slash should not change result
                 'is_path_allowed' => false,
             ];
         }
@@ -336,10 +365,18 @@ class ProxyRouter extends \GLPITestCase
                     'path'            => $plugin_basepath . $path,
                     'is_path_allowed' => true,
                 ];
+                yield [
+                    'path'            => $plugin_basepath . '/' . $path, // extra leading slash should not change result
+                    'is_path_allowed' => true,
+                ];
             }
             foreach (array_merge($disallowed_plugins_php_paths, $disallowed_plugins_static_paths) as $path) {
                 yield [
                     'path'            => $plugin_basepath . $path,
+                    'is_path_allowed' => false,
+                ];
+                yield [
+                    'path'            => $plugin_basepath . '/' . $path, // extra leading slash should not change result
                     'is_path_allowed' => false,
                 ];
             }
