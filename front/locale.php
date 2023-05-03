@@ -40,6 +40,8 @@ $dont_check_maintenance_mode = true;
 
 include('../inc/includes.php');
 
+session_write_close(); // Unlocks session to permit concurrent calls
+
 header("Content-Type: application/json; charset=UTF-8");
 
 $is_cacheable = !isset($_GET['debug']);
