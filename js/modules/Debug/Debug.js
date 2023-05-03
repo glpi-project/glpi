@@ -101,6 +101,10 @@ window.GLPI.Debug = new class Debug {
     init(initial_request) {
         this.initial_request = initial_request;
 
+        $.each(this.initial_request.sql.queries, (i, query) => {
+            this.initial_request.sql.queries[i].query = this.cleanSQLQuery(query.query);
+        });
+
         this.refreshWidgetButtons();
 
         $(document).ajaxSend((event, xhr, settings) => {
@@ -171,6 +175,11 @@ window.GLPI.Debug = new class Debug {
                         }
                     }).done((data) => {
                         ajax_request.profile = data;
+
+                        $.each(ajax_request.profile.sql.queries, (i, query) => {
+                            ajax_request.profile.sql.queries[i].query = this.cleanSQLQuery(query.query);
+                        });
+
                         const content_area = $('#debug-toolbar-expanded-content');
                         if (content_area.data('active-widget') !== undefined) {
                             this.showWidget(content_area.data('active-widget'), true);
@@ -231,6 +240,19 @@ window.GLPI.Debug = new class Debug {
                 request_row.click();
             }
         });
+    }
+
+    cleanSQLQuery(query) {
+        return query
+            .replace('>', `&gt;`)
+            .replace('<', `&lt;`)
+            .replace('UNION', `</br>UNION</br>`)
+            .replace('FROM', `</br>FROM`)
+            .replace('WHERE', `</br>WHERE`)
+            .replace('INNER JOIN', `</br>INNER JOIN`)
+            .replace('LEFT JOIN', `</br>LEFT JOIN`)
+            .replace('ORDER BY', `</br>ORDER BY`)
+            .replace('SORT', `</br>SORT`);
     }
 
     getCombinedSQLData() {
@@ -408,42 +430,34 @@ window.GLPI.Debug = new class Debug {
 
         // get all the request IDs present in the SQL data (first column values)
         let request_ids_present = new Set();
-        sql_table_body.find('tr').each((index, row) => {
-            request_ids_present.add($(row).find('td').first().text());
+        sql_table_body.find('tr td:first-child').each((index, cell) => {
+            request_ids_present.add($(cell).text());
         });
 
         const sql_data = this.getCombinedSQLData();
         const filtered_request_id = content_area.data('request_id');
 
+        let rows_to_append = '';
         $.each(sql_data['queries'], (request_id, queries) => {
             if (request_ids_present.has(request_id) ||
                 (filtered_request_id !== undefined && filtered_request_id !== request_id)) {
                 return;
             }
             queries.forEach((query) => {
-                const clean_sql = query['query']
-                    .replace('>', `&gt;`)
-                    .replace('<', `&lt;`)
-                    .replace('UNION', `</br>UNION</br>`)
-                    .replace('FROM', `</br>FROM`)
-                    .replace('WHERE', `</br>WHERE`)
-                    .replace('INNER JOIN', `</br>INNER JOIN`)
-                    .replace('LEFT JOIN', `</br>LEFT JOIN`)
-                    .replace('ORDER BY', `</br>ORDER BY`)
-                    .replace('SORT', `</br>SORT`);
-                sql_table_body.append(`
+                rows_to_append += `
                     <tr>
                         <td><button class="btn btn-link request-link">${request_id}</button></td>
                         <td>${query['num']}</td>
-                        <td style="max-width: 50vw; white-space: break-spaces;">${clean_sql}</td>
+                        <td style="max-width: 50vw; white-space: break-spaces;">${query['query']}</td>
                         <td>${query['time']}ms</td>
                         <td>${query['rows']}</td>
                         <td>${query['warnings']}</td>
                         <td>${query['errors']}</td>
                     </tr>
-                `);
+                `;
             });
         });
+        sql_table_body.append(rows_to_append);
 
         if (filtered_request_id !== undefined) {
             let total_requests = 0;
