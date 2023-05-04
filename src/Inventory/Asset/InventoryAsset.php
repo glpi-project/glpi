@@ -453,8 +453,7 @@ abstract class InventoryAsset
 
     final protected function cleanName(string $string): string
     {
-        return mb_strtolower(
-            trim(
+        return trim(
                 preg_replace(
                     '/[\x{200B}-\x{200D}\x{FEFF}]/u', //remove invisible characters
                     '',
@@ -464,7 +463,7 @@ abstract class InventoryAsset
                         $string
                     )
                 )
-            )
+
         );
     }
 }
