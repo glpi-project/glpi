@@ -515,48 +515,31 @@ window.GLPI.Debug = new class Debug {
     }
 
     showGlobals(content_area) {
-        /**
-         *
-         * @param {{}} data
-         * @param pad
-         * @param js_expand
-         * @returns {string}
-         */
-        const getCleanArray = (data, pad = 0, js_expand = false) => {
-            // check data is non-empty array or non-empty object
-            let is_empty = data === undefined || data === null || (typeof data === 'object' && Object.keys(data).length === 0);
-
-            if (is_empty) {
-                return 'Empty array';
+        const appendGlobals = (data, container) => {
+            if (data === undefined || data === null) {
+                container.append('Empty array');
+                return;
             }
-            let html = `
-                <table class="table table-striped card-table">
-                    <tr>
-                        <th>KEY</th>
-                        <th>=&gt;</th>
-                        <th>VALUE</th>
-                    </tr>
-            `;
-            $.each(data, (key, value) => {
-                const row_rand = Math.floor(Math.random() * 1000000);
-                let arrow = '=>';
-                if (js_expand && typeof value === 'object') {
-                    arrow = `<a class="fw-bolder" href="javascript:showHideDiv('content${key}${row_rand}', '', '', '')">=></a>`;
-                }
 
-                let val = typeof value === 'string' ? escapeMarkupText(value) : value;
-                let val_extra = '';
-                if (val !== null && typeof val === 'object') {
-                    val = `array(${Object.keys(val).length})`;
-                    if (js_expand) {
-                        val = `<a class="fw-bolder" href="javascript:showHideDiv('content${key}${row_rand}', '', '', '')">${val}</a>`;
-                    }
-                    val_extra = `<div id="content${key}${row_rand}" style="${js_expand ? 'display: none' : ''}">${getCleanArray(value, pad + 1)}</div>`;
+            let data_string = data;
+            try {
+                data_string = JSON.stringify(data, null, ' ');
+            } catch (e) {
+                if (typeof data !== 'string') {
+                    container.append('Empty array');
+                    return;
                 }
-                html += `<tr><td>${key}</td><td>${arrow}</td><td>${val}${val_extra}</td></tr>`;
+            }
+
+            const editor = window.CodeMirror(container.get(0), {
+                value: data_string,
+                mode: 'application/json',
+                lineNumbers: true,
+                readOnly: true,
+                foldGutter: true,
+                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
             });
-            html += '</table>';
-            return html;
+            container.data('editor', editor);
         };
 
         const rand = Math.floor(Math.random() * 1000000);
@@ -573,10 +556,10 @@ window.GLPI.Debug = new class Debug {
             
                   <div class="card-body overflow-auto p-1">
                      <div class="tab-content">
-                        <div id="debugpost${rand}" class="tab-pane active"></div>
-                        <div id="debugget${rand}" class="tab-pane"></div>
-                        <div id="debugsession${rand}" class="tab-pane"></div>
-                        <div id="debugserver${rand}" class="tab-pane"></div>
+                        <div id="debugpost${rand}" class="cm-s-default tab-pane active"></div>
+                        <div id="debugget${rand}" class="cm-s-default tab-pane"></div>
+                        <div id="debugsession${rand}" class="cm-s-default tab-pane"></div>
+                        <div id="debugserver${rand}" class="cm-s-default tab-pane"></div>
                      </div>
                   </div>
                </div>
@@ -587,14 +570,38 @@ window.GLPI.Debug = new class Debug {
 
         const matching_profile = this.getProfile(selected_request_id);
         const globals = matching_profile.globals;
-        content_area.find(`#debugpost${rand}`).html(getCleanArray(globals['post'], 0, true));
-        content_area.find(`#debugget${rand}`).html(getCleanArray(globals['get'], 0, true));
+        appendGlobals(globals['post'], content_area.find(`#debugpost${rand}`));
+        appendGlobals(globals['get'], content_area.find(`#debugget${rand}`));
         if (selected_request_id === this.initial_request.id) {
-            content_area.find(`#debugsession${rand}`).html(getCleanArray(globals['session'], 0, true));
+            appendGlobals(globals['session'], content_area.find(`#debugsession${rand}`));
         } else {
             content_area.find(`#debugsession${rand}`).html(`<div class="alert alert-warning">Session data is only available for the initial request</div>`);
         }
-        content_area.find(`#debugserver${rand}`).html(getCleanArray(globals['server'], 0, true));
+        appendGlobals(globals['server'], content_area.find(`#debugserver${rand}`));
+
+        content_area.on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
+            const target = $(e.target).attr('href');
+            const target_el = content_area.find(target);
+            const previously_shown = target_el.data('previously_shown') || false;
+            const editor = target_el.data('editor');
+            if (!previously_shown && editor) {
+                editor.refresh();
+
+                setTimeout(() => {
+                    // Stupid solution to fold all levels except the first one.
+                    // foldCode(0), would fold the first level only and doesn't handle nested levels.
+                    const total_lines = editor.lineCount();
+                    // Must start from the bottom, otherwise it doesn't fold parent levels
+                    for (let i = total_lines - 1; i > 1; i--) {
+                        editor.foldCode(window.CodeMirror.Pos(i, 0));
+                    }
+                }, 100);
+            }
+            target_el.data('previously_shown', true);
+        });
+
+        // trigger shown.bs.tab on the first tab manually since the event is not triggered on page load
+        content_area.find('a[data-bs-toggle="tab"]').first().trigger('shown.bs.tab');
     }
 
     showClientPerformance(content_area, refresh = false) {
