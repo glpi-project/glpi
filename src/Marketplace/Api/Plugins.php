@@ -204,9 +204,11 @@ class Plugins
     ) {
         global $GLPI_CACHE;
 
+        $cache_key = self::getCacheKey('marketplace_all_plugins');
+
         if (self::$plugins === null) {
             $plugins_colct = !$force_refresh
-                ? $GLPI_CACHE->get('marketplace_all_plugins', null)
+                ? $GLPI_CACHE->get($cache_key, null)
                 : null;
 
             if ($plugins_colct === null) {
@@ -228,7 +230,7 @@ class Plugins
 
                 if ($this->last_error === null) {
                     // Cache result only if self::getPaginatedCollection() did not returned an incomplete result due to an error
-                    $GLPI_CACHE->set('marketplace_all_plugins', $plugins_colct, HOUR_TIMESTAMP);
+                    $GLPI_CACHE->set($cache_key, $plugins_colct, HOUR_TIMESTAMP);
                 }
             }
 
@@ -412,14 +414,16 @@ class Plugins
     {
         global $GLPI_CACHE;
 
-        $plugins_colct = !$force_refresh ? $GLPI_CACHE->get("marketplace_tag_$tag", []) : [];
+        $cache_key = self::getCacheKey("marketplace_tag_$tag");
+
+        $plugins_colct = !$force_refresh ? $GLPI_CACHE->get($cache_key, []) : [];
 
         if (!count($plugins_colct)) {
             $plugins_colct = $this->getPaginatedCollection("tags/{$tag}/plugin");
 
             if ($this->last_error === null) {
                 // Cache result only if self::getPaginatedCollection() did not returned an incomplete result due to an error
-                $GLPI_CACHE->set("marketplace_tag_$tag", $plugins_colct, HOUR_TIMESTAMP);
+                $GLPI_CACHE->set($cache_key, $plugins_colct, HOUR_TIMESTAMP);
             }
         }
 
@@ -501,5 +505,10 @@ class Plugins
     public function isListTruncated(): bool
     {
         return $this->is_list_truncated;
+    }
+
+    private static function getCacheKey(string $item_key): string
+    {
+        return $item_key . '_' . GLPINetwork::getRegistrationKey();
     }
 }
