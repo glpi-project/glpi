@@ -793,24 +793,32 @@ class NetworkPort extends InventoryAsset
         //handle ports for stacked switches
         if ($mainasset->isStackedSwitch()) {
             $bkp_ports = $this->ports;
-            $portid_to_chassisid = $mainasset->getStackedPortsMap();
             $stack_id = $mainasset->getStackId();
+            $need_increment_index = false;
             foreach ($this->ports as $k => $val) {
                 $matches = [];
                 if (
-                    (property_exists($val, 'ifnumber')
-                    && isset($portid_to_chassisid[$val->ifnumber])
-                    && $portid_to_chassisid[$val->ifnumber] != $stack_id)
-                        ||
-                    (preg_match('@[\w-]+(\d+)/\d+/\d+@', $val->name, $matches)
-                    && $matches[1] != $stack_id)
+                    preg_match('@[\w\s+]+(\d+)/[\w]@', $val->name, $matches)
                 ) {
-                    //port attached to another stack entry, remove from here
-                    unset($this->ports[$k]);
-                    continue;
+                    //in case when port is related to chassis index 0 (stack_id)
+                    //ex : GigabitEthernet 0/1    Gi0/0/1
+                    //GLPI compute stack_id by starting with 1 (see: NetworkEquipment->getStackedSwitches)
+                    //so we need to increment index to match related stack_id
+                    if ((int) $matches[1] == 0 || $need_increment_index) {
+                        $matches[1]++;
+                        //current NetworkEquipement must have the index incremented
+                        $need_increment_index = true;
+                    }
+
+                    if ($matches[1] != $stack_id) {
+                        //port attached to another stack entry, remove from here
+                        unset($this->ports[$k]);
+                        continue;
+                    }
                 }
             }
         }
+
 
         $this->handlePortsTrait($itemtype, $items_id);
         if (isset($bkp_ports)) {
