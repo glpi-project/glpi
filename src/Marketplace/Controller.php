@@ -405,7 +405,7 @@ class Controller extends CommonGLPI
     {
         $api_plugin = self::getAPI()->getPlugin($this->plugin_key);
 
-        if (!isset($api_plugin['required_offers'])) {
+        if (empty($api_plugin['required_offers'])) {
             return false;
         }
 
