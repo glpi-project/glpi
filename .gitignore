@@ -45,3 +45,4 @@ phpunit.xml
 /tests/web/error.log
 /inventory-vendors/*.json
 /locales/*.mo
+/inc/downstream.php
