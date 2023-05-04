@@ -45,9 +45,14 @@
             color: $primary;
         }
     }
-}
 
-#debug-toolbar-expanded-content {
-    height: 30vh;
-    overflow: auto;
+    #debug-toolbar-expanded-content {
+        height: 30vh;
+        overflow: auto;
+
+        #debug-requests-table thead th {
+            position: sticky;
+            top: 0;
+        }
+    }
 }

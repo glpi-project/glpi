@@ -813,10 +813,10 @@ window.GLPI.Debug = new class Debug {
                             <thead>
                                 <tr>
                                     <th>Number</th>
-                                    <th style="max-width: 200px; white-space: pre-wrap; position: sticky; top: 0;">URL</th>
-                                    <th style="position: sticky; top: 0;">Status</th>
-                                    <th style="position: sticky; top: 0;">Type</th>
-                                    <th style="position: sticky; top: 0;">Duration</th>
+                                    <th style="max-width: 200px; white-space: pre-wrap;">URL</th>
+                                    <th>Status</th>
+                                    <th>Type</th>
+                                    <th>Duration</th>
                                 </tr>
                             </thead>
                             <tbody style="white-space: nowrap">
