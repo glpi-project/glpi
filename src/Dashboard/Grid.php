@@ -1068,8 +1068,8 @@ HTML;
      */
     public function getFilterHtml(string $filter_id = "", $filter_values = ""): string
     {
-        foreach(Filter::getAll() as $filter) {
-            if ($filter::getId()==$filter_id) {
+        foreach (Filter::getAll() as $filter) {
+            if ($filter::getId() == $filter_id) {
                 return $filter::getHtml($filter_values);
             }
         }

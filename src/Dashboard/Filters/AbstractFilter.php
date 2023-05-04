@@ -34,6 +34,7 @@
  */
 
 namespace Glpi\Dashboard\Filters;
+
 use Html;
 use Search;
 use DBmysql;
@@ -45,34 +46,34 @@ abstract class AbstractFilter
      *
      * @return string
      */
-    public static abstract function getName(): string;
+    abstract public static function getName(): string;
 
     /**
      * Get the html for the filter
-     * 
+     *
      * @return string
      */
-    public static abstract function getHtml(): string;
+    abstract public static function getHtml(): string;
 
      /**
      * Get the filter id
      *
      * @return string
      */
-    public static abstract function getId() : string;
+    abstract public static function getId(): string;
 
     /**
      * Get the filter criteria
-     * 
+     *
      * @return array
      */
-    public static abstract function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array;
+    abstract public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array;
 
 
     /**
      * Get the search filter criteria
-     * 
-     * example : 
+     *
+     * example :
      * [
      * 'link'       => 'AND',
      * 'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'), // itilcategory
@@ -82,7 +83,7 @@ abstract class AbstractFilter
      *
      * @return array
      */
-    public static abstract function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array;
+    abstract public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array;
 
     protected static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
     {
@@ -95,7 +96,7 @@ abstract class AbstractFilter
         }
         return array_search($name . "-" . $tableToSearch, $sort);
     }
-    
+
     /**
      * Get generic HTML for a filter
      *
@@ -153,29 +154,29 @@ abstract class AbstractFilter
     }
 
     public static function displayList(
-      string $label = "",
-      string $value = "",
-      string $fieldname = "",
-      string $itemtype = "",
-      array $add_params = []
-  ): string {
-      $value     = !empty($value) ? $value : null;
-      $rand      = mt_rand();
-      $label     = $label ?? $fieldname;
-      $field     = $itemtype::dropdown([
-          'name'                => $fieldname,
-          'value'               => $value,
-          'rand'                => $rand,
-          'display'             => false,
-          'display_emptychoice' => false,
-          'emptylabel'          => '',
-          'placeholder'         => $label,
-          'on_change'           => "on_change_{$rand}()",
-          'allowClear'          => true,
-          'width'               => ''
-      ] + $add_params);
+        string $label = "",
+        string $value = "",
+        string $fieldname = "",
+        string $itemtype = "",
+        array $add_params = []
+    ): string {
+        $value     = !empty($value) ? $value : null;
+        $rand      = mt_rand();
+        $label     = $label ?? $fieldname;
+        $field     = $itemtype::dropdown([
+            'name'                => $fieldname,
+            'value'               => $value,
+            'rand'                => $rand,
+            'display'             => false,
+            'display_emptychoice' => false,
+            'emptylabel'          => '',
+            'placeholder'         => $label,
+            'on_change'           => "on_change_{$rand}()",
+            'allowClear'          => true,
+            'width'               => ''
+        ] + $add_params);
 
-      $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
       var on_change_{$rand} = function() {
          var dom_elem    = $('#dropdown_{$fieldname}{$rand}');
          var selected    = dom_elem.find(':selected').val();
@@ -186,11 +187,8 @@ abstract class AbstractFilter
       };
 
       JAVASCRIPT;
-      $field .= Html::scriptBlock($js);
+        $field .= Html::scriptBlock($js);
 
-      return self::field($fieldname, $field, $label, $value !== null);
-  }
-
-
-   
+        return self::field($fieldname, $field, $label, $value !== null);
+    }
 }

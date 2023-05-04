@@ -34,6 +34,7 @@
  */
 
 namespace Glpi\Dashboard;
+
 use Glpi\Plugin\Hooks;
 use Session;
 use Glpi\Dashboard\Filters\{
@@ -80,7 +81,7 @@ class Filter extends \CommonDBChild
             UserTechFilter::class,
         ];
 
-        if(isset($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS])) {
+        if (isset($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS])) {
             foreach ($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS] as $hook_filters) {
                 foreach ($hook_filters as $filter) {
                     $more_filters[] = $filter;
@@ -90,7 +91,7 @@ class Filter extends \CommonDBChild
         $filters = array_merge($filters, $more_filters);
 
         return $filters;
-    }   
+    }
 
     /**
      * Return filters for the provided dashboard

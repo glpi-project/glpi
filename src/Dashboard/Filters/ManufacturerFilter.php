@@ -56,17 +56,17 @@ class ManufacturerFilter extends AbstractFilter
      *
      * @return string
      */
-    public static function getId() : string
+    public static function getId(): string
     {
         return "manufacturer";
     }
 
     /**
      * Get the filter criteria
-     * 
+     *
      * @return array
      */
-    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
+    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
     {
         $criteria = [
             "WHERE" => [],
@@ -91,7 +91,7 @@ class ManufacturerFilter extends AbstractFilter
      *
      * @return array
      */
-    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
+    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
     {
         $criteria = [];
 
@@ -113,7 +113,7 @@ class ManufacturerFilter extends AbstractFilter
 
     /**
      * Get the html for the filter
-     * 
+     *
      * @return string
      */
     public static function getHtml(string $value = ""): string

@@ -58,17 +58,17 @@ class DatesFilter extends AbstractFilter
      *
      * @return string
      */
-    public static function getId() : string
+    public static function getId(): string
     {
         return "dates";
     }
 
     /**
      * Get the filter criteria
-     * 
+     *
      * @return array
      */
-    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
+    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
     {
         $criteria = [
             "WHERE" => [],
@@ -115,7 +115,7 @@ class DatesFilter extends AbstractFilter
      *
      * @return array
      */
-    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
+    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
     {
         $criteria = [];
 

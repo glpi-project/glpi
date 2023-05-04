@@ -55,17 +55,17 @@ class DatesModFilter extends AbstractFilter
      *
      * @return string
      */
-    public static function getId() : string
+    public static function getId(): string
     {
         return "dates_mod";
     }
 
     /**
      * Get the filter criteria
-     * 
+     *
      * @return array
      */
-    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
+    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
     {
         $criteria = [
             "WHERE" => [],
@@ -79,7 +79,7 @@ class DatesModFilter extends AbstractFilter
         ) {
             $criteria["WHERE"] += self::getDatesCriteria("$table.date_mod", $apply_filters[self::getId()]);
         }
-        
+
 
         return $criteria;
     }
@@ -100,7 +100,7 @@ class DatesModFilter extends AbstractFilter
      *
      * @return array
      */
-    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
+    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
     {
         $criteria = [];
 

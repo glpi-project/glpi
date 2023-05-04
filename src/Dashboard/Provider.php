@@ -1627,7 +1627,7 @@ class Provider
         return [$start_day, $end_day];
     }
 
-    
+
 
     final public static function getSearchFiltersCriteria(string $table = "", array $apply_filters = [])
     {
@@ -1637,7 +1637,7 @@ class Provider
 
         foreach ($filters as $filter) {
             $filter_criteria = $filter::getSearchCriteria($DBread, $table, $apply_filters);
-            if(!empty($filter_criteria)){
+            if (!empty($filter_criteria)) {
                 $s_criteria = array_merge($s_criteria, $filter_criteria);
             }
         }
@@ -1655,10 +1655,10 @@ class Provider
 
         foreach ($filters as $filter) {
             $filter_criteria = $filter::getCriteria($DBread, $table, $apply_filters);
-            if(isset($filter_criteria['WHERE'])){
+            if (isset($filter_criteria['WHERE'])) {
                 $where = array_merge($where, $filter_criteria['WHERE']);
             }
-            if(isset($filter_criteria['JOIN'])){
+            if (isset($filter_criteria['JOIN'])) {
                 $join = array_merge($join, $filter_criteria['JOIN']);
             }
         }
@@ -1673,8 +1673,4 @@ class Provider
 
         return $criteria;
     }
-
-    
-
-    
 }
