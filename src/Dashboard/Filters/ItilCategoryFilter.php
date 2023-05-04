@@ -39,7 +39,7 @@ use Session;
 use ITILCategory;
 use DBmysql;
 
-class ItilcategoryFilter extends AbstractFilter
+class ItilCategoryFilter extends AbstractFilter
 {
     /**
      * Get the filter name
