@@ -454,16 +454,15 @@ abstract class InventoryAsset
     final protected function cleanName(string $string): string
     {
         return trim(
+            preg_replace(
+                '/[\x{200B}-\x{200D}\x{FEFF}]/u', //remove invisible characters
+                '',
                 preg_replace(
-                    '/[\x{200B}-\x{200D}\x{FEFF}]/u', //remove invisible characters
-                    '',
-                    preg_replace(
-                        '/\s+/u', //replace with single standard whitespace
-                        ' ',
-                        $string
-                    )
+                    '/\s+/u', //replace with single standard whitespace
+                    ' ',
+                    $string
                 )
-
+            )
         );
     }
 }
