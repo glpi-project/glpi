@@ -134,6 +134,21 @@ window.GLPI.Debug = new class Debug {
                         data[key] = value;
                     });
                 }
+            } else if (typeof data === 'string') {
+                // Post data is a URI encoded string similar to a query string. Values may be JSON strings
+                // so we need to parse it and convert it back to an object
+                const data_object = {};
+                data.split('&').forEach((pair) => {
+                    const [key, value] = pair.split('=');
+                    data_object[key] = decodeURIComponent(value);
+                    // try parsing the value as JSON
+                    try {
+                        data_object[key] = JSON.parse(data_object[key]);
+                    } catch (e) {
+                        // ignore
+                    }
+                });
+                data = data_object;
             }
             this.ajax_requests.push({
                 'id': ajax_id,
