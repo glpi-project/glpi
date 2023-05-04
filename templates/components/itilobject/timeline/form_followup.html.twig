@@ -213,7 +213,7 @@
             </div>
 
             {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
-            <div class="d-flex card-footer mx-n3 mb-n3">
+            <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px;">
                {% set pending_reasons %}
                   {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason and not add_reopen %}
                   {% if get_current_interface() == 'central' and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) %}

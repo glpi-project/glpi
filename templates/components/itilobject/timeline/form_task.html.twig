@@ -421,7 +421,7 @@
             {% endset %}
 
             {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
-            <div class="d-flex card-footer mx-n3 mb-n3">
+            <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px;">
                {% if subitem.fields['id'] <= 0 %}
                   <div class="input-group">
                      <button class="btn btn-primary" type="submit" name="add">
