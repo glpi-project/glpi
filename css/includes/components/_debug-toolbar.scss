@@ -66,10 +66,13 @@
                 border-right: 1px solid #808080;
                 min-width: 100px;
             }
+
             .resize-handle {
                 cursor: col-resize;
                 width: 10px;
-                z-index: 1030
+                z-index: 1030;
+                margin-left: -0.5rem;
+                margin-right: -0.25rem;
             }
         }
     }

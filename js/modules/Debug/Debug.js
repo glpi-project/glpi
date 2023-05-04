@@ -833,7 +833,7 @@ window.GLPI.Debug = new class Debug {
                             </tbody>
                         </table>
                     </div>
-                    <div class="resize-handle mx-n2"></div>
+                    <div class="resize-handle"></div>
                     <div class="right-panel overflow-auto ms-2 flex-grow-1">
                         <div id="debugpanel${rand}" class="p-0 mt-n1">
                             <ul class="nav nav-tabs" data-bs-toggle="tabs">
