@@ -258,16 +258,25 @@ window.GLPI.Debug = new class Debug {
     }
 
     cleanSQLQuery(query) {
-        return query
-            .replace('>', `&gt;`)
-            .replace('<', `&lt;`)
-            .replace('UNION', `</br>UNION</br>`)
-            .replace('FROM', `</br>FROM`)
-            .replace('WHERE', `</br>WHERE`)
-            .replace('INNER JOIN', `</br>INNER JOIN`)
-            .replace('LEFT JOIN', `</br>LEFT JOIN`)
-            .replace('ORDER BY', `</br>ORDER BY`)
-            .replace('SORT', `</br>SORT`);
+        const newline_keywords = ['UNION', 'FROM', 'WHERE', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'SORT'];
+        const post_newline_keywords = ['UNION'];
+        let clean_query = '';
+        window.CodeMirror.runMode(query, 'text/x-sql', (text, style) => {
+            text.replace('>', `&gt;`).replace('<', `&lt;`);
+            if (style !== null && style !== undefined) {
+                if (newline_keywords.includes(text.toUpperCase())) {
+                    clean_query += '</br>';
+                }
+                clean_query += `<span class="cm-${style.replace(' ', '')}">${text}</span>`;
+                if (post_newline_keywords.includes(text.toUpperCase())) {
+                    clean_query += '</br>';
+                }
+            } else {
+                clean_query += text;
+            }
+        });
+
+        return clean_query;
     }
 
     getCombinedSQLData() {
@@ -438,7 +447,7 @@ window.GLPI.Debug = new class Debug {
                       <thead>
                       <tr>
                          ${filtered_request_id === undefined ? '<th>Request ID</th>' : ''}
-                         <th>N°</th><th>Query</th><th>Time</th><th>Rows</th><th>Warnings</th><th>Errors</th>
+                         <th>Number</th><th>Query</th><th>Time</th><th>Rows</th><th>Warnings</th><th>Errors</th>
                       </tr>
                       </thead>
                       <tbody></tbody>
@@ -466,11 +475,12 @@ window.GLPI.Debug = new class Debug {
                 return;
             }
             queries.forEach((query) => {
+                //Note: keep the query cell as a single line, or it will ruin the formatting of the contents
                 rows_to_append += `
                     <tr>
                         ${filtered_request_id === undefined ? `<td><button class="btn btn-link request-link">${request_id}</button></td>` : ''}
                         <td>${query['num']}</td>
-                        <td style="max-width: 50vw; white-space: break-spaces;">${query['query']}</td>
+                        <td style="max-width: 50vw; white-space: break-spaces;"><code class="d-block cm-s-default border-0">${query['query']}</code></td>
                         <td>${query['time']}ms</td>
                         <td>${query['rows']}</td>
                         <td>${query['warnings']}</td>

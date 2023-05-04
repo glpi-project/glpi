@@ -1219,7 +1219,7 @@ HTML;
                 Html::requireJs('charts');
             }
 
-            if (in_array('codemirror', $jslibs)) {
+            if (in_array('codemirror', $jslibs) || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/codemirror.css'];
                 Html::requireJs('codemirror');
             }
