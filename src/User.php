@@ -4984,13 +4984,13 @@ JAVASCRIPT;
         $ID = $this->getField('id');
 
         if ($tech) {
-            $type_user   = $CFG_GLPI['linkuser_tech_types'];
-            $type_group  = $CFG_GLPI['linkgroup_tech_types'];
+            $itemtypes   = $CFG_GLPI['linkuser_tech_types']
+                         + $CFG_GLPI['linkgroup_tech_types'];
             $field_user  = 'users_id_tech';
             $field_group = 'groups_id_tech';
         } else {
-            $type_user   = $CFG_GLPI['linkuser_types'];
-            $type_group  = $CFG_GLPI['linkgroup_types'];
+            $itemtypes   = $CFG_GLPI['linkuser_types']
+                         + $CFG_GLPI['linkgroup_types'];
             $field_user  = 'users_id';
             $field_group = 'groups_id';
         }
@@ -5014,7 +5014,7 @@ JAVASCRIPT;
             ],
             'WHERE'     => ['glpi_groups_users.users_id' => $ID]
         ]);
-        $number = count($iterator);
+        $number = 0;
 
         $group_where = [];
         foreach ($iterator as $data) {
@@ -5022,17 +5022,9 @@ JAVASCRIPT;
             $groups[$data["groups_id"]] = $data["name"];
         }
 
-        echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-        $header = "<tr><th>" . _n('Type', 'Types', 1) . "</th>";
-        $header .= "<th>" . Entity::getTypeName(1) . "</th>";
-        $header .= "<th>" . __('Name') . "</th>";
-        $header .= "<th>" . __('Serial number') . "</th>";
-        $header .= "<th>" . __('Inventory number') . "</th>";
-        $header .= "<th>" . __('Status') . "</th>";
-        $header .= "<th>&nbsp;</th></tr>";
-        echo $header;
+        $entries = [];
 
-        foreach ($type_user as $itemtype) {
+        foreach ($itemtypes as $itemtype) {
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
@@ -5040,7 +5032,11 @@ JAVASCRIPT;
                 $itemtable = getTableForItemType($itemtype);
                 $iterator_params = [
                     'FROM'   => $itemtable,
-                    'WHERE'  => [$field_user => $ID]
+                    'WHERE'  => [
+                        'OR' => [
+                            $field_user => $ID
+                        ] + $group_where
+                    ],
                 ];
 
                 if ($item->maybeTemplate()) {
@@ -5055,6 +5051,7 @@ JAVASCRIPT;
                 $type_name = $item->getTypeName();
 
                 foreach ($item_iterator as $data) {
+                    $number++;
                     $cansee = $item->can($data["id"], READ);
                     $link   = $data[$item->getNameField()];
                     if ($cansee) {
@@ -5068,127 +5065,56 @@ JAVASCRIPT;
                     if ($data[$field_user] == $ID) {
                         $linktype = self::getTypeName(1);
                     }
-                    echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>";
-                    echo "<td class='center'>" . Dropdown::getDropdownName(
-                        "glpi_entities",
-                        $data["entities_id"]
-                    ) . "</td>";
-                    echo "<td class='center'>$link</td>";
-                    echo "<td class='center'>";
-                    if (isset($data["serial"]) && !empty($data["serial"])) {
-                          echo $data["serial"];
-                    } else {
-                        echo '&nbsp;';
-                    }
-                    echo "</td><td class='center'>";
-                    if (isset($data["otherserial"]) && !empty($data["otherserial"])) {
-                        echo $data["otherserial"];
-                    } else {
-                        echo '&nbsp;';
-                    }
-                    echo "</td><td class='center'>";
-                    if (isset($data["states_id"])) {
-                        echo Dropdown::getDropdownName("glpi_states", $data['states_id']);
-                    } else {
-                        echo '&nbsp;';
-                    }
-
-                    echo "</td><td class='center'>$linktype</td></tr>";
-                }
-            }
-        }
-        if ($number) {
-            echo $header;
-        }
-        echo "</table></div>";
-
-        if (count($group_where)) {
-            echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-            $header = "<tr>" .
-               "<th>" . _n('Type', 'Types', 1) . "</th>" .
-               "<th>" . Entity::getTypeName(1) . "</th>" .
-               "<th>" . __('Name') . "</th>" .
-               "<th>" . __('Serial number') . "</th>" .
-               "<th>" . __('Inventory number') . "</th>" .
-               "<th>" . __('Status') . "</th>" .
-               "<th>&nbsp;</th></tr>";
-            echo $header;
-            $nb = 0;
-            foreach ($type_group as $itemtype) {
-                if (!($item = getItemForItemtype($itemtype))) {
-                    continue;
-                }
-                if ($item->canView() && $item->isField($field_group)) {
-                    $itemtable = getTableForItemType($itemtype);
-                    $iterator_params = [
-                        'FROM'   => $itemtable,
-                        'WHERE'  => ['OR' => $group_where]
-                    ];
-
-                    if ($item->maybeTemplate()) {
-                        $iterator_params['WHERE']['is_template'] = 0;
-                    }
-                    if ($item->maybeDeleted()) {
-                        $iterator_params['WHERE']['is_deleted'] = 0;
-                    }
-
-                    $group_iterator = $DB->request($iterator_params);
-
-                    $type_name = $item->getTypeName();
-
-                    foreach ($group_iterator as $data) {
-                        $nb++;
-                        $cansee = $item->can($data["id"], READ);
-                        $link   = $data["name"];
-                        if ($cansee) {
-                            $link_item = $item::getFormURLWithID($data['id']);
-                            if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
-                                $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
-                            }
-                            $link = "<a href='" . $link_item . "'>" . $link . "</a>";
+                    if (isset($groups[$data[$field_group]])) {
+                        if ($linktype != "") {
+                            $linktype .= "<br>";
                         }
-                        $linktype = "";
-                        if (isset($groups[$data[$field_group]])) {
-                            $linktype = sprintf(
-                                __('%1$s = %2$s'),
-                                Group::getTypeName(1),
-                                $groups[$data[$field_group]]
-                            );
-                        }
-                        echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>";
-                        echo "<td class='center'>" . Dropdown::getDropdownName(
-                            "glpi_entities",
-                            $data["entities_id"]
+                        $linktype .= sprintf(
+                            __('%1$s = %2$s'),
+                            Group::getTypeName(1),
+                            $groups[$data[$field_group]]
                         );
-                        echo "</td><td class='center'>$link</td>";
-                        echo "<td class='center'>";
-                        if (isset($data["serial"]) && !empty($data["serial"])) {
-                             echo $data["serial"];
-                        } else {
-                            echo '&nbsp;';
-                        }
-                        echo "</td><td class='center'>";
-                        if (isset($data["otherserial"]) && !empty($data["otherserial"])) {
-                            echo $data["otherserial"];
-                        } else {
-                            echo '&nbsp;';
-                        }
-                        echo "</td><td class='center'>";
-                        if (isset($data["states_id"])) {
-                            echo Dropdown::getDropdownName("glpi_states", $data['states_id']);
-                        } else {
-                            echo '&nbsp;';
-                        }
-
-                        echo "</td><td class='center'>$linktype</td></tr>";
                     }
+                    $entries[] = [
+                        'itemtype'      => $itemtype,
+                        'id'            => $data["id"],
+                        'type'          => $type_name,
+                        'entity'        => Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
+                        'name'          => $link,
+                        'serial'        => $data["serial"],
+                        'otherserial'   => $data["otherserial"],
+                        'states'        => Dropdown::getDropdownName("glpi_states", $data['states_id']),
+                        'linktype'      => $linktype,
+                    ];
                 }
             }
-            if ($nb) {
-                echo $header;
-            }
-            echo "</table></div>";
         }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab'                => true,
+            'items_id'              => $ID,
+            'nofilter'              => true,
+            'columns'               => [
+                'type'          => _n('Type', 'Types', 1),
+                'entity'        => Entity::getTypeName(1),
+                'name'          => __('Name'),
+                'serial'        => __('Serial number'),
+                'otherserial'   => __('Inventory number'),
+                'states'        => __('Status'),
+                'linktype'      => ''
+            ],
+            'entries'               => $entries,
+            'total_number'          => $number,
+            'nopager'               => true,
+            'showmassiveactions'    => true,
+            'massiveactionparams'   => [
+                'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+                'container'        => 'mass' . __CLASS__ . mt_rand(),
+                'specific_actions' => [
+                    'update' => __('Update'),
+                ]
+            ],
+        ]);
     }
 
 

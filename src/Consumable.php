@@ -742,6 +742,7 @@ class Consumable extends CommonDBChild
 
         $envs = [];
         foreach ($filtered_data as $env) {
+            $env['itemtype'] = self::getType();
             $envs[$env['id']] = $env;
         }
 
@@ -753,7 +754,6 @@ class Consumable extends CommonDBChild
                 'filters' => $filters
             ]) : "",
             'is_tab' => true,
-            'itemtype' => self::getType(),
             'items_id' => $items_id,
             'filters' => $filters,
             'columns' => [
