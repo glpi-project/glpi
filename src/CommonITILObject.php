@@ -7861,7 +7861,6 @@ abstract class CommonITILObject extends CommonDBTM
             {
                 NotificationEvent::raiseEvent('new', $this);
             }
-            }
         }
     }
 
