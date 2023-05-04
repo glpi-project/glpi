@@ -7850,14 +7850,17 @@ abstract class CommonITILObject extends CommonDBTM
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
             $this->getFromDB($this->fields['id']); // Reload item to get actual status
 
-            NotificationEvent::raiseEvent('new', $this);
-
             $status = $this->fields['status'] ?? null;
             if (in_array($status, $this->getSolvedStatusArray())) {
                 NotificationEvent::raiseEvent('solved', $this);
             }
-            if (in_array($status, $this->getClosedStatusArray())) {
+            elseif (in_array($status, $this->getClosedStatusArray())) {
                 NotificationEvent::raiseEvent('closed', $this);
+            }
+            else 
+            {
+                NotificationEvent::raiseEvent('new', $this);
+            }
             }
         }
     }
