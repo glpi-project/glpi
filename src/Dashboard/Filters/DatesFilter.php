@@ -70,14 +70,17 @@ class DatesFilter extends AbstractFilter
      */
     public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $criteria = [];
+        $criteria = [
+            "WHERE" => [],
+            "JOIN"  => [],
+        ];
 
         if (
             ($DB->fieldExists($table, 'date'))
             && isset($apply_filters[self::getId()])
             && count($apply_filters[self::getId()]) == 2
         ) {
-            $criteria[] = self::getDatesCriteria("$table.date", $apply_filters[self::getId()]);
+            $criteria["WHERE"] += self::getDatesCriteria("$table.date", $apply_filters[self::getId()]);
         }
 
        //exclude itilobject already processed with 'date'
@@ -90,7 +93,7 @@ class DatesFilter extends AbstractFilter
             && isset($apply_filters[self::getId()])
             && count($apply_filters[self::getId()]) == 2
         ) {
-            $criteria[] = self::getDatesCriteria("$table.date_creation", $apply_filters[self::getId()]);
+            $criteria["WHERE"] += self::getDatesCriteria("$table.date_creation", $apply_filters[self::getId()]);
         }
 
         return $criteria;
@@ -114,18 +117,15 @@ class DatesFilter extends AbstractFilter
      */
     public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []) : array
     {
-        $criteria = [
-            "WHERE" => [],
-            "JOIN"  => [],
-        ];
+        $criteria = [];
 
         if (
             $DB->fieldExists($table, 'date')
             && isset($apply_filters[self::getId()])
             && count($apply_filters[self::getId()]) == 2
         ) {
-            $criteria["WHERE"] += self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters[DatesFilter::getId()], 'begin');
-            $criteria["WHERE"] += self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters[DatesFilter::getId()], 'end');
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters[self::getId()], 'begin');
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters[self::getId()], 'end');
         }
 
         //exclude itilobject already processed with 'date'
@@ -138,8 +138,8 @@ class DatesFilter extends AbstractFilter
             && isset($apply_filters[self::getId()])
             && count($apply_filters[self::getId()]) == 2
         ) {
-            $criteria["WHERE"] += self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $apply_filters[DatesFilter::getId()], 'begin');
-            $criteria["WHERE"] += self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $apply_filters[DatesFilter::getId()], 'end');
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $apply_filters[self::getId()], 'begin');
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $apply_filters[self::getId()], 'end');
         }
 
         return $criteria;

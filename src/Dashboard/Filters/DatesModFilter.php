@@ -36,6 +36,7 @@
 namespace Glpi\Dashboard\Filters;
 
 use DBmysql;
+use Html;
 
 class DatesModFilter extends AbstractFilter
 {
@@ -78,6 +79,7 @@ class DatesModFilter extends AbstractFilter
         ) {
             $criteria["WHERE"] += self::getDatesCriteria("$table.date_mod", $apply_filters[self::getId()]);
         }
+        
 
         return $criteria;
     }
@@ -107,8 +109,8 @@ class DatesModFilter extends AbstractFilter
             && isset($apply_filters[self::getId()])
             && count($apply_filters[self::getId()]) == 2
         ) {
-            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $apply_filters[DatesModFilter::getId()], 'begin');
-            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $apply_filters[DatesModFilter::getId()], 'end');
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $apply_filters[self::getId()], 'begin');
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $apply_filters[self::getId()], 'end');
         }
 
         return $criteria;
@@ -145,6 +147,36 @@ class DatesModFilter extends AbstractFilter
      */
     public static function getHtml($values = ""): string
     {
-        return DatesFilter::getHtml($values, "dates_mod");
+        // string mean empty value
+        if (is_string($values)) {
+            $values = [];
+        }
+
+        $rand  = mt_rand();
+        $label = self::getName();
+        $field = Html::showDateField('filter-dates', [
+            'value'        => $values,
+            'rand'         => $rand,
+            'range'        => true,
+            'display'      => false,
+            'calendar_btn' => false,
+            'placeholder'  => $label,
+            'on_change'    => "on_change_{$rand}(selectedDates, dateStr, instance)",
+        ]);
+
+        $js = <<<JAVASCRIPT
+        var on_change_{$rand} = function(selectedDates, dateStr, instance) {
+        // we are waiting for empty value or a range of dates,
+        // don't trigger when only the first date is selected
+        var nb_dates = selectedDates.length;
+        if (nb_dates == 0 || nb_dates == 2) {
+            Dashboard.getActiveDashboard().saveFilter('dates_mod', selectedDates);
+            $(instance.input).closest("fieldset").addClass("filled");
+        }
+        };
+        JAVASCRIPT;
+        $field .= Html::scriptBlock($js);
+
+        return self::field('dates_mod', $field, $label, is_array($values) && count($values) > 0);
     }
 }
