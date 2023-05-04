@@ -7853,11 +7853,11 @@ abstract class CommonITILObject extends CommonDBTM
             $status = $this->fields['status'] ?? null;
             if (in_array($status, $this->getSolvedStatusArray())) {
                 NotificationEvent::raiseEvent('solved', $this);
-            } 
+            }
             elseif (in_array($status, $this->getClosedStatusArray())) {
                 NotificationEvent::raiseEvent('closed', $this);
-            } 
-            else 
+            }
+            else
             {
                 NotificationEvent::raiseEvent('new', $this);
             }
