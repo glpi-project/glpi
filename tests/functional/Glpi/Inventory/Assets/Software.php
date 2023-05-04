@@ -1247,4 +1247,92 @@ class Software extends AbstractInventoryAsset
             "softwareversions_id" => $version_data['id']
         ]))->isTrue();
     }
+
+    public function testManufacturerDifferentCase()
+    {
+        $computer = new \Computer();
+        $soft = new \Software();
+        $version = new \SoftwareVersion();
+        $item_version = new \Item_SoftwareVersion();
+
+        //inventory with a software manufacturer name with different cases
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <NAME>Realtek PCI-E Wireless LAN Driver</NAME>
+      <VERSION>Drv_3.00.0015</VERSION>
+      <PUBLISHER>REALTEK Semiconductor Corp.</PUBLISHER>
+    </SOFTWARES>
+    <SOFTWARES>
+      <NAME>Realtek Card Reader</NAME>
+      <VERSION>10.0.17134.31242</VERSION>
+      <PUBLISHER>Realtek Semiconductor Corp.</PUBLISHER>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //create manually a computer
+        $computers_id = $computer->add([
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        $this->doInventory($xml_source, true);
+
+        //check software has been created
+        $this->boolean(
+            $soft->getFromDBByCrit(['name' => 'Realtek Card Reader'])
+        )->isTrue();
+        $softwares_id = $soft->fields['id'];
+
+        //check version has been created
+        $this->boolean(
+            $version->getFromDBByCrit(['name' => '10.0.17134.31242'])
+        )->isTrue();
+        $this->integer($version->fields['softwares_id'])->isIdenticalTo($softwares_id);
+        $versions_id = $version->fields['id'];
+
+        //check computer-softwareverison relation has been created
+        $this->boolean($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $versions_id
+        ]))->isTrue();
+        $item_versions_id = $item_version->fields['id'];
+
+        //import again
+        $this->doInventory($xml_source, true);
+
+        //check software is the same
+        $this->boolean(
+            $soft->getFromDBByCrit(['name' => 'Realtek Card Reader'])
+        )->isTrue();
+        $this->integer($softwares_id)->isIdenticalTo($soft->fields['id']);
+
+        //check version is the same
+        $this->boolean(
+            $version->getFromDBByCrit(['name' => '10.0.17134.31242'])
+        )->isTrue();
+        $this->integer($versions_id)->isIdenticalTo($version->fields['id']);
+
+        //check computer-softwareverison relation is the same
+        $this->boolean($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $versions_id
+        ]))->isTrue();
+        $this->integer($item_versions_id)->isIdenticalTo($item_version->fields['id']);
+    }
 }
