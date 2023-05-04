@@ -563,7 +563,7 @@ window.GLPI.Debug = new class Debug {
         content_area.empty();
         content_area.append(`
             <div>
-               <div id="debugpanel${rand}" class="container-fluid card p-0" style="min-width: 400px; max-width: 90vw">
+               <div id="debugpanel${rand}" class="container-fluid card p-0 border-top-0" style="min-width: 400px; max-width: 90vw">
                   <ul class="nav nav-pills" data-bs-toggle="tabs">
                      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#debugpost${rand}">POST</a></li>
                      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugget${rand}">GET</a></li>
