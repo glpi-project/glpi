@@ -55,6 +55,7 @@ use Ticket;
 use Ticket_User;
 use Toolbox;
 use User;
+use Search;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
     GroupTechFilter,
