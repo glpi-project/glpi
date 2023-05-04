@@ -506,9 +506,9 @@ class Software extends InventoryAsset
     protected function getFullCompareKey(\stdClass $val, bool $with_version = true): string
     {
         return $this->getNormalizedComparisonKey([
-            'name'             => $val->name,
-            'version'          => $with_version ? strtolower($val->version) : '',
-            'arch'             => strtolower($val->arch ?? ''),
+            'name'             => mb_strtolower($val->name),
+            'version'          => $with_version ? mb_strtolower($val->version) : '',
+            'arch'             => mb_strtolower($val->arch ?? ''),
             'manufacturers_id' => mb_strtolower($val->manufacturers_id),
             'entities_id'      => (int)$val->entities_id,
             'is_recursive'     => $val->is_recursive,
