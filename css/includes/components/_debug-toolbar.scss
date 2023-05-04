@@ -54,5 +54,23 @@
             position: sticky;
             top: 0;
         }
+
+        .category-badge {
+            padding: 5px;
+            border-radius: 25%;
+        }
+
+        .split-panel-h {
+            .left-panel {
+                flex: 0 0 33%;
+                border-right: 1px solid #808080;
+                min-width: 100px;
+            }
+            .resize-handle {
+                cursor: col-resize;
+                width: 10px;
+                z-index: 1030
+            }
+        }
     }
 }

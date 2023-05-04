@@ -709,7 +709,7 @@ window.GLPI.Debug = new class Debug {
                 <tr data-profiler-section-id="${section.id}">
                     ${'<td style="min-width: 2rem"></td>'.repeat(nest_level)}
                     <td>
-                        <span style='padding: 5px; border-radius: 25%; background-color: ${cat_colors.bg_color}; color: ${cat_colors.text_color}'>
+                        <span class="category-badge" style='background-color: ${cat_colors.bg_color}; color: ${cat_colors.text_color}'>
                             ${section.category}
                         </span>
                     </td>
@@ -807,8 +807,8 @@ window.GLPI.Debug = new class Debug {
             content_area.empty();
             const rand = Math.floor(Math.random() * 1000000);
             content_area.append(`
-                <div class="d-flex flex-row h-100">
-                    <div class="overflow-auto" style="flex: 0 0 33%; border-right: 1px solid #808080; min-width: 100px;">
+                <div class="d-flex flex-row h-100 split-panel-h">
+                    <div class="left-panel overflow-auto">
                         <table id="debug-requests-table" class="table table-hover mb-1">
                             <thead>
                                 <tr>
@@ -823,8 +823,8 @@ window.GLPI.Debug = new class Debug {
                             </tbody>
                         </table>
                     </div>
-                    <div class="resize-handle mx-n2" style="cursor: col-resize; width: 10px; z-index: 1030"></div>
-                    <div class="overflow-auto ms-2 flex-grow-1">
+                    <div class="resize-handle mx-n2"></div>
+                    <div class="right-panel overflow-auto ms-2 flex-grow-1">
                         <div id="debugpanel${rand}" class="p-0 mt-n1">
                             <ul class="nav nav-tabs" data-bs-toggle="tabs">
                                 <li class="nav-item">
