@@ -725,15 +725,15 @@ class Consumable extends CommonDBChild
             ] + $sql_filters
         ];
 
-        $all_data = $DB->request($query);
-        $all_data = iterator_to_array($all_data);
+        $total_number = (int)$DB->request($query + [
+            'COUNT'  => 'cpt'
+        ])->current()['cpt'];
         $filtered_data = $DB->request($query + [
             'LIMIT' => $_SESSION['glpilist_limit'],
             'START' => $start,
             'ORDER' => "$sort $order",
         ]);
 
-        $total_number = count($all_data);
         $filtered_number = count(getAllDataFromTable(self::getTable(), [
             'items_id' => $items_id,
             'itemtype' => $itemtype,
