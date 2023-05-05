@@ -108,6 +108,8 @@ class Profile
     public static function load(string $id, bool $delete = true): ?self
     {
         $profile_location = GLPI_TMP_DIR . '/debug/profiles/';
+        // only keep letters and numbers in the id to avoid path traversal
+        $id = preg_replace('/[^a-zA-Z0-9]/', '', $id);
         $profile_name = $id . '.json.gz';
 
         if (!file_exists($profile_location . $profile_name)) {
