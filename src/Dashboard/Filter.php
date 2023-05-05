@@ -37,6 +37,7 @@ namespace Glpi\Dashboard;
 
 use Glpi\Plugin\Hooks;
 use Session;
+use Plugin;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
     ItilCategoryFilter,
@@ -81,10 +82,12 @@ class Filter extends \CommonDBChild
             UserTechFilter::class,
         ];
 
-        if (isset($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS])) {
+        if (isset($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS]) && is_array($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS])) {
             foreach ($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS] as $hook_filters) {
-                foreach ($hook_filters as $filter) {
-                    $more_filters[] = $filter;
+                if (Plugin::isPluginActive($hook_filters)) {
+                    foreach ($hook_filters as $filter) {
+                        $more_filters[] = $filter;
+                    }
                 }
             }
         }
