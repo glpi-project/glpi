@@ -195,7 +195,6 @@ class Entity extends CommonTreeDropdown
     {
         // Do not show the create button if no recusive access on current entity
         return parent::canCreate() && Session::haveRecursiveAccessToEntity(Session::getActiveEntity());
-
     }
 
     public function canCreateItem()
