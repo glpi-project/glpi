@@ -184,7 +184,7 @@ window.GLPI.Debug = new class Debug {
 
                     // Ask the server for the debug information it saved for this request
                     $.ajax({
-                        url: CFG_GLPI['url_base'] + '/ajax/debug.php',
+                        url: CFG_GLPI.root_doc + '/ajax/debug.php',
                         data: {
                             'ajax_id': ajax_id,
                         }
