@@ -925,7 +925,7 @@ window.GLPI.Debug = new class Debug {
             if (row.length === 0) {
                 const next_number = content_area.find('#debug-requests-table tbody tr').length;
                 content_area.find('#debug-requests-table tbody').append(`
-                    <tr data-request-id="${request.id}" class="cursor-pointer">
+                    <tr data-request-id="${request.id}" class="cursor-pointer animate__pulse animate__slow">
                         <td>${next_number}</td>
                         <td style="max-width: 200px; white-space: pre-wrap;">${request.url}</td>
                         <td>${request.status}</td>
@@ -938,6 +938,14 @@ window.GLPI.Debug = new class Debug {
                 row.find('> td:nth-child(5)').text(`${request.time}ms`);
             }
         });
+
+        const requests_table = content_area.find('#debug-requests-table');
+        if (requests_table.data('sort')) {
+            requests_table.find('thead th').eq(requests_table.data('sort')).click().click();
+        } else {
+            // scroll to the bottom of the table
+            requests_table.parent().scrollTop(requests_table.parent()[0].scrollHeight);
+        }
     }
 
     showRequestSummary(content_area) {
