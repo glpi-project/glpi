@@ -1120,4 +1120,40 @@ class Entity extends DbTestCase
         $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 3)', true))->isGreaterThan(0);
         $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 4)', true))->isGreaterThan(0);
     }
+
+    public function testRename()
+    {
+        $this->login();
+
+        $old_entity = $this->createItem(
+            'Entity',
+            [
+                'name'        => 'Existing entity',
+                'entities_id' => 0,
+            ]
+        );
+
+        $new_entity = $this->createItem(
+            'Entity',
+            [
+                'name'        => 'New entity',
+                'entities_id' => 0,
+            ]
+        );
+
+        $entities_id = $new_entity->fields['id'];
+        $this->integer($entities_id)->isGreaterThan(0);
+
+        //try to rename on existing name
+        $this->boolean(
+            $new_entity->update([
+                'id'   => $entities_id,
+                'name' => 'Existing entity',
+            ])
+        )->isTrue();
+        $this->hasSessionMessages(ERROR, ['An entity with that name already exists at the same level.']);
+
+        $this->boolean($new_entity->getFromDB($entities_id))->isTrue();
+        $this->string($new_entity->fields['name'])->isEqualTo('New entity');
+    }
 }

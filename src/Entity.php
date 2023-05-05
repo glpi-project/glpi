@@ -155,9 +155,35 @@ class Entity extends CommonTreeDropdown
         ];
     }
 
-    /**
-     * @since 0.84
-     **/
+    public function pre_updateInDB()
+    {
+        global $DB;
+
+        if (($key = array_search('name', $this->updates)) !== false) {
+            /// Check if entity does not exist
+            $iterator = $DB->request([
+                'FROM' => $this->getTable(),
+                'WHERE' => [
+                    'name' => $this->input['name'],
+                    'entities_id' => $this->input['entities_id'],
+                    'id' => ['<>', $this->input['id']]
+                ]
+            ]);
+
+            if (count($iterator)) {
+                //To display a message
+                $this->fields['name'] = $this->oldvalues['name'];
+                unset($this->updates[$key]);
+                unset($this->oldvalues['name']);
+                Session::addMessageAfterRedirect(
+                    __('An entity with that name already exists at the same level.'),
+                    false,
+                    ERROR
+                );
+            }
+        }
+    }
+
     public function pre_deleteItem()
     {
         global $GLPI_CACHE;
