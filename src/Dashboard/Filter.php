@@ -40,6 +40,7 @@ use Session;
 use Plugin;
 use Toolbox;
 use Glpi\Dashboard\Filters\{
+    AbstractFilter,
     DatesFilter,
     ItilCategoryFilter,
     LocationFilter,
@@ -161,7 +162,7 @@ class Filter extends \CommonDBChild
     public static function dates_mod($values): string
     {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . DatesModFilter::class . ' instead.');
-        return "";
+        return DatesModFilter::getHtml($values);
     }
 
 
@@ -171,7 +172,7 @@ class Filter extends \CommonDBChild
     public static function itilcategory(string $value = ""): string
     {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . ItilCategoryFilter::class . ' instead.');
-        return "";
+        return ItilCategoryFilter::getHtml($value);
     }
 
     /**
@@ -180,7 +181,7 @@ class Filter extends \CommonDBChild
     public static function requesttype(string $value = ""): string
     {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . RequestTypeFilter::class . ' instead.');
-        return "";
+        return RequestTypeFilter::getHtml($value);
     }
 
     /**
@@ -189,7 +190,7 @@ class Filter extends \CommonDBChild
     public static function location(string $value = ""): string
     {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . LocationFilter::class . ' instead.');
-        return "";
+        return LocationFilter::getHtml($value);
     }
 
     /**
@@ -198,7 +199,7 @@ class Filter extends \CommonDBChild
     public static function manufacturer(string $value = ""): string
     {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . ManufacturerFilter::class . ' instead.');
-        return "";
+        return ManufacturerFilter::getHtml($value);
     }
 
     /**
@@ -207,7 +208,7 @@ class Filter extends \CommonDBChild
     public static function group_tech(string $value = ""): string
     {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . GroupTechFilter::class . ' instead.');
-        return "";
+        return GroupTechFilter::getHtml($value);
     }
 
     /**
@@ -216,7 +217,7 @@ class Filter extends \CommonDBChild
     public static function user_tech(string $value = ""): string
     {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . UserTechFilter::class . ' instead.');
-        return "";
+        return UserTechFilter::getHtml($value);
     }
 
     /**
@@ -225,7 +226,7 @@ class Filter extends \CommonDBChild
     public static function state(string $value = ""): string
     {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . StateFilter::class . ' instead.');
-        return "";
+        return StateFilter::getHtml($value);
     }
 
     /**
@@ -234,7 +235,7 @@ class Filter extends \CommonDBChild
     public static function tickettype(string $value = ""): string
     {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . TicketTypeFilter::class . ' instead.');
-        return "";
+        return TicketTypeFilter::getHtml($value);
     }
 
     /**
@@ -246,7 +247,7 @@ class Filter extends \CommonDBChild
         string $itemtype = "",
         array $add_params = []
     ): string {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated.');
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . AbstractFilter::class . ' instead.');
         return "";
     }
 
@@ -268,7 +269,7 @@ class Filter extends \CommonDBChild
         bool $filled = false
     ): string {
 
-        Toolbox::deprecated(__METHOD__ . ' is deprecated.');
-        return "";
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . AbstractFilter::class . ' instead.');
+        return AbstractFilter::field($id, $field, $label, $filled);
     }
 }
