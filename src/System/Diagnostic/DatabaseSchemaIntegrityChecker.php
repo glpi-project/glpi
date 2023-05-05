@@ -231,7 +231,7 @@ class DatabaseSchemaIntegrityChecker
         }
 
         $matches = [];
-        preg_match_all('/(?<sql_query>CREATE TABLE[^`]*`(?<table_name>.+)`[^;]+);/', $schema_sql, $matches);
+        preg_match_all('/(?<sql_query>CREATE TABLE[^`]*`(?<table_name>\w+)`.+?);$/ms', $schema_sql, $matches);
         $tables_names             = $matches['table_name'];
         $create_table_sql_queries = $matches['sql_query'];
 

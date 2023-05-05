@@ -172,6 +172,35 @@ CREATE TABLE `table_{$table_increment}` (
 SQL,
                 'differences'    => null,
             ],
+            // `;` char in comments should be handled correctly.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `do_count` tinyint(1) NOT NULL DEFAULT '2' COMMENT 'Do or do not count results on list display; see SavedSearch::COUNT_* constants',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='some comment with an escaped \' backquote' AUTO_INCREMENT=15
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `do_count` tinyint NOT NULL DEFAULT 2,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL COMMENT 'name of the object',
+  `do_count` tinyint NOT NULL DEFAULT 2 COMMENT 'Do or do not count results on list display; see SavedSearch::COUNT_* constants',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15
+SQL,
+                'differences'    => null,
+            ],
             // Implicit NULL and implicit default values should be removed.
             [
                 'name' => sprintf('table_%s', ++$table_increment),
