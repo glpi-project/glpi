@@ -781,19 +781,42 @@ class DatabaseSchemaIntegrityChecker
      */
     private function getDbVersion(): ?string
     {
-        if (
-            $this->db_version === null
-            && $this->db->tableExists('glpi_configs') && $this->db->fieldExists('glpi_configs', 'context')
-        ) {
-            $this->db_version = $this->db->request(
-                [
-                    'FROM'   => 'glpi_configs',
-                    'WHERE'  => [
-                        'context' => 'core',
-                        'name'    => 'dbversion',
+        if ($this->db_version === null) {
+            if ($this->db->tableExists('glpi_configs') && $this->db->fieldExists('glpi_configs', 'context')) {
+                $dbversion_result = $this->db->request(
+                    [
+                        'FROM'   => 'glpi_configs',
+                        'WHERE'  => [
+                            'context' => 'core',
+                            'name'    => 'dbversion',
+                        ]
                     ]
-                ]
-            )->current()['value'] ?? null;
+                );
+                if ($dbversion_result->count() > 0) {
+                    // GLPI >= 9.2
+                    $this->db_version = $dbversion_result->current()['value'];
+                } else {
+                    // GLPI >= 0.85
+                    $dbversion_result = $this->db->request(
+                        [
+                            'FROM'   => 'glpi_configs',
+                            'WHERE'  => [
+                                'context' => 'core',
+                                'name'    => 'version',
+                            ]
+                        ]
+                    );
+                    $this->db_version = $dbversion_result->current()['value'] ?? null;
+                }
+            } elseif ($this->db->tableExists('glpi_configs') && $this->db->fieldExists('glpi_configs', 'version')) {
+                // GLPI < 0.85
+                $this->db_version = $this->db->request(
+                    [
+                        'SELECT' => ['version'],
+                        'FROM'   => 'glpi_configs',
+                    ]
+                )->current()['version'] ?? null;
+            }
         }
 
         return $this->db_version;
