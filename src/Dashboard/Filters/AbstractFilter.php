@@ -67,7 +67,7 @@ abstract class AbstractFilter
      *
      * @return array
      */
-    abstract public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array;
+    abstract public static function getCriteria(DBmysql $DB, string $table, array $apply_filters = []): array;
 
 
     /**
