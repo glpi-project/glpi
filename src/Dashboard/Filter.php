@@ -38,6 +38,7 @@ namespace Glpi\Dashboard;
 use Glpi\Plugin\Hooks;
 use Session;
 use Plugin;
+use Toolbox;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
     ItilCategoryFilter,
@@ -143,5 +144,131 @@ class Filter extends \CommonDBChild
                 'users_id'                 => Session::getLoginUserID(),
             ]
         );
+    }
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function dates($values = "", string $fieldname = 'dates'): string
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . DatesFilter::class . ' instead.');
+        return null;
+    }
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function dates_mod($values): string
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . DatesModFilter::class . ' instead.');
+        return "";
+    }
+
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function itilcategory(string $value = ""): string
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . ItilCategoryFilter::class . ' instead.');
+        return "";
+    }
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function requesttype(string $value = ""): string
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . RequestTypeFilter::class . ' instead.');
+        return "";
+    }
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function location(string $value = ""): string
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . LocationFilter::class . ' instead.');
+        return "";
+    }
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function manufacturer(string $value = ""): string
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . ManufacturerFilter::class . ' instead.');
+        return "";
+    }
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function group_tech(string $value = ""): string
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . GroupTechFilter::class . ' instead.');
+        return "";
+    }
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function user_tech(string $value = ""): string
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . UserTechFilter::class . ' instead.');
+        return "";
+    }
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function state(string $value = ""): string
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . StateFilter::class . ' instead.');
+        return "";
+    }
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function tickettype(string $value = ""): string
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . TicketTypeFilter::class . ' instead.');
+        return "";
+    }
+
+    /**
+     * @deprecated 10.0.0
+     */
+    public static function displayList(
+        string $value = "",
+        string $fieldname = "",
+        string $itemtype = "",
+        array $add_params = []
+    ): string {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated.');
+        return "";
+    }
+
+    /**
+     * Get generic HTML for a filter
+     *
+     * @deprecated 10.0.0
+     * @param string $id system name of the filter (ex "dates")
+     * @param string $field html of the filter
+     * @param string $label displayed label for the filter
+     * @param bool   $filled
+     *
+     * @return string the html for the complete field
+     */
+    public static function field(
+        string $id = "",
+        string $field = "",
+        string $label = "",
+        bool $filled = false
+    ): string {
+
+        Toolbox::deprecated(__METHOD__ . ' is deprecated.');
+        return "";
     }
 }
