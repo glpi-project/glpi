@@ -141,7 +141,7 @@ class Inventory
             $data = json_decode($converter->convert($contentdata));
         } else {
             $this->inventory_tmpfile = tempnam(GLPI_INVENTORY_DIR, 'json_');
-            $contentdata = json_encode($data);
+            $contentdata = json_encode($data, JSON_PRETTY_PRINT);
         }
 
         try {
