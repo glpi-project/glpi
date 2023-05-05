@@ -1340,6 +1340,7 @@ HTML;
         $tpl_vars['css_files'][] = ['path' => 'css/palettes/' . $theme . '.scss'];
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
+        $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
        // Search
