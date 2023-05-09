@@ -1442,12 +1442,15 @@ JAVASCRIPT
             echo "</td></tr>";
         }
 
-        echo "<tr class='tab_bg_1'><th colspan='4'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) . "</th></tr>";
+        echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) . "</th></tr>";
+
         echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Enable notifications by default') . "</td><td>";
+        echo "<td><label for='dropdown_is_notif_enable_default$rand'>" . __('Enable notifications by default') . "</label></td><td>";
         Dropdown::showYesNo(
             'is_notif_enable_default',
-            $data['is_notif_enable_default']
+            $data['is_notif_enable_default'],
+            -1,
+            ['rand' => $rand]
         );
         echo "</td></tr>";
 
