@@ -84,16 +84,13 @@ class Filter extends \CommonDBChild
             UserTechFilter::class,
         ];
 
-        if (isset($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS]) && is_array($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS])) {
-            foreach ($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS] as $hook_filters) {
-                if (Plugin::isPluginActive($hook_filters)) {
-                    foreach ($hook_filters as $filter) {
-                        $more_filters[] = $filter;
-                    }
-                }
+        foreach (($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS] ?? []) as $hook_filters) {
+            if (!Plugin::isPluginActive($hook_filters)) {
+                continue;
             }
+
+            array_push($filters, ...$hook_filters);
         }
-        $filters = array_merge($filters, $more_filters);
 
         return $filters;
     }
