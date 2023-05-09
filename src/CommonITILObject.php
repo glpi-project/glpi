@@ -483,7 +483,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (in_array($this->getType(), ['Change', 'Problem']) && $tickets_id) {
             $ticket->getFromDB($tickets_id);
 
-            foreach ([
+            $fields = [
                 'content',
                 'name',
                 'impact',
@@ -491,7 +491,8 @@ abstract class CommonITILObject extends CommonDBTM
                 'priority',
                 'time_to_resolve',
                 'entities_id',
-            ] as $field) {
+            ];
+            foreach ($fields as $field) {
                 if (!isset($options['_saved'][$field])) {
                     $options[$field] = $ticket->fields[$field];
                 }
