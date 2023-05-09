@@ -99,7 +99,7 @@ class Filter extends \CommonDBChild
      *
      * @param int $dashboards_id
      *
-     * @return array the JSON representation of the filter data
+     * @return string the JSON representation of the filter data
      */
     public static function getForDashboard(int $dashboards_id = 0): string
     {
