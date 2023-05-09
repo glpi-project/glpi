@@ -1642,7 +1642,7 @@ class Provider
             }
         }
 
-        return $s_criteria;
+        return ['criteria' => $s_criteria];
     }
 
     public static function getFiltersCriteria(string $table = "", array $apply_filters = [])
