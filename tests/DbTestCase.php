@@ -250,11 +250,16 @@ class DbTestCase extends \GLPITestCase
      *
      * @param string $itemtype
      * @param array $inputs
+     *
+     * @return array created items
      */
-    protected function createItems($itemtype, $inputs)
+    protected function createItems($itemtype, $inputs): array
     {
+        $items = [];
         foreach ($inputs as $input) {
-            $this->createItem($itemtype, $input);
+            $items[] = $this->createItem($itemtype, $input);
         }
+
+        return $items;
     }
 }

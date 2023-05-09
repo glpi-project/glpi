@@ -37,8 +37,10 @@ namespace tests\units;
 
 use DbTestCase;
 use Glpi\Team\Team;
+use ProjectState;
 use ProjectTask;
 use ProjectTeam;
+use Search;
 
 /* Test for inc/project.class.php */
 class Project extends DbTestCase
@@ -443,5 +445,55 @@ class Project extends DbTestCase
 
         // Compare tasks
         $this->array($tasks_clone)->isEqualTo($expected);
+    }
+
+    /**
+     * Functionnal test to ensure that project's states colors are shown in
+     * the search results
+     */
+    public function testProjectStateColorInSearchResults(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        // Create some unique state colors
+        list(
+            $state1,
+            $state2,
+            $state3
+        ) = $this->createItems(ProjectState::getType(), [
+            ['name' => 'state1', 'color' => '#000001'],
+            ['name' => 'state2', 'color' => '#000002'],
+            ['name' => 'state3', 'color' => '#000003'],
+        ]);
+
+        // Create projects using these states
+        $this->createItems(\Project::getType(), [
+            ['name' => 'project1a', 'projectstates_id' => $state1->getID(), 'entities_id' => $entity],
+            ['name' => 'project2a', 'projectstates_id' => $state2->getID(), 'entities_id' => $entity],
+            ['name' => 'project2b', 'projectstates_id' => $state2->getID(), 'entities_id' => $entity],
+            ['name' => 'project3a', 'projectstates_id' => $state3->getID(), 'entities_id' => $entity],
+            ['name' => 'project3b', 'projectstates_id' => $state3->getID(), 'entities_id' => $entity],
+            ['name' => 'project3c', 'projectstates_id' => $state3->getID(), 'entities_id' => $entity],
+        ]);
+
+        // Execute search
+        $params = [
+            'display_type' => Search::HTML_OUTPUT,
+            'criteria'     => [],
+            'item_type'    => \Project::getType(),
+            'is_deleted'   => 0,
+            'as_map'       => 0,
+            'forcedisplay' => [/* State */ 12],
+        ];
+        ob_start();
+        Search::showList($params['item_type'], $params);
+        $html = ob_get_contents();
+        ob_end_clean();
+
+        // Check results
+        $this->integer(substr_count($html, "background-color: #000001;"))->isEqualTo(1);
+        $this->integer(substr_count($html, "background-color: #000002;"))->isEqualTo(2);
+        $this->integer(substr_count($html, "background-color: #000003;"))->isEqualTo(3);
     }
 }
