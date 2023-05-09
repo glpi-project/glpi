@@ -1263,7 +1263,7 @@ HTML;
                     'State',
                     'Entity',
                     'Manufacturer',
-                    LocationFilter::getId(),
+                    'Location',
                 ];
 
                 if (class_exists($itemtype . 'Type')) {
