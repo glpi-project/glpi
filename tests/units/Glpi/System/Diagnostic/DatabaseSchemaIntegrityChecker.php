@@ -1171,6 +1171,86 @@ DIFF,
                 'ignore_unsigned_keys_migration' => true
             ]
         );
+
+        // Checks related to unsigned migration on a database not allowing signed keys, ignoring migration tokens.
+        // "unsigned" should be visible added to expected primary/foreign keys in diff, but not in normalized SQL
+
+        $tables = [
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `users_id` int unsigned NOT NULL,
+  `users_id_tech` int DEFAULT NULL,
+  `groups_id` int NOT NULL,
+  `groups_id_tech` int unsigned DEFAULT NULL,
+  `projects_id` int NOT NULL DEFAULT 0,
+  `uid` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `users_id` int NOT NULL,
+  `users_id_tech` int,
+  `groups_id` int NOT NULL,
+  `groups_id_tech` int,
+  `projects_id` int NOT NULL DEFAULT 0,
+  `uid` int,
+  PRIMARY KEY (`id`)
+)
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `users_id` int NOT NULL,
+  `groups_id_tech` int DEFAULT NULL,
+  `projects_id` int DEFAULT NULL,
+  `uid` int DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
+--- Expected database schema
++++ Current database schema
+@@ @@
+   `id` int NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) NOT NULL,
+   `users_id` int NOT NULL,
+-  `users_id_tech` int unsigned,
+-  `groups_id` int unsigned NOT NULL,
+   `groups_id_tech` int,
+-  `projects_id` int unsigned NOT NULL DEFAULT 0,
+-  `uid` int,
++  `projects_id` int,
++  `uid` int DEFAULT 1,
+   PRIMARY KEY (`id`)
+ )
+
+DIFF,
+                ],
+            ],
+        ];
+
+        yield $convert_to_provider_entry(
+            $tables,
+            [
+                'strict' => true,
+                'allow_signed_keys' => false,
+                'ignore_innodb_migration' => true,
+                'ignore_timestamps_migration' => true,
+                'ignore_utf8mb4_migration' => true,
+                'ignore_dynamic_row_format_migration' => true,
+                'ignore_unsigned_keys_migration' => true
+            ]
+        );
     }
 
     /**
@@ -1184,8 +1264,7 @@ DIFF,
         array $expected_differences, // ignored
         array $args
     ) {
-        $db = $this->geDbMock();
-        $db->use_utf8mb4 = $args['use_utf8mb4'];
+        $db = $this->geDbMock($args);
 
         $this->newTestedInstance(
             $db,
@@ -1213,8 +1292,7 @@ DIFF,
         array $expected_differences,
         array $args
     ) {
-        $db = $this->geDbMock();
-        $db->use_utf8mb4 = $args['use_utf8mb4'];
+        $db = $this->geDbMock($args);
 
         $this->newTestedInstance(
             $db,
@@ -1261,7 +1339,7 @@ DIFF,
             ]
         );
 
-        $db = $this->geDbMock();
+        $db = $this->geDbMock($args);
 
         $this->newTestedInstance($db);
         $this->array($this->testedInstance->extractSchemaFromFile(vfsStream::url('glpi/install/schema.sql')))
@@ -1289,8 +1367,8 @@ DIFF,
             ]
         );
 
-        $db = $this->geDbMock();
-        $db->use_utf8mb4 = $args['use_utf8mb4'];
+        $db = $this->geDbMock($args);
+
         $that = $this;
         $this->calling($db)->query = function ($query) use ($effective_tables, $that) {
             $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
@@ -1376,8 +1454,8 @@ SQL,
                 ]
             );
 
-            $db = $this->geDbMock();
-            $db->use_utf8mb4 = true;
+            $db = $this->geDbMock(['use_utf8mb4' => true]);
+
             $this->calling($db)->tableExists = function ($table_name) use ($table_prefix) {
                 return $table_name !== "glpi_{$table_prefix}missingtable";
             };
@@ -1917,13 +1995,19 @@ DIFF);
      *
      * @return \DBmysql
      */
-    private function geDbMock(): \DBmysql
+    private function geDbMock(array $options = []): \DBmysql
     {
         $this->mockGenerator->orphanize('__construct');
         $db = new \mock\DBmysql();
         $this->calling($db)->tableExists = true;
         $this->calling($db)->fieldExists = true;
         $this->calling($db)->request = new \ArrayIterator();
+
+        foreach ($options as $property => $value) {
+            if (property_exists($db, $property)) {
+                $db->{$property} = $value;
+            }
+        }
 
         return $db;
     }

@@ -204,7 +204,7 @@ class DatabaseSchemaIntegrityChecker
             return '';
         }
 
-        return $this->differ->diff(
+        return $this->diff(
             $proper_create_table_sql,
             $effective_create_table_sql
         );
@@ -271,7 +271,7 @@ class DatabaseSchemaIntegrityChecker
             if (!$this->db->tableExists($table_name)) {
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_MISSING_TABLE,
-                    'diff' => $this->differ->diff($create_table_sql, '')
+                    'diff' => $this->diff($create_table_sql, '')
                 ];
                 continue;
             }
@@ -280,7 +280,7 @@ class DatabaseSchemaIntegrityChecker
             if ($create_table_sql !== $effective_create_table_sql) {
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_ALTERED_TABLE,
-                    'diff' => $this->differ->diff($create_table_sql, $effective_create_table_sql)
+                    'diff' => $this->diff($create_table_sql, $effective_create_table_sql)
                 ];
             }
         }
@@ -314,7 +314,7 @@ class DatabaseSchemaIntegrityChecker
                 $effective_create_table_sql = $this->getNomalizedSql($this->getEffectiveCreateTableSql($table_name));
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_UNKNOWN_TABLE,
-                    'diff' => $this->differ->diff('', $effective_create_table_sql)
+                    'diff' => $this->diff('', $effective_create_table_sql)
                 ];
             }
         }
@@ -719,6 +719,24 @@ class DatabaseSchemaIntegrityChecker
         }
 
         return $sql;
+    }
+
+    /**
+     * Generate diff between proper and effective `CREATE TABLE` SQL string.
+     */
+    private function diff(string $proper_create_table_sql, string $effective_create_table_sql): string
+    {
+        $diff = $this->differ->diff(
+            $proper_create_table_sql,
+            $effective_create_table_sql
+        );
+
+        if (!$this->db->allow_signed_keys) {
+            // Add `unsigned` to primary/foreign keys on lines preceded by a `-` (i.e. expected but not found in DB).
+            $diff = preg_replace('/^-\s+(`id`|`.+_id(_.+)?`)\s+int(?!\s+unsigned)/im', '$0 unsigned', $diff);
+        }
+
+        return $diff;
     }
 
     /**
