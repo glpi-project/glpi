@@ -1432,10 +1432,10 @@ HTML;
 
             foreach (
                 [
-                    ItilCategoryFilter::getId() => __("Top ticket's categories"),
+                    'ITILCategory' => __("Top ticket's categories"),
                     'Entity'       => __("Top ticket's entities"),
-                    RequestTypeFilter::getId()  => __("Top ticket's request types"),
-                    LocationFilter::getId()     => __("Top ticket's locations"),
+                    'RequestType'  => __("Top ticket's request types"),
+                    'Location'     => __("Top ticket's locations"),
                 ] as $itemtype => $label
             ) {
                 $cards["top_ticket_$itemtype"] = [
