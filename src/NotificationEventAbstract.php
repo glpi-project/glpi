@@ -94,6 +94,19 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                  $notificationtarget->addForTarget($target, $options);
 
                 foreach ($notificationtarget->getTargets() as $users_infos) {
+
+                    $user = new User();
+                    //do not notify if user explicitly refused it
+                    //Except for CommonITILOject (already manage by use_notification)
+                    if (
+                        !is_a($item, CommonITILObject::class)
+                        && isset($users_infos['users_id'])
+                        && $user->getFromDB($users_infos['users_id'])
+                        && !$user->isUserNotificationEnable()
+                    ) {
+                        continue;
+                    }
+
                     $key = $users_infos[static::getTargetFieldName()];
                     if (
                         $label

@@ -567,18 +567,23 @@ class NotificationTarget extends CommonDBChild
         if (isset($data['name']) && !empty($data['name'])) {
             $username = $data['name'];
         }
+
         if (isset($data['users_id']) && ($data['users_id'] > 0)) {
             $user = new User();
             if (
                 !$user->getFromDB($data['users_id'])
                 || ($user->getField('is_deleted') == 1)
+                // if notification not send by NotificationTargetCommonITILObject
+                // check if user explicitly refused notification
+                //for CommonITILObject use_notification is check before
+                || (!$user->isUserNotificationEnable() && !is_a(get_called_class(), NotificationTargetCommonITILObject::class, true))
                 || ($user->getField('is_active') == 0)
                 || (!is_null($user->getField('begin_date'))
                   && ($user->getField('begin_date') > $_SESSION["glpi_currenttime"]))
                 || (!is_null($user->getField('end_date'))
                   && ($user->getField('end_date') < $_SESSION["glpi_currenttime"]))
             ) {
-               // unknown, deleted or disabled user
+               // unknown, deleted, not notifiable or disabled user
                 return false;
             }
             $filt = getEntitiesRestrictCriteria(

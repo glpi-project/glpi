@@ -166,6 +166,14 @@
                <input class="form-check-input" type="checkbox" id="use_notification" name="_notifications_use_notification" />
                <label class="form-check-label" for="use_notification">{{ __('Email followup') }}</label>
             </div>
+            <div id="alert_notification_disable" class='alert alert-info d-flex align-items-center mb-4 d-none' role='alert'>
+               <i class='fas fa-info-circle fa-xl'></i>
+               <span class='ms-2'>
+               {{ __('Notifications are disable (from the user preferences or the entity configuration)') }}
+               <br>
+               {{ __('However, you can reactivate the notification for this ticket') }}
+               </span>
+            </div>
             <input type="email" class="form-control" id="alternative_email" name="_notifications_alternative_email" />
          </div>
       </div>
@@ -232,6 +240,13 @@
       modal.find("input[name=_notifications_actorname]").removeAttr('readonly').val(text).attr('readonly', 'true');
       modal.find("input[name=_notifications_use_notification]").prop('checked', parseInt(actor.use_notification));
       modal.find("input[name=_notifications_alternative_email]").val(actor.alternative_email);
+
+      console.log(actor.use_notification);
+      if (parseInt(actor.use_notification) == false) {
+         modal.find("#alert_notification_disable").removeClass('d-none');
+      } else {
+         modal.find("#alert_notification_disable").addClass('d-none');
+      }
 
       editActorNotifySettings_modal.show();
    }

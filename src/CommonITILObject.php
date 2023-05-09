@@ -191,7 +191,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'          => 'User',
                             'text'              => $name,
                             'title'             => $name,
-                            'use_notification'  => $email === '' ? false : $default_use_notif,
+                            'use_notification'  => $email === '' ? false : ($default_use_notif && $userobj->isUserNotificationEnable()),
                             'alternative_email' => $email,
                         ];
                     }
@@ -218,7 +218,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'          => 'User',
                             'text'              => $name,
                             'title'             => $name,
-                            'use_notification'  => $email === '' ? false : $default_use_notif,
+                            'use_notification'  => $email === '' ? false : ($default_use_notif && $userobj->isUserNotificationEnable()),
                             'alternative_email' => $email,
                         ];
                     }

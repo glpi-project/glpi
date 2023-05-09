@@ -3902,12 +3902,18 @@ JAVASCRIPT;
         if (is_numeric(Session::getLoginUserID(false))) {
             $users_id_requester = Session::getLoginUserID();
             $users_id_assign    = Session::getLoginUserID();
+            $user = new User();
+            $user->getFromDB(Session::getLoginUserID());
+            $user_notification_enable = $user->isUserNotificationEnable();
+
            // No default requester if own ticket right = tech and update_ticket right to update requester
             if (Session::haveRightsOr(self::$rightname, [UPDATE, self::OWN]) && !$_SESSION['glpiset_default_requester']) {
                 $users_id_requester = 0;
+                $user_notification_enable = 1; // no default requester reset to true
             }
             if (!Session::haveRight(self::$rightname, self::OWN) || !$_SESSION['glpiset_default_tech']) {
                 $users_id_assign = 0;
+                $user_notification_enable = 1; // no default assign reset to true
             }
             $entity      = $_SESSION['glpiactive_entity'];
             $requesttype = $_SESSION['glpidefault_requesttypes_id'];
@@ -3921,14 +3927,16 @@ JAVASCRIPT;
 
         $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $entity, '', 1);
 
+
+
        // Set default values...
         return  ['_users_id_requester'       => $users_id_requester,
-            '_users_id_requester_notif' => ['use_notification'  => [$default_use_notif],
+            '_users_id_requester_notif' => ['use_notification'  => [(string) ($default_use_notif & $user_notification_enable)],
                 'alternative_email' => ['']
             ],
             '_groups_id_requester'      => 0,
             '_users_id_assign'          =>  $users_id_assign,
-            '_users_id_assign_notif'    => ['use_notification'  => [$default_use_notif],
+            '_users_id_assign_notif'    => ['use_notification'  => [(string) ($default_use_notif & $user_notification_enable)],
                 'alternative_email' => ['']
             ],
             '_groups_id_assign'         => 0,

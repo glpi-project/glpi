@@ -112,4 +112,49 @@ class NotificationMailing extends DbTestCase
              'event'                    => 'test_notification'
          ]);
     }
+
+
+    public function testGlobalAddRecipient()
+    {
+        //setup
+        $this->login();
+
+        //check default computed value
+        $user = new \User();
+        $this->boolean((bool)$user->getFromDB(\Session::getLoginUserID()))->isTrue();
+        $this->variable($user->fields['is_notif_enable_default'])->isNull(); //default value from user table
+        $this->boolean((bool)$user->isUserNotificationEnable())->isTrue(); //like default configuration
+
+        $notification = new \NotificationTargetProject();
+        $notification->setEvent("NotificationEventMailing");
+        $notification->addToRecipientsList([
+            'users_id' => \Session::getLoginUserID()
+        ]);
+
+        $targets = $notification->getTargets();
+        $this->array($targets)->hasSize(1);
+
+
+        //update user to explicitly refuse notification
+        $this->boolean($user->update([
+            'id' => \Session::getLoginUserID(),
+            'is_notif_enable_default' => '0'
+        ]))->isTrue();
+        //check computed value
+        $this->boolean($user->getFromDB(\Session::getLoginUserID()))->isTrue();
+        $this->boolean((bool)$user->fields['is_notif_enable_default'])->isFalse();
+        $this->boolean($user->isUserNotificationEnable())->isFalse();
+
+
+        $notification = new \NotificationTargetProject();
+        $notification->setEvent("NotificationEventMailing");
+
+        $notification->addToRecipientsList([
+            'users_id' => \Session::getLoginUserID()
+        ]);
+
+        $targets = $notification->getTargets();
+        $this->array($targets)->hasSize(0);
+    }
+
 }
