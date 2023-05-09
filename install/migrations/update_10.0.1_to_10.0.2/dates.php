@@ -53,6 +53,7 @@ $columns_iterator = $DB->request(
         'FROM'   => 'information_schema.columns',
         'WHERE'  => [
             'table_schema' => $DB->dbdefault,
+            'table_type'   => 'BASE TABLE',
             'data_type'    => ['timestamp', 'datetime', 'date'],
         ],
         'ORDER'  => ['TABLE_NAME', 'COLUMN_NAME'],
