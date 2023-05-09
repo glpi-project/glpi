@@ -156,5 +156,4 @@ class NotificationMailing extends DbTestCase
         $targets = $notification->getTargets();
         $this->array($targets)->hasSize(0);
     }
-
 }
