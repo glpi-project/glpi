@@ -217,6 +217,11 @@ class Entity extends CommonTreeDropdown
         return _n('Entity', 'Entities', $nb);
     }
 
+    public static function canCreate()
+    {
+        // Do not show the create button if no recusive access on current entity
+        return parent::canCreate() && Session::haveRecursiveAccessToEntity(Session::getActiveEntity());
+    }
 
     public function canCreateItem()
     {
