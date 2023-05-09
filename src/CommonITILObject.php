@@ -483,12 +483,21 @@ abstract class CommonITILObject extends CommonDBTM
         if (in_array($this->getType(), ['Change', 'Problem']) && $tickets_id) {
             $ticket->getFromDB($tickets_id);
 
-            $options['content']             = $ticket->fields['content'];
-            $options['name']                = $ticket->fields['name'];
-            $options['impact']              = $ticket->fields['impact'];
-            $options['urgency']             = $ticket->fields['urgency'];
-            $options['priority']            = $ticket->fields['priority'];
-            if (isset($options['_tickets_id']) && !isset($options['_saved']['itilcategories_id'])) {
+            foreach ([
+                'content',
+                'name',
+                'impact',
+                'urgency',
+                'priority',
+                'time_to_resolve',
+                'entities_id',
+            ] as $field) {
+                if (!isset($options['_saved'][$field])) {
+                    $options[$field] = $ticket->fields[$field];
+                }
+            }
+
+            if (!isset($options['_saved']['itilcategories_id'])) {
                 //page is reloaded on category change, we only want category on the very first load
                 $category = new ITILCategory();
                 $options['itilcategories_id'] = 0;
@@ -502,8 +511,6 @@ abstract class CommonITILObject extends CommonDBTM
                     $options['itilcategories_id'] = $ticket->fields['itilcategories_id'];
                 }
             }
-            $options['time_to_resolve']     = $ticket->fields['time_to_resolve'];
-            $options['entities_id']         = $ticket->fields['entities_id'];
         }
 
         // check original problem for change
