@@ -53,7 +53,7 @@ abstract class AbstractFilter
      *
      * @return string
      */
-    abstract public static function getHtml(): string;
+    abstract public static function getHtml($values = ""): string;
 
      /**
      * Get the filter id

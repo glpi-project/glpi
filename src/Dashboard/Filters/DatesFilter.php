@@ -176,7 +176,7 @@ class DatesFilter extends AbstractFilter
      *
      * @return string
      */
-    public static function getHtml($values = "", string $fieldname = 'dates'): string
+    public static function getHtml($values = ""): string
     {
         // string mean empty value
         if (is_string($values)) {
@@ -201,13 +201,13 @@ class DatesFilter extends AbstractFilter
         // don't trigger when only the first date is selected
         var nb_dates = selectedDates.length;
         if (nb_dates == 0 || nb_dates == 2) {
-            Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selectedDates);
+            Dashboard.getActiveDashboard().saveFilter('dates', selectedDates);
             $(instance.input).closest("fieldset").addClass("filled");
         }
         };
         JAVASCRIPT;
         $field .= Html::scriptBlock($js);
 
-        return self::field($fieldname, $field, $label, is_array($values) && count($values) > 0);
+        return self::field('dates', $field, $label, is_array($values) && count($values) > 0);
     }
 }
