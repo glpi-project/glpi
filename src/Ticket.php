@@ -3918,6 +3918,7 @@ JAVASCRIPT;
             $entity      = $_SESSION['glpiactive_entity'];
             $requesttype = $_SESSION['glpidefault_requesttypes_id'];
         } else {
+            $user_notification_enable = 1;
             $users_id_requester = 0;
             $users_id_assign    = 0;
             $requesttype        = $CFG_GLPI['default_requesttypes_id'];
