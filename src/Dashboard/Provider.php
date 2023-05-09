@@ -1638,7 +1638,7 @@ class Provider
         foreach ($filters as $filter) {
             $filter_criteria = $filter::getSearchCriteria($DBread, $table, $apply_filters);
             if (!empty($filter_criteria)) {
-                $s_criteria = array_merge($s_criteria, $filter_criteria);
+                array_push($s_criteria, ...$filter_criteria);
             }
         }
 
