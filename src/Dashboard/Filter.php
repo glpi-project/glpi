@@ -69,7 +69,6 @@ class Filter extends \CommonDBChild
     public static function getAll(): array
     {
         global $PLUGIN_HOOKS;
-        $more_filters = [];
 
         $filters = [
             DatesFilter::class,
