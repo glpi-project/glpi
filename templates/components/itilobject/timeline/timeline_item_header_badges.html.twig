@@ -65,7 +65,7 @@
    {% endif %}
 </span>
 
-{% if users_id_editor > 0 and date_creation != date_mod %}
+{% if date_creation != date_mod %}
    <span class="badge user-select-auto text-wrap ms-1 d-none d-md-block">
       {% set date_span %}
          <span
@@ -83,15 +83,19 @@
          </span>
       {% endset %}
 
-      {% set is_current_editor = (users_id_editor == session('glpiID')) %}
-      {% set anonym_editor = (get_current_interface() == 'helpdesk' and not is_current_editor and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
-      {% set editor_span %}
-         {{ include('components/user/link_with_tooltip.html.twig', {
-            'users_id': users_id_editor,
-            'enable_anonymization': anonym_editor
-         }, with_context = false) }}
-      {% endset %}
+      {% if users_id_editor > 0 %}
+         {% set is_current_editor = (users_id_editor == session('glpiID')) %}
+         {% set anonym_editor = (get_current_interface() == 'helpdesk' and not is_current_editor and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
+         {% set editor_span %}
+            {{ include('components/user/link_with_tooltip.html.twig', {
+               'users_id': users_id_editor,
+               'enable_anonymization': anonym_editor
+            }, with_context = false) }}
+         {% endset %}
 
-      {{ __('Last update: %1$s by %2$s')|format(date_span, editor_span)|raw }}
+         {{ __('Last update: %1$s by %2$s')|format(date_span, editor_span)|raw }}
+      {% else %}
+         {{ __('Last update: %1$s by anonymous user')|format(date_span)|raw }}
+      {% endif %}
    </span>
 {% endif %}
