@@ -116,8 +116,8 @@ class ItilCategoryFilter extends AbstractFilter
      *
      * @return string
      */
-    public static function getHtml(string $value = ""): string
+    public static function getHtml($value = ""): string
     {
-        return self::displayList(self::getName(), $value, 'itilcategory', ITILCategory::class);
+        return self::displayList(self::getName(), is_string($value) ? $value : "", 'itilcategory', ITILCategory::class);
     }
 }

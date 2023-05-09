@@ -117,8 +117,8 @@ class RequestTypeFilter extends AbstractFilter
      *
      * @return string
      */
-    public static function getHtml(string $value = ""): string
+    public static function getHtml($value = ""): string
     {
-        return self::displayList(self::getName(), $value, 'requesttype', RequestType::class);
+        return self::displayList(self::getName(), is_string($value) ? $value : "", 'requesttype', RequestType::class);
     }
 }
