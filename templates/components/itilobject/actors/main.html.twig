@@ -241,7 +241,6 @@
       modal.find("input[name=_notifications_use_notification]").prop('checked', parseInt(actor.use_notification));
       modal.find("input[name=_notifications_alternative_email]").val(actor.alternative_email);
 
-      console.log(actor.use_notification);
       if (parseInt(actor.use_notification) == false) {
          modal.find("#alert_notification_disable").removeClass('d-none');
       } else {
