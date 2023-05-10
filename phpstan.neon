@@ -13,4 +13,3 @@ parameters:
     ignoreErrors:
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
-        - '/\w+ has been replaced by \w+/'

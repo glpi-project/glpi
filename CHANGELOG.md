@@ -54,7 +54,9 @@ The present file will list all changes made to the project; according to the
 ### Removed
 - `Link tickets` massive action for Tickets (Use `Link ITIL Object` instead).
 - `Link to a problem` massive action for Tickets (Use `Link ITIL Object` instead).
-- Manage tab for Knowledgebase (Unpublished is now a toggle in the browse tab)
+- Manage tab for Knowledgebase (Unpublished is now a toggle in the browse tab).
+- The database "master" property in the status checker (/status.php and glpi:system:status), replaced by "main".
+- The database "slaves" property in the status checker (/status.php and glpi:system:status), replaced by "replicas".
 
 ### API changes
 
@@ -152,20 +154,29 @@ The present file will list all changes made to the project; according to the
 - Handling of encoded/escaped value in `autoName()`.
 - `regenerateTreeCompleteName()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
+- `CommonDropdown::displayHeader()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
 - `Config::getCurrentDBVersion()`
 - `DbUtils::regenerateTreeCompleteName()`
+- `GLPI::getLogLevel()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
+- `Glpi\Inventory\Conf::importFile()`
 - `Glpi\System\Requirement\DataDirectoriesProtectedPath` class.
 - `Glpi\System\Requirement\ProtectedWebAccess` class.
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
+- `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Html::clean()`
+- `MailCollector::listEncodings()`
+- `Netpoint` class
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
+- `RSSFeed::showDiscoveredFeeds()`
 - `Rule::$can_sort` property.
 - `Rule::$orderby` property.
+- `RuleImportComputer` class.
+- `RuleImportComputerCollection` class.
 - `Search::computeTitle()`
 - `Search::csv_clean()`
 - `Search::findCriteriaInSession()`
@@ -174,10 +185,19 @@ The present file will list all changes made to the project; according to the
 - `Search::getMetaReferenceItemtype()`
 - `Search::outputData()`
 - `Search::sylk_clean()`
+- `SLM::setTicketCalendar()`
 - `Toolbox::canUseCas()`
+- `Toolbox::checkValidReferer()`
 - `Toolbox::clean_cross_side_scripting_deep()`
+- `Toolbox::endsWith()`
+- `Toolbox::filesizeDirectory()`
 - `Toolbox::getHtmLawedSafeConfig()`
 - `Toolbox::getHtmlToDisplay()`
+- `Toolbox::logError()`
+- `Toolbox::logNotice()`
+- `Toolbox::logWarning()`
+- `Toolbox::sodiumDecrypt()`
+- `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `XML` class.
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
@@ -357,6 +377,7 @@ The present file will list all changes made to the project; according to the
 - `Netpoint` has been deprecated and replaced by `Socket`
 - `CommonDropdown::displayHeader()`, use `CommonDropdown::displayCentralHeader()` instead and make sure to override properly `first_level_menu`, `second_level_menu` and `third_level_menu`.
 - `GLPI::getLogLevel()`
+- `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Html::clean()`
 - `MailCollector::listEncodings()`
 - `RuleImportComputer` class

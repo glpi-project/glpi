@@ -112,7 +112,6 @@ class Transfer extends DbTestCase
                 'PendingReasonCron',
                 'Database',
                 'Socket',
-                'Netpoint',
                 'Link_Itemtype',
             ]
         );

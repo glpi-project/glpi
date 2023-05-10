@@ -207,14 +207,6 @@ abstract class CommonDropdown extends CommonDBTM
         return $ong;
     }
 
-    public function displayHeader()
-    {
-        Toolbox::deprecated(
-            "This method is deprecated. Use displayCentralHeader() instead"
-        );
-        static::displayCentralHeader();
-    }
-
     public static function displayCentralHeader(
         ?string $title = null,
         ?array $menus = null

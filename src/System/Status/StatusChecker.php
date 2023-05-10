@@ -169,10 +169,10 @@ final class StatusChecker
         if ($status === null) {
             $status = [
                 'status' => self::STATUS_OK,
-                'master' => [
+                'main' => [
                     'status' => self::STATUS_OK,
                 ],
-                'slaves' => [
+                'replicas' => [
                     'status' => self::STATUS_NO_DATA,
                     'servers' => []
                 ]
@@ -187,29 +187,29 @@ final class StatusChecker
                 }
 
                 if (count($hosts)) {
-                    $status['slaves']['status'] = self::STATUS_OK;
+                    $status['replicas']['status'] = self::STATUS_OK;
                 }
 
                 foreach ($hosts as $num => $name) {
                     $diff = DBConnection::getReplicateDelay($num);
                     if (abs($diff) > 1000000000) {
-                        $status['slaves']['servers'][$num] = [
+                        $status['replicas']['servers'][$num] = [
                             'status'             => self::STATUS_PROBLEM,
                             'replication_delay'  => '-1',
                             'status_msg'           => _x('glpi_status', 'Replication delay is too high')
                         ];
-                        $status['slaves']['status'] = self::STATUS_PROBLEM;
+                        $status['replicas']['status'] = self::STATUS_PROBLEM;
                         $status['status'] = self::STATUS_PROBLEM;
                     } else if (abs($diff) > HOUR_TIMESTAMP) {
-                        $status['slaves']['servers'][$num] = [
+                        $status['replicas']['servers'][$num] = [
                             'status'             => self::STATUS_PROBLEM,
                             'replication_delay'  => abs($diff),
                             'status_msg'           => _x('glpi_status', 'Replication delay is too high')
                         ];
-                        $status['slaves']['status'] = self::STATUS_PROBLEM;
+                        $status['replicas']['status'] = self::STATUS_PROBLEM;
                         $status['status'] = self::STATUS_PROBLEM;
                     } else {
-                        $status['slaves']['servers'][$num] = [
+                        $status['replicas']['servers'][$num] = [
                             'status'             => self::STATUS_OK,
                             'replication_delay'  => abs($diff)
                         ];
@@ -219,17 +219,13 @@ final class StatusChecker
 
            // Check main server connection
             if (!@DBConnection::establishDBConnection(false, true, false)) {
-                $status['master'] = [
+                $status['main'] = [
                     'status' => self::STATUS_PROBLEM,
                     'status_msg' => _x('glpi_status', 'Unable to connect to the main database')
                 ];
                 $status['status'] = self::STATUS_PROBLEM;
             }
         }
-
-        // Set new properties. Master and slave are deprecated given their implications in English.
-        $status['main'] = $status['master'];
-        $status['replicas'] = $status['slaves'];
 
         return $status;
     }
@@ -602,18 +598,6 @@ final class StatusChecker
     }
 
     /**
-     * @param bool $public_only True if only public status information should be given.
-     * @param bool $as_array
-     * @return array|string
-     * @deprecated 10.0.0 Use {@link self::getServiceStatus} instead
-     */
-    public static function getFullStatus($public_only = true, $as_array = true)
-    {
-        Toolbox::deprecated('Use StatusChecker::getServiceStatus for service checks instead');
-        return self::getServiceStatus(null, $public_only, $as_array);
-    }
-
-    /**
      * Format the given full service status result as a plain-text output compatible with previous versions of GLPI.
      * @param array $status
      * @return string
@@ -623,14 +607,14 @@ final class StatusChecker
        // Deprecated notices are done on the /status.php endpoint and CLI commands to give better migration hints
         $output = '';
        // Plain-text output
-        if (count($status['db']['slaves'])) {
-            foreach ($status['db']['slaves']['servers'] as $num => $slave_info) {
+        if (count($status['db']['replicas'])) {
+            foreach ($status['db']['replicas']['servers'] as $num => $slave_info) {
                 $output .= "GLPI_DBSLAVE_{$num}_{$slave_info['status']}\n";
             }
         } else {
             $output .= "No slave DB\n"; // Leave as "slave" since plain text is already deprecated
         }
-        $output .= "GLPI_DB_{$status['db']['master']['status']}\n";
+        $output .= "GLPI_DB_{$status['db']['main']['status']}\n";
         $output .= "GLPI_SESSION_DIR_{$status['filesystem']['session_dir']['status']}\n";
         if (count($status['ldap']['servers'])) {
             $output .= 'Check LDAP servers:';

@@ -141,15 +141,6 @@ class DbTestCase extends \GLPITestCase
      */
     protected function getClasses($function = false, array $excludes = [])
     {
-       // Add deprecated classes to excludes to prevent test failure
-        $excludes = array_merge(
-            $excludes,
-            [
-                'TicketFollowup', // Deprecated
-                '/^RuleImportComputer.*/', // Deprecated
-            ]
-        );
-
         $files_iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(GLPI_ROOT . '/src'),
             RecursiveIteratorIterator::SELF_FIRST

@@ -113,21 +113,6 @@ class MailCollector extends DbTestCase
                ->isIdenticalTo($expected);
     }
 
-    public function testListEncodings()
-    {
-        $this->newTestedInstance;
-
-        $this->when(
-            function () {
-                $this->array($this->testedInstance->listEncodings())
-                    ->containsValues(['utf-8', 'iso-8859-1', 'iso-8859-14', 'cp1252']);
-            }
-        )->error()
-           ->withType(E_USER_DEPRECATED)
-           ->withMessage('Called method is deprecated')
-           ->exists();
-    }
-
     public function testPrepareInput()
     {
         $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
