@@ -77,9 +77,6 @@ function isAPI()
     if (strpos($script, 'apirest.php') !== false) {
         return true;
     }
-    if (strpos($script, 'apixmlrpc.php') !== false) {
-        return true;
-    }
 
     return false;
 }

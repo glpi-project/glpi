@@ -169,7 +169,6 @@ class ProxyRouter extends \GLPITestCase
             '/install/install.php',
             '/install/update.php',
             '/apirest.php',
-            '/apixmlrpc.php',
             '/caldav.php',
             '/index.php',
             '/status.php',

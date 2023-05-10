@@ -657,11 +657,8 @@ abstract class APIBaseClass extends atoum
                         'itemtype'                 => "Computer",
                         'NetworkName_name'         => "testname",
                         'NetworkName_fqdns_id'     => 0,
-                                  // add an aditionnal key to the next array
-                                  // to avoid xmlrpc losing -1 key.
-                                  // see https://bugs.php.net/bug.php?id=37746
-                        'NetworkName__ipaddresses' => ['-1'                => "1.2.3.4",
-                            '_xmlrpc_fckng_fix' => ''
+                        'NetworkName__ipaddresses' => [
+                            '-1' => "1.2.3.4",
                         ],
                         '_create_children'         => true
                     ]
