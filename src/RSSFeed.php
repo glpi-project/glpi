@@ -863,52 +863,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
 
     /**
-     * Show discovered feeds
-     *
-     * @return void
-     *
-     * @deprecated
-     **/
-    public function showDiscoveredFeeds()
-    {
-        Toolbox::deprecated();
-        if (!Toolbox::isUrlSafe($this->fields['url'])) {
-            return;
-        }
-
-        $feed = new SimplePie();
-        $feed->enable_cache(false);
-        $feed->set_feed_url($this->fields['url']);
-        $feed->init();
-        $feed->handle_content_type();
-
-        if ($feed->error()) {
-            return;
-        }
-
-        foreach ($feed->get_all_discovered_feeds() as $f) {
-            $newurl  = $f->url;
-            $newfeed = self::getRSSFeed($newurl);
-            if ($newfeed && !$newfeed->error()) {
-                $link = URL::sanitizeURL($newfeed->get_permalink());
-                if (!empty($link)) {
-                     echo "<a href='$newurl'>" . $newfeed->get_title() . "</a>&nbsp;";
-                     Html::showSimpleForm(
-                         $this->getFormURL(),
-                         'update',
-                         _x('button', 'Use'),
-                         ['id'  => $this->getID(),
-                             'url' => $newurl
-                         ]
-                     );
-                     echo "<br>";
-                }
-            }
-        }
-    }
-
-
-    /**
      * Get a specific RSS feed.
      *
      * @param string    $url            URL of the feed or array of URL

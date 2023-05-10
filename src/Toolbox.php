@@ -248,26 +248,6 @@ class Toolbox
     }
 
     /**
-     * @deprecated 10.0.0
-     */
-    public static function sodiumEncrypt($content, $key = null)
-    {
-        Toolbox::deprecated('Use "GLPIKey::encrypt()"');
-        $glpikey = new GLPIKey();
-        return $glpikey->encrypt($content, $key);
-    }
-
-    /**
-     * @deprecated 10.0.0
-     */
-    public static function sodiumDecrypt($content, $key = null)
-    {
-        Toolbox::deprecated('Use "GLPIKey::decrypt()"');
-        $glpikey = new GLPIKey();
-        return $glpikey->decrypt($content, $key);
-    }
-
-    /**
      * Log in 'php-errors' all args
      *
      * @param LoggerInterface   $logger Logger instance, if any
@@ -350,50 +330,11 @@ class Toolbox
     }
 
     /**
-     * PHP notice log
-     */
-    public static function logNotice()
-    {
-        self::deprecated(
-            'Use either native trigger_error($msg, E_USER_NOTICE) to log notices,'
-            . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
-            . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
-        );
-        self::log(null, LogLevel::NOTICE, func_get_args());
-    }
-
-    /**
      * PHP info log
      */
     public static function logInfo()
     {
         self::log(null, LogLevel::INFO, func_get_args());
-    }
-
-    /**
-     * PHP warning log
-     */
-    public static function logWarning()
-    {
-        self::deprecated(
-            'Use either native trigger_error($msg, E_USER_WARNING) to log warnings,'
-            . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
-            . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
-        );
-        self::log(null, LogLevel::WARNING, func_get_args());
-    }
-
-    /**
-     * PHP error log
-     */
-    public static function logError()
-    {
-        self::deprecated(
-            'Use either native trigger_error($msg, E_USER_WARNING) to log errors,'
-            . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
-            . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
-        );
-        self::log(null, LogLevel::ERROR, func_get_args());
     }
 
     /**
@@ -821,41 +762,6 @@ class Toolbox
             return 2;
         }
         return 3;
-    }
-
-
-    /**
-     * Get the filesize of a complete directory (from php.net)
-     *
-     * @param string $path  directory or file to get size
-     *
-     * @return null|integer
-     *
-     * @deprecated 10.0.0
-     **/
-    public static function filesizeDirectory($path)
-    {
-        Toolbox::deprecated();
-
-        if (!is_dir($path)) {
-            return filesize($path);
-        }
-
-        if ($handle = opendir($path)) {
-            $size = 0;
-
-            while (false !== ($file = readdir($handle))) {
-                if (($file != '.') && ($file != '..')) {
-                    $size += filesize($path . '/' . $file);
-                    $size += self::filesizeDirectory($path . '/' . $file);
-                }
-            }
-
-            closedir($handle);
-            return $size;
-        }
-
-        return null;
     }
 
 
@@ -2396,79 +2302,6 @@ class Toolbox
 
 
     /**
-     * Check valid referer accessing GLPI
-     *
-     * @since 0.84.2
-     *
-     * @return void  display error if not permit
-     *
-     * @deprecated 10.0.7
-     **/
-    public static function checkValidReferer()
-    {
-        Toolbox::deprecated('Checking `HTTP_REFERER` does not provide any security.');
-
-        global $CFG_GLPI;
-
-        $isvalidReferer = true;
-
-        if (!isset($_SERVER['HTTP_REFERER'])) {
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                Html::displayErrorAndDie(
-                    __("No HTTP_REFERER found in request. Reload previous page before doing action again."),
-                    true
-                );
-                $isvalidReferer = false;
-            }
-        } else if (!is_array($url = parse_url($_SERVER['HTTP_REFERER']))) {
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                Html::displayErrorAndDie(
-                    __("Error when parsing HTTP_REFERER. Reload previous page before doing action again."),
-                    true
-                );
-                $isvalidReferer = false;
-            }
-        }
-
-        if (
-            !isset($url['host'])
-            || (($url['host'] != $_SERVER['SERVER_NAME'])
-            && (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])
-               || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))
-        ) {
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                Html::displayErrorAndDie(
-                    __("None or Invalid host in HTTP_REFERER. Reload previous page before doing action again."),
-                    true
-                );
-                $isvalidReferer = false;
-            }
-        }
-
-        if (
-            !isset($url['path'])
-            || (!empty($CFG_GLPI['root_doc'])
-            && (strpos($url['path'], $CFG_GLPI['root_doc']) !== 0))
-        ) {
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                Html::displayErrorAndDie(
-                    __("None or Invalid path in HTTP_REFERER. Reload previous page before doing action again."),
-                    true
-                );
-                $isvalidReferer = false;
-            }
-        }
-
-        if (!$isvalidReferer && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
-            Html::displayErrorAndDie(
-                __("The action you have requested is not allowed. Reload previous page before doing action again."),
-                true
-            );
-        }
-    }
-
-
-    /**
      * Retrieve the mime type of a file
      *
      * @since 0.85.5
@@ -2815,42 +2648,6 @@ class Toolbox
 
         // See if the string contents are valid JSON.
         return null !== json_decode($json);
-    }
-
-    /**
-     * Checks if a string starts with another one
-     *
-     * @since 9.1.5
-     *
-     * @param string $haystack String to check
-     * @param string $needle   String to find
-     *
-     * @return boolean
-     *
-     * @deprecated 10.0.0
-     */
-    public static function startsWith($haystack, $needle)
-    {
-        Toolbox::deprecated('Use native str_starts_with() function.');
-        return str_starts_with($haystack, $needle);
-    }
-
-    /**
-     * Checks if a string starts with another one
-     *
-     * @since 9.2
-     *
-     * @param string $haystack String to check
-     * @param string $needle   String to find
-     *
-     * @return boolean
-     *
-     * @deprecated 10.0.0
-     */
-    public static function endsWith($haystack, $needle)
-    {
-        Toolbox::deprecated('Use native str_ends_with() function.');
-        return str_ends_with($haystack, $needle);
     }
 
     /**

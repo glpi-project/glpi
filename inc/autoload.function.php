@@ -297,17 +297,6 @@ function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi')
  */
 function glpi_autoload($classname)
 {
-    // Deprecation warn for RuleImportComputer* classes
-    if (in_array($classname, ['RuleImportComputer', 'RuleImportComputerCollection'])) {
-        Toolbox::deprecated(
-            sprintf(
-                '%s has been replaced by %s.',
-                $classname,
-                str_replace('Computer', 'Asset', $classname)
-            )
-        );
-    }
-
     $plug = isPluginItemType($classname);
     if (!$plug) {
         // PSR-4 styled autoloading for classes without namespace

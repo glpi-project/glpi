@@ -87,17 +87,6 @@ class GLPI
     }
 
     /**
-     * Get log level
-     *
-     * @return string
-     */
-    public function getLogLevel()
-    {
-        Toolbox::deprecated();
-        return $this->log_level;
-    }
-
-    /**
      * Init and register error handler.
      *
      * @return ErrorHandler

@@ -142,28 +142,6 @@ class Conf extends CommonGLPI
     }
 
     /**
-     * Import inventory file
-     *
-     * @param array $files $_FILES
-     *
-     * @return Request
-     *
-     * @deprecated
-     */
-    public function importFile($files): Request
-    {
-        \Toolbox::deprecated();
-
-        $path = $files['inventory_files']['tmp_name'];
-        $name = $files['inventory_files']['name'];
-
-        $results = $this->importFiles([$name => $path]);
-        $result  = array_pop($results);
-
-        return $result['request'];
-    }
-
-    /**
      * Import inventory files
      *
      * @param array $files[filename => filepath] Files to import

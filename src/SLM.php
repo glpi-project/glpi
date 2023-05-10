@@ -60,20 +60,6 @@ class SLM extends CommonDBTM
         return _n('Service level', 'Service levels', $nb);
     }
 
-    /**
-     * Force calendar of the SLM if value -1: calendar of the entity
-     *
-     * @param integer $calendars_id calendars_id of the ticket
-     **/
-    public function setTicketCalendar($calendars_id)
-    {
-        Toolbox::deprecated();
-
-        if ($this->fields['use_ticket_calendar']) {
-            $this->fields['calendars_id'] = $calendars_id;
-        }
-    }
-
     public function defineTabs($options = [])
     {
 
