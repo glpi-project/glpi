@@ -3928,8 +3928,6 @@ JAVASCRIPT;
 
         $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $entity, '', 1);
 
-
-
        // Set default values...
         return  ['_users_id_requester'       => $users_id_requester,
             '_users_id_requester_notif' => ['use_notification'  => [(string) ($default_use_notif & $user_notification_enable)],
