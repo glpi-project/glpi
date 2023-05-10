@@ -1139,13 +1139,21 @@ window.GLPI.Debug = new class Debug {
 
         const TIMELINE_REFRESH_RATE = 10; // 10 FPS
         const DIVIDER_WIDTH = 150;
-        const ROW_HEIGHT = 6;
+        const ROW_HEIGHT = 4;
         const ROW_MARGIN = 2;
 
         content_area.append(`
-            <canvas height="${(sections.length * (ROW_HEIGHT + ROW_MARGIN)) + 12}"></canvas>
+            <canvas class="d-none" height="${(sections.length * (ROW_HEIGHT + ROW_MARGIN)) + 12}"></canvas>
         `);
         const canvas_el = content_area.find('canvas').eq(0);
+
+        content_area.closest('#debug-toolbar').on('keyup', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.keyCode === 84) { // 't'
+                canvas_el.toggleClass('d-none');
+            }
+        });
 
         /**
          * @type {CanvasRenderingContext2D}
@@ -1205,6 +1213,9 @@ window.GLPI.Debug = new class Debug {
 
         let hover_data = null;
         canvas_el.on('render', () => {
+            if (canvas_el.hasClass('d-none')) {
+                return;
+            }
             canvas_el.attr('width', canvas_el.parent().width());
             const canvas_width = canvas_el.width();
             const canvas_height = canvas_el.height();
