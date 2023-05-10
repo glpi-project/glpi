@@ -2550,7 +2550,7 @@ class CommonDBTM extends CommonGLPI
                                 $items_id_field = reset($items_id_matches);
                             }
                             $or_criteria[] = [
-                                $itemtype_field => $this->getType(),
+                                $tablename . "." . $itemtype_field => $this->getType(),
                                 $tablename . "." . $items_id_field => $this->getID(),
                             ];
                         } else {
