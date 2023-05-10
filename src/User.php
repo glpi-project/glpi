@@ -4983,6 +4983,8 @@ JAVASCRIPT;
 
         $ID = $this->getField('id');
 
+        $start       = intval($_GET["start"] ?? 0);
+
         if ($tech) {
             $itemtypes   = $CFG_GLPI['linkuser_tech_types']
                          + $CFG_GLPI['linkgroup_tech_types'];
@@ -5051,7 +5053,6 @@ JAVASCRIPT;
                 $type_name = $item->getTypeName();
 
                 foreach ($item_iterator as $data) {
-                    $number++;
                     $cansee = $item->can($data["id"], READ);
                     $link   = $data[$item->getNameField()];
                     if ($cansee) {
@@ -5075,22 +5076,26 @@ JAVASCRIPT;
                             $groups[$data[$field_group]]
                         );
                     }
-                    $entries[] = [
-                        'itemtype'      => $itemtype,
-                        'id'            => $data["id"],
-                        'type'          => $type_name,
-                        'entity'        => Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
-                        'name'          => $link,
-                        'serial'        => $data["serial"],
-                        'otherserial'   => $data["otherserial"],
-                        'states'        => Dropdown::getDropdownName("glpi_states", $data['states_id']),
-                        'linktype'      => $linktype,
-                    ];
+                    if ($number >= $start && $number < $start + $_SESSION['glpilist_limit']) {
+                        $entries[] = [
+                            'itemtype'      => $itemtype,
+                            'id'            => $data["id"],
+                            'type'          => $type_name,
+                            'entity'        => Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
+                            'name'          => $link,
+                            'serial'        => $data["serial"],
+                            'otherserial'   => $data["otherserial"],
+                            'states'        => Dropdown::getDropdownName("glpi_states", $data['states_id']),
+                            'linktype'      => $linktype,
+                        ];
+                    }
+                    $number++;
                 }
             }
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start'                 => $start,
             'is_tab'                => true,
             'items_id'              => $ID,
             'nofilter'              => true,
@@ -5105,7 +5110,7 @@ JAVASCRIPT;
             ],
             'entries'               => $entries,
             'total_number'          => $number,
-            'nopager'               => true,
+            'filtered_number'       => $number,
             'showmassiveactions'    => true,
             'massiveactionparams'   => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
