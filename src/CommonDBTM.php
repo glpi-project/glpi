@@ -2551,7 +2551,7 @@ class CommonDBTM extends CommonGLPI
                             }
                             $or_criteria[] = [
                                 $itemtype_field => $this->getType(),
-                                $items_id_field => $this->getID(),
+                                $tablename . "." . $items_id_field => $this->getID(),
                             ];
                         } else {
                             // Relation based on single foreign key
