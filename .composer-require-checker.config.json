@@ -6,7 +6,7 @@
 
     "curl", "gd", "intl", "mysqli", "zlib",
 
-    "exif", "ldap", "pcntl", "xmlrpc", "zip"
+    "exif", "ldap", "pcntl", "zip"
   ],
   "symbol-whitelist": [
     "// Missing constant in Alpine Linux",
