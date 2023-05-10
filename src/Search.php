@@ -6557,7 +6557,6 @@ JAVASCRIPT;
             $linkfield = $so["linkfield"];
 
            /// TODO try to clean all specific cases using SpecificToDisplay
-
             switch ($table . '.' . $field) {
                 case "glpi_users.name":
                     // USER search case
@@ -6771,10 +6770,25 @@ JAVASCRIPT;
                         }
                         return $out;
                     } else if (($so["datatype"] ?? "") != "itemlink" && !empty($data[$ID][0]['name'])) {
-                        return Entity::badgeCompletename($data[$ID][0]['name']);
+                        $completename = $data[$ID][0]['name'];
+                        if (!$_SESSION['glpiuse_flat_dropdowntree_on_search_result']) {
+                            $split_name = explode(">", $completename);
+                            $entity_name = trim(end($split_name));
+                            return Entity::badgeCompletename($entity_name, CommonTreeDropdown::sanitizeSeparatorInCompletename($completename));
+                        }
+                        return Entity::badgeCompletename($completename);
                     }
                     break;
-
+                case $table . ".completename":
+                    if (
+                        $itemtype != getItemTypeForTable($table)
+                        && $data[$ID][0]['name'] != null //column have value in DB
+                        && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
+                    ) {
+                        $split_name = explode(">", $data[$ID][0]['name']);
+                        return trim(end($split_name));
+                    }
+                    break;
                 case "glpi_documenttypes.icon":
                     if (!empty($data[$ID][0]['name'])) {
                         return "<img class='middle' alt='' src='" . $CFG_GLPI["typedoc_icon_dir"] . "/" .
