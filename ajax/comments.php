@@ -75,12 +75,12 @@ if (
                     $tmpname = getUserName($_POST["value"], 2);
                 }
             }
-            echo $tmpname["comment"];
+            echo $tmpname["comment"]; // `comment` field from `getUserName()` is expected to be a safe HTML string
 
             if (isset($_POST['withlink'])) {
-                echo "<script type='text/javascript' >\n";
-                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . $tmpname['link'] . "');";
-                echo "</script>\n";
+                echo "<script>";
+                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', " . json_encode($tmpname['link']) . ");";
+                echo "</script>";
             }
             break;
 
@@ -103,29 +103,29 @@ if (
                 }
                 $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
                 if (is_array($tmpname) && isset($tmpname["comment"])) {
-                    echo $tmpname["comment"];
+                    echo $tmpname["comment"]; // `comment` field from `Dropdown::getDropdownName()` is expected to be a safe HTML string
                 }
 
                 if (isset($_POST['withlink'])) {
-                    echo "<script type='text/javascript' >\n";
-                    echo Html::jsGetElementbyID($_POST['withlink']) . ".
-                    attr('href', '" . $_POST['itemtype']::getFormURLWithID($_POST["value"]) . "');";
-                    echo "</script>\n";
+                    echo "<script>";
+                    echo Html::jsGetElementbyID($_POST['withlink'])
+                        . ".attr('href', " . json_encode($_POST['itemtype']::getFormURLWithID($_POST["value"])) . ");";
+                    echo "</script>";
                 }
 
                 if (isset($_POST['with_dc_position'])) {
                     $item = new $_POST['itemtype']();
-                    echo "<script type='text/javascript' >\n";
+                    echo "<script>";
 
-                   //if item have a DC position (reload url to it's rack)
+                    //if item have a DC position (reload url to it's rack)
                     if ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true)) {
-                        echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".
-                  html(\"&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>\");";
+                        $link = '&nbsp;<a class="fas fa-crosshairs" href="' . $rack->getLinkURL() . '"></a>';
+                        echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".html(" . json_encode($link) . ");";
                     } else {
-                       //remove old dc position
+                        //remove old dc position
                         echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".empty();";
                     }
-                    echo "</script>\n";
+                    echo "</script>";
                 }
             }
     }

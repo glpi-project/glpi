@@ -61,7 +61,7 @@ $dashboard = new Glpi\Dashboard\Dashboard($_REQUEST['dashboard'] ?? "");
 
 switch ($_POST['action'] ?? null) {
     case 'save_new_dashboard':
-        echo $dashboard->saveNew(
+        $dashboard->saveNew(
             $_POST['title']   ?? "",
             $_POST['context'] ?? ""
         );
@@ -82,7 +82,7 @@ switch ($_POST['action'] ?? null) {
         exit;
 
     case 'delete_dashboard':
-        echo $dashboard->delete(['key' => $_POST['dashboard']]);
+        $dashboard->delete(['key' => $_POST['dashboard']]);
         exit;
 
     case 'set_last_dashboard':
@@ -98,7 +98,7 @@ switch ($_POST['action'] ?? null) {
 
 switch ($_GET['action'] ?? null) {
     case 'get_filter_data':
-        echo $dashboard->getFilter();
+        echo $dashboard->getFilter(); // method returns a JSON string
         exit;
 }
 

@@ -56,7 +56,7 @@ $inline = false;
 if (isset($_POST['inline']) && $_POST['inline']) {
     $inline = true;
 }
-$submitname = _sx('button', 'Post');
+$submitname = _x('button', 'Post');
 if (isset($_POST['submitname']) && $_POST['submitname']) {
     $submitname = $_POST['submitname'];
 }
@@ -115,14 +115,14 @@ if (
         echo $item->getValueToSelect($search, $fieldname, $values, $options);
     }
 
-    echo "<input type='hidden' name='field' value='$fieldname'>";
+    echo "<input type='hidden' name='field' value='" . htmlspecialchars($fieldname) . "'>";
     echo "</td>";
     if ($inline) {
-        echo "<td><input type='submit' name='massiveaction' class='btn btn-primary' value='$submitname'></td>";
+        echo "<td><input type='submit' name='massiveaction' class='btn btn-primary' value='" . htmlspecialchars($submitname) . "'></td>";
     }
     echo "</tr></table>";
 
     if (!$inline) {
-        echo "<br><input type='submit' name='massiveaction' class='btn btn-primary' value='$submitname'>";
+        echo "<br><input type='submit' name='massiveaction' class='btn btn-primary' value='" . htmlspecialchars($submitname) . "'>";
     }
 }

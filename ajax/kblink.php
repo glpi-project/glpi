@@ -68,6 +68,6 @@ if (
         }
         $item = new $itemtype();
         $item->getFromDB(intval($_POST["value"]));
-        echo '&nbsp;' . $item->getLinks();
+        echo '&nbsp;' . $item->getLinks(); // method result is expected to be a safe HTML string
     }
 }

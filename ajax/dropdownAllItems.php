@@ -107,6 +107,6 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
             $params
         );
 
-        echo "<br><span id='showItemSpecificity_" . $_POST["name"] . "$rand'>&nbsp;</span>\n";
+        echo "<br><span id='showItemSpecificity_" . htmlspecialchars($_POST["name"]) . "$rand'>&nbsp;</span>";
     }
 }

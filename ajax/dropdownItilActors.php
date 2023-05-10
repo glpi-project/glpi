@@ -127,8 +127,7 @@ if (
                         printf(
                             __('%1$s: %2$s'),
                             _n('Email', 'Emails', 1),
-                            "<input type='text' size='25' name='_itil_" . $_POST["actortype"] .
-                            "[alternative_email]'>"
+                            "<input type='text' size='25' name='_itil_" . htmlspecialchars($_POST["actortype"]) . "[alternative_email]'>"
                         );
                     }
                     echo "</span>";
@@ -229,8 +228,7 @@ if (
                         printf(
                             __('%1$s: %2$s'),
                             _n('Email', 'Emails', 1),
-                            "<input type='text' size='25' name='_itil_" . $_POST["actortype"] .
-                            "[alternative_email]'>"
+                            "<input type='text' size='25' name='_itil_" . htmlspecialchars($_POST["actortype"]) . "[alternative_email]'>"
                         );
                     }
                     echo "</span>";

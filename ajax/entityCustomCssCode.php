@@ -65,7 +65,7 @@ if (isset($_POST['enable_custom_css']) && isset($_POST['entities_id'])) {
         echo 'disabled';
     }
     echo '>';
-    echo Html::entities_deep($custom_css_code);
+    echo htmlspecialchars($custom_css_code);
     echo '</textarea>';
 
     echo Html::scriptBlock(<<<JAVASCRIPT

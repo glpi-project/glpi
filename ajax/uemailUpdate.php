@@ -101,7 +101,7 @@ if (
     ) {
         $email_string =  $default_email[$user_index];
        // Clean alternative email
-        echo "<input type='hidden' size='25' name='" . $_POST['field'] . "[alternative_email][]'
+        echo "<input type='hidden' size='25' name='" . htmlspecialchars($_POST['field']) . "[alternative_email][]'
              value=''>";
     } else if (count($emails) > 1) {
        // Several emails : select in the list
@@ -122,11 +122,11 @@ if (
             ]
         );
     } else {
-        $email_string = "<input type='mail' class='form-control' name='" . $_POST['field'] . "[alternative_email][]'
-                        value='" . htmlentities($default_email, ENT_QUOTES, 'utf-8') . "'>";
+        $email_string = "<input type='mail' class='form-control' name='" . htmlspecialchars($_POST['field']) . "[alternative_email][]'
+                        value='" . htmlspecialchars($default_email) . "'>";
     }
 
-    echo "$email_string";
+    echo htmlspecialchars($email_string);
 }
 
 Ajax::commonDropdownUpdateItem($_POST);

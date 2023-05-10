@@ -765,6 +765,8 @@ var showMapForLocation = function(elt) {
             }).done(function(data) {
                 if (data.success === false) {
                     glpi_html_dialog({
+                        // data.message is expected to be a safe HTML string and must not be escaped here,
+                        // as it sometimes contains some HTML tags.
                         body: data.message
                     });
                 } else {

@@ -67,7 +67,7 @@ if (!array_key_exists($subckey, $all_entitiestree)) {
             foreach ($entities as $entities_id => &$entity) {
                 $entity['key']   = $entities_id;
 
-                $title = "<a href='$base_path?active_entity={$entities_id}'>{$entity['name']}</a>";
+                $title = "<a href='$base_path?active_entity={$entities_id}'>" . htmlspecialchars($entity['name']) . "</a>";
                 $entity['title'] = $title;
                 unset($entity['name']);
 

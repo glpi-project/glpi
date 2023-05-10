@@ -68,9 +68,8 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['ite
         $item->getFromDB($items_id);
         if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {
             $result = [
-                'name'   => $item->getName(),
-                'lat'    => $item->fields['latitude'],
-                'lng'    => $item->fields['longitude']
+                'lat'    => (float)$item->fields['latitude'],
+                'lng'    => (float)$item->fields['longitude']
             ];
         } else {
             $result = [

@@ -77,7 +77,7 @@ if (
     if ($nb) {
         $content = '';
         foreach ($data as $title) {
-            $content .= $title . '<br>';
+            $content .= htmlspecialchars($title) . '<br>';
         }
         echo '&nbsp;';
         Html::showToolTip($content);
