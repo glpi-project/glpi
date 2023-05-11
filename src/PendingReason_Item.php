@@ -187,20 +187,13 @@ class PendingReason_Item extends CommonDBRelation
             return false;
         }
 
-        $pending_reason = PendingReason::getById($this->fields['pendingreasons_id']);
-        $calendar = Calendar::getById($pending_reason->fields['calendars_id']);
-        $date = new DateTime($this->fields['last_bump_date']);
-        $frequency = $this->fields['followup_frequency'] > 86400 ? 86400 : $this->fields['followup_frequency'];
-        for ($i = 0; $i < ceil($this->fields['followup_frequency'] / 86400.0); $i++) {
-            do {
-                $date->setTimestamp($date->getTimestamp() + $frequency);
-            } while (
-                $calendar && ($calendar->isHoliday($date->format('Y-m-d H:i:s'))
-                    || !$calendar->isAWorkingDay($date->getTimestamp()))
-            );
-        }
+        $last_bump_date = new DateTime($this->fields['last_bump_date']);
 
-        return $date->format("Y-m-d H:i:s");
+        return $this->skipNonWorkingDays(
+            Calendar::getById(PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']),
+            $last_bump_date,
+            (new DateTime())->setTimestamp($last_bump_date->getTimestamp() + $this->fields['followup_frequency'])
+        )->format("Y-m-d H:i:s");
     }
 
     /**
@@ -214,22 +207,41 @@ class PendingReason_Item extends CommonDBRelation
             return false;
         }
 
-       // If there was a bump, calculate from last_bump_date
-        $pending_reason = PendingReason::getById($this->fields['pendingreasons_id']);
-        $calendar = Calendar::getById($pending_reason->fields['calendars_id']);
-        $date = new DateTime($this->fields['last_bump_date']);
-        $frequency = $this->fields['followup_frequency'] > 86400 ? 86400 : $this->fields['followup_frequency'];
-        $remaining_bumps = abs($this->fields['followups_before_resolution']) - $this->fields['bump_count'];
-        for ($i = 0; $i < ceil($this->fields['followup_frequency'] / 86400.0) * ($remaining_bumps + 1); $i++) {
-            do {
-                $date->setTimestamp($date->getTimestamp() + $frequency);
-            } while (
+        $remaining_bumps = ($this->fields['followups_before_resolution'] > 0 ?
+            $this->fields['followups_before_resolution'] : 0)
+            - $this->fields['bump_count'] + 1;
+        $last_bump_date = new DateTime($this->fields['last_bump_date']);
+
+        return $this->skipNonWorkingDays(
+            Calendar::getById(PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']),
+            $last_bump_date,
+            (new DateTime())->setTimestamp(
+                $last_bump_date->getTimestamp() + ($this->fields['followup_frequency'] * $remaining_bumps)
+            ),
+        )->format("Y-m-d H:i:s");
+    }
+
+    /**
+     * Skip non working days in the date range
+     *
+     * @param Calendar $calendar
+     * @param DateTime $start
+     * @param DateTime $end
+     * @return DateTime
+     */
+    public function skipNonWorkingDays(Calendar $calendar, DateTime $start, DateTime $end)
+    {
+        for ($i = 1; $i < $end->diff($start)->format('%a') + 1; $i++) {
+            $date = (new DateTime())->setTimestamp($start->getTimestamp() + (DAY_TIMESTAMP * $i));
+            if (
                 $calendar && ($calendar->isHoliday($date->format('Y-m-d H:i:s'))
                     || !$calendar->isAWorkingDay($date->getTimestamp()))
-            );
+            ) {
+                $end->setTimestamp($end->getTimestamp() + DAY_TIMESTAMP);
+            }
         }
 
-        return $date->format("Y-m-d H:i:s");
+        return $end;
     }
 
     /**
