@@ -125,12 +125,12 @@ class NotificationMailing extends DbTestCase
         $this->variable($user->fields['is_notif_enable_default'])->isNull(); //default value from user table
         $this->boolean((bool)$user->isUserNotificationEnable())->isTrue(); //like default configuration
 
+        //Notification from NotificationTargetUser must be sent
         $notification = new \NotificationTargetProject();
         $notification->setEvent("NotificationEventMailing");
         $notification->addToRecipientsList([
             'users_id' => \Session::getLoginUserID()
         ]);
-
         $targets = $notification->getTargets();
         $this->array($targets)->hasSize(1);
 
@@ -145,7 +145,7 @@ class NotificationMailing extends DbTestCase
         $this->boolean((bool)$user->fields['is_notif_enable_default'])->isFalse();
         $this->boolean($user->isUserNotificationEnable())->isFalse();
 
-
+        //Notification from NotificationTargetUser must be not sent
         $notification = new \NotificationTargetProject();
         $notification->setEvent("NotificationEventMailing");
 
@@ -155,5 +155,15 @@ class NotificationMailing extends DbTestCase
 
         $targets = $notification->getTargets();
         $this->array($targets)->hasSize(0);
+
+
+        //Notification from NotificationTargetUser must be sent
+        $notification = new \NotificationTargetUser();
+        $notification->setEvent("NotificationEventMailing");
+        $notification->addToRecipientsList([
+            'users_id' => \Session::getLoginUserID()
+        ]);
+        $targets = $notification->getTargets();
+        $this->array($targets)->hasSize(1);
     }
 }

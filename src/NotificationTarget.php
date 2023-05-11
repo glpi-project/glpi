@@ -193,7 +193,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return boolean
      **/
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null, string $itemtype = null)
     {
         $users_id = Session::getLoginUserID(false);
 
@@ -222,6 +222,22 @@ class NotificationTarget extends CommonDBChild
             }
         }
 
+        //do not notify if user explicitly refused it
+        //Except for CommonITILOject (already manage by use_notification)
+        //Except for password notification event
+        $bypass_notification = ['passwordexpires', 'passwordforget', 'passwordinit'];
+        $user = new User();
+        if (
+            is_string($itemtype)
+            && (!is_a($itemtype, CommonITILObject::class, true) || !is_a($itemtype, NotificationTargetCommonITILObject::class, true))
+            && (!is_a($itemtype, NotificationTargetUser::class, true))
+            && isset($infos['users_id'])
+            && $user->getFromDB($infos['users_id'])
+            && !$user->isUserNotificationEnable()
+            && !in_array($event, $bypass_notification)
+        ) {
+            return false;
+        }
         return true;
     }
 
@@ -576,7 +592,7 @@ class NotificationTarget extends CommonDBChild
                 // if notification not send by NotificationTargetCommonITILObject
                 // check if user explicitly refused notification
                 //for CommonITILObject use_notification is check before
-                || (!$user->isUserNotificationEnable() && !is_a(get_called_class(), NotificationTargetCommonITILObject::class, true))
+                || (!$this->validateSendTo("", $data, true, null, get_called_class()))
                 || ($user->getField('is_active') == 0)
                 || (!is_null($user->getField('begin_date'))
                   && ($user->getField('begin_date') > $_SESSION["glpi_currenttime"]))
