@@ -40,5 +40,6 @@
 
 if (!$DB->fieldExists('glpi_users', 'is_notif_enable_default')) {
     $migration->addField('glpi_users', 'is_notif_enable_default', "tinyint DEFAULT NULL");
-    $migration->addConfig(['is_notif_enable_default' => 1]);
 }
+
+$migration->addConfig(['is_notif_enable_default' => 1]);
