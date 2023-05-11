@@ -7051,7 +7051,7 @@ JAVASCRIPT;
      * Check if this User notification is enable
      * @return bool
      */
-    public function isUserNotificationEnable(): bool
+    final public function isUserNotificationEnable(): bool
     {
         global $CFG_GLPI;
 
