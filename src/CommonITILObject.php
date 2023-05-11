@@ -483,6 +483,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (in_array($this->getType(), ['Change', 'Problem']) && $tickets_id) {
             $ticket->getFromDB($tickets_id);
 
+            // copy fields from original ticket, only when fields are not already set by the user (contained in _saved array)
             $fields = [
                 'content',
                 'name',
