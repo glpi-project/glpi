@@ -7056,7 +7056,6 @@ JAVASCRIPT;
         global $CFG_GLPI;
 
         $user_pref = $this->fields['is_notif_enable_default'];
-        //var_dump($user_pref);
         //load default conf if needed
         if (is_null($user_pref)) {
             $user_pref = $CFG_GLPI['is_notif_enable_default'];
