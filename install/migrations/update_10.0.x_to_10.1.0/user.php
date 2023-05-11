@@ -38,7 +38,7 @@
  * @var Migration $migration
  */
 
-if (!$DB->fieldExists(\User::getTable(), 'is_notif_enable_default')) {
+if (!$DB->fieldExists('glpi_users', 'is_notif_enable_default')) {
     $migration->addField('glpi_users', 'is_notif_enable_default', "tinyint DEFAULT NULL");
     $migration->addConfig(['is_notif_enable_default' => 1]);
 }
