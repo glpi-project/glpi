@@ -68,11 +68,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null, string $itemtype = null)
     {
 
        // Check global ones for notification to myself
-        if (!parent::validateSendTo($event, $infos, $notify_me, $emitter)) {
+        if (!parent::validateSendTo($event, $infos, $notify_me, $emitter, $itemtype = null)) {
             return false;
         }
 
