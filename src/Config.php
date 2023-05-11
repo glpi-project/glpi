@@ -1445,24 +1445,19 @@ JAVASCRIPT
         echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) . "</th></tr>";
 
         echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_is_notif_enable_default$rand'>" . __('Enable notifications') . "</label></td><td>";
+        $content_helper = "<ul>
+            <li>" . __('Preselect "notification: no" in ITIL objects actor configuration, with ability to derogate to it') . "</li>
+            <li>" . __('Disable all notifications on all other objects, without ability to derogate to it.') . "</li>
+        </ul>
+        ";
+        $helper = "<span class='form-help' data-bs-toggle='popover' data-bs-placement='top' data-bs-html='true' data-bs-content='" . $content_helper . "'>?</span>";
+        echo "<td><label for='dropdown_is_notif_enable_default$rand'>" . __('Enable notifications') . "</label>&nbsp;" . $helper . "</td><td>";
         Dropdown::showYesNo(
             'is_notif_enable_default',
             $data['is_notif_enable_default'],
             -1,
             ['rand' => $rand]
         );
-        echo "</td>";
-        echo "<td colspan='2'>
-            <div class='alert alert-info d-flex align-items-center mb-0' role='alert'>
-            <i class='fas fa-info-circle fa-xl'></i>
-            <ul>
-                <li>" . __('Preselect "notification: no" in ITIL objects actor configuration, with ability to derogate to it') . "</li>
-                <li>" . __('Disable all notifications on all other objects, without ability to derogate to it.') . "</li>
-            </ul>
-            </span>
-        </div></td>";
-
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>" . __('Notification popups') . "</th></tr>";
