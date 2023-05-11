@@ -42,13 +42,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
 {
     public $private_profiles = [];
 
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null, string $itemtype = null)
     {
         if ($event == 'satisfaction') {
             return true;
         }
 
-        return parent::validateSendTo($event, $infos, $notify_me, $emitter);
+        return parent::validateSendTo($event, $infos, $notify_me, $emitter, $itemtype);
     }
 
     /**

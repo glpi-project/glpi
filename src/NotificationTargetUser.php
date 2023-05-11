@@ -58,6 +58,16 @@ class NotificationTargetUser extends NotificationTarget
         }
     }
 
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null, string $itemtype = null)
+    {
+       // Always send notification for spassword
+        if (in_array($event, ['passwordinit', 'passwordforget', 'passwordexpires'])) {
+            return true;
+        }
+
+        return parent::validateSendTo($event, $infos, $notify_me, $emitter, $itemtype);
+    }
+
 
     /**
      * @see NotificationTarget::addSpecificTargets()

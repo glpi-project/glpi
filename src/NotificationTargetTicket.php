@@ -41,7 +41,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     const HEADERTAG = '=-=-=-=';
     const FOOTERTAG = '=_=_=_=';
 
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null, string $itemtype = null)
     {
        // Always send notification for satisfaction : if send on ticket closure
        // Always send notification for new ticket
@@ -49,7 +49,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             return true;
         }
 
-        return parent::validateSendTo($event, $infos, $notify_me, $emitter);
+        return parent::validateSendTo($event, $infos, $notify_me, $emitter, $itemtype);
     }
 
 

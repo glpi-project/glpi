@@ -224,8 +224,6 @@ class NotificationTarget extends CommonDBChild
 
         //do not notify if user explicitly refused it
         //Except for CommonITILOject (already manage by use_notification)
-        //Except for password notification event
-        $bypass_notification = ['passwordexpires', 'passwordforget', 'passwordinit'];
         $user = new User();
         if (
             is_string($itemtype)
@@ -234,7 +232,6 @@ class NotificationTarget extends CommonDBChild
             && isset($infos['users_id'])
             && $user->getFromDB($infos['users_id'])
             && !$user->isUserNotificationEnable()
-            && !in_array($event, $bypass_notification)
         ) {
             return false;
         }
