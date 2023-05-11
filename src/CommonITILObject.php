@@ -7299,7 +7299,7 @@ abstract class CommonITILObject extends CommonDBTM
             $followup_template = ITILFollowupTemplate::getById($pending_reason->fields['itilfollowuptemplates_id']);
             $content = sprintf(
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
-                '<i id="aaaa" class="ti ti-reload text-primary me-1"></i>',
+                '<i class="ti ti-reload text-primary me-1"></i>',
                 __('Auto bump'),
                 htmlspecialchars($followup_template->fields['content']),
                 $autobump_obj->getPendinReason()->fields['name']
