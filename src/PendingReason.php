@@ -80,10 +80,10 @@ class PendingReason extends CommonDropdown
                         . '$("select[name=\'is_default\']").on("change", function() {'
                         . 'if ($(this).val() == 1) {'
                         . '$("#is_default_warning").removeClass("d-none");'
-                        . '$("select[name=\'is_pending_per_default\']").parent().parent().removeClass("d-none");'
+                        . '$("select[name=\'is_pending_per_default\']").prop("disabled", false);'
                         . '} else {'
                         . '$("#is_default_warning").addClass("d-none");'
-                        . '$("select[name=\'is_pending_per_default\']").parent().parent().addClass("d-none");'
+                        . '$("select[name=\'is_pending_per_default\']").prop("disabled", true);'
                         . '}'
                         . '});'
                         . '</script>',
@@ -94,7 +94,7 @@ class PendingReason extends CommonDropdown
                 'label' => __('Pending per default'),
                 'type' => 'bool',
                 'params' => [
-                    'add_field_class' => $this->fields['is_default'] ? '' : 'd-none',
+                    'disabled' => !$this->fields['is_default'],
                 ],
             ],
             [
@@ -105,7 +105,7 @@ class PendingReason extends CommonDropdown
             ],
             [
                 'name'  => 'followup_frequency',
-                'label' => __('Automatic follow-up frequency'),
+                'label' => __('Automatic follow-up/solution frequency'),
                 'type'  => '',
                 'list'  => true
             ],
