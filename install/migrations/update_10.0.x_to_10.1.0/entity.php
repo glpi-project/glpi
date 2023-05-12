@@ -63,14 +63,14 @@ foreach ($fields as $field) {
             $field,
             "tinyint NOT NULL DEFAULT '-2'"
         );
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_entities',
+                [$field => $config[$field]],
+                ['id' => 0]
+            )
+        );
     }
-    $migration->addPostQuery(
-        $DB->buildUpdate(
-            'glpi_entities',
-            [$field => $config[$field]],
-            ['id' => 0]
-        )
-    );
 }
 
 $fields = [
@@ -85,12 +85,12 @@ foreach ($fields as $field) {
             $field,
             "int NOT NULL DEFAULT '-2'"
         );
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_entities',
+                [$field => $config[$field]],
+                ['id' => 0]
+            )
+        );
     }
-    $migration->addPostQuery(
-        $DB->buildUpdate(
-            'glpi_entities',
-            [$field => $config[$field]],
-            ['id' => 0]
-        )
-    );
 }

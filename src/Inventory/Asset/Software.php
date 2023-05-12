@@ -174,7 +174,7 @@ class Software extends InventoryAsset
 
                 //If the manufacturer has been modified or set by the rules engine
                 if (isset($res_rule["manufacturer"])) {
-                    $mkey = md5('manufacturers_id' . $res_rule['manufacturer']);
+                    $mkey = md5('manufacturers_id' . mb_strtolower($res_rule['manufacturer']));
                     $mid = Dropdown::import(
                         'Manufacturer',
                         ['name' => $res_rule['manufacturer']]
@@ -186,7 +186,7 @@ class Software extends InventoryAsset
                     && $val->manufacturers_id != ''
                     && $val->manufacturers_id != '0'
                 ) {
-                    $mkey = md5('manufacturers_id' . $val->manufacturers_id);
+                    $mkey = md5('manufacturers_id' . mb_strtolower($val->manufacturers_id));
                     if (!isset($this->known_links[$mkey])) {
                         $new_value = Dropdown::importExternal(
                             'Manufacturer',
@@ -505,10 +505,10 @@ class Software extends InventoryAsset
     protected function getFullCompareKey(\stdClass $val, bool $with_version = true): string
     {
         return $this->getNormalizedComparisonKey([
-            'name'             => $val->name,
-            'version'          => $with_version ? strtolower($val->version) : '',
-            'arch'             => strtolower($val->arch ?? ''),
-            'manufacturers_id' => $val->manufacturers_id,
+            'name'             => mb_strtolower($val->name),
+            'version'          => $with_version ? mb_strtolower($val->version) : '',
+            'arch'             => mb_strtolower($val->arch ?? ''),
+            'manufacturers_id' => mb_strtolower($val->manufacturers_id),
             'entities_id'      => (int)$val->entities_id,
             'is_recursive'     => $val->is_recursive,
             'os'               => $this->getOsForKey($val),

@@ -63,20 +63,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         if (static::canView()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                if ($item->getType() == KnowbaseItem::getType()) {
-                    $nb = countElementsInTable(
-                        'glpi_knowbaseitems_items',
-                        ['knowbaseitems_id' => $item->getID()]
-                    );
-                } else {
-                    $nb = countElementsInTable(
-                        'glpi_knowbaseitems_items',
-                        [
-                            'itemtype' => $item::getType(),
-                            'items_id' => $item->getId()
-                        ]
-                    );
-                }
+                $nb = self::getCountForItem($item);
             }
 
             $type_name = null;
@@ -117,18 +104,8 @@ class KnowbaseItem_Item extends CommonDBRelation
 
         $canedit = $item->can($item_id, UPDATE);
 
-       // Total Number of events
-        if ($item_type == KnowbaseItem::getType()) {
-            $number = countElementsInTable("glpi_knowbaseitems_items", ['knowbaseitems_id' => $item_id]);
-        } else {
-            $number = countElementsInTable(
-                'glpi_knowbaseitems_items',
-                [
-                    'itemtype' => $item::getType(),
-                    'items_id' => $item_id
-                ]
-            );
-        }
+        // Total Number of KB items
+        $number = self::getCountForItem($item);
 
         $ok_state = true;
         if ($item instanceof CommonITILObject) {
@@ -324,15 +301,6 @@ class KnowbaseItem_Item extends CommonDBRelation
         $criteria = [
             'FROM'      => ['glpi_knowbaseitems_items'],
             'FIELDS'    => ['glpi_knowbaseitems_items' => '*'],
-            'INNER JOIN' => [
-                'glpi_knowbaseitems' => [
-                    'ON'  => [
-                        'glpi_knowbaseitems_items' => 'knowbaseitems_id',
-                        'glpi_knowbaseitems'       => 'id'
-                    ]
-                ]
-            ],
-            'WHERE'     => [],
             'ORDER'     => ['itemtype', 'items_id DESC'],
             'GROUPBY'   => [
                 'glpi_knowbaseitems_items.id',
@@ -343,36 +311,17 @@ class KnowbaseItem_Item extends CommonDBRelation
                 'glpi_knowbaseitems_items.date_mod'
             ]
         ];
-        $where = [];
-
-        $items_id  = (int)$item->getField('id');
 
         if ($item::getType() == KnowbaseItem::getType()) {
-            $id_field = 'glpi_knowbaseitems_items.knowbaseitems_id';
-            $visibility = KnowbaseItem::getVisibilityCriteria();
-            if (count($visibility['LEFT JOIN'])) {
-                $criteria['LEFT JOIN'] = $visibility['LEFT JOIN'];
-                if (isset($visibility['WHERE'])) {
-                    $where = $visibility['WHERE'];
-                }
-            }
+            $criteria['WHERE'][] = [
+                'glpi_knowbaseitems_items.knowbaseitems_id' => $item->getID(),
+            ];
         } else {
-            $id_field = 'glpi_knowbaseitems_items.items_id';
-            $where = getEntitiesRestrictCriteria($item->getTable(), '', '', $item->maybeRecursive());
-            $where[] = ['glpi_knowbaseitems_items.itemtype' => $item::getType()];
-            if (count($where)) {
-                $criteria['INNER JOIN'][$item->getTable()] = [
-                    'ON' => [
-                        'glpi_knowbaseitems_items' => 'items_id',
-                        $item->getTable()          => 'id'
-                    ]
-                ];
-            }
-        }
-
-        $criteria['WHERE'] = [$id_field => $items_id];
-        if (count($where)) {
-            $criteria['WHERE'] = array_merge($criteria['WHERE'], $where);
+            $criteria = array_merge_recursive($criteria, self::getVisibilityCriteriaForItem($item));
+            $criteria['WHERE'][] = [
+                'glpi_knowbaseitems_items.items_id' => $item->getID(),
+                'glpi_knowbaseitems_items.itemtype' => $item->getType()
+            ];
         }
 
         if ($limit) {
@@ -464,5 +413,55 @@ class KnowbaseItem_Item extends CommonDBRelation
             break;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+    private static function getCountForItem(CommonDBTM $item): int
+    {
+        if ($item->getType() == KnowbaseItem::getType()) {
+            $criteria['WHERE'] = [
+                'glpi_knowbaseitems_items.knowbaseitems_id' => $item->getID(),
+            ];
+        } else {
+            $criteria = self::getVisibilityCriteriaForItem($item);
+            $criteria['WHERE'][] = [
+                'glpi_knowbaseitems_items.itemtype' => $item::getType(),
+                'glpi_knowbaseitems_items.items_id' => $item->getId(),
+            ];
+        }
+
+        return countElementsInTable('glpi_knowbaseitems_items', $criteria);
+    }
+
+    /**
+     * Return visibility criteria that must be used to find KB items related to given item.
+     */
+    private static function getVisibilityCriteriaForItem(CommonDBTM $item): array
+    {
+        $criteria = array_merge_recursive(
+            [
+                'INNER JOIN' => [
+                    'glpi_knowbaseitems' => [
+                        'ON' => [
+                            'glpi_knowbaseitems_items' => 'knowbaseitems_id',
+                            'glpi_knowbaseitems'       => 'id'
+                        ]
+                    ]
+                ]
+            ],
+            KnowbaseItem::getVisibilityCriteria()
+        );
+
+        $entity_criteria = getEntitiesRestrictCriteria($item->getTable(), '', '', $item->maybeRecursive());
+        if (!empty($entity_criteria)) {
+            $criteria['INNER JOIN'][$item->getTable()] = [
+                'ON' => [
+                    'glpi_knowbaseitems_items' => 'items_id',
+                    $item->getTable()          => 'id'
+                ]
+            ];
+            $criteria['WHERE'][] = $entity_criteria;
+        }
+
+        return $criteria;
     }
 }

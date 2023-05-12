@@ -141,6 +141,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                         : 0;
                                     $send_data['_entities_id']              = $entity;
                                     $send_data['mode']                      = $data['mode'];
+                                    $send_data['event']                     = $event;
 
                                     Notification::send($send_data);
                                 } else {

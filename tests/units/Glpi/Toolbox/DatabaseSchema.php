@@ -41,7 +41,7 @@ class DatabaseSchema extends \GLPITestCase
     {
         foreach (['-dev', '-alpha', '-alpha1', '-alpha3', '-beta', '-beta2', '-rc', '-rc1', ''] as $suffix) {
             // Unavailable versions
-            foreach (['0.72', '0.80', '0.84.1', '9.1', '9.1.1'] as $version) {
+            foreach (['0.72', '0.72.21', '0.78', '0.78.5'] as $version) {
                 yield [
                     'version'  => $version . $suffix,
                     'expected' => null,

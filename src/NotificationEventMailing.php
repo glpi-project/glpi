@@ -132,23 +132,24 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
                 }
 
-                // Add custom header for mail grouping in reader
-                $mail->getHeaders()->addTextHeader(
-                    'In-Reply-To',
-                    str_replace(
-                        [
-                            '%uuid',
-                            '%itemtype',
-                            '%items_id'
-                        ],
-                        [
-                            Config::getUuid('notification'),
+                if (is_a($current->fields['itemtype'], CommonDBTM::class, true)) {
+                    $reference_event = $current->fields['itemtype']::getMessageReferenceEvent($current->fields['event']);
+                    if ($reference_event !== null && $reference_event !== $current->fields['event']) {
+                        // Add `In-Reply-To` and `References` for mail grouping in reader when:
+                        // - there is a reference event (i.e. we want to add current notification to a thread)
+                        // - event is not the reference event (i.e. the thread has already be initiated).
+                        // see https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.4
+                        $email_ref = NotificationTarget::getMessageIdForEvent(
                             $current->fields['itemtype'],
-                            $current->fields['items_id']
-                        ],
-                        "<GLPI-%uuid-%itemtype-%items_id>"
-                    )
-                );
+                            $current->fields['items_id'],
+                            $reference_event
+                        );
+                        $mail->getHeaders()->addTextHeader('In-Reply-To', "<{$email_ref}>");
+                        $mail->getHeaders()->addTextHeader('References', "<{$email_ref}>");
+                        $mmail->AddCustomHeader("<{$email_ref}>");
+                        $mmail->AddCustomHeader("References: <{$email_ref}>");
+                    }
+                }
 
                 $mail->from(new Address($current->fields['sender'], $current->fields['sendername']));
 

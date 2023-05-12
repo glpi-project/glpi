@@ -124,6 +124,13 @@ class Plugin extends CommonDBTM
      */
     private static $loaded_plugins = [];
 
+    /**
+     * Store additional infos for each plugins
+     *
+     * @var array
+     */
+    private ?array $plugins_information = null;
+
     public static function getTypeName($nb = 0)
     {
         return _n('Plugin', 'Plugins', $nb);
@@ -467,10 +474,9 @@ class Plugin extends CommonDBTM
      */
     public function checkStates($scan_inactive_and_new_plugins = false, array $excluded_plugins = [])
     {
-
         $directories = [];
 
-       // Add known plugins to the check list
+        // Add known plugins to the check list
         $condition = $scan_inactive_and_new_plugins ? [] : ['state' => self::ACTIVATED];
         $known_plugins = $this->find($condition);
         foreach ($known_plugins as $plugin) {
@@ -478,7 +484,7 @@ class Plugin extends CommonDBTM
         }
 
         if ($scan_inactive_and_new_plugins) {
-           // Add found directories to the check list
+            // Add found directories to the check list
             foreach (PLUGINS_DIRECTORIES as $plugins_directory) {
                 if (!is_dir($plugins_directory)) {
                     continue;
@@ -495,10 +501,10 @@ class Plugin extends CommonDBTM
             }
         }
 
-       // Prevent duplicated checks
+        // Prevent duplicated checks
         $directories = array_unique($directories);
 
-       // Check all directories from the checklist
+        // Check all directories from the checklist
         foreach ($directories as $directory) {
             if (in_array($directory, $excluded_plugins)) {
                 continue;
@@ -509,6 +515,40 @@ class Plugin extends CommonDBTM
         self::$plugins_state_checked = true;
     }
 
+    /**
+     * Get information for all plugins found on filesystem.
+     *
+     * @return array
+     */
+    private function getPluginsInformation(): array
+    {
+        // Run once
+        if ($this->plugins_information !== null) {
+            return $this->plugins_information;
+        }
+
+        $plugins_information = [];
+        $plugins_directories = new AppendIterator();
+        foreach (PLUGINS_DIRECTORIES as $base_dir) {
+            $plugins_directories->append(new DirectoryIterator($base_dir));
+        }
+        foreach ($plugins_directories as $plugin_directory) {
+            $plugin_name = $plugin_directory->getFilename();
+
+            if (
+                in_array($plugin_name, ['.svn', '.', '..'])
+                || !is_dir($plugin_directory->getRealPath())
+            ) {
+                continue;
+            }
+
+            $info = $this->getInformationsFromDirectory($plugin_name);
+            $plugins_information[$plugin_name] = $info;
+        }
+        $this->plugins_information = $plugins_information;
+
+        return $this->plugins_information;
+    }
 
     /**
      * Check plugin state.
@@ -519,14 +559,12 @@ class Plugin extends CommonDBTM
      */
     public function checkPluginState($plugin_key)
     {
-
         $plugin = new self();
 
-        $informations = $this->getInformationsFromDirectory($plugin_key);
+        $information = $this->getPluginsInformation()[$plugin_key] ?? [];
         $new_specs    = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
-
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
-        $is_loadable      = !empty($informations);
+        $is_loadable      = !empty($information);
         $is_replaced      = $new_specs !== null;
 
         if (!$is_already_known && !$is_loadable) {
@@ -550,7 +588,7 @@ class Plugin extends CommonDBTM
                     [
                         'id'    => $plugin->fields['id'],
                         'state' => self::REPLACED,
-                    ] + $informations
+                    ] + $information
                 );
 
                 $this->unload($plugin_key);
@@ -592,7 +630,7 @@ class Plugin extends CommonDBTM
             // Plugin not known, add it in DB
             $this->add(
                 array_merge(
-                    $informations,
+                    $information,
                     [
                         'state'     => $is_replaced ? self::REPLACED : self::NOTINSTALLED,
                         'directory' => $plugin_key,
@@ -603,12 +641,12 @@ class Plugin extends CommonDBTM
         }
 
         if (
-            $informations['version'] != $plugin->fields['version']
+            $information['version'] != $plugin->fields['version']
             || $plugin_key != $plugin->fields['directory']
         ) {
             // Plugin known version differs from information or plugin has been renamed,
             // update information in database
-            $input              = $informations;
+            $input              = $information;
             $input['id']        = $plugin->fields['id'];
             $input['directory'] = $plugin_key;
             if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED, self::NOTUPDATED])) {
@@ -737,27 +775,16 @@ class Plugin extends CommonDBTM
      *
      * @param string $oldname
      *
-     * @return null|array If a new directory is found, returns an array containing 'directory' and 'informations' keys.
+     * @return null|array If a new directory is found, returns an array containing 'directory' and 'information' keys.
      */
     private function getNewInfoAndDirBasedOnOldName($oldname)
     {
-
-        $plugins_directories = new DirectoryIterator(GLPI_ROOT . '/plugins');
-        /** @var SplFileInfo $plugin_directory */
-        foreach ($plugins_directories as $plugin_directory) {
-            if (
-                in_array($plugin_directory->getFilename(), ['.svn', '.', '..'])
-                || !is_dir($plugin_directory->getRealPath())
-            ) {
-                continue;
-            }
-
-            $informations = $this->getInformationsFromDirectory($plugin_directory->getFilename());
-            if (array_key_exists('oldname', $informations) && $informations['oldname'] === $oldname) {
+        foreach ($this->getPluginsInformation() as $plugin_name => $information) {
+            if (array_key_exists('oldname', $information) && $information['oldname'] === $oldname) {
                // Return information if oldname specified in parsed directory matches passed value
                 return [
-                    'directory'    => $plugin_directory->getFilename(),
-                    'informations' => $informations,
+                    'directory'    => $plugin_name,
+                    'information' => $information,
                 ];
             }
         }

@@ -37,6 +37,9 @@ namespace tests\units;
 
 use Contract;
 use ContractType;
+use ITILFollowup;
+use ITILFollowupTemplate;
+use RuleAction;
 use Ticket_Contract;
 
 // Force import because of atoum autoloader not working
@@ -740,5 +743,138 @@ class RuleTicket extends RuleCommonITILObject
                 'items_id' => $ticketsUpdate_id
             ]
         ))->isEqualTo(1);
+    }
+
+    public function testFollowupTemplateAssignFromGroup()
+    {
+        $this->login();
+
+        // Create rule
+        $rule_ticket = new \RuleTicket();
+        $rule_ticket_id = $rule_ticket->add([
+            'name'         => 'test group requester criterion',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
+            'is_recursive' => 1,
+        ]);
+        $this->integer($rule_ticket_id)->isGreaterThan(0);
+
+        //create group that matches the rule
+        $group = new \Group();
+        $group_id1 = $group->add($group_input = [
+            "name"         => "group1",
+            "is_requester" => true
+        ]);
+        $this->checkInput($group, $group_id1, $group_input);
+
+        //create group that doesn't match the rule
+        $group_id2 = $group->add($group_input = [
+            "name"         => "group2",
+            "is_requester" => true
+        ]);
+        $this->checkInput($group, $group_id2, $group_input);
+
+        // Create criteria to check if requester group is group1
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add([
+            'rules_id'  => $rule_ticket_id,
+            'criteria'  => '_groups_id_requester',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $group_id1,
+        ]);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        // Create followup template
+        $followup_template = new ITILFollowupTemplate();
+        $followup_template_id = $followup_template->add([
+            'content' => "<p>test testFollowupTemplateAssignFromGroup</p>",
+        ]);
+        $this->integer($followup_template_id)->isGreaterThan(0);
+
+        // Add action to rule
+        $rule_action = new RuleAction();
+        $rule_action_id = $rule_action->add([
+            'rules_id'    => $rule_ticket_id,
+            'action_type' => 'append',
+            'field'       => 'itilfollowup_template',
+            'value'       => $followup_template_id,
+        ]);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        // Create ticket
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name'              => 'test',
+            'content'           => 'test',
+            '_groups_id_requester' => [$group_id1],
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //link between group1 and ticket will exist
+        $ticketGroup = new \Group_Ticket();
+        $this->boolean(
+            $ticketGroup->getFromDBByCrit([
+                'tickets_id'         => $ticket_id,
+                'groups_id'          => $group_id1,
+                'type'               => \CommonITILActor::REQUESTER
+            ])
+        )->isTrue();
+
+        // Check that followup was added
+        $this->integer(countElementsInTable(
+            ITILFollowup::getTable(),
+            ['itemtype' => \Ticket::getType(), 'items_id' => $ticket_id]
+        ))->isEqualTo(1);
+
+        // Add group2 to ticket
+        $ticket->update([
+            'id'                  => $ticket_id,
+            '_groups_id_requester' => [$group_id1, $group_id2],
+        ]);
+
+        //link between group2 and ticket will exist
+        $this->boolean(
+            $ticketGroup->getFromDBByCrit([
+                'tickets_id'         => $ticket_id,
+                'groups_id'          => $group_id2,
+                'type'               => \CommonITILActor::REQUESTER
+            ])
+        )->isTrue();
+
+        // Check that followup was added
+        $this->integer(countElementsInTable(
+            ITILFollowup::getTable(),
+            ['itemtype' => \Ticket::getType(), 'items_id' => $ticket_id]
+        ))->isEqualTo(2);
+
+        // Add user to ticket
+        $user = new \User();
+        $user_id = $user->add([
+            'name' => 'test',
+        ]);
+        $this->integer($user_id)->isGreaterThan(0);
+
+        $ticket->update([
+            'id'                  => $ticket_id,
+            '_users_id_requester' => [$user_id],
+        ]);
+
+        //link between user and ticket will exist
+        $ticketUser = new \Ticket_User();
+        $this->boolean(
+            $ticketUser->getFromDBByCrit([
+                'tickets_id'         => $ticket_id,
+                'users_id'           => $user_id,
+                'type'               => \CommonITILActor::REQUESTER
+            ])
+        )->isTrue();
+
+        // Check that followup was NOT added
+        $this->integer(countElementsInTable(
+            ITILFollowup::getTable(),
+            ['itemtype' => \Ticket::getType(), 'items_id' => $ticket_id]
+        ))->isEqualTo(2);
     }
 }

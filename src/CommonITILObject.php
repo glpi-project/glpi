@@ -10086,4 +10086,10 @@ abstract class CommonITILObject extends CommonDBTM
         unset($input['actiontime']);
         return $input;
     }
+
+    public static function getMessageReferenceEvent(string $event): ?string
+    {
+        // All actions should be attached to thread instanciated by `new` event
+        return 'new';
+    }
 }

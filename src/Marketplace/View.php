@@ -775,7 +775,7 @@ HTML;
 
                     // Use "marketplace.download.php" proxy if archive is downloadable from GLPI marketplace plugins API
                     // as this API will refuse to serve the archive if registration key is not set in headers.
-                    $download_url = str_starts_with($plugin_data['installation_url'], GLPI_MARKETPLACE_PLUGINS_API_URI)
+                    $download_url = parse_url($plugin_data['installation_url'], PHP_URL_HOST) === parse_url(GLPI_MARKETPLACE_PLUGINS_API_URI, PHP_URL_HOST)
                         ? $CFG_GLPI['root_doc'] . '/front/marketplace.download.php?key=' . $plugin_key
                         : $plugin_data['installation_url'];
 

@@ -149,6 +149,8 @@ class NotificationMailing implements NotificationInterface
         $data['sender']                               = $options['from'];
         $data['sendername']                           = $options['fromname'];
 
+        $data['event'] = $options['event'] ?? null; // `event` has been added in GLPI 10.0.7
+
         if (isset($options['replyto']) && $options['replyto']) {
             $data['replyto']       = $options['replyto'];
             if (isset($options['replytoname'])) {

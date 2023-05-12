@@ -175,7 +175,7 @@ class Utf8mb4Command extends AbstractCommand
 
                 if (!$result) {
                     $this->outputMessage(
-                        sprintf(__('<error>Error migrating table "%s".</error>'), $table),
+                        '<error>' . sprintf(__('Error migrating table "%s".'), $table) . '</error>',
                         OutputInterface::VERBOSITY_QUIET
                     );
                     $errors = true;

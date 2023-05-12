@@ -216,6 +216,9 @@ The present file will list all changes made to the project; according to the
 
 ### API changes
 
+#### Added
+- `CommonDBTM::getMessageReferenceEvent()` method that can be overridden to tweak notifications grouping in mail clients.
+
 #### Changes
 
 #### Deprecated

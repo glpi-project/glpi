@@ -204,7 +204,7 @@ class DatabaseSchemaIntegrityChecker
             return '';
         }
 
-        return $this->differ->diff(
+        return $this->diff(
             $proper_create_table_sql,
             $effective_create_table_sql
         );
@@ -231,7 +231,7 @@ class DatabaseSchemaIntegrityChecker
         }
 
         $matches = [];
-        preg_match_all('/(?<sql_query>CREATE TABLE[^`]*`(?<table_name>.+)`[^;]+);/', $schema_sql, $matches);
+        preg_match_all('/(?<sql_query>CREATE TABLE[^`]*`(?<table_name>\w+)`.+?);$/ms', $schema_sql, $matches);
         $tables_names             = $matches['table_name'];
         $create_table_sql_queries = $matches['sql_query'];
 
@@ -271,7 +271,7 @@ class DatabaseSchemaIntegrityChecker
             if (!$this->db->tableExists($table_name)) {
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_MISSING_TABLE,
-                    'diff' => $this->differ->diff($create_table_sql, '')
+                    'diff' => $this->diff($create_table_sql, '')
                 ];
                 continue;
             }
@@ -280,7 +280,7 @@ class DatabaseSchemaIntegrityChecker
             if ($create_table_sql !== $effective_create_table_sql) {
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_ALTERED_TABLE,
-                    'diff' => $this->differ->diff($create_table_sql, $effective_create_table_sql)
+                    'diff' => $this->diff($create_table_sql, $effective_create_table_sql)
                 ];
             }
         }
@@ -314,7 +314,7 @@ class DatabaseSchemaIntegrityChecker
                 $effective_create_table_sql = $this->getNomalizedSql($this->getEffectiveCreateTableSql($table_name));
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_UNKNOWN_TABLE,
-                    'diff' => $this->differ->diff('', $effective_create_table_sql)
+                    'diff' => $this->diff('', $effective_create_table_sql)
                 ];
             }
         }
@@ -722,6 +722,24 @@ class DatabaseSchemaIntegrityChecker
     }
 
     /**
+     * Generate diff between proper and effective `CREATE TABLE` SQL string.
+     */
+    private function diff(string $proper_create_table_sql, string $effective_create_table_sql): string
+    {
+        $diff = $this->differ->diff(
+            $proper_create_table_sql,
+            $effective_create_table_sql
+        );
+
+        if (!$this->db->allow_signed_keys) {
+            // Add `unsigned` to primary/foreign keys on lines preceded by a `-` (i.e. expected but not found in DB).
+            $diff = preg_replace('/^-\s+(`id`|`.+_id(_.+)?`)\s+int(?!\s+unsigned)/im', '$0 unsigned', $diff);
+        }
+
+        return $diff;
+    }
+
+    /**
      * Get schema file path for given version.
      *
      * @param string|null $schema_version   Installed schema version
@@ -781,19 +799,42 @@ class DatabaseSchemaIntegrityChecker
      */
     private function getDbVersion(): ?string
     {
-        if (
-            $this->db_version === null
-            && $this->db->tableExists('glpi_configs') && $this->db->fieldExists('glpi_configs', 'context')
-        ) {
-            $this->db_version = $this->db->request(
-                [
-                    'FROM'   => 'glpi_configs',
-                    'WHERE'  => [
-                        'context' => 'core',
-                        'name'    => 'dbversion',
+        if ($this->db_version === null) {
+            if ($this->db->tableExists('glpi_configs') && $this->db->fieldExists('glpi_configs', 'context')) {
+                $dbversion_result = $this->db->request(
+                    [
+                        'FROM'   => 'glpi_configs',
+                        'WHERE'  => [
+                            'context' => 'core',
+                            'name'    => 'dbversion',
+                        ]
                     ]
-                ]
-            )->current()['value'] ?? null;
+                );
+                if ($dbversion_result->count() > 0) {
+                    // GLPI >= 9.2
+                    $this->db_version = $dbversion_result->current()['value'];
+                } else {
+                    // GLPI >= 0.85
+                    $dbversion_result = $this->db->request(
+                        [
+                            'FROM'   => 'glpi_configs',
+                            'WHERE'  => [
+                                'context' => 'core',
+                                'name'    => 'version',
+                            ]
+                        ]
+                    );
+                    $this->db_version = $dbversion_result->current()['value'] ?? null;
+                }
+            } elseif ($this->db->tableExists('glpi_configs') && $this->db->fieldExists('glpi_configs', 'version')) {
+                // GLPI < 0.85
+                $this->db_version = $this->db->request(
+                    [
+                        'SELECT' => ['version'],
+                        'FROM'   => 'glpi_configs',
+                    ]
+                )->current()['version'] ?? null;
+            }
         }
 
         return $this->db_version;

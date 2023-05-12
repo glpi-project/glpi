@@ -410,6 +410,14 @@ class NetworkEquipment extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'uuid',
+            'name'               => __('UUID'),
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
             'id'                 => '14',
             'table'              => $this->getTable(),
             'field'              => 'ram',

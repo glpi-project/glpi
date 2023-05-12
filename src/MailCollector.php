@@ -2135,16 +2135,15 @@ class MailCollector extends CommonDBTM
             return null;
         }
 
-        $pattern = $this->getMessageIdExtractPattern();
-
         foreach (['in_reply_to', 'references'] as $header_name) {
-            $matches = [];
-            if (
-                $message->getHeaders()->has($header_name)
-                && preg_match($pattern, $message->getHeader($header_name)->getFieldValue(), $matches)
-            ) {
-                $itemtype = $matches['itemtype'] ?? '';
-                $items_id = $matches['items_id'] ?? '';
+            if (!$message->getHeaders()->has($header_name)) {
+                continue;
+            }
+
+            $matches = $this->extractValuesFromRefHeader($message->getHeader($header_name)->getFieldValue());
+            if ($matches !== null) {
+                $itemtype = $matches['itemtype'];
+                $items_id = $matches['items_id'];
 
                // Handle old format MessageId where itemtype was not in header
                 if (empty($itemtype) && !empty($items_id)) {
@@ -2177,21 +2176,19 @@ class MailCollector extends CommonDBTM
      */
     public function isMessageSentByGlpi(Message $message): bool
     {
-        $pattern = $this->getMessageIdExtractPattern();
-
         if (!$message->getHeaders()->has('message-id')) {
            // Messages sent by GLPI now have always a message-id header.
             return false;
         }
 
         $message_id = $message->getHeader('message_id')->getFieldValue();
-        $matches = [];
-        if (!preg_match($pattern, $message_id, $matches)) {
+        $matches = $this->extractValuesFromRefHeader($message_id);
+        if ($matches === null) {
            // message-id header does not match GLPI format.
             return false;
         }
 
-        $uuid = $matches['uuid'] ?? '';
+        $uuid = $matches['uuid'];
         if (empty($uuid)) {
            // message-id corresponds to old format, without uuid.
            // We assume that in most environments this message have been sent by this instance of GLPI,
@@ -2215,16 +2212,14 @@ class MailCollector extends CommonDBTM
      */
     public function isResponseToMessageSentByAnotherGlpi(Message $message): bool
     {
-        $pattern = $this->getMessageIdExtractPattern();
-
         $has_uuid_from_another_glpi = false;
         $has_uuid_from_current_glpi = false;
         foreach (['in-reply-to', 'references'] as $header_name) {
-            $matches = [];
-            if (
-                $message->getHeaders()->has($header_name)
-                && preg_match($pattern, $message->getHeader($header_name)->getFieldValue(), $matches)
-            ) {
+            if (!$message->getHeaders()->has($header_name)) {
+                continue;
+            }
+            $matches = $this->extractValuesFromRefHeader($message->getHeader($header_name)->getFieldValue());
+            if ($matches !== null) {
                 if (empty($matches['uuid'])) {
                     continue;
                 }
@@ -2243,28 +2238,75 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * Get pattern that can be used to extract information from a GLPI MessageId (uuid, itemtype and items_id).
+     * Extract information from a `Message-Id` or `Reference` header.
+     * Headers mays contains `uuid`, `itemtype`, `items_id` and `event` values.
      *
-     * @see NotificationTarget::getMessageID()
+     * @see NotificationTarget::getMessageIdForEvent()
      *
      * @return string
      */
-    private function getMessageIdExtractPattern(): string
+    private function extractValuesFromRefHeader(string $header): ?array
     {
-       // old format for tickets:           GLPI-{$items_id}.{$time}.{$rand}@{$uname}
-       // old format without related item:  GLPI.{$time}.{$rand}@{$uname}
-       // old format with related item:     GLPI-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
-       // new format without related item:  GLPI_{$uuid}.{$time}.{$rand}@{$uname}
-       // new format with related item:     GLPI_{$uuid}-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
+        $defaults = [
+            'uuid'      => null,
+            'itemtype'  => null,
+            'items_id'  => null,
+            'event'     => null,
+        ];
 
-        return '/GLPI'
-         . '(_(?<uuid>[a-z0-9]+))?' // uuid was not be present in old format
-         . '(-(?<itemtype>[a-z]+))?' // itemtype is not present if notification is not related to any object and was not present in old format
-         . '(-(?<items_id>[0-9]+))?' // items_id is not present if notification is not related to any object
-         . '\.[0-9]+' // time()
-         . '\.[0-9]+' // rand()
-         . '@\w*' // uname
-         . '/i'; // insensitive
+        $values = [];
+
+        // Message-Id generated in GLPI >= 10.0.7
+        // - without related item:                  GLPI_{$uuid}/{$event}.{$time}.{$rand}@{$uname}
+        // - with related item (reference event):   GLPI_{$uuid}-{$itemtype}-{$items_id}/{$event}@{$uname}
+        // - with related item (other events):      GLPI_{$uuid}-{$itemtype}-{$items_id}/{$event}.{$time}.{$rand}@{$uname}
+        $pattern = '/'
+            . 'GLPI'
+            . '_(?<uuid>[a-z0-9]+)' // uuid
+            . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
+            . '\/(?<event>[a-z_]+)' // event
+            . '(\.[0-9]+\.[0-9]+)?' // optional time + rand (only when NOT related to an item OR when event is not the reference one)
+            . '@.+'     // uname
+            . '/i';
+        if (preg_match($pattern, $header, $values) === 1) {
+            $values += $defaults;
+            return $values;
+        }
+
+        // Message-Id generated by GLPI >= 10.0.0 < 10.0.7
+        // - without related item:  GLPI_{$uuid}.{$time}.{$rand}@{$uname}
+        // - with related item:     GLPI_{$uuid}-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
+        $pattern = '/'
+            . 'GLPI'
+            . '_(?<uuid>[a-z0-9]+)' // uuid
+            . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optionnal itemtype + items_id
+            . '\.[0-9]+' // time()
+            . '\.[0-9]+' // rand()
+            . '@.+'     // uname
+            . '/i';
+        if (preg_match($pattern, $header, $values) === 1) {
+            $values += $defaults;
+            return $values;
+        }
+
+        // Message-Id generated by GLPI < 10.0.0
+        // - for tickets:           GLPI-{$items_id}.{$time}.{$rand}@{$uname}
+        // - without related item:  GLPI.{$time}.{$rand}@{$uname}
+        // - with related item:     GLPI-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
+        $pattern = '/'
+            . 'GLPI'
+            . '(-(?<itemtype>[a-z]+))?' // optionnal itemtype
+            . '(-(?<items_id>[0-9]+))?' // optionnal items_id
+            . '\.[0-9]+' // time()
+            . '\.[0-9]+' // rand()
+            . '@.+' // uname
+            . '/i';
+        if (preg_match($pattern, $header, $values) === 1) {
+            $values += $defaults;
+            return $values;
+        }
+
+        return null;
     }
 
     /**

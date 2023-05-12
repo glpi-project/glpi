@@ -62,6 +62,8 @@ final class ProxyRouter
     {
         $this->root_dir = $root_dir;
 
+        $path = preg_replace('/\/{2,}/', '/', $path); // remove duplicates `/`
+
         $path_matches = [];
         if (
             preg_match('/^(?<path>.+\.[^\/]+)(?<pathinfo>\/.*)$/', $path, $path_matches) === 1
@@ -305,7 +307,6 @@ final class ProxyRouter
         header(sprintf('Etag: %s', $etag));
         header_remove('Pragma');
         header('Cache-Control: public, max-age=2592000, must-revalidate'); // 30 days cache
-        header(sprintf('Content-Disposition: attachment; filename="%s"', basename($target_file)));
         header(sprintf('Content-type: %s', $mime));
 
         if ($is_not_modified) {

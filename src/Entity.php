@@ -164,9 +164,35 @@ class Entity extends CommonTreeDropdown
         ];
     }
 
-    /**
-     * @since 0.84
-     **/
+    public function pre_updateInDB()
+    {
+        global $DB;
+
+        if (($key = array_search('name', $this->updates)) !== false) {
+            /// Check if entity does not exist
+            $iterator = $DB->request([
+                'FROM' => $this->getTable(),
+                'WHERE' => [
+                    'name' => $this->input['name'],
+                    'entities_id' => $this->input['entities_id'],
+                    'id' => ['<>', $this->input['id']]
+                ]
+            ]);
+
+            if (count($iterator)) {
+                //To display a message
+                $this->fields['name'] = $this->oldvalues['name'];
+                unset($this->updates[$key]);
+                unset($this->oldvalues['name']);
+                Session::addMessageAfterRedirect(
+                    __('An entity with that name already exists at the same level.'),
+                    false,
+                    ERROR
+                );
+            }
+        }
+    }
+
     public function pre_deleteItem()
     {
         global $GLPI_CACHE;
@@ -200,6 +226,11 @@ class Entity extends CommonTreeDropdown
         return _n('Entity', 'Entities', $nb);
     }
 
+    public static function canCreate()
+    {
+        // Do not show the create button if no recusive access on current entity
+        return parent::canCreate() && Session::haveRecursiveAccessToEntity(Session::getActiveEntity());
+    }
 
     public function canCreateItem()
     {
@@ -4294,12 +4325,14 @@ class Entity extends CommonTreeDropdown
      *
      * @return string|null
      */
-    public static function badgeCompletename(string $entity_string = ""): string
+    public static function badgeCompletename(string $entity_string = "", ?string $title = null): string
     {
         $names  = explode(' > ', trim($entity_string));
 
         // Construct HTML with special chars encoded.
-        $title = htmlspecialchars(implode(' > ', $names));
+        if ($title === null) {
+            $title = htmlspecialchars(implode(' > ', $names));
+        }
         $breadcrumbs = implode(
             '<i class="fas fa-caret-right mx-1"></i>',
             array_map(

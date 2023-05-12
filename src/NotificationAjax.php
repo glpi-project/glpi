@@ -64,7 +64,8 @@ class NotificationAjax implements NotificationInterface
             'fromname'                    => 'TEST',
             'subject'                     => 'Test notification',
             'content_text'                => "Hello, this is a test notification.",
-            'to'                          => Session::getLoginUserID()
+            'to'                          => Session::getLoginUserID(),
+            'event'                       => 'test_notification'
         ]);
     }
 
@@ -83,6 +84,8 @@ class NotificationAjax implements NotificationInterface
         $data['name']                                 = $options['subject'];
         $data['body_text']                            = $options['content_text'];
         $data['recipient']                            = $options['to'];
+
+        $data['event'] = $options['event'] ?? null; // `event` has been added in GLPI 10.0.7
 
         $data['mode'] = Notification_NotificationTemplate::MODE_AJAX;
 
@@ -134,12 +137,9 @@ class NotificationAjax implements NotificationInterface
             if ($iterator->numrows()) {
                 foreach ($iterator as $row) {
                     $url = null;
-                    if (
-                        $row['itemtype'] != 'NotificationAjax' &&
-                        method_exists($row['itemtype'], 'getFormURL')
-                    ) {
+                    if (is_a($row['itemtype'], CommonGLPI::class, true)) {
                         $item = new $row['itemtype']();
-                        $url = $item->getFormURL(false) . "?id={$row['items_id']}";
+                        $url = $item->getFormURLWithID($row['items_id'], true);
                     }
 
                     $return[] = [

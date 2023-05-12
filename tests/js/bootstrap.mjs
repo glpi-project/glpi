@@ -37,6 +37,9 @@ await import('jquery').then((jquery) => {
     window.$ = window.jQuery = jquery.default;
 });
 await import('@tabler/core');
+await import('select2/dist/js/select2.full').then((select2) => {
+    $.fn.select2 = select2;
+});
 
 // Add a flag variable to know in other scripts if they are run in tests. Should not affect how they behave, just how functions/vars in non-modules are bound.
 window.GLPI_TEST_ENV = true;

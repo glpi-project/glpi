@@ -347,9 +347,11 @@
     {% endif %}
 
     {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
-    <div class="d-flex card-footer mx-n3 mb-n3">
+    {# Fixed min-height ensure no height increase when toggling the pending reason button, as select 2 dropdown are a bit higher than the default footer height #}
+    <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px; min-height: 79px">
         {% if subitem.fields['id'] <= 0 %}
-            <div class="input-group">
+            {# Do not enable flex wrapping when creating a new item as the pending form will be merged with the add button in an input group #}
+            <div class="input-group flex-nowrap">
                 <button class="btn btn-primary" type="submit" name="add">
                 <i class="fas fa-plus"></i>
                 <span>{{ _x('button', 'Add') }}</span>

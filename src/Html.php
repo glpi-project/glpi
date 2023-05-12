@@ -1307,6 +1307,7 @@ HTML;
         $tpl_vars['css_files'][] = ['path' => $theme->getPath()];
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
+        $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
        // Search

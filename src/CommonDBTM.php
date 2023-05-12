@@ -6611,4 +6611,29 @@ class CommonDBTM extends CommonGLPI
 
         return $is_global;
     }
+
+    /**
+     * Return reference event name for given event.
+     *
+     * @param string $event
+     *
+     * @since 10.0.7
+     */
+    public static function getMessageReferenceEvent(string $event): ?string
+    {
+        switch ($event) {
+            case 'new':
+            case 'update':
+            case 'delete':
+            case 'user_mention':
+                // Add the CRUD actions and the `user_mention` notifications to thread instanciated by `new` event
+                $reference_event = 'new';
+                break;
+            default:
+                // Other actions should have their own thread
+                $reference_event = null;
+                break;
+        }
+        return $reference_event;
+    }
 }
