@@ -55,6 +55,6 @@ class ITILAutoBump extends CommonDBChild
 
     public static function getIcon()
     {
-        return "ti ti-reload";
+        return "ti ti-refresh-alert";
     }
 }
