@@ -692,7 +692,7 @@ class Consumable extends CommonDBChild
         $order       = strtoupper($_GET["order"] ?? "");
         $filters     = $_GET['filters'] ?? [];
         $is_filtered = count($filters) > 0;
-        $sql_filters = getEntitiesRestrictCriteria('glpi_consumableitems', '', '', true);
+        $sql_filters = self::convertFiltersValuesToSqlCriteria($filters);
 
         if (strlen($sort) == 0) {
             $sort = "name";
@@ -722,23 +722,24 @@ class Consumable extends CommonDBChild
                 'glpi_consumables.items_id' => $items_id,
                 'glpi_consumables.itemtype' => $itemtype,
                 'NOT' => ['glpi_consumables.date_out' => 'NULL'],
-            ] + $sql_filters
+            ] + getEntitiesRestrictCriteria('glpi_consumableitems', '', '', true),
         ];
 
         $total_number = (int)$DB->request($query + [
             'COUNT'  => 'cpt'
         ])->current()['cpt'];
-        $filtered_data = $DB->request($query + [
+
+        $filtered_query = $query;
+        $filtered_query['WHERE'] += $sql_filters;
+        $filtered_data = $DB->request($filtered_query + [
             'LIMIT' => $_SESSION['glpilist_limit'],
             'START' => $start,
             'ORDER' => "$sort $order",
         ]);
 
-        $filtered_number = count(getAllDataFromTable(self::getTable(), [
-            'items_id' => $items_id,
-            'itemtype' => $itemtype,
-            'NOT' => ['glpi_consumables.date_out' => 'NULL'],
-        ] + $sql_filters));
+        $filtered_number = (int)$DB->request($filtered_query + [
+            'COUNT'  => 'cpt'
+        ])->current()['cpt'];
 
         $envs = [];
         foreach ($filtered_data as $env) {
@@ -991,5 +992,25 @@ class Consumable extends CommonDBChild
     public static function getIcon()
     {
         return "ti ti-package";
+    }
+
+    public static function convertFiltersValuesToSqlCriteria(array $filters = []): array
+    {
+        $sql_filters = [];
+
+        $like_filters = [
+            'id'        => 'glpi_consumables.id',
+            'itemname'  => 'glpi_consumableitems.name',
+            'ref'       => 'glpi_consumableitems.ref',
+            'date_in'   => 'glpi_consumables.date_in',
+            'date_out'  => 'glpi_consumables.date_out',
+        ];
+        foreach ($like_filters as $filter_key => $filter_field) {
+            if (strlen(($filters[$filter_key] ?? ""))) {
+                $sql_filters[$filter_field] = ['LIKE', '%' . $filters[$filter_key] . '%'];
+            }
+        }
+
+        return $sql_filters;
     }
 }

@@ -92,6 +92,9 @@
                 </tr>
                 {% if filters|length > 0  %}
                     <tr class="filter_row">
+                        {% if showmassiveactions %}
+                            <td></td>
+                        {% endif %}
                         <td style="display: none">
                             <input type="hidden" name="filters[active]" value="1" />
                             <input type="hidden" name="items_id" value="{{ items_id }}" />
