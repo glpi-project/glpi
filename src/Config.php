@@ -1446,7 +1446,7 @@ JAVASCRIPT
 
         echo "<tr class='tab_bg_2'>";
         $content_helper = "<ul>
-            <li>" . __('Preselect "notification: no" in ITIL objects actor configuration, with ability to derogate to it') . "</li>
+            <li>" . __('Disable notifications by default on ITIL objects actor configuration, with ability to derogate to it') . "</li>
             <li>" . __('Disable all notifications on all other objects, without ability to derogate to it.') . "</li>
         </ul>
         ";
