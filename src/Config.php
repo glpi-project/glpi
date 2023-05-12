@@ -1450,7 +1450,7 @@ JAVASCRIPT
             <li>" . __('Disable all notifications on all other objects, without ability to derogate to it.') . "</li>
         </ul>
         ";
-        $helper = "<span class='form-help' data-bs-toggle='popover' data-bs-placement='top' data-bs-html='true' data-bs-content='" . $content_helper . "'>?</span>";
+        $helper = "<span class='form-help' data-bs-toggle='popover' data-bs-placement='top' data-bs-html='true' data-bs-content='" . htmlspecialchars($content_helper) . "'>?</span>";
         echo "<td><label for='dropdown_is_notif_enable_default$rand'>" . __('Enable notifications') . "</label>&nbsp;" . $helper . "</td><td>";
         Dropdown::showYesNo(
             'is_notif_enable_default',
