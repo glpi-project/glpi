@@ -410,7 +410,7 @@ class Update
     {
         $migrations = [];
 
-        $current_version = VersionParser::getNormalizedVersion($current_version);
+        $current_version = VersionParser::getNormalizedVersion($current_version, true, true);
 
         $pattern = '/^update_(?<source_version>\d+\.\d+\.(?:\d+|x))_to_(?<target_version>\d+\.\d+\.(?:\d+|x))\.php$/';
         $migration_iterator = new DirectoryIterator($this->migrations_directory);

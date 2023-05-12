@@ -165,7 +165,11 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             $installed_version = null; // Cannot know installed schema of plugins
         } else {
             $context = 'core';
-            $installed_version = $CFG_GLPI['dbversion'];
+            $installed_version = $CFG_GLPI['dbversion'] ?? $CFG_GLPI['version']; // `dbversion` has been added in GLPI 9.2
+
+            // Some versions were stored with unexpected whitespaces.
+            // e.g. ` 0.80`, ` 0.80.1`, ...
+            $installed_version = trim($installed_version);
         }
 
         if (!$checker->canCheckIntegrity($installed_version, $context)) {
