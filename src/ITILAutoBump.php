@@ -46,7 +46,7 @@ class ITILAutoBump extends CommonDBChild
         return _n('Auto Bump', 'Auto Bumps', $nb);
     }
 
-    public function getPendinReason()
+    public function getPendingReason()
     {
         $pending_reason = new PendingReason();
         $pending_reason->getFromDB($this->fields['pendingreasons_id']);
