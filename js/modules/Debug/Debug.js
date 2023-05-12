@@ -144,6 +144,11 @@ window.GLPI.Debug = new class Debug {
 
         this.refreshWidgetButtons();
 
+        // Move the toolbar to the end of .page-body instead of the footer to avoid overlapping the sidebar
+        const toolbar = $('#debug-toolbar');
+        toolbar.appendTo('body > .page > .page-wrapper > .page-body');
+        toolbar.removeClass('d-none');
+
         $(document).ajaxSend((event, xhr, settings) => {
             // If the request is going to the debug AJAX endpoint, don't do anything
             if (settings.url.indexOf('ajax/debug.php') !== -1) {
