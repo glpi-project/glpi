@@ -278,6 +278,7 @@ class ITILSolution extends CommonDBChild
 
     public function post_addItem()
     {
+        $config = Config::getConfigurationValues('core', ['system_user']);
 
        //adding a solution mean the ITIL object is now solved
        //and maybe closed (according to entitiy configuration)
@@ -323,7 +324,11 @@ class ITILSolution extends CommonDBChild
             ]);
         }
 
-        if ($this->input["itemtype"] == 'Ticket' && $_SESSION['glpiset_solution_tech']) {
+        if (
+            $this->input["itemtype"] == 'Ticket'
+            && $_SESSION['glpiset_solution_tech']
+            && $this->input["users_id"] != $config['system_user']
+        ) {
             Ticket::assignToMe($this->input["items_id"], $this->input["users_id"]);
         }
 
