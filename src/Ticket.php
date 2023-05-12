@@ -1152,6 +1152,7 @@ class Ticket extends CommonITILObject
         $rules               = new RuleTicketCollection($entid);
         $rule                = $rules->getRuleClass();
         $changes             = [];
+        $unchanged           = [];
         $post_added          = [];
         $tocleanafterrules   = [];
         $usertypes           = [
@@ -1189,6 +1190,14 @@ class Ticket extends CommonITILObject
                 $input_key = '_' . $field . '_' . $t;
                 $deleted_key = $input_key . '_deleted';
                 $deleted_actors = array_key_exists($deleted_key, $input) && is_array($input[$deleted_key]) ? array_column($input[$deleted_key], 'items_id') : [];
+                $tmp_input = $input[$input_key] ?? [];
+                if (!is_array($tmp_input)) {
+                    $tmp_input = [$tmp_input];
+                }
+                $added_actors = array_diff($tmp_input, array_column($actors, $field));
+                if (empty($added_actors) && empty($deleted_actors)) {
+                    $unchanged[] = $input_key;
+                }
                 foreach ($actors as $actor) {
                     if (
                         !isset($input[$input_key])
@@ -1218,8 +1227,9 @@ class Ticket extends CommonITILObject
                 && !array_key_exists($key, $post_added)
             ) {
                 if (
-                    !isset($this->fields[$key])
-                    || ($DB->escape($this->fields[$key]) != $input[$key])
+                    (!isset($this->fields[$key])
+                    || ($DB->escape($this->fields[$key]) != $input[$key]))
+                    && !in_array($key, $unchanged)
                 ) {
                     $changes[] = $key;
                 }
