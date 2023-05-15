@@ -64,7 +64,6 @@ final class Search
     private function __construct(array $schema, array $request_params)
     {
         $this->schema = $schema;
-        ob_flush();
         $this->request_params = $request_params;
         $this->flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
         $this->joins = Doc\Schema::getJoins($schema['properties']);

@@ -106,7 +106,7 @@ abstract class AbstractController
      * @param string|null $field
      * @return array
      */
-    protected static function getDropdownTypeSchema(string $class, ?string $field = null): array
+    protected static function getDropdownTypeSchema(string $class, ?string $field = null, string $name_field = 'name'): array
     {
         if ($field === null) {
             $field = $class::getForeignKeyField();
@@ -123,9 +123,9 @@ abstract class AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'x-readonly' => $class !== \Entity::class,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                $name_field => ['type' => Doc\Schema::TYPE_STRING],
             ]
         ];
     }

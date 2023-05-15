@@ -38,10 +38,12 @@ namespace Glpi\Api\HL;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AdministrationController;
 use Glpi\Api\HL\Controller\AssetController;
+use Glpi\Api\HL\Controller\ComponentController;
 use Glpi\Api\HL\Controller\CoreController;
 use Glpi\Api\HL\Controller\CRUDControllerTrait;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\ManagementController;
+use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
 use Glpi\Api\HL\Middleware\CRUDRequestMiddleware;
 use Glpi\Api\HL\Middleware\DebugRequestMiddleware;
@@ -147,9 +149,11 @@ EOT;
             $instance = new self();
             $instance->registerController(new CoreController());
             $instance->registerController(new AssetController());
+            $instance->registerController(new ComponentController());
             $instance->registerController(new ITILController());
             $instance->registerController(new AdministrationController());
             $instance->registerController(new ManagementController());
+            $instance->registerController(new ProjectController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {

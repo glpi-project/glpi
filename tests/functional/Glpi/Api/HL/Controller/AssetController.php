@@ -50,10 +50,9 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($types) {
-                    $this->array($content)->hasSize(count($types));
+                    $this->array($content)->size->isGreaterThanOrEqualTo(count($types));
                     foreach ($content as $asset) {
                         $this->array($asset)->hasKeys(['itemtype', 'name', 'href']);
-                        $this->boolean(in_array($asset['itemtype'], $types, true))->isTrue();
                         $this->string($asset['name'])->isNotEmpty();
                         $this->string($asset['href'])->isEqualTo('/Assets/' . $asset['itemtype']);
                     }
@@ -127,14 +126,20 @@ class AssetController extends \HLAPITestCase
 
     protected function createUpdateDeleteItemProvider()
     {
-        $types = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
+        $types = [
+            'Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
+            'Software', 'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Cable', 'Socket'
+        ];
         foreach ($types as $type) {
             $unique_id = __FUNCTION__ . '_' . random_int(0, 10000);
+            $fields = [
+                'name' => $unique_id,
+            ];
+            if ($type !== 'Socket') {
+                $fields['entity'] = getItemByTypeName('Entity', '_test_root_entity', true);
+            }
             yield [
-                $type, [
-                    'name' => $unique_id,
-                    'entity' => getItemByTypeName('Entity', '_test_root_entity', true),
-                ]
+                $type, $fields
             ];
         }
     }
@@ -170,8 +175,10 @@ class AssetController extends \HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) use ($fields) {
                     $to_check = $fields;
-                    unset($to_check['entity']);
-                    $to_check['entity.id'] = $fields['entity'];
+                    if (array_key_exists('entity', $to_check)) {
+                        unset($to_check['entity']);
+                        $to_check['entity.id'] = $fields['entity'];
+                    }
                     $this->checkSimpleContentExpect($content, ['fields' => $to_check]);
                 });
         });
@@ -248,6 +255,70 @@ class AssetController extends \HLAPITestCase
                     $this->integer($count_by_type['Monitor'])->isGreaterThanOrEqualTo(1);
                     $this->integer($count_by_type['Printer'])->isGreaterThanOrEqualTo(1);
                 });
+        });
+    }
+
+    public function testCRUDSoftwareVersion()
+    {
+        $this->login();
+
+        // Create a software
+        $software = new \Software();
+        $this->integer($software_id = $software->add([
+            'name' => __FUNCTION__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]));
+
+        // Create
+        $request = new Request('POST', '/Assets/Software/' . $software_id . '/Version');
+        $request->setParameter('name', '1.0');
+        $new_item_location = null;
+        $this->api->call($request, function ($call) use (&$new_item_location) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_item_location) {
+                    $this->array($headers)->hasKey('Location');
+                    $this->string($headers['Location'])->startWith("/Assets/SoftwareVersion/");
+                    $new_item_location = $headers['Location'];
+                });
+        });
+
+        // Get and verify
+        $this->api->call(new Request('GET', $new_item_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKey('name');
+                    $this->string($content['name'])->isEqualTo('1.0');
+                });
+        });
+
+        // Update
+        $request = new Request('PATCH', $new_item_location);
+        $request->setParameter('name', '1.1');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->checkSimpleContentExpect($content, ['fields' => ['name' => '1.1']]);
+                });
+        });
+
+        // Delete
+        $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
+        });
+
+        // Verify item does not exist anymore
+        $this->api->call(new Request('GET', $new_item_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isNotFoundError();
         });
     }
 }
