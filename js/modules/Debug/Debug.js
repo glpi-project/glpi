@@ -784,7 +784,7 @@ window.GLPI.Debug = new class Debug {
         content_area.append(`
             <div>
                <label>
-                 Hide near-instant sections (<=1ms):
+                 Hide near-instant sections (&lt;=1ms):
                  <input type="checkbox" name="hide_instant_sections">
                </label>
             </div>
