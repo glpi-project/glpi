@@ -193,7 +193,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return boolean
      **/
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null, string $itemtype = null)
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
         $users_id = Session::getLoginUserID(false);
 
@@ -223,18 +223,27 @@ class NotificationTarget extends CommonDBChild
         }
 
         //do not notify if user explicitly refused it
-        //Except for CommonITILOject (already manage by use_notification)
         $user = new User();
         if (
-            is_string($itemtype)
-            && (!is_a($itemtype, CommonITILObject::class, true) || !is_a($itemtype, NotificationTargetCommonITILObject::class, true))
-            && (!is_a($itemtype, NotificationTargetUser::class, true))
+            !$this->canNotificationBeDisabled($event)
             && isset($infos['users_id'])
             && $user->getFromDB($infos['users_id'])
             && !$user->isUserNotificationEnable()
         ) {
             return false;
         }
+        return true;
+    }
+
+    /**
+     * Check if notification (for a specific event) can be disabled
+     *
+     * @param string  $event     notification event
+     *
+     * @return boolean
+     **/
+    protected function canNotificationBeDisabled(string $event): bool
+    {
         return true;
     }
 

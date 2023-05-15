@@ -68,11 +68,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null, string $itemtype = null)
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
 
        // Check global ones for notification to myself
-        if (!parent::validateSendTo($event, $infos, $notify_me, $emitter, $itemtype = null)) {
+        if (!parent::validateSendTo($event, $infos, $notify_me, $emitter)) {
             return false;
         }
 
@@ -86,6 +86,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
 
         return true;
+    }
+
+    protected function canNotificationBeDisabled(string $event): bool
+    {
+        // Notifications on ITIL objects are relying on `use_notification` property of actors.
+        return false;
     }
 
     /**

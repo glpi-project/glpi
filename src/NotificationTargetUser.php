@@ -58,14 +58,24 @@ class NotificationTargetUser extends NotificationTarget
         }
     }
 
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null, string $itemtype = null)
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
        // Always send notification for spassword
         if (in_array($event, ['passwordinit', 'passwordforget', 'passwordexpires'])) {
             return true;
         }
 
-        return parent::validateSendTo($event, $infos, $notify_me, $emitter, $itemtype);
+        return parent::validateSendTo($event, $infos, $notify_me, $emitter);
+    }
+
+    protected function canNotificationBeDisabled(string $event): bool
+    {
+        if (in_array($event, ['passwordinit', 'passwordforget', 'passwordexpires'])) {
+            // Notifications related to passwords should never be disabled.
+            return false;
+        }
+
+        return true;
     }
 
 
