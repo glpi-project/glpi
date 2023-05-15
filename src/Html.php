@@ -1671,9 +1671,9 @@ HTML;
         $sector = strtolower($sector);
         $item   = strtolower($item);
 
-        \Glpi\Debug\Profiler::start('Html::includeHeader');
+        \Glpi\Debug\Profiler::getInstance()->start('Html::includeHeader');
         self::includeHeader($title, $sector, $item, $option, $add_id);
-        \Glpi\Debug\Profiler::stop('Html::includeHeader');
+        \Glpi\Debug\Profiler::getInstance()->stop('Html::includeHeader');
 
         $tmp_active_item = explode("/", $item);
         $active_item     = array_pop($tmp_active_item);
@@ -1828,7 +1828,7 @@ HTML;
         TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
 
         if (!str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
-            \Glpi\Debug\Profiler::stopAll();
+            \Glpi\Debug\Profiler::getInstance()->stopAll();
             (new Glpi\Debug\Toolbar())->show();
         }
 

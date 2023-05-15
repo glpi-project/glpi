@@ -44,7 +44,7 @@ include_once GLPI_ROOT . '/inc/based_config.php';
 // Init Timer to compute time of display
 $TIMER_DEBUG = new Timer();
 $TIMER_DEBUG->start();
-\Glpi\Debug\Profiler::start('php_request');
+\Glpi\Debug\Profiler::getInstance()->start('php_request');
 
 
 /// TODO try to remove them if possible
@@ -86,9 +86,9 @@ if (!isset($PLUGINS_INCLUDED)) {
     $PLUGINS_INCLUDED = 1;
     $PLUGINS_EXCLUDED = isset($PLUGINS_EXCLUDED) ? $PLUGINS_EXCLUDED : [];
     $plugin = new Plugin();
-    \Glpi\Debug\Profiler::start('plugins_init', 'plugins');
+    \Glpi\Debug\Profiler::getInstance()->start('plugins_init', \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
     $plugin->init(true, $PLUGINS_EXCLUDED);
-    \Glpi\Debug\Profiler::stop('plugins_init');
+    \Glpi\Debug\Profiler::getInstance()->stop('plugins_init');
 }
 
 // Security system

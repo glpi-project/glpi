@@ -43,7 +43,7 @@ if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
     die();
 }
 
-\Glpi\Debug\Profiler::$disabled = true;
+\Glpi\Debug\Profiler::getInstance()->disable();
 
 if (isset($_GET['ajax_id'])) {
     // Get debug data for a specific ajax call

@@ -74,7 +74,7 @@ final class Profile
             // Register a shutdown function to save the profile
             register_shutdown_function(static function () {
                 // Stop all profiler timers (should just be the main php_request one unless something died)
-                Profiler::stopAll();
+                Profiler::getInstance()->stopAll();
                 self::getCurrent()->save();
             });
         }
