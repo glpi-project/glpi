@@ -94,55 +94,6 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * Return filters for the provided dashboard
-     *
-     * @param int $dashboards_id
-     *
-     * @return string the JSON representation of the filter data
-     */
-    public static function getForDashboard(int $dashboards_id = 0): string
-    {
-        global $DB;
-
-
-        $dr_iterator = $DB->request([
-            'FROM'  => self::getTable(),
-            'WHERE' => [
-                'dashboards_dashboards_id' => $dashboards_id,
-                'users_id'                 => Session::getLoginUserID(),
-            ]
-        ]);
-
-        $settings = $dr_iterator->count() === 1 ? $dr_iterator->current()['filter'] : null;
-
-        return is_string($settings) ? $settings : '{}';
-    }
-
-    /**
-     * Save filter in DB for the provided dashboard
-     *
-     * @param int $dashboards_id id (not key) of the dashboard
-     * @param array $settings contains a JSON representation of the filter data
-     *
-     * @return void
-     */
-    public static function addForDashboard(int $dashboards_id = 0, string $settings = ''): void
-    {
-        global $DB;
-
-        $DB->updateOrInsert(
-            self::getTable(),
-            [
-                'filter'                   => $settings,
-            ],
-            [
-                'dashboards_dashboards_id' => $dashboards_id,
-                'users_id'                 => Session::getLoginUserID(),
-            ]
-        );
-    }
-
-    /**
      * @deprecated 10.0.0
      */
     public static function dates($values = "", string $fieldname = 'dates'): string
@@ -266,5 +217,54 @@ class Filter extends \CommonDBChild
 
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . AbstractFilter::class . ' instead.');
         return AbstractFilter::field($id, $field, $label, $filled);
+    }
+
+    /**
+     * Return filters for the provided dashboard
+     *
+     * @param int $dashboards_id
+     *
+     * @return string the JSON representation of the filter data
+     */
+    public static function getForDashboard(int $dashboards_id = 0): string
+    {
+        global $DB;
+
+
+        $dr_iterator = $DB->request([
+            'FROM'  => self::getTable(),
+            'WHERE' => [
+                'dashboards_dashboards_id' => $dashboards_id,
+                'users_id'                 => Session::getLoginUserID(),
+            ]
+        ]);
+
+        $settings = $dr_iterator->count() === 1 ? $dr_iterator->current()['filter'] : null;
+
+        return is_string($settings) ? $settings : '{}';
+    }
+
+    /**
+     * Save filter in DB for the provided dashboard
+     *
+     * @param int $dashboards_id id (not key) of the dashboard
+     * @param array $settings contains a JSON representation of the filter data
+     *
+     * @return void
+     */
+    public static function addForDashboard(int $dashboards_id = 0, string $settings = ''): void
+    {
+        global $DB;
+
+        $DB->updateOrInsert(
+            self::getTable(),
+            [
+                'filter'                   => $settings,
+            ],
+            [
+                'dashboards_dashboards_id' => $dashboards_id,
+                'users_id'                 => Session::getLoginUserID(),
+            ]
+        );
     }
 }
