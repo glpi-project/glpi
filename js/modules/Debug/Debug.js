@@ -214,10 +214,6 @@ window.GLPI.Debug = new class Debug {
                     ajax_request.status = xhr.status;
                     ajax_request.time = new Date() - ajax_request.start;
                     ajax_request.status_type = xhr.status >= 200 && xhr.status < 300 ? 'success' : 'danger';
-                    // If the server sent a X-GLPI-Debug-Server-Global header, store it
-                    if (xhr.getResponseHeader('X-GLPI-Debug-Server-Global') !== null) {
-                        ajax_request.server_global = JSON.parse(xhr.getResponseHeader('X-GLPI-Debug-Server-Global'));
-                    }
 
                     // Ask the server for the debug information it saved for this request
                     $.ajax({

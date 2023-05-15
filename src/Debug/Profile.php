@@ -57,11 +57,6 @@ final class Profile
 
     private static ?self $current = null;
 
-    /**
-     * The threshold for the size of the debug info before it is saved to disk rather than sent directly to the browser.
-     */
-    private const DEBUG_INFO_HEADER_THRESHOLD = 4096;
-
     public function __construct(string $id, ?string $parent_id)
     {
         $this->id = $id;
@@ -75,19 +70,6 @@ final class Profile
             $id = $_SERVER['HTTP_X_GLPI_AJAX_ID'] ?? bin2hex(random_bytes(8));
             $parent_id = $_SERVER['HTTP_X_GLPI_AJAX_PARENT_ID'] ?? null;
             self::$current = new self($id, $parent_id);
-
-            // If this is a sub-request, we can send the $_SERVER global data back in a header now to avoid having to save it later.
-            if ($parent_id !== null) {
-                try {
-                    $server_global = json_encode($_SERVER ?? [], JSON_THROW_ON_ERROR);
-                    $header_len = strlen($server_global);
-                    if ($header_len < self::DEBUG_INFO_HEADER_THRESHOLD) {
-                        header('X-GLPI-Debug-Server-Global: ' . $server_global);
-                    }
-                } catch (\Exception $e) {
-                    // Ignore
-                }
-            }
 
             // Register a shutdown function to save the profile
             register_shutdown_function(static function () {
@@ -170,11 +152,11 @@ final class Profile
             // We only need these for top-level requests. For AJAX, this data is already known by the client.
             $debug_info['globals']['get'] = $_GET ?? [];
             $debug_info['globals']['post'] = $_POST ?? [];
-            $debug_info['globals']['server'] = $_SERVER ?? [];
         }
         $session = $_SESSION ?? [];
         unset($session['debug_profiles']);
         $debug_info['globals']['session'] = $session;
+        $debug_info['globals']['server'] = $_SERVER ?? [];
 
         foreach ($DEBUG_SQL['queries'] as $num => $query) {
             $info = [
