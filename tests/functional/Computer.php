@@ -452,6 +452,11 @@ class Computer extends DbTestCase
             ])
         )->isGreaterThan(0);
 
+        //add antivirus
+        $antivirus = new \ComputerAntivirus();
+        $antivirus_id = (int)$antivirus->add(['name' => 'Test link antivirus', 'computers_id' => $id]);
+        $this->integer($antivirus_id)->isGreaterThan(0);
+
        //clone!
         $computer = new \Computer(); //$computer->fields contents is already escaped!
         $this->boolean($computer->getFromDB($id))->isTrue();
@@ -488,7 +493,7 @@ class Computer extends DbTestCase
         $relations = [
             \Infocom::class => 1,
             \Notepad::class  => 1,
-            \Item_OperatingSystem::class => 1
+            \Item_OperatingSystem::class => 1,
         ];
 
         foreach ($relations as $relation => $expected) {
@@ -502,6 +507,9 @@ class Computer extends DbTestCase
                 )
             )->isIdenticalTo($expected);
         }
+
+        //check antivirus
+        $this->boolean($antivirus->getFromDBByCrit(['computers_id' => $clonedComputer->fields['id']]))->isTrue();
 
        //check processor has been cloned
         $this->boolean($link->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();
