@@ -797,24 +797,23 @@ class Profile extends CommonDBTM
     {
         /**
          * Helper function to streamline rights definition
-         * @param class-string<CommonDBTM> $itemtype
+         * @param class-string<CommonDBTM>|null $itemtype
          * @param string $interface
-         * @param string $field
          * @param array $options
          * @return array
          */
-        $fn_get_rights = static function (string $itemtype, string $interface, string $field = null, array $options = []) {
+        $fn_get_rights = static function (?string $itemtype, string $interface, array $options = []) {
             $options = array_replace([
+                'field' => null,
+                'label' => null,
+                'rights' => null,
                 'scope' => 'entity'
             ], $options);
-            $rights = Profile::getRightsFor($itemtype, $interface);
-            if ($field === null) {
-                $field = $itemtype::$rightname;
-            }
+
             return [
-                'rights' => $rights,
-                'label'  => $itemtype::getTypeName(Session::getPluralNumber()),
-                'field'  => $field,
+                'rights' => $options['rights'] ?? Profile::getRightsFor($itemtype, $interface),
+                'label'  => $options['label'] ?? $itemtype::getTypeName(Session::getPluralNumber()),
+                'field'  => $options['field'] ?? $itemtype::$rightname,
                 'scope' => $options['scope']
             ];
         };
@@ -830,12 +829,9 @@ class Profile extends CommonDBTM
                 'central' => [
                     'tracking' => [
                         'itilobjects' => [
-                            [
-                                'itemtype'  => 'TicketTemplate',
-                                'label'     => _n('Template', 'Templates', Session::getPluralNumber()),
-                                'field'     => 'itiltemplate',
-                                'scope'     => 'entity'
-                            ],
+                            $fn_get_rights(TicketTemplate::class, 'central', [
+                                'label' => _n('Template', 'Templates', Session::getPluralNumber())
+                            ]),
                             $fn_get_rights(PendingReason::class, 'central'),
                         ],
                         'tickets' => [
@@ -892,19 +888,16 @@ class Profile extends CommonDBTM
                             $fn_get_rights(Phone::class, 'central'),
                             $fn_get_rights(Peripheral::class, 'central'),
                             $fn_get_rights(NetworkName::class, 'central'),
-                            $fn_get_rights(DeviceSimcard::class, 'central', 'devicesimcard_pinpuk'),
+                            $fn_get_rights(DeviceSimcard::class, 'central', ['field' => 'devicesimcard_pinpuk']),
                         ],
                     ],
                     'management' => [
                         'general' => [
                             $fn_get_rights(SoftwareLicense::class, 'central'),
-                            [
-                                'itemtype'  => 'Contact',
-                                'label'     => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / " .
-                                    _n('Supplier', 'Suppliers', Session::getPluralNumber()),
-                                'field'     => 'contact_enterprise',
-                                'scope'     => 'entity'
-                            ],
+                            $fn_get_rights(Contact::class, 'central', [
+                                'label' => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / " .
+                                    _n('Supplier', 'Suppliers', Session::getPluralNumber())
+                            ]),
                             $fn_get_rights(Document::class, 'central'),
                             $fn_get_rights(Contract::class, 'central'),
                             $fn_get_rights(Infocom::class, 'central'),
@@ -922,146 +915,112 @@ class Profile extends CommonDBTM
                     'admin' => [
                         'general' => [
                             $fn_get_rights(User::class, 'central'),
-                            $fn_get_rights(Entity::class, 'central', null, ['scope' => 'global']),
-                            $fn_get_rights(Group::class, 'central', null, ['scope' => 'global']),
-                            $fn_get_rights(__CLASS__, 'central', null, ['scope' => 'global']),
-                            $fn_get_rights(QueuedNotification::class, 'central', null, ['scope' => 'global']),
-                            $fn_get_rights(Log::class, 'central', null, ['scope' => 'global']),
+                            $fn_get_rights(Entity::class, 'central', ['scope' => 'global']),
+                            $fn_get_rights(Group::class, 'central', ['scope' => 'global']),
+                            $fn_get_rights(__CLASS__, 'central', ['scope' => 'global']),
+                            $fn_get_rights(QueuedNotification::class, 'central', ['scope' => 'global']),
+                            $fn_get_rights(Log::class, 'central', ['scope' => 'global']),
                         ],
                         'inventory' => [
-                            [
-                                'itemtype'  => 'Glpi\Inventory\Conf',
-                                'label'     => __('Inventory'),
-                                'field'     => 'inventory',
-                                'scope'     => 'global'
-                            ],
-                            [
-                                'itemtype'  => 'LockedField',
-                                'label'     => Lockedfield::getTypeName(Session::getPluralNumber()),
-                                'field'     => 'locked_field',
-                                'rights'  => [
+                            $fn_get_rights(\Glpi\Inventory\Conf::class, 'central', [
+                                'label' => __('Inventory'),
+                                'field' => 'inventory',
+                                'scope' => 'global'
+                            ]),
+                            $fn_get_rights(Lockedfield::class, 'central', [
+                                'rights' => [
                                     CREATE => __('Create'), // For READ / CREATE
                                     UPDATE => __('Update'), //for CREATE / PURGE global lock
                                 ],
-                                'scope'     => 'global'
-                            ],
-                            $fn_get_rights(SNMPCredential::class, 'central', null, ['scope' => 'global']),
-                            [
-                                'itemtype'  => 'RefusedEquipment',
-                                'label'     => RefusedEquipment::getTypeName(Session::getPluralNumber()),
-                                'field'     => 'refusedequipment',
-                                'rights'  => [
+                                'scope' => 'global'
+                            ]),
+                            $fn_get_rights(SNMPCredential::class, 'central', ['scope' => 'global']),
+                            $fn_get_rights(RefusedEquipment::class, 'central', [
+                                'rights' => [
                                     READ  => __('Read'),
                                     UPDATE  => __('Update'),
-                                    PURGE   => ['short' => __('Purge'),
+                                    PURGE   => [
+                                        'short' => __('Purge'),
                                         'long'  => _x('button', 'Delete permanently')
                                     ]
                                 ],
-                                'scope'     => 'global'
-                            ],
-                            [
-                                'itemtype'  => 'Unmanaged',
-                                'label'     => Unmanaged::getTypeName(Session::getPluralNumber()),
-                                'field'     => 'unmanaged',
-                                'rights'  => [
+                                'scope' => 'global'
+                            ]),
+                            $fn_get_rights(Unmanaged::class, 'central', [
+                                'rights' => [
                                     READ  => __('Read'),
                                     UPDATE  => __('Update'),
                                     DELETE => __('Delete'),
-                                    PURGE   => ['short' => __('Purge'),
+                                    PURGE   => [
+                                        'short' => __('Purge'),
                                         'long'  => _x('button', 'Delete permanently')
                                     ]
                                 ],
-                                'scope'     => 'global'
-                            ],
-                            [
-                                'itemtype'  => 'Agent',
-                                'label'     => Agent::getTypeName(Session::getPluralNumber()),
-                                'field'     => 'agent',
-                                'rights'  => [
-                                    READ    => __('Read'),
+                                'scope' => 'global'
+                            ]),
+                            $fn_get_rights(Agent::class, 'central', [
+                                'rights' => [
+                                    READ  => __('Read'),
                                     UPDATE  => __('Update'),
-                                    PURGE   => ['short' => __('Purge'),
+                                    PURGE   => [
+                                        'short' => __('Purge'),
                                         'long'  => _x('button', 'Delete permanently')
                                     ]
                                 ],
-                                'scope'     => 'global'
-                            ],
+                                'scope' => 'global'
+                            ]),
                         ],
                         'rules' => [
-                            [
-                                'itemtype'  => 'Rule', //FIXME Why not RuleRight?
+                            $fn_get_rights(RuleRight::class, 'central', [
                                 'label'     => __('Authorizations assignment rules'),
-                                'field'     => 'rule_ldap',
                                 'scope'     => 'global'
-                            ],
-                            [
-                                'itemtype'  => 'RuleImportAsset',
+                            ]),
+                            $fn_get_rights(RuleImportAsset::class, 'central', [
                                 'label'     => __('Rules for assigning a computer to an entity'),
-                                'field'     => 'rule_import',
                                 'scope'     => 'global'
-                            ],
-                            [
-                                'itemtype'  => 'RuleLocation',
+                            ]),
+                            $fn_get_rights(RuleLocation::class, 'central', [
                                 'label'     => __('Rules for assigning a computer to a location'),
-                                'field'     => 'rule_location',
                                 'scope'     => 'global'
-                            ],
-                            [
-                                'itemtype'  => 'RuleMailCollector',
+                            ]),
+                            $fn_get_rights(RuleMailCollector::class, 'central', [
                                 'label'     => __('Rules for assigning a ticket created through a mails receiver'),
-                                'field'     => 'rule_mailcollector',
                                 'scope'     => 'global'
-                            ],
-                            [
-                                'itemtype'  => 'RuleSoftwareCategory',
+                            ]),
+                            $fn_get_rights(RuleSoftwareCategory::class, 'central', [
                                 'label'     => __('Rules for assigning a category to a software'),
-                                'field'     => 'rule_softwarecategories',
                                 'scope'     => 'global'
-                            ],
-                            [
-                                'itemtype'  => 'RuleTicket',
+                            ]),
+                            $fn_get_rights(RuleTicket::class, 'central', [
                                 'label'     => __('Business rules for tickets (entity)'),
-                                'field'     => 'rule_ticket',
-                                'scope'     => 'entity'
-                            ],
-                            [
-                                'itemtype'  => 'RuleAsset',
+                            ]),
+                            $fn_get_rights(RuleAsset::class, 'central', [
                                 'label'     => __('Business rules for assets'),
-                                'field'     => 'rule_asset',
-                                'scope'     => 'entity'
-                            ],
-                            [
-                                'itemtype'  => 'Transfer',
+                            ]),
+                            $fn_get_rights(Transfer::class, 'central', [
                                 'label'     => __('Transfer'),
-                                'field'     => 'transfer',
                                 'scope'     => 'global'
-                            ],
+                            ]),
                         ],
                         'dictionaries' => [
-                            [
-                                'itemtype'  => 'RuleDictionnaryDropdown',
+                            $fn_get_rights(RuleDictionnaryDropdown::class, 'central', [
                                 'label'     => __('Dropdowns dictionary'),
-                                'field'     => 'rule_dictionnary_dropdown',
                                 'scope'     => 'global'
-                            ],
-                            [
-                                'itemtype'  => 'RuleDictionnarySoftware',
+                            ]),
+                            $fn_get_rights(RuleDictionnarySoftware::class, 'central', [
                                 'label'     => __('Software dictionary'),
-                                'field'     => 'rule_dictionnary_software',
                                 'scope'     => 'global'
-                            ],
-                            [
-                                'itemtype'  => 'RuleDictionnaryPrinter',
+                            ]),
+                            $fn_get_rights(RuleDictionnaryPrinter::class, 'central', [
                                 'label'     => __('Printers dictionnary'),
-                                'field'     => 'rule_dictionnary_printer',
                                 'scope'     => 'global'
-                            ]
+                            ]),
                         ]
                     ],
                     'setup' => [
                         'general' => [
-                            $fn_get_rights(Config::class, 'central', null, ['scope' => 'entity']),
-                            [
+                            $fn_get_rights(Config::class, 'central', ['scope' => 'entity']),
+                            $fn_get_rights(null, 'central', [
                                 'rights'  => [
                                     READ    => __('Read'),
                                     UPDATE  => __('Update')
@@ -1069,43 +1028,35 @@ class Profile extends CommonDBTM
                                 'label'  => __('Personalization'),
                                 'field'  => 'personalization',
                                 'scope'     => 'entity'
-                            ],
-                            [
-                                'itemtype'  => 'Glpi\Dashboard\Grid',
+                            ]),
+                            $fn_get_rights(\Glpi\Dashboard\Grid::class, 'central', [
                                 'label'     => __('All dashboards'),
                                 'field'     => 'dashboard',
                                 'scope'     => 'entity'
-                            ],
-                            $fn_get_rights(DisplayPreference::class, 'central', null, ['scope' => 'entity']),
-                            [
-                                'itemtype'  => 'Item_Devices',
+                            ]),
+                            $fn_get_rights(DisplayPreference::class, 'central', ['scope' => 'entity']),
+                            $fn_get_rights(Item_Devices::class, 'central', [
                                 'label'     => _n('Component', 'Components', Session::getPluralNumber()),
                                 'field'     => 'device',
-                                'scope'     => 'entity'
-                            ],
-                            [
+                            ]),
+                            $fn_get_rights(null, 'central', [
                                 'rights'    => $dropdown_rights,
                                 'label'     => _n('Global dropdown', 'Global dropdowns', Session::getPluralNumber()),
                                 'field'     => 'dropdown',
                                 'scope'     => 'global'
-                            ],
-                            $fn_get_rights(Location::class, 'central', null, ['scope' => 'entity']),
-                            $fn_get_rights(ITILCategory::class, 'central', null, ['scope' => 'entity']),
-                            $fn_get_rights(KnowbaseItemCategory::class, 'central', null, ['scope' => 'entity']),
-                            $fn_get_rights(TaskCategory::class, 'central', null, ['scope' => 'entity']),
-                            $fn_get_rights(State::class, 'central', null, ['scope' => 'entity']),
-                            $fn_get_rights(ITILFollowupTemplate::class, 'central', null, ['scope' => 'entity']),
-                            $fn_get_rights(SolutionTemplate::class, 'central', null, ['scope' => 'entity']),
-                            $fn_get_rights(Calendar::class, 'central', null, ['scope' => 'entity']),
-                            $fn_get_rights(DocumentType::class, 'central', null, ['scope' => 'entity']),
-                            $fn_get_rights(Link::class, 'central', null, ['scope' => 'entity']),
-                            $fn_get_rights(Notification::class, 'central', null, ['scope' => 'entity']),
-                            [
-                                'itemtype'  => 'SLM',
-                                'label'     => __('SLM'),
-                                'field'     => 'slm',
-                                'scope'     => 'entity'
-                            ],
+                            ]),
+                            $fn_get_rights(Location::class, 'central'),
+                            $fn_get_rights(ITILCategory::class, 'central'),
+                            $fn_get_rights(KnowbaseItemCategory::class, 'central'),
+                            $fn_get_rights(TaskCategory::class, 'central'),
+                            $fn_get_rights(State::class, 'central'),
+                            $fn_get_rights(ITILFollowupTemplate::class, 'central'),
+                            $fn_get_rights(SolutionTemplate::class, 'central'),
+                            $fn_get_rights(Calendar::class, 'central'),
+                            $fn_get_rights(DocumentType::class, 'central'),
+                            $fn_get_rights(Link::class, 'central'),
+                            $fn_get_rights(Notification::class, 'central'),
+                            $fn_get_rights(SLM::class, 'central', ['label' => __('SLM')])
                         ],
                     ]
                 ],
@@ -1128,16 +1079,15 @@ class Profile extends CommonDBTM
                     ],
                     'setup' => [
                         'general' => [
-                            $fn_get_rights(Config::class, 'central', null, ['scope' => 'entity']),
-                            [
+                            $fn_get_rights(Config::class, 'central', ['scope' => 'entity']),
+                            $fn_get_rights(null, 'helpdesk', [
                                 'rights'  => [
                                     READ    => __('Read'),
                                     UPDATE  => __('Update')
                                 ],
                                 'label'  => __('Personalization'),
                                 'field'  => 'personalization',
-                                'scope'     => 'entity'
-                            ],
+                            ]),
                         ],
                     ]
                 ]
