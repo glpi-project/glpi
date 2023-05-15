@@ -58,12 +58,6 @@ final class Profile
     private static ?self $current = null;
 
     /**
-     * @var bool If true, top-level profiles will be saved to disk.
-     * This is false by default since these are usually initial pages loads and the data is directly used, so saving it is not useful.
-     */
-    private const SAVE_TOP_LEVEL_PROFILES = false;
-
-    /**
      * The threshold for the size of the debug info before it is saved to disk rather than sent directly to the browser.
      */
     private const DEBUG_INFO_HEADER_THRESHOLD = 4096;
@@ -107,24 +101,19 @@ final class Profile
 
     public static function load(string $id, bool $delete = true): ?self
     {
-        $profile_location = GLPI_TMP_DIR . '/debug/profiles/';
-        // only keep letters and numbers in the id to avoid path traversal
-        $id = preg_replace('/[^a-zA-Z0-9]/', '', $id);
-        $profile_name = $id . '.json.gz';
-
-        if (!file_exists($profile_location . $profile_name)) {
+        if (!isset($_SESSION['debug_profiles'][$id])) {
             return null;
         }
 
         try {
-            $profile_data = json_decode(gzdecode(file_get_contents($profile_location . $profile_name)), true, 512, JSON_THROW_ON_ERROR);
+            $profile_data = json_decode(gzdecode($_SESSION['debug_profiles'][$id]), true, 512, JSON_THROW_ON_ERROR);
             $profile = new self($profile_data['id'], $profile_data['parent_id']);
             $profile->is_readonly = true;
             $profile->start_time = $profile_data['start_time'];
             $profile->debug_info = $profile_data;
 
             if ($delete) {
-                unlink($profile_location . $profile_name);
+                unset($_SESSION['debug_profiles'][$id]);
             }
             return $profile;
         } catch (\Exception $e) {
@@ -150,14 +139,13 @@ final class Profile
         $this->additional_info[$widget][] = $data;
     }
 
-    public function getDebugInfo()
+    public function getDebugInfo(): array
     {
         if ($this->is_readonly) {
             return $this->debug_info;
         }
-        global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $TIMER_DEBUG;
+        global $DEBUG_SQL, $TIMER_DEBUG;
 
-        $queries_duration = $CFG_GLPI["debug_sql"] ? array_sum($DEBUG_SQL['times']) : 0;
         $execution_time = $TIMER_DEBUG->getTime();
 
         /**
@@ -183,7 +171,9 @@ final class Profile
             $debug_info['globals']['get'] = $_GET ?? [];
             $debug_info['globals']['post'] = $_POST ?? [];
             // We don't worry about session data for AJAX given the size and need to save the profile to the disk
-            $debug_info['globals']['session'] = $_SESSION ?? [];
+            $session = $_SESSION ?? [];
+            unset($session['debug_profiles']);
+            $debug_info['globals']['session'] = $session;
             $debug_info['globals']['server'] = $_SERVER ?? [];
         }
 
@@ -216,24 +206,20 @@ final class Profile
         if ($this->is_readonly) {
             return;
         }
-        if (!self::SAVE_TOP_LEVEL_PROFILES && $this->parent_id === null) {
+        if ($this->parent_id === null) {
+            // Don't save top-level requests. The data is sent in the response in a script tag when the bar is initialized.
             return;
-        }
-        $profile_location = GLPI_TMP_DIR . '/debug/profiles/';
-        $profile_name = $this->id . '.json.gz';
-
-        // create missing directory
-        if (!is_dir($profile_location)) {
-            if (!mkdir($created_dir = $profile_location, 0770, true) && !is_dir($created_dir)) {
-                throw new \RuntimeException(sprintf('Failed to create debug profile directory %s', $created_dir));
-            }
         }
 
         $info = $this->getDebugInfo();
         $info['start_time'] = $this->start_time;
 
-        $json = json_encode($info);
-        $gz = gzencode($json, 9);
-        file_put_contents($profile_location . $profile_name, $gz);
+        try {
+            $json = json_encode($info, JSON_THROW_ON_ERROR);
+            $gz = gzencode($json, 9);
+            $_SESSION['debug_profiles'][$this->id] = $gz;
+        } catch (\Exception $e) {
+            // Ignore
+        }
     }
 }

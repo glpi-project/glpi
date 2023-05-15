@@ -45,9 +45,6 @@ if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
 
 \Glpi\Debug\Profiler::$disabled = true;
 
-// We don't need to modify the session, so we can close the session file to avoid blocking other requests
-session_write_close();
-
 if (isset($_GET['ajax_id'])) {
     // Get debug data for a specific ajax call
     $ajax_id = $_GET['ajax_id'];
