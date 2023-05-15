@@ -32,11 +32,9 @@
  #}
 
 <!DOCTYPE html>
-{% set debug_mode = session('glpi_use_mode') == constant('Session::DEBUG_MODE') %}
-{% set request_id = constant('GLPI_REQUEST_ID') is defined ? constant('GLPI_REQUEST_ID') : null %}
 <html lang="{{ lang }}" {% if high_contrast %}data-high-contrast="1"{% endif %}
       data-glpi-theme="{{ theme.getKey() }}" data-glpi-theme-dark="{{ theme.isDarkTheme() ? '1' : '0' }}"
-      {{ debug_mode and request_id != null ? 'data-glpi-request-id=' ~ constant('GLPI_REQUEST_ID') : '' }}>
+      {{ glpi_request_id is defined ? 'data-glpi-request-id=' ~ glpi_request_id : '' }}>
 <head>
    <title>{{ title }} - GLPI</title>
 
