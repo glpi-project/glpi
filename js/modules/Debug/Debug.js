@@ -609,11 +609,7 @@ window.GLPI.Debug = new class Debug {
         const globals = matching_profile.globals;
         appendGlobals(globals['post'], content_area.find(`#debugpost${rand}`));
         appendGlobals(globals['get'], content_area.find(`#debugget${rand}`));
-        if (selected_request_id === this.initial_request.id) {
-            appendGlobals(globals['session'], content_area.find(`#debugsession${rand}`));
-        } else {
-            content_area.find(`#debugsession${rand}`).html(`<div class="alert alert-warning">Session data is only available for the initial request</div>`);
-        }
+        appendGlobals(globals['session'], content_area.find(`#debugsession${rand}`));
         appendGlobals(globals['server'], content_area.find(`#debugserver${rand}`));
 
         content_area.on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {

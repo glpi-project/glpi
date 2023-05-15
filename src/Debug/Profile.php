@@ -170,12 +170,11 @@ final class Profile
             // We only need these for top-level requests. For AJAX, this data is already known by the client.
             $debug_info['globals']['get'] = $_GET ?? [];
             $debug_info['globals']['post'] = $_POST ?? [];
-            // We don't worry about session data for AJAX given the size and need to save the profile to the disk
-            $session = $_SESSION ?? [];
-            unset($session['debug_profiles']);
-            $debug_info['globals']['session'] = $session;
             $debug_info['globals']['server'] = $_SERVER ?? [];
         }
+        $session = $_SESSION ?? [];
+        unset($session['debug_profiles']);
+        $debug_info['globals']['session'] = $session;
 
         foreach ($DEBUG_SQL['queries'] as $num => $query) {
             $info = [
