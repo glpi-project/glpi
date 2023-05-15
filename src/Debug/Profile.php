@@ -196,6 +196,10 @@ final class Profile
 
     public function save(): void
     {
+        if (isAPI() || isCommandLine()) {
+            // No saving debug info for API or CLI requests
+            return;
+        }
         if ($this->is_readonly) {
             return;
         }
