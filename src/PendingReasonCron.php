@@ -120,12 +120,6 @@ class PendingReasonCron extends CommonDBTM
                 continue;
             }
 
-            // Skip if the day is a non-working day or a holliday
-            $calendar = Calendar::getById($pending_reason->fields['calendars_id']);
-            if ($calendar && ($calendar->isHoliday($now) || !$calendar->isAWorkingDay(time()))) {
-                continue;
-            }
-
             $next_bump = $pending_item->getNextFollowupDate();
             $resolve = $pending_item->getAutoResolvedate();
 

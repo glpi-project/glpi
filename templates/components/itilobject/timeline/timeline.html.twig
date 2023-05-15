@@ -245,4 +245,21 @@ $(function() {
       $("#itil-footer .main-actions").show();
    });
 });
+
+// Align ITILAutoBump
+let result = document.evaluate(
+   '//div[contains(@class, "timeline-header")][contains(@id, "ITILAutoBump_")]',
+   document,
+   null,
+   XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+   null
+);
+
+for (let i = 0; i < result.snapshotLength; i++) {
+   let node = result.snapshotItem(i);
+   let width = (i > 0 ? Math.max(result.snapshotItem(i - 1).offsetWidth, node.offsetWidth) : node.offsetWidth) + 1;
+   node.style.setProperty('width', 'var(--itilautobump-header-badge-width)');
+   node.style.setProperty('flex-direction', 'row-reverse');
+   document.documentElement.style.setProperty('--itilautobump-header-badge-width', width + 'px');
+}
 </script>

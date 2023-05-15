@@ -68,7 +68,7 @@ class PendingReason extends CommonDropdown
                         'show_warning' => $defaultPendingReason && $defaultPendingReason->getID() != $this->getID(),
                         'tooltip' => $defaultPendingReason ? \Html::showToolTip(
                             sprintf(
-                                __('If you set this as the default pending reason, the previous default pending reason (%s) will no longer default.'),
+                                __('If you set this as the default pending reason, the previous default pending reason (%s) will no longer be the default value.'),
                                 '<a href="' . PendingReason::getFormURLWithID($defaultPendingReason->getID()) . '">' . $defaultPendingReason->fields['name'] . '</a>'
                             ),
                             [
@@ -379,13 +379,13 @@ class PendingReason extends CommonDropdown
         return $input;
     }
 
-    public function add(array $input, $options = [], $history = true)
+    public function prepareInputForAdd($input)
     {
-        return parent::add($this->prepareInput($input), $options, $history);
+        return $this->prepareInput($input);
     }
 
-    public function update(array $input, $options = [], $history = true)
+    public function prepareInputForUpdate($input)
     {
-        return parent::update($this->prepareInput($input), $options, $history);
+        return $this->prepareInput($input);
     }
 }

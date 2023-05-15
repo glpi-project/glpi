@@ -190,10 +190,6 @@ class PendingReason_Item extends CommonDBRelation
         $calendar = Calendar::getById(
             PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']
         );
-        $lastBumpDate = new DateTime($this->fields['last_bump_date']);
-        $lastBumpDate->add(DateInterval::createFromDateString(
-            $this->fields['followup_frequency'] . ' seconds'
-        ));
 
         if ($calendar) {
             return $calendar->computeEndDate(
@@ -203,6 +199,11 @@ class PendingReason_Item extends CommonDBRelation
                 true
             );
         }
+
+        $lastBumpDate = new DateTime($this->fields['last_bump_date']);
+        $lastBumpDate->add(DateInterval::createFromDateString(
+            $this->fields['followup_frequency'] . ' seconds'
+        ));
 
         return $lastBumpDate->format('Y-m-d H:i:s');
     }
@@ -218,17 +219,13 @@ class PendingReason_Item extends CommonDBRelation
             return false;
         }
 
-        $remaining_bumps = ($this->fields['followups_before_resolution'] > 0 ?
-            $this->fields['followups_before_resolution'] : 0)
-            - $this->fields['bump_count'] + 1;
+        // -1 = auto resolution without bumps
+        $expected_bumps = max($this->fields['followups_before_resolution'], 0);
+        $remaining_bumps = $expected_bumps - $this->fields['bump_count'] + 1;
 
         $calendar = Calendar::getById(
             PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']
         );
-        $lastBumpDate = new DateTime($this->fields['last_bump_date']);
-        $lastBumpDate->add(DateInterval::createFromDateString(
-            $this->fields['followup_frequency'] * $remaining_bumps . ' seconds'
-        ));
 
         if ($calendar) {
             return $calendar->computeEndDate(
@@ -238,6 +235,11 @@ class PendingReason_Item extends CommonDBRelation
                 true
             );
         }
+
+        $lastBumpDate = new DateTime($this->fields['last_bump_date']);
+        $lastBumpDate->add(DateInterval::createFromDateString(
+            $this->fields['followup_frequency'] * $remaining_bumps . ' seconds'
+        ));
 
         return $lastBumpDate->format('Y-m-d H:i:s');
     }

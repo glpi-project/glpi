@@ -108,7 +108,7 @@ class PendingReason extends DbTestCase
                 'expected' => '2021-02-25 13:01:00'
             ],
             [
-            // Case 6: first with weekend
+            // Case 5: first with weekend
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,

@@ -5196,22 +5196,9 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id'                       => '31',
                 'notificationtemplates_id' => '31',
                 'language'                 => '',
-                'subject'                  => '##ticket.action## ##ticket.entity##',
-                'content_text'             => '##lang.ticket.title##: ##ticket.title##
-
-##lang.ticket.autobump.bumpcounter##: ##ticket.autobump.bumpcounter##
-##lang.ticket.autobump.bumpremaining##: ##ticket.autobump.bumpremaining##
-##lang.ticket.autobump.bumptotal##: ##ticket.autobump.bumptotal##
-##lang.ticket.autobump.deadline##: ##ticket.autobump.deadline##
-
-##lang.ticket.autobump.bumptext##: ##ticket.autobump.bumptext##',
-                'content_html'             => '&lt;p&gt;##lang.ticket.title##: ##ticket.title##&lt;/p&gt;
-&lt;p&gt;##lang.ticket.autobump.bumpcounter##: ##ticket.autobump.bumpcounter##
-##lang.ticket.autobump.bumpremaining##: ##ticket.autobump.bumpremaining##
-##lang.ticket.autobump.bumptotal##: ##ticket.autobump.bumptotal##
-##lang.ticket.autobump.deadline##: ##ticket.autobump.deadline##&lt;/p&gt;
-&lt;p&gt;
-##lang.ticket.autobump.bumptext##: ##ticket.autobump.bumptext##&lt;/p&gt;',
+                'subject'                  => '##ticket.action## ##ticket.title##',
+                'content_text'             => '##ticket.autobump.bumptext##',
+                'content_html'             => '&lt;p&gt;##ticket.autobump.bumptext##&lt;/p&gt;',
             ]
         ];
 

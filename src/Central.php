@@ -513,10 +513,11 @@ class Central extends CommonGLPI
             if (
                 \Config::getConfigurationValue('core', 'use_notifications')
                 && countElementsInTable('glpi_pendingreasons_items') > 0
-                && $notification->getFromDBByCrit([
+                && !count($notification->find([
                     'itemtype' => 'Ticket',
-                    'event'     => 'auto_bump'
-                ]) && !$notification->getField('is_active')
+                    'event'     => 'auto_bump',
+                    'is_active'  => true,
+                ]))
             ) {
                 $criteria = [
                     'criteria' => [
