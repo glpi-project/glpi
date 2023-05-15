@@ -1639,7 +1639,7 @@ class Session
         $now = time();
         if (isset($_SESSION['glpiidortokens']) && is_array($_SESSION['glpiidortokens'])) {
             foreach ($_SESSION['glpiidortokens'] as $footprint => $token) {
-                if ($token['expires'] < $now) {
+                if (!empty($token) && isset($token['expires']) && $token['expires'] < $now) {
                     unset($_SESSION['glpiidortokens'][$footprint]);
                 }
             }
