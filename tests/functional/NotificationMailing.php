@@ -115,8 +115,8 @@ class NotificationMailing extends DbTestCase
     }
 
 
-    public function testDisabledNotification() {
-
+    public function testDisabledNotification()
+    {
         //setup
         $this->login();
 
