@@ -1056,7 +1056,8 @@ class Profile extends CommonDBTM
                             $fn_get_rights(DocumentType::class, 'central'),
                             $fn_get_rights(Link::class, 'central'),
                             $fn_get_rights(Notification::class, 'central'),
-                            $fn_get_rights(SLM::class, 'central', ['label' => __('SLM')])
+                            $fn_get_rights(SLM::class, 'central', ['label' => __('SLM')]),                            
+                            $fn_get_rights(LineOperator::class, 'central'),
                         ],
                     ]
                 ],
@@ -1079,7 +1080,6 @@ class Profile extends CommonDBTM
                     ],
                     'setup' => [
                         'general' => [
-                            $fn_get_rights(Config::class, 'central', ['scope' => 'entity']),
                             $fn_get_rights(null, 'helpdesk', [
                                 'rights'  => [
                                     READ    => __('Read'),
