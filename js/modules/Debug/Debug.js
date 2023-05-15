@@ -693,7 +693,8 @@ window.GLPI.Debug = new class Debug {
         const predefined_colors = {
             core: '#526dad',
             db: '#9252ad',
-            twig: '#64ad52'
+            twig: '#64ad52',
+            plugins: '#a077a6',
         };
         let bg_color = '';
         if (predefined_colors[category] !== undefined) {

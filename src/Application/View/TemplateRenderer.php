@@ -159,7 +159,7 @@ class TemplateRenderer
     public function render(string $template, array $variables = []): string
     {
         try {
-            Profiler::start('render ' . $template, 'twig');
+            Profiler::start('render ' . $template, Profiler::CATEGORY_TWIG);
             return $this->environment->load($template)->render($variables);
         } catch (\Twig\Error\Error $e) {
             ErrorHandler::getInstance()->handleTwigError($e);
@@ -180,7 +180,7 @@ class TemplateRenderer
     public function display(string $template, array $variables = []): void
     {
         try {
-            Profiler::start('display ' . $template, 'twig');
+            Profiler::start('display ' . $template, Profiler::CATEGORY_TWIG);
             $this->environment->load($template)->display($variables);
         } catch (\Twig\Error\Error $e) {
             ErrorHandler::getInstance()->handleTwigError($e);

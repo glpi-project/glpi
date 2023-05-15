@@ -35,7 +35,11 @@
 
 namespace Glpi\Debug;
 
-class Profiler
+/**
+ * Class that handles profiling sections of code.
+ * The data is viewable in the debug bar only. If the current user is not in debug mode, the profiler is disabled.
+ */
+final class Profiler
 {
     /** @var ProfilerSection[] */
     private static $current_sections = [];
