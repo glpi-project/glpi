@@ -7294,7 +7294,7 @@ abstract class CommonITILObject extends CommonDBTM
         $autobump_obj = new ITILAutoBump();
         $autobumps = $autobump_obj->find(['items_id'  => $this->getID()]);
         foreach ($autobumps as $autobump_id => $autobump) {
-            $autobump_obj->getFromDB($autobump_id);
+            $autobump_obj = ITILAutoBump::getByID($autobump_id);
             $pending_reason = $autobump_obj->getPendingReason();
             $followup_template = ITILFollowupTemplate::getById($pending_reason->fields['itilfollowuptemplates_id']);
             $content = sprintf(

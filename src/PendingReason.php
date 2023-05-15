@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * ITILCategory class
  **/
@@ -62,9 +64,9 @@ class PendingReason extends CommonDropdown
                 'label' => __('Default pending reason'),
                 'type' => 'bool',
                 'params' => [
-                    'add_field_html' => ($defaultPendingReason && $defaultPendingReason->getID() != $this->getID() ?
-                        '<span id="is_default_warning" class="text-warning d-none">'
-                        . \Html::showToolTip(
+                    'add_field_html' => TemplateRenderer::getInstance()->render('components/form/pending_reason_is_default.html.twig', [
+                        'show_warning' => $defaultPendingReason && $defaultPendingReason->getID() != $this->getID(),
+                        'tooltip' => $defaultPendingReason ? \Html::showToolTip(
                             sprintf(
                                 __('If you set this as the default pending reason, the previous default pending reason (%s) will no longer default.'),
                                 '<a href="' . PendingReason::getFormURLWithID($defaultPendingReason->getID()) . '">' . $defaultPendingReason->fields['name'] . '</a>'
@@ -73,20 +75,8 @@ class PendingReason extends CommonDropdown
                                 'display' => false,
                                 'awesome-class' => 'fa fa-exclamation-triangle fa-lg',
                             ]
-                        )
-                        . '</span>'
-                        : '')
-                        . '<script>'
-                        . '$("select[name=\'is_default\']").on("change", function() {'
-                        . 'if ($(this).val() == 1) {'
-                        . '$("#is_default_warning").removeClass("d-none");'
-                        . '$("select[name=\'is_pending_per_default\']").prop("disabled", false);'
-                        . '} else {'
-                        . '$("#is_default_warning").addClass("d-none");'
-                        . '$("select[name=\'is_pending_per_default\']").prop("disabled", true);'
-                        . '}'
-                        . '});'
-                        . '</script>',
+                        ) : '',
+                    ]),
                 ],
             ],
             [

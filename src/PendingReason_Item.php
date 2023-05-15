@@ -187,13 +187,13 @@ class PendingReason_Item extends CommonDBRelation
             return false;
         }
 
-        $last_bump_date = new DateTime($this->fields['last_bump_date']);
-
-        return $this->skipNonWorkingDays(
-            Calendar::getById(PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']),
-            $last_bump_date,
-            (new DateTime())->setTimestamp($last_bump_date->getTimestamp() + $this->fields['followup_frequency'])
-        )->format("Y-m-d H:i:s");
+        $calendar = Calendar::getById(PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']);
+        return $calendar->computeEndDate(
+            $this->fields['last_bump_date'],
+            $this->fields['followup_frequency'],
+            0,
+            true
+        );
     }
 
     /**
@@ -210,15 +210,14 @@ class PendingReason_Item extends CommonDBRelation
         $remaining_bumps = ($this->fields['followups_before_resolution'] > 0 ?
             $this->fields['followups_before_resolution'] : 0)
             - $this->fields['bump_count'] + 1;
-        $last_bump_date = new DateTime($this->fields['last_bump_date']);
 
-        return $this->skipNonWorkingDays(
-            Calendar::getById(PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']),
-            $last_bump_date,
-            (new DateTime())->setTimestamp(
-                $last_bump_date->getTimestamp() + ($this->fields['followup_frequency'] * $remaining_bumps)
-            ),
-        )->format("Y-m-d H:i:s");
+        $calendar = Calendar::getById(PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']);
+        return $calendar->computeEndDate(
+            $this->fields['last_bump_date'],
+            $this->fields['followup_frequency'] * $remaining_bumps,
+            0,
+            true
+        );
     }
 
     /**

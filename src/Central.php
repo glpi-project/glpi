@@ -506,12 +506,13 @@ class Central extends CommonGLPI
             }
 
             /*
-            * Check if there are pending reasons items and the notification is not active
-            * If so, display a warning message
-            */
+             * Check if there are pending reasons items and the notification is not active
+             * If so, display a warning message
+             */
             $notification = new \Notification();
             if (
-                countElementsInTable('glpi_pendingreasons_items') > 0
+                \Config::getConfigurationValue('core', 'use_notifications')
+                && countElementsInTable('glpi_pendingreasons_items') > 0
                 && $notification->getFromDBByCrit([
                     'itemtype' => 'Ticket',
                     'event'     => 'auto_bump'
@@ -527,14 +528,12 @@ class Central extends CommonGLPI
                         ]
                     ]
                 ];
-                $link = '<a href="' . Notification::getSearchURL() . '?' . Toolbox::append_params($criteria) . '">' . __('Show notification') . '</a>';
+                $link = '<a href="' . Notification::getSearchURL() . '?' . Toolbox::append_params($criteria) . '">' . __('notification') . '</a>';
 
                 $messages['warnings'][] = sprintf(
-                    __('There are %1$s pending reasons items and the notification is not active.'),
-                    countElementsInTable('glpi_pendingreasons_items')
-                )
-                    . ' '
-                    . $link;
+                    __('You have defined pending reasons without any respective active %s.'),
+                    $link
+                );
             }
         }
 
