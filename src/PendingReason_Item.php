@@ -187,13 +187,24 @@ class PendingReason_Item extends CommonDBRelation
             return false;
         }
 
-        $calendar = Calendar::getById(PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']);
-        return $calendar->computeEndDate(
-            $this->fields['last_bump_date'],
-            $this->fields['followup_frequency'],
-            0,
-            true
+        $calendar = Calendar::getById(
+            PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']
         );
+        $lastBumpDate = new DateTime($this->fields['last_bump_date']);
+        $lastBumpDate->add(DateInterval::createFromDateString(
+            $this->fields['followup_frequency'] . ' seconds'
+        ));
+
+        if ($calendar) {
+            return $calendar->computeEndDate(
+                $this->fields['last_bump_date'],
+                $this->fields['followup_frequency'],
+                0,
+                true
+            );
+        }
+
+        return $lastBumpDate->format('Y-m-d H:i:s');
     }
 
     /**
@@ -211,13 +222,24 @@ class PendingReason_Item extends CommonDBRelation
             $this->fields['followups_before_resolution'] : 0)
             - $this->fields['bump_count'] + 1;
 
-        $calendar = Calendar::getById(PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']);
-        return $calendar->computeEndDate(
-            $this->fields['last_bump_date'],
-            $this->fields['followup_frequency'] * $remaining_bumps,
-            0,
-            true
+        $calendar = Calendar::getById(
+            PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']
         );
+        $lastBumpDate = new DateTime($this->fields['last_bump_date']);
+        $lastBumpDate->add(DateInterval::createFromDateString(
+            $this->fields['followup_frequency'] * $remaining_bumps . ' seconds'
+        ));
+
+        if ($calendar) {
+            return $calendar->computeEndDate(
+                $this->fields['last_bump_date'],
+                $this->fields['followup_frequency'] * $remaining_bumps,
+                0,
+                true
+            );
+        }
+
+        return $lastBumpDate->format('Y-m-d H:i:s');
     }
 
     /**
