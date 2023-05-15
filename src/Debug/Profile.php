@@ -41,8 +41,6 @@ final class Profile
 
     private ?string $parent_id;
 
-    private string $start_time;
-
     /**
      * @var bool If true, the profile is loaded from an old request so current debug info should not be accessible from this profile
      */
@@ -61,7 +59,6 @@ final class Profile
     {
         $this->id = $id;
         $this->parent_id = $parent_id;
-        $this->start_time = $_SESSION['glpi_currenttime'];
     }
 
     public static function getCurrent(): self
@@ -91,7 +88,6 @@ final class Profile
             $profile_data = json_decode(gzdecode($_SESSION['debug_profiles'][$id]), true, 512, JSON_THROW_ON_ERROR);
             $profile = new self($profile_data['id'], $profile_data['parent_id']);
             $profile->is_readonly = true;
-            $profile->start_time = $profile_data['start_time'];
             $profile->debug_info = $profile_data;
 
             if ($delete) {
@@ -209,7 +205,6 @@ final class Profile
         }
 
         $info = $this->getDebugInfo();
-        $info['start_time'] = $this->start_time;
 
         try {
             $json = json_encode($info, JSON_THROW_ON_ERROR);
