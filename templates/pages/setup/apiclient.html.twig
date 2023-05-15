@@ -71,7 +71,7 @@
     {% set reset_btn %}
         {{ fields.checkboxField(
             '_reset_app_token',
-            '',
+            item.isNewItem() ? 1 : 0,
             __('Regenerate'),
             {
                 'full_width': true
