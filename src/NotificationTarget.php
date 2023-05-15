@@ -589,7 +589,6 @@ class NotificationTarget extends CommonDBChild
         if (isset($data['name']) && !empty($data['name'])) {
             $username = $data['name'];
         }
-
         if (isset($data['users_id']) && ($data['users_id'] > 0)) {
             $user = new User();
             if (
@@ -601,7 +600,7 @@ class NotificationTarget extends CommonDBChild
                 || (!is_null($user->getField('end_date'))
                   && ($user->getField('end_date') < $_SESSION["glpi_currenttime"]))
             ) {
-               // unknown, deleted, not notifiable or disabled user
+               // unknown, deleted or disabled user
                 return false;
             }
             $filt = getEntitiesRestrictCriteria(
