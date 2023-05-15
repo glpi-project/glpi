@@ -516,8 +516,8 @@ window.GLPI.Debug = new class Debug {
                         <td style="max-width: 50vw; white-space: break-spaces;"><code class="d-block cm-s-default border-0">${query['query']}</code></td>
                         <td>${query['time']}ms</td>
                         <td>${query['rows']}</td>
-                        <td>${query['warnings']}</td>
-                        <td>${query['errors']}</td>
+                        <td>${escapeMarkupText(query['warnings'])}</td>
+                        <td>${escapeMarkupText(query['errors'])}</td>
                     </tr>
                 `;
             });
