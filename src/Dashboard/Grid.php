@@ -773,10 +773,7 @@ HTML;
         $params = array_merge($default_params, $params);
 
         $used         = array_flip($params['used']);
-        $filters      = [];
-        foreach (Filter::getAll() as $filter) {
-            $filters[$filter::getId()] = $filter::getName();
-        }
+        $filters      = Filter::getFilterChoices();
         $list_filters = array_diff_key($filters, $used);
 
         $rand = mt_rand();
@@ -1049,6 +1046,7 @@ HTML;
     public function getFiltersSetHtml(array $filters = []): string
     {
         $html = "";
+
         foreach ($filters as $filter_id => $filter_values) {
             $html .= $this->getFilterHtml($filter_id, $filter_values);
         }
@@ -1068,7 +1066,7 @@ HTML;
      */
     public function getFilterHtml(string $filter_id = "", $filter_values = ""): string
     {
-        foreach (Filter::getAll() as $filter) {
+        foreach (Filter::getRegisteredFilterClasses() as $filter) {
             if ($filter::getId() == $filter_id) {
                 return $filter::getHtml($filter_values);
             }

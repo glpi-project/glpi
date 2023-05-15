@@ -1661,7 +1661,7 @@ class Provider
     {
         $DBread = DBConnection::getReadConnection();
         $s_criteria = [];
-        $filters = Filter::getAll();
+        $filters = Filter::getRegisteredFilterClasses();
 
         foreach ($filters as $filter) {
             $filter_criteria = $filter::getSearchCriteria($DBread, $table, $apply_filters);
@@ -1683,7 +1683,7 @@ class Provider
         $where = [];
         $join  = [];
 
-        $filters = Filter::getAll();
+        $filters = Filter::getRegisteredFilterClasses();
 
         foreach ($filters as $filter) {
             $filter_criteria = $filter::getCriteria($DBread, $table, $apply_filters);

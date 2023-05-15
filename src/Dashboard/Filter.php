@@ -62,11 +62,11 @@ class Filter extends \CommonDBChild
     public static $items_id = 'dashboards_dashboards_id';
 
     /**
-     * Return all available filters
+     * Return registered filters classes.
      *
-     * @return array of filters
+     * @return array
      */
-    public static function getAll(): array
+    public static function getRegisteredFilterClasses(): array
     {
         global $PLUGIN_HOOKS;
 
@@ -94,7 +94,39 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @deprecated 10.0.0
+     * Return filters choices (to be used in a dropdown context).
+     * Keys are filters ids, values are filters labels.
+     *
+     * @return array of filters
+     */
+    public static function getFilterChoices(): array
+    {
+        $filters = [];
+
+        /* @var \Glpi\Dashboard\Filters\AbstractFilter $filter_class */
+        foreach (self::getRegisteredFilterClasses() as $filter_class) {
+            $filters[$filter_class::getId()] = $filter_class::getName();
+        }
+
+        return $filters;
+    }
+
+    /**
+     * Return all available filters.
+     * Keys are filters ids, values are filters labels.
+     *
+     * @return array of filters
+     *
+     * @deprecated 10.0.8
+     */
+    public static function getAll(): array
+    {
+        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use getFilterChoices() instead.');
+        return self::getFilterChoices();
+    }
+
+    /**
+     * @deprecated 10.0.8
      */
     public static function dates($values = "", string $fieldname = 'dates'): string
     {
@@ -103,7 +135,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      */
     public static function dates_mod($values): string
     {
@@ -113,7 +145,7 @@ class Filter extends \CommonDBChild
 
 
     /**
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      */
     public static function itilcategory(string $value = ""): string
     {
@@ -122,7 +154,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      */
     public static function requesttype(string $value = ""): string
     {
@@ -131,7 +163,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      */
     public static function location(string $value = ""): string
     {
@@ -140,7 +172,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      */
     public static function manufacturer(string $value = ""): string
     {
@@ -149,7 +181,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      */
     public static function group_tech(string $value = ""): string
     {
@@ -158,7 +190,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      */
     public static function user_tech(string $value = ""): string
     {
@@ -167,7 +199,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      */
     public static function state(string $value = ""): string
     {
@@ -176,7 +208,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      */
     public static function tickettype(string $value = ""): string
     {
@@ -185,7 +217,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      */
     public static function displayList(
         string $value = "",
@@ -194,13 +226,43 @@ class Filter extends \CommonDBChild
         array $add_params = []
     ): string {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . AbstractFilter::class . ' instead.');
-        return "";
+
+        $value     = !empty($value) ? $value : null;
+        $rand      = mt_rand();
+        $label     = self::getFilterChoices()[$fieldname];
+        $field     = $itemtype::dropdown([
+            'name'                => $fieldname,
+            'value'               => $value,
+            'rand'                => $rand,
+            'display'             => false,
+            'display_emptychoice' => false,
+            'emptylabel'          => '',
+            'placeholder'         => $label,
+            'on_change'           => "on_change_{$rand}()",
+            'allowClear'          => true,
+            'width'               => ''
+        ] + $add_params);
+
+        $js = <<<JAVASCRIPT
+      var on_change_{$rand} = function() {
+         var dom_elem    = $('#dropdown_{$fieldname}{$rand}');
+         var selected    = dom_elem.find(':selected').val();
+
+         Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
+
+         $(dom_elem).closest("fieldset").toggleClass("filled", selected !== null)
+      };
+
+JAVASCRIPT;
+        $field .= \Html::scriptBlock($js);
+
+        return self::field($fieldname, $field, $label, $value !== null);
     }
 
     /**
      * Get generic HTML for a filter
      *
-     * @deprecated 10.0.0
+     * @deprecated 10.0.8
      * @param string $id system name of the filter (ex "dates")
      * @param string $field html of the filter
      * @param string $label displayed label for the filter
@@ -230,7 +292,6 @@ class Filter extends \CommonDBChild
     {
         global $DB;
 
-
         $dr_iterator = $DB->request([
             'FROM'  => self::getTable(),
             'WHERE' => [
@@ -252,7 +313,7 @@ class Filter extends \CommonDBChild
      *
      * @return void
      */
-    public static function addForDashboard(int $dashboards_id = 0, string $settings = ''): void
+    public static function addForDashboard(int $dashboards_id = 0, string $settings = '')
     {
         global $DB;
 
