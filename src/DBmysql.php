@@ -352,6 +352,8 @@ class DBmysql
 
         $debug_data = [
             'query' => $query,
+            'time' => 0,
+            'rows' => 0,
             'errors' => '',
             'warnings' => '',
         ];
@@ -385,11 +387,10 @@ class DBmysql
             }
         }
 
-        $TIME = $TIMER->getTime();
-        $debug_data['time'] = (int) ($TIME * 1000);
-        $debug_data['rows'] = $this->affectedRows();
-
         if ($is_debug && $CFG_GLPI["debug_sql"]) {
+            $TIME = $TIMER->getTime();
+            $debug_data['time'] = (int) ($TIME * 1000);
+            $debug_data['rows'] = $this->affectedRows();
             $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
             $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
         }

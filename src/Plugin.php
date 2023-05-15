@@ -1640,12 +1640,12 @@ class Plugin extends CommonDBTM
                     }
 
                     if (isset($tab[$itemtype])) {
-                        \Glpi\Debug\Profiler::getInstance()->start("${$plugin_key}:${$name}", 'plugins');
+                        \Glpi\Debug\Profiler::getInstance()->start("${plugin_key}:${name}", 'plugins');
                         self::includeHook($plugin_key);
                         if (is_callable($tab[$itemtype])) {
                             call_user_func($tab[$itemtype], $data);
                         }
-                        \Glpi\Debug\Profiler::getInstance()->stop("${$plugin_key}:${$name}");
+                        \Glpi\Debug\Profiler::getInstance()->stop("${plugin_key}:${name}");
                     }
                 }
             }
@@ -1656,12 +1656,12 @@ class Plugin extends CommonDBTM
                         continue;
                     }
 
-                    \Glpi\Debug\Profiler::getInstance()->start("${$plugin_key}:${$name}", 'plugins');
+                    \Glpi\Debug\Profiler::getInstance()->start("${plugin_key}:${name}", 'plugins');
                     self::includeHook($plugin_key);
                     if (is_callable($function)) {
                         call_user_func($function, $data);
                     }
-                    \Glpi\Debug\Profiler::getInstance()->stop("${$plugin_key}:${$name}");
+                    \Glpi\Debug\Profiler::getInstance()->stop("${plugin_key}:${name}");
                 }
             }
         }
