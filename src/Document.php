@@ -570,7 +570,7 @@ class Document extends CommonDBTM
             $link_params = sprintf('&itemtype=%s&items_id=%s', $linked_item->getType(), $linked_item->getID());
         }
 
-        $splitter = explode("/", $this->fields['filename']);
+        $splitter = $this->fields['filename'] !== null ? explode("/", $this->fields['filename']) : [];
 
         if (count($splitter) == 2) {
            // Old documents in EXT/filename
@@ -582,7 +582,7 @@ class Document extends CommonDBTM
 
         $initfileout = $fileout;
 
-        if (Toolbox::strlen($fileout) > $len) {
+        if ($fileout !== null && Toolbox::strlen($fileout) > $len) {
             $fileout = Toolbox::substr($fileout, 0, $len) . "&hellip;";
         }
 
@@ -600,7 +600,7 @@ class Document extends CommonDBTM
                     title=\"" . $initfileout . "\"target='_blank'>";
             $close = "</a>";
         }
-        $splitter = explode("/", $this->fields['filepath']);
+        $splitter = $this->fields['filename'] !== null ? explode("/", $this->fields['filepath']) : [];
 
         if (count($splitter)) {
             $iterator = $DB->request([
