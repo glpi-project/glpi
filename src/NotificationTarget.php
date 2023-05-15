@@ -225,7 +225,7 @@ class NotificationTarget extends CommonDBChild
         //do not notify if user explicitly refused it
         $user = new User();
         if (
-            !$this->canNotificationBeDisabled($event)
+            $this->canNotificationBeDisabled($event)
             && isset($infos['users_id'])
             && $user->getFromDB($infos['users_id'])
             && !$user->isUserNotificationEnable()
