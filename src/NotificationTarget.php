@@ -595,10 +595,6 @@ class NotificationTarget extends CommonDBChild
             if (
                 !$user->getFromDB($data['users_id'])
                 || ($user->getField('is_deleted') == 1)
-                // if notification not send by NotificationTargetCommonITILObject
-                // check if user explicitly refused notification
-                //for CommonITILObject use_notification is check before
-                || (!$this->validateSendTo("", $data, true, null, get_called_class()))
                 || ($user->getField('is_active') == 0)
                 || (!is_null($user->getField('begin_date'))
                   && ($user->getField('begin_date') > $_SESSION["glpi_currenttime"]))
