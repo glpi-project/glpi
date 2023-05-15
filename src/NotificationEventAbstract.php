@@ -97,7 +97,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                     $key = $users_infos[static::getTargetFieldName()];
                     if (
                         $label
-                        || $notificationtarget->validateSendTo($event, $users_infos, $notify_me, $emitter, get_class($item))
+                        || $notificationtarget->validateSendTo($event, $users_infos, $notify_me, $emitter)
                     ) {
                         //If the user have not yet been notified
                         if (!isset($processed[$users_infos['language']][$key])) {
