@@ -756,10 +756,10 @@ window.GLPI.Debug = new class Debug {
                     ${'<td style="min-width: 2rem"></td>'.repeat(nest_level)}
                     <td>
                         <span class="category-badge" style='background-color: ${cat_colors.bg_color}; color: ${cat_colors.text_color}'>
-                            ${section.category}
+                            ${escapeMarkupText(section.category)}
                         </span>
                     </td>
-                    <td>${section.name}</td><td>${section.start}</td><td>${section.end}</td>
+                    <td>${escapeMarkupText(section.name)}</td><td>${section.start}</td><td>${section.end}</td>
                     <td data-column="duration" data-duration-raw="${duration}">${duration.toFixed(0)}ms</td>
                     <td>${percent_of_parent}%</td>
                 </tr>
