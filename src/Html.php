@@ -1840,6 +1840,7 @@ HTML;
     public static function ajaxFooter()
     {
         // Not currently used. Old debug stuff is now in the new debug bar.
+        // FIXME: Deprecate this in GLPI 10.1.
     }
 
 

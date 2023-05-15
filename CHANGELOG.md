@@ -6,12 +6,15 @@ The present file will list all changes made to the project; according to the
 ## [10.0.8] unreleased
 
 ### Added
+- Unified Debug bar feature has been added to display debug information in the browser as a replacement and expansion on the previous, individual debug panels.
 
 ### Changed
 
 ### Deprecated
 
 ### Removed
+- Debug panels and the toggle button to show/hide the primary debug panel that was next to the current user's name in the top right corner of the screen have been removed.
+- `debug_tabs` plugin hook
 
 ### API changes
 
@@ -21,6 +24,8 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- `Html::displayDebugInfo` method no longer has any effect. The functionality was replaced by the new Debug Bar feature.
+- `Hooks::DEBUG_TABS`
 
 #### Removed
 
