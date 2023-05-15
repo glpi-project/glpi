@@ -634,6 +634,7 @@ class Toolbox
         if (isset($mode)) {
             $_SESSION['glpi_use_mode'] = $mode;
         }
+        //FIXME Deprecate the debug_sql and debug_vars parameters in GLPI 10.1.0
         if (isset($debug_sql)) {
             $CFG_GLPI['debug_sql'] = $debug_sql;
         }

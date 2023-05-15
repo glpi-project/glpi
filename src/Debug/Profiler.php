@@ -104,7 +104,7 @@ final class Profiler
             $section = array_pop($section);
             $section->end(microtime(true) * 1000);
             unset($this->current_sections[$k]);
-            Profile::getCurrent()->addData('profiler', $section->toArray());
+            Profile::getCurrent()->setData('profiler', $section->toArray());
         }
     }
 

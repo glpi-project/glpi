@@ -26,6 +26,12 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 - `Html::displayDebugInfo` method no longer has any effect. The functionality was replaced by the new Debug Bar feature.
 - `Hooks::DEBUG_TABS`
+- `$TIMER_DEBUG` global variable.
+- `$DEBUG_SQL` global variable.
+- `$SQL_TOTAL_REQUEST` global variable.
+- `$DEBUG_SQL` global variable.
+- `$CFG_GLPI['debug_sql']` configuration option.
+- `$CFG_GLPI['debug_vars']` configuration option.
 
 #### Removed
 

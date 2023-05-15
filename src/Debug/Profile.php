@@ -113,7 +113,7 @@ final class Profile
         return $this->parent_id;
     }
 
-    public function addData(string $widget, $data)
+    public function setData(string $widget, $data)
     {
         if (!array_key_exists($widget, $this->additional_info)) {
             $this->additional_info[$widget] = [];
@@ -121,14 +121,39 @@ final class Profile
         $this->additional_info[$widget][] = $data;
     }
 
+    public function addSQLQueryData(string $query, int $time, int $rows = 0, string $errors = '', string $warnings = '')
+    {
+        if (!array_key_exists('sql', $this->additional_info)) {
+            $this->additional_info['sql'] = [
+                'queries' => [],
+            ];
+        }
+        $next_num = count($this->additional_info['sql']['queries'] ?? []);
+        $this->additional_info['sql']['queries'][] = [
+            'num' => $next_num,
+            'query' => $query,
+            'time' => $time,
+            'rows' => $rows,
+            'errors' => $errors,
+            'warnings' => $warnings,
+        ];
+    }
+
     public function getDebugInfo(): array
     {
         if ($this->is_readonly) {
             return $this->debug_info;
         }
-        global $DEBUG_SQL, $TIMER_DEBUG;
 
-        $execution_time = $TIMER_DEBUG->getTime();
+        $execution_time = -1;
+        if (isset($this->additional_info['profiler'])) {
+            $main_section = array_values(array_filter($this->additional_info['profiler'], static function (array $section) {
+                return $section['category'] === Profiler::CATEGORY_CORE && $section['name'] === 'php_request';
+            }));
+            if (count($main_section)) {
+                $execution_time = $main_section[0]['end'] - $main_section[0]['start'];
+            }
+        }
 
         /**
          * Each top-level key corresponds to a debug toolbar widget id
@@ -158,25 +183,12 @@ final class Profile
         $debug_info['globals']['session'] = $session;
         $debug_info['globals']['server'] = $_SERVER ?? [];
 
-        foreach ($DEBUG_SQL['queries'] as $num => $query) {
-            $info = [
-                'num' => $num,
-                'query' => $query,
-                'time' => ((float) $DEBUG_SQL['times'][$num] * 1000) ?? -1.0,
-                'rows' => $DEBUG_SQL['rows'][$num] ?? 0,
-                'errors' => $DEBUG_SQL['errors'][$num] ?? '',
-                'warnings' => '',
-            ];
-            if (isset($DEBUG_SQL['warnings'][$num])) {
-                foreach ($DEBUG_SQL['warnings'][$num] as $warning) {
-                    $info['warnings'] .= sprintf('%s: %s', $warning['Code'], $warning['Message']) . "\n";
-                }
-            }
-            $debug_info['sql']['queries'][] = $info;
-        }
-
         foreach ($this->additional_info as $widget => $data) {
-            $debug_info[$widget] = $data;
+            if (!array_key_exists($widget, $debug_info)) {
+                $debug_info[$widget] = $data;
+            } else {
+                $debug_info[$widget] = array_merge($debug_info[$widget], $data);
+            }
         }
 
         return $debug_info;
