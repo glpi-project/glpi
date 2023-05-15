@@ -1624,7 +1624,6 @@ class Plugin extends CommonDBTM
     {
         global $PLUGIN_HOOKS;
 
-        \Glpi\Debug\Profiler::start($name, 'plugins');
         if ($param == null) {
             $data = func_get_args();
         } else {
@@ -1641,10 +1640,12 @@ class Plugin extends CommonDBTM
                     }
 
                     if (isset($tab[$itemtype])) {
+                        \Glpi\Debug\Profiler::start("${$plugin_key}:${$name}", 'plugins');
                         self::includeHook($plugin_key);
                         if (is_callable($tab[$itemtype])) {
                             call_user_func($tab[$itemtype], $data);
                         }
+                        \Glpi\Debug\Profiler::stop("${$plugin_key}:${$name}");
                     }
                 }
             }
@@ -1655,14 +1656,15 @@ class Plugin extends CommonDBTM
                         continue;
                     }
 
+                    \Glpi\Debug\Profiler::start("${$plugin_key}:${$name}", 'plugins');
                     self::includeHook($plugin_key);
                     if (is_callable($function)) {
                         call_user_func($function, $data);
                     }
+                    \Glpi\Debug\Profiler::stop("${$plugin_key}:${$name}");
                 }
             }
         }
-        \Glpi\Debug\Profiler::stop($name);
        /* Variable-length argument lists have a slight problem when */
        /* passing values by reference. Pity. This is a workaround.  */
         return $data;
