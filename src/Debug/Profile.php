@@ -35,7 +35,7 @@
 
 namespace Glpi\Debug;
 
-class Profile
+final class Profile
 {
     private string $id;
 
