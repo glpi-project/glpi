@@ -31,7 +31,23 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set users_id = (item.fields['users_id_recipient'] > 0 ? item.fields['users_id_recipient'] : 0) %}
+{# Compute users_id (requester) to display identity / thumbnail if #}
+{# - there is only one requester #}
+{# - it is not an anonymous user #}
+{# else diaply a blank thumbnail without identity #}
+
+{% set array_user = item.getUsers(constant('CommonITILActor::REQUESTER')) %}
+{% if array_user|length == 1 and array_user[0].users_id > 0 %}
+   {% set display_requester = get_item('User', array_user[0].users_id) is not null ? 1 : 0 %}
+   {% if display_requester %}
+      {% set users_id = array_user[0].users_id %}
+   {% else %}
+      {% set users_id = 0 %}
+   {% endif %}
+{% else %}
+   {% set users_id = 0 %}
+{% endif %}
+
 {% set entry_rand = random() %}
 
 <div class="timeline-item mb-3 ITILContent"
