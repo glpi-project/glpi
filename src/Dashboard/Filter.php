@@ -131,7 +131,7 @@ class Filter extends \CommonDBChild
     public static function dates($values = "", string $fieldname = 'dates'): string
     {
         Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . DatesFilter::class . ' instead.');
-        return DatesFilter::getHtml($values, $fieldname);
+        return DatesFilter::getHtml($values);
     }
 
     /**

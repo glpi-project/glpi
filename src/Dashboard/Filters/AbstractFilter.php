@@ -51,9 +51,11 @@ abstract class AbstractFilter
     /**
      * Get the html for the filter
      *
+     * @param mixed $value
+     *
      * @return string
      */
-    abstract public static function getHtml($values = ""): string;
+    abstract public static function getHtml($value): string;
 
      /**
      * Get the filter id

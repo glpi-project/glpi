@@ -138,19 +138,12 @@ class DatesModFilter extends AbstractFilter
         }
     }
 
-    /**
-     * Get HTML for a dates range filter. Same as date but for last update field
-     *
-     * @param string|array $values init the input with these values, will be a string if empty values
-     *
-     * @return string
-     */
-    public static function getHtml($values = ""): string
+    public static function getHtml($value): string
     {
-        // string mean empty value
-        if (is_string($values)) {
-            $values = [];
-        }
+        $values = is_array($value)
+            ? $value
+            : [] // can be a string if values are not initialized yet
+        ;
 
         $rand  = mt_rand();
         $label = self::getName();

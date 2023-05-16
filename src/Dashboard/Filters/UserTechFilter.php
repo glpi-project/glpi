@@ -162,21 +162,22 @@ class UserTechFilter extends AbstractFilter
         return $criteria;
     }
 
-    /**
-     * Get the html for the filter
-     *
-     * @return string
-     */
-    public static function getHtml($value = ""): string
+    public static function getHtml($value): string
     {
-        return self::displayList(self::getName(), is_string($value) ? $value : "", 'user_tech', User::class, [
-            'right' => 'own_ticket',
-            'toadd' => [
-                [
-                    'id'    => 'myself',
-                    'text'  => __('Myself'),
+        return self::displayList(
+            self::getName(),
+            is_string($value) ? $value : "",
+            'user_tech',
+            User::class,
+            [
+                'right' => 'own_ticket',
+                'toadd' => [
+                    [
+                        'id'    => 'myself',
+                        'text'  => __('Myself'),
+                    ]
                 ]
             ]
-        ]);
+        );
     }
 }

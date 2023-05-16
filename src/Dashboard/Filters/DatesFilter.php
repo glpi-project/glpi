@@ -167,21 +167,12 @@ class DatesFilter extends AbstractFilter
         }
     }
 
-    /**
-     * Get HTML for a dates range filter
-     *
-     * @param string|array $values init the input with these values, will be a string if empty values
-     * @param string $fieldname how is named the current date field
-     *                         (used to specify creation date or last update)
-     *
-     * @return string
-     */
-    public static function getHtml($values = ""): string
+    public static function getHtml($value): string
     {
-        // string mean empty value
-        if (is_string($values)) {
-            $values = [];
-        }
+        $values = is_array($value)
+            ? $value
+            : [] // can be a string if values are not initialized yet
+        ;
 
         $rand  = mt_rand();
         $label = self::getName();
@@ -197,17 +188,17 @@ class DatesFilter extends AbstractFilter
 
         $js = <<<JAVASCRIPT
         var on_change_{$rand} = function(selectedDates, dateStr, instance) {
-        // we are waiting for empty value or a range of dates,
-        // don't trigger when only the first date is selected
-        var nb_dates = selectedDates.length;
-        if (nb_dates == 0 || nb_dates == 2) {
-            Dashboard.getActiveDashboard().saveFilter('dates', selectedDates);
-            $(instance.input).closest("fieldset").addClass("filled");
-        }
+            // we are waiting for empty value or a range of dates,
+            // don't trigger when only the first date is selected
+            var nb_dates = selectedDates.length;
+            if (nb_dates == 0 || nb_dates == 2) {
+                Dashboard.getActiveDashboard().saveFilter('dates', selectedDates);
+                $(instance.input).closest("fieldset").addClass("filled");
+            }
         };
-        JAVASCRIPT;
+JAVASCRIPT;
         $field .= Html::scriptBlock($js);
 
-        return self::field('dates', $field, $label, is_array($values) && count($values) > 0);
+        return self::field('dates', $field, $label, count($values) > 0);
     }
 }
