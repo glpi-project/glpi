@@ -41,21 +41,11 @@ use DBmysql;
 
 class TicketTypeFilter extends AbstractFilter
 {
-    /**
-     * Get the filter name
-     *
-     * @return string
-     */
     public static function getName(): string
     {
         return _n("Ticket type", "Ticket types", Session::getPluralNumber());
     }
 
-    /**
-     * Get the filter id
-     *
-     * @return string
-     */
     public static function getId(): string
     {
         return "tickettype";
@@ -74,11 +64,6 @@ class TicketTypeFilter extends AbstractFilter
         return $criteria;
     }
 
-     /**
-     * Get the search filter criteria
-     *
-     * @return array
-     */
     public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
     {
         $criteria = [];

@@ -40,21 +40,11 @@ use Html;
 
 class DatesModFilter extends AbstractFilter
 {
-    /**
-     * Get the filter name
-     *
-     * @return string
-     */
     public static function getName(): string
     {
         return __("Last update");
     }
 
-    /**
-     * Get the filter id
-     *
-     * @return string
-     */
     public static function getId(): string
     {
         return "dates_mod";
@@ -89,11 +79,6 @@ class DatesModFilter extends AbstractFilter
         ];
     }
 
-    /**
-     * Get the search filter criteria
-     *
-     * @return array
-     */
     public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
     {
         $criteria = [];
