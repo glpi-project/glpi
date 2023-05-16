@@ -70,7 +70,7 @@
                         'authorization_code': __("Authorization code"),
                      }, __('Grants'), {
                         multiple: true,
-                        values: item.fields['grants'],
+                        values: item.fields['grants']|default(['authorization_code']),
                      }) }}
 
                      {{ fields.textareaField(
