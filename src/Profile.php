@@ -1067,7 +1067,7 @@ class Profile extends CommonDBTM
                             $fn_get_rights(DocumentType::class, 'central'),
                             $fn_get_rights(Link::class, 'central'),
                             $fn_get_rights(Notification::class, 'central'),
-                            $fn_get_rights(SLM::class, 'central', ['label' => __('SLM')]),                            
+                            $fn_get_rights(SLM::class, 'central', ['label' => __('SLM')]),
                             $fn_get_rights(LineOperator::class, 'central'),
                         ],
                     ]
@@ -2759,6 +2759,20 @@ class Profile extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => 'slm']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '171',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => LineOperator::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => LineOperator::class,
+            'rightname'          => LineOperator::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => LineOperator::$rightname]
             ]
         ];
 
