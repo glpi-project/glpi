@@ -1111,20 +1111,11 @@ HTML;
      */
     public static function getAllDashboardCardsCacheKey(): string
     {
-        $language = Session::getLanguage();
-
-        if (!$language) {
-            // Keep a log trace in case of unexpected session value
-            // This may help with debugging in the future
-            trigger_error(
-                "Unable to get current language, will default to 'getAllDashboardCards' key",
-                E_USER_WARNING
-            );
-
-            return "getAllDashboardCards";
-        }
-
-        return "getAllDashboardCards_$language";
+        return sprintf(
+            'getAllDashboardCards_%s_%s',
+            sha1(json_encode(Filter::getRegisteredFilterClasses())),
+            Session::getLanguage() ?? ''
+        );
     }
 
     /**
