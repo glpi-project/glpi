@@ -54,17 +54,17 @@
       </div>
       <div class="debug-toolbar-content p-1 d-flex w-100 justify-content-between">
          <ul class="debug-toolbar-widgets nav nav-tabs align-items-center border-0" data-bs-toggle="tabs">
-            {{ _self.widget_button('server_performance', 'Server performance') }}
-            {{ _self.widget_button('sql', 'SQL Requests', 'ti ti-database') }}
-            {{ _self.widget_button('requests', 'Requests', 'ti ti-refresh') }}
-            {{ _self.widget_button('client_performance', 'Client performance', 'ti ti-brand-javascript') }}
+            {{ _self.widget_button('server_performance', _x('debug', 'Server performance')) }}
+            {{ _self.widget_button('sql', _x('debug', 'SQL Requests'), 'ti ti-database') }}
+            {{ _self.widget_button('requests', _x('debug', 'Requests'), 'ti ti-refresh') }}
+            {{ _self.widget_button('client_performance', _x('debug', 'Client performance'), 'ti ti-brand-javascript') }}
          </ul>
          <div class="debug-toolbar-controls pt-2">
             <div class="debug-toolbar-control">
                <button type="button" class="btn btn-icon border-0 p-1" name="toggle_content_area" onclick="GLPI.Debug.toggleExtraContentArea();">
                   <i class="ti ti-square-arrow-down"></i>
                </button>
-               <button type="button" class="btn btn-icon border-0 p-1" title="Close" onclick="GLPI.Debug.hideDebugToolbar();">
+               <button type="button" class="btn btn-icon border-0 p-1" title="{{ __('Close') }}" onclick="GLPI.Debug.hideDebugToolbar();">
                   <i class="ti ti-square-x"></i>
                </button>
             </div>
