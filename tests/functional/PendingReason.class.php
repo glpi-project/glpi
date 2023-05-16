@@ -141,6 +141,21 @@ class PendingReason extends DbTestCase
                 ],
                 'expected' => '2019-01-07 13:00:00',
             ],
+            [
+            // Case 7: no followup
+                'fields' => [
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 86400,
+                        'followups_before_resolution' => -1,
+                        'bump_count'                  => 0,
+                        'last_bump_date'              => '2018-12-28 13:00:00',
+                    ]
+                ],
+                'expected' => false,
+            ]
         ];
     }
 
@@ -314,6 +329,21 @@ class PendingReason extends DbTestCase
                     ]
                 ],
                 'expected' => '2019-01-10 13:00:00',
+            ],
+            [
+            // Case 8: no bumps before resolution
+                'fields' => [
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 86400,
+                        'followups_before_resolution' => -1,
+                        'bump_count'                  => 0,
+                        'last_bump_date'              => '2023-05-12 19:00:00',
+                    ],
+                ],
+                'expected' => '2023-05-15 19:00:00',
             ],
         ];
     }
