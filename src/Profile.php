@@ -864,9 +864,15 @@ class Profile extends CommonDBTM
                     ],
                     'tools' => [
                         'general' => [
-                            $fn_get_rights(Reminder::class, 'central'),
-                            $fn_get_rights(RSSFeed::class, 'central'),
-                            $fn_get_rights(SavedSearch::class, 'central'),
+                            $fn_get_rights(Reminder::class, 'central', [
+                                'label' => _n('Public reminder', 'Public reminders', Session::getPluralNumber())
+                            ]),
+                            $fn_get_rights(RSSFeed::class, 'central', [
+                                'label' => _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber())
+                            ]),
+                            $fn_get_rights(SavedSearch::class, 'central', [
+                                'label' => _n('Public saved search', 'Public saved searches', Session::getPluralNumber())
+                            ]),
                             $fn_get_rights(Report::class, 'central'),
                             $fn_get_rights(KnowbaseItem::class, 'central'),
                             $fn_get_rights(ReservationItem::class, 'central'),
@@ -887,8 +893,13 @@ class Profile extends CommonDBTM
                             $fn_get_rights(Consumable::class, 'central'),
                             $fn_get_rights(Phone::class, 'central'),
                             $fn_get_rights(Peripheral::class, 'central'),
-                            $fn_get_rights(NetworkName::class, 'central'),
-                            $fn_get_rights(DeviceSimcard::class, 'central', ['field' => 'devicesimcard_pinpuk']),
+                            $fn_get_rights(NetworkName::class, 'central', [
+                                'label' => __('Internet')
+                            ]),
+                            $fn_get_rights(DeviceSimcard::class, 'central', [
+                                'label' => __('Simcard PIN/PUK'),
+                                'field' => 'devicesimcard_pinpuk'
+                            ]),
                         ],
                     ],
                     'management' => [
