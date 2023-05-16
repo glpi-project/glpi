@@ -67,9 +67,13 @@ abstract class AbstractFilter
     /**
      * Get the filter criteria
      *
+     * @param DBmysql $DB
+     * @param string $table
+     * @param mixed  $value
+     *
      * @return array
      */
-    abstract public static function getCriteria(DBmysql $DB, string $table, array $apply_filters = []): array;
+    abstract public static function getCriteria(DBmysql $DB, string $table, $value): array;
 
 
     /**

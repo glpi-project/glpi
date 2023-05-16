@@ -1686,7 +1686,10 @@ class Provider
         $filters = Filter::getRegisteredFilterClasses();
 
         foreach ($filters as $filter) {
-            $filter_criteria = $filter::getCriteria($DBread, $table, $apply_filters);
+            if (!array_key_exists($filter::getId(), $apply_filters)) {
+                continue;
+            }
+            $filter_criteria = $filter::getCriteria($DBread, $table, $apply_filters[$filter::getId()]);
             if (isset($filter_criteria['WHERE'])) {
                 $where = array_merge($where, $filter_criteria['WHERE']);
             }

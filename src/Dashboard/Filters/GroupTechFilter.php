@@ -63,57 +63,47 @@ class GroupTechFilter extends AbstractFilter
         return "group_tech";
     }
 
-    /**
-     * Get the filter criteria
-     *
-     * @return array
-     */
-    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getCriteria(DBmysql $DB, string $table, $value): array
     {
-        $criteria = [
-            "WHERE" => [],
-            "JOIN"  => [],
-        ];
+        $criteria = [];
 
-        if (isset($apply_filters[self::getId()])) {
-            $groups_id = null;
-            if ((int) $apply_filters[self::getId()] > 0) {
-                $groups_id =  (int) $apply_filters[self::getId()];
-            } else if ($apply_filters[self::getId()] == 'mygroups') {
-                $groups_id =  $_SESSION['glpigroups'];
-            }
+        $groups_id = null;
+        if ((int)$value > 0) {
+            $groups_id = (int) $value;
+        } else if ($value == 'mygroups') {
+            $groups_id = $_SESSION['glpigroups'];
+        }
 
-            if ($groups_id != null) {
-                if ($DB->fieldExists($table, 'groups_id_tech')) {
-                    $criteria["WHERE"] += [
-                        "$table.groups_id_tech" => $groups_id
-                    ];
-                } else if (
-                    in_array($table, [
-                        Ticket::getTable(),
-                        Change::getTable(),
-                        Problem::getTable(),
-                    ])
-                ) {
-                    $itemtype  = getItemTypeForTable($table);
-                    $main_item = getItemForItemtype($itemtype);
-                    $grouplink = $main_item->grouplinkclass;
-                    $gl_table  = $grouplink::getTable();
-                    $fk        = $main_item->getForeignKeyField();
+        if ($groups_id != null) {
+            if ($DB->fieldExists($table, 'groups_id_tech')) {
+                $criteria["WHERE"] = [
+                    "$table.groups_id_tech" => $groups_id
+                ];
+            } else if (
+                in_array($table, [
+                    Ticket::getTable(),
+                    Change::getTable(),
+                    Problem::getTable(),
+                ])
+            ) {
+                $itemtype  = getItemTypeForTable($table);
+                $main_item = getItemForItemtype($itemtype);
+                $grouplink = $main_item->grouplinkclass;
+                $gl_table  = $grouplink::getTable();
+                $fk        = $main_item->getForeignKeyField();
 
-                    $criteria["JOIN"] += [
-                        "$gl_table as gl" => [
-                            'ON' => [
-                                'gl'   => $fk,
-                                $table => 'id',
-                            ]
+                $criteria["JOIN"] = [
+                    "$gl_table as gl" => [
+                        'ON' => [
+                            'gl'   => $fk,
+                            $table => 'id',
                         ]
-                    ];
-                    $criteria["WHERE"] += [
-                        "gl.type"      => \CommonITILActor::ASSIGN,
-                        "gl.groups_id" => $groups_id
-                    ];
-                }
+                    ]
+                ];
+                $criteria["WHERE"] = [
+                    "gl.type"      => \CommonITILActor::ASSIGN,
+                    "gl.groups_id" => $groups_id
+                ];
             }
         }
 

@@ -61,25 +61,13 @@ class StateFilter extends AbstractFilter
         return "state";
     }
 
-    /**
-     * Get the filter criteria
-     *
-     * @return array
-     */
-    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getCriteria(DBmysql $DB, string $table, $value): array
     {
-        $criteria = [
-            "WHERE" => [],
-            "JOIN"  => [],
-        ];
+        $criteria = [];
 
-        if (
-            $DB->fieldExists($table, 'states_id')
-            && isset($apply_filters[self::getId()])
-            && (int) $apply_filters[self::getId()] > 0
-        ) {
-            $criteria["WHERE"] += [
-                "$table.states_id" => (int) $apply_filters[self::getId()]
+        if ((int) $value > 0 && $DB->fieldExists($table, 'states_id')) {
+            $criteria["WHERE"] = [
+                "$table.states_id" => (int) $value
             ];
         }
 

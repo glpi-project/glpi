@@ -64,57 +64,47 @@ class UserTechFilter extends AbstractFilter
         return "user_tech";
     }
 
-    /**
-     * Get the filter criteria
-     *
-     * @return array
-     */
-    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getCriteria(DBmysql $DB, string $table, $value): array
     {
-        $criteria = [
-            "WHERE" => [],
-            "JOIN"  => [],
-        ];
+        $criteria = [];
 
-        if (isset($apply_filters[self::getId()])) {
-            $users_id = null;
-            if ((int) $apply_filters[self::getId()] > 0) {
-                $users_id = (int) $apply_filters[self::getId()];
-            } else if ($apply_filters[self::getId()] === 'myself') {
-                $users_id = $_SESSION['glpiID'];
-            }
+        $users_id = null;
+        if ((int) $value > 0) {
+            $users_id = (int) $value;
+        } else if ($value === 'myself') {
+            $users_id = $_SESSION['glpiID'];
+        }
 
-            if ($users_id !== null) {
-                if ($DB->fieldExists($table, 'users_id_tech')) {
-                    $criteria["WHERE"] += [
-                        "$table.users_id_tech" => $users_id,
-                    ];
-                } else if (
-                    in_array($table, [
-                        Ticket::getTable(),
-                        Change::getTable(),
-                        Problem::getTable(),
-                    ])
-                ) {
-                    $itemtype  = getItemTypeForTable($table);
-                    $main_item = getItemForItemtype($itemtype);
-                    $userlink  = $main_item->userlinkclass;
-                    $ul_table  = $userlink::getTable();
-                    $fk        = $main_item->getForeignKeyField();
+        if ($users_id !== null) {
+            if ($DB->fieldExists($table, 'users_id_tech')) {
+                $criteria["WHERE"] = [
+                    "$table.users_id_tech" => $users_id,
+                ];
+            } else if (
+                in_array($table, [
+                    Ticket::getTable(),
+                    Change::getTable(),
+                    Problem::getTable(),
+                ])
+            ) {
+                $itemtype  = getItemTypeForTable($table);
+                $main_item = getItemForItemtype($itemtype);
+                $userlink  = $main_item->userlinkclass;
+                $ul_table  = $userlink::getTable();
+                $fk        = $main_item->getForeignKeyField();
 
-                    $criteria["JOIN"] += [
-                        "$ul_table as ul" => [
-                            'ON' => [
-                                'ul'   => $fk,
-                                $table => 'id',
-                            ]
+                $criteria["JOIN"] = [
+                    "$ul_table as ul" => [
+                        'ON' => [
+                            'ul'   => $fk,
+                            $table => 'id',
                         ]
-                    ];
-                    $criteria["WHERE"] += [
-                        "ul.type"     => \CommonITILActor::ASSIGN,
-                        "ul.users_id" => $users_id,
-                    ];
-                }
+                    ]
+                ];
+                $criteria["WHERE"] = [
+                    "ul.type"     => \CommonITILActor::ASSIGN,
+                    "ul.users_id" => $users_id,
+                ];
             }
         }
 

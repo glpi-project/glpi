@@ -60,26 +60,20 @@ class DatesModFilter extends AbstractFilter
         return "dates_mod";
     }
 
-    /**
-     * Get the filter criteria
-     *
-     * @return array
-     */
-    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getCriteria(DBmysql $DB, string $table, $value): array
     {
-        $criteria = [
-            "WHERE" => [],
-            "JOIN"  => [],
-        ];
-
-        if (
-            $DB->fieldExists($table, 'date_mod')
-            && isset($apply_filters[self::getId()])
-            && count($apply_filters[self::getId()]) == 2
-        ) {
-            $criteria["WHERE"] += self::getDatesCriteria("$table.date_mod", $apply_filters[self::getId()]);
+        if (!is_array($value) || count($value) !== 2) {
+            // Empty filter value
+            return [];
         }
 
+        $criteria = [];
+
+        if ($DB->fieldExists($table, 'date_mod')) {
+            $criteria = [
+                'WHERE' => self::getDatesCriteria("$table.date_mod", $value)
+            ];
+        }
 
         return $criteria;
     }

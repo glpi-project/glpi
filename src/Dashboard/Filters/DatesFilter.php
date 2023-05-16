@@ -63,37 +63,27 @@ class DatesFilter extends AbstractFilter
         return "dates";
     }
 
-    /**
-     * Get the filter criteria
-     *
-     * @return array
-     */
-    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getCriteria(DBmysql $DB, string $table, $value): array
     {
-        $criteria = [
-            "WHERE" => [],
-            "JOIN"  => [],
-        ];
-
-        if (
-            ($DB->fieldExists($table, 'date'))
-            && isset($apply_filters[self::getId()])
-            && count($apply_filters[self::getId()]) == 2
-        ) {
-            $criteria["WHERE"] += self::getDatesCriteria("$table.date", $apply_filters[self::getId()]);
+        if (!is_array($value) || count($value) !== 2) {
+            // Empty filter value
+            return [];
         }
 
-       //exclude itilobject already processed with 'date'
+        $criteria = [
+            'WHERE' => [],
+        ];
+
+        if ($DB->fieldExists($table, 'date')) {
+            $criteria['WHERE'][] = self::getDatesCriteria("$table.date", $value);
+        }
+
         if (
-            (!in_array($table, [
-                Ticket::getTable(),
-                Change::getTable(),
-                Problem::getTable(),
-            ]) && $DB->fieldExists($table, 'date_creation'))
-            && isset($apply_filters[self::getId()])
-            && count($apply_filters[self::getId()]) == 2
+            $DB->fieldExists($table, 'date_creation')
+            // exclude itilobject already processed with 'date'
+            && !in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])
         ) {
-            $criteria["WHERE"] += self::getDatesCriteria("$table.date_creation", $apply_filters[self::getId()]);
+            $criteria['WHERE'][] = self::getDatesCriteria("$table.date_creation", $value);
         }
 
         return $criteria;

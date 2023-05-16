@@ -61,25 +61,13 @@ class ItilCategoryFilter extends AbstractFilter
         return "itilcategory";
     }
 
-    /**
-     * Get the filter criteria
-     *
-     * @return array
-     */
-    public static function getCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getCriteria(DBmysql $DB, string $table, $value): array
     {
-        $criteria = [
-            "WHERE" => [],
-            "JOIN"  => [],
-        ];
+        $criteria = [];
 
-        if (
-            $DB->fieldExists($table, 'itilcategories_id')
-            && isset($apply_filters[self::getId()])
-            && (int) $apply_filters[self::getId()] > 0
-        ) {
-            $criteria["WHERE"] += [
-                "$table.itilcategories_id" => getSonsOf(ITILCategory::getTable(), (int) $apply_filters[self::getId()])
+        if ((int) $value > 0 && $DB->fieldExists($table, 'itilcategories_id')) {
+            $criteria["WHERE"] = [
+                "$table.itilcategories_id" => getSonsOf(ITILCategory::getTable(), (int) $value)
             ];
         }
 
