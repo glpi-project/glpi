@@ -681,7 +681,7 @@ class Config extends CommonDBTM
         }
         echo "<tr class='tab_bg_2'>";
         echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
-        echo "<td colspan='3'><input type='url' name='url_base_api' id='url_base_api' value='" . $CFG_GLPI["url_base_api"] . "' class='form-control'></td>";
+        echo "<td colspan='3' class='copy_to_clipboard_wrapper'><input type='url' name='url_base_api' id='url_base_api' value='" . $current_version['endpoint'] . "' class='form-control' readonly></td>";
         echo "</tr>";
 
         echo "<tr><th colspan='4'>" . __('Legacy API') . "</th></tr>";
@@ -694,7 +694,7 @@ class Config extends CommonDBTM
             echo "</td>";
         }
         echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
-        echo "<td colspan='3'><input type='url' name='url_base_api' id='url_base_api' value='" . $CFG_GLPI["url_base_api"] . "' class='form-control'></td>";
+        echo "<td colspan='3' class='copy_to_clipboard_wrapper'><input type='url' name='url_base_api' id='url_base_api' value='" . $CFG_GLPI["url_base_api"] . "' class='form-control' readonly></td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_2'>";

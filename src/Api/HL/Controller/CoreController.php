@@ -252,7 +252,7 @@ HTML;
         $twig_params['css_files'][] = ['path' => ThemeManager::getInstance()->getCurrentTheme()->getPath()];
 
         $content = TemplateRenderer::getInstance()->render('layout/parts/head.html.twig', $twig_params);
-        $content .= '<body><div class="container py-2">';
+        $content .= '<body class="api-documentation"><div class="container py-2 d-flex">';
         // If not logged in, inject some basic CSS in case the browser says they prefer a dark color scheme
         if (!Session::getLoginUserID()) {
             $content .= <<<HTML
@@ -267,7 +267,6 @@ HTML;
                     }
                 </style>
 HTML;
-
         }
         $content .= $html_docs;
         $content .= '</div></body>';
