@@ -35,7 +35,6 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use DBmysql;
 use Html;
 
 class DatesModFilter extends AbstractFilter
@@ -50,40 +49,38 @@ class DatesModFilter extends AbstractFilter
         return "dates_mod";
     }
 
-    public static function getCriteria(DBmysql $DB, string $table, $value): array
+    public static function canBeApplied(string $table): bool
     {
-        if (!is_array($value) || count($value) !== 2) {
-            // Empty filter value
-            return [];
-        }
+        global $DB;
 
-        $criteria = [];
-
-        if ($DB->fieldExists($table, 'date_mod')) {
-            $criteria = [
-                'WHERE' => self::getDatesCriteria("$table.date_mod", $value)
-            ];
-        }
-
-        return $criteria;
+        return $DB->fieldExists($table, 'date_mod');
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
+    public static function getCriteria(string $table, $value): array
     {
         if (!is_array($value) || count($value) !== 2) {
             // Empty filter value
             return [];
         }
 
-        $criteria = [];
+        return [
+            'WHERE' => self::getDatesCriteria("$table.date_mod", $value)
+        ];
+    }
 
-        if ($DB->fieldExists($table, 'date_mod')) {
-            $date_mod_option_id = self::getSearchOptionID($table, "date_mod", $table);
-            $criteria[] = self::getDatesSearchCriteria($date_mod_option_id, $value, 'begin');
-            $criteria[] = self::getDatesSearchCriteria($date_mod_option_id, $value, 'end');
+    public static function getSearchCriteria(string $table, $value): array
+    {
+        if (!is_array($value) || count($value) !== 2) {
+            // Empty filter value
+            return [];
         }
 
-        return $criteria;
+        $date_mod_option_id = self::getSearchOptionID($table, "date_mod", $table);
+
+        return [
+            self::getDatesSearchCriteria($date_mod_option_id, $value, 'begin'),
+            self::getDatesSearchCriteria($date_mod_option_id, $value, 'end'),
+        ];
     }
 
     public static function getHtml($value): string

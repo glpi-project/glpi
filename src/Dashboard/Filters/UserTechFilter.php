@@ -35,12 +35,11 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use User;
-use DBmysql;
-use Ticket;
 use Change;
 use Problem;
 use Session;
+use Ticket;
+use User;
 
 class UserTechFilter extends AbstractFilter
 {
@@ -54,8 +53,18 @@ class UserTechFilter extends AbstractFilter
         return "user_tech";
     }
 
-    public static function getCriteria(DBmysql $DB, string $table, $value): array
+    public static function canBeApplied(string $table): bool
     {
+        global $DB;
+
+        return $DB->fieldExists($table, 'users_id_tech')
+            || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()]);
+    }
+
+    public static function getCriteria(string $table, $value): array
+    {
+        global $DB;
+
         $criteria = [];
 
         $users_id = null;
@@ -95,8 +104,10 @@ class UserTechFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
+    public static function getSearchCriteria(string $table, $value): array
     {
+        global $DB;
+
         $criteria = [];
 
         if ((int) $value > 0 || $value === 'myself') {

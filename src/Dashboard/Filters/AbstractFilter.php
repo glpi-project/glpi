@@ -37,7 +37,6 @@ namespace Glpi\Dashboard\Filters;
 
 use Html;
 use Search;
-use DBmysql;
 
 abstract class AbstractFilter
 {
@@ -65,16 +64,23 @@ abstract class AbstractFilter
     abstract public static function getId(): string;
 
     /**
+     * Can the filter be applied to the given table?
+     *
+     * @param string $table
+     *
+     * @return bool
+     */
+    abstract public static function canBeApplied(string $table): bool;
+
+    /**
      * Get the filter criteria
      *
-     * @param DBmysql $DB
      * @param string $table
      * @param mixed  $value
      *
      * @return array
      */
-    abstract public static function getCriteria(DBmysql $DB, string $table, $value): array;
-
+    abstract public static function getCriteria(string $table, $value): array;
 
     /**
      * Get the search filter criteria
@@ -87,13 +93,12 @@ abstract class AbstractFilter
      * 'value'      => (int) $apply_filters[ItilCategoryFilter::getId()]
      * ]
      *
-     * @param DBmysql $DB
      * @param string $table
      * @param mixed  $value
      *
      * @return array
      */
-    abstract public static function getSearchCriteria(DBmysql $DB, string $table, $value): array;
+    abstract public static function getSearchCriteria(string $table, $value): array;
 
     protected static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
     {

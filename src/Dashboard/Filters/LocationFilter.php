@@ -35,9 +35,8 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use Session;
 use Location;
-use DBmysql;
+use Session;
 
 class LocationFilter extends AbstractFilter
 {
@@ -51,11 +50,18 @@ class LocationFilter extends AbstractFilter
         return "location";
     }
 
-    public static function getCriteria(DBmysql $DB, string $table, $value): array
+    public static function canBeApplied(string $table): bool
+    {
+        global $DB;
+
+        return $DB->fieldExists($table, 'locations_id');
+    }
+
+    public static function getCriteria(string $table, $value): array
     {
         $criteria = [];
 
-        if ((int) $value > 0 && $DB->fieldExists($table, 'locations_id')) {
+        if ((int) $value > 0) {
             $criteria["WHERE"] = [
                 "$table.locations_id" => (int) $value
             ];
@@ -64,11 +70,11 @@ class LocationFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
+    public static function getSearchCriteria(string $table, $value): array
     {
         $criteria = [];
 
-        if ((int) $value > 0 && $DB->fieldExists($table, 'locations_id')) {
+        if ((int) $value > 0) {
             $criteria[] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'locations_id', 'glpi_locations'),

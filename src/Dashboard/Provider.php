@@ -1659,15 +1659,14 @@ class Provider
      */
     final public static function getSearchFiltersCriteria(string $table = "", array $apply_filters = [], bool $default_criteria_on_empty = false)
     {
-        $DBread = DBConnection::getReadConnection();
         $s_criteria = [];
         $filters = Filter::getRegisteredFilterClasses();
 
         foreach ($filters as $filter) {
-            if (!array_key_exists($filter::getId(), $apply_filters)) {
+            if (!$filter::canBeApplied($table) || !array_key_exists($filter::getId(), $apply_filters)) {
                 continue;
             }
-            $filter_criteria = $filter::getSearchCriteria($DBread, $table, $apply_filters[$filter::getId()]);
+            $filter_criteria = $filter::getSearchCriteria($table, $apply_filters[$filter::getId()]);
             array_push($s_criteria, ...$filter_criteria);
         }
 
@@ -1680,17 +1679,16 @@ class Provider
 
     public static function getFiltersCriteria(string $table = "", array $apply_filters = [])
     {
-        $DBread = DBConnection::getReadConnection();
         $where = [];
         $join  = [];
 
         $filters = Filter::getRegisteredFilterClasses();
 
         foreach ($filters as $filter) {
-            if (!array_key_exists($filter::getId(), $apply_filters)) {
+            if (!$filter::canBeApplied($table) || !array_key_exists($filter::getId(), $apply_filters)) {
                 continue;
             }
-            $filter_criteria = $filter::getCriteria($DBread, $table, $apply_filters[$filter::getId()]);
+            $filter_criteria = $filter::getCriteria($table, $apply_filters[$filter::getId()]);
             if (isset($filter_criteria['WHERE'])) {
                 $where = array_merge($where, $filter_criteria['WHERE']);
             }

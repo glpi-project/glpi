@@ -37,7 +37,6 @@ namespace Glpi\Dashboard\Filters;
 
 use Session;
 use Ticket;
-use DBmysql;
 
 class TicketTypeFilter extends AbstractFilter
 {
@@ -51,11 +50,18 @@ class TicketTypeFilter extends AbstractFilter
         return "tickettype";
     }
 
-    public static function getCriteria(DBmysql $DB, string $table, $value): array
+    public static function canBeApplied(string $table): bool
+    {
+        global $DB;
+
+        return $DB->fieldExists($table, 'type');
+    }
+
+    public static function getCriteria(string $table, $value): array
     {
         $criteria = [];
 
-        if ((int) $value > 0 && $DB->fieldExists($table, 'type')) {
+        if ((int) $value > 0) {
             $criteria["WHERE"] = [
                 "$table.type" => (int) $value
             ];
@@ -64,11 +70,11 @@ class TicketTypeFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
+    public static function getSearchCriteria(string $table, $value): array
     {
         $criteria = [];
 
-        if ((int) $value > 0 && $DB->fieldExists($table, 'type')) {
+        if ((int) $value > 0) {
             $criteria[] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'type', $table),

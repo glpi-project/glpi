@@ -35,9 +35,8 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use Session;
 use RequestType;
-use DBmysql;
+use Session;
 
 class RequestTypeFilter extends AbstractFilter
 {
@@ -51,11 +50,18 @@ class RequestTypeFilter extends AbstractFilter
         return "requesttype";
     }
 
-    public static function getCriteria(DBmysql $DB, string $table, $value): array
+    public static function canBeApplied(string $table): bool
+    {
+        global $DB;
+
+        return $DB->fieldExists($table, 'requesttypes_id');
+    }
+
+    public static function getCriteria(string $table, $value): array
     {
         $criteria = [];
 
-        if ((int) $value > 0 && $DB->fieldExists($table, 'requesttypes_id')) {
+        if ((int) $value > 0) {
             $criteria["WHERE"] = [
                 "$table.requesttypes_id" => (int) $value
             ];
@@ -64,11 +70,11 @@ class RequestTypeFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
+    public static function getSearchCriteria(string $table, $value): array
     {
         $criteria = [];
 
-        if ((int) $value > 0 && $DB->fieldExists($table, 'requesttypes_id')) {
+        if ((int) $value > 0) {
             $criteria[] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'requesttypes_id', 'glpi_requesttypes'),

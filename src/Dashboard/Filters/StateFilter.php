@@ -37,7 +37,6 @@ namespace Glpi\Dashboard\Filters;
 
 use Session;
 use State;
-use DBmysql;
 
 class StateFilter extends AbstractFilter
 {
@@ -51,11 +50,18 @@ class StateFilter extends AbstractFilter
         return "state";
     }
 
-    public static function getCriteria(DBmysql $DB, string $table, $value): array
+    public static function canBeApplied(string $table): bool
+    {
+        global $DB;
+
+        return $DB->fieldExists($table, 'states_id');
+    }
+
+    public static function getCriteria(string $table, $value): array
     {
         $criteria = [];
 
-        if ((int) $value > 0 && $DB->fieldExists($table, 'states_id')) {
+        if ((int) $value > 0) {
             $criteria["WHERE"] = [
                 "$table.states_id" => (int) $value
             ];
@@ -64,11 +70,11 @@ class StateFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
+    public static function getSearchCriteria(string $table, $value): array
     {
         $criteria = [];
 
-        if ((int) $value > 0 && $DB->fieldExists($table, 'states_id')) {
+        if ((int) $value > 0) {
             $criteria[] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'states_id', 'glpi_states'),

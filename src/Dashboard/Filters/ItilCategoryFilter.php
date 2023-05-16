@@ -35,9 +35,8 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use Session;
 use ITILCategory;
-use DBmysql;
+use Session;
 
 class ItilCategoryFilter extends AbstractFilter
 {
@@ -51,11 +50,18 @@ class ItilCategoryFilter extends AbstractFilter
         return "itilcategory";
     }
 
-    public static function getCriteria(DBmysql $DB, string $table, $value): array
+    public static function canBeApplied(string $table): bool
+    {
+        global $DB;
+
+        return $DB->fieldExists($table, 'itilcategories_id');
+    }
+
+    public static function getCriteria(string $table, $value): array
     {
         $criteria = [];
 
-        if ((int) $value > 0 && $DB->fieldExists($table, 'itilcategories_id')) {
+        if ((int) $value > 0) {
             $criteria["WHERE"] = [
                 "$table.itilcategories_id" => getSonsOf(ITILCategory::getTable(), (int) $value)
             ];
@@ -64,11 +70,11 @@ class ItilCategoryFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
+    public static function getSearchCriteria(string $table, $value): array
     {
         $criteria = [];
 
-        if ((int) $value > 0 && $DB->fieldExists($table, 'itilcategories_id')) {
+        if ((int) $value > 0) {
             $criteria[] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'),

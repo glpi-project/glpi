@@ -35,11 +35,10 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use Group;
-use DBmysql;
-use Ticket;
 use Change;
+use Group;
 use Problem;
+use Ticket;
 
 class GroupTechFilter extends AbstractFilter
 {
@@ -53,8 +52,18 @@ class GroupTechFilter extends AbstractFilter
         return "group_tech";
     }
 
-    public static function getCriteria(DBmysql $DB, string $table, $value): array
+    public static function canBeApplied(string $table): bool
     {
+        global $DB;
+
+        return $DB->fieldExists($table, 'groups_id_tech')
+            || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()]);
+    }
+
+    public static function getCriteria(string $table, $value): array
+    {
+        global $DB;
+
         $criteria = [];
 
         $groups_id = null;
@@ -94,8 +103,10 @@ class GroupTechFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
+    public static function getSearchCriteria(string $table, $value): array
     {
+        global $DB;
+
         $criteria = [];
 
         $groups_id = null;

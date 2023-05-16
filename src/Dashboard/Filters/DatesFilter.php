@@ -35,11 +35,10 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use Html;
-use DBmysql;
-use Ticket;
 use Change;
+use Html;
 use Problem;
+use Ticket;
 
 class DatesFilter extends AbstractFilter
 {
@@ -53,8 +52,22 @@ class DatesFilter extends AbstractFilter
         return "dates";
     }
 
-    public static function getCriteria(DBmysql $DB, string $table, $value): array
+    public static function canBeApplied(string $table): bool
     {
+        global $DB;
+
+        return $DB->fieldExists($table, 'date')
+            || (
+                $DB->fieldExists($table, 'date_creation')
+                // exclude itilobject already processed with 'date'
+                && !in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])
+            );
+    }
+
+    public static function getCriteria(string $table, $value): array
+    {
+        global $DB;
+
         if (!is_array($value) || count($value) !== 2) {
             // Empty filter value
             return [];
@@ -79,8 +92,10 @@ class DatesFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
+    public static function getSearchCriteria(string $table, $value): array
     {
+        global $DB;
+
         if (!is_array($value) || count($value) !== 2) {
             // Empty filter value
             return [];

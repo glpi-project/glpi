@@ -62,6 +62,24 @@ class Filter extends \CommonDBChild
     public static $items_id = 'dashboards_dashboards_id';
 
     /**
+     * Return IDs of filters that can be applied to given table.
+     *
+     * @return array of filters
+     */
+    public static function getAppliableFilters(string $table): array
+    {
+        $filters_ids = [];
+
+        foreach (self::getRegisteredFilterClasses() as $filter_class) {
+            if ($filter_class::canBeApplied($table)) {
+                $filters_ids[] = $filter_class::getId();
+            }
+        }
+
+        return $filters_ids;
+    }
+
+    /**
      * Return registered filters classes.
      *
      * @return array
