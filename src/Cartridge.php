@@ -48,6 +48,8 @@ class Cartridge extends CommonDBRelation
     public $dohistory                   = true;
     public $no_form_page                = true;
 
+    public static $rightname = 'cartridge';
+
     public static $itemtype_1 = 'CartridgeItem';
     public static $items_id_1 = 'cartridgeitems_id';
 
