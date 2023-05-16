@@ -117,84 +117,89 @@ class Filter extends \CommonDBChild
      *
      * @return array of filters
      *
-     * @deprecated 10.0.8
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function getAll(): array
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use getFilterChoices() instead.');
         return self::getFilterChoices();
     }
 
     /**
-     * @deprecated 10.0.8
+     * Get HTML for a dates range filter
+     *
+     * @param string|array $values init the input with these values, will be a string if empty values
+     * @param string $fieldname how is named the current date field
+     *                         (used to specify creation date or last update)
+     *
+     * @return string
+     *
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function dates($values = "", string $fieldname = 'dates'): string
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . DatesFilter::class . ' instead.');
         return DatesFilter::getHtml($values);
     }
 
     /**
-     * @deprecated 10.0.8
+     * Get HTML for a dates range filter. Same as date but for last update field
+     *
+     * @param string|array $values init the input with these values, will be a string if empty values
+     *
+     * @return string
+     *
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function dates_mod($values): string
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . DatesModFilter::class . ' instead.');
         return DatesModFilter::getHtml($values);
     }
 
 
     /**
-     * @deprecated 10.0.8
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function itilcategory(string $value = ""): string
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . ItilCategoryFilter::class . ' instead.');
         return ItilCategoryFilter::getHtml($value);
     }
 
     /**
-     * @deprecated 10.0.8
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function requesttype(string $value = ""): string
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . RequestTypeFilter::class . ' instead.');
         return RequestTypeFilter::getHtml($value);
     }
 
     /**
-     * @deprecated 10.0.8
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function location(string $value = ""): string
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . LocationFilter::class . ' instead.');
         return LocationFilter::getHtml($value);
     }
 
     /**
-     * @deprecated 10.0.8
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function manufacturer(string $value = ""): string
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . ManufacturerFilter::class . ' instead.');
         return ManufacturerFilter::getHtml($value);
     }
 
     /**
-     * @deprecated 10.0.8
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function group_tech(string $value = ""): string
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . GroupTechFilter::class . ' instead.');
         return GroupTechFilter::getHtml($value);
     }
 
     /**
-     * @deprecated 10.0.8
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function user_tech(string $value = ""): string
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . UserTechFilter::class . ' instead.');
         return UserTechFilter::getHtml($value);
     }
 
@@ -203,21 +208,19 @@ class Filter extends \CommonDBChild
      */
     public static function state(string $value = ""): string
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . StateFilter::class . ' instead.');
         return StateFilter::getHtml($value);
     }
 
     /**
-     * @deprecated 10.0.8
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function tickettype(string $value = ""): string
     {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . TicketTypeFilter::class . ' instead.');
         return TicketTypeFilter::getHtml($value);
     }
 
     /**
-     * @deprecated 10.0.8
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function displayList(
         string $value = "",
@@ -225,8 +228,6 @@ class Filter extends \CommonDBChild
         string $itemtype = "",
         array $add_params = []
     ): string {
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . AbstractFilter::class . ' instead.');
-
         $value     = !empty($value) ? $value : null;
         $rand      = mt_rand();
         $label     = self::getFilterChoices()[$fieldname];
@@ -262,13 +263,14 @@ JAVASCRIPT;
     /**
      * Get generic HTML for a filter
      *
-     * @deprecated 10.0.8
      * @param string $id system name of the filter (ex "dates")
      * @param string $field html of the filter
      * @param string $label displayed label for the filter
      * @param bool   $filled
      *
      * @return string the html for the complete field
+     *
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function field(
         string $id = "",
@@ -276,8 +278,6 @@ JAVASCRIPT;
         string $label = "",
         bool $filled = false
     ): string {
-
-        Toolbox::deprecated(__METHOD__ . ' is deprecated. Use ' . AbstractFilter::class . ' instead.');
         return AbstractFilter::field($id, $field, $label, $filled);
     }
 
