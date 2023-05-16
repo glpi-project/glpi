@@ -374,6 +374,9 @@ HTML;
             }
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
+
+            $json_type = json_encode($type);
+            $withtemplate = (int)($_GET['withtemplate'] ?? 0);
             $js = <<<JS
          var loadTabContents = function (tablink, force_reload = false, update_current_tab = true) {
             var url = tablink.attr('href');
@@ -384,10 +387,10 @@ HTML;
                 $.get(
                   '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
                   {
-                     itemtype: " . json_encode($type) . ",
+                     itemtype: $json_type,
                      id: '$ID',
                      tab: index,
-                     withtemplate: " . (int)($_GET['withtemplate'] ?? 0) . "
+                     withtemplate: $withtemplate
                   }
                );
             }
@@ -431,7 +434,7 @@ HTML;
                if ($(this).attr('data-show-all-tabs') === 'true') {
                   loadAllTabs();
                   // show all tabs by adding active and show classes to all tabs
-                  $('#$tabdiv_id').parent().find('.tab-pane').addClass('active show');
+                  $('#$tabdiv_id').parent().find('.tab-pane').addClass('active show').removeClass('fade');
                } else {
                   // Remove active and show classes from all tabs except the one that is clicked
                   let clicked_tab = $(this).attr('data-bs-target');
