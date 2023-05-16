@@ -64,20 +64,16 @@ class TicketTypeFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
     {
         $criteria = [];
 
-        if (
-            $DB->fieldExists($table, 'type')
-            && isset($apply_filters[self::getId()])
-            && (int) $apply_filters[self::getId()] > 0
-        ) {
+        if ((int) $value > 0 && $DB->fieldExists($table, 'type')) {
             $criteria[] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'type', $table),
                 'searchtype' => 'equals',
-                'value'      => (int) $apply_filters[self::getId()]
+                'value'      => (int) $value
             ];
         }
         return $criteria;

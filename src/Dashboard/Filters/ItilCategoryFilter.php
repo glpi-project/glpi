@@ -64,20 +64,16 @@ class ItilCategoryFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
     {
         $criteria = [];
 
-        if (
-            $DB->fieldExists($table, 'itilcategories_id')
-            && isset($apply_filters[self::getId()])
-            && (int) $apply_filters[self::getId()] > 0
-        ) {
+        if ((int) $value > 0 && $DB->fieldExists($table, 'itilcategories_id')) {
             $criteria[] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'), // itilcategory
                 'searchtype' => 'under',
-                'value'      => (int) $apply_filters[self::getId()]
+                'value'      => (int) $value
             ];
         }
 

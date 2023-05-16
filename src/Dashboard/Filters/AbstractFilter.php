@@ -87,9 +87,13 @@ abstract class AbstractFilter
      * 'value'      => (int) $apply_filters[ItilCategoryFilter::getId()]
      * ]
      *
+     * @param DBmysql $DB
+     * @param string $table
+     * @param mixed  $value
+     *
      * @return array
      */
-    abstract public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array;
+    abstract public static function getSearchCriteria(DBmysql $DB, string $table, $value): array;
 
     protected static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
     {

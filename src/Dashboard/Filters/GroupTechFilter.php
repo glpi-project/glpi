@@ -100,40 +100,38 @@ class GroupTechFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
     {
         $criteria = [];
 
-        if (isset($apply_filters[self::getId()])) {
-            $groups_id = null;
-            if ((int) $apply_filters[self::getId()] > 0) {
-                $groups_id =  (int) $apply_filters[self::getId()];
-            } else if ($apply_filters[self::getId()] == 'mygroups') {
-                $groups_id =  'mygroups';
-            }
+        $groups_id = null;
+        if ((int) $value > 0) {
+            $groups_id =  (int) $value;
+        } else if ($value == 'mygroups') {
+            $groups_id =  'mygroups';
+        }
 
-            if ($groups_id != null) {
-                if ($DB->fieldExists($table, 'groups_id_tech')) {
-                    $criteria[] = [
-                        'link'       => 'AND',
-                        'field'      => self::getSearchOptionID($table, 'groups_id_tech', 'glpi_groups'), // group tech
-                        'searchtype' => 'equals',
-                        'value'      => $groups_id
-                    ];
-                } else if (
-                    in_array($table, [
-                        Ticket::getTable(),
-                        Change::getTable(),
-                        Problem::getTable(),
-                    ])
-                ) {
-                    $criteria[] = [
-                        'link'       => 'AND',
-                        'field'      => 8, // group tech
-                        'searchtype' => 'equals',
-                        'value'      => $groups_id
-                    ];
-                }
+        if ($groups_id != null) {
+            if ($DB->fieldExists($table, 'groups_id_tech')) {
+                $criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => self::getSearchOptionID($table, 'groups_id_tech', 'glpi_groups'), // group tech
+                    'searchtype' => 'equals',
+                    'value'      => $groups_id
+                ];
+            } else if (
+                in_array($table, [
+                    Ticket::getTable(),
+                    Change::getTable(),
+                    Problem::getTable(),
+                ])
+            ) {
+                $criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => 8, // group tech
+                    'searchtype' => 'equals',
+                    'value'      => $groups_id
+                ];
             }
         }
 

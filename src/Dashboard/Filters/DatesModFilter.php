@@ -79,17 +79,18 @@ class DatesModFilter extends AbstractFilter
         ];
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
     {
+        if (!is_array($value) || count($value) !== 2) {
+            // Empty filter value
+            return [];
+        }
+
         $criteria = [];
 
-        if (
-            $DB->fieldExists($table, 'date_mod')
-            && isset($apply_filters[self::getId()])
-            && count($apply_filters[self::getId()]) == 2
-        ) {
-            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $apply_filters[self::getId()], 'begin');
-            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $apply_filters[self::getId()], 'end');
+        if ($DB->fieldExists($table, 'date_mod')) {
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $value, 'begin');
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $value, 'end');
         }
 
         return $criteria;

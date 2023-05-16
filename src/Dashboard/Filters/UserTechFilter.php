@@ -101,23 +101,17 @@ class UserTechFilter extends AbstractFilter
         return $criteria;
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
     {
         $criteria = [];
 
-        if (
-            isset($apply_filters[self::getId()])
-            && (
-                (int) $apply_filters[self::getId()] > 0
-                || $apply_filters[self::getId()] === 'myself'
-            )
-        ) {
+        if ((int) $value > 0 || $value === 'myself') {
             if ($DB->fieldExists($table, 'users_id_tech')) {
                 $criteria[] = [
                     'link'       => 'AND',
                     'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),// tech
                     'searchtype' => 'equals',
-                    'value'      =>  $apply_filters[self::getId()] === 'myself' ? (int) Session::getLoginUserID() : (int) $apply_filters[self::getId()]
+                    'value'      =>  $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value
                 ];
             } elseif (
                 in_array($table, [
@@ -130,7 +124,7 @@ class UserTechFilter extends AbstractFilter
                     'link'       => 'AND',
                     'field'      => 5,// tech
                     'searchtype' => 'equals',
-                    'value'      =>  is_numeric($apply_filters[self::getId()]) ? (int) $apply_filters[self::getId()] : $apply_filters[self::getId()]
+                    'value'      =>  is_numeric($value) ? (int) $value : $value
                 ];
             }
         }

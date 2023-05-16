@@ -90,31 +90,27 @@ class DatesFilter extends AbstractFilter
         ];
     }
 
-    public static function getSearchCriteria(DBmysql $DB, string $table = "", array $apply_filters = []): array
+    public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
     {
-        $criteria = [];
-
-        if (
-            $DB->fieldExists($table, 'date')
-            && isset($apply_filters[self::getId()])
-            && count($apply_filters[self::getId()]) == 2
-        ) {
-            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters[self::getId()], 'begin');
-            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters[self::getId()], 'end');
+        if (!is_array($value) || count($value) !== 2) {
+            // Empty filter value
+            return [];
         }
 
-        //exclude itilobject already processed with 'date'
+        $criteria = [];
+
+        if ($DB->fieldExists($table, 'date')) {
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $value, 'begin');
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $value, 'end');
+        }
+
         if (
-            !in_array($table, [
-                Ticket::getTable(),
-                Change::getTable(),
-                Problem::getTable(),
-            ]) && $DB->fieldExists($table, 'date_creation')
-            && isset($apply_filters[self::getId()])
-            && count($apply_filters[self::getId()]) == 2
+            $DB->fieldExists($table, 'date_creation')
+            // exclude itilobject already processed with 'date'
+            && !in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])
         ) {
-            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $apply_filters[self::getId()], 'begin');
-            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $apply_filters[self::getId()], 'end');
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $value, 'begin');
+            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $value, 'end');
         }
 
         return $criteria;

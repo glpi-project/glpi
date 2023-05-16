@@ -1664,10 +1664,11 @@ class Provider
         $filters = Filter::getRegisteredFilterClasses();
 
         foreach ($filters as $filter) {
-            $filter_criteria = $filter::getSearchCriteria($DBread, $table, $apply_filters);
-            if (!empty($filter_criteria)) {
-                array_push($s_criteria, ...$filter_criteria);
+            if (!array_key_exists($filter::getId(), $apply_filters)) {
+                continue;
             }
+            $filter_criteria = $filter::getSearchCriteria($DBread, $table, $apply_filters[$filter::getId()]);
+            array_push($s_criteria, ...$filter_criteria);
         }
 
         if ($default_criteria_on_empty === true && count($s_criteria) === 0) {
