@@ -70,13 +70,7 @@ class UserTechFilter extends AbstractFilter
                 $criteria["WHERE"] = [
                     "$table.users_id_tech" => $users_id,
                 ];
-            } else if (
-                in_array($table, [
-                    Ticket::getTable(),
-                    Change::getTable(),
-                    Problem::getTable(),
-                ])
-            ) {
+            } else if (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
                 $itemtype  = getItemTypeForTable($table);
                 $main_item = getItemForItemtype($itemtype);
                 $userlink  = $main_item->userlinkclass;
@@ -109,17 +103,11 @@ class UserTechFilter extends AbstractFilter
             if ($DB->fieldExists($table, 'users_id_tech')) {
                 $criteria[] = [
                     'link'       => 'AND',
-                    'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),// tech
+                    'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),
                     'searchtype' => 'equals',
                     'value'      =>  $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value
                 ];
-            } elseif (
-                in_array($table, [
-                    Ticket::getTable(),
-                    Change::getTable(),
-                    Problem::getTable(),
-                ])
-            ) {
+            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
                 $criteria[] = [
                     'link'       => 'AND',
                     'field'      => 5,// tech

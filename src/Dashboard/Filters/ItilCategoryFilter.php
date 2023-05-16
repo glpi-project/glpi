@@ -71,7 +71,7 @@ class ItilCategoryFilter extends AbstractFilter
         if ((int) $value > 0 && $DB->fieldExists($table, 'itilcategories_id')) {
             $criteria[] = [
                 'link'       => 'AND',
-                'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'), // itilcategory
+                'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'),
                 'searchtype' => 'under',
                 'value'      => (int) $value
             ];

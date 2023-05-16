@@ -69,13 +69,7 @@ class GroupTechFilter extends AbstractFilter
                 $criteria["WHERE"] = [
                     "$table.groups_id_tech" => $groups_id
                 ];
-            } else if (
-                in_array($table, [
-                    Ticket::getTable(),
-                    Change::getTable(),
-                    Problem::getTable(),
-                ])
-            ) {
+            } else if (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
                 $itemtype  = getItemTypeForTable($table);
                 $main_item = getItemForItemtype($itemtype);
                 $grouplink = $main_item->grouplinkclass;
@@ -115,17 +109,11 @@ class GroupTechFilter extends AbstractFilter
             if ($DB->fieldExists($table, 'groups_id_tech')) {
                 $criteria[] = [
                     'link'       => 'AND',
-                    'field'      => self::getSearchOptionID($table, 'groups_id_tech', 'glpi_groups'), // group tech
+                    'field'      => self::getSearchOptionID($table, 'groups_id_tech', 'glpi_groups'),
                     'searchtype' => 'equals',
                     'value'      => $groups_id
                 ];
-            } else if (
-                in_array($table, [
-                    Ticket::getTable(),
-                    Change::getTable(),
-                    Problem::getTable(),
-                ])
-            ) {
+            } else if (in_array($table, [Ticket::getTable(), Change::getTable(),Problem::getTable()])) {
                 $criteria[] = [
                     'link'       => 'AND',
                     'field'      => 8, // group tech
@@ -145,7 +133,9 @@ class GroupTechFilter extends AbstractFilter
             is_string($value) ? $value : "",
             'group_tech',
             Group::class,
-            ['toadd' => ['mygroups' => __("My groups")]]
+            [
+                'toadd' => ['mygroups' => __("My groups")],
+            ]
         );
     }
 }

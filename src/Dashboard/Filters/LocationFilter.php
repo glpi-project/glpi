@@ -71,7 +71,7 @@ class LocationFilter extends AbstractFilter
         if ((int) $value > 0 && $DB->fieldExists($table, 'locations_id')) {
             $criteria[] = [
                 'link'       => 'AND',
-                'field'      => self::getSearchOptionID($table, 'locations_id', 'glpi_locations'), // location
+                'field'      => self::getSearchOptionID($table, 'locations_id', 'glpi_locations'),
                 'searchtype' => 'equals',
                 'value'      => (int) $value
             ];

@@ -71,7 +71,7 @@ class RequestTypeFilter extends AbstractFilter
         if ((int) $value > 0 && $DB->fieldExists($table, 'requesttypes_id')) {
             $criteria[] = [
                 'link'       => 'AND',
-                'field'      => self::getSearchOptionID($table, 'requesttypes_id', 'glpi_requesttypes'), // request type
+                'field'      => self::getSearchOptionID($table, 'requesttypes_id', 'glpi_requesttypes'),
                 'searchtype' => 'equals',
                 'value'      => (int) $value
             ];

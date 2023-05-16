@@ -44,6 +44,11 @@ use CommonTreeDropdown;
 use CommonDevice;
 use Config;
 use DBConnection;
+use Glpi\Dashboard\Filters\{
+    DatesFilter,
+    GroupTechFilter,
+    UserTechFilter,
+};
 use Group;
 use Group_Ticket;
 use Profile_User;
@@ -56,11 +61,6 @@ use Ticket_User;
 use Toolbox;
 use User;
 use Search;
-use Glpi\Dashboard\Filters\{
-    DatesFilter,
-    GroupTechFilter,
-    UserTechFilter,
-};
 
 /**
  * Provider class

@@ -68,17 +68,6 @@ class DatesModFilter extends AbstractFilter
         return $criteria;
     }
 
-    private static function getDatesCriteria(string $field = "", array $dates = []): array
-    {
-        $begin = strtotime($dates[0]);
-        $end   = strtotime($dates[1]);
-
-        return [
-            [$field => ['>=', date('Y-m-d', $begin)]],
-            [$field => ['<=', date('Y-m-d', $end)]],
-        ];
-    }
-
     public static function getSearchCriteria(DBmysql $DB, string $table, $value): array
     {
         if (!is_array($value) || count($value) !== 2) {
@@ -89,33 +78,12 @@ class DatesModFilter extends AbstractFilter
         $criteria = [];
 
         if ($DB->fieldExists($table, 'date_mod')) {
-            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $value, 'begin');
-            $criteria[] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $value, 'end');
+            $date_mod_option_id = self::getSearchOptionID($table, "date_mod", $table);
+            $criteria[] = self::getDatesSearchCriteria($date_mod_option_id, $value, 'begin');
+            $criteria[] = self::getDatesSearchCriteria($date_mod_option_id, $value, 'end');
         }
 
         return $criteria;
-    }
-
-    private static function getDatesSearchCriteria(int $searchoption_id, array $dates = [], $when = 'begin'): array
-    {
-
-        if ($when == "begin") {
-            $begin = strtotime($dates[0]);
-            return [
-                'link'       => 'AND',
-                'field'      => $searchoption_id, // creation date
-                'searchtype' => 'morethan',
-                'value'      => date('Y-m-d 00:00:00', $begin)
-            ];
-        } else {
-            $end   = strtotime($dates[1]);
-            return [
-                'link'       => 'AND',
-                'field'      => $searchoption_id, // creation date
-                'searchtype' => 'lessthan',
-                'value'      => date('Y-m-d 00:00:00', $end)
-            ];
-        }
     }
 
     public static function getHtml($value): string
@@ -138,16 +106,16 @@ class DatesModFilter extends AbstractFilter
         ]);
 
         $js = <<<JAVASCRIPT
-        var on_change_{$rand} = function(selectedDates, dateStr, instance) {
-        // we are waiting for empty value or a range of dates,
-        // don't trigger when only the first date is selected
-        var nb_dates = selectedDates.length;
-        if (nb_dates == 0 || nb_dates == 2) {
-            Dashboard.getActiveDashboard().saveFilter('dates_mod', selectedDates);
-            $(instance.input).closest("fieldset").addClass("filled");
-        }
-        };
-        JAVASCRIPT;
+            var on_change_{$rand} = function(selectedDates, dateStr, instance) {
+                // we are waiting for empty value or a range of dates,
+                // don't trigger when only the first date is selected
+                var nb_dates = selectedDates.length;
+                if (nb_dates == 0 || nb_dates == 2) {
+                    Dashboard.getActiveDashboard().saveFilter('dates_mod', selectedDates);
+                    $(instance.input).closest("fieldset").addClass("filled");
+                }
+            };
+JAVASCRIPT;
         $field .= Html::scriptBlock($js);
 
         return self::field('dates_mod', $field, $label, is_array($values) && count($values) > 0);

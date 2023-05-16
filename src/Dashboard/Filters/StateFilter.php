@@ -71,7 +71,7 @@ class StateFilter extends AbstractFilter
         if ((int) $value > 0 && $DB->fieldExists($table, 'states_id')) {
             $criteria[] = [
                 'link'       => 'AND',
-                'field'      => self::getSearchOptionID($table, 'states_id', 'glpi_states'), // state
+                'field'      => self::getSearchOptionID($table, 'states_id', 'glpi_states'),
                 'searchtype' => 'equals',
                 'value'      => (int) $value
             ];

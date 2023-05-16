@@ -71,7 +71,7 @@ class ManufacturerFilter extends AbstractFilter
         if ((int) $value > 0 && $DB->fieldExists($table, 'manufacturers_id')) {
             $criteria[] = [
                 'link'       => 'AND',
-                'field'      => self::getSearchOptionID($table, 'manufacturers_id', 'glpi_manufacturers'), // manufacturer
+                'field'      => self::getSearchOptionID($table, 'manufacturers_id', 'glpi_manufacturers'),
                 'searchtype' => 'equals',
                 'value'      => (int) $value
             ];
