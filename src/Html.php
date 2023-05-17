@@ -3409,8 +3409,16 @@ JS;
                 $dates[$i . 'WEEK'] = sprintf(_n('+ %d week', '+ %d weeks', $i), $i);
             }
 
+            if ($params['with_days']) {
+                $dates['ENDMONTH']  = __('End of the month');
+            }
+
             for ($i = 1; $i <= 12; $i++) {
                 $dates[$i . 'MONTH'] = sprintf(_n('+ %d month', '+ %d months', $i), $i);
+            }
+
+            if ($params['with_days']) {
+                $dates['ENDYEAR']  = __('End of the year');
             }
 
             for ($i = 1; $i <= 10; $i++) {
@@ -3454,8 +3462,8 @@ JS;
                 return date("Y-m-d", $specifictime);
         }
 
-       // Search on begin of month / year
-        if (strstr($val, 'BEGIN')) {
+       // Search on begin /end of month / year
+        if (strstr($val, 'BEGIN') || strstr($val, 'END')) {
             $hour   = 0;
             $minute = 0;
             $second = 0;
@@ -3469,6 +3477,15 @@ JS;
                     break;
 
                 case "BEGINMONTH":
+                    break;
+
+                case "ENDYEAR":
+                    $month = 12;
+                    $day = 31;
+                    break;
+
+                case "ENDMONTH":
+                    $day = date("t", $specifictime);
                     break;
             }
 
