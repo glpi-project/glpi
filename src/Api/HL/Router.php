@@ -582,8 +582,6 @@ EOT;
         // Try authenticating from a cookie for cases when the API is accessed from a browser
         $auth = new \Auth();
         if (!$auth->getAlternateAuthSystemsUserLogin(\Auth::COOKIE)) {
-            // If the session isn't being resumed from a cookie, we shouldn't use cookies at all
-            ini_set('session.use_cookies', 0);
             if ($request->hasHeader('Authorization')) {
                 $auth_header = $request->getHeaderLine('Authorization');
                 // if basic auth
