@@ -373,7 +373,7 @@ window.GLPI.Debug = new class Debug {
         const server_performance_button = this.getWidgetButton('server_performance');
         const server_perf = this.initial_request.server_performance;
         const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
-        server_performance_button.find('.debug-text').text(`${server_perf.execution_time}s | ${memory_usage_mio}mio`);
+        server_performance_button.find('.debug-text').text(`${server_perf.execution_time}ms | ${memory_usage_mio}mio`);
 
         const sql_count = this.getCombinedSQLData().total_requests;
         const sql_button = this.getWidgetButton('sql');
@@ -456,9 +456,9 @@ window.GLPI.Debug = new class Debug {
         content_area.find('table tbody').empty().append(`
             <tr>
                 <td>
-                    ${_x('debug', 'Initial Execution Time')}: ${this.initial_request.server_performance.execution_time}s
+                    ${_x('debug', 'Initial Execution Time')}: ${this.initial_request.server_performance.execution_time}ms
                     <br>
-                    ${_x('debug', 'Total Execution Time')}: ${total_execution_time}s
+                    ${_x('debug', 'Total Execution Time')}: ${total_execution_time}ms
                 </td>
                 <td>
                     ${_x('debug', 'Memory Usage')}: ${memory_usage_mio}mio / ${memory_limit_mio}mio
@@ -1008,7 +1008,7 @@ window.GLPI.Debug = new class Debug {
                 <tbody>
                     <tr>
                         <td>
-                            ${_x('debug', 'Initial Execution Time')}: ${total_execution_time}s
+                            ${_x('debug', 'Initial Execution Time')}: ${total_execution_time}ms
                         </td>
                         <td>
                             ${_x('debug', 'Memory Usage')}: ${memory_usage_mio}mio / ${memory_limit_mio}mio
