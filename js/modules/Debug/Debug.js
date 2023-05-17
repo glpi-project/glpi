@@ -642,7 +642,14 @@ window.GLPI.Debug = new class Debug {
         const paint_timings = window.performance.getEntriesByType('paint');
         const resource_timings = window.performance.getEntriesByType('resource');
 
-        const time_to_first_paint = paint_timings.filter((timing) => timing.name === 'first-paint')[0].startTime;
+        let paint_timing = paint_timings.filter((timing) => timing.name === 'first-paint');
+        let paint_timing_label = _x('debug', 'Time to first paint');
+        if (paint_timing.length === 0) {
+            // Firefox doesn't have first-paint for whatever reason
+            paint_timing = paint_timings.filter((timing) => timing.name === 'first-contentful-paint');
+            paint_timing_label = _x('debug', 'Time to first contentful paint');
+        }
+        const time_to_first_paint = paint_timing.length > 0 ? paint_timing[0].startTime : -1;
         const time_to_dom_interactive = nav_timings.domInteractive;
         const time_to_dom_complete = nav_timings.domComplete;
 
@@ -655,7 +662,7 @@ window.GLPI.Debug = new class Debug {
                 <tbody>
                     <tr><th colspan="4">${_x('debug', 'Timings')}</th></tr>
                     <tr>
-                        <th>${_x('debug', 'Time to first paint')}</th><td>${time_to_first_paint.toFixed(2)}ms</td>
+                        <th>${paint_timing_label}</th><td>${time_to_first_paint.toFixed(2)}ms</td>
                         <th>${_x('debug', 'Time to DOM interactive')}</th><td>${time_to_dom_interactive.toFixed(2)}ms</td>
                     </tr>
                     <tr>
