@@ -641,7 +641,7 @@ export default class SearchInput {
                 return; // continue
             }
             const description = info.description || '';
-            const label = info.label
+            const label = info.label || name;
             let prefix_content = '';
             const prefix_count = Object.keys(info.supported_prefixes || {}).length;
 
