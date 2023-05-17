@@ -89,6 +89,8 @@ class RequirementsManager
                 'libxml',
                 'json',
                 'simplexml',
+                'xmlreader', // required/used by simplepie/simplepie and sabre/xml
+                'xmlwriter', // required/used by sabre/xml
             ]
         );
 
