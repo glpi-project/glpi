@@ -258,7 +258,8 @@ class VirtualMachine extends InventoryAsset
         }
 
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_vms) != 0) {
-           // Delete virtual machines links in DB
+            // Delete virtual machines links in DB
+            $keep_history = $this->conf->keep_vm_history;
             foreach ($db_vms as $idtmp => $data) {
                 if (isset($data['uuid']) && $data['uuid'] != '') {
                     $vm = new \stdClass();
@@ -266,12 +267,12 @@ class VirtualMachine extends InventoryAsset
                     $computers_vm_id = $this->getExistingVMAsComputer($vm);
                     if ($computers_vm_id) {
                         $computer->getFromDB($computers_vm_id);
-                        if ($computer->fields['is_dynamic'] == 1) {
-                            $computer->delete(['id' => $computers_vm_id], false);
+                        if ($computer->fields['is_dynamic'] == 1 && $keep_history) {
+                            $computer->delete(['id' => $computers_vm_id]);
                         }
                     }
                 }
-                $computerVirtualmachine->delete(['id' => $idtmp]);
+                $computerVirtualmachine->delete(['id' => $idtmp], !$keep_history);
             }
         }
 
