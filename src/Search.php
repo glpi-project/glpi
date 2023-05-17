@@ -3958,14 +3958,10 @@ JAVASCRIPT;
                              "_" . self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']
                                                                    ['joinparams']) . $addmeta;
 
-                             $order = isset($CFG_GLPI["names_format"]) ? $CFG_GLPI["names_format"] : User::REALNAME_BEFORE;
-                            if (isset($_SESSION["glpinames_format"])) {
-                                $order = $_SESSION["glpinames_format"];
-                            }
-                             $user_complete_name = "`$table$addtable`.`realname`, ' ', `$table$addtable`.`firstname`";
-                            if ($order == User::FIRSTNAME_BEFORE) {
-                                $user_complete_name = "`$table$addtable`.`firstname`, ' ', `$table$addtable`.`realname`";
-                            }
+                             $order = $_SESSION["glpinames_format"] ?? $CFG_GLPI["names_format"] ?? User::REALNAME_BEFORE;
+                             $user_complete_name = $order == User::FIRSTNAME_BEFORE
+                                 ? "`$table$addtable`.`firstname`, ' ', `$table$addtable`.`realname`"
+                                 : "`$table$addtable`.`realname`, ' ', `$table$addtable`.`firstname`";
 
                              $adduserinfos
                               = "GROUP_CONCAT(DISTINCT CONCAT(`$itemtype_user_table`.`users_id`, ' ',
