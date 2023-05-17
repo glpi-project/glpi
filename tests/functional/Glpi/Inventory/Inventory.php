@@ -5084,6 +5084,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $ips = [
             'No description found'  => [
                 'v4'   => '172.28.214.132',
+                'v6'   => 'fe80::8077:63ff:fe5b:2a71',
             ]
         ];
 

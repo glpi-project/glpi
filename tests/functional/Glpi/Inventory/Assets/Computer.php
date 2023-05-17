@@ -1403,4 +1403,66 @@ class Computer extends AbstractInventoryAsset
         $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $domain->fields['id']]))->isTrue();
         $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $ndyn_domain->fields['id']]))->isTrue();
     }
+
+    public function testSeveralIPV4()
+    {
+        global $DB;
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_with_several_ipv4.json');
+        $json = json_decode($json_str);
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('16823975')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        $ipaddress = new \IPAddress();
+        $ips = $ipaddress->find(["mainitems_id" => $computers_id, "mainitemtype" => "Computer", "version" => '4']);
+        $this->integer(count($ips))->isIdenticalTo(6);
+
+        $ips = $ipaddress->find(["mainitems_id" => $computers_id, "mainitemtype" => "Computer" , "version" => '6']);
+        $this->integer(count($ips))->isIdenticalTo(1);
+    }
+
+    public function testSeveralIPV6()
+    {
+        global $DB;
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_with_several_ipv6.json');
+        $json = json_decode($json_str);
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('16811420')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        $ipaddress = new \IPAddress();
+        $ips = $ipaddress->find(["mainitems_id" => $computers_id, "mainitemtype" => "Computer", "version" => '4']);
+        $this->integer(count($ips))->isIdenticalTo(2);
+
+        $ips = $ipaddress->find(["mainitems_id" => $computers_id, "mainitemtype" => "Computer" , "version" => '6']);
+        $this->integer(count($ips))->isIdenticalTo(5);
+    }
 }

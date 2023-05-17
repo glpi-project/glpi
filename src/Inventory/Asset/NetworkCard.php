@@ -197,27 +197,45 @@ class NetworkCard extends Device
                 }
 
                 if (isset($this->ports[$portkey])) {
-                    if (property_exists($val_port, 'ip') && $val_port->ip != '') {
-                        if (!in_array($val_port->ip, $this->ports[$portkey]->ipaddress)) {
-                             $this->ports[$portkey]->ipaddress[] = $val_port->ip;
+                    if (!property_exists($this->ports[$portkey], "ipaddress") || !is_array($this->ports[$portkey]->ipaddress)) {
+                        $this->ports[$portkey]->ipaddress = [];
+                    }
+                    if (property_exists($val_port, "ip")) {
+                        if (is_array($val_port->ip)) {
+                            $this->ports[$portkey]->ipaddress = array_merge($this->ports[$portkey]->ipaddress, $val_port->ip);
+                        } else {
+                            array_push($this->ports[$portkey]->ipaddress, $val_port->ip);
                         }
                     }
-                    if (property_exists($val_port, 'ipaddress6') && $val_port->ipaddress6 != '') {
-                        if (!in_array($val_port->ipaddress6, $this->ports[$portkey]->ipaddress)) {
-                            $this->ports[$portkey]->ipaddress[] = $val_port->ipaddress6;
+                    if (property_exists($val_port, 'ipaddress6')) {
+                        if (is_array($val_port->ipaddress6)) {
+                            $this->ports[$portkey]->ipaddress = array_merge($this->ports[$portkey]->ipaddress, $val_port->ipaddress6);
+                        } else {
+                            array_push($this->ports[$portkey]->ipaddress, $val_port->ipaddress6);
                         }
                     }
+                    $this->ports[$portkey]->ipaddress = array_merge(array_filter($this->ports[$portkey]->ipaddress), []);
                 } else {
-                    if (property_exists($val_port, 'ip')) {
-                        if ($val_port->ip != '') {
-                             $val_port->ipaddress = [$val_port->ip];
-                        }
-                        unset($val_port->ip);
-                    } else if (property_exists($val_port, 'ipaddress6') && $val_port->ipaddress6 != '') {
-                        $val_port->ipaddress = [$val_port->ipaddress6];
-                    } else {
+                    if (!property_exists($val_port, "ipaddress") || !is_array($val_port->ipaddress)) {
                         $val_port->ipaddress = [];
                     }
+                    if (property_exists($val_port, "ip")) {
+                        if (is_array($val_port->ip)) {
+                            $val_port->ipaddress = array_merge($val_port->ipaddress, $val_port->ip);
+                        } else {
+                            array_push($val_port->ipaddress, $val_port->ip);
+                        }
+                    }
+
+                    if (property_exists($val_port, 'ipaddress6')) {
+                        if (is_array($val_port->ipaddress6)) {
+                            $val_port->ipaddress = array_merge($val_port->ipaddress, $val_port->ipaddress6);
+                        } else {
+                            array_push($val_port->ipaddress, $val_port->ipaddress6);
+                        }
+                    }
+
+                    $val_port->ipaddress = array_merge(array_filter($val_port->ipaddress), []);
 
                     if (property_exists($val_port, 'instantiation_type')) {
                         switch ($val_port->instantiation_type) {
