@@ -249,7 +249,9 @@ HTML;
             'title' => __('API Getting Started'),
             'css_files' => [],
         ];
-        $twig_params['css_files'][] = ['path' => ThemeManager::getInstance()->getCurrentTheme()->getPath()];
+        $theme = ThemeManager::getInstance()->getCurrentTheme();
+        $twig_params['css_files'][] = ['path' => $theme->getPath()];
+        $twig_params['theme'] = $theme;
 
         $content = TemplateRenderer::getInstance()->render('layout/parts/head.html.twig', $twig_params);
         $content .= '<body class="api-documentation"><div class="container py-2 d-flex">';

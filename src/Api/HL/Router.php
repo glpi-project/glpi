@@ -579,37 +579,43 @@ EOT;
      */
     private function handleAuth(Request $request): void
     {
-        if ($request->hasHeader('Authorization')) {
-            $auth_header = $request->getHeaderLine('Authorization');
-            // if basic auth
-            if (preg_match('/^Basic\s+(.*)$/i', $auth_header, $matches)) {
-                $this->resumeSession('');
-            } else {
-                $this->startTemporarySession($request);
-                if ($request->hasHeader('GLPI-Profile')) {
-                    $requested_profile = $request->getHeaderLine('GLPI-Profile');
-                    if (is_numeric($requested_profile)) {
-                        Session::changeProfile((int) $requested_profile);
+        // Try authenticating from a cookie for cases when the API is accessed from a browser
+        $auth = new \Auth();
+        if (!$auth->getAlternateAuthSystemsUserLogin(\Auth::COOKIE)) {
+            // If the session isn't being resumed from a cookie, we shouldn't use cookies at all
+            ini_set('session.use_cookies', 0);
+            if ($request->hasHeader('Authorization')) {
+                $auth_header = $request->getHeaderLine('Authorization');
+                // if basic auth
+                if (preg_match('/^Basic\s+(.*)$/i', $auth_header, $matches)) {
+                    $this->resumeSession('');
+                } else {
+                    $this->startTemporarySession($request);
+                    if ($request->hasHeader('GLPI-Profile')) {
+                        $requested_profile = $request->getHeaderLine('GLPI-Profile');
+                        if (is_numeric($requested_profile)) {
+                            Session::changeProfile((int)$requested_profile);
+                        }
+                    }
+                    if ($request->hasHeader('GLPI-Entity')) {
+                        $requested_entity = $request->getHeaderLine('GLPI-Entity');
+                        if (is_numeric($requested_entity)) {
+                            $is_recursive = $request->hasHeader('GLPI-Entity-Recursive') && strtolower($request->getHeaderLine('GLPI-Entity-Recursive')) === 'true';
+                            Session::changeActiveEntities((int)$requested_entity, $is_recursive);
+                        }
                     }
                 }
-                if ($request->hasHeader('GLPI-Entity')) {
-                    $requested_entity = $request->getHeaderLine('GLPI-Entity');
-                    if (is_numeric($requested_entity)) {
-                        $is_recursive = $request->hasHeader('GLPI-Entity-Recursive') && strtolower($request->getHeaderLine('GLPI-Entity-Recursive')) === 'true';
-                        Session::changeActiveEntities((int) $requested_entity, $is_recursive);
-                    }
-                }
+                return;
             }
-            return;
+            if (
+                $request->hasHeader('Glpi-Session-Token')
+                && !empty($request->getHeaderLine('Glpi-Session-Token'))
+            ) {
+                $this->resumeSession($request->getHeaderLine('Glpi-Session-Token'));
+            }
+            Session::setPath();
+            Session::start();
         }
-        if (
-            $request->hasHeader('Glpi-Session-Token')
-            && !empty($request->getHeaderLine('Glpi-Session-Token'))
-        ) {
-            $this->resumeSession($request->getHeaderLine('Glpi-Session-Token'));
-        }
-        Session::setPath();
-        Session::start();
 
         // Clear all messages in the session to avoid unhandled messages being displayed in the errors of unrelated API requests
         $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
