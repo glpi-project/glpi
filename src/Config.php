@@ -1442,6 +1442,24 @@ JAVASCRIPT
             echo "</td></tr>";
         }
 
+        echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) . "</th></tr>";
+
+        echo "<tr class='tab_bg_2'>";
+        $content_helper = "<ul>
+            <li>" . __('Disable notifications by default on ITIL objects actor configuration, with ability to derogate to it') . "</li>
+            <li>" . __('Disable all notifications on all other objects, without ability to derogate to it.') . "</li>
+        </ul>
+        ";
+        $helper = "<span class='form-help' data-bs-toggle='popover' data-bs-placement='top' data-bs-html='true' data-bs-content='" . htmlspecialchars($content_helper) . "'>?</span>";
+        echo "<td><label for='dropdown_is_notif_enable_default$rand'>" . __('Enable notifications') . "</label>&nbsp;" . $helper . "</td><td>";
+        Dropdown::showYesNo(
+            'is_notif_enable_default',
+            $data['is_notif_enable_default'],
+            -1,
+            ['rand' => $rand]
+        );
+        echo "</tr>";
+
         echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>" . __('Notification popups') . "</th></tr>";
 
         echo "<tr class='tab_bg_2'>";

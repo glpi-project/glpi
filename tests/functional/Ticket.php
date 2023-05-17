@@ -5856,4 +5856,66 @@ HTML
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->array($actors)->hasSize(0);
     }
+
+    public function testNotificationDisabled()
+    {
+        //setup
+        $this->login();
+
+        $user = new \User();
+
+        //check default computed value
+        $this->boolean((bool)$user->getFromDB(\Session::getLoginUserID()))->isTrue();
+        $this->variable($user->fields['is_notif_enable_default'])->isNull(); //default value from user table
+        $this->boolean((bool)$user->isUserNotificationEnable())->isTrue(); //like default configuration
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                "_users_id_requester" => \Session::getLoginUserID(),
+            ] + $ticket->getDefaultValues(getItemByTypeName('Entity', '_test_root_entity', true))
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //load ticket actor
+        $ticket_user = new \Ticket_User();
+        $actors = $ticket_user->find([
+            "tickets_id" => $ticket_id,
+            "type" => CommonITILActor::REQUESTER,
+        ]);
+        $this->integer(count($actors))->isIdenticalTo(1);
+        $this->integer(reset($actors)['use_notification'])->isEqualTo(1);
+
+        //update user to explicitly refuse notification
+        $this->boolean($user->update([
+            'id' => \Session::getLoginUserID(),
+            'is_notif_enable_default' => '0'
+        ]))->isTrue();
+        //check computed value
+        $this->boolean($user->getFromDB(\Session::getLoginUserID()))->isTrue();
+        $this->boolean((bool)$user->fields['is_notif_enable_default'])->isFalse();
+        $this->boolean($user->isUserNotificationEnable())->isFalse();
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'other ticket title',
+                'content'     => 'other description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            ] + $ticket->getDefaultValues(getItemByTypeName('Entity', '_test_root_entity', true))
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //load ticket actor
+        $ticket_user = new \Ticket_User();
+        $actors = $ticket_user->find([
+            "tickets_id" => $ticket_id,
+            "type" => CommonITILActor::REQUESTER,
+        ]);
+        $this->integer(count($actors))->isIdenticalTo(1);
+        $this->integer(reset($actors)['use_notification'])->isEqualTo(0);
+    }
 }

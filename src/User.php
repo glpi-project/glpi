@@ -7046,4 +7046,21 @@ JAVASCRIPT;
             && $users_ids[0] == $this->fields['id'] // Id match our user
         ;
     }
+
+    /**
+     * Check if this User notification is enable
+     * @return bool
+     */
+    final public function isUserNotificationEnable(): bool
+    {
+        global $CFG_GLPI;
+
+        $user_pref = $this->fields['is_notif_enable_default'];
+        //load default conf if needed
+        if (is_null($user_pref)) {
+            $user_pref = $CFG_GLPI['is_notif_enable_default'];
+        }
+
+        return $user_pref;
+    }
 }

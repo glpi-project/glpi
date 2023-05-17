@@ -58,6 +58,16 @@ class NotificationTargetUser extends NotificationTarget
         }
     }
 
+    protected function canNotificationBeDisabled(string $event): bool
+    {
+        if (in_array($event, ['passwordinit', 'passwordforget', 'passwordexpires'])) {
+            // Notifications related to passwords should never be disabled.
+            return false;
+        }
+
+        return true;
+    }
+
 
     /**
      * @see NotificationTarget::addSpecificTargets()

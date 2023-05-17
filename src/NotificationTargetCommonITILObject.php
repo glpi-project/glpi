@@ -88,6 +88,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return true;
     }
 
+    protected function canNotificationBeDisabled(string $event): bool
+    {
+        // Notifications on ITIL objects are relying on `use_notification` property of actors.
+        return false;
+    }
+
     /**
      * Get notification subject prefix
      *

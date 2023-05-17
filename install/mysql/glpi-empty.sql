@@ -7813,6 +7813,7 @@ CREATE TABLE `glpi_users` (
   `2fa` text,
   `2fa_unenforced` tinyint NOT NULL DEFAULT 0 COMMENT 'If 1, the user is excluded from 2FA enforcement policies',
   `password_history` longtext,
+  `is_notif_enable_default` tinyint DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
   KEY `firstname` (`firstname`),

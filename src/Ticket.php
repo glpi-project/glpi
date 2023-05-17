@@ -3902,16 +3902,23 @@ JAVASCRIPT;
         if (is_numeric(Session::getLoginUserID(false))) {
             $users_id_requester = Session::getLoginUserID();
             $users_id_assign    = Session::getLoginUserID();
+            $requester_notification_enable = $_SESSION['glpiis_notif_enable_default'];
+            $assignee_notification_enable  = $_SESSION['glpiis_notif_enable_default'];
+
            // No default requester if own ticket right = tech and update_ticket right to update requester
             if (Session::haveRightsOr(self::$rightname, [UPDATE, self::OWN]) && !$_SESSION['glpiset_default_requester']) {
                 $users_id_requester = 0;
+                $requester_notification_enable = 1; // no default requester reset to true
             }
             if (!Session::haveRight(self::$rightname, self::OWN) || !$_SESSION['glpiset_default_tech']) {
                 $users_id_assign = 0;
+                $assignee_notification_enable = 1; // no default assign reset to true
             }
             $entity      = $_SESSION['glpiactive_entity'];
             $requesttype = $_SESSION['glpidefault_requesttypes_id'];
         } else {
+            $requester_notification_enable = 1;
+            $assignee_notification_enable = 1;
             $users_id_requester = 0;
             $users_id_assign    = 0;
             $requesttype        = $CFG_GLPI['default_requesttypes_id'];
@@ -3923,12 +3930,12 @@ JAVASCRIPT;
 
        // Set default values...
         return  ['_users_id_requester'       => $users_id_requester,
-            '_users_id_requester_notif' => ['use_notification'  => [$default_use_notif],
+            '_users_id_requester_notif' => ['use_notification'  => [(string) ($default_use_notif & $requester_notification_enable)],
                 'alternative_email' => ['']
             ],
             '_groups_id_requester'      => 0,
             '_users_id_assign'          =>  $users_id_assign,
-            '_users_id_assign_notif'    => ['use_notification'  => [$default_use_notif],
+            '_users_id_assign_notif'    => ['use_notification'  => [(string) ($default_use_notif & $assignee_notification_enable)],
                 'alternative_email' => ['']
             ],
             '_groups_id_assign'         => 0,
