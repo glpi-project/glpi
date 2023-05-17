@@ -536,10 +536,10 @@ window.GLPI.Debug = new class Debug {
                 }
             });
             content_area.find('h1').first()
-                .text(`${_x('debug', '%1$d Queries took %2$dms', 'glpi', total_requests, total_duration)}`);
+                .text(`${_x('debug', '%1 Queries took %2ms', 'glpi', total_requests, total_duration)}`);
         } else {
             content_area.find('h1').first()
-                .text(`${_x('debug', '%1$d Queries took %2$dms', 'glpi', sql_data.total_requests, sql_data.total_duration)}`);
+                .text(`${_x('debug', '%1 Queries took %2ms', 'glpi', sql_data.total_requests, sql_data.total_duration)}`);
         }
 
         if (sql_table.data('sort')) {
