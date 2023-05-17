@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+
 class RuleAction extends CommonDBChild
 {
    // From CommonDBChild
@@ -680,7 +683,7 @@ class RuleAction extends CommonDBChild
                             $param['condition'] = [new QuerySubQuery([
                                 'SELECT' => ['COUNT' => ['users_id']],
                                 'FROM'   => 'glpi_groups_users',
-                                'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+                                'WHERE'  => ['groups_id' => new QueryExpression('glpi_groups.id')]
                             ])
                             ];
                             $param['right']     = ['validate_incident', 'validate_request'];

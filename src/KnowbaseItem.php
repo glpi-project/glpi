@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
 use Glpi\RichText\RichText;
 
@@ -1126,7 +1128,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $DB->update(
             'glpi_knowbaseitems',
             [
-                'view'   => new \QueryExpression($DB->quoteName('view') . ' + 1')
+                'view'   => new QueryExpression($DB->quoteName('view') . ' + 1')
             ],
             [
                 'id' => $this->getID()

@@ -106,7 +106,7 @@ class DB extends \GLPITestCase
             [null, 'NULL'],
             ['null', 'NULL'],
             ['NULL', 'NULL'],
-            [new \QueryExpression('`field`'), '`field`'],
+            [new \Glpi\DBAL\QueryExpression('`field`'), '`field`'],
             ['`field', "'`field'"],
             [false, "'0'"],
             [true, "'1'"],
@@ -140,8 +140,8 @@ class DB extends \GLPITestCase
                 'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
             ], [
                 'table', [
-                    'field'  => new \QueryParam(),
-                    'other'  => new \QueryParam()
+                    'field'  => new \Glpi\DBAL\QueryParam(),
+                    'other'  => new \Glpi\DBAL\QueryParam()
                 ],
                 'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)'
             ]/*, [
@@ -195,9 +195,9 @@ class DB extends \GLPITestCase
                 'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))'
             ], [
                 'table', [
-                    'field'  => new \QueryParam()
+                    'field'  => new \Glpi\DBAL\QueryParam()
                 ], [
-                    'NOT' => ['id' => [new \QueryParam(), new \QueryParam()]]
+                    'NOT' => ['id' => [new \Glpi\DBAL\QueryParam(), new \Glpi\DBAL\QueryParam()]]
                 ],
                 [],
                 'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))'
@@ -211,7 +211,7 @@ class DB extends \GLPITestCase
                 'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
             ], [*/
                 'table', [
-                    'field'  => new \QueryExpression(\DBmysql::quoteName('field') . ' + 1')
+                    'field'  => new \Glpi\DBAL\QueryExpression(\DBmysql::quoteName('field') . ' + 1')
                 ], [
                     'id'  => [1, 2]
                 ],
@@ -219,7 +219,7 @@ class DB extends \GLPITestCase
                 'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
             ], [
                 'table', [
-                    'field'  => new \QueryExpression(\DBmysql::quoteName('field') . ' + 1')
+                    'field'  => new \Glpi\DBAL\QueryExpression(\DBmysql::quoteName('field') . ' + 1')
                 ], [
                     'id'  => [1, 2]
                 ],
@@ -301,7 +301,7 @@ class DB extends \GLPITestCase
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))'
             ], [
                 'table', [
-                    'NOT'  => ['id' => [new \QueryParam(), new \QueryParam()]]
+                    'NOT'  => ['id' => [new \Glpi\DBAL\QueryParam(), new \Glpi\DBAL\QueryParam()]]
                 ],
                 [],
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))'

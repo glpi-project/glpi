@@ -58,13 +58,13 @@ class QueryParam extends DbTestCase
      */
     public function testQueryParam($value, $expected)
     {
-        $qpa = new \QueryParam($value);
+        $qpa = new \Glpi\DBAL\QueryParam($value);
         $this->string($qpa->getValue())->isIdenticalTo($expected);
     }
 
     public function testEmptyQueryParam()
     {
-        $qpa = new \QueryParam();
+        $qpa = new \Glpi\DBAL\QueryParam();
         $this->string($qpa->getValue())->isIdenticalTo('?');
     }
 }

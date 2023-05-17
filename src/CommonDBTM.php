@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryParam;
 use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Plugin\Hooks;

@@ -36,12 +36,13 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
 use NetworkPort as GlobalNetworkPort;
 use NetworkPortAggregate;
 use NetworkPortType;
-use QueryParam;
 use RuleImportAssetCollection;
 use Unmanaged;
 
@@ -200,7 +201,7 @@ class NetworkPort extends InventoryAsset
                             ]
                         ];
                         $criteria['LEFT JOIN'][\NetworkPort::getTable() . ' AS n2'][] =
-                            new \QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
+                            new QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
 
                         $iterator = $DB->request($criteria);
                         if (count($iterator)) {

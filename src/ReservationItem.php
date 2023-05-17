@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * ReservationItem Class
  **/
@@ -582,7 +584,7 @@ class ReservationItem extends CommonDBChild
             $itemtable = getTableForItemType($itemtype);
             $itemname  = $item->getNameField();
 
-            $otherserial = new \QueryExpression($DB->quote('') . ' AS ' . $DB->quoteName('otherserial'));
+            $otherserial = new QueryExpression($DB->quote('') . ' AS ' . $DB->quoteName('otherserial'));
             if ($item->isField('otherserial')) {
                 $otherserial = "$itemtable.otherserial AS otherserial";
             }
@@ -785,7 +787,7 @@ class ReservationItem extends CommonDBChild
                 'WHERE'     => [
                     'glpi_reservationitems.entities_id' => $entity,
                     new QueryExpression('(UNIX_TIMESTAMP(' . $DB->quoteName('glpi_reservations.end') . ') - ' . $secs . ') < UNIX_TIMESTAMP()'),
-                    'glpi_reservations.begin'  => ['<', new \QueryExpression('NOW()')],
+                    'glpi_reservations.begin'  => ['<', new QueryExpression('NOW()')],
                     'glpi_alerts.date'         => null
                 ]
             ];

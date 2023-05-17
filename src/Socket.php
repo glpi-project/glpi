@@ -283,7 +283,7 @@ class Socket extends CommonDBChild
         $already_use = [];
         $sub_query = [];
 
-        $sub_query[] = new \QuerySubQuery([
+        $sub_query[] = new DBAL\QuerySubQuery([
             'SELECT' => ['sockets.id AS socket_id'],
             'FROM'   => Socket::getTable() . ' AS sockets',
             'LEFT JOIN'   => [
@@ -303,7 +303,7 @@ class Socket extends CommonDBChild
             ],
         ]);
 
-        $sub_query[] = new \QuerySubQuery([
+        $sub_query[] = new DBAL\QuerySubQuery([
             'SELECT' => ['sockets.id AS socket_id'],
             'FROM'   => Socket::getTable() . ' AS sockets',
             'LEFT JOIN'   => [
@@ -324,7 +324,7 @@ class Socket extends CommonDBChild
         ]);
 
         $sockets_iterator = $DB->request([
-            'FROM' => new \QueryUnion($sub_query)
+            'FROM' => new DBAL\QueryUnion($sub_query)
         ]);
 
         foreach ($sockets_iterator as $row) {

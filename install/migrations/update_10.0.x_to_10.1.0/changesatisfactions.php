@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -135,7 +137,7 @@ $migration->addRight('change', CommonITILObject::SURVEY, [
 $DB->updateOrDie(
     'glpi_entities',
     [
-        'inquest_URL' => new \QueryExpression(
+        'inquest_URL' => new QueryExpression(
             'REPLACE(inquest_URL, \'[TICKETCATEGORY_\', \'##[ITILCATEGORY_\')'
         ),
     ],

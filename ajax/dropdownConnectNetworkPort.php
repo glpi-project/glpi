@@ -37,6 +37,8 @@
  * @since 0.84
  */
 
+use Glpi\DBAL\QueryExpression;
+
 $AJAX_INCLUDE = 1;
 
 include('../inc/includes.php');

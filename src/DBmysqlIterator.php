@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QuerySubQuery;
+
 /**
  *  Database iterator class for Mysql
  **/
@@ -288,7 +293,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 if ($table instanceof \AbstractQuery) {
                     $query = $table;
                     $table = $query->getQuery();
-                } else if ($table instanceof \QueryExpression) {
+                } else if ($table instanceof QueryExpression) {
                     $table = $table->getValue();
                 } else {
                     $table = DBmysql::quoteName($table);
@@ -423,7 +428,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         if (is_numeric($t)) {
             if ($f instanceof \AbstractQuery) {
                 return $f->getQuery();
-            } else if ($f instanceof \QueryExpression || $f instanceof \QueryFunction) {
+            } else if ($f instanceof QueryExpression || $f instanceof QueryFunction) {
                 return $f->getValue();
             } else {
                 return DBmysql::quoteName($f);
@@ -624,9 +629,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         if ($value instanceof \AbstractQuery) {
             return $value->getQuery();
-        } else if ($value instanceof \QueryExpression || $value instanceof \QueryFunction) {
+        } else if ($value instanceof QueryExpression || $value instanceof QueryFunction) {
             return $value->getValue();
-        } else if ($value instanceof \QueryParam) {
+        } else if ($value instanceof QueryParam) {
             return $value->getValue();
         } else {
             return $this->analyseCriterionValue($value);
@@ -683,7 +688,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     throw new \RuntimeException('BAD JOIN');
                 }
 
-                if ($jointablekey instanceof \QuerySubQuery) {
+                if ($jointablekey instanceof QuerySubQuery) {
                     $jointablekey = $jointablekey->getQuery();
                 } else {
                     $jointablekey = DBmysql::quoteName($jointablekey);

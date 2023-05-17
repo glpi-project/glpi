@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Socket;
 
 /// Location class
@@ -490,7 +492,7 @@ class Location extends CommonTreeDropdown
             $itemtype_criteria = [
                 'SELECT' => [
                     "$table.id",
-                    new \QueryExpression($DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('type')),
+                    new QueryExpression($DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('type')),
                 ],
                 'FROM'   => $table,
                 'WHERE'  => [
@@ -507,7 +509,7 @@ class Location extends CommonTreeDropdown
 
             $queries[] = $itemtype_criteria;
         }
-        $criteria = count($queries) === 1 ? $queries[0] : ['FROM' => new \QueryUnion($queries)];
+        $criteria = count($queries) === 1 ? $queries[0] : ['FROM' => new QueryUnion($queries)];
 
         $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
         $criteria['START'] = $start;

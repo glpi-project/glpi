@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QuerySubQuery;
+
 /**
  * Profile class
  *
@@ -206,11 +210,11 @@ class ProfileRight extends CommonDBChild
     {
         global $DB;
 
-        $subq = new \QuerySubQuery([
+        $subq = new QuerySubQuery([
             'FROM'   => 'glpi_profilerights AS CURRENT',
             'WHERE'  => [
                 'CURRENT.profiles_id'   => $profiles_id,
-                'CURRENT.NAME'          => new \QueryExpression('POSSIBLE.NAME')
+                'CURRENT.NAME'          => new QueryExpression('POSSIBLE.NAME')
             ]
         ]);
 
@@ -220,7 +224,7 @@ class ProfileRight extends CommonDBChild
             'DISTINCT'        => true,
             'FROM'            => 'glpi_profilerights AS POSSIBLE',
             'WHERE'           => [
-                new \QueryExpression($expr)
+                new QueryExpression($expr)
             ]
         ]);
 

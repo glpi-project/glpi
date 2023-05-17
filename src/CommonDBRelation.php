@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /// Common DataBase Relation Table Manager Class
 abstract class CommonDBRelation extends CommonDBConnexity
 {
@@ -119,7 +122,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $where1[$table . '.' . static::$itemtype_1] = $itemtype;
             $request = true;
         } else {
-            $fields[] = new \QueryExpression("'" . static::$itemtype_1 . "' AS itemtype_1");
+            $fields[] = new QueryExpression("'" . static::$itemtype_1 . "' AS itemtype_1");
             if (
                 ($itemtype ==  static::$itemtype_1)
                 || is_subclass_of($itemtype, static::$itemtype_1)
@@ -131,7 +134,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $conditions[] = $where1;
             $fields[] = QueryFunction::if($where1, 1, 0, $DB::quoteName('is_1'));
         } else {
-            $fields[] = new \QueryExpression('0 AS is_1');
+            $fields[] = new QueryExpression('0 AS is_1');
         }
 
        // Check item 2 type
@@ -144,7 +147,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $where2[$table . '.' . static::$itemtype_2] = $itemtype;
             $request = true;
         } else {
-            $fields[] = new \QueryExpression("'" . static::$itemtype_2 . "' AS itemtype_2");
+            $fields[] = new QueryExpression("'" . static::$itemtype_2 . "' AS itemtype_2");
             if (
                 ($itemtype ==  static::$itemtype_2)
                 || is_subclass_of($itemtype, static::$itemtype_2)
@@ -156,7 +159,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $conditions[] = $where2;
             $fields[] = QueryFunction::if($where2, 1, 0, $DB::quoteName('is_2'));
         } else {
-            $fields[] = new \QueryExpression('0 AS is_2');
+            $fields[] = new QueryExpression('0 AS is_2');
         }
 
         if (count($conditions) != 0) {

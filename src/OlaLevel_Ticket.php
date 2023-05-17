@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * @since 9.2
  */
@@ -187,7 +189,7 @@ class OlaLevel_Ticket extends CommonDBTM
                 ]
             ],
             'WHERE'     => [
-                'glpi_olalevels_tickets.date' => ['<', new \QueryExpression('NOW()')]
+                'glpi_olalevels_tickets.date' => ['<', new QueryExpression('NOW()')]
             ]
         ]);
 
@@ -341,7 +343,7 @@ class OlaLevel_Ticket extends CommonDBTM
                 ]
             ],
             'WHERE'     => [
-                'glpi_olalevels_tickets.date'       => ['<', new \QueryExpression('NOW()')],
+                'glpi_olalevels_tickets.date'       => ['<', new QueryExpression('NOW()')],
                 'glpi_olalevels_tickets.tickets_id' => $tickets_id,
                 'glpi_olas.type'                    => $olaType
             ]

@@ -35,6 +35,8 @@
 
 namespace Glpi\Dashboard;
 
+use Glpi\DBAL\QueryParam;
+
 class Item extends \CommonDBChild
 {
     public static $itemtype = "Glpi\\Dashboard\\Dashboard";
@@ -95,14 +97,14 @@ class Item extends \CommonDBChild
         $query_items = $DB->buildInsert(
             self::getTable(),
             [
-                'dashboards_dashboards_id' => new \QueryParam(),
-                'gridstack_id' => new \QueryParam(),
-                'card_id'      => new \QueryParam(),
-                'x'            => new \QueryParam(),
-                'y'            => new \QueryParam(),
-                'width'        => new \QueryParam(),
-                'height'       => new \QueryParam(),
-                'card_options' => new \QueryParam(),
+                'dashboards_dashboards_id' => new QueryParam(),
+                'gridstack_id' => new QueryParam(),
+                'card_id'      => new QueryParam(),
+                'x'            => new QueryParam(),
+                'y'            => new QueryParam(),
+                'width'        => new QueryParam(),
+                'height'       => new QueryParam(),
+                'card_options' => new QueryParam(),
             ]
         );
         $stmt = $DB->prepare($query_items);

@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
+
 /**
  * Update from 9.4.x to 9.5.0
  *
@@ -89,7 +92,7 @@ function update94xto950()
             $DB->buildUpdate(
                 'glpi_suppliers',
                 ['is_active' => 1],
-                [new \QueryExpression('true')]
+                [new QueryExpression('true')]
             )
         );
     }
@@ -374,11 +377,11 @@ function update94xto950()
             $DB->buildUpdate(
                 'glpi_documents_items',
                 [
-                    'date_creation' => new \QueryExpression(
+                    'date_creation' => new QueryExpression(
                         $DB->quoteName('date_mod')
                     )
                 ],
-                [new \QueryExpression('true')]
+                [new QueryExpression('true')]
             )
         );
         $migration->addKey('glpi_documents_items', 'date_creation');
@@ -899,7 +902,7 @@ function update94xto950()
             $DB->buildUpdate(
                 $table,
                 [
-                    'uuid' => new \QueryExpression('UUID()'),
+                    'uuid' => new QueryExpression('UUID()'),
                 ],
                 [
                     'uuid' => null,
@@ -1287,7 +1290,7 @@ function update94xto950()
             [
                 'name'            => 'Alert domains',
                 'itemtype'        => 'Domain',
-                'date_mod'        => new \QueryExpression('NOW()'),
+                'date_mod'        => new QueryExpression('NOW()'),
             ],
             'Add domains expiration notification template'
         );
@@ -1338,8 +1341,8 @@ HTML
                     'comment'         => null,
                     'is_recursive'    => 1,
                     'is_active'       => 1,
-                    'date_creation'   => new \QueryExpression('NOW()'),
-                    'date_mod'        => new \QueryExpression('NOW()'),
+                    'date_creation'   => new QueryExpression('NOW()'),
+                    'date_mod'        => new QueryExpression('NOW()'),
                 ],
                 'Add domains expiration notification'
             );
@@ -1508,8 +1511,8 @@ HTML
                 'comment'         => null,
                 'is_recursive'    => 1,
                 'is_active'       => 1,
-                'date_creation'   => new \QueryExpression('NOW()'),
-                'date_mod'        => new \QueryExpression('NOW()'),
+                'date_creation'   => new QueryExpression('NOW()'),
+                'date_mod'        => new QueryExpression('NOW()'),
             ],
             'Add password expires notification'
         );
@@ -1520,7 +1523,7 @@ HTML
             [
                 'name'            => 'Password expires alert',
                 'itemtype'        => 'User',
-                'date_mod'        => new \QueryExpression('NOW()'),
+                'date_mod'        => new QueryExpression('NOW()'),
             ],
             'Add password expires notification template'
         );
@@ -1625,7 +1628,7 @@ HTML
             [
                 'name'            => 'Plugin updates',
                 'itemtype'        => 'Glpi\Marketplace\Controller',
-                'date_mod'        => new \QueryExpression('NOW()'),
+                'date_mod'        => new QueryExpression('NOW()'),
             ],
             'Add plugins updates notification template'
         );
@@ -1666,8 +1669,8 @@ HTML
                 'comment'         => null,
                 'is_recursive'    => 1,
                 'is_active'       => 1,
-                'date_creation'   => new \QueryExpression('NOW()'),
-                'date_mod'        => new \QueryExpression('NOW()'),
+                'date_creation'   => new QueryExpression('NOW()'),
+                'date_mod'        => new QueryExpression('NOW()'),
             ],
             'Add plugins updates notification'
         );

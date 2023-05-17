@@ -33,10 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\TicketParameters;
 use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\RichText\RichText;
 
@@ -752,7 +755,7 @@ class Ticket extends CommonITILObject
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_tickets_users'],
                             [
-                                'glpi_tickets_users.tickets_id'  => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_tickets_users.tickets_id'  => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
                                 'glpi_tickets_users.users_id'    => $item->getID(),
                                 'glpi_tickets_users.type'        => CommonITILActor::REQUESTER
                             ] + getEntitiesRestrictCriteria(self::getTable())
@@ -764,7 +767,7 @@ class Ticket extends CommonITILObject
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_suppliers_tickets'],
                             [
-                                'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_suppliers_tickets.tickets_id'    => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
                                 'glpi_suppliers_tickets.suppliers_id'  => $item->getID()
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
@@ -797,7 +800,7 @@ class Ticket extends CommonITILObject
                           $nb = countElementsInTable(
                               ['glpi_tickets', 'glpi_groups_tickets'],
                               [
-                                  'glpi_groups_tickets.tickets_id' => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                  'glpi_groups_tickets.tickets_id' => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
                                   'glpi_groups_tickets.groups_id'  => $item->getID(),
                                   'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER
                               ] + getEntitiesRestrictCriteria(self::getTable())
@@ -2245,7 +2248,7 @@ class Ticket extends CommonITILObject
                     $this->getSolvedStatusArray(),
                     $this->getClosedStatusArray()
                 ),
-                new \QueryExpression(
+                new QueryExpression(
                     "ADDDATE(" . $DB->quoteName($this->getTable() . ".solvedate") . ", INTERVAL $days DAY) > NOW()"
                 ),
                 'NOT'                         => [
@@ -4432,7 +4435,7 @@ JAVASCRIPT;
                         'glpi_tickets.status'   => self::CLOSED,
                         ['OR'                   => [
                             'glpi_entities.inquest_duration' => 0,
-                            new \QueryExpression(
+                            new QueryExpression(
                                 'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_ticketsatisfactions.date_begin') .
                                 ', INTERVAL ' . $DB->quoteName('glpi_entities.inquest_duration')  . ' DAY), CURDATE()) > 0'
                             )
@@ -5314,7 +5317,7 @@ JAVASCRIPT;
                         'glpi_tickets.users_id_recipient'   => Session::getLoginUserID(),
                         [
                             'AND' => [
-                                'glpi_tickets_users.tickets_id'  => new \QueryExpression('glpi_tickets.id'),
+                                'glpi_tickets_users.tickets_id'  => new QueryExpression('glpi_tickets.id'),
                                 'glpi_tickets_users.users_id'    => Session::getLoginUserID()
                             ]
                         ]
@@ -5582,7 +5585,7 @@ JAVASCRIPT;
                         $criteria['WHERE']['solvedate'] = ['<=', $end_date];
                     } else {
                      // no calendar, remove all days
-                        $criteria['WHERE'][] = new \QueryExpression(
+                        $criteria['WHERE'][] = new QueryExpression(
                             "ADDDATE(" . $DB->quoteName('solvedate') . ", INTERVAL $delay DAY) < NOW()"
                         );
                     }
@@ -5708,7 +5711,7 @@ JAVASCRIPT;
 
                 if ($delay > 0) {
                    // remove all days
-                    $criteria['WHERE'][] = new \QueryExpression("ADDDATE(`closedate`, INTERVAL " . $delay . " DAY) < NOW()");
+                    $criteria['WHERE'][] = new QueryExpression("ADDDATE(`closedate`, INTERVAL " . $delay . " DAY) < NOW()");
                 }
 
                 $iterator = $DB->request($criteria);
@@ -6234,7 +6237,7 @@ JAVASCRIPT;
                             'itemtype' => 'Ticket',
                             'items_id' => $id,
                             'NOT' => [
-                                'documents_id' => new \QuerySubQuery([
+                                'documents_id' => new QuerySubQuery([
                                     'SELECT' => 'documents_id',
                                     'FROM'   => $document_item->getTable(),
                                     'WHERE'  => [

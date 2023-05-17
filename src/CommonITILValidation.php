@@ -33,7 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\RichText\RichText;
 
 /**
@@ -788,7 +790,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     $target_criteria,
                     [
                         static::getTableField('itemtype_target') => Group::class,
-                        static::getTableField('items_id_target') => new \QuerySubQuery([
+                        static::getTableField('items_id_target') => new QuerySubQuery([
                             'SELECT' => Group_User::getTableField('groups_id'),
                             'FROM'   => Group_User::getTable(),
                             'WHERE'  => [

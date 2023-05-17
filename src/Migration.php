@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Console\Application;
 use Symfony\Component\Console\Output\OutputInterface;
 

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * CronTaskLog class
  **/
@@ -67,7 +69,7 @@ class CronTaskLog extends CommonDBTM
             'glpi_crontasklogs',
             [
                 'crontasks_id' => $id,
-                new \QueryExpression("UNIX_TIMESTAMP(" . $DB->quoteName("date") . ") < UNIX_TIMESTAMP()-$secs")
+                new QueryExpression("UNIX_TIMESTAMP(" . $DB->quoteName("date") . ") < UNIX_TIMESTAMP()-$secs")
             ]
         );
 

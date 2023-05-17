@@ -41,8 +41,8 @@ use CommonTreeDropdown;
 use DropdownTranslation;
 use Html;
 use ITILCategory;
-use QuerySubQuery;
-use QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryExpression;
 use Search;
 
 /**

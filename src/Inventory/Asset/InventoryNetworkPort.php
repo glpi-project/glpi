@@ -44,7 +44,7 @@ use Item_DeviceNetworkCard;
 use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
-use QueryParam;
+use Glpi\DBAL\QueryParam;
 use Unmanaged;
 
 trait InventoryNetworkPort
