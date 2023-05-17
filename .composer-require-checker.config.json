@@ -2,7 +2,7 @@
   "php-core-extensions": [
     "core", "standard",
 
-    "dom", "date", "filter", "libxml", "pcre", "reflection", "session", "spl",
+    "date", "pcre", "reflection", "spl",
 
     "exif", "ldap", "pcntl", "xmlrpc"
   ],
