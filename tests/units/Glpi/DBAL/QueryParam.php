@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace tests\units\Glpi\DBAL;
 
 use DbTestCase;
 
