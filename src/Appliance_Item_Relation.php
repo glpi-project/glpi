@@ -157,7 +157,7 @@ class Appliance_Item_Relation extends CommonDBRelation
         if (count($types)) {
             $clause = ['itemtype' => $types];
         } else {
-            $clause = [new \QueryExpression('true = false')];
+            $clause = [new \Glpi\DBAL\QueryExpression('true = false')];
         }
         $extra_types_where = array_merge(
             $extra_types_where,

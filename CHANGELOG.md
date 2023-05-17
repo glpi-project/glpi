@@ -63,7 +63,7 @@ The present file will list all changes made to the project; according to the
 
 #### Added
 - `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
-- `QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
+- `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 
 #### Changes
 - `chartist` library has been replaced by `echarts`.
@@ -88,6 +88,10 @@ The present file will list all changes made to the project; according to the
 - Usage of `DBmysql::query()` method is prohibited to ensure that legacy unsafe DB are no more executed. To execute DB queries,
   either `DBmysql::request()` can be used to craft query using the GLPI query builder,
   either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
+- `QueryExpression` class moved to `Glpi\DBAL` namespace.
+- `QueryParam` class moved to `Glpi\DBAL` namespace.
+- `QuerySubQuery` class moved to `Glpi\DBAL` namespace.
+- `QueryUnion` class moved to `Glpi\DBAL` namespace.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.

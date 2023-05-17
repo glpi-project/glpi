@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /// Class IPNetwork : Represent an IPv4 or an IPv6 network.
 /// It fully use IPAddress and IPNetmask to check validity and change representation from binary
 /// to textual values.
@@ -679,7 +682,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             if ($relation == "equals") {
                 for ($i = $startIndex; $i < 4; ++$i) {
                     $WHERE = [
-                        new \QueryExpression("(" . $DB->quoteName($addressDB[$i]) . " & " . $DB->quoteValue($netmaskPa[$i]) . ") = (" . $DB->quoteValue($addressPa[$i]) . " & " . $DB->quoteValue($netmaskPa[$i]) . ")"),
+                        new QueryExpression("(" . $DB->quoteName($addressDB[$i]) . " & " . $DB->quoteValue($netmaskPa[$i]) . ") = (" . $DB->quoteValue($addressPa[$i]) . " & " . $DB->quoteValue($netmaskPa[$i]) . ")"),
                         $netmaskDB[$i]  => $netmaskPa[$i]
                     ];
                 }
@@ -692,8 +695,8 @@ class IPNetwork extends CommonImplicitTreeDropdown
                     }
 
                     $WHERE = [
-                        new \QueryExpression("(" . $DB->quoteName($addressDB[$i]) . " & $globalNetmask) = (" . $DB->quoteValue($addressPa[$i]) . " & $globalNetmask)"),
-                        new \QueryExpression("(" . $DB->quoteValue($netmaskPa[$i]) . " & " . $DB->quoteName($netmaskDB[$i]) . ")=$globalNetmask")
+                        new QueryExpression("(" . $DB->quoteName($addressDB[$i]) . " & $globalNetmask) = (" . $DB->quoteValue($addressPa[$i]) . " & $globalNetmask)"),
+                        new QueryExpression("(" . $DB->quoteValue($netmaskPa[$i]) . " & " . $DB->quoteName($netmaskDB[$i]) . ")=$globalNetmask")
                     ];
                 }
             }
@@ -813,7 +816,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $result = [];
         for ($i = ($version == 4 ? 3 : 0); $i < 4; ++$i) {
-            $result[] = new \QueryExpression(
+            $result[] = new QueryExpression(
                 "({$DB->quoteName($tableName.'.'.$binaryFieldPrefix.'_'.$i)} & " . $this->fields["netmask_$i"] . ") = ({$start[$i]})"
             );
         }
@@ -1046,7 +1049,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             [
                 'ipnetworks_id'   => 0,
                 'level'           => 1,
-                'completename'    => new \QueryExpression($DB->quoteName('name'))
+                'completename'    => new QueryExpression($DB->quoteName('name'))
             ],
             [true]
         );

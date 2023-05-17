@@ -48,7 +48,7 @@ use Html;
 use Planning;
 use PlanningEventCategory;
 use PlanningRecall;
-use QueryExpression;
+use Glpi\DBAL\QueryExpression;
 use Reminder;
 use RRule\RRule;
 use RRule\RSet;

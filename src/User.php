@@ -33,9 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Filter;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Plugin\Hooks;
 use Sabre\VObject;
@@ -1729,7 +1732,7 @@ class User extends CommonDBTM
                         $lgroups = [];
                         foreach ($v[$i][$field] as $lgroup) {
                             $lgroups[] = [
-                                new \QueryExpression($DB->quoteValue($lgroup) .
+                                new QueryExpression($DB->quoteValue($lgroup) .
                                              " LIKE " .
                                              $DB->quoteName('ldap_value'))
                             ];
@@ -4498,7 +4501,7 @@ JAVASCRIPT;
                 ? [$firstname_field, $realname_field]
                 : [$realname_field, $firstname_field];
 
-                $concat = new \QueryExpression(QueryFunction::concat($fields) . ' LIKE ' . $DB::quoteValue($txt_search));
+                $concat = new QueryExpression(QueryFunction::concat($fields) . ' LIKE ' . $DB::quoteValue($txt_search));
                 $WHERE[] = [
                     'OR' => [
                         'glpi_users.name'                => ['LIKE', $txt_search],
@@ -6797,7 +6800,7 @@ JAVASCRIPT;
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'password_forget_token'       => $token,
-                new \QueryExpression('NOW() < ADDDATE(' . $DB::quoteName('password_forget_token_date') . ', INTERVAL ' . $CFG_GLPI['password_init_token_delay'] . ' SECOND)')
+                new QueryExpression('NOW() < ADDDATE(' . $DB::quoteName('password_forget_token_date') . ', INTERVAL ' . $CFG_GLPI['password_init_token_delay'] . ' SECOND)')
             ]
         ]);
 

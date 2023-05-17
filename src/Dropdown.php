@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Plugin\Hooks;
 use Glpi\SocketModel;
 
@@ -495,8 +497,8 @@ class Dropdown
         $comment = "";
 
         if ($id) {
-            $SELECTNAME    = new \QueryExpression("'' AS " . $DB->quoteName('transname'));
-            $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+            $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
+            $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
             $JOIN          = [];
             $JOINS         = [];
             if ($translate) {

@@ -46,8 +46,8 @@ use Glpi\Search\SearchOption;
 use Group;
 use ITILFollowup;
 use Problem;
-use QueryExpression;
-use QueryFunction;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Session;
 use Software;
 use Ticket;
@@ -2623,7 +2623,7 @@ final class SQLProvider implements SearchProviderInterface
                                 "$new_table$AS" => [
                                     'ON' => [
                                         $nt => 'itemtype',
-                                        new \QueryExpression("'$used_itemtype'"),
+                                        new QueryExpression("'$used_itemtype'"),
                                     ]
                                 ]
                             ]
@@ -3133,7 +3133,7 @@ final class SQLProvider implements SearchProviderInterface
                 "glpi_dropdowntranslations AS $alias" => [
                     'ON' => [
                         $alias => 'itemtype',
-                        new \QueryExpression("'$itemtype'"),
+                        new QueryExpression("'$itemtype'"),
                         [
                             'AND' => [
                                 "$alias.items_id" => "$table.id",

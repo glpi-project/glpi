@@ -39,6 +39,9 @@
  * @var array $ADDTODISPLAYPREF
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
+
 $migration->addConfig(\Glpi\Inventory\Conf::getDefaults(), 'inventory');
 
 $default_charset = DBConnection::getDefaultCharset();
@@ -517,7 +520,7 @@ if (!$DB->tableExists('glpi_printerlogs')) {
 
     if (!isIndex('glpi_printerlogs', 'unicity')) {
         // Preserve only last insert for a given date.
-        $to_preserve_sql = new \QueryExpression(
+        $to_preserve_sql = new QueryExpression(
             sprintf(
                 'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
                 $DB->quoteName('id'),
@@ -597,7 +600,7 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
 
     if (!isIndex('glpi_networkportmetrics', 'unicity')) {
         // Preserve only last insert for a given date.
-        $to_preserve_sql = new \QueryExpression(
+        $to_preserve_sql = new QueryExpression(
             sprintf(
                 'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
                 $DB->quoteName('id'),

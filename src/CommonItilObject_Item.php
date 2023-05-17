@@ -39,6 +39,8 @@
  * Relation between CommonItilObject_Item and Items
  */
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
 
 abstract class CommonItilObject_Item extends CommonDBRelation
 {
@@ -1089,13 +1091,13 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $itemtypes = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
 
-        $union = new \QueryUnion();
+        $union = new QueryUnion();
         foreach ($itemtypes as $type) {
             $table = getTableForItemType($type);
             $union->addQuery([
                 'SELECT' => [
                     'id',
-                    new \QueryExpression("$type AS " . $DB->quoteName('itemtype')),
+                    new QueryExpression("$type AS " . $DB->quoteName('itemtype')),
                     "name"
                 ],
                 'FROM'   => $table,

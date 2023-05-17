@@ -53,7 +53,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testAddDate($date, $interval, $interval_unit, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::addDate($date, $interval, $interval_unit, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::addDate($date, $interval, $interval_unit, $alias))->isIdenticalTo($expected);
     }
 
     protected function concatProvider()
@@ -71,7 +71,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testConcat($params, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::concat($params, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::concat($params, $alias))->isIdenticalTo($expected);
     }
 
     protected function ifProvider()
@@ -89,7 +89,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testIf($condition, $true, $false, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::if($condition, $true, $false, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::if($condition, $true, $false, $alias))->isIdenticalTo($expected);
     }
 
     protected function ifNullProvider()
@@ -107,7 +107,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testIfNUll($expression, $value, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::ifNull($expression, $value, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::ifNull($expression, $value, $alias))->isIdenticalTo($expected);
     }
 
     protected function groupConcatProvider()
@@ -161,7 +161,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testGroupConcat($expression, $separator, $distinct, $order_by, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::groupConcat($expression, $separator, $distinct, $order_by, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::groupConcat($expression, $separator, $distinct, $order_by, $alias))->isIdenticalTo($expected);
     }
 
     protected function floorProvider()
@@ -177,7 +177,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testFloor($expression, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::floor($expression, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::floor($expression, $alias))->isIdenticalTo($expected);
     }
 
     protected function sumProvider()
@@ -195,7 +195,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testSum($expression, $distinct, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::sum($expression, $distinct, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::sum($expression, $distinct, $alias))->isIdenticalTo($expected);
     }
 
     protected function countProvider()
@@ -213,7 +213,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testCount($expression, $distinct, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::count($expression, $distinct, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::count($expression, $distinct, $alias))->isIdenticalTo($expected);
     }
 
     protected function minProvider()
@@ -229,7 +229,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testMin($expression, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::min($expression, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::min($expression, $alias))->isIdenticalTo($expected);
     }
 
     protected function avgProvider()
@@ -245,7 +245,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testAvg($expression, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::avg($expression, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::avg($expression, $alias))->isIdenticalTo($expected);
     }
 
     protected function castProvider()
@@ -261,7 +261,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testCast($expression, $type, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::cast($expression, $type, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::cast($expression, $type, $alias))->isIdenticalTo($expected);
     }
 
     protected function convertProvider()
@@ -277,7 +277,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testConvert($expression, $transcoding, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::convert($expression, $transcoding, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::convert($expression, $transcoding, $alias))->isIdenticalTo($expected);
     }
 
     protected function nowProvider()
@@ -293,7 +293,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testNow($alias, $expected)
     {
-        $this->string((string) \QueryFunction::now($alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::now($alias))->isIdenticalTo($expected);
     }
 
     protected function lowerProvider()
@@ -309,7 +309,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testLower($expression, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::lower($expression, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::lower($expression, $alias))->isIdenticalTo($expected);
     }
 
     protected function replaceProvider()
@@ -329,7 +329,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testReplace($expression, $search, $replace, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::replace($expression, $search, $replace, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::replace($expression, $search, $replace, $alias))->isIdenticalTo($expected);
     }
 
     protected function unixTimestampProvider()
@@ -345,7 +345,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testUnixTimestamp($expression, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::unixTimestamp($expression, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::unixTimestamp($expression, $alias))->isIdenticalTo($expected);
     }
 
     protected function fromUnixTimestampProvider()
@@ -383,7 +383,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testFromUnixTimestamp($expression, $format, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::fromUnixTimestamp($expression, $format, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::fromUnixTimestamp($expression, $format, $alias))->isIdenticalTo($expected);
     }
 
     protected function dateFormatProvider()
@@ -399,7 +399,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testDateFormat($expression, $format, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::dateFormat($expression, $format, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::dateFormat($expression, $format, $alias))->isIdenticalTo($expected);
     }
 
     protected function coalesceProvider()
@@ -431,7 +431,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testCoalesce($params, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::coalesce($params, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::coalesce($params, $alias))->isIdenticalTo($expected);
     }
 
     protected function leastProvider()
@@ -461,7 +461,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testLeast($params, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::least($params, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::least($params, $alias))->isIdenticalTo($expected);
     }
 
     protected function timestampDiffProvider()
@@ -489,7 +489,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testTimestampDiff($unit, $expression1, $expression2, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::timestampDiff($unit, $expression1, $expression2, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::timestampDiff($unit, $expression1, $expression2, $alias))->isIdenticalTo($expected);
     }
 
     protected function bitCountProvider()
@@ -513,6 +513,6 @@ class QueryFunction extends \GLPITestCase
      */
     public function testBitCount($expression, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::bitCount($expression, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::bitCount($expression, $alias))->isIdenticalTo($expected);
     }
 }

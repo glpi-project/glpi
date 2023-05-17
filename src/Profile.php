@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
  * Profile class
@@ -651,11 +653,11 @@ class Profile extends CommonDBTM
             'FROM'   => 'glpi_profilerights',
             'COUNT'  => 'cpt',
             'WHERE'  => [
-                'glpi_profilerights.profiles_id' => new \QueryExpression(\DBmysql::quoteName('glpi_profiles.id')),
+                'glpi_profilerights.profiles_id' => new QueryExpression(\DBmysql::quoteName('glpi_profiles.id')),
                 'OR'                             => $right_subqueries
             ]
         ]);
-        $criteria[] = new \QueryExpression(count($right_subqueries) . " = " . $sub_query->getQuery());
+        $criteria[] = new QueryExpression(count($right_subqueries) . " = " . $sub_query->getQuery());
 
         if (Session::getCurrentInterface() == 'central') {
             return [

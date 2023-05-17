@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\DBAL\QueryExpression;
 use GLPIKey;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
@@ -77,7 +78,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
             'FROM' => 'glpi_oauth_auth_codes',
             'WHERE' => [
                 'identifier' => $codeId,
-                'date_expiration' => ['>', new \QueryExpression('NOW()')],
+                'date_expiration' => ['>', new QueryExpression('NOW()')],
             ]
         ]);
         return $iterator->count() === 0;

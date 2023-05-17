@@ -35,6 +35,8 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
 use Glpi\Features\Clonable;
 
 /**
@@ -813,7 +815,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $criteria = [
             'SELECT'    => [
                 "$table.*",
-                new \QueryExpression(
+                new QueryExpression(
                     "IF($utable.users_id = " . Session::getLoginUserID() . ", $utable.id, NULL) AS is_default"
                 ),
             ],
@@ -1030,7 +1032,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 [
                     'last_execution_time'   => $time,
                     'last_execution_date'   => date('Y-m-d H:i:s'),
-                    'counter'               => new \QueryExpression($DB->quoteName('counter') . ' + 1')
+                    'counter'               => new QueryExpression($DB->quoteName('counter') . ' + 1')
                 ],
                 [
                     'id' => $id

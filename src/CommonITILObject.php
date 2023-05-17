@@ -33,7 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
@@ -1253,7 +1257,7 @@ abstract class CommonITILObject extends CommonDBTM
         return countElementsInTable(
             [$itemtable, $linktable],
             [
-                "$linktable.$itemfk"    => new \QueryExpression(DBmysql::quoteName("$itemtable.id")),
+                "$linktable.$itemfk"    => new QueryExpression(DBmysql::quoteName("$itemtable.id")),
                 "$linktable.$field"     => $id,
                 "$linktable.type"       => $role,
                 "$itemtable.is_deleted" => 0,
@@ -1446,7 +1450,7 @@ abstract class CommonITILObject extends CommonDBTM
                     ],
                     [
                         'NOT' => [$this->getTable() . '.solvedate' => null],
-                        new \QueryExpression(
+                        new QueryExpression(
                             "ADDDATE(" . $DB->quoteName($this->getTable()) .
                             "." . $DB->quoteName('solvedate') . ", INTERVAL $days DAY) > NOW()"
                         )
@@ -7356,7 +7360,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
         $fk = $this->getForeignKeyField();
 
-        $subquery1 = new \QuerySubQuery([
+        $subquery1 = new QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
                 'tu.type AS type'
@@ -7375,7 +7379,7 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ]);
 
-        $subquery2 = new \QuerySubQuery([
+        $subquery2 = new QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
                 'gt.type AS type'
@@ -7400,7 +7404,7 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ]);
 
-        $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
+        $union = new QueryUnion([$subquery1, $subquery2], false, 'allactors');
         $iterator = $DB->request([
             'SELECT'          => [
                 'users_id',

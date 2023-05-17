@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Stat\StatData;
 use Glpi\Application\View\TemplateRenderer;
 use Laminas\Json\Expr as Json_Expr;

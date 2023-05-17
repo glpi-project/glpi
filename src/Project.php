@@ -34,6 +34,10 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
@@ -2631,7 +2635,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             return false;
         }
 
-        $query1 = new \QuerySubQuery([
+        $query1 = new QuerySubQuery([
             'SELECT' => [
                 'percent_done'
             ],
@@ -2641,7 +2645,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 'is_deleted'   => 0
             ]
         ]);
-        $query2 = new \QuerySubQuery([
+        $query2 = new QuerySubQuery([
             'SELECT' => [
                 'percent_done'
             ],

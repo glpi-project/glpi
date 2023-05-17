@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryParam;
 use Glpi\Search\SearchOption;
 
 /**
@@ -1289,7 +1290,7 @@ class Log extends CommonDBTM
             return;
         }
 
-        $dparams = array_fill_keys(array_keys($queue[0]), new \QueryParam());
+        $dparams = array_fill_keys(array_keys($queue[0]), new QueryParam());
         $update = $DB->buildInsert(
             static::getTable(),
             $dparams

@@ -34,6 +34,9 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 
 /**
  * Database utilities
@@ -1143,8 +1146,8 @@ final class DbUtils
         $name    = "";
         $comment = "";
 
-        $SELECTNAME    = new \QueryExpression("'' AS " . $DB->quoteName('transname'));
-        $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+        $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
+        $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
         $JOIN          = [];
         $JOINS         = [];
         if ($translate) {
@@ -1245,8 +1248,8 @@ final class DbUtils
         $name    = "";
         $comment = "";
 
-        $SELECTNAME    = new \QueryExpression("'' AS " . $DB->quoteName('transname'));
-        $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+        $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
+        $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
         $JOIN          = [];
         $JOINS         = [];
         if ($translate) {
@@ -1804,23 +1807,23 @@ final class DbUtils
                     $criteria['WHERE']['entities_id'] = $entities_id;
                 }
 
-                $subqueries[] = new \QuerySubQuery($criteria);
+                $subqueries[] = new QuerySubQuery($criteria);
             }
 
             $criteria = [
                 'SELECT' => [
-                    new \QueryExpression(
+                    new QueryExpression(
                         "CAST(SUBSTRING(" . $DB->quoteName('code') . ", $pos, $len) AS " .
                         "unsigned) AS " . $DB->quoteName('no')
                     )
                 ],
-                'FROM'   => new \QueryUnion($subqueries, false, 'codes')
+                'FROM'   => new QueryUnion($subqueries, false, 'codes')
             ];
         } else {
             $table = $this->getTableForItemType($itemtype);
             $criteria = [
                 'SELECT' => [
-                    new \QueryExpression(
+                    new QueryExpression(
                         "CAST(SUBSTRING(" . $DB->quoteName($field) . ", $pos, $len) AS " .
                         "unsigned) AS " . $DB->quoteName('no')
                     )
@@ -1844,7 +1847,7 @@ final class DbUtils
             }
         }
 
-        $subquery = new \QuerySubQuery($criteria, 'Num');
+        $subquery = new QuerySubQuery($criteria, 'Num');
         $iterator = $DB->request([
             'SELECT' => ['MAX' => 'Num.no AS lastNo'],
             'FROM'   => $subquery

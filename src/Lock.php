@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 
@@ -92,7 +95,7 @@ class Lock extends CommonGLPI
             $subquery = [];
 
             //get locked field for current itemtype
-            $subquery[] = new \QuerySubQuery([
+            $subquery[] = new QuerySubQuery([
                 'SELECT' => $lockedfield->getTable() . ".*",
                 'FROM'   => $lockedfield->getTable(),
                 'WHERE'  => [
@@ -126,7 +129,7 @@ class Lock extends CommonGLPI
                         'OR' => [
                             [
                                 $lockedfield->getTable() . '.itemtype'  => $lockable_itemtype,
-                                $lockedfield->getTable() . '.items_id'  => new \QueryExpression(getTableForItemType($lockable_itemtype) . '.id')
+                                $lockedfield->getTable() . '.items_id'  => new QueryExpression(getTableForItemType($lockable_itemtype) . '.id')
                             ], [
                                 $lockedfield->getTable() . '.itemtype'  => $lockable_itemtype,
                                 $lockedfield->getTable() . '.is_global' => 1
@@ -170,10 +173,10 @@ class Lock extends CommonGLPI
                         ];
                     }
                 }
-                $subquery[] = new \QuerySubQuery($query);
+                $subquery[] = new QuerySubQuery($query);
             }
 
-            $union = new \QueryUnion($subquery);
+            $union = new QueryUnion($subquery);
             $locked_iterator = $DB->request([
                 'FROM' => $union
             ]);

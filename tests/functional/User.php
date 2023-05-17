@@ -38,7 +38,7 @@ namespace tests\units;
 use DateTime;
 use DateInterval;
 use Profile_User;
-use QuerySubQuery;
+use Glpi\DBAL\QuerySubQuery;
 
 /* Test for inc/user.class.php */
 

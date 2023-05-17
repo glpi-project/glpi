@@ -39,6 +39,7 @@ use AuthLDAP;
 use CronTask;
 use DBConnection;
 use DBmysql;
+use Glpi\DBAL\QueryExpression;
 use MailCollector;
 use Plugin;
 use Toolbox;
@@ -490,11 +491,11 @@ final class StatusChecker
                     [
                         'state'  => CronTask::STATE_RUNNING,
                         'OR'     => [
-                            new \QueryExpression(
+                            new QueryExpression(
                                 '(unix_timestamp(' . DBmysql::quoteName('lastrun') . ') + 2 * ' .
                                 DBmysql::quoteName('frequency') . ' < unix_timestamp(now()))'
                             ),
-                            new \QueryExpression(
+                            new QueryExpression(
                                 '(unix_timestamp(' . DBmysql::quoteName('lastrun') . ') + 2 * ' .
                                 HOUR_TIMESTAMP . ' < unix_timestamp(now()))'
                             )

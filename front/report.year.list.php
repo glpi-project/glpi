@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 include("../inc/includes.php");
 
 Session::checkRight("reports", READ);

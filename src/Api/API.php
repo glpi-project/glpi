@@ -50,6 +50,7 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
 use Html;
@@ -62,7 +63,7 @@ use NetworkEquipment;
 use NetworkPort;
 use Notepad;
 use Problem;
-use QueryFunction;
+use Glpi\DBAL\QueryFunction;
 use SavedSearch;
 use Search;
 use Session;
@@ -1192,7 +1193,7 @@ abstract class API
                 $criteria['LEFT JOIN'][$DB::quoteName($parentTable)] = [
                     'ON' => [
                         $parentTable => 'itemtype',
-                        new \QueryExpression($DB::quoteValue($itemtype)),
+                        new QueryExpression($DB::quoteValue($itemtype)),
                         [
                             'AND' => [
                                 "$parentTable.items_id" => "$table.id",

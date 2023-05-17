@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -52,8 +54,8 @@ if (!$notification_exists) {
             'comment'         => '',
             'is_recursive'    => 1,
             'is_active'       => 1,
-            'date_creation'   => new \QueryExpression('NOW()'),
-            'date_mod'        => new \QueryExpression('NOW()')
+            'date_creation'   => new QueryExpression('NOW()'),
+            'date_mod'        => new QueryExpression('NOW()')
         ],
         '10.1 Add password initialization notification'
     );
@@ -124,7 +126,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Change', 'event' 
         [
             'name'            => 'Change Satisfaction',
             'itemtype'        => 'Change',
-            'date_mod'        => new \QueryExpression('NOW()'),
+            'date_mod'        => new QueryExpression('NOW()'),
         ],
         'Add change satisfaction survey notification template'
     );
@@ -175,8 +177,8 @@ HTML
                 'comment'         => null,
                 'is_recursive'    => 1,
                 'is_active'       => 1,
-                'date_creation'   => new \QueryExpression('NOW()'),
-                'date_mod'        => new \QueryExpression('NOW()'),
+                'date_creation'   => new QueryExpression('NOW()'),
+                'date_mod'        => new QueryExpression('NOW()'),
             ],
             'Add change satisfaction survey notification'
         );

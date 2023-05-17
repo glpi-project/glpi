@@ -109,7 +109,7 @@ class RuleImportAsset extends DbTestCase
             $DB->update(
                 'glpi_rules',
                 [
-                    'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' + 2')
+                    'ranking' => new \Glpi\DBAL\QueryExpression($DB->quoteName('ranking') . ' + 2')
                 ],
                 [
                     'ranking'   => ['>', $r['ranking']],

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\DBAL;
+
 /**
  *  Database iterator class for Mysql
  **/

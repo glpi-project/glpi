@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\DBAL;
+
+use DBmysqlIterator;
+
 /**
  *  Query function class
  **/
@@ -301,7 +305,7 @@ class QueryFunction
      * Build a REPLACE SQL function call
      * @param string $expression Expression to search in
      * @param string $search String to search
-     * @param string $replace  String to replace
+     * @param string $replace String to replace
      * @param string|null $alias Function result alias
      * @return static
      */

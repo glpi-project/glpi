@@ -40,8 +40,8 @@ use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
-use QueryExpression;
-use QueryUnion;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
 use RuntimeException;
 
 /**

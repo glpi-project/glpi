@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\DBAL;
+
+use AbstractQuery;
+use DBmysql;
+
 /**
  * UNION query class
  **/
@@ -44,12 +49,12 @@ class QueryUnion extends AbstractQuery
     /**
      * Create a sub query
      *
-     * @param array   $queries  An array of queries to union. Either SubQuery objects
+     * @param array $queries An array of queries to union. Either SubQuery objects
      *                          or an array of criteria to build them.
-     *                          You can also add later using @see addQuery
-     * @param boolean $distinct Include duplicates or not. Turning on may has
+     *                          You can also add later using @param boolean $distinct Include duplicates or not. Turning on may has
      *                          huge cost on queries performances.
-     * @param string  $alias    Union ALIAS. Defaults to null.
+     * @param string $alias Union ALIAS. Defaults to null.
+     * @see addQuery
      */
     public function __construct(array $queries = [], $distinct = false, $alias = null)
     {
@@ -69,8 +74,8 @@ class QueryUnion extends AbstractQuery
      */
     public function addQuery($query)
     {
-        if (!$query instanceof \QuerySubQuery) {
-            $query = new \QuerySubQuery($query);
+        if (!$query instanceof QuerySubQuery) {
+            $query = new QuerySubQuery($query);
         }
         $this->queries[] = $query;
     }
@@ -113,8 +118,8 @@ class QueryUnion extends AbstractQuery
         $query = '(' . implode(" $keyword ", $queries) . ')';
 
         $alias = $this->alias !== null
-         ? $this->alias
-         : 'union_' . md5($query);
+            ? $this->alias
+            : 'union_' . md5($query);
         $query .= ' AS ' . DBmysql::quoteName($alias);
 
         return $query;

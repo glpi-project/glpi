@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;

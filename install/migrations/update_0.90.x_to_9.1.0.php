@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Search\SearchOption;
 
 /**
@@ -186,7 +187,7 @@ function update090xto910()
         $DB->updateOrDie(
             "glpi_profilerights",
             [
-                'rights' => new \QueryExpression(
+                'rights' => new QueryExpression(
                     DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue(UNLOCK)
                 )
             ],
@@ -244,7 +245,7 @@ function update090xto910()
             [
                 'name'      => "Unlock Item request",
                 'itemtype'  => "ObjectLock",
-                'date_mod'  => new \QueryExpression("NOW()")
+                'date_mod'  => new QueryExpression("NOW()")
             ],
             "9.1 Add unlock request notification template"
         );
@@ -305,7 +306,7 @@ function update090xto910()
                 'comment'                  => "",
                 'is_recursive'             => 1,
                 'is_active'                => 1,
-                'date_mod'                 => new \QueryExpression("NOW()")
+                'date_mod'                 => new QueryExpression("NOW()")
             ],
             "9.1 add Unlock Request notification"
         );
@@ -470,8 +471,8 @@ function update090xto910()
                 'name'               => "full access from localhost",
                 'date_mod'           => null,
                 'is_active'          => 1,
-                'ipv4_range_start'   => new \QueryExpression("INET_ATON('127.0.0.1')"),
-                'ipv4_range_end'     => new \QueryExpression("INET_ATON('127.0.0.1')"),
+                'ipv4_range_start'   => new QueryExpression("INET_ATON('127.0.0.1')"),
+                'ipv4_range_end'     => new QueryExpression("INET_ATON('127.0.0.1')"),
                 'ipv6'               => "::1",
                 'app_token'          => null,
                 'app_token_date'     => null,
@@ -754,7 +755,7 @@ function update090xto910()
         $DB->updateOrDie(
             "glpi_profilerights",
             [
-                'rights' => new \QueryExpression(
+                'rights' => new QueryExpression(
                     DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue(Ticket::SURVEY)
                 )
             ],
