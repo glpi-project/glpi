@@ -36,17 +36,22 @@
 namespace Glpi\Dashboard;
 
 use Glpi\Plugin\Hooks;
-use Group;
-use Html;
-use ITILCategory;
-use Location;
-use Manufacturer;
-use Plugin;
-use RequestType;
 use Session;
-use State;
-use Ticket;
-use User;
+use Plugin;
+use Toolbox;
+use Glpi\Dashboard\Filters\{
+    AbstractFilter,
+    DatesFilter,
+    ItilCategoryFilter,
+    LocationFilter,
+    ManufacturerFilter,
+    RequestTypeFilter,
+    StateFilter,
+    TicketTypeFilter,
+    GroupTechFilter,
+    UserTechFilter,
+    DatesModFilter
+};
 
 /**
  * Filter class
@@ -57,32 +62,84 @@ class Filter extends \CommonDBChild
     public static $items_id = 'dashboards_dashboards_id';
 
     /**
-     * Return all available filters
-     * Plugins can hooks on this functions to add their own filters
+     * Return IDs of filters that can be applied to given table.
      *
      * @return array of filters
      */
-    public static function getAll(): array
+    public static function getAppliableFilters(string $table): array
     {
+        $filters_ids = [];
+
+        foreach (self::getRegisteredFilterClasses() as $filter_class) {
+            if ($filter_class::canBeApplied($table)) {
+                $filters_ids[] = $filter_class::getId();
+            }
+        }
+
+        return $filters_ids;
+    }
+
+    /**
+     * Return registered filters classes.
+     *
+     * @return array
+     */
+    public static function getRegisteredFilterClasses(): array
+    {
+        global $PLUGIN_HOOKS;
+
         $filters = [
-            'dates'        => __("Creation date"),
-            'dates_mod'    => __("Last update"),
-            'itilcategory' => ITILCategory::getTypeName(Session::getPluralNumber()),
-            'requesttype'  => RequestType::getTypeName(Session::getPluralNumber()),
-            'location'     => Location::getTypeName(Session::getPluralNumber()),
-            'manufacturer' => Manufacturer::getTypeName(Session::getPluralNumber()),
-            'state'        => State::getTypeName(Session::getPluralNumber()),
-            'tickettype'   => _n("Ticket type", "Ticket types", Session::getPluralNumber()),
-            'group_tech'   => __("Technician group"),
-            'user_tech'    => __("Technician"),
+            DatesFilter::class,
+            DatesModFilter::class,
+            ItilCategoryFilter::class,
+            LocationFilter::class,
+            ManufacturerFilter::class,
+            RequestTypeFilter::class,
+            StateFilter::class,
+            TicketTypeFilter::class,
+            GroupTechFilter::class,
+            UserTechFilter::class,
         ];
 
-        $more_filters = Plugin::doHookFunction(Hooks::DASHBOARD_FILTERS);
-        if (is_array($more_filters)) {
-            $filters = array_merge($filters, $more_filters);
+        foreach (($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS] ?? []) as $plugin => $hook_filters) {
+            if (!Plugin::isPluginActive($plugin)) {
+                continue;
+            }
+            array_push($filters, ...$hook_filters);
         }
 
         return $filters;
+    }
+
+    /**
+     * Return filters choices (to be used in a dropdown context).
+     * Keys are filters ids, values are filters labels.
+     *
+     * @return array of filters
+     */
+    public static function getFilterChoices(): array
+    {
+        $filters = [];
+
+        /* @var \Glpi\Dashboard\Filters\AbstractFilter $filter_class */
+        foreach (self::getRegisteredFilterClasses() as $filter_class) {
+            $filters[$filter_class::getId()] = $filter_class::getName();
+        }
+
+        return $filters;
+    }
+
+    /**
+     * Return all available filters.
+     * Keys are filters ids, values are filters labels.
+     *
+     * @return array of filters
+     *
+     * @FIXME Deprecate/remove in GLPI 10.1.
+     */
+    public static function getAll(): array
+    {
+        return self::getFilterChoices();
     }
 
     /**
@@ -93,40 +150,12 @@ class Filter extends \CommonDBChild
      *                         (used to specify creation date or last update)
      *
      * @return string
+     *
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function dates($values = "", string $fieldname = 'dates'): string
     {
-       // string mean empty value
-        if (is_string($values)) {
-            $values = [];
-        }
-
-        $rand  = mt_rand();
-        $label = self::getAll()[$fieldname];
-        $field = Html::showDateField('filter-dates', [
-            'value'        => $values,
-            'rand'         => $rand,
-            'range'        => true,
-            'display'      => false,
-            'calendar_btn' => false,
-            'placeholder'  => $label,
-            'on_change'    => "on_change_{$rand}(selectedDates, dateStr, instance)",
-        ]);
-
-        $js = <<<JAVASCRIPT
-      var on_change_{$rand} = function(selectedDates, dateStr, instance) {
-         // we are waiting for empty value or a range of dates,
-         // don't trigger when only the first date is selected
-         var nb_dates = selectedDates.length;
-         if (nb_dates == 0 || nb_dates == 2) {
-            Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selectedDates);
-            $(instance.input).closest("fieldset").addClass("filled");
-         }
-      };
-JAVASCRIPT;
-        $field .= Html::scriptBlock($js);
-
-        return self::field($fieldname, $field, $label, is_array($values) && count($values) > 0);
+        return DatesFilter::getHtml($values);
     }
 
     /**
@@ -135,64 +164,82 @@ JAVASCRIPT;
      * @param string|array $values init the input with these values, will be a string if empty values
      *
      * @return string
+     *
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function dates_mod($values): string
     {
-        return self::dates($values, "dates_mod");
+        return DatesModFilter::getHtml($values);
     }
 
 
+    /**
+     * @FIXME Deprecate/remove in GLPI 10.1.
+     */
     public static function itilcategory(string $value = ""): string
     {
-        return self::displayList($value, 'itilcategory', ITILCategory::class);
+        return ItilCategoryFilter::getHtml($value);
     }
 
+    /**
+     * @FIXME Deprecate/remove in GLPI 10.1.
+     */
     public static function requesttype(string $value = ""): string
     {
-        return self::displayList($value, 'requesttype', RequestType::class);
+        return RequestTypeFilter::getHtml($value);
     }
 
+    /**
+     * @FIXME Deprecate/remove in GLPI 10.1.
+     */
     public static function location(string $value = ""): string
     {
-        return self::displayList($value, 'location', Location::class);
+        return LocationFilter::getHtml($value);
     }
 
+    /**
+     * @FIXME Deprecate/remove in GLPI 10.1.
+     */
     public static function manufacturer(string $value = ""): string
     {
-        return self::displayList($value, 'manufacturer', Manufacturer::class);
+        return ManufacturerFilter::getHtml($value);
     }
 
+    /**
+     * @FIXME Deprecate/remove in GLPI 10.1.
+     */
     public static function group_tech(string $value = ""): string
     {
-        return self::displayList($value, 'group_tech', Group::class, ['toadd' => ['mygroups' => __("My groups")]]);
+        return GroupTechFilter::getHtml($value);
     }
 
+    /**
+     * @FIXME Deprecate/remove in GLPI 10.1.
+     */
     public static function user_tech(string $value = ""): string
     {
-        return self::displayList($value, 'user_tech', User::class, [
-            'right' => 'own_ticket',
-            'toadd' => [
-                [
-                    'id'    => 'myself',
-                    'text'  => __('Myself'),
-                ]
-            ]
-        ]);
+        return UserTechFilter::getHtml($value);
     }
 
+    /**
+     * @deprecated 10.0.8
+     */
     public static function state(string $value = ""): string
     {
-        return self::displayList($value, 'state', State::class);
+        return StateFilter::getHtml($value);
     }
 
+    /**
+     * @FIXME Deprecate/remove in GLPI 10.1.
+     */
     public static function tickettype(string $value = ""): string
     {
-        return self::displayList($value, 'tickettype', Ticket::class, [
-            'condition' => ['id' => -1],
-            'toadd'     => Ticket::getTypes()
-        ]);
+        return TicketTypeFilter::getHtml($value);
     }
 
+    /**
+     * @FIXME Deprecate/remove in GLPI 10.1.
+     */
     public static function displayList(
         string $value = "",
         string $fieldname = "",
@@ -201,7 +248,7 @@ JAVASCRIPT;
     ): string {
         $value     = !empty($value) ? $value : null;
         $rand      = mt_rand();
-        $label     = self::getAll()[$fieldname];
+        $label     = self::getFilterChoices()[$fieldname];
         $field     = $itemtype::dropdown([
             'name'                => $fieldname,
             'value'               => $value,
@@ -226,7 +273,7 @@ JAVASCRIPT;
       };
 
 JAVASCRIPT;
-        $field .= Html::scriptBlock($js);
+        $field .= \Html::scriptBlock($js);
 
         return self::field($fieldname, $field, $label, $value !== null);
     }
@@ -240,6 +287,8 @@ JAVASCRIPT;
      * @param bool   $filled
      *
      * @return string the html for the complete field
+     *
+     * @FIXME Deprecate/remove in GLPI 10.1.
      */
     public static function field(
         string $id = "",
@@ -247,44 +296,7 @@ JAVASCRIPT;
         string $label = "",
         bool $filled = false
     ): string {
-
-        $rand  = mt_rand();
-        $class = $filled ? "filled" : "";
-
-        $js = <<<JAVASCRIPT
-      $(function () {
-         $('#filter-{$rand} input')
-            .on('input', function() {
-               var str_len = $(this).val().length;
-               if (str_len > 0) {
-                  $('#filter-{$rand}').addClass('filled');
-               } else {
-                  $('#filter-{$rand}').removeClass('filled');
-               }
-
-               $(this).width((str_len + 1) * 8 );
-            });
-
-         $('#filter-{$rand}')
-            .hover(function() {
-               $('.dashboard .card.filter-{$id}').addClass('filter-impacted');
-            }, function() {
-               $('.dashboard .card.filter-{$id}').removeClass('filter-impacted');
-            });
-      });
-JAVASCRIPT;
-        $js = Html::scriptBlock($js);
-
-        $html  = <<<HTML
-      <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
-         $field
-         <legend>$label</legend>
-         <i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash delete-filter'></i>
-         {$js}
-      </fieldset>
-HTML;
-
-        return $html;
+        return AbstractFilter::field($id, $field, $label, $filled);
     }
 
     /**
@@ -292,7 +304,7 @@ HTML;
      *
      * @param int $dashboards_id
      *
-     * @return array the JSON representation of the filter data
+     * @return string the JSON representation of the filter data
      */
     public static function getForDashboard(int $dashboards_id = 0): string
     {
