@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Filter;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
