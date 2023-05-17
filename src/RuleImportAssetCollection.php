@@ -1,7 +1,5 @@
 <?php
 
-use Glpi\DBAL\QueryFunction;
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -34,6 +32,8 @@ use Glpi\DBAL\QueryFunction;
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryFunction;
 
 /// Import rules collection class
 class RuleImportAssetCollection extends RuleCollection

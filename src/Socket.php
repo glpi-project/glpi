@@ -43,6 +43,8 @@ use CommonGLPI;
 use Computer;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Html;
 use HTMLTableCell;
 use HTMLTableRow;
@@ -283,7 +285,7 @@ class Socket extends CommonDBChild
         $already_use = [];
         $sub_query = [];
 
-        $sub_query[] = new DBAL\QuerySubQuery([
+        $sub_query[] = new QuerySubQuery([
             'SELECT' => ['sockets.id AS socket_id'],
             'FROM'   => Socket::getTable() . ' AS sockets',
             'LEFT JOIN'   => [
@@ -303,7 +305,7 @@ class Socket extends CommonDBChild
             ],
         ]);
 
-        $sub_query[] = new DBAL\QuerySubQuery([
+        $sub_query[] = new QuerySubQuery([
             'SELECT' => ['sockets.id AS socket_id'],
             'FROM'   => Socket::getTable() . ' AS sockets',
             'LEFT JOIN'   => [
@@ -324,7 +326,7 @@ class Socket extends CommonDBChild
         ]);
 
         $sockets_iterator = $DB->request([
-            'FROM' => new DBAL\QueryUnion($sub_query)
+            'FROM' => new QueryUnion($sub_query)
         ]);
 
         foreach ($sockets_iterator as $row) {

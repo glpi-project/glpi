@@ -1,7 +1,5 @@
 <?php
 
-use Glpi\DBAL\QueryExpression;
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -34,6 +32,8 @@ use Glpi\DBAL\QueryExpression;
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryExpression;
 
 class PurgeLogs extends CommonDBTM
 {
