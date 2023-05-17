@@ -78,7 +78,7 @@ class QueryFunction
     {
         $alias = $this->alias ? ' AS ' . $this->alias : '';
 
-        $function_string = match($this->name) {
+        $function_string = match ($this->name) {
             'ADDDATE' => AddDate::format($this->params),
             'GROUP_CONCAT' => GroupConcat::format($this->params),
             'COUNT' => Count::format($this->params),
