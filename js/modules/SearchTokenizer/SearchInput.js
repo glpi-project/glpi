@@ -641,6 +641,7 @@ export default class SearchInput {
                 return; // continue
             }
             const description = info.description || '';
+            const label = info.label
             let prefix_content = '';
             const prefix_count = Object.keys(info.supported_prefixes || {}).length;
 
@@ -655,7 +656,7 @@ export default class SearchInput {
             helper += `
             <li class="list-group-item list-group-item-action" style="cursor: pointer" data-tag="${name}">
                 <div class="d-flex flex-grow-1 justify-content-between">
-                   <b>${name}</b>
+                   <b>${label}</b>
                    <span>${prefix_content}</span>
                 </div>
                 <div class="text-muted fst-italic">${description}</div>
