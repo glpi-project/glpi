@@ -36,6 +36,13 @@
 namespace Glpi\DBAL;
 
 use DBmysqlIterator;
+use Glpi\DBAL\Function\AddDate;
+use Glpi\DBAL\Function\Cast;
+use Glpi\DBAL\Function\Convert;
+use Glpi\DBAL\Function\Count;
+use Glpi\DBAL\Function\Formatter;
+use Glpi\DBAL\Function\GroupConcat;
+use Glpi\DBAL\Function\Sum;
 
 /**
  *  Query function class
@@ -69,61 +76,19 @@ class QueryFunction
      */
     public function getValue()
     {
-        global $DB;
-
-        $parameters = $this->params;
-
         $alias = $this->alias ? ' AS ' . $this->alias : '';
 
-        if ($this->name === 'ADDDATE') {
-            $output = sprintf(
-                'DATE_ADD(%s, INTERVAL %s %s)',
-                $parameters[0], // Date
-                $parameters[1], // Interval
-                strtoupper($parameters[2]) // Unit
-            );
-            $output .= $alias;
-            return $output;
-        } else if ($this->name === 'GROUP_CONCAT') {
-            [$expression, $separator, $distinct, $order_by] = $parameters;
-            $output = 'GROUP_CONCAT(';
-            if ($distinct) {
-                $output .= 'DISTINCT ';
-            }
-            $output .= $expression;
-            if ($order_by) {
-                $output .= ' ORDER BY ' . $order_by;
-            }
-            if ($separator) {
-                $output .= ' SEPARATOR ' . $separator;
-            }
-            $output .= ')' . $alias;
-            return $output;
-        } else if ($this->name === 'COUNT') {
-            [$expression, $distinct] = $parameters;
-            $output = 'COUNT(';
-            if ($distinct) {
-                $output .= 'DISTINCT ';
-            }
-            $output .= $expression . ')' . $alias;
-            return $output;
-        } else if ($this->name === 'SUM') {
-            [$expression, $distinct] = $parameters;
-            $output = 'SUM(';
-            if ($distinct) {
-                $output .= 'DISTINCT ';
-            }
-            $output .= $expression . ')' . $alias;
-            return $output;
-        } else if ($this->name === 'CAST') {
-            [$expression, $type] = $parameters;
-            return 'CAST(' . $expression . ' AS ' . $type . ')' . $alias;
-        } else if ($this->name === 'CONVERT') {
-            [$expression, $transcoding] = $parameters;
-            return 'CONVERT(' . $expression . ' USING ' . $transcoding . ')' . $alias;
-        }
+        $function_string = match($this->name) {
+            'ADDDATE' => AddDate::format($this->params),
+            'GROUP_CONCAT' => GroupConcat::format($this->params),
+            'COUNT' => Count::format($this->params),
+            'SUM' => Sum::format($this->params),
+            'CAST' => Cast::format($this->params),
+            'CONVERT' => Convert::format($this->params),
+            default => $this->name . '(' . implode(', ', $this->params) . ')',
+        };
 
-        return $this->name . '(' . implode(', ', $parameters) . ')' . $alias;
+        return $function_string . $alias;
     }
 
     public function __toString()
