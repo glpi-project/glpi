@@ -4684,7 +4684,7 @@ CREATE TABLE `glpi_networkportfiberchannels` (
   `networkports_id` int unsigned NOT NULL DEFAULT '0',
   `items_devicenetworkcards_id` int unsigned NOT NULL DEFAULT '0',
   `networkportfiberchanneltypes_id` int unsigned NOT NULL DEFAULT '0',
-  `wwn` varchar(16) DEFAULT '',
+  `wwn` varchar(50) DEFAULT '',
   `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
