@@ -643,14 +643,10 @@ class QueuedNotification extends CommonDBTM
                 [
                     'is_deleted'   => 0,
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
-<<<<<<< HEAD
-                    new QueryExpression('UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') + ' . $secs . ' < UNIX_TIMESTAMP(NOW())')
-=======
-                    new \QueryExpression(
+                    new QueryExpression(
                         QueryFunction::unixTimestamp($DB::quoteName('send_time') . " + $secs") .
                             ' < ' . QueryFunction::unixTimestamp(QueryFunction::now())
                     )
->>>>>>> f2757d51a4 (More replacements)
                 ]
             );
             $vol = $DB->affectedRows();

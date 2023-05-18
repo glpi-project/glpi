@@ -787,6 +787,7 @@ class ReservationItem extends CommonDBChild
                 ],
                 'WHERE'     => [
                     'glpi_reservationitems.entities_id' => $entity,
+                    new QueryExpression(
                         QueryFunction::unixTimestamp($DB::quoteName('glpi_reservations.end') . " - $secs") .
                             ' < ' . QueryFunction::unixTimestamp()
                     ),

@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
