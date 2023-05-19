@@ -53,6 +53,7 @@ use Glpi\Api\HL\Middleware\DebugResponseMiddleware;
 use Glpi\Api\HL\Middleware\MiddlewareInput;
 use Glpi\Api\HL\Middleware\RequestMiddlewareInterface;
 use Glpi\Api\HL\Middleware\ResponseMiddlewareInterface;
+use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Middleware\RSQLRequestMiddleware;
 use Glpi\Api\HL\Middleware\SecurityResponseMiddleware;
 use Glpi\Http\JSONResponse;
@@ -188,6 +189,7 @@ EOT;
             // Always run the security middleware (no condition set)
             $instance->registerResponseMiddleware(new SecurityResponseMiddleware());
             $instance->registerResponseMiddleware(new DebugResponseMiddleware(), PHP_INT_MAX);
+            $instance->registerResponseMiddleware(new ResultFormatterMiddleware());
 
             // Register middleware from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_MIDDLEWARE])) {
