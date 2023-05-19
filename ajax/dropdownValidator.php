@@ -118,6 +118,7 @@ if (isset($_POST["validatortype"])) {
                 'right'  => $_POST['right'],
                 'width'  => '100%',
                 'toadd'  => $added_supervisors,
+                'rand'   => $_POST['rand'],
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
             break;
@@ -126,9 +127,10 @@ if (isset($_POST["validatortype"])) {
             Group::dropdown([
                 'name'   => $items_id_name,
                 'entity' => $_POST['entity'],
-                'value'  => $_POST['items_id_target'],
+                'value'  => !is_array($_POST['items_id_target']) ? $_POST['items_id_target'] : '',
                 'right'  => $_POST['right'],
                 'width'  => '100%',
+                'rand'   => $_POST['rand'],
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'Group']);
             break;
@@ -141,6 +143,7 @@ if (isset($_POST["validatortype"])) {
                 'value'  => $value,
                 'entity' => $_POST["entity"],
                 'width'  => '100%',
+                'rand'   => $_POST['rand'],
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
 
@@ -151,6 +154,7 @@ if (isset($_POST["validatortype"])) {
                 'entity'        => $_POST['entity'],
                 'groups_id'     => '__VALUE__',
                 'items_id'      => $_POST['items_id_target'],
+                'rand'          => $_POST['rand'],
             ];
             if (array_key_exists('name', $_POST)) {
                 // TODO Drop in GLPI 11.0
@@ -202,8 +206,9 @@ if (isset($_POST["validatortype"])) {
             }
 
             $param['multiple'] = true;
-            $param['display'] = true;
-            $param['size']    = count($users);
+            $param['display']  = true;
+            $param['size']     = count($users);
+            $param['rand']     = $_POST['rand'];
 
             $rand  = Dropdown::showFromArray(
                 $items_id_name,

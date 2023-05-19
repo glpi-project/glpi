@@ -844,6 +844,7 @@ CREATE TABLE `glpi_changevalidations` (
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `changes_id` int unsigned NOT NULL DEFAULT '0',
   `users_id_validate` int unsigned NOT NULL DEFAULT '0',
+  `itilvalidationtemplates_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype_target` varchar(255) NOT NULL,
   `items_id_target` int unsigned NOT NULL DEFAULT '0',
   `comment_submission` text,
@@ -858,6 +859,7 @@ CREATE TABLE `glpi_changevalidations` (
   KEY `is_recursive` (`is_recursive`),
   KEY `users_id` (`users_id`),
   KEY `users_id_validate` (`users_id_validate`),
+  KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
   KEY `item_target` (`itemtype_target`,`items_id_target`),
   KEY `changes_id` (`changes_id`),
   KEY `submission_date` (`submission_date`),
@@ -7599,6 +7601,7 @@ CREATE TABLE `glpi_ticketvalidations` (
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `tickets_id` int unsigned NOT NULL DEFAULT '0',
   `users_id_validate` int unsigned NOT NULL DEFAULT '0',
+  `itilvalidationtemplates_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype_target` varchar(255) NOT NULL,
   `items_id_target` int unsigned NOT NULL DEFAULT '0',
   `comment_submission` text,
@@ -7612,6 +7615,7 @@ CREATE TABLE `glpi_ticketvalidations` (
   KEY `entities_id` (`entities_id`),
   KEY `users_id` (`users_id`),
   KEY `users_id_validate` (`users_id_validate`),
+  KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
   KEY `item_target` (`itemtype_target`,`items_id_target`),
   KEY `tickets_id` (`tickets_id`),
   KEY `submission_date` (`submission_date`),
@@ -9547,6 +9551,38 @@ CREATE TABLE `glpi_searches_criteriafilters` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`, `items_id`),
   KEY `search_itemtype` (`search_itemtype`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_itilvalidationtemplates`;
+CREATE TABLE `glpi_itilvalidationtemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `itemtypes` varchar(100) DEFAULT NULL,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `comment_submission` text,
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_itilvalidationtemplates_targets`;
+CREATE TABLE `glpi_itilvalidationtemplates_targets` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itilvalidationtemplates_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) DEFAULT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `groups_id` (`groups_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

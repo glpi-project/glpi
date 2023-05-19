@@ -182,6 +182,24 @@
                 <h3 class="cart-title">{{ __("Validation request") }}</h3>
             </div>
             <div class="card-body">
+               {{ fields.dropdownField(
+                  'ITILValidationTemplate',
+                  'itilvalidationtemplates_id',
+                  '',
+                  _n('Template', 'Templates', 1),
+                  {
+                     'full_width': true,
+                     'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
+                     'entity': item.fields['entities_id'],
+                     'rand': rand,
+                     'condition': {
+                        'WHERE': {
+                           'itemtypes': ['LIKE', '%' ~ item.getType() ~ 'Validation%'],
+                        },
+                     },
+                  },
+                ) }}
+
                 {{ fields.readOnlyField(
                     'approval_requester',
                     get_current_user().getFriendlyName(),
@@ -210,6 +228,7 @@
                             'items_id_target': subitem.fields['items_id_target'] ?? '',
                             'right': validation_right,
                             'display': false,
+                            'rand': rand,
                         }),
                         __('Approver'),
                         {
@@ -286,5 +305,70 @@
             window.scrollTo(0,document.body.scrollHeight);
          </script>
       {% endif %}
+
+      <script type="text/javascript">
+         function waitForElement{{ rand }}(selector) {
+            return new Promise(resolve => {
+               if (document.querySelector(selector)) {
+                     return resolve(document.querySelector(selector));
+               }
+
+               const observer = new MutationObserver(mutations => {
+                     if (document.querySelector(selector)) {
+                        resolve(document.querySelector(selector));
+                        observer.disconnect();
+                     }
+               });
+
+               observer.observe(document.body, {
+                     childList: true,
+                     subtree: true
+               });
+            });
+         }
+
+         function itilvalidationtemplate_update{{ rand }}(value) {
+            $.ajax({
+               url: '{{ path('/ajax/itilvalidation.php') }}',
+               type: 'POST',
+               data: {
+                  validationtemplates_id: value,
+                  items_id: '{{ item.fields['id'] }}',
+                  itemtype: '{{ item.getType() }}'
+               }
+            }).done(function (data) {
+               if (data.comment_submission !== undefined) {
+                  // set textarea content
+                  if (validationtinymce = tinymce.get("comment_submission_{{ rand }}")) {
+                     validationtinymce.setContent(data.comment_submission);
+                  }
+               }
+
+               if (data.validatortype !== undefined) {
+                  // set validator type
+                  $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
+                  $("#dropdown__validatortype_{{ rand }}").trigger('setValue', data.validatortype);
+               }
+
+               waitForElement{{ rand }}("#dropdown_groups_id{{ rand }}").then((elm) => {
+                  if (data.groups_id !== undefined) {
+                     // set groups_id
+                     $("#dropdown_groups_id{{ rand }}").ready(function() {
+                        $("#dropdown_groups_id{{ rand }}").trigger('setValue', data.groups_id)
+                     });
+                  }
+               });
+
+               waitForElement{{ rand }}("#dropdown_items_id_target{{ rand }}").then((elm) => {
+                  if (data.items_id_target !== undefined) {
+                     // set items_id_target
+                     $("#dropdown_items_id_target{{ rand }}").ready(function() {
+                        $("#dropdown_items_id_target{{ rand }}").trigger('setValue', data.items_id_target)
+                     });
+                  }
+               });
+            });
+         }
+      </script>
    {% endif %}
 {% endblock %}
