@@ -815,6 +815,7 @@ HTML;
             }
 
             $buttons .= TemplateRenderer::getInstance()->render('components/plugin_uninstall_modal.html.twig', [
+                'plugin_name' => $plugin_inst->getField('name'),
                 'open_btn' => "<button data-bs-toggle='modal'
                                        data-bs-target='#uninstallModal'
                                        title='" . __s("Uninstall") . "'>

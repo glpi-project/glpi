@@ -2672,6 +2672,7 @@ class Plugin extends CommonDBTM
                    // Uninstall button for installed plugins
                     if (function_exists("plugin_" . $directory . "_uninstall")) {
                         $output .= TemplateRenderer::getInstance()->render('components/plugin_uninstall_modal.html.twig', [
+                            'plugin_name' => $plugin->getField('name'),
                             'open_btn' => '<span class="fas fa-fw fa-folder-minus fa-2x pointer"
                                                  data-bs-toggle="modal"
                                                  data-bs-target="#uninstallModal"
