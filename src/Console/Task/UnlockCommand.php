@@ -112,10 +112,9 @@ class UnlockCommand extends AbstractCommand
                 'WHERE'  => [
                     'state' => CronTask::STATE_RUNNING,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp($this->db::quoteName('lastrun')) . " + $delay"
-                            . " < "
-                            . QueryFunction::unixTimestamp(QueryFunction::now()
-                        )
+                    QueryFunction::unixTimestamp($this->db::quoteName('lastrun')) . " + $delay"
+                        . " < "
+                        . QueryFunction::unixTimestamp(QueryFunction::now())
                     )
                 ]
             ]

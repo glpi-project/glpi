@@ -280,10 +280,10 @@ final class SQLProvider implements SearchProviderInterface
                         return array_merge($SELECT, $ADDITONALFIELDS);
                     }
                     $SELECT = [
-                        "$table$addtable.$field AS {$NAME}",
-                        "$table$addtable.realname AS {$NAME}_realname",
-                        "$table$addtable.id AS {$NAME}_id",
-                        "$table$addtable.firstname AS {$NAME}_firstname",
+                        $DB::quoteName("$table$addtable.$field AS {$NAME}"),
+                        $DB::quoteName("$table$addtable.realname AS {$NAME}_realname"),
+                        $DB::quoteName("$table$addtable.id AS {$NAME}_id"),
+                        $DB::quoteName("$table$addtable.firstname AS {$NAME}_firstname"),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 }
@@ -618,7 +618,7 @@ final class SQLProvider implements SearchProviderInterface
             return array_merge($SELECT, $ADDITONALFIELDS);
         }
         $SELECT = [
-            "$tocompute AS $NAME",
+            "$tocompute AS " . $DB::quoteName($NAME),
         ];
         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $SELECT[] = "$tocomputetrans AS {$NAME}_trans_{$field}";

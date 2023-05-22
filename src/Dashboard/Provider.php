@@ -1550,15 +1550,15 @@ class Provider
             [
                 'SELECT' => [
                     QueryFunction::dateFormat($DBread::quoteName('date'), '%Y-%m', 'period'),
-                    QueryFunction::avg($DBread::quoteName('takeintoaccount_delay_stat'),'avg_takeintoaccount_delay_stat'),
+                    QueryFunction::avg($DBread::quoteName('takeintoaccount_delay_stat'), 'avg_takeintoaccount_delay_stat'),
                     QueryFunction::avg($DBread::quoteName('waiting_duration'), 'avg_waiting_duration'),
                     QueryFunction::avg($DBread::quoteName('solve_delay_stat'), 'avg_solve_delay_stat'),
                     QueryFunction::avg($DBread::quoteName('close_delay_stat'), 'close_delay_stat'),
                 ],
                 'FROM' => $t_table,
                 'WHERE' => [
-                        'is_deleted' => 0,
-                    ] + getEntitiesRestrictCriteria($t_table),
+                    'is_deleted' => 0,
+                ] + getEntitiesRestrictCriteria($t_table),
                 'ORDER' => 'period ASC',
                 'GROUP' => ['period']
             ],
