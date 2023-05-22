@@ -979,7 +979,7 @@ class Provider
             [
                 'SELECT' => [
                     'COUNT DISTINCT' => "$t_table.id as nb_tickets",
-                    QueryFunction::dateFormat($DB::quoteName('date'), $DB::quoteValue('%Y-%m'), $DB::quoteName('ticket_month')),
+                    QueryFunction::dateFormat($DB::quoteName('date'), $DB::quoteValue('%Y-%m'), 'ticket_month'),
                 ],
                 'FROM'    => $t_table,
                 'WHERE'    => [
@@ -1259,7 +1259,7 @@ class Provider
                 QueryFunction::fromUnixTimestamp(
                     expression: QueryFunction::unixTimestamp($DB::quoteName("{$t_table}_distinct.date")),
                     format: $DB::quoteValue('%Y-%m'),
-                    alias: $DB::quoteName('period')
+                    alias: 'period'
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
@@ -1267,7 +1267,7 @@ class Provider
                         true_expression: 1,
                         false_expression: 0
                     ),
-                    alias: $DB::quoteValue(_x('status', 'New'))
+                    alias: _x('status', 'New')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
@@ -1275,7 +1275,7 @@ class Provider
                         true_expression: 1,
                         false_expression: 0
                     ),
-                    alias: $DB::quoteValue(_x('status', 'Processing (assigned)'))
+                    alias: _x('status', 'Processing (assigned)')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
@@ -1283,7 +1283,7 @@ class Provider
                         true_expression: 1,
                         false_expression: 0
                     ),
-                    alias: $DB::quoteValue(_x('status', 'Processing (planned)'))
+                    alias: _x('status', 'Processing (planned)')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
@@ -1291,7 +1291,7 @@ class Provider
                         true_expression: 1,
                         false_expression: 0
                     ),
-                    alias: $DB::quoteValue(__('Pending'))
+                    alias: __('Pending')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
@@ -1299,7 +1299,7 @@ class Provider
                         true_expression: 1,
                         false_expression: 0
                     ),
-                    alias: $DB::quoteValue(_x('status', 'Solved'))
+                    alias: _x('status', 'Solved')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
@@ -1307,7 +1307,7 @@ class Provider
                         true_expression: 1,
                         false_expression: 0
                     ),
-                    alias: $DB::quoteValue(_x('status', 'Closed'))
+                    alias: _x('status', 'Closed')
                 ),
             ],
             'FROM' => new QuerySubQuery($sub_query, "{$t_table}_distinct"),
@@ -1549,16 +1549,16 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT' => [
-                    QueryFunction::dateFormat($DBread::quoteName('date'), '%Y-%m', $DBread::quoteName('period')),
-                    QueryFunction::avg($DBread::quoteName('takeintoaccount_delay_stat'), $DBread::quoteName('avg_takeintoaccount_delay_stat')),
-                    QueryFunction::avg($DBread::quoteName('waiting_duration'), $DBread::quoteName('avg_waiting_duration')),
-                    QueryFunction::avg($DBread::quoteName('solve_delay_stat'), $DBread::quoteName('avg_solve_delay_stat')),
-                    QueryFunction::avg($DBread::quoteName('close_delay_stat'), $DBread::quoteName('close_delay_stat')),
+                    QueryFunction::dateFormat($DBread::quoteName('date'), '%Y-%m', 'period'),
+                    QueryFunction::avg($DBread::quoteName('takeintoaccount_delay_stat'),'avg_takeintoaccount_delay_stat'),
+                    QueryFunction::avg($DBread::quoteName('waiting_duration'), 'avg_waiting_duration'),
+                    QueryFunction::avg($DBread::quoteName('solve_delay_stat'), 'avg_solve_delay_stat'),
+                    QueryFunction::avg($DBread::quoteName('close_delay_stat'), 'close_delay_stat'),
                 ],
                 'FROM' => $t_table,
                 'WHERE' => [
-                    'is_deleted' => 0,
-                ] + getEntitiesRestrictCriteria($t_table),
+                        'is_deleted' => 0,
+                    ] + getEntitiesRestrictCriteria($t_table),
                 'ORDER' => 'period ASC',
                 'GROUP' => ['period']
             ],

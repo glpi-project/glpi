@@ -230,7 +230,7 @@ final class SQLProvider implements SearchProviderInterface
                             order_by: $tocomputeid
                         ),
                         value: $DB::quoteValue(\Search::NULLVALUE . \Search::SHORTSEP),
-                        alias: $DB::quoteName("{$NAME}_{$key}")
+                        alias: "{$NAME}_{$key}"
                     );
                 } else {
                     $ADDITONALFIELDS[] = $DB::quoteName("{$additionalfield_field} AS {$NAME}_{$key}");
@@ -263,7 +263,7 @@ final class SQLProvider implements SearchProviderInterface
                                 ]),
                                 separator: $DB::quoteValue(\Search::LONGSEP),
                                 distinct: true,
-                                alias: $DB::quoteName("{$NAME}_2")
+                                alias: "{$NAME}_2"
                             );
                         }
                         $SELECT = [
@@ -271,7 +271,7 @@ final class SQLProvider implements SearchProviderInterface
                                 expression: $DB::quoteName("{$table}{$addtable}.id"),
                                 separator: $DB::quoteValue(\Search::LONGSEP),
                                 distinct: true,
-                                alias: $DB::quoteName($NAME)
+                                alias: $NAME
                             ),
                         ];
                         if (!empty($addaltemail)) {
@@ -296,7 +296,7 @@ final class SQLProvider implements SearchProviderInterface
                         expression: QueryFunction::sum($DB::quoteName("{$_table_add_table}.{$field}")) . ' * ' .
                             QueryFunction::count($DB::quoteName("{$_table_add_table}.id"), true) . ' / ' .
                             QueryFunction::count($DB::quoteName("{$_table_add_table}.id")),
-                        alias: $DB::quoteName($NAME)
+                        alias: $NAME
                     ),
                     QueryFunction::min($DB::quoteName("{$_table_add_table}.{$field}"), $DB::quoteName("{$NAME}_min")),
                 ];
@@ -312,22 +312,22 @@ final class SQLProvider implements SearchProviderInterface
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("{$table}{$addtable}.{$field}"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            alias: $DB::quoteName($NAME)
+                            alias: $NAME
                         ),
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.entities_id"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            alias: $DB::quoteName("{$NAME}_entities_id")
+                            alias:"{$NAME}_entities_id"
                         ),
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_recursive"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            alias: $DB::quoteName("{$NAME}_is_recursive")
+                            alias: "{$NAME}_is_recursive"
                         ),
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_dynamic"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            alias: $DB::quoteName("{$NAME}_is_dynamic")
+                            alias: "{$NAME}_is_dynamic"
                         ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
@@ -344,22 +344,22 @@ final class SQLProvider implements SearchProviderInterface
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("{$table}{$addtable}.completename"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            alias: $DB::quoteName($NAME)
+                            alias: $NAME
                         ),
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.profiles_id"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            alias: $DB::quoteName("{$NAME}_profiles_id")
+                            alias: "{$NAME}_profiles_id"
                         ),
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_recursive"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            alias: $DB::quoteName("{$NAME}_is_recursive")
+                            alias: "{$NAME}_is_recursive"
                         ),
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_dynamic"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            alias: $DB::quoteName("{$NAME}_is_dynamic")
+                            alias: "{$NAME}_is_dynamic"
                         ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
@@ -389,7 +389,7 @@ final class SQLProvider implements SearchProviderInterface
                             ]),
                             separator: $DB::quoteValue(\Search::LONGSEP),
                             distinct: true,
-                            alias: $DB::quoteName($NAME)
+                            alias: $NAME
                         ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
@@ -410,7 +410,7 @@ final class SQLProvider implements SearchProviderInterface
                         ]),
                         separator: $DB::quoteValue(\Search::LONGSEP),
                         distinct: true,
-                        alias: $DB::quoteName($NAME)
+                        alias: $NAME
                     ),
                 ];
                 return array_merge($SELECT, $ADDITONALFIELDS);
@@ -430,7 +430,7 @@ final class SQLProvider implements SearchProviderInterface
                             ]),
                             separator: $DB::quoteValue(\Search::LONGSEP),
                             distinct: true,
-                            alias: $DB::quoteName($NAME)
+                            alias: $NAME
                         ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
@@ -446,7 +446,7 @@ final class SQLProvider implements SearchProviderInterface
                             ]),
                             separator: $DB::quoteValue(\Search::LONGSEP),
                             distinct: true,
-                            alias: $DB::quoteName($NAME)
+                            alias: $NAME
                         ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
@@ -468,7 +468,7 @@ final class SQLProvider implements SearchProviderInterface
                             separator: $DB::quoteValue(\Search::LONGSEP),
                             distinct: true,
                             order_by: $DB::quoteName("{$table}{$addtable}.date") . ' DESC',
-                            alias: $DB::quoteName($NAME)
+                            alias: $NAME
                         ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
@@ -503,7 +503,7 @@ final class SQLProvider implements SearchProviderInterface
                         QueryFunction::count(
                             expression: $DB::quoteName("$table$addtable.$field"),
                             distinct: true,
-                            alias: $DB::quoteName($NAME)
+                            alias: $NAME
                         ),
                     ], $ADDITONALFIELDS);
 
@@ -524,7 +524,7 @@ final class SQLProvider implements SearchProviderInterface
                                 ),
                                 separator: $DB::quoteValue(\Search::LONGSEP),
                                 distinct: true,
-                                alias: $DB::quoteName($NAME)
+                                alias: $NAME
                             ),
                         ], $ADDITONALFIELDS);
                     }
@@ -533,7 +533,7 @@ final class SQLProvider implements SearchProviderInterface
                             date: $DB::quoteName("{$table}{$addtable}.{$opt['datafields'][1]}"),
                             interval: $DB::quoteName("{$table}{$addtable}.{$opt['datafields'][2]}") . $add_minus,
                             interval_unit: $interval,
-                            alias: $DB::quoteName($NAME)
+                            alias: $NAME
                         ),
                     ], $ADDITONALFIELDS);
 
@@ -550,7 +550,7 @@ final class SQLProvider implements SearchProviderInterface
                                 separator: $DB::quoteValue(\Search::LONGSEP),
                                 distinct: true,
                                 order_by: $tocomputeid,
-                                alias: $DB::quoteName("{$NAME}_trans_{$field}")
+                                alias: "{$NAME}_trans_{$field}"
                             );
                         }
                         $SELECT = [
@@ -563,7 +563,7 @@ final class SQLProvider implements SearchProviderInterface
                                 separator: $DB::quoteValue(\Search::LONGSEP),
                                 distinct: true,
                                 order_by: $DB::quoteName("{$table}{$addtable}.id"),
-                                alias: $DB::quoteName($NAME)
+                                alias: $NAME
                             ),
                         ];
                         if (!empty($TRANS)) {
@@ -596,7 +596,7 @@ final class SQLProvider implements SearchProviderInterface
                     separator: $DB::quoteValue(\Search::LONGSEP),
                     distinct: true,
                     order_by: $tocomputeid,
-                    alias: $DB::quoteName("{$NAME}_trans_{$field}")
+                    alias: "{$NAME}_trans_{$field}"
                 );
             }
             $SELECT = [
@@ -609,7 +609,7 @@ final class SQLProvider implements SearchProviderInterface
                     separator: $DB::quoteValue(\Search::LONGSEP),
                     distinct: true,
                     order_by: $tocomputeid,
-                    alias: $DB::quoteName($NAME)
+                    alias: $NAME
                 ),
             ];
             if (!empty($TRANS)) {

@@ -124,7 +124,7 @@ class ProjectTask_Ticket extends CommonDBRelation
             'SELECT'    => [
                 QueryFunction::sum(
                     expression: $DB::quoteName('glpi_tickets.actiontime'),
-                    alias: $DB::quoteName('duration')
+                    alias: 'duration'
                 )
             ],
             'FROM'         => self::getTable(),

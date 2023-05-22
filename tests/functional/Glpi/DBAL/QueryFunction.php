@@ -42,7 +42,7 @@ class QueryFunction extends \GLPITestCase
         return [
             ['`glpi_computers`.`date_mod`', '1', 'DAY', null, 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 1 DAY)'],
             ['`glpi_computers`.`date_mod`', '5-1', 'DAY', null, 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 5-1 DAY)'],
-            ['`glpi_computers`.`date_mod`', '1', 'DAY', '`date_alias`', 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 1 DAY) AS `date_alias`'],
+            ['`glpi_computers`.`date_mod`', '1', 'DAY', 'date_alias', 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 1 DAY) AS `date_alias`'],
             ['`glpi_computers`.`date_mod`', '5', 'MONTH', null, 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 5 MONTH)'],
             ['`glpi_tickets`.`date_creation`', '`glpi_tickets`.`time_to_own`', 'SECOND', null, 'DATE_ADD(`glpi_tickets`.`date_creation`, INTERVAL `glpi_tickets`.`time_to_own` SECOND)'],
         ];
@@ -60,9 +60,9 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             [["'A'", "'B'", "'C'"], null, "CONCAT('A', 'B', 'C')"],
-            [["'A'", "'B'", "'C'"], '`concat_alias`', "CONCAT('A', 'B', 'C') AS `concat_alias`"],
+            [["'A'", "'B'", "'C'"], 'concat_alias', "CONCAT('A', 'B', 'C') AS `concat_alias`"],
             [["'A'", '`glpi_computers`.`name`', "'C'"], null, "CONCAT('A', `glpi_computers`.`name`, 'C')"],
-            [["'A'", '`glpi_computers`.`name`', "'C'"], '`concat_alias`', "CONCAT('A', `glpi_computers`.`name`, 'C') AS `concat_alias`"],
+            [["'A'", '`glpi_computers`.`name`', "'C'"], 'concat_alias', "CONCAT('A', `glpi_computers`.`name`, 'C') AS `concat_alias`"],
         ];
     }
 
@@ -78,9 +78,9 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`is_deleted`', "'deleted'", "'not deleted'", null, "IF(`glpi_computers`.`is_deleted`, 'deleted', 'not deleted')"],
-            ['`glpi_computers`.`is_deleted`', "'deleted'", "'not deleted'", '`if_alias`', "IF(`glpi_computers`.`is_deleted`, 'deleted', 'not deleted') AS `if_alias`"],
+            ['`glpi_computers`.`is_deleted`', "'deleted'", "'not deleted'", 'if_alias', "IF(`glpi_computers`.`is_deleted`, 'deleted', 'not deleted') AS `if_alias`"],
             ['`glpi_computers`.`is_deleted`', '`glpi_computers`.`name`', "'not deleted'", null, "IF(`glpi_computers`.`is_deleted`, `glpi_computers`.`name`, 'not deleted')"],
-            ['`glpi_computers`.`is_deleted`', '`glpi_computers`.`name`', "'not deleted'", '`if_alias`', "IF(`glpi_computers`.`is_deleted`, `glpi_computers`.`name`, 'not deleted') AS `if_alias`"],
+            ['`glpi_computers`.`is_deleted`', '`glpi_computers`.`name`', "'not deleted'", 'if_alias', "IF(`glpi_computers`.`is_deleted`, `glpi_computers`.`name`, 'not deleted') AS `if_alias`"],
         ];
     }
 
@@ -96,9 +96,9 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`name`', "'unknown'", null, "IFNULL(`glpi_computers`.`name`, 'unknown')"],
-            ['`glpi_computers`.`name`', "'unknown'", '`ifnull_alias`', "IFNULL(`glpi_computers`.`name`, 'unknown') AS `ifnull_alias`"],
+            ['`glpi_computers`.`name`', "'unknown'", 'ifnull_alias', "IFNULL(`glpi_computers`.`name`, 'unknown') AS `ifnull_alias`"],
             ['`glpi_computers`.`name`', '`glpi_computers`.`serial`', null, "IFNULL(`glpi_computers`.`name`, `glpi_computers`.`serial`)"],
-            ['`glpi_computers`.`name`', '`glpi_computers`.`serial`', '`ifnull_alias`', "IFNULL(`glpi_computers`.`name`, `glpi_computers`.`serial`) AS `ifnull_alias`"],
+            ['`glpi_computers`.`name`', '`glpi_computers`.`serial`', 'ifnull_alias', "IFNULL(`glpi_computers`.`name`, `glpi_computers`.`serial`) AS `ifnull_alias`"],
         ];
     }
 
@@ -150,7 +150,7 @@ class QueryFunction extends \GLPITestCase
                 'separator' => "'_'",
                 'distinct' => true,
                 'order_by' => '`glpi_computers`.`is_deleted`',
-                'alias' => '`group_concat_alias`',
+                'alias' => 'group_concat_alias',
                 'expected' => "GROUP_CONCAT(DISTINCT `glpi_computers`.`name` ORDER BY `glpi_computers`.`is_deleted` SEPARATOR '_') AS `group_concat_alias`"
             ],
         ];
@@ -168,7 +168,7 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`name`', null, "FLOOR(`glpi_computers`.`name`)"],
-            ['`glpi_computers`.`name`', '`floor_alias`', "FLOOR(`glpi_computers`.`name`) AS `floor_alias`"],
+            ['`glpi_computers`.`name`', 'floor_alias', "FLOOR(`glpi_computers`.`name`) AS `floor_alias`"],
         ];
     }
 
@@ -184,9 +184,9 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`name`', false, null, "SUM(`glpi_computers`.`name`)"],
-            ['`glpi_computers`.`name`', false, '`sum_alias`', "SUM(`glpi_computers`.`name`) AS `sum_alias`"],
+            ['`glpi_computers`.`name`', false, 'sum_alias', "SUM(`glpi_computers`.`name`) AS `sum_alias`"],
             ['`glpi_computers`.`name`', true, null, "SUM(DISTINCT `glpi_computers`.`name`)"],
-            ['`glpi_computers`.`name`', true, '`sum_alias`', "SUM(DISTINCT `glpi_computers`.`name`) AS `sum_alias`"],
+            ['`glpi_computers`.`name`', true, 'sum_alias', "SUM(DISTINCT `glpi_computers`.`name`) AS `sum_alias`"],
         ];
     }
 
@@ -202,9 +202,9 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`name`', false, null, "COUNT(`glpi_computers`.`name`)"],
-            ['`glpi_computers`.`name`', false, '`count_alias`', "COUNT(`glpi_computers`.`name`) AS `count_alias`"],
+            ['`glpi_computers`.`name`', false, 'count_alias', "COUNT(`glpi_computers`.`name`) AS `count_alias`"],
             ['`glpi_computers`.`name`', true, null, "COUNT(DISTINCT `glpi_computers`.`name`)"],
-            ['`glpi_computers`.`name`', true, '`count_alias`', "COUNT(DISTINCT `glpi_computers`.`name`) AS `count_alias`"],
+            ['`glpi_computers`.`name`', true, 'count_alias', "COUNT(DISTINCT `glpi_computers`.`name`) AS `count_alias`"],
         ];
     }
 
@@ -220,7 +220,7 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`uuid`', null, "MIN(`glpi_computers`.`uuid`)"],
-            ['`glpi_computers`.`uuid`', '`min_alias`', "MIN(`glpi_computers`.`uuid`) AS `min_alias`"],
+            ['`glpi_computers`.`uuid`', 'min_alias', "MIN(`glpi_computers`.`uuid`) AS `min_alias`"],
         ];
     }
 
@@ -236,7 +236,7 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_tickets`.`waiting_duration`', null, "AVG(`glpi_tickets`.`waiting_duration`)"],
-            ['`glpi_tickets`.`waiting_duration`', '`avg_alias`', "AVG(`glpi_tickets`.`waiting_duration`) AS `avg_alias`"],
+            ['`glpi_tickets`.`waiting_duration`', 'avg_alias', "AVG(`glpi_tickets`.`waiting_duration`) AS `avg_alias`"],
         ];
     }
 
@@ -252,7 +252,7 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`serial`', 'INT', null, "CAST(`glpi_computers`.`serial` AS INT)"],
-            ['`glpi_computers`.`serial`', 'INT', '`cast_alias`', "CAST(`glpi_computers`.`serial` AS INT) AS `cast_alias`"],
+            ['`glpi_computers`.`serial`', 'INT', 'cast_alias', "CAST(`glpi_computers`.`serial` AS INT) AS `cast_alias`"],
         ];
     }
 
@@ -268,7 +268,7 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`name`', 'utf8mb4', null, "CONVERT(`glpi_computers`.`name` USING utf8mb4)"],
-            ['`glpi_computers`.`name`', 'utf8mb4', '`convert_alias`', "CONVERT(`glpi_computers`.`name` USING utf8mb4) AS `convert_alias`"],
+            ['`glpi_computers`.`name`', 'utf8mb4', 'convert_alias', "CONVERT(`glpi_computers`.`name` USING utf8mb4) AS `convert_alias`"],
         ];
     }
 
@@ -284,7 +284,7 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             [null, "NOW()"],
-            ['`now_alias`', "NOW() AS `now_alias`"],
+            ['now_alias', "NOW() AS `now_alias`"],
         ];
     }
 
@@ -300,7 +300,7 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`name`', null, "LOWER(`glpi_computers`.`name`)"],
-            ['`glpi_computers`.`name`', '`lower_alias`', "LOWER(`glpi_computers`.`name`) AS `lower_alias`"],
+            ['`glpi_computers`.`name`', 'lower_alias', "LOWER(`glpi_computers`.`name`) AS `lower_alias`"],
         ];
     }
 
@@ -316,11 +316,11 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`name`', '`glpi_computers`.`serial`', '`glpi_computers`.`otherserial`', null, "REPLACE(`glpi_computers`.`name`, `glpi_computers`.`serial`, `glpi_computers`.`otherserial`)"],
-            ['`glpi_computers`.`name`', '`glpi_computers`.`serial`', '`glpi_computers`.`otherserial`', '`replace_alias`', "REPLACE(`glpi_computers`.`name`, `glpi_computers`.`serial`, `glpi_computers`.`otherserial`) AS `replace_alias`"],
+            ['`glpi_computers`.`name`', '`glpi_computers`.`serial`', '`glpi_computers`.`otherserial`', 'replace_alias', "REPLACE(`glpi_computers`.`name`, `glpi_computers`.`serial`, `glpi_computers`.`otherserial`) AS `replace_alias`"],
             ['`glpi_computers`.`name`', "'test'", '`glpi_computers`.`otherserial`', null, "REPLACE(`glpi_computers`.`name`, 'test', `glpi_computers`.`otherserial`)"],
-            ['`glpi_computers`.`name`', "'test'", '`glpi_computers`.`otherserial`', '`replace_alias`', "REPLACE(`glpi_computers`.`name`, 'test', `glpi_computers`.`otherserial`) AS `replace_alias`"],
+            ['`glpi_computers`.`name`', "'test'", '`glpi_computers`.`otherserial`', 'replace_alias', "REPLACE(`glpi_computers`.`name`, 'test', `glpi_computers`.`otherserial`) AS `replace_alias`"],
             ['`glpi_computers`.`name`', "'test'", "'test2'", null, "REPLACE(`glpi_computers`.`name`, 'test', 'test2')"],
-            ['`glpi_computers`.`name`', "'test'", "'test2'", '`replace_alias`', "REPLACE(`glpi_computers`.`name`, 'test', 'test2') AS `replace_alias`"],
+            ['`glpi_computers`.`name`', "'test'", "'test2'", 'replace_alias', "REPLACE(`glpi_computers`.`name`, 'test', 'test2') AS `replace_alias`"],
         ];
     }
 
@@ -336,7 +336,7 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`date_mod`', null, "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`)"],
-            ['`glpi_computers`.`date_mod`', '`unix_timestamp_alias`', "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`) AS `unix_timestamp_alias`"],
+            ['`glpi_computers`.`date_mod`', 'unix_timestamp_alias', "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`) AS `unix_timestamp_alias`"],
         ];
     }
 
@@ -372,7 +372,7 @@ class QueryFunction extends \GLPITestCase
             [
                 'expression' => '`glpi_computers`.`date_mod`',
                 'format' => "'%Y-%m-%d'",
-                'alias' => '`from_unix_timestamp_alias`',
+                'alias' => 'from_unix_timestamp_alias',
                 'expected' => "FROM_UNIXTIME(`glpi_computers`.`date_mod`, '%Y-%m-%d') AS `from_unix_timestamp_alias`",
             ],
         ];
@@ -390,7 +390,7 @@ class QueryFunction extends \GLPITestCase
     {
         return [
             ['`glpi_computers`.`date_mod`', "'%Y-%m-%d'", null, "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d')"],
-            ['`glpi_computers`.`date_mod`', "'%Y-%m-%d'", '`date_format_alias`', "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d') AS `date_format_alias`"],
+            ['`glpi_computers`.`date_mod`', "'%Y-%m-%d'", 'date_format_alias', "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d') AS `date_format_alias`"],
         ];
     }
 
@@ -420,7 +420,7 @@ class QueryFunction extends \GLPITestCase
                     '`glpi_computers`.`serial`',
                     '`glpi_computers`.`otherserial`',
                 ],
-                'alias' => '`coalesce_alias`',
+                'alias' => 'coalesce_alias',
                 'expected' => "COALESCE(`glpi_computers`.`name`, `glpi_computers`.`serial`, `glpi_computers`.`otherserial`) AS `coalesce_alias`",
             ],
         ];
@@ -450,7 +450,7 @@ class QueryFunction extends \GLPITestCase
                     '`glpi_computers`.`date_mod`',
                     '`glpi_computers`.`date_creation`',
                 ],
-                'alias' => '`least_alias`',
+                'alias' => 'least_alias',
                 'expected' => "LEAST(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`) AS `least_alias`",
             ],
         ];
@@ -478,7 +478,7 @@ class QueryFunction extends \GLPITestCase
                 'unit' => 'SECOND',
                 'expression1' => '`glpi_computers`.`date_mod`',
                 'expression2' => '`glpi_computers`.`date_creation`',
-                'alias' => '`timestampdiff_alias`',
+                'alias' => 'timestampdiff_alias',
                 'expected' => "TIMESTAMPDIFF(SECOND, `glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`) AS `timestampdiff_alias`",
             ],
         ];
@@ -502,7 +502,7 @@ class QueryFunction extends \GLPITestCase
             ],
             [
                 'expression' => '`glpi_ipnetworks`.`netmask_0`',
-                'alias' => '`bit_count_alias`',
+                'alias' => 'bit_count_alias',
                 'expected' => "BIT_COUNT(`glpi_ipnetworks`.`netmask_0`) AS `bit_count_alias`",
             ],
         ];

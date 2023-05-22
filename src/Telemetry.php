@@ -127,7 +127,7 @@ class Telemetry extends CommonGLPI
             'SELECT' => [
                 QueryFunction::round(
                     expression: QueryFunction::sum('data_length + index_length') . ' / 1024 / 1024',
-                    alias: $DB::quoteName('dbsize'),
+                    alias: 'dbsize',
                 )
             ],
             'FROM'   => 'information_schema.tables',

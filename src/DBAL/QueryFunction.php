@@ -64,9 +64,11 @@ class QueryFunction
      */
     public function __construct(string $name, array $params = [], ?string $alias = null)
     {
+        global $DB;
+
         $this->name = $name;
         $this->params = $params;
-        $this->alias = $alias;
+        $this->alias = !empty($alias) ? $DB::quoteName($alias) : null;
     }
 
     /**
@@ -99,7 +101,7 @@ class QueryFunction
     /**
      * Build a CONCAT SQL function call
      * @param array $params Function parameters. Parameters must be already quoted if needed with {@link DBmysql::quote()} or {@link DBmysql::quoteName()}
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function concat(array $params, ?string $alias = null): self
@@ -113,7 +115,7 @@ class QueryFunction
      * @param string $date Date to add interval to
      * @param string $interval Interval to add
      * @param string $interval_unit Interval unit
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function addDate(string $date, string $interval, string $interval_unit, ?string $alias = null): self
@@ -126,7 +128,7 @@ class QueryFunction
      * @param string|array $condition Condition to test
      * @param string $true_expression Expression to return if condition is true
      * @param string $false_expression Expression to return if condition is false
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function if(string|array $condition, string $true_expression, string $false_expression, ?string $alias = null): self
@@ -142,7 +144,7 @@ class QueryFunction
      * Parameters must be already quoted if needed with {@link DBmysql::quote()} or {@link DBmysql::quoteName()}
      * @param string $expression Expression to check
      * @param string $value Value to return if expression is null
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function ifNull(string $expression, string $value, ?string $alias = null): self
@@ -156,7 +158,7 @@ class QueryFunction
      * @param string|null $separator Separator to use
      * @param bool $distinct Use DISTINCT or not
      * @param string|null $order_by Order by clause
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function groupConcat(string $expression, ?string $separator = null, bool $distinct = false, ?string $order_by = null, ?string $alias = null): self
@@ -167,7 +169,7 @@ class QueryFunction
     /**
      * Build a FLOOR SQL function call
      * @param string $expression Expression to floor
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function floor(string $expression, ?string $alias = null): self
@@ -179,7 +181,7 @@ class QueryFunction
      * Build a SUM SQL function call
      * @param string $expression Expression to sum
      * @param bool $distinct Use DISTINCT or not
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function sum(string $expression, bool $distinct = false, ?string $alias = null): self
@@ -191,7 +193,7 @@ class QueryFunction
      * Build a COUNT SQL function call
      * @param string $expression Expression to count
      * @param bool $distinct Use DISTINCT or not
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function count(string $expression, bool $distinct = false, ?string $alias = null): self
@@ -202,7 +204,7 @@ class QueryFunction
     /**
      * Build a MIN SQL function call
      * @param string $expression Expression to get min value
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function min(string $expression, ?string $alias = null): self
@@ -213,7 +215,7 @@ class QueryFunction
     /**
      * Build an AVG SQL function call
      * @param string $expression Expression to get average value
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function avg(string $expression, ?string $alias = null): self
@@ -225,7 +227,7 @@ class QueryFunction
      * Build a CAST SQL function call
      * @param string $expression Expression to cast
      * @param string $type Type to cast to
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function cast(string $expression, string $type, ?string $alias = null): self
@@ -237,7 +239,7 @@ class QueryFunction
      * Build a CONVERT SQL function call
      * @param string $expression Expression to convert
      * @param string $transcoding Transcoding to use
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function convert(string $expression, string $transcoding, ?string $alias = null): self
@@ -247,7 +249,7 @@ class QueryFunction
 
     /**
      * Build a NOW SQL function call
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function now(?string $alias = null): self
@@ -258,7 +260,7 @@ class QueryFunction
     /**
      * Build a LOWER SQL function call
      * @param string $expression Expression to convert
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function lower(string $expression, ?string $alias = null): self
@@ -271,7 +273,7 @@ class QueryFunction
      * @param string $expression Expression to search in
      * @param string $search String to search
      * @param string $replace String to replace
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function replace(string $expression, string $search, string $replace, ?string $alias = null): self
@@ -282,7 +284,7 @@ class QueryFunction
     /**
      * Build a UNIX_TIMESTAMP SQL function call
      * @param string $expression Expression to convert
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function unixTimestamp(string $expression, ?string $alias = null): self
@@ -294,7 +296,7 @@ class QueryFunction
      * Build a FROM_UNIXTIME SQL function call
      * @param string $expression Expression to convert
      * @param string|null $format Function result alias
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function fromUnixTimestamp(string $expression, ?string $format = null, ?string $alias = null): self
@@ -310,7 +312,7 @@ class QueryFunction
      * Build a DATE_FORMAT SQL function call
      * @param string $expression Expression to format
      * @param string $format Format to use
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function dateFormat(string $expression, string $format, ?string $alias = null): self
@@ -323,7 +325,7 @@ class QueryFunction
      * @param string $expression Expression to pad
      * @param string $length Length to pad to
      * @param string $pad_string String to pad with
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function lpad(string $expression, string $length, string $pad_string, ?string $alias = null): self
@@ -335,7 +337,7 @@ class QueryFunction
      * Buidl a ROUND SQL function call
      * @param string $expression Expression to round
      * @param int $precision Precision to round to
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function round(string $expression, int $precision = 0, ?string $alias = null): self
@@ -347,7 +349,7 @@ class QueryFunction
      * Build a NULLIF SQL function call
      * @param string $expression Expression to check
      * @param string $value Value to check against
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function nullIf(string $expression, string $value, ?string $alias = null): self
@@ -358,7 +360,7 @@ class QueryFunction
     /**
      * Build a COALESCE SQL function call
      * @param array $params Parameters to check
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function coalesce(array $params, ?string $alias = null): self
@@ -369,7 +371,7 @@ class QueryFunction
     /**
      * Build a LEAST SQL function call
      * @param array $params Parameters to check
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function least(array $params, ?string $alias = null): self
@@ -382,7 +384,7 @@ class QueryFunction
      * @param string $unit Unit to use
      * @param string $expression1 Expression to compare
      * @param string $expression2 Expression to compare
-     * @param string|null $alias Function result alias
+     * @param string|null $alias Function result alias (will be automatically quoted)
      * @return static
      */
     public static function timestampDiff(string $unit, string $expression1, string $expression2, ?string $alias = null): self
@@ -390,11 +392,24 @@ class QueryFunction
         return new self('TIMESTAMPDIFF', [$unit, $expression1, $expression2], $alias);
     }
 
+    /**
+     * Build a BIT_COUNT SQL function call
+     * @param string $expression Expression for the function
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return static
+     */
     public static function bitCount(string $expression, ?string $alias = null): self
     {
         return new self('BIT_COUNT', [$expression], $alias);
     }
 
+    /**
+     * Build a DATEDIFF SQL function call
+     * @param string $expression1 Expression to compare
+     * @param string $expression2 Expression to compare
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return static
+     */
     public static function dateDiff(string $expression1, string $expression2, ?string $alias = null): self
     {
         return new self('DATEDIFF', [$expression1, $expression2], $alias);

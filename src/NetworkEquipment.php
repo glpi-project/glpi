@@ -196,7 +196,7 @@ class NetworkEquipment extends CommonDBTM
                     QueryFunction::groupConcat(
                         expression: $DB::quoteName('items_id'),
                         distinct: true,
-                        alias: $DB::quoteName('ids')
+                        alias: 'ids'
                     ),
                 ],
                 'FROM'         => 'glpi_networkports_networkports',

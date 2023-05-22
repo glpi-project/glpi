@@ -2922,7 +2922,7 @@ abstract class API
                                 $DB::quoteName('ipadr.name'),
                             ]),
                             separator: $DB::quoteValue(Search::LONGSEP),
-                            alias: $DB::quoteName('ipadresses')
+                            alias: 'ipadresses'
                         );
                         $netn_iterator = $DB->request([
                             'SELECT'    => [

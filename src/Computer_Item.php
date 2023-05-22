@@ -860,7 +860,7 @@ class Computer_Item extends CommonDBRelation
                     QueryFunction::groupConcat(
                         expression: $DB::quoteName('items_id'),
                         distinct: true,
-                        alias: $DB::quoteName('ids')
+                        alias: 'ids'
                     ),
                 ],
                 'FROM' => self::getTable(),
@@ -886,7 +886,7 @@ class Computer_Item extends CommonDBRelation
                     QueryFunction::groupConcat(
                         expression: $DB::quoteName('items_id'),
                         distinct: true,
-                        alias: $DB::quoteName('ids')
+                        alias: 'ids'
                     ),
                     'computers_id'
                 ],

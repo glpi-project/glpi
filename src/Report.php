@@ -385,7 +385,7 @@ class Report extends CommonGLPI
                 QueryFunction::groupConcat(
                     expression: $DB::quoteName('ADDR_1.name'),
                     separator: $DB::quoteValue(', '),
-                    alias: $DB::quoteName('ip_1')
+                    alias: 'ip_1'
                 ),
                 'PORT_2.itemtype AS itemtype_2',
                 'PORT_2.items_id AS items_id_2',
@@ -395,7 +395,7 @@ class Report extends CommonGLPI
                 QueryFunction::groupConcat(
                     expression: $DB::quoteName('ADDR_2.name'),
                     separator: $DB::quoteValue(', '),
-                    alias: $DB::quoteName('ip_2')
+                    alias: 'ip_2'
                 ),
             ], $select),
             'FROM'         => $from,

@@ -420,7 +420,7 @@ class Budget extends CommonDropdown
                             expression: $DB::quoteName("$costtable.actiontime") . " * " . $DB::quoteName("$costtable.cost_time") . "/" . HOUR_TIMESTAMP . "
                                           + " . $DB::quoteName("$costtable.cost_fixed") . "
                                           + " . $DB::quoteName("$costtable.cost_material"),
-                            alias: $DB::quoteName('value')
+                            alias: 'value'
                         );
                         $criteria = [
                             'SELECT'       => [
@@ -763,7 +763,7 @@ class Budget extends CommonDropdown
                         expression: $DB::quoteName("$costtable.actiontime") . " * " . $DB::quoteName("$costtable.cost_time") . "/" . HOUR_TIMESTAMP . "
                                            + " . $DB::quoteName("$costtable.cost_fixed") . "
                                            + " . $DB::quoteName("$costtable.cost_material"),
-                        alias: $DB::quoteName('sumvalue')
+                        alias: 'sumvalue'
                     );
 
                     $criteria = [

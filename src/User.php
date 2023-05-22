@@ -6407,9 +6407,9 @@ JAVASCRIPT;
 
         return [
             'OR' => [
-                (string) QueryFunction::lower($login) => ['LIKE', "%$filter%"],
-                (string) $concat_names_first_last     => ['LIKE', "%$filter_no_spaces%"],
-                (string) $concat_names_last_first     => ['LIKE', "%$filter_no_spaces%"],
+                new QueryExpression(QueryFunction::lower($login) . ' LIKE ' . $DB::quoteValue("%$filter%")),
+                new QueryExpression($concat_names_first_last . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
+                new QueryExpression($concat_names_last_first . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
             ]
         ];
     }
@@ -6437,7 +6437,7 @@ JAVASCRIPT;
             condition: new QueryExpression("$first <> " . $DB::quoteValue('') . " && $second <> " . $DB::quoteValue('')),
             true_expression: QueryFunction::concat([$first, $DB::quoteValue(' '), $second]),
             false_expression: $name,
-            alias: $DB::quoteName($alias)
+            alias: $alias
         );
     }
 

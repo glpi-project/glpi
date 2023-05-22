@@ -121,7 +121,7 @@ class RuleImportAssetCollection extends RuleCollection
                     ),
                     false_expression: null
                 ),
-                alias: $DB::quoteName('is_itemtype')
+                alias: 'is_itemtype'
             );
             $where = [];
             $criteria['HAVING'] = ['is_itemtype' => 0];

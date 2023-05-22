@@ -3225,7 +3225,7 @@ JAVASCRIPT;
                                     $DB::quoteValue(' '),
                                     QueryFunction::ifNull($DB::quoteName('firstname'), $DB::quoteValue(''))
                                 ],
-                                alias: $DB::quoteName($field)
+                                alias:$field
                             ),
                             "$table.comment",
                             "$table.id"
@@ -3240,7 +3240,7 @@ JAVASCRIPT;
                             "$table.*",
                             QueryFunction::concat(
                                 params: [$DB::quoteName('glpi_softwares.name'), $DB::quoteValue(' - '), $DB::quoteName('glpi_softwarelicenses.name')],
-                                alias: $DB::quoteName($field)
+                                alias: $field
                             ),
                         ],
                         'FROM'   => $table,
