@@ -589,7 +589,7 @@ class DatabaseInstance extends CommonDBTM
             foreach ($instances as $row) {
                 $item = new self();
                 $item->getFromDB($row['id']);
-                echo "<tr lass='tab_bg_1'>";
+                echo "<tr class='tab_bg_1" . ($item->fields['is_deleted'] ? '_2' : '') . "'>";
                 echo "<td>" . $item->getLink() . "</td>";
                 $databases = $item->getDatabases();
                 echo "<td>" . sprintf(_n('%1$d database', '%1$d databases', count($databases)), count($databases)) . "</td>";
