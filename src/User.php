@@ -4499,8 +4499,8 @@ JAVASCRIPT;
                 $firstname_field = $DB::quoteName(self::getTableField('firstname'));
                 $realname_field = $DB::quoteName(self::getTableField('realname'));
                 $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
-                ? [$firstname_field, $realname_field]
-                : [$realname_field, $firstname_field];
+                ? [$firstname_field, $DB::quoteValue(' '), $realname_field]
+                : [$realname_field, $DB::quoteValue(' '), $firstname_field];
 
                 $concat = new QueryExpression(QueryFunction::concat($fields) . ' LIKE ' . $DB::quoteValue($txt_search));
                 $WHERE[] = [
