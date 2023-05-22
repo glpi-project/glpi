@@ -132,7 +132,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
         if ($request === true) {
             $conditions[] = $where1;
-            $fields[] = QueryFunction::if($where1, 1, 0, $DB::quoteName('is_1'));
+            $fields[] = QueryFunction::if($where1, 1, 0, 'is_1');
         } else {
             $fields[] = new QueryExpression('0 AS is_1');
         }

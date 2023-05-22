@@ -33,32 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\DBAL\Function;
-
-use DBmysqlIterator;
-use Glpi\DBAL\QueryFunction;
-
 /**
- * Class for formatting an GROUP_CONCAT SQL function
- * @interal Not for direct use. Use {@link QueryFunction} instead.
+ * @deprecated 10.1.0
  */
-final class GroupConcat implements Formatter
+class QueryParam extends Glpi\DBAL\QueryParam
 {
-    public static function format(array $parameters): string
+    public function __construct($expression)
     {
-        [$expression, $separator, $distinct, $order_by] = $parameters;
-        $output = 'GROUP_CONCAT(';
-        if ($distinct) {
-            $output .= 'DISTINCT ';
-        }
-        $output .= $expression;
-        if ($order_by) {
-            $output .= (new DBmysqlIterator(null))->handleOrderClause($order_by);
-        }
-        if ($separator) {
-            $output .= ' SEPARATOR ' . $separator;
-        }
-        $output .= ')';
-        return $output;
+        Toolbox::deprecated();
+        parent::__construct($expression);
     }
 }

@@ -280,10 +280,10 @@ final class SQLProvider implements SearchProviderInterface
                         return array_merge($SELECT, $ADDITONALFIELDS);
                     }
                     $SELECT = [
-                        $DB::quoteName("$table$addtable.$field AS {$NAME}"),
-                        $DB::quoteName("$table$addtable.realname AS {$NAME}_realname"),
-                        $DB::quoteName("$table$addtable.id AS {$NAME}_id"),
-                        $DB::quoteName("$table$addtable.firstname AS {$NAME}_firstname"),
+                        "$table$addtable.$field AS {$NAME}",
+                        "$table$addtable.realname AS {$NAME}_realname",
+                        "$table$addtable.id AS {$NAME}_id",
+                        "$table$addtable.firstname AS {$NAME}_firstname",
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 }
@@ -317,19 +317,16 @@ final class SQLProvider implements SearchProviderInterface
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.entities_id"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            distinct: true,
                             alias: $DB::quoteName("{$NAME}_entities_id")
                         ),
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_recursive"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            distinct: true,
                             alias: $DB::quoteName("{$NAME}_is_recursive")
                         ),
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_dynamic"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            distinct: true,
                             alias: $DB::quoteName("{$NAME}_is_dynamic")
                         ),
                     ];
@@ -372,10 +369,10 @@ final class SQLProvider implements SearchProviderInterface
             case "glpi_auth_tables.name":
                 $user_searchopt = SearchOption::getOptionsForItemtype('User');
                 $SELECT = [
-                    $DB::quoteName("glpi_users.authtype AS {$NAME}"),
-                    $DB::quoteName("glpi_users.auths_id AS {$NAME}_auths_id"),
-                    $DB::quoteName("glpi_authldaps{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[30]['joinparams']) . "{$addmeta},{$field} AS {$NAME}_{$ID}_ldapname"),
-                    $DB::quoteName("glpi_authldaps{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[31]['joinparams']) . "{$addmeta},{$field} AS {$NAME}_{$ID}_mailname"),
+                    "glpi_users.authtype AS {$NAME}",
+                    "glpi_users.auths_id AS {$NAME}_auths_id",
+                    "glpi_authldaps{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[30]['joinparams']) . "{$addmeta},{$field} AS {$NAME}_{$ID}_ldapname",
+                    "glpi_authmails{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[31]['joinparams']) . "{$addmeta},{$field} AS {$NAME}_{$ID}_mailname",
                 ];
                 return array_merge($SELECT, $ADDITONALFIELDS);
 
@@ -522,7 +519,7 @@ final class SQLProvider implements SearchProviderInterface
                             QueryFunction::groupConcat(
                                 expression: QueryFunction::addDate(
                                     date: $DB::quoteName("{$table}{$addtable}.{$opt["datafields"][1]}"),
-                                    interval: $opt['datafields'][2] . $add_minus,
+                                    interval: $DB::quoteName("{$table}{$addtable}.{$opt["datafields"][2]}") . $add_minus,
                                     interval_unit: $interval
                                 ),
                                 separator: $DB::quoteValue(\Search::LONGSEP),
@@ -621,10 +618,10 @@ final class SQLProvider implements SearchProviderInterface
             return array_merge($SELECT, $ADDITONALFIELDS);
         }
         $SELECT = [
-            "$tocompute AS " . $DB::quoteName($NAME),
+            "$tocompute AS $NAME",
         ];
         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-            $SELECT[] = "$tocomputetrans AS " . $DB::quoteName("{$NAME}_trans_{$field}");
+            $SELECT[] = "$tocomputetrans AS {$NAME}_trans_{$field}";
         }
         return array_merge($SELECT, $ADDITONALFIELDS);
     }
@@ -662,7 +659,7 @@ final class SQLProvider implements SearchProviderInterface
             case 'Notification':
                 if (!\Config::canView()) {
                     $criteria = [
-                        'NOT' => [$DB::quoteName('glpi_notifications.itemtype') => ['CronTask', 'DBConnection']]
+                        'NOT' => ['glpi_notifications.itemtype' => ['CronTask', 'DBConnection']]
                     ];
                 }
                 break;
@@ -680,16 +677,16 @@ final class SQLProvider implements SearchProviderInterface
                 $group_criteria = [];
                 if (count($_SESSION['glpigroups'])) {
                     $group_criteria = [
-                        $DB::quoteName("$teamtable.itemtype") => Group::class,
-                        $DB::quoteName("$teamtable.items_id") => $_SESSION['glpigroups']
+                        "$teamtable.itemtype" => Group::class,
+                        "$teamtable.items_id" => $_SESSION['glpigroups']
                     ];
                 }
                 $user_criteria = [
-                    $DB::quoteName("$teamtable.itemtype") => User::class,
-                    $DB::quoteName("$teamtable.items_id") => Session::getLoginUserID()
+                    "$teamtable.itemtype" => User::class,
+                    "$teamtable.items_id" => Session::getLoginUserID()
                 ];
                 $criteria = [
-                    $DB::quoteName("glpi_projects.is_template") => 0,
+                    "glpi_projects.is_template" => 0,
                     'OR' => [
                         $user_criteria
                     ]
@@ -703,18 +700,18 @@ final class SQLProvider implements SearchProviderInterface
                 if (!Session::haveRight("project", \Project::READALL)) {
                     $teamtable  = 'glpi_projectteams';
                     $user_criteria = [
-                        $DB::quoteName("$teamtable.itemtype") => User::class,
-                        $DB::quoteName("$teamtable.items_id") => Session::getLoginUserID()
+                        "$teamtable.itemtype" => User::class,
+                        "$teamtable.items_id" => Session::getLoginUserID()
                     ];
                     $group_criteria = [
-                        $DB::quoteName("$teamtable.itemtype") => Group::class,
-                        $DB::quoteName("$teamtable.items_id") => $_SESSION['glpigroups']
+                        "$teamtable.itemtype" => Group::class,
+                        "$teamtable.items_id" => $_SESSION['glpigroups']
                     ];
                     $criteria = [
                         "OR" => [
-                            $DB::quoteName("glpi_projects.users_id") => Session::getLoginUserID(),
+                            "glpi_projects.users_id" => Session::getLoginUserID(),
                             $user_criteria,
-                            $DB::quoteName("glpi_projects.groups_id") => $_SESSION['glpigroups'],
+                            "glpi_projects.groups_id" => $_SESSION['glpigroups'],
                             $group_criteria
                         ]
                     ];
@@ -1661,7 +1658,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
                         if (is_numeric($regs[2])) {
                             return [
-                                new QueryExpression("$date_computation " .
+                                new QueryExpression("$date_computation " . $regs[1] .
                                     QueryFunction::addDate(
                                         date: QueryFunction::now(),
                                         interval: $regs[2],

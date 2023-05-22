@@ -6435,7 +6435,7 @@ JAVASCRIPT;
 
         return QueryFunction::if(
             condition: new QueryExpression("$first <> " . $DB::quoteValue('') . " && $second <> " . $DB::quoteValue('')),
-            true_expression: QueryFunction::concat([$first, $second]),
+            true_expression: QueryFunction::concat([$first, $DB::quoteValue(' '), $second]),
             false_expression: $name,
             alias: $DB::quoteName($alias)
         );

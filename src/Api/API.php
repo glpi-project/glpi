@@ -1132,11 +1132,11 @@ abstract class API
 
         if (empty($criteria['WHERE'])) {
             $criteria['WHERE'] = [
-                '1' => '1'
+                new QueryExpression('true')
             ];
         }
         if ($item->maybeDeleted()) {
-            $criteria['WHERE'][$DB::quoteName("$table.is_deleted")] = (int)$params['is_deleted'];
+            $criteria['WHERE']["$table.is_deleted"] = (int) $params['is_deleted'];
         }
 
        // add filter for a parent itemtype
@@ -1170,12 +1170,12 @@ abstract class API
 
            // filter with parents fields
             if (isset($item->fields[$fk_parent])) {
-                $criteria['WHERE'][$DB::quoteName("$table.$fk_parent")] = (int) $this->parameters['parent_id'];
+                $criteria['WHERE']["$table.$fk_parent"] = (int) $this->parameters['parent_id'];
             } else if (
                 isset($item->fields['itemtype'], $item->fields['items_id'])
             ) {
-                $criteria['WHERE'][$DB::quoteName("$table.itemtype")] = $this->parameters['parent_itemtype'];
-                $criteria['WHERE'][$DB::quoteName("$table.items_id")] = (int) $this->parameters['parent_id'];
+                $criteria['WHERE']["$table.itemtype"] = $this->parameters['parent_itemtype'];
+                $criteria['WHERE']["$table.items_id"] = (int) $this->parameters['parent_id'];
             } else if (isset($parent_item->fields[$fk_child])) {
                 $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
                 $criteria['LEFT JOIN'][$parentTable] = [
@@ -1190,13 +1190,13 @@ abstract class API
                  && isset($parent_item->fields['items_id'])
             ) {
                 $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
-                $criteria['LEFT JOIN'][$DB::quoteName($parentTable)] = [
+                $criteria['LEFT JOIN'][$parentTable] = [
                     'ON' => [
-                        $parentTable => 'itemtype',
-                        new QueryExpression($DB::quoteValue($itemtype)),
+                        $parentTable    => 'items_id',
+                        $table          => 'id',
                         [
                             'AND' => [
-                                "$parentTable.items_id" => "$table.id",
+                                "$parentTable.itemtype" => $itemtype,
                             ]
                         ]
                     ]
@@ -1224,14 +1224,14 @@ abstract class API
            // make text search
             foreach ($params['searchText'] as $filter_field => $filter_value) {
                 if (!empty($filter_value)) {
-                    $criteria['WHERE'][$DB::quoteName("$table.$filter_field")] = ['LIKE', SQLProvider::makeTextSearchValue($filter_value)];
+                    $criteria['WHERE']["$table.$filter_field"] = ['LIKE', SQLProvider::makeTextSearchValue($filter_value)];
                 }
             }
         }
 
        // filter with entity
         if ($item->getType() == 'Entity') {
-            $criteria['WHERE'][] = [getEntitiesRestrictCriteria($itemtype::getTable())];
+            $criteria['WHERE'][] = getEntitiesRestrictCriteria($itemtype::getTable());
         } else if (
             $item->isEntityAssign()
             // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like ITILTemplateMandatoryField)
@@ -1243,7 +1243,7 @@ abstract class API
                 $criteria['WHERE'][] = [
                     'OR' => [
                         $entity_restrict,
-                        $DB::quoteName("$table.is_private") => 1,
+                        "$table.is_private" => 1,
                     ]
                 ];
             } else {
@@ -1255,7 +1255,7 @@ abstract class API
         $add_keys_names = count($params['add_keys_names']) > 0;
 
        // build query
-        $criteria['SELECT'] = [$DB::quoteName("$table.id"), $DB::quoteName("$table.*")];
+        $criteria['SELECT'] = ["$table.id", "$table.*"];
         $criteria['DISTINCT'] = true;
         $criteria['FROM'] = $table;
         $criteria['ORDER'] = $params['sort'] . ' ' . $params['order'];
@@ -1282,7 +1282,7 @@ abstract class API
         // get result full row counts
         $count_result = $DB->request([
             'COUNT' => 'cpt',
-            'FROM'  => $DB::quoteName($table),
+            'FROM'  => $table,
             'LEFT JOIN' => $criteria['LEFT JOIN'],
             'WHERE' => $criteria['WHERE'],
         ]);
