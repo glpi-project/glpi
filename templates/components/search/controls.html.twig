@@ -106,7 +106,7 @@
         'sort': sort,
         'order': order,
         'start': start,
-      }|url_encode ~ posthref %}
+      }|url_encode ~ '&' ~ posthref %}
       <ul class="dropdown-menu" aria-labelledby="dropdown-export">
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
             <i class="far fa-lg fa-file-pdf"></i>
