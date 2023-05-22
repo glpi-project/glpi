@@ -491,4 +491,115 @@ abstract class CommonITILRecurrent extends DbTestCase
 
         return date($format, $time);
     }
+
+    protected function createItemProvider()
+    {
+        $target_class = $this->getChildClass()::getConcreteClass();
+
+        $tech_id = getItemByTypeName(\User::class, 'tech', true);
+
+        // Create a 7d/7 24h/24 calendar
+        $calendar = $this->createItem(\Calendar::class, ['name' => 'testCreateItem calendar']);
+        for ($day = 0; $day <= 6; $day++) {
+            $this->createItem(
+                \CalendarSegment::class,
+                [
+                    'calendars_id' => $calendar->getID(),
+                    'day'          => $day,
+                    'begin'        => '00:00:00',
+                    'end'          => '24:00:00'
+                ]
+            );
+        }
+
+        // Status is computed to INCOMING as long as there is no predefined assignee
+        yield [
+            'predefined_fields' => [
+                '1'  => 'Test', // 1=name
+            ],
+            'expected_fields'   => [
+                'name'   => 'Test',
+                'status' => \CommonITILObject::INCOMING,
+            ],
+        ];
+
+        // Status is computed to ASSIGNED as long as there is a predefined assignee (except if ASSIGNED is not valid status)
+        yield [
+            'predefined_fields' => [
+                '5'  => $tech_id,
+            ],
+            'expected_fields'   => [
+                'status' => in_array(\CommonITILObject::ASSIGNED, array_keys($target_class::getAllStatusArray()))
+                    ? \CommonITILObject::ASSIGNED
+                    : \CommonITILObject::INCOMING,
+            ],
+        ];
+
+        // Predefined status is preserved
+        yield [
+            'predefined_fields' => [
+                '5'  => $tech_id,
+                '12' => \CommonITILObject::INCOMING, // 12=status
+            ],
+            'expected_fields'   => [
+                'status' => \CommonITILObject::INCOMING,
+            ],
+        ];
+    }
+
+    /**
+     * @param array $predefined_fields
+     * @param array $expected_fields
+     *
+     * @dataProvider createItemProvider
+     */
+    public function testCreateItem(array $predefined_fields, array $expected_fields)
+    {
+        $child_class = $this->getChildClass();
+        $template_class = $child_class::getTemplateClass();
+        $predefined_fields_class = $child_class::getPredefinedFieldsClass();
+
+        $calendar = getItemByTypeName(\Calendar::class, 'testCreateItem calendar');
+
+        // Create template and its predefined fields
+        $template = $this->createItem(
+            $template_class,
+            [
+                'name' => __METHOD__
+            ]
+        );
+        foreach ($predefined_fields as $num => $value) {
+            $this->createItem(
+                $predefined_fields_class,
+                [
+                    $template->getForeignKeyField() => $template->getID(),
+                    'num' => $num,
+                    'value' => $value,
+                ]
+            );
+        }
+
+        // Create item
+        $instance = $this->createItem(
+            $child_class,
+            [
+                'name'          => __METHOD__,
+                'begin_date'    => date('Y-m-d H:i:s', strtotime('-7 days')),
+                'end_date'      => null,
+                'periodicity'   => 3600,
+                'create_before' => 0,
+                'calendars_id'  => $calendar->getID(),
+                $template->getForeignKeyField() => $template->getID(),
+            ]
+        );
+        $created_item = null;
+        $this->boolean($instance->createItem($created_item))->isTrue();
+
+        // Validates created item fields
+        $this->object($created_item)->isInstanceOf(\CommonITILObject::class);
+        foreach ($expected_fields as $field_name => $field_value) {
+            $this->array($created_item->fields)->hasKey($field_name);
+            $this->variable($created_item->fields[$field_name])->isEqualTo($field_value);
+        }
+    }
 }
