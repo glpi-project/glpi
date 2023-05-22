@@ -37,6 +37,7 @@
  * Based on cacti plugin system
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
@@ -2670,13 +2671,22 @@ class Plugin extends CommonDBTM
                 if (in_array($state, [self::ACTIVATED, self::NOTUPDATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)) {
                    // Uninstall button for installed plugins
                     if (function_exists("plugin_" . $directory . "_uninstall")) {
-                        $output .= Html::getSimpleForm(
-                            static::getFormURL(),
-                            ['action' => 'uninstall'],
-                            _x('button', 'Uninstall'),
-                            ['id' => $ID],
-                            'fa-fw fa-folder-minus fa-2x'
-                        ) . '&nbsp;';
+                        $output .= TemplateRenderer::getInstance()->render('components/plugin_uninstall_modal.html.twig', [
+                            'open_btn' => '<span class="fas fa-fw fa-folder-minus fa-2x pointer"
+                                                 data-bs-toggle="modal"
+                                                 data-bs-target="#uninstallModal"
+                                                 title="' . __s("Uninstall") . '">
+                                               <span class="sr-only">' . __s("Uninstall") . '</span>
+                                           </span>',
+                            'uninstall_btn' => Html::getSimpleForm(
+                                static::getFormURL(),
+                                ['action' => 'uninstall'],
+                                _x('button', 'Uninstall'),
+                                ['id' => $ID],
+                                '',
+                                'class="btn btn-danger w-100"'
+                            ),
+                        ]);
                     } else {
                        //TRANS: %s is the list of missing functions
                         $output .= sprintf(
