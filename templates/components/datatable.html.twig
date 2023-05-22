@@ -180,8 +180,10 @@
                                         {{ call("Html::convDateTime", [entry[colkey]])|raw }}
                                     {% elseif formatter == "bytesize" %}
                                         {{ call("Toolbox::getSize", [entry[colkey]])|raw }}
-                                    {% else %}
+                                    {% elseif formatter == "itemlink" %}
                                         {{ entry[colkey]|raw }}
+                                    {% else %}
+                                        {{ entry[colkey] }}
                                     {% endif %}
                                 {% endif %}
                             </td>

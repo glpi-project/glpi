@@ -4986,13 +4986,11 @@ JAVASCRIPT;
         $start       = intval($_GET["start"] ?? 0);
 
         if ($tech) {
-            $itemtypes   = $CFG_GLPI['linkuser_tech_types']
-                         + $CFG_GLPI['linkgroup_tech_types'];
+            $itemtypes = array_merge($CFG_GLPI['linkuser_tech_types'], $CFG_GLPI['linkgroup_tech_types']);
             $field_user  = 'users_id_tech';
             $field_group = 'groups_id_tech';
         } else {
-            $itemtypes   = $CFG_GLPI['linkuser_types']
-                         + $CFG_GLPI['linkgroup_types'];
+            $itemtypes = array_merge($CFG_GLPI['linkuser_types'], $CFG_GLPI['linkgroup_types']);
             $field_user  = 'users_id';
             $field_group = 'groups_id';
         }
@@ -5062,15 +5060,12 @@ JAVASCRIPT;
                         }
                         $link = "<a href='" . $link_item . "'>" . $link . "</a>";
                     }
-                    $linktype = "";
+                    $linktypes = [];
                     if ($data[$field_user] == $ID) {
-                        $linktype = self::getTypeName(1);
+                        $linktypes[] = self::getTypeName(1);
                     }
                     if (isset($groups[$data[$field_group]])) {
-                        if ($linktype != "") {
-                            $linktype .= "<br>";
-                        }
-                        $linktype .= sprintf(
+                        $linktypes[] = sprintf(
                             __('%1$s = %2$s'),
                             Group::getTypeName(1),
                             $groups[$data[$field_group]]
@@ -5085,8 +5080,8 @@ JAVASCRIPT;
                             'name'          => $link,
                             'serial'        => $data["serial"],
                             'otherserial'   => $data["otherserial"],
-                            'states'        => Dropdown::getDropdownName("glpi_states", $data['states_id']),
-                            'linktype'      => $linktype,
+                            'states'        => Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, ''),
+                            'linktype'      => implode(', ', $linktypes),
                         ];
                     }
                     $number++;
@@ -5107,6 +5102,9 @@ JAVASCRIPT;
                 'otherserial'   => __('Inventory number'),
                 'states'        => __('Status'),
                 'linktype'      => ''
+            ],
+            'formatters' => [
+                'name'          => 'itemlink',
             ],
             'entries'               => $entries,
             'total_number'          => $number,
