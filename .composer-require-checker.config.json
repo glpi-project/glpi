@@ -2,11 +2,9 @@
   "php-core-extensions": [
     "core", "standard",
 
-    "dom", "date", "fileinfo", "filter", "json", "libxml", "pcre", "reflection", "session", "simplexml", "spl", "xml",
+    "date", "pcre", "reflection", "spl",
 
-    "curl", "gd", "intl", "mysqli", "zlib",
-
-    "exif", "ldap", "pcntl", "xmlrpc", "zip"
+    "exif", "ldap", "pcntl", "xmlrpc"
   ],
   "symbol-whitelist": [
     "// PHP symbols",

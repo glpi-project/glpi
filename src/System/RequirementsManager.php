@@ -79,10 +79,22 @@ class RequirementsManager
 
         $requirements[] = new MysqliMysqlnd();
 
-       // Mandatory PHP extensions that are defaultly enabled
-        $requirements[] = new ExtensionGroup(__('PHP core extensions'), ['dom', 'fileinfo', 'json', 'simplexml']);
+        // Mandatory PHP extensions that are defaultly enabled but can be disabled
+        $requirements[] = new ExtensionGroup(
+            __('PHP core extensions'),
+            [
+                'dom',
+                'fileinfo',
+                'filter',
+                'libxml',
+                'json',
+                'simplexml',
+                'xmlreader', // required/used by simplepie/simplepie and sabre/xml
+                'xmlwriter', // required/used by sabre/xml
+            ]
+        );
 
-       // Mandatory PHP extensions that are NOT defaultly enabled
+        // Mandatory PHP extensions that are NOT defaultly enabled
         $requirements[] = new Extension(
             'curl',
             false,
@@ -97,11 +109,6 @@ class RequirementsManager
             'intl',
             false,
             __('Required for internationalization.')
-        );
-        $requirements[] = new Extension(
-            'libxml',
-            false,
-            __('Required for XML handling.')
         );
         $requirements[] = new Extension(
             'zlib',
