@@ -35,6 +35,7 @@
 
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Glpi\Features\Clonable;
 use Glpi\RichText\RichText;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
@@ -50,6 +51,7 @@ class Reminder extends CommonDBVisible implements
         post_getEmpty as trait_post_getEmpty;
     }
     use VobjectConverterTrait;
+    use Clonable;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -178,6 +180,24 @@ class Reminder extends CommonDBVisible implements
                 ReminderTranslation::class,
             ]
         );
+    }
+
+    public function prepareInputForClone($input)
+    {
+        // regenerate uuid
+        $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+        return $input;
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Entity_Reminder::class,
+            Group_Reminder::class,
+            Profile_Reminder::class,
+            Reminder_User::class,
+            ReminderTranslation::class,
+        ];
     }
 
     public function haveVisibilityAccess()
