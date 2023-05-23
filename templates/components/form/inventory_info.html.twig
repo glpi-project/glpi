@@ -55,10 +55,11 @@
          </span>
       {% endif %}
    </div>
+
    {% set agent = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryAgent() : null %}
    {% if agent is not null %}
       <div class="card-body row">
-         <div class="mb-3 col-12 col-sm-6">
+         <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >{{ agent.getTypeName() }}</label>
             <span>
                <i class="{{ agent.getIcon() }}"></i>
@@ -66,31 +67,37 @@
             </span>
          </div>
 
-         <div class="mb-3 col-12 col-sm-6">
+         <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >{{ __('Useragent') }}</label>
             <span>{{ agent.fields['useragent']|verbatim_value }}</span>
          </div>
 
-         <div class="mb-3 col-12 col-sm-6">
+         <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >{{ __('Inventory tag') }}</label>
             <span>{{ agent.fields['tag']|verbatim_value }}</span>
          </div>
 
-         <div class="mb-3 col-12 col-sm-6">
-            <label class="form-label" >{{ __('Last contact') }}</label>
-            <span>{{ agent.fields['last_contact']|formatted_datetime }}</span>
-         </div>
-
-         <div class="mb-3 col-12 col-sm-6">
+         <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >{{ __('Public contact address') }}</label>
             <span>{{ agent.fields['remote_addr']|verbatim_value }}</span>
          </div>
 
-
-         <div class="mb-3 col-12 col-sm-6">
+         <div class="mb-3 col-12 col-sm-4">
+            <label class="form-label" >{{ __('Last contact') }}</label>
+            <span>{{ agent.fields['last_contact']|formatted_datetime }}</span>
          </div>
 
-         <div class="mb-3 col-12 col-sm-6">
+         {% if item.isField('last_inventory_update') %}
+            <div class="mb-3 col-12 col-sm-4">
+               <label class="form-label" >{{ __('Last inventory update') }}</label>
+               <span>{{ item.fields['last_inventory_update']|formatted_datetime }}</span>
+            </div>
+         {% else %}
+            <div class="mb-3 col-12 col-sm-4">
+            </div>
+         {% endif %}
+
+         <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >
                {{ __('Agent status') }}
                <i id="update-status" class="fas fa-sync" role="button" title="{{ __('Ask agent about its current status') }}"></i>
@@ -98,7 +105,7 @@
             <span id='agent_status'>{{ __('Unknown') }}</span>
          </div>
 
-         <div class="mb-3 col-12 col-sm-6">
+         <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >
                {{ __('Request inventory') }}
                <i id="update-inventory" class="fas fa-sync" role="button" title="{{ __('Request agent to proceed an new inventory') }}"></i>
