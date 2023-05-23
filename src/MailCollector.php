@@ -2007,7 +2007,7 @@ class MailCollector extends CommonDBTM
         }
         if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
             $mailer = new GLPIMailer();
-            $msg .= sprintf('(%s)', $mailer->buildDsn(false));
+            $msg .= sprintf('(%s)', $mailer::buildDsn(false));
         }
         echo wordwrap($msg . "\n", $width, "\n\t\t");
         echo "\n</pre></td></tr>";

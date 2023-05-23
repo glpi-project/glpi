@@ -93,16 +93,16 @@ class GLPIMailer extends DbTestCase
         $bkp_check_certif = $CFG_GLPI['smtp_check_certificate'];
 
         $mailer = new \GLPIMailer();
-        $this->string($mailer->buildDsn(true))->isIdenticalTo('native://default');
-        $this->string($mailer->buildDsn(false))->isIdenticalTo('native://default');
+        $this->string($mailer::buildDsn(true))->isIdenticalTo('native://default');
+        $this->string($mailer::buildDsn(false))->isIdenticalTo('native://default');
 
         $CFG_GLPI['smtp_mode'] = MAIL_SMTP;
         $CFG_GLPI['smtp_port'] = 123;
         $CFG_GLPI['smtp_host'] = 'myhost.com';
         $CFG_GLPI['smtp_username'] = 'myuser';
         $CFG_GLPI['smtp_passwd'] = (new \GLPIKey())->encrypt('mypass');
-        $this->string($mailer->buildDsn(true))->isIdenticalTo('smtp://myuser:mypass@myhost.com:123');
-        $this->string($mailer->buildDsn(false))->isIdenticalTo('smtp://myuser:********@myhost.com:123');
+        $this->string($mailer::buildDsn(true))->isIdenticalTo('smtp://myuser:mypass@myhost.com:123');
+        $this->string($mailer::buildDsn(false))->isIdenticalTo('smtp://myuser:********@myhost.com:123');
 
         //reset values
         $CFG_GLPI['smtp_mode'] = $bkp_mode;

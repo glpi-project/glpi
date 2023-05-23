@@ -73,11 +73,11 @@ class GLPIMailer
      */
     private ?string $debug_header_line;
 
-    public function __construct()
+    public function __construct(?TransportInterface $transport = null)
     {
         global $CFG_GLPI;
 
-        $this->transport = Transport::fromDsn($this->buildDsn(true));
+        $this->transport = $transport ?? Transport::fromDsn(self::buildDsn(true));
 
         if (method_exists($this->transport, 'getStream')) {
             $stream = $this->transport->getStream();
@@ -97,7 +97,7 @@ class GLPIMailer
      *
      * @return string
      */
-    final public function buildDsn(bool $with_clear_password): string
+    final public static function buildDsn(bool $with_clear_password): string
     {
         global $CFG_GLPI;
 

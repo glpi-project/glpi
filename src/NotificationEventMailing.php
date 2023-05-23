@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
@@ -117,9 +118,12 @@ class NotificationEventMailing extends NotificationEventAbstract
 
         $processed = [];
 
+        // Init transport once to avoid login in to the smtp server for every mail
+        $transport = Transport::fromDsn(GLPIMailer::buildDsn(true));
+
         foreach ($data as $row) {
             //make sure mailer is reset on each mail
-            $mmail = new GLPIMailer();
+            $mmail = new GLPIMailer($transport);
             $mail = $mmail->getEmail();
             $current = new QueuedNotification();
             $current->getFromResultSet($row);
