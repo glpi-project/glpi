@@ -479,6 +479,8 @@ HTML;
 
         // Unsanitize images urls
         $imgs = array_map(function ($img) {
+            // URL may contain &amp; which is not handled by Sanitizer::decodeHtmlSpecialChars(); htmlawed problem, see RichText::getSafeHtml().
+            $img['src'] = str_replace('&amp;', '&#38;', $img['src']);
             $img['src'] = Sanitizer::decodeHtmlSpecialChars($img['src']);
             return $img;
         }, $imgs);
