@@ -707,6 +707,11 @@ class Document extends CommonDBTM
         $itemtype = $options['itemtype'] ?? null;
         $items_id = $options['items_id'] ?? null;
 
+        // Validate itemtype, as it might come directly from $_GET
+        if (!Toolbox::isCommonDBTM($itemtype)) {
+            return false;
+        }
+
         // legacy options
         $changes_id  = $itemtype === null ? ($options['changes_id'] ?? null) : ($itemtype === 'Change' ? $items_id : null);
         $problems_id = $itemtype === null ? ($options['problems_id'] ?? null) : ($itemtype === 'Problem' ? $items_id : null);
