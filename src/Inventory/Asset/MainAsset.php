@@ -405,7 +405,7 @@ abstract class MainAsset extends InventoryAsset
      */
     public function prepareAllRulesInput(\stdClass $val): array
     {
-        $input = [];
+        $input = ['_auto' => 1];
 
         if (isset($this->getAgent()->fields['tag'])) {
             $input['tag'] = $this->getAgent()->fields['tag'];
