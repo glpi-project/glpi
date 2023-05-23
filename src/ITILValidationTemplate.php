@@ -41,7 +41,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     // From CommonDBTM
     public $dohistory = true;
 
-    // public static $rightname = 'validationtemplate';
+    public static $rightname = 'itilvalidationtemplate';
 
     public $can_be_translated = true;
 
@@ -82,7 +82,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
                 'list'  => true
             ],
             [
-                'name'           => 'comment_submission',
+                'name'           => 'content',
                 'label'          => __('Content'),
                 'type'           => 'tinymce',
                 // As content copying from template is not using the image pasting process, these images
@@ -204,7 +204,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         $tab[] = [
             'id'                 => '4',
             'name'               => __('Content'),
-            'field'              => 'comment_submission',
+            'field'              => 'content',
             'table'              => $this->getTable(),
             'datatype'           => 'text',
             'htmltext'           => true
@@ -265,7 +265,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
                     'itilvalidationtemplates_id' => $this->getID(),
                     'itemtype'                   => $this->input['itemtype_target'],
                     'items_id'                   => $user_id,
-                    'groups_id'                  => $this->input['groups_id'],
+                    'groups_id'                  => $this->input['groups_id'] ?? null,
                 ]);
             }
         }

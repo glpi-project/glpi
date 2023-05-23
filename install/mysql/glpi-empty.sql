@@ -9560,7 +9560,7 @@ CREATE TABLE `glpi_itilvalidationtemplates` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `itemtypes` varchar(100) DEFAULT NULL,
   `name` varchar(255) NOT NULL DEFAULT '',
-  `comment_submission` text,
+  `content` text,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,

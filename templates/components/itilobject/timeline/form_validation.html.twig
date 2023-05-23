@@ -337,10 +337,10 @@
                   itemtype: '{{ item.getType() }}'
                }
             }).done(function (data) {
-               if (data.comment_submission !== undefined) {
+               if (data.content !== undefined) {
                   // set textarea content
                   if (validationtinymce = tinymce.get("comment_submission_{{ rand }}")) {
-                     validationtinymce.setContent(data.comment_submission);
+                     validationtinymce.setContent(data.content);
                   }
                }
 

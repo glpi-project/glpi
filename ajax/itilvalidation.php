@@ -54,7 +54,7 @@ if ($validationtemplates_id === null) {
 } else if ($validationtemplates_id == 0) {
     // Reset form
     echo json_encode([
-        'comment_submission' => ""
+        'content' => ""
     ]);
     die;
 }
