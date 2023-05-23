@@ -891,7 +891,7 @@ $ curl -X GET \
   * *criteria*: array of criterion objects to filter search. Optional.
     You can optionally precise `meta=true` to pass a searchoption of another itemtype (meta-criteria).
     Each criterion object must provide at least:
-      * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
+      * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, OR NOT].
 
       And you can pass a direct searchoption usage :
 
@@ -951,7 +951,7 @@ $ curl -X GET \
       **Deprecated: Now criteria support meta flag, you should use it instead direct metacriteria option.**
 
       Each meta-criterion object must provide:
-        * *link*: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory.
+        * *link*: logical operator in [AND, OR, AND NOT, OR NOT]. Mandatory.
         * *itemtype*: second itemtype to link.
         * *field*: id of the searchoption.
         * *searchtype*: type of search in [contains¹, equals², notequals², lessthan, morethan, under, notunder].
