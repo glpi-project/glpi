@@ -275,6 +275,12 @@ class NotificationEventMailing extends NotificationEventAbstract
                                     }
 
                                     $img_infos = getimagesize(GLPI_DOC_DIR . "/" . $doc->fields['filepath']);
+
+                                    if (!$img_infos) {
+                                        // Failure to read image size, skip to avoid a divide by zero exception
+                                        continue;
+                                    }
+
                                     $initial_width = $img_infos[0];
                                     $initial_height = $img_infos[1];
 
