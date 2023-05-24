@@ -283,7 +283,6 @@ class Document extends DbTestCase
             'itemtype' => 'not_a_class',
             'items_id' => 'not an id',
         ]))->isFalse();
-
         $this->boolean(
             $document->update(
                 [
@@ -293,7 +292,6 @@ class Document extends DbTestCase
             )
         )->isTrue();
         $this->boolean($document->canViewFile())->isTrue();
-
     }
 
     /**
