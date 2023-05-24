@@ -194,7 +194,9 @@ $break_tablet: 1400px;
                 display: inline-flex;
             }
         }
+    }
 
+    &.edit-mode, &.filter-mode {
         .card.filter-impacted {
             border-color: #509ee3;
 
