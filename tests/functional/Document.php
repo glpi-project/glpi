@@ -279,6 +279,11 @@ class Document extends DbTestCase
 
        // post-only can see its own documents
         $this->login('post-only', 'postonly');
+        $this->boolean($document->canViewFile([
+            'itemtype' => 'not_a_class',
+            'items_id' => 'not an id',
+        ]))->isFalse();
+
         $this->boolean(
             $document->update(
                 [
@@ -288,6 +293,7 @@ class Document extends DbTestCase
             )
         )->isTrue();
         $this->boolean($document->canViewFile())->isTrue();
+
     }
 
     /**

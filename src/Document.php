@@ -707,11 +707,6 @@ class Document extends CommonDBTM
         $itemtype = $options['itemtype'] ?? null;
         $items_id = $options['items_id'] ?? null;
 
-        // Validate itemtype, as it might come directly from $_GET
-        if ($itemtype !== null && !Toolbox::isCommonDBTM($itemtype)) {
-            return false;
-        }
-
         // legacy options
         $changes_id  = $itemtype === null ? ($options['changes_id'] ?? null) : ($itemtype === 'Change' ? $items_id : null);
         $problems_id = $itemtype === null ? ($options['problems_id'] ?? null) : ($itemtype === 'Problem' ? $items_id : null);
@@ -727,6 +722,7 @@ class Document extends CommonDBTM
 
         if (
             $itemtype !== null
+            && is_a($itemtype, CommonDBTM::class, true)
             && $items_id !== null
             && $this->canViewFileFromItem($itemtype, $items_id)
         ) {
