@@ -39,7 +39,7 @@ use Glpi\DBAL\QueryFunction;
 
 /**
  * Class for formatting an ADDDATE SQL function
- * @interal Not for direct use. Use {@link QueryFunction} instead.
+ * @internal Not for direct use. Use {@link QueryFunction} instead.
  */
 final class AddDate implements Formatter
 {
