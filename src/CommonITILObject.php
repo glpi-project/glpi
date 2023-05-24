@@ -8836,7 +8836,7 @@ abstract class CommonITILObject extends CommonDBTM
             ];
 
             if (static::class === Ticket::class) {
-                $data['_links'] = $linked_tickets[$data['id']] ?? [];
+                $data['_steps'] = $linked_tickets[$data['id']] ?? [];
             }
 
             $items[$data['id']] = $data;
