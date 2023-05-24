@@ -194,6 +194,18 @@ $break_tablet: 1400px;
                 display: inline-flex;
             }
         }
+    }
+
+    &.filter-mode {
+        .toolbar {
+            .change-dashboard {
+            display: none;
+            }
+
+            .filter-dashboard-properties {
+            display: inline-block;
+            }
+        }
 
         .filters_toolbar {
             .filters {
