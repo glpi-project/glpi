@@ -151,7 +151,6 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::seems_utf8()`
 - `Toolbox::stripslashes_deep()`
 - `Search::getOptions()` no longer returns a reference
-- Use of raw SQL function strings. Use `QueryFunction` static methods instead.
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.
