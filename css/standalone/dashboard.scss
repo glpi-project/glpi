@@ -196,21 +196,6 @@ $break_tablet: 1400px;
         }
     }
 
-    &.edit-mode, &.filter-mode {
-        .card.filter-impacted {
-            border-color: #509ee3;
-
-            &::before {
-                background: rgb(80,158,227, 30%);
-                content: '';
-                position: absolute;
-                width: inherit;
-                height: inherit;
-                margin: -3px;
-            }
-        }
-    }
-
     &.filter-mode {
         .toolbar {
             .change-dashboard {
@@ -272,6 +257,19 @@ $break_tablet: 1400px;
                 .add-filter {
                     display: inline-block;
                 }
+            }
+        }
+
+        .card.filter-impacted {
+            border-color: #509ee3;
+
+            &::before {
+                background: rgb(80, 158, 227, 30%);
+                content: "";
+                position: absolute;
+                width: inherit;
+                height: inherit;
+                margin: -3px;
             }
         }
     }
