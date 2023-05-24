@@ -144,8 +144,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                             $current->fields['items_id'],
                             $reference_event
                         );
-                        $mail->getHeaders()->addTextHeader('In-Reply-To', "<{$email_ref}>");
-                        $mail->getHeaders()->addTextHeader('References', "<{$email_ref}>");
+                        $mmail->AddCustomHeader('In-Reply-To', "<{$email_ref}>");
                         $mmail->AddCustomHeader("<{$email_ref}>");
                         $mmail->AddCustomHeader("References: <{$email_ref}>");
                     }
