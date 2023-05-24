@@ -894,18 +894,9 @@ class GLPIDashboard {
         var edit_ctrl = $(this.elem_id+" .toolbar .filter-dashboard");
         edit_ctrl.toggleClass('active', activate);
         this.element.toggleClass('filter-mode', activate);
-        this.grid.setStatic(!activate);
 
         // set filters as sortable (draggable) or not
         sortable('.filters', activate ? 'enable' : 'disable');
-
-        if (!this.filter_mode) {
-            // save markdown textareas set as dirty
-            var dirty_textareas = $(".grid-stack-item.dirty");
-            if (dirty_textareas.length > 0) {
-                this.saveDashboard(true);
-            }
-        }
     }
 
     toggleFullscreenMode(fs_ctrl) {

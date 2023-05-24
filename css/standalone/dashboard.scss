@@ -198,8 +198,8 @@ $break_tablet: 1400px;
         .card.filter-impacted {
             border-color: #509ee3;
 
-            &:before {
-                background: rgb(80,158,227, .3);
+            &::before {
+                background: rgb(80,158,227, 30%);
                 content: '';
                 position: absolute;
                 width: inherit;
