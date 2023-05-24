@@ -1721,7 +1721,7 @@ class RuleTicket extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
-            'condition'    => \RuleTicket::ONADD,
+            'condition'    => \RuleTicket::ONADD | \RuleTicket::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->checkInput($ruleticket, $ruletid, $ruletinput);
@@ -1776,6 +1776,25 @@ class RuleTicket extends DbTestCase
        // Check that the rule was NOT executed
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
         $this->integer($ticket->fields['impact'])->isNotEqualTo(1);
+
+        // Update ticket to match the rule
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'itilcategories_id' => $category_id,
+        ]);
+
+        // Check that the rule was executed
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer($ticket->fields['impact'])->isEqualTo(1);
+
+        // Change impact, the rule must not be executed again as the category didn't change
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'itilcategories_id' => $category_id, // Simulate same category being sent from the user form
+            'impact' => 2,
+        ]);
+
+         // Check that the rule was not executed
+         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+         $this->integer($ticket->fields['impact'])->isNotEqualTo(1);
     }
 
     /**
