@@ -65,6 +65,7 @@ class GLPIDashboard {
         this.all_cards = [];
         this.all_widgets = [];
         this.edit_mode = false;
+        this.filter_mode = false;
         this.embed = false;
         this.ajax_cards = false;
         this.context = "core";
@@ -196,6 +197,14 @@ class GLPIDashboard {
             var activate = !$(this).hasClass('active');
 
             that.setEditMode(activate);
+            that.setFilterMode(activate);
+        });
+
+        // filter mode toggle
+        $("#dashboard-"+options.rand+" .toolbar .filter-dashboard").on('click', function() {
+            var activate = !$(this).hasClass('active');
+
+            that.setFilterMode(activate);
         });
 
         // fullscreen mode toggle
@@ -871,6 +880,26 @@ class GLPIDashboard {
         sortable(this.filters_selector, activate ? 'enable' : 'disable');
 
         if (!this.edit_mode) {
+            // save markdown textareas set as dirty
+            var dirty_textareas = $(".grid-stack-item.dirty");
+            if (dirty_textareas.length > 0) {
+                this.saveDashboard(true);
+            }
+        }
+    }
+
+    setFilterMode(activate) {
+        this.filter_mode = typeof activate == "undefined" ? true : activate;
+
+        var edit_ctrl = $(this.elem_id+" .toolbar .filter-dashboard");
+        edit_ctrl.toggleClass('active', activate);
+        this.element.toggleClass('filter-mode', activate);
+        this.grid.setStatic(!activate);
+
+        // set filters as sortable (draggable) or not
+        sortable('.filters', activate ? 'enable' : 'disable');
+
+        if (!this.filter_mode) {
             // save markdown textareas set as dirty
             var dirty_textareas = $(".grid-stack-item.dirty");
             if (dirty_textareas.length > 0) {
