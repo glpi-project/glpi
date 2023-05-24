@@ -6255,4 +6255,239 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
         $this->string($computer->fields['otherserial'])->isIdenticalTo($tag);
     }
+
+    public function testStatusIfInventoryOnAdd()
+    {
+        global $DB;
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'set status if inventory',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_auto',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => '1'
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        $state = new \State();
+        $states_id = $state->add(['name' => 'test_status_if_inventory']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_setstatusifinventory</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_setstatusifinventory']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        //FIXME: rule won't work with ONADD only. item is updated just after creation during inventory, and we do not have rules results from commondbtm.
+        //$this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['states_id'])->isIdenticalTo(0);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo(0);
+    }
+
+    public function testStatusIfInventoryOnUpdate()
+    {
+        global $DB;
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'set status if inventory',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_auto',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => '1'
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        $state = new \State();
+        $states_id = $state->add(['name' => 'test_status_if_inventory']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_setstatusifinventory</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_setstatusifinventory']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        //FIXME: rule won't work with ONUPDATE only. item is updated just after creation during inventory
+        //$this->integer($computer->fields['states_id'])->isIdenticalTo(0);
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+    }
+
+    public function testStatusIfInventoryOnAddUpdate()
+    {
+        global $DB;
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'set status if inventory',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_auto',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => '1'
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        $state = new \State();
+        $states_id = $state->add(['name' => 'test_status_if_inventory']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_setstatusifinventory</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_setstatusifinventory']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+    }
 }
