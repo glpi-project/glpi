@@ -127,7 +127,7 @@ class PrinterLog extends CommonDBChild
         }
 
         $filters = [
-            'date' => ['>', $start_date->format('Y-m-d')],
+            'date' => ['>=', $start_date->format('Y-m-d')],
             'AND' => [
                 'date' => ['<=', $end_date->format('Y-m-d')]
             ],
