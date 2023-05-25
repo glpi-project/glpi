@@ -1005,7 +1005,7 @@ HTML;
                 $dashboard_cards[$gridstack_id] = $html;
                 $GLPI_CACHE->set($cache_key, $dashboard_cards, new \DateInterval("PT" . $cache_age . "S"));
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $html = $render_error_html;
             $execution_time = round(microtime(true) - $start, 3);
             // Log the error message without exiting

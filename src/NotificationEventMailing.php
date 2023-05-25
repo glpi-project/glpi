@@ -355,7 +355,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                 if (!empty($current->fields['messageid'])) {
                     $mmail->MessageID = "<" . $current->fields['messageid'] . ">";
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 self::handleFailedSend($current, $e->getMessage());
             }
 

@@ -258,7 +258,7 @@ class Conf extends CommonGLPI
                     'items'   => $inventory_request->getInventory()->getItems(),
                 ];
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw $e;
         }
 

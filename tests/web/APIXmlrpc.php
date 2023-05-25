@@ -85,7 +85,7 @@ class APIXmlrpc extends APIBaseClass
        // launch query
         try {
             $res = $this->doHttpRequest($resource, $flat_params);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $response = $e->getResponse();
             $this->variable($response->getStatusCode())->isEqualTo($expected_codes);
             $body = xmlrpc_decode($response->getBody());

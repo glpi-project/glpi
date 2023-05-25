@@ -448,7 +448,7 @@ class Software extends InventoryAsset
             $this->populateVersions();
             $this->storeVersions();
             $this->storeAssetLink();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw $e;
         }
     }

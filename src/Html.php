@@ -194,7 +194,7 @@ class Html
 
         try {
             $date = new \DateTime($time);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e);
             Session::addMessageAfterRedirect(
                 sprintf(
