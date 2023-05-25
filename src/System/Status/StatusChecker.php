@@ -445,7 +445,7 @@ final class StatusChecker
                                 $status['servers'][$mc['name']] = [
                                     'status' => self::STATUS_OK
                                 ];
-                            } catch (\Exception $e) {
+                            } catch (\Throwable $e) {
                                 $status['servers'][$mc['name']] = [
                                     'status'       => self::STATUS_PROBLEM,
                                     'error_code'   => $e->getCode(),

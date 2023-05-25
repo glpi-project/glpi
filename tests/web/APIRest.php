@@ -112,7 +112,7 @@ class APIRest extends APIBaseClass
                     $this->base_uri . $relative_uri,
                     $params
                 );
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 throw $e;
             }
         }

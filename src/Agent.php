@@ -709,7 +709,7 @@ class Agent extends CommonDBTM
             } catch (\GuzzleHttp\Exception\RequestException $e) {
                 // got an error response, we don't need to try other addresses
                 break;
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 // many addresses will be incorrect
             }
         }
@@ -737,7 +737,7 @@ class Agent extends CommonDBTM
             ErrorHandler::getInstance()->handleException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // no response
             return ['answer' => __('Unknown')];
         }
@@ -758,7 +758,7 @@ class Agent extends CommonDBTM
             ErrorHandler::getInstance()->handleException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // no response
             return ['answer' => __('Unknown')];
         }

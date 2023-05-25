@@ -504,7 +504,7 @@ class SavedSearch_Alert extends CommonDBChild
                               'items_id' => $row['id'],
                           ]);
                     }
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     self::restoreContext($context);
                     ErrorHandler::getInstance()->handleException($e);
                 }

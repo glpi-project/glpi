@@ -824,7 +824,7 @@ class Infocom extends CommonDBChild
                 throw new \RuntimeException('Empty date');
             }
             $fiscaldate = new \DateTime($fiscaldate, new DateTimeZone($TZ));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Session::addMessageAfterRedirect(
                 __('Please fill you fiscal year date in preferences.'),
                 false,
@@ -843,7 +843,7 @@ class Infocom extends CommonDBChild
             } else {
                 $usedate = new \DateTime($buydate, new DateTimeZone($TZ));
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Session::addMessageAfterRedirect(
                 __('Please fill either buy or use date in preferences.'),
                 false,

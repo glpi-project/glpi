@@ -413,7 +413,7 @@ class Toolbox
 
         try {
             $logger->addRecord($level, $msg, $extra);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
            //something went wrong, make sure logging does not cause fatal
             error_log($e);
         }

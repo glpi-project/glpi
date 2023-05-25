@@ -90,7 +90,7 @@ if (isset($_GET['refused'])) {
 if ($handle === true) {
     try {
         $inventory_request->handleRequest($contents);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         $inventory_request->addError($e->getMessage());
     }
 }

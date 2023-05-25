@@ -4405,7 +4405,7 @@ class AuthLDAP extends CommonDBTM
                     throw new \RuntimeException('Not an objectguid!');
                 }
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
            //well... this is not an objectguid apparently
             $value = $infos[$field];
         }

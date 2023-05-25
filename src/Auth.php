@@ -216,7 +216,7 @@ class Auth extends CommonGLPI
             );
 
             return $protocol->login($login, $pass);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->addToError($e->getMessage());
             return false;
         } finally {

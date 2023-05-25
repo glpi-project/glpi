@@ -350,7 +350,7 @@ class Inventory
                     $DB->commit();
                 }
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $DB->rollback();
             throw $e;
         } finally {
