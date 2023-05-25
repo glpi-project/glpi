@@ -63,3 +63,37 @@ if (!$DB->tableExists('glpi_itilvalidationtemplates')) {
     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
     $DB->queryOrDie($query, 'x.x add table glpi_itilvalidationtemplates');
 }
+
+// Add ITILValidationTemplatesTargets table
+if (!$DB->tableExists('glpi_itilvalidationtemplates_targets')) {
+    $query = "CREATE TABLE `glpi_itilvalidationtemplates_targets` (
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+        `itilvalidationtemplates_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+        `itemtype` varchar(100) DEFAULT NULL,
+        `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+        `groups_id` int unsigned DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
+        KEY `item` (`itemtype`,`items_id`),
+        KEY `groups_id` (`groups_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
+    $DB->queryOrDie($query, 'x.x add table glpi_itilvalidationtemplates_targets');
+}
+
+$table = 'glpi_changevalidations';
+// Add new 'itilvalidationtemplates_id' field on 'glpi_changevalidations' table
+$fkey_to_add = 'itilvalidationtemplates_id';
+if (!$DB->fieldExists($table, $fkey_to_add, false)) {
+    $migration->addField($table, $fkey_to_add, 'fkey', ['after' => 'users_id_validate']);
+    $migration->addKey($table, $fkey_to_add);
+}
+
+$table = 'glpi_ticketvalidations';
+// Add new 'itilvalidationtemplates_id' field on 'glpi_ticketvalidations' table
+$fkey_to_add = 'itilvalidationtemplates_id';
+if (!$DB->fieldExists($table, $fkey_to_add, false)) {
+    $migration->addField($table, $fkey_to_add, 'fkey', ['after' => 'users_id_validate']);
+    $migration->addKey($table, $fkey_to_add);
+}
+
+$migration->addRight('itilvalidationtemplate', ALLSTANDARDRIGHT, ['dropdown' => UPDATE]);
