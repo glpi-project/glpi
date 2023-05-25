@@ -816,16 +816,17 @@ HTML;
 
             $buttons .= TemplateRenderer::getInstance()->render('components/plugin_uninstall_modal.html.twig', [
                 'plugin_name' => $plugin_inst->getField('name'),
-                'open_btn' => "<button data-bs-toggle='modal'
-                                       data-bs-target='#uninstallModal'
-                                       title='" . __s("Uninstall") . "'>
-                                   <i class='ti ti-folder-x'></i>
-                               </button>",
-                'uninstall_btn' => "<a href='#' class='btn btn-danger w-100 modify_plugin'
-                                       data-action='uninstall_plugin'
-                                       data-bs-dismiss='modal'>
-                                       " . _x('button', 'Uninstall') . "
-                                   </a>",
+                'modal_id' => 'uninstallModal' . $plugin_inst->getField('directory'),
+                'open_btn' => '<button data-bs-toggle="modal"
+                                       data-bs-target="#uninstallModal' . $plugin_inst->getField('directory') . '"
+                                       title="' . __s('Uninstall') . '">
+                                   <i class="ti ti-folder-x"></i>
+                               </button>',
+                'uninstall_btn' => '<a href="#" class="btn btn-danger w-100 modify_plugin"
+                                       data-action="uninstall_plugin"
+                                       data-bs-dismiss="modal">
+                                       ' . _x("button", "Uninstall") . '
+                                   </a>',
             ]);
 
             if (!strlen($error) && $is_actived && $config_page) {

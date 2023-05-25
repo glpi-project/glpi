@@ -2673,9 +2673,10 @@ class Plugin extends CommonDBTM
                     if (function_exists("plugin_" . $directory . "_uninstall")) {
                         $output .= TemplateRenderer::getInstance()->render('components/plugin_uninstall_modal.html.twig', [
                             'plugin_name' => $plugin->getField('name'),
+                            'modal_id' => 'uninstallModal' . $plugin->getField('directory'),
                             'open_btn' => '<span class="fas fa-fw fa-folder-minus fa-2x pointer"
                                                  data-bs-toggle="modal"
-                                                 data-bs-target="#uninstallModal"
+                                                 data-bs-target="#uninstallModal' . $plugin->getField('directory') . '"
                                                  title="' . __s("Uninstall") . '">
                                                <span class="sr-only">' . __s("Uninstall") . '</span>
                                            </span>',
