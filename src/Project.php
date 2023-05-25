@@ -2462,52 +2462,52 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             ],
             'supported_filters'           => [
                 'title' => [
-                    'label' => __('title'),
+                    'label' => _x('filters', 'title'),
                     'description' => _x('filters', 'The title of the item'),
                     'supported_prefixes' => ['!', '#'] // Support exclusions and regex
                 ],
                 'type' => [
-                    'label' => __('type'),
+                    'label' => _x('filters', 'type'),
                     'description' => _x('filters', 'The type of the item'),
                     'supported_prefixes' => ['!'] // Support exclusions only
                 ],
                 'milestone' => [
-                    'label' => __('milestone'),
+                    'label' => _x('filters', 'milestone'),
                     'description' => _x('filters', 'If the item represents a milestone or not'),
                     'supported_prefixes' => ['!']
                 ],
                 'content' => [
-                    'label' => __('content'),
+                    'label' => _x('filters', 'content'),
                     'description' => _x('filters', 'The content of the item'),
                     'supported_prefixes' => ['!', '#']
                 ],
                 'deleted' => [
-                    'label' => __('deleted'),
+                    'label' => _x('filters', 'deleted'),
                     'description' => _x('filters', 'If the item is deleted or not'),
                     'supported_prefixes' => ['!']
                 ],
                 'team' => [
-                    'label' => __('team'),
+                    'label' => _x('filters', 'team'),
                     'description' => _x('filters', 'A team member for the item'),
                     'supported_prefixes' => ['!']
                 ],
                 'user' => [
-                    'label' => __('user'),
+                    'label' => _x('filters', 'user'),
                     'description' => _x('filters', 'A user in the team of the item'),
                     'supported_prefixes' => ['!']
                 ],
                 'group' => [
-                    'label' => __('group'),
+                    'label' => _x('filters', 'group'),
                     'description' => _x('filters', 'A group in the team of the item'),
                     'supported_prefixes' => ['!']
                 ],
                 'supplier' => [
-                    'label' => __('supplier'),
+                    'label' => _x('filters', 'supplier'),
                     'description' => _x('filters', 'A supplier in the team of the item'),
                     'supported_prefixes' => ['!']
                 ],
                 'contact' => [
-                    'label' => __('contact'),
+                    'label' => _x('filters', 'contact'),
                     'description' => _x('filters', 'A contact in the team of the item'),
                     'supported_prefixes' => ['!']
                 ],
