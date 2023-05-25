@@ -1129,7 +1129,8 @@ class Ticket extends CommonITILObject
 
         // Set previous category code, this is needed to let the rule engine
         // decide if the code was changed
-        if ($category = ITILCategory::getById($this->fields['itilcategories_id'] ?? 0)) {
+        $existing_cat_id = $this->fields['itilcategories_id'] ?? 0;
+        if ($existing_cat_id > 0 && $category = ITILCategory::getById($existing_cat_id)) {
             $this->fields['itilcategories_id_code'] = $category->fields['code'];
         }
 
