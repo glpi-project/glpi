@@ -8593,10 +8593,17 @@ abstract class CommonITILObject extends CommonDBTM
     {
         global $DB;
 
-        $items      = [];
+        // List of items to return
+        $items = [];
 
-        $itil_table = static::getTable();
+        // Common variables
+        $self_item = new static();
+        $can_update = static::canUpdate();
+        $itemtype = static::class;
+        $self_fk_field = static::getForeignKeyField();
+        $linked_actors = [];
 
+        // Build base query
         $WHERE = ['is_deleted' => 0];
         $WHERE += $criteria;
         $WHERE += getEntitiesRestrictCriteria();
@@ -8605,149 +8612,233 @@ abstract class CommonITILObject extends CommonDBTM
         if (!empty($visiblity_criteria)) {
             $WHERE[] = new QueryExpression(Search::addDefaultWhere(static::class));
         }
-
-        $request = [
-            'SELECT' => [
-                $itil_table . '.id',
-                $itil_table . '.name',
-                $itil_table . '.status',
-                $itil_table . '.itilcategories_id',
-                $itil_table . '.content',
-            ],
-            'FROM'   => $itil_table,
+        $base_common_itil_query = [
+            'SELECT' => ['id'],
+            'FROM'   => static::getTable(),
             'WHERE'  => $WHERE
         ];
 
-        $iterator = $DB->request($request);
-        foreach ($iterator as $data) {
-            // Create a fake item to get just the actors without loading all other information about items.
-            $temp_item = new static();
-            $temp_item->fields['id'] = $data['id'];
-            $temp_item->loadActors();
+        // Load common_itil
+        $common_itil_query = $base_common_itil_query;
+        $common_itil_query['SELECT'][] = 'name';
+        $common_itil_query['SELECT'][] = 'status';
+        $common_itil_query['SELECT'][] = 'itilcategories_id';
+        $common_itil_query['SELECT'][] = 'content';
+        $common_itil_iterator = $DB->request($common_itil_query);
+
+        // Load actors (users)
+        $user_link_class = $self_item->userlinkclass;
+        $user_link_table = getTableForItemType($user_link_class);
+        if (!empty($user_link_class)) {
+            $linked_user_iterator = $DB->request([
+                'SELECT' => [
+                    $user_link_class::getTableField($self_fk_field),
+                    $user_link_class::getTableField('users_id'),
+                    User::getTableField('firstname'),
+                    User::getTableField('realname'),
+                ],
+                'FROM'   => $user_link_table,
+                'LEFT JOIN' => [
+                    User::getTable() => [
+                        'ON'  => [
+                            $user_link_table => 'users_id',
+                            User::getTable() => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE'  => [
+                    'type' => CommonITILActor::ASSIGN,
+                    $self_fk_field => new QuerySubQuery($base_common_itil_query)
+                ]
+            ]);
+        }
+        foreach ($linked_user_iterator as $linked_user_row) {
+            $common_itil_id = $linked_user_row[$self_fk_field];
+
+            // Init array
+            if (!isset($linked_actors[$common_itil_id])) {
+                $linked_actors[$common_itil_id] = [];
+            }
+
+            // Push users
+            $linked_actors[$common_itil_id][] = [
+                'itemtype'  => User::getType(),
+                'id'        => $linked_user_row['users_id'],
+                'firstname' => $linked_user_row['firstname'],
+                'realname'  => $linked_user_row['realname'],
+                'name'      => formatUserName(
+                    $linked_user_row['users_id'],
+                    '',
+                    $linked_user_row['realname'],
+                    $linked_user_row['firstname']
+                ),
+            ];
+        }
+
+        // Load actors (groups)
+        $group_link_class = $self_item->grouplinkclass;
+        $group_link_table = getTableForItemType($group_link_class);
+        if (!empty($group_link_class)) {
+            $linked_group_iterator = $DB->request([
+                'SELECT' => [
+                    $group_link_class::getTableField($self_fk_field),
+                    $group_link_class::getTableField('groups_id'),
+                    Group::getTableField('name'),
+                ],
+                'FROM'   => $group_link_table,
+                'LEFT JOIN' => [
+                    Group::getTable() => [
+                        'ON'  => [
+                            $group_link_table => 'groups_id',
+                            Group::getTable() => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE'  => [
+                    'type' => CommonITILActor::ASSIGN,
+                    $self_fk_field => new QuerySubQuery($base_common_itil_query)
+                ]
+            ]);
+        }
+        foreach ($linked_group_iterator as $linked_group_row) {
+            $common_itil_id = $linked_group_row[$self_fk_field];
+
+            // Init array
+            if (!isset($linked_actors[$common_itil_id])) {
+                $linked_actors[$common_itil_id] = [];
+            }
+
+            // Push groups
+            $linked_actors[$common_itil_id][] = [
+                'itemtype' => Group::getType(),
+                'id'       => $linked_group_row['groups_id'],
+                'name'     => $linked_group_row['name'],
+            ];
+        }
+
+        // Load actors (supplier)
+        $supplier_link_class = $self_item->supplierlinkclass;
+        $suplier_link_table = getTableForItemType($supplier_link_class);
+        if (!empty($supplier_link_class)) {
+            $linked_supplier_iterator = $DB->request([
+                'SELECT' => [
+                    $supplier_link_class::getTableField($self_fk_field),
+                    $supplier_link_class::getTableField('suppliers_id'),
+                    Supplier::getTableField('name'),
+                ],
+                'FROM'   => $suplier_link_table,
+                'LEFT JOIN' => [
+                    Supplier::getTable() => [
+                        'ON'  => [
+                            $suplier_link_table => 'suppliers_id',
+                            Supplier::getTable() => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE'  => [
+                    'type' => CommonITILActor::ASSIGN,
+                    $self_fk_field => new QuerySubQuery($base_common_itil_query)
+                ]
+            ]);
+        }
+        foreach ($linked_supplier_iterator as $linked_supplier_row) {
+            $common_itil_id = $linked_supplier_row[$self_fk_field];
+
+            // Init array
+            if (!isset($linked_actors[$common_itil_id])) {
+                $linked_actors[$common_itil_id] = [];
+            }
+
+            // Push groups
+            $linked_actors[$common_itil_id][] = [
+                'itemtype' => Supplier::getType(),
+                'id'       => $linked_supplier_row['suppliers_id'],
+                'name'     => $linked_supplier_row['name'],
+            ];
+        }
+
+        // Load linked tickets (only for tickets)
+        if (static::class === Ticket::class) {
+            $linked_tickets = [];
+            $linked_tickets_iterator = $DB->request(new \QueryUnion([
+                // Get parents tickets
+                [
+                    'SELECT' => [
+                        Ticket_Ticket::getTableField('tickets_id_1 AS tickets_id_parent'),
+                        Ticket_Ticket::getTableField('tickets_id_2 AS tickets_id_child'),
+                        Ticket::getTableField('status'),
+                    ],
+                    'FROM' => Ticket_Ticket::getTable(),
+                    'LEFT JOIN' => [
+                        Ticket::getTable() => [
+                            'ON'  => [
+                                Ticket_Ticket::getTable() => 'tickets_id_2',
+                                Ticket::getTable() => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'  => [
+                        'link' => Ticket_Ticket::PARENT_OF,
+                        'tickets_id_1' => new QuerySubQuery($base_common_itil_query),
+                    ]
+                ],
+                // Get children tickets
+                [
+                    'SELECT' => [
+                        Ticket_Ticket::getTableField('tickets_id_1 AS tickets_id_child'),
+                        Ticket_Ticket::getTableField('tickets_id_2 AS tickets_id_parent'),
+                        Ticket::getTableField('status'),
+                    ],
+                    'FROM' => Ticket_Ticket::getTable(),
+                    'LEFT JOIN' => [
+                        Ticket::getTable() => [
+                            'ON'  => [
+                                Ticket_Ticket::getTable() => 'tickets_id_1',
+                                Ticket::getTable() => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'  => [
+                        'link' => Ticket_Ticket::SON_OF,
+                        'tickets_id_2' => new QuerySubQuery($base_common_itil_query),
+                    ]
+                ]
+            ]));
+
+            foreach ($linked_tickets_iterator as $linked_ticket_row) {
+                $tickets_id_parent = $linked_ticket_row['tickets_id_parent'];
+
+                // Init array
+                if (!isset($linked_tickets[$tickets_id_parent])) {
+                    $linked_tickets[$tickets_id_parent] = [];
+                }
+
+                // Push links
+                $linked_tickets[$tickets_id_parent][] = [
+                    'tickets_id' => $linked_ticket_row['tickets_id_child'],
+                    'status'     => $linked_ticket_row['status'],
+                ];
+            }
+        }
+
+        foreach ($common_itil_iterator as $data) {
             $data = [
-                'id'      => $data['id'],
-                'name'    => $data['name'],
-                'category' => $data['itilcategories_id'],
-                'content' => $data['content'],
-                'status'  => $data['status'],
+                'id'        => $data['id'],
+                'name'      => $data['name'],
+                'category'  => $data['itilcategories_id'],
+                'content'   => $data['content'],
+                'status'    => $data['status'],
+                '_itemtype' => $itemtype,
+                '_team'     => $linked_actors[$data['id']] ?? [],
+                // Only use global update right here because checking item right
+                // is too expensive (need to load full item just to check right)
+                '_readonly' => !$can_update,
             ];
 
-            // Build team member data
-            $supported_teamtypes = [
-                'User' => ['id', 'firstname', 'realname'],
-                'Group' => ['id', 'name'],
-                'Supplier' => ['id', 'name'],
-            ];
-            $members = [
-                'User'      => $temp_item->getUsers(CommonITILActor::ASSIGN),
-                'Group'     => $temp_item->getGroups(CommonITILActor::ASSIGN),
-                'Supplier'   => $temp_item->getSuppliers(CommonITILActor::ASSIGN),
-            ];
-            $team = [];
-            foreach ($supported_teamtypes as $itemtype => $fields) {
-                $fields[] = 'id';
-                $fields[] = new QueryExpression($DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('itemtype'));
-
-                $member_ids = array_map(static function ($e) use ($itemtype) {
-                    return $e[$itemtype::getForeignKeyField()];
-                }, $members[$itemtype]);
-                if (count($member_ids)) {
-                    $itemtable = $itemtype::getTable();
-                    $all_items = $DB->request([
-                        'SELECT'    => $fields,
-                        'FROM'      => $itemtable,
-                        'WHERE'     => [
-                            "{$itemtable}.id"   => $member_ids
-                        ]
-                    ]);
-                    $all_members[$itemtype] = [];
-                    foreach ($all_items as $member_data) {
-                        if ($itemtype === User::class) {
-                            $member_data['name'] = formatUserName(
-                                $member_data['id'],
-                                '',
-                                $member_data['realname'],
-                                $member_data['firstname']
-                            );
-                        }
-                        $team[] = $member_data;
-                    }
-                }
-            }
-
-            $data['_itemtype'] = static::class;
-            $data['_team'] = $team;
             if (static::class === Ticket::class) {
-                $ticket_table = Ticket::getTable();
-                $tt_table = Ticket_Ticket::getTable();
-                $links = [];
-                $link_iterator = $DB->request([
-                    'FROM'   => new \QueryUnion([
-                        [
-                            'SELECT' => [
-                                new QueryExpression($DB->quoteName('tickets_id_1') . ' AS ' . $DB->quoteName('tickets_id')),
-                                'status'
-                            ],
-                            'FROM'   => $tt_table,
-                            'LEFT JOIN' => [
-                                $ticket_table => [
-                                    'ON'  => [
-                                        $ticket_table  => 'id',
-                                        $tt_table      => 'tickets_id_1'
-                                    ]
-                                ]
-                            ],
-                            'WHERE'  => [
-                                'tickets_id_1' => $data['id'],
-                                'link' => Ticket_Ticket::PARENT_OF
-                            ]
-                        ],
-                        [
-                            'SELECT' => [
-                                new QueryExpression($DB->quoteName('tickets_id_2') . ' AS ' . $DB->quoteName('tickets_id')),
-                                'status'
-                            ],
-                            'FROM'   => $tt_table,
-                            'LEFT JOIN' => [
-                                $ticket_table => [
-                                    'ON'  => [
-                                        $ticket_table  => 'id',
-                                        $tt_table      => 'tickets_id_2'
-                                    ]
-                                ]
-                            ],
-                            'WHERE'  => [
-                                'tickets_id_2' => $data['id'],
-                                'link' => Ticket_Ticket::SON_OF
-                            ]
-                        ]
-                    ])
-                ]);
-                foreach ($link_iterator as $link_data) {
-                     $links[$link_data['tickets_id']] = $link_data;
-                }
-                if ($links) {
-                    if (count($links)) {
-                        // Fill statuses
-                        $ticket_ids = array_keys($links);
-                        $status_it = $DB->request([
-                            'SELECT' => ['id', 'status'],
-                            'FROM'   => Ticket::getTable(),
-                            'WHERE'  => [
-                                'id' => $ticket_ids
-                            ]
-                        ]);
-                        foreach ($status_it as $status_data) {
-                            $links[$status_data['id']]['status'] = $status_data['status'];
-                        }
-                        $data['_steps'] = $links;
-                    }
-                }
-            } else {
-                $data['_steps'] = [];
+                $data['_steps'] = $linked_tickets[$data['id']] ?? [];
             }
-            // Only use global update right here because checking item right is too expensive (need to load full item just to check right)
-            $data['_readonly'] = !static::canUpdate();
+
             $items[$data['id']] = $data;
         }
 
