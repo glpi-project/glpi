@@ -844,4 +844,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         return in_array($value, $this->allowed_operators, true);
     }
+
+    public function fetchFields(): array
+    {
+        return $this->res->fetch_fields();
+    }
 }
