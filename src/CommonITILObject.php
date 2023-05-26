@@ -7241,6 +7241,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'item'     => [
                         'id'                 => $log_item['id'],
                         'content'            => $content,
+                        'is_content_safe'    => true,
                         'date'               => $log_item['date_mod'],
                         'users_id'           => 0,
                         'can_edit'           => false,
