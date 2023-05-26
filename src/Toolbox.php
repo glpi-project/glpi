@@ -1415,7 +1415,8 @@ class Toolbox
      * @param string $url         URL to retrieve
      * @param array  $eopts       Extra curl opts
      * @param string $msgerr      will contains a human readable error string if an error occurs of url returns empty contents
-     * @param string $curl_error  will contains original curl error string if an error occurs
+     * @param bool   $check_url_safeness    indicated whether the URL have to be filetered by safety checks
+     * @param array  $curl_info   will contains contents provided by `curl_getinfo`
      *
      * @return string
      */
@@ -1424,7 +1425,8 @@ class Toolbox
         array $eopts = [],
         &$msgerr = null,
         &$curl_error = null,
-        bool $check_url_safeness = false
+        bool $check_url_safeness = false,
+        ?array &$curl_info = null
     ) {
         global $CFG_GLPI;
 
@@ -1487,7 +1489,8 @@ class Toolbox
         curl_setopt_array($ch, $opts);
         $content = curl_exec($ch);
         $curl_error = curl_error($ch) ?: null;
-        $curl_redirect = curl_getinfo($ch, CURLINFO_REDIRECT_URL) ?: null;
+        $curl_info = curl_getinfo($ch);
+        $curl_redirect = $curl_info['redirect_url'] ?? null;
         curl_close($ch);
 
         if ($curl_error !== null) {
@@ -1505,8 +1508,8 @@ class Toolbox
                 );
             }
             $content = '';
-        } else if ($curl_redirect !== null) {
-            return self::callCurl($curl_redirect, $eopts, $msgerr, $curl_error, $check_url_safeness);
+        } else if (!empty($curl_redirect)) {
+            return self::callCurl($curl_redirect, $eopts, $msgerr, $curl_error, $check_url_safeness, $curl_info);
         } else if (empty($content)) {
             $msgerr = __('No data available on the web site');
         }
