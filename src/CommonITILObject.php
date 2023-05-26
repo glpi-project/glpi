@@ -8613,17 +8613,28 @@ abstract class CommonITILObject extends CommonDBTM
             $WHERE[] = new QueryExpression(Search::addDefaultWhere(static::class));
         }
         $base_common_itil_query = [
-            'SELECT' => ['id'],
+            'SELECT' => [static::getTableField('id')],
             'FROM'   => static::getTable(),
             'WHERE'  => $WHERE
         ];
 
+        // Add JOIN
+        $linked_tables = [];
+        $default_joint = Search::addDefaultJoin(
+            $itemtype,
+            getTableForItemType($itemtype),
+            $linked_tables, // Passed by reference, must be a defined variable even if empty
+        );
+        if (!empty($default_joint)) {
+            $base_common_itil_query['LEFT JOIN'] = [new QueryExpression($default_joint)];
+        }
+
         // Load common_itil
         $common_itil_query = $base_common_itil_query;
-        $common_itil_query['SELECT'][] = 'name';
-        $common_itil_query['SELECT'][] = 'status';
-        $common_itil_query['SELECT'][] = 'itilcategories_id';
-        $common_itil_query['SELECT'][] = 'content';
+        $common_itil_query['SELECT'][] = static::getTableField('name');
+        $common_itil_query['SELECT'][] = static::getTableField('status');
+        $common_itil_query['SELECT'][] = static::getTableField('itilcategories_id');
+        $common_itil_query['SELECT'][] = static::getTableField('content');
         $common_itil_iterator = $DB->request($common_itil_query);
 
         // Load actors (users)
@@ -8868,12 +8879,12 @@ abstract class CommonITILObject extends CommonDBTM
         });
         if (count($statuses_from_db)) {
             $criteria = [
-                'status' => $statuses_from_db
+                static::getTableField('status') => $statuses_from_db
             ];
         }
 
         // Avoid fetching everything when nothing is needed
-        if (isset($criteria['status'])) {
+        if (isset($criteria[static::getTableField('status')])) {
             $items = self::getDataToDisplayOnKanban($ID, $criteria);
         } else {
             $items = [];

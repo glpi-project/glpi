@@ -669,6 +669,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
 
             foreach ($jointables as $jointablekey => $jointablecrit) {
+                if ($jointablecrit instanceof QueryExpression) {
+                    $query .= $jointablecrit->getValue();
+                    continue;
+                }
+
                 if (isset($jointablecrit['TABLE'])) {
                    //not a "simple" FKEY
                     $jointablekey = $jointablecrit['TABLE'];
