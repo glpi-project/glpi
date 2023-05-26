@@ -669,6 +669,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
 
             foreach ($jointables as $jointablekey => $jointablecrit) {
+                // QueryExpression support, can be removed once Search::getDefaultJoin no longer returns raw SQL
+                if ($jointablecrit instanceof QueryExpression) {
+                    $query .= $jointablecrit->getValue();
+                    continue;
+                }
+
                 if (isset($jointablecrit['TABLE'])) {
                    //not a "simple" FKEY
                     $jointablekey = $jointablecrit['TABLE'];
