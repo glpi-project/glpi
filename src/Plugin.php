@@ -2652,8 +2652,8 @@ class Plugin extends CommonDBTM
                                 ['action' => 'install'],
                                 $msg,
                                 ['id' => $ID],
-                                'fa-fw fa-folder-plus fa-2x'
-                            ) . '&nbsp;';
+                                'fa-fw fa-folder-plus fa-2x me-1'
+                            );
                         }
                     } else {
                         $missing = '';
@@ -2674,12 +2674,12 @@ class Plugin extends CommonDBTM
                         $output .= TemplateRenderer::getInstance()->render('components/plugin_uninstall_modal.html.twig', [
                             'plugin_name' => $plugin->getField('name'),
                             'modal_id' => 'uninstallModal' . $plugin->getField('directory'),
-                            'open_btn' => '<a class="pointer"><span class="fas fa-fw fa-folder-minus fa-2x"
+                            'open_btn' => '<a class="pointer"><span class="fas fa-fw fa-folder-minus fa-2x me-1"
                                                   data-bs-toggle="modal"
                                                   data-bs-target="#uninstallModal' . $plugin->getField('directory') . '"
                                                   title="' . __s("Uninstall") . '">
                                                   <span class="sr-only">' . __s("Uninstall") . '</span>
-                                              </span></a>&nbsp;',
+                                              </span></a>',
                             'uninstall_btn' => Html::getSimpleForm(
                                 static::getFormURL(),
                                 ['action' => 'uninstall'],
