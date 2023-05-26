@@ -512,7 +512,9 @@ class ReservationItem extends CommonDBChild
         ]);
 
         foreach ($iterator as $data) {
-            $values[$data['itemtype']] = $data['itemtype']::getTypeName();
+            if (is_a($data['itemtype'], CommonDBTM::class, true) && $data['itemtype']::canView()) {
+                $values[$data['itemtype']] = $data['itemtype']::getTypeName();
+            }
         }
 
         $iterator = $DB->request([
