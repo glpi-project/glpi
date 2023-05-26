@@ -2115,7 +2115,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.numberoflinkedproblems' => _x('quantity', 'Number of linked problems'),
             $objettype . '.autobump.bumpcounter' => __('Number of sent bumps'),
             $objettype . '.autobump.bumpremaining' => __('Number of remaining bumps'),
-            $objettype . '.autobump.bumptotal'  => __('Total number of bumps before auto resolution'),
+            $objettype . '.autobump.bumptotal'  => __('Total number of bumps before automatic resolution'),
             $objettype . '.autobump.deadline'   => __('Auto resolution deadline'),
             $objettype . '.autobump.bumptext'   => __('Bump text'),
         ];
