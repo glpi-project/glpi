@@ -37,6 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Psr\Log\LogLevel;
+use QueryExpression;
 
 // Generic test classe, to be extended for CommonDBTM Object
 
@@ -492,6 +493,11 @@ class DBmysqlIterator extends DbTestCase
         )
          ->isInstanceOf('RuntimeException')
          ->hasMessage('BAD JOIN');
+
+        // QueryExpression
+        $expression = "LEFT JOIN xxxx";
+        $join = $this->it->analyseJoins(['LEFT JOIN' => [new QueryExpression($expression)]]);
+        $this->string($join)->isIdenticalTo($expression);
     }
 
     public function testHaving()
