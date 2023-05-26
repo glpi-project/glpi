@@ -69,7 +69,7 @@
       {% endset %}
 
       {{ __('Created: %1$s by %2$s for the group %3$s')|format(date_span, creator_span, group_span)|raw }}
-   {% elseif entry['type'] == 'ITILAutoBump' %}
+   {% elseif entry['type'] == 'ITILReminder' %}
       {{ __('%1$s')|format(date_span)|raw }}
    {% else %}
       {% if users_id > 0 %}

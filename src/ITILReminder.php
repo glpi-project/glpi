@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-class ITILAutoBump extends CommonDBChild
+class ITILReminder extends CommonDBChild
 {
     // From CommonDBTM
     public $dohistory = true;

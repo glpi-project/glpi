@@ -56,28 +56,11 @@ class PendingReason extends CommonDropdown
 
     public function getAdditionalFields()
     {
-        $defaultPendingReason = self::getDefault();
-
         return [
             [
                 'name' => 'is_default',
                 'label' => __('Default pending reason'),
-                'type' => 'bool',
-                'params' => [
-                    'add_field_html' => TemplateRenderer::getInstance()->render('components/form/pending_reason_is_default.html.twig', [
-                        'show_warning' => $defaultPendingReason && $defaultPendingReason->getID() != $this->getID(),
-                        'tooltip' => $defaultPendingReason ? \Html::showToolTip(
-                            sprintf(
-                                __('If you set this as the default pending reason, the previous default pending reason (%s) will no longer be the default value.'),
-                                '<a href="' . PendingReason::getFormURLWithID($defaultPendingReason->getID()) . '">' . $defaultPendingReason->fields['name'] . '</a>'
-                            ),
-                            [
-                                'display' => false,
-                                'awesome-class' => 'fa fa-exclamation-triangle fa-lg',
-                            ]
-                        ) : '',
-                    ]),
-                ],
+                'type' => '',
             ],
             [
                 'name' => 'is_pending_per_default',
@@ -274,6 +257,43 @@ class PendingReason extends CommonDropdown
     }
 
     /**
+     * Display specific "is_default" field
+     *
+     * @param $value
+     * @param $name
+     * @param $options
+     */
+    public function displayIsDefaultPendingReasonField(
+        $value = null,
+        $name = "",
+        $options = [],
+    ) {
+        if (empty($name)) {
+            $name = "is_default";
+        }
+
+        $options['display'] = false;
+        $defaultPendingReason = self::getDefault();
+
+        $out = Dropdown::showYesNo($name, $value, params: $options);
+        $out .= TemplateRenderer::getInstance()->render('components/form/pending_reason_is_default.html.twig', [
+            'show_warning' => $defaultPendingReason && $defaultPendingReason->getID() != $this->getID(),
+            'tooltip' => $defaultPendingReason ? \Html::showToolTip(
+                sprintf(
+                    __('If you set this as the default pending reason, the previous default pending reason (%s) will no longer be the default value.'),
+                    '<a href="' . PendingReason::getFormURLWithID($defaultPendingReason->getID()) . '">' . $defaultPendingReason->fields['name'] . '</a>'
+                ),
+                [
+                    'display' => false,
+                    'awesome-class' => 'fa fa-exclamation-triangle fa-lg',
+                ]
+            ) : '',
+        ]);
+
+        return $out;
+    }
+
+    /**
      * Get possibles values for 'followups_before_resolution' field of pending reasons
      * @return array number of bump before resolution => label
      */
@@ -291,9 +311,11 @@ class PendingReason extends CommonDropdown
     {
 
         if ($field['name'] == 'followup_frequency') {
-            echo self::displayFollowupFrequencyfield($this->fields['followup_frequency'], "", [], false);
+            echo self::displayFollowupFrequencyfield($this->fields['followup_frequency']);
         } else if ($field['name'] == 'followups_before_resolution') {
-            echo self::displayFollowupsNumberBeforeResolutionField($this->fields['followups_before_resolution'], "", [], false);
+            echo self::displayFollowupsNumberBeforeResolutionField($this->fields['followups_before_resolution']);
+        } else if ($field['name'] == 'is_default') {
+            echo self::displayIsDefaultPendingReasonField($this->fields['is_default']);
         }
     }
 

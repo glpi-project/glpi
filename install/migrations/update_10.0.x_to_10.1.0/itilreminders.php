@@ -42,9 +42,9 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-// Add ITILAutoBump table
-if (!$DB->tableExists('glpi_itilautobumps')) {
-    $query = "CREATE TABLE `glpi_itilautobumps` (
+// Add ITILReminder table
+if (!$DB->tableExists('glpi_itilreminders')) {
+    $query = "CREATE TABLE `glpi_itilreminders` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `itemtype` varchar(100) NOT NULL,
         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -57,5 +57,5 @@ if (!$DB->tableExists('glpi_itilautobumps')) {
         KEY `date_creation` (`date_creation`),
         KEY `pendingreasons_id` (`pendingreasons_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, 'x.x add table glpi_itilautobumps');
+    $DB->queryOrDie($query, 'x.x add table glpi_itilreminders');
 }

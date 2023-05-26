@@ -7290,27 +7290,28 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        // add autobumps to timeline
-        $autobump_obj = new ITILAutoBump();
-        $autobumps = $autobump_obj->find(['items_id'  => $this->getID()]);
-        foreach ($autobumps as $autobump_id => $autobump) {
-            $autobump_obj = ITILAutoBump::getByID($autobump_id);
-            $pending_reason = $autobump_obj->getPendingReason();
+        // add autoreminders to timeline
+        $autoreminder_obj = new ITILReminder();
+        $autoreminders = $autoreminder_obj->find(['items_id'  => $this->getID()]);
+        foreach ($autoreminders as $autoreminder_id => $autoreminder) {
+            $autoreminder_obj = ITILReminder::getByID($autoreminder_id);
+            $pending_reason = $autoreminder_obj->getPendingReason();
             $followup_template = ITILFollowupTemplate::getById($pending_reason->fields['itilfollowuptemplates_id']);
             $content = sprintf(
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
                 '<i class="ti ti-refresh-alert text-warning me-1"></i>',
-                __('Auto bump'),
-                $followup_template->fields['content'],
-                $autobump_obj->getPendingReason()->fields['name']
+                __('Auto reminder'),
+                $followup_template->fields['content'] ?? '',
+                $autoreminder_obj->getPendingReason()->fields['name']
             );
 
-            $timeline["ITILAutoBump_" . $autobump_id] = [
-                'type' => ITILAutoBump::class,
+            $timeline["ITILReminder_" . $autoreminder_id] = [
+                'type' => ITILReminder::class,
                 'item' => [
-                    'id' => $autobump_id,
+                    'id' => $autoreminder_id,
                     'content' => $content,
-                    'date' => $autobump['date_creation'],
+                    'is_content_safe'    => true,
+                    'date' => $autoreminder['date_creation'],
                     'users_id' => 0,
                     'can_edit' => false,
                     'timeline_position' => self::TIMELINE_LEFT,

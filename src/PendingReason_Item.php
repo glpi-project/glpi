@@ -245,29 +245,6 @@ class PendingReason_Item extends CommonDBRelation
     }
 
     /**
-     * Skip non working days in the date range
-     *
-     * @param Calendar $calendar
-     * @param DateTime $start
-     * @param DateTime $end
-     * @return DateTime
-     */
-    public function skipNonWorkingDays(Calendar $calendar, DateTime $start, DateTime $end)
-    {
-        for ($i = 1; $i < $end->diff($start)->format('%a') + 1; $i++) {
-            $date = (new DateTime())->setTimestamp($start->getTimestamp() + (DAY_TIMESTAMP * $i));
-            if (
-                $calendar && ($calendar->isHoliday($date->format('Y-m-d H:i:s'))
-                    || !$calendar->isAWorkingDay($date->getTimestamp()))
-            ) {
-                $end->setTimestamp($end->getTimestamp() + DAY_TIMESTAMP);
-            }
-        }
-
-        return $end;
-    }
-
-    /**
      * Check that the given timeline event is the lastest "pending" action for
      * the given item
      *

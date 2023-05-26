@@ -216,7 +216,7 @@ HTML,
 /** /Change Satisfaction notification */
 
 /** Add new notification for AutoBump */
-if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' => 'auto_bump']) === 0) {
+if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' => 'auto_reminder']) === 0) {
     $DB->insertOrDie('glpi_notificationtemplates', [
         'name' => 'Automatic reminder',
         'itemtype' => 'Ticket'
@@ -231,21 +231,21 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
         'content_text' => <<<PLAINTEXT
         ##lang.ticket.title##: ##ticket.title##
 
-##lang.ticket.autobump.bumpcounter##: ##ticket.autobump.bumpcounter##
-##lang.ticket.autobump.bumpremaining##: ##ticket.autobump.bumpremaining##
-##lang.ticket.autobump.bumptotal##: ##ticket.autobump.bumptotal##
-##lang.ticket.autobump.deadline##: ##ticket.autobump.deadline##
+##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##
+##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##
+##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##
+##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##
 
-##lang.ticket.autobump.bumptext##: ##ticket.autobump.bumptext##
+##lang.ticket.reminder.bumptext##: ##ticket.reminder.bumptext##
 PLAINTEXT,
         'content_html' => <<<HTML
         &lt;p&gt;##lang.ticket.title##: ##ticket.title##&lt;/p&gt;
-&lt;p&gt;##lang.ticket.autobump.bumpcounter##: ##ticket.autobump.bumpcounter##
-##lang.ticket.autobump.bumpremaining##: ##ticket.autobump.bumpremaining##
-##lang.ticket.autobump.bumptotal##: ##ticket.autobump.bumptotal##
-##lang.ticket.autobump.deadline##: ##ticket.autobump.deadline##&lt;/p&gt;
+&lt;p&gt;##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##
+##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##
+##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##
+##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##&lt;/p&gt;
 &lt;p&gt;
-##lang.ticket.autobump.bumptext##: ##ticket.autobump.bumptext##&lt;/p&gt;
+##lang.ticket.reminder.bumptext##: ##ticket.reminder.bumptext##&lt;/p&gt;
 HTML
     ]);
 
@@ -254,7 +254,7 @@ HTML
         [
             'name'            => 'Automatic reminder',
             'itemtype'        => 'Ticket',
-            'event'           => 'auto_bump',
+            'event'           => 'auto_reminder',
             'comment'         => null,
             'is_recursive'    => 0,
             'is_active'       => 0,

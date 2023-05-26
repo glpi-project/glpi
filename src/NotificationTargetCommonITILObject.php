@@ -142,7 +142,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'update_followup'   => __('Update of a followup'),
             'delete_followup'   => __('Deletion of a followup'),
             'user_mention'      => __('User mentionned'),
-            'auto_bump'         => __('Automatic reminder'),
+            'auto_reminder'         => __('Automatic reminder'),
         ];
 
         asort($events);
@@ -1379,9 +1379,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.solution.description##"] = $itilsolution->getField('content');
         }
 
-        $itilautobump = new ITILAutoBump();
+        $itilreminder = new ITILReminder();
         if (
-            $itilautobump->getFromDBByRequest([
+            $itilreminder->getFromDBByRequest([
                 'WHERE'  => [
                     'itemtype'  => $objettype,
                     'items_id'  => $item->fields['id'],
@@ -1390,7 +1390,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 'LIMIT'  => 1
             ])
         ) {
-            $pending_reason = PendingReason::getById($itilautobump->getField('pendingreasons_id'));
+            $pending_reason = PendingReason::getById($itilreminder->getField('pendingreasons_id'));
             $pending_reason_item = new PendingReason_Item();
             $followup_template = ITILFollowupTemplate::getById($pending_reason->getField('itilfollowuptemplates_id'));
             if (
@@ -1404,11 +1404,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     'LIMIT'  => 1
                 ])
             ) {
-                $data["##$objettype.autobump.bumpcounter##"]   = $pending_reason_item->getField('bump_count');
-                $data["##$objettype.autobump.bumpremaining##"] = $pending_reason_item->getField('followups_before_resolution') - $pending_reason_item->getField('bump_count');
-                $data["##$objettype.autobump.bumptotal##"]     = $pending_reason_item->getField('followups_before_resolution');
-                $data["##$objettype.autobump.deadline##"]      = $pending_reason_item->getAutoResolvedate();
-                $data["##$objettype.autobump.bumptext##"]      = $followup_template->getField('content');
+                $data["##$objettype.reminder.bumpcounter##"]   = $pending_reason_item->getField('bump_count');
+                $data["##$objettype.reminder.bumpremaining##"] = $pending_reason_item->getField('followups_before_resolution') - $pending_reason_item->getField('bump_count');
+                $data["##$objettype.reminder.bumptotal##"]     = $pending_reason_item->getField('followups_before_resolution');
+                $data["##$objettype.reminder.deadline##"]      = $pending_reason_item->getAutoResolvedate();
+                $data["##$objettype.reminder.bumptext##"]      = $followup_template->getField('content');
             }
         }
 
@@ -2113,11 +2113,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
             $objettype . '.numberoflinkedchanges' => _x('quantity', 'Number of linked changes'),
             $objettype . '.numberoflinkedproblems' => _x('quantity', 'Number of linked problems'),
-            $objettype . '.autobump.bumpcounter' => __('Number of sent bumps'),
-            $objettype . '.autobump.bumpremaining' => __('Number of remaining bumps'),
-            $objettype . '.autobump.bumptotal'  => __('Total number of bumps before automatic resolution'),
-            $objettype . '.autobump.deadline'   => __('Auto resolution deadline'),
-            $objettype . '.autobump.bumptext'   => __('Bump text'),
+            $objettype . '.reminder.bumpcounter' => __('Number of sent bumps since status is pending'),
+            $objettype . '.reminder.bumpremaining' => __('Number of remaining bumps before automatic resolution'),
+            $objettype . '.reminder.bumptotal'  => __('Total number of bumps before automatic resolution'),
+            $objettype . '.reminder.deadline'   => __('Auto resolution deadline'),
+            $objettype . '.reminder.bumptext'   => __('Bump text'),
         ];
 
         foreach ($tags as $tag => $label) {

@@ -3064,7 +3064,7 @@ $empty_data_builder = new class
                 'id'           => 76,
                 'name'         => 'Automatic reminder',
                 'itemtype'     => 'Ticket',
-                'event'        => 'auto_bump',
+                'event'        => 'auto_reminder',
                 'is_recursive' => 0,
                 'is_active'    => 0,
             ]
@@ -5197,8 +5197,8 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'notificationtemplates_id' => '31',
                 'language'                 => '',
                 'subject'                  => '##ticket.action## ##ticket.title##',
-                'content_text'             => '##ticket.autobump.bumptext##',
-                'content_html'             => '&lt;p&gt;##ticket.autobump.bumptext##&lt;/p&gt;',
+                'content_text'             => '##ticket.reminder.bumptext##',
+                'content_html'             => '&lt;p&gt;##ticket.reminder.bumptext##&lt;/p&gt;',
             ]
         ];
 

@@ -1069,7 +1069,7 @@ $RELATION = [
 
     'glpi_pendingreasons' => [
         '_glpi_pendingreasons_items' => 'pendingreasons_id',
-        '_glpi_itilautobumps' => 'pendingreasons_id',
+        '_glpi_itilreminders' => 'pendingreasons_id',
     ],
 
     'glpi_pdumodels' => [

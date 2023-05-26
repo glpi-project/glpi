@@ -45,6 +45,7 @@
         } else {
             $("#is_default_warning").addClass("d-none");
             $("select[name=\'is_pending_per_default\']").prop("disabled", true);
+            $("select[name=\'is_pending_per_default\']").trigger('setValue', 0);
         }
     });
 </script>

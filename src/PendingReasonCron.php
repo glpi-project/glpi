@@ -142,9 +142,9 @@ class PendingReasonCron extends CommonDBTM
                     continue;
                 }
 
-                // Add bump (new ITILAutoBump)
-                $autoBump = new ITILAutoBump();
-                $autoBump->add([
+                // Add bump (new ITILReminder)
+                $autoReminder = new ITILReminder();
+                $autoReminder->add([
                     'itemtype' => $item::getType(),
                     'items_id' => $item->getID(),
                     'pendingreasons_id' => $pending_reason->getID(),
@@ -152,7 +152,7 @@ class PendingReasonCron extends CommonDBTM
                 $task->addVolume(1);
 
                 // Send notification
-                \NotificationEvent::raiseEvent('auto_bump', $item);
+                \NotificationEvent::raiseEvent('auto_reminder', $item);
             } else if ($resolve && $now > $resolve) {
                 // Load solution template
                 $solution_template = SolutionTemplate::getById($pending_reason->fields['solutiontemplates_id']);

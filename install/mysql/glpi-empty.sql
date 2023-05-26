@@ -9554,8 +9554,8 @@ CREATE TABLE `glpi_searches_criteriafilters` (
   KEY `search_itemtype` (`search_itemtype`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-DROP TABLE IF EXISTS `glpi_itilautobumps`;
-CREATE TABLE `glpi_itilautobumps` (
+DROP TABLE IF EXISTS `glpi_itilreminders`;
+CREATE TABLE `glpi_itilreminders` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL,
   `items_id` int unsigned NOT NULL DEFAULT '0',
