@@ -722,6 +722,7 @@ class Document extends CommonDBTM
 
         if (
             $itemtype !== null
+            && is_a($itemtype, CommonDBTM::class, true)
             && $items_id !== null
             && $this->canViewFileFromItem($itemtype, $items_id)
         ) {
