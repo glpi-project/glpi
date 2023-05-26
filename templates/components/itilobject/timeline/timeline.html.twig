@@ -159,7 +159,11 @@
                         {% endif %}
                      {% else %}
                         <div class="read-only-content">
-                           {{ entry_i['content']|safe_html }}
+                            {% if entry_i['is_content_safe'] %}
+                                {{ entry_i['content']|raw }}
+                            {% else %}
+                                {{ entry_i['content']|safe_html }}
+                            {% endif %}
                         </div>
                      {% endif %}
                      <div class="edit-content collapse">
