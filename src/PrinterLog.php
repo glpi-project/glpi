@@ -94,14 +94,6 @@ class PrinterLog extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == Printer::getType() && $item->getID() > 0) {
-            // display the printer graph buttons component
-            TemplateRenderer::getInstance()->display('components/printer_graph_buttons.html.twig', [
-                'start_date' => $_GET['date_start'] ?? null,
-                'end_date'   => $_GET['date_end'] ?? null,
-                'interval'   => $_GET['date_interval'] ?? 'P1Y',
-                'format'     => $_GET['date_format'] ?? 'dynamic',
-            ]);
-
             $printerlog = new self();
             $printerlog->showMetrics($item);
             return true;
@@ -166,8 +158,15 @@ class PrinterLog extends CommonDBChild
 
             $series = array_filter(
                 $series,
-                fn ($k) => !isset($series[$k + 1])
-                    || date($formats[$format], strtotime($series[$k]['date'])) !== date($formats[$format], strtotime($series[$k + 1]['date'])),
+                function ($k) use ($series, $format, $formats) {
+                    if (!isset($series[$k + 1])) {
+                        return true;
+                    }
+
+                    $current_date = date($formats[$format], strtotime($series[$k]['date']));
+                    $next_date = date($formats[$format], strtotime($series[$k + 1]['date']));
+                    return $current_date !== $next_date;
+                },
                 ARRAY_FILTER_USE_KEY
             );
         }
@@ -182,23 +181,25 @@ class PrinterLog extends CommonDBChild
      */
     public function showMetrics(Printer $printer)
     {
+        $format = htmlspecialchars($_GET['date_format'] ?? 'dynamic');
+
         if (isset($_GET['date_interval'])) {
             $raw_metrics = $this->getMetrics(
                 $printer,
-                interval: $_GET['date_interval'],
-                format: $_GET['date_format'] ?? 'dynamic',
+                interval: htmlspecialchars($_GET['date_interval']),
+                format: $format,
             );
         } elseif (isset($_GET['date_start']) && isset($_GET['date_end'])) {
             $raw_metrics = $this->getMetrics(
                 $printer,
-                start_date: new DateTime($_GET['date_start']),
-                end_date: new DateTime($_GET['date_end']),
-                format: $_GET['date_format'] ?? 'dynamic',
+                start_date: new DateTime(htmlspecialchars($_GET['date_start'])),
+                end_date: new DateTime(htmlspecialchars($_GET['date_end'])),
+                format: $format,
             );
         } else {
             $raw_metrics = $this->getMetrics(
                 $printer,
-                format: $_GET['date_format'] ?? 'dynamic',
+                format: $format,
             );
         }
 
@@ -255,6 +256,14 @@ class PrinterLog extends CommonDBChild
             'show_points' => false,
             'line_width'  => 2,
         ];
+
+       // display the printer graph buttons component
+        TemplateRenderer::getInstance()->display('components/printer_graph_buttons.html.twig', [
+            'start_date' => htmlspecialchars($_GET['date_start'] ?? ''),
+            'end_date'   => htmlspecialchars($_GET['date_end'] ?? ''),
+            'interval'   => htmlspecialchars($_GET['date_interval'] ?? 'P1Y'),
+            'format'     => $format,
+        ]);
 
        //display graph
         echo "<div class='dashboard printer_barchart pt-2'>";
