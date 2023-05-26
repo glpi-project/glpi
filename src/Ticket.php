@@ -1127,6 +1127,13 @@ class Ticket extends CommonITILObject
             $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
         }
 
+        // Set previous category code, this is needed to let the rule engine
+        // decide if the code was changed
+        $existing_cat_id = $this->fields['itilcategories_id'] ?? 0;
+        if ($existing_cat_id > 0 && $category = ITILCategory::getById($existing_cat_id)) {
+            $this->fields['itilcategories_id_code'] = $category->fields['code'];
+        }
+
        // Set _contract_type for rules
         $input['_contract_types'] = [];
         $contracts_link = Ticket_Contract::getListForItem($this);
