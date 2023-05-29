@@ -1701,6 +1701,14 @@ class Infocom extends CommonDBChild
             'datatype'           => 'bool'
         ];
 
+        $tab[] = [
+            'id'                 => '173',
+            'table'              => 'glpi_businesscriticities',
+            'field'              => 'completename',
+            'name'               => _n('Business criticity', 'Business criticities', 1),
+            'datatype'           => 'dropdown'
+        ];
+
         return $tab;
     }
 
