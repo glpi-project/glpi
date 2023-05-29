@@ -664,6 +664,13 @@ final class QueryBuilder implements SearchInputInterface
             }
         }
 
+        if ($defaultfilter = \DefaultFilter::getSearchCriteria($itemtype)) {
+            $params['defaultfilter'] = $defaultfilter;
+            if (!isset($params['nodefault'])) {
+                $params['criteria'][] = $defaultfilter['search_criteria'];
+            }
+        }
+
         return $params;
     }
 

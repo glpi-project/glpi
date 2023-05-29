@@ -57,3 +57,19 @@ if (!$DB->tableExists($table)) {
 
     $DB->queryOrDie($query, "Add table $table");
 }
+
+$table = "glpi_defaultfilters";
+if (!$DB->tableExists($table)) {
+    $query = "CREATE TABLE `$table` (
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) DEFAULT NULL,
+        `is_active` tinyint NOT NULL DEFAULT '1',
+        `comment` text DEFAULT NULL,
+        `itemtype` varchar(100) DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `itemtype` (`itemtype`),
+        KEY `is_active` (`is_active`)
+    ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+    $DB->queryOrDie($query, "Add table $table");
+}

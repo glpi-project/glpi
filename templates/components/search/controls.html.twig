@@ -222,6 +222,16 @@ $(document).ready(function() {
       });
    });
 
+   $('.default-filter').change(function(event) {
+      var url = window.location.href;
+      url = url.replace(/&nodefault/g, '');
+      if (!$(this).is(":checked")) {
+         console.log('remove default filter');
+         url += '&nodefault';
+      }
+      window.location.replace(url);
+   });
+
    // Callbacks for copy success/failure
    function copy_success() {
       glpi_toast_info(__('Results copied to clipboard'));

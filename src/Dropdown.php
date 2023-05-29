@@ -1099,7 +1099,8 @@ JAVASCRIPT;
                     'State' => null,
                     'Manufacturer' => null,
                     'Blacklist' => null,
-                    'BlacklistedMailContent' => null
+                    'BlacklistedMailContent' => null,
+                    'DefaultFilter' => null,
                 ],
 
                 __('Assistance') => [
