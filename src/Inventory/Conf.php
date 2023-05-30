@@ -98,7 +98,6 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
  * @property int $import_monitor
  * @property int $import_printer
  * @property int $import_peripheral
- * @property int $keep_vm_history
  *
  */
 class Conf extends CommonGLPI
@@ -667,22 +666,6 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "</tr>";
 
-
-        echo "<tr class='tab_bg_1'>";
-
-        echo "<td>";
-        echo "<label for='dropdown_keep_vm_history$rand'>";
-        echo __('keep track of the history of virtual machines');
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Dropdown::showYesNo("keep_vm_history", $config['keep_vm_history']);
-        echo "</td>";
-
-        echo "<td>";
-        echo "</td>";
-        echo "</tr>";
-
         echo "<tr class='tab_bg_1'>";
         echo "<th colspan='4'>";
         echo CommonDevice::getTypeName(Session::getPluralNumber());
@@ -1165,7 +1148,6 @@ class Conf extends CommonGLPI
             'stale_agents_delay'             => 0,
             'stale_agents_action'            => exportArrayToDB([0]),
             'stale_agents_status'            => 0,
-            'keep_vm_history'            => 0,
         ];
     }
 }
