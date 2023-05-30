@@ -241,6 +241,25 @@ class Software extends InventoryAsset
             }
         }
 
+        //add Operating System as Software
+        if (isset($this->extra_data[OperatingSystem::class])) {
+            $os = $this->extra_data[OperatingSystem::class]->getData();
+            $os_data = [
+                'name' => $os['name'] ?? $os['full_name']
+            ];
+
+            if (!empty($os['version'] ?? '')) {
+                $os_data['version'] = $os['version'];
+            }
+
+
+            if (!empty($os['arch'] ?? '')) {
+                $os_data['arch'] = $os['arch'];
+            }
+
+            $this->data[] = $os_data;
+        }
+
         return $this->data;
     }
 
