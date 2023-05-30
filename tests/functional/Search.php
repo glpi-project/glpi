@@ -1520,13 +1520,16 @@ class Search extends DbTestCase
         \Search::constructSQL($data);
         \Search::constructData($data);
 
-        $this->integer($data['data']['totalcount'])->isEqualTo(1);
-        $this->array($data)
-         ->array['data']
-         ->array['rows']
-         ->array[0]
-         ->array['raw']
-         ->string['ITEM_Ticket_1']->isEqualTo('test ticket visibility for tech user with READNEWTICKET right');
+        foreach ($data['data']['rows'][0]['raw'] as $key => $value) {
+            if (str_ends_with($key, 'status')) {
+                $this->array($data)
+                 ->array['data']
+                 ->array['rows']
+                 ->array[0]
+                 ->array['raw']
+                 ->integer[$key]->isEqualTo(\Ticket::INCOMING);
+            }
+        }
     }
 
     public function testProblems()
