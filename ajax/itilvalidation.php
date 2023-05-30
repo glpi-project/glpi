@@ -84,10 +84,10 @@ if (!$parent->getFromDB($parents_id)) {
 }
 
 $targets = ITILValidationTemplate_Target::getTargets($template->getID());
-$itemtype = array_key_first($targets);
-$items_id_target = array_map(function ($item) {
-    return $item['items_id'];
-}, $targets[$itemtype]);
+// Both template creation form and validation creation form permits to create targets
+// for only one itemtype at once.
+$itemtype = array_key_first($targets); 
+$items_id_target = array_column($targets[$itemtype], 'items_id');
 
 if (count($targets[$itemtype]) > 0 && isset($targets[$itemtype][0]['groups_id'])) {
     $itemtype = 'Group_User';
