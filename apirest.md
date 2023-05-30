@@ -45,7 +45,6 @@ Method
 itemtype
 :   A GLPI type, could be an asset, an ITIL or a configuration object, etc.
     This type must be a class who inherits CommonDTBM GLPI class.
-    See [List itemtypes](https://forge.glpi-project.org/apidoc/class-CommonDBTM.html).
 
 searchOption
 :   A column identifier (integer) of an itemtype (ex: 1 -> id, 2 -> name, ...).
@@ -1735,8 +1734,6 @@ Check the user administration and the GLPI logs files (in files/_logs directory)
 ### ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM
 
 You asked a inexistent resource (endpoint). It's not a predefined (initSession, getFullSession, etc) nor a GLPI CommonDBTM resources.
-
-See this documentation for predefined ones or [List itemtypes](https://forge.glpi-project.org/apidoc/class-CommonDBTM.html) for available resources
 
 ### ERROR_SQL
 
