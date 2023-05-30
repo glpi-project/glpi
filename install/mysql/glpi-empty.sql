@@ -9558,7 +9558,6 @@ CREATE TABLE `glpi_itilvalidationtemplates` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `itemtypes` varchar(100) DEFAULT NULL,
   `name` varchar(255) NOT NULL DEFAULT '',
   `content` text,
   `comment` text,

@@ -54,12 +54,6 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     {
         return [
             [
-                'name'  => 'itemtypes',
-                'label' => __('Use template for'),
-                'type'  => '',
-                'list'  => true
-            ],
-            [
                 'name'  => 'approver',
                 'label' => __('Approver'),
                 'type'  => '',
@@ -77,35 +71,6 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
                 'disable_images' => true,
             ]
         ];
-    }
-
-    /**
-     * Display specific "itemtypes" field
-     *
-     * @param $value
-     * @param $name
-     * @param $options
-     */
-    public static function displayUseTemplateForField(
-        $id = -1,
-        $value = null,
-        $name = "",
-        $options = []
-    ) {
-        $options['values']              = $id > 0 ? explode(',', $value) : [
-            'TicketValidation', 'ChangeValidation'
-        ];
-        $options['emptylabel']          = __("Use template for");
-        $options['display_emptychoice'] = true;
-        $options['display']             = false;
-        $options['width']               = '95%';
-        $options['multiple']            = true;
-
-        if (empty($name)) {
-            $name = "itemtypes";
-        }
-
-        return Dropdown::showFromArray($name, self::getUseTemplateForValues(), $options);
     }
 
     /**
@@ -137,46 +102,16 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         return CommonITILValidation::dropdownValidator($options);
     }
 
-    /**
-     * Get possibles values for "itemtypes" field
-     * @return array timestamp before each bump => label
-     */
-    public static function getUseTemplateForValues(): array
-    {
-        return [
-            'TicketValidation' => __('Ticket Validation'),
-            'ChangeValidation' => __('Change Validation'),
-        ];
-    }
-
     public function displaySpecificTypeField($id, $field = [], array $options = [])
     {
-        if ($field['name'] == 'itemtypes') {
-            echo self::displayUseTemplateForField($id, $this->fields['itemtypes'], "", []);
-        } elseif ($field['name'] == 'approver') {
+        if ($field['name'] == 'approver') {
             echo self::displayValidatorField(ITILValidationTemplate_Target::getTargets($id), []);
         }
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
-    {
-        if ($field == 'itemtypes') {
-            $value = '';
-            foreach (explode(',', $values[$field]) as $key => $val) {
-                $value .= ($key > 0 ? ', ' : '') . self::getUseTemplateForValues()[$val];
-            }
-
-            return $value;
-        }
-
-        return parent::getSpecificValueToDisplay($field, $values, $options);
-    }
-
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
-        if ($field == 'itemtypes') {
-            return self::displayUseTemplateForField(-1, $values[$field], $name, $options);
-        } elseif ($field == 'approver') {
+        if ($field == 'approver') {
             return self::displayValidatorField($values[$field], $options);
         }
 
@@ -196,42 +131,12 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
             'htmltext'           => true
         ];
 
-        $tab[] = [
-            'id'                 => '5',
-            'name'               => __('Use template for'),
-            'field'              => 'itemtypes',
-            'table'              => $this->getTable(),
-            'datatype'           => 'specific',
-            'massiveaction'      => false,
-        ];
-
         return $tab;
     }
 
     public static function getIcon()
     {
         return "fas fa-layer-group";
-    }
-
-    public function prepareInput($input)
-    {
-        if (isset($input['itemtypes'])) {
-            $input['itemtypes'] = implode(',', $input['itemtypes']);
-        } else {
-            $input['itemtypes'] = '';
-        }
-
-        return $input;
-    }
-
-    public function prepareInputForAdd($input)
-    {
-        return $this->prepareInput($input);
-    }
-
-    public function prepareInputForUpdate($input)
-    {
-        return $this->prepareInput($input);
     }
 
     public function postTargets()

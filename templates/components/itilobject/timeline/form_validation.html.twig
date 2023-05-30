@@ -192,11 +192,6 @@
                      'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
                      'entity': item.fields['entities_id'],
                      'rand': rand,
-                     'condition': {
-                        'WHERE': {
-                           'itemtypes': ['LIKE', '%' ~ item.getType() ~ 'Validation%'],
-                        },
-                     },
                   },
                 ) }}
 
