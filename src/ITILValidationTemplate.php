@@ -45,17 +45,13 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
     public $can_be_translated = true;
 
-
     public static function getTypeName($nb = 0)
     {
         return _n('Validation template', 'Validation templates', $nb);
     }
 
-
     public function getAdditionalFields()
     {
-        $target   = new ITILValidationTemplate_Target();
-
         return [
             [
                 'name'  => 'itemtypes',
@@ -185,7 +181,6 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
-
 
     public function rawSearchOptions()
     {
