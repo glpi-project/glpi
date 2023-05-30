@@ -93,6 +93,9 @@ if (count($targets[$itemtype]) > 0 && isset($targets[$itemtype][0]['groups_id'])
     $itemtype = 'Group_User';
 }
 
+// Render template content using twig
+$template->fields['content'] = $template->getRenderedContent($parent);
+
 // Return json response with the template fields
 echo json_encode(array_merge($template->fields, [
     'validatortype'   => $itemtype,

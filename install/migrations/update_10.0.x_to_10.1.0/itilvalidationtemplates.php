@@ -46,7 +46,7 @@ $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 if (!$DB->tableExists('glpi_itilvalidationtemplates')) {
     $query = "CREATE TABLE `glpi_itilvalidationtemplates` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
-        `entities_id` int unsigned NOT NULL DEFAULT '0',
+        `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `is_recursive` tinyint NOT NULL DEFAULT '0',
         `itemtypes` varchar(100) DEFAULT NULL,
         `name` varchar(255) NOT NULL DEFAULT '',
@@ -71,7 +71,7 @@ if (!$DB->tableExists('glpi_itilvalidationtemplates_targets')) {
         `itilvalidationtemplates_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `itemtype` varchar(100) DEFAULT NULL,
         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-        `groups_id` int unsigned DEFAULT NULL,
+        `groups_id` int {$default_key_sign} DEFAULT NULL,
         PRIMARY KEY (`id`),
         KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
         KEY `item` (`itemtype`,`items_id`),

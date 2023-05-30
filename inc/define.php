@@ -588,10 +588,11 @@ $CFG_GLPI['javascript'] = [
     ],
     'config' => [
         'commondropdown'  => [
-            'ITILFollowupTemplate'  => ['tinymce'],
-            'ProjectTaskTemplate'   => ['tinymce'],
-            'SolutionTemplate'      => ['tinymce'],
-            'TaskTemplate'          => ['tinymce'],
+            'ITILFollowupTemplate'   => ['tinymce'],
+            'ProjectTaskTemplate'    => ['tinymce'],
+            'SolutionTemplate'       => ['tinymce'],
+            'TaskTemplate'           => ['tinymce'],
+            'ITILValidationTemplate' => ['tinymce'],
         ],
         'notification' => [
             'notificationtemplate' => ['tinymce']
