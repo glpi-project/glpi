@@ -5699,6 +5699,36 @@ HTML
         $this->array($entities)->isIdenticalTo([$entity2_id, $entity1_id]);
     }
 
+    public function testViewIncomingTicketWithoutNewTicketRight()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testViewIncomingTicketWithoutNewTicketRight',
+            'content' => 'testViewIncomingTicketWithoutNewTicketRight',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $this->changeTechRight(\Ticket::READMY);
+        $this->boolean($ticket->canViewItem())->isFalse();
+    }
+
+    public function testViewIncomingTicketWithNewTicketRight()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testViewIncomingTicketWithoutNewTicketRight',
+            'content' => 'testViewIncomingTicketWithoutNewTicketRight',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $this->changeTechRight(\Ticket::READNEWTICKET);
+        $this->boolean($ticket->canViewItem())->isTrue();
+    }
+
     public function testAssignToMe()
     {
         $this->login();
