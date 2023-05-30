@@ -71,7 +71,7 @@ class QueryFunction
     private static function getExpression(string $func_name, array $params, ?string $alias = null): QueryExpression
     {
         global $DB;
-        $params = array_map(static function($p) use ($DB) {
+        $params = array_map(static function ($p) use ($DB) {
             return $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p);
         }, $params);
         return new QueryExpression($func_name . '(' . implode(', ', $params) . ')', $alias);

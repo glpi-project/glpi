@@ -61,26 +61,34 @@ class QueryFunction extends \GLPITestCase
     protected function concatProvider()
     {
         return [
-            [[
-                new QueryExpression("'A'"),
-                new QueryExpression("'B'"),
-                new QueryExpression("'C'")
-            ], null, "CONCAT('A', 'B', 'C')"],
-            [[
-                new QueryExpression("'A'"),
-                new QueryExpression("'B'"),
-                new QueryExpression("'C'")
-            ], 'concat_alias', "CONCAT('A', 'B', 'C') AS `concat_alias`"],
-            [[
-                new QueryExpression("'A'"),
-                'glpi_computers.name',
-                new QueryExpression("'C'")
-            ], null, "CONCAT('A', `glpi_computers`.`name`, 'C')"],
-            [[
-                new QueryExpression("'A'"),
-                'glpi_computers.name',
-                new QueryExpression("'C'")
-            ], 'concat_alias', "CONCAT('A', `glpi_computers`.`name`, 'C') AS `concat_alias`"],
+            [
+                [
+                    new QueryExpression("'A'"),
+                    new QueryExpression("'B'"),
+                    new QueryExpression("'C'")
+                ], null, "CONCAT('A', 'B', 'C')"
+            ],
+            [
+                [
+                    new QueryExpression("'A'"),
+                    new QueryExpression("'B'"),
+                    new QueryExpression("'C'")
+                ], 'concat_alias', "CONCAT('A', 'B', 'C') AS `concat_alias`"
+            ],
+            [
+                [
+                    new QueryExpression("'A'"),
+                    'glpi_computers.name',
+                    new QueryExpression("'C'")
+                ], null, "CONCAT('A', `glpi_computers`.`name`, 'C')"
+            ],
+            [
+                [
+                    new QueryExpression("'A'"),
+                    'glpi_computers.name',
+                    new QueryExpression("'C'")
+                ], 'concat_alias', "CONCAT('A', `glpi_computers`.`name`, 'C') AS `concat_alias`"
+            ],
         ];
     }
 

@@ -71,7 +71,7 @@ class QueryExpression
         global $DB;
         $sql = $this->expression;
         if (!empty($this->alias)) {
-            $sql .= ' AS ' . $DB::quoteName($this->alias);;
+            $sql .= ' AS ' . $DB::quoteName($this->alias);
         }
         return $sql;
     }
