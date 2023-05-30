@@ -86,12 +86,13 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
      * @param $name
      * @param $options
      */
-    public function displayUseTemplateForField(
+    public static function displayUseTemplateForField(
+        $id = -1,
         $value = null,
         $name = "",
         $options = []
     ) {
-        $options['values']              = $this->getID() > 0 ? explode(',', $value) : [
+        $options['values']              = $id > 0 ? explode(',', $value) : [
             'TicketValidation', 'ChangeValidation'
         ];
         $options['emptylabel']          = __("Use template for");
@@ -151,7 +152,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     public function displaySpecificTypeField($id, $field = [], array $options = [])
     {
         if ($field['name'] == 'itemtypes') {
-            echo self::displayUseTemplateForField($this->fields['itemtypes'], "", []);
+            echo self::displayUseTemplateForField($id, $this->fields['itemtypes'], "", []);
         } elseif ($field['name'] == 'approver') {
             echo self::displayValidatorField(ITILValidationTemplate_Target::getTargets($id), []);
         }
@@ -174,7 +175,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if ($field == 'itemtypes') {
-            return self::displayUseTemplateForField($values[$field], $name, $options);
+            return self::displayUseTemplateForField(-1, $values[$field], $name, $options);
         } elseif ($field == 'approver') {
             return self::displayValidatorField($values[$field], $options);
         }
