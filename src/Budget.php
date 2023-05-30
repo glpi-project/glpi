@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
 /**
@@ -417,9 +418,9 @@ class Budget extends CommonDropdown
                         $costtable = getTableForItemType($item->getType() . 'Cost');
 
                         $sum = QueryFunction::sum(
-                            expression: $DB::quoteName("$costtable.actiontime") . " * " . $DB::quoteName("$costtable.cost_time") . "/" . HOUR_TIMESTAMP . "
+                            expression: new QueryExpression($DB::quoteName("$costtable.actiontime") . " * " . $DB::quoteName("$costtable.cost_time") . "/" . HOUR_TIMESTAMP . "
                                           + " . $DB::quoteName("$costtable.cost_fixed") . "
-                                          + " . $DB::quoteName("$costtable.cost_material"),
+                                          + " . $DB::quoteName("$costtable.cost_material")),
                             alias: 'value'
                         );
                         $criteria = [
@@ -760,9 +761,9 @@ class Budget extends CommonDropdown
                 case 'Change':
                     $costtable   = getTableForItemType($item->getType() . 'Cost');
                     $sum = QueryFunction::sum(
-                        expression: $DB::quoteName("$costtable.actiontime") . " * " . $DB::quoteName("$costtable.cost_time") . "/" . HOUR_TIMESTAMP . "
+                        expression: new QueryExpression($DB::quoteName("$costtable.actiontime") . " * " . $DB::quoteName("$costtable.cost_time") . "/" . HOUR_TIMESTAMP . "
                                            + " . $DB::quoteName("$costtable.cost_fixed") . "
-                                           + " . $DB::quoteName("$costtable.cost_material"),
+                                           + " . $DB::quoteName("$costtable.cost_material")),
                         alias: 'sumvalue'
                     );
 

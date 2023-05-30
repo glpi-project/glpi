@@ -2917,11 +2917,11 @@ abstract class API
                         // append network name
                         $concat_expr = QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                $DB::quoteName('ipadr.id'),
-                                $DB::quoteValue(Search::SHORTSEP),
-                                $DB::quoteName('ipadr.name'),
+                                'ipadr.id',
+                                new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
+                                'ipadr.name',
                             ]),
-                            separator: $DB::quoteValue(Search::LONGSEP),
+                            separator: Search::LONGSEP,
                             alias: 'ipadresses'
                         );
                         $netn_iterator = $DB->request([

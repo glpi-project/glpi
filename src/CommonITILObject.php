@@ -4643,6 +4643,11 @@ abstract class CommonITILObject extends CommonDBTM
         return $tab;
     }
 
+    /**
+     * @param string $type
+     * @param string $table
+     * @return QueryExpression|void
+     */
     public static function generateSLAOLAComputation($type, $table = "TABLE")
     {
         global $DB;
@@ -4650,40 +4655,40 @@ abstract class CommonITILObject extends CommonDBTM
         switch ($type) {
             case 'internal_time_to_own':
             case 'time_to_own':
-                return QueryFunction::if(
-                    condition: [
-                        'NOT' => ["{$table}.{$type}" => null],
-                        "$table.status" => ['<>', self::WAITING],
-                        'OR' => [
-                            [
-                                'AND' => [
-                                    'NOT' => ["$table.takeintoaccountdate" => null],
-                                    "$table.takeintoaccountdate" => ['>', new QueryExpression($DB::quoteName("{$table}.{$type}"))]
-                                ]
-                            ],
-                            [
-                                'AND' => [
-                                    "$table.takeintoaccountdate" => null,
-                                    "$table.takeintoaccount_delay_stat" => ['>',
-                                        QueryFunction::timestampDiff(
-                                            unit: 'SECOND',
-                                            expression1: $DB::quoteName("$table.date"),
-                                            expression2: $DB::quoteName("{$table}.{$type}")
-                                        )
-                                    ]
-                                ]
-                            ],
-                            [
-                                'AND' => [
-                                    "$table.takeintoaccount_delay_stat" => 0,
-                                    "$table.$type" => ['<', QueryFunction::now()]
+            return QueryFunction::if(
+                condition: [
+                    'NOT' => ["{$table}.{$type}" => null],
+                    "$table.status" => ['<>', self::WAITING],
+                    'OR' => [
+                        [
+                            'AND' => [
+                                'NOT' => ["$table.takeintoaccountdate" => null],
+                                "$table.takeintoaccountdate" => ['>', new QueryExpression($DB::quoteName("{$table}.{$type}"))]
+                            ]
+                        ],
+                        [
+                            'AND' => [
+                                "$table.takeintoaccountdate" => null,
+                                "$table.takeintoaccount_delay_stat" => ['>',
+                                    QueryFunction::timestampDiff(
+                                        unit: 'SECOND',
+                                        expression1: "$table.date",
+                                        expression2: "{$table}.{$type}"
+                                    )
                                 ]
                             ]
+                        ],
+                        [
+                            'AND' => [
+                                "$table.takeintoaccount_delay_stat" => 0,
+                                "$table.$type" => ['<', QueryFunction::now()]
+                            ]
                         ]
-                    ],
-                    true_expression: 1,
-                    false_expression: 0
-                );
+                    ]
+                ],
+                true_expression: new QueryExpression('1'),
+                false_expression: new QueryExpression('0')
+            );
 
             case 'internal_time_to_resolve':
             case 'time_to_resolve':
@@ -4699,8 +4704,8 @@ abstract class CommonITILObject extends CommonDBTM
                             ]
                         ]
                     ],
-                    true_expression: 1,
-                    false_expression: 0
+                    true_expression: new QueryExpression('1'),
+                    false_expression: new QueryExpression('0')
                 );
         }
     }

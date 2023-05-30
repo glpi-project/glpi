@@ -2989,7 +2989,7 @@ JAVASCRIPT;
             'computation'        => self::generateSLAOLAComputation('internal_time_to_own')
         ];
 
-        $max_date = '99999999';
+        $max_date = new QueryExpression('99999999');
         $tab[] = [
             'id'                 => '188',
             'table'              => $this->getTable(),
@@ -3007,28 +3007,28 @@ JAVASCRIPT;
             'computation'        => QueryFunction::replace(
                 expression: QueryFunction::least([
                     QueryFunction::if(
-                        condition: $DB::quoteName('TABLE.takeintoaccount_delay_stat') . ' <= 0',
-                        true_expression: QueryFunction::coalesce([$DB::quoteName('TABLE.time_to_own'), $max_date]),
+                        condition: ['TABLE.takeintoaccount_delay_stat' => ['<=', 0]],
+                        true_expression: QueryFunction::coalesce(['TABLE.time_to_own', $max_date]),
                         false_expression: $max_date
                     ),
                     QueryFunction::if(
-                        condition: $DB::quoteName('TABLE.takeintoaccount_delay_stat') . ' <= 0',
-                        true_expression: QueryFunction::coalesce([$DB::quoteName('TABLE.internal_time_to_own'), $max_date]),
+                        condition: ['TABLE.takeintoaccount_delay_stat' => ['<=', 0]],
+                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_own', $max_date]),
                         false_expression: $max_date
                     ),
                     QueryFunction::if(
-                        condition: $DB::quoteName('TABLE.solvedate') . ' IS NULL',
-                        true_expression: QueryFunction::coalesce([$DB::quoteName('TABLE.time_to_resolve'), $max_date]),
+                        condition: ['TABLE.solvedate' => null],
+                        true_expression: QueryFunction::coalesce(['TABLE.time_to_resolve', $max_date]),
                         false_expression: $max_date
                     ),
                     QueryFunction::if(
-                        condition: $DB::quoteName('TABLE.solvedate') . ' IS NULL',
-                        true_expression: QueryFunction::coalesce([$DB::quoteName('TABLE.internal_time_to_resolve'), $max_date]),
+                        condition: ['TABLE.solvedate' => null],
+                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_resolve', $max_date]),
                         false_expression: $max_date
                     ),
                 ]),
-                search: $DB::quoteValue($max_date),
-                replace: $DB::quoteValue('')
+                search: new QueryExpression($DB::quoteValue($max_date)),
+                replace: new QueryExpression($DB::quoteValue(''))
             ),
         ];
 

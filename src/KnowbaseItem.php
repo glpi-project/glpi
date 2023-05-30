@@ -1477,10 +1477,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'SELECT' => [
                 'glpi_knowbaseitems.*',
                 new QueryExpression(
-                    QueryFunction::count($DB::quoteName('glpi_knowbaseitems_users.id')) . ' + ' .
-                    QueryFunction::count($DB::quoteName('glpi_groups_knowbaseitems.id')) . ' + ' .
-                    QueryFunction::count($DB::quoteName('glpi_knowbaseitems_profiles.id')) . ' + ' .
-                    QueryFunction::count($DB::quoteName('glpi_entities_knowbaseitems.id')) . ' AS ' .
+                    QueryFunction::count('glpi_knowbaseitems_users.id') . ' + ' .
+                    QueryFunction::count('glpi_groups_knowbaseitems.id') . ' + ' .
+                    QueryFunction::count('glpi_knowbaseitems_profiles.id') . ' + ' .
+                    QueryFunction::count('glpi_entities_knowbaseitems.id') . ' AS ' .
                     $DB::quoteName('visibility_count')
                 )
             ],

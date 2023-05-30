@@ -794,7 +794,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     ],
                 ],
             ],
-            'computation'        => QueryFunction::sum($DB::quoteName('TABLE.cost')),
+            'computation'        => QueryFunction::sum('TABLE.cost'),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

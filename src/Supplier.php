@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 
@@ -286,7 +287,7 @@ class Supplier extends CommonDBTM
             'forcegroupby'       => true,
             'datatype'           => 'itemlink',
             'massiveaction'      => false,
-            'computation'        => QueryFunction::concat([$DB::quoteName("TABLE.{$name1}"), $DB::quoteValue(' '), $DB::quoteName("TABLE.{$name2}")]),
+            'computation'        => QueryFunction::concat(["TABLE.{$name1}", new QueryExpression($DB::quoteValue(' ')), "TABLE.{$name2}"]),
             'computationgroupby' => true,
             'joinparams'         => [
                 'beforejoin'         => [

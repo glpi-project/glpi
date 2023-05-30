@@ -4496,11 +4496,11 @@ JAVASCRIPT;
             if (strlen((string)$search) > 0) {
                 $txt_search = Search::makeTextSearchValue($search);
 
-                $firstname_field = $DB::quoteName(self::getTableField('firstname'));
-                $realname_field = $DB::quoteName(self::getTableField('realname'));
+                $firstname_field = self::getTableField('firstname');
+                $realname_field = self::getTableField('realname');
                 $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
-                ? [$firstname_field, $DB::quoteValue(' '), $realname_field]
-                : [$realname_field, $DB::quoteValue(' '), $firstname_field];
+                ? [$firstname_field, new QueryExpression($DB::quoteValue(' ')), $realname_field]
+                : [$realname_field, new QueryExpression($DB::quoteValue(' ')), $firstname_field];
 
                 $concat = new QueryExpression(QueryFunction::concat($fields) . ' LIKE ' . $DB::quoteValue($txt_search));
                 $WHERE[] = [
@@ -6384,30 +6384,27 @@ JAVASCRIPT;
         global $DB;
 
         $table     = self::getTable();
-        $login     = $DB::quoteName("$table.name");
-        $firstname = $DB::quoteName("$table.firstname");
-        $lastname  = $DB::quoteName("$table.realname");
 
         $filter = strtolower($filter);
         $filter_no_spaces = str_replace(" ", "", $filter);
         $concat_names_first_last = QueryFunction::lower(
             QueryFunction::replace(
-                expression: QueryFunction::concat([$firstname, $lastname]),
-                search: $DB::quoteValue(' '),
-                replace: $DB::quoteValue('')
+                expression: QueryFunction::concat(["$table.firstname", "$table.realname"]),
+                search: new QueryExpression($DB::quoteValue(' ')),
+                replace: new QueryExpression($DB::quoteValue(''))
             )
         );
         $concat_names_last_first = QueryFunction::lower(
             QueryFunction::replace(
-                expression: QueryFunction::concat([$lastname, $firstname]),
-                search: $DB::quoteValue(' '),
-                replace: $DB::quoteValue('')
+                expression: QueryFunction::concat(["$table.realname", "$table.firstname"]),
+                search: new QueryExpression($DB::quoteValue(' ')),
+                replace: new QueryExpression($DB::quoteValue(''))
             )
         );
 
         return [
             'OR' => [
-                new QueryExpression(QueryFunction::lower($login) . ' LIKE ' . $DB::quoteValue("%$filter%")),
+                new QueryExpression(QueryFunction::lower("$table.name") . ' LIKE ' . $DB::quoteValue("%$filter%")),
                 new QueryExpression($concat_names_first_last . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
                 new QueryExpression($concat_names_last_first . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
             ]
@@ -6428,15 +6425,13 @@ JAVASCRIPT;
         }
 
         $table  = self::getTable();
-        $first  = DBmysql::quoteName("$table.$first");
-        $second = $DB::quoteName("$table.$second");
-        $alias  = $DB::quoteName($alias);
-        $name   = $DB::quoteName($table . '.' . self::getNameField());
-
         return QueryFunction::if(
-            condition: new QueryExpression("$first <> " . $DB::quoteValue('') . " && $second <> " . $DB::quoteValue('')),
-            true_expression: QueryFunction::concat([$first, $DB::quoteValue(' '), $second]),
-            false_expression: $name,
+            condition: [
+                "$table.$first" => ['<>' => ''],
+                "$table.$second" => ['<>' => '']
+            ],
+            true_expression: QueryFunction::concat(["$table.$first", new QueryExpression($DB::quoteValue(' ')), "$table.$second"]),
+            false_expression: $table . '.' . self::getNameField(),
             alias: $alias
         );
     }

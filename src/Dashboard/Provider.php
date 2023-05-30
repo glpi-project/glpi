@@ -472,17 +472,18 @@ class Provider
         $ownExceeded = Ticket::generateSLAOLAComputation('time_to_own', $table);
         $resolveExceeded = Ticket::generateSLAOLAComputation('time_to_resolve', $table);
         $slaState = QueryFunction::if(
-            condition: new QueryExpression("$ownExceeded AND $resolveExceeded"),
-            true_expression: 3,
+            condition: [$ownExceeded, $resolveExceeded],
+            true_expression: new QueryExpression('3'),
             false_expression: QueryFunction::if(
                 condition: $resolveExceeded,
-                true_expression: 2,
+                true_expression: new QueryExpression('2'),
                 false_expression: QueryFunction::if(
                     condition: $ownExceeded,
-                    true_expression: 1,
-                    false_expression: 0
+                    true_expression: new QueryExpression('1'),
+                    false_expression: new QueryExpression('0')
                 )
-            )
+            ),
+            alias: 'sla_state'
         );
         $config = Config::getConfigurationValues('core');
         if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
@@ -493,13 +494,12 @@ class Provider
             $second = "firstname";
         }
 
-        $friendlyName = QueryFunction::concat([$DB::quoteName("{$userTable}.{$first}"), $DB::quoteValue(' '), $DB::quoteName("{$userTable}.{$second}")]);
         $query_criteria = [
             'COUNT' => 'cpt',
             'SELECT'    => [
-                new QueryExpression("$friendlyName as `username`"),
+                QueryFunction::concat(["{$userTable}.{$first}", new QueryExpression($DB::quoteValue(' ')), "{$userTable}.{$second}"], 'username'),
                 "$userTable.name",
-                new QueryExpression("$slaState as `sla_state`"),
+                $slaState,
             ],
             'FROM'   => $table,
             'INNER JOIN' => [
@@ -979,7 +979,7 @@ class Provider
             [
                 'SELECT' => [
                     'COUNT DISTINCT' => "$t_table.id as nb_tickets",
-                    QueryFunction::dateFormat($DB::quoteName('date'), $DB::quoteValue('%Y-%m'), 'ticket_month'),
+                    QueryFunction::dateFormat('date', new QueryExpression($DB::quoteValue('%Y-%m')), 'ticket_month'),
                 ],
                 'FROM'    => $t_table,
                 'WHERE'    => [
@@ -1257,55 +1257,55 @@ class Provider
         $criteria = [
             'SELECT'   => [
                 QueryFunction::fromUnixTimestamp(
-                    expression: QueryFunction::unixTimestamp($DB::quoteName("{$t_table}_distinct.date")),
-                    format: $DB::quoteValue('%Y-%m'),
+                    expression: QueryFunction::unixTimestamp("{$t_table}_distinct.date"),
+                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
                     alias: 'period'
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::INCOMING,
-                        true_expression: 1,
-                        false_expression: 0
+                        condition: ["{$t_table}_distinct.status" => Ticket::INCOMING],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
                     ),
                     alias: _x('status', 'New')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::ASSIGNED,
-                        true_expression: 1,
-                        false_expression: 0
+                        condition: ["{$t_table}_distinct.status" => Ticket::ASSIGNED],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
                     ),
                     alias: _x('status', 'Processing (assigned)')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::PLANNED,
-                        true_expression: 1,
-                        false_expression: 0
+                        condition: ["{$t_table}_distinct.status" => Ticket::PLANNED],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
                     ),
                     alias: _x('status', 'Processing (planned)')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::WAITING,
-                        true_expression: 1,
-                        false_expression: 0
+                        condition: ["{$t_table}_distinct.status" => Ticket::WAITING],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
                     ),
                     alias: __('Pending')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::SOLVED,
-                        true_expression: 1,
-                        false_expression: 0
+                        condition: ["{$t_table}_distinct.status" => Ticket::SOLVED],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
                     ),
                     alias: _x('status', 'Solved')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::CLOSED,
-                        true_expression: 1,
-                        false_expression: 0
+                        condition: ["{$t_table}_distinct.status" => Ticket::CLOSED],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
                     ),
                     alias: _x('status', 'Closed')
                 ),
@@ -1549,11 +1549,11 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT' => [
-                    QueryFunction::dateFormat($DBread::quoteName('date'), '%Y-%m', 'period'),
-                    QueryFunction::avg($DBread::quoteName('takeintoaccount_delay_stat'), 'avg_takeintoaccount_delay_stat'),
-                    QueryFunction::avg($DBread::quoteName('waiting_duration'), 'avg_waiting_duration'),
-                    QueryFunction::avg($DBread::quoteName('solve_delay_stat'), 'avg_solve_delay_stat'),
-                    QueryFunction::avg($DBread::quoteName('close_delay_stat'), 'close_delay_stat'),
+                    QueryFunction::dateFormat('date', new QueryExpression($DBread::quoteValue('%Y-%m')), 'period'),
+                    QueryFunction::avg('takeintoaccount_delay_stat', 'avg_takeintoaccount_delay_stat'),
+                    QueryFunction::avg('waiting_duration', 'avg_waiting_duration'),
+                    QueryFunction::avg('solve_delay_stat', 'avg_solve_delay_stat'),
+                    QueryFunction::avg('close_delay_stat', 'close_delay_stat'),
                 ],
                 'FROM' => $t_table,
                 'WHERE' => [

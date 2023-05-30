@@ -123,7 +123,7 @@ class ProjectTask_Ticket extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: $DB::quoteName('glpi_tickets.actiontime'),
+                    expression: 'glpi_tickets.actiontime',
                     alias: 'duration'
                 )
             ],

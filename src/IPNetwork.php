@@ -750,7 +750,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
        // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested
        // element)
         for ($i = $startIndex; $i < 4; ++$i) {
-            $ORDER[] = new QueryExpression(QueryFunction::bitCount($DB::quoteName($netmaskDB[$i])) . " $ORDER_ORIENTATION");
+            $ORDER[] = new QueryExpression(QueryFunction::bitCount($netmaskDB[$i]) . " $ORDER_ORIENTATION");
         }
 
         if (!empty($condition["where"])) {

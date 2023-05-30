@@ -219,7 +219,7 @@ abstract class CommonDevice extends CommonDropdown
                 'SELECT'    => [
                     'itemtype',
                     QueryFunction::groupConcat(
-                        expression: $DB::quoteName('items_id'),
+                        expression: 'items_id',
                         distinct: true,
                         alias: 'ids'
                     ),

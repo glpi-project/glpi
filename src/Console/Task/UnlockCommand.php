@@ -104,7 +104,7 @@ class UnlockCommand extends AbstractCommand
                 'SELECT' => [
                     'id',
                     QueryFunction::concat(
-                        params: [$this->db::quoteName('itemtype'), $this->db::quoteValue('::'), $this->db::quoteName('name')],
+                        params: ['itemtype', new QueryExpression($this->db::quoteValue('::')), 'name'],
                         alias: 'task'
                     )
                 ],
@@ -112,7 +112,7 @@ class UnlockCommand extends AbstractCommand
                 'WHERE'  => [
                     'state' => CronTask::STATE_RUNNING,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp($this->db::quoteName('lastrun')) . " + $delay"
+                        QueryFunction::unixTimestamp('lastrun') . " + $delay"
                         . " < "
                         . QueryFunction::unixTimestamp(QueryFunction::now())
                     )

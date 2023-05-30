@@ -40,19 +40,25 @@ namespace Glpi\DBAL;
  **/
 class QueryExpression
 {
-    private $expression;
+    private string $expression;
+
+    private ?string $alias;
 
     /**
      * Create a query expression
      *
-     * @param string $value Query parameter value, defaults to '?'
+     * @param string $expression The query expression
+     * @param ?string $alias     The query expression alias
      */
-    public function __construct($expression)
+    public function __construct($expression, ?string $alias = null)
     {
-        if (empty($expression)) {
+        if ($expression === null || $expression === '') {
+            var_dump(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
+            ob_flush();
             throw new \RuntimeException('Cannot build an empty expression');
         }
         $this->expression = $expression;
+        $this->alias = $alias;
     }
 
     /**
@@ -62,9 +68,13 @@ class QueryExpression
      */
     public function getValue()
     {
-        return $this->expression;
+        global $DB;
+        $sql = $this->expression;
+        if (!empty($this->alias)) {
+            $sql .= ' AS ' . $DB::quoteName($this->alias);;
+        }
+        return $sql;
     }
-
 
     public function __toString()
     {

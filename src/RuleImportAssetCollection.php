@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
 /// Import rules collection class
@@ -113,13 +114,13 @@ class RuleImportAssetCollection extends RuleCollection
             }
             $criteria['SELECT'][] = QueryFunction::count(
                 expression: QueryFunction::if(
-                    condition: $DB::quoteName('crit.criteria') . ' = ' . $DB::quoteValue('itemtype'),
+                    condition: ['crit.criteria' => 'itemtype'],
                     true_expression: QueryFunction::if(
-                        condition: $DB::quoteName('crit.pattern') . ' IN (' . implode(', ', array_map(static fn ($k) => $DB::quoteValue($k), array_keys($tabs))) . ')',
-                        true_expression: 1,
-                        false_expression: null
+                        condition: ['crit.pattern' => array_keys($tabs)],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('null')
                     ),
-                    false_expression: null
+                    false_expression: new QueryExpression('null')
                 ),
                 alias: 'is_itemtype'
             );

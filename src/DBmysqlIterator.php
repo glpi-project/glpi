@@ -384,7 +384,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     }
                     $cleanorderby[] = $new;
                 }
-            } else if ($o instanceof QueryExpression || $o instanceof QueryFunction) {
+            } else if ($o instanceof QueryExpression) {
                 $cleanorderby[] = $o->getValue();
             } else {
                 trigger_error("Invalid order clause", E_USER_ERROR);
@@ -428,7 +428,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         if (is_numeric($t)) {
             if ($f instanceof \AbstractQuery) {
                 return $f->getQuery();
-            } else if ($f instanceof QueryExpression || $f instanceof QueryFunction) {
+            } else if ($f instanceof QueryExpression) {
                 return $f->getValue();
             } else {
                 return DBmysql::quoteName($f);
@@ -627,15 +627,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     private function getCriterionValue($value)
     {
-        if ($value instanceof \AbstractQuery) {
-            return $value->getQuery();
-        } else if ($value instanceof QueryExpression || $value instanceof QueryFunction) {
-            return $value->getValue();
-        } else if ($value instanceof QueryParam) {
-            return $value->getValue();
-        } else {
-            return $this->analyseCriterionValue($value);
-        }
+        return match (true) {
+            $value instanceof \AbstractQuery => $value->getQuery(),
+            $value instanceof QueryExpression => $value->getValue(),
+            $value instanceof QueryParam => $value->getValue(),
+            default => $this->analyseCriterionValue($value)
+        };
     }
 
     private function analyseCriterionValue($value)

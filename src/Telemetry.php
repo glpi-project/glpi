@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
 class Telemetry extends CommonGLPI
@@ -126,7 +127,7 @@ class Telemetry extends CommonGLPI
         $size_res = $DB->request([
             'SELECT' => [
                 QueryFunction::round(
-                    expression: QueryFunction::sum('data_length + index_length') . ' / 1024 / 1024',
+                    expression: new QueryExpression(QueryFunction::sum(new QueryExpression('data_length + index_length')) . ' / 1024 / 1024'),
                     alias: 'dbsize',
                 )
             ],

@@ -273,9 +273,9 @@ class DeviceHardDrive extends CommonDevice
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
             'computation'        => '(' .
-                QueryFunction::sum($DB::quoteName('TABLE.capacity')) . ' / ' .
-                QueryFunction::count($DB::quoteName('TABLE.id')) . ') * ' .
-                QueryFunction::count(expression: $DB::quoteName('TABLE.id'), distinct: true),
+                QueryFunction::sum('TABLE.capacity') . ' / ' .
+                QueryFunction::count('TABLE.id') . ') * ' .
+                QueryFunction::count(expression: 'TABLE.id', distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

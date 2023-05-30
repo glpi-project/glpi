@@ -260,9 +260,9 @@ class DeviceMemory extends CommonDevice
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
             'computation'        => '(' .
-                QueryFunction::sum($DB::quoteName('TABLE.size')) . '/' .
-                QueryFunction::count($DB::quoteName('TABLE.id')) . ') * ' .
-                QueryFunction::count($DB::quoteName('TABLE.id'), true),
+                QueryFunction::sum('TABLE.size') . '/' .
+                QueryFunction::count('TABLE.id') . ') * ' .
+                QueryFunction::count('TABLE.id', true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

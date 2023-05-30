@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
 /**
@@ -392,6 +393,7 @@ class Item_Disk extends CommonDBChild
 
     public static function rawSearchOptionsToAdd($itemtype)
     {
+        global $DB;
         $tab = [];
 
         $name = _n('Volume', 'Volumes', Session::getPluralNumber());
@@ -454,9 +456,9 @@ class Item_Disk extends CommonDBChild
             'width'              => 2,
          // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
             'computation'        => QueryFunction::lpad(
-                expression: QueryFunction::round('100*TABLE.freesize/' . QueryFunction::nullIf('TABLE.totalsize', 0)),
-                length: 3,
-                pad_string: '0'
+                expression: QueryFunction::round(new QueryExpression('100*TABLE.freesize/' . QueryFunction::nullIf('TABLE.totalsize', new QueryExpression('0')))),
+                length: new QueryExpression('3'),
+                pad_string: new QueryExpression($DB::quoteValue('0'))
             ),
             'computationgroupby' => true,
             'unit'               => '%',

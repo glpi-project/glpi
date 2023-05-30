@@ -3221,9 +3221,9 @@ JAVASCRIPT;
                             "$table.entities_id",
                             QueryFunction::concat(
                                 params: [
-                                    QueryFunction::ifNull($DB::quoteName('name'), $DB::quoteValue('')),
-                                    $DB::quoteValue(' '),
-                                    QueryFunction::ifNull($DB::quoteName('firstname'), $DB::quoteValue(''))
+                                    QueryFunction::ifNull('name', new QueryExpression($DB::quoteValue(''))),
+                                    new QueryExpression($DB::quoteValue(' ')),
+                                    QueryFunction::ifNull('firstname', new QueryExpression($DB::quoteValue('')))
                                 ],
                                 alias:$field
                             ),
@@ -3239,7 +3239,7 @@ JAVASCRIPT;
                         'SELECT' => [
                             "$table.*",
                             QueryFunction::concat(
-                                params: [$DB::quoteName('glpi_softwares.name'), $DB::quoteValue(' - '), $DB::quoteName('glpi_softwarelicenses.name')],
+                                params: ['glpi_softwares.name', new QueryExpression($DB::quoteValue(' - ')), 'glpi_softwarelicenses.name'],
                                 alias: $field
                             ),
                         ],

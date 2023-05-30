@@ -36,382 +36,322 @@
 namespace Glpi\DBAL;
 
 use DBmysqlIterator;
-use Glpi\DBAL\Function\AddDate;
-use Glpi\DBAL\Function\Cast;
-use Glpi\DBAL\Function\Convert;
-use Glpi\DBAL\Function\Count;
-use Glpi\DBAL\Function\Formatter;
-use Glpi\DBAL\Function\GroupConcat;
-use Glpi\DBAL\Function\Sum;
 
 /**
  *  Query function class
+ *
+ * If a parameter takes a string or a QueryExpression, a string is an unquoted identifier while a QueryExpression is used for everything else.
+ * Generic 'params' array parameters follow the same rules for their elements.
+ * All aliases passed to the functions are automatically quoted as identifiers.
+ * @method static QueryExpression avg(string|QueryExpression $expression, ?string $alias = null) Build an 'AVG' SQL function call
+ * @method static QueryExpression bitAnd(string|QueryExpression $expression, ?string $alias = null) Build a 'BIT_AND' SQL function call
+ * @method static QueryExpression bitCount(string|QueryExpression $expression, ?string $alias = null) Build a 'BIT_COUNT' SQL function call
+ * @method static QueryExpression bitOr(string|QueryExpression $expression, ?string $alias = null) Build a 'BIT_OR' SQL function call
+ * @method static QueryExpression bitXor(string|QueryExpression $expression, ?string $alias = null) Build a 'BIT_XOR' SQL function call
+ * @method static QueryExpression coalesce(array $params, ?string $alias = null) Build a 'COALESCE' function call
+ * @method static QueryExpression concat(array $params, ?string $alias = null) Build a 'CONCAT' SQL function call
+ * @method static QueryExpression floor(string|QueryExpression $expression, ?string $alias = null) Build a 'FLOOR' function call
+ * @method static QueryExpression least(array $params, ?string $alias = null) Build a 'LEAST' function call
+ * @method static QueryExpression lower(string|QueryExpression $expression, ?string $alias = null) Build a 'LOWER' SQL function call
+ * @method static QueryExpression max(string|QueryExpression $expression, ?string $alias = null) Build a 'MAX' SQL function call
+ * @method static QueryExpression min(string|QueryExpression $expression, ?string $alias = null) Build a 'MIN' SQL function call
+ * @method static QueryExpression unixTimestamp(string|QueryExpression $expression, ?string $alias = null) Build a 'UNIX_TIMESTAMP' SQL function call
+ * @method static QueryExpression upper(string|QueryExpression $expression, ?string $alias = null) Build a 'UPPER' SQL function call
  **/
 class QueryFunction
 {
-    private string $name;
-
-    private array $params;
-
-    private ?string $alias;
-
     /**
-     * Create a query expression
-     *
-     * @param string $name Function name
-     * @param array $params Function parameters
-     * @param string|null $alias Function result alias
+     * Format the given data as a SQL function call.
+     * The alias should not be quoted. It will be done in the returned QueryExpression when its value is evaluated.
+     * @param string $func_name SQL function name
+     * @param array $params Array of quoted identifiers or QueryExpressions
+     * @param string|null $alias Unquoted alias
+     * @return QueryExpression
      */
-    public function __construct(string $name, array $params = [], ?string $alias = null)
+    private static function getExpression(string $func_name, array $params, ?string $alias = null): QueryExpression
     {
         global $DB;
-
-        $this->name = $name;
-        $this->params = $params;
-        $this->alias = !empty($alias) ? $DB::quoteName($alias) : null;
+        $params = array_map(static function($p) use ($DB) {
+            return $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p);
+        }, $params);
+        return new QueryExpression($func_name . '(' . implode(', ', $params) . ')', $alias);
     }
 
-    /**
-     * Query expression value
-     *
-     * @return string
-     */
-    public function getValue()
+    public static function __callStatic(string $name, array $arguments)
     {
-        $alias = $this->alias ? ' AS ' . $this->alias : '';
+        $args = array_values($arguments);
+        $params = $args[0];
+        if (!is_array($params)) {
+            $params = [$params];
+        }
 
-        $function_string = match ($this->name) {
-            'ADDDATE' => AddDate::format($this->params),
-            'GROUP_CONCAT' => GroupConcat::format($this->params),
-            'COUNT' => Count::format($this->params),
-            'SUM' => Sum::format($this->params),
-            'CAST' => Cast::format($this->params),
-            'CONVERT' => Convert::format($this->params),
-            default => $this->name . '(' . implode(', ', $this->params) . ')',
+        // Map camelCase function names to SQL function names
+        $func_name = match (true) {
+            // if the name is in camelCase, convert camelCase to snake_case
+            (bool) preg_match('/[A-Z]/', $name) => preg_replace('/(?<!^)[A-Z]/', '_$0', $name),
+            // Place any special formatting cases here
+            default => $name,
         };
-
-        return $function_string . $alias;
-    }
-
-    public function __toString()
-    {
-        return $this->getValue();
-    }
-
-    /**
-     * Build a CONCAT SQL function call
-     * @param array $params Function parameters. Parameters must be already quoted if needed with {@link DBmysql::quote()} or {@link DBmysql::quoteName()}
-     * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
-     */
-    public static function concat(array $params, ?string $alias = null): self
-    {
-        return new self('CONCAT', $params, $alias);
+        $func_name = strtoupper($func_name);
+        return self::getExpression($func_name, $params, $args[1] ?? null);
     }
 
     /**
      * Build an ADDDATE SQL function call
-     * Parameters must be already quoted if needed with {@link DBmysql::quote()} or {@link DBmysql::quoteName()}
-     * @param string $date Date to add interval to
-     * @param string $interval Interval to add
+     * @param string|QueryExpression $date Date to add interval to
+     * @param string|QueryExpression $interval Interval to add
      * @param string $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function addDate(string $date, string $interval, string $interval_unit, ?string $alias = null): self
+    public static function addDate(string|QueryExpression $date, string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
     {
-        return new self('ADDDATE', [$date, $interval, $interval_unit], $alias);
+        global $DB;
+        $date = $date instanceof QueryExpression ? $date : $DB::quoteName($date);
+        $interval = $interval instanceof QueryExpression ? $interval : $DB::quoteName($interval);
+        $exp = sprintf('DATE_ADD(%s, INTERVAL %s %s)', $date, $interval, strtoupper($interval_unit));
+        return new QueryExpression($exp, $alias);
     }
 
     /**
      * Build an IF SQL function call
-     * @param string|array $condition Condition to test
-     * @param string $true_expression Expression to return if condition is true
-     * @param string $false_expression Expression to return if condition is false
+     * @param string|QueryExpression|array $condition Condition to test
+     * @param string|QueryExpression $true_expression Expression to return if condition is true
+     * @param string|QueryExpression $false_expression Expression to return if condition is false
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function if(string|array $condition, string $true_expression, string $false_expression, ?string $alias = null): self
+    public static function if(string|QueryExpression|array $condition, string|QueryExpression $true_expression, string|QueryExpression $false_expression, ?string $alias = null): QueryExpression
     {
         if (is_array($condition)) {
-            $condition = (new DBmysqlIterator(null))->analyseCrit($condition);
+            $condition = new QueryExpression((new DBmysqlIterator(null))->analyseCrit($condition));
         }
-        return new self('IF', [$condition, $true_expression, $false_expression], $alias);
+        return self::getExpression('IF', [$condition, $true_expression, $false_expression], $alias);
     }
 
     /**
      * Build an IFNULL SQL function call
-     * Parameters must be already quoted if needed with {@link DBmysql::quote()} or {@link DBmysql::quoteName()}
-     * @param string $expression Expression to check
-     * @param string $value Value to return if expression is null
+     * @param string|QueryExpression $expression Expression to check
+     * @param string|QueryExpression $value Value to return if expression is null
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function ifNull(string $expression, string $value, ?string $alias = null): self
+    public static function ifNull(string|QueryExpression $expression, string|QueryExpression $value, ?string $alias = null): QueryExpression
     {
-        return new self('IFNULL', [$expression, $value], $alias);
+        return self::getExpression('IFNULL', [$expression, $value], $alias);
     }
 
     /**
      * Build a GROUP_CONCAT SQL function call
-     * @param string $expression Expression to group
-     * @param string|null $separator Separator to use
+     * @param string|QueryExpression $expression Expression to group
+     * @param string|null $separator Separator to use (will be automatically quoted as a value)
      * @param bool $distinct Use DISTINCT or not
-     * @param string|null $order_by Order by clause
+     * @param array|string|null $order_by Order by clause
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function groupConcat(string $expression, ?string $separator = null, bool $distinct = false, ?string $order_by = null, ?string $alias = null): self
+    public static function groupConcat(string|QueryExpression $expression, ?string $separator = null, bool $distinct = false, array|string $order_by = null, ?string $alias = null): QueryExpression
     {
-        return new self('GROUP_CONCAT', [$expression, $separator, $distinct, $order_by], $alias);
-    }
+        global $DB;
 
-    /**
-     * Build a FLOOR SQL function call
-     * @param string $expression Expression to floor
-     * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
-     */
-    public static function floor(string $expression, ?string $alias = null): self
-    {
-        return new self('FLOOR', [$expression], $alias);
+        $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
+        $exp = 'GROUP_CONCAT(';
+        if ($distinct) {
+            $exp .= 'DISTINCT ';
+        }
+        $exp .= $expression;
+        if ($order_by) {
+            $exp .= (new DBmysqlIterator(null))->handleOrderClause($order_by);
+        }
+        if (!empty($separator)) {
+            $exp .= ' SEPARATOR ' . $DB::quoteValue($separator);
+        }
+        $exp .= ')';
+        return new QueryExpression($exp, $alias);
     }
 
     /**
      * Build a SUM SQL function call
-     * @param string $expression Expression to sum
+     * @param string|QueryExpression $expression Expression to sum
      * @param bool $distinct Use DISTINCT or not
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function sum(string $expression, bool $distinct = false, ?string $alias = null): self
+    public static function sum(string|QueryExpression $expression, bool $distinct = false, ?string $alias = null): QueryExpression
     {
-        return new self('SUM', [$expression, $distinct], $alias);
+        global $DB;
+
+        $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
+        $exp = 'SUM(';
+        if ($distinct) {
+            $exp .= 'DISTINCT ';
+        }
+        $exp .= $expression . ')';
+        return new QueryExpression($exp, $alias);
     }
 
     /**
      * Build a COUNT SQL function call
-     * @param string $expression Expression to count
+     * @param string|QueryExpression $expression Expression to count
      * @param bool $distinct Use DISTINCT or not
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function count(string $expression, bool $distinct = false, ?string $alias = null): self
+    public static function count(string|QueryExpression $expression, bool $distinct = false, ?string $alias = null): QueryExpression
     {
-        return new self('COUNT', [$expression, $distinct], $alias);
-    }
+        global $DB;
 
-    /**
-     * Build a MIN SQL function call
-     * @param string $expression Expression to get min value
-     * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
-     */
-    public static function min(string $expression, ?string $alias = null): self
-    {
-        return new self('MIN', [$expression], $alias);
-    }
-
-    /**
-     * Build an AVG SQL function call
-     * @param string $expression Expression to get average value
-     * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
-     */
-    public static function avg(string $expression, ?string $alias = null): self
-    {
-        return new self('AVG', [$expression], $alias);
+        $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
+        $exp = 'COUNT(';
+        if ($distinct) {
+            $exp .= 'DISTINCT ';
+        }
+        $exp .= $expression . ')';
+        return new QueryExpression($exp, $alias);
     }
 
     /**
      * Build a CAST SQL function call
-     * @param string $expression Expression to cast
+     * @param string|QueryExpression $expression Expression to cast
      * @param string $type Type to cast to
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function cast(string $expression, string $type, ?string $alias = null): self
+    public static function cast(string|QueryExpression $expression, string $type, ?string $alias = null): QueryExpression
     {
-        return new self('CAST', [$expression, $type], $alias);
+        global $DB;
+
+        $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
+        return new QueryExpression('CAST(' . $expression . ' AS ' . $type . ')', $alias);
     }
 
     /**
      * Build a CONVERT SQL function call
-     * @param string $expression Expression to convert
+     * @param string|QueryExpression $expression Expression to convert
      * @param string $transcoding Transcoding to use
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function convert(string $expression, string $transcoding, ?string $alias = null): self
+    public static function convert(string|QueryExpression $expression, string $transcoding, ?string $alias = null): QueryExpression
     {
-        return new self('CONVERT', [$expression, $transcoding], $alias);
+        global $DB;
+        $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
+        return new QueryExpression('CONVERT(' . $expression . ' USING ' . $transcoding . ')', $alias);
     }
 
     /**
      * Build a NOW SQL function call
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function now(?string $alias = null): self
+    public static function now(?string $alias = null): QueryExpression
     {
-        return new self('NOW', [], $alias);
-    }
-
-    /**
-     * Build a LOWER SQL function call
-     * @param string $expression Expression to convert
-     * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
-     */
-    public static function lower(string $expression, ?string $alias = null): self
-    {
-        return new self('LOWER', [$expression], $alias);
+        return new QueryExpression('NOW()', $alias);
     }
 
     /**
      * Build a REPLACE SQL function call
-     * @param string $expression Expression to search in
-     * @param string $search String to search
-     * @param string $replace String to replace
+     * @param string|QueryExpression $expression Expression to search in
+     * @param string|QueryExpression $search String to search
+     * @param string|QueryExpression $replace String to replace
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function replace(string $expression, string $search, string $replace, ?string $alias = null): self
+    public static function replace(string|QueryExpression $expression, string|QueryExpression $search, string|QueryExpression $replace, ?string $alias = null): QueryExpression
     {
-        return new self('REPLACE', [$expression, $search, $replace], $alias);
-    }
-
-    /**
-     * Build a UNIX_TIMESTAMP SQL function call
-     * @param string $expression Expression to convert
-     * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
-     */
-    public static function unixTimestamp(string $expression, ?string $alias = null): self
-    {
-        return new self('UNIX_TIMESTAMP', [$expression], $alias);
+        return self::getExpression('REPLACE', [$expression, $search, $replace], $alias);
     }
 
     /**
      * Build a FROM_UNIXTIME SQL function call
-     * @param string $expression Expression to convert
-     * @param string|null $format Function result alias
+     * @param string|QueryExpression $expression Expression to convert
+     * @param string|QueryExpression|null $format Function result alias
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function fromUnixTimestamp(string $expression, ?string $format = null, ?string $alias = null): self
+    public static function fromUnixTimestamp(string|QueryExpression $expression, string|QueryExpression $format = null, ?string $alias = null): QueryExpression
     {
         $params = [$expression];
         if ($format !== null) {
             $params[] = $format;
         }
-        return new self('FROM_UNIXTIME', $params, $alias);
+        return self::getExpression('FROM_UNIXTIME', $params, $alias);
     }
 
     /**
      * Build a DATE_FORMAT SQL function call
-     * @param string $expression Expression to format
-     * @param string $format Format to use
+     * @param string|QueryExpression $expression Expression to format
+     * @param string|QueryExpression $format Format to use
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function dateFormat(string $expression, string $format, ?string $alias = null): self
+    public static function dateFormat(string|QueryExpression $expression, string|QueryExpression $format, ?string $alias = null): QueryExpression
     {
-        return new self('DATE_FORMAT', [$expression, $format], $alias);
+        return self::getExpression('DATE_FORMAT', [$expression, $format], $alias);
     }
 
     /**
      * Build a LPAD SQL function call
-     * @param string $expression Expression to pad
-     * @param string $length Length to pad to
-     * @param string $pad_string String to pad with
+     * @param string|QueryExpression $expression Expression to pad
+     * @param string|QueryExpression $length Length to pad to
+     * @param string|QueryExpression $pad_string String to pad with
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function lpad(string $expression, string $length, string $pad_string, ?string $alias = null): self
+    public static function lpad(string|QueryExpression $expression, string|QueryExpression $length, string|QueryExpression $pad_string, ?string $alias = null): QueryExpression
     {
-        return new self('LPAD', [$expression, $length, $pad_string], $alias);
+        return self::getExpression('LPAD', [$expression, $length, $pad_string], $alias);
     }
 
     /**
      * Buidl a ROUND SQL function call
-     * @param string $expression Expression to round
-     * @param int $precision Precision to round to
+     * @param string|QueryExpression $expression Expression to round
+     * @param string|QueryExpression|null $precision Precision to round to
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function round(string $expression, int $precision = 0, ?string $alias = null): self
+    public static function round(string|QueryExpression $expression, string|QueryExpression $precision = null, ?string $alias = null): QueryExpression
     {
-        return new self('ROUND', [$expression, $precision], $alias);
+        if ($precision === null) {
+            $precision = new QueryExpression('0');
+        }
+        return self::getExpression('ROUND', [$expression, $precision], $alias);
     }
 
     /**
      * Build a NULLIF SQL function call
-     * @param string $expression Expression to check
-     * @param string $value Value to check against
+     * @param string|QueryExpression $expression Expression to check
+     * @param string|QueryExpression $value Value to check against
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function nullIf(string $expression, string $value, ?string $alias = null): self
+    public static function nullIf(string|QueryExpression $expression, string|QueryExpression $value, ?string $alias = null): QueryExpression
     {
-        return new self('NULLIF', [$expression, $value], $alias);
-    }
-
-    /**
-     * Build a COALESCE SQL function call
-     * @param array $params Parameters to check
-     * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
-     */
-    public static function coalesce(array $params, ?string $alias = null): self
-    {
-        return new self('COALESCE', $params, $alias);
-    }
-
-    /**
-     * Build a LEAST SQL function call
-     * @param array $params Parameters to check
-     * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
-     */
-    public static function least(array $params, ?string $alias = null): self
-    {
-        return new self('LEAST', $params, $alias);
+        return self::getExpression('NULLIF', [$expression, $value], $alias);
     }
 
     /**
      * Build a TIMESTAMPDIFF SQL function call
      * @param string $unit Unit to use
-     * @param string $expression1 Expression to compare
-     * @param string $expression2 Expression to compare
+     * @param string|QueryExpression $expression1 Expression to compare
+     * @param string|QueryExpression $expression2 Expression to compare
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function timestampDiff(string $unit, string $expression1, string $expression2, ?string $alias = null): self
+    public static function timestampDiff(string $unit, string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
-        return new self('TIMESTAMPDIFF', [$unit, $expression1, $expression2], $alias);
-    }
-
-    /**
-     * Build a BIT_COUNT SQL function call
-     * @param string $expression Expression for the function
-     * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
-     */
-    public static function bitCount(string $expression, ?string $alias = null): self
-    {
-        return new self('BIT_COUNT', [$expression], $alias);
+        return self::getExpression('TIMESTAMPDIFF', [new QueryExpression($unit), $expression1, $expression2], $alias);
     }
 
     /**
      * Build a DATEDIFF SQL function call
-     * @param string $expression1 Expression to compare
-     * @param string $expression2 Expression to compare
+     * @param string|QueryExpression $expression1 Expression to compare
+     * @param string|QueryExpression $expression2 Expression to compare
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return static
+     * @return QueryExpression
      */
-    public static function dateDiff(string $expression1, string $expression2, ?string $alias = null): self
+    public static function dateDiff(string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
-        return new self('DATEDIFF', [$expression1, $expression2], $alias);
+        return self::getExpression('DATEDIFF', [$expression1, $expression2], $alias);
     }
 }

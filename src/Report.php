@@ -383,8 +383,8 @@ class Report extends CommonGLPI
                 'PORT_1.mac AS mac_1',
                 'PORT_1.logical_number AS logical_1',
                 QueryFunction::groupConcat(
-                    expression: $DB::quoteName('ADDR_1.name'),
-                    separator: $DB::quoteValue(', '),
+                    expression: 'ADDR_1.name',
+                    separator: ', ',
                     alias: 'ip_1'
                 ),
                 'PORT_2.itemtype AS itemtype_2',
@@ -393,8 +393,8 @@ class Report extends CommonGLPI
                 'PORT_2.name AS port_2',
                 'PORT_2.mac AS mac_2',
                 QueryFunction::groupConcat(
-                    expression: $DB::quoteName('ADDR_2.name'),
-                    separator: $DB::quoteValue(', '),
+                    expression: 'ADDR_2.name',
+                    separator: ', ',
                     alias: 'ip_2'
                 ),
             ], $select),
@@ -441,9 +441,9 @@ class Report extends CommonGLPI
                     'ON'  => [
                         'PORT_2' => 'id',
                         QueryFunction::if(
-                            condition: $DB::quoteName("LINK.networkports_id_1") . ' = ' . $DB::quoteName("PORT_1.id"),
-                            true_expression: $DB::quoteName("LINK.networkports_id_2"),
-                            false_expression: $DB::quoteName("LINK.networkports_id_1")
+                            condition: new QueryExpression($DB::quoteName("LINK.networkports_id_1") . ' = ' . $DB::quoteName("PORT_1.id")),
+                            true_expression: "LINK.networkports_id_2",
+                            false_expression: "LINK.networkports_id_1"
                         ),
                     ]
                 ],

@@ -642,7 +642,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: $DB::quoteName('glpi_tickets.actiontime'),
+                    expression: 'glpi_tickets.actiontime',
                     alias: 'duration'
                 )
             ],
@@ -709,7 +709,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: $DB::quoteName('planned_duration'),
+                    expression: 'planned_duration',
                     alias: 'duration'
                 )
             ],
