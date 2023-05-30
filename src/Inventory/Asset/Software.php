@@ -94,6 +94,31 @@ class Software extends InventoryAsset
         $with_manufacturer = [];
         $without_manufacturer = [];
 
+        //put OS as software
+        $main_asset_raw_data = $this->getMainAsset()->getRawData();
+        if (
+            property_exists($main_asset_raw_data, 'content')
+            && property_exists($main_asset_raw_data->content, 'operatingsystem')
+        ) {
+            $os = new \stdClass();
+            if (property_exists($main_asset_raw_data->content->operatingsystem, 'name')) {
+                $os->name = $main_asset_raw_data->content->operatingsystem->name;
+            }
+
+            if (property_exists($main_asset_raw_data->content->operatingsystem, 'full_name')) {
+                $os->name = $main_asset_raw_data->content->operatingsystem->full_name;
+            }
+
+            if (property_exists($main_asset_raw_data->content->operatingsystem, 'arch')) {
+                $os->arch = $main_asset_raw_data->content->operatingsystem->arch;
+            }
+
+            if (property_exists($main_asset_raw_data->content->operatingsystem, 'version')) {
+                $os->version = $main_asset_raw_data->content->operatingsystem->version;
+            }
+            $this->data[] = $os;
+        }
+
         foreach ($this->data as $k => &$val) {
             foreach ($mapping as $origin => $dest) {
                 if (property_exists($val, $origin)) {

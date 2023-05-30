@@ -37,6 +37,7 @@ namespace Glpi\Inventory\Asset;
 
 use ComputerModel;
 use ComputerType;
+use stdClass;
 
 class Computer extends MainAsset
 {
@@ -53,5 +54,10 @@ class Computer extends MainAsset
     public function getItemtype(): string
     {
         return \Computer::class;
+    }
+
+    public function getRawData(): stdClass
+    {
+        return $this->raw_data;
     }
 }
