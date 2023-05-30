@@ -94,6 +94,20 @@ class Software extends InventoryAsset
         $with_manufacturer = [];
         $without_manufacturer = [];
 
+        //add Operating System as Software
+        if (isset($this->extra_data[OperatingSystem::class])) {
+            $os = $this->extra_data[OperatingSystem::class]->getData()[0];
+            $os_data = new \stdClass();
+            $os_data->name = $os->name ?? $os['full_name'];
+            $os_data->arch = $os->arch ?? null;
+
+            if (property_exists($os, 'version')) {
+                $os_data->version = $os->version;
+            }
+
+            $this->data[] = $os_data;
+        }
+
         foreach ($this->data as $k => &$val) {
             foreach ($mapping as $origin => $dest) {
                 if (property_exists($val, $origin)) {
@@ -239,25 +253,6 @@ class Software extends InventoryAsset
                //same software do exists with a manufacturer, remove current duplicate
                 unset($this->data[$data_index]);
             }
-        }
-
-        //add Operating System as Software
-        if (isset($this->extra_data[OperatingSystem::class])) {
-            $os = $this->extra_data[OperatingSystem::class]->getData();
-            $os_data = [
-                'name' => $os['name'] ?? $os['full_name']
-            ];
-
-            if (!empty($os['version'] ?? '')) {
-                $os_data['version'] = $os['version'];
-            }
-
-
-            if (!empty($os['arch'] ?? '')) {
-                $os_data['arch'] = $os['arch'];
-            }
-
-            $this->data[] = $os_data;
         }
 
         return $this->data;
