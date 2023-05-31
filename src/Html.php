@@ -3843,7 +3843,7 @@ JS;
         $js = <<<JS
          $(function() {
             const html_el = $('html');
-            var is_dark = html_el.attr('data-glpi-theme-dark') || html_el.css('--is-dark').trim() === 'true';
+            var is_dark = html_el.attr('data-glpi-theme-dark') === "1" || html_el.css('--is-dark').trim() === 'true';
             var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
             // init editor
