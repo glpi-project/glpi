@@ -67,7 +67,7 @@ class Software extends InventoryAsset
 
     /** @var array */
     protected $extra_data = [
-        OperatingSystem::class => null
+        '\Glpi\Inventory\Asset\OperatingSystem' => null
     ];
 
     public function prepare(): array
@@ -279,8 +279,8 @@ class Software extends InventoryAsset
         //Get operating system
         $operatingsystems_id = 0;
 
-        if (isset($this->extra_data[OperatingSystem::class])) {
-            $os = $this->extra_data[OperatingSystem::class];
+        if (isset($this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'])) {
+            $os = $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'][0];
             $operatingsystems_id = $os->getId();
 
             //add Operating System as Software
@@ -290,10 +290,7 @@ class Software extends InventoryAsset
             $os_soft_data->arch = $os_data->arch ?? null;
             $os_soft_data->comment = null;
             $os_soft_data->manufacturers_id = 0;
-
-            if (property_exists($os_data, 'version')) {
-                $os_soft_data->version = $os_data->version;
-            }
+            $os_soft_data->version = $os_data->version ?? '';
 
             $this->data[] = $os_soft_data;
         }
@@ -521,7 +518,7 @@ class Software extends InventoryAsset
     {
         return $this->getNormalizedComparisonKey([
             'name'             => mb_strtolower($val->name),
-            'version'          => $with_version ? mb_strtolower($val->version) : '',
+            'version'          => $with_version ? mb_strtolower($val->version ?? '') : '',
             'arch'             => mb_strtolower($val->arch ?? ''),
             'manufacturers_id' => mb_strtolower($val->manufacturers_id),
             'entities_id'      => (int)$val->entities_id,
