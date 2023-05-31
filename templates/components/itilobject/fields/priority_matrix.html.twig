@@ -105,6 +105,7 @@ $(function() {
          data: {
             'urgency': $('#dropdown_urgency{{ rand }}').select2('data') ? $('#dropdown_urgency{{ rand }}').select2('data')[0].id : 0,
             'impact':  $('#dropdown_impact{{ rand }}').select2('data') ? $('#dropdown_impact{{ rand }}').select2('data')[0].id : 0,
+            '_predefined_fields':  $('input[name="_predefined_fields"]').val(),
             'getJson': true,
          }
       }).done(function(data) {
