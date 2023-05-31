@@ -53,8 +53,6 @@ class QueryExpression
     public function __construct($expression, ?string $alias = null)
     {
         if ($expression === null || $expression === '') {
-            var_dump(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
-            ob_flush();
             throw new \RuntimeException('Cannot build an empty expression');
         }
         $this->expression = $expression;
