@@ -1571,7 +1571,7 @@ function waitForElement(selector) {
             return resolve(document.querySelector(selector));
         }
 
-        const observer = new MutationObserver(mutations => {
+        const observer = new MutationObserver(() => {
             if (document.querySelector(selector)) {
                 resolve(document.querySelector(selector));
                 observer.disconnect();
