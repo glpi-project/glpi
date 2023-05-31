@@ -178,8 +178,6 @@ class Contract extends CommonDBTM
 
     public static function rawSearchOptionsToAdd()
     {
-        global $DB;
-
         $tab = [];
 
         $joinparams = [
@@ -471,8 +469,6 @@ class Contract extends CommonDBTM
 
     public function rawSearchOptions()
     {
-        global $DB;
-
         $tab = [];
 
         $tab[] = [

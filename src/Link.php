@@ -585,8 +585,6 @@ class Link extends CommonDBTM
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        global $DB;
-
         if (!self::canView()) {
             return false;
         }

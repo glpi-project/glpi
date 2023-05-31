@@ -100,8 +100,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      **/
     public static function getSQLCriteriaToSearchForItem($itemtype, $items_id)
     {
-        global $DB;
-
         $table = static::getTable();
 
         $conditions = [];

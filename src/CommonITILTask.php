@@ -1521,8 +1521,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     public static function showCentralList($start, $status = 'todo', $showgrouptickets = true)
     {
-        global $DB;
-
         $iterator = self::getTaskList($status, $showgrouptickets);
 
         $total_row_count = count($iterator);

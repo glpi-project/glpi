@@ -1014,8 +1014,6 @@ class Ticket extends CommonITILObject
 
     public function prepareInputForUpdate($input)
     {
-        global $DB;
-
         $input = $this->transformActorsInput($input);
 
        // Get ticket : need for comparison
@@ -5205,8 +5203,6 @@ JAVASCRIPT;
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        global $DB;
-
         if (
             !Session::haveRightsOr(
                 self::$rightname,

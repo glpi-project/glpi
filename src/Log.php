@@ -1187,8 +1187,6 @@ class Log extends CommonDBTM
      **/
     public static function convertFiltersValuesToSqlCriteria(array $filters)
     {
-        global $DB;
-
         $sql_filters = [];
 
         if (isset($filters['affected_fields']) && !empty($filters['affected_fields'])) {

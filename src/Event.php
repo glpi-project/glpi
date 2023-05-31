@@ -107,8 +107,6 @@ class Event extends CommonDBTM
      **/
     public static function log($items_id, $type, $level, $service, $event)
     {
-        global $DB;
-
         $input = ['items_id' => intval($items_id),
             'type'     => $type,
             'date'     => $_SESSION["glpi_currenttime"],

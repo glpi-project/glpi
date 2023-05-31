@@ -1525,7 +1525,7 @@ class Auth extends CommonGLPI
      */
     public static function showSynchronizationForm(User $user)
     {
-        global $DB, $CFG_GLPI;
+        global $CFG_GLPI;
 
         if (Session::haveRight("user", User::UPDATEAUTHENT)) {
             echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('User') . "'>";

@@ -83,8 +83,6 @@ class RuleImportAssetCollection extends RuleCollection
 
     public function collectionFilter($criteria, $options = [])
     {
-        global $DB;
-
        //current tab
         $active_tab = $options['_glpi_tab'] ?? Session::getActiveTab($this->getType());
         $current_tab = str_replace(__CLASS__ . '$', '', $active_tab);

@@ -3997,8 +3997,6 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getSearchOptionsMain()
     {
-        global $DB;
-
         $tab = [];
 
         $tab[] = [

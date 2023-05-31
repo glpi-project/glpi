@@ -642,7 +642,6 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getDefaultWhereCriteria(string $itemtype): array
     {
-        global $DB;
         $criteria = [];
 
         switch ($itemtype) {
@@ -3181,8 +3180,6 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array
     {
-        global $DB;
-
         $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return false;

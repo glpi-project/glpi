@@ -2513,7 +2513,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function canUnrecurs()
     {
-        global $DB, $CFG_GLPI;
+        global $CFG_GLPI;
 
         $ID  = $this->fields['id'];
         if (

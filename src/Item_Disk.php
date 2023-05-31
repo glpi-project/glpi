@@ -216,8 +216,6 @@ class Item_Disk extends CommonDBChild
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        global $DB;
-
         $ID = $item->fields['id'];
         $itemtype = $item->getType();
 

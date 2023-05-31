@@ -130,8 +130,6 @@ class QueuedNotification extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        global $DB;
-
         if (!isset($input['create_time']) || empty($input['create_time'])) {
             $input['create_time'] = $_SESSION["glpi_currenttime"];
         }
