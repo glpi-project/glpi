@@ -598,6 +598,7 @@ $RELATION = [
         '_glpi_items_operatingsystems'     => 'entities_id',
         'glpi_itilcategories'              => 'entities_id',
         'glpi_itilfollowuptemplates'       => 'entities_id',
+        'glpi_itilvalidationtemplates'     => 'entities_id',
         'glpi_knowbaseitemcategories'      => 'entities_id',
         'glpi_knowbaseitems'               => 'entities_id',
         'glpi_knowbaseitems_profiles'      => 'entities_id',
@@ -665,7 +666,6 @@ $RELATION = [
         'glpi_users'                       => 'entities_id',
         'glpi_vlans'                       => 'entities_id',
         'glpi_wifinetworks'                => 'entities_id',
-        'glpi_itilvalidationtemplates'     => 'entities_id',
     ],
 
     'glpi_filesystems' => [

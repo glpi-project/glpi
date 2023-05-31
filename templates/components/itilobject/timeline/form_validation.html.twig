@@ -302,26 +302,6 @@
       {% endif %}
 
       <script type="text/javascript">
-         function waitForElement{{ rand }}(selector) {
-            return new Promise(resolve => {
-               if (document.querySelector(selector)) {
-                     return resolve(document.querySelector(selector));
-               }
-
-               const observer = new MutationObserver(mutations => {
-                     if (document.querySelector(selector)) {
-                        resolve(document.querySelector(selector));
-                        observer.disconnect();
-                     }
-               });
-
-               observer.observe(document.body, {
-                     childList: true,
-                     subtree: true
-               });
-            });
-         }
-
          function itilvalidationtemplate_update{{ rand }}(value) {
             $.ajax({
                url: '{{ path('/ajax/itilvalidation.php') }}',
@@ -343,25 +323,42 @@
                   // set validator type
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', data.validatortype);
+
+                  if (data.groups_id !== undefined && data.groups_id !== null) {
+                     waitForElement("#dropdown_groups_id{{ rand }}").then((elm) => {
+                        // set groups_id
+                        $("#dropdown_groups_id{{ rand }}").ready(function() {
+                           $("#dropdown_groups_id{{ rand }}").trigger('setValue', data.groups_id);
+                        });
+
+                        waitForElement("#dropdown_items_id_target{{ rand }}").then((elm) => {
+                           // set items_id_target
+                           $("#dropdown_items_id_target{{ rand }}").ready(function() {
+                              $("#dropdown_items_id_target{{ rand }}").trigger('setValue', data.items_id_target);
+                           });
+                        });
+                     });
+                  } else if (data.items_id_target !== undefined) {
+                     new Promise((resolve) => {
+                        // if dropdown_items_id_target exists, wait for it to be removed
+                        // is required because the dropdown is removed and recreated when the setValue is triggered
+                        if ($("#dropdown_items_id_target{{ rand }}").length > 0) {
+                           $("#dropdown_items_id_target{{ rand }}").on('remove', function() {
+                              resolve();
+                           });
+                        } else {
+                           resolve();
+                        }
+                     }).then(() => {
+                        waitForElement("#dropdown_items_id_target{{ rand }}").then((elm) => {
+                           // set items_id_target
+                           $("#dropdown_items_id_target{{ rand }}").ready(function() {
+                              $("#dropdown_items_id_target{{ rand }}").trigger('setValue', data.items_id_target);
+                           });
+                        });
+                     });
+                  }
                }
-
-               waitForElement{{ rand }}("#dropdown_groups_id{{ rand }}").then((elm) => {
-                  if (data.groups_id !== undefined) {
-                     // set groups_id
-                     $("#dropdown_groups_id{{ rand }}").ready(function() {
-                        $("#dropdown_groups_id{{ rand }}").trigger('setValue', data.groups_id)
-                     });
-                  }
-               });
-
-               waitForElement{{ rand }}("#dropdown_items_id_target{{ rand }}").then((elm) => {
-                  if (data.items_id_target !== undefined) {
-                     // set items_id_target
-                     $("#dropdown_items_id_target{{ rand }}").ready(function() {
-                        $("#dropdown_items_id_target{{ rand }}").trigger('setValue', data.items_id_target)
-                     });
-                  }
-               });
             });
          }
       </script>

@@ -86,20 +86,22 @@ if (!$parent->getFromDB($parents_id)) {
 $targets = ITILValidationTemplate_Target::getTargets($template->getID());
 // Both template creation form and validation creation form permits to create targets
 // for only one itemtype at once.
-$itemtype = array_key_first($targets); 
-$items_id_target = array_column($targets[$itemtype], 'items_id');
+$target = current($targets);
+$itemtype = $target['itemtype'];
+$items_id_target = array_column($targets, 'items_id');
 
-if (count($targets[$itemtype]) > 0 && isset($targets[$itemtype][0]['groups_id'])) {
+if (isset($target['groups_id'])) {
     $itemtype = 'Group_User';
 }
 
 // Render template content using twig
 $template->fields['content'] = $template->getRenderedContent($parent);
 
+
 // Return json response with the template fields
 echo json_encode(array_merge($template->fields, [
     'validatortype'   => $itemtype,
-    'groups_id'       => $itemtype == 'Group_User' ? $targets['User'][0]['groups_id'] : null,
+    'groups_id'       => $itemtype == 'Group_User' ? $target['groups_id'] : null,
     'items_id_target' => ($itemtype == 'Group' || $itemtype == 'User') && count($items_id_target) == 1 ?
         $items_id_target[0] : $items_id_target
 ]));

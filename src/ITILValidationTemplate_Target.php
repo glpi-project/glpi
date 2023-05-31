@@ -52,17 +52,8 @@ class ITILValidationTemplate_Target extends CommonDBRelation
 
     public static function getTargets($itilvalidationtemplates_id)
     {
-        $itiltargets = new self();
-        $targets     = [];
-
-        foreach (
-            $itiltargets->find([
-                'itilvalidationtemplates_id' => $itilvalidationtemplates_id,
-            ]) as $id => $data
-        ) {
-            $targets[$data['itemtype']][] = $data;
-        }
-
-        return $targets;
+        return (new self())->find([
+            'itilvalidationtemplates_id' => $itilvalidationtemplates_id,
+        ]);
     }
 }

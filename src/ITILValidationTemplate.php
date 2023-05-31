@@ -76,25 +76,22 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     /**
      * Display specific "approver" field
      *
-     * @param $value
-     * @param $name
-     * @param $options
+     * @param int $id ITILValidationTemplate ID
      */
     public static function displayValidatorField(
-        $value = null,
-        $options = []
+        $id,
     ) {
-        if ($value) {
-            $itemtype = array_key_first($value);
-            $items_id = array_map(function ($item) {
-                return $item['items_id'];
-            }, $value[$itemtype]);
+        if ($id > 0) {
+            $targets = ITILValidationTemplate_Target::getTargets($id);
+            $target = current($targets);
+            $itemtype = $target['itemtype'];
+            $items_id = array_column($targets, 'items_id');
         }
 
         $options['users_id_requester'] = \Session::getLoginUserID();
         $options['itemtype_target']    = $itemtype ?? null;
-        $options['groups_id']          = $value ? $value[$itemtype][0]['groups_id'] : null;
-        $options['items_id_target']    = $value && $itemtype == 'Group' && count($items_id) == 1 ?
+        $options['groups_id']          = isset($target) ? $target['groups_id'] : null;
+        $options['items_id_target']    = isset($target) && $itemtype == 'Group' && count($items_id) == 1 ?
             $items_id[0] : $items_id ?? null;
         $options['right']              = 'validate_request';
         $options['display']            = false;
@@ -105,17 +102,8 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     public function displaySpecificTypeField($id, $field = [], array $options = [])
     {
         if ($field['name'] == 'approver') {
-            echo self::displayValidatorField(ITILValidationTemplate_Target::getTargets($id), []);
+            echo self::displayValidatorField($id, []);
         }
-    }
-
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
-    {
-        if ($field == 'approver') {
-            return self::displayValidatorField($values[$field], $options);
-        }
-
-        return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
     public function rawSearchOptions()
@@ -141,15 +129,15 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
     public function postTargets()
     {
-        $itilValidationTemplatesTarget = new ITILValidationTemplate_Target();
-        $itilValidationTemplatesTarget->deleteByCriteria([
-            'itilvalidationtemplates_id' => $this->getID(),
-        ]);
-
         if (isset($this->input['itemtype_target']) && isset($this->input['items_id_target'])) {
             if (!is_array($this->input['items_id_target'])) {
                 $this->input['items_id_target'] = [$this->input['items_id_target']];
             }
+
+            $itilValidationTemplatesTarget = new ITILValidationTemplate_Target();
+            $itilValidationTemplatesTarget->deleteByCriteria([
+                'itilvalidationtemplates_id' => $this->getID(),
+            ]);
 
             foreach ($this->input['items_id_target'] as $user_id) {
                 $itilValidationTemplatesTarget->add([
