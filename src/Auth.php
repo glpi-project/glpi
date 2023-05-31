@@ -627,8 +627,11 @@ class Auth extends CommonGLPI
                 $cookie_name   = session_name() . '_rememberme';
 
                 if ($CFG_GLPI["login_remember_time"]) {
-                    $data = json_decode($_COOKIE[$cookie_name], true);
-                    if (count($data) === 2) {
+                    $data = null;
+                    if (array_key_exists($cookie_name, $_COOKIE)) {
+                        $data = json_decode($_COOKIE[$cookie_name], true);
+                    }
+                    if (is_array($data) && count($data) === 2) {
                         list ($cookie_id, $cookie_token) = $data;
 
                         $user = new User();

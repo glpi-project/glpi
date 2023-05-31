@@ -33,36 +33,26 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Api\HL;
+namespace Glpi\Api\HL\Middleware;
 
-use Attribute;
+use Session;
 
-#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
-class Route
+class CookieAuthMiddleware extends AbstractMiddleware implements AuthMiddlewareInterface
 {
-    /**
-     * Access to the route is allowed without any authentication.
-     */
-    public const SECURITY_NONE = 0;
-
-    /**
-     * Access to the route is allowed only if the user is logged in (valid Glpi-Session-Token header).
-     */
-    public const SECURITY_AUTHENTICATED = 1;
-
-    public const DEFAULT_PRIORITY = 10;
-
-    public function __construct(
-        public string $path,
-        /** @var string[] $methods */
-        public array $methods = [],
-        /** @var array<string, string|array> $requirements */
-        public array $requirements = [],
-        public int $priority = self::DEFAULT_PRIORITY,
-        public int $security_level = self::SECURITY_AUTHENTICATED,
-        /** @var string[] */
-        public array $tags = [],
-        public array $middlewares = [],
-    ) {
+    public function process(MiddlewareInput $input, callable $next): void
+    {
+        $auth = new \Auth();
+        if ($auth->getAlternateAuthSystemsUserLogin(\Auth::COOKIE)) {
+            // User could be authenticated by a cookie
+            // Need to destroy the current session, enable cookie use, and then restart the session
+            session_destroy();
+            ini_set('session.use_cookies', '1');
+            Session::setPath();
+            Session::start();
+            // unset the response to indicate a successful auth
+            $input->response = null;
+        } else {
+            $next($input);
+        }
     }
 }

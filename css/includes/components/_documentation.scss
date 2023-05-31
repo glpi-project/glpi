@@ -31,6 +31,25 @@
  * ---------------------------------------------------------------------
  */
 
+body.api-documentation {
+    > .container {
+        .sidebar {
+            background: inherit;
+            color: inherit;
+            width: 200px;
+            position: fixed;
+            top: 70px;
+            left: 10px;
+            bottom: 0;
+            overflow: auto;
+        }
+
+        .main-content {
+            margin-left: 210px;
+        }
+    }
+}
+
 .documentation {
     background-color: white;
     max-width: 700px;

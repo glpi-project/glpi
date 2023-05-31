@@ -426,7 +426,7 @@ EOT;
                     'userTokenAuth' => []
                 ]
             ]);
-        } else if ($route_path->getRouteSecurityLevel() === Route::SECURITY_AUTHENTICATED) {
+        } else if ($route_path->getRouteSecurityLevel() !== Route::SECURITY_NONE) {
             $schemas = array_merge($schemas, [
                 [
                     'sessionTokenAuth' => []
