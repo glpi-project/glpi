@@ -9615,6 +9615,7 @@ CREATE TABLE `glpi_defaultfilters` (
   `itemtype` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `itemtype` (`itemtype`),
+  KEY `name` (`name`),
   KEY `is_active` (`is_active`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

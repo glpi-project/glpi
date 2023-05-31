@@ -68,6 +68,7 @@ if (!$DB->tableExists($table)) {
         `itemtype` varchar(100) DEFAULT NULL,
         PRIMARY KEY (`id`),
         UNIQUE KEY `itemtype` (`itemtype`),
+        KEY `name` (`name`),
         KEY `is_active` (`is_active`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 
