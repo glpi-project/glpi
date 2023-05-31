@@ -94,20 +94,6 @@ class Software extends InventoryAsset
         $with_manufacturer = [];
         $without_manufacturer = [];
 
-        //add Operating System as Software
-        if (isset($this->extra_data[OperatingSystem::class])) {
-            $os = $this->extra_data[OperatingSystem::class]->getData()[0];
-            $os_data = new \stdClass();
-            $os_data->name = $os->name ?? $os['full_name'];
-            $os_data->arch = $os->arch ?? null;
-
-            if (property_exists($os, 'version')) {
-                $os_data->version = $os->version;
-            }
-
-            $this->data[] = $os_data;
-        }
-
         foreach ($this->data as $k => &$val) {
             foreach ($mapping as $origin => $dest) {
                 if (property_exists($val, $origin)) {
@@ -218,7 +204,7 @@ class Software extends InventoryAsset
                 if (!property_exists($val, 'version')) {
                     $val->version = '';
                 }
-                //arch is undefined, set it to blankk
+                //arch is undefined, set it to blank
                 if (!property_exists($val, 'arch')) {
                     $val->arch = '';
                 }
@@ -296,6 +282,20 @@ class Software extends InventoryAsset
         if (isset($this->extra_data[OperatingSystem::class])) {
             $os = $this->extra_data[OperatingSystem::class];
             $operatingsystems_id = $os->getId();
+
+            //add Operating System as Software
+            $os_data = $os->getData()[0];
+            $os_soft_data = new \stdClass();
+            $os_soft_data->name = $os_data->name ?? $os_data->full_name;
+            $os_soft_data->arch = $os_data->arch ?? null;
+            $os_soft_data->comment = null;
+            $os_soft_data->manufacturers_id = 0;
+
+            if (property_exists($os_data, 'version')) {
+                $os_soft_data->version = $os_data->version;
+            }
+
+            $this->data[] = $os_soft_data;
         }
 
         $db_software = [];
