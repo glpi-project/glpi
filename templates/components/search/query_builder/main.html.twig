@@ -113,6 +113,8 @@
                   href="{{ p['target'] ~ ('?' in p['target'] ? '&amp;' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
                   <i class="ti ti-circle-x"></i>
                </a>
+            {% elseif p['forcereset'] %}
+               <input type="hidden" name="reset" value="reset">
             {% endif %}
          {% endif %}
          {% for template, params in extra_actions_templates %}

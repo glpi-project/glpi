@@ -67,6 +67,7 @@ final class QueryBuilder implements SearchInputInterface
             $p['target']       = \Toolbox::getItemTypeSearchURL($itemtype);
         }
         $p['showreset']                     = true;
+        $p['forcereset']                    = false;
         $p['showbookmark']                  = true;
         $p['showfolding']                   = true;
         $p['mainform']                      = true;

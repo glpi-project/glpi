@@ -100,6 +100,7 @@ final class CriteriaFilter extends CommonDBChild
             'showmassiveactions'      => false,
             'showbookmark'            => false,
             'showreset'               => false,
+            'forcereset'              => true,
             'actionvalue'             => __("Preview results"),
             'extra_actions_templates' => [
                 "components/search/criteria_filter_actions.html.twig" => [
