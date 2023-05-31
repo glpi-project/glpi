@@ -50,7 +50,7 @@
 
 {% if not format_presets %}
     {% set format_presets = {
-        'dynamic': __('Dynamic'),
+        'dynamic': __('Dynamic distribution'),
         'daily': __('Daily'),
         'weekly': __('Weekly'),
         'monthly': __('Monthly'),
@@ -72,7 +72,8 @@
 <div class="d-flex gap-2 w-full">
     <div id="select_range_dropdown" class="dropdown">
         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {{ start_date and end_date ? 'Custom range' : timerange_presets[interval] }}
+            <i class="ti ti-calendar me-2"></i>
+            {{ start_date and end_date ? __('Custom range') ~ ': ' ~ start_date|split('T')[0] ~ ' - ' ~ end_date|split('T')[0] : timerange_presets[interval] }}
         </button>
         <ul class="dropdown-menu">
             {% for key, value in timerange_presets %}
@@ -99,6 +100,7 @@
     </div>
     <div id="select_format_dropdown" class="dropdown">
         <button class="btn dropdown-toggle show" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="ti ti-chart-dots-3 me-2"></i>
             {{ format_presets[format] }}
         </button>
         <ul class="dropdown-menu">
@@ -153,10 +155,15 @@
         let end_date = range_date._flatpickr.selectedDates[1];
 
         if (start_date && end_date) {
-            date_range_data['start_date'] = start_date.toISOString();
-            date_range_data['end_date'] = end_date.toISOString();
+            // Igore timezone offset
+            date_range_data['start_date'] = new Date(start_date.getTime() - (start_date.getTimezoneOffset() * 60000)).toISOString();
+            date_range_data['end_date'] = new Date(end_date.getTime() - (end_date.getTimezoneOffset() * 60000)).toISOString();
             date_range_data['interval'] = null;
 
+            let label = __('Custom Range') + ': ';
+            label += date_range_data['start_date'].split('T')[0];
+            label += ' - ' + date_range_data['end_date'].split('T')[0];
+            $('#select_range_dropdown button.dropdown-toggle').html(label);
             reloadTab_{{ options['rand'] }}();
         }
     }

@@ -253,7 +253,7 @@ class PrinterLog extends CommonDBChild
             'icon'  => $params['icon'],
             'color' => '#ffffff',
             'distributed' => false,
-            'show_points' => false,
+            'show_points' => true,
             'line_width'  => 2,
         ];
 
