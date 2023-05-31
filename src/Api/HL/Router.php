@@ -679,7 +679,7 @@ EOT;
         $auth->auth_succeded = true;
         $auth->user = new \User();
         $auth->user->getFromDB($data['user_id']);
-        Session::init($auth, false);
+        Session::init($auth);
     }
 
     /**
