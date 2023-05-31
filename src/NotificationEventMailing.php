@@ -131,7 +131,24 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
                 }
 
-                if (is_a($current->fields['itemtype'], CommonDBTM::class, true)) {
+                if ($current->fields['event'] === null) {
+                    // Notifications that were pushed in queue before upgrade to GLPI 10.0.8+ have a `null` value in `event` field.
+                    // Build the `In-Reply-To` header as it was done before GLPI 10.0.8.
+                    $mmail->AddCustomHeader(
+                        str_replace(
+                            [
+                                '%uuid',
+                                '%itemtype',
+                                '%items_id'
+                            ],
+                            [
+                                Config::getUuid('notification'),
+                                $current->fields['items_id']
+                            ],
+                            "In-Reply-To: <GLPI-%uuid-%itemtype-%items_id>"
+                        )
+                    );
+                } elseif (is_a($current->fields['itemtype'], CommonDBTM::class, true)) {
                     $reference_event = $current->fields['itemtype']::getMessageReferenceEvent($current->fields['event']);
                     if ($reference_event !== null && $reference_event !== $current->fields['event']) {
                         // Add `In-Reply-To` and `References` for mail grouping in reader when:
