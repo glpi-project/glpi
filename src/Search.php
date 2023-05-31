@@ -6686,7 +6686,8 @@ JAVASCRIPT;
                         $added         = [];
                         for ($k = 0; $k < $data[$ID]['count']; $k++) {
                             if (
-                                strlen(trim($data[$ID][$k]['name'])) > 0
+                                isset($data[$ID][$k]['name'])
+                                && strlen(trim($data[$ID][$k]['name'])) > 0
                                 && !in_array(
                                     $data[$ID][$k]['name'] . "-" . $data[$ID][$k]['entities_id'],
                                     $added
