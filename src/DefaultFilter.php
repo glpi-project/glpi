@@ -138,7 +138,10 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
                 ]
             ],
             'WHERE' => [
-                "$default_table.itemtype" => $itemtype
+                "$default_table.itemtype" => $itemtype,
+                "NOT" => [
+                    "$filter_table.search_criteria" => null
+                ]
             ]
         ];
 

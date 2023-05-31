@@ -224,11 +224,14 @@ $(document).ready(function() {
 
    $('.default-filter').change(function(event) {
       var url = window.location.href;
-      url = url.replace(/&nodefault/g, '');
+      url = url.replace(/&?nodefault/g, '');
       if (!$(this).is(":checked")) {
-         console.log('remove default filter');
-         url += '&nodefault';
+         if (url.indexOf('?') == -1)
+            url += '?nodefault';
+         else
+            url += '&nodefault';
       }
+      url = url.replace(/\?$/g, '');
       window.location.replace(url);
    });
 

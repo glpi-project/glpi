@@ -88,6 +88,8 @@ final class QueryBuilder implements SearchInputInterface
         $normalized_itemtype = Toolbox::getNormalizedItemtype($itemtype);
         $linked = SearchEngine::getMetaItemtypeAvailable($itemtype);
 
+        $can_disablefilter = \Session::haveRightsOr('search_config', [\DisplayPreference::PERSONAL, \DisplayPreference::GENERAL]);
+
         TemplateRenderer::getInstance()->display('components/search/query_builder/main.html.twig', [
             'mainform'            => $p['mainform'],
             'showaction'          => $p['showaction'],
@@ -96,6 +98,7 @@ final class QueryBuilder implements SearchInputInterface
             'criteria'            => $p['criteria'],
             'p'                   => $p,
             'linked'              => $linked,
+            'can_disablefilter'   => $can_disablefilter,
         ]);
     }
 
@@ -666,7 +669,8 @@ final class QueryBuilder implements SearchInputInterface
 
         if ($defaultfilter = \DefaultFilter::getSearchCriteria($itemtype)) {
             $params['defaultfilter'] = $defaultfilter;
-            if (!isset($params['nodefault'])) {
+            $can_disablefilter = \Session::haveRightsOr('search_config', [\DisplayPreference::PERSONAL, \DisplayPreference::GENERAL]);
+            if (!isset($params['nodefault']) || !$can_disablefilter) {
                 $params['criteria'][] = $defaultfilter['search_criteria'];
             }
         }

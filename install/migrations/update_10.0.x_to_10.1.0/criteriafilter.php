@@ -74,3 +74,5 @@ if (!$DB->tableExists($table)) {
 
     $DB->queryOrDie($query, "Add table $table");
 }
+
+$migration->addRight(DefaultFilter::$rightname, ALLSTANDARDRIGHT, ['config' => UPDATE]);
