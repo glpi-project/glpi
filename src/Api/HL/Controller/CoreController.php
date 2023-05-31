@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
@@ -99,7 +100,7 @@ final class CoreController extends AbstractController
         ];
     }
 
-    #[Route(path: '/', methods: ['GET'], security_level: Route::SECURITY_NONE)]
+    #[Route(path: '/', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[Doc\Route(
         description: 'API Homepage. Displays the available API versions and a list of available routes. When logged in, more routes are displayed.',
         responses: [
@@ -148,7 +149,7 @@ final class CoreController extends AbstractController
         return new JSONResponse($data);
     }
 
-    #[Route(path: '/doc{ext}', methods: ['GET'], requirements: ['ext' => '(.json)?'], security_level: Route::SECURITY_NONE)]
+    #[Route(path: '/doc{ext}', methods: ['GET'], requirements: ['ext' => '(.json)?'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[Doc\Route(
         description: 'Displays the API documentation as a Swagger UI HTML page or as the raw JSON schema.',
         parameters: [
@@ -218,7 +219,7 @@ HTML;
         return new JSONResponse($schema);
     }
 
-    #[Route(path: '/getting-started{ext}', methods: ['GET'], requirements: ['ext' => '(.md)?'], security_level: Route::SECURITY_NONE)]
+    #[Route(path: '/getting-started{ext}', methods: ['GET'], requirements: ['ext' => '(.md)?'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[Doc\Route(
         description: 'Displays the general API documentation to get started.',
         parameters: [

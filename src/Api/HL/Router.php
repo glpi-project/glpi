@@ -45,6 +45,8 @@ use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
+use Glpi\Api\HL\Middleware\AuthMiddlewareInterface;
+use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\Middleware\CRUDRequestMiddleware;
 use Glpi\Api\HL\Middleware\DebugRequestMiddleware;
 use Glpi\Api\HL\Middleware\DebugResponseMiddleware;
@@ -71,6 +73,11 @@ class Router
      * @var AbstractController[]
      */
     protected array $controllers = [];
+
+    /**
+     * @var array{middleware: AuthMiddlewareInterface, priority: integer, condition: callable}[]
+     */
+    protected array $auth_middlewares = [];
 
     /**
      * @var array{middleware: RequestMiddlewareInterface, priority: integer, condition: callable}[]
@@ -169,8 +176,10 @@ EOT;
                 }
             }
 
-            $instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static function (AbstractController $controller) {
-                return \Toolbox::hasTrait($controller, CRUDControllerTrait::class);
+            $instance->registerAuthMiddleware(new CookieAuthMiddleware());
+
+            $instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static function (RoutePath $route_path) {
+                return \Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class);
             });
             $instance->registerRequestMiddleware(new DebugRequestMiddleware());
             $instance->registerRequestMiddleware(new RSQLRequestMiddleware());
@@ -244,6 +253,28 @@ EOT;
     }
 
     /**
+     * Register an auth middleware
+     *
+     * @param AuthMiddlewareInterface $middleware
+     * @param int $priority
+     * @param callable|null $condition
+     * @phpstan-param null|callable(AbstractController): bool $condition
+     * @return void
+     */
+    public function registerAuthMiddleware(AuthMiddlewareInterface $middleware, int $priority = 0, ?callable $condition = null): void
+    {
+        $this->auth_middlewares[] = [
+            'priority' => $priority,
+            'middleware' => $middleware,
+            'condition' => $condition ?? static fn(RoutePath $route_path) => true,
+        ];
+        // Sort by priority (Higher priority last due to how the processing is done)
+        usort($this->auth_middlewares, static function ($a, $b) {
+            return $a['priority'] <=> $b['priority'];
+        });
+    }
+
+    /**
      * Register a request middleware
      *
      * @param RequestMiddlewareInterface $middleware
@@ -257,7 +288,7 @@ EOT;
         $this->request_middlewares[] = [
             'priority' => $priority,
             'middleware' => $middleware,
-            'condition' => $condition ?? static fn(AbstractController $controller) => true,
+            'condition' => $condition ?? static fn(RoutePath $route_path) => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
         usort($this->request_middlewares, static function ($a, $b) {
@@ -279,7 +310,7 @@ EOT;
         $this->response_middlewares[] = [
             'priority' => $priority,
             'middleware' => $middleware,
-            'condition' => $condition ?? static fn(AbstractController $controller) => true,
+            'condition' => $condition ?? static fn(RoutePath $route_path) => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
         usort($this->response_middlewares, static function ($a, $b) {
@@ -434,13 +465,29 @@ EOT;
         return null;
     }
 
+    private function doAuthMiddleware(MiddlewareInput $input): void
+    {
+        $action = static function (MiddlewareInput $input, ?callable $next = null) {
+        };
+        foreach ($this->auth_middlewares as $middleware) {
+            $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
+            $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
+            if (!$conditions_met) {
+                continue;
+            }
+            $action = static fn ($input) => $middleware['middleware']($input, $action);
+        }
+        $action($input);
+    }
+
     private function doRequestMiddleware(MiddlewareInput $input): ?Response
     {
         $action = static function (MiddlewareInput $input, ?callable $next = null) {
             return null;
         };
         foreach ($this->request_middlewares as $middleware) {
-            $conditions_met = $middleware['condition']($input->route_path->getControllerInstance());
+            $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
+            $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
             if (!$conditions_met) {
                 continue;
             }
@@ -454,7 +501,8 @@ EOT;
         $action = static function (MiddlewareInput $input, ?callable $next = null) {
         };
         foreach ($this->response_middlewares as $middleware) {
-            $conditions_met = $middleware['condition']($input->route_path->getControllerInstance());
+            $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
+            $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
             if (!$conditions_met) {
                 continue;
             }
@@ -520,13 +568,18 @@ EOT;
         if ($matched_route === null) {
             $response = new Response(404);
         } else {
-            $requires_auth = $matched_route->getRouteSecurityLevel() === Route::SECURITY_AUTHENTICATED;
-            if ($requires_auth) {
-                $unauthenticated_response = new JSONResponse([
-                    'title' => _x('api', 'You are not authenticated'),
-                    'detail' => _x('api', 'The Glpi-Session-Token header is missing or invalid'),
-                    'status' => 'ERROR_UNAUTHENTICATED',
-                ], 401);
+            $requires_auth = $matched_route->getRouteSecurityLevel() !== Route::SECURITY_NONE;
+            $unauthenticated_response = new JSONResponse([
+                'title' => _x('api', 'You are not authenticated'),
+                'detail' => _x('api', 'The Glpi-Session-Token header is missing or invalid'),
+                'status' => 'ERROR_UNAUTHENTICATED',
+            ], 401);
+            $middleware_input = new MiddlewareInput($request, $matched_route, $unauthenticated_response);
+            // Do auth middlewares now even if auth isn't required so session data *could* be used like the theme for doc endpoints.
+            $this->doAuthMiddleware($middleware_input);
+            $auth_from_middleware = $middleware_input->response === null;
+
+            if ($requires_auth && !$auth_from_middleware) {
                 if (!$request->hasHeader('Glpi-Session-Token')) {
                     if (!($request->hasHeader('Authorization') && Session::getLoginUserID() !== false)) {
                         $response = $unauthenticated_response;
@@ -579,41 +632,37 @@ EOT;
      */
     private function handleAuth(Request $request): void
     {
-        // Try authenticating from a cookie for cases when the API is accessed from a browser
-        $auth = new \Auth();
-        if (!$auth->getAlternateAuthSystemsUserLogin(\Auth::COOKIE)) {
-            if ($request->hasHeader('Authorization')) {
-                $auth_header = $request->getHeaderLine('Authorization');
-                // if basic auth
-                if (preg_match('/^Basic\s+(.*)$/i', $auth_header, $matches)) {
-                    $this->resumeSession('');
-                } else {
-                    $this->startTemporarySession($request);
-                    if ($request->hasHeader('GLPI-Profile')) {
-                        $requested_profile = $request->getHeaderLine('GLPI-Profile');
-                        if (is_numeric($requested_profile)) {
-                            Session::changeProfile((int)$requested_profile);
-                        }
-                    }
-                    if ($request->hasHeader('GLPI-Entity')) {
-                        $requested_entity = $request->getHeaderLine('GLPI-Entity');
-                        if (is_numeric($requested_entity)) {
-                            $is_recursive = $request->hasHeader('GLPI-Entity-Recursive') && strtolower($request->getHeaderLine('GLPI-Entity-Recursive')) === 'true';
-                            Session::changeActiveEntities((int)$requested_entity, $is_recursive);
-                        }
+        if ($request->hasHeader('Authorization')) {
+            $auth_header = $request->getHeaderLine('Authorization');
+            // if basic auth
+            if (preg_match('/^Basic\s+(.*)$/i', $auth_header, $matches)) {
+                $this->resumeSession('');
+            } else {
+                $this->startTemporarySession($request);
+                if ($request->hasHeader('GLPI-Profile')) {
+                    $requested_profile = $request->getHeaderLine('GLPI-Profile');
+                    if (is_numeric($requested_profile)) {
+                        Session::changeProfile((int)$requested_profile);
                     }
                 }
-                return;
+                if ($request->hasHeader('GLPI-Entity')) {
+                    $requested_entity = $request->getHeaderLine('GLPI-Entity');
+                    if (is_numeric($requested_entity)) {
+                        $is_recursive = $request->hasHeader('GLPI-Entity-Recursive') && strtolower($request->getHeaderLine('GLPI-Entity-Recursive')) === 'true';
+                        Session::changeActiveEntities((int)$requested_entity, $is_recursive);
+                    }
+                }
             }
-            if (
-                $request->hasHeader('Glpi-Session-Token')
-                && !empty($request->getHeaderLine('Glpi-Session-Token'))
-            ) {
-                $this->resumeSession($request->getHeaderLine('Glpi-Session-Token'));
-            }
-            Session::setPath();
-            Session::start();
+            return;
         }
+        if (
+            $request->hasHeader('Glpi-Session-Token')
+            && !empty($request->getHeaderLine('Glpi-Session-Token'))
+        ) {
+            $this->resumeSession($request->getHeaderLine('Glpi-Session-Token'));
+        }
+        Session::setPath();
+        Session::start();
 
         // Clear all messages in the session to avoid unhandled messages being displayed in the errors of unrelated API requests
         $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
@@ -629,7 +678,7 @@ EOT;
         $auth->auth_succeded = true;
         $auth->user = new \User();
         $auth->user->getFromDB($data['user_id']);
-        Session::init($auth);
+        Session::init($auth, false);
     }
 
     /**

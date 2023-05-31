@@ -33,36 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Api\HL;
+namespace Glpi\Api\HL\Middleware;
 
-use Attribute;
+use Glpi\Api\HL\RoutePath;
+use Glpi\Http\Request;
+use Glpi\Http\Response;
 
-#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
-class Route
+interface AuthMiddlewareInterface
 {
-    /**
-     * Access to the route is allowed without any authentication.
-     */
-    public const SECURITY_NONE = 0;
+    public function process(MiddlewareInput $input, callable $next): void;
 
     /**
-     * Access to the route is allowed only if the user is logged in (valid Glpi-Session-Token header).
+     * @param MiddlewareInput $input
+     * @param callable $next
+     * @return ?Response
      */
-    public const SECURITY_AUTHENTICATED = 1;
-
-    public const DEFAULT_PRIORITY = 10;
-
-    public function __construct(
-        public string $path,
-        /** @var string[] $methods */
-        public array $methods = [],
-        /** @var array<string, string|array> $requirements */
-        public array $requirements = [],
-        public int $priority = self::DEFAULT_PRIORITY,
-        public int $security_level = self::SECURITY_AUTHENTICATED,
-        /** @var string[] */
-        public array $tags = [],
-        public array $middlewares = [],
-    ) {
-    }
+    public function __invoke(MiddlewareInput $input, callable $next);
 }
