@@ -1468,6 +1468,70 @@ class Search extends DbTestCase
         }
     }
 
+    public function testTickets()
+    {
+        $tech_users_id = getItemByTypeName('User', "tech", true);
+
+       // reduce the right of tech profile
+       // to have only the right of display their own tickets
+        \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+            'Ticket' => (\Ticket::READMY)
+        ]);
+
+       // add a group for tech user
+        $group = new \Group();
+        $groups_id = $group->add([
+            'name' => "test group for tech user"
+        ]);
+        $this->integer((int)$groups_id)->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer(
+            (int)$group_user->add([
+                'groups_id' => $groups_id,
+                'users_id'  => $tech_users_id
+            ])
+        )->isGreaterThan(0);
+
+       // create a ticket
+        $ticket = new \Ticket();
+        $this->integer((int)$ticket->add([
+            'name'         => "test ticket visibility for tech user with READNEWTICKET right",
+            'content'      => "test ticket visibility for tech user with READNEWTICKET right",
+        ]))->isGreaterThan(0);
+
+       // let's use tech user
+        $this->login('tech', 'tech');
+
+       // do search and check presence of the created problem
+        $data = \Search::prepareDatasForSearch('Ticket', ['reset' => 'reset']);
+        \Search::constructSQL($data);
+        \Search::constructData($data);
+
+        $this->integer($data['data']['totalcount'])->isEqualTo(0);
+
+       // update the right of tech profile
+       // to have only the right of display their own tickets and tickets with incoming status
+        \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+            'Ticket' => (\Ticket::READMY + \Ticket::READNEWTICKET)
+        ]);
+
+       // do search and check presence of the created problem
+        $data = \Search::prepareDatasForSearch('Ticket', ['reset' => 'reset']);
+        \Search::constructSQL($data);
+        \Search::constructData($data);
+
+        foreach ($data['data']['rows'][0]['raw'] as $key => $value) {
+            if (str_ends_with($key, 'status')) {
+                $this->array($data)
+                 ->array['data']
+                 ->array['rows']
+                 ->array[0]
+                 ->array['raw']
+                 ->integer[$key]->isEqualTo(\Ticket::INCOMING);
+            }
+        }
+    }
+
     public function testProblems()
     {
         $tech_users_id = getItemByTypeName('User', "tech", true);

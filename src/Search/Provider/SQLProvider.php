@@ -705,11 +705,12 @@ final class SQLProvider implements SearchProviderInterface
                                 "$assigngroup_table.groups_id" => $_SESSION['glpigroups']
                             ];
                         }
-                        if (Session::haveRight('ticket', \Ticket::ASSIGN)) {
-                            $criteria['OR'][] = [
-                                'glpi_tickets.status' => \CommonITILObject::INCOMING
-                            ];
-                        }
+                    }
+
+                    if (Session::haveRight('ticket', \Ticket::READNEWTICKET)) {
+                        $criteria['OR'][] = [
+                            'glpi_tickets.status' => \CommonITILObject::INCOMING
+                        ];
                     }
 
                     if (

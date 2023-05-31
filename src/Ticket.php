@@ -86,6 +86,7 @@ class Ticket extends CommonITILObject
     const STEAL            =  16384;
     const OWN              =  32768;
     const CHANGEPRIORITY   =  65536;
+    const READNEWTICKET    = 262144;
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -251,7 +252,8 @@ class Ticket extends CommonITILObject
             self::$rightname,
             [self::READALL, self::READMY, UPDATE, self::READASSIGN,
                 self::READGROUP,
-                self::OWN
+                self::OWN,
+                self::READNEWTICKET
             ]
         )
               || Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights()));
@@ -298,6 +300,14 @@ class Ticket extends CommonITILObject
             return true;
         }
 
+        // Can see incoming tickets
+        if (
+            Session::haveRight(self::$rightname, self::READNEWTICKET)
+            && ($this->fields["status"] == self::INCOMING)
+        ) {
+            return true;
+        }
+
         // Can see assigned tickets
         if (
             Session::haveRight(self::$rightname, self::READASSIGN)
@@ -306,10 +316,6 @@ class Ticket extends CommonITILObject
                 || (
                     isset($_SESSION["glpigroups"])
                     && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])
-                )
-                || (
-                    Session::haveRight(self::$rightname, self::ASSIGN)
-                    && ($this->fields["status"] == self::INCOMING)
                 )
             )
         ) {
@@ -5125,7 +5131,7 @@ JAVASCRIPT;
     {
         global $DB;
 
-        if (!Session::haveRight(self::$rightname, self::READALL)) {
+        if (!Session::haveRightsOr(self::$rightname, [self::READALL, self::READNEWTICKET])) {
             return false;
         }
 
@@ -5765,6 +5771,7 @@ JAVASCRIPT;
             $values[self::SURVEY]         = ['short' => __('Approve solution/Reply survey (my ticket)'),
                 'long'  => __('Approve solution and reply to survey for ticket created by me')
             ];
+            $values[self::READNEWTICKET]       = __('View new tickets');
         }
         if ($interface == 'helpdesk') {
             unset($values[UPDATE], $values[DELETE], $values[PURGE]);
@@ -6039,7 +6046,7 @@ JAVASCRIPT;
             WHERE `groups_id` IN ($groups) AND type = $assign";
             $condition .= "OR `$fieldID` IN ($group_query) ";
 
-            if (Session::haveRight('ticket', Ticket::ASSIGN)) {
+            if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
                // Add new tickets
                 $tickets_query = "SELECT `id`
                FROM `glpi_tickets`
@@ -6469,7 +6476,7 @@ JAVASCRIPT;
                 ];
             }
 
-            if (Session::haveRight('ticket', Ticket::ASSIGN)) {
+            if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
                 $temp['OR'][] = [
                     ['glpi_tickets.status' => CommonITILObject::INCOMING]
                 ];

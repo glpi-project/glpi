@@ -5905,7 +5905,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'ticket',
                 'rights' => ALLSTANDARDRIGHT | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::ASSIGN
-                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY,
+                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY | Ticket::READNEWTICKET,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'followup',
@@ -6202,7 +6202,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'ticket',
                 'rights' => ALLSTANDARDRIGHT | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::ASSIGN
-                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY,
+                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY | Ticket::READNEWTICKET,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'followup',
@@ -6500,7 +6500,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'ticket',
-                'rights' => Ticket::READMY | UPDATE | CREATE | Ticket::READALL | Ticket::ASSIGN | CommonITILObject::SURVEY,
+                'rights' => Ticket::READMY | UPDATE | CREATE | Ticket::READALL | Ticket::ASSIGN | CommonITILObject::SURVEY | Ticket::READNEWTICKET,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'followup',
@@ -7077,7 +7077,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticket',
                 'rights' => ALLSTANDARDRIGHT | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::ASSIGN
-                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY,
+                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY | Ticket::READNEWTICKET,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'followup',
