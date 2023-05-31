@@ -78,9 +78,9 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
      *
      * @param int $id ITILValidationTemplate ID
      */
-    public static function displayValidatorField(
-        $id,
-    ) {
+    private static function displayValidatorField(
+        ?int $id,
+    ): string {
         if ($id > 0) {
             $targets = ITILValidationTemplate_Target::getTargets($id);
             $target = current($targets);
@@ -102,7 +102,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     public function displaySpecificTypeField($id, $field = [], array $options = [])
     {
         if ($field['name'] == 'approver') {
-            echo self::displayValidatorField($id, []);
+            echo self::displayValidatorField($id);
         }
     }
 
@@ -127,7 +127,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         return "fas fa-layer-group";
     }
 
-    public function postTargets()
+    private function postTargets(): void
     {
         if (isset($this->input['itemtype_target']) && isset($this->input['items_id_target'])) {
             if (!is_array($this->input['items_id_target'])) {
