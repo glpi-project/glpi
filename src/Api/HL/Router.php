@@ -176,7 +176,8 @@ EOT;
                 }
             }
 
-            $instance->registerAuthMiddleware(new CookieAuthMiddleware());
+            // Cookie middleware shouldn't run by default. Must be explicitly enabled by adding it in a Route attribute.
+            $instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path) => false);
 
             $instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static function (RoutePath $route_path) {
                 return \Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class);
