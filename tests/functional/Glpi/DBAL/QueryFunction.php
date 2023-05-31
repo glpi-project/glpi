@@ -39,23 +39,23 @@ use Glpi\DBAL\QueryExpression;
 
 class QueryFunction extends \GLPITestCase
 {
-    protected function addDateProvider()
+    protected function dateAddProvider()
     {
         return [
-            ['glpi_computers.date_mod', new QueryExpression('1'), 'DAY', null, 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 1 DAY)'],
-            ['glpi_computers.date_mod', new QueryExpression('5-1'), 'DAY', null, 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 5-1 DAY)'],
-            ['glpi_computers.date_mod', new QueryExpression('1'), 'DAY', 'date_alias', 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 1 DAY) AS `date_alias`'],
-            ['glpi_computers.date_mod', new QueryExpression('5'), 'MONTH', null, 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 5 MONTH)'],
-            ['glpi_tickets.date_creation', 'glpi_tickets.time_to_own', 'SECOND', null, 'DATE_ADD(`glpi_tickets`.`date_creation`, INTERVAL `glpi_tickets`.`time_to_own` SECOND)'],
+            ['glpi_computers.date_mod', 1, 'DAY', null, 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 1 DAY)'],
+            ['glpi_computers.date_mod', '5-1', 'DAY', null, 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL \'5-1\' DAY)'],
+            ['glpi_computers.date_mod', 1, 'DAY', 'date_alias', 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 1 DAY) AS `date_alias`'],
+            ['glpi_computers.date_mod', 5, 'MONTH', null, 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 5 MONTH)'],
+            ['glpi_tickets.date_creation', new QueryExpression('`glpi_tickets`.`time_to_own`'), 'SECOND', null, 'DATE_ADD(`glpi_tickets`.`date_creation`, INTERVAL `glpi_tickets`.`time_to_own` SECOND)'],
         ];
     }
 
     /**
-     * @dataProvider addDateProvider
+     * @dataProvider dateAddProvider
      */
-    public function testAddDate($date, $interval, $interval_unit, $alias, $expected)
+    public function testDateAdd($date, $interval, $interval_unit, $alias, $expected)
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::addDate($date, $interval, $interval_unit, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::dateAdd($date, $interval, $interval_unit, $alias))->isIdenticalTo($expected);
     }
 
     protected function concatProvider()

@@ -100,15 +100,15 @@ class QueryFunction
      * Build an DATE_ADD SQL function call
      * @param string|QueryExpression $date Date to add interval to
      * @param string|QueryExpression $interval Interval to add
-     * @param int|string $interval_unit Interval unit
+     * @param int|string|QueryExpression $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function dateAdd(string|QueryExpression $date, int|string $interval, string $interval_unit, ?string $alias = null): QueryExpression
+    public static function dateAdd(string|QueryExpression $date, int|string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
     {
         global $DB;
         $date = $date instanceof QueryExpression ? $date : $DB::quoteName($date);
-        $interval = is_int($interval) ? $interval : $DB::quoteValue($interval);
+        $interval = is_string($interval) ? $DB::quoteValue($interval) : $interval;
         $exp = sprintf('DATE_ADD(%s, INTERVAL %s %s)', $date, $interval, strtoupper($interval_unit));
         return new QueryExpression($exp, $alias);
     }

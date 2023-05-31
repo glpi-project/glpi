@@ -519,7 +519,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($meta || $opt->isForceGroupBy()) {
                         return array_merge([
                             QueryFunction::groupConcat(
-                                expression: QueryFunction::addDate(
+                                expression: QueryFunction::dateAdd(
                                     date: "{$table}{$addtable}.{$opt["datafields"][1]}",
                                     interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$opt["datafields"][2]}") . $add_minus),
                                     interval_unit: $interval
@@ -531,7 +531,7 @@ final class SQLProvider implements SearchProviderInterface
                         ], $ADDITONALFIELDS);
                     }
                     return array_merge([
-                        QueryFunction::addDate(
+                        QueryFunction::dateAdd(
                             date: "{$table}{$addtable}.{$opt['datafields'][1]}",
                             interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$opt['datafields'][2]}") . $add_minus),
                             interval_unit: $interval,
@@ -1643,7 +1643,7 @@ final class SQLProvider implements SearchProviderInterface
                         if (isset($opt["datafields"][3])) {
                             $add_minus = '-' . $DB::quoteName($table . '.' . $opt["datafields"][3]);
                         }
-                        $date_computation = QueryFunction::addDate(
+                        $date_computation = QueryFunction::dateAdd(
                             date: "$table." . $opt["datafields"][1],
                             interval: new QueryExpression($DB::quoteName("$table." . $opt["datafields"][2]) . $add_minus),
                             interval_unit: $delay_unit
@@ -1660,7 +1660,7 @@ final class SQLProvider implements SearchProviderInterface
                         if (is_numeric($regs[2])) {
                             return [
                                 new QueryExpression("$date_computation " . $regs[1] .
-                                    QueryFunction::addDate(
+                                    QueryFunction::dateAdd(
                                         date: QueryFunction::now(),
                                         interval: new QueryExpression($regs[2]),
                                         interval_unit: $search_unit
@@ -3477,7 +3477,7 @@ final class SQLProvider implements SearchProviderInterface
                         if (isset($searchopt[$ID]["datafields"][3])) {
                             $add_minus = "- `$table$addtable`.`" . $searchopt[$ID]["datafields"][3] . "`";
                         }
-                        $criterion = QueryFunction::addDate(
+                        $criterion = QueryFunction::dateAdd(
                             date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
                             interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus"),
                             interval_unit: $interval,
