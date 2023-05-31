@@ -200,7 +200,7 @@ final class SQLProvider implements SearchProviderInterface
 
         $tocompute      = "$table$addtable.$field";
         $tocomputeid    = "$table$addtable.id";
-        $tocomputetrans = QueryFunction::ifNull("{$table}{$addtable}_trans_{$field}.value", new QueryExpression($DB::quoteValue(\Search::NULLVALUE)));
+        $tocomputetrans = QueryFunction::ifnull("{$table}{$addtable}_trans_{$field}.value", new QueryExpression($DB::quoteValue(\Search::NULLVALUE)));
 
         $ADDITONALFIELDS = [];
         if (
@@ -215,10 +215,10 @@ final class SQLProvider implements SearchProviderInterface
                     $additionalfield_field = $table . $addtable . '.' . $key;
                 }
                 if ($meta || $opt->isForceGroupBy()) {
-                    $ADDITONALFIELDS[] = QueryFunction::ifNull(
+                    $ADDITONALFIELDS[] = QueryFunction::ifnull(
                         expression: QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                QueryFunction::ifNull(
+                                QueryFunction::ifnull(
                                     expression: $additionalfield_field,
                                     value: new QueryExpression($DB::quoteValue(\Search::NULLVALUE))
                                 ),
@@ -461,7 +461,7 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                QueryFunction::ifNull($tocompute, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
+                                QueryFunction::ifnull($tocompute, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
                                 new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
                                 $tocomputeid
                             ]),
@@ -545,7 +545,7 @@ final class SQLProvider implements SearchProviderInterface
                         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
                             $TRANS = QueryFunction::groupConcat(
                                 expression: QueryFunction::concat([
-                                    QueryFunction::ifNull($tocomputetrans, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
+                                    QueryFunction::ifnull($tocomputetrans, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
                                     new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
                                     $tocomputeid
                                 ]),
@@ -591,7 +591,7 @@ final class SQLProvider implements SearchProviderInterface
             if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
                 $TRANS = QueryFunction::groupConcat(
                     expression: QueryFunction::concat([
-                        QueryFunction::ifNull($tocomputetrans, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
+                        QueryFunction::ifnull($tocomputetrans, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
                         new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
                         $tocomputeid
                     ]),
@@ -604,7 +604,7 @@ final class SQLProvider implements SearchProviderInterface
             $SELECT = [
                 QueryFunction::groupConcat(
                     expression: QueryFunction::concat([
-                        QueryFunction::ifNull($tocompute, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
+                        QueryFunction::ifnull($tocompute, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
                         new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
                         $tocomputeid
                     ]),

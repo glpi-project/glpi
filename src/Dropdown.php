@@ -3221,9 +3221,9 @@ JAVASCRIPT;
                             "$table.entities_id",
                             QueryFunction::concat(
                                 params: [
-                                    QueryFunction::ifNull('name', new QueryExpression($DB::quoteValue(''))),
+                                    QueryFunction::ifnull('name', new QueryExpression($DB::quoteValue(''))),
                                     new QueryExpression($DB::quoteValue(' ')),
-                                    QueryFunction::ifNull('firstname', new QueryExpression($DB::quoteValue('')))
+                                    QueryFunction::ifnull('firstname', new QueryExpression($DB::quoteValue('')))
                                 ],
                                 alias:$field
                             ),

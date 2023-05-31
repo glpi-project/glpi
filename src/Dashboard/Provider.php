@@ -979,7 +979,7 @@ class Provider
             [
                 'SELECT' => [
                     'COUNT DISTINCT' => "$t_table.id as nb_tickets",
-                    QueryFunction::dateFormat('date', new QueryExpression($DB::quoteValue('%Y-%m')), 'ticket_month'),
+                    QueryFunction::dateFormat('date', '%Y-%m', 'ticket_month'),
                 ],
                 'FROM'    => $t_table,
                 'WHERE'    => [
@@ -1256,7 +1256,7 @@ class Provider
 
         $criteria = [
             'SELECT'   => [
-                QueryFunction::fromUnixTimestamp(
+                QueryFunction::fromUnixtime(
                     expression: QueryFunction::unixTimestamp("{$t_table}_distinct.date"),
                     format: new QueryExpression($DB::quoteValue('%Y-%m')),
                     alias: 'period'
@@ -1549,7 +1549,7 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT' => [
-                    QueryFunction::dateFormat('date', new QueryExpression($DBread::quoteValue('%Y-%m')), 'period'),
+                    QueryFunction::dateFormat('date', '%Y-%m', 'period'),
                     QueryFunction::avg('takeintoaccount_delay_stat', 'avg_takeintoaccount_delay_stat'),
                     QueryFunction::avg('waiting_duration', 'avg_waiting_duration'),
                     QueryFunction::avg('solve_delay_stat', 'avg_solve_delay_stat'),

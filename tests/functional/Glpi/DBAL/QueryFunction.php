@@ -133,7 +133,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testIfNUll($expression, $value, $alias, $expected)
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::ifNull($expression, $value, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::ifnull($expression, $value, $alias))->isIdenticalTo($expected);
     }
 
     protected function groupConcatProvider()
@@ -417,14 +417,14 @@ class QueryFunction extends \GLPITestCase
      */
     public function testFromUnixTimestamp($expression, $format, $alias, $expected)
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::fromUnixTimestamp($expression, $format, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::fromUnixtime($expression, $format, $alias))->isIdenticalTo($expected);
     }
 
     protected function dateFormatProvider()
     {
         return [
-            ['glpi_computers.date_mod', new QueryExpression("'%Y-%m-%d'"), null, "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d')"],
-            ['glpi_computers.date_mod', new QueryExpression("'%Y-%m-%d'"), 'date_format_alias', "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d') AS `date_format_alias`"],
+            ['glpi_computers.date_mod', '%Y-%m-%d', null, "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d')"],
+            ['glpi_computers.date_mod', '%Y-%m-%d', 'date_format_alias', "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d') AS `date_format_alias`"],
         ];
     }
 
@@ -523,7 +523,7 @@ class QueryFunction extends \GLPITestCase
      */
     public function testTimestampDiff($unit, $expression1, $expression2, $alias, $expected)
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::timestampDiff($unit, $expression1, $expression2, $alias))->isIdenticalTo($expected);
+        $this->string((string) \Glpi\DBAL\QueryFunction::timestampdiff($unit, $expression1, $expression2, $alias))->isIdenticalTo($expected);
     }
 
     protected function bitCountProvider()

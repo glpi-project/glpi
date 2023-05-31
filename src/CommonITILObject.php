@@ -4668,7 +4668,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 'AND' => [
                                     "$table.takeintoaccountdate" => null,
                                     "$table.takeintoaccount_delay_stat" => ['>',
-                                        QueryFunction::timestampDiff(
+                                        QueryFunction::timestampdiff(
                                             unit: 'SECOND',
                                             expression1: "$table.date",
                                             expression2: "{$table}.{$type}"

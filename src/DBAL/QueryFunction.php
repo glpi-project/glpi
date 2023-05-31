@@ -97,18 +97,18 @@ class QueryFunction
     }
 
     /**
-     * Build an ADDDATE SQL function call
+     * Build an DATE_ADD SQL function call
      * @param string|QueryExpression $date Date to add interval to
      * @param string|QueryExpression $interval Interval to add
-     * @param string $interval_unit Interval unit
+     * @param int|string $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function addDate(string|QueryExpression $date, string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
+    public static function dateAdd(string|QueryExpression $date, int|string $interval, string $interval_unit, ?string $alias = null): QueryExpression
     {
         global $DB;
         $date = $date instanceof QueryExpression ? $date : $DB::quoteName($date);
-        $interval = $interval instanceof QueryExpression ? $interval : $DB::quoteName($interval);
+        $interval = is_int($interval) ? $interval : $DB::quoteValue($interval);
         $exp = sprintf('DATE_ADD(%s, INTERVAL %s %s)', $date, $interval, strtoupper($interval_unit));
         return new QueryExpression($exp, $alias);
     }
@@ -136,7 +136,7 @@ class QueryFunction
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function ifNull(string|QueryExpression $expression, string|QueryExpression $value, ?string $alias = null): QueryExpression
+    public static function ifnull(string|QueryExpression $expression, string|QueryExpression $value, ?string $alias = null): QueryExpression
     {
         return self::getExpression('IFNULL', [$expression, $value], $alias);
     }
@@ -269,7 +269,7 @@ class QueryFunction
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function fromUnixTimestamp(string|QueryExpression $expression, string|QueryExpression $format = null, ?string $alias = null): QueryExpression
+    public static function fromUnixtime(string|QueryExpression $expression, string|QueryExpression $format = null, ?string $alias = null): QueryExpression
     {
         $params = [$expression];
         if ($format !== null) {
@@ -281,40 +281,43 @@ class QueryFunction
     /**
      * Build a DATE_FORMAT SQL function call
      * @param string|QueryExpression $expression Expression to format
-     * @param string|QueryExpression $format Format to use
+     * @param string $format Format to use (Automatically quoted as a value)
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function dateFormat(string|QueryExpression $expression, string|QueryExpression $format, ?string $alias = null): QueryExpression
+    public static function dateFormat(string|QueryExpression $expression, string $format, ?string $alias = null): QueryExpression
     {
+        global $DB;
+        $format = new QueryExpression($DB::quoteValue($format));
         return self::getExpression('DATE_FORMAT', [$expression, $format], $alias);
     }
 
     /**
      * Build a LPAD SQL function call
      * @param string|QueryExpression $expression Expression to pad
-     * @param string|QueryExpression $length Length to pad to
-     * @param string|QueryExpression $pad_string String to pad with
+     * @param int $length Length to pad to
+     * @param string $pad_string String to pad with (Automatically quoted as a value)
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function lpad(string|QueryExpression $expression, string|QueryExpression $length, string|QueryExpression $pad_string, ?string $alias = null): QueryExpression
+    public static function lpad(string|QueryExpression $expression, int $length, string $pad_string, ?string $alias = null): QueryExpression
     {
+        global $DB;
+        $length = new QueryExpression((string)$length);
+        $pad_string = new QueryExpression($DB::quoteValue($pad_string));
         return self::getExpression('LPAD', [$expression, $length, $pad_string], $alias);
     }
 
     /**
      * Buidl a ROUND SQL function call
      * @param string|QueryExpression $expression Expression to round
-     * @param string|QueryExpression|null $precision Precision to round to
+     * @param int $precision Precision to round to
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function round(string|QueryExpression $expression, string|QueryExpression $precision = null, ?string $alias = null): QueryExpression
+    public static function round(string|QueryExpression $expression, int $precision = 0, ?string $alias = null): QueryExpression
     {
-        if ($precision === null) {
-            $precision = new QueryExpression('0');
-        }
+        $precision = new QueryExpression((string)$precision);
         return self::getExpression('ROUND', [$expression, $precision], $alias);
     }
 
@@ -325,7 +328,7 @@ class QueryFunction
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function nullIf(string|QueryExpression $expression, string|QueryExpression $value, ?string $alias = null): QueryExpression
+    public static function nullif(string|QueryExpression $expression, string|QueryExpression $value, ?string $alias = null): QueryExpression
     {
         return self::getExpression('NULLIF', [$expression, $value], $alias);
     }
@@ -338,7 +341,7 @@ class QueryFunction
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function timestampDiff(string $unit, string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
+    public static function timestampdiff(string $unit, string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
         return self::getExpression('TIMESTAMPDIFF', [new QueryExpression($unit), $expression1, $expression2], $alias);
     }
@@ -350,7 +353,7 @@ class QueryFunction
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function dateDiff(string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
+    public static function datediff(string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
         return self::getExpression('DATEDIFF', [$expression1, $expression2], $alias);
     }
