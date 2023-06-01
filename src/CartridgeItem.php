@@ -594,8 +594,14 @@ class CartridgeItem extends CommonDBTM
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
+        $printer = new Printer();
+        $asset_cartridge = new Glpi\Inventory\Asset\Cartridge($printer);
+        $known_tags = $asset_cartridge->knownTags(false);
+        $known_tags = array_map(function($a) { return $a["name"];},$known_tags);
+        unset($known_tags["informations"]);
         TemplateRenderer::getInstance()->display('pages/assets/cartridgeitem.html.twig', [
             'item'   => $this,
+            'asset_cartridge_tags' => $known_tags,
             'params' => $options,
         ]);
         return true;
