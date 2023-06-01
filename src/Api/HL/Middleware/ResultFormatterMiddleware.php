@@ -101,13 +101,14 @@ class ResultFormatterMiddleware extends AbstractMiddleware implements ResponseMi
     private function formatXML(array $data): string
     {
         $xml = new \SimpleXMLElement('<root/>');
-        $fn_get_data = static function ($data, $prefix, $xml) use (&$fn_get_data) {
-            foreach ($data as $key => $value) {
-                $full_key = $prefix !== '' ? "{$prefix}.{$key}" : $key;
-                if (is_array($value)) {
-                    $xml = $fn_get_data($value, $full_key, $xml);
-                } else {
-                    $xml->addChild($full_key, $value);
+        $fn_get_data = static function ($data, $xml) use (&$fn_get_data) {
+            if (is_array($data)) {
+                foreach ($data as $key => $value) {
+                    if (is_array($value)) {
+                        $fn_get_data($value, $xml->addChild($key));
+                    } else {
+                        $xml->addChild($key, $value);
+                    }
                 }
             }
             return $xml;
@@ -116,7 +117,7 @@ class ResultFormatterMiddleware extends AbstractMiddleware implements ResponseMi
             $data = [$data];
         }
         foreach ($data as $result_row) {
-            $fn_get_data($result_row, '', $xml->addChild('row'));
+            $fn_get_data($result_row, $xml->addChild('row'));
         }
         return $xml->asXML();
     }
