@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Search;
 use Glpi\Http\Request;
@@ -109,7 +110,7 @@ final class ProjectController extends AbstractController
         ];
     }
 
-    #[Route(path: '/', methods: ['GET'])]
+    #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search projects',
         responses: [
@@ -121,7 +122,7 @@ final class ProjectController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Project'), $request->getParameters());
     }
 
-    #[Route(path: '/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a project by ID',
         responses: [
@@ -166,7 +167,7 @@ final class ProjectController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Project'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Task', methods: ['GET'])]
+    #[Route(path: '/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search project tasks',
         responses: [
@@ -178,7 +179,7 @@ final class ProjectController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Task'), $request->getParameters());
     }
 
-    #[Route(path: '/Task/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Task/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a task by ID',
         responses: [
@@ -223,7 +224,7 @@ final class ProjectController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Task'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/{project_id}/Task', methods: ['GET'])]
+    #[Route(path: '/{project_id}/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search project tasks',
         responses: [

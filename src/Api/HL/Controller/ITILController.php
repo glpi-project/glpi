@@ -42,6 +42,7 @@ use CommonDBTM;
 use CommonITILObject;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
@@ -316,7 +317,7 @@ final class ITILController extends AbstractController
         return $subitem_schema;
     }
 
-    #[Route(path: '/{itemtype}/', methods: ['GET'])]
+    #[Route(path: '/{itemtype}/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search Tickets, Changes or Problems'
     )]
@@ -326,7 +327,7 @@ final class ITILController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema($itemtype), $request->getParameters());
     }
 
-    #[Route(path: '/{itemtype}/{id}', methods: ['GET'])]
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a Ticket, Change or Problem by ID',
         parameters: [
@@ -423,7 +424,7 @@ final class ITILController extends AbstractController
         return $items;
     }
 
-    #[Route(path: '/{itemtype}/{id}/Timeline', methods: ['GET'])]
+    #[Route(path: '/{itemtype}/{id}/Timeline', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get all timeline items for a Ticket, Change or Problem by ID',
         parameters: [
@@ -445,7 +446,7 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}', methods: ['GET'], requirements: [
         'subitem_type' => 'Followup|Task|Document|Solution|Validation|Log'
-    ])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get all timeline items of a specific type for a Ticket, Change or Problem by ID',
         parameters: [
@@ -518,7 +519,7 @@ final class ITILController extends AbstractController
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}/{subitem_id}', methods: ['GET'], requirements: [
         'subitem_type' => 'Followup|Task|Document|Solution|Validation|Log',
         'subitem_id' => '\d+'
-    ])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a specific timeline item by type and ID for a Ticket, Change or Problem by ID',
         parameters: [
@@ -720,7 +721,7 @@ final class ITILController extends AbstractController
         };
     }
 
-    #[Route(path: '/{itemtype}/{id}/TeamMember', methods: ['GET'])]
+    #[Route(path: '/{itemtype}/{id}/TeamMember', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the team members for a specific Ticket, Change or Problem by ID'
     )]
@@ -733,7 +734,7 @@ final class ITILController extends AbstractController
         return new JSONResponse($team);
     }
 
-    #[Route(path: '/{itemtype}/{id}/TeamMember/{role}', methods: ['GET'])]
+    #[Route(path: '/{itemtype}/{id}/TeamMember/{role}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the team members by role for specific Ticket, Change, Problem by ID',
         parameters: [
@@ -849,7 +850,7 @@ final class ITILController extends AbstractController
         return self::getInvalidParametersErrorResponse();
     }
 
-    #[Route(path: '/RecurringTicket', methods: ['GET'])]
+    #[Route(path: '/RecurringTicket', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search recurring tickets'
     )]
@@ -860,7 +861,7 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/RecurringTicket/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
-    ])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a recurring ticket by ID',
     )]
@@ -900,7 +901,7 @@ final class ITILController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('RecurringTicket'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/RecurringChange', methods: ['GET'])]
+    #[Route(path: '/RecurringChange', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search recurring changes'
     )]
@@ -911,7 +912,7 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/RecurringChange/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
-    ])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a recurring change by ID',
     )]
@@ -951,7 +952,7 @@ final class ITILController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('RecurringChange'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/ExternalEvent', methods: ['GET'])]
+    #[Route(path: '/ExternalEvent', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search external evenst'
     )]
@@ -962,7 +963,7 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/ExternalEvent/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
-    ])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a recurring change by ID',
     )]
