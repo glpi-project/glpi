@@ -1010,7 +1010,7 @@ class Inventory extends InventoryTestCase
     {
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
-        $this->integer(count($iterator))->isIdenticalTo(6);
+        $this->integer(count($iterator))->isIdenticalTo(7);
 
         $expecteds = [
             [
@@ -1455,7 +1455,7 @@ class Inventory extends InventoryTestCase
         //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
-        $this->integer(count($iterator))->isIdenticalTo(3033);
+        $this->integer(count($iterator))->isIdenticalTo(3034);
 
         //computer has been created, check logs.
         //check for expected logs
@@ -5362,7 +5362,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($phone);
-        $this->integer(count($iterator))->isIdenticalTo(3);
+        $this->integer(count($iterator))->isIdenticalTo(4);
 
         $expecteds = [
             [
