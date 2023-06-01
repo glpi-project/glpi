@@ -75,7 +75,7 @@
         "@testing-library/jest-dom": "^5.16.5",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^11.0.0",
-        "css-loader": "^6.7.3",
+        "css-loader": "^6.8.1",
         "csso-cli": "^4.0.2",
         "eslint": "^8.39.0",
         "exports-loader": "^4.0.0",
