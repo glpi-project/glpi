@@ -35,7 +35,7 @@
         "jasig/phpcas": "^1.6",
         "laminas/laminas-i18n": "^2.22",
         "laminas/laminas-json": "^3.5",
-        "laminas/laminas-mail": "^2.22",
+        "laminas/laminas-mail": "^2.23",
         "laminas/laminas-mime": "^2.9",
         "league/csv": "^9.9",
         "league/oauth2-client": "^2.7",
