@@ -39,6 +39,8 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Mail\SMTP\OauthConfig;
 use League\OAuth2\Client\Grant\RefreshToken;
 use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Transport\Smtp\Auth\XOAuth2Authenticator;
+use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -82,6 +84,15 @@ class GLPIMailer
         if (method_exists($this->transport, 'getStream')) {
             $stream = $this->transport->getStream();
             $stream->setTimeout(10);
+        }
+
+        if (
+            (int)$CFG_GLPI['smtp_mode'] === MAIL_SMTPOAUTH
+            && $this->transport instanceof EsmtpTransport
+        ) {
+            // Prevent usage of other methods to speed-up authentication process
+            // see https://github.com/symfony/symfony/pull/49900
+            $this->transport->setAuthenticators([new XOAuth2Authenticator()]);
         }
 
         $this->email = new Email();
