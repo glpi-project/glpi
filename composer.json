@@ -63,7 +63,7 @@
         "symfony/console": "^6.3",
         "symfony/css-selector": "^6.3",
         "symfony/dom-crawler": "^6.3",
-        "symfony/html-sanitizer": "^6.2",
+        "symfony/html-sanitizer": "^6.3",
         "symfony/mailer": "^6.2",
         "symfony/mime": "^6.3",
         "symfony/polyfill-ctype": "^1.27",

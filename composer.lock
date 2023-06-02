@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b1aa66a7d7561c67be424d8acd09471c",
+    "content-hash": "5808e86dd68d76d6a82497d154581d9c",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -5025,16 +5025,16 @@
         },
         {
             "name": "symfony/html-sanitizer",
-            "version": "v6.2.7",
+            "version": "v6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/html-sanitizer.git",
-                "reference": "211e36bbb20a5e5db2b940399ab1d2b421a08068"
+                "reference": "eae9b0a9ad7a2ed1963f819547d59ff99ad9e0fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/html-sanitizer/zipball/211e36bbb20a5e5db2b940399ab1d2b421a08068",
-                "reference": "211e36bbb20a5e5db2b940399ab1d2b421a08068",
+                "url": "https://api.github.com/repos/symfony/html-sanitizer/zipball/eae9b0a9ad7a2ed1963f819547d59ff99ad9e0fd",
+                "reference": "eae9b0a9ad7a2ed1963f819547d59ff99ad9e0fd",
                 "shasum": ""
             },
             "require": {
@@ -5074,7 +5074,7 @@
                 "sanitizer"
             ],
             "support": {
-                "source": "https://github.com/symfony/html-sanitizer/tree/v6.2.7"
+                "source": "https://github.com/symfony/html-sanitizer/tree/v6.3.0"
             },
             "funding": [
                 {
@@ -5090,7 +5090,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-14T08:44:56+00:00"
+            "time": "2023-02-14T09:04:20+00:00"
         },
         {
             "name": "symfony/mailer",
