@@ -124,7 +124,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
             $result['cartridge.printer'] .= $printer->fields["id"] . ")";
         }
         if (Session::isMultiEntitiesMode()) {
-            $result['cartridge.entity'] = Dropdown::getDropdownName("glpi_entities" , $printer->fields["entities_id"]);
+            $result['cartridge.entity'] = Dropdown::getDropdownName("glpi_entities", $printer->fields["entities_id"]);
         }
 
         $result['cartridge.item'] = "<a href=\"" . $CFG_GLPI["url_base"] . "/front/cartridgeitem.form.php?id=" . $cartridge->fields["id"] . "\">" . $cartridge->fields["name"] . " (" . $cartridge->fields["ref"] . ")</a>";
