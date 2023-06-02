@@ -41,7 +41,7 @@ use Printer_CartridgeInfo;
 
 class Cartridge extends InventoryAsset
 {
-    public function knownTags(bool $withstates = TRUE): array
+    public function knownTags(bool $withstates = true): array
     {
         $tags = [];
 
@@ -103,22 +103,22 @@ class Cartridge extends InventoryAsset
                                 $slabel
                             )
                         ];
-                    if (isset($aliases[$type . $state])) {
+                        if (isset($aliases[$type . $state])) {
                             foreach ($aliases[$type . $state] as $alias) {
                                 $tags[$alias] = $tags[$type . $state];
                             }
                         }
-                    }
+                    }   
                 } else {
                     $tags[$type] = [
                     //TRANS first argument is a type
                         'name'   => $label
                     ];
                     if (isset($aliases[$type])) {
-                            foreach ($aliases[$type] as $alias) {
-                                $tags[$alias] = $tags[$type];
-                            }
+                        foreach ($aliases[$type] as $alias) {
+                            $tags[$alias] = $tags[$type];
                         }
+                    }
                 }
             } else {
                //types colored: add an entry with type + color and type + color + state
