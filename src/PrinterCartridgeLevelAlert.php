@@ -192,7 +192,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                         echo "<th>" . _n('Printer', 'Printers', Session::getPluralNumber()) . "</th>";
 
                         if (Session::isMultiEntitiesMode()) {
-                            echo "<th>" . __('Entity') . "</th>";
+                            echo "<th>" . _n('Entity', 'Entities', Session::getPluralNumber()) . "</th>";
                         }
 
                         echo "<th>" . _n('Cartridge', 'Cartridges', Session::getPluralNumber()) . "</th>";
