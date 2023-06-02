@@ -71,22 +71,22 @@ class Printer_CartridgeInfo extends CommonDBChild
 
         $iterator = $DB->request([
             'SELECT'    => [
-               'glpi_cartridgeitems.name AS name',
-               'glpi_cartridgeitems.type_tag AS tag',
+                'glpi_cartridgeitems.name AS name',
+                'glpi_cartridgeitems.type_tag AS tag',
             ],
             'FROM'      => 'glpi_cartridges',
             'LEFT JOIN' => [
                 'glpi_cartridgeitems'      => [
-                   'FKEY'   => [
+                    'FKEY'   => [
                        'glpi_cartridges'        => 'cartridgeitems_id',
                        'glpi_cartridgeitems'        => 'id'
                    ]
-               ]
-           ],
+                ]
+            ],
             'WHERE'     => [
-               'glpi_cartridges.printers_id = '.$id,
-               'glpi_cartridges.date_out is not null'
-               ]
+                'glpi_cartridges.printers_id = '.$id,
+                'glpi_cartridges.date_out is not null'
+            ]
         ]);
 
         $info = [];
