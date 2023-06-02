@@ -5104,7 +5104,7 @@ JAVASCRIPT;
                 'linktype'      => ''
             ],
             'formatters' => [
-                'name'          => 'itemlink',
+                'name'          => 'raw_html',
             ],
             'entries'               => $entries,
             'total_number'          => $number,
