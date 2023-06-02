@@ -62,7 +62,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
      **/
     public static function title()
     {
-        hTMl::displayTitle(
+        Html::displayTitle(
             "",
             self::getTypeName(),
             "<i class='fas fa-check fa-lg me-2'></i>" . self::getTypeName()
