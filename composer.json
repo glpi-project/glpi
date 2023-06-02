@@ -33,7 +33,7 @@
         "guzzlehttp/psr7": "^2.5",
         "html2text/html2text": "^4.3",
         "jasig/phpcas": "^1.6",
-        "laminas/laminas-i18n": "^2.22",
+        "laminas/laminas-i18n": "^2.23",
         "laminas/laminas-json": "^3.5",
         "laminas/laminas-mail": "^2.23",
         "laminas/laminas-mime": "^2.9",
