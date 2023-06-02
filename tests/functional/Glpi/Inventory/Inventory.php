@@ -1017,6 +1017,10 @@ class Inventory extends InventoryTestCase
                 'softname' => 'expat',
                 'version' => '2.2.8-1.fc31',
                 'dateinstall' => '2019-12-19',
+            ],[
+                'softname' => 'Fedora',
+                'version' => '31 (Workstation Edition)',
+                'dateinstall' => null,
             ], [
                 'softname' => 'gettext',
                 'version' => '0.20.1-3.fc31',
@@ -1590,7 +1594,7 @@ class Inventory extends InventoryTestCase
         //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
-        $this->integer(count($iterator))->isIdenticalTo(3033);
+        $this->integer(count($iterator))->isIdenticalTo(3034);
 
         //check for expected logs
         $nblogsnow = countElementsInTable(\Log::getTable());
@@ -1770,7 +1774,7 @@ class Inventory extends InventoryTestCase
         //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
-        $this->integer(count($iterator))->isIdenticalTo(3184);
+        $this->integer(count($iterator))->isIdenticalTo(3185);
 
         //check for expected logs after update
         $logs = $DB->request([
@@ -5348,7 +5352,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         foreach ($expecteds as $type => $expected) {
             $component = array_values($components[$type]);
-           //hack to replace expected fkeys
+            //hack to replace expected fkeys
             foreach ($expected as $i => &$row) {
                 foreach (array_keys($row) as $key) {
                     if (isForeignKeyField($key)) {
@@ -5377,6 +5381,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'softname' => 'Enregistreur d\'écran',
                 'version' => '1.5.9',
                 'dateinstall' => '2008-12-31',
+            ], [
+                'softname' => 'Q Android 10.0',
+                'version' => '29',
+                'dateinstall' => null,
             ]
         ];
 
@@ -5443,6 +5451,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //software versions
         $versions = [
             '2.2.8-1.fc31',
+            '31 (Workstation Edition)',
             '0.20.1-3.fc31',
             '3.33.0-1.fc31',
             '3.34.1-1.fc31',
