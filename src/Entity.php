@@ -1064,7 +1064,7 @@ class Entity extends CommonTreeDropdown
             'nosearch'           => true,
             'datatype'           => 'specific'
         ];
-            
+
         $tab[] = [
             'id'                 => '29',
             'table'              => $this->getTable(),
