@@ -70,24 +70,24 @@ class Printer_CartridgeInfo extends CommonDBChild
         $id = $printer->fields['id'];
 
         $iterator = $DB->request([
-           'SELECT'    => [
+            'SELECT'    => [
                'glpi_cartridgeitems.name AS name',
                'glpi_cartridgeitems.type_tag AS tag',
-           ],
-           'FROM'      => 'glpi_cartridges',
-           'LEFT JOIN' => [
-               'glpi_cartridgeitems'      => [
+            ],
+            'FROM'      => 'glpi_cartridges',
+            'LEFT JOIN' => [
+                'glpi_cartridgeitems'      => [
                    'FKEY'   => [
                        'glpi_cartridges'        => 'cartridgeitems_id',
                        'glpi_cartridgeitems'        => 'id'
                    ]
                ]
            ],
-           'WHERE'     => [
-              'glpi_cartridges.printers_id = '.$id,
-              'glpi_cartridges.date_out is not null'
-              ]
-           ]);
+            'WHERE'     => [
+               'glpi_cartridges.printers_id = '.$id,
+               'glpi_cartridges.date_out is not null'
+               ]
+        ]);
 
         $info = [];
         foreach ($iterator as $row) {
@@ -121,7 +121,7 @@ class Printer_CartridgeInfo extends CommonDBChild
 
             echo "<tr>";
             echo sprintf("<td>%s</td>", $tags[$property]['name'] ?? $property);
-            echo sprintf("<td> %s </td>",$mapping[$property]??__('Unknown'));
+            echo sprintf("<td> %s </td>", $mapping[$property] ?? __('Unknown'));
 
             if (strstr($value, 'pages')) {
                 $pages = str_replace('pages', '', $value);
