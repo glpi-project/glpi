@@ -75,7 +75,8 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     *
     * @return string
     */
-    static function query($entities, $repeat=NULL) {
+    private static function query($entities, $repeat = null)
+    {
         global $DB;
 
         $query = "SELECT c.id as cartridge, i.id as cartridgeitem, p.id as printer, p.entities_id as entity, l.value as cartridgelevel, a.id as alertID, a.date as alertDate
@@ -94,10 +95,10 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                 AND p.entities_id IN ($entities)";
 
         if ($repeat) {
-            $query = $query. " AND ( a.date is NULL or a.date < CURRENT_TIMESTAMP() - INTERVAL " . $repeat . " second)";
+            $query = $query . " AND ( a.date is NULL or a.date < CURRENT_TIMESTAMP() - INTERVAL " . $repeat . " second)";
         }
 
-        $query = $query. " ORDER BY p.name";
+        $query = $query . " ORDER BY p.name";
         return $query;
     }
 
@@ -106,30 +107,31 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     *
     * @return string
     */
-    static function prepareBodyValues($data) {
+    private static function prepareBodyValues($data)
+    {
         global $CFG_GLPI;
 
-      $cartridge = new CartridgeItem();
-      $cartridge->getFromDB($data["cartridgeitem"]);
+        $cartridge = new CartridgeItem();
+        $cartridge->getFromDB($data["cartridgeitem"]);
 
-      $printer = new Printer();
-      $printer->getFromDB($data["printer"]);
+        $printer = new Printer();
+        $printer->getFromDB($data["printer"]);
 
-      $result['cartridge.printer'] = "<a href=\"". $CFG_GLPI["url_base"] . "/front/printer.form.php?id=" . $printer->fields["id"] . "\">" . $printer->fields["name"];
+        $result['cartridge.printer'] = "<a href=\"" . $CFG_GLPI["url_base"] . "/front/printer.form.php?id=" . $printer->fields["id"] . "\">" . $printer->fields["name"];
 
-      if ($_SESSION["glpiis_ids_visible"] == 1 || empty($printer->fields["name"])) {
-         $result['cartridge.printer'] .= " (";
-         $result['cartridge.printer'] .= $printer->fields["id"] . ")";
-      }
-      if (Session::isMultiEntitiesMode()) {
-         $result['cartridge.entity'] = Dropdown::getDropdownName("glpi_entities", $printer->fields["entities_id"]);
-      }
+        if ($_SESSION["glpiis_ids_visible"] == 1 || empty($printer->fields["name"])) {
+           $result['cartridge.printer'] .= " (";
+           $result['cartridge.printer'] .= $printer->fields["id"] . ")";
+        }
+        if (Session::isMultiEntitiesMode()) {
+           $result['cartridge.entity'] = Dropdown::getDropdownName("glpi_entities" , $printer->fields["entities_id"]);
+        }
 
-      $result['cartridge.item'] = "<a href=\"" . $CFG_GLPI["url_base"] . "/front/cartridgeitem.form.php?id=" . $cartridge->fields["id"] . "\">" . $cartridge->fields["name"] . " (" . $cartridge->fields["ref"] . ")</a>";
+        $result['cartridge.item'] = "<a href=\"" . $CFG_GLPI["url_base"] . "/front/cartridgeitem.form.php?id=" . $cartridge->fields["id"] . "\">" . $cartridge->fields["name"] . " (" . $cartridge->fields["ref"] . ")</a>";
 
-      $result['cartridge.level'] = $data["cartridgelevel"] . (preg_match('#^[0-9]+$#',$data["cartridgelevel"])?"%":"");
-      $result['cartridge.alertDate'] = $data["alertDate"];
-      return $result;
+        $result['cartridge.level'] = $data["cartridgelevel"] . (preg_match('#^[0-9]+$#',$data["cartridgelevel"])?"%":"");
+        $result['cartridge.alertDate'] = $data["alertDate"];
+        return $result;
    }
 
     /**
@@ -137,7 +139,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     *
     * @return string
     */
-    static function displayBody($data) {
+    private static function displayBody($data) {
 
         $tmp = self::prepareBodyValues($data);
         $body = "<tr class='tab_bg_2'><td>" . $tmp['cartridge.printer'] . "</a></td>";
@@ -152,7 +154,8 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     /**
     *
     */
-    static function displayAlerts() {
+    public static function displayAlerts()
+    {
         global $DB;
 
         $CronTask = new CronTask();
@@ -255,7 +258,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
 
             foreach (Entity::getEntitiesToNotify('printer_cartridge_levels_alert_repeat') as $entity => $repeat) {
                 // KKK if you change this query, please don't forget to also change in showDebug()
-                $query = self::query($entity , $repeat);
+                $query = self::query($entity, $repeat);
                 $result = $DB->query($query);
                 $message = "";
                 $items   = [];
