@@ -120,26 +120,27 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
         $result['cartridge.printer'] = "<a href=\"" . $CFG_GLPI["url_base"] . "/front/printer.form.php?id=" . $printer->fields["id"] . "\">" . $printer->fields["name"];
 
         if ($_SESSION["glpiis_ids_visible"] == 1 || empty($printer->fields["name"])) {
-           $result['cartridge.printer'] .= " (";
-           $result['cartridge.printer'] .= $printer->fields["id"] . ")";
+            $result['cartridge.printer'] .= " (";
+            $result['cartridge.printer'] .= $printer->fields["id"] . ")";
         }
         if (Session::isMultiEntitiesMode()) {
-           $result['cartridge.entity'] = Dropdown::getDropdownName("glpi_entities" , $printer->fields["entities_id"]);
+            $result['cartridge.entity'] = Dropdown::getDropdownName("glpi_entities" , $printer->fields["entities_id"]);
         }
 
         $result['cartridge.item'] = "<a href=\"" . $CFG_GLPI["url_base"] . "/front/cartridgeitem.form.php?id=" . $cartridge->fields["id"] . "\">" . $cartridge->fields["name"] . " (" . $cartridge->fields["ref"] . ")</a>";
 
-        $result['cartridge.level'] = $data["cartridgelevel"] . (preg_match('#^[0-9]+$#',$data["cartridgelevel"])?"%":"");
+        $result['cartridge.level'] = $data["cartridgelevel"] . (preg_match('#^[0-9]+$#', $data["cartridgelevel"]) ? "%" : "");
         $result['cartridge.alertDate'] = $data["alertDate"];
         return $result;
-   }
+    }
 
     /**
     * @param $data
     *
     * @return string
     */
-    private static function displayBody($data) {
+    private static function displayBody($data)
+    {
 
         $tmp = self::prepareBodyValues($data);
         $body = "<tr class='tab_bg_2'><td>" . $tmp['cartridge.printer'] . "</a></td>";
@@ -263,21 +264,21 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                 $message = "";
                 $items   = [];
                 foreach ($result as $cartridge) {
-                       //TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
-                       //TODO: Manage long messages
-                        $message .= sprintf(
-                            __('Threshold of cartridge level alarm reached for the cartridge: %1$s on printer %2$s - Remaining %3$d'),
-                            $cartridge["cartridgeitem"],
-                            $cartridge["printer"],
-                            $cartridge["cartridgelevel"]
-                        );
-                        $message .= '<br>';
-                        $items[$cartridge["cartridge"]] = $cartridge;
+                    //TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
+                    //TODO: Manage long messages
+                    $message .= sprintf(
+                        __('Threshold of cartridge level alarm reached for the cartridge: %1$s on printer %2$s - Remaining %3$d'),
+                        $cartridge["cartridgeitem"],
+                        $cartridge["printer"],
+                        $cartridge["cartridgelevel"]
+                    );
+                    $message .= '<br>';
+                    $items[$cartridge["cartridge"]] = $cartridge;
 
-                        // if alert exists -> delete
-                        if (!empty($cartridge["alertID"])) {
-                            $alert->delete(["id" => $cartridge["alertID"]]);
-                        }
+                    // if alert exists -> delete
+                    if (!empty($cartridge["alertID"])) {
+                        $alert->delete(["id" => $cartridge["alertID"]]);
+                    }
                 }
 
                 if (!empty($items)) {
