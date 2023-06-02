@@ -71,14 +71,13 @@
                  'max': 100,
                  'step': 1,
                  'toadd': {'-1': __('Never')}
-            } | merge(params)]) %}
+            }|merge(params)]) %}
         {% endset %}
         {{ fields.htmlField(
              'warn_level',
              dd_warn_level,
              __('Remaining level threshold warning')
-            )
-         }}
+            ) }}
     {% endif %}
 
 {% endblock %}
