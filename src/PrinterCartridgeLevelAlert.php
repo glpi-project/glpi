@@ -195,7 +195,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                             echo "<th>" . __('Entity') . "</th>";
                         }
 
-                        echo "<th>" . __('Cartridge') . "</th>";
+                        echo "<th>" . _n('Cartridge', 'Cartridges', Session::getPluralNumber()) . "</th>";
                         echo "<th>" . __('Level') . "</th>";
                         echo "<th>" . _n('Email notification', 'Email notifications', false) . "</th>";
                         echo "</tr>";
