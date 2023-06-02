@@ -246,6 +246,18 @@ class CartridgeItem extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => '_virtual',
+            'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nosort'             => true,
+            'additionalfields'   => ['warn_level']
+            ];
+                        
+        $tab[] = [
             'id'                 => '17',
             'table'              => 'glpi_cartridges',
             'field'              => 'id',
@@ -316,6 +328,22 @@ class CartridgeItem extends CommonDBTM
             'datatype'           => 'dropdown'
         ];
 
+        $tab[] = [
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'type_tag',
+            'name'               => __('Cartridge Type as reported by inventory'),
+            'datatype'           => 'dropdown'
+        ];
+        
+        $tab[] = [
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'warn_level',
+            'name'               => __('Printer Cartridge Warning Level'),
+            'datatype'           => 'number'
+        ];
+            
         $tab[] = [
             'id'                 => '8',
             'table'              => $this->getTable(),
