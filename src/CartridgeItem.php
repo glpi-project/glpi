@@ -255,8 +255,8 @@ class CartridgeItem extends CommonDBTM
             'nosearch'           => true,
             'nosort'             => true,
             'additionalfields'   => ['warn_level']
-            ];
-                        
+        ];
+
         $tab[] = [
             'id'                 => '17',
             'table'              => 'glpi_cartridges',
@@ -335,7 +335,7 @@ class CartridgeItem extends CommonDBTM
             'name'               => __('Cartridge Type as reported by inventory'),
             'datatype'           => 'dropdown'
         ];
-        
+
         $tab[] = [
             'id'                 => '7',
             'table'              => $this->getTable(),
@@ -343,7 +343,7 @@ class CartridgeItem extends CommonDBTM
             'name'               => __('Printer Cartridge Warning Level'),
             'datatype'           => 'number'
         ];
-            
+
         $tab[] = [
             'id'                 => '8',
             'table'              => $this->getTable(),
@@ -625,7 +625,10 @@ class CartridgeItem extends CommonDBTM
         $printer = new Printer();
         $asset_cartridge = new Glpi\Inventory\Asset\Cartridge($printer);
         $known_tags = $asset_cartridge->knownTags(false);
-        $known_tags = array_map(function($a) { return $a["name"];},$known_tags);
+        $known_tags = array_map(function ($a) {
+            return $a["name"];
+            }, 
+            $known_tags);
         unset($known_tags["informations"]);
         TemplateRenderer::getInstance()->display('pages/assets/cartridgeitem.html.twig', [
             'item'   => $this,
