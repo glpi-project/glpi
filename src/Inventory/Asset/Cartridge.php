@@ -108,7 +108,7 @@ class Cartridge extends InventoryAsset
                                 $tags[$alias] = $tags[$type . $state];
                             }
                         }
-                    }   
+                    }
                 } else {
                     $tags[$type] = [
                     //TRANS first argument is a type
