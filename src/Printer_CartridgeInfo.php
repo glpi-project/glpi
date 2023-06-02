@@ -78,13 +78,13 @@ class Printer_CartridgeInfo extends CommonDBChild
             'LEFT JOIN' => [
                 'glpi_cartridgeitems'      => [
                     'FKEY'   => [
-                       'glpi_cartridges'        => 'cartridgeitems_id',
-                       'glpi_cartridgeitems'        => 'id'
-                   ]
+                        'glpi_cartridges'        => 'cartridgeitems_id',
+                        'glpi_cartridgeitems'        => 'id'
+                    ]
                 ]
             ],
             'WHERE'     => [
-                'glpi_cartridges.printers_id = '.$id,
+                'glpi_cartridges.printers_id = ' . $id,
                 'glpi_cartridges.date_out is not null'
             ]
         ]);
