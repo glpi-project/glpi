@@ -280,7 +280,11 @@ class Software extends InventoryAsset
         $operatingsystems_id = 0;
 
         if (isset($this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'])) {
-            $os = $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'][0];
+            if (is_array($this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'])) {
+                $os = $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'][0];
+            } else {
+                $os = $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'];
+            }
             $operatingsystems_id = $os->getId();
 
             //add Operating System as Software

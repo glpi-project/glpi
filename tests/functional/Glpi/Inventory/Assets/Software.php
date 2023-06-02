@@ -125,6 +125,7 @@ class Software extends AbstractInventoryAsset
 
     public function testHandle()
     {
+        $this->login();
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
         //first, check there are no software linked to this computer
@@ -141,14 +142,10 @@ class Software extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Software($computer, $json->content->softwares);
-        $osasset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
-        $osasset->prepare();
-        //handle
-        $osasset->handleLinks();
-        $osasset->handle();
 
-        $asset->setExtraData((array)$json->content);
-        $asset->setExtraData(['\Glpi\Inventory\Asset\OperatingSystem' => $osasset]);
+        $extra_data = (array)$json->content;
+
+        $asset->setExtraData($extra_data);
         $result = $asset->prepare();
         $expected = json_decode($expected['expected']);
 
