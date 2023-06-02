@@ -53,13 +53,13 @@ class NotificationTargetPrinterCartridgeLevelAlert extends NotificationTarget
         foreach ($options['items'] as $cartridge_id => $item) {
             $tmp  = [];
             foreach (PrinterCartridgeLevelAlert::prepareBodyValues($item) as $id => $value)
+            {
                 $tmp['##' . $id . '##']      = $value;
-
+            }
             $this->data['cartridges'][] = $tmp;
         }
 
         $this->getTags();
-
         foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
 
             if (!isset($this->data[$tag])) {
