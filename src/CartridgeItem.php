@@ -627,7 +627,7 @@ class CartridgeItem extends CommonDBTM
         $known_tags = $asset_cartridge->knownTags(false);
         $known_tags = array_map(function ($a) {
             return $a["name"];
-            }, 
+        },
             $known_tags);
         unset($known_tags["informations"]);
         TemplateRenderer::getInstance()->display('pages/assets/cartridgeitem.html.twig', [
