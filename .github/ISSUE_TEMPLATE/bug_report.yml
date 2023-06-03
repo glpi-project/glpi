@@ -14,6 +14,7 @@ body:
         * We do not support community plugins. Contact directly their authors, or use [the community forum](https://forum.glpi-project.org).
         * We do not track feature requests nor enhancements here. Propose them on the [suggest dedicated site](https://suggest.glpi-project.org).
         * Keep this tracker in ENGLISH. If you want support in your language, the [community forum](https://forum.glpi-project.org) is the best place.
+        * Always try to reproduce your issue at least on latest stable release.
 
         The GLPI team.
   - type: markdown
