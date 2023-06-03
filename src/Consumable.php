@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 
 //!  Consumable Class
@@ -679,6 +680,106 @@ class Consumable extends CommonDBChild
     }
 
 
+    public static function showForUser(User $user)
+    {
+        global $DB;
+
+        $itemtype = $user->getType();
+        $items_id = $user->getField('id');
+
+        $start       = intval($_GET["start"] ?? 0);
+        $sort        = $_GET["sort"] ?? "";
+        $order       = strtoupper($_GET["order"] ?? "");
+        $filters     = $_GET['filters'] ?? [];
+        $is_filtered = count($filters) > 0;
+        $sql_filters = self::convertFiltersValuesToSqlCriteria($filters);
+
+        if (strlen($sort) == 0) {
+            $sort = "name";
+        }
+        if (strlen($order) == 0) {
+            $order = "ASC";
+        }
+
+        $query = [
+            'SELECT' => [
+                'glpi_consumables.*',
+                'glpi_consumableitems.name AS itemname',
+                'glpi_consumableitems.ref AS ref',
+                'glpi_consumableitems.entities_id AS entities_id',
+                'glpi_consumableitems.is_recursive AS is_recursive'
+            ],
+            'FROM' => self::getTable(),
+            'LEFT JOIN' => [
+                'glpi_consumableitems' => [
+                    'ON' => [
+                        'glpi_consumableitems' => 'id',
+                        'glpi_consumables'     => 'consumableitems_id'
+                    ]
+                ]
+            ],
+            'WHERE'  => [
+                'glpi_consumables.items_id' => $items_id,
+                'glpi_consumables.itemtype' => $itemtype,
+                'NOT' => ['glpi_consumables.date_out' => 'NULL'],
+            ] + getEntitiesRestrictCriteria('glpi_consumableitems', '', '', true),
+        ];
+
+        $total_number = (int)$DB->request($query + [
+            'COUNT'  => 'cpt'
+        ])->current()['cpt'];
+
+        $filtered_query = $query;
+        $filtered_query['WHERE'] += $sql_filters;
+        $filtered_data = $DB->request($filtered_query + [
+            'LIMIT' => $_SESSION['glpilist_limit'],
+            'START' => $start,
+            'ORDER' => "$sort $order",
+        ]);
+
+        $filtered_number = (int)$DB->request($filtered_query + [
+            'COUNT'  => 'cpt'
+        ])->current()['cpt'];
+
+        $envs = [];
+        foreach ($filtered_data as $env) {
+            $env['itemtype'] = self::getType();
+            $envs[$env['id']] = $env;
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'sort' => $sort,
+            'order' => $order,
+            'additional_params' => $is_filtered ? http_build_query([
+                'filters' => $filters
+            ]) : "",
+            'is_tab' => true,
+            'items_id' => $items_id,
+            'filters' => $filters,
+            'columns' => [
+                'id' => __('ID'),
+                'itemname' => __('Name'),
+                'ref' => __('Reference'),
+                'date_in' => __('Add date'),
+                'date_out' => __('Use date'),
+            ],
+            'entries' => $envs,
+            'total_number' => $total_number,
+            'filtered_number' => $filtered_number,
+            'showmassiveactions' => true,
+            'massiveactionparams' => [
+                'num_displayed'    => min($_SESSION['glpilist_limit'], $filtered_number),
+                'container'        => 'mass' . __CLASS__ . mt_rand(),
+                'specific_actions' => [
+                    'delete' => __('Delete permanently'),
+                    'Consumable' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock'),
+                ]
+            ],
+        ]);
+    }
+
+
     /**
      * Show the usage summary of consumables by user
      *
@@ -826,6 +927,11 @@ class Consumable extends CommonDBChild
                         $nb =  self::countForConsumableItem($item);
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                case 'User':
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = self::countForUser($item);
+                    }
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';
@@ -844,6 +950,22 @@ class Consumable extends CommonDBChild
     }
 
 
+    /**
+     * @param User $item
+     *
+     * @return integer
+     **/
+    public static function countForUser(User $item)
+    {
+
+        return countElementsInTable(['glpi_consumables'], [
+            'glpi_consumables.itemtype' => 'User',
+            'glpi_consumables.items_id' => $item->getField('id'),
+            'NOT' => ['glpi_consumables.date_out' => 'NULL'],
+        ]);
+    }
+
+
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -852,6 +974,9 @@ class Consumable extends CommonDBChild
                 self::showAddForm($item);
                 self::showForConsumableItem($item);
                 self::showForConsumableItem($item, 1);
+                break;
+            case 'User':
+                self::showForUser($item);
                 break;
         }
         return true;
@@ -867,5 +992,25 @@ class Consumable extends CommonDBChild
     public static function getIcon()
     {
         return "ti ti-package";
+    }
+
+    public static function convertFiltersValuesToSqlCriteria(array $filters = []): array
+    {
+        $sql_filters = [];
+
+        $like_filters = [
+            'id'        => 'glpi_consumables.id',
+            'itemname'  => 'glpi_consumableitems.name',
+            'ref'       => 'glpi_consumableitems.ref',
+            'date_in'   => 'glpi_consumables.date_in',
+            'date_out'  => 'glpi_consumables.date_out',
+        ];
+        foreach ($like_filters as $filter_key => $filter_field) {
+            if (strlen(($filters[$filter_key] ?? ""))) {
+                $sql_filters[$filter_field] = ['LIKE', '%' . $filters[$filter_key] . '%'];
+            }
+        }
+
+        return $sql_filters;
     }
 }
