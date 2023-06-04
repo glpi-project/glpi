@@ -53,9 +53,9 @@ if (empty($crontask->find(['name' => 'PrinterCartridgeLevelAlert']))) {
         1 * DAY_TIMESTAMP,
         [
             'state' => CronTask::STATE_DISABLE,
-            'mode' => CronTask::MODE_EXTERNAL,
+            'mode' => CronTask::MODE_EXTERNAL
         ]
-    )
+        );
 }
 if (!$cron_added) {
         die("Can't add PrinterCartridgeLevelAlert cron");
