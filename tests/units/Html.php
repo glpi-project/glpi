@@ -349,6 +349,7 @@ class Html extends \GLPITestCase
             'Rule',
             'Profile',
             'QueuedNotification',
+            'PrinterCartridgeLevelAlert',
             'Glpi\\Event',
             'Glpi\Inventory\Inventory'
         ];
