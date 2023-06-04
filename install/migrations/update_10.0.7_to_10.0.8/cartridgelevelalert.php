@@ -59,7 +59,7 @@ if (empty($crontask->find(['name' => 'PrinterCartridgeLevelAlert']))) {
 }
 if (!$cron_added) {
         die("Can't add PrinterCartridgeLevelAlert cron");
-    }
+}
 
 // Insert notification
 $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`)
@@ -71,7 +71,7 @@ $query_id = "SELECT `id`
                 FROM `glpi_notifications`
                 WHERE `itemtype`='PrinterCartridgeLevelAlert' AND `name` = 'Printer Cartridge Levels'";
 $DB->query($query_id);
-$result = $DB->query($query_id) or die ($DB->error());
+$result = $DB->query($query_id) or die($DB->error());
 $notification = $DB->result($result, 0, 'id');
 
 // Insert notification template
@@ -82,7 +82,7 @@ $DB->queryOrDie("INSERT INTO `glpi_notificationtemplates` ( `date_creation`, `id
 $query_id = "SELECT `id`
                 FROM `glpi_notificationtemplates`
                 WHERE `itemtype`='PrinterCartridgeLevelAlert' AND `name` = 'Printer Cartridge Levels'";
-$result = $DB->query($query_id) or die ($DB->error());
+$result = $DB->query($query_id) or die($DB->error());
 $notificationtemplate = $DB->result($result, 0, 'id');
 
 // Link notification and notificicationtemplate
