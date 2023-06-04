@@ -75,12 +75,12 @@ $result = $DB->query($query_id) or die ($DB->error());
 $notification = $DB->result($result, 0, 'id');
 
 // Insert notification template
-$DB->queryOrDie("INSERT INTO `glpi_notificationtemplates` VALUES ('2023-05-26 09:44:46',NULL, 'Printer Cartridge level', 'PrinterCartridgeLevelAlert', '2023-05-26 09:44:46','',NULL)");
+$DB->queryOrDie("INSERT INTO `glpi_notificationtemplates` VALUES ('2023-05-26 09:44:46',NULL, 'Printer Cartridge Levels', 'PrinterCartridgeLevelAlert', '2023-05-26 09:44:46','',NULL)");
 
 // Get notification template ID
 $query_id = "SELECT `id`
                 FROM `glpi_notificationtemplates`
-                WHERE `itemtype`='PrinterCartridgeLevelAlert' AND `name` = 'Printer Cartridge level'";
+                WHERE `itemtype`='PrinterCartridgeLevelAlert' AND `name` = 'Printer Cartridge Levels'";
 $result = $DB->query($query_id) or die ($DB->error());
 $notificationtemplate = $DB->result($result, 0, 'id');
 
