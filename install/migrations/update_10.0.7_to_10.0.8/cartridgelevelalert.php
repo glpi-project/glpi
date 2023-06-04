@@ -69,7 +69,7 @@ $DB->queryOrDie($query);
 // Get notification ID
 $query_id = "SELECT `id`
                 FROM `glpi_notifications`
-                WHERE `itemtype`='PrinterCartridgeLevelAlert' AND `name` = 'Printer Cartridge level'";
+                WHERE `itemtype`='PrinterCartridgeLevelAlert' AND `name` = 'Printer Cartridge Levels'";
 $DB->query($query_id);
 $result = $DB->query($query_id) or die ($DB->error());
 $notification = $DB->result($result, 0, 'id');
