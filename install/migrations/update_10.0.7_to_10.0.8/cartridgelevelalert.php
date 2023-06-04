@@ -120,5 +120,5 @@ $DB->queryOrDie($query);
 
 // Insert Entity Administrator as default target for low level cartridge notifications
 $query = "INSERT INTO `glpi_notificationtargets` (`items_id`, `type`, `notifications_id`)
-            VALUES (11, 1, " . $notification_id . ");";
+            VALUES (11, 1, " . $notification . ");";
 $DB->query($query);
