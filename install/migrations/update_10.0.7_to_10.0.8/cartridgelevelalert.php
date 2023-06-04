@@ -63,7 +63,7 @@ if (!$cron_added) {
 
 // Insert notification
 $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`)
-            VALUES ('Printer Cartridge Levels', 0, 'PrinterCartridgeLevelAlert', 'alert', 1, 1);
+            VALUES ('Printer Cartridge Levels', 0, 'PrinterCartridgeLevelAlert', 'alert', 1, 1)";
 $DB->queryOrDie($query);
 
 // Get notification ID
