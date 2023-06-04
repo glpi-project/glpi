@@ -92,7 +92,7 @@ $DB->queryOrDie($query);
 
 // Insert translation for the notification
 $query = "INSERT INTO `glpi_notificationtemplatetranslations`                                 VALUES(NULL, " . $notificationtemplate . ", '','##cartridge.action## : ##cartridge.entity##',
-##FOREACHcartridges##
+'##FOREACHcartridges##
 ##lang.cartridge.printer## : ##cartridge.printer##
 ##lang.cartridge.entity## : ##cartridge.entity##
 ##lang.cartridge.item## : ##cartridge.item##
