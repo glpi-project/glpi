@@ -39,7 +39,7 @@
  */
 
 $migration->addField('glpi_cartridgeitems', 'type_tag', "varchar(255)");
-$migration->addField('glpi_cartridgeitems', `warn_level` int unsigned NOT NULL DEFAULT '0');
+$migration->addField('glpi_cartridgeitems', 'warn_level' int unsigned NOT NULL DEFAULT '0');
 $migration->addKey('glpi_cartridgeitems', 'type_tag', 'type_tag');
 
 $migration->addField('glpi_entities', 'printer_cartridge_levels_alert_repeat', "int NOT NULL DEFAULT '-2'");
