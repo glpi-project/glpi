@@ -1393,7 +1393,7 @@ class MailCollector extends CommonDBTM
         }
 
         if (!empty($config['mailbox'])) {
-            $params['folder'] = $config['mailbox'];
+            $params['folder'] = mb_convert_encoding($config['mailbox'], 'UTF7-IMAP', 'UTF-8');
         }
 
         if ($config['validate-cert'] === false) {
