@@ -263,7 +263,8 @@ class PendingReason extends CommonDropdown
      * @param $name
      * @param $options
      */
-    private function displayIsDefaultPendingReasonField(bool $value): string {
+    private function displayIsDefaultPendingReasonField(bool $value): string
+    {
         if (empty($name)) {
             $name = "is_default";
         }
