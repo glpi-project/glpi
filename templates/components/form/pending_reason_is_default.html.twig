@@ -41,11 +41,11 @@
     $('select[name="is_default"]').on("change", function () {
         if ($(this).val() == 1) {
             $("#is_default_warning").removeClass("d-none");
-            $("select[name=\'is_pending_per_default\']").prop("disabled", false);
+            $('select[name="is_pending_per_default"]').prop("disabled", false);
         } else {
             $("#is_default_warning").addClass("d-none");
-            $("select[name=\'is_pending_per_default\']").prop("disabled", true);
-            $("select[name=\'is_pending_per_default\']").trigger('setValue', 0);
+            $('select[name="is_pending_per_default"]').prop("disabled", true);
+            $('select[name="is_pending_per_default"]').trigger('setValue', 0);
         }
     });
 </script>

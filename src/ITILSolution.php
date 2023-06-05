@@ -278,7 +278,6 @@ class ITILSolution extends CommonDBChild
 
     public function post_addItem()
     {
-        $config = Config::getConfigurationValues('core', ['system_user']);
 
        //adding a solution mean the ITIL object is now solved
        //and maybe closed (according to entitiy configuration)

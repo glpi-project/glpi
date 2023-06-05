@@ -265,14 +265,9 @@ class PendingReason extends CommonDropdown
      */
     private function displayIsDefaultPendingReasonField(bool $value): string
     {
-        if (empty($name)) {
-            $name = "is_default";
-        }
-
-        $options['display'] = false;
         $defaultPendingReason = self::getDefault();
 
-        $out = Dropdown::showYesNo($name, $value, params: ['display' => false]);
+        $out = Dropdown::showYesNo('is_default', $value, params: ['display' => false]);
         $out .= TemplateRenderer::getInstance()->render('components/form/pending_reason_is_default.html.twig', [
             'show_warning' => $defaultPendingReason && $defaultPendingReason->getID() != $this->getID(),
             'tooltip' => $defaultPendingReason ? \Html::showToolTip(
