@@ -370,18 +370,30 @@ class PendingReason extends CommonDropdown
         return $default_pending && $default_pending->fields['is_pending_per_default'];
     }
 
-    public function prepareInput(array $input)
+    public function updateDefaultPendingReason()
     {
-        if (isset($input['is_default']) && $input['is_default']) {
+        if (isset($this->input['is_default']) && $this->input['is_default']) {
             $previous_default = self::getDefault();
             if ($previous_default !== null) {
-                 $previous_default->update(['id' => $previous_default->getId()] + ['is_default' => 0]);
+                $previous_default->update(['id' => $previous_default->getId()] + ['is_default' => 0]);
             }
         }
+    }
 
-        if (isset($input['is_pending_per_default']) && $input['is_pending_per_default']) {
-            $input['is_pending_per_default'] = $input['is_default'] ?? 0;
-        }
+    public function pre_addInDB()
+    {
+        $this->updateDefaultPendingReason();
+    }
+
+    public function pre_updateInDB()
+    {
+        $this->updateDefaultPendingReason();
+    }
+
+    public function prepareInput($input)
+    {
+        $input['is_pending_per_default'] = isset($input['is_default']) && $input['is_default'] ?
+            ($input['is_pending_per_default'] ?? 0) : 0;
 
         return $input;
     }
