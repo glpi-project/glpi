@@ -4441,7 +4441,7 @@ JAVASCRIPT;
                                 QueryFunction::dateDiff(
                                     expression1: QueryFunction::dateAdd(
                                         date: 'glpi_ticketsatisfactions.date_begin',
-                                        interval: 'glpi_entities.inquest_duration',
+                                        interval: new QueryExpression($DB::quoteName('glpi_entities.inquest_duration')),
                                         interval_unit: 'DAY'
                                     ),
                                     expression2: QueryFunction::curDate()

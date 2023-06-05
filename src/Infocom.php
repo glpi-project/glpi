@@ -525,7 +525,7 @@ class Infocom extends CommonDBChild
                     new QueryExpression(QueryFunction::dateDiff(
                         expression1: QueryFunction::dateAdd(
                             date: 'glpi_infocoms.warranty_date',
-                            interval: 'glpi_infocoms.warranty_duration',
+                            interval: new QueryExpression($DB::quoteName('glpi_infocoms.warranty_duration')),
                             interval_unit: 'MONTH'
                         ),
                         expression2: QueryFunction::curdate()

@@ -882,7 +882,7 @@ class Contract extends CommonDBTM
 
         $end_date = QueryFunction::dateAdd(
             date: 'begin_date',
-            interval: 'duration',
+            interval: new QueryExpression($DB::quoteName('duration')),
             interval_unit: 'MONTH'
         );
 
@@ -1106,7 +1106,7 @@ class Contract extends CommonDBTM
 
         $end_date = QueryFunction::dateAdd(
             date: 'glpi_contracts.begin_date',
-            interval: 'glpi_contracts.duration',
+            interval: new QueryExpression($DB::quoteName('glpi_contracts.duration')),
             interval_unit: 'MONTH'
         );
 
@@ -1824,7 +1824,7 @@ class Contract extends CommonDBTM
                     QueryFunction::dateDiff(
                         expression1: QueryFunction::dateAdd(
                             date: 'glpi_contracts.begin_date',
-                            interval: 'glpi_contracts.duration',
+                            interval: new QueryExpression($DB::quoteName('glpi_contracts.duration')),
                             interval_unit: 'MONTH'
                         ),
                         expression2: QueryFunction::curDate()
