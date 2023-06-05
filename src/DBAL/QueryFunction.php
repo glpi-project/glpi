@@ -345,7 +345,7 @@ class QueryFunction
      */
     public static function substring(string|QueryExpression $expression, int $start, int $length, ?string $alias = null): QueryExpression
     {
-        return self::getExpression('LPAD', [
+        return self::getExpression('SUBSTRING', [
             $expression, new QueryExpression($start), new QueryExpression($length)
         ], $alias);
     }
