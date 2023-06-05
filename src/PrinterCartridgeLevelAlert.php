@@ -79,26 +79,61 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     {
         global $DB;
 
-        $query = "SELECT c.id as cartridge, i.id as cartridgeitem, p.id as printer, p.entities_id as entity, l.value as cartridgelevel, a.id as alertID, a.date as alertDate
-              FROM glpi_cartridges AS c
-              INNER JOIN glpi_cartridgeitems AS i on c.cartridgeitems_id = i.id
-              INNER JOIN glpi_printers_cartridgeinfos AS l on i.type_tag like l.property
-              INNER JOIN glpi_printers as p on c.printers_id = p.id
-              LEFT JOIN glpi_alerts AS a ON c.id = a.items_id and a.itemtype like 'Cartridge'
-              WHERE c.date_out is NULL
-                AND (
-                        ( l.value REGEXP '^[0-9]+$' AND l.value <= i.warn_level )
-                        OR
-                        ( l.value like 'WARNING' OR l.value like 'BAD' )
-                    )
-                AND l.printers_id = p.id
-                AND p.entities_id IN ($entities)";
-
+        $where = "c.date_out is NULL AND ( ( l.value REGEXP '^[0-9]+$' AND l.value <= i.warn_level ) OR ( l.value like 'WARNING' OR l.value like 'BAD' )) AND l.printers_id = p.id AND p.entities_id IN ($entities)";
         if ($repeat) {
-            $query = $query . " AND ( a.date is NULL or a.date < CURRENT_TIMESTAMP() - INTERVAL " . $repeat . " second)";
+            $where = $where . " AND ( a.date is NULL or a.date < CURRENT_TIMESTAMP() - INTERVAL " . $repeat . " second)";
         }
+            $query = [
+                'SELECT' => [
+                    'c.id as cartridge',
+                    'i.id as cartridgeitem',
+                    'p.id as printer',
+                    'p.entities_id as entity',
+                    'l.value as cartridgelevel',
+                    'a.id as alertID',
+                    'a.date as alertDate'
+                ],
+                'FROM'   => 'glpi_cartridges AS c',
+                'INNER JOIN'   => [
+                    'glpi_cartridgeitems AS i'  => [
+                        'ON'  => [
+                            'c' => 'cartridgeitems_id',
+                            'i'  => 'id'
+                            ]
+                        ],
+                    'glpi_printers_cartridgeinfos AS l'  => [
+                        'ON'  => [
+                            'i' => 'type_tag',
+                            'l'  => 'property'
+                            ]
+                        ],
+                    'glpi_printers as p'  => [
+                        'ON'  => [
+                            'c' => 'printers_id',
+                            'p'  => 'id'
+                            ]
+                        ]
+                    ],
+                'LEFT JOIN'    =>  [
+                    'glpi_alerts AS a'  => [
+                        'ON'  => [
+                            'c'  => 'id',
+                            'a'  => 'items_id', [
+                                'AND' => [
+                                'a.itemtype'    =>      'Cartridge'
+                                ]
+                            ]
+                        ]  
+                    ]  
+                ],
+                'WHERE'        => [
+                    new QueryExpression( $where)
+                ],
+                'ORDERBY'      => [
+                   'p.name'
+                ]
+            ];
 
-        $query = $query . " ORDER BY p.name";
         return $query;
     }
 
@@ -164,7 +199,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
             if ($CronTask->fields["state"] != CronTask::STATE_DISABLE) {
                 if (Session::haveRight("cartridge", READ) && Session::haveRight("printer", READ)) {
                     $query  = self::query($_SESSION["glpiactiveentities_string"]);
-                    $result = $DB->query($query);
+                    $result = $DB->request($query);
 
                     echo "<div class='d-flex flex-column'>";
                     echo "<div class='row'>";
@@ -177,7 +212,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                     echo __('Cartridges whose level is low');
                     echo "</div>";
 
-                    if ($DB->numrows($result) > 0) {
+                    if (count($result) > 0) {
                         if (Session::isMultiEntitiesMode()) {
                             $nbcol = 4;
                         } else {
@@ -201,7 +236,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                         echo "</tr>";
                         echo "</thead>";
 
-                        while ($data = $DB->fetchArray($result)) {
+                        foreach($result as $data) {
                             echo self::displayBody($data);
                         }
                         echo "</table>";
@@ -260,7 +295,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
             foreach (Entity::getEntitiesToNotify('printer_cartridge_levels_alert_repeat') as $entity => $repeat) {
                 // KKK if you change this query, please don't forget to also change in showDebug()
                 $query = self::query($entity, $repeat);
-                $result = $DB->query($query);
+                $result = $DB->request($query);
                 $message = "";
                 $items   = [];
                 foreach ($result as $cartridge) {
