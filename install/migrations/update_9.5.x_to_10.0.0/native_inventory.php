@@ -40,6 +40,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
 
 $migration->addConfig(\Glpi\Inventory\Conf::getDefaults(), 'inventory');
@@ -520,22 +521,20 @@ if (!$DB->tableExists('glpi_printerlogs')) {
 
     if (!isIndex('glpi_printerlogs', 'unicity')) {
         // Preserve only last insert for a given date.
-        $to_preserve_sql = new QueryExpression(
-            sprintf(
-                'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
-                $DB->quoteName('id'),
-                $DB->quoteName('id'),
-                $DB->quoteName('glpi_printerlogs'),
-                $DB->quoteName('printers_id'),
-                $DB->quoteName('date')
-            )
-        );
-        $to_preserve_result = $DB->doQuery($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
-        if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
+        $to_preserve_it = $DB->request([
+            'SELECT' => [QueryFunction::max('id', 'id')],
+            'FROM'   => 'glpi_printerlogs',
+            'GROUP'  => ['printers_id', QueryFunction::date('date')],
+        ]);
+        $to_preserve_ids = [];
+        foreach ($to_preserve_it as $data) {
+            $to_preserve_ids[] = $data['id'];
+        }
+        if (!empty($to_preserve_ids)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
             $DB->delete(
                 'glpi_printerlogs',
                 [
-                    'NOT' => ['id' => array_column($to_preserve_result, 'id')]
+                    'NOT' => ['id' => $to_preserve_ids]
                 ]
             );
         }
@@ -600,22 +599,20 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
 
     if (!isIndex('glpi_networkportmetrics', 'unicity')) {
         // Preserve only last insert for a given date.
-        $to_preserve_sql = new QueryExpression(
-            sprintf(
-                'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
-                $DB->quoteName('id'),
-                $DB->quoteName('id'),
-                $DB->quoteName('glpi_networkportmetrics'),
-                $DB->quoteName('networkports_id'),
-                $DB->quoteName('date')
-            )
-        );
-        $to_preserve_result = $DB->doQuery($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
+        $to_preserve_it = $DB->request([
+            'SELECT' => [QueryFunction::max('id', 'id')],
+            'FROM'   => 'glpi_networkportmetrics',
+            'GROUP'  => ['networkports_id', QueryFunction::date('date')],
+        ]);
+        $to_preserve_ids = [];
+        foreach ($to_preserve_it as $data) {
+            $to_preserve_ids[] = $data['id'];
+        }
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
             $DB->delete(
                 'glpi_networkportmetrics',
                 [
-                    'NOT' => ['id' => array_column($to_preserve_result, 'id')]
+                    'NOT' => ['id' => $to_preserve_ids]
                 ]
             );
         }

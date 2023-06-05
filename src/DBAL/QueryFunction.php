@@ -50,6 +50,7 @@ use DBmysqlIterator;
  * @method static QueryExpression bitXor(string|QueryExpression $expression, ?string $alias = null) Build a 'BIT_XOR' SQL function call
  * @method static QueryExpression coalesce(array $params, ?string $alias = null) Build a 'COALESCE' function call
  * @method static QueryExpression concat(array $params, ?string $alias = null) Build a 'CONCAT' SQL function call
+ * @method static QueryExpression date(string|QueryExpression $expression, ?string $alias = null) Build a 'DATE' SQL function call
  * @method static QueryExpression floor(string|QueryExpression $expression, ?string $alias = null) Build a 'FLOOR' function call
  * @method static QueryExpression least(array $params, ?string $alias = null) Build a 'LEAST' function call
  * @method static QueryExpression lower(string|QueryExpression $expression, ?string $alias = null) Build a 'LOWER' SQL function call
@@ -383,5 +384,18 @@ class QueryFunction
     public static function datediff(string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
         return self::getExpression('DATEDIFF', [$expression1, $expression2], $alias);
+    }
+
+    /**
+     * Build a CONVERT_TZ SQL function call
+     * @param string|QueryExpression $datetime The datetime
+     * @param string|QueryExpression $from The timezone to convert from
+     * @param string|QueryExpression $to The timezone to convert to
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return QueryExpression
+     */
+    public static function convertTz(string|QueryExpression $datetime, string|QueryExpression $from, string|QueryExpression $to, ?string $alias = null): QueryExpression
+    {
+        return self::getExpression('CONVERT_TZ', [$datetime, $from, $to], $alias);
     }
 }

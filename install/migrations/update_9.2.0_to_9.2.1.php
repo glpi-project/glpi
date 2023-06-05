@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * Update from 9.2 to 9.2.1
  *
@@ -353,12 +355,19 @@ function update920to921()
         )
     );
 
-   // TODO: can be done when DB::delete() supports JOINs
-    $migration->addPreQuery("DELETE `duplicated` FROM `glpi_profilerights` AS `duplicated`
-                            INNER JOIN `glpi_profilerights` AS `original`
-                            WHERE `duplicated`.`profiles_id` = `original`.`profiles_id`
-                            AND `original`.`name` = 'queuednotification'
-                            AND `duplicated`.`name` = 'queuedmail'");
+    $DB->deleteOrDie('glpi_profilerights', [
+        'original.name' => 'queuednotification',
+        'duplicated.name' => 'queuedmail'
+    ], '', [
+        'INNER JOIN' => [
+            'glpi_profilerights AS duplicated' => [
+                'ON' => [
+                    'duplicated' => 'profiles_id',
+                    'original' => 'profiles_id'
+                ]
+            ],
+        ]
+    ]);
 
     $migration->addPreQuery(
         $DB->buildUpdate(
@@ -379,11 +388,33 @@ function update920to921()
     );
 
     if ($DB->fieldExists("glpi_notifications", "mode", false)) {
-        $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
-                       (`notifications_id`, `mode`, `notificationtemplates_id`)
-                       SELECT `id`, `mode`, `notificationtemplates_id`
-                       FROM `glpi_notifications`";
-        $DB->queryOrDie($query, "9.2 migrate notifications templates");
+        // find all notifications that haven't been migrated yet (no record in glpi_notifications_notificationtemplates where notifications_id = id)
+        $it = $DB->request([
+            'SELECT' => [
+                'glpi_notifications.id',
+                'glpi_notifications.mode',
+                'glpi_notifications.notificationtemplates_id'
+            ],
+            'FROM' => 'glpi_notifications',
+            'LEFT JOIN' => [
+                'glpi_notifications_notificationtemplates' => [
+                    'ON' => [
+                        'glpi_notifications_notificationtemplates' => 'notifications_id',
+                        'glpi_notifications' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'glpi_notifications_notificationtemplates.notifications_id' => null
+            ]
+        ]);
+        foreach ($it as $data) {
+            $DB->insertOrDie('glpi_notifications_notificationtemplates', [
+                'notifications_id' => $data['id'],
+                'mode' => $data['mode'],
+                'notificationtemplates_id' => $data['notificationtemplates_id']
+            ], "9.2 migrate notifications templates");
+        }
 
        //migrate any existing mode before removing the field
         $migration->dropField('glpi_notifications', 'mode');
@@ -423,13 +454,19 @@ function update920to921()
         'Printer'            => 'glpi_printers'
     ];
     foreach ($items as $itemtype => $table) {
-       // TODO: can be done when DB::update() supports JOINs
-        $migration->addPostQuery(
-            "UPDATE glpi_items_operatingsystems AS ios
-            INNER JOIN `$table` as item ON ios.items_id = item.id AND ios.itemtype = '$itemtype'
-            SET ios.entities_id = item.entities_id, ios.is_recursive = item.is_recursive
-         "
-        );
+        $DB->update('glpi_items_operatingsystems AS ios', [
+            'ios.entities_id' => 'item.entities_id',
+            'ios.is_recursive' => 'item.is_recursive'
+        ], [new QueryExpression('true')], [
+            'INNER JOIN' => [
+                $table => [
+                    'ON' => [
+                        'ios.items_id' => 'item.id',
+                        'ios.itemtype' => $itemtype
+                    ]
+                ]
+            ]
+        ]);
     }
 
    //drop "empty" glpi_items_operatingsystems

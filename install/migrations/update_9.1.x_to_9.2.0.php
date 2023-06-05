@@ -1134,12 +1134,33 @@ function update91xto920()
     }
 
     if ($DB->fieldExists("glpi_notifications", "mode", false)) {
-       // TODO can be done when DB::updateOrInsert() supports SELECT
-        $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
-                       (`notifications_id`, `mode`, `notificationtemplates_id`)
-                       SELECT `id`, `mode`, `notificationtemplates_id`
-                       FROM `glpi_notifications`";
-        $DB->queryOrDie($query, "9.2 migrate notifications templates");
+        // find all notifications that haven't been migrated yet (no record in glpi_notifications_notificationtemplates where notifications_id = id)
+        $it = $DB->request([
+            'SELECT' => [
+                'glpi_notifications.id',
+                'glpi_notifications.mode',
+                'glpi_notifications.notificationtemplates_id'
+            ],
+            'FROM' => 'glpi_notifications',
+            'LEFT JOIN' => [
+                'glpi_notifications_notificationtemplates' => [
+                    'ON' => [
+                        'glpi_notifications_notificationtemplates' => 'notifications_id',
+                        'glpi_notifications' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'glpi_notifications_notificationtemplates.notifications_id' => null
+            ]
+        ]);
+        foreach ($it as $data) {
+            $DB->insertOrDie('glpi_notifications_notificationtemplates', [
+                'notifications_id' => $data['id'],
+                'mode' => $data['mode'],
+                'notificationtemplates_id' => $data['notificationtemplates_id']
+            ], "9.2 migrate notifications templates");
+        }
 
        //migrate any existing mode before removing the field
         $migration->dropField('glpi_notifications', 'mode');
@@ -1350,32 +1371,38 @@ function update91xto920()
             "9.2 Add saved search alerts notification targets"
         );
 
-        $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                       (`notificationtemplates_id`, `language`,`subject`,
-                              `content_text`,
-                              `content_html`)
-                     VALUES ($notid, '', '##savedsearch.action## ##savedsearch.name##',
-                     '##savedsearch.type## ###savedsearch.id## - ##savedsearch.name##
+        $notif_text = <<<EOT
+##savedsearch.type## ###savedsearch.id## - ##savedsearch.name##
 
 ##savedsearch.message##
 
 ##lang.savedsearch.url##
 ##savedsearch.url##
 
-Regards,',
-                     '&lt;table&gt;
-                     &lt;tbody&gt;
-                     &lt;tr&gt;&lt;th colspan=\"2\"&gt;&lt;a href=\"##savedsearch.url##\"&gt;##savedsearch.type## ###savedsearch.id## - ##savedsearch.name##&lt;/a&gt;&lt;/th&gt;&lt;/tr&gt;
-                     &lt;tr&gt;&lt;td colspan=\"2\"&gt;&lt;a href=\"##savedsearch.url##\"&gt;##savedsearch.message##&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-                     &lt;tr&gt;
-                     &lt;td&gt;##lang.savedsearch.url##&lt;/td&gt;
-                     &lt;td&gt;##savedsearch.url##&lt;/td&gt;
-                     &lt;/tr&gt;
-                     &lt;/tbody&gt;
-                     &lt;/table&gt;
-                     &lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello &lt;br /&gt;Regards,&lt;/span&gt;&lt;/p&gt;')";
+Regards,
+EOT;
 
-        $DB->queryOrDie($query, "9.2 add saved searches alerts notification translation");
+        $notif_html = <<<EOT
+&lt;table&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;th colspan=\"2\"&gt;&lt;a href=\"##savedsearch.url##\"&gt;##savedsearch.type## ###savedsearch.id## - ##savedsearch.name##&lt;/a&gt;&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=\"2\"&gt;&lt;a href=\"##savedsearch.url##\"&gt;##savedsearch.message##&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;##lang.savedsearch.url##&lt;/td&gt;
+&lt;td&gt;##savedsearch.url##&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello &lt;br /&gt;Regards,&lt;/span&gt;&lt;/p&gt;
+EOT;
+
+        $DB->insertOrDie('glpi_notificationtemplatetranslations', [
+            'notificationtemplates_id' => $nottid,
+            'language'                 => '',
+            'subject'                  => '##savedsearch.action## ##savedsearch.name##',
+            'content_text'             => $notif_text,
+            'content_html'             => $notif_html
+        ], '9.2 add saved searches alerts notification translation');
     }
 
    // Create a dedicated token for api
@@ -1481,12 +1508,14 @@ Regards,',
        //migrate kernel versions.
         $kver = new OperatingSystemKernelVersion();
         $mapping = [];
-        foreach (
-            $DB->request(['SELECT' => ['id', 'os_kernel_version'],
-                'FROM'   => 'glpi_computers',
-                'NOT'   => ['os_kernel_version' => null]
-            ]) as $data
-        ) {
+        $it = $DB->request([
+            'SELECT' => ['id', 'os_kernel_version'],
+            'FROM'   => 'glpi_computers',
+            'WHERE' => [
+                'NOT' => ['os_kernel_version' => null]
+            ]
+        ]);
+        foreach ($it as $data) {
             $key = md5($data['os_kernel_version']);
             if (!isset($mapping[$key])) {
                 $mapping[$key] = [];
@@ -1733,10 +1762,8 @@ Regards,',
             ]);
         }
 
-        $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                  (`notificationtemplates_id`, `language`, `subject`, `content_text`, `content_html`)
-                VALUES ($notid, '', '##certificate.action##  ##certificate.entity##',
-                        '##lang.certificate.entity## : ##certificate.entity##
+        $notif_text = <<<EOT
+##lang.certificate.entity## : ##certificate.entity##
 
 ##FOREACHcertificates##
 
@@ -1745,16 +1772,26 @@ Regards,',
 ##lang.certificate.expirationdate## : ##certificate.expirationdate##
 
 ##certificate.url##
- ##ENDFOREACHcertificates##','&lt;p&gt;
+##ENDFOREACHcertificates##
+EOT;
+        $notif_html = <<<EOT
+&lt;p&gt;
 ##lang.certificate.entity## : ##certificate.entity##&lt;br /&gt;
 ##FOREACHcertificates##
 &lt;br /&gt;##lang.certificate.name## : ##certificate.name##&lt;br /&gt;
 ##lang.certificate.serial## : ##certificate.serial##&lt;br /&gt;
 ##lang.certificate.expirationdate## : ##certificate.expirationdate##
 &lt;br /&gt; &lt;a href=\"##certificate.url##\"&gt; ##certificate.url##
-&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHcertificates##&lt;/p&gt;')";
+&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHcertificates##&lt;/p&gt;
+EOT;
 
-        $DB->queryOrDie($query, "9.2 add certificates alerts notification translation");
+        $DB->insertOrDie('glpi_notificationtemplatetranslations', [
+            'notificationtemplates_id' => $nottid,
+            'language'                 => '',
+            'subject'                  => '##certificate.action##  ##certificate.entity##',
+            'content_text'             => $notif_text,
+            'content_html'             => $notif_html
+        ], '9.2 add certificates alerts notification translation');
 
         $DB->insertOrDie(
             "glpi_notificationtargets",
@@ -2203,34 +2240,83 @@ Regards,',
         'registration_uuid'  => Telemetry::generateRegistrationUuid()
     ]);
 
-    if (isIndex('glpi_authldaps', 'use_tls')) {
-        $query = "ALTER TABLE `glpi_authldaps` DROP INDEX `use_tls`";
-        $DB->queryOrDie($query, "9.2 drop index use_tls for glpi_authldaps");
-    }
+    $migration->dropKey('glpi_authldaps', 'use_tls');
 
-   //Fix some field order from old migrations
+    //Fix some field order from old migrations
     $migration->migrationOneTable('glpi_states');
-    $DB->queryOrDie("ALTER TABLE `glpi_budgets` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
-    $DB->queryOrDie("ALTER TABLE `glpi_changetasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
-    $DB->queryOrDie("ALTER TABLE `glpi_problemtasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
-    $DB->queryOrDie("ALTER TABLE `glpi_tickettasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
-    $DB->queryOrDie("ALTER TABLE `glpi_knowbaseitemcategories` CHANGE `sons_cache` `sons_cache` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `level`");
-    $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `is_followup_default` `is_followup_default` TINYINT NOT NULL DEFAULT '0' AFTER `is_helpdesk_default`");
-    $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `is_mailfollowup_default` `is_mailfollowup_default` TINYINT NOT NULL DEFAULT '0' AFTER `is_mail_default`");
-    $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `comment` `comment` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `is_ticketfollowup`");
-    $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `date_mod` `date_mod` DATETIME NULL DEFAULT NULL AFTER `comment`");
-    $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
-    $DB->queryOrDie("ALTER TABLE `glpi_groups` CHANGE `is_task` `is_task` TINYINT NOT NULL DEFAULT '1' AFTER `is_assign`");
-    $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `date_mod` `date_mod` DATETIME NULL DEFAULT NULL AFTER `is_visible_certificate`");
-    $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
-    $DB->queryOrDie("ALTER TABLE `glpi_taskcategories` CHANGE `is_active` `is_active` TINYINT NOT NULL DEFAULT '1' AFTER `sons_cache`");
-    $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `palette` `palette` CHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `layout`");
-    $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `set_default_requester` `set_default_requester` TINYINT NULL DEFAULT NULL AFTER `ticket_timeline_keep_replaced_tabs`");
-    $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `plannings` `plannings` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `highcontrast_css`");
+    $migration->changeField('glpi_budgets', 'date_creation', 'date_creation', 'datetime', [
+        'null' => true,
+        'after' => 'date_mod'
+    ]);
+    $migration->changeField('glpi_changetasks', 'groups_id_tech', 'groups_id_tech', 'int', [
+        'value' => 0,
+        'after' => 'users_id_tech'
+    ]);
+    $migration->changeField('glpi_problemtasks', 'groups_id_tech', 'groups_id_tech', 'int', [
+        'value' => 0,
+        'after' => 'users_id_tech'
+    ]);
+    $migration->changeField('glpi_tickettasks', 'groups_id_tech', 'groups_id_tech', 'int', [
+        'value' => 0,
+        'after' => 'users_id_tech'
+    ]);
+    $migration->changeField('glpi_knowbaseitemcategories', 'sons_cache', 'sons_cache', 'longtext', [
+        'null' => true,
+        'after' => 'level'
+    ]);
+    $migration->changeField('glpi_requesttypes', 'is_followup_default', 'is_followup_default', 'tinyint', [
+        'value' => 0,
+        'after' => 'is_helpdesk_default'
+    ]);
+    $migration->changeField('glpi_requesttypes', 'is_mailfollowup_default', 'is_mailfollowup_default', 'tinyint', [
+        'value' => 0,
+        'after' => 'is_mail_default'
+    ]);
+    $migration->changeField('glpi_requesttypes', 'comment', 'comment', 'text', [
+        'null' => true,
+        'after' => 'is_ticketfollowup'
+    ]);
+    $migration->changeField('glpi_requesttypes', 'date_mod', 'date_mod', 'datetime', [
+        'null' => true,
+        'after' => 'comment'
+    ]);
+    $migration->changeField('glpi_requesttypes', 'date_creation', 'date_creation', 'datetime', [
+        'null' => true,
+        'after' => 'date_mod'
+    ]);
+    $migration->changeField('glpi_groups', 'is_task', 'is_task', 'tinyint', [
+        'value' => 1,
+        'after' => 'is_assign'
+    ]);
+    $migration->changeField('glpi_states', 'date_mod', 'date_mod', 'datetime', [
+        'null' => true,
+        'after' => 'is_visible_certificate'
+    ]);
+    $migration->changeField('glpi_states', 'date_creation', 'date_creation', 'datetime', [
+        'null' => true,
+        'after' => 'date_mod'
+    ]);
+    $migration->changeField('glpi_taskcategories', 'is_active', 'is_active', 'tinyint', [
+        'value' => 1,
+        'after' => 'sons_cache'
+    ]);
+    $migration->changeField('glpi_users', 'palette', 'palette', 'CHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `layout`');
+    $migration->changeField('glpi_users', 'set_default_requester', 'set_default_requester', 'tinyint', [
+        'null' => true,
+        'after' => 'ticket_timeline_keep_replaced_tabs'
+    ]);
+    $migration->changeField('glpi_users', 'plannings', 'plannings', 'text', [
+        'null' => true,
+        'after' => 'highcontrast_css'
+    ]);
 
-   //Fix bad default values
-    $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `is_visible_softwarelicense` `is_visible_softwarelicense` TINYINT NOT NULL DEFAULT '1'");
-    $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `is_visible_line` `is_visible_line` TINYINT NOT NULL DEFAULT '1'");
+    //Fix bad default values
+    $migration->changeField('glpi_states', 'is_visible_softwarelicense', 'is_visible_softwarelicense', 'tinyint', [
+        'value' => 1,
+    ]);
+    $migration->changeField('glpi_states', 'is_visible_line', 'is_visible_line', 'tinyint', [
+        'value' => 1,
+    ]);
 
    //Fields added in 0905_91 script but not in empty sql...
     if (!$DB->fieldExists('glpi_changetasks', 'date_creation', false)) {
@@ -2270,8 +2356,11 @@ Regards,',
         );
     }
 
-   //Fix comments...
-    $DB->queryOrDie("ALTER TABLE `glpi_savedsearches` CHANGE `type` `type` INT NOT NULL DEFAULT '0' COMMENT 'see SavedSearch:: constants'");
+    //Fix comments...
+    $migration->changeField('glpi_savedsearches', 'type', 'type', 'int', [
+        'default' => 0,
+        'comment' => 'see SavedSearch:: constants',
+    ]);
 
    //Fix unicity...
     $tables = [
@@ -2321,8 +2410,10 @@ Regards,',
         $migration->dropField('glpi_slms', 'resolution_time');
     }
 
-   //wrong type
-    $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `keep_devices_when_purging_item` `keep_devices_when_purging_item` TINYINT NULL DEFAULT NULL");
+    //wrong type
+    $migration->changeField('glpi_users', 'keep_devices_when_purging_item', 'keep_devices_when_purging_item', 'tinyint', [
+        'null' => true,
+    ]);
 
    //missing index
     $migration->addKey('glpi_networknames', 'is_deleted');

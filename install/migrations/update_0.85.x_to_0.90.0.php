@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+
 /**
  * Update from 0.85.5 to 0.90
  *
@@ -92,46 +94,54 @@ function update085xto0900()
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
-        $query = "SELECT DISTINCT `users_id`
-                FROM `glpi_displaypreferences`
-                WHERE `itemtype` = '$type'";
+        $it = $DB->request([
+            'SELECT' => ['users_id'],
+            'DISTINCT' => true,
+            'FROM' => 'glpi_displaypreferences',
+            'WHERE' => ['itemtype' => $type]
+        ]);
 
-        if ($result = $DB->doQuery($query)) {
-            if ($DB->numrows($result) > 0) {
-                while ($data = $DB->fetchAssoc($result)) {
-                    $query = "SELECT MAX(`rank`)
-                         FROM `glpi_displaypreferences`
-                         WHERE `users_id` = '" . $data['users_id'] . "'
-                               AND `itemtype` = '$type'";
-                    $result = $DB->doQuery($query);
-                    $rank   = $DB->result($result, 0, 0);
-                    $rank++;
+        if (count($it) > 0) {
+            foreach ($it as $data) {
+                $rank = $DB->request([
+                    'SELECT' => [
+                        QueryFunction::max('rank')
+                    ],
+                    'FROM' => 'glpi_displaypreferences',
+                    'WHERE' => [
+                        'users_id' => $data['users_id'],
+                        'itemtype' => $type
+                    ]
+                ])->current()['rank']++;
 
-                    foreach ($tab as $newval) {
-                        $query = "SELECT *
-                            FROM `glpi_displaypreferences`
-                            WHERE `users_id` = '" . $data['users_id'] . "'
-                                  AND `num` = '$newval'
-                                  AND `itemtype` = '$type'";
-                        if ($result2 = $DB->doQuery($query)) {
-                            if ($DB->numrows($result2) == 0) {
-                                 $query = "INSERT INTO `glpi_displaypreferences`
-                                         (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                  VALUES ('$type', '$newval', '" . $rank++ . "',
-                                          '" . $data['users_id'] . "')";
-                                 $DB->doQuery($query);
-                            }
-                        }
+                foreach ($tab as $newval) {
+                    $it2 = $DB->request([
+                        'FROM' => 'glpi_displaypreferences',
+                        'WHERE' => [
+                            'users_id' => $data['users_id'],
+                            'num' => $newval,
+                            'itemtype' => $type
+                        ]
+                    ]);
+                    if (count($it2) === 0) {
+                        $DB->insertOrDie('glpi_displaypreferences', [
+                            'itemtype' => $type,
+                            'num' => $newval,
+                            'rank' => $rank++,
+                            'users_id' => $data['users_id']
+                        ]);
                     }
                 }
-            } else { // Add for default user
-                $rank = 1;
-                foreach ($tab as $newval) {
-                    $query = "INSERT INTO `glpi_displaypreferences`
-                                (`itemtype` ,`num` ,`rank` ,`users_id`)
-                         VALUES ('$type', '$newval', '" . $rank++ . "', '0')";
-                    $DB->doQuery($query);
-                }
+            }
+        } else { // Add for default user
+            $rank = 1;
+            foreach ($tab as $newval) {
+                $DB->insertOrDie('glpi_displaypreferences', [
+                    'itemtype' => $type,
+                    'num' => $newval,
+                    'rank' => $rank++,
+                    'users_id' => 0
+                ]);
             }
         }
     }
