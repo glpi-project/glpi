@@ -109,7 +109,7 @@ final class Search
                 if (str_contains($sql_field, '.')) {
                     $join_name = explode('.', $sql_field, 2)[0];
                     if (array_key_exists($join_name, $this->joins) && $this->joins[$join_name]['parent_type'] === 'array') {
-                        $expression = QueryFunction::ifnull($sql_field, '0x0');
+                        $expression = QueryFunction::ifnull($sql_field, new QueryExpression($DB::quoteValue('0x0')));
                         if ($distinct_groups) {
                             $expression = QueryFunction::groupConcat($expression, '0x1D', true);
                         } else {
