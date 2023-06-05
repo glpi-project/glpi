@@ -56,69 +56,91 @@ if (empty($crontask->find(['name' => 'PrinterCartridgeLevelAlert']))) {
             'mode' => CronTask::MODE_EXTERNAL
         ]
     );
-}
-if (!$cron_added) {
+    if (!$cron_added) {
         die("Can't add PrinterCartridgeLevelAlert cron");
+    }
 }
 
 // Insert notification
-$query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`)
-            VALUES ('Printer Cartridge Levels', 0, 'PrinterCartridgeLevelAlert', 'alert', 1, 1)";
-$DB->queryOrDie($query);
+$DB->insertOrDie("glpi_notifications", [
+    'name'            => "Printer Cartridge Levels",
+    'entities_id'     => 0,
+    'itemtype'        => "PrinterCartridgeLevelAlert",
+    'event'           => "alert",
+    'is_recursive'    => 1,
+    'is_active'       => 1
+]);
+
 
 // Get notification ID
 $query_id = "SELECT `id`
                 FROM `glpi_notifications`
                 WHERE `itemtype`='PrinterCartridgeLevelAlert' AND `name` = 'Printer Cartridge Levels'";
-$DB->query($query_id);
-$result = $DB->query($query_id) or die($DB->error());
+$DB->queryOrDie($query_id);
 $notification = $DB->result($result, 0, 'id');
 
 // Insert notification template
-$DB->queryOrDie("INSERT INTO `glpi_notificationtemplates` ( `date_creation`, `id`, `name`, `itemtype`, `date_mod`, `comment`, `css`) 
-            VALUES ('2023-05-26 09:44:46',NULL, 'Printer Cartridge Levels', 'PrinterCartridgeLevelAlert', '2023-05-26 09:44:46','',NULL)");
+$DB->insertOrDie("glpi_notificationtemplates", [
+    'date_creation'     => "2023-05-26 09:44:46",
+    'id'                => null,
+    'name'              => "Printer Cartridge Levels",
+    'itemtype'          => "PrinterCartridgeLevelAlert",
+    'date_mod'          => "2023-05-26 09:44:46",
+    'comment'           => "",
+    'css'               => null
+]);
 
 // Get notification template ID
 $query_id = "SELECT `id`
                 FROM `glpi_notificationtemplates`
                 WHERE `itemtype`='PrinterCartridgeLevelAlert' AND `name` = 'Printer Cartridge Levels'";
-$result = $DB->query($query_id) or die($DB->error());
+$result = $DB->queryOrDie($query_id);
 $notificationtemplate = $DB->result($result, 0, 'id');
 
 // Link notification and notificicationtemplate
-$query = "INSERT INTO `glpi_notifications_notificationtemplates` (`notifications_id`, `mode`, `notificationtemplates_id`)
-            VALUES (" . $notification . ", 'mailing', " . $notificationtemplate . ");";
-$DB->queryOrDie($query);
+$DB->insertOrDie("glpi_notifications_notificationtemplates", [
+    'notifications_id'           => $notification,
+    'mode'                       => "mailing",
+    'notificationtemplates_id'   => $notificationtemplate
+]);
 
 // Insert translation for the notification
-$query = "INSERT INTO `glpi_notificationtemplatetranslations`                                 VALUES(NULL, " . $notificationtemplate . ", '','##cartridge.action## : ##cartridge.entity##',
-'##FOREACHcartridges##
-##lang.cartridge.printer## : ##cartridge.printer##
-##lang.cartridge.entity## : ##cartridge.entity##
-##lang.cartridge.item## : ##cartridge.item##
-##lang.cartridge.level## : ##cartridge.level##
-##ENDFOREACHcartridges##',
-'&#60;table class=\"tab_cadre\" style=\"width: 85.7401%; height: 23.25px;\" border=\"1\" cellspacing=\"2\" cellpadding=\"3\"&#62;
-&#60;tbody&#62;
-&#60;tr style=\"height: 23.25px;\"&#62;
-&#60;th style=\"text-align: left; width: 16.4225%; height: 23.25px;\" bgcolor=\"#cccccc\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##lang.cartridge.printer##&#60;/span&#62;&#60;/th&#62;
-&#60;th style=\"text-align: left; width: 35.3892%; height: 28.25px;\" bgcolor=\"#cccccc\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##lang.cartridge.entity##&#60;/span&#62;&#60;/th&#62;
-&#60;th style=\"text-align: left; width: 34.2083%; height: 28.25px;\" bgcolor=\"#cccccc\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##lang.cartridge.item##&#60;/span&#62;&#60;/th&#62;
-&#60;th style=\"text-align: left; width: 14.3559%; height: 13.25px;\" bgcolor=\"#cccccc\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##lang.cartridge.level##&#60;/span&#62;&#60;/th&#62;
-&#60;/tr&#62;
-##FOREACHcartridges##
-&#60;tr style=\"height: 19.25px;\"&#62;
-&#60;td style=\"text-align: left; width: 16.4225%;\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##cartridge.printer##&#60;/span&#62;&#60;/td&#62;
-&#60;td style=\"text-align: left; width: 35.3892%;\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##cartridge.entity##&#60;/span&#62;&#60;/td&#62;
-&#60;td style=\"text-align: left; width: 34.2083%;\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##cartridge.item##&#60;/span&#62;&#60;/td&#62;
-&#60;td style=\"text-align: left; width: 14.3559%;\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##cartridge.level##&#60;/span&#62;&#60;/td&#62;
-&#60;/tr&#62;
-##ENDFOREACHcartridges##
-&#60;/tbody&#62;
-&#60;/table&#62; ;')";
-$DB->queryOrDie($query);
+$DB->insertOrDie("glpi_notificationtemplatetranslations", [
+    'notificationtemplates_id'          => $notificationtemplate,
+    'language'                          => "",
+    'subject'                           => "##cartridge.action## : ##cartridge.entity##",
+    'content_text'                      => '##FOREACHcartridges##
+                                            ##lang.cartridge.printer## : ##cartridge.printer##
+                                            ##lang.cartridge.entity## : ##cartridge.entity##
+                                            ##lang.cartridge.item## : ##cartridge.item##
+                                            ##lang.cartridge.level## : ##cartridge.level##
+                                            ##ENDFOREACHcartridges##',
+    'content_html'                      => '&#60;table class=\"tab_cadre\" style=\"width: 85.7401%; height: 23.25px;\" border=\"1\" cellspacing=\"2\" cellpadding=\"3\"&#62;
+                                            &#60;tbody&#62;&#60;tr style=\"height: 23.25px;\"&#62;
+                                            &#60;th style=\"text-align: left; width: 16.4225%; height: 23.25px;\" bgcolor=\"#cccccc\"&#62;
+                                            &#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##lang.cartridge.printer##&#60;/span&#62;&#60;/th&#62;
+                                            &#60;th style=\"text-align: left; width: 35.3892%; height: 28.25px;\" bgcolor=\"#cccccc\"&#62;
+                                            &#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##lang.cartridge.entity##&#60;/span&#62;&#60;/th&#62;
+                                            &#60;th style=\"text-align: left; width: 34.2083%; height: 28.25px;\" bgcolor=\"#cccccc\"&#62;
+                                            &#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##lang.cartridge.item##&#60;/span&#62;&#60;/th&#62;
+                                            &#60;th style=\"text-align: left; width: 14.3559%; height: 13.25px;\" bgcolor=\"#cccccc\"&#62;
+                                            &#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##lang.cartridge.level##&#60;/span&#62;&#60;/th&#62;
+                                            &#60;/tr&#62;
+                                            ##FOREACHcartridges##
+                                            &#60;tr style=\"height: 19.25px;\"&#62;
+                                            &#60;td style=\"text-align: left; width: 16.4225%;\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##cartridge.printer##&#60;/span&#62;&#60;/td&#62;
+                                            &#60;td style=\"text-align: left; width: 35.3892%;\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##cartridge.entity##&#60;/span&#62;&#60;/td&#62;
+                                            &#60;td style=\"text-align: left; width: 34.2083%;\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##cartridge.item##&#60;/span&#62;&#60;/td&#62;
+                                            &#60;td style=\"text-align: left; width: 14.3559%;\"&#62;&#60;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&#62;##cartridge.level##&#60;/span&#62;&#60;/td&#62;
+                                            &#60;/tr&#62;
+                                            ##ENDFOREACHcartridges##
+                                            &#60;/tbody&#62;
+                                            &#60;/table&#62;'
+]);
 
 // Insert Entity Administrator as default target for low level cartridge notifications
-$query = "INSERT INTO `glpi_notificationtargets` (`items_id`, `type`, `notifications_id`)
-            VALUES (11, 1, " . $notification . ");";
-$DB->query($query);
+$DB->insertOrDie("glpi_notificationtargets", [
+    'items_id'           => 11,
+    'type'               => 1,
+    'notifications_id'   => $notification
+]);
