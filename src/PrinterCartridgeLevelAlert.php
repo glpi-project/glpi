@@ -195,7 +195,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     {
         global $DB;
 
-        $CronTask = new CronTask();
+        $crontask = new CronTask();
         if ($CronTask->getFromDBbyName("PrinterCartridgeLevelAlert", "PrinterCartridgeLevelAlert")) {
             if ($CronTask->fields["state"] != CronTask::STATE_DISABLE) {
                 if (Session::haveRight("cartridge", READ) && Session::haveRight("printer", READ)) {
