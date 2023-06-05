@@ -1408,8 +1408,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data["##$objettype.reminder.bumpremaining##"] = $pending_reason_item->getField('followups_before_resolution') - $pending_reason_item->getField('bump_count');
                 $data["##$objettype.reminder.bumptotal##"]     = $pending_reason_item->getField('followups_before_resolution');
                 $data["##$objettype.reminder.deadline##"]      = $pending_reason_item->getAutoResolvedate();
-                $data["##$objettype.reminder.text##"]      = $followup_template !== false ? $followup_template->getRenderedContent($item) : '',
-                $data["##$objettype.reminder.name##"] = $pending_reason->getField('name');
+                $data["##$objettype.reminder.text##"]          = $followup_template !== false ? $followup_template->getRenderedContent($item) : '';
+                $data["##$objettype.reminder.name##"]          = $pending_reason->getField('name');
             }
         }
 
