@@ -83,56 +83,57 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
         if ($repeat) {
             $where = $where . " AND ( a.date is NULL or a.date < CURRENT_TIMESTAMP() - INTERVAL " . $repeat . " second)";
         }
-            $query = [
-                'SELECT' => [
-                    'c.id as cartridge',
-                    'i.id as cartridgeitem',
-                    'p.id as printer',
-                    'p.entities_id as entity',
-                    'l.value as cartridgelevel',
-                    'a.id as alertID',
-                    'a.date as alertDate'
+
+        $query = [
+            'SELECT' => [
+                'c.id as cartridge',
+                'i.id as cartridgeitem',
+                'p.id as printer',
+                'p.entities_id as entity',
+                'l.value as cartridgelevel',
+                'a.id as alertID',
+                'a.date as alertDate'
+            ],
+            'FROM'   => 'glpi_cartridges AS c',
+            'INNER JOIN'   => [
+                'glpi_cartridgeitems AS i'  => [
+                    'ON'  => [
+                        'c' => 'cartridgeitems_id',
+                        'i'  => 'id'
+                    ]
                 ],
-                'FROM'   => 'glpi_cartridges AS c',
-                'INNER JOIN'   => [
-                    'glpi_cartridgeitems AS i'  => [
-                        'ON'  => [
-                            'c' => 'cartridgeitems_id',
-                            'i'  => 'id'
-                            ]
-                        ],
-                    'glpi_printers_cartridgeinfos AS l'  => [
-                        'ON'  => [
-                            'i' => 'type_tag',
-                            'l'  => 'property'
-                            ]
-                        ],
-                    'glpi_printers as p'  => [
-                        'ON'  => [
-                            'c' => 'printers_id',
-                            'p'  => 'id'
+                'glpi_printers_cartridgeinfos AS l'  => [
+                    'ON'  => [
+                        'i' => 'type_tag',
+                        'l'  => 'property'
+                    ]
+                ],
+                'glpi_printers as p'  => [
+                    'ON'  => [
+                        'c' => 'printers_id',
+                        'p'  => 'id'
+                    ]
+                ]
+            ],
+            'LEFT JOIN'    =>  [
+                'glpi_alerts AS a'  => [
+                    'ON'  => [
+                        'c'  => 'id',
+                        'a'  => 'items_id', [
+                            'AND' => [
+                                'a.itemtype'    =>      'Cartridge'
                             ]
                         ]
-                    ],
-                'LEFT JOIN'    =>  [
-                    'glpi_alerts AS a'  => [
-                        'ON'  => [
-                            'c'  => 'id',
-                            'a'  => 'items_id', [
-                                'AND' => [
-                                'a.itemtype'    =>      'Cartridge'
-                                ]
-                            ]
-                        ]  
-                    ]  
-                ],
-                'WHERE'        => [
-                    new QueryExpression( $where)
-                ],
-                'ORDERBY'      => [
-                   'p.name'
+                    ]
                 ]
-            ];
+            ],
+            'WHERE'        => [
+                new QueryExpression($where)
+            ],
+            'ORDERBY'      => [
+                'p.name'
+            ]
+        ];
 
         return $query;
     }
