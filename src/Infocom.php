@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * Infocom class
@@ -521,11 +522,14 @@ class Infocom extends CommonDBChild
                     "$table.entities_id"       => $entity,
                     "$table.warranty_duration" => ['>', 0],
                     'NOT'                      => ["$table.warranty_date" => null],
-                    new QueryExpression(
-                        'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_infocoms.warranty_date') . ', INTERVAL (' .
-                        $DB->quoteName('glpi_infocoms.warranty_duration') . ') MONTH), CURDATE() ) <= ' .
-                        $DB->quoteValue($before)
-                    ),
+                    new QueryExpression(QueryFunction::dateDiff(
+                        expression1: QueryFunction::dateAdd(
+                            date: 'glpi_infocoms.warranty_date',
+                            interval: new QueryExpression($DB::quoteName('glpi_infocoms.warranty_duration')),
+                            interval_unit: 'MONTH'
+                        ),
+                        expression2: QueryFunction::curdate()
+                    ) . ' <= ' . $DB::quoteValue($before)),
                     'glpi_alerts.date'         => null
                 ]
             ]);

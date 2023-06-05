@@ -267,6 +267,16 @@ class QueryFunction
     }
 
     /**
+     * Build a CURDATE SQL function call
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return QueryExpression
+     */
+    public static function curdate(?string $alias = null): QueryExpression
+    {
+        return new QueryExpression('CURDATE()', $alias);
+    }
+
+    /**
      * Build a REPLACE SQL function call
      * @param string|QueryExpression $expression Expression to search in
      * @param string|QueryExpression $search String to search

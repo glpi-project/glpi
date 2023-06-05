@@ -6210,10 +6210,10 @@ JAVASCRIPT;
                     self::getTableField('is_active')  => 1,
                     self::getTableField('authtype')   => Auth::DB_GLPI,
                     new QueryExpression(
-                        sprintf(
-                            'NOW() > ADDDATE(%s, INTERVAL %s DAY)',
-                            $DB->quoteName(self::getTableField('password_last_update')),
-                            $expiration_delay - $notice_time
+                        QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
+                            date: self::getTableField('password_last_update'),
+                            interval: $expiration_delay - $notice_time,
+                            interval_unit: 'DAY'
                         )
                     ),
                // Get only users that has not yet been notified within last day
@@ -6302,11 +6302,10 @@ JAVASCRIPT;
                     'is_active'  => 1,
                     'authtype'   => Auth::DB_GLPI,
                     new QueryExpression(
-                        sprintf(
-                            'NOW() > ADDDATE(ADDDATE(%s, INTERVAL %d DAY), INTERVAL %s DAY)',
-                            $DB->quoteName(self::getTableField('password_last_update')),
-                            $expiration_delay,
-                            $lock_delay
+                        QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
+                            date: 'password_last_update',
+                            interval: $expiration_delay + $lock_delay,
+                            interval_unit: 'DAY'
                         )
                     ),
                 ]
@@ -6733,7 +6732,13 @@ JAVASCRIPT;
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'password_forget_token'       => $token,
-                new QueryExpression('NOW() < ADDDATE(' . $DB::quoteName('password_forget_token_date') . ', INTERVAL ' . $CFG_GLPI['password_init_token_delay'] . ' SECOND)')
+                new QueryExpression(
+                    QueryFunction::now() . ' < ' . QueryFunction::dateAdd(
+                        date: 'password_forget_token_date',
+                        interval: $CFG_GLPI['password_init_token_delay'],
+                        interval_unit: 'SECOND'
+                    )
+                )
             ]
         ]);
 
