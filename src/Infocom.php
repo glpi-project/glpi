@@ -529,7 +529,7 @@ class Infocom extends CommonDBChild
                             interval_unit: 'MONTH'
                         ),
                         expression2: QueryFunction::curdate()
-                    ). ' <= ' . $DB::quoteValue($before)),
+                    ) . ' <= ' . $DB::quoteValue($before)),
                     'glpi_alerts.date'         => null
                 ]
             ]);
