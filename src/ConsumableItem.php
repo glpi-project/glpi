@@ -342,11 +342,15 @@ class ConsumableItem extends CommonDBTM
                             'glpi_consumableitems.entities_id'     => $entity,
                             'OR'                                  => [
                                 ['glpi_alerts.date' => null],
-                                ['glpi_alerts.date' => ['<', QueryFunction::dateSub(
-                                    date: QueryFunction::now(),
-                                    interval: $repeat,
-                                    interval_unit: 'SECOND'
-                                )]],
+                                [
+                                    'glpi_alerts.date' => ['<',
+                                        QueryFunction::dateSub(
+                                            date: QueryFunction::now(),
+                                            interval: $repeat,
+                                            interval_unit: 'SECOND'
+                                        )
+                                    ]
+                                ],
                             ],
                         ],
                     ]

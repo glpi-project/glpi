@@ -400,11 +400,15 @@ class SavedSearch_Alert extends CommonDBChild
                 'glpi_savedsearches_alerts.is_active' => true,
                 'OR' => [
                     ['glpi_alerts.date' => null],
-                    ['glpi_alerts.date' => ['<', QueryFunction::dateSub(
-                        date: QueryFunction::now(),
-                        interval: 'glpi_savedsearches_alerts.frequency',
-                        interval_unit: 'SECOND'
-                    )]]
+                    [
+                        'glpi_alerts.date' => ['<',
+                            QueryFunction::dateSub(
+                                date: QueryFunction::now(),
+                                interval: 'glpi_savedsearches_alerts.frequency',
+                                interval_unit: 'SECOND'
+                            )
+                        ]
+                    ]
                 ]
             ]
         ]);

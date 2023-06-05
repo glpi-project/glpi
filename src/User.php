@@ -6219,11 +6219,15 @@ JAVASCRIPT;
                // Get only users that has not yet been notified within last day
                     'OR'                              => [
                         [Alert::getTableField('date') => null],
-                        [Alert::getTableField('date') => ['<', QueryFunction::dateSub(
-                            date: QueryFunction::now(),
-                            interval: 1,
-                            interval_unit: 'DAY'
-                        )]],
+                        [
+                            Alert::getTableField('date') => ['<',
+                                QueryFunction::dateSub(
+                                    date: QueryFunction::now(),
+                                    interval: 1,
+                                    interval_unit: 'DAY'
+                                )
+                            ]
+                        ],
                     ],
                 ],
             ];

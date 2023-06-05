@@ -505,11 +505,13 @@ class CronTask extends CommonDBTM
                 'WHERE'     => [
                     'items_id' => $this->fields['id'],
                     'itemtype' => 'CronTask',
-                    'date'     => ['>', QueryFunction::dateSub(
-                        date: QueryFunction::now(),
-                        interval: 1,
-                        interval_unit: 'DAY'
-                    )],
+                    'date'     => ['>',
+                        QueryFunction::dateSub(
+                            date: QueryFunction::now(),
+                            interval: 1,
+                            interval_unit: 'DAY'
+                        )
+                    ],
                 ],
             ]
         );
