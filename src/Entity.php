@@ -110,6 +110,7 @@ class Entity extends CommonTreeDropdown
             'default_consumables_alarm_threshold',
             'default_contract_alert', 'default_infocom_alert',
             'mailing_signature', 'cartridges_alert_repeat',
+            'printer_cartridge_levels_alert_repeat',
             'consumables_alert_repeat', 'notclosed_delay',
             'use_licenses_alert', 'use_certificates_alert',
             'send_licenses_alert_before_delay',
