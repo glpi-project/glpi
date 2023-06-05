@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
@@ -5962,12 +5964,11 @@ class CommonDBTM extends CommonGLPI
     {
         $table      = static::getTable();
         $name_field = static::getNameField();
-        $name       = DBmysql::quoteName("$table.$name_field");
         $filter     = strtolower($filter);
 
         return [
             'RAW' => [
-                "LOWER($name)" => ['LIKE', "%$filter%"],
+                (string) QueryFunction::lower("$table.$name_field") => ['LIKE', "%$filter%"],
             ]
         ];
     }

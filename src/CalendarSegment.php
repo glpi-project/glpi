@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * CalendarSegment Class
@@ -163,11 +164,11 @@ class CalendarSegment extends CommonDBChild
        // Do not check hour if day before the end day of after the begin day
         $iterator = $DB->request([
             'SELECT' => [
-                new QueryExpression("
-               TIMEDIFF(
-                   LEAST(" . $DB->quoteValue($end_time) . ", " . $DB->quoteName('end') . "),
-                   GREATEST(" . $DB->quoteName('begin') . ", " . $DB->quoteValue($begin_time) . ")
-               ) AS " . $DB->quoteName('TDIFF'))
+                QueryFunction::timediff(
+                    expression1: QueryFunction::least([new QueryExpression($DB::quoteValue($end_time)), 'end']),
+                    expression2: QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))]),
+                    alias: 'TDIFF'
+                ),
             ],
             'FROM'   => 'glpi_calendarsegments',
             'WHERE'  => [
@@ -203,12 +204,12 @@ class CalendarSegment extends CommonDBChild
        // Do not check hour if day before the end day of after the begin day
         $iterator = $DB->request([
             'SELECT' => [
-                new QueryExpression(
-                    "GREATEST(" . $DB->quoteName('begin') . ", " . $DB->quoteValue($begin_time)  . ") AS " . $DB->quoteName('BEGIN')
+                QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))], 'BEGIN'),
+                QueryFunction::timediff(
+                    expression1: 'end',
+                    expression2: QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))]),
+                    alias: 'TDIFF'
                 ),
-                new QueryExpression(
-                    "TIMEDIFF(" . $DB->quoteName('end') . ", GREATEST(" . $DB->quoteName('begin') . ", " . $DB->quoteValue($begin_time) . ")) AS " . $DB->quoteName('TDIFF')
-                )
             ],
             'FROM'   => 'glpi_calendarsegments',
             'WHERE'  => [

@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 
@@ -355,9 +356,9 @@ class Entity extends CommonTreeDropdown
         $input = $this->handleConfigStrategyFields($input);
 
         $result = $DB->request([
-            'SELECT' => new QueryExpression(
-                'MAX(' . $DB->quoteName('id') . ')+1 AS newID'
-            ),
+            'SELECT' => [
+                new QueryExpression(QueryFunction::max('id') . '+1', 'newID')
+            ],
             'FROM'   => $this->getTable()
         ])->current();
         $input['id'] = $result['newID'];
