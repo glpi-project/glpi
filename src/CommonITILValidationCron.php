@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * Cron task for approval reminder
@@ -82,10 +83,24 @@ class CommonITILValidationCron extends CommonDBTM
                         'WHERE'  => [
                             'status'          => CommonITILValidation::WAITING,
                             'entities_id'     => $entity,
-                            'submission_date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')],
+                            'submission_date' => ['<',
+                                QueryFunction::dateSub(
+                                    date: QueryFunction::now(),
+                                    interval: $repeat,
+                                    interval_unit: 'SECOND'
+                                )
+                            ],
                             'OR'              => [
                                 ['last_reminder_date' => null],
-                                ['last_reminder_date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                                [
+                                    'last_reminder_date' => ['<',
+                                        QueryFunction::dateSub(
+                                            date: QueryFunction::now(),
+                                            interval: $repeat,
+                                            interval_unit: 'SECOND'
+                                        )
+                                    ]
+                                ],
                             ],
                         ]
                     ]);

@@ -114,6 +114,23 @@ class QueryFunction
     }
 
     /**
+     * Build an DATE_SUB SQL function call
+     * @param string|QueryExpression $date Date to add interval to
+     * @param int|string|QueryExpression $interval Interval to add
+     * @param string $interval_unit Interval unit
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return QueryExpression
+     */
+    public static function dateSub(string|QueryExpression $date, int|string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
+    {
+        global $DB;
+        $date = $date instanceof QueryExpression ? $date : $DB::quoteName($date);
+        $interval = is_string($interval) ? $DB::quoteValue($interval) : $interval;
+        $exp = sprintf('DATE_SUB(%s, INTERVAL %s %s)', $date, $interval, strtoupper($interval_unit));
+        return new QueryExpression($exp, $alias);
+    }
+
+    /**
      * Build an IF SQL function call
      * @param string|QueryExpression|array $condition Condition to test
      * @param string|QueryExpression $true_expression Expression to return if condition is true
