@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Console\Application;
+use Glpi\DBAL\QueryFunction;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -946,7 +947,9 @@ class Migration
                 // Add new search options with an higher rank.
                 foreach ($iterator as $data) {
                     $max_rank = $DB->request([
-                        'SELECT' => ['MAX' => 'rank AS max_rank'],
+                        'SELECT' => [
+                            QueryFunction::max('rank', 'max_rank')
+                        ],
                         'FROM'   => 'glpi_displaypreferences',
                         'WHERE'  => [
                             'users_id' => $data['users_id'],

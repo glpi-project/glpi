@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * Virtual machine management
@@ -187,7 +188,7 @@ class ComputerVirtualMachine extends CommonDBChild
                 self::getTable(),
                 [
                     'RAW' => [
-                        'LOWER(uuid)' => self::getUUIDRestrictCriteria($comp->fields['uuid'])
+                        (string) QueryFunction::lower('uuid') => self::getUUIDRestrictCriteria($comp->fields['uuid'])
                     ]
                 ]
             );
@@ -427,7 +428,7 @@ class ComputerVirtualMachine extends CommonDBChild
             'FROM'   => 'glpi_computers',
             'WHERE'  => [
                 'RAW' => [
-                    'LOWER(uuid)'  => self::getUUIDRestrictCriteria($fields['uuid'])
+                    (string) QueryFunction::lower('uuid')  => self::getUUIDRestrictCriteria($fields['uuid'])
                 ]
             ]
         ]);
