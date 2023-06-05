@@ -76,7 +76,7 @@ $DB->insertOrDie("glpi_notifications", [
 $query_id = "SELECT `id`
                 FROM `glpi_notifications`
                 WHERE `itemtype`='PrinterCartridgeLevelAlert' AND `name` = 'Printer Cartridge Levels'";
-$DB->queryOrDie($query_id);
+$result = $DB->queryOrDie($query_id);
 $notification = $DB->result($result, 0, 'id');
 
 // Insert notification template
