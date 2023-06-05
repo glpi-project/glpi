@@ -263,11 +263,16 @@ class NetworkPort_NetworkPort extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
+        $crit = [
+            'OR'  => [
+                ['networkports_id_1'  => $input['networkports_id_1']],
+                ['networkports_id_1'  => $input['networkports_id_2']],
+                ['networkports_id_2'  => $input['networkports_id_1']],
+                ['networkports_id_2'  => $input['networkports_id_2']],
+            ]
+        ];
 
-        if (
-            $this->getFromDBForNetworkPort($input['networkports_id_1'])
-            || $this->getFromDBForNetworkPort($input['networkports_id_2'])
-        ) {
+        if (countElementsInTable($this->getTable(), $crit)) {
             trigger_error('Wired non unique!', E_USER_WARNING);
             return false;
         }
