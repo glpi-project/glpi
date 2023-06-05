@@ -2550,13 +2550,13 @@ class CommonDBTM extends CommonGLPI
                                 $items_id_field = reset($items_id_matches);
                             }
                             $or_criteria[] = [
-                                $itemtype_field => $this->getType(),
-                                $items_id_field => $this->getID(),
+                                $tablename . "." . $itemtype_field => $this->getType(),
+                                $tablename . "." . $items_id_field => $this->getID(),
                             ];
                         } else {
                             // Relation based on single foreign key
                             $or_criteria[] = [
-                                $field => $this->getID(),
+                                $tablename . "." . $field => $this->getID(),
                             ];
                         }
                     }
