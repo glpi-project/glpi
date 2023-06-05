@@ -164,11 +164,12 @@ class PendingReasonCron extends CommonDBTM
                 // Add solution
                 $solution = new ITILSolution();
                 $solution->add([
-                    'itemtype'         => $item::getType(),
-                    'items_id'         => $item->getID(),
-                    'solutiontypes_id' => $solution_template->fields['solutiontypes_id'],
-                    'content'          => $solution_template->getRenderedContent($item),
-                    'users_id'         => $config['system_user'],
+                    'itemtype'             => $item::getType(),
+                    'items_id'             => $item->getID(),
+                    'solutiontypes_id'     => $solution_template->fields['solutiontypes_id'],
+                    'content'              => $solution_template->getRenderedContent($item),
+                    'users_id'             => $config['system_user'],
+                    '_disable_auto_assign' => true,
                 ]);
                 $task->addVolume(1);
             }
