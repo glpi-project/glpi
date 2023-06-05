@@ -237,7 +237,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                         echo "</tr>";
                         echo "</thead>";
 
-                        foreach($result as $data) {
+                        foreach ($result as $data) {
                             echo self::displayBody($data);
                         }
                         echo "</table>";
