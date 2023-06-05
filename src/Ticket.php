@@ -2247,7 +2247,11 @@ class Ticket extends CommonITILObject
                     $this->getClosedStatusArray()
                 ),
                 new QueryExpression(
-                    "ADDDATE(" . $DB->quoteName($this->getTable() . ".solvedate") . ", INTERVAL $days DAY) > NOW()"
+                    QueryFunction::dateAdd(
+                        date: static::getTable() . '.solvedate',
+                        interval: $days,
+                        interval_unit: 'DAY'
+                    ) . ' > ' . QueryFunction::now()
                 ),
                 'NOT'                         => [
                     $this->getTable() . '.solvedate' => null
@@ -4434,8 +4438,14 @@ JAVASCRIPT;
                         ['OR'                   => [
                             'glpi_entities.inquest_duration' => 0,
                             new QueryExpression(
-                                'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_ticketsatisfactions.date_begin') .
-                                ', INTERVAL ' . $DB->quoteName('glpi_entities.inquest_duration')  . ' DAY), CURDATE()) > 0'
+                                QueryFunction::dateDiff(
+                                    expression1: QueryFunction::dateAdd(
+                                        date: 'glpi_ticketsatisfactions.date_begin',
+                                        interval: 'glpi_entities.inquest_duration',
+                                        interval_unit: 'DAY'
+                                    ),
+                                    expression2: QueryFunction::curDate()
+                                ) . ' > 0'
                             )
                         ]
                         ],
@@ -5582,7 +5592,11 @@ JAVASCRIPT;
                     } else {
                      // no calendar, remove all days
                         $criteria['WHERE'][] = new QueryExpression(
-                            "ADDDATE(" . $DB->quoteName('solvedate') . ", INTERVAL $delay DAY) < NOW()"
+                            QueryFunction::dateAdd(
+                                date: 'solvedate',
+                                interval: $delay,
+                                interval_unit: 'DAY'
+                            ) . ' < ' . QueryFunction::now()
                         );
                     }
                 }
@@ -5639,7 +5653,13 @@ JAVASCRIPT;
                         self::WAITING
                     ],
                     'closedate'    => null,
-                    new QueryExpression("ADDDATE(" . $DB->quoteName('date') . ", INTERVAL $value DAY) < NOW()")
+                    new QueryExpression(
+                        QueryFunction::dateAdd(
+                            date: 'date',
+                            interval: $value,
+                            interval_unit: 'DAY'
+                        ) . ' < ' . QueryFunction::now()
+                    )
                 ]
             ]);
             $tickets = [];
@@ -5706,8 +5726,14 @@ JAVASCRIPT;
                 ];
 
                 if ($delay > 0) {
-                   // remove all days
-                    $criteria['WHERE'][] = new QueryExpression("ADDDATE(`closedate`, INTERVAL " . $delay . " DAY) < NOW()");
+                    // remove all days
+                    $criteria['WHERE'][] = new QueryExpression(
+                        QueryFunction::dateAdd(
+                            date: 'closedate',
+                            interval: $delay,
+                            interval_unit: 'DAY'
+                        ) . ' < ' . QueryFunction::now()
+                    );
                 }
 
                 $iterator = $DB->request($criteria);

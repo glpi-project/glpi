@@ -1451,8 +1451,11 @@ abstract class CommonITILObject extends CommonDBTM
                     [
                         'NOT' => [$this->getTable() . '.solvedate' => null],
                         new QueryExpression(
-                            "ADDDATE(" . $DB->quoteName($this->getTable()) .
-                            "." . $DB->quoteName('solvedate') . ", INTERVAL $days DAY) > NOW()"
+                            QueryFunction::dateAdd(
+                                date: static::getTable() . '.solvedate',
+                                interval: $days,
+                                interval_unit: 'DAY'
+                            ) . ' > ' . QueryFunction::now()
                         )
                     ]
                 ]
@@ -9788,8 +9791,20 @@ abstract class CommonITILObject extends CommonDBTM
                     "$table.is_deleted"           => 0,
                     "$table.status"               => self::CLOSED,
                     "$table.closedate"            => ['>', $max_closedate],
-                    new QueryExpression("ADDDATE(" . $DB->quoteName("$table.closedate") . ", INTERVAL $delay DAY) <= NOW()"),
-                    new QueryExpression("ADDDATE(" . $DB->quoteName("glpi_entities.max_closedate" . $config_suffix) . ", INTERVAL $duration DAY) <= NOW()"),
+                    new QueryExpression(
+                        QueryFunction::dateAdd(
+                            date: "$table.closedate",
+                            interval: $delay,
+                            interval_unit: 'DAY'
+                        ) . ' <= ' . QueryFunction::now()
+                    ),
+                    new QueryExpression(
+                        QueryFunction::dateAdd(
+                            date: "glpi_entities.max_closedate$config_suffix",
+                            interval: $duration,
+                            interval_unit: 'DAY'
+                        ) . ' <= ' . QueryFunction::now()
+                    ),
                     "$survey_table.id" => null
                 ],
                 'ORDERBY'   => 'closedate ASC'

@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 
@@ -1918,9 +1919,7 @@ final class DbUtils
         }
 
         if (is_string($end) && preg_match($date_pattern, $end) === 1) {
-            $end_expr = new QueryExpression(
-                'ADDDATE(' . $DB->quoteValue($end) . ', INTERVAL 1 DAY)'
-            );
+            $end_expr = QueryFunction::dateAdd(date: new QueryExpression($DB::quoteValue($end)), interval: 1, interval_unit: 'DAY');
             $criteria[] = [$field => ['<=', $end_expr]];
         } elseif ($end !== null && $end !== '') {
             trigger_error(
