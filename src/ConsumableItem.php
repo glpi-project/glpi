@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 
 //!  ConsumableItem Class
@@ -341,7 +342,11 @@ class ConsumableItem extends CommonDBTM
                             'glpi_consumableitems.entities_id'     => $entity,
                             'OR'                                  => [
                                 ['glpi_alerts.date' => null],
-                                ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                                ['glpi_alerts.date' => ['<', QueryFunction::dateSub(
+                                    date: QueryFunction::now(),
+                                    interval: $repeat,
+                                    interval_unit: 'SECOND'
+                                )]],
                             ],
                         ],
                     ]

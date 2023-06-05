@@ -38,6 +38,7 @@ declare(ticks=1);
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
 
 /**
@@ -504,7 +505,11 @@ class CronTask extends CommonDBTM
                 'WHERE'     => [
                     'items_id' => $this->fields['id'],
                     'itemtype' => 'CronTask',
-                    'date'     => ['>', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL 1 day')],
+                    'date'     => ['>', QueryFunction::dateSub(
+                        date: QueryFunction::now(),
+                        interval: 1,
+                        interval_unit: 'DAY'
+                    )],
                 ],
             ]
         );
