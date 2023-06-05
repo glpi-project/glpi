@@ -4416,13 +4416,13 @@ JAVASCRIPT;
                     [
                         'OR' => [
                             ['glpi_users.begin_date' => null],
-                            ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]]
+                            ['glpi_users.begin_date' => ['<', QueryFunction::now()]]
                         ]
                     ],
                     [
                         'OR' => [
                             ['glpi_users.end_date' => null],
-                            ['glpi_users.end_date' => ['>', new QueryExpression('NOW()')]]
+                            ['glpi_users.end_date' => ['>', QueryFunction::now()]]
                         ]
                     ]
 
@@ -5687,12 +5687,12 @@ JAVASCRIPT;
             'glpi_users.is_deleted' => 0, [
                 'OR' => [
                     ['glpi_users.begin_date' => null],
-                    ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]]
+                    ['glpi_users.begin_date' => ['<', QueryFunction::now()]]
                 ],
             ], [
                 'OR'  => [
                     ['glpi_users.end_date'   => null],
-                    ['glpi_users.end_date'   => ['>', new QueryExpression('NOW()')]]
+                    ['glpi_users.end_date'   => ['>', QueryFunction::now()]]
                 ]
             ]
         ];
@@ -6915,7 +6915,7 @@ JAVASCRIPT;
                                 [
                                     self::getTableField('substitution_end_date') => null
                                 ], [
-                                    self::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
+                                    self::getTableField('substitution_end_date') => ['>=', QueryFunction::now()],
                                 ],
                             ],
                         ], [
@@ -6923,7 +6923,7 @@ JAVASCRIPT;
                                 [
                                     self::getTableField('substitution_start_date') => null,
                                 ], [
-                                    self::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
+                                    self::getTableField('substitution_start_date') => ['<=', QueryFunction::now()],
                                 ],
                             ],
                         ]

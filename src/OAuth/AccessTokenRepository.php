@@ -83,7 +83,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             'FROM' => 'glpi_oauth_access_tokens',
             'WHERE' => [
                 'identifier' => $tokenId,
-                'date_expiration' => ['>', new QueryExpression('NOW()')],
+                'date_expiration' => ['>', QueryFunction::now()],
             ]
         ]);
         return $iterator->count() === 0;

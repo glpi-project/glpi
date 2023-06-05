@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
+use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
@@ -1245,13 +1246,13 @@ class Planning extends CommonGLPI
             [
                 'OR' => [
                     ['glpi_users.begin_date' => null],
-                    ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]],
+                    ['glpi_users.begin_date' => ['<', QueryFunction::now()]],
                 ],
             ],
             [
                 'OR' => [
                     ['glpi_users.end_date' => null],
-                    ['glpi_users.end_date' => ['>', new QueryExpression('NOW()')]],
+                    ['glpi_users.end_date' => ['>', QueryFunction::now()]],
                 ]
             ]
         ]);

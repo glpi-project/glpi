@@ -78,7 +78,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
             'FROM' => 'glpi_oauth_auth_codes',
             'WHERE' => [
                 'identifier' => $codeId,
-                'date_expiration' => ['>', new QueryExpression('NOW()')],
+                'date_expiration' => ['>', QueryFunction::now()],
             ]
         ]);
         return $iterator->count() === 0;

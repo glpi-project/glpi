@@ -37,6 +37,7 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Inventory\Conf;
 use Glpi\Plugin\Hooks;
 use GuzzleHttp\Client as Guzzle_Client;
@@ -828,7 +829,13 @@ class Agent extends CommonDBTM
             'SELECT' => ['id'],
             'FROM' => self::getTable(),
             'WHERE' => [
-                'last_contact' => ['<', new QueryExpression("date_add(now(), interval -" . $retention_time . " day)")]
+                'last_contact' => ['<',
+                    QueryFunction::dateSub(
+                        date: QueryFunction::now(),
+                        interval: $retention_time,
+                        interval_unit: 'DAY'
+                    )
+                ]
             ]
         ]);
 

@@ -416,7 +416,7 @@ class PlanningRecall extends CommonDBChild
             ],
             'WHERE'     => [
                 'NOT'                         => ['glpi_planningrecalls.when' => null],
-                'glpi_planningrecalls.when'   => ['<', new QueryExpression('NOW()')],
+                'glpi_planningrecalls.when'   => ['<', QueryFunction::now()],
                 'glpi_alerts.date'            => null
             ]
         ]);

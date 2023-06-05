@@ -502,7 +502,7 @@ trait PlanningEvent
                     'state'  => Planning::TODO,
                     'AND'    => [
                         'state'  => Planning::INFO,
-                        'end'    => ['>', new QueryExpression('NOW()')]
+                        'end'    => ['>', QueryFunction::now()]
                     ]
                 ]
             ];
