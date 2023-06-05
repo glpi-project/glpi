@@ -57,5 +57,5 @@ if (!$DB->tableExists('glpi_itilreminders')) {
         KEY `date_creation` (`date_creation`),
         KEY `pendingreasons_id` (`pendingreasons_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, 'x.x add table glpi_itilreminders');
+    $DB->queryOrDie($query, '10.1 add table glpi_itilreminders');
 }

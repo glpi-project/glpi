@@ -43,10 +43,10 @@ class ITILReminder extends CommonDBChild
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Auto Bump', 'Auto Bumps', $nb);
+        return _n('Automatic reminder', 'Automatic reminders', $nb);
     }
 
-    public function getPendingReason()
+    public function getPendingReason(): PendingReason
     {
         $pending_reason = new PendingReason();
         $pending_reason->getFromDB($this->fields['pendingreasons_id']);

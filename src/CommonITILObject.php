@@ -7300,9 +7300,9 @@ abstract class CommonITILObject extends CommonDBTM
             $content = sprintf(
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
                 '<i class="ti ti-refresh-alert text-warning me-1"></i>',
-                __('Auto reminder'),
-                $followup_template->fields['content'] ?? '',
-                $autoreminder_obj->getPendingReason()->fields['name']
+                ITILReminder::getTypeName(1),
+                $followup_template !== false ? $followup_template->getRenderedContent($this) : '',
+                $pending_reason->fields['name']
             );
 
             $timeline["ITILReminder_" . $autoreminder_id] = [

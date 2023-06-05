@@ -515,7 +515,7 @@ class Central extends CommonGLPI
                 && countElementsInTable('glpi_pendingreasons_items') > 0
                 && !count($notification->find([
                     'itemtype' => 'Ticket',
-                    'event'     => 'auto_bump',
+                    'event'     => 'auto_reminder',
                     'is_active'  => true,
                 ]))
             ) {
@@ -525,7 +525,7 @@ class Central extends CommonGLPI
                             'link' => 'AND',
                             'field' => 2,
                             'searchtype' => 'equals',
-                            'value' => 'Ticket$#$auto_bump'
+                            'value' => 'Ticket$#$auto_reminder'
                         ]
                     ]
                 ];

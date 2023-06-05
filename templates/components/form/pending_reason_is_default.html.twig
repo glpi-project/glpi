@@ -38,7 +38,7 @@
 {% endif %}
 
 <script>
-    $("select[name=\'is_default\']").on("change", function () {
+    $('select[name="is_default"]').on("change", function () {
         if ($(this).val() == 1) {
             $("#is_default_warning").removeClass("d-none");
             $("select[name=\'is_pending_per_default\']").prop("disabled", false);

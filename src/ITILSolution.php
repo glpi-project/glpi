@@ -327,7 +327,7 @@ class ITILSolution extends CommonDBChild
         if (
             $this->input["itemtype"] == 'Ticket'
             && $_SESSION['glpiset_solution_tech']
-            && $this->input["users_id"] != $config['system_user']
+            && ($this->input['_disable_auto_assign'] ?? false) === true
         ) {
             Ticket::assignToMe($this->input["items_id"], $this->input["users_id"]);
         }

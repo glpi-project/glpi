@@ -263,11 +263,7 @@ class PendingReason extends CommonDropdown
      * @param $name
      * @param $options
      */
-    public function displayIsDefaultPendingReasonField(
-        $value = null,
-        $name = "",
-        $options = [],
-    ) {
+    private function displayIsDefaultPendingReasonField(bool $value): string {
         if (empty($name)) {
             $name = "is_default";
         }
@@ -275,7 +271,7 @@ class PendingReason extends CommonDropdown
         $options['display'] = false;
         $defaultPendingReason = self::getDefault();
 
-        $out = Dropdown::showYesNo($name, $value, params: $options);
+        $out = Dropdown::showYesNo($name, $value, params: ['display' => false]);
         $out .= TemplateRenderer::getInstance()->render('components/form/pending_reason_is_default.html.twig', [
             'show_warning' => $defaultPendingReason && $defaultPendingReason->getID() != $this->getID(),
             'tooltip' => $defaultPendingReason ? \Html::showToolTip(
@@ -315,7 +311,7 @@ class PendingReason extends CommonDropdown
         } else if ($field['name'] == 'followups_before_resolution') {
             echo self::displayFollowupsNumberBeforeResolutionField($this->fields['followups_before_resolution']);
         } else if ($field['name'] == 'is_default') {
-            echo self::displayIsDefaultPendingReasonField($this->fields['is_default']);
+            echo self::displayIsDefaultPendingReasonField((bool)$this->fields['is_default']);
         }
     }
 
@@ -357,7 +353,7 @@ class PendingReason extends CommonDropdown
         );
     }
 
-    public static function getDefault()
+    private static function getDefault(): ?PendingReason
     {
         $pending_reason = new PendingReason();
         if (
@@ -381,17 +377,10 @@ class PendingReason extends CommonDropdown
     public function prepareInput(array $input)
     {
         if (isset($input['is_default']) && $input['is_default']) {
-            global $DB;
-
-            $DB->update(
-                $this->getTable(),
-                [
-                    'is_default' => 0,
-                ],
-                [
-                    'is_default' => 1,
-                ]
-            );
+            $previous_default = self::getDefault();
+            if ($previous_default !== null) {
+                 $previous_default->update(['id' => $previous_default->getId()] + ['is_default' => 0]);
+            }
         }
 
         if (isset($input['is_pending_per_default']) && $input['is_pending_per_default']) {
