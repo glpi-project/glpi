@@ -225,7 +225,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                         echo "<table class='table table-hover' cellspacing='2' cellpadding='3'>";
                         echo "<thead>";
                         echo "<tr>";
-                        echo "<th>" . _n('Printer', 'Printers', Session::getPluralNumber()) . "</th>";
+                        echo "<th>" . Printer::getTypeName(Session::getPluralNumber()) . "</th>";
 
                         if (Session::isMultiEntitiesMode()) {
                             echo "<th>" . Entity::getTypeName(Session::getPluralNumber()) . "</th>";
