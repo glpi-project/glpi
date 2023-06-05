@@ -37,6 +37,7 @@ namespace Glpi\Api\HL;
 
 use Glpi\Api\HL\Doc;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 class RSQLInput
 {
@@ -140,7 +141,9 @@ class RSQLInput
                 'sql_where_callable' => function ($a, $b) use ($DB) {
                     $b = str_replace(['%', '*'], ['_', '%'], $b);
                     return [
-                        new QueryExpression($DB::quoteName($a) . " LIKE CAST(" . $DB->quote($b) . " AS BINARY)")
+                        [
+                            $DB::quoteName($a) => ['LIKE', QueryFunction::cast(new QueryExpression($DB->quote($b)), 'BINARY')]
+                        ]
                     ];
                 },
             ],

@@ -38,6 +38,7 @@ namespace Glpi\Api\HL;
 use CommonDBTM;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
 use Glpi\DBAL\QueryExpression;
@@ -108,15 +109,16 @@ final class Search
                 if (str_contains($sql_field, '.')) {
                     $join_name = explode('.', $sql_field, 2)[0];
                     if (array_key_exists($join_name, $this->joins) && $this->joins[$join_name]['parent_type'] === 'array') {
-                        $expression = 'IFNULL(' . $expression . ', 0x0)';
+                        $expression = QueryFunction::ifnull($sql_field, '0x0');
                         if ($distinct_groups) {
-                            $expression = "GROUP_CONCAT(DISTINCT $expression SEPARATOR 0x1D)";
+                            $expression = QueryFunction::groupConcat($expression, '0x1D', true);
                         } else {
-                            $expression = "GROUP_CONCAT($expression SEPARATOR 0x1D)";
+                            $expression = QueryFunction::groupConcat($expression, '0x1D', false);
                         }
                     }
                 }
-                return new QueryExpression($expression . ' AS ' . $DB::quoteValue(str_replace('.', chr(0x1F), $prop_name)));
+                $alias = str_replace('.', chr(0x1F), $prop_name);
+                return new QueryExpression($expression, $alias);
             }
         }
         return null;
@@ -183,7 +185,7 @@ final class Search
                 });
                 //Inject a field for the schema name as the first select
                 $schema_name = $this->table_schemas[$table];
-                $itemtype_field = new QueryExpression($DB::quoteValue($schema_name) . ' AS ' . $DB::quoteValue('_itemtype'));
+                $itemtype_field = new QueryExpression($DB::quoteValue($schema_name), '_itemtype');
                 array_unshift($query['SELECT'], $itemtype_field);
 
                 $query['FROM'] = $table . ' AS _';
@@ -440,7 +442,7 @@ final class Search
                         }, ARRAY_FILTER_USE_BOTH);
                         $criteria['FROM'] = "$table AS " . $DB::quoteName('_');
                         if ($this->union_search_mode) {
-                            $criteria['SELECT'][] = new QueryExpression($DB::quoteValue($schema_name) . ' AS ' . $DB::quoteName('_itemtype'));
+                            $criteria['SELECT'][] = new QueryExpression($DB::quoteValue($schema_name), '_itemtype');
                         }
                     } else {
                         $join_name = explode(chr(0x1F), $fkey)[0];

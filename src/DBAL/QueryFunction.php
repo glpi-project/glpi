@@ -336,6 +336,21 @@ class QueryFunction
     }
 
     /**
+     * Build a SUBSTRING SQL function call
+     * @param string|QueryExpression $expression Expression
+     * @param int $start Start position
+     * @param int $length Length
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return QueryExpression
+     */
+    public static function substring(string|QueryExpression $expression, int $start, int $length, ?string $alias = null): QueryExpression
+    {
+        return self::getExpression('LPAD', [
+            $expression, new QueryExpression($start), new QueryExpression($length)
+        ], $alias);
+    }
+
+    /**
      * Buidl a ROUND SQL function call
      * @param string|QueryExpression $expression Expression to round
      * @param int $precision Precision to round to

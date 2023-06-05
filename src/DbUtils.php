@@ -1813,10 +1813,11 @@ final class DbUtils
 
             $criteria = [
                 'SELECT' => [
-                    new QueryExpression(
-                        "CAST(SUBSTRING(" . $DB->quoteName('code') . ", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
-                    )
+                    QueryFunction::cast(
+                        expression: QueryFunction::substring('code', $pos, $len),
+                        type: 'UNSIGNED',
+                        alias: 'no'
+                    ),
                 ],
                 'FROM'   => new QueryUnion($subqueries, false, 'codes')
             ];
@@ -1824,10 +1825,11 @@ final class DbUtils
             $table = $this->getTableForItemType($itemtype);
             $criteria = [
                 'SELECT' => [
-                    new QueryExpression(
-                        "CAST(SUBSTRING(" . $DB->quoteName($field) . ", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
-                    )
+                    QueryFunction::cast(
+                        expression: QueryFunction::substring($field, $pos, $len),
+                        type: 'UNSIGNED',
+                        alias: 'no'
+                    ),
                 ],
                 'FROM'   => $table,
                 'WHERE'  => [
