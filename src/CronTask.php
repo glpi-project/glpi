@@ -1842,11 +1842,9 @@ class CronTask extends CommonDBTM
                 'state'  => self::STATE_RUNNING,
                 'OR'     => [
                     new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * ' .
-                        DBmysql::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp(QueryFunction::now())
-                    ),
+                        DBmysql::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp(QueryFunction::now())),
                     new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * ' .
-                        HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp(QueryFunction::now())
-                    ),
+                        HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp(QueryFunction::now())),
                 ]
             ]
         ];
