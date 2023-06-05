@@ -106,7 +106,7 @@ class Printer_CartridgeInfo extends CommonDBChild
         echo "<h3>" . $this->getTypeName(Session::getPluralNumber()) . "</h3>";
 
         echo "<table class='tab_cadre_fixehov'>";
-        echo "<thead><tr><th>" . __('Property') . "</th><th>" . _n('Cartridge model', 'Cartridge models', 1) . "</th><th> " . __('Value') . "</th></tr></thead>";
+        echo "<thead><tr><th>" . __('Property') . "</th><th>" . CartridgeItem::getTypeName(1) . "</th><th> " . __('Value') . "</th></tr></thead>";
 
         $asset = new Glpi\Inventory\Asset\Cartridge($printer);
         $tags = $asset->knownTags();
