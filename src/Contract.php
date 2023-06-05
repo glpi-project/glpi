@@ -1817,6 +1817,7 @@ class Contract extends CommonDBTM
      */
     public static function getExpiredCriteria()
     {
+        global $DB;
         return [
             'OR' => [
                 'glpi_contracts.renewal' => 1,
