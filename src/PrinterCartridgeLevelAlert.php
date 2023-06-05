@@ -174,7 +174,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                     echo "</ul>";
                     echo "<div class='tab-content p-2 flex-grow-1 card border-start-0' style='min-height: 150px'>";
                     echo "<div class='alltab'>";
-                    echo __('Cartridges whose level is low', 'additionalalerts');
+                    echo __('Cartridges whose level is low');
                     echo "</div>";
 
                     if ($DB->numrows($result) > 0) {
