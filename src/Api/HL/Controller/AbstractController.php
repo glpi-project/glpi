@@ -43,8 +43,8 @@ use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RSQLInput;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
-use QueryExpression;
-use QueryUnion;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
 use Search;
 
 /**

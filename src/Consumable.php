@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 
 //!  Consumable Class
@@ -803,7 +804,7 @@ class Consumable extends CommonDBChild
             'FROM'   => 'glpi_consumables',
             'WHERE'  => [
                 'NOT'                => ['date_out' => null],
-                'consumableitems_id' => new \QuerySubQuery([
+                'consumableitems_id' => new QuerySubQuery([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_consumableitems',
                     'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems')
@@ -826,7 +827,7 @@ class Consumable extends CommonDBChild
             'FROM'   => 'glpi_consumables',
             'WHERE'  => [
                 'date_out'           => null,
-                'consumableitems_id' => new \QuerySubQuery([
+                'consumableitems_id' => new QuerySubQuery([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_consumableitems',
                     'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems')

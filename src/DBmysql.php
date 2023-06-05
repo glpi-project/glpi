@@ -33,7 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
+use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QueryUnion;
 use Glpi\System\Requirement\DbTimezones;
 
 /**
@@ -1318,10 +1321,10 @@ class DBmysql
         $values = [];
         foreach ($params as $key => $value) {
             $fields[] = $this->quoteName($key);
-            if ($value instanceof \QueryExpression) {
+            if ($value instanceof QueryExpression) {
                 $values[] = $value->getValue();
                 unset($params[$key]);
-            } elseif ($value instanceof \QueryParam) {
+            } elseif ($value instanceof QueryParam) {
                 $values[] = $value->getValue();
             } else {
                 $values[] = self::quoteValue($value);
@@ -1858,7 +1861,7 @@ class DBmysql
     /**
      * Is value quoted as database field/expression?
      *
-     * @param string|\QueryExpression $value Value to check
+     * @param string|QueryExpression $value Value to check
      *
      * @return boolean
      *

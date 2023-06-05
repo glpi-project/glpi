@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 class PurgeLogs extends CommonDBTM
 {
     protected static $notable = true;

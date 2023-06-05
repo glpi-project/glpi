@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryParam;
 use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Plugin\Hooks;
@@ -2512,7 +2513,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function canUnrecurs()
     {
-        global $DB, $CFG_GLPI;
+        global $CFG_GLPI;
 
         $ID  = $this->fields['id'];
         if (

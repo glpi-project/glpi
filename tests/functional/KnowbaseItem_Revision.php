@@ -135,7 +135,7 @@ class KnowbaseItem_Revision extends DbTestCase
 
         $nrev_id = null;
         $data = $DB->request([
-            'SELECT' => new \QueryExpression('MAX(id) AS id'),
+            'SELECT' => new \Glpi\DBAL\QueryExpression('MAX(id) AS id'),
             'FROM'   => 'glpi_knowbaseitems_revisions'
         ])->current();
         $nrev_id = $data['id'];

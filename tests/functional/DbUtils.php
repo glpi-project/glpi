@@ -1285,7 +1285,7 @@ class DbUtils extends DbTestCase
         $this->array($result[0]['date'])
             ->hasSize(2)
             ->string[0]->isIdenticalTo('<=')
-            ->object[1]->isInstanceOf('\QueryExpression');
+            ->object[1]->isInstanceOf('\Glpi\DBAL\QueryExpression');
 
         $this->string(
             $result[0]['date'][1]->getValue()
@@ -1298,7 +1298,7 @@ class DbUtils extends DbTestCase
         $this->array($result[1]['date'])
             ->hasSize(2)
             ->string[0]->isIdenticalTo('<=')
-            ->object[1]->isInstanceOf('\QueryExpression');
+            ->object[1]->isInstanceOf('\Glpi\DBAL\QueryExpression');
 
         $this->string(
             $result[1]['date'][1]->getValue()

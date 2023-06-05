@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * Cron task creating recurrent tickets and changes
  *
@@ -75,11 +77,11 @@ class CommonITILRecurrentCron extends CommonDBTM
             $iterator = $DB->request([
                 'FROM'   => $itemtype::getTable(),
                 'WHERE'  => [
-                    'next_creation_date' => ['<', new \QueryExpression('NOW()')],
+                    'next_creation_date' => ['<', new QueryExpression('NOW()')],
                     'is_active'          => 1,
                     'OR'                 => [
                         ['end_date' => null],
-                        ['end_date' => ['>', new \QueryExpression('NOW()')]]
+                        ['end_date' => ['>', new QueryExpression('NOW()')]]
                     ]
                 ]
             ]);

@@ -36,6 +36,9 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\RichText\RichText;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Property\FlatText;
@@ -637,7 +640,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $iterator = $DB->request([
-            'SELECT'    => new QueryExpression('SUM(glpi_tickets.actiontime) AS duration'),
+            'SELECT'    => [
+                QueryFunction::sum(
+                    expression: 'glpi_tickets.actiontime',
+                    alias: 'duration'
+                )
+            ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                 'glpi_projecttasks_tickets'   => [
@@ -699,7 +707,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => new QueryExpression('SUM(planned_duration) AS duration'),
+            'SELECT'    => [
+                QueryFunction::sum(
+                    expression: 'planned_duration',
+                    alias: 'duration'
+                )
+            ],
             'FROM'   => self::getTable(),
             'WHERE'  => ['projects_id' => $projects_id]
         ]);
@@ -1387,7 +1400,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (!count($ADDWHERE)) {
             $ADDWHERE = [
                 'glpi_projecttaskteams.itemtype' => 'User',
-                'glpi_projecttaskteams.items_id' => new \QuerySubQuery([
+                'glpi_projecttaskteams.items_id' => new QuerySubQuery([
                     'SELECT'          => 'glpi_profiles_users.users_id',
                     'DISTINCT'        => true,
                     'FROM'            => 'glpi_profiles',

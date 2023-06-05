@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 
 /// Common DataBase Relation Table Manager Class
@@ -86,7 +87,7 @@ abstract class CommonDBChild extends CommonDBConnexity
             $criteria['WHERE'][$table . '.' . static::$itemtype] = $itemtype;
             $request = true;
         } else {
-            $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype . "' AS itemtype");
+            $criteria['SELECT'][] = new QueryExpression("'" . static::$itemtype . "' AS itemtype");
             if (
                 ($itemtype ==  static::$itemtype)
                 || is_subclass_of($itemtype, static::$itemtype)

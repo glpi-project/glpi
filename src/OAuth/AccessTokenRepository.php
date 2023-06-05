@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\DBAL\QueryExpression;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
@@ -82,7 +83,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             'FROM' => 'glpi_oauth_access_tokens',
             'WHERE' => [
                 'identifier' => $tokenId,
-                'date_expiration' => ['>', new \QueryExpression('NOW()')],
+                'date_expiration' => ['>', new QueryExpression('NOW()')],
             ]
         ]);
         return $iterator->count() === 0;

@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Event;
 
 class RuleCollection extends CommonDBTM
@@ -843,7 +844,7 @@ JAVASCRIPT;
         $result = $DB->update(
             'glpi_rules',
             [
-                'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' - 1')
+                'ranking' => new QueryExpression($DB->quoteName('ranking') . ' - 1')
             ],
             [
                 'sub_type'  => $this->getRuleClassName(),

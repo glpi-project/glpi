@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+
 /**
  * CommonDevice Class
  * for Device*class
@@ -216,7 +218,11 @@ abstract class CommonDevice extends CommonDropdown
             [
                 'SELECT'    => [
                     'itemtype',
-                    new QueryExpression('GROUP_CONCAT(DISTINCT ' . DBmysql::quoteName('items_id') . ') AS ids'),
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                 ],
                 'FROM'      => $linktable,
                 'WHERE'     => [

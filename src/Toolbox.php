@@ -34,6 +34,7 @@
  */
 
 use Glpi\Console\Application;
+use Glpi\DBAL\QueryParam;
 use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Rules\RulesManager;

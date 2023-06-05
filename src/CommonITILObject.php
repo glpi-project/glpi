@@ -33,7 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
@@ -1253,7 +1257,7 @@ abstract class CommonITILObject extends CommonDBTM
         return countElementsInTable(
             [$itemtable, $linktable],
             [
-                "$linktable.$itemfk"    => new \QueryExpression(DBmysql::quoteName("$itemtable.id")),
+                "$linktable.$itemfk"    => new QueryExpression(DBmysql::quoteName("$itemtable.id")),
                 "$linktable.$field"     => $id,
                 "$linktable.type"       => $role,
                 "$itemtable.is_deleted" => 0,
@@ -1446,7 +1450,7 @@ abstract class CommonITILObject extends CommonDBTM
                     ],
                     [
                         'NOT' => [$this->getTable() . '.solvedate' => null],
-                        new \QueryExpression(
+                        new QueryExpression(
                             "ADDDATE(" . $DB->quoteName($this->getTable()) .
                             "." . $DB->quoteName('solvedate') . ", INTERVAL $days DAY) > NOW()"
                         )
@@ -3993,8 +3997,6 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getSearchOptionsMain()
     {
-        global $DB;
-
         $tab = [];
 
         $tab[] = [
@@ -4639,6 +4641,11 @@ abstract class CommonITILObject extends CommonDBTM
         return $tab;
     }
 
+    /**
+     * @param string $type
+     * @param string $table
+     * @return QueryExpression|void
+     */
     public static function generateSLAOLAComputation($type, $table = "TABLE")
     {
         global $DB;
@@ -4646,29 +4653,58 @@ abstract class CommonITILObject extends CommonDBTM
         switch ($type) {
             case 'internal_time_to_own':
             case 'time_to_own':
-                return 'IF(' . $DB->quoteName($table . '.' . $type) . ' IS NOT NULL
-            AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
-            AND ((' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NOT NULL AND
-                 ' . $DB->quoteName($table . '.takeintoaccountdate') . ' > ' . $DB->quoteName($table . '.' . $type) . ')
-                 OR (' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NULL AND
-                 ' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . '
-                        > TIMESTAMPDIFF(SECOND,
-                                        ' . $DB->quoteName($table . '.date') . ',
-                                        ' . $DB->quoteName($table . '.' . $type) . '))
-                 OR (' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . ' = 0
-                      AND ' . $DB->quoteName($table . '.' . $type) . ' < NOW())),
-            1, 0)';
-            break;
+                return QueryFunction::if(
+                    condition: [
+                        'NOT' => ["{$table}.{$type}" => null],
+                        "$table.status" => ['<>', self::WAITING],
+                        'OR' => [
+                            [
+                                'AND' => [
+                                    'NOT' => ["$table.takeintoaccountdate" => null],
+                                    "$table.takeintoaccountdate" => ['>', new QueryExpression($DB::quoteName("{$table}.{$type}"))]
+                                ]
+                            ],
+                            [
+                                'AND' => [
+                                    "$table.takeintoaccountdate" => null,
+                                    "$table.takeintoaccount_delay_stat" => ['>',
+                                        QueryFunction::timestampdiff(
+                                            unit: 'SECOND',
+                                            expression1: "$table.date",
+                                            expression2: "{$table}.{$type}"
+                                        )
+                                    ]
+                                ]
+                            ],
+                            [
+                                'AND' => [
+                                    "$table.takeintoaccount_delay_stat" => 0,
+                                    "$table.$type" => ['<', QueryFunction::now()]
+                                ]
+                            ]
+                        ]
+                    ],
+                    true_expression: new QueryExpression('1'),
+                    false_expression: new QueryExpression('0')
+                );
 
             case 'internal_time_to_resolve':
             case 'time_to_resolve':
-                return 'IF(' . $DB->quoteName($table . '.' . $type) . ' IS NOT NULL
-            AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
-            AND (' . $DB->quoteName($table . '.solvedate') . ' > ' . $DB->quoteName($table . '.' . $type) . '
-                  OR (' . $DB->quoteName($table . '.solvedate') . ' IS NULL
-                     AND ' . $DB->quoteName($table . '.' . $type) . ' < NOW())),
-            1, 0)';
-            break;
+                return QueryFunction::if(
+                    condition: [
+                        'NOT' => ["{$table}.{$type}" => null],
+                        "$table.status" => ['<>', self::WAITING],
+                        'OR' => [
+                            "$table.solvedate" => ['>', new QueryExpression($DB::quoteName("$table.$type"))],
+                            'AND' => [
+                                "$table.solvedate" => null,
+                                "$table.$type" => ['<', QueryFunction::now()]
+                            ]
+                        ]
+                    ],
+                    true_expression: new QueryExpression('1'),
+                    false_expression: new QueryExpression('0')
+                );
         }
     }
 
@@ -7328,7 +7364,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
         $fk = $this->getForeignKeyField();
 
-        $subquery1 = new \QuerySubQuery([
+        $subquery1 = new QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
                 'tu.type AS type'
@@ -7347,7 +7383,7 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ]);
 
-        $subquery2 = new \QuerySubQuery([
+        $subquery2 = new QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
                 'gt.type AS type'
@@ -7372,7 +7408,7 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ]);
 
-        $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
+        $union = new QueryUnion([$subquery1, $subquery2], false, 'allactors');
         $iterator = $DB->request([
             'SELECT'          => [
                 'users_id',

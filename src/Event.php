@@ -42,6 +42,7 @@ use CronTask;
 use DBConnection;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use Html;
 use Infocom;
 use ITILSolution;
@@ -106,8 +107,6 @@ class Event extends CommonDBTM
      **/
     public static function log($items_id, $type, $level, $service, $event)
     {
-        global $DB;
-
         $input = ['items_id' => intval($items_id),
             'type'     => $type,
             'date'     => $_SESSION["glpi_currenttime"],
@@ -136,7 +135,7 @@ class Event extends CommonDBTM
         $DB->delete(
             'glpi_events',
             [
-                new \QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
+                new QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
             ]
         );
         return $DB->affectedRows();

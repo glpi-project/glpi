@@ -33,38 +33,44 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace Glpi\DBAL;
 
-use DbTestCase;
-
-/* Test for inc/dbutils.class.php */
-
-class QueryParam extends DbTestCase
+/**
+ *  Database iterator class for Mysql
+ **/
+class QueryParam
 {
-    protected function dataParams()
-    {
+    private $value;
 
-        return [
-            [null, '?'],
-            ['', '?'],
-            ['?', '?'],
-            ['myparam', ':myparam'],
-            [':myparam', ':myparam']
-        ];
+    /**
+     * Create a query param with a value
+     *
+     * @param string $value Query parameter value, defaults to '?'
+     */
+    public function __construct($value = '?')
+    {
+        if ($value == null || trim($value) == '') {
+            $value = '?';
+        }
+        if ($value != '?' && !str_starts_with($value, ':')) {
+            $value = ':' . $value;
+        }
+        $this->value = $value;
     }
 
     /**
-     * @dataProvider dataParams
+     * Query parameter value
+     *
+     * @return string
      */
-    public function testQueryParam($value, $expected)
+    public function getValue()
     {
-        $qpa = new \QueryParam($value);
-        $this->string($qpa->getValue())->isIdenticalTo($expected);
+        return $this->value;
     }
 
-    public function testEmptyQueryParam()
+
+    public function __toString()
     {
-        $qpa = new \QueryParam();
-        $this->string($qpa->getValue())->isIdenticalTo('?');
+        return $this->getValue();
     }
 }

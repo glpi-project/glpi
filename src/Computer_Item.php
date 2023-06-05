@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+
 /**
  * Computer_Item Class
  *
@@ -855,7 +857,11 @@ class Computer_Item extends CommonDBRelation
             $iterator = $DB->request([
                 'SELECT' => [
                     'itemtype',
-                    new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                 ],
                 'FROM' => self::getTable(),
                 'WHERE' => [
@@ -877,7 +883,11 @@ class Computer_Item extends CommonDBRelation
             $iterator = $DB->request([
                 'SELECT' => [
                     'itemtype',
-                    new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                     'computers_id'
                 ],
                 'FROM'   => self::getTable(),

@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
+
 class PendingReason_Item extends CommonDBRelation
 {
     public static $itemtype_1 = 'PendingReason';
@@ -308,7 +311,7 @@ class PendingReason_Item extends CommonDBRelation
             ]
         ]);
 
-        $union = new \QueryUnion([$followups_query, $tasks_query], false, 'timelinevents');
+        $union = new QueryUnion([$followups_query, $tasks_query], false, 'timelinevents');
         $data = $DB->request([
             'SELECT' => ['MAX' => 'date_creation AS max_date_creation'],
             'FROM'   => $union

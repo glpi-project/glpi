@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * Disk Class
@@ -214,8 +216,6 @@ class Item_Disk extends CommonDBChild
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        global $DB;
-
         $ID = $item->fields['id'];
         $itemtype = $item->getType();
 
@@ -391,6 +391,7 @@ class Item_Disk extends CommonDBChild
 
     public static function rawSearchOptionsToAdd($itemtype)
     {
+        global $DB;
         $tab = [];
 
         $name = _n('Volume', 'Volumes', Session::getPluralNumber());
@@ -452,7 +453,11 @@ class Item_Disk extends CommonDBChild
             'datatype'           => 'progressbar',
             'width'              => 2,
          // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
-            'computation'        => 'LPAD(ROUND(100*TABLE.freesize/NULLIF(TABLE.totalsize, 0)), 3, 0)',
+            'computation'        => QueryFunction::lpad(
+                expression: QueryFunction::round(new QueryExpression('100*TABLE.freesize/' . QueryFunction::nullif('TABLE.totalsize', new QueryExpression('0')))),
+                length: 3,
+                pad_string: '0'
+            ),
             'computationgroupby' => true,
             'unit'               => '%',
             'massiveaction'      => false,

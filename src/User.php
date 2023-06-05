@@ -36,6 +36,9 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Filter;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Plugin\Hooks;
 use Sabre\VObject;
@@ -1730,7 +1733,7 @@ class User extends CommonDBTM
                         $lgroups = [];
                         foreach ($v[$i][$field] as $lgroup) {
                             $lgroups[] = [
-                                new \QueryExpression($DB->quoteValue($lgroup) .
+                                new QueryExpression($DB->quoteValue($lgroup) .
                                              " LIKE " .
                                              $DB->quoteName('ldap_value'))
                             ];
@@ -4493,16 +4496,13 @@ JAVASCRIPT;
             if (strlen((string)$search) > 0) {
                 $txt_search = Search::makeTextSearchValue($search);
 
-                $firstname_field = $DB->quoteName(self::getTableField('firstname'));
-                $realname_field = $DB->quoteName(self::getTableField('realname'));
+                $firstname_field = self::getTableField('firstname');
+                $realname_field = self::getTableField('realname');
                 $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
-                ? [$firstname_field, $realname_field]
-                : [$realname_field, $firstname_field];
+                ? [$firstname_field, new QueryExpression($DB::quoteValue(' ')), $realname_field]
+                : [$realname_field, new QueryExpression($DB::quoteValue(' ')), $firstname_field];
 
-                $concat = new \QueryExpression(
-                    'CONCAT(' . implode(',' . $DB->quoteValue(' ') . ',', $fields) . ')'
-                    . ' LIKE ' . $DB->quoteValue($txt_search)
-                );
+                $concat = new QueryExpression(QueryFunction::concat($fields) . ' LIKE ' . $DB::quoteValue($txt_search));
                 $WHERE[] = [
                     'OR' => [
                         'glpi_users.name'                => ['LIKE', $txt_search],
@@ -6381,25 +6381,40 @@ JAVASCRIPT;
 
     public static function getFriendlyNameSearchCriteria(string $filter): array
     {
+        global $DB;
+
         $table     = self::getTable();
-        $login     = DBmysql::quoteName("$table.name");
-        $firstname = DBmysql::quoteName("$table.firstname");
-        $lastname  = DBmysql::quoteName("$table.realname");
 
         $filter = strtolower($filter);
         $filter_no_spaces = str_replace(" ", "", $filter);
+        $concat_names_first_last = QueryFunction::lower(
+            QueryFunction::replace(
+                expression: QueryFunction::concat(["$table.firstname", "$table.realname"]),
+                search: new QueryExpression($DB::quoteValue(' ')),
+                replace: new QueryExpression($DB::quoteValue(''))
+            )
+        );
+        $concat_names_last_first = QueryFunction::lower(
+            QueryFunction::replace(
+                expression: QueryFunction::concat(["$table.realname", "$table.firstname"]),
+                search: new QueryExpression($DB::quoteValue(' ')),
+                replace: new QueryExpression($DB::quoteValue(''))
+            )
+        );
 
         return [
             'OR' => [
-                ['RAW' => ["LOWER($login)" => ['LIKE', "%$filter%"]]],
-                ['RAW' => ["LOWER(REPLACE(CONCAT($firstname, $lastname), ' ', ''))" => ['LIKE', "%$filter_no_spaces%"]]],
-                ['RAW' => ["LOWER(REPLACE(CONCAT($lastname, $firstname), ' ', ''))" => ['LIKE', "%$filter_no_spaces%"]]],
+                new QueryExpression(QueryFunction::lower("$table.name") . ' LIKE ' . $DB::quoteValue("%$filter%")),
+                new QueryExpression($concat_names_first_last . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
+                new QueryExpression($concat_names_last_first . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
             ]
         ];
     }
 
     public static function getFriendlyNameFields(string $alias = "name")
     {
+        global $DB;
+
         $config = Config::getConfigurationValues('core');
         if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
             $first = "firstname";
@@ -6410,16 +6425,15 @@ JAVASCRIPT;
         }
 
         $table  = self::getTable();
-        $first  = DBmysql::quoteName("$table.$first");
-        $second = DBmysql::quoteName("$table.$second");
-        $alias  = DBmysql::quoteName($alias);
-        $name   = DBmysql::quoteName($table . '.' . self::getNameField());
-
-        return new QueryExpression("IF(
-            $first <> '' && $second <> '',
-            CONCAT($first, ' ', $second),
-            $name
-         ) AS $alias");
+        return QueryFunction::if(
+            condition: [
+                "$table.$first" => ['<>' => ''],
+                "$table.$second" => ['<>' => '']
+            ],
+            true_expression: QueryFunction::concat(["$table.$first", new QueryExpression($DB::quoteValue(' ')), "$table.$second"]),
+            false_expression: $table . '.' . self::getNameField(),
+            alias: $alias
+        );
     }
 
     public static function getIcon()
@@ -6711,7 +6725,7 @@ JAVASCRIPT;
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'password_forget_token'       => $token,
-                new \QueryExpression('NOW() < ADDDATE(' . $DB::quoteName('password_forget_token_date') . ', INTERVAL ' . $CFG_GLPI['password_init_token_delay'] . ' SECOND)')
+                new QueryExpression('NOW() < ADDDATE(' . $DB::quoteName('password_forget_token_date') . ', INTERVAL ' . $CFG_GLPI['password_init_token_delay'] . ' SECOND)')
             ]
         ]);
 

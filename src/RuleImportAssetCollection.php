@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /// Import rules collection class
 class RuleImportAssetCollection extends RuleCollection
 {
@@ -107,7 +110,18 @@ class RuleImportAssetCollection extends RuleCollection
             if (!is_array($criteria['SELECT'])) {
                 $criteria['SELECT'] = [$criteria['SELECT']];
             }
-            $criteria['SELECT'][] = new QueryExpression("COUNT(IF(crit.criteria = 'itemtype', IF(crit.pattern IN ('" . implode("', '", array_keys($tabs)) . "'), 1, NULL), NULL)) AS is_itemtype");
+            $criteria['SELECT'][] = QueryFunction::count(
+                expression: QueryFunction::if(
+                    condition: ['crit.criteria' => 'itemtype'],
+                    true_expression: QueryFunction::if(
+                        condition: ['crit.pattern' => array_keys($tabs)],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('null')
+                    ),
+                    false_expression: new QueryExpression('null')
+                ),
+                alias: 'is_itemtype'
+            );
             $where = [];
             $criteria['HAVING'] = ['is_itemtype' => 0];
         }

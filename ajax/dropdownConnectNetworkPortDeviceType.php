@@ -37,6 +37,8 @@
  * @since 0.84
  */
 
+use Glpi\DBAL\QuerySubQuery;
+
 include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -66,7 +68,7 @@ if (class_exists($_POST["itemtype"])) {
         'name'      => "items",
         'entity'    => $_POST["entity_restrict"],
         'condition' => [
-            'id' => new \QuerySubQuery([
+            'id' => new QuerySubQuery([
                 'SELECT' => 'items_id',
                 'FROM'   => 'glpi_networkports',
                 'WHERE'  => [

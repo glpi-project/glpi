@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 // Class PlanningRecall
 // @since 0.84
 class PlanningRecall extends CommonDBChild
@@ -232,7 +234,7 @@ class PlanningRecall extends CommonDBChild
         $result = $DB->update(
             'glpi_planningrecalls',
             [
-                'when'   => new \QueryExpression(
+                'when'   => new QueryExpression(
                     "DATE_SUB('$begin', INTERVAL " . $DB->quoteName('before_time') . " SECOND)"
                 ),
             ],
@@ -414,7 +416,7 @@ class PlanningRecall extends CommonDBChild
             ],
             'WHERE'     => [
                 'NOT'                         => ['glpi_planningrecalls.when' => null],
-                'glpi_planningrecalls.when'   => ['<', new \QueryExpression('NOW()')],
+                'glpi_planningrecalls.when'   => ['<', new QueryExpression('NOW()')],
                 'glpi_alerts.date'            => null
             ]
         ]);

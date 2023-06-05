@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryParam;
 use Glpi\Search\SearchOption;
 
 /**
@@ -1186,8 +1187,6 @@ class Log extends CommonDBTM
      **/
     public static function convertFiltersValuesToSqlCriteria(array $filters)
     {
-        global $DB;
-
         $sql_filters = [];
 
         if (isset($filters['affected_fields']) && !empty($filters['affected_fields'])) {
@@ -1289,7 +1288,7 @@ class Log extends CommonDBTM
             return;
         }
 
-        $dparams = array_fill_keys(array_keys($queue[0]), new \QueryParam());
+        $dparams = array_fill_keys(array_keys($queue[0]), new QueryParam());
         $update = $DB->buildInsert(
             static::getTable(),
             $dparams

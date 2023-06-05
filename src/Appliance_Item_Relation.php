@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 class Appliance_Item_Relation extends CommonDBRelation
 {
     public static $itemtype_1 = 'Appliance_Item';
@@ -157,7 +159,7 @@ class Appliance_Item_Relation extends CommonDBRelation
         if (count($types)) {
             $clause = ['itemtype' => $types];
         } else {
-            $clause = [new \QueryExpression('true = false')];
+            $clause = [new QueryExpression('true = false')];
         }
         $extra_types_where = array_merge(
             $extra_types_where,

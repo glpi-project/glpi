@@ -36,6 +36,7 @@
 // Needed for signal handler
 declare(ticks=1);
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 
@@ -231,7 +232,7 @@ class CronTask extends CommonDBTM
             $this->getTable(),
             [
                 'state'  => self::STATE_RUNNING,
-                'lastrun'   => new \QueryExpression('DATE_FORMAT(NOW(),\'%Y-%m-%d %H:%i:00\')')
+                'lastrun'   => new QueryExpression('DATE_FORMAT(NOW(),\'%Y-%m-%d %H:%i:00\')')
             ],
             [
                 'id'  => $this->fields['id'],
@@ -464,7 +465,7 @@ class CronTask extends CommonDBTM
             ];
             $WHERE[] = ['OR' => [
                 'lastrun'   => null,
-                new \QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ') + ' . $DB->quoteName('frequency') . ' <= unix_timestamp(now())')
+                new QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ') + ' . $DB->quoteName('frequency') . ' <= unix_timestamp(now())')
             ]
             ];
         }
@@ -472,14 +473,14 @@ class CronTask extends CommonDBTM
         $iterator = $DB->request([
             'SELECT' => [
                 '*',
-                new \QueryExpression("LOCATE('Plugin', " . $DB->quoteName('itemtype') . ") AS ISPLUGIN")
+                new QueryExpression("LOCATE('Plugin', " . $DB->quoteName('itemtype') . ") AS ISPLUGIN")
             ],
             'FROM'   => $this->getTable(),
             'WHERE'  => $WHERE,
          // Core task before plugins
             'ORDER'  => [
                 'ISPLUGIN',
-                new \QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ')+' . $DB->quoteName('frequency') . '')
+                new QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ')+' . $DB->quoteName('frequency') . '')
             ]
         ]);
 
@@ -1836,8 +1837,8 @@ class CronTask extends CommonDBTM
             'WHERE'  => [
                 'state'  => self::STATE_RUNNING,
                 'OR'     => [
-                    new \QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ') + 2 * ' . $DB->quoteName('frequency') . ' < unix_timestamp(now())'),
-                    new \QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ') + 2 * ' . HOUR_TIMESTAMP . ' < unix_timestamp(now())')
+                    new QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ') + 2 * ' . $DB->quoteName('frequency') . ' < unix_timestamp(now())'),
+                    new QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ') + 2 * ' . HOUR_TIMESTAMP . ' < unix_timestamp(now())')
                 ]
             ]
         ]);

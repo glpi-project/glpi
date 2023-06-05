@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Plugin\Hooks;
 use Glpi\SocketModel;
 
@@ -495,8 +497,8 @@ class Dropdown
         $comment = "";
 
         if ($id) {
-            $SELECTNAME    = new \QueryExpression("'' AS " . $DB->quoteName('transname'));
-            $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+            $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
+            $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
             $JOIN          = [];
             $JOINS         = [];
             if ($translate) {
@@ -3217,9 +3219,13 @@ JAVASCRIPT;
                     $criteria = [
                         'SELECT' => [
                             "$table.entities_id",
-                            new \QueryExpression(
-                                "CONCAT(IFNULL(" . $DB->quoteName('name') . ",''),' ',IFNULL(" .
-                                $DB->quoteName('firstname') . ",'')) AS " . $DB->quoteName($field)
+                            QueryFunction::concat(
+                                params: [
+                                    QueryFunction::ifnull('name', new QueryExpression($DB::quoteValue(''))),
+                                    new QueryExpression($DB::quoteValue(' ')),
+                                    QueryFunction::ifnull('firstname', new QueryExpression($DB::quoteValue('')))
+                                ],
+                                alias:$field
                             ),
                             "$table.comment",
                             "$table.id"
@@ -3232,7 +3238,10 @@ JAVASCRIPT;
                     $criteria = [
                         'SELECT' => [
                             "$table.*",
-                            new \QueryExpression("CONCAT(glpi_softwares.name,' - ',glpi_softwarelicenses.name) AS $field")
+                            QueryFunction::concat(
+                                params: ['glpi_softwares.name', new QueryExpression($DB::quoteValue(' - ')), 'glpi_softwarelicenses.name'],
+                                alias: $field
+                            ),
                         ],
                         'FROM'   => $table,
                         'LEFT JOIN' => [

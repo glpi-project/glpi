@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  *  Contract class
@@ -176,8 +178,6 @@ class Contract extends CommonDBTM
 
     public static function rawSearchOptionsToAdd()
     {
-        global $DB;
-
         $tab = [];
 
         $joinparams = [
@@ -353,10 +353,9 @@ class Contract extends CommonDBTM
             'datatype'           => 'decimal',
             'massiveaction'      => false,
             'joinparams'         => $joinparamscost,
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.cost') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ')',
+            'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / ' .
+                QueryFunction::count('TABLE.id') . ') * ' .
+                QueryFunction::count('TABLE.id', distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -470,8 +469,6 @@ class Contract extends CommonDBTM
 
     public function rawSearchOptions()
     {
-        global $DB;
-
         $tab = [];
 
         $tab[] = [
@@ -787,10 +784,9 @@ class Contract extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child'
             ],
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.cost') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ')',
+            'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / ' .
+                QueryFunction::count('TABLE.id') . ') * ' .
+                QueryFunction::count('TABLE.id', distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -892,8 +888,8 @@ class Contract extends CommonDBTM
             'FROM'   => $table,
             'WHERE'  => [
                 'is_deleted'   => 0,
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())>-30'),
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())<0')
+                new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())>-30'),
+                new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())<0')
             ] + getEntitiesRestrictCriteria($table)
         ])->current();
         $contract0 = $result['cpt'];
@@ -904,8 +900,8 @@ class Contract extends CommonDBTM
             'FROM'   => $table,
             'WHERE'  => [
                 'is_deleted'   => 0,
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())>0'),
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())<=7')
+                new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())>0'),
+                new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())<=7')
             ] + getEntitiesRestrictCriteria($table)
         ])->current();
         $contract7 = $result['cpt'];
@@ -916,8 +912,8 @@ class Contract extends CommonDBTM
             'FROM'   => $table,
             'WHERE'  => [
                 'is_deleted'   => 0,
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())>7'),
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())<30')
+                new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())>7'),
+                new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())<30')
             ] + getEntitiesRestrictCriteria($table)
         ])->current();
         $contract30 = $result['cpt'];
@@ -929,8 +925,8 @@ class Contract extends CommonDBTM
             'WHERE'  => [
                 'is_deleted'   => 0,
                 'notice'       => ['<>', 0],
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())>0'),
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())<=7')
+                new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())>0'),
+                new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())<=7')
             ] + getEntitiesRestrictCriteria($table)
         ])->current();
         $contractpre7 = $result['cpt'];
@@ -942,8 +938,8 @@ class Contract extends CommonDBTM
             'WHERE'  => [
                 'is_deleted'   => 0,
                 'notice'       => ['<>', 0],
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())>7'),
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())<30')
+                new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())>7'),
+                new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())<30')
             ] + getEntitiesRestrictCriteria($table)
         ])->current();
         $contractpre30 = $result['cpt'];
@@ -1814,7 +1810,7 @@ class Contract extends CommonDBTM
 
         return ['OR' => [
             'glpi_contracts.renewal' => 1,
-            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_contracts.begin_date') . ', INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH), CURDATE()) > 0'),
+            new QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_contracts.begin_date') . ', INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH), CURDATE()) > 0'),
         ]
         ];
     }

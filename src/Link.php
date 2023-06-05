@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Toolbox\URL;
 
 /** Link Class
@@ -83,7 +84,7 @@ class Link extends CommonDBTM
                 $nb = countElementsInTable(
                     ['glpi_links_itemtypes','glpi_links'],
                     [
-                        'glpi_links_itemtypes.links_id'  => new \QueryExpression(DBmysql::quoteName('glpi_links.id')),
+                        'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
                         'glpi_links_itemtypes.itemtype'  => $item->getType()
                     ] + $entity_criteria
                 );
@@ -584,8 +585,6 @@ class Link extends CommonDBTM
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        global $DB;
-
         if (!self::canView()) {
             return false;
         }

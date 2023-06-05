@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /** QueuedNotification class
  *
  * @since 0.85
@@ -128,8 +130,6 @@ class QueuedNotification extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        global $DB;
-
         if (!isset($input['create_time']) || empty($input['create_time'])) {
             $input['create_time'] = $_SESSION["glpi_currenttime"];
         }
@@ -603,7 +603,7 @@ class QueuedNotification extends CommonDBTM
                 self::getTable(),
                 [
                     'is_deleted'   => 1,
-                    new \QueryExpression('(UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') < ' . $DB->quoteValue($send_time) . ')')
+                    new QueryExpression('(UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') < ' . $DB->quoteValue($send_time) . ')')
                 ]
             );
             $vol = $DB->affectedRows();
@@ -638,7 +638,7 @@ class QueuedNotification extends CommonDBTM
                 [
                     'is_deleted'   => 0,
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
-                    new \QueryExpression('UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') + ' . $secs . ' < UNIX_TIMESTAMP(NOW())')
+                    new QueryExpression('UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') + ' . $secs . ' < UNIX_TIMESTAMP(NOW())')
                 ]
             );
             $vol = $DB->affectedRows();

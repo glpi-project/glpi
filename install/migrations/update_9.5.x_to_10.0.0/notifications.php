@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -52,8 +54,8 @@ if (!$notification_exists) {
             'comment'         => '',
             'is_recursive'    => 1,
             'is_active'       => 1,
-            'date_creation'   => new \QueryExpression('NOW()'),
-            'date_mod'        => new \QueryExpression('NOW()')
+            'date_creation'   => new QueryExpression('NOW()'),
+            'date_mod'        => new QueryExpression('NOW()')
         ],
         '10.0 Add user mention notification'
     );

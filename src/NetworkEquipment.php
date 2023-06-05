@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Socket;
 
 /**
@@ -191,7 +193,11 @@ class NetworkEquipment extends CommonDBTM
             $criteria = [
                 'SELECT'       => [
                     'itemtype',
-                    new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ' . $DB->quoteName('ids'))
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                 ],
                 'FROM'         => 'glpi_networkports_networkports',
                 'INNER JOIN'   => [

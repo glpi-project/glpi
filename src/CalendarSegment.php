@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * CalendarSegment Class
  */
@@ -161,7 +163,7 @@ class CalendarSegment extends CommonDBChild
        // Do not check hour if day before the end day of after the begin day
         $iterator = $DB->request([
             'SELECT' => [
-                new \QueryExpression("
+                new QueryExpression("
                TIMEDIFF(
                    LEAST(" . $DB->quoteValue($end_time) . ", " . $DB->quoteName('end') . "),
                    GREATEST(" . $DB->quoteName('begin') . ", " . $DB->quoteValue($begin_time) . ")
@@ -201,10 +203,10 @@ class CalendarSegment extends CommonDBChild
        // Do not check hour if day before the end day of after the begin day
         $iterator = $DB->request([
             'SELECT' => [
-                new \QueryExpression(
+                new QueryExpression(
                     "GREATEST(" . $DB->quoteName('begin') . ", " . $DB->quoteValue($begin_time)  . ") AS " . $DB->quoteName('BEGIN')
                 ),
-                new \QueryExpression(
+                new QueryExpression(
                     "TIMEDIFF(" . $DB->quoteName('end') . ", GREATEST(" . $DB->quoteName('begin') . ", " . $DB->quoteValue($begin_time) . ")) AS " . $DB->quoteName('TDIFF')
                 )
             ],

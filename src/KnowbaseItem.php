@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
 use Glpi\RichText\RichText;
 
@@ -1126,7 +1128,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $DB->update(
             'glpi_knowbaseitems',
             [
-                'view'   => new \QueryExpression($DB->quoteName('view') . ' + 1')
+                'view'   => new QueryExpression($DB->quoteName('view') . ' + 1')
             ],
             [
                 'id' => $this->getID()
@@ -1475,11 +1477,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'SELECT' => [
                 'glpi_knowbaseitems.*',
                 new QueryExpression(
-                    'COUNT(' . $DB->quoteName('glpi_knowbaseitems_users.id') . ')' .
-                    ' + COUNT(' . $DB->quoteName('glpi_groups_knowbaseitems.id') . ')' .
-                    ' + COUNT(' . $DB->quoteName('glpi_knowbaseitems_profiles.id') . ')' .
-                    ' + COUNT(' . $DB->quoteName('glpi_entities_knowbaseitems.id') . ') AS ' .
-                    $DB->quoteName('visibility_count')
+                    QueryFunction::count('glpi_knowbaseitems_users.id') . ' + ' .
+                    QueryFunction::count('glpi_groups_knowbaseitems.id') . ' + ' .
+                    QueryFunction::count('glpi_knowbaseitems_profiles.id') . ' + ' .
+                    QueryFunction::count('glpi_entities_knowbaseitems.id') . ' AS ' .
+                    $DB::quoteName('visibility_count')
                 )
             ],
             'FROM'   => 'glpi_knowbaseitems',
