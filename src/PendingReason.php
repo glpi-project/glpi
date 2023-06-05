@@ -353,7 +353,7 @@ class PendingReason extends CommonDropdown
         );
     }
 
-    private static function getDefault(): ?PendingReason
+    public static function getDefault(): ?PendingReason
     {
         $pending_reason = new PendingReason();
         if (
