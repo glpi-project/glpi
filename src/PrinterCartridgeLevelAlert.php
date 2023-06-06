@@ -79,11 +79,30 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     {
         global $DB;
 
-        $where = "c.date_out is NULL AND ( ( l.value REGEXP '^[0-9]+$' AND l.value <= i.warn_level ) OR ( l.value like 'WARNING' OR l.value like 'BAD' )) AND l.printers_id = p.id AND p.entities_id IN ($entities)";
+        $WHERE = [
+            'c.date_out' => null,
+            'l.printers_id' => new QueryExpression($DB::quoteName('p.id')),
+            'p.entities_id' => $entities,
+            'OR' => [
+                [
+                    ['l.value' => ['REGEXP', '^[0-9]+$']],
+                    ['l.value' => ['<=', new QueryExpression($DB::quoteName('i.warn_level')) ] ]
+                ],
+                'OR' => [
+                    ['l.value' => 'WARNING'],
+                    ['l.value' => 'BAD']
+                ]
+            ]
+        ];
         if ($repeat) {
-            $where = $where . " AND ( a.date is NULL or a.date < CURRENT_TIMESTAMP() - INTERVAL " . $repeat . " second)";
+            $where[] = [
+                'OR' => [
+                    ['a.date' => null],
+                    ['a.date' => ['<', new QueryExpression("CURRENT_TIMESTAMP() - INTERVAL $repeat second")]]
+                ]
+            ];
         }
-
+     
         $query = [
             'SELECT' => [
                 'c.id as cartridge',
@@ -127,9 +146,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                     ]
                 ]
             ],
-            'WHERE'        => [
-                new QueryExpression($where)
-            ],
+            'WHERE'        => $WHERE,
             'ORDERBY'      => [
                 'p.name'
             ]
@@ -199,7 +216,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
         if ($crontask->getFromDBbyName("PrinterCartridgeLevelAlert", "PrinterCartridgeLevelAlert")) {
             if ($crontask->fields["state"] != CronTask::STATE_DISABLE) {
                 if (Session::haveRight("cartridge", READ) && Session::haveRight("printer", READ)) {
-                    $query  = self::query($_SESSION["glpiactiveentities_string"]);
+                    $query  = self::query($_SESSION["glpiactiveentities"]);
                     $result = $DB->request($query);
 
                     echo "<div class='d-flex flex-column'>";
