@@ -79,7 +79,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     {
         global $DB;
 
-        if ($entities) {
+        if (count($entities)) {
             $WHERE = [
                 'c.date_out' => null,
                 'l.printers_id' => new QueryExpression($DB::quoteName('p.id')),
@@ -315,7 +315,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
 
             foreach (Entity::getEntitiesToNotify('printer_cartridge_levels_alert_repeat') as $entity => $repeat) {
                 // KKK if you change this query, please don't forget to also change in showDebug()
-                $query = self::query($entity, $repeat);
+                $query = self::query([$entity], $repeat);
                 $result = $DB->request($query);
                 $message = "";
                 $items   = [];
