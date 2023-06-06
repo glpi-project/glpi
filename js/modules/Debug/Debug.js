@@ -514,7 +514,7 @@ window.GLPI.Debug = new class Debug {
                         ${filtered_request_id === undefined ? `<td><button class="btn btn-link request-link">${request_id}</button></td>` : ''}
                         <td>${query['num']}</td>
                         <td style="max-width: 50vw; white-space: break-spaces;"><code class="d-block cm-s-default border-0">${query['query']}</code></td>
-                        <td>${query['time']}ms</td>
+                        <td data-value-unit="ms">${query['time']}ms</td>
                         <td>${query['rows']}</td>
                         <td>${escapeMarkupText(query['warnings'])}</td>
                         <td>${escapeMarkupText(query['errors'])}</td>
@@ -969,7 +969,7 @@ window.GLPI.Debug = new class Debug {
                         <td style="max-width: 200px; white-space: pre-wrap;">${request.url}</td>
                         <td>${request.status}</td>
                         <td>${request.type}</td>
-                        <td>${request.time}ms</td>
+                        <td data-value-unit="ms">${request.time}ms</td>
                     </tr>
                 `);
                 // set the background color of the new row to a pale yellow and fade it out

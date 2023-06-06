@@ -124,20 +124,12 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'get_card':
-        if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
-            // don'l lock session to permits parallel calls
-            // Debug mode needs to write in session to save debug info
-            session_write_close();
-        }
+        Session::writeClose();
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
         break;
 
     case 'get_cards':
-        if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
-            // don'l lock session to permits parallel calls
-            // Debug mode needs to write in session to save debug info
-            session_write_close();
-        }
+        Session::writeClose();
         header("Content-Type: application/json; charset=UTF-8");
         $cards = $request_data['cards'];
         unset($request_data['cards']);

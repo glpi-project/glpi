@@ -50,11 +50,7 @@ if (isset($_POST['action']) && isset($_POST['id'])) {
     }
     $answer = [];
 
-    if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
-        // don'l lock session to permits parallel calls
-        // Debug mode needs to write in session to save debug info
-        session_write_close();
-    }
+    Session::writeClose();
     switch ($_POST['action']) {
         case Agent::ACTION_INVENTORY:
             $answer = $agent->requestInventory();

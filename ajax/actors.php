@@ -42,11 +42,7 @@ switch ($_REQUEST['action']) {
     case "getActors":
         header("Content-Type: application/json; charset=UTF-8");
         Html::header_nocache();
-        if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
-            // don'l lock session to permits parallel calls
-            // Debug mode needs to write in session to save debug info
-            session_write_close();
-        }
+        Session::writeClose();
         echo Dropdown::getDropdownActors($_POST);
         break;
 }

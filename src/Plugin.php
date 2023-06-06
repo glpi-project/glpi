@@ -259,7 +259,9 @@ class Plugin extends CommonDBTM
 
         if ($load_plugins) {
             foreach ($directories_to_load as $directory) {
+                \Glpi\Debug\Profiler::getInstance()->start("{$directory}:init", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
                 Plugin::load($directory);
+                \Glpi\Debug\Profiler::getInstance()->stop("{$directory}:init");
             }
             // For plugins which require action after all plugin init
             Plugin::doHook(Hooks::POST_INIT);
@@ -1640,7 +1642,7 @@ class Plugin extends CommonDBTM
                     }
 
                     if (isset($tab[$itemtype])) {
-                        \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:{$name}", 'plugins');
+                        \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:{$name}", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
                         self::includeHook($plugin_key);
                         if (is_callable($tab[$itemtype])) {
                             call_user_func($tab[$itemtype], $data);
@@ -1656,7 +1658,7 @@ class Plugin extends CommonDBTM
                         continue;
                     }
 
-                    \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:{$name}", 'plugins');
+                    \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:{$name}", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
                     self::includeHook($plugin_key);
                     if (is_callable($function)) {
                         call_user_func($function, $data);

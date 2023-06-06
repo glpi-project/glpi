@@ -159,12 +159,12 @@ class TemplateRenderer
     public function render(string $template, array $variables = []): string
     {
         try {
-            Profiler::getInstance()->start('render ' . $template, Profiler::CATEGORY_TWIG);
+            Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
             return $this->environment->load($template)->render($variables);
         } catch (\Twig\Error\Error $e) {
             ErrorHandler::getInstance()->handleTwigError($e);
         } finally {
-            Profiler::getInstance()->stop('render ' . $template);
+            Profiler::getInstance()->stop($template);
         }
         return '';
     }
@@ -180,12 +180,12 @@ class TemplateRenderer
     public function display(string $template, array $variables = []): void
     {
         try {
-            Profiler::getInstance()->start('display ' . $template, Profiler::CATEGORY_TWIG);
+            Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
             $this->environment->load($template)->display($variables);
         } catch (\Twig\Error\Error $e) {
             ErrorHandler::getInstance()->handleTwigError($e);
         } finally {
-            Profiler::getInstance()->stop('display ' . $template);
+            Profiler::getInstance()->stop($template);
         }
     }
 }
