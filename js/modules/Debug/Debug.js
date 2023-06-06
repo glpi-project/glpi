@@ -218,34 +218,7 @@ window.GLPI.Debug = new class Debug {
                     ajax_request.status_type = xhr.status >= 200 && xhr.status < 300 ? 'success' : 'danger';
 
                     // Ask the server for the debug information it saved for this request
-                    $.ajax({
-                        url: CFG_GLPI.root_doc + '/ajax/debug.php',
-                        data: {
-                            'ajax_id': ajax_id,
-                        }
-                    }).done((data) => {
-                        ajax_request.profile = data;
-
-                        $.each(ajax_request.profile.sql.queries, (i, query) => {
-                            ajax_request.profile.sql.queries[i].query = this.cleanSQLQuery(query.query);
-                        });
-
-                        const content_area = $('#debug-toolbar-expanded-content');
-                        if (content_area.data('active-widget') !== undefined) {
-                            this.showWidget(content_area.data('active-widget'), true);
-                        }
-                        // Move server global to the profile
-                        if (ajax_request.server_global !== undefined) {
-                            ajax_request.profile.globals['server'] = ajax_request.server_global;
-                        }
-                        // Move the data to either the get or post global depending on the request type
-                        if (ajax_request.type === 'POST') {
-                            ajax_request.profile.globals['post'] = ajax_request.data;
-                        } else {
-                            ajax_request.profile.globals['get'] = ajax_request.data;
-                        }
-                        this.refreshWidgetButtons();
-                    });
+                    this.requestAjaxDebugData(ajax_id);
                 }
             }
             this.refreshWidgetButtons();
@@ -288,6 +261,43 @@ window.GLPI.Debug = new class Debug {
             if (request_row.length > 0) {
                 request_row[0].scrollIntoView();
                 request_row.click();
+            }
+        });
+    }
+
+    requestAjaxDebugData(ajax_id, reload_widget = false) {
+        const ajax_request = this.ajax_requests.find((request) => request.id === ajax_id);
+        $.ajax({
+            url: CFG_GLPI.root_doc + '/ajax/debug.php',
+            data: {
+                'ajax_id': ajax_id,
+            }
+        }).done((data) => {
+            ajax_request.profile = data;
+
+            $.each(ajax_request.profile.sql.queries, (i, query) => {
+                ajax_request.profile.sql.queries[i].query = this.cleanSQLQuery(query.query);
+            });
+
+            const content_area = $('#debug-toolbar-expanded-content');
+            if (content_area.data('active-widget') !== undefined) {
+                this.showWidget(content_area.data('active-widget'), true);
+            }
+            // Move server global to the profile
+            if (ajax_request.server_global !== undefined) {
+                ajax_request.profile.globals['server'] = ajax_request.server_global;
+            }
+            // Move the data to either the get or post global depending on the request type
+            if (ajax_request.type === 'POST') {
+                ajax_request.profile.globals['post'] = ajax_request.data;
+            } else {
+                ajax_request.profile.globals['get'] = ajax_request.data;
+            }
+            this.refreshWidgetButtons();
+
+            if (reload_widget) {
+                // reload active widget
+                this.showWidget(content_area.data('active-widget'), true);
             }
         });
     }
@@ -469,6 +479,10 @@ window.GLPI.Debug = new class Debug {
 
     showSQLRequests(content_area, refresh = false) {
         const filtered_request_id = content_area.data('request_id');
+        if (filtered_request_id !== undefined && this.getProfile(filtered_request_id) === undefined) {
+            this.showMissingRequestData(content_area, content_area.data('request_id'));
+            return;
+        }
         if (!refresh) {
             content_area.empty();
             content_area.append(`
@@ -600,6 +614,11 @@ window.GLPI.Debug = new class Debug {
         const selected_request_id = content_area.data('request_id');
 
         const matching_profile = this.getProfile(selected_request_id);
+        if (matching_profile === undefined) {
+            this.showMissingRequestData(content_area, content_area.data('request_id'));
+            return;
+        }
+
         const globals = matching_profile.globals;
         appendGlobals(globals['post'], content_area.find(`#debugpost${rand}`));
         appendGlobals(globals['get'], content_area.find(`#debugget${rand}`));
@@ -844,6 +863,10 @@ window.GLPI.Debug = new class Debug {
 
 
         const matching_profile = this.getProfile(selected_request_id);
+        if (matching_profile === undefined) {
+            this.showMissingRequestData(content_area, selected_request_id);
+            return;
+        }
         const profiler = matching_profile.profiler || {};
 
         // get profiler entries and sort them by start time
@@ -1019,10 +1042,29 @@ window.GLPI.Debug = new class Debug {
         });
     }
 
+    showMissingRequestData(content_area, request_id) {
+        content_area.empty();
+        content_area.append(`
+            <div class="alert alert-danger">
+            <span>${__('No debug data was found for this request immediately after it finished. Some requests like /front/locale.php will never have data as they intentionally close the session.')}</span>
+            </div>
+            <button type="button" class="btn btn-primary" data-request-id="${request_id}"><i class="ti ti-reload"></i>${__('Retry')}</button>
+        `);
+        content_area.find('button').on('click', (e) => {
+            const btn = $(e.currentTarget);
+            const request_id = btn.data('request-id');
+            this.requestAjaxDebugData(request_id, true);
+        });
+    }
+
     showRequestSummary(content_area) {
         content_area.empty();
         const profile = this.getProfile(content_area.data('request_id'));
 
+        if (profile === undefined) {
+            this.showMissingRequestData(content_area, content_area.data('request_id'));
+            return;
+        }
         const server_perf = profile.server_performance;
         const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
         const memory_peak_mio = (server_perf.memory_peak / 1024 / 1024).toFixed(2);

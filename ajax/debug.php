@@ -43,6 +43,8 @@ if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
     die();
 }
 
+// No need to save session data. Cannot use Session::writeClose because it doesn't do anything in debug mode
+session_write_close();
 \Glpi\Debug\Profiler::getInstance()->disable();
 
 if (isset($_GET['ajax_id'])) {
