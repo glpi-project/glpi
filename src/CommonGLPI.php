@@ -687,9 +687,9 @@ class CommonGLPI implements CommonGLPIInterface
                     $options['tabnum'] = $tabnum;
                     $options['itemtype'] = $itemtype;
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
-                    \Glpi\Debug\Profiler::getInstance()->start($obj::class . '::displayTabContentForItem');
+                    \Glpi\Debug\Profiler::getInstance()->start(get_class($obj) . '::displayTabContentForItem');
                     $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
-                    \Glpi\Debug\Profiler::getInstance()->stop($obj::class . '::displayTabContentForItem');
+                    \Glpi\Debug\Profiler::getInstance()->stop(get_class($obj) . '::displayTabContentForItem');
 
                     Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
                     return $ret;
