@@ -133,6 +133,8 @@ window.GLPI.Debug = new class Debug {
             request: '#00aa00',
             response: '#0000ee',
         };
+
+        this.REQUEST_PATH_LENGTH = 100;
     }
 
     init(initial_request) {
@@ -903,10 +905,11 @@ window.GLPI.Debug = new class Debug {
                 </div>
             `);
             this.showRequestTimeline(content_area.find('.request-timeline').eq(0));
+            const truncated_pathname = window.location.pathname.substring(0, this.REQUEST_PATH_LENGTH);
             content_area.find('#debug-requests-table tbody').append(`
                 <tr data-request-id="${this.initial_request.id}" class="cursor-pointer table-active">
                     <td>0</td>
-                    <td style="max-width: 200px; white-space: pre-wrap;">${window.location.pathname}</td>
+                    <td style="max-width: 200px; white-space: pre-wrap;">${truncated_pathname}</td>
                     <td>-</td>
                     <td>${this.initial_request.globals.server['REQUEST_METHOD'] || '-'}</td>
                     <td>${this.initial_request.server_performance.execution_time}ms</td>
@@ -961,10 +964,11 @@ window.GLPI.Debug = new class Debug {
             const row = content_area.find(`tr[data-request-id="${request.id}"]`);
             if (row.length === 0) {
                 const next_number = content_area.find('#debug-requests-table tbody tr').length;
+                const truncated_url = request.url.substring(0, this.REQUEST_PATH_LENGTH);
                 content_area.find('#debug-requests-table tbody').append(`
                     <tr data-request-id="${request.id}" class="cursor-pointer">
                         <td>${next_number}</td>
-                        <td style="max-width: 200px; white-space: pre-wrap;">${request.url}</td>
+                        <td style="max-width: 200px; white-space: pre-wrap;">${truncated_url}</td>
                         <td>${request.status}</td>
                         <td>${request.type}</td>
                         <td data-value-unit="ms">${request.time}ms</td>
