@@ -549,4 +549,21 @@ class QueryFunction extends \GLPITestCase
     {
         $this->string((string) \Glpi\DBAL\QueryFunction::bitCount($expression, $alias))->isIdenticalTo($expected);
     }
+
+    protected function substringProvider()
+    {
+        return [
+            ['glpi_computers.name', 0, 10, null, "SUBSTRING(`glpi_computers`.`name`, 0, 10)"],
+            ['glpi_computers.name', 2, 8, 'substring_alias', "SUBSTRING(`glpi_computers`.`name`, 2, 8) AS `substring_alias`"],
+            [new QueryExpression("'TestName'"), 0, 10, null, "SUBSTRING('TestName', 0, 10)"],
+        ];
+    }
+
+    /**
+     * @dataProvider substringProvider
+     */
+    public function testSubstring($expression, $start, $length, $alias, $expected)
+    {
+        $this->string((string) \Glpi\DBAL\QueryFunction::substring($expression, $start, $length, $alias))->isIdenticalTo($expected);
+    }
 }
