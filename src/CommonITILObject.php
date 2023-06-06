@@ -6121,7 +6121,6 @@ abstract class CommonITILObject extends CommonDBTM
             echo Search::showItem($p['output_type'], $second_column, $item_num, $p['row_num'], $align);
 
             // third column
-            $third_col = sprintf(__('%1$s: %2$s'), __('ID'), $item->fields["id"]);
             if ($p['output_type'] == Search::HTML_OUTPUT) {
                 $third_col = static::getStatusIcon($item->fields["status"]);
             } else {
