@@ -6092,8 +6092,7 @@ abstract class CommonITILObject extends CommonDBTM
             echo Search::showItem($p['output_type'], $check_col, $item_num, $p['row_num'], $align);
 
             // First column ID
-            $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $item->fields["id"]);
-            echo Search::showItem($p['output_type'], $first_col, $item_num, $p['row_num'], $align);
+            echo Search::showItem($p['output_type'], $item->fields["id"], $item_num, $p['row_num'], $align);
 
             // Second column TITLE
             $second_column = "<span class='b'>" . $item->getName() . "</span>&nbsp;";
