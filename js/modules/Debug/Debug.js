@@ -909,7 +909,7 @@ window.GLPI.Debug = new class Debug {
             content_area.find('#debug-requests-table tbody').append(`
                 <tr data-request-id="${this.initial_request.id}" class="cursor-pointer table-active">
                     <td>0</td>
-                    <td style="max-width: 200px; white-space: pre-wrap;">${truncated_pathname}</td>
+                    <td style="max-width: 200px; white-space: pre-wrap;" title="${window.location.pathname}">${truncated_pathname}</td>
                     <td>-</td>
                     <td>${this.initial_request.globals.server['REQUEST_METHOD'] || '-'}</td>
                     <td>${this.initial_request.server_performance.execution_time}ms</td>
@@ -968,7 +968,7 @@ window.GLPI.Debug = new class Debug {
                 content_area.find('#debug-requests-table tbody').append(`
                     <tr data-request-id="${request.id}" class="cursor-pointer">
                         <td>${next_number}</td>
-                        <td style="max-width: 200px; white-space: pre-wrap;">${truncated_url}</td>
+                        <td style="max-width: 200px; white-space: pre-wrap;" title="${request.url}">${truncated_url}</td>
                         <td>${request.status}</td>
                         <td>${request.type}</td>
                         <td data-value-unit="ms">${request.time}ms</td>
