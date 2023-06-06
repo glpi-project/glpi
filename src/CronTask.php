@@ -1832,22 +1832,23 @@ class CronTask extends CommonDBTM
     /**
      * Get criteria to identify crontasks that may be dead.
      * This includes tasks running more than twice as long as their frequency or over 2 hours.
-     * @return array
+     * @return DBmysqlIterator
      */
-    public static function getZombieCriteria(): array
+    public static function getZombieCronTasks(): DBmysqlIterator
     {
-        return [
+        global $DB;
+        return $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'state'  => self::STATE_RUNNING,
                 'OR'     => [
                     new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * ' .
-                        DBmysql::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp(QueryFunction::now())),
+                        DBmysql::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp()),
                     new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * ' .
-                        HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp(QueryFunction::now())),
+                        HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp()),
                 ]
             ]
-        ];
+        ]);
     }
 
     /**
@@ -1861,8 +1862,8 @@ class CronTask extends CommonDBTM
     {
         global $DB;
 
-       // CronTasks running for more than 1 hour or 2 frequency
-        $iterator = $DB->request(self::getZombieCriteria());
+        // CronTasks running for more than 1 hour or 2 frequency
+        $iterator = self::getZombieCrontasks();
         $crontasks = [];
         foreach ($iterator as $data) {
             $crontasks[$data['id']] = $data;

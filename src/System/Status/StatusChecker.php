@@ -489,7 +489,7 @@ final class StatusChecker
                 $running = count(array_filter($crontasks, static function ($crontask) {
                     return $crontask['state'] === CronTask::STATE_RUNNING;
                 }));
-                $stuck_crontasks = $DB->request(CronTask::getZombieCriteria());
+                $stuck_crontasks = CronTask::getZombieCronTasks();
                 foreach ($stuck_crontasks as $ct) {
                       $status['stuck'][] = $ct['name'];
                 }

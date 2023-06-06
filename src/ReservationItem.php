@@ -789,7 +789,7 @@ class ReservationItem extends CommonDBChild
                     'glpi_reservationitems.entities_id' => $entity,
                     new QueryExpression(
                         QueryFunction::unixTimestamp('glpi_reservations.end') . ' - ' . $secs .
-                            ' < ' . QueryFunction::unixTimestamp(QueryFunction::now())
+                            ' < ' . QueryFunction::unixTimestamp()
                     ),
                     'glpi_reservations.begin'  => ['<', QueryFunction::now()],
                     'glpi_alerts.date'         => null
