@@ -375,10 +375,6 @@ window.GLPI.Debug = new class Debug {
         const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
         server_performance_button.find('.debug-text').text(`${server_perf.execution_time}ms | ${memory_usage_mio}mio`);
 
-        const sql_count = this.getCombinedSQLData().total_requests;
-        const sql_button = this.getWidgetButton('sql');
-        sql_button.find('.debug-text').text(sql_count);
-
         const ajax_requests_button = this.getWidgetButton('ajax_requests');
         ajax_requests_button.find('.debug-text').text(this.ajax_requests.length);
 
