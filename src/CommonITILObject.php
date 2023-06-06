@@ -6096,7 +6096,7 @@ abstract class CommonITILObject extends CommonDBTM
 
             // Second column TITLE
             $second_column = "<span class='b'>" . $item->getName() . "</span>&nbsp;";
-            if ($item->canViewItem()) {
+            if ($p['output_type'] == Search::HTML_OUTPUT && $item->canViewItem()) {
                 $second_column  = sprintf(
                     __('%1$s (%2$s)'),
                     "<a id='" . $item->getType() . $item->fields["id"] . "$rand' href=\"" . $item->getLinkURL() . "\">$second_column</a>",
@@ -6106,8 +6106,6 @@ abstract class CommonITILObject extends CommonDBTM
                         $item->numberOfTasks($showprivate)
                     )
                 );
-            }
-            if ($p['output_type'] == Search::HTML_OUTPUT) {
                 $second_column = sprintf(
                     __('%1$s %2$s'),
                     $second_column,
