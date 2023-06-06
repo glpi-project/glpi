@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\RichText\RichText;
 
@@ -748,7 +749,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                             'validator_users.substitution_start_date' => null,
                                         ],
                                         [
-                                            'validator_users.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
+                                            'validator_users.substitution_start_date' => ['<=', QueryFunction::now()],
                                         ],
                                     ],
                                 ],
@@ -758,7 +759,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                             'validator_users.substitution_end_date' => null,
                                         ],
                                         [
-                                            'validator_users.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
+                                            'validator_users.substitution_end_date' => ['>=', QueryFunction::now()],
                                         ],
                                     ],
                                 ],
@@ -1497,7 +1498,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                     [
                                         'REFTABLE.substitution_start_date' => null,
                                     ], [
-                                        'REFTABLE.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
+                                        'REFTABLE.substitution_start_date' => ['<=', QueryFunction::now()],
                                     ],
                                 ],
                             ], [
@@ -1505,7 +1506,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                     [
                                         'REFTABLE.substitution_end_date' => null,
                                     ], [
-                                        'REFTABLE.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
+                                        'REFTABLE.substitution_end_date' => ['>=', QueryFunction::now()],
                                     ],
                                 ],
                             ]
@@ -1578,7 +1579,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                     [
                                         'REFTABLE.substitution_end_date' => null,
                                     ], [
-                                        'REFTABLE.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
+                                        'REFTABLE.substitution_end_date' => ['>=', QueryFunction::now()],
                                     ],
                                 ],
                             ], [
@@ -1586,7 +1587,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                     [
                                         'REFTABLE.substitution_start_date' => null,
                                     ], [
-                                        'REFTABLE.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
+                                        'REFTABLE.substitution_start_date' => ['<=', QueryFunction::now()],
                                     ],
                                 ],
                             ]

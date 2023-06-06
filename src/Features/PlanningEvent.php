@@ -42,6 +42,7 @@ use DateTimeZone;
 use Dropdown;
 use Entity;
 use ExtraVisibilityCriteria;
+use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 use Group_User;
 use Html;
@@ -502,7 +503,7 @@ trait PlanningEvent
                     'state'  => Planning::TODO,
                     'AND'    => [
                         'state'  => Planning::INFO,
-                        'end'    => ['>', new QueryExpression('NOW()')]
+                        'end'    => ['>', QueryFunction::now()]
                     ]
                 ]
             ];

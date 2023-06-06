@@ -233,7 +233,10 @@ class CronTask extends CommonDBTM
             $this->getTable(),
             [
                 'state'  => self::STATE_RUNNING,
-                'lastrun'   => new QueryExpression('DATE_FORMAT(NOW(),\'%Y-%m-%d %H:%i:00\')')
+                'lastrun'   => QueryFunction::dateFormat(
+                    expression: QueryFunction::now(),
+                    format: '%Y-%m-%d %H:%i:00'
+                )
             ],
             [
                 'id'  => $this->fields['id'],
@@ -1826,6 +1829,27 @@ class CronTask extends CommonDBTM
         return 1;
     }
 
+    /**
+     * Get criteria to identify crontasks that may be dead.
+     * This includes tasks running more than twice as long as their frequency or over 2 hours.
+     * @return DBmysqlIterator
+     */
+    public static function getZombieCronTasks(): DBmysqlIterator
+    {
+        global $DB;
+        return $DB->request([
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'state'  => self::STATE_RUNNING,
+                'OR'     => [
+                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * ' .
+                        DBmysql::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp()),
+                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * ' .
+                        HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp()),
+                ]
+            ]
+        ]);
+    }
 
     /**
      * Check zombie crontask
@@ -1838,17 +1862,8 @@ class CronTask extends CommonDBTM
     {
         global $DB;
 
-       // CronTasks running for more than 1 hour or 2 frequency
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                'state'  => self::STATE_RUNNING,
-                'OR'     => [
-                    new QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ') + 2 * ' . $DB->quoteName('frequency') . ' < unix_timestamp(now())'),
-                    new QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ') + 2 * ' . HOUR_TIMESTAMP . ' < unix_timestamp(now())')
-                ]
-            ]
-        ]);
+        // CronTasks running for more than 1 hour or 2 frequency
+        $iterator = self::getZombieCrontasks();
         $crontasks = [];
         foreach ($iterator as $data) {
             $crontasks[$data['id']] = $data;

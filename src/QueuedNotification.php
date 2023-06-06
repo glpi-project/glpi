@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /** QueuedNotification class
  *
@@ -638,7 +639,10 @@ class QueuedNotification extends CommonDBTM
                 [
                     'is_deleted'   => 0,
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
-                    new QueryExpression('UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') + ' . $secs . ' < UNIX_TIMESTAMP(NOW())')
+                    new QueryExpression(
+                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs .
+                            ' < ' . QueryFunction::unixTimestamp()
+                    )
                 ]
             );
             $vol = $DB->affectedRows();

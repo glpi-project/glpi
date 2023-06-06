@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  *  NotificationAjax
@@ -132,7 +133,10 @@ class NotificationAjax implements NotificationInterface
                     'is_deleted'   => false,
                     'recipient'    => Session::getLoginUserID(),
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
-                    new QueryExpression('UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') + ' . $secs . ' > UNIX_TIMESTAMP(NOW())')
+                    new QueryExpression(
+                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs .
+                            ' > ' . QueryFunction::unixTimestamp()
+                    )
                 ]
             ]);
 

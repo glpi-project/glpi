@@ -371,6 +371,8 @@ class QueryFunction extends \GLPITestCase
         return [
             ['glpi_computers.date_mod', null, "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`)"],
             ['glpi_computers.date_mod', 'unix_timestamp_alias', "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`) AS `unix_timestamp_alias`"],
+            [null, null, "UNIX_TIMESTAMP()"],
+            [null, 'unix_now', "UNIX_TIMESTAMP() AS `unix_now`"],
         ];
     }
 
