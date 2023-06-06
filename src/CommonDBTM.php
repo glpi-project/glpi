@@ -6439,7 +6439,7 @@ class CommonDBTM extends CommonGLPI
         ?array $menus = null,
         array $options = []
     ): void {
-        \Glpi\Debug\Profiler::getInstance()->start('displayFullPageForItem');
+        \Glpi\Debug\Profiler::getInstance()->start(static::class . '::displayFullPageForItem');
         $id = (int) $id;
         $item = new static();
 
@@ -6456,7 +6456,7 @@ class CommonDBTM extends CommonGLPI
             // New item, check create rights
             if (!static::canCreate()) {
                 static::displayAccessDeniedPage($menus, 'Missing CREATE right. Cannot view the new item form.');
-                \Glpi\Debug\Profiler::getInstance()->stop('displayFullPageForItem');
+                \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::displayFullPageForItem');
                 return;
             }
 
@@ -6466,13 +6466,13 @@ class CommonDBTM extends CommonGLPI
             // Existing item, try to load it and check read rights
             if (!$item->getFromDB($id)) {
                 static::displayItemNotFoundPage($menus);
-                \Glpi\Debug\Profiler::getInstance()->stop('displayFullPageForItem');
+                \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::displayFullPageForItem');
                 return;
             }
 
             if (!$item->can($id, READ)) {
                 static::displayAccessDeniedPage($menus, 'Missing READ right. Cannot view the item.');
-                \Glpi\Debug\Profiler::getInstance()->stop('displayFullPageForItem');
+                \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::displayFullPageForItem');
                 return;
             }
 
@@ -6482,9 +6482,9 @@ class CommonDBTM extends CommonGLPI
 
         // Show header
         if ($interface == 'central') {
-            \Glpi\Debug\Profiler::getInstance()->start('displayCentralHeader');
+            \Glpi\Debug\Profiler::getInstance()->start(static::class . '::displayCentralHeader');
             static::displayCentralHeader($title, $menus);
-            \Glpi\Debug\Profiler::getInstance()->stop('displayCentralHeader');
+            \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::displayCentralHeader');
         } else {
             static::displayHelpdeskHeader($title, $menus);
         }
@@ -6494,9 +6494,9 @@ class CommonDBTM extends CommonGLPI
         }
         // Show item
         $options['loaded'] = true;
-        \Glpi\Debug\Profiler::getInstance()->start('display');
+        \Glpi\Debug\Profiler::getInstance()->start(static::class . '::display');
         $item->display($options);
-        \Glpi\Debug\Profiler::getInstance()->stop('display');
+        \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::display');
 
         // Display extra html if needed
         if (!empty($options['after_display'] ?? "")) {

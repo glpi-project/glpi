@@ -86,9 +86,7 @@ if (!isset($PLUGINS_INCLUDED)) {
     $PLUGINS_INCLUDED = 1;
     $PLUGINS_EXCLUDED = isset($PLUGINS_EXCLUDED) ? $PLUGINS_EXCLUDED : [];
     $plugin = new Plugin();
-    \Glpi\Debug\Profiler::getInstance()->start('plugins_init', \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
     $plugin->init(true, $PLUGINS_EXCLUDED);
-    \Glpi\Debug\Profiler::getInstance()->stop('plugins_init');
 }
 
 // Security system
