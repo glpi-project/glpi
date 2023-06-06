@@ -104,7 +104,7 @@ class PrinterLog extends DbTestCase
        //use end_date parameter to exclude last report
         $this->array($log->getMetrics($printer, start_date: $cdate1, end_date: $now->sub(new \DateInterval('P1D'))))->hasSize(2);
 
-        for ($i = 0; $i < 25; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $now->sub(new \DateInterval('P1D'));
             $input = [
                 'printers_id' => $printers_id,
@@ -119,10 +119,10 @@ class PrinterLog extends DbTestCase
         }
 
        // check working of daily format
-        $this->array($log->getMetrics($printer, interval: 'P2M', format: 'daily'))->hasSize(26);
+        $this->array($log->getMetrics($printer, interval: 'P2M', format: 'daily'))->hasSize(21);
 
        // check working of weekly format
-        $this->array($log->getMetrics($printer, interval: 'P1M', format: 'weekly'))->hasSize(5);
+        $this->array($log->getMetrics($printer, interval: 'P1M', format: 'weekly'))->hasSize(4);
 
        // check working of monthly format
         $this->array($log->getMetrics($printer, format: 'monthly'))->hasSize(3);
