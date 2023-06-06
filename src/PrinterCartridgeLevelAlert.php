@@ -80,7 +80,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
         global $DB;
 
         if ($entities) {
-           $WHERE = [
+            $WHERE = [
                 'c.date_out' => null,
                 'l.printers_id' => new QueryExpression($DB::quoteName('p.id')),
                 'p.entities_id' => $entities,
@@ -95,14 +95,14 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                     ]
                 ]
             ];
-        if ($repeat) {
-            $where[] = [
-                'OR' => [
-                    ['a.date' => null],
-                    ['a.date' => ['<', new QueryExpression("CURRENT_TIMESTAMP() - INTERVAL $repeat second")]]
-                ]
-            ];
-        }
+            if ($repeat) {
+                $where[] = [
+                    'OR' => [
+                        ['a.date' => null],
+                        ['a.date' => ['<', new QueryExpression("CURRENT_TIMESTAMP() - INTERVAL $repeat second")]]
+                    ]
+                ];
+            }
      
             $query = [
                 'SELECT' => [
