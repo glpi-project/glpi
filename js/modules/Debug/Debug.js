@@ -913,7 +913,7 @@ window.GLPI.Debug = new class Debug {
                     <td style="max-width: 200px; white-space: pre-wrap;">${window.location.pathname}</td>
                     <td>-</td>
                     <td>${this.initial_request.globals.server['REQUEST_METHOD'] || '-'}</td>
-                    <td>${this.initial_request.server_performance.execution_time * 1000}ms</td>
+                    <td>${this.initial_request.server_performance.execution_time}ms</td>
                 </tr>
             `);
             const resize_handle = content_area.find('.resize-handle');
