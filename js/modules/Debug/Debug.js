@@ -906,15 +906,23 @@ window.GLPI.Debug = new class Debug {
             `);
             this.showRequestTimeline(content_area.find('.request-timeline').eq(0));
             const truncated_pathname = window.location.pathname.substring(0, this.REQUEST_PATH_LENGTH);
+            const is_truncated = truncated_pathname.length < window.location.pathname.length;
             content_area.find('#debug-requests-table tbody').append(`
                 <tr data-request-id="${this.initial_request.id}" class="cursor-pointer table-active">
                     <td>0</td>
-                    <td style="max-width: 200px; white-space: pre-wrap;" title="${window.location.pathname}">${truncated_pathname}</td>
+                    <td style="max-width: 200px; white-space: pre-wrap;" title="${window.location.pathname}" data-truncated="${is_truncated ? 'true' : 'false'}">${truncated_pathname}</td>
                     <td>-</td>
                     <td>${this.initial_request.globals.server['REQUEST_METHOD'] || '-'}</td>
                     <td>${this.initial_request.server_performance.execution_time}ms</td>
                 </tr>
             `);
+            if (is_truncated) {
+                content_area.find(`tr[data-request-id="${this.initial_request.id}"] td[data-truncated="true"]`).append(
+                    `<button type="button" class="ms-1 badge bg-secondary" name="show_full_url">
+                        <i class="ti ti-dots"></i>
+                    </button>`
+                );
+            }
             const resize_handle = content_area.find('.resize-handle');
             // Make the resize handle draggable to resize the left column
             let is_dragging = false;
@@ -948,6 +956,12 @@ window.GLPI.Debug = new class Debug {
                     request_id: content_area.data('requests_request_id') || this.initial_request.id,
                 });
             });
+            content_area.on('click', 'button[name="show_full_url"]', (e) => {
+                const btn = $(e.currentTarget);
+                const td = btn.closest('td');
+                td.text(td.attr('title'));
+                btn.hide();
+            });
             if (content_area.data('requests_request_id') === undefined) {
                 content_area.data('requests_request_id', this.initial_request.id);
             }
@@ -965,15 +979,25 @@ window.GLPI.Debug = new class Debug {
             if (row.length === 0) {
                 const next_number = content_area.find('#debug-requests-table tbody tr').length;
                 const truncated_url = request.url.substring(0, this.REQUEST_PATH_LENGTH);
+                const is_truncated = truncated_url.length < request.url.length;
                 content_area.find('#debug-requests-table tbody').append(`
                     <tr data-request-id="${request.id}" class="cursor-pointer">
                         <td>${next_number}</td>
-                        <td style="max-width: 200px; white-space: pre-wrap;" title="${request.url}">${truncated_url}</td>
+                        <td style="max-width: 200px; white-space: pre-wrap;" title="${request.url}" data-truncated="${is_truncated ? 'true' : 'false'}">${truncated_url}</td>
                         <td>${request.status}</td>
                         <td>${request.type}</td>
                         <td data-value-unit="ms">${request.time}ms</td>
                     </tr>
                 `);
+                if (is_truncated) {
+                    if (content_area.find(`tr[data-request-id="${request.id}"] td[data-truncated="true"] button[name="show_full_url"]`).length === 0) {
+                        content_area.find(`tr[data-request-id="${request.id}"] td[data-truncated="true"]`).append(
+                            `<button type="button" class="ms-1 badge bg-secondary" name="show_full_url">
+                        <i class="ti ti-dots"></i>
+                    </button>`
+                        );
+                    }
+                }
                 // set the background color of the new row to a pale yellow and fade it out
                 const new_row = content_area.find(`tr[data-request-id="${request.id}"]`);
                 new_row.css('background-color', '#FFFF7B80');
