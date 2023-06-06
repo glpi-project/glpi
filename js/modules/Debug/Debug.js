@@ -863,20 +863,22 @@ window.GLPI.Debug = new class Debug {
             content_area.append(`
                 <div class="request-timeline"></div>
                 <div class="d-flex flex-row h-100 split-panel-h">
-                    <div class="left-panel overflow-auto">
-                        <table id="debug-requests-table" class="table table-hover mb-1">
-                            <thead>
-                                <tr>
-                                    <th>${_x('debug', 'Number')}</th>
-                                    <th style="max-width: 200px; white-space: pre-wrap;">${_x('debug', 'URL')}</th>
-                                    <th>${_x('debug', 'Status')}</th>
-                                    <th>${_x('debug', 'Type')}</th>
-                                    <th>${_x('debug', 'Duration')}</th>
-                                </tr>
-                            </thead>
-                            <tbody style="white-space: nowrap">
-                            </tbody>
-                        </table>
+                    <div class="left-panel">
+                        <div class="overflow-auto h-100 me-2">
+                            <table id="debug-requests-table" class="table table-hover mb-1">
+                                <thead>
+                                    <tr>
+                                        <th>${_x('debug', 'Number')}</th>
+                                        <th style="max-width: 200px; white-space: pre-wrap;">${_x('debug', 'URL')}</th>
+                                        <th>${_x('debug', 'Status')}</th>
+                                        <th>${_x('debug', 'Type')}</th>
+                                        <th>${_x('debug', 'Duration')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="white-space: nowrap">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="resize-handle"></div>
                     <div class="right-panel overflow-auto ms-2 flex-grow-1">
