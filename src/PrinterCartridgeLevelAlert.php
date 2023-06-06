@@ -96,14 +96,13 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                 ]
             ];
             if ($repeat) {
-                $where[] = [
+                $WHERE[] = [
                     'OR' => [
                         ['a.date' => null],
                         ['a.date' => ['<', new QueryExpression("CURRENT_TIMESTAMP() - INTERVAL $repeat second")]]
                     ]
                 ];
             }
-     
             $query = [
                 'SELECT' => [
                     'c.id as cartridge',
