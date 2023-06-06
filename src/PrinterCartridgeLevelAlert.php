@@ -79,21 +79,22 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     {
         global $DB;
 
-        $WHERE = [
-            'c.date_out' => null,
-            'l.printers_id' => new QueryExpression($DB::quoteName('p.id')),
-            'p.entities_id' => $entities,
-            'OR' => [
-                [
-                    ['l.value' => ['REGEXP', '^[0-9]+$']],
-                    ['l.value' => ['<=', new QueryExpression($DB::quoteName('i.warn_level')) ] ]
-                ],
+        if ($entities) {
+           $WHERE = [
+                'c.date_out' => null,
+                'l.printers_id' => new QueryExpression($DB::quoteName('p.id')),
+                'p.entities_id' => $entities,
                 'OR' => [
-                    ['l.value' => 'WARNING'],
-                    ['l.value' => 'BAD']
+                    [
+                        ['l.value' => ['REGEXP', '^[0-9]+$']],
+                        ['l.value' => ['<=', new QueryExpression($DB::quoteName('i.warn_level')) ] ]
+                    ],
+                    'OR' => [
+                        ['l.value' => 'WARNING'],
+                        ['l.value' => 'BAD']
+                    ]
                 ]
-            ]
-        ];
+            ];
         if ($repeat) {
             $where[] = [
                 'OR' => [
@@ -103,56 +104,59 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
             ];
         }
      
-        $query = [
-            'SELECT' => [
-                'c.id as cartridge',
-                'i.id as cartridgeitem',
-                'p.id as printer',
-                'p.entities_id as entity',
-                'l.value as cartridgelevel',
-                'a.id as alertID',
-                'a.date as alertDate'
-            ],
-            'FROM'   => 'glpi_cartridges AS c',
-            'INNER JOIN'   => [
-                'glpi_cartridgeitems AS i'  => [
-                    'ON'  => [
-                        'c' => 'cartridgeitems_id',
-                        'i'  => 'id'
+            $query = [
+                'SELECT' => [
+                    'c.id as cartridge',
+                    'i.id as cartridgeitem',
+                    'p.id as printer',
+                    'p.entities_id as entity',
+                    'l.value as cartridgelevel',
+                    'a.id as alertID',
+                    'a.date as alertDate'
+                ],
+                'FROM'   => 'glpi_cartridges AS c',
+                'INNER JOIN'   => [
+                    'glpi_cartridgeitems AS i'  => [
+                        'ON'  => [
+                            'c' => 'cartridgeitems_id',
+                            'i'  => 'id'
+                        ]
+                    ],
+                    'glpi_printers_cartridgeinfos AS l'  => [
+                        'ON'  => [
+                            'i' => 'type_tag',
+                            'l'  => 'property'
+                        ]
+                    ],
+                    'glpi_printers as p'  => [
+                        'ON'  => [
+                            'c' => 'printers_id',
+                            'p'  => 'id'
+                        ]
                     ]
                 ],
-                'glpi_printers_cartridgeinfos AS l'  => [
-                    'ON'  => [
-                        'i' => 'type_tag',
-                        'l'  => 'property'
-                    ]
-                ],
-                'glpi_printers as p'  => [
-                    'ON'  => [
-                        'c' => 'printers_id',
-                        'p'  => 'id'
-                    ]
-                ]
-            ],
-            'LEFT JOIN'    =>  [
-                'glpi_alerts AS a'  => [
-                    'ON'  => [
-                        'c'  => 'id',
-                        'a'  => 'items_id', [
-                            'AND' => [
-                                'a.itemtype'    =>      'Cartridge'
+                'LEFT JOIN'    =>  [
+                    'glpi_alerts AS a'  => [
+                        'ON'  => [
+                            'c'  => 'id',
+                            'a'  => 'items_id', [
+                                'AND' => [
+                                    'a.itemtype'    =>      'Cartridge'
+                                ]
                             ]
                         ]
                     ]
+                ],
+                'WHERE'        => $WHERE,
+                'ORDERBY'      => [
+                    'p.name'
                 ]
-            ],
-            'WHERE'        => $WHERE,
-            'ORDERBY'      => [
-                'p.name'
-            ]
-        ];
+            ];
 
-        return $query;
+            return $query;
+        } else {
+            return "";
+        }
     }
 
     /**
