@@ -60,9 +60,9 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
         $validationTemplate->post_addItem();
         $targets = ITILValidationTemplate_Target::getTargets($validationTemplate->getID());
+        $this->array($targets)->hasSize(1);
 
         $target = current($targets);
-        $this->integer(count($targets))->isEqualTo(1);
         $this->string($target['itemtype'])->isEqualTo('User');
         $this->integer($target['items_id'])->isEqualTo(1);
         $this->variable($target['groups_id'])->isNull();
@@ -75,9 +75,9 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
         $validationTemplate->post_addItem();
         $targets = ITILValidationTemplate_Target::getTargets($validationTemplate->getID());
+        $this->array($targets)->hasSize(1);
 
         $target = current($targets);
-        $this->integer(count($targets))->isEqualTo(1);
         $this->string($target['itemtype'])->isEqualTo('Group');
         $this->integer($target['items_id'])->isEqualTo(1);
         $this->variable($target['groups_id'])->isNull();
@@ -91,8 +91,8 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
         $validationTemplate->post_addItem();
         $targets = ITILValidationTemplate_Target::getTargets($validationTemplate->getID());
+        $this->array($targets)->hasSize(4);
 
-        $this->integer(count($targets))->isEqualTo(4);
         foreach ($targets as $target) {
             $this->string($target['itemtype'])->isEqualTo('User');
             $this->array([1, 2, 3, 4])->contains($target['items_id']);
