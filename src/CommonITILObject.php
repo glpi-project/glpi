@@ -43,6 +43,8 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
+use Glpi\Search\AdvancedSearchInterface;
+use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
 
 /**
@@ -52,7 +54,7 @@ use Glpi\Team\Team;
  * @property-read array $groups
  * @property-read array $suppliers
  **/
-abstract class CommonITILObject extends CommonDBTM
+abstract class CommonITILObject extends CommonDBTM implements AdvancedSearchInterface
 {
     use \Glpi\Features\Clonable;
     use \Glpi\Features\Timeline;
@@ -11389,5 +11391,105 @@ abstract class CommonITILObject extends CommonDBTM
             'allow_auto_submit' => false,
             'main_rand' => mt_rand(),
         ]);
+    }
+
+    public static function getSQLDefaultSelectCriteria(string $itemtype): ?array
+    {
+        return null;
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        return null;
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        // Only handle core ITIL objects here
+        if (!in_array($itemtype, [Ticket::class, Change::class, Problem::class], true)) {
+            return null;
+        }
+
+        /** @var Ticket|Change|Problem|false $item */
+        $item = getItemForItemtype($itemtype);
+        if ($opt['field'] === 'status') {
+            $to_check = [];
+            if ($item !== false) {
+                $to_check = match ($val) {
+                    'process' => $item->getProcessStatusArray(),
+                    'notclosed' => array_diff(array_keys($item::getAllStatusArray()), $item::getClosedStatusArray()),
+                    'old' => array_merge($item::getSolvedStatusArray(), $item::getClosedStatusArray()),
+                    'notold' => $item::getNotSolvedStatusArray(),
+                    'all' => array_keys($item::getAllStatusArray()),
+                    default => array_key_exists($val, $item::getAllStatusArray()) ? [$val] : []
+                };
+            }
+            if (count($to_check) > 0) {
+                if ($nott) {
+                    return [
+                        $opt->getTableField() => ['NOT IN' => $to_check]
+                    ];
+                }
+                return [$opt->getTableField() => $to_check];
+            }
+        } else if ($opt['table'] === Ticket_Ticket::getTable() && $opt['field'] === 'tickets_id_1') {
+            $tmp_link = $nott ? 'AND' : 'OR';
+            $compare = $nott ? '<>' : '=';
+            $to_add = [];
+
+            if ($nott && ($val !== 'NULL' && $val !== 'null')) {
+                $to_add = [$opt->getTableField() => null];
+            }
+
+            $criteria = [
+                $tmp_link => [
+                    $opt->getTableField() => [$compare, $val],
+                    "{$opt['table']}.tickets_id_2" => [$compare, $val],
+                ],
+                Ticket::getTableField('id') => ['<>', $val],
+            ];
+            if (!empty($to_add)) {
+                $criteria = [
+                    'OR' => [
+                        $criteria,
+                        $to_add
+                    ]
+                ];
+            }
+            return $criteria;
+        } else if (in_array($opt['field'], ['impact', 'urgency', 'priority'], true)) {
+            if (!is_numeric($val)) {
+                return [];
+            }
+            return match (true) {
+                $val > 0 => [$opt->getTableField() => [$nott ? '<>' : '=', $val]],
+                $val < 0 => [$opt->getTableField() => [$nott ? '<' : '>=', $val]],
+                default => [$opt->getTableField() => [$nott ? '<' : '>=', 0]],
+            };
+        } else if (
+            in_array(
+                $opt->getTableField(),
+                ['glpi_tickets.global_validation', 'glpi_ticketvalidations.status', 'glpi_changes.global_validation', 'glpi_changevalidations.status'],
+                true
+            )
+        ) {
+            if ($val == 'all') {
+                return [];
+            }
+            $to_check = match ($val) {
+                'can' => CommonITILValidation::getCanValidationStatusArray(),
+                'add' => CommonITILValidation::getAllValidationStatusArray(), // Dead case? Handled above
+                default => []
+            };
+            if (count($to_check) === 0) {
+                $to_check = [$val];
+            }
+            return match ($nott) {
+                true => [$opt->getTableField() => ['NOT IN' => $to_check]],
+                default => [$opt->getTableField() => $to_check],
+            };
+        }
+
+        return null;
     }
 }
