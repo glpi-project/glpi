@@ -2118,7 +2118,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.reminder.bumpremaining' => __('Number of remaining reminders before automatic resolution'),
             $objettype . '.reminder.bumptotal'  => __('Total number of reminders before automatic resolution'),
             $objettype . '.reminder.deadline'   => __('Auto resolution deadline'),
-            $objettype . '.reminder.bumptext'   => __('Reminder text'),
+            $objettype . '.reminder.text'   => __('Reminder text'),
             $objettype . '.reminder.name' => __('Pending reason name'),
         ];
 

@@ -236,7 +236,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
 ##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##
 ##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##
 
-##lang.ticket.reminder.bumptext##: ##ticket.reminder.bumptext##
+##lang.ticket.reminder.text##: ##ticket.reminder.text##
 PLAINTEXT,
         'content_html' => <<<HTML
         &lt;p&gt;##lang.ticket.title##: ##ticket.title##&lt;/p&gt;
@@ -245,7 +245,7 @@ PLAINTEXT,
 ##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##
 ##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##&lt;/p&gt;
 &lt;p&gt;
-##lang.ticket.reminder.bumptext##: ##ticket.reminder.bumptext##&lt;/p&gt;
+##lang.ticket.reminder.text##: ##ticket.reminder.text##&lt;/p&gt;
 HTML
     ]);
 
