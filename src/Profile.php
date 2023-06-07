@@ -2058,6 +2058,11 @@ class Profile extends CommonDBTM
                 'field'     => 'solutiontemplate'
             ],
             [
+                'itemtype'  => 'ITILValidationTemplate',
+                'label'     => _n('Validation template', 'Validation templates', Session::getPluralNumber()),
+                'field'     => 'itilvalidationtemplate'
+            ],
+            [
                 'itemtype'  => 'Calendar',
                 'label'     => _n('Calendar', 'Calendars', Session::getPluralNumber()),
                 'field'     => 'calendar'

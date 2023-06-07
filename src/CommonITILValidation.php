@@ -1698,7 +1698,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *  - items_id_target         : Validator id (can be an array)
      *  - applyto
      *
-     * @return void Output is printed
+     * @return string|int Output if $options['display'] is false, else return rand
      *
      * @since 10.1.0 Deprecated usage of 'name' option
      * @since 10.1.0 Deprecated usage of 'users_id_validate' option

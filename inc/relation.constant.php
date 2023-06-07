@@ -598,6 +598,7 @@ $RELATION = [
         '_glpi_items_operatingsystems'     => 'entities_id',
         'glpi_itilcategories'              => 'entities_id',
         'glpi_itilfollowuptemplates'       => 'entities_id',
+        'glpi_itilvalidationtemplates'     => 'entities_id',
         'glpi_knowbaseitemcategories'      => 'entities_id',
         'glpi_knowbaseitems'               => 'entities_id',
         'glpi_knowbaseitems_profiles'      => 'entities_id',
@@ -749,6 +750,7 @@ $RELATION = [
             'groups_id',
         ],
         'glpi_users'                  => 'groups_id',
+        'glpi_itilvalidationtemplates_targets' => 'groups_id',
     ],
 
     'glpi_holidays' => [
@@ -1634,6 +1636,12 @@ $RELATION = [
 
     'glpi_wifinetworks' => [
         'glpi_networkportwifis' => 'wifinetworks_id',
+    ],
+
+    'glpi_itilvalidationtemplates' => [
+        '_glpi_itilvalidationtemplates_targets' => 'itilvalidationtemplates_id',
+        'glpi_changevalidations' => 'itilvalidationtemplates_id',
+        'glpi_ticketvalidations' => 'itilvalidationtemplates_id',
     ],
 
 ];
