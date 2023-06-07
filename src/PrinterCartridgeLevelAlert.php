@@ -314,7 +314,6 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
             $alert   = new Alert();
 
             foreach (Entity::getEntitiesToNotify('printer_cartridge_levels_alert_repeat') as $entity => $repeat) {
-                // KKK if you change this query, please don't forget to also change in showDebug()
                 $query = self::query([$entity], $repeat);
                 $result = $DB->request($query);
                 $message = "";
