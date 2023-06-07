@@ -1105,11 +1105,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
            // as we consider that people often create tasks after their execution
            // begin date is task date minus duration
            // and end date is task date
-            $bdate = "DATE_SUB(" . $DB->quoteName($item->getTable() . '.date') .
-            ", INTERVAL " . $DB->quoteName($item->getTable() . '.actiontime') . " SECOND)";
-            $SELECT[] = new QueryExpression($bdate . ' AS ' . $DB->quoteName('notp_date'));
-            $edate = $DB->quoteName($item->getTable() . '.date');
-            $SELECT[] = new QueryExpression($edate . ' AS ' . $DB->quoteName('notp_edate'));
+            $bdate = QueryFunction::dateSub(
+                date: $item::getTable() . '.date',
+                interval: new QueryExpression($DB::quoteName($item::getTable() . '.actiontime')),
+                interval_unit: 'SECOND'
+            );
+            $SELECT[] = new QueryExpression($bdate, 'notp_date');
+            $edate = $DB::quoteName($item::getTable() . '.date');
+            $SELECT[] = new QueryExpression($edate, 'notp_edate');
             $WHERE = [
                 $item->getTable() . '.end'     => null,
                 $item->getTable() . '.begin'   => null,

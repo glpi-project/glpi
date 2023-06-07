@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 class PurgeLogs extends CommonDBTM
 {
@@ -420,7 +421,7 @@ class PurgeLogs extends CommonDBTM
     public static function getDateModRestriction($month)
     {
         if ($month > 0) {
-            return ['date_mod' => ['<=', new QueryExpression("DATE_ADD(NOW(), INTERVAL -$month MONTH)")]];
+            return ['date_mod' => ['<=', QueryFunction::dateSub(QueryFunction::now(), $month, 'MONTH')]];
         } else if ($month == Config::DELETE_ALL) {
             return [1 => 1];
         } else if ($month == Config::KEEP_ALL) {
