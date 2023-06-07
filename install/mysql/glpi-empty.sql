@@ -9560,6 +9560,8 @@ CREATE TABLE `glpi_itilreminders` (
   `itemtype` varchar(100) NOT NULL,
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `pendingreasons_id` int unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `content` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),

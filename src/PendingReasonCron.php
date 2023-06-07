@@ -142,12 +142,16 @@ class PendingReasonCron extends CommonDBTM
                     continue;
                 }
 
-                // Add bump (new ITILReminder)
-                $autoReminder = new ITILReminder();
-                $autoReminder->add([
+                // Add reminder (new ITILReminder)
+                $reminder = new ITILReminder();
+                $reminder->add([
                     'itemtype' => $item::getType(),
                     'items_id' => $item->getID(),
                     'pendingreasons_id' => $pending_reason->getID(),
+                    'name' => $pending_reason->fields['name'],
+                    'content' => ITILFollowupTemplate::getById(
+                        $pending_reason->fields['itilfollowuptemplates_id']
+                    )->getRenderedContent($item),
                 ]);
                 $task->addVolume(1);
 

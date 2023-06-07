@@ -59,3 +59,6 @@ if (!$DB->tableExists('glpi_itilreminders')) {
     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
     $DB->queryOrDie($query, '10.1 add table glpi_itilreminders');
 }
+
+$migration->addField('glpi_itilreminders', 'name', 'varchar(255) DEFAULT NULL');
+$migration->addField('glpi_itilreminders', 'content', 'text');
