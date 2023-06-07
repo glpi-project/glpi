@@ -3434,8 +3434,6 @@ final class SQLProvider implements SearchProviderInterface
                             $criterion = "`" . $table . $addtable . "`.`name` $order";
                         }
                         break;
-                    //FIXME glpi_networkequipments.ip seems like a dead case
-                    case "glpi_networkequipments.ip":
                     case "glpi_ipaddresses.name":
                         $criterion = "INET6_ATON(`$table$addtable`.`$field`) $order";
                         break;
