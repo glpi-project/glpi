@@ -1431,13 +1431,20 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $SELECT = [$ttask->getTable() . '.*'];
         $WHERE = $ADDWHERE;
         if (isset($options['not_planned'])) {
-           //not planned case
-            $bdate = "DATE_SUB(" . $DB->quoteName($ttask->getTable() . '.date_creation') .
-            ", INTERVAL " . $DB->quoteName($ttask->getTable() . '.planned_duration') . " SECOND)";
-            $SELECT[] = new QueryExpression($bdate . ' AS ' . $DB->quoteName('notp_date'));
-            $edate = "DATE_ADD(" . $DB->quoteName($ttask->getTable() . '.date_creation') .
-            ", INTERVAL " . $DB->quoteName($ttask->getTable() . '.planned_duration') . " SECOND)";
-            $SELECT[] = new QueryExpression($edate . ' AS ' . $DB->quoteName('notp_edate'));
+            //not planned case
+            $bdate = QueryFunction::dateSub(
+                date: $ttask::getTable() . '.date_creation',
+                interval: new QueryExpression($DB::quoteName($ttask::getTable() . '.planned_duration')),
+                interval_unit: 'SECOND',
+            );
+            $edate = QueryFunction::dateAdd(
+                date: $ttask::getTable() . '.date_creation',
+                interval: new QueryExpression($DB::quoteName($ttask::getTable() . '.planned_duration')),
+                interval_unit: 'SECOND',
+                alias: 'notp_edate'
+            );
+            $SELECT[] = new QueryExpression($bdate, 'notp_date');
+            $SELECT[] = new QueryExpression($edate, 'notp_edate');
 
             $WHERE = array_merge($WHERE, [
                 $ttask->getTable() . '.plan_start_date'   => null,
@@ -1654,7 +1661,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $iterator = $DB->request([
             'SELECT' => [
-                new QueryExpression('CAST(AVG(' . $DB->quoteName('percent_done') . ') AS UNSIGNED) AS percent_done')
+                QueryFunction::cast(
+                    expression: QueryFunction::avg('percent_done'),
+                    type: 'UNSIGNED',
+                    alias: 'percent_done'
+                )
             ],
             'FROM'   => ProjectTask::getTable(),
             'WHERE'  => [

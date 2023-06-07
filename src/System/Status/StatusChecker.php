@@ -40,6 +40,7 @@ use CronTask;
 use DBConnection;
 use DBmysql;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use MailCollector;
 use Plugin;
 use Toolbox;
@@ -482,26 +483,13 @@ final class StatusChecker
                 'stuck' => []
             ];
             if (self::isDBAvailable()) {
+                global $DB;
+
                 $crontasks = getAllDataFromTable('glpi_crontasks');
                 $running = count(array_filter($crontasks, static function ($crontask) {
                     return $crontask['state'] === CronTask::STATE_RUNNING;
                 }));
-                $stuck_crontasks = getAllDataFromTable(
-                    'glpi_crontasks',
-                    [
-                        'state'  => CronTask::STATE_RUNNING,
-                        'OR'     => [
-                            new QueryExpression(
-                                '(unix_timestamp(' . DBmysql::quoteName('lastrun') . ') + 2 * ' .
-                                DBmysql::quoteName('frequency') . ' < unix_timestamp(now()))'
-                            ),
-                            new QueryExpression(
-                                '(unix_timestamp(' . DBmysql::quoteName('lastrun') . ') + 2 * ' .
-                                HOUR_TIMESTAMP . ' < unix_timestamp(now()))'
-                            )
-                        ]
-                    ]
-                );
+                $stuck_crontasks = CronTask::getZombieCronTasks();
                 foreach ($stuck_crontasks as $ct) {
                       $status['stuck'][] = $ct['name'];
                 }

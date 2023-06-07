@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 
 /**
@@ -597,7 +598,7 @@ class SoftwareLicense extends CommonTreeDropdown
                     'NEWTABLE.is_template' => 0,
                     'OR'  => [
                         ['NEWTABLE.expire' => null],
-                        ['NEWTABLE.expire' => ['>', new QueryExpression('NOW()')]]
+                        ['NEWTABLE.expire' => ['>', QueryFunction::now()]]
                     ]
                 ]
             )

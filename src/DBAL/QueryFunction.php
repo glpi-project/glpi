@@ -51,12 +51,13 @@ use DBmysqlIterator;
  * @method static QueryExpression coalesce(array $params, ?string $alias = null) Build a 'COALESCE' function call
  * @method static QueryExpression concat(array $params, ?string $alias = null) Build a 'CONCAT' SQL function call
  * @method static QueryExpression floor(string|QueryExpression $expression, ?string $alias = null) Build a 'FLOOR' function call
+ * @method static QueryExpression greatest(array $params, ?string $alias = null) Build a 'LEAST' function call
  * @method static QueryExpression least(array $params, ?string $alias = null) Build a 'LEAST' function call
  * @method static QueryExpression lower(string|QueryExpression $expression, ?string $alias = null) Build a 'LOWER' SQL function call
  * @method static QueryExpression max(string|QueryExpression $expression, ?string $alias = null) Build a 'MAX' SQL function call
  * @method static QueryExpression min(string|QueryExpression $expression, ?string $alias = null) Build a 'MIN' SQL function call
- * @method static QueryExpression unixTimestamp(string|QueryExpression $expression, ?string $alias = null) Build a 'UNIX_TIMESTAMP' SQL function call
  * @method static QueryExpression upper(string|QueryExpression $expression, ?string $alias = null) Build a 'UPPER' SQL function call
+ * @method static QueryExpression year(string|QueryExpression $expression, ?string $alias = null) Build a 'YEAR' SQL function call
  **/
 class QueryFunction
 {
@@ -336,6 +337,21 @@ class QueryFunction
     }
 
     /**
+     * Build a SUBSTRING SQL function call
+     * @param string|QueryExpression $expression Expression
+     * @param int $start Start position
+     * @param int $length Length
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return QueryExpression
+     */
+    public static function substring(string|QueryExpression $expression, int $start, int $length, ?string $alias = null): QueryExpression
+    {
+        return self::getExpression('SUBSTRING', [
+            $expression, new QueryExpression($start), new QueryExpression($length)
+        ], $alias);
+    }
+
+    /**
      * Buidl a ROUND SQL function call
      * @param string|QueryExpression $expression Expression to round
      * @param int $precision Precision to round to
@@ -383,5 +399,32 @@ class QueryFunction
     public static function datediff(string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
         return self::getExpression('DATEDIFF', [$expression1, $expression2], $alias);
+    }
+
+    /**
+     * Build a TIMEDIFF SQL function call
+     * @param string|QueryExpression $expression1 Expression to compare
+     * @param string|QueryExpression $expression2 Expression to compare
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return QueryExpression
+     */
+    public static function timediff(string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
+    {
+        return self::getExpression('TIMEDIFF', [$expression1, $expression2], $alias);
+    }
+
+    /**
+     * Build a UNIX_TIMSTAMP SQL function call
+     * @param string|QueryExpression|null $expression Expression to convert. If null, the current timestamp will be used (NOW() implied at the DB level).
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return QueryExpression
+     */
+    public static function unixTimestamp(string|QueryExpression $expression = null, ?string $alias = null): QueryExpression
+    {
+        $params = [];
+        if ($expression !== null) {
+            $params = [$expression];
+        }
+        return self::getExpression('UNIX_TIMESTAMP', $params, $alias);
     }
 }

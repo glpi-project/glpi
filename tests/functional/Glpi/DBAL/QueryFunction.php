@@ -371,6 +371,8 @@ class QueryFunction extends \GLPITestCase
         return [
             ['glpi_computers.date_mod', null, "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`)"],
             ['glpi_computers.date_mod', 'unix_timestamp_alias', "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`) AS `unix_timestamp_alias`"],
+            [null, null, "UNIX_TIMESTAMP()"],
+            [null, 'unix_now', "UNIX_TIMESTAMP() AS `unix_now`"],
         ];
     }
 
@@ -548,5 +550,113 @@ class QueryFunction extends \GLPITestCase
     public function testBitCount($expression, $alias, $expected)
     {
         $this->string((string) \Glpi\DBAL\QueryFunction::bitCount($expression, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function substringProvider()
+    {
+        return [
+            ['glpi_computers.name', 0, 10, null, "SUBSTRING(`glpi_computers`.`name`, 0, 10)"],
+            ['glpi_computers.name', 2, 8, 'substring_alias', "SUBSTRING(`glpi_computers`.`name`, 2, 8) AS `substring_alias`"],
+            [new QueryExpression("'TestName'"), 0, 10, null, "SUBSTRING('TestName', 0, 10)"],
+        ];
+    }
+
+    /**
+     * @dataProvider substringProvider
+     */
+    public function testSubstring($expression, $start, $length, $alias, $expected)
+    {
+        $this->string((string) \Glpi\DBAL\QueryFunction::substring($expression, $start, $length, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function greatestProvider()
+    {
+        return [
+            [
+                'params' => [
+                    'glpi_computers.date_mod',
+                    'glpi_computers.date_creation',
+                ],
+                'alias' => null,
+                'expected' => "GREATEST(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`)",
+            ],
+            [
+                'params' => [
+                    'glpi_computers.date_mod',
+                    'glpi_computers.date_creation',
+                ],
+                'alias' => 'greatest_alias',
+                'expected' => "GREATEST(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`) AS `greatest_alias`",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider greatestProvider
+     */
+    public function testGreatest($params, $alias, $expected)
+    {
+        $this->string((string) \Glpi\DBAL\QueryFunction::greatest($params, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function yearProvider()
+    {
+        return [
+            [
+                'expression' => 'glpi_computers.date_mod',
+                'alias' => null,
+                'expected' => "YEAR(`glpi_computers`.`date_mod`)",
+            ],
+            [
+                'expression' => 'glpi_computers.date_mod',
+                'alias' => 'year_alias',
+                'expected' => "YEAR(`glpi_computers`.`date_mod`) AS `year_alias`",
+            ],
+            [
+                'expression' => new QueryExpression("'2023-01-01'"),
+                'alias' => null,
+                'expected' => "YEAR('2023-01-01')",
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider yearProvider
+     */
+    public function testYear($expression, $alias, $expected)
+    {
+        $this->string((string) \Glpi\DBAL\QueryFunction::year($expression, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function timeDiffProvider()
+    {
+        return [
+            [
+                'expression1' => 'glpi_computers.date_mod',
+                'expression2' => 'glpi_computers.date_creation',
+                'alias' => null,
+                'expected' => "TIMEDIFF(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`)",
+            ],
+            [
+                'expression1' => 'glpi_computers.date_mod',
+                'expression2' => 'glpi_computers.date_creation',
+                'alias' => 'timediff_alias',
+                'expected' => "TIMEDIFF(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`) AS `timediff_alias`",
+            ],
+            [
+                'expression1' => new QueryExpression("'2023-01-01 00:00:00'"),
+                'expression2' => 'glpi_computers.date_creation',
+                'alias' => null,
+                'expected' => "TIMEDIFF('2023-01-01 00:00:00', `glpi_computers`.`date_creation`)",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider timeDiffProvider
+     */
+    public function testTimeDiff($expression1, $expression2, $alias, $expected)
+    {
+        $this->string((string) \Glpi\DBAL\QueryFunction::timediff($expression1, $expression2, $alias))->isIdenticalTo($expected);
     }
 }

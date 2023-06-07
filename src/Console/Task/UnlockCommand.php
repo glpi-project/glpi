@@ -114,7 +114,7 @@ class UnlockCommand extends AbstractCommand
                     new QueryExpression(
                         QueryFunction::unixTimestamp('lastrun') . " + $delay"
                         . " < "
-                        . QueryFunction::unixTimestamp(QueryFunction::now())
+                        . QueryFunction::unixTimestamp()
                     )
                 ]
             ]

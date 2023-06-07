@@ -182,6 +182,19 @@
                 <h3 class="cart-title">{{ __("Validation request") }}</h3>
             </div>
             <div class="card-body">
+               {{ fields.dropdownField(
+                  'ITILValidationTemplate',
+                  'itilvalidationtemplates_id',
+                  '',
+                  _n('Template', 'Templates', 1),
+                  {
+                     'full_width': true,
+                     'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
+                     'entity': item.fields['entities_id'],
+                     'rand': rand,
+                  },
+                ) }}
+
                 {{ fields.readOnlyField(
                     'approval_requester',
                     get_current_user().getFriendlyName(),
@@ -210,6 +223,7 @@
                             'items_id_target': subitem.fields['items_id_target'] ?? '',
                             'right': validation_right,
                             'display': false,
+                            'rand': rand,
                         }),
                         __('Approver'),
                         {
@@ -286,5 +300,67 @@
             window.scrollTo(0,document.body.scrollHeight);
          </script>
       {% endif %}
+
+      <script type="text/javascript">
+         function itilvalidationtemplate_update{{ rand }}(value) {
+            $.ajax({
+               url: '{{ path('/ajax/itilvalidation.php') }}',
+               type: 'POST',
+               data: {
+                  validationtemplates_id: value,
+                  items_id: '{{ item.fields['id'] }}',
+                  itemtype: '{{ item.getType() }}'
+               }
+            }).done(function (data) {
+               if (data.content !== undefined) {
+                  // set textarea content
+                  if (validationtinymce = tinymce.get("comment_submission_{{ rand }}")) {
+                     validationtinymce.setContent(data.content);
+                  }
+               }
+
+               if (data.validatortype !== undefined) {
+                  // set validator type
+                  $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
+                  $("#dropdown__validatortype_{{ rand }}").trigger('setValue', data.validatortype);
+
+                  if (data.groups_id !== undefined && data.groups_id !== null) {
+                     waitForElement("#dropdown_groups_id{{ rand }}").then((elm) => {
+                        // set groups_id
+                        $("#dropdown_groups_id{{ rand }}").ready(function() {
+                           $("#dropdown_groups_id{{ rand }}").trigger('setValue', data.groups_id);
+                        });
+
+                        waitForElement("#dropdown_items_id_target{{ rand }}").then((elm) => {
+                           // set items_id_target
+                           $("#dropdown_items_id_target{{ rand }}").ready(function() {
+                              $("#dropdown_items_id_target{{ rand }}").trigger('setValue', data.items_id_target);
+                           });
+                        });
+                     });
+                  } else if (data.items_id_target !== undefined) {
+                     new Promise((resolve) => {
+                        // if dropdown_items_id_target exists, wait for it to be removed
+                        // is required because the dropdown is removed and recreated when the setValue is triggered
+                        if ($("#dropdown_items_id_target{{ rand }}").length > 0) {
+                           $("#dropdown_items_id_target{{ rand }}").on('remove', function() {
+                              resolve();
+                           });
+                        } else {
+                           resolve();
+                        }
+                     }).then(() => {
+                        waitForElement("#dropdown_items_id_target{{ rand }}").then((elm) => {
+                           // set items_id_target
+                           $("#dropdown_items_id_target{{ rand }}").ready(function() {
+                              $("#dropdown_items_id_target{{ rand }}").trigger('setValue', data.items_id_target);
+                           });
+                        });
+                     });
+                  }
+               }
+            });
+         }
+      </script>
    {% endif %}
 {% endblock %}
