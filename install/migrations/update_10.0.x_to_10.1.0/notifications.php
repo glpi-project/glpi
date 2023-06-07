@@ -228,25 +228,20 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
         'notificationtemplates_id' => $notificationtemplate_id,
         'language' => '',
         'subject' => '##ticket.action## ##ticket.name##',
-        'content_text' => <<<PLAINTEXT
-        ##lang.ticket.title##: ##ticket.title##
+        'content_text' => '##lang.ticket.title##: ##ticket.title##
 
 ##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##
 ##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##
 ##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##
 ##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##
 
-##lang.ticket.reminder.text##: ##ticket.reminder.text##
-PLAINTEXT,
-        'content_html' => <<<HTML
-        &lt;p&gt;##lang.ticket.title##: ##ticket.title##&lt;/p&gt;
-&lt;p&gt;##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##
-##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##
-##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##
-##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##&lt;/p&gt;
-&lt;p&gt;
-##lang.ticket.reminder.text##: ##ticket.reminder.text##&lt;/p&gt;
-HTML
+##lang.ticket.reminder.text##: ##ticket.reminder.text##',
+        'content_html' => '&lt;p&gt;##lang.ticket.title##: ##ticket.title##&lt;/p&gt;
+            &lt;p&gt;##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##&lt;/a&gt;&lt;br /&gt;
+            ##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##&lt;/a&gt;&lt;br /&gt;
+            ##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##&lt;/a&gt;&lt;br /&gt;
+            ##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##&lt;/p&gt;
+            &lt;p&gt;##lang.ticket.reminder.text##: ##ticket.reminder.text##&lt;/p&gt;',
     ]);
 
     $DB->insertOrDie(

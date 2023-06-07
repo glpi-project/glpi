@@ -5196,9 +5196,21 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id'                       => '31',
                 'notificationtemplates_id' => '31',
                 'language'                 => '',
-                'subject'                  => '##ticket.action## ##ticket.title##',
-                'content_text'             => '##ticket.reminder.bumptext##',
-                'content_html'             => '&lt;p&gt;##ticket.reminder.bumptext##&lt;/p&gt;',
+                'subject'                  => '##ticket.action## ##ticket.name##',
+                'content_text'             => '##lang.ticket.title##: ##ticket.title##
+
+##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##
+##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##
+##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##
+##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##
+
+##lang.ticket.reminder.text##: ##ticket.reminder.text##',
+                'content_html'             => '&lt;p&gt;##lang.ticket.title##: ##ticket.title##&lt;/p&gt;
+                    &lt;p&gt;##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##&lt;/a&gt;&lt;br /&gt;
+                    ##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##&lt;/a&gt;&lt;br /&gt;
+                    ##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##&lt;/a&gt;&lt;br /&gt;
+                    ##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##&lt;/p&gt;
+                    &lt;p&gt;##lang.ticket.reminder.text##: ##ticket.reminder.text##&lt;/p&gt;',
             ]
         ];
 
