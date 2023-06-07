@@ -173,26 +173,24 @@ class Log extends CommonDBTM
                         $changes = [$id_search_option, $oldval ?? '', $values[$key]];
                     } else {
                        // other cases; link field -> get data from dropdown
-                        if ($val2["table"] != 'glpi_auth_tables') {
-                            $changes = [$id_search_option,
-                                sprintf(
-                                    __('%1$s (%2$s)'),
-                                    Dropdown::getDropdownName(
-                                        $val2["table"],
-                                        $oldval
-                                    ),
+                        $changes = [$id_search_option,
+                            sprintf(
+                                __('%1$s (%2$s)'),
+                                Dropdown::getDropdownName(
+                                    $val2["table"],
                                     $oldval
                                 ),
-                                sprintf(
-                                    __('%1$s (%2$s)'),
-                                    Dropdown::getDropdownName(
-                                        $val2["table"],
-                                        $values[$key]
-                                    ),
+                                $oldval
+                            ),
+                            sprintf(
+                                __('%1$s (%2$s)'),
+                                Dropdown::getDropdownName(
+                                    $val2["table"],
                                     $values[$key]
-                                )
-                            ];
-                        }
+                                ),
+                                $values[$key]
+                            )
+                        ];
                     }
                     break;
                 }

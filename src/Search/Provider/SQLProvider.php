@@ -366,16 +366,6 @@ final class SQLProvider implements SearchProviderInterface
                 }
                 break;
 
-            case "glpi_auth_tables.name":
-                $user_searchopt = SearchOption::getOptionsForItemtype('User');
-                $SELECT = [
-                    "glpi_users.authtype AS {$NAME}",
-                    "glpi_users.auths_id AS {$NAME}_auths_id",
-                    "glpi_authldaps{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[30]['joinparams']) . "{$addmeta},{$field} AS {$NAME}_{$ID}_ldapname",
-                    "glpi_authmails{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[31]['joinparams']) . "{$addmeta},{$field} AS {$NAME}_{$ID}_mailname",
-                ];
-                return array_merge($SELECT, $ADDITONALFIELDS);
-
             case "glpi_softwareversions.name":
                 if ($meta && $meta_type === Software::class) {
                     $SELECT = [
@@ -1368,21 +1358,6 @@ final class SQLProvider implements SearchProviderInterface
                     }
                 }
                 break;
-
-            case "glpi_auth_tables.name":
-                $user_searchopt = SearchOption::getOptionsForItemtype('User');
-                $tmplink        = 'OR';
-                if ($nott) {
-                    $tmplink = 'AND';
-                }
-                $criteria = [
-                    $tmplink => []
-                ];
-                $c_field_1 = "glpi_authmails.{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[31]['joinparams']) . "$addmeta.name";
-                $c_field_2 = "glpi_authldaps.{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[30]['joinparams']) . "$addmeta.name";
-                $append_criterion_with_search($criteria[$tmplink], $c_field_1);
-                $append_criterion_with_search($criteria[$tmplink], $c_field_2);
-                return $criteria;
 
             case "glpi_ipaddresses.name":
                 if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
@@ -2454,36 +2429,6 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             if (empty($specific_leftjoin_criteria)) {
-                switch ($new_table) {
-                    // No link
-                    case "glpi_auth_tables":
-                        $user_searchopt     = SearchOption::getOptionsForItemtype('User');
-
-                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $rt,
-                            $already_link_tables,
-                            "glpi_authldaps",
-                            'auths_id',
-                            false,
-                            '',
-                            $user_searchopt[30]['joinparams']
-                        ));
-                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $rt,
-                            $already_link_tables,
-                            "glpi_authmails",
-                            'auths_id',
-                            false,
-                            '',
-                            $user_searchopt[31]['joinparams']
-                        ));
-                        break;
-                }
-            }
-
-            if (empty($specific_leftjoin_criteria)) {
                 switch ($joinparams['jointype']) {
                     case 'child':
                         $linkfield = $joinparams['linkfield'] ?? getForeignKeyFieldForTable($cleanrt);
@@ -3406,18 +3351,6 @@ final class SQLProvider implements SearchProviderInterface
 
             if ($criterion === null) {
                 switch ($table . "." . $field) {
-                    // FIXME Dead case? Can't see any itemtype referencing this table in their search options to be able to get here.
-                    case "glpi_auth_tables.name":
-                        $user_searchopt = SearchOption::getOptionsForItemtype('User');
-                        $criterion = "`glpi_users`.`authtype` $order,
-                              `glpi_authldaps" . $addtable . "_" .
-                            self::computeComplexJoinID($user_searchopt[30]['joinparams']) . "`.
-                                 `name` $order,
-                              `glpi_authmails" . $addtable . "_" .
-                            self::computeComplexJoinID($user_searchopt[31]['joinparams']) . "`.
-                                 `name` $order";
-                        break;
-
                     case "glpi_users.name":
                         if ($itemtype != 'User') {
                             if ($_SESSION["glpinames_format"] == \User::FIRSTNAME_BEFORE) {
@@ -5258,14 +5191,6 @@ final class SQLProvider implements SearchProviderInterface
                         return 0;
                     }
                     return $data[$ID][0]['name'];
-
-                case "glpi_auth_tables.name":
-                    return \Auth::getMethodName(
-                        $data[$ID][0]['name'],
-                        $data[$ID][0]['auths_id'],
-                        1,
-                        $data[$ID][0]['ldapname'] . $data[$ID][0]['mailname']
-                    );
 
                 case "glpi_reservationitems.comment":
                     if (empty($data[$ID][0]['name'])) {
