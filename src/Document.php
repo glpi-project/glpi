@@ -1770,7 +1770,7 @@ class Document extends CommonDBTM
                 return false;
             }
             $etype = exif_imagetype($file);
-            return in_array($etype, [IMAGETYPE_JPEG, IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_BMP]);
+            return in_array($etype, [IMAGETYPE_JPEG, IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_BMP, IMAGETYPE_WEBP]);
         } else {
             trigger_error(
                 'For security reasons, you should consider using exif PHP extension to properly check images.',
@@ -1779,7 +1779,7 @@ class Document extends CommonDBTM
             $fileinfo = finfo_open(FILEINFO_MIME_TYPE);
             return in_array(
                 finfo_file($fileinfo, $file),
-                ['image/jpeg', 'image/png','image/gif', 'image/bmp']
+                ['image/jpeg', 'image/png','image/gif', 'image/bmp', 'image/webp']
             );
         }
     }
