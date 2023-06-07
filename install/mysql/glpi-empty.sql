@@ -9566,6 +9566,7 @@ CREATE TABLE `glpi_itilreminders` (
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `pendingreasons_id` (`pendingreasons_id`)
