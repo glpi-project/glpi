@@ -45,6 +45,7 @@ use Glpi\Debug\Profiler;
 use Glpi\Form\Form;
 use Glpi\Features\AssignableItem;
 use Glpi\RichText\RichText;
+use Glpi\Search\AdvancedSearchInterface;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
@@ -113,24 +114,22 @@ final class SQLProvider implements SearchProviderInterface
             $mayberecursive = $item->maybeRecursive();
         }
         $ret = [];
-        switch ($itemtype) {
-            case 'FieldUnicity':
-                $ret[] = "`glpi_fieldunicities`.`itemtype` AS ITEMTYPE";
-                break;
 
-            default:
-                // Plugin can override core definition for its type
-                if ($plug = isPluginItemType($itemtype)) {
-                    $default_select = \Plugin::doOneHook($plug['plugin'], 'addDefaultSelect', $itemtype);
-                    if (!empty($default_select)) {
-                        $ret[] = new QueryExpression(rtrim($default_select, ' ,'));
-                    }
-                }
+        if (is_subclass_of($itemtype, AdvancedSearchInterface::class)) {
+            $criteria = $itemtype::getSQLDefaultSelectCriteria($itemtype);
+            if ($criteria !== null) {
+                $ret = array_merge($ret, $criteria);
+            }
         }
-        if ($itemtable === 'glpi_entities') {
-            $ret[] = "`$itemtable`.`id` AS entities_id";
-            $ret[] = "'1' AS is_recursive";
-        } else if ($mayberecursive) {
+
+        // Plugin can override core definition for its type
+        if ($plug = isPluginItemType($itemtype)) {
+            $default_select = \Plugin::doOneHook($plug['plugin'], 'addDefaultSelect', $itemtype);
+            if (!empty($default_select)) {
+                $ret[] = new QueryExpression(rtrim($default_select, ' ,'));
+            }
+        }
+        if ($mayberecursive && $itemtable !== 'glpi_entities') {
             if ($item->isField('entities_id')) {
                 $ret[] = $DB::quoteName("$itemtable.entities_id");
             }
@@ -1265,187 +1264,17 @@ final class SQLProvider implements SearchProviderInterface
                 $criteria[$value] = $SEARCH;
             }
         };
-        switch ($inittable . "." . $field) {
-            // case "glpi_users_validation.name" :
-
-            case "glpi_users.name":
-                if ($val === 'myself') {
-                    switch ($searchtype) {
-                        case 'equals':
-                            return [
-                                "$table.id" => $_SESSION['glpiID']
-                            ];
-
-                        case 'notequals':
-                            return [
-                                "$table.id" => ['<>', $_SESSION['glpiID']]
-                            ];
-                    }
-                }
-
-                if ($itemtype === User::class) { // glpi_users case / not link table
-                    $criteria = [
-                        'OR' => []
-                    ];
-                    if (in_array($searchtype, ['equals', 'notequals'])) {
-                        $append_criterion_with_search($criteria['OR'], "$table.id");
-
-                        if ($searchtype === 'notequals') {
-                            $nott = !$nott;
-                        }
-
-                        // Add NULL if $val = 0 and not negative search
-                        // Or negative search on real value
-                        if ((!$nott && ($val == 0)) || ($nott && ($val != 0))) {
-                            $criteria['OR'][] = ["$table.id" => null];
-                        }
-
-                        return $criteria;
-                    }
-                    return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
-                }
-                if ($_SESSION["glpinames_format"] == \User::FIRSTNAME_BEFORE) {
-                    $name1 = 'firstname';
-                    $name2 = 'realname';
-                } else {
-                    $name1 = 'realname';
-                    $name2 = 'firstname';
-                }
-
-                if (in_array($searchtype, ['equals', 'notequals'])) {
-                    $criteria = [
-                        'OR' => []
-                    ];
-                    $append_criterion_with_search($criteria['OR'], "$table.id");
-                    if ($val == 0) {
-                        if ($searchtype === 'notequals') {
-                            $criteria['OR'][] = [
-                                'NOT' => ["$table.id" => null]
-                            ];
-                        } else {
-                            $criteria['OR'][] = [
-                                "$table.id" => null
-                            ];
-                        }
-                    }
-                    return $criteria;
-                } else if ($searchtype === 'empty') {
-                    $criteria = [];
-                    $append_criterion_with_search($criteria, "$table.id");
-                    return $criteria;
-                }
-                $toadd   = '';
-
-                $tmplink = 'OR';
-                if ($nott) {
-                    $tmplink = 'AND';
-                }
-
-                if (is_a($itemtype, \CommonITILObject::class, true)) {
-                    $itil_user_tables = ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'];
-                    $has_join         = isset($opt["joinparams"]["beforejoin"]["table"], $opt["joinparams"]["beforejoin"]["joinparams"]);
-                    if ($has_join && in_array($opt["joinparams"]["beforejoin"]["table"], $itil_user_tables, true)) {
-                        $bj        = $opt["joinparams"]["beforejoin"];
-                        $linktable = $bj['table'] . '_' . \Search::computeComplexJoinID($bj['joinparams']) . $addmeta;
-                        //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
-                        $toadd     = self::makeTextCriteria(
-                            "`$linktable`.`alternative_email`",
-                            $val,
-                            $nott,
-                            $tmplink
-                        );
-                        // Remove $tmplink (may have spaces around it) from front of $toadd
-                        $toadd = preg_replace('/^\s*' . preg_quote($tmplink, '/') . '\s*/', '', $toadd);
-                        if ($val === '^$') {
-                            return [
-                                'OR' => [
-                                    "$linktable.users_id" => null,
-                                    "$linktable.alternative_email" => null
-                                ]
-                            ];
-                        }
-                    }
-                }
-                $criteria = [
-                    $tmplink => []
-                ];
-                $append_criterion_with_search($criteria[$tmplink], "$table.$name1");
-                $append_criterion_with_search($criteria[$tmplink], "$table.$name2");
-                $append_criterion_with_search($criteria[$tmplink], "$table.$field");
-                $append_criterion_with_search(
-                    $criteria[$tmplink],
-                    QueryFunction::concat([
-                        "$table.$name1",
-                        new QueryExpression($DB::quoteValue(' ')),
-                        "$table.$name2"
-                    ])
-                );
-                if ($nott && ($val !== 'NULL') && ($val !== 'null')) {
-                    $criteria = [
-                        $tmplink => [
-                            'OR' => [
-                                $criteria,
-                                "$table.$field" => null
-                            ],
-                            new QueryExpression($toadd)
-                        ]
-                    ];
-                }
+        $opt_itemtype = getItemTypeForTable($opt['table']);
+        if ($opt_itemtype === 'UNKNOWN') {
+            $opt_itemtype = $itemtype;
+        }
+        if (is_subclass_of($opt_itemtype, AdvancedSearchInterface::class)) {
+            $criteria = $opt_itemtype::getSQLWhereCriteria($itemtype, $opt, $nott, $searchtype, $val, $meta, $append_criterion_with_search);
+            if ($criteria !== null) {
                 return $criteria;
-
-            case "glpi_groups.completename":
-                if ($val === 'mygroups') {
-                    switch ($searchtype) {
-                        case 'equals':
-                            if (count($_SESSION['glpigroups']) === 0) {
-                                return [];
-                            }
-                            return [
-                                "$table.id" => $_SESSION['glpigroups']
-                            ];
-
-                        case 'notequals':
-                            if (count($_SESSION['glpigroups']) === 0) {
-                                return [];
-                            }
-                            return [
-                                "$table.id" => ['NOT IN', $_SESSION['glpigroups']]
-                            ];
-
-                        case 'under':
-                            if (count($_SESSION['glpigroups']) === 0) {
-                                return [];
-                            }
-                            $groups = $_SESSION['glpigroups'];
-                            foreach ($_SESSION['glpigroups'] as $g) {
-                                $groups += getSonsOf($inittable, $g);
-                            }
-                            $groups = array_unique($groups);
-                            return [
-                                "$table.id" => $groups
-                            ];
-
-                        case 'notunder':
-                            if (count($_SESSION['glpigroups']) === 0) {
-                                return [];
-                            }
-                            $groups = $_SESSION['glpigroups'];
-                            foreach ($_SESSION['glpigroups'] as $g) {
-                                $groups += getSonsOf($inittable, $g);
-                            }
-                            $groups = array_unique($groups);
-                            return [
-                                "$table.id" => ['NOT IN', $groups]
-                            ];
-
-                        case 'empty':
-                            $criteria = [];
-                            $append_criterion_with_search($criteria, "$table.id");
-                            return $criteria;
-                    }
-                }
-                break;
-
+            }
+        }
+        switch ($inittable . "." . $field) {
             case "glpi_ipaddresses.name":
                 if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
                     if ($nott) {
@@ -1459,93 +1288,6 @@ final class SQLProvider implements SearchProviderInterface
                     return [new QueryExpression("(INET_ATON(`$table`.`$field`) " . $regs[1] . " INET_ATON('" . $regs[3] . "'))")];
                 }
                 break;
-
-            case "glpi_tickets.status":
-            case "glpi_problems.status":
-            case "glpi_changes.status":
-                $tocheck = [];
-                $item = getItemForItemtype($itemtype);
-                if ($item instanceof CommonITILObject) {
-                    switch ($val) {
-                        case 'process':
-                            $tocheck = $item->getProcessStatusArray();
-                            break;
-
-                        case 'notclosed':
-                            $tocheck = $item::getAllStatusArray();
-                            foreach ($item::getClosedStatusArray() as $status) {
-                                if (isset($tocheck[$status])) {
-                                    unset($tocheck[$status]);
-                                }
-                            }
-                            $tocheck = array_keys($tocheck);
-                            break;
-
-                        case 'old':
-                            $tocheck = array_merge(
-                                $item::getSolvedStatusArray(),
-                                $item::getClosedStatusArray()
-                            );
-                            break;
-
-                        case 'notold':
-                            $tocheck = $item::getNotSolvedStatusArray();
-                            break;
-
-                        case 'all':
-                            $tocheck = array_keys($item::getAllStatusArray());
-                            break;
-                    }
-
-                    if (count($tocheck) === 0) {
-                        $statuses = $item::getAllStatusArray();
-                        if (isset($statuses[$val])) {
-                            $tocheck = [$val];
-                        }
-                    }
-                }
-
-                if (count($tocheck)) {
-                    if ($nott) {
-                        return [
-                            "$table.$field" => ['NOT IN', $tocheck]
-                        ];
-                    }
-                    return [
-                        "$table.$field" => $tocheck
-                    ];
-                }
-                break;
-
-            case "glpi_tickets_tickets.tickets_id_1":
-                $tmplink = 'OR';
-                $compare = '=';
-                if ($nott) {
-                    $tmplink = 'AND';
-                    $compare = '<>';
-                }
-                $toadd2 = '';
-                if (
-                    $nott
-                    && ($val != 'NULL') && ($val != 'null')
-                ) {
-                    $toadd2 = " OR `$table`.`$field` IS NULL";
-                }
-
-                return new QueryExpression(" (((`$table`.`tickets_id_1` $compare '$val'
-                              $tmplink `$table`.`tickets_id_2` $compare '$val')
-                             AND `glpi_tickets`.`id` <> '$val')
-                            $toadd2)");
-
-            case "glpi_tickets.priority":
-            case "glpi_tickets.impact":
-            case "glpi_tickets.urgency":
-            case "glpi_problems.priority":
-            case "glpi_problems.impact":
-            case "glpi_problems.urgency":
-            case "glpi_changes.priority":
-            case "glpi_changes.impact":
-            case "glpi_changes.urgency":
             case "glpi_projects.priority":
                 if (is_numeric($val)) {
                     if ($val > 0) {
@@ -1567,29 +1309,6 @@ final class SQLProvider implements SearchProviderInterface
                     ];
                 }
                 return [];
-
-            case "glpi_tickets.global_validation":
-            case "glpi_ticketvalidations.status":
-            case "glpi_changes.global_validation":
-            case "glpi_changevalidations.status":
-                if ($val !== 'can' && !is_numeric($val)) {
-                    return [];
-                }
-                $tocheck = [];
-                if ($val === 'can') {
-                    $tocheck = \CommonITILValidation::getCanValidationStatusArray();
-                } else {
-                    $tocheck = [$val];
-                }
-                if ($nott) {
-                    return [
-                        "$table.$field" => ['NOT IN', $tocheck]
-                    ];
-                }
-                return [
-                    "$table.$field" => $tocheck
-                ];
-
             case "glpi_notifications.event":
                 if (in_array($searchtype, ['equals', 'notequals']) && strpos($val, \Search::SHORTSEP)) {
                     $not = 'notequals' === $searchtype ? 'NOT' : '';
