@@ -737,4 +737,36 @@ class QueryFunction extends \GLPITestCase
     {
         $this->string((string) \Glpi\DBAL\QueryFunction::locate($substring, $expression, $alias))->isIdenticalTo($expected);
     }
+
+    protected function inetAtonProvider()
+    {
+        return [
+            ['glpi_ipaddresses.name', null, "INET_ATON(`glpi_ipaddresses`.`name`)"],
+            ['glpi_ipaddresses.name', 'inet_alias', "INET_ATON(`glpi_ipaddresses`.`name`) AS `inet_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider inetAtonProvider
+     */
+    public function testInetAton($expression, $alias, $expected)
+    {
+        $this->string((string) \Glpi\DBAL\QueryFunction::inetAton($expression, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function inetAton6Provider()
+    {
+        return [
+            ['glpi_ipaddresses.name', null, "INET6_ATON(`glpi_ipaddresses`.`name`)"],
+            ['glpi_ipaddresses.name', 'inet_alias', "INET6_ATON(`glpi_ipaddresses`.`name`) AS `inet_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider inetAton6Provider
+     */
+    public function testInet6Aton($expression, $alias, $expected)
+    {
+        $this->string((string) \Glpi\DBAL\QueryFunction::inet6Aton($expression, $alias))->isIdenticalTo($expected);
+    }
 }

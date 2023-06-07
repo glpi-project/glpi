@@ -888,4 +888,11 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     {
         return "/Form/Render/" . $this->getID();
     }
+
+    #[Override]
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        // Do not show unsaved drafts in the form list
+        return ['is_draft' => 0];
+    }
 }

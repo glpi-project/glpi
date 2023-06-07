@@ -34,6 +34,9 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\Search\Provider\SQLProvider;
 
 /**
  * SoftwareVersion Class
@@ -396,5 +399,52 @@ TWIG, $twig_params);
             self::showForSoftware($item);
         }
         return true;
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, \Glpi\Search\SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table_ref = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+        $addmeta = $meta ? SQLProvider::getMetaTableUniqueSuffix($opt['table'], $meta_type) : '';
+
+        if ($field === 'name') {
+            if ($meta && $meta_type === Software::class) {
+                return [
+                    QueryFunction::groupConcat(
+                        expression: QueryFunction::concat([
+                            "glpi_softwares.name",
+                            new QueryExpression($DB::quoteValue(" - ")),
+                            "$table_ref.name",
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "$table_ref.id",
+                        ]),
+                        separator: \Search::LONGSEP,
+                        distinct: true,
+                        alias: $opt->getSelectFieldAlias($itemtype)
+                    ),
+                ];
+            }
+        } else if ($field === 'comment') {
+            $_table = ($meta && $meta_type === Software::class) ? Software::getTable() : ($table_ref);
+            return [
+                QueryFunction::groupConcat(
+                    expression: QueryFunction::concat([
+                        "{$_table}.name",
+                        new QueryExpression($DB::quoteValue(" - ")),
+                        "{$table_ref}.comment",
+                        new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                        "{$table_ref}.id"
+                    ]),
+                    separator: \Search::LONGSEP,
+                    distinct: true,
+                    alias: $opt->getSelectFieldAlias($itemtype)
+                ),
+            ];
+        }
+
+        return parent::getSQLSelectCriteria($itemtype, $opt, $meta, $meta_type);
     }
 }

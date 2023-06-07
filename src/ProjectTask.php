@@ -40,6 +40,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\RichText\RichText;
+use Glpi\Search\Provider\SQLProvider;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\IntegerValue;
@@ -2400,5 +2401,54 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
         }
         return $result;
+    }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        $teamtable  = 'glpi_projecttaskteams';
+        $group_criteria = [];
+        if (count($_SESSION['glpigroups'])) {
+            $group_criteria = [
+                "$teamtable.itemtype" => Group::class,
+                "$teamtable.items_id" => $_SESSION['glpigroups']
+            ];
+        }
+        $user_criteria = [
+            "$teamtable.itemtype" => User::class,
+            "$teamtable.items_id" => Session::getLoginUserID()
+        ];
+        $criteria = [
+            "glpi_projects.is_template" => 0,
+            'OR' => [
+                $user_criteria
+            ]
+        ];
+        if (!empty($group_criteria)) {
+            $criteria['OR'][] = $group_criteria;
+        }
+        return $criteria;
+    }
+
+    public static function getSQLDefaultJoinCriteria(string $ref_table, array &$already_link_tables): array
+    {
+        $joins = SQLProvider::getLeftJoinCriteria(
+            static::class,
+            $ref_table,
+            $already_link_tables,
+            "glpi_projects",
+            "projects_id"
+        );
+        $joins = array_merge_recursive($joins, SQLProvider::getLeftJoinCriteria(
+            static::class,
+            $ref_table,
+            $already_link_tables,
+            "glpi_projecttaskteams",
+            "projecttaskteams_id",
+            0,
+            0,
+            ['jointype' => 'child']
+        ));
+
+        return $joins;
     }
 }

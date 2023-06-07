@@ -38,6 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 use Glpi\Features\AssignableItem;
+use Glpi\Search\SearchOption;
 
 /**
  * SoftwareLicense Class
@@ -1197,5 +1198,22 @@ TWIG, $twig_params);
     public static function getIcon()
     {
         return "ti ti-key";
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        $table_ref = $opt->getTableReference($itemtype, $meta);
+        if ($opt['table'] === self::getTable() && $opt['field'] === 'number') {
+            return [
+                QueryFunction::floor(
+                    expression: new QueryExpression(QueryFunction::sum("{$table_ref}.number") . ' * ' .
+                        QueryFunction::count("{$table_ref}.id", true) . ' / ' .
+                        QueryFunction::count("{$table_ref}.id")),
+                    alias: $opt->getSelectFieldAlias($itemtype)
+                ),
+                QueryFunction::min("{$table_ref}.number", $opt->getSelectFieldAlias($itemtype, 'min')),
+            ];
+        }
+        return parent::getSQLSelectCriteria($itemtype, $opt, $meta, $meta_type);
     }
 }

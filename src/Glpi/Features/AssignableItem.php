@@ -35,11 +35,15 @@
 
 namespace Glpi\Features;
 
+use CommonDBTM;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Group_Item;
 use Session;
 
+/**
+ * @phpstan-require-extends CommonDBTM
+ */
 trait AssignableItem
 {
     public static function canView(): bool
@@ -320,5 +324,10 @@ trait AssignableItem
     public function post_getFromDB()
     {
         $this->loadGroupFields();
+    }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        return static::getAssignableVisiblityCriteria();
     }
 }

@@ -47,8 +47,11 @@ class Problem extends CommonITILObject
     protected static $forward_entity_to = ['ProblemCost'];
 
    // From CommonITIL
+    /** @var class-string<CommonITILActor> */
     public $userlinkclass        = 'Problem_User';
+    /** @var class-string<CommonITILActor> */
     public $grouplinkclass       = 'Group_Problem';
+    /** @var class-string<CommonITILActor> */
     public $supplierlinkclass    = 'Problem_Supplier';
 
     public static $rightname            = 'problem';
@@ -59,10 +62,6 @@ class Problem extends CommonITILObject
     const URGENCY_MASK_FIELD   = 'urgency_mask';
     const IMPACT_MASK_FIELD    = 'impact_mask';
     const STATUS_MATRIX_FIELD  = 'problem_status';
-
-    const READMY               = 1;
-    const READALL              = 1024;
-
 
     /**
      * Name of the type

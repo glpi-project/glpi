@@ -43,6 +43,8 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
+use Glpi\Search\Provider\SQLProvider;
+use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
 
 /**
@@ -61,13 +63,16 @@ abstract class CommonITILObject extends CommonDBTM
 
    /// Users by type
     protected $lazy_loaded_users = null;
+    /** @var class-string<CommonITILActor>|'' */
     public $userlinkclass  = '';
    /// Groups by type
     protected $lazy_loaded_groups = null;
+    /** @var class-string<CommonITILActor>|'' */
     public $grouplinkclass = '';
 
    /// Suppliers by type
     protected $lazy_loaded_suppliers = null;
+    /** @var class-string<CommonITILActor>|'' */
     public $supplierlinkclass = '';
 
     // HELPDESK LINK HARDWARE DEFINITION : CHECKSUM SYSTEM : BOTH=1*2^0+1*2^1=3
@@ -106,6 +111,8 @@ abstract class CommonITILObject extends CommonDBTM
     const TIMELINE_ORDER_NATURAL = 'natural';
     const TIMELINE_ORDER_REVERSE = 'reverse';
 
+    const READMY           =      1;
+    const READALL          =   1024;
     const SURVEY           = 131072;
 
     abstract public static function getTaskClass();
@@ -10213,7 +10220,6 @@ abstract class CommonITILObject extends CommonDBTM
         }
         $role = $params['role'] ?? CommonITILActor::ASSIGN;
 
-        /** @var CommonDBTM $link_class */
         $link_class = null;
         switch ($itemtype) {
             case 'User':
@@ -10232,7 +10238,6 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         $link_item = new $link_class();
-        /** @var CommonDBTM $itemtype */
         $result = $link_item->add([
             static::getForeignKeyField()     => $this->getID(),
             $itemtype::getForeignKeyField()  => $items_id,
@@ -10245,7 +10250,6 @@ abstract class CommonITILObject extends CommonDBTM
     {
         $role = $params['role'] ?? CommonITILActor::ASSIGN;
 
-        /** @var CommonDBTM $link_class */
         $link_class = null;
         switch ($itemtype) {
             case 'User':
@@ -10264,7 +10268,6 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         $link_item = new $link_class();
-        /** @var CommonDBTM $itemtype */
         $result = $link_item->deleteByCriteria([
             static::getForeignKeyField()     => $this->getID(),
             $itemtype::getForeignKeyField()  => $items_id,
@@ -10282,9 +10285,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $team_itemtypes = static::getTeamItemtypes();
 
-        /** @var CommonDBTM $itemtype */
         foreach ($team_itemtypes as $itemtype) {
-            /** @var CommonDBTM $link_class */
             $link_class = null;
             switch ($itemtype) {
                 case 'User':
@@ -10302,7 +10303,6 @@ abstract class CommonITILObject extends CommonDBTM
                 continue;
             }
 
-            $select = [];
             if ($itemtype === 'User') {
                 $select = [$link_class::getTable() . '.' . $itemtype::getForeignKeyField(), 'type', 'name', 'realname', 'firstname'];
             } else {
@@ -11220,5 +11220,214 @@ abstract class CommonITILObject extends CommonDBTM
             'allow_auto_submit' => false,
             'main_rand' => mt_rand(),
         ]);
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        // Only handle core ITIL objects here
+        if (!in_array($itemtype, [Ticket::class, Change::class, Problem::class], true)) {
+            return null;
+        }
+
+        /** @var Ticket|Change|Problem|false $item */
+        $item = getItemForItemtype($itemtype);
+        if ($opt['field'] === 'status') {
+            $to_check = [];
+            if ($item !== false) {
+                $to_check = match ($val) {
+                    'process' => $item->getProcessStatusArray(),
+                    'notclosed' => array_diff(array_keys($item::getAllStatusArray()), $item::getClosedStatusArray()),
+                    'old' => array_merge($item::getSolvedStatusArray(), $item::getClosedStatusArray()),
+                    'notold' => $item::getNotSolvedStatusArray(),
+                    'all' => array_keys($item::getAllStatusArray()),
+                    default => array_key_exists($val, $item::getAllStatusArray()) ? [$val] : []
+                };
+            }
+            if (count($to_check) > 0) {
+                if ($nott) {
+                    return [
+                        $opt->getTableField() => ['NOT IN' => $to_check]
+                    ];
+                }
+                return [$opt->getTableField() => $to_check];
+            }
+        } else if (in_array($opt['field'], ['impact', 'urgency', 'priority'], true)) {
+            if (!is_numeric($val)) {
+                return [];
+            }
+            return match (true) {
+                $val > 0 => [$opt->getTableField() => [$nott ? '<>' : '=', $val]],
+                $val < 0 => [$opt->getTableField() => [$nott ? '<' : '>=', $val]],
+                default => [$opt->getTableField() => [$nott ? '<' : '>=', 0]],
+            };
+        }
+
+        return parent::getSQLWhereCriteria($itemtype, $opt, $nott, $searchtype, $val, $meta, $fn_append_with_search);
+    }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        if (static::class === Change::class) {
+            $right       = 'change';
+            $table       = 'changes';
+            $groupetable = "`glpi_changes_groups_";
+        } else if (static::class === Problem::class) {
+            $right       = 'problem';
+            $table       = 'problems';
+            $groupetable = "`glpi_groups_problems_";
+        } else {
+            return parent::getSQLDefaultWhereCriteria();
+        }
+        // Same structure in addDefaultJoin
+        if (!Session::haveRight($right, static::READALL)) {
+            $criteria = [
+                'OR' => []
+            ];
+
+            $searchopt       = SearchOption::getOptionsForItemtype(static::class);
+            if (Session::haveRight($right, static::READMY)) {
+                $requester_table      = '`glpi_' . $table . '_users_' .
+                    SQLProvider::computeComplexJoinID($searchopt[4]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+                $requestergroup_table = $groupetable .
+                    SQLProvider::computeComplexJoinID($searchopt[71]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+
+                $observer_table       = '`glpi_' . $table . '_users_' .
+                    SQLProvider::computeComplexJoinID($searchopt[66]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+                $observergroup_table  = $groupetable .
+                    SQLProvider::computeComplexJoinID($searchopt[65]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+
+                $assign_table         = '`glpi_' . $table . '_users_' .
+                    SQLProvider::computeComplexJoinID($searchopt[5]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+                $assigngroup_table    = $groupetable .
+                    SQLProvider::computeComplexJoinID($searchopt[8]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+
+                $criteria['OR'][] = [
+                    'OR' => [
+                        "$requester_table.users_id" => Session::getLoginUserID(),
+                        "$observer_table.users_id" => Session::getLoginUserID(),
+                        "$assign_table.users_id" => Session::getLoginUserID(),
+                        "glpi_" . $table . ".users_id_recipient" => Session::getLoginUserID()
+                    ]
+                ];
+                if (count($_SESSION['glpigroups'])) {
+                    $criteria['OR'][] = [
+                        'OR' => [
+                            "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
+                            "$observergroup_table.groups_id" => $_SESSION['glpigroups'],
+                            "$assigngroup_table.groups_id" => $_SESSION['glpigroups']
+                        ]
+                    ];
+                }
+            } else {
+                $criteria['OR'][] = [
+                    '0' => '1'
+                ];
+            }
+            return $criteria;
+        }
+        return parent::getSQLDefaultWhereCriteria();
+    }
+
+    public static function getSQLDefaultJoinCriteria(string $ref_table, array &$already_link_tables): array
+    {
+        $right = static::$rightname;
+        $table = preg_replace('/^glpi_/', '', static::getTable());
+        $item = new static();
+        $user_link_class = $item->userlinkclass;
+        $group_link_class = $item->grouplinkclass;
+        $user_link_table = $user_link_class::getTable();
+        $group_link_table = $group_link_class::getTable();
+        $linkfield = $group_link_class::getForeignKeyField();
+
+        if (static::class !== Change::class && static::class !== Problem::class) {
+            return parent::getSQLDefaultJoinCriteria($ref_table, $already_link_tables);
+        }
+
+        // Same structure in addDefaultWhere
+        $out = [];
+        if (!Session::haveRight($right, static::READALL)) {
+            $searchopt = SearchOption::getOptionsForItemtype(static::class);
+
+            if (Session::haveRight($right, static::READMY)) {
+                // show mine : requester
+                $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                    static::class,
+                    $ref_table,
+                    $already_link_tables,
+                    $user_link_table,
+                    $table . "_users_id",
+                    0,
+                    0,
+                    $searchopt[4]['joinparams']['beforejoin']['joinparams']
+                ));
+                if (count($_SESSION['glpigroups'])) {
+                    $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                        static::class,
+                        $ref_table,
+                        $already_link_tables,
+                        $group_link_table,
+                        $linkfield,
+                        0,
+                        0,
+                        $searchopt[71]['joinparams']['beforejoin']['joinparams']
+                    ));
+                }
+
+                // show mine : observer
+                $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                    static::class,
+                    $ref_table,
+                    $already_link_tables,
+                    $user_link_table,
+                    $table . "_users_id",
+                    0,
+                    0,
+                    $searchopt[66]['joinparams']['beforejoin']['joinparams']
+                ));
+                if (count($_SESSION['glpigroups'])) {
+                    $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                        static::class,
+                        $ref_table,
+                        $already_link_tables,
+                        $group_link_table,
+                        $linkfield,
+                        0,
+                        0,
+                        $searchopt[65]['joinparams']['beforejoin']['joinparams']
+                    ));
+                }
+
+                // show mine : assign
+                $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                    static::class,
+                    $ref_table,
+                    $already_link_tables,
+                    $user_link_table,
+                    $table . "_users_id",
+                    0,
+                    0,
+                    $searchopt[5]['joinparams']['beforejoin']['joinparams']
+                ));
+                if (count($_SESSION['glpigroups'])) {
+                    $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                        static::class,
+                        $ref_table,
+                        $already_link_tables,
+                        $group_link_table,
+                        $linkfield,
+                        0,
+                        0,
+                        $searchopt[8]['joinparams']['beforejoin']['joinparams']
+                    ));
+                }
+            }
+        }
+        return $out;
     }
 }

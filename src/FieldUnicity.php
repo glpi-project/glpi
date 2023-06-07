@@ -592,4 +592,11 @@ class FieldUnicity extends CommonDropdown
     {
         return "ti ti-fingerprint";
     }
+
+    public static function getSQLDefaultSelectCriteria(): array
+    {
+        return [
+            'glpi_fieldunicities.itemtype AS ITEMTYPE'
+        ];
+    }
 }

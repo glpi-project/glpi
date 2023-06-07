@@ -37,7 +37,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
-use Glpi\Plugin\Hooks;
+use Glpi\Search\Provider\SQLProvider;
+use Glpi\Search\SearchEngine;
+use Glpi\Search\SearchOption;
 
 /**
  * Entity class
@@ -3063,7 +3065,7 @@ class Entity extends CommonTreeDropdown
 
             $adapt_tree = static function (&$entities) use (&$adapt_tree, $token, $twig) {
                 foreach ($entities as $entities_id => &$entity) {
-                    $entity['key']   = $entities_id;
+                    $entity['key'] = $entities_id;
 
                     if (isset($entity['tree']) && count($entity['tree']) > 0) {
                         $entity['folder'] = true;
@@ -3113,5 +3115,50 @@ class Entity extends CommonTreeDropdown
         $select_tree($entitiestree);
 
         return $entitiestree;
+    }
+
+    public static function getSQLDefaultSelectCriteria(): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $itemtable = SearchEngine::getOrigTableName(static::class);
+        return [
+            "{$itemtable}.id AS entities_id",
+            new QueryExpression($DB::quoteValue('1') . ' AS ' . $DB::quoteName('is_recursive')),
+        ];
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table_ref = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+
+        if ($field === 'completename') {
+            if ($itemtype === User::class && $opt['id'] === 80) {
+                $addmeta = $meta ? '_' . $meta_type : '';
+                return [
+                    QueryFunction::groupConcat(
+                        expression: QueryFunction::concat([
+                            "$table_ref.completename",
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "glpi_profiles_users{$addmeta}.entities_id",
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "glpi_profiles_users{$addmeta}.is_recursive",
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "glpi_profiles_users{$addmeta}.is_dynamic",
+                        ]),
+                        separator: \Search::LONGSEP,
+                        distinct: true,
+                        alias: $opt->getSelectFieldAlias($itemtype)
+                    ),
+                ];
+            }
+        }
+
+        return parent::getSQLSelectCriteria($itemtype, $opt, $meta, $meta_type);
     }
 }

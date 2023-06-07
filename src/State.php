@@ -35,8 +35,10 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\Clonable;
+use Glpi\Search\Provider\SQLProvider;
 
 /**
  * State Class
@@ -852,5 +854,53 @@ class State extends CommonTreeDropdown
         foreach ($visibilities as $visibility) {
             $this->fields['is_visible_' . strtolower($visibility['visible_itemtype'])] = $visibility['is_visible'];
         }
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, \Glpi\Search\SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table_ref = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+        $addmeta = $meta ? SQLProvider::getMetaTableUniqueSuffix($opt['table'], $meta_type) : '';
+
+        if ($field === 'completename') {
+            if ($meta && $meta_type === Software::class) {
+                return [
+                    QueryFunction::groupConcat(
+                        expression: QueryFunction::concat([
+                            "glpi_softwares.name",
+                            new QueryExpression($DB::quoteValue(" - ")),
+                            "glpi_softwareversions{$addmeta}.name",
+                            new QueryExpression($DB::quoteValue(" - ")),
+                            "{$table_ref}.{$field}",
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "{$table_ref}.id",
+                        ]),
+                        separator: \Search::LONGSEP,
+                        distinct: true,
+                        alias: $opt->getSelectFieldAlias($itemtype)
+                    ),
+                ];
+            } else if ($itemtype === Software::class) {
+                return [
+                    QueryFunction::groupConcat(
+                        expression: QueryFunction::concat([
+                            "glpi_softwareversions.name",
+                            new QueryExpression($DB::quoteValue(" - ")),
+                            "{$table_ref}.{$field}",
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "{$table_ref}.id",
+                        ]),
+                        separator: \Search::LONGSEP,
+                        distinct: true,
+                        alias: $opt->getSelectFieldAlias($itemtype)
+                    ),
+                ];
+            }
+        }
+
+        return parent::getSQLSelectCriteria($itemtype, $opt, $meta, $meta_type);
     }
 }

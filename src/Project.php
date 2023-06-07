@@ -40,6 +40,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\Team\Team;
 
 /**
@@ -2961,5 +2962,74 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     public static function getIcon()
     {
         return "ti ti-layout-kanban";
+    }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        if (!Session::haveRight("project", self::READALL)) {
+            $teamtable  = 'glpi_projectteams';
+            $user_criteria = [
+                "$teamtable.itemtype" => User::class,
+                "$teamtable.items_id" => Session::getLoginUserID()
+            ];
+            $group_criteria = [
+                "$teamtable.itemtype" => Group::class,
+                "$teamtable.items_id" => $_SESSION['glpigroups']
+            ];
+            return [
+                "OR" => [
+                    "glpi_projects.users_id" => Session::getLoginUserID(),
+                    $user_criteria,
+                    "glpi_projects.groups_id" => $_SESSION['glpigroups'],
+                    $group_criteria
+                ]
+            ];
+        }
+        return parent::getSQLDefaultWhereCriteria();
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, \Glpi\Search\SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        $table = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+        if ($field === 'priority') {
+            if (is_numeric($val)) {
+                if ($val > 0) {
+                    $compare = ($nott ? '<>' : '=');
+                    return [
+                        "$table.$field" => [$compare, $val]
+                    ];
+                }
+                $compare = ($nott ? '<' : '>=');
+                if ($val < 0) {
+                    return [
+                        "$table.$field" => [$compare, abs($val)]
+                    ];
+                }
+                // Show all
+                return [
+                    "$table.$field" => [$compare, 0]
+                ];
+            }
+            return [];
+        }
+        return parent::getSQLWhereCriteria($itemtype, $opt, $nott, $searchtype, $val, $meta, $fn_append_with_search);
+    }
+
+    public static function getSQLDefaultJoinCriteria(string $ref_table, array &$already_link_tables): array
+    {
+        if (!Session::haveRight("project", self::READALL)) {
+            return SQLProvider::getLeftJoinCriteria(
+                static::class,
+                $ref_table,
+                $already_link_tables,
+                "glpi_projectteams",
+                "projectteams_id",
+                0,
+                0,
+                ['jointype' => 'child']
+            );
+        }
+        return parent::getSQLDefaultJoinCriteria($ref_table, $already_link_tables);
     }
 }

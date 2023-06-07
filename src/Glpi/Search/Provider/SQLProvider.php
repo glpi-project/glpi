@@ -37,28 +37,18 @@ namespace Glpi\Search\Provider;
 
 use Change;
 use CommonDBTM;
-use CommonITILObject;
 use DBmysqlIterator;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
-use Glpi\Form\Form;
-use Glpi\Features\AssignableItem;
 use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
-use Group;
 use Group_Item;
-use ITILFollowup;
-use Problem;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Session;
-use Software;
-use Ticket;
-use Toolbox;
-use User;
 
 /**
  *
@@ -97,7 +87,7 @@ final class SQLProvider implements SearchProviderInterface
 
     /**
      * Generic function to get the default SELECT criteria for an item type
-     * @param class-string<CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM>|'AllAssets' $itemtype
      * @return array
      */
     public static function getDefaultSelectCriteria(string $itemtype): array
@@ -113,24 +103,19 @@ final class SQLProvider implements SearchProviderInterface
             $mayberecursive = $item->maybeRecursive();
         }
         $ret = [];
-        switch ($itemtype) {
-            case 'FieldUnicity':
-                $ret[] = "`glpi_fieldunicities`.`itemtype` AS ITEMTYPE";
-                break;
 
-            default:
-                // Plugin can override core definition for its type
-                if ($plug = isPluginItemType($itemtype)) {
-                    $default_select = \Plugin::doOneHook($plug['plugin'], 'addDefaultSelect', $itemtype);
-                    if (!empty($default_select)) {
-                        $ret[] = new QueryExpression(rtrim($default_select, ' ,'));
-                    }
-                }
+        if (method_exists($itemtype, 'getSQLDefaultSelectCriteria')) {
+            $ret = array_merge($ret, $item::getSQLDefaultSelectCriteria());
         }
-        if ($itemtable === 'glpi_entities') {
-            $ret[] = "`$itemtable`.`id` AS entities_id";
-            $ret[] = "'1' AS is_recursive";
-        } else if ($mayberecursive) {
+
+        // Plugin can override core definition for its type
+        if ($plug = isPluginItemType($itemtype)) {
+            $default_select = \Plugin::doOneHook($plug['plugin'], 'addDefaultSelect', $itemtype);
+            if (!empty($default_select)) {
+                $ret[] = new QueryExpression(rtrim($default_select, ' ,'));
+            }
+        }
+        if ($mayberecursive && $itemtable !== 'glpi_entities') {
             if ($item->isField('entities_id')) {
                 $ret[] = $DB::quoteName("$itemtable.entities_id");
             }
@@ -159,7 +144,7 @@ final class SQLProvider implements SearchProviderInterface
         global $CFG_GLPI, $DB;
 
         $opt_arrays = SearchOption::getOptionsForItemtype($itemtype);
-        $opt = new SearchOption($opt_arrays[$ID]);
+        $opt = new SearchOption(['id' => $ID] + $opt_arrays[$ID]);
         $table        = $opt["table"];
         $opt_itemtype = $opt['itemtype'] ?? getItemTypeForTable($table);
         $field        = $opt["field"];
@@ -248,223 +233,16 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
+        if (is_subclass_of($opt_itemtype, CommonDBTM::class)) {
+            $criteria = $opt_itemtype::getSQLSelectCriteria($itemtype, $opt, $meta, $meta_type);
+            if ($criteria !== null) {
+                return array_merge($criteria, $ADDITONALFIELDS);
+            }
+        }
+
         // Virtual display no select : only get additional fields
         if ($is_virtual) {
             return $ADDITONALFIELDS;
-        }
-
-        switch ($table . "." . $field) {
-            case "glpi_users.name":
-                if ($itemtype !== User::class) {
-                    if ($opt->isForceGroupBy()) {
-                        $addaltemail = "";
-                        if (
-                            in_array($itemtype, ['Ticket', 'Change', 'Problem'])
-                            && isset($opt['joinparams']['beforejoin']['table'])
-                            && in_array($opt['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
-                        ) { // For tickets_users
-                            $before_join = $opt['joinparams']['beforejoin'];
-                            $ticket_user_table = $before_join['table'] . "_" . \Search::computeComplexJoinID($before_join['joinparams']) . $addmeta;
-                            $addaltemail = QueryFunction::groupConcat(
-                                expression: QueryFunction::concat([
-                                    "{$ticket_user_table}.users_id",
-                                    new QueryExpression($DB::quoteValue(' ')),
-                                    "{$ticket_user_table}.alternative_email"
-                                ]),
-                                separator: \Search::LONGSEP,
-                                distinct: true,
-                                alias: "{$NAME}_2"
-                            );
-                        }
-                        $SELECT = [
-                            QueryFunction::groupConcat(
-                                expression: "{$table}{$addtable}.id",
-                                separator: \Search::LONGSEP,
-                                distinct: true,
-                                alias: $NAME
-                            ),
-                        ];
-                        if (!empty($addaltemail)) {
-                            $SELECT[] = $addaltemail;
-                        }
-                        return array_merge($SELECT, $ADDITONALFIELDS);
-                    }
-                    $SELECT = [
-                        $DB::quoteName("$table$addtable.$field AS {$NAME}"),
-                        $DB::quoteName("$table$addtable.realname AS {$NAME}_realname"),
-                        $DB::quoteName("$table$addtable.id AS {$NAME}_id"),
-                        $DB::quoteName("$table$addtable.firstname AS {$NAME}_firstname"),
-                    ];
-                    return array_merge($SELECT, $ADDITONALFIELDS);
-                }
-                break;
-
-            case "glpi_softwarelicenses.number":
-                $_table_add_table = $table . ($meta ? $addtable2 : $addtable);
-                $SELECT = [
-                    QueryFunction::floor(
-                        expression: new QueryExpression(QueryFunction::sum("{$_table_add_table}.{$field}") . ' * ' .
-                            QueryFunction::count("{$_table_add_table}.id", true) . ' / ' .
-                            QueryFunction::count("{$_table_add_table}.id")),
-                        alias: $NAME
-                    ),
-                    QueryFunction::min("{$_table_add_table}.{$field}", "{$NAME}_min"),
-                ];
-                return array_merge($SELECT, $ADDITONALFIELDS);
-
-            case "glpi_profiles.name":
-                if ($itemtype === User::class && $ID === 20) {
-                    $addtable2 = '';
-                    if ($meta) {
-                        $addtable2 = "_" . $meta_type;
-                    }
-                    $SELECT = [
-                        QueryFunction::groupConcat(
-                            expression: QueryFunction::concat([
-                                "{$table}{$addtable}.{$field}",
-                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.entities_id",
-                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_recursive",
-                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_dynamic",
-                            ]),
-                            distinct: true,
-                            separator: \Search::LONGSEP,
-                            alias: $NAME
-                        ),
-                    ];
-                    return array_merge($SELECT, $ADDITONALFIELDS);
-                }
-                break;
-
-            case "glpi_entities.completename":
-                if ($itemtype === User::class && $ID === 80) {
-                    $addtable2 = '';
-                    if ($meta) {
-                        $addtable2 = "_" . $meta_type;
-                    }
-                    $SELECT = [
-                        QueryFunction::groupConcat(
-                            expression: QueryFunction::concat([
-                                "{$table}{$addtable}.completename",
-                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.entities_id",
-                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_recursive",
-                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_dynamic",
-                            ]),
-                            distinct: true,
-                            separator: \Search::LONGSEP,
-                            alias: $NAME
-                        ),
-                    ];
-                    return array_merge($SELECT, $ADDITONALFIELDS);
-                }
-                break;
-
-            case "glpi_softwareversions.name":
-                if ($meta && $meta_type === Software::class) {
-                    $SELECT = [
-                        QueryFunction::groupConcat(
-                            expression: QueryFunction::concat([
-                                "glpi_softwares.name",
-                                new QueryExpression($DB::quoteValue(" - ")),
-                                "{$table}{$addtable2}.{$field}",
-                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                "{$table}{$addtable2}.id",
-                            ]),
-                            separator: \Search::LONGSEP,
-                            distinct: true,
-                            alias: $NAME
-                        ),
-                    ];
-                    return array_merge($SELECT, $ADDITONALFIELDS);
-                }
-                break;
-
-            case "glpi_softwareversions.comment":
-                $_table = ($meta && $meta_type === Software::class) ? 'glpi_softwares' : ($table . $addtable);
-                $_table_add_table = $table . (($meta && $meta_type === Software::class) ? $addtable2 : $addtable);
-                $SELECT = [
-                    QueryFunction::groupConcat(
-                        expression: QueryFunction::concat([
-                            "{$_table}.name",
-                            new QueryExpression($DB::quoteValue(" - ")),
-                            "{$_table_add_table}.{$field}",
-                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                            "{$_table_add_table}.id"
-                        ]),
-                        separator: \Search::LONGSEP,
-                        distinct: true,
-                        alias: $NAME
-                    ),
-                ];
-                return array_merge($SELECT, $ADDITONALFIELDS);
-
-            case "glpi_states.name":
-                if ($meta && $meta_type === Software::class) {
-                    $SELECT = [
-                        QueryFunction::groupConcat(
-                            expression: QueryFunction::concat([
-                                "glpi_softwares.name",
-                                new QueryExpression($DB::quoteValue(" - ")),
-                                "glpi_softwareversions{$addtable}.name",
-                                new QueryExpression($DB::quoteValue(" - ")),
-                                "{$table}{$addtable2}.{$field}",
-                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                "{$table}{$addtable2}.id",
-                            ]),
-                            separator: \Search::LONGSEP,
-                            distinct: true,
-                            alias: $NAME
-                        ),
-                    ];
-                    return array_merge($SELECT, $ADDITONALFIELDS);
-                } else if ($meta_type === Software::class) {
-                    $SELECT = [
-                        QueryFunction::groupConcat(
-                            expression: QueryFunction::concat([
-                                "glpi_softwareversions.name",
-                                new QueryExpression($DB::quoteValue(" - ")),
-                                "{$table}{$addtable}.{$field}",
-                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                "{$table}{$addtable}.id",
-                            ]),
-                            separator: \Search::LONGSEP,
-                            distinct: true,
-                            alias: $NAME
-                        ),
-                    ];
-                    return array_merge($SELECT, $ADDITONALFIELDS);
-                }
-                break;
-
-            case "glpi_itilfollowups.content":
-            case "glpi_tickettasks.content":
-            case "glpi_changetasks.content":
-                if (is_subclass_of($itemtype, CommonITILObject::class)) {
-                    // force ordering by date desc
-                    $SELECT = [
-                        QueryFunction::groupConcat(
-                            expression: QueryFunction::concat([
-                                QueryFunction::ifnull($tocompute, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
-                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                $tocomputeid
-                            ]),
-                            separator: \Search::LONGSEP,
-                            distinct: true,
-                            order_by: "{$table}{$addtable}.date DESC",
-                            alias: $NAME
-                        ),
-                    ];
-                    return array_merge($SELECT, $ADDITONALFIELDS);
-                }
-                break;
-
-            default:
-                break;
         }
 
         //// Default cases
@@ -624,408 +402,22 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Generic Function to add default where to a request
      *
-     * @param class-string<CommonDBTM> $itemtype device type
+     * @param class-string<CommonDBTM>|'AllAssets' $itemtype device type
      *
      * @return array WHERE criteria array
      **/
     public static function getDefaultWhereCriteria(string $itemtype): array
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $criteria = [];
-
-        switch ($itemtype) {
-            case 'Reservation':
-                $criteria = getEntitiesRestrictCriteria(\ReservationItem::getTable(), '', '', true);
-                break;
-
-            case 'Reminder':
-                $criteria = \Reminder::getVisibilityCriteria()['WHERE'];
-                break;
-
-            case 'RSSFeed':
-                $criteria = \RSSFeed::getVisibilityCriteria()['WHERE'];
-                break;
-
-            case 'Notification':
-                if (!\Config::canView()) {
-                    $criteria = [
-                        'NOT' => ['glpi_notifications.itemtype' => ['CronTask', 'DBConnection']]
-                    ];
-                }
-                break;
-
-            // No link
-            case 'User':
-                // View all entities
-                if (!Session::canViewAllEntities()) {
-                    $criteria = getEntitiesRestrictCriteria("glpi_profiles_users", '', '', true);
-                }
-                break;
-
-            case 'ProjectTask':
-                $teamtable  = 'glpi_projecttaskteams';
-                $group_criteria = [];
-                if (count($_SESSION['glpigroups'])) {
-                    $group_criteria = [
-                        "$teamtable.itemtype" => Group::class,
-                        "$teamtable.items_id" => $_SESSION['glpigroups']
-                    ];
-                }
-                $user_criteria = [
-                    "$teamtable.itemtype" => User::class,
-                    "$teamtable.items_id" => Session::getLoginUserID()
-                ];
-                $criteria = [
-                    "glpi_projects.is_template" => 0,
-                    'OR' => [
-                        $user_criteria
-                    ]
-                ];
-                if (!empty($group_criteria)) {
-                    $criteria['OR'][] = $group_criteria;
-                }
-                break;
-
-            case 'Project':
-                if (!Session::haveRight("project", \Project::READALL)) {
-                    $teamtable  = 'glpi_projectteams';
-                    $user_criteria = [
-                        "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID()
-                    ];
-                    $group_criteria = [
-                        "$teamtable.itemtype" => Group::class,
-                        "$teamtable.items_id" => $_SESSION['glpigroups']
-                    ];
-                    $criteria = [
-                        "OR" => [
-                            "glpi_projects.users_id" => Session::getLoginUserID(),
-                            $user_criteria,
-                            "glpi_projects.groups_id" => $_SESSION['glpigroups'],
-                            $group_criteria
-                        ]
-                    ];
-                }
-                break;
-
-            case 'Ticket':
-                // Same structure in addDefaultJoin
-                if (!Session::haveRight("ticket", \Ticket::READALL)) {
-                    $searchopt
-                        = SearchOption::getOptionsForItemtype($itemtype);
-                    $requester_table
-                        = '`glpi_tickets_users_' .
-                        self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-                    $requestergroup_table
-                        = '`glpi_groups_tickets_' .
-                        self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-
-                    $assign_table
-                        = '`glpi_tickets_users_' .
-                        self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-                    $assigngroup_table
-                        = '`glpi_groups_tickets_' .
-                        self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-
-                    $observer_table
-                        = '`glpi_tickets_users_' .
-                        self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-                    $observergroup_table
-                        = '`glpi_groups_tickets_' .
-                        self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-
-                    $condition = "(";
-
-                    $criteria = [
-                        'OR' => []
-                    ];
-                    if (Session::haveRight("ticket", \Ticket::READMY)) {
-                        $criteria['OR'][] = [
-                            'OR' => [
-                                "$requester_table.users_id" => Session::getLoginUserID(),
-                                "$observer_table.users_id" => Session::getLoginUserID(),
-                                "glpi_tickets.users_id_recipient" => Session::getLoginUserID()
-                            ]
-                        ];
-                    } else {
-                        $criteria['OR'][] = [
-                            '0' => '1'
-                        ];
-                    }
-
-                    if (Session::haveRight("ticket", \Ticket::READGROUP)) {
-                        if (count($_SESSION['glpigroups'])) {
-                            $criteria['OR'][] = [
-                                'OR' => [
-                                    "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
-                                    "$observergroup_table.groups_id" => $_SESSION['glpigroups']
-                                ]
-                            ];
-                        }
-                    }
-
-                    if (Session::haveRight("ticket", \Ticket::OWN)) {// Can own ticket : show assign to me
-                        $criteria['OR'][] = [
-                            "$assign_table.users_id" => Session::getLoginUserID()
-                        ];
-                    }
-
-                    if (Session::haveRight("ticket", \Ticket::READASSIGN)) { // assign to me
-                        $criteria['OR'][] = [
-                            "$assign_table.users_id" => Session::getLoginUserID()
-                        ];
-                        if (count($_SESSION['glpigroups'])) {
-                            $criteria['OR'][] = [
-                                "$assigngroup_table.groups_id" => $_SESSION['glpigroups']
-                            ];
-                        }
-                    }
-
-                    if (Session::haveRight('ticket', \Ticket::READNEWTICKET)) {
-                        $criteria['OR'][] = [
-                            'glpi_tickets.status' => \CommonITILObject::INCOMING
-                        ];
-                    }
-
-                    if (
-                        Session::haveRightsOr(
-                            'ticketvalidation',
-                            [\TicketValidation::VALIDATEINCIDENT,
-                                \TicketValidation::VALIDATEREQUEST
-                            ]
-                        )
-                    ) {
-                        $criteria['OR'][] = [
-                            'AND' => [
-                                "`glpi_ticketvalidations`.`itemtype_target`" => User::class,
-                                "`glpi_ticketvalidations`.`items_id_target`" => Session::getLoginUserID()
-                            ]
-                        ];
-                        if (count($_SESSION['glpigroups'])) {
-                            $criteria['OR'][] = [
-                                'AND' => [
-                                    "`glpi_ticketvalidations`.`itemtype_target`" => Group::class,
-                                    "`glpi_ticketvalidations`.`items_id_target`" => $_SESSION['glpigroups']
-                                ]
-                            ];
-                        }
-                    }
-                }
-                break;
-
-            case 'Change':
-            case 'Problem':
-                if ($itemtype === Change::class) {
-                    $right       = 'change';
-                    $table       = 'changes';
-                    $groupetable = "`glpi_changes_groups_";
-                } else if ($itemtype === Problem::class) {
-                    $right       = 'problem';
-                    $table       = 'problems';
-                    $groupetable = "`glpi_groups_problems_";
-                }
-                // Same structure in addDefaultJoin
-                $condition = '';
-                if (!Session::haveRight("$right", $itemtype::READALL)) {
-                    $criteria = [
-                        'OR' => []
-                    ];
-
-                    $searchopt       = SearchOption::getOptionsForItemtype($itemtype);
-                    if (Session::haveRight("$right", $itemtype::READMY)) {
-                        $requester_table      = '`glpi_' . $table . '_users_' .
-                            self::computeComplexJoinID($searchopt[4]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-                        $requestergroup_table = $groupetable .
-                            self::computeComplexJoinID($searchopt[71]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-
-                        $observer_table       = '`glpi_' . $table . '_users_' .
-                            self::computeComplexJoinID($searchopt[66]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-                        $observergroup_table  = $groupetable .
-                            self::computeComplexJoinID($searchopt[65]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-
-                        $assign_table         = '`glpi_' . $table . '_users_' .
-                            self::computeComplexJoinID($searchopt[5]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-                        $assigngroup_table    = $groupetable .
-                            self::computeComplexJoinID($searchopt[8]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-
-                        $criteria['OR'][] = [
-                            'OR' => [
-                                "$requester_table.users_id" => Session::getLoginUserID(),
-                                "$observer_table.users_id" => Session::getLoginUserID(),
-                                "$assign_table.users_id" => Session::getLoginUserID(),
-                                "glpi_" . $table . ".users_id_recipient" => Session::getLoginUserID()
-                            ]
-                        ];
-                        if (count($_SESSION['glpigroups'])) {
-                            $criteria['OR'][] = [
-                                'OR' => [
-                                    "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
-                                    "$observergroup_table.groups_id" => $_SESSION['glpigroups'],
-                                    "$assigngroup_table.groups_id" => $_SESSION['glpigroups']
-                                ]
-                            ];
-                        }
-                    } else {
-                        $criteria['OR'][] = [
-                            '0' => '1'
-                        ];
-                    }
-                }
-                break;
-
-            case 'Config':
-                $availableContexts = array_merge(['core', 'inventory'], \Plugin::getPlugins());
-                $criteria = ["`context`" => $availableContexts];
-                break;
-
-            case 'SavedSearch':
-                $criteria = \SavedSearch::getVisibilityCriteria()['WHERE'];
-                break;
-
-            case 'TicketTask':
-                // Filter on is_private
-                $allowed_is_private = [];
-                if (Session::haveRight(\TicketTask::$rightname, \CommonITILTask::SEEPRIVATE)) {
-                    $allowed_is_private[] = 1;
-                }
-                if (Session::haveRight(\TicketTask::$rightname, \CommonITILTask::SEEPUBLIC)) {
-                    $allowed_is_private[] = 0;
-                }
-
-                // If the user can't see public and private
-                if (!count($allowed_is_private)) {
-                    $criteria = [
-                        '0' => '1'
-                    ];
-                    break;
-                }
-
-                $criteria = [
-                    'OR' => [
-                        'glpi_tickettasks.is_private' => $allowed_is_private,
-                        // Check for assigned or created tasks
-                        'glpi_tickettasks.users_id' => Session::getLoginUserID(),
-                        'glpi_tickettasks.users_id_tech' => Session::getLoginUserID(),
-                    ]
-                ];
-
-                // Check for parent item visibility unless the user can see all the
-                // possible parents
-                if (!Session::haveRight('ticket', \Ticket::READALL)) {
-                    $criteria[] = [
-                        new QueryExpression(\TicketTask::buildParentCondition())
-                    ];
-                }
-
-                break;
-
-            case 'ITILFollowup':
-                // Filter on is_private
-                $allowed_is_private = [];
-                if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
-                    $allowed_is_private[] = 1;
-                }
-                if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC)) {
-                    $allowed_is_private[] = 0;
-                }
-
-                // If the user can't see public and private
-                if (!count($allowed_is_private)) {
-                    $criteria = [
-                        '0' => '1'
-                    ];
-                    break;
-                }
-
-
-                $in = "IN ('" . implode("','", $allowed_is_private) . "')";
-                $criteria = [
-                    'glpi_itilfollowups.is_private' => $allowed_is_private,
-                    'OR' => [
-                        new QueryExpression(ITILFollowup::buildParentCondition(Ticket::getType())),
-                        new QueryExpression(ITILFollowup::buildParentCondition(
-                            Change::getType(),
-                            'changes_id',
-                            "glpi_changes_users",
-                            "glpi_changes_groups"
-                        )),
-                        new QueryExpression(ITILFollowup::buildParentCondition(
-                            Problem::getType(),
-                            'problems_id',
-                            "glpi_problems_users",
-                            "glpi_problems_groups"
-                        )),
-                    ]
-                ];
-
-                // Entity restrictions
-                $entity_restrictions = [];
-                foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
-                    $entity_restrictions[] = getEntitiesRestrictRequest(
-                        '',
-                        $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
-                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
-                        ]),
-                        'entities_id',
-                        ''
-                    );
-                }
-                if (!empty($entity_restrictions)) {
-                    $criteria[] = ['OR' => $entity_restrictions];
-                }
-
-                break;
-
-            case 'PlanningExternalEvent':
-                $criteria = \PlanningExternalEvent::getVisibilityCriteria();
-                break;
-
-            case 'ValidatorSubstitute':
-                if (Session::getLoginUserID() !== false) {
-                    $criteria = ['users_id' => Session::getLoginUserID()];
-                }
-
-                break;
-
-            case 'KnowbaseItem':
-                $criteria = \KnowbaseItem::getVisibilityCriteria(false)['WHERE'];
-                break;
-
-            case Form::class:
-                // Do not show unsaved drafts in the form list
-                $criteria = ['is_draft' => 0];
-                break;
-
-            default:
-                // Plugin can override core definition for its type
-                if ($plug = isPluginItemType($itemtype)) {
-                    $default_where = \Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype);
-                    if (!empty($default_where)) {
-                        $criteria = [new QueryExpression($default_where)];
-                    }
-                }
-                break;
+        if (method_exists($itemtype, 'getSQLDefaultWhereCriteria')) {
+            $criteria = $itemtype::getSQLDefaultWhereCriteria();
         }
 
-        if (Toolbox::hasTrait($itemtype, AssignableItem::class)) {
-            /** @var AssignableItem $itemtype */
-            $visibility_criteria = $itemtype::getAssignableVisiblityCriteria();
-            if (count($visibility_criteria)) {
-                $criteria[] = $visibility_criteria;
+        // Plugin can override core definition for its type
+        if ($plug = isPluginItemType($itemtype)) {
+            $default_where = \Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype);
+            if (!empty($default_where)) {
+                $criteria = [new QueryExpression($default_where)];
             }
         }
 
@@ -1070,7 +462,7 @@ final class SQLProvider implements SearchProviderInterface
         if (!isset($searchopt[$ID]['table'])) {
             return [];
         }
-        $opt = new SearchOption($searchopt[$ID]);
+        $opt = new SearchOption(['id' => $ID] + $searchopt[$ID]);
 
         $table     = $opt["table"];
         $field     = $opt["field"];
@@ -1265,345 +657,15 @@ final class SQLProvider implements SearchProviderInterface
                 $criteria[$value] = $SEARCH;
             }
         };
-        switch ($inittable . "." . $field) {
-            // case "glpi_users_validation.name" :
-
-            case "glpi_users.name":
-                if ($val === 'myself') {
-                    switch ($searchtype) {
-                        case 'equals':
-                            return [
-                                "$table.id" => $_SESSION['glpiID']
-                            ];
-
-                        case 'notequals':
-                            return [
-                                "$table.id" => ['<>', $_SESSION['glpiID']]
-                            ];
-                    }
-                }
-
-                if ($itemtype === User::class) { // glpi_users case / not link table
-                    $criteria = [
-                        'OR' => []
-                    ];
-                    if (in_array($searchtype, ['equals', 'notequals'])) {
-                        $append_criterion_with_search($criteria['OR'], "$table.id");
-
-                        if ($searchtype === 'notequals') {
-                            $nott = !$nott;
-                        }
-
-                        // Add NULL if $val = 0 and not negative search
-                        // Or negative search on real value
-                        if ((!$nott && ($val == 0)) || ($nott && ($val != 0))) {
-                            $criteria['OR'][] = ["$table.id" => null];
-                        }
-
-                        return $criteria;
-                    }
-                    return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
-                }
-                if ($_SESSION["glpinames_format"] == \User::FIRSTNAME_BEFORE) {
-                    $name1 = 'firstname';
-                    $name2 = 'realname';
-                } else {
-                    $name1 = 'realname';
-                    $name2 = 'firstname';
-                }
-
-                if (in_array($searchtype, ['equals', 'notequals'])) {
-                    $criteria = [
-                        'OR' => []
-                    ];
-                    $append_criterion_with_search($criteria['OR'], "$table.id");
-                    if ($val == 0) {
-                        if ($searchtype === 'notequals') {
-                            $criteria['OR'][] = [
-                                'NOT' => ["$table.id" => null]
-                            ];
-                        } else {
-                            $criteria['OR'][] = [
-                                "$table.id" => null
-                            ];
-                        }
-                    }
-                    return $criteria;
-                } else if ($searchtype === 'empty') {
-                    $criteria = [];
-                    $append_criterion_with_search($criteria, "$table.id");
-                    return $criteria;
-                }
-                $toadd   = '';
-
-                $tmplink = 'OR';
-                if ($nott) {
-                    $tmplink = 'AND';
-                }
-
-                if (is_a($itemtype, \CommonITILObject::class, true)) {
-                    $itil_user_tables = ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'];
-                    $has_join         = isset($opt["joinparams"]["beforejoin"]["table"], $opt["joinparams"]["beforejoin"]["joinparams"]);
-                    if ($has_join && in_array($opt["joinparams"]["beforejoin"]["table"], $itil_user_tables, true)) {
-                        $bj        = $opt["joinparams"]["beforejoin"];
-                        $linktable = $bj['table'] . '_' . \Search::computeComplexJoinID($bj['joinparams']) . $addmeta;
-                        //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
-                        $toadd     = self::makeTextCriteria(
-                            "`$linktable`.`alternative_email`",
-                            $val,
-                            $nott,
-                            $tmplink
-                        );
-                        // Remove $tmplink (may have spaces around it) from front of $toadd
-                        $toadd = preg_replace('/^\s*' . preg_quote($tmplink, '/') . '\s*/', '', $toadd);
-                        if ($val === '^$') {
-                            return [
-                                'OR' => [
-                                    "$linktable.users_id" => null,
-                                    "$linktable.alternative_email" => null
-                                ]
-                            ];
-                        }
-                    }
-                }
-                $criteria = [
-                    $tmplink => []
-                ];
-                $append_criterion_with_search($criteria[$tmplink], "$table.$name1");
-                $append_criterion_with_search($criteria[$tmplink], "$table.$name2");
-                $append_criterion_with_search($criteria[$tmplink], "$table.$field");
-                $append_criterion_with_search(
-                    $criteria[$tmplink],
-                    QueryFunction::concat([
-                        "$table.$name1",
-                        new QueryExpression($DB::quoteValue(' ')),
-                        "$table.$name2"
-                    ])
-                );
-                if ($nott && ($val !== 'NULL') && ($val !== 'null')) {
-                    $criteria = [
-                        $tmplink => [
-                            'OR' => [
-                                $criteria,
-                                "$table.$field" => null
-                            ],
-                            new QueryExpression($toadd)
-                        ]
-                    ];
-                }
+        $opt_itemtype = getItemTypeForTable($opt['table']);
+        if ($opt_itemtype === 'UNKNOWN') {
+            $opt_itemtype = $itemtype;
+        }
+        if (is_subclass_of($opt_itemtype, CommonDBTM::class)) {
+            $criteria = $opt_itemtype::getSQLWhereCriteria($itemtype, $opt, $nott, $searchtype, $val, $meta, $append_criterion_with_search);
+            if ($criteria !== null) {
                 return $criteria;
-
-            case "glpi_groups.completename":
-                if ($val === 'mygroups') {
-                    switch ($searchtype) {
-                        case 'equals':
-                            if (count($_SESSION['glpigroups']) === 0) {
-                                return [];
-                            }
-                            return [
-                                "$table.id" => $_SESSION['glpigroups']
-                            ];
-
-                        case 'notequals':
-                            if (count($_SESSION['glpigroups']) === 0) {
-                                return [];
-                            }
-                            return [
-                                "$table.id" => ['NOT IN', $_SESSION['glpigroups']]
-                            ];
-
-                        case 'under':
-                            if (count($_SESSION['glpigroups']) === 0) {
-                                return [];
-                            }
-                            $groups = $_SESSION['glpigroups'];
-                            foreach ($_SESSION['glpigroups'] as $g) {
-                                $groups += getSonsOf($inittable, $g);
-                            }
-                            $groups = array_unique($groups);
-                            return [
-                                "$table.id" => $groups
-                            ];
-
-                        case 'notunder':
-                            if (count($_SESSION['glpigroups']) === 0) {
-                                return [];
-                            }
-                            $groups = $_SESSION['glpigroups'];
-                            foreach ($_SESSION['glpigroups'] as $g) {
-                                $groups += getSonsOf($inittable, $g);
-                            }
-                            $groups = array_unique($groups);
-                            return [
-                                "$table.id" => ['NOT IN', $groups]
-                            ];
-
-                        case 'empty':
-                            $criteria = [];
-                            $append_criterion_with_search($criteria, "$table.id");
-                            return $criteria;
-                    }
-                }
-                break;
-
-            case "glpi_ipaddresses.name":
-                if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
-                    if ($nott) {
-                        if ($regs[1] == '<') {
-                            $regs[1] = '>';
-                        } else {
-                            $regs[1] = '<';
-                        }
-                    }
-                    $regs[1] .= $regs[2];
-                    return [new QueryExpression("(INET_ATON(`$table`.`$field`) " . $regs[1] . " INET_ATON('" . $regs[3] . "'))")];
-                }
-                break;
-
-            case "glpi_tickets.status":
-            case "glpi_problems.status":
-            case "glpi_changes.status":
-                $tocheck = [];
-                $item = getItemForItemtype($itemtype);
-                if ($item instanceof CommonITILObject) {
-                    switch ($val) {
-                        case 'process':
-                            $tocheck = $item->getProcessStatusArray();
-                            break;
-
-                        case 'notclosed':
-                            $tocheck = $item::getAllStatusArray();
-                            foreach ($item::getClosedStatusArray() as $status) {
-                                if (isset($tocheck[$status])) {
-                                    unset($tocheck[$status]);
-                                }
-                            }
-                            $tocheck = array_keys($tocheck);
-                            break;
-
-                        case 'old':
-                            $tocheck = array_merge(
-                                $item::getSolvedStatusArray(),
-                                $item::getClosedStatusArray()
-                            );
-                            break;
-
-                        case 'notold':
-                            $tocheck = $item::getNotSolvedStatusArray();
-                            break;
-
-                        case 'all':
-                            $tocheck = array_keys($item::getAllStatusArray());
-                            break;
-                    }
-
-                    if (count($tocheck) === 0) {
-                        $statuses = $item::getAllStatusArray();
-                        if (isset($statuses[$val])) {
-                            $tocheck = [$val];
-                        }
-                    }
-                }
-
-                if (count($tocheck)) {
-                    if ($nott) {
-                        return [
-                            "$table.$field" => ['NOT IN', $tocheck]
-                        ];
-                    }
-                    return [
-                        "$table.$field" => $tocheck
-                    ];
-                }
-                break;
-
-            case "glpi_tickets_tickets.tickets_id_1":
-                $tmplink = 'OR';
-                $compare = '=';
-                if ($nott) {
-                    $tmplink = 'AND';
-                    $compare = '<>';
-                }
-                $toadd2 = '';
-                if (
-                    $nott
-                    && ($val != 'NULL') && ($val != 'null')
-                ) {
-                    $toadd2 = " OR `$table`.`$field` IS NULL";
-                }
-
-                return new QueryExpression(" (((`$table`.`tickets_id_1` $compare '$val'
-                              $tmplink `$table`.`tickets_id_2` $compare '$val')
-                             AND `glpi_tickets`.`id` <> '$val')
-                            $toadd2)");
-
-            case "glpi_tickets.priority":
-            case "glpi_tickets.impact":
-            case "glpi_tickets.urgency":
-            case "glpi_problems.priority":
-            case "glpi_problems.impact":
-            case "glpi_problems.urgency":
-            case "glpi_changes.priority":
-            case "glpi_changes.impact":
-            case "glpi_changes.urgency":
-            case "glpi_projects.priority":
-                if (is_numeric($val)) {
-                    if ($val > 0) {
-                        $compare = ($nott ? '<>' : '=');
-                        return [
-                            "$table.$field" => [$compare, $val]
-                        ];
-                    }
-                    if ($val < 0) {
-                        $compare = ($nott ? '<' : '>=');
-                        return [
-                            "$table.$field" => [$compare, abs($val)]
-                        ];
-                    }
-                    // Show all
-                    $compare = ($nott ? '<' : '>=');
-                    return [
-                        "$table.$field" => [$compare, 0]
-                    ];
-                }
-                return [];
-
-            case "glpi_tickets.global_validation":
-            case "glpi_ticketvalidations.status":
-            case "glpi_changes.global_validation":
-            case "glpi_changevalidations.status":
-                if ($val !== 'can' && !is_numeric($val)) {
-                    return [];
-                }
-                $tocheck = [];
-                if ($val === 'can') {
-                    $tocheck = \CommonITILValidation::getCanValidationStatusArray();
-                } else {
-                    $tocheck = [$val];
-                }
-                if ($nott) {
-                    return [
-                        "$table.$field" => ['NOT IN', $tocheck]
-                    ];
-                }
-                return [
-                    "$table.$field" => $tocheck
-                ];
-
-            case "glpi_notifications.event":
-                if (in_array($searchtype, ['equals', 'notequals']) && strpos($val, \Search::SHORTSEP)) {
-                    $not = 'notequals' === $searchtype ? 'NOT' : '';
-                    [$itemtype_val, $event_val] = explode(\Search::SHORTSEP, $val);
-                    $criteria = [
-                        "$table.event" => $event_val,
-                        "$table.itemtype" => $itemtype_val
-                    ];
-                    if ($not) {
-                        $criteria = ['NOT' => $criteria];
-                    }
-                    return $criteria;
-                }
-                break;
+            }
         }
 
         //// Default cases
@@ -1926,7 +988,7 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Generic Function to add Default left join to a request
      *
-     * @param class-string<CommonDBTM> $itemtype   Reference item type
+     * @param class-string<CommonDBTM>|'AllAssets' $itemtype   Reference item type
      * @param class-string<CommonDBTM> $ref_table  Reference table
      * @param array &$already_link_tables  Array of tables already joined
      *
@@ -1934,338 +996,26 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getDefaultJoinCriteria(string $itemtype, string $ref_table, array &$already_link_tables): array
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $out = [];
-        switch ($itemtype) {
-            // No link
-            case 'User':
-                $out = self::getLeftJoinCriteria(
-                    $itemtype,
-                    $ref_table,
-                    $already_link_tables,
-                    "glpi_profiles_users",
-                    "profiles_users_id",
-                    0,
-                    0,
-                    ['jointype' => 'child']
-                );
-                break;
+        if (method_exists($itemtype, 'getSQLDefaultJoinCriteria')) {
+            $out = $itemtype::getSQLDefaultJoinCriteria($ref_table, $already_link_tables);
+        }
 
-            case 'Reservation':
-                $out = self::getLeftJoinCriteria(
-                    $itemtype,
-                    $ref_table,
-                    $already_link_tables,
-                    \ReservationItem::getTable(),
-                    \ReservationItem::getForeignKeyField(),
-                );
-                break;
-
-            case 'Reminder':
-                $out = ['LEFT JOIN' => \Reminder::getVisibilityCriteria()['LEFT JOIN']];
-                break;
-
-            case 'RSSFeed':
-                $out = ['LEFT JOIN' => \RSSFeed::getVisibilityCriteria()['LEFT JOIN']];
-                break;
-
-            case 'ProjectTask':
-                // Same structure in addDefaultWhere
-                $out = self::getLeftJoinCriteria(
-                    $itemtype,
-                    $ref_table,
-                    $already_link_tables,
-                    "glpi_projects",
-                    "projects_id"
-                );
-                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                    $itemtype,
-                    $ref_table,
-                    $already_link_tables,
-                    "glpi_projecttaskteams",
-                    "projecttaskteams_id",
-                    0,
-                    0,
-                    ['jointype' => 'child']
-                ));
-                break;
-
-            case 'Project':
-                // Same structure in addDefaultWhere
-                if (!Session::haveRight("project", \Project::READALL)) {
-                    $out = self::getLeftJoinCriteria(
-                        $itemtype,
-                        $ref_table,
-                        $already_link_tables,
-                        "glpi_projectteams",
-                        "projectteams_id",
-                        0,
-                        0,
-                        ['jointype' => 'child']
-                    );
+        // Plugin can override core definition for its type
+        if ($plug = isPluginItemType($itemtype)) {
+            $plugin_name   = $plug['plugin'];
+            $hook_function = 'plugin_' . strtolower($plugin_name) . '_addDefaultJoin';
+            $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, &$already_link_tables) {
+                if (is_callable($hook_function)) {
+                    return $hook_function($itemtype, $ref_table, $already_link_tables);
                 }
-                break;
-
-            case 'Ticket':
-                // Same structure in addDefaultWhere
-                if (!Session::haveRight("ticket", \Ticket::READALL)) {
-                    $searchopt = SearchOption::getOptionsForItemtype($itemtype);
-
-                    // show mine : requester
-                    $out = self::getLeftJoinCriteria(
-                        $itemtype,
-                        $ref_table,
-                        $already_link_tables,
-                        "glpi_tickets_users",
-                        "tickets_users_id",
-                        0,
-                        0,
-                        $searchopt[4]['joinparams']['beforejoin']['joinparams']
-                    );
-
-                    if (Session::haveRight("ticket", \Ticket::READGROUP)) {
-                        if (count($_SESSION['glpigroups'])) {
-                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                                $itemtype,
-                                $ref_table,
-                                $already_link_tables,
-                                "glpi_groups_tickets",
-                                "groups_tickets_id",
-                                0,
-                                0,
-                                $searchopt[71]['joinparams']['beforejoin']
-                                ['joinparams']
-                            ));
-                        }
-                    }
-
-                    // show mine : observer
-                    $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                        $itemtype,
-                        $ref_table,
-                        $already_link_tables,
-                        "glpi_tickets_users",
-                        "tickets_users_id",
-                        0,
-                        0,
-                        $searchopt[66]['joinparams']['beforejoin']['joinparams']
-                    ));
-
-                    if (count($_SESSION['glpigroups'])) {
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_groups_tickets",
-                            "groups_tickets_id",
-                            0,
-                            0,
-                            $searchopt[65]['joinparams']['beforejoin']['joinparams']
-                        ));
-                    }
-
-                    if (Session::haveRight("ticket", \Ticket::OWN)) { // Can own ticket : show assign to me
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_tickets_users",
-                            "tickets_users_id",
-                            0,
-                            0,
-                            $searchopt[5]['joinparams']['beforejoin']['joinparams']
-                        ));
-                    }
-
-                    if (Session::haveRightsOr("ticket", [\Ticket::READMY, \Ticket::READASSIGN])) { // show mine + assign to me
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_tickets_users",
-                            "tickets_users_id",
-                            0,
-                            0,
-                            $searchopt[5]['joinparams']['beforejoin']['joinparams']
-                        ));
-
-                        if (count($_SESSION['glpigroups'])) {
-                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                                $itemtype,
-                                $ref_table,
-                                $already_link_tables,
-                                "glpi_groups_tickets",
-                                "groups_tickets_id",
-                                0,
-                                0,
-                                $searchopt[8]['joinparams']['beforejoin']
-                                ['joinparams']
-                            ));
-                        }
-                    }
-
-                    if (
-                        Session::haveRightsOr(
-                            'ticketvalidation',
-                            [\TicketValidation::VALIDATEINCIDENT,
-                                \TicketValidation::VALIDATEREQUEST
-                            ]
-                        )
-                    ) {
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_ticketvalidations",
-                            "ticketvalidations_id",
-                            0,
-                            0,
-                            $searchopt[58]['joinparams']['beforejoin']['joinparams']
-                        ));
-                    }
-                }
-                break;
-
-            case 'Change':
-            case 'Problem':
-                if ($itemtype === Change::class) {
-                    $right       = 'change';
-                    $table       = 'changes';
-                    $groupetable = "glpi_changes_groups";
-                    $linkfield   = "changes_groups_id";
-                } else if ($itemtype === Problem::class) {
-                    $right       = 'problem';
-                    $table       = 'problems';
-                    $groupetable = "glpi_groups_problems";
-                    $linkfield   = "groups_problems_id";
-                }
-
-                // Same structure in addDefaultWhere
-                $out = [];
-                if (!Session::haveRight("$right", $itemtype::READALL)) {
-                    $searchopt = SearchOption::getOptionsForItemtype($itemtype);
-
-                    if (Session::haveRight("$right", $itemtype::READMY)) {
-                        // show mine : requester
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_" . $table . "_users",
-                            $table . "_users_id",
-                            0,
-                            0,
-                            $searchopt[4]['joinparams']['beforejoin']['joinparams']
-                        ));
-                        if (count($_SESSION['glpigroups'])) {
-                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                                $itemtype,
-                                $ref_table,
-                                $already_link_tables,
-                                $groupetable,
-                                $linkfield,
-                                0,
-                                0,
-                                $searchopt[71]['joinparams']['beforejoin']['joinparams']
-                            ));
-                        }
-
-                        // show mine : observer
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_" . $table . "_users",
-                            $table . "_users_id",
-                            0,
-                            0,
-                            $searchopt[66]['joinparams']['beforejoin']['joinparams']
-                        ));
-                        if (count($_SESSION['glpigroups'])) {
-                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                                $itemtype,
-                                $ref_table,
-                                $already_link_tables,
-                                $groupetable,
-                                $linkfield,
-                                0,
-                                0,
-                                $searchopt[65]['joinparams']['beforejoin']['joinparams']
-                            ));
-                        }
-
-                        // show mine : assign
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_" . $table . "_users",
-                            $table . "_users_id",
-                            0,
-                            0,
-                            $searchopt[5]['joinparams']['beforejoin']['joinparams']
-                        ));
-                        if (count($_SESSION['glpigroups'])) {
-                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                                $itemtype,
-                                $ref_table,
-                                $already_link_tables,
-                                $groupetable,
-                                $linkfield,
-                                0,
-                                0,
-                                $searchopt[8]['joinparams']['beforejoin']['joinparams']
-                            ));
-                        }
-                    }
-                }
-                break;
-
-            case 'KnowbaseItem':
-                $leftjoin = \KnowbaseItem::getVisibilityCriteria(false)['LEFT JOIN'];
-                $out = ['LEFT JOIN' => $leftjoin];
-                foreach ($leftjoin as $table => $criteria) {
-                    $already_link_tables[] = $table;
-                }
-                break;
-
-            case ITILFollowup::class:
-                foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
-                    $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                        $itemtype,
-                        $ref_table,
-                        $already_link_tables,
-                        $itil_itemtype::getTable(),
-                        'items_id',
-                        false,
-                        '',
-                        [
-                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
-                        ]
-                    ));
-                }
-                break;
-
-            default:
-                // Plugin can override core definition for its type
-                if ($plug = isPluginItemType($itemtype)) {
-                    $plugin_name   = $plug['plugin'];
-                    $hook_function = 'plugin_' . strtolower($plugin_name) . '_addDefaultJoin';
-                    $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, &$already_link_tables) {
-                        if (is_callable($hook_function)) {
-                            return $hook_function($itemtype, $ref_table, $already_link_tables);
-                        }
-                    };
-                    $out = \Plugin::doOneHook($plugin_name, $hook_closure);
-                    $out = $out ?? []; // convert null into an empty array
-                    if (!is_array($out)) {
-                        // Toolbox::deprecated('Plugin hook ' . $hook_function . ' should return an array');
-                        $out = self::parseJoinString($out);
-                    }
-                }
-                break;
+            };
+            $out = \Plugin::doOneHook($plugin_name, $hook_closure);
+            $out = $out ?? []; // convert null into an empty array
+            if (!is_array($out)) {
+                // Toolbox::deprecated('Plugin hook ' . $hook_function . ' should return an array');
+                $out = self::parseJoinString($out);
+            }
         }
 
         [$itemtype, $out] = \Plugin::doHookFunction('add_default_join', [$itemtype, $out]);
@@ -3598,14 +2348,13 @@ final class SQLProvider implements SearchProviderInterface
             }
             $order = $sort_field['order'] ?? 'ASC';
             // Order security check
-            if ($order != 'ASC') {
+            if ($order !== 'ASC') {
                 $order = 'DESC';
             }
 
             $criterion = null;
 
             $table = $searchopt[$ID]["table"];
-            $field = $searchopt[$ID]["field"];
 
             $addtable = '';
 
@@ -3649,51 +2398,9 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             if ($criterion === null) {
-                switch ($table . "." . $field) {
-                    case "glpi_users.name":
-                        if ($itemtype != 'User') {
-                            if ($_SESSION["glpinames_format"] == \User::FIRSTNAME_BEFORE) {
-                                $name1 = 'firstname';
-                                $name2 = 'realname';
-                            } else {
-                                $name1 = 'realname';
-                                $name2 = 'firstname';
-                            }
-                            $addaltemail = "";
-                            if (
-                                in_array($itemtype, ['Ticket', 'Change', 'Problem'])
-                                && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
-                                && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
-                            ) { // For tickets_users
-                                $ticket_user_table = $searchopt[$ID]['joinparams']['beforejoin']['table'] . "_" .
-                                    self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
-                                $addaltemail = ",
-                                IFNULL(`$ticket_user_table`.`alternative_email`, '')";
-                            }
-                            if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                                $criterion = "GROUP_CONCAT(DISTINCT CONCAT(
-                                    IFNULL(`$table$addtable`.`$name1`, ''),
-                                    IFNULL(`$table$addtable`.`$name2`, ''),
-                                    IFNULL(`$table$addtable`.`name`, '')$addaltemail
-                                ) ORDER BY CONCAT(
-                                    IFNULL(`$table$addtable`.`$name1`, ''),
-                                    IFNULL(`$table$addtable`.`$name2`, ''),
-                                    IFNULL(`$table$addtable`.`name`, '')$addaltemail) ASC
-                                ) $order";
-                            } else {
-                                $criterion = "CONCAT(
-                                    IFNULL(`$table$addtable`.`$name1`, ''),
-                                    IFNULL(`$table$addtable`.`$name2`, ''),
-                                    IFNULL(`$table$addtable`.`name`, '')$addaltemail
-                                ) $order";
-                            }
-                        } else {
-                            $criterion = "`" . $table . $addtable . "`.`name` $order";
-                        }
-                        break;
-                    case "glpi_ipaddresses.name":
-                        $criterion = "INET6_ATON(`$table$addtable`.`$field`) $order";
-                        break;
+                $opt_itemtype = $sort_field['itemtype'] ?? getItemTypeForTable($table);
+                if (is_subclass_of($opt_itemtype, CommonDBTM::class)) {
+                    $criterion = $opt_itemtype::getSQLOrderByCriteria($itemtype, new SearchOption($searchopt[$ID]), $order);
                 }
             }
 
@@ -6437,7 +5144,7 @@ HTML;
      * @param string $meta_itemtype
      * @return string
      */
-    private static function getMetaTableUniqueSuffix(string $initial_table, string $meta_itemtype): string
+    public static function getMetaTableUniqueSuffix(string $initial_table, string $meta_itemtype): string
     {
         $suffix = '';
 

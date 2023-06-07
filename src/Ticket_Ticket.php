@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\Search\SearchOption;
 
 /// Class Ticket links
 class Ticket_Ticket extends CommonITILObject_CommonITILObject
@@ -177,5 +178,36 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
 
         ksort($tickets);
         return $tickets;
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        if ($opt['field'] === 'tickets_id_1') {
+            $tmp_link = $nott ? 'AND' : 'OR';
+            $compare = $nott ? '<>' : '=';
+            $to_add = [];
+
+            if ($nott && ($val !== 'NULL' && $val !== 'null')) {
+                $to_add = [$opt->getTableField() => null];
+            }
+
+            $criteria = [
+                $tmp_link => [
+                    $opt->getTableField() => [$compare, $val],
+                    "{$opt['table']}.tickets_id_2" => [$compare, $val],
+                ],
+                Ticket::getTableField('id') => ['<>', $val],
+            ];
+            if (!empty($to_add)) {
+                $criteria = [
+                    'OR' => [
+                        $criteria,
+                        $to_add
+                    ]
+                ];
+            }
+            return $criteria;
+        }
+        return parent::getSQLWhereCriteria($itemtype, $opt, $nott, $searchtype, $val, $meta, $fn_append_with_search);
     }
 }

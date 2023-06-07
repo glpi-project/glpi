@@ -41,6 +41,8 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\Provider\SQLProvider;
+use Glpi\Search\SearchOption;
 use Sabre\VObject;
 
 class User extends CommonDBTM
@@ -7306,14 +7308,277 @@ JAVASCRIPT;
             return false;
         }
 
-        $all_pinned     = importArrayFromDB($this->fields['savedsearches_pinned']);
+        $all_pinned = importArrayFromDB($this->fields['savedsearches_pinned']);
         $already_pinned = $all_pinned[$itemtype] ?? 0;
 
         $all_pinned[$itemtype] = $already_pinned ? 0 : 1;
 
         return $this->update([
-            'id'                   => $this->fields['id'],
+            'id' => $this->fields['id'],
             'savedsearches_pinned' => exportArrayToDB($all_pinned),
         ]);
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table_ref = $opt->getTableReference($itemtype, $meta);
+        $addmeta = $meta ? SQLProvider::getMetaTableUniqueSuffix($opt['table'], $meta_type) : '';
+
+        // Search for user from other itemtype like Ticket
+        if ($itemtype !== self::class && $opt['table'] === self::getTable() && $opt['field'] === 'name') {
+            if (!$opt->isForceGroupBy()) {
+                return [
+                    $DB::quoteName("$table_ref.name AS " . $opt->getSelectFieldAlias($itemtype)),
+                    $DB::quoteName("$table_ref.realname AS " . $opt->getSelectFieldAlias($itemtype, 'realname')),
+                    $DB::quoteName("$table_ref.id AS " . $opt->getSelectFieldAlias($itemtype, 'id')),
+                    $DB::quoteName("$table_ref.firstname AS " . $opt->getSelectFieldAlias($itemtype, 'firstname')),
+                ];
+            }
+
+            $addaltemail = "";
+            if (
+                isset($opt['joinparams']['beforejoin']['table'])
+                && in_array($itemtype, ['Ticket', 'Change', 'Problem'])
+                && in_array($opt['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
+            ) { // For tickets_users
+                $before_join = $opt['joinparams']['beforejoin'];
+                $ticket_user_table = $before_join['table'] . "_" . \Search::computeComplexJoinID($before_join['joinparams']) . $addmeta;
+                $addaltemail = QueryFunction::groupConcat(
+                    expression: QueryFunction::concat([
+                        "{$ticket_user_table}.users_id",
+                        new QueryExpression($DB::quoteValue(' ')),
+                        "{$ticket_user_table}.alternative_email"
+                    ]),
+                    separator: \Search::LONGSEP,
+                    distinct: true,
+                    alias: $opt->getSelectFieldAlias($itemtype, '2')
+                );
+            }
+            $SELECT = [
+                QueryFunction::groupConcat(
+                    expression: "{$table_ref}.id",
+                    separator: \Search::LONGSEP,
+                    distinct: true,
+                    alias: $opt->getSelectFieldAlias($itemtype)
+                ),
+            ];
+            if (!empty($addaltemail)) {
+                $SELECT[] = $addaltemail;
+            }
+            return $SELECT;
+        }
+        return parent::getSQLSelectCriteria($itemtype, $opt, $meta, $meta_type);
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+
+        if ($field === 'name') {
+            if ($val === 'myself') {
+                switch ($searchtype) {
+                    case 'equals':
+                        return [
+                            "$table.id" => $_SESSION['glpiID']
+                        ];
+
+                    case 'notequals':
+                        return [
+                            "$table.id" => ['<>', $_SESSION['glpiID']]
+                        ];
+                }
+            }
+
+            if ($itemtype === self::class) {
+                $criteria = ['OR' => []];
+                if (in_array($searchtype, ['equals', 'notequals'])) {
+                    $fn_append_with_search($criteria['OR'], "$table.id");
+
+                    if ($searchtype === 'notequals') {
+                        $nott = !$nott;
+                    }
+
+                    // Add NULL if $val = 0 and not negative search
+                    // Or negative search on real value
+                    if ((!$nott && ($val == 0)) || ($nott && ($val != 0))) {
+                        $criteria['OR'][] = ["$table.id" => null];
+                    }
+
+                    return $criteria;
+                }
+                return [new QueryExpression(SQLProvider::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
+            }
+
+            if ($_SESSION["glpinames_format"] == \User::FIRSTNAME_BEFORE) {
+                $name1 = 'firstname';
+                $name2 = 'realname';
+            } else {
+                $name1 = 'realname';
+                $name2 = 'firstname';
+            }
+
+            if (in_array($searchtype, ['equals', 'notequals'])) {
+                $criteria = [
+                    'OR' => []
+                ];
+                $fn_append_with_search($criteria['OR'], "$table.id");
+                if ($val == 0) {
+                    if ($searchtype === 'notequals') {
+                        $criteria['OR'][] = [
+                            'NOT' => ["$table.id" => null]
+                        ];
+                    } else {
+                        $criteria['OR'][] = [
+                            "$table.id" => null
+                        ];
+                    }
+                }
+                return $criteria;
+            } else if ($searchtype === 'empty') {
+                $criteria = [];
+                $fn_append_with_search($criteria, "$table.id");
+                return $criteria;
+            }
+            $toadd   = '';
+
+            $tmplink = 'OR';
+            if ($nott) {
+                $tmplink = 'AND';
+            }
+
+            if (is_a($itemtype, \CommonITILObject::class, true)) {
+                $itil_user_tables = ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'];
+                $has_join         = isset($opt["joinparams"]["beforejoin"]["table"], $opt["joinparams"]["beforejoin"]["joinparams"]);
+                if ($has_join && in_array($opt["joinparams"]["beforejoin"]["table"], $itil_user_tables, true)) {
+                    $bj        = $opt["joinparams"]["beforejoin"];
+                    $linktable = $bj['table'] . '_' . \Search::computeComplexJoinID($bj['joinparams']) . $opt->getTableMetaSuffix($itemtype, $meta);
+                    //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
+                    $toadd     = SQLProvider::makeTextCriteria(
+                        "`$linktable`.`alternative_email`",
+                        $val,
+                        $nott,
+                        $tmplink
+                    );
+                    // Remove $tmplink (may have spaces around it) from front of $toadd
+                    $toadd = preg_replace('/^\s*' . preg_quote($tmplink, '/') . '\s*/', '', $toadd);
+                    if ($val === '^$') {
+                        return [
+                            'OR' => [
+                                "$linktable.users_id" => null,
+                                "$linktable.alternative_email" => null
+                            ]
+                        ];
+                    }
+                }
+            }
+            $criteria = [
+                $tmplink => []
+            ];
+            $fn_append_with_search($criteria[$tmplink], "$table.$name1");
+            $fn_append_with_search($criteria[$tmplink], "$table.$name2");
+            $fn_append_with_search($criteria[$tmplink], "$table.$field");
+            $fn_append_with_search(
+                $criteria[$tmplink],
+                QueryFunction::concat([
+                    "$table.$name1",
+                    new QueryExpression($DB::quoteValue(' ')),
+                    "$table.$name2"
+                ])
+            );
+            if ($nott && ($val !== 'NULL') && ($val !== 'null')) {
+                $criteria = [
+                    $tmplink => [
+                        'OR' => [
+                            $criteria,
+                            "$table.$field" => null
+                        ],
+                        new QueryExpression($toadd)
+                    ]
+                ];
+            }
+            return $criteria;
+        }
+        return parent::getSQLWhereCriteria($itemtype, $opt, $nott, $searchtype, $val, $meta, $fn_append_with_search);
+    }
+
+    public static function getSQLOrderByCriteria(string $itemtype, SearchOption $opt, string $order): ?QueryExpression
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $field = $opt['field'];
+        $table_ref = $opt->getTableReference($itemtype);
+
+        if ($field === 'name') {
+            if ($itemtype !== self::class) {
+                if ((int) $_SESSION["glpinames_format"] === self::FIRSTNAME_BEFORE) {
+                    $name1 = 'firstname';
+                    $name2 = 'realname';
+                } else {
+                    $name1 = 'realname';
+                    $name2 = 'firstname';
+                }
+                $concat_criteria =  [
+                    QueryFunction::ifnull("$table_ref.$name1", new QueryExpression($DB::quoteValue(''))),
+                    QueryFunction::ifnull("$table_ref.$name2", new QueryExpression($DB::quoteValue(''))),
+                    QueryFunction::ifnull("$table_ref.name", new QueryExpression($DB::quoteValue(''))),
+                ];
+                if (
+                    in_array($itemtype, ['Ticket', 'Change', 'Problem'])
+                    && isset($opt['joinparams']['beforejoin']['table'])
+                    && in_array($opt['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
+                ) { // For tickets_users
+                    $ticket_user_table = $opt['joinparams']['beforejoin']['table'] . "_" .
+                        SQLProvider::computeComplexJoinID($opt['joinparams']['beforejoin']['joinparams']);
+                    $concat_criteria[] = QueryFunction::ifnull("$ticket_user_table.alternative_email", new QueryExpression($DB::quoteValue('')));
+                }
+
+                $concat_criteria = QueryFunction::concat($concat_criteria);
+
+                if ((isset($opt["forcegroupby"]) && $opt["forcegroupby"])) {
+                    return new QueryExpression(
+                        QueryFunction::groupConcat(
+                            expression: $concat_criteria,
+                            distinct: true,
+                            order_by: new QueryExpression($concat_criteria . ' ASC'),
+                        ) . " $order"
+                    );
+                } else {
+                    return new QueryExpression($concat_criteria . " $order");
+                }
+            } else {
+                return new QueryExpression("`" . $table_ref . "`.`name` $order");
+            }
+        }
+        return parent::getSQLOrderByCriteria($itemtype, $opt, $order);
+    }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        if (!Session::canViewAllEntities()) {
+            return getEntitiesRestrictCriteria("glpi_profiles_users", '', '', true);
+        }
+        return parent::getSQLDefaultWhereCriteria();
+    }
+
+    public static function getSQLDefaultJoinCriteria(string $ref_table, array &$already_link_tables): array
+    {
+        return SQLProvider::getLeftJoinCriteria(
+            static::class,
+            $ref_table,
+            $already_link_tables,
+            "glpi_profiles_users",
+            "profiles_users_id",
+            0,
+            0,
+            ['jointype' => 'child']
+        );
     }
 }

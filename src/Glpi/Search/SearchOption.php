@@ -787,4 +787,72 @@ final class SearchOption implements \ArrayAccess
     {
         self::$search_options_cache = [];
     }
+
+    public function getTableField(): string
+    {
+        return "{$this['table']}.{$this['field']}";
+    }
+
+    /**
+     * @param class-string<\CommonDBTM> $itemtype
+     * @param bool $meta
+     * @return string
+     */
+    public function getTableMetaSuffix(string $itemtype, bool $meta = false): string
+    {
+        return ($meta && $itemtype::getTable() !== $this['table']) ? ("_" . $itemtype) : '';
+    }
+
+    /**
+     * @param class-string<\CommonDBTM> $itemtype
+     * @param bool $meta
+     * @return string
+     */
+    public function getTableReference(string $itemtype, bool $meta = false): string
+    {
+        $table = $this['table'];
+        $is_fkey_composite_on_self = getTableNameForForeignKeyField($this["linkfield"]) === $table
+            && $this["linkfield"] !== getForeignKeyFieldForTable($table);
+        $orig_table = SearchEngine::getOrigTableName($itemtype);
+        if (
+            ($table !== 'asset_types')
+            && ($is_fkey_composite_on_self || $table !== $orig_table)
+            && ($this["linkfield"] !== getForeignKeyFieldForTable($table))
+        ) {
+            $table   .= "_" . $this["linkfield"];
+        }
+
+        if (isset($this['joinparams'])) {
+            $complexjoin = \Search::computeComplexJoinID($this['joinparams']);
+
+            if (!empty($complexjoin)) {
+                $table .= "_" . $complexjoin;
+            }
+        }
+
+        $table .= $this->getTableMetaSuffix($itemtype, $meta);
+
+        return $table;
+    }
+
+    /**
+     * Get the alias preifx that should be used for SELECT fields based on this search option
+     * @param string $itemtype The main item type
+     * @return string
+     */
+    private function getSelectFieldAliasPrefix(string $itemtype): string
+    {
+        return "ITEM_{$itemtype}_{$this['id']}";
+    }
+
+    /**
+     * Get the alias for a specific SELECT field required by this search option
+     * @param string $itemtype The main item type
+     * @param ?string $field The field name. Leave null to get the alias for the main field
+     * @return string
+     */
+    public function getSelectFieldAlias(string $itemtype, ?string $field = null): string
+    {
+        return $this->getSelectFieldAliasPrefix($itemtype) . ($field !== null ? "_{$field}" : '');
+    }
 }

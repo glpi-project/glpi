@@ -47,8 +47,11 @@ class Change extends CommonITILObject
     protected static $forward_entity_to = ['ChangeValidation', 'ChangeCost'];
 
    // From CommonITIL
+    /** @var class-string<CommonITILActor> */
     public $userlinkclass               = 'Change_User';
+    /** @var class-string<CommonITILActor> */
     public $grouplinkclass              = 'Change_Group';
+    /** @var class-string<CommonITILActor> */
     public $supplierlinkclass           = 'Change_Supplier';
 
     public static $rightname                   = 'change';
@@ -58,10 +61,6 @@ class Change extends CommonITILObject
     const URGENCY_MASK_FIELD            = 'urgency_mask';
     const IMPACT_MASK_FIELD             = 'impact_mask';
     const STATUS_MATRIX_FIELD           = 'change_status';
-
-
-    const READMY                        = 1;
-    const READALL                       = 1024;
 
    // Specific status for changes
     const REFUSED                       = 13;

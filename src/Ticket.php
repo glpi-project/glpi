@@ -42,6 +42,8 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\RichText\RichText;
+use Glpi\Search\Provider\SQLProvider;
+use Glpi\Search\SearchOption;
 
 /**
  * Ticket Class
@@ -53,8 +55,11 @@ class Ticket extends CommonITILObject
     protected static $forward_entity_to = ['TicketValidation', 'TicketCost'];
 
    // From CommonITIL
+    /** @var class-string<CommonITILActor> */
     public $userlinkclass               = 'Ticket_User';
+    /** @var class-string<CommonITILActor> */
     public $grouplinkclass              = 'Group_Ticket';
+    /** @var class-string<CommonITILActor> */
     public $supplierlinkclass           = 'Supplier_Ticket';
 
     public static $rightname                   = 'ticket';
@@ -75,8 +80,6 @@ class Ticket extends CommonITILObject
    // Demand type
     const DEMAND_TYPE   = 2;
 
-    const READMY           =      1;
-    const READALL          =   1024;
     const READGROUP        =   2048;
     const READASSIGN       =   4096;
     const ASSIGN           =   8192;
@@ -6342,5 +6345,240 @@ JAVASCRIPT;
         }
 
         return $options;
+    }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        if (!Session::haveRight("ticket", self::READALL)) {
+            $searchopt
+                = SearchOption::getOptionsForItemtype(static::class);
+            $requester_table
+                = '`glpi_tickets_users_' .
+                SQLProvider::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+            $requestergroup_table
+                = '`glpi_groups_tickets_' .
+                SQLProvider::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+
+            $assign_table
+                = '`glpi_tickets_users_' .
+                SQLProvider::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+            $assigngroup_table
+                = '`glpi_groups_tickets_' .
+                SQLProvider::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+
+            $observer_table
+                = '`glpi_tickets_users_' .
+                SQLProvider::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+            $observergroup_table
+                = '`glpi_groups_tickets_' .
+                SQLProvider::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+
+            $condition = "(";
+
+            $criteria = [
+                'OR' => []
+            ];
+            if (Session::haveRight("ticket", self::READMY)) {
+                $criteria['OR'][] = [
+                    'OR' => [
+                        "$requester_table.users_id" => Session::getLoginUserID(),
+                        "$observer_table.users_id" => Session::getLoginUserID(),
+                        "glpi_tickets.users_id_recipient" => Session::getLoginUserID()
+                    ]
+                ];
+            } else {
+                $criteria['OR'][] = [
+                    '0' => '1'
+                ];
+            }
+
+            if (Session::haveRight("ticket", self::READGROUP)) {
+                if (count($_SESSION['glpigroups'])) {
+                    $criteria['OR'][] = [
+                        'OR' => [
+                            "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
+                            "$observergroup_table.groups_id" => $_SESSION['glpigroups']
+                        ]
+                    ];
+                }
+            }
+
+            if (Session::haveRight("ticket", self::OWN)) {// Can own ticket : show assign to me
+                $criteria['OR'][] = [
+                    "$assign_table.users_id" => Session::getLoginUserID()
+                ];
+            }
+
+            if (Session::haveRight("ticket", self::READASSIGN)) { // assign to me
+                $criteria['OR'][] = [
+                    "$assign_table.users_id" => Session::getLoginUserID()
+                ];
+                if (count($_SESSION['glpigroups'])) {
+                    $criteria['OR'][] = [
+                        "$assigngroup_table.groups_id" => $_SESSION['glpigroups']
+                    ];
+                }
+            }
+
+            if (Session::haveRight('ticket', self::READNEWTICKET)) {
+                $criteria['OR'][] = [
+                    'glpi_tickets.status' => \CommonITILObject::INCOMING
+                ];
+            }
+
+            if (
+                Session::haveRightsOr(
+                    'ticketvalidation',
+                    [\TicketValidation::VALIDATEINCIDENT,
+                        \TicketValidation::VALIDATEREQUEST
+                    ]
+                )
+            ) {
+                $criteria['OR'][] = [
+                    'AND' => [
+                        "`glpi_ticketvalidations`.`itemtype_target`" => User::class,
+                        "`glpi_ticketvalidations`.`items_id_target`" => Session::getLoginUserID()
+                    ]
+                ];
+                if (count($_SESSION['glpigroups'])) {
+                    $criteria['OR'][] = [
+                        'AND' => [
+                            "`glpi_ticketvalidations`.`itemtype_target`" => Group::class,
+                            "`glpi_ticketvalidations`.`items_id_target`" => $_SESSION['glpigroups']
+                        ]
+                    ];
+                }
+            }
+            return $criteria;
+        }
+        return parent::getSQLDefaultWhereCriteria();
+    }
+
+    public static function getSQLDefaultJoinCriteria(string $ref_table, array &$already_link_tables): array
+    {
+        if (!Session::haveRight("ticket", self::READALL)) {
+            $searchopt = SearchOption::getOptionsForItemtype(static::class);
+
+            // show mine : requester
+            $out = SQLProvider::getLeftJoinCriteria(
+                static::class,
+                $ref_table,
+                $already_link_tables,
+                "glpi_tickets_users",
+                "tickets_users_id",
+                0,
+                0,
+                $searchopt[4]['joinparams']['beforejoin']['joinparams']
+            );
+
+            if (Session::haveRight("ticket", self::READGROUP)) {
+                if (count($_SESSION['glpigroups'])) {
+                    $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                        static::class,
+                        $ref_table,
+                        $already_link_tables,
+                        "glpi_groups_tickets",
+                        "groups_tickets_id",
+                        0,
+                        0,
+                        $searchopt[71]['joinparams']['beforejoin']
+                        ['joinparams']
+                    ));
+                }
+            }
+
+            // show mine : observer
+            $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                static::class,
+                $ref_table,
+                $already_link_tables,
+                "glpi_tickets_users",
+                "tickets_users_id",
+                0,
+                0,
+                $searchopt[66]['joinparams']['beforejoin']['joinparams']
+            ));
+
+            if (count($_SESSION['glpigroups'])) {
+                $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                    static::class,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_groups_tickets",
+                    "groups_tickets_id",
+                    0,
+                    0,
+                    $searchopt[65]['joinparams']['beforejoin']['joinparams']
+                ));
+            }
+
+            if (Session::haveRight("ticket", self::OWN)) { // Can own ticket : show assign to me
+                $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                    static::class,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_tickets_users",
+                    "tickets_users_id",
+                    0,
+                    0,
+                    $searchopt[5]['joinparams']['beforejoin']['joinparams']
+                ));
+            }
+
+            if (Session::haveRightsOr("ticket", [self::READMY, self::READASSIGN])) { // show mine + assign to me
+                $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                    static::class,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_tickets_users",
+                    "tickets_users_id",
+                    0,
+                    0,
+                    $searchopt[5]['joinparams']['beforejoin']['joinparams']
+                ));
+
+                if (count($_SESSION['glpigroups'])) {
+                    $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                        static::class,
+                        $ref_table,
+                        $already_link_tables,
+                        "glpi_groups_tickets",
+                        "groups_tickets_id",
+                        0,
+                        0,
+                        $searchopt[8]['joinparams']['beforejoin']
+                        ['joinparams']
+                    ));
+                }
+            }
+
+            if (
+                Session::haveRightsOr(
+                    'ticketvalidation',
+                    [\TicketValidation::VALIDATEINCIDENT,
+                        \TicketValidation::VALIDATEREQUEST
+                    ]
+                )
+            ) {
+                $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                    static::class,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_ticketvalidations",
+                    "ticketvalidations_id",
+                    0,
+                    0,
+                    $searchopt[58]['joinparams']['beforejoin']['joinparams']
+                ));
+            }
+            return $out;
+        }
+        return CommonDBTM::getSQLDefaultJoinCriteria($ref_table, $already_link_tables);
     }
 }
