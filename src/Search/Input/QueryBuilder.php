@@ -313,8 +313,13 @@ final class QueryBuilder implements SearchInputInterface
 
         // Default case : text field
         if (!$display) {
+            $fieldpattern = self::getInputValidationPattern($searchopt['datatype'] ?? '', false);
+            $pattern = $fieldpattern['pattern'];
+            $message = $fieldpattern['validation_message'];
+
             echo "<input type='text' class='form-control' size='13' name='$inputname' value=\"" .
-                htmlspecialchars($request['value']) . "\">";
+                htmlspecialchars($request['value']) . "\" pattern=\"" . htmlspecialchars($pattern) . "\">" .
+                "<span class='info'>" . htmlspecialchars($message) . "</span>";
         }
     }
 
@@ -755,5 +760,79 @@ final class QueryBuilder implements SearchInputInterface
         }
 
         return false;
+    }
+
+    /**
+     * Get the input value validation pattern for given datatype.
+     *
+     * @param string    $table
+     * @param string    $field
+     * @param bool      $with_delimiters
+     *      True to return a complete pattern, including delimiters.
+     *      False to return a pattern without delimiters, that can be used inside another regex or in a HTML input pattern.
+     *
+     * @return array An array with
+     *      - a `pattern` entry that contains the pattern that can be used to validate the value;
+     *      - a `validation_message` entry that contains a message that indicates what is the expected value format.
+     */
+    final public static function getInputValidationPattern(string $datatype, bool $with_delimiters = true): array
+    {
+        $starting_limit_pattern = '\^?';
+        $ending_limit_pattern   = '\$?';
+        $relative_operators_pattern = '((>|<|>=|<=)\s*)?';
+
+        switch ($datatype) {
+            case 'bool':
+                $pattern = '0|1';
+                $message = __('must be a boolean (0 or 1)');
+                break;
+
+            case 'color':
+                $pattern = $starting_limit_pattern . '#?[0-9a-fA-F]{1,6}' . $ending_limit_pattern;
+                $message = __('must be a color (6 hexadecimal characters)');
+                break;
+
+            case 'count':
+            case 'integer':
+            case 'number':
+            case 'actiontime':
+            case 'decimal':
+            case 'timestamp':
+                $pattern = $relative_operators_pattern . '-?\s*\d+(\.\d+)?';
+                $message = __('must be a number');
+                break;
+
+            case 'datetime':
+                $pattern = $relative_operators_pattern . '([\d:\- ]+|\-?\s*\d+(\.\d+)?)';
+                $message = __('must be a date time (YYYY-MM-DD HH:mm:SS) or be a relative number of months (e.g. > -6 for dates higher than 6 months ago)');
+                break;
+
+            case 'date':
+            case 'date_delay':
+                $pattern = $relative_operators_pattern . '([\d\-]+|\-?\s*\d+(\.\d+)?)';
+                $message = __('must be a date (YYYY-MM-DD) or be a relative number of months (e.g. > -6 for dates higher than 6 months ago)');
+                break;
+
+            case 'dropdown':
+            case 'email':
+            case 'itemlink':
+            case 'itemtypename':
+            case 'specific':
+            case 'string':
+            case 'text':
+            default:
+                $pattern = '.*';
+                $message = '';
+                break;
+        }
+        if ($pattern != '.*') {
+            $pattern = 'NULL|null|(\s*' . $pattern . '\s*)';
+        }
+
+        if ($with_delimiters) {
+            $pattern = '/^(' . $pattern . ')$/';
+        }
+
+        return ['pattern' => $pattern, 'validation_message' => $message];
     }
 }
