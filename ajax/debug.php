@@ -33,33 +33,35 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
-
-$AJAX_INCLUDE = 1;
 include('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['action']) && isset($_POST['id'])) {
-    $agent = new Agent();
-    if (!$agent->getFromDB($_POST['id']) || !$agent->canView()) {
-        Response::sendError(404, 'Unable to load agent #' . $_POST['id']);
-        return;
-    }
-    $answer = [];
-
-    Session::writeClose();
-    switch ($_POST['action']) {
-        case Agent::ACTION_INVENTORY:
-            $answer = $agent->requestInventory();
-            break;
-
-        case Agent::ACTION_STATUS:
-            $answer = $agent->requestStatus();
-            break;
-    }
-
-    echo json_encode($answer);
+if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
+    http_response_code(403);
+    die();
 }
+
+// No need to save session data. Cannot use Session::writeClose because it doesn't do anything in debug mode
+session_write_close();
+\Glpi\Debug\Profiler::getInstance()->disable();
+
+if (isset($_GET['ajax_id'])) {
+    // Get debug data for a specific ajax call
+    $ajax_id = $_GET['ajax_id'];
+    $profile = \Glpi\Debug\Profile::load($ajax_id);
+    if ($profile) {
+        $data = $profile->getDebugInfo();
+        if ($data) {
+            header('Content-Type: application/json');
+            echo json_encode($data);
+            die();
+        }
+    }
+    http_response_code(404);
+    die();
+}
+
+http_response_code(400);
+die();

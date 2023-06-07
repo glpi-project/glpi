@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,12 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-.debug-panel {
-    font-size: $font-size-sm;
-    z-index: 9999;
-    display: none;
+namespace Glpi\Debug;
 
-    .card-body {
-        height: 300px;
+use Glpi\Application\View\TemplateRenderer;
+
+final class Toolbar
+{
+    public function show()
+    {
+        $info = Profile::getCurrent()->getDebugInfo();
+
+        // Needed widgets: summary (exec time, memory, etc), SQL, super-globals
+        TemplateRenderer::getInstance()->display('components/debug/debug_toolbar.html.twig', [
+            'debug_info' => $info,
+        ]);
     }
 }

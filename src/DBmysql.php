@@ -348,13 +348,23 @@ class DBmysql
     {
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
+        //FIXME Remove use of $DEBUG_SQL and $SQL_TOTAL_REQUEST
+
+        $debug_data = [
+            'query' => $query,
+            'time' => 0,
+            'rows' => 0,
+            'errors' => '',
+            'warnings' => '',
+        ];
+
         $is_debug = isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
         if ($is_debug && $CFG_GLPI["debug_sql"]) {
             $SQL_TOTAL_REQUEST++;
             $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST] = $query;
         }
-        if ($is_debug && $CFG_GLPI["debug_sql"] || $this->execution_time === true) {
-            $TIMER                                    = new Timer();
+        if ($is_debug || $this->execution_time === true) {
+            $TIMER = new Timer();
             $TIMER->start();
         }
 
@@ -373,11 +383,14 @@ class DBmysql
 
             if (($is_debug || isAPI()) && $CFG_GLPI["debug_sql"]) {
                 $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
+                $debug_data['errors'] = $this->error();
             }
         }
 
         if ($is_debug && $CFG_GLPI["debug_sql"]) {
-            $TIME                                   = $TIMER->getTime();
+            $TIME = $TIMER->getTime();
+            $debug_data['time'] = (int) ($TIME * 1000);
+            $debug_data['rows'] = $this->affectedRows();
             $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
             $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
         }
@@ -385,20 +398,23 @@ class DBmysql
         $this->last_query_warnings = $this->fetchQueryWarnings();
         $DEBUG_SQL['warnings'][$SQL_TOTAL_REQUEST] = $this->last_query_warnings;
 
+        $warnings_string = implode(
+            "\n",
+            array_map(
+                static function ($warning) {
+                    return sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                },
+                $this->last_query_warnings
+            )
+        );
+        $debug_data['warnings'] = $warnings_string;
+
         // Output warnings in SQL log
         if (!empty($this->last_query_warnings)) {
             $message = sprintf(
                 "  *** MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s\n",
                 $query,
-                implode(
-                    "\n",
-                    array_map(
-                        function ($warning) {
-                            return sprintf('%s: %s', $warning['Code'], $warning['Message']);
-                        },
-                        $this->last_query_warnings
-                    )
-                )
+                $warnings_string
             );
             $message .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
             Toolbox::logSqlWarning($message);
@@ -406,6 +422,13 @@ class DBmysql
             ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
         }
 
+        \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
+            $debug_data['query'],
+            $debug_data['time'],
+            $debug_data['rows'],
+            $debug_data['errors'],
+            $debug_data['warnings']
+        );
         if ($this->execution_time === true) {
             $this->execution_time = $TIMER->getTime(0, true);
         }

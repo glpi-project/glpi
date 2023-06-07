@@ -1,0 +1,81 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = rand|default(random()) %}
+
+{% macro widget_button(id, title, icon = null) %}
+   <li class="debug-toolbar-widget d-inline-block p-1" data-glpi-debug-widget-id="{{ id }}">
+      <button type="button" class="btn btn-icon border-0 p-1" title="{{ title }}" data-bs-toggle="tab">
+         <span class="debug-text"></span>
+         {% if icon != null %}
+            <i class="{{ icon }}"></i>
+         {% endif %}
+      </button>
+   </li>
+{% endmacro %}
+
+<div id="debug-toolbar" class="position-sticky bottom-0 w-100 card" tabindex="0">
+   <div class="resize-handle my-n2" style="cursor: row-resize; height: 10px; z-index: 1030"></div>
+   <div class="d-flex flex-row">
+      <div class="debug-toolbar-badge d-flex py-2">
+         <button type="button" class="btn btn-icon border-0 p-0" onclick="GLPI.Debug.showDebugToolbar();">
+            <i class="ti ti-bug"></i>
+         </button>
+      </div>
+      <div class="debug-toolbar-content p-1 d-flex w-100 justify-content-between">
+         <ul class="debug-toolbar-widgets nav nav-tabs align-items-center border-0" data-bs-toggle="tabs">
+            {{ _self.widget_button('server_performance', _x('debug', 'Server performance')) }}
+            {{ _self.widget_button('sql', _x('debug', 'SQL Requests'), 'ti ti-database') }}
+            {{ _self.widget_button('requests', _x('debug', 'Requests'), 'ti ti-refresh') }}
+            {{ _self.widget_button('client_performance', _x('debug', 'Client performance'), 'ti ti-brand-javascript') }}
+         </ul>
+         <div class="debug-toolbar-controls pt-2">
+            <div class="debug-toolbar-control">
+               <button type="button" class="btn btn-icon border-0 p-1" name="toggle_content_area" onclick="GLPI.Debug.toggleExtraContentArea();">
+                  <i class="ti ti-square-arrow-down"></i>
+               </button>
+               <button type="button" class="btn btn-icon border-0 p-1" title="{{ __('Close') }}" onclick="GLPI.Debug.hideDebugToolbar();">
+                  <i class="ti ti-square-x"></i>
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div id="debug-toolbar-expanded-content" class="w-100 card d-none pe-2">
+   </div>
+</div>
+<script>
+    $(document).on('ready', () => {
+        window.GLPI.Debug.init({{ debug_info|json_encode|raw }});
+    });
+</script>

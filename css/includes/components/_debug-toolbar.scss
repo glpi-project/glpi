@@ -1,6 +1,4 @@
-<?php
-
-/**
+/*!
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,33 +31,50 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+#debug-toolbar {
+    z-index: 9999;
+    outline: none;
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
-Html::header_nocache();
-
-Session::checkLoginUser();
-
-if (isset($_POST['action']) && isset($_POST['id'])) {
-    $agent = new Agent();
-    if (!$agent->getFromDB($_POST['id']) || !$agent->canView()) {
-        Response::sendError(404, 'Unable to load agent #' . $_POST['id']);
-        return;
-    }
-    $answer = [];
-
-    Session::writeClose();
-    switch ($_POST['action']) {
-        case Agent::ACTION_INVENTORY:
-            $answer = $agent->requestInventory();
-            break;
-
-        case Agent::ACTION_STATUS:
-            $answer = $agent->requestStatus();
-            break;
+    .debug-toolbar-badge button {
+        box-shadow: none;
     }
 
-    echo json_encode($answer);
+    .debug-toolbar-widgets .debug-toolbar-widget > button {
+        box-shadow: none;
+
+        &.active {
+            color: $primary;
+        }
+    }
+
+    #debug-toolbar-expanded-content {
+        height: 30vh;
+        overflow: auto;
+
+        #debug-requests-table thead th {
+            position: sticky;
+            top: 0;
+        }
+
+        .category-badge {
+            padding: 5px;
+            border-radius: 25%;
+        }
+
+        .split-panel-h {
+            .left-panel {
+                flex: 0 0 33%;
+                border-right: 1px solid #808080;
+                min-width: 100px;
+            }
+
+            .resize-handle {
+                cursor: col-resize;
+                width: 10px;
+                z-index: 1030;
+                margin-left: -0.5rem;
+                margin-right: -0.25rem;
+            }
+        }
+    }
 }

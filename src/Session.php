@@ -66,7 +66,16 @@ class Session
        // write_close may cause troubles (no login / back to login page)
     }
 
-
+    /**
+     * Write and close session, but only if not in debug mode (allows proper use of the debug bar for AJAX calls).
+     * @return void
+     */
+    public static function writeClose()
+    {
+        if ($_SESSION['glpi_use_mode'] !== self::DEBUG_MODE) {
+            session_write_close();
+        }
+    }
 
     /**
      * Init session for the user is defined

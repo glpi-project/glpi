@@ -1531,8 +1531,17 @@ function initSortableTable(element_id) {
 
         const rows = element.find('tbody tr');
         const sorted_rows = rows.sort((a, b) => {
-            let a_value = $(a).find('td').eq(column_index).text();
-            let b_value = $(b).find('td').eq(column_index).text();
+            const a_cell = $(a).find('td').eq(column_index);
+            const b_cell = $(b).find('td').eq(column_index);
+            let a_value = a_cell.text();
+            let b_value = b_cell.text();
+
+            if (a_cell.attr('data-value-unit') !== undefined) {
+                a_value = a_value.replace(a_cell.attr('data-value-unit'), '').trim();
+            }
+            if (b_cell.attr('data-value-unit') !== undefined) {
+                b_value = b_value.replace(b_cell.attr('data-value-unit'), '').trim();
+            }
             // if the values are numberic, cast them to numbers to sort them correctly
             if (!isNaN(a_value) && !isNaN(b_value)) {
                 a_value = Number(a_value);
