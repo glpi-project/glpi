@@ -125,6 +125,7 @@ class Software extends AbstractInventoryAsset
 
     public function testHandle()
     {
+        $this->login();
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
         //first, check there are no software linked to this computer
@@ -141,7 +142,10 @@ class Software extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Software($computer, $json->content->softwares);
-        $asset->setExtraData((array)$json->content);
+
+        $extra_data = (array)$json->content;
+
+        $asset->setExtraData($extra_data);
         $result = $asset->prepare();
         $expected = json_decode($expected['expected']);
 
@@ -173,17 +177,17 @@ class Software extends AbstractInventoryAsset
         $osasset->handle();
 
         $extra_data = (array)$json->content;
-        $extra_data[\Glpi\Inventory\Asset\OperatingSystem::class] = $osasset;
+        $extra_data['\Glpi\Inventory\Asset\OperatingSystem'] = $osasset;
 
         $asset->setExtraData($extra_data);
         $result = $asset->prepare();
         $expected = json_decode($expected['expected']);
         $this->object($result[0])->isEqualTo($expected);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
-        $this->boolean($sov->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+        $this->boolean($sov->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer', ['NOT' => ['date_install' => null]]]))
          ->isTrue('A software version has not been linked to computer!');
 
         $this->integer($sov->fields['softwareversions_id'])->isNotEqualTo($version->fields['id']);
@@ -192,10 +196,10 @@ class Software extends AbstractInventoryAsset
         $this->boolean($version->getFromDB($sov->fields['softwareversions_id']))->isTrue();
         $this->integer($version->fields['operatingsystems_id'])->isGreaterThan(0);
 
-       //new computer with same software
+        //new computer with same software
         global $DB;
         $soft_reference = $DB->request(\Software::getTable());
-        $this->integer(count($soft_reference))->isIdenticalTo(4);
+        $this->integer(count($soft_reference))->isIdenticalTo(5);
 
         $computer2 = getItemByTypeName('Computer', '_test_pc02');
        //first, check there are no software linked to this computer
@@ -210,7 +214,7 @@ class Software extends AbstractInventoryAsset
         $osasset->handle();
 
         $extra_data = (array)$json->content;
-        $extra_data[\Glpi\Inventory\Asset\OperatingSystem::class] = $osasset;
+        $extra_data['\Glpi\Inventory\Asset\OperatingSystem'] = $osasset;
 
         $asset->setExtraData($extra_data);
         $result = $asset->prepare();
@@ -218,7 +222,7 @@ class Software extends AbstractInventoryAsset
         //handle
         $asset->handleLinks();
         $asset->handle();
-        $this->boolean($sov->getFromDbByCrit(['items_id' => $computer2->fields['id'], 'itemtype' => 'Computer']))
+        $this->boolean($sov->getFromDbByCrit(['items_id' => $computer2->fields['id'], 'itemtype' => 'Computer', ['NOT' => ['date_install' => null]]]))
          ->isTrue('A software version has not been linked to computer!');
 
         $this->integer(count($DB->request(\Software::getTable())))->isIdenticalTo(count($soft_reference));

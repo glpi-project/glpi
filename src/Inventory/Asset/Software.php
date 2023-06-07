@@ -67,7 +67,7 @@ class Software extends InventoryAsset
 
     /** @var array */
     protected $extra_data = [
-        OperatingSystem::class => null
+        '\Glpi\Inventory\Asset\OperatingSystem' => null
     ];
 
     public function prepare(): array
@@ -204,7 +204,7 @@ class Software extends InventoryAsset
                 if (!property_exists($val, 'version')) {
                     $val->version = '';
                 }
-                //arch is undefined, set it to blankk
+                //arch is undefined, set it to blank
                 if (!property_exists($val, 'arch')) {
                     $val->arch = '';
                 }
@@ -279,9 +279,24 @@ class Software extends InventoryAsset
         //Get operating system
         $operatingsystems_id = 0;
 
-        if (isset($this->extra_data[OperatingSystem::class])) {
-            $os = $this->extra_data[OperatingSystem::class];
+        if (isset($this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'])) {
+            if (is_array($this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'])) {
+                $os = $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'][0];
+            } else {
+                $os = $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'];
+            }
             $operatingsystems_id = $os->getId();
+
+            //add Operating System as Software
+            $os_data = $os->getData()[0];
+            $os_soft_data = new \stdClass();
+            $os_soft_data->name = $os_data->name ?? $os_data->full_name;
+            $os_soft_data->arch = $os_data->arch ?? null;
+            $os_soft_data->comment = null;
+            $os_soft_data->manufacturers_id = 0;
+            $os_soft_data->version = $os_data->version ?? '';
+
+            $this->data[] = $os_soft_data;
         }
 
         $db_software = [];
@@ -507,7 +522,7 @@ class Software extends InventoryAsset
     {
         return $this->getNormalizedComparisonKey([
             'name'             => mb_strtolower($val->name),
-            'version'          => $with_version ? mb_strtolower($val->version) : '',
+            'version'          => $with_version ? mb_strtolower($val->version ?? '') : '',
             'arch'             => mb_strtolower($val->arch ?? ''),
             'manufacturers_id' => mb_strtolower(transliterator_transliterate("Any-Latin; Latin-ASCII; [^a-zA-Z0-9\.\ -_] Remove;", $val->manufacturers_id)),
             'entities_id'      => (int)$val->entities_id,
