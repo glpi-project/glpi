@@ -711,7 +711,7 @@ JAVASCRIPT;
 
     public function prepareInputForUpdate($input)
     {
-        if (!isset($input['bgcolor']) || empty($input['bgcolor'])) {
+        if (array_key_exists('bgcolor', $input) && empty($input['bgcolor'])) {
             $input['bgcolor'] = '#FEC95C';
         }
         return $this->prepareInput($input);
