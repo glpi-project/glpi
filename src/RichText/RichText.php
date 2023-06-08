@@ -197,6 +197,7 @@ final class RichText
             'pre',
             'table',
             'ul',
+            'ol',
         ];
         return preg_match('/<(' . implode('|', $html_tags) . ')(\s+[^>]*)?>/i', $content) === 1;
     }
