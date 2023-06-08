@@ -210,7 +210,7 @@ class RuleAsset extends Rule
         $values = parent::getRights();
        //TRANS: short for : Business rules for ticket (entity parent)
         $values[self::PARENT] = ['short' => __('Parent business'),
-            'long'  => __('Business rules for ticket (entity parent)')
+            'long'  => __('Business rules (entity parent)')
         ];
 
         return $values;
