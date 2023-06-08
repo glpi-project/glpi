@@ -206,14 +206,10 @@ class Document_Item extends CommonDBRelation
         return true;
     }
 
-
-    /**
-     * @TODO Remove `_do_update_ticket` handling in GLPI 10.1, it is not used anymore.
-     */
     public function post_addItem()
     {
 
-        if ($this->fields['itemtype'] == 'Ticket' && ($this->input['_do_update_ticket'] ?? true)) {
+        if ($this->fields['itemtype'] == 'Ticket') {
             $ticket = new Ticket();
             $input  = [
                 'id'              => $this->fields['items_id'],
@@ -231,7 +227,6 @@ class Document_Item extends CommonDBRelation
         }
         parent::post_addItem();
     }
-
 
     /**
      * @since 0.83

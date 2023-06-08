@@ -96,8 +96,6 @@ CREATE TABLE `glpi_authldaps` (
   `title_field` varchar(255) DEFAULT NULL,
   `category_field` varchar(255) DEFAULT NULL,
   `language_field` varchar(255) DEFAULT NULL,
-  `entity_field` varchar(255) DEFAULT NULL,
-  `entity_condition` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `comment` text,
   `is_default` tinyint NOT NULL DEFAULT '0',

@@ -251,8 +251,6 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['registration_number_field'] = 'employeenumber';
                 $this->fields['comment_field']             = 'info';
                 $this->fields['title_field']               = 'title';
-                $this->fields['entity_field']              = 'ou';
-                $this->fields['entity_condition']          = '(objectclass=organizationalUnit)';
                 $this->fields['use_dn']                    = 1;
                 $this->fields['can_support_pagesize']      = 1;
                 $this->fields['pagesize']                  = '1000';
@@ -283,8 +281,6 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['registration_number_field'] = 'employeenumber';
                 $this->fields['comment_field']             = 'description';
                 $this->fields['title_field']               = 'title';
-                $this->fields['entity_field']              = 'ou';
-                $this->fields['entity_condition']          = '(objectClass=organizationalUnit)';
                 $this->fields['use_dn']                    = 1;
                 $this->fields['can_support_pagesize']      = 1;
                 $this->fields['pagesize']                  = '1000';
@@ -586,8 +582,8 @@ class AuthLDAP extends CommonDBTM
            //Fill fields when using preconfiguration models
             if (!$ID) {
                 $hidden_fields = ['comment_field', 'email1_field', 'email2_field',
-                    'email3_field', 'email4_field', 'entity_condition',
-                    'entity_field', 'firstname_field', 'group_condition',
+                    'email3_field', 'email4_field',
+                    'firstname_field', 'group_condition',
                     'group_field', 'group_member_field', 'group_search_type',
                     'mobile_field', 'phone_field', 'phone2_field',
                     'realname_field', 'registration_number_field', 'title_field',
@@ -985,42 +981,6 @@ class AuthLDAP extends CommonDBTM
                 'responsible_field'         => __('Supervisor'),
             ]
         ]);
-    }
-
-    /**
-     * Show entity config form
-     *
-     * @return void
-     */
-    public function showFormEntityConfig()
-    {
-
-        $ID = $this->getField('id');
-
-        echo "<div class='center'>";
-        echo "<form method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-        echo "<input type='hidden' name='id' value='$ID'>";
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr><th class='center' colspan='4'>" . __('Import entities from LDAP directory') .
-           "</th></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Attribute representing entity') . "</td>";
-        echo "<td colspan='3'>";
-        echo "<input type='text' name='entity_field' value='" . $this->fields["entity_field"] . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Search filter for entities') . "</td>";
-        echo "<td colspan='3'>";
-        echo "<input type='text' name='entity_condition' value='" . $this->fields["entity_condition"] . "'
-             size='100'></td></tr>";
-
-        echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-        echo "<input type='submit' name='update' class='btn btn-primary' value=\"" . __s('Save') . "\">";
-        echo "</td></tr>";
-        echo "</table>";
-        Html::closeForm();
-        echo "</div>";
     }
 
     public function defineTabs($options = [])
@@ -4288,8 +4248,6 @@ class AuthLDAP extends CommonDBTM
             $ong[1]  = self::createTabEntry(_sx('button', 'Test'));                     // test connexion
             $ong[2]  = self::createTabEntry(User::getTypeName(Session::getPluralNumber()), 0, $item::getType(), User::getIcon());
             $ong[3]  = self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), 0, $item::getType(), User::getIcon());
-           // TODO clean fields entity_XXX if not used
-           // $ong[4]  = Entity::getTypeName(1);                  // params for entity config
             $ong[5]  = self::createTabEntry(__('Advanced information'));   // params for entity advanced config
             $ong[6]  = self::createTabEntry(_n('Replicate', 'Replicates', Session::getPluralNumber()));
 
@@ -4321,10 +4279,6 @@ class AuthLDAP extends CommonDBTM
 
             case 3:
                 $item->showFormGroupsConfig();
-                break;
-
-            case 4:
-                $item->showFormEntityConfig();
                 break;
 
             case 5:
