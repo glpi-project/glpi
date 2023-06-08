@@ -130,7 +130,14 @@ class Plugin extends CommonDBTM
      *
      * @var array
      */
-    private ?array $plugins_information = null;
+    private array $plugins_information = [];
+
+    /**
+     * Store keys of plugins found on filesystem.
+     *
+     * @var array|null
+     */
+    private ?array $filesystem_plugin_keys = null;
 
     public static function getTypeName($nb = 0)
     {
@@ -478,21 +485,7 @@ class Plugin extends CommonDBTM
         }
 
         if ($scan_inactive_and_new_plugins) {
-            // Add found directories to the check list
-            foreach (PLUGINS_DIRECTORIES as $plugins_directory) {
-                if (!is_dir($plugins_directory)) {
-                    continue;
-                }
-                $directory_handle  = opendir($plugins_directory);
-                while (false !== ($filename = readdir($directory_handle))) {
-                    if (
-                        !in_array($filename, ['.svn', '.', '..'])
-                        && is_dir($plugins_directory . DIRECTORY_SEPARATOR . $filename)
-                    ) {
-                        $directories[] = $filename;
-                    }
-                }
-            }
+            array_push($directories, ...$this->getFilesystemPluginKeys());
         }
 
         // Prevent duplicated checks
@@ -503,45 +496,54 @@ class Plugin extends CommonDBTM
             if (in_array($directory, $excluded_plugins)) {
                 continue;
             }
-            $this->checkPluginState($directory);
+            $this->checkPluginState($directory, $scan_inactive_and_new_plugins);
         }
 
         self::$plugins_state_checked = true;
     }
 
     /**
-     * Get information for all plugins found on filesystem.
-     *
-     * @return array
+     * Get information for a given plugin.
      */
-    private function getPluginsInformation(): array
+    private function getPluginInformation(string $plugin_key): ?array
     {
-        // Run once
-        if ($this->plugins_information !== null) {
-            return $this->plugins_information;
+        if (!array_key_exists($plugin_key, $this->plugins_information)) {
+            $information = $this->getInformationsFromDirectory($plugin_key);
+            $this->plugins_information[$plugin_key] = !empty($information) ? $information : null;
         }
 
-        $plugins_information = [];
-        $plugins_directories = new AppendIterator();
-        foreach (PLUGINS_DIRECTORIES as $base_dir) {
-            $plugins_directories->append(new DirectoryIterator($base_dir));
-        }
-        foreach ($plugins_directories as $plugin_directory) {
-            $plugin_name = $plugin_directory->getFilename();
+        return $this->plugins_information[$plugin_key];
+    }
 
-            if (
-                in_array($plugin_name, ['.svn', '.', '..'])
-                || !is_dir($plugin_directory->getRealPath())
-            ) {
-                continue;
+    /**
+     * Return plugin keys corresponding to directories found in filesystem.
+     */
+    private function getFilesystemPluginKeys(): array
+    {
+        if ($this->filesystem_plugin_keys === null) {
+            $this->filesystem_plugin_keys = [];
+
+            $plugins_directories = new AppendIterator();
+            foreach (PLUGINS_DIRECTORIES as $base_dir) {
+                if (!is_dir($base_dir)) {
+                    continue;
+                }
+                $plugins_directories->append(new DirectoryIterator($base_dir));
             }
 
-            $info = $this->getInformationsFromDirectory($plugin_name);
-            $plugins_information[$plugin_name] = $info;
-        }
-        $this->plugins_information = $plugins_information;
+            foreach ($plugins_directories as $plugin_directory) {
+                if (
+                    str_starts_with($plugin_directory->getFilename(), '.') // ignore hidden files
+                    || !is_dir($plugin_directory->getRealPath())
+                ) {
+                    continue;
+                }
 
-        return $this->plugins_information;
+                $this->filesystem_plugin_keys[] = $plugin_directory->getFilename();
+            }
+        }
+
+        return $this->filesystem_plugin_keys;
     }
 
     /**
@@ -551,14 +553,15 @@ class Plugin extends CommonDBTM
      *
      * return void
      */
-    public function checkPluginState($plugin_key)
+    public function checkPluginState($plugin_key, bool $check_for_replacement = false)
     {
         $plugin = new self();
 
-        $information = $this->getPluginsInformation()[$plugin_key] ?? [];
-        $new_specs    = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
+        $information      = $this->getPluginInformation($plugin_key) ?? [];
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
         $is_loadable      = !empty($information);
+
+        $new_specs        = $check_for_replacement ? $this->getNewInfoAndDirBasedOnOldName($plugin_key) : null;
         $is_replaced      = $new_specs !== null;
 
         if (!$is_already_known && !$is_loadable) {
@@ -773,11 +776,13 @@ class Plugin extends CommonDBTM
      */
     private function getNewInfoAndDirBasedOnOldName($oldname)
     {
-        foreach ($this->getPluginsInformation() as $plugin_name => $information) {
-            if (array_key_exists('oldname', $information) && $information['oldname'] === $oldname) {
-               // Return information if oldname specified in parsed directory matches passed value
+        foreach ($this->getFilesystemPluginKeys() as $plugin_key) {
+            $information = $this->getPluginInformation($plugin_key);
+
+            if (($information['oldname'] ?? null) === $oldname) {
+                // Return information if oldname specified in parsed directory matches passed value
                 return [
-                    'directory'    => $plugin_name,
+                    'directory'   => $plugin_key,
                     'information' => $information,
                 ];
             }
