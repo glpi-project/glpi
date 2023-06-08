@@ -290,7 +290,7 @@ class Software extends InventoryAsset
             //add Operating System as Software
             $os_data = $os->getData()[0];
             $os_soft_data = new \stdClass();
-            $os_soft_data->name = $os_data->name ?? $os_data->full_name;
+            $os_soft_data->name = $os_data->full_name ?? $os_data->name;
             $os_soft_data->arch = $os_data->arch ?? null;
             $os_soft_data->comment = null;
             $os_soft_data->manufacturers_id = 0;
