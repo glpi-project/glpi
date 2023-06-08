@@ -46,7 +46,7 @@
 {% endif %}
 
 {% set onchange = '' %}
-{% if item.isNewItem() %}
+{% if item.isNewItem() and actortype == "requester" %}
    {% set onchange = 'this.form.submit();' %}
 {% endif %}
 
