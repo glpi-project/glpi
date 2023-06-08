@@ -2788,7 +2788,7 @@ JAVASCRIPT;
         $normalized_itemtype = strtolower(str_replace('\\', '', $request["itemtype"]));
         $rowid       = 'searchrow' . $normalized_itemtype . $randrow;
         $addclass    = $num == 0 ? ' headerRow' : '';
-        $prefix      = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
+        $prefix      = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit'], ENT_QUOTES) : '';
         $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
         $criteria    = [];
         $from_meta   = isset($request['from_meta']) && $request['from_meta'];
@@ -2986,7 +2986,7 @@ JAVASCRIPT;
 
         $p            = $request['p'];
         $num          = (int) $request['num'];
-        $prefix       = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
+        $prefix       = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit'], ENT_QUOTES) : '';
         $parents_num  = isset($p['parents_num']) ? $p['parents_num'] : [];
         $itemtype     = $request["itemtype"];
         $metacriteria = [];
@@ -3098,7 +3098,7 @@ JAVASCRIPT;
         $randrow     = mt_rand();
         $rowid       = 'searchrow' . $request['itemtype'] . $randrow;
         $addclass    = $num == 0 ? ' headerRow' : '';
-        $prefix      = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
+        $prefix      = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit'], ENT_QUOTES) : '';
         $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
 
         if (!$criteria = self::findCriteriaInSession($request['itemtype'], $num, $parents_num)) {
@@ -3243,7 +3243,7 @@ JAVASCRIPT;
 
         $p      = $request['p'];
         $num    = (int) $request['num'];
-        $prefix = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
+        $prefix = isset($p['prefix_crit']) ? htmlentities($p['prefix_crit'], ENT_QUOTES) : '';
 
         if (!is_subclass_of($request['itemtype'], 'CommonDBTM')) {
             throw new \RuntimeException('Invalid itemtype provided!');
@@ -3342,7 +3342,7 @@ JAVASCRIPT;
         }
 
         $p                 = $request['p'];
-        $prefix            = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
+        $prefix            = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit'], ENT_QUOTES) : '';
         $searchopt         = isset($request['searchopt']) ? $request['searchopt'] : [];
         $request['value']  = rawurldecode($request['value']);
         $fieldname         = isset($request['meta']) && $request['meta']
