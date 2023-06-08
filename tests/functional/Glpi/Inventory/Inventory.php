@@ -1018,7 +1018,7 @@ class Inventory extends InventoryTestCase
                 'version' => '2.2.8-1.fc31',
                 'dateinstall' => '2019-12-19',
             ],[
-                'softname' => 'Fedora',
+                'softname' => 'Fedora 31 (Workstation Edition)',
                 'version' => '31 (Workstation Edition)',
                 'dateinstall' => null,
             ], [
@@ -5318,7 +5318,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'version' => '1.5.9',
                 'dateinstall' => '2008-12-31',
             ], [
-                'softname' => 'Q Android 10.0',
+                'softname' => 'Q Android 10.0 api 29',
                 'version' => '29',
                 'dateinstall' => null,
             ]
