@@ -360,7 +360,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         $this->data['tasks'] = [];
         foreach ($tasks as $task) {
             $tmp                            = [];
-            $tmp['##task.creationdate##']   = Html::convDateTime($task['date']);
+            $tmp['##task.creationdate##']   = Html::convDateTime($task['date_creation']);
             $tmp['##task.lastupdatedate##'] = Html::convDateTime($task['date_mod']);
             $tmp['##task.name##']           = $task['name'];
             $tmp['##task.description##']    = $task['content'];
