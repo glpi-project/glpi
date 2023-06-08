@@ -206,33 +206,6 @@ class Document_Item extends CommonDBRelation
         return true;
     }
 
-
-    /**
-     * @TODO Remove `_do_update_ticket` handling in GLPI 10.1, it is not used anymore.
-     */
-    public function post_addItem()
-    {
-
-        if ($this->fields['itemtype'] == 'Ticket' && ($this->input['_do_update_ticket'] ?? true)) {
-            $ticket = new Ticket();
-            $input  = [
-                'id'              => $this->fields['items_id'],
-                'date_mod'        => $_SESSION["glpi_currenttime"],
-            ];
-
-            if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
-                $input['_forcenotif'] = true;
-            }
-            if (isset($this->input['_disablenotif']) && $this->input['_disablenotif']) {
-                $input['_disablenotif'] = true;
-            }
-
-            $ticket->update($input);
-        }
-        parent::post_addItem();
-    }
-
-
     /**
      * @since 0.83
      *

@@ -132,13 +132,6 @@ class CommonDBTM extends CommonGLPI
     protected static $forward_entity_to = [];
 
     /**
-     * Foreign key field cache : set dynamically calling getForeignKeyField
-     *
-     * @TODO Remove this variable as it is not used ?
-     */
-    protected $fkfield = "";
-
-    /**
      * Search option of item. Initialized on first call to self::getOptions() and used as cache.
      *
      * @var array

@@ -66,8 +66,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
             if (isset($options['processed'])) {
                 $processed = &$options['processed'];
                 unset($options['processed']);
-            } else { // Compat with GLPI < 9.4.2 TODO: remove in 9.5
-                $processed = [];
             }
 
             $targets = getAllDataFromTable(

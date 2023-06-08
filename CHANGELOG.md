@@ -208,6 +208,7 @@ The present file will list all changes made to the project; according to the
 - `XML` class.
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
 - Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.
+- `CommonDBTM::$fkfield` property.
 
 ## [10.0.8] unreleased
 
