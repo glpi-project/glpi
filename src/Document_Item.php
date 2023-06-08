@@ -206,6 +206,28 @@ class Document_Item extends CommonDBRelation
         return true;
     }
 
+    public function post_addItem()
+    {
+
+        if ($this->fields['itemtype'] == 'Ticket') {
+            $ticket = new Ticket();
+            $input  = [
+                'id'              => $this->fields['items_id'],
+                'date_mod'        => $_SESSION["glpi_currenttime"],
+            ];
+
+            if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
+                $input['_forcenotif'] = true;
+            }
+            if (isset($this->input['_disablenotif']) && $this->input['_disablenotif']) {
+                $input['_disablenotif'] = true;
+            }
+
+            $ticket->update($input);
+        }
+        parent::post_addItem();
+    }
+
     /**
      * @since 0.83
      *
