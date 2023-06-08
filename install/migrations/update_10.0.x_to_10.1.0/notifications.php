@@ -80,18 +80,16 @@ if (!$notification_exists) {
             'subject' => '##user.action##',
             'content_text' => <<<PLAINTEXT
     ##user.realname## ##user.firstname##
-    
+
     ##lang.passwordinit.information##
-    
+
     ##lang.passwordinit.link## ##user.passwordiniturl##
-    PLAINTEXT
-            ,
+    PLAINTEXT,
             'content_html' => <<<HTML
     &lt;p&gt;&lt;strong&gt;##user.realname## ##user.firstname##&lt;/strong&gt;&lt;/p&gt;
     &lt;p&gt;##lang.passwordinit.information##&lt;/p&gt;
     &lt;p&gt;##lang.passwordinit.link## &lt;a title="##user.passwordiniturl##" href="##user.passwordiniturl##"&gt;##user.passwordiniturl##&lt;/a&gt;&lt;/p&gt;
-    HTML
-            ,
+    HTML,
         ],
         '10.1 Add password initialization notification template translations'
     );
@@ -144,14 +142,12 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Change', 'event' 
 ##lang.change.closedate## : ##change.closedate##
 
 ##lang.satisfaction.text## ##change.urlsatisfaction##
-PLAINTEXT
-            ,
+PLAINTEXT,
             'content_html'             => <<<HTML
 &lt;p&gt;##lang.change.title## : ##change.title##&lt;/p&gt;
 &lt;p&gt;##lang.change.closedate## : ##change.closedate##&lt;/p&gt;
 &lt;p&gt;##lang.satisfaction.text## &lt;a href="##change.urlsatisfaction##"&gt;##change.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;
-HTML
-            ,
+HTML,
         ],
         'Add change satisfaction survey notification template translations'
     );
@@ -218,3 +214,77 @@ HTML
     }
 }
 /** /Change Satisfaction notification */
+
+/** Add new notification for AutoBump */
+if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' => 'auto_reminder']) === 0) {
+    $DB->insertOrDie('glpi_notificationtemplates', [
+        'name' => 'Automatic reminder',
+        'itemtype' => 'Ticket'
+    ]);
+
+    $notificationtemplate_id = $DB->insertId();
+
+    $DB->insertOrDie('glpi_notificationtemplatetranslations', [
+        'notificationtemplates_id' => $notificationtemplate_id,
+        'language' => '',
+        'subject' => '##ticket.action## ##ticket.name##',
+        'content_text' => '##lang.ticket.title##: ##ticket.title##
+
+##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##
+##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##
+##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##
+##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##
+
+##lang.ticket.reminder.text##: ##ticket.reminder.text##',
+        'content_html' => '&lt;p&gt;##lang.ticket.title##: ##ticket.title##&lt;/p&gt;
+            &lt;p&gt;##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##&lt;/a&gt;&lt;br /&gt;
+            ##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##&lt;/a&gt;&lt;br /&gt;
+            ##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##&lt;/a&gt;&lt;br /&gt;
+            ##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##&lt;/p&gt;
+            &lt;p&gt;##lang.ticket.reminder.text##: ##ticket.reminder.text##&lt;/p&gt;',
+    ]);
+
+    $DB->insertOrDie(
+        'glpi_notifications',
+        [
+            'name'            => 'Automatic reminder',
+            'itemtype'        => 'Ticket',
+            'event'           => 'auto_reminder',
+            'comment'         => null,
+            'is_recursive'    => 0,
+            'is_active'       => 0,
+        ],
+        'Add automatic reminder notification'
+    );
+    $notification_id = $DB->insertId();
+
+    $targets = [
+        [
+            'items_id' => 3,
+            'type' => 1,
+        ],
+        [
+            'items_id' => 1,
+            'type' => 1,
+        ],
+        [
+            'items_id' => 21,
+            'type' => 1,
+        ],
+    ];
+
+    foreach ($targets as $target) {
+        $DB->insertOrDie('glpi_notificationtargets', [
+            'items_id'         => $target['items_id'],
+            'type'             => $target['type'],
+            'notifications_id' => $notification_id,
+        ]);
+    }
+
+    $DB->insertOrDie('glpi_notifications_notificationtemplates', [
+        'notifications_id'         => $notification_id,
+        'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+        'notificationtemplates_id' => $notificationtemplate_id,
+    ]);
+}
+/** /Add new notification for AutoBump */

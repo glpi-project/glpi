@@ -504,6 +504,38 @@ class Central extends CommonGLPI
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
             }
+
+            /*
+             * Check if there are pending reasons items and the notification is not active
+             * If so, display a warning message
+             */
+            $notification = new \Notification();
+            if (
+                \Config::getConfigurationValue('core', 'use_notifications')
+                && countElementsInTable('glpi_pendingreasons_items') > 0
+                && !count($notification->find([
+                    'itemtype' => 'Ticket',
+                    'event'     => 'auto_reminder',
+                    'is_active'  => true,
+                ]))
+            ) {
+                $criteria = [
+                    'criteria' => [
+                        0 => [
+                            'link' => 'AND',
+                            'field' => 2,
+                            'searchtype' => 'equals',
+                            'value' => 'Ticket$#$auto_reminder'
+                        ]
+                    ]
+                ];
+                $link = '<a href="' . Notification::getSearchURL() . '?' . Toolbox::append_params($criteria) . '">' . __('notification') . '</a>';
+
+                $messages['warnings'][] = sprintf(
+                    __('You have defined pending reasons without any respective active %s.'),
+                    $link
+                );
+            }
         }
 
         if ($DB->isSlave() && !$DB->first_connection) {

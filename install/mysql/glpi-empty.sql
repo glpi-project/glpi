@@ -9238,18 +9238,22 @@ CREATE TABLE `glpi_pendingreasons` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `is_default` tinyint NOT NULL DEFAULT '0',
+  `is_pending_per_default` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `followup_frequency` int NOT NULL DEFAULT '0',
   `followups_before_resolution` int NOT NULL DEFAULT '0',
   `itilfollowuptemplates_id` int unsigned NOT NULL DEFAULT '0',
   `solutiontemplates_id` int unsigned NOT NULL DEFAULT '0',
+  `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `solutiontemplates_id` (`solutiontemplates_id`)
+  KEY `solutiontemplates_id` (`solutiontemplates_id`),
+  KEY `calendars_id` (`calendars_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_pendingreasons_items`;
@@ -9583,6 +9587,24 @@ CREATE TABLE `glpi_itilvalidationtemplates_targets` (
   KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `groups_id` (`groups_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_itilreminders`;
+CREATE TABLE `glpi_itilreminders` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) NOT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `pendingreasons_id` int unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `content` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  KEY `pendingreasons_id` (`pendingreasons_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

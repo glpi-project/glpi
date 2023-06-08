@@ -287,7 +287,8 @@
         }
     }
 
-    &.Log {
+    &.Log,
+    &.ITILReminder {
         width: 100%;
 
         .user-part {
@@ -315,6 +316,7 @@
                     .timeline-header {
                         margin-left: 1rem;
                         margin-top: 0;
+                        margin-bottom: 0;
                     }
                 }
             }

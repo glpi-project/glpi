@@ -180,13 +180,32 @@ class PendingReason_Item extends CommonDBRelation
             return false;
         }
 
-        if ($this->fields['followups_before_resolution'] > 0 && $this->fields['followups_before_resolution'] <= $this->fields['bump_count']) {
+        if (
+            $this->fields['followups_before_resolution'] != 0
+            && $this->fields['followups_before_resolution'] <= $this->fields['bump_count']
+        ) {
             return false;
         }
 
-        $date = new DateTime($this->fields['last_bump_date']);
-        $date->setTimestamp($date->getTimestamp() + $this->fields['followup_frequency']);
-        return $date->format("Y-m-d H:i:s");
+        $calendar = Calendar::getById(
+            PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']
+        );
+
+        if ($calendar) {
+            return $calendar->computeEndDate(
+                $this->fields['last_bump_date'],
+                $this->fields['followup_frequency'],
+                0,
+                true
+            );
+        }
+
+        $lastBumpDate = new DateTime($this->fields['last_bump_date']);
+        $lastBumpDate->add(DateInterval::createFromDateString(
+            $this->fields['followup_frequency'] . ' seconds'
+        ));
+
+        return $lastBumpDate->format('Y-m-d H:i:s');
     }
 
     /**
@@ -200,11 +219,29 @@ class PendingReason_Item extends CommonDBRelation
             return false;
         }
 
-       // If there was a bump, calculate from last_bump_date
-        $date = new DateTime($this->fields['last_bump_date']);
-        $date->setTimestamp($date->getTimestamp() + $this->fields['followup_frequency'] * ($this->fields['followups_before_resolution'] + 1 - $this->fields['bump_count']));
+        // -1 = auto resolution without bumps
+        $expected_bumps = max($this->fields['followups_before_resolution'], 0);
+        $remaining_bumps = $expected_bumps - $this->fields['bump_count'] + 1;
 
-        return $date->format("Y-m-d H:i:s");
+        $calendar = Calendar::getById(
+            PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']
+        );
+
+        if ($calendar) {
+            return $calendar->computeEndDate(
+                $this->fields['last_bump_date'],
+                $this->fields['followup_frequency'] * $remaining_bumps,
+                0,
+                true
+            );
+        }
+
+        $lastBumpDate = new DateTime($this->fields['last_bump_date']);
+        $lastBumpDate->add(DateInterval::createFromDateString(
+            $this->fields['followup_frequency'] * $remaining_bumps . ' seconds'
+        ));
+
+        return $lastBumpDate->format('Y-m-d H:i:s');
     }
 
     /**

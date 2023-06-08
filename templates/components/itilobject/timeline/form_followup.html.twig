@@ -41,6 +41,7 @@
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
 {% set nokb = params['nokb'] is defined or params['nokb'] == true %}
 {% set rand = random() %}
+{% set is_default_pending = call('PendingReason::isDefaultPending') %}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -216,7 +217,7 @@
             {# Fixed min-height ensure no height increase when toggling the pending reason button, as select 2 dropdown are a bit higher than the default footer height #}
             <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px; min-height: 79px">
                {% set pending_reasons %}
-                  {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason and not add_reopen %}
+                  {% set show_pending_reasons_actions = (item.fields['status'] == constant('CommonITILObject::WAITING') or is_default_pending) and not has_pending_reason and not add_reopen %}
                   {% if get_current_interface() == 'central' and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) %}
                      <span
                         class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
@@ -230,7 +231,7 @@
                               <input type="checkbox" name="pending" value="1" class="form-check-input"
                                     id="enable-pending-reasons-{{ rand }}"
                                     role="button"
-                                    {{ item.fields['status'] == constant('CommonITILObject::WAITING') and not add_reopen ? 'checked' : '' }}
+                                    {{ (item.fields['status'] == constant('CommonITILObject::WAITING') or is_default_pending) and not add_reopen ? 'checked' : '' }}
                                     data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
                            </label>
                         </span>

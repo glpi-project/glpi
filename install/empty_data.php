@@ -3060,7 +3060,14 @@ $empty_data_builder = new class
                 'event'        => 'replysatisfaction',
                 'is_recursive' => 1,
                 'is_active'    => 1,
-            ],
+            ], [
+                'id'           => 76,
+                'name'         => 'Automatic reminder',
+                'itemtype'     => 'Ticket',
+                'event'        => 'auto_reminder',
+                'is_recursive' => 0,
+                'is_active'    => 0,
+            ]
         ];
 
         $tables['glpi_notifications_notificationtemplates'] = [
@@ -3439,7 +3446,12 @@ $empty_data_builder = new class
                 'notifications_id'         => '75',
                 'mode'                     => 'mailing',
                 'notificationtemplates_id' => 30,
-            ],
+            ], [
+                'id'                       => 76,
+                'notifications_id'         => '76',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 31,
+            ]
         ];
 
         $tables['glpi_notificationtargets'] = [
@@ -4153,7 +4165,22 @@ $empty_data_builder = new class
                 'items_id'         => '2',
                 'type'             => '1',
                 'notifications_id' => '75',
-            ],
+            ], [
+                'id'               => '145',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '76',
+            ], [
+                'id'               => '146',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '76',
+            ], [
+                'id'               => '147',
+                'items_id'         => '21',
+                'type'             => '1',
+                'notifications_id' => '76',
+            ]
         ];
 
         $tables['glpi_notificationtemplates'] = [
@@ -4277,7 +4304,11 @@ $empty_data_builder = new class
                 'id'       => '30',
                 'name'     => 'Change Satisfaction',
                 'itemtype' => 'Change',
-            ],
+            ], [
+                'id'       => '31',
+                'name'     => 'Automatic reminder',
+                'itemtype' => 'Ticket',
+            ]
         ];
 
         $tables['glpi_notificationtemplatetranslations'] = [
@@ -5161,7 +5192,26 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'content_html'             => '&lt;p&gt;##lang.change.title## : ##change.title##&lt;/p&gt;
 &lt;p&gt;##lang.change.closedate## : ##change.closedate##&lt;/p&gt;
 &lt;p&gt;##lang.satisfaction.text## &lt;a href="##change.urlsatisfaction##"&gt;##change.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;',
-            ],
+            ], [
+                'id'                       => '31',
+                'notificationtemplates_id' => '31',
+                'language'                 => '',
+                'subject'                  => '##ticket.action## ##ticket.name##',
+                'content_text'             => '##lang.ticket.title##: ##ticket.title##
+
+##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##
+##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##
+##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##
+##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##
+
+##lang.ticket.reminder.text##: ##ticket.reminder.text##',
+                'content_html'             => '&lt;p&gt;##lang.ticket.title##: ##ticket.title##&lt;/p&gt;
+                    &lt;p&gt;##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##&lt;/a&gt;&lt;br /&gt;
+                    ##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##&lt;/a&gt;&lt;br /&gt;
+                    ##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##&lt;/a&gt;&lt;br /&gt;
+                    ##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##&lt;/p&gt;
+                    &lt;p&gt;##lang.ticket.reminder.text##: ##ticket.reminder.text##&lt;/p&gt;',
+            ]
         ];
 
         $tables['glpi_profilerights'] = [
