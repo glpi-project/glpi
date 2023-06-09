@@ -239,7 +239,7 @@ class User extends CommonDBTM
      *
      * @return void
      */
-    public function cachePreferences()
+    final public function loadPreferencesInSession(): void
     {
         global $CFG_GLPI;
 

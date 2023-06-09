@@ -3660,7 +3660,8 @@ HTML;
                 $oldvalue = "{...}";
             }
 
-            $CFG_GLPI[$this->fields['name']] = $newvalue;
+            $CFG_GLPI[$this->fields['name']] = $newvalue; // Ensure post update actions and hook that are using `$CFG_GLPI` will use the new value
+
             $this->logConfigChange(
                 $this->fields['context'],
                 $this->fields['name'],
