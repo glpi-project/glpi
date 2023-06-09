@@ -1250,11 +1250,15 @@ class Ticket extends CommonITILObject
             list($dateField, $slaField) = SLA::getFieldNames($slmType);
             if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
                 $manual_slas_id[$slmType] = $input[$slaField];
+            } elseif (!isset($input[$slaField])) {
+                $input[$slaField] = $this->fields[$slaField];
             }
 
             list($dateField, $olaField) = OLA::getFieldNames($slmType);
             if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
                 $manual_olas_id[$slmType] = $input[$olaField];
+            } elseif (!isset($input[$olaField])) {
+                $input[$olaField] = $this->fields[$olaField];
             }
         }
 
