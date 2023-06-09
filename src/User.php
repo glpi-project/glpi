@@ -269,7 +269,7 @@ class User extends CommonDBTM
             $_SESSION["glpiID"]                      = $this->fields['id'];
             $_SESSION["glpi_use_mode"]               = Session::NORMAL_MODE;
             Session::loadEntity($entities_id, $is_recursive);
-            $this->cachePreferences();
+            $this->loadPreferencesInSession();
             Session::loadGroups();
             Session::loadLanguage();
         }

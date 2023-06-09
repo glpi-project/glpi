@@ -3017,7 +3017,7 @@ HTML;
         if ($_SESSION['glpiID'] ?? false) {
             $user = new \User();
             if ($user->getFromDB($_SESSION['glpiID'])) {
-                $user->cachePreferences();
+                $user->loadPreferencesInSession();
             }
         }
     }
