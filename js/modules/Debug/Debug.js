@@ -306,13 +306,13 @@ window.GLPI.Debug = new class Debug {
         const newline_keywords = ['UNION', 'FROM', 'WHERE', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'SORT'];
         const post_newline_keywords = ['UNION'];
         let clean_query = '';
-        window.CodeMirror.runMode(query, 'text/x-sql', (text, style) => {
+        window.CodeMirror.runMode(query, window.CodeMirror.languages.sql().language, (text, style) => {
             text.replace('>', `&gt;`).replace('<', `&lt;`);
             if (style !== null && style !== undefined) {
                 if (newline_keywords.includes(text.toUpperCase())) {
                     clean_query += '</br>';
                 }
-                clean_query += `<span class="cm-${style.replace(' ', '')}">${text}</span>`;
+                clean_query += `<span class="${style.replace(' ', '')}">${text}</span>`;
                 if (post_newline_keywords.includes(text.toUpperCase())) {
                     clean_query += '</br>';
                 }
@@ -320,6 +320,14 @@ window.GLPI.Debug = new class Debug {
                 clean_query += text;
             }
         });
+        if ($('#debug-toolbar style[data-cm-sql-styles]').length === 0) {
+            /** @var {string[]} */
+            const rules = window.CodeMirror.defaultHighlightStyle.module.rules;
+            // Rules are an array of complete css rules. We can just join them together and insert them into a style tag
+            const style_tag = $('<style data-cm-sql-styles></style>');
+            style_tag.text(rules.join(''));
+            $('#debug-toolbar').prepend(style_tag);
+        }
 
         return clean_query;
     }
@@ -576,15 +584,16 @@ window.GLPI.Debug = new class Debug {
                 }
             }
 
-            const editor = window.CodeMirror(container.get(0), {
-                value: data_string,
-                mode: 'application/json',
-                lineNumbers: true,
-                readOnly: true,
-                foldGutter: true,
-                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+            const editor = new window.CodeMirror.EditorView({
+                extensions: [
+                    window.CodeMirror.setup,
+                    window.CodeMirror.languages.json(),
+                    window.CodeMirror.EditorView.lineWrapping,
+                    window.CodeMirror.EditorView.contentAttributes.of({contenteditable: false}),
+                ],
+                doc: data_string
             });
-            container.data('editor', editor);
+            container.append(editor.dom);
         };
 
         const rand = Math.floor(Math.random() * 1000000);
@@ -624,30 +633,6 @@ window.GLPI.Debug = new class Debug {
         appendGlobals(globals['get'], content_area.find(`#debugget${rand}`));
         appendGlobals(globals['session'], content_area.find(`#debugsession${rand}`));
         appendGlobals(globals['server'], content_area.find(`#debugserver${rand}`));
-
-        content_area.on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
-            const target = $(e.target).attr('href');
-            const target_el = content_area.find(target);
-            const previously_shown = target_el.data('previously_shown') || false;
-            const editor = target_el.data('editor');
-            if (!previously_shown && editor) {
-                editor.refresh();
-
-                setTimeout(() => {
-                    // Stupid solution to fold all levels except the first one.
-                    // foldCode(0), would fold the first level only and doesn't handle nested levels.
-                    const total_lines = editor.lineCount();
-                    // Must start from the bottom, otherwise it doesn't fold parent levels
-                    for (let i = total_lines - 1; i > 1; i--) {
-                        editor.foldCode(window.CodeMirror.Pos(i, 0));
-                    }
-                }, 100);
-            }
-            target_el.data('previously_shown', true);
-        });
-
-        // trigger shown.bs.tab on the first tab manually since the event is not triggered on page load
-        content_area.find('a[data-bs-toggle="tab"]').first().trigger('shown.bs.tab');
     }
 
     showClientPerformance(content_area, refresh = false) {
