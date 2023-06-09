@@ -3012,6 +3012,14 @@ HTML;
                 $config->add($input);
             }
         }
+
+        //reload config for loggedin user
+        if ($_SESSION['glpiID'] ?? false) {
+            $user = new \User();
+            if ($user->getFromDB($_SESSION['glpiID'])) {
+                $user->cachePreferences();
+            }
+        }
     }
 
     /**
@@ -3614,8 +3622,7 @@ HTML;
 
     public function post_updateItem($history = 1)
     {
-        global $DB;
-
+        global $DB, $CFG_GLPI;
         // Check if password expiration mechanism has been activated
         if (
             $this->fields['name'] == 'password_expiration_delay'
@@ -3653,6 +3660,7 @@ HTML;
                 $oldvalue = "{...}";
             }
 
+            $CFG_GLPI[$this->fields['name']] = $newvalue;
             $this->logConfigChange(
                 $this->fields['context'],
                 $this->fields['name'],
