@@ -116,7 +116,7 @@ class Html
 
         try {
             $date = new \DateTime($time);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e);
             Session::addMessageAfterRedirect(
                 sprintf(
@@ -672,74 +672,11 @@ class Html
      * @param boolean $ajax         If we're called from ajax (false by default)
      *
      * @return void
+     * @deprecated 10.0.0
      **/
     public static function displayDebugInfos($with_session = true, $ajax = false, $rand = null)
     {
-        global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $TIMER_DEBUG, $PLUGIN_HOOKS;
-
-       // Only for debug mode so not need to be translated
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
-            if ($rand === null) {
-                $rand = mt_rand();
-            }
-
-            $plugin_tabs = [];
-            if (isset($PLUGIN_HOOKS[Hooks::DEBUG_TABS])) {
-                foreach ($PLUGIN_HOOKS[Hooks::DEBUG_TABS] as $tabs) {
-                    $plugin_tabs = array_merge($plugin_tabs, $tabs);
-                }
-            }
-
-            $queries_duration = $CFG_GLPI["debug_sql"] ? array_sum($DEBUG_SQL['times']) : 0;
-            $execution_time = $TIMER_DEBUG->getTime();
-            $summary = [
-                'execution_time'    => sprintf(_n('%s second', '%s seconds', $execution_time), $execution_time),
-                'memory_usage'      => memory_get_usage(),
-                'sql_queries_count'     => $CFG_GLPI["debug_sql"] ? $SQL_TOTAL_REQUEST : 0,
-                'sql_queries_duration'  => $CFG_GLPI["debug_sql"] ? sprintf(_n('%s second', '%s seconds', $queries_duration), $queries_duration) : 0,
-            ];
-            $sql_info = [];
-
-            if ($CFG_GLPI['debug_sql']) {
-                $sql_info['total_requests'] = $summary['sql_queries_count'];
-                $sql_info['total_duration'] = $summary['sql_queries_duration'];
-                $sql_info['queries'] = [];
-                foreach ($DEBUG_SQL['queries'] as $num => $query) {
-                    $info = [
-                        'num'       => $num,
-                        'query'     => $query,
-                        'time'      => $DEBUG_SQL['times'][$num] ?? '',
-                        'rows'      => $DEBUG_SQL['rows'][$num] ?? 0,
-                        'errors'    => $DEBUG_SQL['errors'][$num] ?? '',
-                        'warnings'  => '',
-                    ];
-                    if (isset($DEBUG_SQL['warnings'][$num])) {
-                        foreach ($DEBUG_SQL['warnings'][$num] as $warning) {
-                            $info['warnings'] .= sprintf('%s: %s', $warning['Code'], $warning['Message']) . "\n";
-                        }
-                    }
-                    $sql_info['queries'][] = $info;
-                }
-            }
-            $vars_info = [
-                'get'      => $_GET ?? [],
-                'post'     => $_POST ?? [],
-                'session'  => $_SESSION ?? [],
-                'server'   => $_SERVER ?? [],
-            ];
-
-            TemplateRenderer::getInstance()->display('debug_panel.html.twig', [
-                'summary'       => $summary,
-                'sql_info'      => $sql_info,
-                'vars_info'     => $vars_info,
-                'with_session'  => $with_session,
-                'debug_sql'     => $CFG_GLPI['debug_sql'],
-                'debug_vars'    => $CFG_GLPI['debug_vars'],
-                'ajax'          => $ajax,
-                'rand'          => $rand,
-                'plugin_tabs'   => $plugin_tabs,
-            ]);
-        }
+        Toolbox::deprecated('Html::displayDebugInfo is not used anymore. It was replaced by a unified debug bar.');
     }
 
 
@@ -1250,7 +1187,7 @@ HTML;
                 Html::requireJs('charts');
             }
 
-            if (in_array('codemirror', $jslibs)) {
+            if (in_array('codemirror', $jslibs) || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                 Html::requireJs('codemirror');
             }
 
@@ -1310,9 +1247,17 @@ HTML;
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            $tpl_vars['js_modules'][] = ['path' => 'js/modules/Debug/Debug.js'];
+        }
+
        // Search
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/ResultsView.js'];
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/Table.js'];
+
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            $tpl_vars['glpi_request_id'] = \Glpi\Debug\Profile::getCurrent()->getID();
+        }
 
         TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', $tpl_vars);
 
@@ -1472,7 +1417,8 @@ HTML;
             foreach ($menu as $category => $entries) {
                 if (isset($entries['types']) && count($entries['types'])) {
                     foreach ($entries['types'] as $type) {
-                        if ($data = $type::getMenuContent()) {
+                        $data = $type::getMenuContent();
+                        if ($data) {
                           // Multi menu entries management
                             if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
                                 if (!isset($menu[$category]['content'])) {
@@ -1692,7 +1638,9 @@ HTML;
         $sector = strtolower($sector);
         $item   = strtolower($item);
 
+        \Glpi\Debug\Profiler::getInstance()->start('Html::includeHeader');
         self::includeHeader($title, $sector, $item, $option, $add_id);
+        \Glpi\Debug\Profiler::getInstance()->stop('Html::includeHeader');
 
         $tmp_active_item = explode("/", $item);
         $active_item     = array_pop($tmp_active_item);
@@ -1846,7 +1794,10 @@ HTML;
 
         TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
 
-        self::displayDebugInfos();
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE && !str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
+            \Glpi\Debug\Profiler::getInstance()->stopAll();
+            (new Glpi\Debug\Toolbar())->show();
+        }
 
         if (!$keepDB && function_exists('closeDBConnections')) {
             closeDBConnections();
@@ -1859,27 +1810,8 @@ HTML;
      **/
     public static function ajaxFooter()
     {
-
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
-            $rand = mt_rand();
-            echo "<div class='center d-none d-md-block btn-group' id='debugajax'>";
-            echo "<a class='btn btn-sm btn-danger debug-float' href=\"javascript:showHideDiv('debugpanel$rand','','','');\">
-            <i class='fas fa-bug'></i>
-            <span>AJAX DEBUG</span>
-         </a>";
-            if (
-                !isset($_GET['full_page_tab'])
-                && strstr($_SERVER['REQUEST_URI'], '/ajax/common.tabs.php')
-            ) {
-                echo "<a href='" . $_SERVER['REQUEST_URI'] . "&full_page_tab=1' class='btn btn-sm btn-danger'>
-               <i class='fas fa-external-link-alt'></i>
-               <span>Display only tab for debug</span>
-            </a>";
-            }
-            echo "</div>";
-            self::displayDebugInfos(false, true, $rand);
-            echo "</div>";
-        }
+        // Not currently used. Old debug stuff is now in the new debug bar.
+        // FIXME: Deprecate this in GLPI 10.1.
     }
 
 
@@ -3378,8 +3310,16 @@ JS;
                 $dates[$i . 'WEEK'] = sprintf(_n('+ %d week', '+ %d weeks', $i), $i);
             }
 
+            if ($params['with_days']) {
+                $dates['ENDMONTH']  = __('End of the month');
+            }
+
             for ($i = 1; $i <= 12; $i++) {
                 $dates[$i . 'MONTH'] = sprintf(_n('+ %d month', '+ %d months', $i), $i);
+            }
+
+            if ($params['with_days']) {
+                $dates['ENDYEAR']  = __('End of the year');
             }
 
             for ($i = 1; $i <= 10; $i++) {
@@ -3423,8 +3363,8 @@ JS;
                 return date("Y-m-d", $specifictime);
         }
 
-       // Search on begin of month / year
-        if (strstr($val, 'BEGIN')) {
+       // Search on begin /end of month / year
+        if (strstr($val, 'BEGIN') || strstr($val, 'END')) {
             $hour   = 0;
             $minute = 0;
             $second = 0;
@@ -3438,6 +3378,15 @@ JS;
                     break;
 
                 case "BEGINMONTH":
+                    break;
+
+                case "ENDYEAR":
+                    $month = 12;
+                    $day = 31;
+                    break;
+
+                case "ENDMONTH":
+                    $day = date("t", $specifictime);
                     break;
             }
 
@@ -4863,7 +4812,7 @@ JAVASCRIPT
          const select2_el = $('#$field_id').select2({
             width: '$width',
             multiple: '$multiple',
-            placeholder: '$placeholder',
+            placeholder: " . json_encode($placeholder) . ",
             allowClear: $allowclear,
             minimumInputLength: 0,
             quietMillis: 100,

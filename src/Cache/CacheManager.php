@@ -430,6 +430,11 @@ class CacheManager
             $config  = include($config_file);
             $contexts = $config['contexts'] ?? [];
             foreach ($contexts as $context => $context_config) {
+                if (!$this->isContextValid($context, true)) {
+                    trigger_error(sprintf('Invalid or non configurable context: "%s".', $context), E_USER_NOTICE);
+                    unset($config['contexts'][$context]);
+                    continue;
+                }
                 if (
                     !$this->isContextValid($context, true)
                     || !is_array($context_config)
@@ -484,8 +489,8 @@ PHP;
 
         if (!$only_configurable) {
            // 'installer' and 'translations' cache storages cannot not be configured (they always use the filesystem storage)
-            $core_contexts[] = 'installer';
-            $core_contexts[] = 'translations';
+            $core_contexts[] = self::CONTEXT_INSTALLER;
+            $core_contexts[] = self::CONTEXT_TRANSLATIONS;
         }
 
         return in_array($context, $core_contexts, true) || preg_match('/^plugin:\w+$/', $context) === 1;

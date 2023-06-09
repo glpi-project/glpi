@@ -124,12 +124,12 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'get_card':
-        session_write_close();
+        Session::writeClose();
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
         break;
 
     case 'get_cards':
-        session_write_close();
+        Session::writeClose();
         header("Content-Type: application/json; charset=UTF-8");
         $cards = $request_data['cards'];
         unset($request_data['cards']);

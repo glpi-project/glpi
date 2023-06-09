@@ -924,6 +924,11 @@ abstract class MainAsset extends InventoryAsset
             foreach ($assets as $asset) {
                 $asset->setEntityID($this->getEntityID());
                 $asset->setExtraData($this->assets);
+                foreach ($this->assets as $asset_type => $asset_list) {
+                    if ($asset_type != '\\' . get_class($asset)) {
+                        $asset->setExtraData([$asset_type => $asset_list]);
+                    }
+                }
                 $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
                 $asset->handleLinks();
                 $asset->handle();

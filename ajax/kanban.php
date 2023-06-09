@@ -244,6 +244,7 @@ if (($_POST['action'] ?? null) === 'update') {
     header("Content-Type: application/json; charset=UTF-8", true);
     echo json_encode($itemtype::getAllKanbanColumns($_REQUEST['column_field']));
 } else if ($_REQUEST['action'] === 'get_column') {
+    Session::writeClose();
     $checkParams(['column_id', 'column_field', 'items_id']);
     header("Content-Type: application/json; charset=UTF-8", true);
     $column = $itemtype::getKanbanColumns($_REQUEST['items_id'], $_REQUEST['column_field'], [$_REQUEST['column_id']]);

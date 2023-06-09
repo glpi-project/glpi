@@ -41,7 +41,7 @@ if (!array_key_exists('cookie_refresh', $_GET)) {
     // Redirecting on self using `http-equiv="refresh"` will get around this limitation.
     $url = htmlspecialchars(
         $_SERVER['REQUEST_URI']
-        . (str_contains($_SERVER['REQUEST_URI'], '?') ? '&' : '?')
+        . (strpos($_SERVER['REQUEST_URI'], '?') !== false ? '&' : '?')
         . 'cookie_refresh'
     );
 

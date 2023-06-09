@@ -287,7 +287,7 @@ class Transfer extends CommonDBTM
                 if (!$intransaction && $DB->inTransaction()) {
                     $DB->commit();
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 if (!$intransaction && $DB->inTransaction()) {
                     $DB->rollBack();
                 }

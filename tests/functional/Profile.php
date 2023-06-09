@@ -290,4 +290,50 @@ class Profile extends DbTestCase
             "Can't remove update right on this profile as it is the only remaining profile with this right."
         ]);
     }
+
+    /**
+     * Test that core profile rights have a search option in the Profile class to ensure that changes are recorded in the profile's history.
+     */
+    public function testProfileRightsHaveSearchOptions()
+    {
+        $search_opts = \Search::getOptions(\Profile::class);
+        // We can keep only the options that have 'right' as the field
+        $search_opts = array_filter($search_opts, static function ($opt) {
+            return is_array($opt) && isset($opt['field']) && $opt['field'] === 'rights';
+        });
+        $failures = [];
+        $all_rights = \Profile::getRightsForForm();
+
+        foreach ($all_rights as $interface => $forms) {
+            foreach ($forms as $form => $groups) {
+                foreach ($groups as $group => $rights) {
+                    $previous_right = null;
+                    foreach ($rights as $right) {
+                        if (empty($right['field'])) {
+                            echo 'A right is missing a field name. Please check that the class has the rightname property set or the right is otherwise defined with the field property in the array';
+                            if ($previous_right) {
+                                echo 'The previous right was: ' . print_r($previous_right, true) . " in ${$interface}/${$form}/${$group}";
+                            } else {
+                                echo "The right was the first one in ${$interface}/${$form}/${$group}";
+                            }
+                            continue;
+                        }
+                        $search_opt_matches = array_filter($search_opts, static function ($opt) use ($right) {
+                            return array_key_exists('rightname', $opt) && $opt['rightname'] === $right['field'];
+                        });
+                        if (!count($search_opt_matches)) {
+                            $failures[] = $right['field'];
+                        }
+                        $previous_right = $right;
+                    }
+                }
+            }
+        }
+
+        $failures = array_unique($failures);
+        if (count($failures)) {
+            echo sprintf('The following rights do not have a search option: %s', implode(', ', $failures));
+        }
+        $this->array($failures)->isEmpty();
+    }
 }

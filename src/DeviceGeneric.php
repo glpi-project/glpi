@@ -91,6 +91,7 @@ class DeviceGeneric extends CommonDevice
         switch ($itemtype) {
             case 'Computer':
                 Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                $base->addHeader('devicegenerictypes_id', _n('Type', 'Types', 1), $super, $father);
                 break;
         }
     }
@@ -112,6 +113,13 @@ class DeviceGeneric extends CommonDevice
         switch ($item->getType()) {
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
+                if ($this->fields["devicegenerictypes_id"]) {
+                    $type_name = Dropdown::getDropdownName(
+                        "glpi_devicegenerictypes",
+                        $this->fields["devicegenerictypes_id"]
+                    );
+                    $row->addCell($row->getHeaderByName('devicegenerictypes_id'), $type_name);
+                }
                 break;
         }
     }

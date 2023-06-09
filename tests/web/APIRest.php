@@ -1857,7 +1857,7 @@ class APIRest extends atoum
                     $this->base_uri . $relative_uri,
                     $params
                 );
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 throw $e;
             }
         }

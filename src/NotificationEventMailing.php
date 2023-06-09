@@ -136,7 +136,25 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
                 }
 
-                if (is_a($current->fields['itemtype'], CommonDBTM::class, true)) {
+                if ($current->fields['event'] === null) {
+                    // Notifications that were pushed in queue before upgrade to GLPI 10.0.8+ have a `null` value in `event` field.
+                    // Build the `In-Reply-To` header as it was done before GLPI 10.0.8.
+                    $mail->getHeaders()->addTextHeader(
+                        'In-Reply-To',
+                        str_replace(
+                            [
+                                '%uuid',
+                                '%itemtype',
+                                '%items_id'
+                            ],
+                            [
+                                Config::getUuid('notification'),
+                                $current->fields['items_id']
+                            ],
+                            '<GLPI-%uuid-%itemtype-%items_id>'
+                        )
+                    );
+                } elseif (is_a($current->fields['itemtype'], CommonDBTM::class, true)) {
                     $reference_event = $current->fields['itemtype']::getMessageReferenceEvent($current->fields['event']);
                     if ($reference_event !== null && $reference_event !== $current->fields['event']) {
                         // Add `In-Reply-To` and `References` for mail grouping in reader when:
@@ -268,7 +286,13 @@ class NotificationEventMailing extends NotificationEventAbstract
                                         $custom_height = intval($hmatches[1]);
                                     }
 
-                                    $img_infos  = getimagesize(GLPI_DOC_DIR . "/" . $doc->fields['filepath']);
+                                    $img_infos = getimagesize(GLPI_DOC_DIR . "/" . $doc->fields['filepath']);
+
+                                    if (!$img_infos) {
+                                        // Failure to read image size, skip to avoid a divide by zero exception
+                                        continue;
+                                    }
+
                                     $initial_width = $img_infos[0];
                                     $initial_height = $img_infos[1];
 
@@ -349,7 +373,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                         $CFG_GLPI['url_base'] . $current->getFormURLWithID($current->fields['id'], false)
                     )
                 );
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 self::handleFailedSend($current, $e->getMessage());
             }
 

@@ -1010,13 +1010,17 @@ class Inventory extends InventoryTestCase
     {
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
-        $this->integer(count($iterator))->isIdenticalTo(6);
+        $this->integer(count($iterator))->isIdenticalTo(7);
 
         $expecteds = [
             [
                 'softname' => 'expat',
                 'version' => '2.2.8-1.fc31',
                 'dateinstall' => '2019-12-19',
+            ],[
+                'softname' => 'Fedora 31 (Workstation Edition)',
+                'version' => '31 (Workstation Edition)',
+                'dateinstall' => null,
             ], [
                 'softname' => 'gettext',
                 'version' => '0.20.1-3.fc31',
@@ -1455,7 +1459,7 @@ class Inventory extends InventoryTestCase
         //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
-        $this->integer(count($iterator))->isIdenticalTo(3033);
+        $this->integer(count($iterator))->isIdenticalTo(3034);
 
         //computer has been created, check logs.
         //check for expected logs
@@ -1590,7 +1594,7 @@ class Inventory extends InventoryTestCase
         //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
-        $this->integer(count($iterator))->isIdenticalTo(3033);
+        $this->integer(count($iterator))->isIdenticalTo(3034);
 
         //check for expected logs
         $nblogsnow = countElementsInTable(\Log::getTable());
@@ -1770,7 +1774,7 @@ class Inventory extends InventoryTestCase
         //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
-        $this->integer(count($iterator))->isIdenticalTo(3184);
+        $this->integer(count($iterator))->isIdenticalTo(3185);
 
         //check for expected logs after update
         $logs = $DB->request([
@@ -4534,70 +4538,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ;
     }
 
-    public function testRemoveVirtualMachines()
-    {
-        global $DB;
-
-        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
-
-        $count_vms = count($json->content->virtualmachines);
-        $this->integer($count_vms)->isIdenticalTo(6);
-
-        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
-        $nb_computers = countElementsInTable(\Computer::getTable());
-
-        //change config to import vms as computers
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->boolean($conf->saveConf(['vm_as_computer' => 1]))->isTrue();
-        $this->logout();
-
-        //$json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
-        $inventory = $this->doInventory($json);
-
-        //check inventory metadata
-        $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(5)
-            ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
-            ->string['itemtype']->isIdenticalTo('Computer')
-            ->variable['port']->isIdenticalTo(null)
-            ->string['action']->isIdenticalTo('inventory');
-
-        //check we add main computer and one computer per vm
-        //one does not have an uuid, so no computer is created.
-        ++$nb_computers;
-        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
-        //check created vms
-        $nb_vms += $count_vms;
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
-
-        //remove postgres
-        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
-        $vms = $json->content->virtualmachines;
-        unset($vms[4]);
-        $json->content->virtualmachines = $vms;
-
-        $this->doInventory($json);
-
-        //check there are same count for computers and virtual machines
-        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($count_vms);
-        //check there is one less vm and computer not marked as deleted
-        $nb_vms--;
-        $this->integer(countElementsInTable(\Computer::getTable(), ['is_deleted' => 0]))->isIdenticalTo($nb_computers + $count_vms - 2);
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable(), ['is_deleted' => 0]))->isIdenticalTo($nb_vms);
-
-        //check related computer has been put in trashbin
-        $iterator = $DB->request([
-            'FROM' => \Computer::getTable(),
-            'WHERE' => [
-                'name' => 'db',
-                'is_deleted' => 1
-            ]
-        ]);
-        $this->integer(count($iterator))->isIdenticalTo(1);
-    }
-
     public function testRuleRefuseImportVirtualMachines()
     {
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
@@ -5348,7 +5288,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         foreach ($expecteds as $type => $expected) {
             $component = array_values($components[$type]);
-           //hack to replace expected fkeys
+            //hack to replace expected fkeys
             foreach ($expected as $i => &$row) {
                 foreach (array_keys($row) as $key) {
                     if (isForeignKeyField($key)) {
@@ -5362,7 +5302,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //software
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($phone);
-        $this->integer(count($iterator))->isIdenticalTo(3);
+        $this->integer(count($iterator))->isIdenticalTo(4);
 
         $expecteds = [
             [
@@ -5377,6 +5317,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'softname' => 'Enregistreur d\'écran',
                 'version' => '1.5.9',
                 'dateinstall' => '2008-12-31',
+            ], [
+                'softname' => 'Q Android 10.0 api 29',
+                'version' => '29',
+                'dateinstall' => null,
             ]
         ];
 
@@ -5443,6 +5387,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //software versions
         $versions = [
             '2.2.8-1.fc31',
+            '31 (Workstation Edition)',
             '0.20.1-3.fc31',
             '3.33.0-1.fc31',
             '3.34.1-1.fc31',

@@ -20,7 +20,6 @@ jobs:
       matrix:
         include:
           # build on lower supported version to ensure building tools are compatible with this version
-          - {branch: "9.5/bugfixes", php-version: "7.2"}
           - {branch: "10.0/bugfixes", php-version: "7.4"}
           - {branch: "main", php-version: "8.1"}
     services:

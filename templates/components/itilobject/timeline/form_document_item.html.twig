@@ -102,18 +102,20 @@
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                 {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
-                {{ fields.dropdownField(
-                    'DocumentCategory',
-                    'documentcategories_id',
-                    null,
-                    __("Heading"),
-                    {
-                        'label_class': 'col-xxl-3',
-                        'field_class': 'col-xxl-11',
-                        'full_width': true,
-                        'is_horizontal': false
-                    }
-                ) }}
+                {% if get_current_interface() == 'central' %}
+                    {{ fields.dropdownField(
+                        'DocumentCategory',
+                        'documentcategories_id',
+                        null,
+                        __("Heading"),
+                        {
+                            'label_class': 'col-xxl-3',
+                            'field_class': 'col-xxl-11',
+                            'full_width': true,
+                            'is_horizontal': false
+                        }
+                    ) }}
+                {% endif %}
 
                 {% set max_size %}
                     <div class="alert alert-info">

@@ -1,0 +1,80 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+#debug-toolbar {
+    z-index: 9999;
+    outline: none;
+
+    .debug-toolbar-badge button {
+        box-shadow: none;
+    }
+
+    .debug-toolbar-widgets .debug-toolbar-widget > button {
+        box-shadow: none;
+
+        &.active {
+            color: $primary;
+        }
+    }
+
+    #debug-toolbar-expanded-content {
+        height: 30vh;
+        overflow: auto;
+
+        #debug-requests-table thead th {
+            position: sticky;
+            top: 0;
+        }
+
+        .category-badge {
+            padding: 5px;
+            border-radius: 25%;
+        }
+
+        .split-panel-h {
+            .left-panel {
+                flex: 0 0 33%;
+                border-right: 1px solid #808080;
+                min-width: 100px;
+            }
+
+            .resize-handle {
+                cursor: col-resize;
+                width: 10px;
+                z-index: 1030;
+                margin-left: -0.5rem;
+                margin-right: -0.25rem;
+            }
+        }
+    }
+}

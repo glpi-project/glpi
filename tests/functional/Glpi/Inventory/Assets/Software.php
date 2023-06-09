@@ -125,6 +125,7 @@ class Software extends AbstractInventoryAsset
 
     public function testHandle()
     {
+        $this->login();
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
         //first, check there are no software linked to this computer
@@ -141,7 +142,10 @@ class Software extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Software($computer, $json->content->softwares);
-        $asset->setExtraData((array)$json->content);
+
+        $extra_data = (array)$json->content;
+
+        $asset->setExtraData($extra_data);
         $result = $asset->prepare();
         $expected = json_decode($expected['expected']);
 
@@ -173,17 +177,17 @@ class Software extends AbstractInventoryAsset
         $osasset->handle();
 
         $extra_data = (array)$json->content;
-        $extra_data[\Glpi\Inventory\Asset\OperatingSystem::class] = $osasset;
+        $extra_data['\Glpi\Inventory\Asset\OperatingSystem'] = $osasset;
 
         $asset->setExtraData($extra_data);
         $result = $asset->prepare();
         $expected = json_decode($expected['expected']);
         $this->object($result[0])->isEqualTo($expected);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
-        $this->boolean($sov->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+        $this->boolean($sov->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer', ['NOT' => ['date_install' => null]]]))
          ->isTrue('A software version has not been linked to computer!');
 
         $this->integer($sov->fields['softwareversions_id'])->isNotEqualTo($version->fields['id']);
@@ -192,10 +196,10 @@ class Software extends AbstractInventoryAsset
         $this->boolean($version->getFromDB($sov->fields['softwareversions_id']))->isTrue();
         $this->integer($version->fields['operatingsystems_id'])->isGreaterThan(0);
 
-       //new computer with same software
+        //new computer with same software
         global $DB;
         $soft_reference = $DB->request(\Software::getTable());
-        $this->integer(count($soft_reference))->isIdenticalTo(4);
+        $this->integer(count($soft_reference))->isIdenticalTo(5);
 
         $computer2 = getItemByTypeName('Computer', '_test_pc02');
        //first, check there are no software linked to this computer
@@ -210,7 +214,7 @@ class Software extends AbstractInventoryAsset
         $osasset->handle();
 
         $extra_data = (array)$json->content;
-        $extra_data[\Glpi\Inventory\Asset\OperatingSystem::class] = $osasset;
+        $extra_data['\Glpi\Inventory\Asset\OperatingSystem'] = $osasset;
 
         $asset->setExtraData($extra_data);
         $result = $asset->prepare();
@@ -218,7 +222,7 @@ class Software extends AbstractInventoryAsset
         //handle
         $asset->handleLinks();
         $asset->handle();
-        $this->boolean($sov->getFromDbByCrit(['items_id' => $computer2->fields['id'], 'itemtype' => 'Computer']))
+        $this->boolean($sov->getFromDbByCrit(['items_id' => $computer2->fields['id'], 'itemtype' => 'Computer', ['NOT' => ['date_install' => null]]]))
          ->isTrue('A software version has not been linked to computer!');
 
         $this->integer(count($DB->request(\Software::getTable())))->isIdenticalTo(count($soft_reference));
@@ -1410,6 +1414,94 @@ class Software extends AbstractInventoryAsset
         //check version is the same
         $this->boolean(
             $version->getFromDBByCrit(['name' => '4.21'])
+        )->isTrue();
+        $this->integer($versions_id)->isIdenticalTo($version->fields['id']);
+
+        //check computer-softwareverison relation is the same
+        $this->boolean($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $versions_id
+        ]))->isTrue();
+        $this->integer($item_versions_id)->isIdenticalTo($item_version->fields['id']);
+    }
+
+    public function testManufacturerSpecialCharacters()
+    {
+        $computer = new \Computer();
+        $soft = new \Software();
+        $version = new \SoftwareVersion();
+        $item_version = new \Item_SoftwareVersion();
+
+        //inventory with a software manufacturer with a special character
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+      <SOFTWARES>
+      <NAME>Any other software</NAME>
+      <VERSION>2.0.0</VERSION>
+      <PUBLISHER>Manufacture</PUBLISHER>
+    </SOFTWARES>
+    <SOFTWARES>
+      <NAME>Any software</NAME>
+      <VERSION>1.0.0</VERSION>
+      <PUBLISHER>Manufacturé</PUBLISHER>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //create manually a computer
+        $computers_id = $computer->add([
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        $this->doInventory($xml_source, true);
+
+        //check software has been created
+        $this->boolean(
+            $soft->getFromDBByCrit(['name' => 'Any software'])
+        )->isTrue();
+        $softwares_id = $soft->fields['id'];
+
+        //check version has been created
+        $this->boolean(
+            $version->getFromDBByCrit(['name' => '1.0.0'])
+        )->isTrue();
+        $this->integer($version->fields['softwares_id'])->isIdenticalTo($softwares_id);
+        $versions_id = $version->fields['id'];
+
+        //check computer-softwareverison relation has been created
+        $this->boolean($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $versions_id
+        ]))->isTrue();
+        $item_versions_id = $item_version->fields['id'];
+
+        //import again
+        $this->doInventory($xml_source, true);
+
+        //check software is the same
+        $this->boolean(
+            $soft->getFromDBByCrit(['name' => 'Any software'])
+        )->isTrue();
+        $this->integer($softwares_id)->isIdenticalTo($soft->fields['id']);
+
+        //check version is the same
+        $this->boolean(
+            $version->getFromDBByCrit(['name' => '1.0.0'])
         )->isTrue();
         $this->integer($versions_id)->isIdenticalTo($version->fields['id']);
 

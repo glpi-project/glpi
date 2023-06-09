@@ -49,6 +49,7 @@ use Glpi\Application\View\Extension\SearchExtension;
 use Glpi\Application\View\Extension\SecurityExtension;
 use Glpi\Application\View\Extension\SessionExtension;
 use Glpi\Application\View\Extension\TeamExtension;
+use Glpi\Debug\Profiler;
 use Plugin;
 use Session;
 use Twig\Environment;
@@ -158,9 +159,12 @@ class TemplateRenderer
     public function render(string $template, array $variables = []): string
     {
         try {
+            Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
             return $this->environment->load($template)->render($variables);
         } catch (\Twig\Error\Error $e) {
             ErrorHandler::getInstance()->handleTwigError($e);
+        } finally {
+            Profiler::getInstance()->stop($template);
         }
         return '';
     }
@@ -176,9 +180,12 @@ class TemplateRenderer
     public function display(string $template, array $variables = []): void
     {
         try {
+            Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
             $this->environment->load($template)->display($variables);
         } catch (\Twig\Error\Error $e) {
             ErrorHandler::getInstance()->handleTwigError($e);
+        } finally {
+            Profiler::getInstance()->stop($template);
         }
     }
 }

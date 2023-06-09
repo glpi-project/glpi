@@ -61,7 +61,7 @@ if (!$DB->tableExists('glpi_pendingreasons')) {
          KEY `is_recursive` (`is_recursive`),
          KEY `solutiontemplates_id` (`solutiontemplates_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = $default_charset COLLATE = $default_collation;";
-    $DB->queryOrDie($query, "x.x add table glpi_pendingreasons");
+    $DB->queryOrDie($query, "10.0 add table glpi_pendingreasons");
 }
 
 // Add pending reason items table
@@ -80,7 +80,7 @@ if (!$DB->tableExists('glpi_pendingreasons_items')) {
          KEY `pendingreasons_id` (`pendingreasons_id`),
          KEY `item` (`itemtype`,`items_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = $default_charset COLLATE = $default_collation;";
-    $DB->queryOrDie($query, "x.x add table glpi_pendingreasons_items");
+    $DB->queryOrDie($query, "10.0 add table glpi_pendingreasons_items");
 }
 
 // Add pendingreason right

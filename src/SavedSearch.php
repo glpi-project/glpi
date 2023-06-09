@@ -353,7 +353,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $this->fields["users_id"]     = Session::getLoginUserID();
         $this->fields["is_private"]   = 1;
         $this->fields["is_recursive"] = 1;
-        $this->fields["entities_id"]  = $_SESSION["glpiactive_entity"];
+        $this->fields["entities_id"]  = Session::getActiveEntity();
     }
 
 
@@ -1241,7 +1241,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                               $stmt->bind_param('sss', $execution_time, $now, $row['id']);
                               $DB->executeStatement($stmt);
                         }
-                    } catch (\Exception $e) {
+                    } catch (\Throwable $e) {
                         ErrorHandler::getInstance()->handleException($e);
                     }
                 }

@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,12 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-.debug-panel {
-    font-size: $font-size-sm;
-    z-index: 9999;
-    display: none;
-
-    .card-body {
-        height: 300px;
-    }
-}
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
+$migration->changeField(
+    NetworkPortFiberchannel::getTable(),
+    'wwn',
+    'wwn',
+    "varchar(50) DEFAULT ''",
+);

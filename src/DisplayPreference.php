@@ -52,7 +52,10 @@ class DisplayPreference extends CommonDBTM
     const PERSONAL = 1024;
     const GENERAL  = 2048;
 
-
+    public static function getTypeName($nb = 0)
+    {
+        return __('Search result display');
+    }
 
     public function prepareInputForAdd($input)
     {

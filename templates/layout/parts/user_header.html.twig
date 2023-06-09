@@ -34,14 +34,6 @@
 {% set rand_header = random() %}
 
 <div class="btn-group">
-   {% if is_debug_active %}
-      <button class="btn btn-outline-danger d-none d-md-block see_debug" role="button">
-         <i class="ti ti-bug fa-lg mt-1" title=" {{ __('Display GLPI debug informations') }}">
-            <span class="visually-hidden">{{ __('Display GLPI debug informations') }}</span>
-         </i>
-      </button>
-   {% endif %}
-
    {% if user is not null %}
       <div class="navbar-nav flex-row order-md-last user-menu">
          <div class="nav-item dropdown">

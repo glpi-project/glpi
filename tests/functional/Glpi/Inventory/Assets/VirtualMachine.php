@@ -360,4 +360,170 @@ class VirtualMachine extends AbstractInventoryAsset
           $this->integer($vm_first->fields['id'])->isEqualTo($vm_second->fields['id']);
           $this->integer($computer_linked_first->fields['id'])->isEqualTo($computer_linked_second->fields['id']);
     }
+
+    public function testImportVirtualMachineWithoutHistory()
+    {
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <BIOS>
+              <ASSETTAG></ASSETTAG>
+              <BDATE>2018-02-08T00:00:00Z</BDATE>
+              <BVERSION>1.3.7</BVERSION>
+              <MSN>2YR88P2</MSN>
+              <SMANUFACTURER>Dell Inc.</SMANUFACTURER>
+              <SMODEL>PowerEdge R640</SMODEL>
+              <SSN>2YR88P2</SSN>
+            </BIOS>
+            <HARDWARE>
+              <DNS>10.100.230.2/10.100.230.4</DNS>
+              <MEMORY>130625</MEMORY>
+              <NAME>ESX-03-DMZ</NAME>
+              <UUID>8c8c8944-0074-5632-7452-b2c04f564712</UUID>
+              <VMSYSTEM>Physical</VMSYSTEM>
+              <WORKGROUP>teclib.fr</WORKGROUP>
+            </HARDWARE>
+            <VERSIONCLIENT>GLPI-Agent_v1.4-1</VERSIONCLIENT>
+            <VIRTUALMACHINES>
+              <COMMENT>Computer VM</COMMENT>
+              <MAC>00:50:56:90:43:42</MAC>
+              <MEMORY>1024</MEMORY>
+              <NAME>SRV-DMZ-EZ</NAME>
+              <STATUS>running</STATUS>
+              <UUID>fe040942-926a-e895-13f9-a37fc3607c14</UUID>
+              <VCPU>1</VCPU>
+              <VMTYPE>VMware</VMTYPE>
+            </VIRTUALMACHINES>
+            <VIRTUALMACHINES>
+            <COMMENT>Computer VM</COMMENT>
+            <MAC>00:50:56:90:43:42</MAC>
+            <MEMORY>1024</MEMORY>
+            <NAME>SRV-DMZ-EZ</NAME>
+            <STATUS>running</STATUS>
+            <UUID>c37f7ce8-af95-4676-b454-0959f2c5e162</UUID>
+            <VCPU>1</VCPU>
+            <VMTYPE>VMware</VMTYPE>
+          </VIRTUALMACHINES>
+          </CONTENT>
+          <DEVICEID>ESX-03-DMZ.insep.fr-2023-02-02-11-34-53</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>
+        ";
+
+        //change config to import vms as computers
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf(['vm_as_computer' => 1]))->isTrue();
+        $this->logout();
+
+        //computer inventory knows bios
+        $inventory = $this->doInventory($xml_source, true);
+
+        $esx_id_first = $inventory->getItem()->fields['id'];
+        $this->integer($esx_id_first)->isGreaterThan(0);
+
+        //get two VM
+        $vm = new \ComputerVirtualMachine();
+        $this->array($vm->find())->hasSize(2);
+
+        //get first ComputervirtualMachine -> not deleted / purged
+        $firlst_vm = new \ComputerVirtualMachine();
+        $this->boolean($firlst_vm->getFromDBByCrit([
+            'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
+            'computers_id' => $esx_id_first,
+            'is_deleted' => false
+        ]))->isTrue();
+        //get related computer with fe040942-926a-e895-13f9-a37fc3607c14 -> not deleted / purged
+        $first_computer_linked = new \Computer();
+        $this->boolean($first_computer_linked->getFromDBByCrit([
+            'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
+            'is_deleted' => false
+        ]))->isTrue();
+
+        //get second ComputervirtualMachine -> not deleted / purged
+        $second_vm = new \ComputerVirtualMachine();
+        $this->boolean($second_vm->getFromDBByCrit([
+            'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
+            'computers_id' => $esx_id_first,
+            'is_deleted' => false
+        ]))->isTrue();
+        //get computer with c37f7ce8-af95-4676-b454-0959f2c5e162 -> not deleted / purged
+        $second_computer_linked = new \Computer();
+        $this->boolean($second_computer_linked->getFromDBByCrit([
+            'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
+            'is_deleted' => false
+        ]))->isTrue();
+
+        //redi inventory without c37f7ce8-af95-4676-b454-0959f2c5e162
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <BIOS>
+              <ASSETTAG></ASSETTAG>
+              <BDATE>2018-02-08T00:00:00Z</BDATE>
+              <BVERSION>1.3.7</BVERSION>
+              <MSN>2YR88P2</MSN>
+              <SMANUFACTURER>Dell Inc.</SMANUFACTURER>
+              <SMODEL>PowerEdge R640</SMODEL>
+              <SSN>2YR88P2</SSN>
+            </BIOS>
+            <HARDWARE>
+              <DNS>10.100.230.2/10.100.230.4</DNS>
+              <MEMORY>130625</MEMORY>
+              <NAME>ESX-03-DMZ</NAME>
+              <UUID>8c8c8944-0074-5632-7452-b2c04f564712</UUID>
+              <VMSYSTEM>Physical</VMSYSTEM>
+              <WORKGROUP>teclib.fr</WORKGROUP>
+            </HARDWARE>
+            <VERSIONCLIENT>GLPI-Agent_v1.4-1</VERSIONCLIENT>
+            <VIRTUALMACHINES>
+              <COMMENT>Computer VM</COMMENT>
+              <MAC>00:50:56:90:43:42</MAC>
+              <MEMORY>1024</MEMORY>
+              <NAME>SRV-DMZ-EZ</NAME>
+              <STATUS>running</STATUS>
+              <UUID>fe040942-926a-e895-13f9-a37fc3607c14</UUID>
+              <VCPU>1</VCPU>
+              <VMTYPE>VMware</VMTYPE>
+            </VIRTUALMACHINES>
+          </CONTENT>
+          <DEVICEID>ESX-03-DMZ.insep.fr-2023-02-02-11-34-53</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>
+        ";
+
+        //redo inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //now one VM
+        $vm = new \ComputerVirtualMachine();
+        $this->array($vm->find())->hasSize(1);
+
+        //get first ComputervirtualMachine -> not deleted / purged
+        $firlst_vm = new \ComputerVirtualMachine();
+        $this->boolean($firlst_vm->getFromDBByCrit([
+            'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
+            'computers_id' => $esx_id_first,
+            'is_deleted' => false
+        ]))->isTrue();
+        //get computer with fe040942-926a-e895-13f9-a37fc3607c14 -> not deleted / purged
+        $first_computer_linked = new \Computer();
+        $this->boolean($first_computer_linked->getFromDBByCrit([
+            'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
+            'is_deleted' => false
+        ]))->isTrue();
+
+        //get second ComputervirtualMachine -> purged
+        $second_vm = new \ComputerVirtualMachine();
+        $this->boolean($second_vm->getFromDBByCrit([
+            'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
+            'computers_id' => $esx_id_first
+        ]))->isFalse();
+        //get computer with c37f7ce8-af95-4676-b454-0959f2c5e162 -> not deleted / purged
+        $second_computer_linked = new \Computer();
+        $this->boolean($second_computer_linked->getFromDBByCrit([
+            'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
+            'is_deleted' => false
+        ]))->isTrue();
+    }
 }

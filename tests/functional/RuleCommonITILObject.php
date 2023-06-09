@@ -1640,71 +1640,80 @@ abstract class RuleCommonITILObject extends DbTestCase
     {
         $this->login();
 
-        // Create rule
-        $rule_itil = $this->getRuleInstance();
-        $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        // Common variables that will be reused
+        $rule_criteria_category_code = "R";
+        $rule_action_impact_value = 1; // very low
 
-        $ruletid = $rule_itil->add($ruletinput = [
+        // Create rule, rule criteria and rule action
+        $rule = $this->createItem($this->getTestedClass(), [
             'name'         => 'test category code',
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => \RuleCommonITILObject::ONADD | \RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
-        $this->checkInput($rule_itil, $ruletid, $ruletinput);
-
-        // Create criteria to check if category code is R
-        $crit_id = $rulecrit->add($crit_input = [
-            'rules_id'  => $ruletid,
+        $this->createItem('RuleCriteria', [
+            'rules_id'  => $rule->getID(),
             'criteria'  => 'itilcategories_id_code',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 'R',
+            'pattern'   => $rule_criteria_category_code,
         ]);
-        $this->checkInput($rulecrit, $crit_id, $crit_input);
-
-        // Create action to put impact to very low
-        $action_id = $ruleaction->add($action_input = [
-            'rules_id'    => $ruletid,
+        $this->createItem('RuleAction', [
+            'rules_id'    => $rule->getID(),
             'action_type' => 'assign',
             'field'       => 'impact',
-            'value'       => 1,
+            'value'       => $rule_action_impact_value,
         ]);
-        $this->checkInput($ruleaction, $action_id, $action_input);
 
-        // Create new group
-        $category = new \ITILCategory();
-        $category_id = $category->add($category_input = [
-            "name" => "group1",
-            "code" => "R"
+        // Create new category
+        $category = $this->createItem('ITILCategory', [
+            "name" => "category_test",
+            "code" => $rule_criteria_category_code,
         ]);
-        $this->checkInput($category, $category_id, $category_input);
 
         // Check ITIL Object that trigger rule on creation
-        $itil = $this->getITILObjectInstance();
-        $itil_id = $itil->add($itil_input = [
+        $itil = $this->createItem($this->getITILObjectClass(), [
             'name'              => 'test category code',
             'content'           => 'test category code',
-            'itilcategories_id' => $category_id
+            'itilcategories_id' => $category->getID(),
         ]);
-        $this->checkInput($itil, $itil_id, $itil_input);
+        $itil_id = $itil->getID();
 
         // Check that the rule was executed
         $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['impact'])->isEqualTo(1);
+        $this->integer($itil->fields['impact'])->isEqualTo($rule_action_impact_value);
 
         // Create another ITIL Object that doesn't match the rule
-        $itil_id = $itil->add($itil_input = [
+        $itil = $this->createItem($this->getITILObjectClass(), [
             'name'              => 'test category code',
             'content'           => 'test category code',
             'itilcategories_id' => 0
         ]);
-        $this->checkInput($itil, $itil_id, $itil_input);
+        $itil_id = $itil->getID();
 
         // Check that the rule was NOT executed
         $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['impact'])->isNotEqualTo(1);
+        $this->integer($itil->fields['impact'])->isNotEqualTo($rule_action_impact_value);
+
+        // Update ticket to match the rule
+        $this->updateItem($this->getITILObjectClass(), $itil_id, [
+            'itilcategories_id' => $category->getID(),
+        ]);
+
+        // Check that the rule was executed
+        $this->boolean($itil->getFromDB($itil_id))->isTrue();
+        $this->integer($itil->fields['impact'])->isEqualTo($rule_action_impact_value);
+
+        // Change impact, the rule must not be executed again as the category didn't change
+        $this->updateItem($this->getITILObjectClass(), $itil_id, [
+            'itilcategories_id' => $category->getID(), // Simulate same category being sent from the user form
+            'impact' => 2,
+        ]);
+
+        // Check that the rule was NOT executed
+        $this->boolean($itil->getFromDB($itil_id))->isTrue();
+        $this->integer($itil->fields['impact'])->isNotEqualTo($rule_action_impact_value);
     }
 
     public function testAssignAppliance()

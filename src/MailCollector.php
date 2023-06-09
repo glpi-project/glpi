@@ -783,7 +783,7 @@ class MailCollector extends CommonDBTM
                         }
 
                         $messages[$message_id] = $message;
-                    } catch (\Exception $e) {
+                    } catch (\Throwable $e) {
                         $GLPI->getErrorHandler()->handleException($e);
                         Toolbox::logInFile(
                             'mailgate',
@@ -1398,7 +1398,7 @@ class MailCollector extends CommonDBTM
         }
 
         if (!empty($config['mailbox'])) {
-            $params['folder'] = $config['mailbox'];
+            $params['folder'] = mb_convert_encoding($config['mailbox'], 'UTF7-IMAP', 'UTF-8');
         }
 
         if ($config['validate-cert'] === false) {
@@ -1417,7 +1417,7 @@ class MailCollector extends CommonDBTM
                     'errors' => 0
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->update([
                 'id'     => $this->getID(),
                 'errors' => ($this->fields['errors'] + 1)
@@ -1853,7 +1853,7 @@ class MailCollector extends CommonDBTM
             try {
                 $this->storage->moveMessage($this->storage->getNumberByUniqueId($uid), $name);
                 return true;
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                // raise an error and fallback to delete
                 trigger_error(
                     sprintf(

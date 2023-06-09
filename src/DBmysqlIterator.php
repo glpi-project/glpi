@@ -677,6 +677,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
 
             foreach ($jointables as $jointablekey => $jointablecrit) {
+                // QueryExpression support, can be removed once Search::getDefaultJoin no longer returns raw SQL
+                if ($jointablecrit instanceof QueryExpression) {
+                    $query .= $jointablecrit->getValue();
+                    continue;
+                }
+
                 if (isset($jointablecrit['TABLE'])) {
                    //not a "simple" FKEY
                     $jointablekey = $jointablecrit['TABLE'];
@@ -858,5 +864,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
     public function isOperator($value)
     {
         return in_array($value, $this->allowed_operators, true);
+    }
+
+    public function fetchFields(): array
+    {
+        return $this->res->fetch_fields();
     }
 }

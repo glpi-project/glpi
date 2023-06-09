@@ -492,6 +492,11 @@ class DBmysqlIterator extends DbTestCase
         )
          ->isInstanceOf('RuntimeException')
          ->hasMessage('BAD JOIN');
+
+        // QueryExpression
+        $expression = "LEFT JOIN xxxx";
+        $join = $this->it->analyseJoins(['LEFT JOIN' => [new \Glpi\DBAL\QueryExpression($expression)]]);
+        $this->string($join)->isIdenticalTo($expression);
     }
 
     public function testHaving()

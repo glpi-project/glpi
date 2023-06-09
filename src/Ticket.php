@@ -3096,7 +3096,7 @@ JAVASCRIPT;
             'table'              => 'glpi_slas',
             'field'              => 'name',
             'linkfield'          => 'slas_id_tto',
-            'name'               => __('SLA') . "&nbsp;" . __('Time to own'),
+            'name'               => __('SLA') . ' ' . __('Time to own'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -3110,7 +3110,7 @@ JAVASCRIPT;
             'table'              => 'glpi_slas',
             'field'              => 'name',
             'linkfield'          => 'slas_id_ttr',
-            'name'               => __('SLA') . "&nbsp;" . __('Time to resolve'),
+            'name'               => __('SLA') . ' ' . __('Time to resolve'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -3123,7 +3123,7 @@ JAVASCRIPT;
             'id'                 => '32',
             'table'              => 'glpi_slalevels',
             'field'              => 'name',
-            'name'               => __('SLA') . "&nbsp;" . _n('Escalation level', 'Escalation levels', 1),
+            'name'               => __('SLA') . ' ' . _n('Escalation level', 'Escalation levels', 1),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -3147,7 +3147,7 @@ JAVASCRIPT;
             'table'              => 'glpi_olas',
             'field'              => 'name',
             'linkfield'          => 'olas_id_tto',
-            'name'               => __('OLA') . "&nbsp;" . __('Internal time to own'),
+            'name'               => __('OLA') . ' ' . __('Internal time to own'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -3161,7 +3161,7 @@ JAVASCRIPT;
             'table'              => 'glpi_olas',
             'field'              => 'name',
             'linkfield'          => 'olas_id_ttr',
-            'name'               => __('OLA') . "&nbsp;" . __('Internal time to resolve'),
+            'name'               => __('OLA') . ' ' . __('Internal time to resolve'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -3174,7 +3174,7 @@ JAVASCRIPT;
             'id'                 => '192',
             'table'              => 'glpi_olalevels',
             'field'              => 'name',
-            'name'               => __('OLA') . "&nbsp;" . _n('Escalation level', 'Escalation levels', 1),
+            'name'               => __('OLA') . ' ' . _n('Escalation level', 'Escalation levels', 1),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [

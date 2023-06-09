@@ -230,7 +230,7 @@ class Auth extends CommonGLPI
             );
 
             return $protocol->login($login, $pass);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->addToError($e->getMessage());
             return false;
         } finally {
@@ -291,23 +291,40 @@ class Auth extends CommonGLPI
 
             $dn = $infos['dn'];
             $this->user_found = $dn != '';
-            if ($this->user_found && @ldap_bind($this->ldap_connection, $dn, $password)) {
-               //Hook to implement to restrict access by checking the ldap directory
+
+            if ($this->user_found) {
+                $bind_result = @ldap_bind($this->ldap_connection, $dn, $password);
+
+                if ($bind_result === false) {
+                    $this->addToError(
+                        AuthLDAP::buildError(
+                            $this->ldap_connection,
+                            sprintf(
+                                'Unable to bind `%s`',
+                                $dn
+                            )
+                        )
+                    );
+                }
+            }
+
+            if ($this->user_found && $bind_result !== false) {
+                //Hook to implement to restrict access by checking the ldap directory
                 if (Plugin::doHookFunction(Hooks::RESTRICT_LDAP_AUTH, $infos)) {
                     return $infos;
                 }
                 $this->addToError(__('User not authorized to connect in GLPI'));
-               //Use is present by has no right to connect because of a plugin
+                //Use is present by has no right to connect because of a plugin
                 return false;
             } else {
-               // Incorrect login
+                // Incorrect login
                 $this->addToError(__('Incorrect username or password'));
-               //Use is not present anymore in the directory!
+                //Use is not present anymore in the directory!
                 return false;
             }
         } else {
             $this->addToError(__('Unable to connect to the LDAP directory'));
-           //Directory is not available
+            //Directory is not available
             return false;
         }
     }

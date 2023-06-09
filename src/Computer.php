@@ -76,7 +76,8 @@ class Computer extends CommonDBTM
             Computer_Item::class,
             Notepad::class,
             KnowbaseItem_Item::class,
-            Item_RemoteManagement::class
+            Item_RemoteManagement::class,
+            ComputerAntivirus::class
         ];
     }
 
