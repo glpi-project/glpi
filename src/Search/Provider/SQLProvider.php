@@ -40,6 +40,7 @@ use CommonDBTM;
 use CommonITILObject;
 use DBmysqlIterator;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Debug\Profiler;
 use Glpi\RichText\RichText;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
@@ -3442,6 +3443,7 @@ final class SQLProvider implements SearchProviderInterface
             return false;
         }
 
+        Profiler::getInstance()->start('SQLProvider::constructSQL', Profiler::CATEGORY_SEARCH);
         $data['sql']['count']  = [];
         $data['sql']['search'] = '';
         $data['sql']['raw']    = [];
@@ -3853,6 +3855,7 @@ final class SQLProvider implements SearchProviderInterface
             }
             if (empty($QUERY)) {
                 echo \Search::showError($data['display_type']);
+                Profiler::getInstance()->stop('SQLProvider::constructSQL');
                 return;
             }
             $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']] . ".", "", $ORDER) .
@@ -3876,6 +3879,7 @@ final class SQLProvider implements SearchProviderInterface
                 $LIMIT;
         }
         $data['sql']['search'] = $QUERY;
+        Profiler::getInstance()->stop('SQLProvider::constructSQL');
     }
 
     /**
@@ -4178,6 +4182,7 @@ final class SQLProvider implements SearchProviderInterface
         }
         $data['data'] = [];
 
+        Profiler::getInstance()->start('SQLProvider::constructData', Profiler::CATEGORY_SEARCH);
         // Use a ReadOnly connection if available and configured to be used
         $DBread = \DBConnection::getReadConnection();
         $DBread->doQuery("SET SESSION group_concat_max_len = 8194304;");
@@ -4216,6 +4221,7 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             if ($onlycount) {
+                Profiler::getInstance()->stop('SQLProvider::constructData');
                 //we just want to coutn results; no need to continue process
                 return;
             }
@@ -4252,7 +4258,9 @@ final class SQLProvider implements SearchProviderInterface
             // Get columns
             $data['data']['cols'] = [];
 
+            Profiler::getInstance()->start('SQLProvider::constructData - get options for main itemtype', Profiler::CATEGORY_SEARCH);
             $searchopt = SearchOption::getOptionsForItemtype($data['itemtype']);
+            Profiler::getInstance()->stop('SQLProvider::constructData - get options for main itemtype');
 
             foreach ($data['toview'] as $opt_id) {
                 $data['data']['cols'][] = [
@@ -4264,6 +4272,7 @@ final class SQLProvider implements SearchProviderInterface
                 ];
             }
 
+            Profiler::getInstance()->start('SQLProvider::constructData - get options for meta toview cols', Profiler::CATEGORY_SEARCH);
             // manage toview column for criteria with meta flag
             foreach ($data['meta_toview'] as $m_itemtype => $toview) {
                 $m_searchopt = SearchOption::getOptionsForItemtype($m_itemtype);
@@ -4278,10 +4287,12 @@ final class SQLProvider implements SearchProviderInterface
                     ];
                 }
             }
+            Profiler::getInstance()->stop('SQLProvider::constructData - get options for meta toview cols');
 
             // Display columns Headers for meta items
             $already_printed = [];
 
+            Profiler::getInstance()->start('SQLProvider::constructData - get options for meta criteria');
             if (count($data['search']['metacriteria'])) {
                 foreach ($data['search']['metacriteria'] as $metacriteria) {
                     if (
@@ -4305,6 +4316,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                 }
             }
+            Profiler::getInstance()->stop('SQLProvider::constructData - get options for meta criteria');
 
             // search group (corresponding of dropdown optgroup) of current col
             foreach ($data['data']['cols'] as $num => $col) {
@@ -4352,6 +4364,8 @@ final class SQLProvider implements SearchProviderInterface
 
             \Search::$output_type = $data['display_type'];
 
+            Profiler::getInstance()->start('SQLProvider::constructData - giveItem', Profiler::CATEGORY_SEARCH);
+            Profiler::getInstance()->pause('SQLProvider::constructData - giveItem');
             while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
                 $row = $DBread->fetchAssoc($result);
 
@@ -4432,16 +4446,19 @@ final class SQLProvider implements SearchProviderInterface
                     }
                 }
                 foreach ($data['data']['cols'] as $val) {
+                    Profiler::getInstance()->resume('SQLProvider::constructData - giveItem');
                     $newrow[$val['itemtype'] . '_' . $val['id']]['displayname'] = self::giveItem(
                         $val['itemtype'],
                         $val['id'],
                         $newrow
                     );
+                    Profiler::getInstance()->pause('SQLProvider::constructData - giveItem');
                 }
 
                 $data['data']['rows'][$i] = $newrow;
                 $i++;
             }
+            Profiler::getInstance()->stop('SQLProvider::constructData - giveItem');
 
             $data['data']['count'] = count($data['data']['rows']);
         } else {
@@ -4457,6 +4474,7 @@ final class SQLProvider implements SearchProviderInterface
                 echo $DBread->error();
             }
         }
+        Profiler::getInstance()->stop('SQLProvider::constructData');
     }
 
     /**

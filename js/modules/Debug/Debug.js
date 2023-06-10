@@ -719,6 +719,7 @@ window.GLPI.Debug = new class Debug {
             db: '#9252ad',
             twig: '#64ad52',
             plugins: '#a077a6',
+            search: '#b6803d',
         };
         let bg_color = '';
         if (predefined_colors[category] !== undefined) {
@@ -768,7 +769,7 @@ window.GLPI.Debug = new class Debug {
 
         top_level_sections.forEach((section) => {
             const cat_colors = this.getProfilerCategoryColor(section.category);
-            const duration = section.end - section.start;
+            const duration = section.duration || (section.end - section.start);
 
             let percent_of_parent = 100;
             if (nest_level > 0) {
