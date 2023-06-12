@@ -1502,7 +1502,7 @@ class AuthLDAP extends DbTestCase
         )
             ->error()
                 ->withType(E_USER_WARNING)
-                ->withMessage("Unable to bind with login `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)")
+                ->withMessage("Unable to bind to LDAP server `server-does-not-exists.org:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)")
             ->exists();
 
         //reset directory configuration
@@ -1685,6 +1685,9 @@ class AuthLDAP extends DbTestCase
         ]);
     }
 
+    /**
+     * @extensions ldap
+     */
     public function testSyncLongDN()
     {
         $ldap = $this->ldap;
@@ -1811,6 +1814,9 @@ class AuthLDAP extends DbTestCase
         )->isTrue();
     }
 
+    /**
+     * @extensions ldap
+     */
     public function testSyncLongDNiCyrillic()
     {
         $ldap = $this->ldap;
@@ -1945,6 +1951,8 @@ class AuthLDAP extends DbTestCase
 
     /**
      * @dataProvider testSyncWithManagerProvider
+     *
+     * @extensions ldap
      */
     public function testSyncWithManager($manager_dn, array $manager_entry)
     {
@@ -2126,6 +2134,9 @@ class AuthLDAP extends DbTestCase
         $this->array($gus)->hasSize(1);
     }
 
+    /**
+     * @extensions ldap
+     */
     public function testLdapUnavailable()
     {
         //Import user that doesn't exist yet
@@ -2210,5 +2221,440 @@ class AuthLDAP extends DbTestCase
             'name' => 'manager',
         ]);
         $this->array($uts)->hasSize(0);
+    }
+
+    protected function connectToServerErrorsProvider(): iterable
+    {
+        yield [
+            'host'     => 'invalidserver',
+            'port'     => '3890',
+            'login'    => '',
+            'password' => '',
+            'error'    => implode(
+                "\n",
+                [
+                    'Unable to bind to LDAP server `invalidserver:3890` anonymously',
+                    'error: Can\'t contact LDAP server (-1)',
+                ]
+            ),
+        ];
+
+        yield [
+            'host'     => 'openldap',
+            'port'     => '12345',
+            'login'    => '',
+            'password' => '',
+            'error'    => implode(
+                "\n",
+                [
+                    'Unable to bind to LDAP server `openldap:12345` anonymously',
+                    'error: Can\'t contact LDAP server (-1)',
+                ]
+            ),
+        ];
+
+        yield [
+            'host'     => 'openldap',
+            'port'     => '3890',
+            'login'    => 'notavalidrdn',
+            'password' => '',
+            'error'    => implode(
+                "\n",
+                [
+                    'Unable to bind to LDAP server `openldap:3890` with RDN `notavalidrdn`',
+                    'error: Invalid DN syntax (34)',
+                    'extended error: invalid DN',
+                    'err string: invalid DN',
+                ]
+            ),
+        ];
+
+        yield [
+            'host'     => 'openldap',
+            'port'     => '3890',
+            'login'    => 'cn=Manager,dc=glpi,dc=org',
+            'password' => 'wrongpassword',
+            'error'    => implode(
+                "\n",
+                [
+                    'Unable to bind to LDAP server `openldap:3890` with RDN `cn=Manager,dc=glpi,dc=org`',
+                    'error: Invalid credentials (49)',
+                ]
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider connectToServerErrorsProvider
+     *
+     * @extensions ldap
+     */
+    public function testConnectToServerErrorMessage(
+        string $host,
+        string $port,
+        string $login,
+        string $password,
+        string $error
+    ) {
+        $this->when(
+            function () use ($host, $port, $login, $password) {
+                \AuthLDAP::connectToServer($host, $port, $login, $password);
+            }
+        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+    }
+
+    /**
+     * @extensions ldap
+     */
+    public function testConnectToServerTlsError()
+    {
+        $error = implode(
+            "\n",
+            [
+                'Unable to start TLS connection to LDAP server `openldap:3890`',
+                'error: Protocol error (2)',
+                'extended error: unsupported extended operation',
+                'err string: unsupported extended operation',
+            ]
+        );
+
+        $this->when(
+            function () {
+                \AuthLDAP::connectToServer(
+                    'openldap',
+                    '3890',
+                    'cn=Manager,dc=glpi,dc=org',
+                    'insecure',
+                    true,
+                );
+            }
+        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+    }
+
+    /**
+     * @extensions ldap
+     */
+    public function testGetGroupCNByDnError()
+    {
+
+        $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
+        $connection = $ldap->connect();
+        $this->checkLdapConnection($connection);
+
+        $error = implode(
+            "\n",
+            [
+                'Unable to get LDAP group having DN `notavaliddn`',
+                'error: Invalid DN syntax (34)',
+                'extended error: invalid DN',
+                'err string: invalid DN',
+            ]
+        );
+
+        $this->when(
+            function () use ($connection) {
+                \AuthLDAP::getGroupCNByDn($connection, 'notavaliddn');
+            }
+        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+    }
+
+
+    protected function getObjectGroupByDnErrorsProvider(): iterable
+    {
+        // invalid base DN
+        yield [
+            'basedn' => 'notavalidbasedn',
+            'filter' => '(objectclass=inetOrgPerson)',
+            'error'  => implode(
+                "\n",
+                [
+                    'Unable to get LDAP object having DN `notavalidbasedn` with filter `(objectclass=inetOrgPerson)`',
+                    'error: Invalid DN syntax (34)',
+                    'extended error: invalid DN',
+                    'err string: invalid DN',
+                ]
+            ),
+        ];
+
+        // invalid filter
+        yield [
+            'basedn' => 'dc=glpi,dc=org',
+            'filter' => 'notavalidfilter',
+            'error'  => implode(
+                "\n",
+                [
+                    'Unable to get LDAP object having DN `dc=glpi,dc=org` with filter `notavalidfilter`',
+                    'error: Bad search filter (-7)',
+                ]
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider getObjectGroupByDnErrorsProvider
+     *
+     * @extensions ldap
+     */
+    public function testGetObjectGroupByDnError(
+        string $basedn,
+        string $filter,
+        string $error
+    ) {
+        $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
+        $connection = $ldap->connect();
+        $this->checkLdapConnection($connection);
+
+        $this->when(
+            function () use ($connection, $basedn, $filter) {
+                \AuthLDAP::getObjectByDn($connection, $filter, $basedn, ['dn']);
+            }
+        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+    }
+
+    protected function searchForUsersErrorsProvider(): iterable
+    {
+        // error messages should be identical whether pagesize support is enabled or not
+        $configs = [
+            [
+                'can_support_pagesize' => 0,
+            ],
+            [
+                'can_support_pagesize' => 1,
+                'pagesize'             => 100,
+            ],
+        ];
+        foreach ($configs as $config_fields) {
+            // invalid base DN
+            yield [
+                'config_fields' => $config_fields,
+                'basedn'        => 'notavalidbasedn',
+                'filter'        => '(objectclass=inetOrgPerson)',
+                'error'         => implode(
+                    "\n",
+                    [
+                        'LDAP search with base DN `notavalidbasedn` and filter `(objectclass=inetOrgPerson)` failed',
+                        'error: Invalid DN syntax (34)',
+                        'extended error: invalid DN',
+                        'err string: invalid DN',
+                    ]
+                ),
+            ];
+
+            // invalid filter
+            yield [
+                'config_fields' => $config_fields,
+                'basedn'        => 'dc=glpi,dc=org',
+                'filter'        => 'notavalidfilter',
+                'error'         => implode(
+                    "\n",
+                    [
+                        'LDAP search with base DN `dc=glpi,dc=org` and filter `notavalidfilter` failed',
+                        'error: Bad search filter (-7)',
+                    ]
+                ),
+            ];
+        }
+
+        // invalid pagesize
+        yield [
+            'config_fields' => [
+                'can_support_pagesize' => 1,
+                'pagesize'             => 0,
+            ],
+            'basedn'        => 'dc=glpi,dc=org',
+            'filter'        => '(objectclass=inetOrgPerson)',
+            'error'         => implode(
+                "\n",
+                [
+                    'LDAP search with base DN `dc=glpi,dc=org` and filter `(objectclass=inetOrgPerson)` failed',
+                    'error: Bad parameter to an ldap routine (-9)',
+                ]
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider searchForUsersErrorsProvider
+     *
+     * @extensions ldap
+     */
+    public function testSearchForUsersErrorMessages(
+        array $config_fields,
+        string $basedn,
+        string $filter,
+        string $error
+    ) {
+        $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
+        $ldap->fields = array_merge($ldap->fields, $config_fields);
+
+        $connection = $ldap->connect();
+        $this->checkLdapConnection($connection);
+
+        $this->when(
+            function () use ($ldap, $connection, $basedn, $filter) {
+                $limitexceeded = $user_infos = $ldap_users = null;
+
+                \AuthLDAP::searchForUsers(
+                    $connection,
+                    ['basedn' => $basedn],
+                    $filter,
+                    ['dn'],
+                    $limitexceeded,
+                    $user_infos,
+                    $ldap_users,
+                    $ldap
+                );
+            }
+        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+    }
+
+    protected function searchUserDnErrorsProvider(): iterable
+    {
+        // invalid base DN
+        yield [
+            'options' => [
+                'basedn'    => 'notavalidbasedn',
+            ],
+            'error'         => implode(
+                "\n",
+                [
+                    'LDAP search with base DN `notavalidbasedn` and filter `(uid=johndoe)` failed',
+                    'error: Invalid DN syntax (34)',
+                    'extended error: invalid DN',
+                    'err string: invalid DN',
+                ]
+            ),
+        ];
+
+        // invalid filter
+        yield [
+            'options' => [
+                'basedn'    => 'dc=glpi,dc=org',
+                'condition' => 'invalidfilter)',
+            ],
+            'error'         => implode(
+                "\n",
+                [
+                    'LDAP search with base DN `dc=glpi,dc=org` and filter `(& (uid=johndoe) invalidfilter))` failed',
+                    'error: Bad search filter (-7)',
+                ]
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider searchUserDnErrorsProvider
+     *
+     * @extensions ldap
+     */
+    public function testSearchUserDnErrorMessages(
+        array $options,
+        string $error
+    ) {
+        $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
+        $connection = $ldap->connect();
+        $this->checkLdapConnection($connection);
+
+        $this->when(
+            function () use ($connection, $options) {
+                \AuthLDAP::searchUserDn(
+                    $connection,
+                    $options + [
+                        'login_field'       => 'uid',
+                        'search_parameters' => ['fields' => ['login' => 'uid']],
+                        'user_params'       => ['value'  => 'johndoe'],
+                    ]
+                );
+            }
+        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+    }
+
+    protected function getGroupsFromLDAPErrorsProvider(): iterable
+    {
+        // error messages should be identical whether pagesize support is enabled or not
+        $configs = [
+            [
+                'can_support_pagesize' => 0,
+            ],
+            [
+                'can_support_pagesize' => 1,
+                'pagesize'             => 100,
+            ],
+        ];
+        foreach ($configs as $config_fields) {
+            // invalid base DN
+            yield [
+                'config_fields' => $config_fields + ['basedn' => 'notavalidbasedn'],
+                'filter'        => '(objectclass=inetOrgPerson)',
+                'error'         => implode(
+                    "\n",
+                    [
+                        'LDAP search with base DN `notavalidbasedn` and filter `(objectclass=inetOrgPerson)` failed',
+                        'error: Invalid DN syntax (34)',
+                        'extended error: invalid DN',
+                        'err string: invalid DN',
+                    ]
+                ),
+            ];
+
+            // invalid filter
+            yield [
+                'config_fields' => $config_fields,
+                'filter'        => 'notavalidfilter',
+                'error'         => implode(
+                    "\n",
+                    [
+                        'LDAP search with base DN `dc=glpi,dc=org` and filter `notavalidfilter` failed',
+                        'error: Bad search filter (-7)',
+                    ]
+                ),
+            ];
+        }
+
+        // invalid pagesize
+        yield [
+            'config_fields' => [
+                'can_support_pagesize' => 1,
+                'pagesize'             => 0,
+            ],
+            'filter'        => '(objectclass=groupOfNames)',
+            'error'         => implode(
+                "\n",
+                [
+                    'LDAP search with base DN `dc=glpi,dc=org` and filter `(objectclass=groupOfNames)` failed',
+                    'error: Bad parameter to an ldap routine (-9)',
+                ]
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider getGroupsFromLDAPErrorsProvider
+     *
+     * @extensions ldap
+     */
+    public function testGetGroupsFromLDAPErrors(
+        array $config_fields,
+        string $filter,
+        string $error
+    ) {
+        $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
+        $ldap->fields = array_merge($ldap->fields, $config_fields);
+
+        $connection = $ldap->connect();
+        $this->checkLdapConnection($connection);
+
+        $this->when(
+            function () use ($ldap, $connection, $filter) {
+                $limitexceeded = null;
+
+                \AuthLDAP::getGroupsFromLDAP(
+                    $connection,
+                    $ldap,
+                    $filter,
+                    $limitexceeded
+                );
+            }
+        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
     }
 }

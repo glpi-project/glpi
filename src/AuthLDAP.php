@@ -1914,7 +1914,7 @@ class AuthLDAP extends CommonDBTM
                         trigger_error(
                             static::buildError(
                                 $ds,
-                                'LDAP search failed'
+                                sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
                             ),
                             E_USER_WARNING
                         );
@@ -1934,7 +1934,7 @@ class AuthLDAP extends CommonDBTM
                         trigger_error(
                             static::buildError(
                                 $ds,
-                                'LDAP search failed'
+                                sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
                             ),
                             E_USER_WARNING
                         );
@@ -2546,7 +2546,7 @@ class AuthLDAP extends CommonDBTM
                     static::buildError(
                         $ldap_connection,
                         sprintf(
-                            "Unable to get Group from DN `%s`",
+                            'Unable to get LDAP group having DN `%s`',
                             $group_dn
                         )
                     ),
@@ -2625,7 +2625,7 @@ class AuthLDAP extends CommonDBTM
                         trigger_error(
                             static::buildError(
                                 $ldap_connection,
-                                'LDAP search failed'
+                                sprintf('LDAP search with base DN `%s` and filter `%s` failed', $config_ldap->fields['basedn'], $filter)
                             ),
                             E_USER_WARNING
                         );
@@ -2645,7 +2645,7 @@ class AuthLDAP extends CommonDBTM
                         trigger_error(
                             static::buildError(
                                 $ldap_connection,
-                                'LDAP search failed'
+                                sprintf('LDAP search with base DN `%s` and filter `%s` failed', $config_ldap->fields['basedn'], $filter)
                             ),
                             E_USER_WARNING
                         );
@@ -3112,7 +3112,7 @@ class AuthLDAP extends CommonDBTM
                     static::buildError(
                         $ds,
                         sprintf(
-                            "Unable to start TLS connection to LDAP server %s:%s",
+                            "Unable to start TLS connection to LDAP server `%s:%s`",
                             $host,
                             $port
                         )
@@ -3127,10 +3127,11 @@ class AuthLDAP extends CommonDBTM
             return true;
         }
 
-        // Auth bind
         if ($login != '') {
+            // Auth bind
             $b = @ldap_bind($ds, $login, $password);
-        } else { // Anonymous bind
+        } else {
+            // Anonymous bind
             $b = @ldap_bind($ds);
         }
         if ($b === false) {
@@ -3138,8 +3139,10 @@ class AuthLDAP extends CommonDBTM
                 static::buildError(
                     $ds,
                     sprintf(
-                        "Unable to bind%s",
-                        ($login != '' ? " with login `$login`" : ' anonymously')
+                        "Unable to bind to LDAP server `%s:%s` %s",
+                        $host,
+                        $port,
+                        ($login != '' ? "with RDN `$login`" : 'anonymously')
                     )
                 ),
                 E_USER_WARNING
@@ -3494,15 +3497,15 @@ class AuthLDAP extends CommonDBTM
         $sync_attr       = (isset($values['search_parameters']['fields']['sync_field'])) ?
          $values['search_parameters']['fields']['sync_field'] : null;
 
-        $ldap_parameters = ["dn"];
-        foreach ($values['search_parameters']['fields'] as $parameter) {
-            $ldap_parameters[] = $parameter;
+        $attrs = ["dn"];
+        foreach ($values['search_parameters']['fields'] as $attr) {
+            $attrs[] = $attr;
         }
 
        //First : if a user dn is provided, look for it in the directory
        //Before trying to find the user using his login_field
         if ($values['user_dn']) {
-            $info = self::getUserByDn($ds, $values['user_dn'], $ldap_parameters);
+            $info = self::getUserByDn($ds, $values['user_dn'], $attrs);
 
             if ($info) {
                 $ret = [
@@ -3527,14 +3530,14 @@ class AuthLDAP extends CommonDBTM
             $filter = "(& $filter " . Sanitizer::unsanitize($values['condition']) . ")";
         }
 
-        $result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters);
+        $result = @ldap_search($ds, $values['basedn'], $filter, $attrs);
         if ($result === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {
                 trigger_error(
                     static::buildError(
                         $ds,
-                        'LDAP search failed'
+                        sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
                     ),
                     E_USER_WARNING
                 );
@@ -3583,11 +3586,9 @@ class AuthLDAP extends CommonDBTM
                 trigger_error(
                     static::buildError(
                         $ds,
-                        sprintf(
-                            'Error reading LDAP directory for DN %s',
-                            $dn
-                        )
-                    )
+                        sprintf('Unable to get LDAP object having DN `%s` with filter `%s`', $dn, $condition)
+                    ),
+                    E_USER_WARNING
                 );
             }
             return false;
