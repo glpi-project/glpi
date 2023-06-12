@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 global $DB;
 
 //move criteria 'os_name' to 'name' for 'RuleDictionnaryOperatingSystem'
