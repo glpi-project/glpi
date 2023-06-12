@@ -1658,12 +1658,7 @@ class User extends CommonDBTM
                     trigger_error(
                         AuthLDAP::buildError(
                             $ldap_connection,
-                            sprintf(
-                                'Unable to read LDAP groups for user `%s` with filter `%s` and attributes `%s`',
-                                $userdn,
-                                "objectClass=*",
-                                implode('`, `', $group_fields)
-                            )
+                            sprintf('Unable to get LDAP groups for user having DN `%s` with filter `%s', $userdn, "objectClass=*")
                         ),
                         E_USER_WARNING
                     );
@@ -1834,12 +1829,7 @@ class User extends CommonDBTM
                     trigger_error(
                         AuthLDAP::buildError(
                             $ldap_connection,
-                            sprintf(
-                                'Unable to read LDAP for user `%s` with filter `%s` and attributes `%s`',
-                                $userdn,
-                                "objectClass=*",
-                                implode('`, `', $f)
-                            )
+                            sprintf('Unable to get LDAP user having DN `%s` with filter `%s`', $userdn, "objectClass=*")
                         ),
                         E_USER_WARNING
                     );
@@ -2106,7 +2096,7 @@ class User extends CommonDBTM
                 trigger_error(
                     AuthLDAP::buildError(
                         $ds,
-                        'LDAP search failed'
+                        sprintf('LDAP search with base DN `%s` and filter `%s` failed', $ldap_base_dn, $filter)
                     ),
                     E_USER_WARNING
                 );
