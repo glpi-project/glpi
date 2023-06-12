@@ -1,4 +1,3 @@
-
 <?php
 
 /**
@@ -33,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 global $DB;
 
 //move criteria 'os_name' to 'name' for 'RuleDictionnaryOperatingSystem'
@@ -40,8 +40,6 @@ global $DB;
 //move criteria 'os_edition' to 'name' for 'RuleDictionnaryOperatingSystemEdition'
 //move criteria 'arch_name' to 'name' for 'RuleDictionnaryOperatingSystemArchitecture'
 //move criteria 'servicepack_name' to 'name' for 'RuleDictionnaryOperatingSystemServicePack'
-
-
 
 $subType = [
     'servicepack_name' => 'RuleDictionnaryOperatingSystemServicePack',
@@ -84,4 +82,3 @@ foreach ($result as $data) {
                WHERE `id` = " . $data['criteria_id'];
     $DB->queryOrDie($query, "10.0.6 change crtieria name");
 }
-
