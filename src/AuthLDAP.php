@@ -1893,6 +1893,7 @@ class AuthLDAP extends CommonDBTM
 
         do {
             $filter = Sanitizer::unsanitize($filter);
+            $base_dn = ldap_escape($values['basedn'], '', LDAP_ESCAPE_DN);
             if (self::isLdapPageSizeAvailable($config_ldap)) {
                 $controls = [
                     [
@@ -1904,7 +1905,7 @@ class AuthLDAP extends CommonDBTM
                         ]
                     ]
                 ];
-                $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+                $sr = @ldap_search($ds, $base_dn, $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 if (
                     $sr === false
                     || @ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false
@@ -1927,7 +1928,7 @@ class AuthLDAP extends CommonDBTM
                     $cookie = '';
                 }
             } else {
-                $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
+                $sr = @ldap_search($ds, $base_dn, $filter, $attrs);
                 if ($sr === false) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ds) !== 32) {
@@ -2604,6 +2605,7 @@ class AuthLDAP extends CommonDBTM
         $count  = 0;
         do {
             $filter = Sanitizer::unsanitize($filter);
+            $base_dn = ldap_escape($config_ldap->fields['basedn'], '', LDAP_ESCAPE_DN);
             if (self::isLdapPageSizeAvailable($config_ldap)) {
                 $controls = [
                     [
@@ -2615,7 +2617,7 @@ class AuthLDAP extends CommonDBTM
                         ]
                     ]
                 ];
-                $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+                $sr = @ldap_search($ldap_connection, $base_dn, $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 if (
                     $sr === false
                     || @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false
@@ -2638,7 +2640,7 @@ class AuthLDAP extends CommonDBTM
                     $cookie = '';
                 }
             } else {
-                $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs);
+                $sr = @ldap_search($ldap_connection, $base_dn, $filter, $attrs);
                 if ($sr === false) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ldap_connection) !== 32) {
@@ -3527,7 +3529,12 @@ class AuthLDAP extends CommonDBTM
             $filter = "(& $filter " . Sanitizer::unsanitize($values['condition']) . ")";
         }
 
-        $result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters);
+        $result = @ldap_search(
+            $ds,
+            ldap_escape($values->fields['basedn'], '', LDAP_ESCAPE_DN),
+            $filter,
+            $ldap_parameters
+        );
         if ($result === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {

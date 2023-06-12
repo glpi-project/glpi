@@ -2089,7 +2089,7 @@ class User extends CommonDBTM
         }
 
        //Perform the search
-        $sr = @ldap_search($ds, $ldap_base_dn, $filter, $attrs);
+        $sr = @ldap_search($ds, ldap_escape($ldap_base_dn, '', LDAP_ESCAPE_DN), $filter, $attrs);
 
         if ($sr === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
