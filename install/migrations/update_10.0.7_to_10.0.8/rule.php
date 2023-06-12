@@ -80,5 +80,5 @@ foreach ($result as $data) {
     $query = "UPDATE `glpi_rulecriterias`
                SET `criteria` = 'name'
                WHERE `id` = " . $data['criteria_id'];
-    $DB->queryOrDie($query, "10.0.6 change crtieria name");
+    $DB->queryOrDie($query, "10.0.8 change crtieria name");
 }
