@@ -702,8 +702,9 @@ final class AssetController extends AbstractController
     }
 
     #[Route(
-        path: '/{itemtype}', methods: ['GET'], requirements: ['itemtype' => [self::class, 'getAssetTypes']],
-        tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class]
+        path: '/{itemtype}', methods: ['GET'], requirements: [
+            'itemtype' => [self::class, 'getAssetTypes']
+        ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class]
     )]
     #[Doc\Route(
         description: 'List or search assets of a specific type'
