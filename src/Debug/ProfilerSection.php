@@ -52,8 +52,7 @@ final class ProfilerSection
     private int $end;
 
     /**
-     * @var array Array of start and end times of paises which will be removed from the final duration.
-     * Index 0 will be the start time and index 1 will be the end time.
+     * @var array{start: int, end?: int}[] Array of start and end times of paises which will be removed from the final duration.
      */
     private array $pauses = [];
 
@@ -110,7 +109,8 @@ final class ProfilerSection
 
         // Remove paused time from the total runtime.
         foreach ($this->pauses as $pause) {
-            $duration -= $pause[1] - $pause[0];
+            $pause_end = $pause['end'] ?? $end;
+            $duration -= $pause_end - $pause['start'];
         }
 
         return (int) $duration;
@@ -144,7 +144,7 @@ final class ProfilerSection
     public function pause(): void
     {
         if (!$this->isPaused()) {
-            $this->pauses[] = [microtime(true) * 1000];
+            $this->pauses[] = ['start' => microtime(true) * 1000];
         }
     }
 
@@ -155,7 +155,7 @@ final class ProfilerSection
             return;
         }
         $last_pause = array_key_last($this->pauses);
-        $this->pauses[$last_pause][1] = microtime(true) * 1000;
+        $this->pauses[$last_pause]['end'] = microtime(true) * 1000;
     }
 
     public function isPaused(): bool
