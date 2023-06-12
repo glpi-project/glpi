@@ -234,6 +234,22 @@ class User extends CommonDBTM
         }
     }
 
+    /**
+     * Cache preferences for the current user in session.
+     *
+     * @return void
+     */
+    final public function loadPreferencesInSession(): void
+    {
+        global $CFG_GLPI;
+
+        $this->computePreferences();
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (isset($this->fields[$field])) {
+                $_SESSION["glpi$field"] = $this->fields[$field];
+            }
+        }
+    }
 
     /**
      * Load minimal session for user.
@@ -247,20 +263,13 @@ class User extends CommonDBTM
      */
     public function loadMinimalSession($entities_id, $is_recursive)
     {
-        global $CFG_GLPI;
-
         if (isset($this->fields['id']) && !isset($_SESSION["glpiID"])) {
             Session::destroy();
             Session::start();
             $_SESSION["glpiID"]                      = $this->fields['id'];
             $_SESSION["glpi_use_mode"]               = Session::NORMAL_MODE;
             Session::loadEntity($entities_id, $is_recursive);
-            $this->computePreferences();
-            foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                if (isset($this->fields[$field])) {
-                    $_SESSION["glpi$field"] = $this->fields[$field];
-                }
-            }
+            $this->loadPreferencesInSession();
             Session::loadGroups();
             Session::loadLanguage();
         }
