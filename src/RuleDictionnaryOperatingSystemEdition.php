@@ -49,9 +49,9 @@ class RuleDictionnaryOperatingSystemEdition extends RuleDictionnaryDropdown
             return $criterias;
         }
 
-        $criterias['os_edition']['field'] = 'name';
-        $criterias['os_edition']['name']  = _n('Edition', 'Editions', 1);
-        $criterias['os_edition']['table'] = 'glpi_operatingsystemeditions';
+        $criterias['name']['field'] = 'name';
+        $criterias['name']['name']  = _n('Edition', 'Editions', 1);
+        $criterias['name']['table'] = 'glpi_operatingsystemeditions';
 
         $criterias['os_name']['field'] = 'name';
         $criterias['os_name']['name']  = OperatingSystem::getTypeName(1);
