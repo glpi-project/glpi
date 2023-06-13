@@ -676,7 +676,7 @@ class ReservationItem extends CommonDBChild
             }
 
             // Filter locations if location was provided/submitted
-            if (isset($_POST['locations_id']) && !empty($_POST['locations_id'])) {
+            if ((int)($_POST['locations_id'] ?? 0) > 0) {
                 $criteria['WHERE'][] = [
                     'glpi_locations.id' => getSonsOf('glpi_locations', (int) $_POST['locations_id']),
                 ];
