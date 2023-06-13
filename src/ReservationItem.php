@@ -557,13 +557,11 @@ class ReservationItem extends CommonDBChild
         echo "</td></tr>";
 
         // Location dropdown
-        $user = new User();
-        $user->getFromDB(Session::getLoginUserID());
         $locrand = mt_rand();
         echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . __('Item location') . "</label></td><td>";
         Location::dropdown([
             // Fill with submitted data if any, otherwise use user's location
-            'value'  => $_POST['locations_id'] ?? $user->fields['locations_id'],
+            'value'  => (int)($_POST['locations_id'] ?? User::getById(Session::getLoginUserID())->fields['locations_id'] ?? 0),
             'rand'   => $locrand,
             'entity' => $_SESSION['glpiactiveentities'],
         ]);
