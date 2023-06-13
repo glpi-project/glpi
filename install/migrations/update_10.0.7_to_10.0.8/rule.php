@@ -41,7 +41,7 @@ global $DB;
 //move criteria 'arch_name' to 'name' for 'RuleDictionnaryOperatingSystemArchitecture'
 //move criteria 'servicepack_name' to 'name' for 'RuleDictionnaryOperatingSystemServicePack'
 
-$subType = [
+$sub_types = [
     'servicepack_name' => 'RuleDictionnaryOperatingSystemServicePack',
     'os_edition' => 'RuleDictionnaryOperatingSystemEdition',
     'arch_name' => 'RuleDictionnaryOperatingSystemArchitecture',
@@ -50,35 +50,25 @@ $subType = [
 ];
 
 //Get all glpi_rulecrtiteria with 'name' criteria for OS Dictionnary
-$result = $DB->request(
-    [
-        'SELECT'    => [
-            'glpi_rulecriterias.id AS criteria_id' ,
-            'glpi_rulecriterias.criteria' ,
-            'glpi_rules.sub_type' ,
-        ],
-        'FROM'      => 'glpi_rulecriterias',
-        'LEFT JOIN' => [
-            'glpi_rules' => [
-                'FKEY' => [
-                    'glpi_rulecriterias'   => 'rules_id',
-                    'glpi_rules'            => 'id',
-                    [
-                        'AND' => ['glpi_rules.sub_type' => array_values($subType)],
+foreach ($sub_types as $criteria => $sub_type) {
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_rulecriterias',
+            ['criteria' => 'name'],
+            ['criteria' => $criteria],
+            [
+                'INNER JOIN' => [
+                    'glpi_rules' => [
+                        'FKEY' => [
+                            'glpi_rulecriterias' => 'rules_id',
+                            'glpi_rules' => 'id',
+                            [
+                                'AND' => ['glpi_rules.sub_type' => array_values($sub_type)],
+                            ]
+                        ],
                     ],
-                ]
+                ],
             ]
-        ],
-        'WHERE'     => [
-            'glpi_rulecriterias.criteria'      => array_keys($subType)
-        ],
-    ]
-);
-
-//foreach crierias, change 'name' key to desired
-foreach ($result as $data) {
-    $query = "UPDATE `glpi_rulecriterias`
-               SET `criteria` = 'name'
-               WHERE `id` = " . $data['criteria_id'];
-    $DB->queryOrDie($query, "10.0.8 change crtieria name");
+        )
+    );
 }
