@@ -4039,7 +4039,7 @@ JAVASCRIPT;
                     }
                     return " GROUP_CONCAT(
                         DISTINCT CONCAT(
-                                `$table$addtable`.`$field`, '". self::SHORTSEP .
+                                `$table$addtable` . `$field`, '" . self::SHORTSEP .
                                 "', `glpi_profiles_users$addtable2`.`entities_id`, '" . self::SHORTSEP .
                                 "', `glpi_profiles_users$addtable2`.`is_recursive`, '" . self::SHORTSEP .
                                 "', `glpi_profiles_users$addtable2`.`is_dynamic`) SEPARATOR '" . self::LONGSEP .
@@ -4058,7 +4058,7 @@ JAVASCRIPT;
                     }
                     return " GROUP_CONCAT(
                         DISTINCT CONCAT(
-                                `$table$addtable`.`completename`, '". self::SHORTSEP .
+                                `$table$addtable` . `completename`, '" . self::SHORTSEP .
                                 "', `glpi_profiles_users$addtable2`.`profiles_id`, '" . self::SHORTSEP .
                                 "', `glpi_profiles_users$addtable2`.`is_recursive`, '" . self::SHORTSEP .
                                 "', `glpi_profiles_users$addtable2`.`is_dynamic`) SEPARATOR '" . self::LONGSEP .
