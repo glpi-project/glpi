@@ -566,7 +566,7 @@ class ReservationItem extends CommonDBChild
             // Fill with submitted data if any, otherwise use user's location
             'value'  => $_POST['locations_id'] ?? $user->fields['locations_id'],
             'rand'   => $locrand,
-            'entity' => count($entities) <= 0 ? -1 : $entities,
+            'entity' => $_SESSION['glpiactiveentities'],
         ]);
 
         echo "</td></tr>";
