@@ -63,7 +63,6 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
             'state'     => $new_state,
             'users_id_editor' => Session::getLoginUserID()
         ]);
-        $task->getFromDB(intval($_POST['tasks_id']));
         $new_label = Planning::getState($new_state);
         echo json_encode([
             'state'  => $task->fields['state'],
