@@ -559,7 +559,6 @@ class ReservationItem extends CommonDBChild
         // Location dropdown
         $user = new User();
         $user->getFromDB(Session::getLoginUserID());
-        $entities = Profile_User::getUserEntities($user->fields['id'], true);
         $locrand = mt_rand();
         echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . __('Item location') . "</label></td><td>";
         Location::dropdown([
