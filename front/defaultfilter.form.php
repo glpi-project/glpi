@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRight("defaultfilter", READ);
+Session::checkRight(DefaultFilter::$rightname, READ);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";

@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("defaultfilter", READ);
+Session::checkRight(DefaultFilter::$rightname, READ);
 
 Html::header(
     DefaultFilter::getTypeName(Session::getPluralNumber()),
