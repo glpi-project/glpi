@@ -542,7 +542,7 @@ EOT;
                 } else {
                     throw new \RuntimeException();
                 }
-            } catch (\Exception) {
+            } catch (\Throwable) {
                 $response = new JSONResponse(
                     AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, _x('api', 'Invalid JSON body')),
                     400
