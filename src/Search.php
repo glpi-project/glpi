@@ -1642,7 +1642,19 @@ class Search
                             $handled = false;
                             if ($fieldname != 'content' && is_string($val) && strpos($val, self::SHORTSEP) !== false) {
                                 $split2                    = self::explodeWithID(self::SHORTSEP, $val);
-                                if (is_numeric($split2[1])) {
+                                if ($j == "User_80") {
+                                    $newrow[$j][0][$fieldname] = $split2[0];
+                                    $newrow[$j][0]["profiles_id"] = $split2[1];
+                                    $newrow[$j][0]["is_recursive"] = $split2[2];
+                                    $newrow[$j][0]["is_dynamic"] = $split2[3];
+                                    $handled = true;
+                                } elseif ($j == "User_20") {
+                                    $newrow[$j][0][$fieldname] = $split2[0];
+                                    $newrow[$j][0]["entities_id"] = $split2[1];
+                                    $newrow[$j][0]["is_recursive"] = $split2[2];
+                                    $newrow[$j][0]["is_dynamic"] = $split2[3];
+                                    $handled = true;
+                                } elseif (is_numeric($split2[1])) {
                                     $newrow[$j][0][$fieldname] = $split2[0];
                                     $newrow[$j][0]['id']       = $split2[1];
                                     $handled = true;
@@ -1666,7 +1678,19 @@ class Search
                                 $handled = false;
                                 if (strpos($val2, self::SHORTSEP) !== false) {
                                     $split2                  = self::explodeWithID(self::SHORTSEP, $val2);
-                                    if (is_numeric($split2[1])) {
+                                    if ($j == "User_80") {
+                                        $newrow[$j][$key2][$fieldname] = $split2[0];
+                                        $newrow[$j][$key2]["profiles_id"] = $split2[1];
+                                        $newrow[$j][$key2]["is_recursive"] = $split2[2];
+                                        $newrow[$j][$key2]["is_dynamic"] = $split2[3];
+                                        $handled = true;
+                                    } elseif ($j == "User_20") {
+                                        $newrow[$j][$key2][$fieldname] = $split2[0];
+                                        $newrow[$j][$key2]["entities_id"] = $split2[1];
+                                        $newrow[$j][$key2]["is_recursive"] = $split2[2];
+                                        $newrow[$j][$key2]["is_dynamic"] = $split2[3];
+                                        $handled = true;
+                                    } elseif (is_numeric($split2[1])) {
                                         $newrow[$j][$key2]['id'] = $split2[1];
                                         if ($split2[0] == self::NULLVALUE) {
                                             $newrow[$j][$key2][$fieldname] = null;
@@ -4013,14 +4037,13 @@ JAVASCRIPT;
                     if ($meta) {
                         $addtable2 = "_" . $meta_type;
                     }
-                    return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '" . self::LONGSEP . "') AS `" . $NAME . "`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`entities_id` SEPARATOR '" . self::LONGSEP . "')
-                                    AS `" . $NAME . "_entities_id`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '" . self::LONGSEP . "')
-                                    AS `" . $NAME . "_is_recursive`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '" . self::LONGSEP . "')
-                                    AS `" . $NAME . "_is_dynamic`,
-                        $ADDITONALFIELDS";
+                    return " GROUP_CONCAT(
+                        DISTINCT CONCAT(
+                                `$table$addtable` . `$field`, '" . self::SHORTSEP .
+                                "', `glpi_profiles_users$addtable2`.`entities_id`, '" . self::SHORTSEP .
+                                "', `glpi_profiles_users$addtable2`.`is_recursive`, '" . self::SHORTSEP .
+                                "', `glpi_profiles_users$addtable2`.`is_dynamic`) SEPARATOR '" . self::LONGSEP .
+                        "' ) AS `" . $NAME . "`, $ADDITONALFIELDS";
                 }
                 break;
 
@@ -4033,15 +4056,13 @@ JAVASCRIPT;
                     if ($meta) {
                         $addtable2 = "_" . $meta_type;
                     }
-                    return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '" . self::LONGSEP . "')
-                                    AS `" . $NAME . "`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`profiles_id` SEPARATOR '" . self::LONGSEP . "')
-                                    AS `" . $NAME . "_profiles_id`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '" . self::LONGSEP . "')
-                                    AS `" . $NAME . "_is_recursive`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '" . self::LONGSEP . "')
-                                    AS `" . $NAME . "_is_dynamic`,
-                        $ADDITONALFIELDS";
+                    return " GROUP_CONCAT(
+                        DISTINCT CONCAT(
+                                `$table$addtable` . `completename`, '" . self::SHORTSEP .
+                                "', `glpi_profiles_users$addtable2`.`profiles_id`, '" . self::SHORTSEP .
+                                "', `glpi_profiles_users$addtable2`.`is_recursive`, '" . self::SHORTSEP .
+                                "', `glpi_profiles_users$addtable2`.`is_dynamic`) SEPARATOR '" . self::LONGSEP .
+                        "' ) AS `" . $NAME . "`, $ADDITONALFIELDS";
                 }
                 break;
 
