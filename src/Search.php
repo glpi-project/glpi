@@ -1642,22 +1642,19 @@ class Search
                             $handled = false;
                             if ($fieldname != 'content' && is_string($val) && strpos($val, self::SHORTSEP) !== false) {
                                 $split2                    = self::explodeWithID(self::SHORTSEP, $val);
-                            
                                 if ($j == "User_80") {
                                     $newrow[$j][0][$fieldname] = $split2[0];
                                     $newrow[$j][0]["profiles_id"] = $split2[1];
                                     $newrow[$j][0]["is_recursive"] = $split2[2];
                                     $newrow[$j][0]["is_dynamic"] = $split2[3];
                                     $handled = true;
-                                }
-                                elseif ($j == "User_20") {
+                                } elseif ($j == "User_20") {
                                     $newrow[$j][0][$fieldname] = $split2[0];
                                     $newrow[$j][0]["entities_id"] = $split2[1];
                                     $newrow[$j][0]["is_recursive"] = $split2[2];
                                     $newrow[$j][0]["is_dynamic"] = $split2[3];
                                     $handled = true;
-                                }
-                                elseif (is_numeric($split2[1])) {
+                                } elseif (is_numeric($split2[1])) {
                                     $newrow[$j][0][$fieldname] = $split2[0];
                                     $newrow[$j][0]['id']       = $split2[1];
                                     $handled = true;
@@ -4066,7 +4063,7 @@ JAVASCRIPT;
                                 "', `glpi_profiles_users$addtable2`.`is_recursive`, '" . self::SHORTSEP .
                                 "', `glpi_profiles_users$addtable2`.`is_dynamic`) SEPARATOR '" . self::LONGSEP .
                         "' ) AS `" . $NAME . "`, $ADDITONALFIELDS";
-                    }
+                }
                 break;
 
             case "glpi_auth_tables.name":
