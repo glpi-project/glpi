@@ -352,6 +352,10 @@ HTML;
             $img_tag = $image_match[0];
             $docsrc  = $image_match[1];
             $docid   = $image_match[2];
+
+            // Special chars are encoded in `src` attribute. We decode them to be sure to work with "raw" data.
+            $docsrc  = htmlspecialchars_decode($image_match[1], ENT_QUOTES);
+
             $document = new Document();
             if ($document->getFromDB($docid)) {
                 $docpath = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
@@ -472,17 +476,11 @@ HTML;
             $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
             $width_attr = isset($img['thumbnail_w']) ? "width='{$img['thumbnail_w']}'" : "";
             $height_attr = isset($img['thumbnail_h']) ? "height='{$img['thumbnail_h']}'" : "";
-            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr}>";
+            $out .= "<img src='" . htmlspecialchars($img['thumbnail_src'], ENT_QUOTES) . "' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr}>";
             $out .= "</a>";
             $out .= "</figure>";
         }
         $out .= "</div>";
-
-        // Unsanitize images urls
-        $imgs = array_map(function ($img) {
-            $img['src'] = Sanitizer::decodeHtmlSpecialChars($img['src']);
-            return $img;
-        }, $imgs);
 
         $items_json = json_encode($imgs);
         $dltext = __('Download');
