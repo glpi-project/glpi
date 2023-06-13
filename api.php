@@ -100,7 +100,7 @@ try {
         ),
         400
     );
-} catch (Exception | Error $e) {
+} catch (\Throwable $e) {
     ErrorHandler::getInstance()->handleException($e);
     $response = new Response(500);
     $response->send();

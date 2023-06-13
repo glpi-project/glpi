@@ -535,7 +535,7 @@ HTML;
             return $response;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new Response());
-        } catch (\Exception) {
+        } catch (\Throwable) {
             return new JSONResponse(null, 500);
         }
     }
@@ -552,7 +552,7 @@ HTML;
             return $response;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new JSONResponse());
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             return new JSONResponse(null, 500);
         }
     }

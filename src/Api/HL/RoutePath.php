@@ -151,7 +151,7 @@ final class RoutePath
                     throw new \Exception("RoutePath has no Route attribute");
                 }
                 $this->route = $route_attributes[0]->newInstance();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 trigger_error("Unable to hydrate RoutePath {$this->key}: {$e->getMessage()}", E_USER_ERROR);
             }
             $this->mergeControllerRouteData();

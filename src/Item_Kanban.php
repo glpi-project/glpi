@@ -161,7 +161,7 @@ class Item_Kanban extends CommonDBRelation
                 'itemtype' => $itemtype,
                 'items_id' => $items_id
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return false;
         }
     }
