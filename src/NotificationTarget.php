@@ -412,6 +412,8 @@ class NotificationTarget extends CommonDBChild
         if (!Notification::canView()) {
             return false;
         }
+        $canedit = false;
+
         if ($notification->getField('itemtype') != '') {
             $notifications_id = $notification->fields['id'];
             $canedit = $notification->can($notifications_id, UPDATE);
