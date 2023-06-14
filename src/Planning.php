@@ -941,15 +941,19 @@ class Planning extends CommonGLPI
         $uID = 0;
         $gID = 0;
         $expanded = '';
+        $title = '';
+        $caldav_item_url = '';
         if ($filter_data['type'] == 'user') {
             $uID = $actor[1];
             $user = new User();
             $user->getFromDB($actor[1]);
             $title = $user->getName();
+            $caldav_item_url = self::getCaldavBaseCalendarUrl($user);
         } else if ($filter_data['type'] == 'group_users') {
             $group = new Group();
             $group->getFromDB($actor[1]);
             $title = $group->getName();
+            $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
             $enabled = $disabled = 0;
             foreach ($filter_data['users'] as $user) {
                 if ($user['display']) {
@@ -967,6 +971,7 @@ class Planning extends CommonGLPI
             $group = new Group();
             $group->getFromDB($actor[1]);
             $title = $group->getName();
+            $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
         } else if ($filter_data['type'] == 'external') {
             $title = $filter_data['name'];
         } else if ($filter_data['type'] == 'event_filter') {
@@ -1071,9 +1076,7 @@ class Planning extends CommonGLPI
                  "/front/planningcsv.php?uID=" . $uID . "&gID=" . $gID . "'>" .
                  _sx("button", "Export") . " - " . __("CSV") . "</a></li>";
 
-                $caldav_url = $CFG_GLPI['url_base']
-                . '/caldav.php/'
-                . self::getCaldavBaseCalendarUrl($filter_data['type'] == 'user' ? $user : $group);
+                $caldav_url = $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url;
                 $copy_js = 'copyTextToClipboard("' . $caldav_url . '");'
                 . ' alert("' . __s('CalDAV URL has been copied to clipboard') . '");'
                 . ' return false;';
