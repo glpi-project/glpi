@@ -158,11 +158,11 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     }
 
     /**
-    * @param $data
+    * @param array $data
     *
-    * @return string
+    * @return array
     */
-    public static function prepareBodyValues($data)
+    public static function prepareBodyValues(array $data): array
     {
         global $CFG_GLPI;
 
