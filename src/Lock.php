@@ -867,6 +867,7 @@ class Lock extends CommonGLPI
             $domain = new Domain();
             $domain_relation = new DomainRelation();
 
+            $link = '';
             if ($domain->getFromDB($row['domains_id'])) {
                 $link = $domain->getLink();
             }
