@@ -1470,9 +1470,6 @@ class CommonDBTM extends CommonGLPI
 
         if ($addMessAfterRedirect) {
             $link = $this->getFormURL();
-            if (!isset($link)) {
-                return;
-            }
             if ($this->getName() == NOT_AVAILABLE) {
                //TRANS: %1$s is the itemtype, %2$d is the id of the item
                 $this->fields['name'] = sprintf(
@@ -1912,11 +1909,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            $link = $this->getFormURL();
-            if (!isset($link)) {
-                return;
-            }
-           // Do not display quotes
+            // Do not display quotes
             if (isset($this->fields['name'])) {
                 $this->fields['name'] = stripslashes($this->fields['name']);
             } else {
@@ -2154,10 +2147,6 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            $link = $this->getFormURL();
-            if (!isset($link)) {
-                return;
-            }
             if (isset($this->input['_no_message_link'])) {
                 $display = $this->getNameID();
             } else {
@@ -2198,10 +2187,6 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            $link = $this->getFormURL();
-            if (!isset($link)) {
-                return;
-            }
             if (isset($this->input['_no_message_link'])) {
                 $display = $this->getNameID();
             } else {
@@ -2322,10 +2307,6 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            $link = $this->getFormURL();
-            if (!isset($link)) {
-                return;
-            }
             if (isset($this->input['_no_message_link'])) {
                 $display = $this->getNameID();
             } else {
