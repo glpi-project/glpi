@@ -5524,21 +5524,18 @@ HTML;
                       . ($p['multiple'] ? " multiple='multiple'" : "")
                       . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
 
-        $progressall_js = '';
-        if (!$p['only_uploaded_files']) {
-            $display .= "<div id='progress{$p['rand']}' style='display:none'>" .
-                 "<div class='uploadbar' style='width: 0%;'></div></div>";
-            $progressall_js = "
-            progressall: function(event, data) {
-               var progress = parseInt(data.loaded / data.total * 100, 10);
-               $('#progress{$p['rand']}').show();
-               $('#progress{$p['rand']} .uploadbar')
-                  .text(progress + '%')
-                  .css('width', progress + '%')
-                  .show();
-            },
-         ";
-        }
+        $display .= "<div id='progress{$p['rand']}' style='display:none'>" .
+                "<div class='uploadbar' style='width: 0%;'></div></div>";
+        $progressall_js = "
+        progressall: function(event, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress{$p['rand']}').show();
+            $('#progress{$p['rand']} .uploadbar')
+                .text(progress + '%')
+                .css('width', progress + '%')
+                .show();
+        },
+        ";
 
         $display .= Html::scriptBlock("
       $(function() {
@@ -5589,7 +5586,8 @@ HTML;
                         $('#progress{$p['rand']}').show();
                         $('#progress{$p['rand']} .uploadbar')
                            .text(file.error)
-                           .css('width', '100%');
+                           .css('width', '100%')
+                           .show();
                         return;
                      }
                   }

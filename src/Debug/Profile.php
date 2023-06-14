@@ -94,7 +94,7 @@ final class Profile
                 unset($_SESSION['debug_profiles'][$id]);
             }
             return $profile;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return null;
         }
     }
@@ -210,7 +210,7 @@ final class Profile
             $json = json_encode($info, JSON_THROW_ON_ERROR);
             $gz = gzencode($json, 9);
             $_SESSION['debug_profiles'][$this->id] = $gz;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Ignore
         }
     }

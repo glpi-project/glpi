@@ -261,12 +261,7 @@ class RuleRightCollection extends RuleCollection
                     trigger_error(
                         AuthLDAP::buildError(
                             $params_lower["connection"],
-                            sprintf(
-                                __('Unable to read LDAP directory for user `%s` with filter `%s` and attributes `%s`'),
-                                $params_lower["userdn"],
-                                'objectClass=*',
-                                implode('`, `', $rule_fields)
-                            )
+                            sprintf('Unable to get LDAP user having DN `%s` with filter `%s`', $params_lower["userdn"], 'objectClass=*')
                         ),
                         E_USER_WARNING
                     );

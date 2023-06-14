@@ -76,4 +76,327 @@ class Profile_User extends DbTestCase
         // Can still be purged by calling delete, maybe it should not be possible ?
         $this->boolean((new \Profile_User())->delete(['id' => 2], 1))->isTrue();
     }
+
+    public function testLogOperationOnAddAndDelete(): void
+    {
+        global $DB;
+
+        $user     = getItemByTypeName(\User::class, 'glpi');
+        $profile1 = getItemByTypeName(\Profile::class, 'Self-Service');
+        $profile2 = getItemByTypeName(\Profile::class, 'Observer');
+        $entity1  = getItemByTypeName(\Entity::class, '_test_root_entity');
+        $entity2  = getItemByTypeName(\Entity::class, '_test_child_1');
+
+        // Create items
+        $DB->truncate(\Log::getTable());
+
+        $input1 = [
+            'users_id'     => $user->getId(),
+            'profiles_id'  => $profile1->getId(),
+            'entities_id'  => $entity1->getId(),
+            'is_dynamic'   => 0,
+            'is_recursive' => 0,
+        ];
+        $input2 = [
+            'users_id'     => $user->getId(),
+            'profiles_id'  => $profile1->getId(),
+            'entities_id'  => $entity2->getId(),
+            'is_dynamic'   => 0,
+            'is_recursive' => 1,
+        ];
+        $input3 = [
+            'users_id'     => $user->getId(),
+            'profiles_id'  => $profile2->getId(),
+            'entities_id'  => $entity2->getId(),
+            'is_dynamic'   => 1,
+            'is_recursive' => 1,
+        ];
+        $this->createItems(\Profile_User::class, [$input1, $input2, $input3]);
+
+        // Check created log entries
+        $expected_entries = [
+            // Log entries for first profile
+            [
+                'itemtype'      => \User::class,
+                'items_id'      => $user->getId(),
+                'itemtype_link' => \Profile::class,
+                'linked_action' => \Log::HISTORY_ADD_SUBITEM,
+                'old_value'     => '',
+                'new_value'     => sprintf(
+                    '%s (%s), %s (%s)',
+                    $entity1->fields['completename'],
+                    $entity1->fields['id'],
+                    $profile1->fields['name'],
+                    $profile1->fields['id'],
+                ),
+            ],
+            [
+                'itemtype'      => \Profile::class,
+                'items_id'      => $profile1->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_ADD_SUBITEM,
+                'old_value'     => '',
+                'new_value'     => sprintf(
+                    '%s (%s), %s (%s)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $entity1->fields['completename'],
+                    $entity1->fields['id'],
+                ),
+            ],
+            [
+                'itemtype'      => \Entity::class,
+                'items_id'      => $entity1->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_ADD_SUBITEM,
+                'old_value'     => '',
+                'new_value'     => sprintf(
+                    '%s (%s), %s (%s)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $profile1->fields['name'],
+                    $profile1->fields['id'],
+                ),
+            ],
+            // Log entries for second profile
+            [
+                'itemtype'      => \User::class,
+                'items_id'      => $user->getId(),
+                'itemtype_link' => \Profile::class,
+                'linked_action' => \Log::HISTORY_ADD_SUBITEM,
+                'old_value'     => '',
+                'new_value'     => sprintf(
+                    '%s (%s), %s (%s) (R)',
+                    $entity2->fields['completename'],
+                    $entity2->fields['id'],
+                    $profile1->fields['name'],
+                    $profile1->fields['id'],
+                ),
+            ],
+            [
+                'itemtype'      => \Profile::class,
+                'items_id'      => $profile1->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_ADD_SUBITEM,
+                'old_value'     => '',
+                'new_value'     => sprintf(
+                    '%s (%s), %s (%s) (R)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $entity2->fields['completename'],
+                    $entity2->fields['id'],
+                ),
+            ],
+            [
+                'itemtype'      => \Entity::class,
+                'items_id'      => $entity2->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_ADD_SUBITEM,
+                'old_value'     => '',
+                'new_value'     => sprintf(
+                    '%s (%s), %s (%s) (R)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $profile1->fields['name'],
+                    $profile1->fields['id'],
+                ),
+            ],
+            // Log entries for third profile
+            [
+                'itemtype'      => \User::class,
+                'items_id'      => $user->getId(),
+                'itemtype_link' => \Profile::class,
+                'linked_action' => \Log::HISTORY_ADD_SUBITEM,
+                'old_value'     => '',
+                'new_value'     => sprintf(
+                    '%s (%s), %s (%s) (D, R)',
+                    $entity2->fields['completename'],
+                    $entity2->fields['id'],
+                    $profile2->fields['name'],
+                    $profile2->fields['id'],
+                ),
+            ],
+            [
+                'itemtype'      => \Profile::class,
+                'items_id'      => $profile2->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_ADD_SUBITEM,
+                'old_value'     => '',
+                'new_value'     => sprintf(
+                    '%s (%s), %s (%s) (D, R)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $entity2->fields['completename'],
+                    $entity2->fields['id'],
+                ),
+            ],
+            [
+                'itemtype'      => \Entity::class,
+                'items_id'      => $entity2->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_ADD_SUBITEM,
+                'old_value'     => '',
+                'new_value'     => sprintf(
+                    '%s (%s), %s (%s) (D, R)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $profile2->fields['name'],
+                    $profile2->fields['id'],
+                ),
+            ],
+        ];
+
+        $this->integer(countElementsInTable(\Log::getTable()))->isEqualTo(count($expected_entries));
+
+        foreach ($expected_entries as $expected_entry) {
+            $this->integer(countElementsInTable(\Log::getTable(), $expected_entry))->isEqualTo(1);
+        }
+
+        // Delete items
+        $DB->truncate(\Log::getTable());
+
+        $profile_user = new \Profile_User();
+        $this->boolean($profile_user->deleteByCriteria($input1))->isTrue();
+        $this->boolean($profile_user->deleteByCriteria($input2))->isTrue();
+        $this->boolean($profile_user->deleteByCriteria($input3))->isTrue();
+
+        // Check created log entries
+        $expected_entries = [
+            // Log entries for first profile
+            [
+                'itemtype'      => \User::class,
+                'items_id'      => $user->getId(),
+                'itemtype_link' => \Profile::class,
+                'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
+                'old_value'     => sprintf(
+                    '%s (%s), %s (%s)',
+                    $entity1->fields['completename'],
+                    $entity1->fields['id'],
+                    $profile1->fields['name'],
+                    $profile1->fields['id'],
+                ),
+                'new_value'     => '',
+            ],
+            [
+                'itemtype'      => \Profile::class,
+                'items_id'      => $profile1->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
+                'old_value'     => sprintf(
+                    '%s (%s), %s (%s)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $entity1->fields['completename'],
+                    $entity1->fields['id'],
+                ),
+                'new_value'     => '',
+            ],
+            [
+                'itemtype'      => \Entity::class,
+                'items_id'      => $entity1->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
+                'old_value'     => sprintf(
+                    '%s (%s), %s (%s)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $profile1->fields['name'],
+                    $profile1->fields['id'],
+                ),
+                'new_value'     => '',
+            ],
+            // Log entries for second profile
+            [
+                'itemtype'      => \User::class,
+                'items_id'      => $user->getId(),
+                'itemtype_link' => \Profile::class,
+                'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
+                'old_value'     => sprintf(
+                    '%s (%s), %s (%s) (R)',
+                    $entity2->fields['completename'],
+                    $entity2->fields['id'],
+                    $profile1->fields['name'],
+                    $profile1->fields['id'],
+                ),
+                'new_value'     => '',
+            ],
+            [
+                'itemtype'      => \Profile::class,
+                'items_id'      => $profile1->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
+                'old_value'     => sprintf(
+                    '%s (%s), %s (%s) (R)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $entity2->fields['completename'],
+                    $entity2->fields['id'],
+                ),
+                'new_value'     => '',
+            ],
+            [
+                'itemtype'      => \Entity::class,
+                'items_id'      => $entity2->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
+                'old_value'     => sprintf(
+                    '%s (%s), %s (%s) (R)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $profile1->fields['name'],
+                    $profile1->fields['id'],
+                ),
+                'new_value'     => '',
+            ],
+            // Log entries for third profile
+            [
+                'itemtype'      => \User::class,
+                'items_id'      => $user->getId(),
+                'itemtype_link' => \Profile::class,
+                'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
+                'old_value'     => sprintf(
+                    '%s (%s), %s (%s) (D, R)',
+                    $entity2->fields['completename'],
+                    $entity2->fields['id'],
+                    $profile2->fields['name'],
+                    $profile2->fields['id'],
+                ),
+                'new_value'     => '',
+            ],
+            [
+                'itemtype'      => \Profile::class,
+                'items_id'      => $profile2->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
+                'old_value'     => sprintf(
+                    '%s (%s), %s (%s) (D, R)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $entity2->fields['completename'],
+                    $entity2->fields['id'],
+                ),
+                'new_value'     => '',
+            ],
+            [
+                'itemtype'      => \Entity::class,
+                'items_id'      => $entity2->getId(),
+                'itemtype_link' => \User::class,
+                'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
+                'old_value'     => sprintf(
+                    '%s (%s), %s (%s) (D, R)',
+                    $user->fields['name'],
+                    $user->fields['id'],
+                    $profile2->fields['name'],
+                    $profile2->fields['id'],
+                ),
+                'new_value'     => '',
+            ],
+        ];
+
+        $this->integer(countElementsInTable(\Log::getTable()))->isEqualTo(count($expected_entries));
+
+        foreach ($expected_entries as $expected_entry) {
+            $this->integer(countElementsInTable(\Log::getTable(), $expected_entry))->isEqualTo(1);
+        }
+    }
 }
