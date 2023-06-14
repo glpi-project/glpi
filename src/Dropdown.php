@@ -90,7 +90,7 @@ class Dropdown
     {
         global $CFG_GLPI;
 
-        if ($itemtype && !($item = getItemForItemtype($itemtype))) {
+        if (!($item = getItemForItemtype($itemtype))) {
             return false;
         }
 
