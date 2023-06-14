@@ -4653,17 +4653,16 @@ class AuthLDAP extends CommonDBTM
             return $users;
         }
 
+
+        $sync_field = $config_ldap->isSyncFieldEnabled() ? $config_ldap->fields['sync_field'] : null;
+
         foreach ($ldap_users as $userinfos) {
             $user_to_add = [];
             $user = new User();
 
-            $user_sync_field = null;
-            if ($config_ldap->isSyncFieldEnabled()) {
-                $sync_field = $config_ldap->fields['sync_field'];
-                if (isset($userinfos[$sync_field])) {
-                    $user_sync_field = self::getFieldValue($userinfos, $sync_field);
-                }
-            }
+            $user_sync_field = $config_ldap->isSyncFieldEnabled() && isset($userinfos[$sync_field])
+                ? self::getFieldValue($userinfos, $sync_field)
+                : null;
 
             $user = $config_ldap->getLdapExistingUser(
                 $userinfos['user'],
