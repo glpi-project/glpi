@@ -489,7 +489,8 @@ class Problem extends CommonITILObject
             'field'              => 'impactcontent',
             'name'               => __('Impacts'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -498,7 +499,8 @@ class Problem extends CommonITILObject
             'field'              => 'causecontent',
             'name'               => __('Causes'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -507,7 +509,8 @@ class Problem extends CommonITILObject
             'field'              => 'symptomcontent',
             'name'               => __('Symptoms'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
