@@ -3949,6 +3949,7 @@ JAVASCRIPT;
 
        // Count real items returned
         $count = 0;
+        $logins = [];
         if (count($result)) {
             foreach ($result as $data) {
                 $users[$data["id"]] = formatUserName(
