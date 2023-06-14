@@ -6447,11 +6447,11 @@ JAVASCRIPT;
         // add SLA/OLA (for business rules)
         foreach ([SLM::TTR, SLM::TTO] as $slmType) {
             list($dateField, $slaField) = SLA::getFieldNames($slmType);
-            if (!isset($input[$slaField])) {
+            if (!isset($input[$slaField]) && isset($this->fields[$slaField])) {
                 $input[$slaField] = $this->fields[$slaField];
             }
             list($dateField, $olaField) = OLA::getFieldNames($slmType);
-            if (!isset($input[$olaField])) {
+            if (!isset($input[$olaField]) && isset($this->fields[$olaField])) {
                 $input[$olaField] = $this->fields[$olaField];
             }
         }
