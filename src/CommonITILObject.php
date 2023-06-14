@@ -8397,6 +8397,9 @@ abstract class CommonITILObject extends CommonDBTM
             case 'Supplier':
                 $actor = new $this->supplierlinkclass();
                 break;
+            default:
+                throw new \RuntimeException('Unexpected actor type.');
+                break;
         }
         return $actor;
     }
