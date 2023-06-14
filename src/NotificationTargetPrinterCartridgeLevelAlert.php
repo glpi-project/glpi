@@ -69,7 +69,7 @@ class NotificationTargetPrinterCartridgeLevelAlert extends NotificationTarget
     public function getTags()
     {
         $tags = [
-            'cartridge.printer'        => _n('Printer', 'Printers', Session::getPluralNumber()),
+            'cartridge.printer'        => Printer::getTypeName(Session::getPluralNumber()),
             'cartridge.entity'         => Entity::getTypeName(1),
             'cartridge.item'           => Cartridge::getTypeName(1),
             'cartridge.level'          => __('Level')
