@@ -153,7 +153,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
 
             return $query;
         } else {
-            return "";
+            return [];
         }
     }
 
