@@ -6609,7 +6609,7 @@ HTML;
                     }
 
                     if (isset($firstlvl['default'])) {
-                        if (strlen($menu['title']) > 0) {
+                        if (strlen($firstlvl['title']) > 0) {
                             $fuzzy_entries[] = [
                                 'url'   => $firstlvl['default'],
                                 'title' => $firstlvl['title']
