@@ -4644,6 +4644,8 @@ JAVASCRIPT;
 
         // Special case when searching for an user (need to compare with login, firstname, ...)
         $subquery_specific_username = false;
+        $subquery_specific_username_firstname_real_name = '';
+        $subquery_specific_username_anonymous = '';
 
         // The subquery operator will be "IN" or "NOT IN" depending on the context and criteria
         $subquery_operator = "";
