@@ -131,10 +131,10 @@ abstract class AbstractFilter
         bool $filled = false
     ): string {
 
-         $rand  = mt_rand();
-         $class = $filled ? "filled" : "";
+        $rand  = mt_rand();
+        $class = $filled ? "filled" : "";
 
-         $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
             $(function () {
                 $('#filter-{$rand} input')
                     .on('input', function() {
@@ -155,16 +155,16 @@ abstract class AbstractFilter
                         $('.dashboard .card.filter-{$id}').removeClass('filter-impacted');
                     });
                 });
- JAVASCRIPT;
-         $js = Html::scriptBlock($js);
+JAVASCRIPT;
+        $js = Html::scriptBlock($js);
 
-         $html  = <<<HTML
+        $html  = <<<HTML
             <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
                 $field
                 <legend>$label</legend>
                 <button class="btn btn-sm btn-icon btn-ghost-secondary delete-filter">
                     <i class='ti ti-trash'></i>
-                </button
+                </button>
                 {$js}
             </fieldset>
 HTML;
