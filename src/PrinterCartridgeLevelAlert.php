@@ -190,11 +190,11 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     }
 
     /**
-    * @param $data
+    * @param array $data
     *
     * @return string
     */
-    private static function displayBody($data)
+    private static function displayBody(array $data): string
     {
 
         $tmp = self::prepareBodyValues($data);
