@@ -4732,6 +4732,8 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
+        $value = $values;
+
         if (count($searchoptions)) {
             $field = $searchoptions['field'];
 
@@ -4739,7 +4741,6 @@ class CommonDBTM extends CommonGLPI
             if (is_array($values)) {
                 $value = $values[$field];
             } else {
-                $value  = $values;
                 $values = [$field => $value];
             }
 
@@ -4969,13 +4970,15 @@ class CommonDBTM extends CommonGLPI
                 );
             }
         }
+
+        $value  = $values;
+
         if (count($searchoptions)) {
             $field = $searchoptions['field'];
            // Normalize option
             if (is_array($values)) {
                 $value = $values[$field];
             } else {
-                $value  = $values;
                 $values = [$field => $value];
             }
 
