@@ -1194,11 +1194,11 @@ class Lock extends CommonGLPI
                             "field" => $lock_fields_name,
                             "is_global" => 0
                         ]);
-                    }
-                    if ($res) {
-                        $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_OK);
-                    } else {
-                        $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_KO);
+                        if ($res) {
+                            $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_KO);
+                        }
                     }
                 }
                 return;
