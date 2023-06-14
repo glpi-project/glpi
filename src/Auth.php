@@ -751,6 +751,7 @@ class Auth extends CommonGLPI
 
        // manage the $login_auth (force the auth source of the user account)
         $this->user->fields["auths_id"] = 0;
+        $authtype = null;
         if ($login_auth == 'local') {
             $authtype = self::DB_GLPI;
             $this->user->fields["authtype"] = self::DB_GLPI;
@@ -763,7 +764,9 @@ class Auth extends CommonGLPI
             } else if ($auth_matches['type'] == 'external') {
                 $authtype = self::EXTERNAL;
             }
-            $this->user->fields['authtype'] = $authtype;
+            if ($authtype !== null) {
+                $this->user->fields['authtype'] = $authtype;
+            }
         }
         if (!$noauto && ($authtype = self::checkAlternateAuthSystems())) {
             if (
