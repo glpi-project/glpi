@@ -1024,7 +1024,15 @@ class Infocom extends CommonDBChild
                     $dureedegressif = $duree - $dureelineaire; // calcul de la duree de l'amortissement
                                                         // en mode degressif
                     $mrt            = $va;
-                  // amortissement degressif pour les premieres annees
+
+                    $tab = [
+                        'annee'    => [],
+                        'vcnetdeb' => [],
+                        'vcnetfin' => [],
+                        'annuite'  => [],
+                    ];
+
+                    // amortissement degressif pour les premieres annees
                     for ($i = 1; $i <= $dureedegressif; $i++) {
                         $tab['annee'][$i]    = $date_Y + $i - 1;
                         $tab['vcnetdeb'][$i] = $mrt; // Pour chaque annee on calcule la valeur comptable nette
