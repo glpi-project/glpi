@@ -4538,17 +4538,17 @@ class CommonDBTM extends CommonGLPI
                             $where['NOT'] = [$this->getTable() . '.id' => $this->input['id']];
                         }
 
-                        if (countElementsInTable($this->getTable(), $where) > 0) {
+                        $doubles = getAllDataFromTable($this->getTable(), $where);
+                        if (countElementsInTable($doubles) > 0) {
+                            $message = [];
                             if (
                                 $p['unicity_error_message']
                                 || $p['add_event_on_duplicate']
                             ) {
-                                $message = [];
                                 foreach (explode(',', $fields['fields']) as $field) {
                                     $message[$field] = $this->input[$field];
                                 }
 
-                                $doubles      = getAllDataFromTable($this->getTable(), $where);
                                 $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                                 if ($p['unicity_error_message']) {
                                     if (!$fields['action_refuse']) {
