@@ -95,7 +95,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                     ]
                 ]
             ];
-            if ($repeat) {
+            if ($repeat > 0) {
                 $WHERE[] = [
                     'OR' => [
                         ['a.date' => null],
