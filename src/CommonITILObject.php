@@ -3381,7 +3381,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
 
         $tab = static::getAllStatusArray();
-        if (!isset($current)) {
+        if (!static::isStatusExists($current)) {
             $current = self::INCOMING;
         }
 
