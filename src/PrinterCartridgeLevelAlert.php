@@ -36,8 +36,7 @@
 /**
  *  PrinterCartridgeLevelAlert class
  *
- * @ since version 0.84
- **/
+  **/
 class PrinterCartridgeLevelAlert extends CommonGLPI
 {
     protected static $notable = true;
