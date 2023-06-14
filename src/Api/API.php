@@ -3332,12 +3332,14 @@ abstract class API
 
         if ($results['ok'] == 0 && $results['noaction'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
            // No items were processed, invalid action key -> 400
-            $this->returnError(
+            return $this->returnError(
                 "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
                 400,
                 "ERROR_MASSIVEACTION_KEY"
             );
-        } else if ($results['ok'] > 0 && $results['ko'] == 0) {
+        }
+
+        if ($results['ok'] > 0 && $results['ko'] == 0) {
            // Success -> 200
             $code = 200;
         } else if ($results['ko'] > 0 && $results['ok'] > 0) {
