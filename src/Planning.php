@@ -1682,6 +1682,9 @@ class Planning extends CommonGLPI
                 case "user":
                     $key = isset($item->fields['users_id_tech']) ? "users_id_tech" : "users_id";
                     break;
+                default:
+                    throw new \RuntimeException(sprintf('Unexpected event actor itemtype `%s`.', $event['actor']['itemtype']));
+                    break;
             }
 
             unset(
