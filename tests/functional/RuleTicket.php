@@ -3107,4 +3107,112 @@ class RuleTicket extends DbTestCase
             ['itemtype' => \Ticket::getType(), 'items_id' => $ticket_id]
         ))->isEqualTo(2);
     }
+
+    public function testSLACriterion()
+    {
+        $this->login('glpi', 'glpi');
+
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add($ruletinput = [
+            'name'         => "test rule SLA",
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
+            'is_recursive' => 1
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+        $slm = new \SLM();
+        $slm_id = $slm->add(
+            [
+                'name'         => 'Test SLM',
+                'calendars_id' => 0, //24/24 7/7
+            ]
+        );
+        $this->integer($slm_id)->isGreaterThan(0);
+
+        // prepare sla/ola inputs
+        $sla_in = [
+            'slms_id'         => $slm_id,
+            'name'            => "SLA TTR",
+            'comment'         => $this->getUniqueString(),
+            'type'            => \SLM::TTR,
+            'number_time'     => 4,
+            'definition_time' => 'day',
+        ];
+
+        // add SLA (TTR)
+        $sla    = new \SLA();
+        $slas_id_ttr = $sla->add($sla_in);
+        $this->checkInput($sla, $slas_id_ttr, $sla_in);
+
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'slas_id_ttr',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $slas_id_ttr
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'urgency',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 5
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+        //create new location
+        $location = new \Location();
+        $location_id = $location->add($location_input = [
+            "name" => "location1",
+        ]);
+        $this->checkInput($location, $location_id, $location_input);
+
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'locations_id',
+            'value'       => $location_id
+        ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
+
+        //create ticket to match rule
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add($ticket_input = [
+            'name'              => 'test SLA',
+            'content'           => 'test SLA',
+            'slas_id_ttr'       => $slas_id_ttr,
+            'urgency'           => 5
+        ]);
+        $this->checkInput($ticket, $ticket_id, $ticket_input);
+
+        $this->integer($ticket->fields['locations_id'])->isIdenticalTo($location_id);
+
+        //create ticket to not match rule
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add($ticket_input = [
+            'name'              => 'test SLA',
+            'content'           => 'test SLA',
+            'slas_id_ttr'       => $slas_id_ttr,
+        ]);
+        $this->checkInput($ticket, $ticket_id, $ticket_input);
+
+        $this->integer($ticket->fields['locations_id'])->isIdenticalTo(0);
+
+        //update URGENCY to match rule
+        $this->boolean($ticket->update($ticket_input = [
+            'id'                => $ticket_id,
+            'urgency'           => 5,
+        ]))->isTrue();
+
+        $ticket->getFromDB($ticket_id);
+        $this->checkInput($ticket, $ticket_id, $ticket_input);
+
+        $this->integer($ticket->fields['locations_id'])->isIdenticalTo($location_id);
+    }
 }
