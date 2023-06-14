@@ -1071,7 +1071,7 @@ class Plugin extends CommonDBTM
                 $this->unload($this->fields['directory']);
 
                 Session::addMessageAfterRedirect(
-                    sprintf(__('Plugin configuration must be done, it cannot be activated.') . ' ' . $msg, $this->fields['name']),
+                    sprintf(__('Plugin configuration must be done, it cannot be activated.'), $this->fields['name']),
                     true,
                     ERROR
                 );
