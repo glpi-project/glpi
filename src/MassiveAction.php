@@ -997,6 +997,7 @@ class MassiveAction
                         }
                     }
 
+                    $options = [];
                     if (count($itemtypes) > 1) {
                         $common_options = [];
                         foreach ($options_count as $field => $users) {
