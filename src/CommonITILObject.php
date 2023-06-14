@@ -3373,7 +3373,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @since 0.84 new proto
      *
-     * @param integer $current   status
+     * @param int|null $current   status
      *
      * @return array
      **/
