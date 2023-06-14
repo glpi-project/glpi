@@ -1526,11 +1526,13 @@ class MassiveAction
                     if (Search::isInfocomOption($item->getType(), $index)) {
                         $ic               = new Infocom();
                         $link_entity_type = -1;
+                        $is_recursive     = 0;
                        /// Specific entity item
                         if ($searchopt[$index]["table"] == "glpi_suppliers") {
                              $ent = new Supplier();
                             if ($ent->getFromDB($input[$input["field"]])) {
                                 $link_entity_type = $ent->fields["entities_id"];
+                                $is_recursive     = $ent->fields["is_recursive"];
                             }
                         }
                         foreach ($ids as $key) {
@@ -1538,7 +1540,7 @@ class MassiveAction
                                 if (
                                     ($link_entity_type < 0)
                                     || ($link_entity_type == $item->getEntityID())
-                                    || ($ent->fields["is_recursive"]
+                                    || ($is_recursive
                                     && in_array(
                                         $link_entity_type,
                                         getAncestorsOf(
