@@ -299,15 +299,15 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     /**
      * Cron action on cartridges : alert if a stock is behind the threshold
      *
-     * @param CronTask $task CronTask for log, display information if NULL? (default NULL)
+     * @param CronTask|null $task CronTask for log, display information if NULL? (default NULL)
      *
-     * @return void
+     * @return 0 : nothing to do 1 : done with success
      **/
     public static function cronPrinterCartridgeLevelAlert($task = null)
     {
         global $DB, $CFG_GLPI;
 
-        $cron_status = 1;
+        $cron_status = 0;
         if ($CFG_GLPI["use_notifications"]) {
             $message = [];
             $alert   = new Alert();
@@ -318,7 +318,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                 $message = "";
                 $items   = [];
                 foreach ($result as $cartridge) {
-                    //TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
+                    //TRANS: %1$s is the cartridge name, %2$s is the printer name, %3$d the remaining level
                     //TODO: Manage long messages
                     $message .= sprintf(
                         __('Threshold of cartridge level alarm reached for the cartridge: %1$s on printer %2$s - Remaining %3$d'),
@@ -364,6 +364,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                             $alert->add($input);
                             unset($alert->fields['id']);
                         }
+                        $cron_status = 1;
                     } else {
                      //TRANS: %s is entity name
                         $msg = sprintf(__('%s: send cartridge alert failed'), $entityname);
@@ -377,6 +378,6 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                 }
             }
         }
-        return 0;
+        return $cron_status;
     }
 }
