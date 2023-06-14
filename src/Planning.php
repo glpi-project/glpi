@@ -2593,6 +2593,7 @@ class Planning extends CommonGLPI
                 $vevent['DTSTART'] = $dateBegin;
                 $vevent['DTEND']   = $dateEnd;
 
+                $summary = '';
                 if (isset($val["tickets_id"])) {
                     $summary = sprintf(__('Ticket #%1$s %2$s'), $val["tickets_id"], $val["name"]);
                 } else if (isset($val["name"])) {
@@ -2600,6 +2601,7 @@ class Planning extends CommonGLPI
                 }
                 $vevent['SUMMARY'] = $summary;
 
+                $description = '';
                 if (isset($val["content"])) {
                     $description = $val["content"];
                 } else if (isset($val["text"])) {
