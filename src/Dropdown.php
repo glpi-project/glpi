@@ -1313,6 +1313,7 @@ JAVASCRIPT;
         echo "<label class='col-sm-1 col-form-label'>$title</label>";
         $selected = '';
 
+        $values = [];
         foreach ($optgroup as $label => $dp) {
             foreach ($dp as $key => $val) {
                 $search = $key::getSearchURL();
