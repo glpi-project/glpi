@@ -4741,6 +4741,7 @@ abstract class CommonITILObject extends CommonDBTM
             $params['_user_index'] = $options['_user_index'];
         }
 
+        $paramscomment = [];
         if ($CFG_GLPI['notifications_mailing']) {
             $paramscomment = [
                 'value'            => '__VALUE__',
