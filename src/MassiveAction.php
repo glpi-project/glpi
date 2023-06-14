@@ -936,7 +936,7 @@ class MassiveAction
                 if (!isset($ma->POST['id_field'])) {
                     $itemtypes        = array_keys($ma->items);
                     $options_per_type = [];
-                    $options_counts   = [];
+                    $options_count   = [];
                     foreach ($itemtypes as $itemtype) {
                         $options_per_type[$itemtype] = [];
                         $group                       = '';
