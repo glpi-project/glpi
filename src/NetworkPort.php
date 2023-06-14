@@ -1061,13 +1061,13 @@ class NetworkPort extends CommonDBChild
                             }
 
                             if (!empty($in)) {
-                                $in = Toolbox::getSize($in, 1000);
+                                $in = Toolbox::getSize($in);
                             } else {
                                 $in = ' - ';
                             }
 
                             if (!empty($out)) {
-                                $out = Toolbox::getSize($out, 1000);
+                                $out = Toolbox::getSize($out);
                             } else {
                                 $out = ' - ';
                             }
