@@ -1651,11 +1651,6 @@ class MailCollector extends CommonDBTM
                 }
             }
 
-           // if no filename found, ignore this part
-            if (empty($filename)) {
-                return false;
-            }
-
             $filename = Toolbox::filename($filename);
 
            //try to avoid conflict between inline image and attachment
