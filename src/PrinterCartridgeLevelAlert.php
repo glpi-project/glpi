@@ -70,12 +70,12 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     }
 
     /**
-    * @param $entities
-    *        $repeat for already notified management
+    * @param array $entities
+    * @param int $repeat for already notified management
     *
-    * @return string
+    * @return array
     */
-    private static function query($entities, $repeat = null)
+    private static function query(array $entities, int $repeat = 0): array
     {
         global $DB;
 
