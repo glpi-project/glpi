@@ -158,6 +158,7 @@ class Dropdown
             $params['used'] = array_diff($params['used'], [$params['value']]);
         }
 
+        $names = [];
         if (!$params['multiple'] && isset($params['toadd'][$params['value']])) {
             $name = $params['toadd'][$params['value']];
         } else if (
@@ -171,8 +172,6 @@ class Dropdown
                 $comment = $tmpname["comment"];
             }
         } else if ($params['multiple']) {
-            $names = [];
-
             foreach ($params['values'] as $value) {
                 if (isset($params['toadd'][$value])) {
                     // Specific case, value added by the "toadd" param
