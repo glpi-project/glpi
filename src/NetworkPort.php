@@ -1456,7 +1456,7 @@ class NetworkPort extends CommonDBChild
                 'joinparams' => $joinparams
             ]
         ];
-        NetworkName::rawSearchOptionsToAdd($tab, $networkNameJoin, $itemtype);
+        NetworkName::rawSearchOptionsToAdd($tab, $networkNameJoin);
 
         $instantjoin = ['jointype'   => 'child',
             'beforejoin' => ['table'      => 'glpi_networkports',
