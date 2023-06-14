@@ -4485,6 +4485,7 @@ class CommonDBTM extends CommonGLPI
             } else if (isset($this->fields['entities_id'])) {
                 $entities_id = $this->fields['entities_id'];
             } else {
+                $entities_id = 0;
                 $message = 'Missing entity ID!';
                 trigger_error($message, E_USER_WARNING);
             }
