@@ -557,6 +557,18 @@ class ReservationItem extends CommonDBChild
         ]);
 
         echo "</td></tr>";
+
+        // Location dropdown
+        $locrand = mt_rand();
+        echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . __('Item location') . "</label></td><td>";
+        Location::dropdown([
+            // Fill with submitted data if any, otherwise use user's location
+            'value'  => (int)($_POST['locations_id'] ?? User::getById(Session::getLoginUserID())->fields['locations_id'] ?? 0),
+            'rand'   => $locrand,
+            'entity' => $_SESSION['glpiactiveentities'],
+        ]);
+
+        echo "</td></tr>";
         echo "</table>";
         Html::closeForm();
         echo "</div>";
@@ -660,6 +672,13 @@ class ReservationItem extends CommonDBChild
                     ];
                     $criteria['WHERE'][] = ["$itemtable.peripheraltypes_id" => $tmp[1]];
                 }
+            }
+
+            // Filter locations if location was provided/submitted
+            if ((int)($_POST['locations_id'] ?? 0) > 0) {
+                $criteria['WHERE'][] = [
+                    'glpi_locations.id' => getSonsOf('glpi_locations', (int) $_POST['locations_id']),
+                ];
             }
 
             $iterator = $DB->request($criteria);
