@@ -194,7 +194,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     *
     * @return string
     */
-    private static function displayBody(array $data): string
+    private static function getHtmlBody(array $data): string
     {
 
         $tmp = self::prepareBodyValues($data);
@@ -257,7 +257,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                         echo "</thead>";
 
                         foreach ($result as $data) {
-                            echo self::displayBody($data);
+                            echo self::getHtmlBody($data);
                         }
                         echo "</table>";
                         echo "</div>";
