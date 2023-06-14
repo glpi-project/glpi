@@ -1581,8 +1581,8 @@ final class DbUtils
      *
      * @param integer $ID           ID of the user.
      * @param string  $login        login of the user
-     * @param string  $realname     realname of the user
-     * @param string  $firstname    firstname of the user
+     * @param string|null  $realname     realname of the user
+     * @param string|null  $firstname    firstname of the user
      * @param integer $link         include link (only if $link==1) (default =0)
      * @param integer $cut          limit string length (0 = no limit) (default =0)
      * @param boolean $force_config force order and id_visible to use common config (false by default)
@@ -1629,7 +1629,7 @@ final class DbUtils
 
         if (
             $ID > 0
-            && ((strlen($formatted ?? '') == 0) || $id_visible)
+            && ((strlen($formatted) == 0) || $id_visible)
         ) {
             $formatted = sprintf(__('%1$s (%2$s)'), $formatted, $ID);
         }
