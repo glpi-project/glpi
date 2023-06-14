@@ -208,9 +208,9 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
 
 
     /**
-    *
+    * @return void
     */
-    public static function displayAlerts()
+    public static function displayAlerts(): void
     {
         global $DB;
 
