@@ -47,7 +47,16 @@
          {{ call('Dropdown::getDropdownName', ["glpi_softwares", item.fields['softwares_id']]) }} </a>
       {% endset %}
 
-      {{ fields.field('software', software_link,  _n('Software', 'Softwares', get_plural_number())) }}
+      {{ fields.field(
+         'software',
+         software_link,
+         _n('Software', 'Softwares', get_plural_number()),
+         {
+            'width': '100%',
+            'height': '100%',
+            'input_class' : 'd-flex col-xxl-7 field-container align-items-center'
+         }
+      ) }}
 
    {% else %}
 
