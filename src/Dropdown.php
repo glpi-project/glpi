@@ -3853,6 +3853,7 @@ JAVASCRIPT;
                     $value = $post['max'];
                 }
 
+                $txt = $value;
                 if (isset($post['unit'])) {
                     $decimals = Toolbox::isFloat($value) ? Toolbox::getDecimalNumbers($post['step']) : 0;
                     $txt = Dropdown::getValueWithUnit($value, $post['unit'], $decimals);
