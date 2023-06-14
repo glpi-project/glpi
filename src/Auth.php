@@ -785,6 +785,7 @@ class Auth extends CommonGLPI
                 }
 
                 $ldapservers = [];
+                $ldapservers_status = false;
                //if LDAP enabled too, get user's infos from LDAP
                 if (Toolbox::canUseLdap()) {
                    //User has already authenticated, at least once: it's ldap server if filled
@@ -806,7 +807,6 @@ class Auth extends CommonGLPI
                         }
                     }
 
-                    $ldapservers_status = false;
                     foreach ($ldapservers as $ldap_method) {
                         $ds = AuthLDAP::connectToServer(
                             $ldap_method["host"],
