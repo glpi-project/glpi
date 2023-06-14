@@ -2888,10 +2888,9 @@ JAVASCRIPT;
 
            // Ignore first item for all pages except first page
             $firstitem = (($post['page'] > 1));
+            $firstitem_entity = -1;
+            $prev             = -1;
             if (count($iterator)) {
-                $prev             = -1;
-                $firstitem_entity = -1;
-
                 foreach ($iterator as $data) {
                     $ID    = $data['id'];
                     $level = $data['level'];
