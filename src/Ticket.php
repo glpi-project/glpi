@@ -1250,15 +1250,11 @@ class Ticket extends CommonITILObject
             list($dateField, $slaField) = SLA::getFieldNames($slmType);
             if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
                 $manual_slas_id[$slmType] = $input[$slaField];
-            } elseif (!isset($input[$slaField])) {
-                $input[$slaField] = $this->fields[$slaField];
             }
 
             list($dateField, $olaField) = OLA::getFieldNames($slmType);
             if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
                 $manual_olas_id[$slmType] = $input[$olaField];
-            } elseif (!isset($input[$olaField])) {
-                $input[$olaField] = $this->fields[$olaField];
             }
         }
 
@@ -6446,6 +6442,18 @@ JAVASCRIPT;
         }
         if (count($calendars)) {
             $input['_date_creation_calendars_id'] = $calendars;
+        }
+
+        // add SLA/OLA (for business rules)
+        foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+            list($dateField, $slaField) = SLA::getFieldNames($slmType);
+            if (!isset($input[$slaField])) {
+                $input[$slaField] = $this->fields[$slaField];
+            }
+            list($dateField, $olaField) = OLA::getFieldNames($slmType);
+            if (!isset($input[$olaField])) {
+                $input[$olaField] = $this->fields[$olaField];
+            }
         }
     }
 
