@@ -1458,21 +1458,30 @@ class AuthLDAP extends CommonDBTM
         }
         $config_ldap->getFromDB($_SESSION['ldap_server']);
 
-        $filter_name1 = "condition";
-        $filter_name2 = "condition";
+        $filter_name1 = null;
+        $filter_name2 = null;
         if ($users) {
-            $filter_var = "ldap_filter";
+            $filter_name1 = "condition";
+            $filter_var   = "ldap_filter";
         } else {
             $filter_var = "ldap_group_filter";
             switch ($config_ldap->fields["group_search_type"]) {
+                case self::GROUP_SEARCH_USER:
+                    $filter_name1 = "condition";
+                    break;
+
                 case self::GROUP_SEARCH_GROUP:
+                    $filter_name1 = "group_condition";
+                    break;
+
                 case self::GROUP_SEARCH_BOTH:
                     $filter_name1 = "group_condition";
+                    $filter_name2 = "condition";
                     break;
             }
         }
 
-        if (!isset($_SESSION[$filter_var]) || ($_SESSION[$filter_var] == '')) {
+        if ($filter_name1 !== null && (!isset($_SESSION[$filter_var]) || $_SESSION[$filter_var] == '')) {
             $_SESSION[$filter_var] = Sanitizer::unsanitize($config_ldap->fields[$filter_name1]);
         }
 
@@ -1489,7 +1498,7 @@ class AuthLDAP extends CommonDBTM
             !$users
             && ($config_ldap->fields["group_search_type"] == self::GROUP_SEARCH_BOTH)
         ) {
-            if (!isset($_SESSION["ldap_group_filter2"]) || ($_SESSION["ldap_group_filter2"] == '')) {
+            if ($filter_name2 !== null && (!isset($_SESSION["ldap_group_filter2"]) || $_SESSION["ldap_group_filter2"] == '')) {
                 $_SESSION["ldap_group_filter2"] = Sanitizer::unsanitize($config_ldap->fields[$filter_name2]);
             }
             echo "</td></tr>";
