@@ -1458,23 +1458,16 @@ class AuthLDAP extends CommonDBTM
         }
         $config_ldap->getFromDB($_SESSION['ldap_server']);
 
+        $filter_name1 = "condition";
+        $filter_name2 = "condition";
         if ($users) {
-            $filter_name1 = "condition";
-            $filter_var   = "ldap_filter";
+            $filter_var = "ldap_filter";
         } else {
             $filter_var = "ldap_group_filter";
             switch ($config_ldap->fields["group_search_type"]) {
-                case self::GROUP_SEARCH_USER:
-                    $filter_name1 = "condition";
-                    break;
-
                 case self::GROUP_SEARCH_GROUP:
-                    $filter_name1 = "group_condition";
-                    break;
-
                 case self::GROUP_SEARCH_BOTH:
                     $filter_name1 = "group_condition";
-                    $filter_name2 = "condition";
                     break;
             }
         }
