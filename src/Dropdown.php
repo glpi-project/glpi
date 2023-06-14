@@ -968,6 +968,7 @@ JAVASCRIPT;
      **/
     public static function showYesNo($name, $value = 0, $restrict_to = -1, $params = [])
     {
+        $options = [];
 
         if (!array_key_exists('use_checkbox', $params)) {
            // TODO: switch to true when Html::showCheckbox() is validated
