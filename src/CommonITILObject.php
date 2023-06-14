@@ -193,7 +193,8 @@ abstract class CommonITILObject extends CommonDBTM
                             'text'              => $name,
                             'title'             => $name,
                             'use_notification'  => $email === '' ? false : $default_use_notif,
-                            'alternative_email' => $email,
+                            'default_email'     => $email,
+                            'alternative_email' => '',
                         ];
                     }
                 }
@@ -220,7 +221,8 @@ abstract class CommonITILObject extends CommonDBTM
                             'text'              => $name,
                             'title'             => $name,
                             'use_notification'  => $email === '' ? false : $default_use_notif,
-                            'alternative_email' => $email,
+                            'default_email'     => $email,
+                            'alternative_email' => '',
                         ];
                     }
                 }
@@ -248,7 +250,8 @@ abstract class CommonITILObject extends CommonDBTM
                             'text'              => $supplier_obj->fields['name'],
                             'title'             => $supplier_obj->fields['name'],
                             'use_notification'  => $supplier_obj->fields['email'] === '' ? false : $default_use_notif,
-                            'alternative_email' => $supplier_obj->fields['email'],
+                            'default_email'     => $supplier_obj->fields['email'],
+                            'alternative_email' => '',
                         ];
                     }
                 }
@@ -278,16 +281,23 @@ abstract class CommonITILObject extends CommonDBTM
                                     $actor_obj->fields["realname"],
                                     $actor_obj->fields["firstname"]
                                 );
-                                $completename = $name;
+                                $actors[] = $existing_actor + [
+                                    'text'          => $name,
+                                    'title'         => $name,
+                                    'default_email' => UserEmail::getDefaultForUser($actor_obj->fields["id"]),
+                                ];
+                            } elseif ($actor_obj instanceof Supplier) {
+                                $actors[] = $existing_actor + [
+                                    'text'          => $actor_obj->fields['name'],
+                                    'title'         => $actor_obj->fields['name'],
+                                    'default_email' => $actor_obj->fields['email'],
+                                ];
                             } else {
-                                $name         = $actor_obj->getName();
-                                $completename = $actor_obj->getRawCompleteName();
+                                $actors[] = $existing_actor + [
+                                    'text'  => $actor_obj->getName(),
+                                    'title' => $actor_obj->getRawCompleteName(),
+                                ];
                             }
-
-                            $actors[] = $existing_actor + [
-                                'text'  => $name,
-                                'title' => $completename,
-                            ];
                         } elseif (
                             $actor_obj instanceof User
                             && $existing_actor['items_id'] == 0
@@ -316,6 +326,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'text'              => $name,
                     'title'             => $name,
                     'use_notification'  => $user['use_notification'],
+                    'default_email'     => UserEmail::getDefaultForUser($user['users_id']),
                     'alternative_email' => $user['alternative_email'],
                 ];
             }
@@ -336,16 +347,19 @@ abstract class CommonITILObject extends CommonDBTM
         }
         if (isset($this->suppliers[$actortype])) {
             foreach ($this->suppliers[$actortype] as $supplier) {
-                $name = Dropdown::getDropdownName(Supplier::getTable(), $supplier['suppliers_id']);
-                $actors[] = [
-                    'id'                => $supplier['id'],
-                    'items_id'          => $supplier['suppliers_id'],
-                    'itemtype'          => 'Supplier',
-                    'text'              => $name,
-                    'title'             => $name,
-                    'use_notification'  => $supplier['use_notification'],
-                    'alternative_email' => $supplier['alternative_email'],
-                ];
+                $supplier_obj = new Supplier();
+                if ($supplier_obj->getFromDB($supplier['suppliers_id'])) {
+                    $actors[] = [
+                        'id'                => $supplier['id'],
+                        'items_id'          => $supplier['suppliers_id'],
+                        'itemtype'          => 'Supplier',
+                        'text'              => $supplier_obj->fields['name'],
+                        'title'             => $supplier_obj->fields['name'],
+                        'use_notification'  => $supplier['use_notification'],
+                        'default_email'     => $supplier_obj->fields['email'],
+                        'alternative_email' => $supplier['alternative_email'],
+                    ];
+                }
             }
         }
 

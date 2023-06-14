@@ -4064,7 +4064,8 @@ JAVASCRIPT;
                     'itemtype'          => "User",
                     'items_id'          => $ID,
                     'use_notification'  => strlen($user['default_email'] ?? "") > 0 ? 1 : 0,
-                    'alternative_email' => $user['default_email'],
+                    'default_email'     => $user['default_email'],
+                    'alternative_email' => '',
                 ];
             }
         }
@@ -4128,7 +4129,8 @@ JAVASCRIPT;
                         $children['id']                = "Supplier_" . $children['id'];
                         $children['itemtype']          = "Supplier";
                         $children['use_notification']  = strlen($supplier_obj->fields['email']) > 0 ? 1 : 0;
-                        $children['alternative_email'] = $supplier_obj->fields['email'];
+                        $children['default_email']     = $supplier_obj->fields['email'];
+                        $children['alternative_email'] = '';
                     }
                 }
 
