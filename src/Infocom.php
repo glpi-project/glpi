@@ -1753,7 +1753,7 @@ class Infocom extends CommonDBChild
             return __('Never');
         }
 
-        if (($from == null) || empty($from)) {
+        if (empty($from)) {
             return "";
         }
 
