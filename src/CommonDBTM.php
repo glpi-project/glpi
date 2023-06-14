@@ -5264,9 +5264,6 @@ class CommonDBTM extends CommonGLPI
             if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
                 $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
             }
-            if (Session::isMultiEntitiesMode()) {
-                $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
-            }
             if ($item->canCreate() && !$add) {
                 $modify_params =
                 (strpos($target, '?') ? '&amp;' : '?')
@@ -5278,6 +5275,7 @@ class CommonDBTM extends CommonGLPI
                 echo "<a href=\"$target_modify\">";
                 echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
                 if (Session::isMultiEntitiesMode()) {
+                    $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
                     echo "<td class='tab_bg_1 center'>$entity</td>";
                 }
                 echo "<td class='tab_bg_2 center b'>";
