@@ -47,7 +47,7 @@ class NotificationTargetPrinterCartridgeLevelAlert extends NotificationTarget
     public function addDataForTemplate($event, $options = [])
     {
         $events = $this->getAllEvents();
-        $this->data['##cartridge.action##'] = __($events[$event]);
+        $this->data['##cartridge.action##'] = $events[$event];
         $this->data['##cartridge.entity##'] = Dropdown::getDropdownName("glpi_entities", $options["entities_id"]);
 
         foreach ($options['items'] as $cartridge_id => $item) {
