@@ -2101,8 +2101,8 @@ JAVASCRIPT;
             }
         }
 
+        $other_select_option = $name . '_other_value';
         if ($param['other'] !== false) {
-            $other_select_option = $name . '_other_value';
             $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
 
            // If $param['other'] is a string, then we must highlight "other" option
