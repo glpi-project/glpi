@@ -1608,8 +1608,7 @@ class MailCollector extends CommonDBTM
 
            // Try to get filename from Content-Disposition header
             if (
-                empty($filename)
-                && $part->getHeaders()->has('content-disposition')
+                $part->getHeaders()->has('content-disposition')
                 && ($content_disp_header = $part->getHeader('content-disposition')) instanceof ContentDisposition
             ) {
                 $filename = $content_disp_header->getParameter('filename') ?? '';
