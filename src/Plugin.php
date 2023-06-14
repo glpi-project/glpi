@@ -1887,7 +1887,7 @@ class Plugin extends CommonDBTM
                 // variables used in this function.
                 // For example, if the included files contains a $key variable, it will
                 // replace the $key variable used here.
-                $include_fct = function () use ($plugin_key, $file_path) {
+                $include_fct = function () use ($file_path) {
                     include_once($file_path);
                 };
                 $include_fct();
