@@ -931,7 +931,7 @@ final class DbUtils
                 $db_sons = $iterator->current()['sons_cache'];
                 $db_sons = $db_sons !== null ? trim($db_sons) : null;
                 if (!empty($db_sons)) {
-                    $sons = $this->importArrayFromDB($db_sons, true);
+                    $sons = $this->importArrayFromDB($db_sons);
                 }
             }
         }
@@ -1054,7 +1054,7 @@ final class DbUtils
 
                   // Return datas from cache in DB
                     if (!empty($rancestors)) {
-                        $ancestors = array_replace($ancestors, $this->importArrayFromDB($rancestors, true));
+                        $ancestors = array_replace($ancestors, $this->importArrayFromDB($rancestors));
                     } else {
                         $loc_id_found = [];
                      // Recursive solution for table with-cache
