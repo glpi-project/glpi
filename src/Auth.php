@@ -1028,7 +1028,6 @@ class Auth extends CommonGLPI
                         "system",
                         3,
                         "login",
-                        "login",
                         "Connection failed for " . $login_name . " ($ip)"
                     );
                 } else {
