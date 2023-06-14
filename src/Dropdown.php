@@ -865,6 +865,7 @@ class Dropdown
                 closedir($dh);
                 sort($files);
 
+                $values = [];
                 foreach ($files as $file) {
                     if (preg_match("/\.png$/i", $file)) {
                         $values[$file] = $file;
