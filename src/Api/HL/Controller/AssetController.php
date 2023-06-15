@@ -701,11 +701,9 @@ final class AssetController extends AbstractController
         return Search::searchBySchema($this->getGlobalAssetSchema(), $request->getParameters());
     }
 
-    #[Route(
-        path: '/{itemtype}', methods: ['GET'], requirements: [
-            'itemtype' => [self::class, 'getAssetTypes']
-        ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class]
-    )]
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getAssetTypes']
+    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search assets of a specific type'
     )]
