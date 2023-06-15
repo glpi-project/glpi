@@ -210,6 +210,9 @@ class RSQLInput
         $operators = $this->getOperators();
         $operator_pattern = '(' . implode('|', array_column($operators, 'operator')) . ')';
         foreach ($rsql_filters as $rsql_filter) {
+            if (empty($rsql_filter)) {
+                continue;
+            }
             // filter pattern is field_name + operator + value where the operator always starts and ends with a symbol and the value may be a quoted string
             [$field, $operator, $value] = preg_split("/$operator_pattern/", $rsql_filter, 2, PREG_SPLIT_DELIM_CAPTURE);
             $operator = array_filter($operators, static fn ($v) => $v['operator'] === $operator);
@@ -253,7 +256,7 @@ class RSQLInput
             if (!str_contains($sql_field, '.')) {
                 $sql_field = '_.' . $sql_field;
             }
-            $criteria = array_merge($sql_where_callable($sql_field, $value));
+            $criteria[] = array_merge($sql_where_callable($sql_field, $value));
         }
         return $criteria;
     }
