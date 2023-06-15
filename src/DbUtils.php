@@ -1580,7 +1580,7 @@ final class DbUtils
      * Format a user name
      *
      * @param integer $ID           ID of the user.
-     * @param string  $login        login of the user
+     * @param string|null  $login        login of the user
      * @param string|null  $realname     realname of the user
      * @param string|null  $firstname    firstname of the user
      * @param integer $link         include link (only if $link==1) (default =0)
@@ -1624,7 +1624,7 @@ final class DbUtils
                 $formatted = Toolbox::substr($formatted, 0, $cut) . " ...";
             }
         } else {
-            $formatted = $login;
+            $formatted = $login ?? '';
         }
 
         if (
