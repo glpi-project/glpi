@@ -483,6 +483,7 @@ class DropdownTranslation extends CommonDBChild
     {
         if (!isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
             // parent is mandatory
+            trigger_error('Parent item must be defined in `$options["parent"]`.', E_USER_WARNING);
             return false;
         }
 
