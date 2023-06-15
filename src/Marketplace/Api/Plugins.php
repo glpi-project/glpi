@@ -66,7 +66,7 @@ class Plugins
 
     public static $plugins = null;
 
-    public function __construct(bool $connect = false)
+    public function __construct()
     {
         global $CFG_GLPI;
 
