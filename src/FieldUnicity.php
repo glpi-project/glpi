@@ -566,7 +566,7 @@ class FieldUnicity extends CommonDropdown
         }
 
         echo "<table class='tab_cadre_fixe'>";
-        if (!empty($fields)) {
+        if (count($fields) > 0) {
             $colspan = count($fields) + 1;
             echo "<tr class='tab_bg_2'><th colspan='" . $colspan . "'>" . __('Duplicates') . "</th></tr>";
 

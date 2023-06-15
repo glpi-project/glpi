@@ -939,9 +939,9 @@ class Infocom extends CommonDBChild
      * @param number  $va            valeur d'acquisition
      * @param number  $duree         duree d'amortissement
      * @param number  $coef          coefficient d'amortissement
-     * @param string  $date_achat    Date d'achat
-     * @param string  $date_use      Date d'utilisation
-     * @param string  $date_tax      date du debut de l'annee fiscale
+     * @param string|null  $date_achat    Date d'achat
+     * @param string|null  $date_use      Date d'utilisation
+     * @param string|null  $date_tax      date du debut de l'annee fiscale
      * @param string  $view          "n" pour l'annee en cours ou "all" pour le tableau complet (default 'n')
      *
      * @return float|array
@@ -1753,7 +1753,7 @@ class Infocom extends CommonDBChild
             return __('Never');
         }
 
-        if (($from == null) || empty($from)) {
+        if (empty($from)) {
             return "";
         }
 

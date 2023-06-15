@@ -840,7 +840,7 @@ class IPAddress extends CommonDBChild
             }
         }
 
-        if (isset($binary) && (count($binary) == 4)) {
+        if (count($binary) == 4) {
             if (self::isIPv4MappedToIPv6Address($binary)) {
                 $this->version = 4;
             } else {

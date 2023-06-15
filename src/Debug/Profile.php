@@ -171,13 +171,13 @@ final class Profile
 
         if ($this->parent_id === null) {
             // We only need these for top-level requests. For AJAX, this data is already known by the client.
-            $debug_info['globals']['get'] = $_GET ?? [];
-            $debug_info['globals']['post'] = $_POST ?? [];
+            $debug_info['globals']['get'] = $_GET;
+            $debug_info['globals']['post'] = $_POST;
         }
         $session = $_SESSION ?? [];
         unset($session['debug_profiles']);
         $debug_info['globals']['session'] = $session;
-        $debug_info['globals']['server'] = $_SERVER ?? [];
+        $debug_info['globals']['server'] = $_SERVER;
 
         foreach ($this->additional_info as $widget => $data) {
             if (!array_key_exists($widget, $debug_info)) {

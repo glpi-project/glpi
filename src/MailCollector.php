@@ -1608,8 +1608,7 @@ class MailCollector extends CommonDBTM
 
            // Try to get filename from Content-Disposition header
             if (
-                empty($filename)
-                && $part->getHeaders()->has('content-disposition')
+                $part->getHeaders()->has('content-disposition')
                 && ($content_disp_header = $part->getHeader('content-disposition')) instanceof ContentDisposition
             ) {
                 $filename = $content_disp_header->getParameter('filename') ?? '';
@@ -1650,11 +1649,6 @@ class MailCollector extends CommonDBTM
                 } else {
                     $filename = "msg_$subpart.EML"; // default trivial one :)!
                 }
-            }
-
-           // if no filename found, ignore this part
-            if (empty($filename)) {
-                return false;
             }
 
             $filename = Toolbox::filename($filename);
