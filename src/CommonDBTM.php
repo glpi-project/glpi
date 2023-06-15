@@ -925,12 +925,18 @@ class CommonDBTM extends CommonGLPI
                     );
                     foreach ($result as $data) {
                         $item = new $itemtype();
-                        $item->update(
-                            [
-                                $id_field       => $data[$id_field],
-                                '_disablenotif' => true,
-                            ] + $update
-                        );
+                        $input =  [
+                            $id_field       => $data[$id_field],
+                            '_disablenotif' => true,
+                        ] + $update;
+
+                        //prevent lock if item is dynamic
+                        //as the dictionary rules are played out during the inventory anyway
+                        if (isset($data['is_dynamic'])) {
+                            $input['is_dynamic'] = $data['is_dynamic'];
+                        }
+
+                        $item->update($input);
                     }
                 }
             }
