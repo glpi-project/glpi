@@ -777,10 +777,10 @@
         },
         {
             "name": "htmlawed/htmlawed",
-            "version": "1.2.9",
+            "version": "1.2.14",
             "dist": {
                 "type": "zip",
-                "url": "https://www.bioinformatics.org/phplabware/downloads/htmLawed129.zip"
+                "url": "https://www.bioinformatics.org/phplabware/downloads/htmLawed1214.zip"
             },
             "type": "library",
             "autoload": {
