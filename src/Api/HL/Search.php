@@ -685,9 +685,14 @@ final class Search
      * @param array $request_params
      * @param array $get_route
      * @phpstan-param array<class-string<AbstractController>, string> $get_route
+     * @param array $extra_get_route_params Additional parameters needed to generate the GET route. This should only be needed for complex routes.
+     *      This is used to re-map the parameters to the GET route.
+     *      The array can contain an 'id' property which is the name of the parameter that the resulting ID is set to ('id' by default).
+     *      The array may also contain a 'mapped' property which is an array of parameter names and static values.
+     *      For example ['mapped' => ['subitem_type' => 'Followup']] would set the 'subitem_type' parameter to 'Followup'.
      * @return Response
      */
-    public static function createBySchema(array $schema, array $request_params, array $get_route): Response
+    public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {
         $itemtype = self::getItemtypeFromSchema($schema);
         $input = self::getInputParamsBySchema($schema, $request_params);
@@ -697,9 +702,14 @@ final class Search
         $items_id = $item->add($input);
         [$controller, $method] = $get_route;
 
+        $id_field = $extra_get_route_params['id'] ?? 'id';
         if ($items_id !== false) {
-            // Ensure the ID parameter is set to get the correct GET route
-            $request_params['id'] = $items_id;
+            $request_params[$id_field] = $items_id;
+        }
+        if (array_key_exists('mapped', $extra_get_route_params)) {
+            foreach ($extra_get_route_params['mapped'] as $key => $value) {
+                $request_params[$key] = $value;
+            }
         }
 
         //TODO Return a 202 response if one or more fields are not valid (don't exist in the schema at least or are read-only)
