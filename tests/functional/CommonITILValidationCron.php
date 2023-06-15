@@ -74,7 +74,7 @@ class CommonITILValidationCron extends DbTestCase
         $this->integer($ticket_validation_id)->isGreaterThan(0);
 
         // backdate ticket validation
-        $DB->updateOrDie(
+        $DB->update(
             \TicketValidation::getTable(),
             [
                 'submission_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
@@ -95,14 +95,14 @@ class CommonITILValidationCron extends DbTestCase
         $this->integer($crontask_id)->isGreaterThan(0);
 
         // run cron
-        \CommonITILValidationCron::cronApprovalReminder($crontask);
+        $this->integer(\CommonITILValidationCron::cronApprovalReminder($crontask))->isEqualTo(1);
 
         // verify last reminder date is set
-        $ticket_validation->getFromDB($ticket_validation_id);
+        $this->boolean($ticket_validation->getFromDB($ticket_validation_id))->isTrue();
         $this->string($ticket_validation->fields['last_reminder_date'])->isNotEmpty();
 
         // reset last reminder date
-        $DB->updateOrDie(
+        $DB->update(
             \TicketValidation::getTable(),
             [
                 'last_reminder_date' => null,
@@ -113,7 +113,7 @@ class CommonITILValidationCron extends DbTestCase
         );
 
         // verify last reminder date is empty
-        $ticket_validation->getFromDB($ticket_validation_id);
+        $this->boolean($ticket_validation->getFromDB($ticket_validation_id))->isTrue();
         $this->string((string)$ticket_validation->fields['last_reminder_date'])->isEmpty();
 
         // Solve ticket
@@ -125,7 +125,7 @@ class CommonITILValidationCron extends DbTestCase
         )->isTrue();
 
         // run cron
-        \CommonITILValidationCron::cronApprovalReminder($crontask);
+        $this->integer(\CommonITILValidationCron::cronApprovalReminder($crontask))->isEqualTo(1);
 
         // verify last reminder date is empty
         $this->boolean($ticket_validation->getFromDB($ticket_validation_id))->isTrue();
@@ -140,9 +140,10 @@ class CommonITILValidationCron extends DbTestCase
         )->isTrue();
 
         // run cron
-        \CommonITILValidationCron::cronApprovalReminder($crontask);
+        $this->integer(\CommonITILValidationCron::cronApprovalReminder($crontask))->isEqualTo(1);
 
         // verify last reminder date is empty
         $this->boolean($ticket_validation->getFromDB($ticket_validation_id))->isTrue();
+        $this->string((string)$ticket_validation->fields['last_reminder_date'])->isEmpty();
     }
 }
