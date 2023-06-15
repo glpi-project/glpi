@@ -85,8 +85,7 @@ class PlanningRecall extends CommonDBChild
                     if (
                         Session::haveRightsOr(
                             "planning",
-                            [Planning::READMY, Planning::READGROUP],
-                            Planning::READALL
+                            [Planning::READMY, Planning::READGROUP, Planning::READALL]
                         )
                     ) {
                         $_SESSION['glpiplanningreminder_isavailable'] = 1;

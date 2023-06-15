@@ -1367,7 +1367,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         global $CFG_GLPI;
 
-        $options      = static::getAvailableDisplayOptions($sub_itemtype);
+        $options      = static::getAvailableDisplayOptions();
 
         if (count($options)) {
             if (empty($sub_itemtype)) {
