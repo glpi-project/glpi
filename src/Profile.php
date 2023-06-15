@@ -3677,7 +3677,8 @@ class Profile extends CommonDBTM
             'ORDER'  => 'name'
         ]);
 
-       //New rule -> get the next free ranking
+        // New rule -> get the next free ranking
+        $profiles = [];
         foreach ($iterator as $data) {
             $profiles[$data['id']] = $data['name'];
         }

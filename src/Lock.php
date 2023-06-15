@@ -239,6 +239,7 @@ class Lock extends CommonGLPI
                     $default_itemtype_label = $row['itemtype']::getTypeName();
                     $default_object_link    = $object->getLink();
                     $default_itemtype       = $row['itemtype'];
+                    $default_items_id       = null;
 
                     //get real type name from Item_Devices
                     // ex: get 'Hard drives' instead of 'Hard drive items'
@@ -276,7 +277,7 @@ class Lock extends CommonGLPI
                     // specific link for CommonDBRelation itemtype (like Item_OperatingSystem)
                     // get 'real' object name inside URL name
                     // ex: get 'Ubuntu 22.04.1 LTS' instead of 'Computer asus-desktop'
-                    if (is_a($row['itemtype'], CommonDBRelation::class, true)) {
+                    if ($default_items_id !== null && is_a($row['itemtype'], CommonDBRelation::class, true)) {
                         $related_object = new $default_itemtype();
                         $related_object->getFromDB($object->fields[$default_items_id]);
                         $default_object_link = "<a href='" . $object->getLinkURL() . "'" . $related_object->getName() . ">" . $related_object->getName() . "</a>";
@@ -866,6 +867,7 @@ class Lock extends CommonGLPI
             $domain = new Domain();
             $domain_relation = new DomainRelation();
 
+            $link = '';
             if ($domain->getFromDB($row['domains_id'])) {
                 $link = $domain->getLink();
             }
@@ -1192,11 +1194,11 @@ class Lock extends CommonGLPI
                             "field" => $lock_fields_name,
                             "is_global" => 0
                         ]);
-                    }
-                    if ($res) {
-                        $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_OK);
-                    } else {
-                        $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_KO);
+                        if ($res) {
+                            $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_KO);
+                        }
                     }
                 }
                 return;

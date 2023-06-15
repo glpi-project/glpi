@@ -226,6 +226,7 @@ class GLPINetwork extends CommonGLPI
         );
 
         $valid_json = false;
+        $registration_data = null;
         if ($error_message === null) {
             if (\Toolbox::isJSON($registration_response)) {
                 $valid_json = true;

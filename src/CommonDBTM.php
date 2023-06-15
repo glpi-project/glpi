@@ -4466,6 +4466,7 @@ class CommonDBTM extends CommonGLPI
             } else if (isset($this->fields['entities_id'])) {
                 $entities_id = $this->fields['entities_id'];
             } else {
+                $entities_id = 0;
                 $message = 'Missing entity ID!';
                 trigger_error($message, E_USER_WARNING);
             }
@@ -4518,17 +4519,17 @@ class CommonDBTM extends CommonGLPI
                             $where['NOT'] = [$this->getTable() . '.id' => $this->input['id']];
                         }
 
-                        if (countElementsInTable($this->getTable(), $where) > 0) {
+                        $doubles = getAllDataFromTable($this->getTable(), $where);
+                        if (countElementsInTable($doubles) > 0) {
+                            $message = [];
                             if (
                                 $p['unicity_error_message']
                                 || $p['add_event_on_duplicate']
                             ) {
-                                $message = [];
                                 foreach (explode(',', $fields['fields']) as $field) {
                                     $message[$field] = $this->input[$field];
                                 }
 
-                                $doubles      = getAllDataFromTable($this->getTable(), $where);
                                 $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                                 if ($p['unicity_error_message']) {
                                     if (!$fields['action_refuse']) {
@@ -4712,6 +4713,8 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
+        $value = $values;
+
         if (count($searchoptions)) {
             $field = $searchoptions['field'];
 
@@ -4719,7 +4722,6 @@ class CommonDBTM extends CommonGLPI
             if (is_array($values)) {
                 $value = $values[$field];
             } else {
-                $value  = $values;
                 $values = [$field => $value];
             }
 
@@ -4949,13 +4951,15 @@ class CommonDBTM extends CommonGLPI
                 );
             }
         }
+
+        $value  = $values;
+
         if (count($searchoptions)) {
             $field = $searchoptions['field'];
            // Normalize option
             if (is_array($values)) {
                 $value = $values[$field];
             } else {
-                $value  = $values;
                 $values = [$field => $value];
             }
 
@@ -5241,9 +5245,6 @@ class CommonDBTM extends CommonGLPI
             if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
                 $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
             }
-            if (Session::isMultiEntitiesMode()) {
-                $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
-            }
             if ($item->canCreate() && !$add) {
                 $modify_params =
                 (strpos($target, '?') ? '&amp;' : '?')
@@ -5255,6 +5256,7 @@ class CommonDBTM extends CommonGLPI
                 echo "<a href=\"$target_modify\">";
                 echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
                 if (Session::isMultiEntitiesMode()) {
+                    $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
                     echo "<td class='tab_bg_1 center'>$entity</td>";
                 }
                 echo "<td class='tab_bg_2 center b'>";

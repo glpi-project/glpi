@@ -1251,9 +1251,7 @@ class Item_Devices extends CommonDBRelation
         $item->check($input['items_id'], UPDATE, $_POST);
 
         $is_device = ($item instanceof CommonDevice);
-        if ($is_device) {
-            $link_type = $itemtype::getItem_DeviceType();
-        }
+        $link_type = $is_device ? $itemtype::getItem_DeviceType() : '';
 
         $links   = [];
        // Update quantity or values

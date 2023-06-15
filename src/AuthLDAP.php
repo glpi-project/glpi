@@ -1458,6 +1458,8 @@ class AuthLDAP extends CommonDBTM
         }
         $config_ldap->getFromDB($_SESSION['ldap_server']);
 
+        $filter_name1 = null;
+        $filter_name2 = null;
         if ($users) {
             $filter_name1 = "condition";
             $filter_var   = "ldap_filter";
@@ -1479,7 +1481,7 @@ class AuthLDAP extends CommonDBTM
             }
         }
 
-        if (!isset($_SESSION[$filter_var]) || ($_SESSION[$filter_var] == '')) {
+        if ($filter_name1 !== null && (!isset($_SESSION[$filter_var]) || $_SESSION[$filter_var] == '')) {
             $_SESSION[$filter_var] = Sanitizer::unsanitize($config_ldap->fields[$filter_name1]);
         }
 
@@ -1496,7 +1498,7 @@ class AuthLDAP extends CommonDBTM
             !$users
             && ($config_ldap->fields["group_search_type"] == self::GROUP_SEARCH_BOTH)
         ) {
-            if (!isset($_SESSION["ldap_group_filter2"]) || ($_SESSION["ldap_group_filter2"] == '')) {
+            if ($filter_name2 !== null && (!isset($_SESSION["ldap_group_filter2"]) || $_SESSION["ldap_group_filter2"] == '')) {
                 $_SESSION["ldap_group_filter2"] = Sanitizer::unsanitize($config_ldap->fields[$filter_name2]);
             }
             echo "</td></tr>";
@@ -4660,17 +4662,16 @@ class AuthLDAP extends CommonDBTM
             return $users;
         }
 
+
+        $sync_field = $config_ldap->isSyncFieldEnabled() ? $config_ldap->fields['sync_field'] : null;
+
         foreach ($ldap_users as $userinfos) {
             $user_to_add = [];
             $user = new User();
 
-            $user_sync_field = null;
-            if ($config_ldap->isSyncFieldEnabled()) {
-                $sync_field = $config_ldap->fields['sync_field'];
-                if (isset($userinfos[$sync_field])) {
-                    $user_sync_field = self::getFieldValue($userinfos, $sync_field);
-                }
-            }
+            $user_sync_field = $config_ldap->isSyncFieldEnabled() && isset($userinfos[$sync_field])
+                ? self::getFieldValue($userinfos, $sync_field)
+                : null;
 
             $user = $config_ldap->getLdapExistingUser(
                 $userinfos['user'],

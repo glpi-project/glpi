@@ -90,7 +90,7 @@ class Dropdown
     {
         global $CFG_GLPI;
 
-        if ($itemtype && !($item = getItemForItemtype($itemtype))) {
+        if (!($item = getItemForItemtype($itemtype))) {
             return false;
         }
 
@@ -158,6 +158,7 @@ class Dropdown
             $params['used'] = array_diff($params['used'], [$params['value']]);
         }
 
+        $names = [];
         if (!$params['multiple'] && isset($params['toadd'][$params['value']])) {
             $name = $params['toadd'][$params['value']];
         } else if (
@@ -171,8 +172,6 @@ class Dropdown
                 $comment = $tmpname["comment"];
             }
         } else if ($params['multiple']) {
-            $names = [];
-
             foreach ($params['values'] as $value) {
                 if (isset($params['toadd'][$value])) {
                     // Specific case, value added by the "toadd" param
@@ -866,6 +865,7 @@ class Dropdown
                 closedir($dh);
                 sort($files);
 
+                $values = [];
                 foreach ($files as $file) {
                     if (preg_match("/\.png$/i", $file)) {
                         $values[$file] = $file;
@@ -968,6 +968,7 @@ JAVASCRIPT;
      **/
     public static function showYesNo($name, $value = 0, $restrict_to = -1, $params = [])
     {
+        $options = [];
 
         if (!array_key_exists('use_checkbox', $params)) {
            // TODO: switch to true when Html::showCheckbox() is validated
@@ -1312,6 +1313,7 @@ JAVASCRIPT;
         echo "<label class='col-sm-1 col-form-label'>$title</label>";
         $selected = '';
 
+        $values = [];
         foreach ($optgroup as $label => $dp) {
             foreach ($dp as $key => $val) {
                 $search = $key::getSearchURL();
@@ -2099,8 +2101,8 @@ JAVASCRIPT;
             }
         }
 
+        $other_select_option = $name . '_other_value';
         if ($param['other'] !== false) {
-            $other_select_option = $name . '_other_value';
             $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
 
            // If $param['other'] is a string, then we must highlight "other" option
@@ -2886,10 +2888,9 @@ JAVASCRIPT;
 
            // Ignore first item for all pages except first page
             $firstitem = (($post['page'] > 1));
+            $firstitem_entity = -1;
+            $prev             = -1;
             if (count($iterator)) {
-                $prev             = -1;
-                $firstitem_entity = -1;
-
                 foreach ($iterator as $data) {
                     $ID    = $data['id'];
                     $level = $data['level'];
@@ -3852,6 +3853,7 @@ JAVASCRIPT;
                     $value = $post['max'];
                 }
 
+                $txt = $value;
                 if (isset($post['unit'])) {
                     $decimals = Toolbox::isFloat($value) ? Toolbox::getDecimalNumbers($post['step']) : 0;
                     $txt = Dropdown::getValueWithUnit($value, $post['unit'], $decimals);
@@ -3947,6 +3949,7 @@ JAVASCRIPT;
 
        // Count real items returned
         $count = 0;
+        $logins = [];
         if (count($result)) {
             foreach ($result as $data) {
                 $users[$data["id"]] = formatUserName(

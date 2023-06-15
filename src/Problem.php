@@ -176,6 +176,7 @@ class Problem extends CommonITILObject
         if (static::canView()) {
             switch ($item->getType()) {
                 case __CLASS__:
+                    $ong = [];
                     if ($item->canUpdate()) {
                         $ong[1] = __('Statistics');
                     }

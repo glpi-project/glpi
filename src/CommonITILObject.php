@@ -4741,6 +4741,7 @@ abstract class CommonITILObject extends CommonDBTM
             $params['_user_index'] = $options['_user_index'];
         }
 
+        $paramscomment = [];
         if ($CFG_GLPI['notifications_mailing']) {
             $paramscomment = [
                 'value'            => '__VALUE__',
@@ -8396,6 +8397,9 @@ abstract class CommonITILObject extends CommonDBTM
             case 'Supplier':
                 $actor = new $this->supplierlinkclass();
                 break;
+            default:
+                throw new \RuntimeException('Unexpected actor type.');
+                break;
         }
         return $actor;
     }
@@ -8634,8 +8638,8 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Load actors (users)
         $user_link_class = $self_item->userlinkclass;
-        $user_link_table = getTableForItemType($user_link_class);
-        if (!empty($user_link_class)) {
+        if (is_a($user_link_class, CommonITILActor::class, true)) {
+            $user_link_table = getTableForItemType($user_link_class);
             $linked_user_iterator = $DB->request([
                 'SELECT' => [
                     $user_link_class::getTableField($self_fk_field),
@@ -8657,34 +8661,34 @@ abstract class CommonITILObject extends CommonDBTM
                     $self_fk_field => new QuerySubQuery($base_common_itil_query)
                 ]
             ]);
-        }
-        foreach ($linked_user_iterator as $linked_user_row) {
-            $common_itil_id = $linked_user_row[$self_fk_field];
+            foreach ($linked_user_iterator as $linked_user_row) {
+                $common_itil_id = $linked_user_row[$self_fk_field];
 
-            // Init array
-            if (!isset($linked_actors[$common_itil_id])) {
-                $linked_actors[$common_itil_id] = [];
+                // Init array
+                if (!isset($linked_actors[$common_itil_id])) {
+                    $linked_actors[$common_itil_id] = [];
+                }
+
+                // Push users
+                $linked_actors[$common_itil_id][] = [
+                    'itemtype'  => User::getType(),
+                    'id'        => $linked_user_row['users_id'],
+                    'firstname' => $linked_user_row['firstname'],
+                    'realname'  => $linked_user_row['realname'],
+                    'name'      => formatUserName(
+                        $linked_user_row['users_id'],
+                        '',
+                        $linked_user_row['realname'],
+                        $linked_user_row['firstname']
+                    ),
+                ];
             }
-
-            // Push users
-            $linked_actors[$common_itil_id][] = [
-                'itemtype'  => User::getType(),
-                'id'        => $linked_user_row['users_id'],
-                'firstname' => $linked_user_row['firstname'],
-                'realname'  => $linked_user_row['realname'],
-                'name'      => formatUserName(
-                    $linked_user_row['users_id'],
-                    '',
-                    $linked_user_row['realname'],
-                    $linked_user_row['firstname']
-                ),
-            ];
         }
 
         // Load actors (groups)
         $group_link_class = $self_item->grouplinkclass;
-        $group_link_table = getTableForItemType($group_link_class);
-        if (!empty($group_link_class)) {
+        if (is_a($group_link_class, CommonITILActor::class, true)) {
+            $group_link_table = getTableForItemType($group_link_class);
             $linked_group_iterator = $DB->request([
                 'SELECT' => [
                     $group_link_class::getTableField($self_fk_field),
@@ -8705,27 +8709,27 @@ abstract class CommonITILObject extends CommonDBTM
                     $self_fk_field => new QuerySubQuery($base_common_itil_query)
                 ]
             ]);
-        }
-        foreach ($linked_group_iterator as $linked_group_row) {
-            $common_itil_id = $linked_group_row[$self_fk_field];
+            foreach ($linked_group_iterator as $linked_group_row) {
+                $common_itil_id = $linked_group_row[$self_fk_field];
 
-            // Init array
-            if (!isset($linked_actors[$common_itil_id])) {
-                $linked_actors[$common_itil_id] = [];
+                // Init array
+                if (!isset($linked_actors[$common_itil_id])) {
+                    $linked_actors[$common_itil_id] = [];
+                }
+
+                // Push groups
+                $linked_actors[$common_itil_id][] = [
+                    'itemtype' => Group::getType(),
+                    'id'       => $linked_group_row['groups_id'],
+                    'name'     => $linked_group_row['name'],
+                ];
             }
-
-            // Push groups
-            $linked_actors[$common_itil_id][] = [
-                'itemtype' => Group::getType(),
-                'id'       => $linked_group_row['groups_id'],
-                'name'     => $linked_group_row['name'],
-            ];
         }
 
         // Load actors (supplier)
         $supplier_link_class = $self_item->supplierlinkclass;
-        $suplier_link_table = getTableForItemType($supplier_link_class);
-        if (!empty($supplier_link_class)) {
+        if (is_a($supplier_link_class, CommonITILActor::class, true)) {
+            $suplier_link_table = getTableForItemType($supplier_link_class);
             $linked_supplier_iterator = $DB->request([
                 'SELECT' => [
                     $supplier_link_class::getTableField($self_fk_field),
@@ -8746,21 +8750,21 @@ abstract class CommonITILObject extends CommonDBTM
                     $self_fk_field => new QuerySubQuery($base_common_itil_query)
                 ]
             ]);
-        }
-        foreach ($linked_supplier_iterator as $linked_supplier_row) {
-            $common_itil_id = $linked_supplier_row[$self_fk_field];
+            foreach ($linked_supplier_iterator as $linked_supplier_row) {
+                $common_itil_id = $linked_supplier_row[$self_fk_field];
 
-            // Init array
-            if (!isset($linked_actors[$common_itil_id])) {
-                $linked_actors[$common_itil_id] = [];
+                // Init array
+                if (!isset($linked_actors[$common_itil_id])) {
+                    $linked_actors[$common_itil_id] = [];
+                }
+
+                // Push groups
+                $linked_actors[$common_itil_id][] = [
+                    'itemtype' => Supplier::getType(),
+                    'id'       => $linked_supplier_row['suppliers_id'],
+                    'name'     => $linked_supplier_row['name'],
+                ];
             }
-
-            // Push groups
-            $linked_actors[$common_itil_id][] = [
-                'itemtype' => Supplier::getType(),
-                'id'       => $linked_supplier_row['suppliers_id'],
-                'name'     => $linked_supplier_row['name'],
-            ];
         }
 
         // Load linked tickets (only for tickets)

@@ -1710,12 +1710,6 @@ abstract class API
             $raw = $row['raw'];
             $id = $raw['id'];
 
-           // keep row itemtype for all asset
-            if ($itemtype == AllAssets::getType()) {
-                $current_id       = $raw['id'];
-                $current_itemtype = $raw['TYPE'];
-            }
-
            // retrive value (and manage multiple values)
             $clean_values = [];
             foreach ($rawdata['data']['cols'] as $col) {
@@ -1742,8 +1736,8 @@ abstract class API
 
            // if all asset, provide type in returned data
             if ($itemtype == AllAssets::getType()) {
-                $current_line['id']       = $current_id;
-                $current_line['itemtype'] = $current_itemtype;
+                $current_line['id']       = $raw['id'];
+                $current_line['itemtype'] = $raw['TYPE'];
             }
 
            // append to final array
@@ -3338,12 +3332,14 @@ abstract class API
 
         if ($results['ok'] == 0 && $results['noaction'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
            // No items were processed, invalid action key -> 400
-            $this->returnError(
+            return $this->returnError(
                 "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
                 400,
                 "ERROR_MASSIVEACTION_KEY"
             );
-        } else if ($results['ok'] > 0 && $results['ko'] == 0) {
+        }
+
+        if ($results['ok'] > 0 && $results['ko'] == 0) {
            // Success -> 200
             $code = 200;
         } else if ($results['ko'] > 0 && $results['ok'] > 0) {
