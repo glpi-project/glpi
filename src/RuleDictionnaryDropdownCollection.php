@@ -56,7 +56,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
             return $this->replayRulesOnExistingDBForModel($offset, $maxtime);
         }
 
-        if (isCommandLine()) {
+        if (isCommandLine() && !defined('TU_USER')) {
             printf(__('Replay rules on existing database started on %s') . "\n", date("r"));
         }
 
@@ -78,8 +78,10 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
             foreach ($iterator as $data) {
                 if (!($i % $step)) {
                     if (isCommandLine()) {
-                      //TRANS: %1$s is a row, %2$s is total rows
-                        printf(__('Replay rules on existing database: %1$s/%2$s') . "\r", $i, $nb);
+                        //TRANS: %1$s is a row, %2$s is total rows
+                        if (!defined('TU_USER')) {
+                            printf(__('Replay rules on existing database: %1$s/%2$s') . "\r", $i, $nb);
+                        }
                     } else {
                         Html::changeProgressBarPosition($i, $nb, "$i / $nb");
                     }
@@ -115,7 +117,9 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
         }
 
         if (isCommandLine()) {
-            printf(__('Replay rules on existing database started on %s') . "\n", date("r"));
+            if (!defined('TU_USER')) {
+                printf(__('Replay rules on existing database started on %s') . "\n", date("r"));
+            }
         } else {
             Html::changeProgressBarPosition($i, $nb, "$i / $nb");
         }
