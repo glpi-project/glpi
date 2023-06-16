@@ -1,7 +1,8 @@
 FROM php:8.1-fpm-alpine
 
 RUN apk add --update --no-cache \
-    nodejs-current npm mysql-client curl patch gettext
+    nodejs-current npm mysql-client curl patch gettext perl git \
+    zsh sudo
 
 RUN apk add --update --no-cache \
     icu-dev icu-libs zlib-dev g++ make automake autoconf libzip-dev \
@@ -24,6 +25,7 @@ RUN addgroup -g 1000 glpi \
   && adduser -D -h /home/glpi -G glpi -u 1000 glpi \
   && mkdir -p /var/glpi \
   && chown glpi:glpi /var/glpi
+RUN echo "glpi ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER glpi
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
