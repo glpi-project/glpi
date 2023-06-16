@@ -711,7 +711,7 @@ class Search
             $new_table,
             $linkfield,
             (bool) $meta,
-            $meta_type ?? '',
+            (string) $meta_type,
             $joinparams,
             $field
         );

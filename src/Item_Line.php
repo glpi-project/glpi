@@ -64,9 +64,9 @@ class Item_Line extends CommonDBRelation
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Line) {
-            self::showItemsForLine($item, $withtemplate);
+            self::showItemsForLine($item);
         } else {
-            self::showLinesForItem($item, $withtemplate);
+            self::showLinesForItem($item);
         }
         return true;
     }

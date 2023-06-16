@@ -388,7 +388,7 @@ EOT;
         if ($routes === null) {
             $routes = $this->getRoutesFromCache();
         }
-        return $routes ?? [];
+        return $routes;
     }
 
     /**

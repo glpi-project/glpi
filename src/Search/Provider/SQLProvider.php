@@ -834,6 +834,10 @@ final class SQLProvider implements SearchProviderInterface
                 // Same structure in addDefaultJoin
                 $condition = '';
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
+                    $criteria = [
+                        'OR' => []
+                    ];
+
                     $searchopt       = SearchOption::getOptionsForItemtype($itemtype);
                     if (Session::haveRight("$right", $itemtype::READMY)) {
                         $requester_table      = '`glpi_' . $table . '_users_' .
@@ -856,12 +860,7 @@ final class SQLProvider implements SearchProviderInterface
                         $assigngroup_table    = $groupetable .
                             self::computeComplexJoinID($searchopt[8]['joinparams']
                             ['beforejoin']['joinparams']) . '`';
-                    }
-                    $criteria = [
-                        'OR' => []
-                    ];
 
-                    if (Session::haveRight($right, $itemtype::READMY)) {
                         $criteria['OR'][] = [
                             'OR' => [
                                 "$requester_table.users_id" => Session::getLoginUserID(),
