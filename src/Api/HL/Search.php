@@ -563,7 +563,7 @@ final class Search
             'results' => array_values($results),
             'start' => $criteria['START'] ?? 0,
             'limit' => $criteria['LIMIT'] ?? count($results),
-            'total' => $total_count ?? 0,
+            'total' => $total_count,
         ];
     }
 
