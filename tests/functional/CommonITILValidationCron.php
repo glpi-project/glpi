@@ -74,15 +74,17 @@ class CommonITILValidationCron extends DbTestCase
         $this->integer($ticket_validation_id)->isGreaterThan(0);
 
         // backdate ticket validation
-        $DB->update(
-            \TicketValidation::getTable(),
-            [
-                'submission_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
-            ],
-            [
-                'id' => $ticket_validation_id,
-            ]
-        );
+        $this->boolean(
+            $DB->update(
+                \TicketValidation::getTable(),
+                [
+                    'submission_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
+                ],
+                [
+                    'id' => $ticket_validation_id,
+                ]
+            )
+        )->isTrue();
 
         // create crontask
         $crontask = new \CronTask();
@@ -102,15 +104,17 @@ class CommonITILValidationCron extends DbTestCase
         $this->string($ticket_validation->fields['last_reminder_date'])->isNotEmpty();
 
         // reset last reminder date
-        $DB->update(
-            \TicketValidation::getTable(),
-            [
-                'last_reminder_date' => null,
-            ],
-            [
-                'id' => $ticket_validation_id,
-            ]
-        );
+        $this->boolean(
+            $DB->update(
+                \TicketValidation::getTable(),
+                [
+                    'last_reminder_date' => null,
+                ],
+                [
+                    'id' => $ticket_validation_id,
+                ]
+            )
+        )->isTrue();
 
         // verify last reminder date is empty
         $this->boolean($ticket_validation->getFromDB($ticket_validation_id))->isTrue();
