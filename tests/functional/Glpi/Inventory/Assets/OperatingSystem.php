@@ -1281,17 +1281,11 @@ class OperatingSystem extends AbstractInventoryAsset
 
         //replay rule
         $this->login('glpi', 'glpi');
-        $start = explode(" ", microtime());
-        $start = $start[0] + $start[1];
-
-        $max = get_cfg_var("max_execution_time");
-        $max = $start + ($max > 0 ? $max / 2.0 : 30.0);
 
         $os_dictionnary = new \RuleDictionnaryOperatingSystemCollection();
-
         $this->output(
-            function () use ($os_dictionnary, $max) {
-                $os_dictionnary->replayRulesOnExistingDB(0, $max, [], []);
+            function () use ($os_dictionnary) {
+                $os_dictionnary->replayRulesOnExistingDB(0, 0, [], []);
             }
         )->contains("Replay rules on existing database started on");
 
