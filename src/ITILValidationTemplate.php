@@ -81,20 +81,25 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     private static function displayValidatorField(
         ?int $id,
     ): string {
-        if ($id > 0) {
-            $targets = ITILValidationTemplate_Target::getTargets($id);
-            $target = current($targets);
-            $itemtype = $target['itemtype'];
-            $items_id = array_column($targets, 'items_id');
-        }
+        $options = [
+            'users_id_requester' => \Session::getLoginUserID(),
+            'itemtype_target'    => null,
+            'groups_id'          => null,
+            'items_id_target'    => null,
+            'right'              => 'validate_request',
+            'display'            => false,
+        ];
 
-        $options['users_id_requester'] = \Session::getLoginUserID();
-        $options['itemtype_target']    = $itemtype ?? null;
-        $options['groups_id']          = isset($target) ? $target['groups_id'] : null;
-        $options['items_id_target']    = isset($target) && $itemtype == 'Group' && count($items_id) == 1 ?
-            $items_id[0] : $items_id ?? null;
-        $options['right']              = 'validate_request';
-        $options['display']            = false;
+        if ($id > 0) {
+            $targets   = ITILValidationTemplate_Target::getTargets($id);
+            $target    = current($targets);
+            $itemtype  = $target['itemtype'];
+            $items_ids = array_column($targets, 'items_id');
+
+            $options['itemtype_target'] = $itemtype;
+            $options['groups_id']       = $target['groups_id'];
+            $options['items_id_target'] = $itemtype == 'Group' && count($items_ids) == 1 ? $items_ids[0] : $items_ids;
+        }
 
         return CommonITILValidation::dropdownValidator($options);
     }
