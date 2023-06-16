@@ -1435,6 +1435,7 @@ class Provider
         }
 
         $type = 0;
+        $soption = 0;
         switch ($case) {
             case "user_requester":
                 $type     = CommonITILActor::REQUESTER;

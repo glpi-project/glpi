@@ -423,10 +423,6 @@ class Document_Item extends CommonDBRelation
             if ($item->canView()) {
                 $iterator = self::getTypeItems($instID, $itemtype);
 
-                if ($itemtype == 'SoftwareLicense') {
-                    $soft = new Software();
-                }
-
                 foreach ($iterator as $data) {
                     $linkname_extra = "";
                     if ($item instanceof ITILFollowup || $item instanceof ITILSolution) {
@@ -453,6 +449,7 @@ class Document_Item extends CommonDBRelation
                     }
 
                     if ($itemtype == 'SoftwareLicense') {
+                        $soft = new Software();
                         $soft->getFromDB($data['softwares_id']);
                         $data["name"] = sprintf(
                             __('%1$s - %2$s'),

@@ -782,6 +782,7 @@ class NetworkName extends FQDNLabel
         }
 
         $table_options = ['createRow' => true];
+        $start = 0;
 
         if (
             ($item->getType() == 'FQDN')
@@ -789,8 +790,6 @@ class NetworkName extends FQDNLabel
         ) {
             if (isset($_GET["start"])) {
                 $start = $_GET["start"];
-            } else {
-                $start = 0;
             }
 
             if (!empty($_GET["order"])) {

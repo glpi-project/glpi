@@ -773,6 +773,10 @@ class NetworkPortInstantiation extends CommonDBChild
                 $selectOptions['size']            = 4;
                 $netport_types[]                  = 'NetworkPortAlias';
                 break;
+
+            default:
+                throw new \RuntimeException(sprintf('Unexpected origin `%s`.', $origin));
+                break;
         }
 
         if (isset($this->fields[$field_name])) {

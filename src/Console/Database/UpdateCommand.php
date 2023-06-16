@@ -254,14 +254,14 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         $error = null;
         try {
             $differences = $checker->checkCompleteSchemaForVersion($installed_version, true);
+            if (count($differences) > 0) {
+                $install_version_nohash = preg_replace('/@.+$/', '', $installed_version);
+                $error = sprintf(__('The database schema is not consistent with the installed GLPI version (%s).'), $install_version_nohash)
+                    . ' '
+                    . sprintf(__('Run the "%1$s" command to view found differences.'), 'php bin/console database:check_schema_integrity');
+            }
         } catch (\Throwable $e) {
             $error = sprintf(__('Database integrity check failed with error (%s).'), $e->getMessage());
-        }
-        if (count($differences) > 0) {
-            $install_version_nohash = preg_replace('/@.+$/', '', $installed_version);
-            $error = sprintf(__('The database schema is not consistent with the installed GLPI version (%s).'), $install_version_nohash)
-                . ' '
-                . sprintf(__('Run the "%1$s" command to view found differences.'), 'php bin/console database:check_schema_integrity');
         }
 
         if ($error !== null) {

@@ -1340,10 +1340,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $item = getItemForItemtype($this->fields['itemtype']);
             $item->getFromDB($this->fields['items_id']);
 
-            $link = $item->getFormURL();
-            if (!isset($link)) {
-                return;
-            }
             if (($name = $item->getName()) == NOT_AVAILABLE) {
                //TRANS: %1$s is the itemtype, %2$d is the id of the item
                 $item->fields['name'] = sprintf(
@@ -1392,10 +1388,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $item = getItemForItemtype($this->fields['itemtype']);
             $item->getFromDB($this->fields['items_id']);
 
-            $link = $item->getFormURL();
-            if (!isset($link)) {
-                return;
-            }
             if (isset($this->input['_no_message_link'])) {
                 $display = $item->getNameID();
             } else {

@@ -36,20 +36,48 @@
 {% set params  = params ?? [] %}
 
 {% block form_fields %}
-   {{ fields.dropdownField(
-      'Software',
-      'softwares_id',
-      item.fields['softwares_id'],
-      "Software"|itemtype_name,
-      {
-         'entity': item.fields['entities_id'],
-         'condition': {
-            'is_template': 0,
-            'is_deleted': 0,
-         },
-         'on_change': 'this.form.submit()'
-      }
-   ) }}
+
+
+   {% if item.fields['id'] > 0 %}
+
+      <input type="hidden" name="softwares_id" value="{{ item.fields['softwares_id'] }}" />
+
+      {% set software_link %}
+         <a href="{{ call('Software::getFormURLWithID', [item.fields['softwares_id']]) }}">
+         {{ call('Dropdown::getDropdownName', ["glpi_softwares", item.fields['softwares_id']]) }} </a>
+      {% endset %}
+
+      {{ fields.field(
+         'software',
+         software_link,
+         _n('Software', 'Softwares', get_plural_number()),
+         {
+            'width': '100%',
+            'height': '100%',
+            'input_class' : 'd-flex col-xxl-7 field-container align-items-center'
+         }
+      ) }}
+
+   {% else %}
+
+      {{ fields.dropdownField(
+         'Software',
+         'softwares_id',
+         item.fields['softwares_id'],
+         "Software"|itemtype_name,
+         {
+            'entity': item.fields['entities_id'],
+            'condition': {
+               'is_template': 0,
+               'is_deleted': 0,
+            },
+            'on_change': 'this.form.submit()'
+         }
+      ) }}
+
+   {% endif %}
+
+
 
    {{ fields.nullField() }}
 

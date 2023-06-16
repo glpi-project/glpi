@@ -61,7 +61,7 @@ class ConfigureCommand extends AbstractCommand
      */
     private $cache_manager;
 
-    public function __construct(string $name = null)
+    public function __construct()
     {
         $this->cache_manager = new CacheManager();
 

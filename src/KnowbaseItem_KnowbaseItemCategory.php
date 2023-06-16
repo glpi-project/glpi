@@ -170,6 +170,8 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
             );
         }
 
+        $rand = mt_rand();
+
         if ($canedit && $ok_state) {
             echo '<form method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
             echo "<div class='center'>";
@@ -178,7 +180,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
             echo  __('Add a category');
             echo "</th><tr>";
             echo "<tr class='tab_bg_2'><td>";
-            $rand = KnowbaseItemCategory::dropdown();
+            KnowbaseItemCategory::dropdown(['rand' => $rand]);
             echo "</td><td>";
             echo "<input type=\"submit\" name=\"add\" value=\"" . _sx('button', 'Add') . "\" class=\"btn btn-primary\">";
             echo "</td></tr>";

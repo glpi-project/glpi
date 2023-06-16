@@ -396,10 +396,9 @@ class DBmysql
             $SQL_TOTAL_REQUEST++;
             $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST] = $query;
         }
-        if ($is_debug || $this->execution_time === true) {
-            $TIMER = new Timer();
-            $TIMER->start();
-        }
+
+        $TIMER = new Timer();
+        $TIMER->start();
 
         $this->checkForDeprecatedTableOptions($query);
 

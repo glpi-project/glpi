@@ -172,7 +172,7 @@ class InstallCommand extends AbstractConfigureCommand
         }
 
         if (!$this->isDbAlreadyConfigured() || $input->getOption('reconfigure')) {
-            $this->configureDatabase($input, $output, false, true, false, false, false);
+            $this->configureDatabase($input, $output, false);
 
             // Ensure global $DB is updated (used by GLPIKey)
             global $DB;

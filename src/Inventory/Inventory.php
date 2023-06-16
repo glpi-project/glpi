@@ -255,9 +255,8 @@ class Inventory
             $_SESSION['glpiname'] = $_SESSION['glpiinventoryuserrunning'];
         }
 
+        $main_start = microtime(true); //bench
         try {
-            //bench
-            $main_start = microtime(true);
             if (!$DB->inTransaction()) {
                 $DB->beginTransaction();
             }

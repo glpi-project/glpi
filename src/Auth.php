@@ -751,6 +751,7 @@ class Auth extends CommonGLPI
 
         // manage the $login_auth (force the auth source of the user account)
         $this->user->fields["auths_id"] = 0;
+        $authtype = null;
         if ($login_auth == 'local') {
             $this->auth_type = self::DB_GLPI;
             $this->user->fields["authtype"] = self::DB_GLPI;
@@ -782,6 +783,7 @@ class Auth extends CommonGLPI
                 }
 
                 $ldapservers = [];
+                $ldapservers_status = false;
                 //if LDAP enabled too, get user's infos from LDAP
                 if (Toolbox::canUseLdap()) {
                     //User has already authenticated, at least once: its ldap server is filled
@@ -803,7 +805,6 @@ class Auth extends CommonGLPI
                         }
                     }
 
-                    $ldapservers_status = false;
                     foreach ($ldapservers as $ldap_method) {
                         $ds = AuthLDAP::connectToServer(
                             $ldap_method["host"],
@@ -1098,7 +1099,6 @@ class Auth extends CommonGLPI
                         0,
                         "system",
                         3,
-                        "login",
                         "login",
                         "Connection failed for " . $login_name . " ($ip)"
                     );

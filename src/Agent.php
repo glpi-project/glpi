@@ -684,6 +684,7 @@ class Agent extends CommonDBTM
             $addresses = $this->getAgentURLs();
         }
 
+        $exception = null;
         $response = null;
         foreach ($addresses as $address) {
             $options = [
@@ -706,17 +707,17 @@ class Agent extends CommonDBTM
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;
                 break;
-            } catch (\GuzzleHttp\Exception\RequestException $e) {
+            } catch (\GuzzleHttp\Exception\RequestException $exception) {
                 // got an error response, we don't need to try other addresses
                 break;
-            } catch (\Throwable $e) {
+            } catch (\Throwable $exception) {
                 // many addresses will be incorrect
             }
         }
 
-        if (!$response) {
+        if ($response === null && $exception !== null) {
             // throw last exception on no response
-            throw $e;
+            throw $exception;
         }
 
         return $response;

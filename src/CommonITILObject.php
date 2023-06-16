@@ -196,7 +196,8 @@ abstract class CommonITILObject extends CommonDBTM
                             'text'              => $name,
                             'title'             => $name,
                             'use_notification'  => $email === '' ? false : ($default_use_notif && $userobj->isUserNotificationEnable()),
-                            'alternative_email' => $email,
+                            'default_email'     => $email,
+                            'alternative_email' => '',
                         ];
                     }
                 }
@@ -223,7 +224,8 @@ abstract class CommonITILObject extends CommonDBTM
                             'text'              => $name,
                             'title'             => $name,
                             'use_notification'  => $email === '' ? false : ($default_use_notif && $userobj->isUserNotificationEnable()),
-                            'alternative_email' => $email,
+                            'default_email'     => $email,
+                            'alternative_email' => '',
                         ];
                     }
                 }
@@ -251,7 +253,8 @@ abstract class CommonITILObject extends CommonDBTM
                             'text'              => $supplier_obj->fields['name'],
                             'title'             => $supplier_obj->fields['name'],
                             'use_notification'  => $supplier_obj->fields['email'] === '' ? false : $default_use_notif,
-                            'alternative_email' => $supplier_obj->fields['email'],
+                            'default_email'     => $supplier_obj->fields['email'],
+                            'alternative_email' => '',
                         ];
                     }
                 }
@@ -281,16 +284,23 @@ abstract class CommonITILObject extends CommonDBTM
                                     $actor_obj->fields["realname"],
                                     $actor_obj->fields["firstname"]
                                 );
-                                $completename = $name;
+                                $actors[] = $existing_actor + [
+                                    'text'          => $name,
+                                    'title'         => $name,
+                                    'default_email' => UserEmail::getDefaultForUser($actor_obj->fields["id"]),
+                                ];
+                            } elseif ($actor_obj instanceof Supplier) {
+                                $actors[] = $existing_actor + [
+                                    'text'          => $actor_obj->fields['name'],
+                                    'title'         => $actor_obj->fields['name'],
+                                    'default_email' => $actor_obj->fields['email'],
+                                ];
                             } else {
-                                $name         = $actor_obj->getName();
-                                $completename = $actor_obj->getRawCompleteName();
+                                $actors[] = $existing_actor + [
+                                    'text'  => $actor_obj->getName(),
+                                    'title' => $actor_obj->getRawCompleteName(),
+                                ];
                             }
-
-                            $actors[] = $existing_actor + [
-                                'text'  => $name,
-                                'title' => $completename,
-                            ];
                         } elseif (
                             $actor_obj instanceof User
                             && $existing_actor['items_id'] == 0
@@ -319,6 +329,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'text'              => $name,
                     'title'             => $name,
                     'use_notification'  => $user['use_notification'],
+                    'default_email'     => UserEmail::getDefaultForUser($user['users_id']),
                     'alternative_email' => $user['alternative_email'],
                 ];
             }
@@ -339,16 +350,19 @@ abstract class CommonITILObject extends CommonDBTM
         }
         if (isset($this->suppliers[$actortype])) {
             foreach ($this->suppliers[$actortype] as $supplier) {
-                $name = Dropdown::getDropdownName(Supplier::getTable(), $supplier['suppliers_id']);
-                $actors[] = [
-                    'id'                => $supplier['id'],
-                    'items_id'          => $supplier['suppliers_id'],
-                    'itemtype'          => 'Supplier',
-                    'text'              => $name,
-                    'title'             => $name,
-                    'use_notification'  => $supplier['use_notification'],
-                    'alternative_email' => $supplier['alternative_email'],
-                ];
+                $supplier_obj = new Supplier();
+                if ($supplier_obj->getFromDB($supplier['suppliers_id'])) {
+                    $actors[] = [
+                        'id'                => $supplier['id'],
+                        'items_id'          => $supplier['suppliers_id'],
+                        'itemtype'          => 'Supplier',
+                        'text'              => $supplier_obj->fields['name'],
+                        'title'             => $supplier_obj->fields['name'],
+                        'use_notification'  => $supplier['use_notification'],
+                        'default_email'     => $supplier_obj->fields['email'],
+                        'alternative_email' => $supplier['alternative_email'],
+                    ];
+                }
             }
         }
 
@@ -3573,7 +3587,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @since 0.84 new proto
      *
-     * @param integer $current   status
+     * @param int|null $current   status
      *
      * @return array
      **/
@@ -3581,7 +3595,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
 
         $tab = static::getAllStatusArray();
-        if (!isset($current)) {
+        if (!static::isStatusExists($current)) {
             $current = self::INCOMING;
         }
 
@@ -5026,6 +5040,7 @@ abstract class CommonITILObject extends CommonDBTM
             $params['_user_index'] = $options['_user_index'];
         }
 
+        $paramscomment = [];
         if ($CFG_GLPI['notifications_mailing']) {
             $paramscomment = [
                 'value'            => '__VALUE__',
@@ -8755,6 +8770,9 @@ abstract class CommonITILObject extends CommonDBTM
             case 'Supplier':
                 $actor = new $this->supplierlinkclass();
                 break;
+            default:
+                throw new \RuntimeException('Unexpected actor type.');
+                break;
         }
         return $actor;
     }
@@ -8993,8 +9011,8 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Load actors (users)
         $user_link_class = $self_item->userlinkclass;
-        $user_link_table = getTableForItemType($user_link_class);
-        if (!empty($user_link_class)) {
+        if (is_a($user_link_class, CommonITILActor::class, true)) {
+            $user_link_table = getTableForItemType($user_link_class);
             $linked_user_iterator = $DB->request([
                 'SELECT' => [
                     $user_link_class::getTableField($self_fk_field),
@@ -9016,34 +9034,34 @@ abstract class CommonITILObject extends CommonDBTM
                     $self_fk_field => new QuerySubQuery($base_common_itil_query)
                 ]
             ]);
-        }
-        foreach ($linked_user_iterator as $linked_user_row) {
-            $common_itil_id = $linked_user_row[$self_fk_field];
+            foreach ($linked_user_iterator as $linked_user_row) {
+                $common_itil_id = $linked_user_row[$self_fk_field];
 
-            // Init array
-            if (!isset($linked_actors[$common_itil_id])) {
-                $linked_actors[$common_itil_id] = [];
+                // Init array
+                if (!isset($linked_actors[$common_itil_id])) {
+                    $linked_actors[$common_itil_id] = [];
+                }
+
+                // Push users
+                $linked_actors[$common_itil_id][] = [
+                    'itemtype'  => User::getType(),
+                    'id'        => $linked_user_row['users_id'],
+                    'firstname' => $linked_user_row['firstname'],
+                    'realname'  => $linked_user_row['realname'],
+                    'name'      => formatUserName(
+                        $linked_user_row['users_id'],
+                        '',
+                        $linked_user_row['realname'],
+                        $linked_user_row['firstname']
+                    ),
+                ];
             }
-
-            // Push users
-            $linked_actors[$common_itil_id][] = [
-                'itemtype'  => User::getType(),
-                'id'        => $linked_user_row['users_id'],
-                'firstname' => $linked_user_row['firstname'],
-                'realname'  => $linked_user_row['realname'],
-                'name'      => formatUserName(
-                    $linked_user_row['users_id'],
-                    '',
-                    $linked_user_row['realname'],
-                    $linked_user_row['firstname']
-                ),
-            ];
         }
 
         // Load actors (groups)
         $group_link_class = $self_item->grouplinkclass;
-        $group_link_table = getTableForItemType($group_link_class);
-        if (!empty($group_link_class)) {
+        if (is_a($group_link_class, CommonITILActor::class, true)) {
+            $group_link_table = getTableForItemType($group_link_class);
             $linked_group_iterator = $DB->request([
                 'SELECT' => [
                     $group_link_class::getTableField($self_fk_field),
@@ -9064,27 +9082,27 @@ abstract class CommonITILObject extends CommonDBTM
                     $self_fk_field => new QuerySubQuery($base_common_itil_query)
                 ]
             ]);
-        }
-        foreach ($linked_group_iterator as $linked_group_row) {
-            $common_itil_id = $linked_group_row[$self_fk_field];
+            foreach ($linked_group_iterator as $linked_group_row) {
+                $common_itil_id = $linked_group_row[$self_fk_field];
 
-            // Init array
-            if (!isset($linked_actors[$common_itil_id])) {
-                $linked_actors[$common_itil_id] = [];
+                // Init array
+                if (!isset($linked_actors[$common_itil_id])) {
+                    $linked_actors[$common_itil_id] = [];
+                }
+
+                // Push groups
+                $linked_actors[$common_itil_id][] = [
+                    'itemtype' => Group::getType(),
+                    'id'       => $linked_group_row['groups_id'],
+                    'name'     => $linked_group_row['name'],
+                ];
             }
-
-            // Push groups
-            $linked_actors[$common_itil_id][] = [
-                'itemtype' => Group::getType(),
-                'id'       => $linked_group_row['groups_id'],
-                'name'     => $linked_group_row['name'],
-            ];
         }
 
         // Load actors (supplier)
         $supplier_link_class = $self_item->supplierlinkclass;
-        $suplier_link_table = getTableForItemType($supplier_link_class);
-        if (!empty($supplier_link_class)) {
+        if (is_a($supplier_link_class, CommonITILActor::class, true)) {
+            $suplier_link_table = getTableForItemType($supplier_link_class);
             $linked_supplier_iterator = $DB->request([
                 'SELECT' => [
                     $supplier_link_class::getTableField($self_fk_field),
@@ -9105,21 +9123,21 @@ abstract class CommonITILObject extends CommonDBTM
                     $self_fk_field => new QuerySubQuery($base_common_itil_query)
                 ]
             ]);
-        }
-        foreach ($linked_supplier_iterator as $linked_supplier_row) {
-            $common_itil_id = $linked_supplier_row[$self_fk_field];
+            foreach ($linked_supplier_iterator as $linked_supplier_row) {
+                $common_itil_id = $linked_supplier_row[$self_fk_field];
 
-            // Init array
-            if (!isset($linked_actors[$common_itil_id])) {
-                $linked_actors[$common_itil_id] = [];
+                // Init array
+                if (!isset($linked_actors[$common_itil_id])) {
+                    $linked_actors[$common_itil_id] = [];
+                }
+
+                // Push groups
+                $linked_actors[$common_itil_id][] = [
+                    'itemtype' => Supplier::getType(),
+                    'id'       => $linked_supplier_row['suppliers_id'],
+                    'name'     => $linked_supplier_row['name'],
+                ];
             }
-
-            // Push groups
-            $linked_actors[$common_itil_id][] = [
-                'itemtype' => Supplier::getType(),
-                'id'       => $linked_supplier_row['suppliers_id'],
-                'name'     => $linked_supplier_row['name'],
-            ];
         }
 
         // Load linked tickets (only for tickets)
@@ -9810,7 +9828,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @return void
      */
-    final protected function fillInputForBusinessRules(array &$input)
+    protected function fillInputForBusinessRules(array &$input)
     {
         global $DB;
 

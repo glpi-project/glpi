@@ -787,11 +787,11 @@ class Cartridge extends CommonDBRelation
 
         $number = count($iterator);
 
+        $rand = mt_rand();
         echo "<div class='spaced'>";
         // Display the pager
         Html::printAjaxPager(Consumable::getTypeName(Session::getPluralNumber()), $start, $total_number);
         if ($canedit && $number) {
-            $rand = mt_rand();
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $actions = ['purge' => _x('button', 'Delete permanently'),
                 'Infocom' . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate'

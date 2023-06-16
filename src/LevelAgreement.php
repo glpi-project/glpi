@@ -431,6 +431,7 @@ abstract class LevelAgreement extends CommonDBChild
                     ]
                 );
                 echo "</td>";
+                $link = '';
                 if ($slm->fields['use_ticket_calendar']) {
                     $link = __('Calendar of the ticket');
                 } else if (!$slm->fields['calendars_id']) {

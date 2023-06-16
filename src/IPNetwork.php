@@ -706,6 +706,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             $entityID = $_SESSION['glpiactive_entity'];
         }
         $entitiesID = [];
+        $ORDER_ORIENTATION = '';
         switch ($relation) {
             case "is contained by":
                 $ORDER_ORIENTATION = 'ASC';
@@ -722,7 +723,6 @@ class IPNetwork extends CommonImplicitTreeDropdown
                 break;
 
             case "equals":
-                $ORDER_ORIENTATION = '';
                 if ($recursive) {
                     $entitiesID = getSonsAndAncestorsOf('glpi_entities', $entityID);
                 }
