@@ -1192,7 +1192,7 @@ class OperatingSystem extends AbstractInventoryAsset
         $this->string($theos['install_date'])->isIdenticalTo("2022-10-14");
     }
 
-    public function testReplayruleOnOS()
+    public function testReplayRuleOnOS()
     {
         $os = new \OperatingSystem();
         $cos = new \Item_OperatingSystem();
