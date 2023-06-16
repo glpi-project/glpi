@@ -181,7 +181,7 @@ class Schema implements \ArrayAccess
         if (isset($schema['enum'])) {
             $enum = $schema['enum'];
         }
-        return new Schema(type: $type, format: $format, properties: $properties, items: $items, enum: $enum);
+        return new Schema(type: $type, format: $format, properties: $properties, items: $items, enum: $enum, pattern: $pattern);
     }
 
     public function offsetExists(mixed $offset): bool
