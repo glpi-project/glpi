@@ -1263,18 +1263,20 @@ class OperatingSystem extends AbstractInventoryAsset
         $this->string($theos1['install_date'])->isIdenticalTo("2022-01-01");
 
         //enable rule to clean OS
-        $DB->update(
-            Rule::getTable(),
-            [
-                'is_active' => 1,
-            ],
-            [
-                "sub_type" =>
+        $this->boolean(
+            $DB->update(
+                Rule::getTable(),
                 [
-                    RuleDictionnaryOperatingSystem::class,
+                    'is_active' => 1,
+                ],
+                [
+                    "sub_type" =>
+                    [
+                        RuleDictionnaryOperatingSystem::class,
+                    ]
                 ]
-            ]
-        );
+            )
+        )->isTrue();
 
         //replay rule
         $this->login('glpi', 'glpi');
