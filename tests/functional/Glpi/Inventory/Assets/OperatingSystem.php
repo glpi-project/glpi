@@ -1183,6 +1183,7 @@ class OperatingSystem extends AbstractInventoryAsset
         $list = $os->find();
         $this->integer(count($list))->isIdenticalTo(2);
 
+        //but still only one linked to computer
         $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($list))->isIdenticalTo(1);
         $theos = current($list);
