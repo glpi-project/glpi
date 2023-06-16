@@ -189,7 +189,7 @@ function step3($host, $user, $password, $update)
        // get databases
         if (
             $engine_requirement->isValidated() && $config_requirement->isValidated()
-            && $DB_list = $link->doQuery("SHOW DATABASES")
+            && $DB_list = $link->query("SHOW DATABASES")
         ) {
             while ($row = $DB_list->fetch_array()) {
                 if (
