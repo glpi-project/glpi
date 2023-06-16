@@ -641,7 +641,6 @@ HTML;
             $palette = self::getGradientPalette(
                 $p['color'],
                 $nb_series,
-                ".dashboard #{$chart_id}",
                 false
             );
             $colors = $palette['colors'];
@@ -1038,8 +1037,7 @@ JAVASCRIPT;
             $nb_colors = $p['distributed'] ? $nb_labels : $nb_series;
             $palette = self::getGradientPalette(
                 $p['color'],
-                $nb_colors,
-                "#{$chart_id}"
+                $nb_colors
             )['colors'];
         }
         $palette_json = json_encode($palette);
@@ -1408,8 +1406,7 @@ JAVASCRIPT;
         if ($p['use_gradient']) {
             $palette = self::getGradientPalette(
                 $p['color'],
-                $nb_series,
-                "#{$chart_id}"
+                $nb_series
             )['colors'];
         }
 
