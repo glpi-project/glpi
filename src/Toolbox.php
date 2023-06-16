@@ -36,6 +36,7 @@
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
+use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Rules\RulesManager;
 use Laminas\Mail\Storage\AbstractStorage;
@@ -519,17 +520,19 @@ class Toolbox
      * @param string      $file        storage filename
      * @param string      $filename    file title
      * @param string|null $mime        file mime type
-     * @param boolean     $add_expires add expires headers maximize cacheability ?
+     * @param boolean     $expires_headers add expires headers maximize cacheability ?
+     * @param boolean     $return_response return a Response object instead of sending it directly
      *
-     * @return void
+     * @return Response|void
+     * @phpstan-return $return_response ? Response : void
      **/
-    public static function sendFile($file, $filename, $mime = null, $expires_headers = false)
+    public static function sendFile($file, $filename, $mime = null, $expires_headers = false, bool $return_response = false)
     {
 
        // Test securite : document in DOC_DIR
         $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
 
-        if (strstr($tmpfile, "../") || strstr($tmpfile, "..\\")) {
+        if (str_contains($tmpfile, "../") || str_contains($tmpfile, "..\\")) {
             Event::log(
                 $file,
                 "sendFile",
@@ -537,11 +540,17 @@ class Toolbox
                 "security",
                 $_SESSION["glpiname"] . " try to get a non standard file."
             );
+            if ($return_response) {
+                return new Response(403);
+            }
             echo "Security attack!!!";
             die(1);
         }
 
         if (!file_exists($file)) {
+            if ($return_response) {
+                return new Response(404);
+            }
             echo "Error file $file does not exist";
             die(1);
         }
@@ -584,35 +593,52 @@ class Toolbox
             ob_clean();
         }
 
-        // Now send the file with header() magic
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastModified) . " GMT");
-        header("Etag: $etag");
+        $headers = [
+            'Last-Modified' => gmdate("D, d M Y H:i:s", $lastModified) . " GMT",
+            'Etag'          => $etag,
+            'Cache-Control' => 'private',
+        ];
         header_remove('Pragma');
-        header('Cache-Control: private');
         if ($expires_headers) {
             $max_age = WEEK_TIMESTAMP;
-            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
+            $headers['Expires'] = gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age);
         }
-        header(
-            "Content-disposition:$attachment filename=\"" .
+        $content_disposition = "$attachment filename=\"" .
             addslashes(mb_convert_encoding($filename, 'ISO-8859-1', 'UTF-8')) .
             "\"; filename*=utf-8''" .
-            rawurlencode($filename)
-        );
-        header("Content-type: " . $mime);
+            rawurlencode($filename);
+        $headers['Content-Disposition'] = $content_disposition;
+        $headers['Content-type'] = $mime;
 
        // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
        // http://tools.ietf.org/html/rfc7232#section-3.3
+        $condition_met = true;
         if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
-            http_response_code(304); //304 - Not Modified
-            exit;
+            $condition_met = false;
         }
         if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified) {
-            http_response_code(304); //304 - Not Modified
+            $condition_met = false;
+        }
+        if (!$condition_met) {
+            $response = new Response(304, $headers);
+            if ($return_response) {
+                return $response;
+            }
+            $response->send();
             exit;
         }
-
-        readfile($file) or die("Error opening file $file");
+        $content = file_get_contents($file);
+        if ($content === false) {
+            if ($return_response) {
+                return new Response(500);
+            }
+            die("Error opening file $file");
+        }
+        $response = new Response(200, $headers, $content);
+        if ($return_response) {
+            return $response;
+        }
+        $response->send();
     }
 
 

@@ -518,6 +518,14 @@ final class ManagementController extends AbstractController
     )]
     public function getDocument(Request $request): Response
     {
+        if ($request->hasHeader('Accept') && $request->getHeaderLine('Accept') === 'application/octet-stream') {
+            // User is requesting the actual file
+            $document = new Document();
+            if ($document->getFromDB($request->getAttribute('id'))) {
+                return $document->send(null, true);
+            }
+            return self::getNotFoundErrorResponse();
+        }
         return Search::getOneBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
     }
 
