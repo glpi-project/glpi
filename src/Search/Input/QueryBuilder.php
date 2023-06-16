@@ -405,7 +405,7 @@ final class QueryBuilder implements SearchInputInterface
             'criteria_value' => $value,
             'itemtype'   => $request["itemtype"],
             'num'        => $num,
-            'criteria'   => $criteria ?? null,
+            'criteria'   => $criteria,
             'prefix'     => $prefix,
             'p'         => $p,
             'row_id'      => $rowid,
