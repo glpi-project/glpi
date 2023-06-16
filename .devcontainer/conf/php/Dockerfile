@@ -10,7 +10,7 @@ RUN apk add --update --no-cache \
 
 RUN \
     docker-php-ext-install bz2 && \
-    docker-php-ext-configure exif && \
+    docker-php-ext-install exif && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-install gd && \
     docker-php-ext-configure intl && docker-php-ext-install intl && \
     docker-php-ext-install ldap && \
