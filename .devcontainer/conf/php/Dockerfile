@@ -1,7 +1,7 @@
 FROM php:8.1-fpm-alpine
 
 RUN apk add --update --no-cache \
-    nodejs-current npm mysql-client curl
+    nodejs-current npm mysql-client curl patch
 
 RUN apk add --update --no-cache \
     icu-dev icu-libs zlib-dev g++ make automake autoconf libzip-dev \
