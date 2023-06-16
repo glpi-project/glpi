@@ -37,6 +37,7 @@ namespace Glpi\Api\HL\Controller;
 
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
@@ -291,7 +292,7 @@ final class AdministrationController extends AbstractController
         ];
     }
 
-    #[Route(path: '/User', methods: ['GET'])]
+    #[Route(path: '/User', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search users',
         responses: [
@@ -303,7 +304,7 @@ final class AdministrationController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('User'), $request->getParameters());
     }
 
-    #[Route(path: '/Group', methods: ['GET'])]
+    #[Route(path: '/Group', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search groups',
         responses: [
@@ -315,7 +316,7 @@ final class AdministrationController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Group'), $request->getParameters());
     }
 
-    #[Route(path: '/Entity', methods: ['GET'])]
+    #[Route(path: '/Entity', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search entities',
         responses: [
@@ -327,7 +328,7 @@ final class AdministrationController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Entity'), $request->getParameters());
     }
 
-    #[Route(path: '/Profile', methods: ['GET'])]
+    #[Route(path: '/Profile', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search profiles',
         responses: [
@@ -369,7 +370,7 @@ final class AdministrationController extends AbstractController
         return $emails;
     }
 
-    #[Route(path: '/User/me', methods: ['GET'])]
+    #[Route(path: '/User/me', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the current user',
         responses: [
@@ -382,7 +383,7 @@ final class AdministrationController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('User'), ['id' => $my_user_id], $request->getParameters());
     }
 
-    #[Route(path: '/User/me/emails', methods: ['GET'])]
+    #[Route(path: '/User/me/emails', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the current user\'s email addresses',
         responses: [
@@ -453,7 +454,7 @@ final class AdministrationController extends AbstractController
         return self::getCRUDCreateResponse($emails_id, self::getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $emails_id]));
     }
 
-    #[Route(path: '/User/me/emails/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/User/me/emails/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a specific email address for the current user',
         responses: [
@@ -485,7 +486,7 @@ final class AdministrationController extends AbstractController
         return Search::createBySchema($this->getKnownSchema('User'), $request->getParameters(), [self::class, 'getUserByID']);
     }
 
-    #[Route(path: '/User/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/User/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a user by ID',
         responses: [
@@ -497,7 +498,7 @@ final class AdministrationController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/User/username/{username}', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
+    #[Route(path: '/User/username/{username}', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a user by username',
         responses: [
@@ -581,7 +582,7 @@ final class AdministrationController extends AbstractController
         return Search::createBySchema($this->getKnownSchema('Group'), $request->getParameters(), [self::class, 'getGroupByID']);
     }
 
-    #[Route(path: '/Group/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Group/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a group by ID',
         responses: [
@@ -634,7 +635,7 @@ final class AdministrationController extends AbstractController
         return Search::createBySchema($this->getKnownSchema('Entity'), $request->getParameters(), [self::class, 'getEntityByID']);
     }
 
-    #[Route(path: '/Entity/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Entity/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get an entity by ID',
         responses: [
@@ -687,7 +688,7 @@ final class AdministrationController extends AbstractController
         return Search::createBySchema($this->getKnownSchema('Profile'), $request->getParameters(), [self::class, 'getProfileByID']);
     }
 
-    #[Route(path: '/Profile/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Profile/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a profile by ID',
         responses: [

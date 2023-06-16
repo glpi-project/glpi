@@ -451,14 +451,24 @@ EOT;
             } else {
                 $resolved_schema = $response->getSchema()->toArray();
             }
+            $response_media_type = $response->getMediaType();
             $response_schema = [
                 'description' => $response->getDescription(),
                 'content' => [
-                    $response->getMediaType() => [
+                    $response_media_type => [
                         'schema' => $resolved_schema
                     ]
-                ]
+                ],
             ];
+            if ($response_media_type === 'application/json') {
+                // add csv and xml
+                $response_schema['content']['text/csv'] = [
+                    'schema' => $resolved_schema
+                ];
+                $response_schema['content']['application/xml'] = [
+                    'schema' => $resolved_schema
+                ];
+            }
             $response_schemas[$response->getStatusCode()] = $response_schema;
         }
         return $response_schemas;
@@ -476,14 +486,17 @@ EOT;
         foreach ($route_methods as $route_method) {
             $route_doc = $route_path->getRouteDoc($route_method);
             $method = strtolower($route_method);
+            $response_schema = $this->getPathResponseSchemas($route_path, $route_method);
             $path_schema = [
                 'tags' => $route_path->getRouteTags(),
-                'responses' => $this->getPathResponseSchemas($route_path, $route_method),
+                'responses' => $response_schema,
             ];
             if (!isset($path_schema['responses']['200'])) {
                 $path_schema['responses']['200'] = [
                     'description' => 'Success'
                 ];
+            } else {
+                $path_schema['responses']['200']['produces'] = array_keys($response_schema[200]['content']);
             }
             if (!isset($path_schema['responses']['500'])) {
                 $path_schema['responses']['500'] = [

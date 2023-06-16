@@ -52,6 +52,7 @@ use Document;
 use Domain;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Search;
 use Glpi\Http\Request;
@@ -204,7 +205,7 @@ final class ManagementController extends AbstractController
         return $schemas;
     }
 
-    #[Route(path: '/Budget', methods: ['GET'])]
+    #[Route(path: '/Budget', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search budgets',
         responses: [
@@ -216,7 +217,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Budget'), $request->getParameters());
     }
 
-    #[Route(path: '/Budget/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Budget/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a budget by ID',
         responses: [
@@ -261,7 +262,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Budget'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/License', methods: ['GET'])]
+    #[Route(path: '/License', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search licenses',
         responses: [
@@ -273,7 +274,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('License'), $request->getParameters());
     }
 
-    #[Route(path: '/License/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/License/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a license by ID',
         responses: [
@@ -318,7 +319,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('License'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Supplier', methods: ['GET'])]
+    #[Route(path: '/Supplier', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search suppliers',
         responses: [
@@ -330,7 +331,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Supplier'), $request->getParameters());
     }
 
-    #[Route(path: '/Supplier/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Supplier/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a supplier by ID',
         responses: [
@@ -383,7 +384,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Supplier'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Contact', methods: ['GET'])]
+    #[Route(path: '/Contact', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search contacts',
         responses: [
@@ -395,7 +396,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Contact'), $request->getParameters());
     }
 
-    #[Route(path: '/Contact/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Contact/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a contact by ID',
         responses: [
@@ -440,7 +441,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Contact'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Contract', methods: ['GET'])]
+    #[Route(path: '/Contract', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search contracts',
         responses: [
@@ -452,7 +453,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Contract'), $request->getParameters());
     }
 
-    #[Route(path: '/Contract/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Contract/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a contract by ID',
         responses: [
@@ -497,7 +498,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Contract'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Document', methods: ['GET'])]
+    #[Route(path: '/Document', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search documents',
         responses: [
@@ -509,7 +510,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Document'), $request->getParameters());
     }
 
-    #[Route(path: '/Document/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Document/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a document by ID',
         responses: [
@@ -554,7 +555,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Line', methods: ['GET'])]
+    #[Route(path: '/Line', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search lines',
         responses: [
@@ -566,7 +567,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Line'), $request->getParameters());
     }
 
-    #[Route(path: '/Line/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Line/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a line by ID',
         responses: [
@@ -611,7 +612,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Line'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Certificate', methods: ['GET'])]
+    #[Route(path: '/Certificate', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search certificates',
         responses: [
@@ -623,7 +624,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Certificate'), $request->getParameters());
     }
 
-    #[Route(path: '/Certificate/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Certificate/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a certificate by ID',
         responses: [
@@ -668,7 +669,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Certificate'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/DataCenter', methods: ['GET'])]
+    #[Route(path: '/DataCenter', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search data centers',
         responses: [
@@ -680,7 +681,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('DataCenter'), $request->getParameters());
     }
 
-    #[Route(path: '/DataCenter/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/DataCenter/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a data center by ID',
         responses: [
@@ -725,7 +726,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('DataCenter'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Cluster', methods: ['GET'])]
+    #[Route(path: '/Cluster', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search clusters',
         responses: [
@@ -737,7 +738,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Cluster'), $request->getParameters());
     }
 
-    #[Route(path: '/Cluster/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Cluster/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a cluster by ID',
         responses: [
@@ -782,7 +783,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Cluster'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Domain', methods: ['GET'])]
+    #[Route(path: '/Domain', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search domains',
         responses: [
@@ -794,7 +795,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Domain'), $request->getParameters());
     }
 
-    #[Route(path: '/Domain/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Domain/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a domain by ID',
         responses: [
@@ -839,7 +840,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Domain'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Appliance', methods: ['GET'])]
+    #[Route(path: '/Appliance', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search appliances',
         responses: [
@@ -851,7 +852,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Appliance'), $request->getParameters());
     }
 
-    #[Route(path: '/Appliance/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Appliance/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a appliance by ID',
         responses: [
@@ -896,7 +897,7 @@ final class ManagementController extends AbstractController
         return Search::deleteBySchema($this->getKnownSchema('Appliance'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Database', methods: ['GET'])]
+    #[Route(path: '/Database', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search databases',
         responses: [
@@ -908,7 +909,7 @@ final class ManagementController extends AbstractController
         return Search::searchBySchema($this->getKnownSchema('Database'), $request->getParameters());
     }
 
-    #[Route(path: '/Database/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/Database/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a database by ID',
         responses: [

@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
@@ -426,7 +427,7 @@ class ComponentController extends AbstractController
         ];
     }
 
-    #[Route(path: '/Components', methods: ['GET'], tags: ['Components'])]
+    #[Route(path: '/Components', methods: ['GET'], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get all available component types',
         methods: ['GET'],
@@ -472,7 +473,7 @@ class ComponentController extends AbstractController
 
     #[Route(path: '/Components/{component_type}', methods: ['GET'], requirements: [
         'component_type' => '\w*'
-    ], tags: ['Components'])]
+    ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the component definitions of the specified type',
     )]
@@ -485,7 +486,7 @@ class ComponentController extends AbstractController
     #[Route(path: '/Components/{component_type}/{id}', methods: ['GET'], requirements: [
         'component_type' => '\w*',
         'id' => '\d+'
-    ], tags: ['Components'])]
+    ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a specific component definition',
     )]
@@ -512,7 +513,7 @@ class ComponentController extends AbstractController
     #[Route(path: '/Components/{component_type}/{id}/Items', methods: ['GET'], requirements: [
         'component_type' => '\w*',
         'id' => '\d+'
-    ], tags: ['Components'])]
+    ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the components of a specific component definition',
     )]
@@ -569,7 +570,7 @@ class ComponentController extends AbstractController
     #[Route(path: '/Components/{component_type}/Items/{id}', methods: ['GET'], requirements: [
         'component_type' => '\w*',
         'id' => '\d+'
-    ], tags: ['Components'])]
+    ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a specific component',
     )]
@@ -585,7 +586,7 @@ class ComponentController extends AbstractController
         'itemtype' => '\w*',
         'component_type' => '\w*',
         'id' => '\d+'
-    ], tags: ['Assets', 'Components'])]
+    ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get all components for an asset',
     )]
