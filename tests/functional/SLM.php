@@ -932,4 +932,323 @@ class SLM extends DbTestCase
         $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
         $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
     }
+
+    protected function laProvider(): iterable
+    {
+        foreach ([\OLA::class, \SLA::class] as $la_class) {
+            foreach ([\SLM::TTO, \SLM::TTR] as $la_type) {
+                // 30 minutes LA without pauses
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 30,
+                        'definition_time' => 'minute',
+                    ],
+                    'begin_date'        => '2023-06-09 08:46:12',
+                    'pauses'            => [],
+                    'target_date'       => '2023-06-09 09:16:12',
+                    'waiting_duration'  => 0,
+                ];
+
+                // 30 hours LA with many pauses within the same day
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 30,
+                        'definition_time' => 'minute',
+                    ],
+                    'begin_date'        => '2023-06-09 08:46:12',
+                    'pauses'            => [
+                        [
+                            // pause: 1 h 18 m 12 s (4692 s)
+                            'from' => '2023-06-09 08:47:42',
+                            'to'   => '2023-06-09 10:05:54',
+                        ],
+                        [
+                            // pause: 25 m 25 s (1525 s)
+                            'from' => '2023-06-09 10:09:13',
+                            'to'   => '2023-06-09 10:34:38',
+                        ],
+                        [
+                            // pause: 45 m 36 s (2736 s)
+                            'from' => '2023-06-09 10:43:41',
+                            'to'   => '2023-06-09 11:29:17',
+                        ],
+                    ],
+                    'target_date'       => $la_type == \SLM::TTR
+                        // 2023-06-09 08:46:12 + 30 m (LA time) + 2 h 29 m 13 s (waiting time)
+                        ? '2023-06-09 11:45:25'
+                        // TTO does is not impacted by waiting times
+                        : '2023-06-09 09:16:12'
+                    ,
+                    'waiting_duration'  => $la_type == \SLM::TTR
+                        ? 8953 // 4692 + 1525 + 2736
+                        : 0,
+                ];
+
+                // 4 hours LA without pauses
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 4,
+                        'definition_time' => 'hour',
+                    ],
+                    'begin_date'        => '2023-06-09 08:46:12',
+                    'pauses'            => [],
+                    'target_date'       => '2023-06-09 12:46:12',
+                    'waiting_duration'  => 0,
+                ];
+
+                // 4 hours LA with a pause within the same day
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 4,
+                        'definition_time' => 'hour',
+                    ],
+                    'begin_date'        => '2023-06-09 08:46:12',
+                    'pauses'            => [
+                        [
+                            // pause: 2 h 8 m 22 s (7702 s)
+                            'from' => '2023-06-09 09:15:27',
+                            'to'   => '2023-06-09 11:23:49',
+                        ],
+                    ],
+                    'target_date'       => $la_type == \SLM::TTR
+                        // 2023-06-09 08:46:12 + 4 h (LA time) + 2h 8 m 22 s (waiting time)
+                        ? '2023-06-09 14:54:34'
+                        // TTO does is not impacted by waiting times
+                        : '2023-06-09 12:46:12'
+                    ,
+                    'waiting_duration'  => $la_type == \SLM::TTR ? 7702 : 0,
+                ];
+
+                // 4 hours LA with pauses accross multiple days
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 4,
+                        'definition_time' => 'hour',
+                    ],
+                    'begin_date'        => '2023-06-05 10:00:00', // LA will start at 10:30
+                    'pauses'            => [
+                        [
+                            // From calendar POV, pause is
+                            // from 11:00:00 to 19:00:00 on 2023-06-05 (8 h),
+                            // from 08:30:00 to 19:00:00 on 2023-06-06 (10 h 30 m),
+                            // from 08:30:00 to 09:30:00 on 2023-06-07 (1 h).
+                            // pause: 8 h + 10 h 30 m + 1 h = 19 h 30 m (70 200 s)
+                            'from' => '2023-06-05 11:00:00',
+                            'to'   => '2023-06-07 09:30:00',
+                        ],
+                        [
+                            // From calendar POV, pause is
+                            // from 10:00:00 to 19:00:00 on 2023-06-07 (9 h),
+                            // from 08:30:00 to 09:00:00 on 2023-06-08 (30 m).
+                            // pause: 9 h + 30 m = 9 h 30 m (34 200 s)
+                            'from' => '2023-06-07 10:00:00',
+                            'to'   => '2023-06-08 09:00:00',
+                        ],
+                    ],
+                    'target_date'       => $la_type == \SLM::TTR
+                        // 2023-06-05 10:30:00 + 4 h (LA time) + 29 h (waiting time) + non-working hours
+                        ? '2023-06-08 12:00:00'
+                        // TTO does is not impacted by waiting times
+                        : '2023-06-05 14:30:00'
+                    ,
+                    'waiting_duration'  => $la_type == \SLM::TTR ? 104400 : 0,
+                ];
+
+                // 5 days LA over a week-end without pauses
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 5,
+                        'definition_time' => 'day',
+                    ],
+                    'begin_date'        => '2023-06-09 08:46:12',
+                    'pauses'            => [],
+                    'target_date'       => '2023-06-16 08:46:12',
+                    'waiting_duration'  => 0,
+                ];
+
+                // 5 days LA over a week-end without pauses
+                // + `end_of_working_day`
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'               => $la_type,
+                        'number_time'        => 5,
+                        'definition_time'    => 'day',
+                        'end_of_working_day' => 1,
+                    ],
+                    'begin_date'        => '2023-06-09 08:46:12',
+                    'pauses'            => [],
+                    'target_date'       => '2023-06-16 19:00:00',
+                    'waiting_duration'  => 0,
+                ];
+
+                // 5 days LA with multiple pauses, including a pause of multiple days over a week-end
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 5,
+                        'definition_time' => 'day',
+                    ],
+                    'begin_date'        => '2023-06-07 10:00:00',
+                    'pauses'            => [
+                        [
+                            // From calendar POV, pause is
+                            // from 11:00:00 to 19:00:00 on 2023-06-07 (8 h),
+                            // from 08:30:00 to 19:00:00 on 2023-06-08 (10 h 30 m),
+                            // from 08:30:00 to 19:00:00 on 2023-06-09 (10 h 30 m),
+                            // not counted on 2023-06-10 as it is not a working day,
+                            // not counted on 2023-06-11 as it is not a working day,
+                            // from 10:30:00 to 19:00:00 on 2023-06-12 (08 h 30 m),
+                            // from 08:30:00 to 11:00:00 on 2023-06-13 (2 h 30 m).
+                            // pause: 8 h + 10 h 30 m + 10 h 30 m + 10 h 30 m + 2 h 30 m = 40 h (144 000 s)
+                            'from' => '2023-06-07 11:00:00',
+                            'to'   => '2023-06-13 11:00:00',
+                        ],
+                        [
+                            // From calendar POV, pause is from 08:30:00 to 18:00:00 on 2023-06-07 (9 h 30 m),
+                            // pause: 9 h 30 m (34 200 s)
+                            'from' => '2023-06-14 07:00:00',
+                            'to'   => '2023-06-14 18:00:00',
+                        ],
+                    ],
+                    'target_date'       => $la_type == \SLM::TTR
+                        // 2023-06-07 10:00:00 + 5 days (LA time)
+                        // -> 2023-06-14 10:00:00 + 49 h 30 m (waiting time) + non-working hours
+                        ? '2023-06-21 09:00:00'
+                        : '2023-06-14 10:00:00' // TTO does is not impacted by waiting times
+                    ,
+                    'waiting_duration'  => $la_type == \SLM::TTR ? 178200 : 0,
+                ];
+
+                // 5 days LA with multiple pauses, including a pause of multiple days over a week-end
+                // + `end_of_working_day`
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'               => $la_type,
+                        'number_time'        => 5,
+                        'definition_time'    => 'day',
+                        'end_of_working_day' => 1,
+                    ],
+                    'begin_date'        => '2023-06-07 10:00:00',
+                    'pauses'            => [
+                        [
+                            // From calendar POV, pause is
+                            // from 11:00:00 to 19:00:00 on 2023-06-07 (8 h),
+                            // from 08:30:00 to 19:00:00 on 2023-06-08 (10 h 30 m),
+                            // from 08:30:00 to 19:00:00 on 2023-06-09 (10 h 30 m),
+                            // not counted on 2023-06-10 as it is not a working day,
+                            // not counted on 2023-06-11 as it is not a working day,
+                            // from 10:30:00 to 19:00:00 on 2023-06-12 (08 h 30 m),
+                            // from 08:30:00 to 11:00:00 on 2023-06-13 (2 h 30 m).
+                            // pause: 8 h + 10 h 30 m + 10 h 30 m + 10 h 30 m + 2 h 30 m = 40 h (144 000 s)
+                            'from' => '2023-06-07 11:00:00',
+                            'to'   => '2023-06-13 11:00:00',
+                        ],
+                        [
+                            // From calendar POV, pause is from 08:30:00 to 18:00:00 on 2023-06-07 (9 h 30 m),
+                            // pause: 9 h 30 m (34 200 s)
+                            'from' => '2023-06-14 07:00:00',
+                            'to'   => '2023-06-14 18:00:00',
+                        ],
+                    ],
+                    'target_date'       => $la_type == \SLM::TTR
+                        // 2023-06-07 10:00:00 + 5 days/end of working day(LA time)
+                        // -> 2023-06-14 19:00:00 + 49 h 30 m (waiting time) + non-working hours
+                        ? '2023-06-21 18:00:00'
+                        // TTO does is not impacted by waiting times
+                        : '2023-06-14 19:00:00'
+                    ,
+                    'waiting_duration'  => $la_type == \SLM::TTR ? 178200 : 0,
+                ];
+            }
+        }
+    }
+
+    /**
+     * @dataProvider laProvider
+     */
+    public function testComputation(
+        string $la_class,
+        array $la_params,
+        string $begin_date,
+        array $pauses,
+        string $target_date,
+        int $waiting_duration
+    ): void {
+        $this->login(); // must be logged in to be able to change ticket status
+
+        // Create a calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
+        $calendar = $this->createItem(\Calendar::class, ['name' => __FUNCTION__]);
+        for ($i = 1; $i <= 5; $i++) {
+            $this->createItem(
+                \CalendarSegment::class,
+                [
+                    'calendars_id' => $calendar->getID(),
+                    'day'          => $i,
+                    'begin'        => $i == 1 ? '10:30:00' : '08:30:00', // monday starts later
+                    'end'          => '19:00:00',
+                ]
+            );
+        }
+
+        // Create a service level
+        $slm = $this->createItem(
+            \SLM::class,
+            [
+                'name'         => __FUNCTION__,
+                'calendars_id' => $calendar->getID(),
+            ]
+        );
+
+        // Create a level agreement item
+        $la = $this->createItem(
+            $la_class,
+            [
+                'name'    => __FUNCTION__,
+                'slms_id' => $slm->getID(),
+            ] + $la_params
+        );
+
+        // Create a ticket
+        $_SESSION['glpi_currenttime'] = $begin_date;
+
+        list($la_date_field, $la_fk_field) = $la->getFieldNames($la->fields['type']);
+        $ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'       => __FUNCTION__,
+                'content'    => __FUNCTION__,
+                $la_fk_field => $la->getID(),
+            ]
+        );
+
+        // Apply pauses
+        foreach ($pauses as $pause) {
+            $_SESSION['glpi_currenttime'] = $pause['from'];
+            $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => \Ticket::WAITING]);
+
+            $_SESSION['glpi_currenttime'] = $pause['to'];
+            $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => \Ticket::ASSIGNED]);
+        }
+
+        // Reload ticket
+        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
+
+        $this->integer($ticket->fields[$la_class::getWaitingFieldName()])->isEqualTo($waiting_duration);
+        $this->string($ticket->fields[$la_date_field])->isEqualTo($target_date);
+    }
 }

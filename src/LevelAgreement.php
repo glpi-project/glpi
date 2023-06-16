@@ -96,6 +96,11 @@ abstract class LevelAgreement extends CommonDBChild
         return [$dateField, $laField];
     }
 
+    public static function getWaitingFieldName(): string
+    {
+        return static::$prefix . '_waiting_duration';
+    }
+
     public function defineTabs($options = [])
     {
 
@@ -795,12 +800,11 @@ abstract class LevelAgreement extends CommonDBChild
 
         if (isset($this->fields['id'])) {
             $cal          = new Calendar();
-            $work_in_days = ($this->fields['definition_time'] == 'day');
 
            // Based on a calendar
             if ($this->fields['calendars_id'] > 0) {
                 if ($cal->getFromDB($this->fields['calendars_id'])) {
-                    return $cal->getActiveTimeBetween($start, $end, $work_in_days);
+                    return $cal->getActiveTimeBetween($start, $end);
                 }
             } else { // No calendar
                 $timestart = strtotime($start);
