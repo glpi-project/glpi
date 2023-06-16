@@ -5256,18 +5256,21 @@ HTML;
      * @since 0.85
      *
      * @param string $key    The name of the attribute to create
-     * @param string $value  The value of the attribute to create.
+     * @param string|array $value  The value of the attribute to create.
      *
      * @return string The composed attribute.
      **/
     public static function formatAttribute($key, $value)
     {
+        if (empty($value)) {
+            $value = '';
+        }
 
         if (is_array($value)) {
             $value = implode(' ', $value);
         }
 
-        return sprintf('%1$s="%2$s"', htmlspecialchars($key), htmlspecialchars($value ?? ''));
+        return sprintf('%1$s="%2$s"', htmlspecialchars($key), htmlspecialchars($value));
     }
 
 
