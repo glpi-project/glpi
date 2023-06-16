@@ -1288,7 +1288,13 @@ class OperatingSystem extends AbstractInventoryAsset
         $max = $start + ($max > 0 ? $max / 2.0 : 30.0);
 
         $os_dictionnary = new \RuleDictionnaryOperatingSystemCollection();
-        $os_dictionnary->replayRulesOnExistingDB(0, $max, [], []);
+
+        $this->output(
+            function () use ($os_dictionnary, $max) {
+                $os_dictionnary->replayRulesOnExistingDB(0, $max, [], []);
+            }
+        )->contains("Replay rules on existing database started on");
+
 
         $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($list))->isIdenticalTo(1);
