@@ -147,7 +147,7 @@ final class Search
 
         $fn_append_join = static function ($join_alias, $join, $parent_type = null) use (&$joins, &$fn_append_join) {
             $join_type = ($join['type'] ?? 'LEFT') . ' JOIN';
-            if (!isset($criteria[$join_type])) {
+            if (!isset($joins[$join_type])) {
                 $joins[$join_type] = [];
             }
             $join_table = $join['table'] . ' AS ' . $join_alias;
