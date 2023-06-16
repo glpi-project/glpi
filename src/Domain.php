@@ -226,7 +226,7 @@ class Domain extends CommonDBTM
 
         $tab[] = [
             'id'                 => '81',
-            'table'              => 'glpi_entities',
+            'table'              => self::getTable(),
             'field'              => 'entities_id',
             'name'               => __('Entity-ID')
         ];
