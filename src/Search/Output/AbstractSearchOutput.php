@@ -79,10 +79,10 @@ abstract class AbstractSearchOutput
     /**
      * Print generic normal Item Cell
      *
-     * @param string  $value       Value to display
-     * @param integer &$num        Column number
-     * @param integer $row         Row number
-     * @param string  $extraparam  Extra parameters for display (default '')
+     * @param string|null   $value       Value to display
+     * @param integer       &$num        Column number
+     * @param integer       $row         Row number
+     * @param string        $extraparam  Extra parameters for display (default '')
      *
      * @return string HTML to display
      **/
