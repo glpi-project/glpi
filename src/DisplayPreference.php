@@ -410,6 +410,7 @@ class DisplayPreference extends CommonDBTM
                     if ((!in_array($data["num"], $fixed_columns)) && isset($searchopt[$data["num"]])) {
                         echo "<tr>";
                         echo "<td>";
+                        echo self::nameOfGroupForItemInSearchopt($searchopt, $data["num"]);
                         echo $searchopt[$data["num"]]["name"] . "</td>";
 
                         if ($i != 0) {
@@ -465,6 +466,30 @@ class DisplayPreference extends CommonDBTM
         }
         echo "</div>";
     }
+
+
+    /**
+     * Return the group name of an element in the searchopt array
+     *
+     * @param array $searchopt
+     * @param int   $searchoptkey
+     *
+     * @return void|string Return the name of the group, or nothing
+     *
+     * @since 10.0.8
+     */
+    private function nameOfGroupForItemInSearchopt($searchopt, $searchoptkey)
+    {
+        $searchoptarray = array_keys($searchopt);
+
+        for ($key = array_search($searchoptkey, $searchoptarray) - 1; $key > 0; $key--) {
+            if (is_string($searchoptarray[$key])) {
+                return __($searchopt[$searchoptarray[$key]]['name']) . " - ";
+                break;
+            }
+        }
+    }
+
 
     /**
      * Print the search config form
@@ -559,6 +584,7 @@ class DisplayPreference extends CommonDBTM
                     && isset($searchopt[$data["num"]])
                 ) {
                     echo "<tr><td>";
+                    echo self::nameOfGroupForItemInSearchopt($searchopt, $data["num"]);
                     echo $searchopt[$data["num"]]["name"];
                     echo "</td>";
 
