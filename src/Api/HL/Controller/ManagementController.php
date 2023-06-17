@@ -201,6 +201,17 @@ final class ManagementController extends AbstractController
             }
         }
 
+        $schemas['Document']['properties']['filename'] = ['type' => Doc\Schema::TYPE_STRING];
+        $schemas['Document']['properties']['filepath'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'x-mapped-from' => 'id',
+            'x-mapper' => static function ($v) use ($CFG_GLPI) {
+                return $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v;
+            }
+        ];
+        $schemas['Document']['properties']['mime'] = ['type' => Doc\Schema::TYPE_STRING];
+        $schemas['Document']['properties']['sha1sum'] = ['type' => Doc\Schema::TYPE_STRING];
+
         return $schemas;
     }
 
@@ -511,7 +522,7 @@ final class ManagementController extends AbstractController
 
     #[Route(path: '/Document/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[Doc\Route(
-        description: 'Get a document by ID',
+        description: 'Get a document by ID. If the Accept header is set to application/octet-stream, the file will be returned. Otherwise, the document metadata will be returned.',
         responses: [
             ['schema' => 'Document']
         ]
