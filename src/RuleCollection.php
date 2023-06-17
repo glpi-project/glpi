@@ -1224,6 +1224,11 @@ JAVASCRIPT;
                 }
 
                 foreach ($rule['rulecriteria'] as $k_crit => $criteria) {
+                    // Fix patterns decoded as empty arrays to prevent empty IN clauses in SQL generation.
+                    if (is_array($criteria['pattern']) && empty($criteria['pattern'])) {
+                        $criteria['pattern'] = '';
+                    }
+
                     $available_criteria = $tmprule->getCriterias();
                     $crit               = $criteria['criteria'];
                    //check FK (just in case of "is", "is_not" and "under" criteria)
@@ -1261,6 +1266,10 @@ JAVASCRIPT;
                 }
 
                 foreach ($rule['ruleaction'] as $k_action => $action) {
+                    // Fix values decoded as empty arrays to prevent empty IN clauses in SQL generation.
+                    if (is_array($action['value']) && empty($action['value'])) {
+                        $action['value'] = '';
+                    }
                     $available_actions = $tmprule->getActions();
                     $act               = $action['field'];
 
@@ -1271,9 +1280,9 @@ JAVASCRIPT;
                     ) {
                        //pass root entity and empty array (N/A value)
                         if (
-                            ($action['field'] == "entities_id")
+                            (in_array($action['value'], ['entities_id', 'new_entities_id'], true))
                             && (($action['value'] == 0)
-                            || ($action['value'] == []))
+                            || ($action['value'] == ''))
                         ) {
                             continue;
                         }
