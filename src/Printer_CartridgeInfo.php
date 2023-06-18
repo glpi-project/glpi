@@ -75,7 +75,7 @@ class Printer_CartridgeInfo extends CommonDBChild
                 'glpi_cartridgeitems.type_tag AS tag',
             ],
             'FROM'      => 'glpi_cartridges',
-            'LEFT JOIN' => [
+            'INNER JOIN' => [
                 'glpi_cartridgeitems'      => [
                     'ON'   => [
                         'glpi_cartridges'        => 'cartridgeitems_id',
@@ -85,9 +85,7 @@ class Printer_CartridgeInfo extends CommonDBChild
             ],
             'WHERE'     => [
                 'glpi_cartridges.printers_id' => $id,
-                'NOT' => [
-                    'glpi_cartridges.date_out' => null
-                ]
+                'glpi_cartridges.date_out' => null
             ]
         ]);
 
