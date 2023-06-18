@@ -147,7 +147,9 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
                 ],
                 'WHERE'        => $WHERE,
                 'ORDERBY'      => [
-                    'p.name'
+                    'entity',
+                    'p.name',
+                    'cartridge',
                 ]
             ];
 
