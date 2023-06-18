@@ -471,23 +471,31 @@ class DisplayPreference extends CommonDBTM
     /**
      * Return the group name of an element in the searchopt array
      *
+     * The group names are located before the items that belong to it, and are the only string keys, every item's key are integer.
+     *
+     * We first get the keys of the array to be able to iterate trought his items, including the group names.
+     * So we iterate trought the array key's in a reverse order,
+     * starting from the position before the item which we want to get the group name.
+     * The first key of string type we encouter, is our item's group name.
+     *
      * @param array $searchopt
      * @param int   $searchoptkey
      *
-     * @return void|string Return the name of the group, or nothing
+     * @return string Return the name of the group or an empty string.
      *
      * @since 10.0.8
      */
-    private function nameOfGroupForItemInSearchopt($searchopt, $searchoptkey)
+    private static function nameOfGroupForItemInSearchopt($searchopt, $searchoptkey)
     {
-        $searchoptarray = array_keys($searchopt);
+        $searchoptkeys = array_keys($searchopt);
 
-        for ($key = array_search($searchoptkey, $searchoptarray) - 1; $key > 0; $key--) {
-            if (is_string($searchoptarray[$key])) {
-                return __($searchopt[$searchoptarray[$key]]['name']) . " - ";
-                break;
+        for ($key = array_search($searchoptkey, $searchoptkeys) - 1; $key > 0; $key--) {
+            if (is_string($searchoptkeys[$key])) {
+                return $searchopt[$searchoptkeys[$key]]['name'] . " - ";
             }
         }
+
+        return "";
     }
 
 
