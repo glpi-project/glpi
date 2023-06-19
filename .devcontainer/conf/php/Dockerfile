@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.2-fpm-alpine
 
 RUN apk add --update --no-cache \
     nodejs-current npm mysql-client curl patch gettext perl git \
