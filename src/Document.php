@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
+use Glpi\Http\Response;
 
 /**
  * Document class
@@ -520,14 +521,20 @@ class Document extends CommonDBTM
      * Send a document to navigator
      *
      * @param string $context Context to resize image, if any
+     * @param bool   $return_response
+     * @return Response|void
+     * @phpstan-return $return_response ? Response : void
      **/
-    public function send($context = null)
+    public function send($context = null, bool $return_response = false)
     {
         $file = GLPI_DOC_DIR . "/" . $this->fields['filepath'];
         if ($context !== null) {
             $file = self::getImage($file, $context);
         }
-        Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime']);
+        $response = Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime'], false, $return_response);
+        if ($response !== null) {
+            return $response;
+        }
     }
 
 

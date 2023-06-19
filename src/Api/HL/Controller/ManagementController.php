@@ -202,6 +202,17 @@ final class ManagementController extends AbstractController
             }
         }
 
+        $schemas['Document']['properties']['filename'] = ['type' => Doc\Schema::TYPE_STRING];
+        $schemas['Document']['properties']['filepath'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'x-mapped-from' => 'id',
+            'x-mapper' => static function ($v) use ($CFG_GLPI) {
+                return $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v;
+            }
+        ];
+        $schemas['Document']['properties']['mime'] = ['type' => Doc\Schema::TYPE_STRING];
+        $schemas['Document']['properties']['sha1sum'] = ['type' => Doc\Schema::TYPE_STRING];
+
         return $schemas;
     }
 
@@ -512,13 +523,24 @@ final class ManagementController extends AbstractController
 
     #[Route(path: '/Document/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'Get a document by ID',
+        description: 'Get a document by ID. If the Accept header is set to application/octet-stream, the file will be returned. Otherwise, the document metadata will be returned.',
         responses: [
             ['schema' => 'Document']
         ]
     )]
     public function getDocument(Request $request): Response
     {
+        if ($request->hasHeader('Accept') && $request->getHeaderLine('Accept') === 'application/octet-stream') {
+            // User is requesting the actual file
+            $document = new Document();
+            if ($document->getFromDB($request->getAttribute('id'))) {
+                if ($document->canViewFile()) {
+                    return $document->send(null, true);
+                }
+                return self::getAccessDeniedErrorResponse();
+            }
+            return self::getNotFoundErrorResponse();
+        }
         return Search::getOneBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
     }
 
