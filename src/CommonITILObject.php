@@ -6916,7 +6916,10 @@ abstract class CommonITILObject extends CommonDBTM
                 'timeline_position'  => ['>', self::NO_TIMELINE]
             ]);
             foreach ($document_items as $document_item) {
-                $document_obj->getFromDB($document_item['documents_id']);
+                if (!$document_obj->getFromDB($document_item['documents_id'])) {
+                    // Orphan `Document_Item`
+                    continue;
+                }
 
                 $date = $document_item['date'] ?? $document_item['date_creation'];
 
