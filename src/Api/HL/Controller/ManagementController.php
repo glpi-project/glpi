@@ -231,6 +231,18 @@ final class ManagementController extends AbstractController
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
+                'documents_id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'filepath' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'documents_id',
+                    'x-mapper' => static function ($v) use ($CFG_GLPI) {
+                        return $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v;
+                    }
+                ]
             ]
         ];
 
