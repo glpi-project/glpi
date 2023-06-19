@@ -39,8 +39,6 @@ services:
     build:
       context: conf/php
     restart: unless-stopped
-    networks:
-      - default
     volumes:
       - ..:/var/www/:rw
     depends_on:
@@ -50,8 +48,6 @@ services:
     container_name: "glpi-nginx"
     build:
       context: ./conf/nginx
-    networks:
-      - default
     volumes:
       - ..:/var/www:rw
       - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
