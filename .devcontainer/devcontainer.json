@@ -6,18 +6,6 @@
 	"service": "php",
 	"workspaceFolder": "/var/www/",
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
 	// For use with PHP (e.g.php -S localhost:9090)
 	"forwardPorts": [9090]
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "sudo chmod a+x \"$(pwd)\" && sudo rm -rf /var/www/html && sudo ln -s \"$(pwd)\" /var/www/html"
-
-	// Configure tool-specific properties.
-	// "customizations": {},
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
 }
