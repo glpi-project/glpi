@@ -264,7 +264,7 @@ class Session
         }
 
         if (is_null($port)) {
-            $port = $_SERVER['HTTP_PORT'] ?? '';
+            $port = $_SERVER['SERVER_PORT'] ?? '';
         }
 
         return "glpi_" . md5($path . $host . $port);
