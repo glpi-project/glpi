@@ -52,6 +52,10 @@ class Rule extends CommonDBTM
    ///Actions affected to this rule
     public $actions               = [];
    ///Criterias affected to this rule
+
+    // Keep track of rule type (ONADD, ONUPDATE or both)
+    public int $rule_type;
+
     public $criterias             = [];
    /// Rules can be sorted ?
     public $can_sort              = false;
@@ -1039,7 +1043,7 @@ class Rule extends CommonDBTM
         if ($ID == "") {
             return $this->getEmpty();
         }
-        if ($ret = $this->getFromDB($ID)) {
+        if ($this->getFromDB($ID)) {
             if (
                 $withactions
                 && ($RuleAction = getItemForItemtype($this->ruleactionclass))
@@ -1053,6 +1057,9 @@ class Rule extends CommonDBTM
             ) {
                 $this->criterias = $RuleCriterias->getRuleCriterias($ID);
             }
+
+            // Keep track of rule type so we can verify later that the cached rules match the correct condition
+            $this->rule_type = $this->fields['condition'];
 
             return true;
         }
