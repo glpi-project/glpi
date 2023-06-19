@@ -71,8 +71,8 @@ services:
       MARIADB_DATABASE: glpi
       MARIADB_USER: glpi
       MARIADB_PASSWORD: glpi
-    ports:
-      - "3306:3306"
+    expose:
+      - "3306"
 
 volumes:
   glpi-src:
