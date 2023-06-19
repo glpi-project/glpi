@@ -246,7 +246,7 @@ class Session
      *
      * @param string|null $path Default to GLPI_ROOT
      * @param string|null $host Default to $_SERVER['HTTP_HOST']
-     * @param string|null $port Default to $_SERVER['HTTP_PORT']
+     * @param string|null $port Default to $_SERVER['SERVER_PORT']
      *
      * @return string An unique session name
      */
