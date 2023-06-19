@@ -43,6 +43,8 @@ services:
       - ..:/var/www/:rw
     depends_on:
       - db
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
 
   nginx:
     container_name: "glpi-nginx"
