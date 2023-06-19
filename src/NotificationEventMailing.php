@@ -143,6 +143,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                             ],
                             [
                                 Config::getUuid('notification'),
+                                $current->fields['itemtype'],
                                 $current->fields['items_id']
                             ],
                             "In-Reply-To: <GLPI-%uuid-%itemtype-%items_id>"
