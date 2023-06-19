@@ -612,13 +612,13 @@ class Toolbox
 
        // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
        // http://tools.ietf.org/html/rfc7232#section-3.3
-        $matches_cache = true;
+        $matches_cache = false;
         if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
-            $matches_cache = false;
+            $matches_cache = true;
         } else if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified) {
-            $matches_cache = false;
+            $matches_cache = true;
         }
-        if (!$matches_cache) {
+        if ($matches_cache) {
             $response = new Response(304, $headers);
             if ($return_response) {
                 return $response;
