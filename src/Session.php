@@ -254,8 +254,7 @@ class Session
         ?string $path = null,
         ?string $host = null,
         ?string $port = null
-    ): string
-    {
+    ): string {
         if (is_null($path)) {
             $path = realpath(GLPI_ROOT);
         }
