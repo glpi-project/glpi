@@ -44,11 +44,11 @@
 $columns_iterator = $DB->request(
     [
         'SELECT' => [
-            'table_name AS TABLE_NAME',
-            'column_name AS COLUMN_NAME',
-            'column_default AS COLUMN_DEFAULT',
-            'data_type AS DATA_TYPE',
-            'is_nullable AS IS_NULLABLE',
+            'information_schema.columns.table_name AS TABLE_NAME',
+            'information_schema.columns.column_name AS COLUMN_NAME',
+            'information_schema.columns.column_default AS COLUMN_DEFAULT',
+            'information_schema.columns.data_type AS DATA_TYPE',
+            'information_schema.columns.is_nullable AS IS_NULLABLE',
         ],
         'FROM'   => 'information_schema.columns',
         'INNER JOIN' => [
