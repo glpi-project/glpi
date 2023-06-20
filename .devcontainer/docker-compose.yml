@@ -48,7 +48,9 @@ services:
 
   nginx:
     container_name: "glpi-nginx"
-    image: "nginx:alpine-slim"
+    image: "nginx:alpine"
+    command: ["nginx"]
+    restart: unless-stopped
     volumes:
       - ..:/var/www:rw
       - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
