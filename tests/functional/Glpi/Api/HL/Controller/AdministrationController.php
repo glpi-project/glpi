@@ -394,6 +394,15 @@ class AdministrationController extends \HLAPITestCase
         });
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
 
+        $this->api->call(new Request('GET', '/Administration/User/me'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->string($content['picture'])->contains('/front/document.send.php');
+                });
+        });
+
         $this->api->call(new Request('GET', '/Administration/User/me/picture'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
