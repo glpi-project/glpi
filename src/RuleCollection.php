@@ -1628,7 +1628,7 @@ JAVASCRIPT;
         if (count($this->RuleList->list)) {
             /** @var Rule $rule */
             foreach ($this->RuleList->list as $rule) {
-                if ($p['condition'] && !($rule->rule_type & $p['condition'])) {
+                if ($p['condition'] && !($rule->fields['condition'] & $p['condition'])) {
                     // Rule is loaded in the cache but is not relevant for the current condition
                     continue;
                 }
