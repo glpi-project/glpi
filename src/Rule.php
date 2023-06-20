@@ -52,7 +52,6 @@ class Rule extends CommonDBTM
    ///Actions affected to this rule
     public $actions               = [];
    ///Criterias affected to this rule
-
     public $criterias             = [];
    /// Rules can be sorted ?
     public $can_sort              = false;
