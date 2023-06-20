@@ -485,7 +485,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @since 10.0.8
      */
-    private static function nameOfGroupForItemInSearchopt($searchopt, $searchoptkey)
+    private function nameOfGroupForItemInSearchopt(array $search_options, int $search_option_key): string
     {
         $searchoptkeys = array_keys($searchopt);
 
