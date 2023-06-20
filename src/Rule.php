@@ -1059,7 +1059,7 @@ class Rule extends CommonDBTM
             }
 
             // Keep track of rule type so we can verify later that the cached rules match the correct condition
-            $this->rule_type = $this->fields['condition'];
+            $this->rule_type = $this->fields['condition'] ?? 0;
 
             return true;
         }
