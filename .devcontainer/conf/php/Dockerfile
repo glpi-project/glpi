@@ -3,25 +3,40 @@ FROM php:8.2-fpm-alpine
 # Install tools
 RUN apk add --update --no-cache \
     nodejs-current npm mysql-client curl patch gettext perl git \
-    zsh sudo
-
-# Install PHP extensions dependencies
-RUN apk add --update --no-cache \
-    icu-dev icu-libs zlib-dev g++ make automake autoconf libzip-dev \
-    libpng-dev libwebp-dev libjpeg-turbo-dev freetype-dev \
-    ldb-dev libldap openldap-dev linux-headers
-
-# Install PHP extensions
-RUN \
+    zsh sudo vim && \
+    # Install PHP extensions dependencies
+    apk add --virtual .build-deps openldap-dev linux-headers $PHPIZE_DEPS && \
+    # Install PHP extensions
+    ## BZ2 extension
+    apk add bzip2-dev && \
     docker-php-ext-install bz2 && \
+    ## Exif extension
     docker-php-ext-install exif && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && docker-php-ext-install gd && \
-    docker-php-ext-configure intl && docker-php-ext-install intl && \
+    ## GD extension
+    apk add freetype-dev libjpeg-turbo-dev libpng-dev libwebp-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
+    docker-php-ext-install gd && \
+    ## Intl extension
+    apk add icu-dev icu-data-full && \
+    docker-php-ext-install intl && \
+    ## LDAP extension
+    apk add libldap && \
     docker-php-ext-install ldap && \
+    ## Mysqli extension
     docker-php-ext-install mysqli && \
+    ## Opcache extension
     docker-php-ext-install opcache && \
+    ## Zip extension
+    apk add libzip-dev && \
     docker-php-ext-configure zip && docker-php-ext-install zip && \
-    pecl install xdebug && docker-php-ext-enable xdebug
+    ## Xdebug extension
+    pecl install xdebug && docker-php-ext-enable xdebug && \
+    # clean cache and dependencies
+    rm -rf /var/cache/apk/* && \
+    apk del -f .build-deps
+
+# Add transifex client
+RUN cd /usr/local/bin/ && curl --silent --location https://raw.githubusercontent.com/transifex/cli/master/install.sh | sh
 
 # Create application volume (used to share codesource with host),
 # give its ownage to glpi user (1000:1000) and define it as base working dir
