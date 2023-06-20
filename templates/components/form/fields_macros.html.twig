@@ -659,6 +659,14 @@
       'locked_fields': [],
    }|merge(options) %}
 
+   {% if options.info is defined %}
+      {% set label = label ~ " <i class='pointer fa fa-info' title=\"" ~ options.info ~ "\"></i>" %}
+   {% endif %}
+
+   {% if options.copy_btn is defined %}
+      {% set field = field ~ " <i class='pointer fa fa-paste disclose' onclick='$(\"#%id%\").select(); document.execCommand(\"copy\");'></i>" %}
+   {% endif %}
+
    {% if options.locked_fields[name] is defined %}
       {% set options = options|merge({'locked': true, 'locked_value': options.locked_fields[name]}) %}
    {% elseif name in options.locked_fields %}

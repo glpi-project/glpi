@@ -183,21 +183,24 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 $documents_ids = [];
                 $documents_to_attach = [];
-                if ($is_html || $CFG_GLPI['attach_ticket_documents_to_mail']) {
+                $documents_data = json_decode($current->fields['documents_data'], true);
+                $itemtype = $documents_data['itemtype'] ?? '';
+                $items_id = $documents_data['items_id'] ?? 0;
+                if ($is_html || $items_id > 0) {
                     // Retieve document list if mail is in HTML format (for inline images)
                     // or if documents are attached to mail.
-                    $item = getItemForItemtype($current->fields['itemtype']);
+                    $item = getItemForItemtype($itemtype);
                     if (
                         $item !== false
                         && (
-                            $current->fields['items_id'] > 0
-                            || ($current->fields['itemtype'] == Entity::class && $current->fields['items_id'] == 0)
+                            $items_id > 0
+                            || ($itemtype == Entity::class && $items_id == 0)
                         )
-                        && $item->getFromDB($current->fields['items_id'])
+                        && $item->getFromDB($items_id)
                     ) {
                         $doc_crit = [
-                            'items_id' => $current->fields['items_id'],
-                            'itemtype' => $current->fields['itemtype'],
+                            'items_id' => $items_id,
+                            'itemtype' => $itemtype,
                         ];
                         if ($item instanceof CommonITILObject) {
                             $doc_crit = $item->getAssociatedDocumentsCriteria(true);
@@ -358,7 +361,9 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
                 }
 
-                self::attachDocuments($mail, $documents_to_attach);
+                if (!empty($documents_to_attach)) {
+                    self::attachDocuments($mail, $documents_to_attach);
+                }
 
                 $recipient = $current->getField('recipient');
                 if (defined('GLPI_FORCE_MAIL')) {
@@ -482,7 +487,8 @@ class NotificationEventMailing extends NotificationEventAbstract
     {
         global $CFG_GLPI;
 
-        if (!$CFG_GLPI['attach_ticket_documents_to_mail']) {
+        $attach_documents = $CFG_GLPI['attach_ticket_documents_to_mail'];
+        if ($attach_documents === NotificationMailingSetting::NO_DOCUMENT) {
             return;
         }
 

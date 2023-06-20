@@ -1,0 +1,402 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set rand = random() %}
+{% set field_options = {
+    'full_width': true,
+    'rand': rand
+} %}
+
+<form action='{{ form_url }}' method='post'><div>
+    <input type='hidden' name='id' value='1'>
+    <table class='tab_cadre_fixe'>
+        <tr class='tab_bg_1'><th colspan='4'>
+            {{ _n('Email notification', 'Email notifications', get_plural_number()) }}
+        </th></tr>
+
+        {% if (config('notifications_mailing') == 1) %}
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.emailField(
+                        'admin_email',
+                        config('admin_email'),
+                        __('Administrator email address'),
+                        field_options
+                    ) }}
+                </td>
+                <td>
+                    {{ fields.textField(
+                        'admin_email_name',
+                        config('admin_email_name'),
+                        __('Administrator name'),
+                        field_options
+                    ) }}
+                </td>
+            </tr>
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.emailField(
+                        'from_email',
+                        config('from_email'),
+                        __('Email sender address'),
+                        field_options|merge({'info': __('Address to use in from for sent emails.') ~ '\n'
+                             ~ __('If not set, main or entity administrator email address will be used.')})
+                    ) }}
+                </td>
+                <td>
+                    {{ fields.textField(
+                        'from_email_name',
+                        config('from_email_name'),
+                        __('Email sender name'),
+                        field_options|merge({'info': __('Name to use in from for sent emails.') ~ '\n'
+                             ~ __('If not set, main or entity administrator email name will be used.')})
+                    ) }}
+                </td>
+            </tr>
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.emailField(
+                        'replyto_email',
+                        config('replyto_email'),
+                        __('Reply-To address'),
+                        field_options|merge({'info': __('Optionnal reply to address.') ~ '\n'
+                             ~ __('If not set, main or entity administrator email address will be used.')})
+                    ) }}
+                </td>
+                <td>
+                    {{ fields.textField(
+                        'replyto_email_name',
+                        config('replyto_email_name'),
+                        __('Reply-To name'),
+                        field_options|merge({'info': __('Optionnal reply to name.') ~ '\n'
+                             ~ __('If not set, main or entity administrator name will be used.')})
+                    ) }}
+                </td>
+            </tr>
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.emailField(
+                        'noreply_email',
+                        config('noreply_email'),
+                        __('No-Reply address'),
+                        field_options|merge({'info': __('Optionnal No-Reply address.') ~ '\n'
+                             ~ __('If set, it will be used for notifications that doesnʼt expect a reply.')})
+                    ) }}
+                </td>
+                <td>
+                    {{ fields.textField(
+                        'noreply_email_name',
+                        config('noreply_email_name'),
+                        __('No-Reply name'),
+                        field_options|merge({'info': __('Optionnal No-Reply name.') ~ '\n'
+                             ~ __('If not set, main or entity administrator name will be used.')})
+                    ) }}
+                </td>
+            </tr>
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.dropdownArrayField(
+                        "attach_ticket_documents_to_mail",
+                        config('attach_ticket_documents_to_mail'),
+                        attach_documents_values,
+                        __('Add documents into ticket notifications'),
+                        field_options
+                    ) }}
+                </td>
+            </tr>
+
+            <tr class='tab_bg_2'>
+                <td colspan=2>
+                    {{ fields.textareaField(
+                        'mailing_signature',
+                        config('mailing_signature'),
+                        __('Email signature'),
+                        field_options
+                    ) }}
+                </td>
+            </tr>
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.dropdownArrayField(
+                        "smtp_mode",
+                        config('smtp_mode'),
+                        mail_methods,
+                        __('Way of sending emails'),
+                        field_options
+                    )}}
+                    {% if not mail_method_php %}
+                        <tr class='tab_bg_2'><td class='center' colspan='2'>
+                            <span class='red'>{{ __('The PHP mail function is unknown or is not activated on your system.') }}</span><br>
+                            {{ __('The use of a SMTP is needed.') }}</td></tr>
+                    {% endif %}
+                    <script type="text/javascript">
+                        $(function() {
+                            $('[name=smtp_mode]').on('change', function() {
+                                const value = $(this).find('option:selected').val();
+                                const is_mail  = value === "{{ constant('MAIL_MAIL') }}";
+                                const is_oauth = value === "{{ constant('MAIL_SMTPOAUTH') }}";
+
+                                $('#smtp_config').toggleClass('starthidden', is_mail);
+
+                                // show/hide elements not related to Oauth
+                                $("#dropdown_smtp_check_certificate{{ rand }}").closest('tr').toggle(!is_oauth);
+                                $('label[for=\"smtp_passwd\"]').toggle(!is_oauth);
+                                $('#smtp_username_{{ rand }}').closest('tr').toggle(!is_oauth);
+
+                                // show/hide elements related to Oauth
+                                $("#oauth_redirect_alert_{{ rand }}").toggleClass('d-none', !is_oauth);
+                                $("#dropdown_smtp_oauth_provider{{ rand }}").closest('tr').toggle(is_oauth);
+                                $("#smtp_oauth_client_id_{{ rand }}").closest('tr').toggle(is_oauth);
+                                $("#_force_redirect_to_smtp_oauth_{{ rand }}").closest('tr').toggle(is_oauth);
+                                $('[name=smtp_oauth_provider]').trigger('change'); // refresh additional params using dedicated method
+                            });
+                            $('[name=smtp_mode]').trigger('change');
+                        });
+                    </script>
+                </td>
+                <td>
+                    {{ fields.numberField(
+                        'smtp_max_retries',
+                        config('smtp_max_retries'),
+                        __('Max. delivery retries'),
+                        field_options
+                    )}}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    {{ fields.numberField(
+                        'smtp_retry_time',
+                        config('smtp_retry_time'),
+                        __('Try to deliver again in (minutes)'),
+                        field_options
+                    )}}
+                </td>
+            </tr>
+        </table>
+
+        <table class='tab_cadre_fixe' id='smtp_config'>
+            <tr class='tab_bg_1'><th colspan='4'>{{ authmail_name }}</th></tr>
+
+            <tr class='tab_bg_2'>
+                <td colspan='4'>
+                    <div id='oauth_redirect_alert_{{ rand }}' class='d-flex alert alert-info'>
+                        <i class='fas fa-info-circle fa-2x alert-icon'></i>
+                        {{ __('Once the form has been validated, you will be redirected to your supplierʼs authentication page if necessary.') }}
+                    </div>
+                </td>
+            </tr>
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.dropdownArrayField(
+                        'smtp_oauth_provider',
+                        config('smtp_oauth_provider'),
+                        providers_values,
+                        __('Oauth provider'),
+                        field_options|merge({'display_emptychoice' : true})
+                    )}}
+                </td>
+                <td>
+                    {{ fields.textField(
+                        '_smtp_oauth_callback_url',
+                        config('url_base') ~ '/front/smtp_oauth2_callback.php',
+                        _x('oauth', 'Callback URL'),
+                        field_options|merge({
+                            'info': _x('oauth', 'This is the callback URL that you will have to declare in your provider application.'),
+                            'copy_btn': true,
+                        })
+                    )}}
+                </td>
+            </tr>
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.textField(
+                        'smtp_oauth_client_id',
+                        config('smtp_oauth_client_id'),
+                        _x('oauth', 'Client ID'),
+                        field_options,
+                    )}}
+                </td>
+                <td>
+                    {{ fields.passwordField(
+                        'smtp_oauth_client_secret',
+                        '',
+                        _x('oauth', 'Client secret'),
+                        field_options,
+                    )}}
+                </td>
+            </tr>
+
+            {% for provider_class in supported_providers %}
+                {% for param_specs in call(provider_class ~ '::getAdditionalParameters') %}
+                    <tr class='tab_bg_2'>
+                        <td>
+                            <label for='smtp_oauth_options_{{ param_specs['key'] }}_{{ rand }}'>{{ param_specs['label'] }}</label>
+                            {% if param_specs.helper is defined %}
+                                <i class='pointer fa fa-info' title='{{ param_specs['helper'] }}'></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% set option_value = config('smtp_oauth_provider') == provider_class
+                                ? (provider_options[param_specs['key']] ?? param_specs['default'] ?? '')
+                                : '' %}
+                            <input class='form-control'
+                                    name='smtp_oauth_options[{{ param_specs['key'] }}]'
+                                    id='smtp_oauth_options_{{ param_specs['key'] }}_{{ rand }}'
+                                    value='{{ option_value }}'
+                                    data-oauth_additional_parameter='true'
+                                    data-oauth_provider='{{ provider_class }}'
+                            >
+                        </td>
+                        <td colspan='2'></td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+
+            <script type='text/javascript'>
+                $(function() {
+                    $('[name=smtp_oauth_provider]').on('change', function() {
+                        const value = $(this).find('option:selected').val();
+                        $(this.closest('form')).find('[data-oauth_additional_parameter="true"]').each(
+                            function (key, field) {
+                                const row = $(field).closest('tr');
+                                const matches_current_provider = value === $(field).attr('data-oauth_provider');
+                                row.toggle(matches_current_provider);
+                                row.find('input, select').prop('disabled', !matches_current_provider);
+                            }
+                        );
+
+                    });
+                    $('[name=smtp_oauth_provider]').trigger('change');
+                });
+            </script>
+
+            {% if config('smtp_oauth_refresh_token') != '' %}
+                <tr class='tab_bg_2'>
+                    <td>
+                        {{ fields.checkboxField(
+                            '_force_redirect_to_smtp_oauth',
+                            '',
+                            _x('oauth', 'Force OAuth authentication refresh'),
+                            field_options|merge({'info': _x('oauth', 'You can use this option to force redirection to the OAuth authentication process. This will trigger generation of a new OAuth token.')})
+                        )}}
+                    </td>
+                </tr>
+            {% endif %}
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.dropdownYesNo(
+                        'smtp_check_certificate',
+                        config('smtp_check_certificate'),
+                        __('Check certificate'),
+                        field_options,
+                    ) }}
+                </td>
+            </tr>
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.textField(
+                        'smtp_host',
+                        config('smtp_host'),
+                        __('SMTP host'),
+                        field_options,
+                    ) }}
+                </td>
+                <td>
+                    {{ fields.numberField(
+                        'smtp_port',
+                        config('smtp_port'),
+                        _n('Port', 'Ports', 1),
+                        field_options,
+                    ) }}
+                </td>
+            </tr>
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.textField(
+                        'smtp_username',
+                        config('smtp_username'),
+                        __('SMTP login (optional)'),
+                        field_options,
+                    )}}
+                </td>
+                <td>
+                    {{ fields.passwordField(
+                        'smtp_passwd',
+                        '',
+                        __('SMTP password (optional)'),
+                        field_options,
+                    )}}
+                </td>
+            </tr>
+
+            <tr class='tab_bg_2'>
+                <td>
+                    {{ fields.emailField(
+                        'smtp_sender',
+                        config('smtp_sender'),
+                        __('Email sender'),
+                        field_options|merge({'info': __('May be required for some mails providers.') ~ '\n'
+                             ~ __('If not set, main administrator email will be used.')})
+                    ) }}
+                </td>
+            </tr>
+        </table>
+    {% else %}
+            <tr><td colspan='4'>{{ __('Notifications are disabled.') }}
+                <a href="{{ config('root_doc') }}/front/setup.notification.php">{{ __('See configuration') }}</a></td></tr>
+        </table>
+    {% endif %}
+    <div class="card-body mx-n2 mb-4 border-top d-flex flex-row-reverse align-items-start flex-wrap">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" name="update" class="btn btn-primary">
+            {{ _x('button', 'Save') }}
+        </button>
+        <button class="btn btn-outline-secondary me-2" type="submit" name="test_smtp_send" value="1">
+            Send a test email to the administrator
+        </button>
+    </div>
+</div></form>

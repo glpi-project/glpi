@@ -141,6 +141,37 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     $send_data['mode']                      = $data['mode'];
                                     $send_data['event']                     = $event;
 
+                                    $send_data['documents_data'] = '';
+                                    foreach ($options as $k => $v) {
+                                        $itemtype = getItemtypeForForeignKeyField($k);
+                                        if (class_exists($itemtype)) {
+                                            if ($data['attach_documents'] == NotificationMailingSetting::INHERIT) {
+                                                $data['attach_documents'] = $CFG_GLPI['notifications_attach_documents'];
+                                            }
+                                            switch ($data['attach_documents']) {
+                                                case NotificationMailingSetting::NO_DOCUMENT:
+                                                    $send_data['documents_data'] = '';
+                                                    break;
+                                                case NotificationMailingSetting::ALL_TICKET:
+                                                    $send_data['documents_data'] = json_encode(
+                                                        [
+                                                            'itemtype' => $send_data['_itemtype'],
+                                                            'items_id' => $send_data['_items_id']
+                                                        ]
+                                                    );
+                                                    break;
+                                                case NotificationMailingSetting::ONLY_TRIGGERED:
+                                                    $send_data['documents_data'] = json_encode(
+                                                        [
+                                                            'itemtype' => $itemtype,
+                                                            'items_id' => $v
+                                                        ]
+                                                    );
+                                                    break;
+                                            }
+                                        }
+                                    }
+
                                     Notification::send($send_data);
                                 } else {
                                     $notificationtarget->getFromDB($target['id']);

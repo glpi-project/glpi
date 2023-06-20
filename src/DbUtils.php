@@ -94,6 +94,10 @@ final class DbUtils
             $fkname = substr($fkname, 1);
         }
 
+        if ($fkname === 'followup_id') {
+            return 'glpi_itilfollowups';
+        }
+
         return "glpi_" . preg_replace("/_id.*/", "", $fkname);
     }
 
