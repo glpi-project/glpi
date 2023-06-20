@@ -61,7 +61,7 @@ services:
 
   db:
     container_name: "glpi-db"
-    image: mariadb:10.7.3
+    image: mariadb:10.11
     restart: unless-stopped
     volumes:
       - mariadb-data:/var/lib/mysql
