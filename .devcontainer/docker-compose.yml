@@ -48,8 +48,7 @@ services:
 
   nginx:
     container_name: "glpi-nginx"
-    build:
-      context: ./conf/nginx
+    image: "nginx:alpine-slim"
     volumes:
       - ..:/var/www:rw
       - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
