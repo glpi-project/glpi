@@ -3215,4 +3215,113 @@ class RuleTicket extends DbTestCase
 
         $this->integer($ticket->fields['locations_id'])->isIdenticalTo($location_id);
     }
+
+    /**
+     * Data provider for testAssignLocationFromUser
+     *
+     * @return iterable
+     */
+    protected function testAssignLocationFromUserProvider(): iterable
+    {
+        $this->login();
+        $entity = getItemByTypeName('Entity', '_test_root_entity');
+        $user = getItemByTypeName('User', TU_USER);
+
+        // Create rule
+        $rule = $this->createItem("RuleTicket", [
+            'name'        => "test rule SLA",
+            'match'       => 'AND',
+            'is_active'   => 1,
+            'sub_type'    => 'RuleTicket',
+            'condition'   => \RuleTicket::ONADD,
+            'entities_id' => $entity->getID(),
+        ]);
+        $this->createItem("RuleCriteria", [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'locations_id',
+            'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+            'pattern'   => 1
+        ]);
+        $this->createItem("RuleCriteria", [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => '_locations_id_of_requester',
+            'condition' => \Rule::PATTERN_EXISTS,
+            'pattern'   => 1
+        ]);
+        $this->createItem("RuleAction", [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'fromuser',
+            'field'       => 'locations_id',
+            'value'       => 1
+        ]);
+
+        // Create location and set it to our user
+        $user_location = $this->createItem('Location', [
+            'name'        => 'User location',
+            'entities_id' => $entity->getID(),
+        ]);
+        $this->updateItem('User', $user->getID(), [
+            'locations_id' => $user_location->getID()
+        ]);
+
+        // Create another location
+        $other_location = $this->createItem('Location', [
+            'name'        => 'Other location',
+            'entities_id' => $entity->getID(),
+        ]);
+
+        // Create a ticket without location, should trigger the rule and set the user location
+        yield [null, $user_location->getID()];
+
+        // Create a ticket with a specific location, should not trigger the rule
+        yield [$other_location->getID(), $other_location->getID()];
+    }
+
+    /**
+     * Test the following rule:
+     * IF ticket location is not set AND Requester has a location
+     * THEN set location from requester
+     *
+     * @param int|null $input_locations_id               Input location
+     * @param int      $expected_location_after_creation Ticket final location after the rule are processed
+     *
+     * @return void
+     *
+     * @dataprovider testAssignLocationFromUserProvider
+     */
+    public function testAssignLocationFromUser(
+        ?int $input_locations_id,
+        int $expected_location_after_creation
+    ): void {
+        $input = [
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name'        => 'test ticket',
+            'content'     => 'test ticket',
+            '_actors'     => [
+                // Requester is needed for the criteria on the requester's location
+                'requester' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => getItemByTypeName('User', TU_USER, true),
+                    ]
+                ],
+                // Must have an assigned tech for the test to be meaningfull as this
+                // will trigger some post_update code that will run the rules again
+                'assign' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => getItemByTypeName('User', TU_USER, true),
+                    ]
+                ]
+            ]
+        ];
+
+        if (!is_null($input_locations_id)) {
+            $input['locations_id'] = $input_locations_id;
+        }
+
+        $ticket = $this->createItem('Ticket', $input);
+        $ticket->getFromDB($ticket->getID());
+        $this->integer($ticket->fields['locations_id'])->isEqualTo($expected_location_after_creation);
+    }
 }

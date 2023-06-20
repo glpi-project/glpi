@@ -1039,7 +1039,7 @@ class Rule extends CommonDBTM
         if ($ID == "") {
             return $this->getEmpty();
         }
-        if ($ret = $this->getFromDB($ID)) {
+        if ($this->getFromDB($ID)) {
             if (
                 $withactions
                 && ($RuleAction = getItemForItemtype($this->ruleactionclass))
