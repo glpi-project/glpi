@@ -162,4 +162,40 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
         }
         return [];
     }
+
+    private function prepareInput($input)
+    {
+        // Checks that the itemtype is not already in use
+        $criteria = [
+            'itemtype' => $input['itemtype'],
+        ];
+
+        if (isset($input['id'])) {
+            $criteria['id'] = ['!=', $input['id']];
+        }
+
+        if ($this->getFromDBByCrit($criteria)) {
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __('Itemtype %s is already in use'),
+                    $input['itemtype']
+                ),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->prepareInput($input);
+    }
 }
