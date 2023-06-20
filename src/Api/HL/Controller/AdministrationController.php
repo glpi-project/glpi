@@ -556,7 +556,7 @@ final class AdministrationController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
     }
 
-    #[Route(path: '/User/{id}/Picture', methods: ['GET'])]
+    #[Route(path: '/User/{id}/Picture', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[Doc\Route(
         description: 'Get the picture for the current user'
     )]
@@ -574,7 +574,7 @@ final class AdministrationController extends AbstractController
         return $this->getUserPictureResponse($data['name'], $data['picture']);
     }
 
-    #[Route(path: '/User/username/{username}/Picture', methods: ['GET'])]
+    #[Route(path: '/User/username/{username}/Picture', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
     #[Doc\Route(
         description: 'Get the picture for the current user'
     )]
