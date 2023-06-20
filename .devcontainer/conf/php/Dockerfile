@@ -23,7 +23,7 @@ RUN \
     docker-php-ext-configure zip && docker-php-ext-install zip && \
     pecl install xdebug && docker-php-ext-enable xdebug
 
-# Create application volume (used to share data across jobs),
+# Create application volume (used to share codesource with host),
 # give its ownage to glpi user (1000:1000) and define it as base working dir
 RUN addgroup -g 1000 glpi \
   && adduser -D -h /home/glpi -G glpi -u 1000 glpi \
