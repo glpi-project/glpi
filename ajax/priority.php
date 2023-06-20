@@ -44,8 +44,7 @@ if (
     && isset($_REQUEST["impact"])
 ) {
     // Read predefined templates fields
-    $predefined_fields  = $_REQUEST["_predefined_fields"] ?? [];
-    $predefined_fields  = Toolbox::decodeArrayFromInput($predefined_fields);
+    $predefined_fields  = array_key_exists('_predefined_fields', $_REQUEST) ? Toolbox::decodeArrayFromInput($_REQUEST["_predefined_fields"]) : [];
 
     // Fallback to Form value -> Template values -> Medium
     $priority = Ticket::computePriority(
