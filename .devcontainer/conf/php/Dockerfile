@@ -1,14 +1,17 @@
 FROM php:8.2-fpm-alpine
 
+# Install tools
 RUN apk add --update --no-cache \
     nodejs-current npm mysql-client curl patch gettext perl git \
     zsh sudo
 
+# Install PHP extensions dependencies
 RUN apk add --update --no-cache \
     icu-dev icu-libs zlib-dev g++ make automake autoconf libzip-dev \
     libpng-dev libwebp-dev libjpeg-turbo-dev freetype-dev \
-    ldb-dev libldap openldap-dev
+    ldb-dev libldap openldap-dev linux-headers
 
+# Install PHP extensions
 RUN \
     docker-php-ext-install bz2 && \
     docker-php-ext-install exif && \
@@ -17,7 +20,8 @@ RUN \
     docker-php-ext-install ldap && \
     docker-php-ext-install mysqli && \
     docker-php-ext-install opcache && \
-    docker-php-ext-configure zip && docker-php-ext-install zip
+    docker-php-ext-configure zip && docker-php-ext-install zip && \
+    pecl install xdebug && docker-php-ext-enable xdebug
 
 # Create application volume (used to share data across jobs),
 # give its ownage to glpi user (1000:1000) and define it as base working dir
