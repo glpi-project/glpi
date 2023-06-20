@@ -437,8 +437,9 @@ final class Search
 
                     if ($fkey === 'id') {
                         $props_to_use = array_filter($this->flattened_properties, static function ($prop_params, $prop_name) {
+                            $mapped_from_other = isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_name;
                             // We aren't handling joins or mapped fields here
-                            return !str_contains($prop_name, '.') && !isset($prop_params['x-mapped-from']);
+                            return !str_contains($prop_name, '.') && !$mapped_from_other;
                         }, ARRAY_FILTER_USE_BOTH);
                         $criteria['FROM'] = "$table AS " . $DB::quoteName('_');
                         if ($this->union_search_mode) {
