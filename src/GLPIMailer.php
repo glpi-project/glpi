@@ -56,7 +56,7 @@ class GLPIMailer extends PHPMailer
 
         $this->CharSet            = "utf-8";
 
-        $this->Encoding           = "base64";
+        $this->Encoding           = self::ENCODING_QUOTED_PRINTABLE;
 
        // Comes from config
         $this->SetLanguage("en", Config::getLibraryDir("PHPMailer") . "/language/");
