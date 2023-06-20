@@ -61,6 +61,9 @@ class GLPITestCase extends atoum
        // By default, no session, not connected
         $this->resetSession();
 
+        // By default, there shouldn't be any pictures in the test files
+        $this->resetPictures();
+
        // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
@@ -100,6 +103,32 @@ class GLPITestCase extends atoum
                     )
                 );
             }
+        }
+    }
+
+    protected function resetPictures()
+    {
+        // Delete contents of test files/_pictures
+        $dir = GLPI_PICTURE_DIR;
+        if (!str_contains($dir, '/tests/files/_pictures')) {
+            throw new \RuntimeException('Invalid picture dir: ' . $dir);
+        }
+        // Delete nested folders and files in dir
+        $fn_delete = function ($dir, $parent) use (&$fn_delete) {
+            $files = glob($dir . '/*') ?? [];
+            foreach ($files as $file) {
+                if (is_dir($file)) {
+                    $fn_delete($file, $parent);
+                } else {
+                    unlink($file);
+                }
+            }
+            if ($dir !== $parent) {
+                rmdir($dir);
+            }
+        };
+        if (file_exists($dir) && is_dir($dir)) {
+            $fn_delete($dir, $dir);
         }
     }
 
