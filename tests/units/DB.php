@@ -144,6 +144,13 @@ class DB extends \GLPITestCase
                     'other'  => new \QueryParam()
                 ],
                 'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)'
+            ], [
+                'table', new \QuerySubQuery([
+                    'SELECT' => ['id', 'name'],
+                    'FROM' => 'other',
+                    'WHERE' => ['NOT' => ['name' => null]]
+                ]),
+                'INSERT INTO `table` (SELECT `id`, `name` FROM `other` WHERE NOT (`name` IS NULL))'
             ]/*, [
                 'table', [
                     'field'  => new \QueryParam('field'),

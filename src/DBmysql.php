@@ -1304,24 +1304,31 @@ class DBmysql
      * @since 9.3
      *
      * @param string $table  Table name
-     * @param array  $params Query parameters ([field name => field value)
+     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
+     * @phpstan-param array<string, mixed>|QuerySubQuery $params
      *
      * @return string
      */
     public function buildInsert($table, $params)
     {
-        $query = "INSERT INTO " . self::quoteName($table) . " (";
+        $query = "INSERT INTO " . self::quoteName($table) . ' ';
 
         $fields = [];
-        foreach ($params as $key => &$value) {
-            $fields[] = $this->quoteName($key);
-            $value = $this->quoteValue($value);
-        }
+        if ($params instanceof QuerySubQuery) {
+            // INSERT INTO ... SELECT Query where the sub-query returns all columns needed for the insert
+            $query .= $params->getQuery();
+        } else {
+            $query .= "(";
+            foreach ($params as $key => &$value) {
+                $fields[] = $this->quoteName($key);
+                $value = $this->quoteValue($value);
+            }
 
-        $query .= implode(', ', $fields);
-        $query .= ") VALUES (";
-        $query .= implode(", ", $params);
-        $query .= ")";
+            $query .= implode(', ', $fields);
+            $query .= ") VALUES (";
+            $query .= implode(", ", $params);
+            $query .= ")";
+        }
 
         return $query;
     }
