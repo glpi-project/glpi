@@ -437,7 +437,8 @@ final class Search
 
                     if ($fkey === 'id') {
                         $props_to_use = array_filter($this->flattened_properties, static function ($prop_params, $prop_name) {
-                            $mapped_from_other = isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_name;
+                            $prop_field = $prop_params['x-field'] ?? $prop_name;
+                            $mapped_from_other = isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field;
                             // We aren't handling joins or mapped fields here
                             return !str_contains($prop_name, '.') && !$mapped_from_other;
                         }, ARRAY_FILTER_USE_BOTH);
