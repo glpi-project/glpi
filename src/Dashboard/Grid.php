@@ -187,7 +187,6 @@ HTML;
      */
     public static function canViewOneDashboard($context = null): bool
     {
-       // check global (admin) right
         if (Dashboard::canView()) {
             return true;
         }
@@ -232,7 +231,7 @@ HTML;
      *
      * @return void display html of the grid
      */
-    public function show(bool $mini = false)
+    public function show(bool $mini = false, ?string $token = null)
     {
         global $GLPI_CACHE;
 
@@ -251,6 +250,7 @@ HTML;
         }
 
         $embed_str     = self::$embed ? "true" : "false";
+        $token_str     = $token !== null ? "'{$token}'" : "null";
         $embed_class   = self::$embed ? "embed" : "";
         $mini_class    = $mini ? "mini" : "";
 
@@ -421,12 +421,15 @@ HTML;
             rows:        {$this->grid_rows},
             cell_margin: {$this->cell_margin},
             rand:        '{$rand}',
-            embed:       {$embed_str},
             ajax_cards:  {$ajax_cards},
             all_cards:   {$cards_json},
             all_widgets: {$all_widgets_json},
             context:     "{$this->context}",
             cache_key:   "{$cache_key}",
+            embed:       {$embed_str},
+            token:       {$token_str},
+            entities_id: {$_SESSION['glpiactive_entity']},
+            is_recursive:{$_SESSION['glpiactive_entity_recursive']},
          })
       });
 JAVASCRIPT;
@@ -487,7 +490,7 @@ JAVASCRIPT;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
 
        // show embeded dashboard
-        $this->show(true);
+        $this->show(true, $params['token']);
     }
 
     public static function getToken(string $dasboard = "", int $entities_id = 0, int $is_recursive = 0): string
@@ -528,8 +531,6 @@ JAVASCRIPT;
 
         if ($token !== $params['token']) {
             return false;
-            Html::displayRightError();
-            exit;
         }
 
         return true;

@@ -33,10 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Filename was previously states.php
- * @since 0.84
- */
+use Glpi\Dashboard\Dashboard;
 
 include('../inc/includes.php');
 
@@ -49,9 +46,15 @@ if ($default == "") {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/ticket.php");
 }
 
+$dashboard = new Dashboard($default);
+if (!$dashboard->canViewCurrent()) {
+    Html::displayRightError();
+    exit();
+}
+
 Html::header(__('Helpdesk Dashboard'), $_SERVER['PHP_SELF'], "helpdesk", "dashboard");
 
-$dashboard = new Glpi\Dashboard\Grid($default);
-$dashboard->showDefault();
+$grid = new Glpi\Dashboard\Grid($default);
+$grid->showDefault();
 
 Html::footer();
