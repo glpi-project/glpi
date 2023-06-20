@@ -219,6 +219,7 @@ TEXT,
             'documents' => '',
             'mode' => 'ajax',
             'event' => 'new',
+            'documents_data' => null,
         ];
         $this->array($data)->isIdenticalTo($expected);
 

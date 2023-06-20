@@ -41,7 +41,6 @@ use Glpi\Mail\SMTP\OauthConfig;
  */
 class NotificationMailingSetting extends NotificationSetting
 {
-
     public const INHERIT        = -2;   // Inherit from global config
     public const NO_DOCUMENT    = 0;    // No document
     public const ALL_TICKET     = 1;    // All ticket documents

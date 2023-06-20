@@ -110,7 +110,8 @@ class NotificationMailing extends DbTestCase
              'messageid'                => null,
              'documents'                => '',
              'mode'                     => 'mailing',
-             'event'                    => 'test_notification'
+             'event'                    => 'test_notification',
+             'documents_data'           => '',
          ]);
     }
 

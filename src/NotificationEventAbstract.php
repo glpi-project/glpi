@@ -146,7 +146,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                         $itemtype = getItemtypeForForeignKeyField($k);
                                         if (class_exists($itemtype)) {
                                             if ($data['attach_documents'] == NotificationMailingSetting::INHERIT) {
-                                                $data['attach_documents'] = $CFG_GLPI['notifications_attach_documents'];
+                                                $data['attach_documents'] = $CFG_GLPI['attach_ticket_documents_to_mail'];
                                             }
                                             switch ($data['attach_documents']) {
                                                 case NotificationMailingSetting::NO_DOCUMENT:
