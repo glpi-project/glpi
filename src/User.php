@@ -2866,29 +2866,6 @@ HTML;
                 echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
 
                 echo "<tr class='tab_bg_1'><td>";
-                echo __("Personal token");
-                echo "</td><td colspan='2'>";
-
-                if (!empty($this->fields["personal_token"])) {
-                    echo "<div class='copy_to_clipboard_wrapper'>";
-                    echo Html::input('_personal_token', [
-                        'value'    => $this->fields["personal_token"],
-                        'style'    => 'width:90%'
-                    ]);
-                    echo "</div>";
-                    echo "(" . sprintf(
-                        __('generated on %s'),
-                        Html::convDateTime($this->fields["personal_token_date"])
-                    ) . ")";
-                }
-                echo "</td><td>";
-                Html::showCheckbox(['name'  => '_reset_personal_token',
-                    'title' => __('Regenerate')
-                ]);
-                echo "&nbsp;&nbsp;" . __('Regenerate');
-                echo "</td></tr>";
-
-                echo "<tr class='tab_bg_1'><td>";
                 echo __("API token");
                 echo "</td><td colspan='2'>";
                 if (!empty($this->fields["api_token"])) {
@@ -3274,29 +3251,6 @@ HTML;
             }
 
             echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'><td>";
-            echo __("Personal token");
-            echo "</td><td colspan='2'>";
-
-            if (!empty($this->fields["personal_token"])) {
-                echo "<div class='copy_to_clipboard_wrapper'>";
-                echo Html::input('_personal_token', [
-                    'value'    => $this->fields["personal_token"],
-                    'style'    => 'width:90%'
-                ]);
-                echo "</div>";
-                echo "(" . sprintf(
-                    __('generated on %s'),
-                    Html::convDateTime($this->fields["personal_token_date"])
-                ) . ")";
-            }
-            echo "</td><td>";
-            Html::showCheckbox(['name'  => '_reset_personal_token',
-                'title' => __('Regenerate')
-            ]);
-            echo "&nbsp;&nbsp;" . __('Regenerate');
-            echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>";
             echo __("API token");
