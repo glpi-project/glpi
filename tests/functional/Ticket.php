@@ -5560,6 +5560,9 @@ HTML
     {
         global $DB;
 
+        $this->login();
+
+        // Create a new user
         $user = new User();
         $user_id = $user->add([
             'name' => 'testShowCentralCountCriteria',
@@ -5569,6 +5572,7 @@ HTML
         ]);
         $this->integer($user_id)->isGreaterThan(0);
 
+        // Create a new ticket with the user as requester
         $ticket_requester = new \Ticket();
         $ticket_id_requester = $ticket_requester->add([
             'name' => 'testShowCentralCountCriteria',
@@ -5576,6 +5580,7 @@ HTML
         ]);
         $this->integer($ticket_id_requester)->isGreaterThan(0);
 
+        // Add the user as requester for the ticket
         $ticket_user_requester = new \Ticket_User();
         $ticket_user_id_requester = $ticket_user_requester->add([
             'tickets_id' => $ticket_id_requester,
@@ -5584,6 +5589,7 @@ HTML
         ]);
         $this->integer($ticket_user_id_requester)->isGreaterThan(0);
 
+        // Create a new ticket with the user as observer
         $ticket_observer = new \Ticket();
         $ticket_id_observer = $ticket_observer->add([
             'name' => 'testShowCentralCountCriteria',
@@ -5591,6 +5597,7 @@ HTML
         ]);
         $this->integer($ticket_id_observer)->isGreaterThan(0);
 
+        // Add the user as observer for the ticket
         $ticket_user_observer = new \Ticket_User();
         $ticket_user_observer_id = $ticket_user_observer->add([
             'tickets_id' => $ticket_id_observer,
@@ -5599,6 +5606,18 @@ HTML
         ]);
         $this->integer($ticket_user_observer_id)->isGreaterThan(0);
 
+        // Create a new ticket
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name' => 'testShowCentralCountCriteria',
+            'content' => 'testShowCentralCountCriteria',
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        // Login with the new user
+        $this->login('testShowCentralCountCriteria', 'testShowCentralCountCriteria');
+
+        // Check if the user can see 2 tickets
         $criteria = $this->callPrivateMethod($this->newTestedInstance(), 'showCentralCountCriteria', true);
         $iterator = $DB->request($criteria);
         foreach ($iterator as $data) {
@@ -5607,6 +5626,17 @@ HTML
                 ->hasKey('COUNT')
                 ->integer['status']->isEqualTo(1)
                 ->integer['COUNT']->isEqualTo(2);
+        }
+
+        // Check if the global view return 3 tickets
+        $criteria = $this->callPrivateMethod($this->newTestedInstance(), 'showCentralCountCriteria', false);
+        $iterator = $DB->request($criteria);
+        foreach ($iterator as $data) {
+            $this->array($data)
+                ->hasKey('status')
+                ->hasKey('COUNT')
+                ->integer['status']->isEqualTo(1)
+                ->integer['COUNT']->isEqualTo(3);
         }
     }
 }
