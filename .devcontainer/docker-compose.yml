@@ -50,11 +50,10 @@ services:
   nginx:
     container_name: "glpi-nginx"
     image: "nginx:alpine"
-    command: ["nginx"]
     restart: unless-stopped
     volumes:
       - ..:/var/www:rw
-      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./conf/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
     ports:
