@@ -410,7 +410,7 @@ class DisplayPreference extends CommonDBTM
                     if ((!in_array($data["num"], $fixed_columns)) && isset($searchopt[$data["num"]])) {
                         echo "<tr>";
                         echo "<td>";
-                        echo self::nameOfGroupForItemInSearchopt($searchopt, $data["num"]);
+                        echo $this->nameOfGroupForItemInSearchopt($searchopt, $data["num"]);
                         echo $searchopt[$data["num"]]["name"] . "</td>";
 
                         if ($i != 0) {
@@ -487,11 +487,11 @@ class DisplayPreference extends CommonDBTM
      */
     private function nameOfGroupForItemInSearchopt(array $search_options, int $search_option_key): string
     {
-        $searchoptkeys = array_keys($searchopt);
+        $search_options_keys = array_keys($search_options);
 
-        for ($key = array_search($searchoptkey, $searchoptkeys) - 1; $key > 0; $key--) {
-            if (is_string($searchoptkeys[$key])) {
-                return $searchopt[$searchoptkeys[$key]]['name'] . " - ";
+        for ($key = array_search($search_option_key, $search_options_keys) - 1; $key > 0; $key--) {
+            if (is_string($search_options_keys[$key])) {
+                return $search_options[$search_options_keys[$key]]['name'] . " - ";
             }
         }
 
@@ -592,7 +592,7 @@ class DisplayPreference extends CommonDBTM
                     && isset($searchopt[$data["num"]])
                 ) {
                     echo "<tr><td>";
-                    echo self::nameOfGroupForItemInSearchopt($searchopt, $data["num"]);
+                    echo $this->nameOfGroupForItemInSearchopt($searchopt, $data["num"]);
                     echo $searchopt[$data["num"]]["name"];
                     echo "</td>";
 
