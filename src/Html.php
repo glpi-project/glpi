@@ -5601,7 +5601,7 @@ HTML;
             },
             fail: function (e, data) {
                 // enable submit button after upload
-                $(this).closest('form').find('button:submit').prop('disabled', '');
+                $(this).closest('form').find(':submit').prop('disabled', false);
                const err = 'responseText' in data.jqXHR && data.jqXHR.responseText.length > 0
                   ? data.jqXHR.responseText
                   : data.jqXHR.statusText;
