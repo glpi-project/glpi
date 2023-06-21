@@ -2250,7 +2250,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'entities_id' => 0,
             'is_recursive' => 0,
             'name' => '3k-1-pa3.glpi-project.infra',
-            'ram' => '128',
+            'ram' => 128,
             'serial' => 'FOC1243W0ED',
             'otherserial' => null,
             'contact' => null,
@@ -4515,7 +4515,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->array($cvms->fields)
             ->string['name']->isIdenticalTo('glpi-10-rc1')
             ->integer['vcpu']->isIdenticalTo(2)
-            ->string['ram']->isIdenticalTo('2048')
+            ->integer['ram']->isIdenticalTo(2048)
             ->string['uuid']->isIdenticalTo('487dfdb542a4bfb23670b8d4e76d8b6886c2ed35')
         ;
 
@@ -4533,7 +4533,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->array($cvms->fields)
             ->string['name']->isIdenticalTo('glpi-10-rc1')
             ->integer['vcpu']->isIdenticalTo(2)
-            ->string['ram']->isIdenticalTo('4096')
+            ->integer['ram']->isIdenticalTo(4096)
             ->string['uuid']->isIdenticalTo('487dfdb542a4bfb23670b8d4e76d8b6886c2ed35')
         ;
     }
