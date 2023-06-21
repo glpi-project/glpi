@@ -5609,7 +5609,7 @@ HTML;
             },
             processfail: function (e, data) {
                 // enable submit button after upload
-                $(this).closest('form').find('button:submit').prop('disabled', '');
+                $(this).closest('form').find(':submit').prop('disabled', false);
                $.each(
                   data.files,
                   function(index, file) {
