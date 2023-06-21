@@ -341,6 +341,12 @@ class Document extends CommonDBTM
                 'items_id'     => $this->input["items_id"]
             ]);
 
+            if ($this->input["itemtype"] == 'Ticket') {
+                $main_item = new Ticket();
+                $main_item->getFromDB($this->input["items_id"]);
+                NotificationEvent::raiseEvent('add_document', $main_item);
+            }
+
             Event::log(
                 $this->fields['id'],
                 "documents",
