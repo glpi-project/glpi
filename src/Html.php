@@ -5578,7 +5578,7 @@ HTML;
             maxChunkSize: {$max_chunk_size},
             add: function (e, data) {
                // disable submit button during upload
-               $(this).closest('form').find('button:submit').prop('disabled', 'disabled');
+               $(this).closest('form').find(':submit').prop('disabled', true);
                // randomize filename
                for (var i = 0; i < data.files.length; i++) {
                   data.files[i].uploadName = uniqid('', true) + data.files[i].name;
