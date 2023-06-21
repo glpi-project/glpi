@@ -73,8 +73,7 @@
                         'from_email',
                         config('from_email'),
                         __('Email sender address'),
-                        field_options|merge({'info': __('Address to use in from for sent emails.') ~ '\n'
-                             ~ __('If not set, main or entity administrator email address will be used.')})
+                        field_options|merge({'info': __('Address to use in from for sent emails.') ~ '\n' ~ __('If not set, main or entity administrator email address will be used.')})
                     ) }}
                 </td>
                 <td>
@@ -82,8 +81,7 @@
                         'from_email_name',
                         config('from_email_name'),
                         __('Email sender name'),
-                        field_options|merge({'info': __('Name to use in from for sent emails.') ~ '\n'
-                             ~ __('If not set, main or entity administrator email name will be used.')})
+                        field_options|merge({'info': __('Name to use in from for sent emails.') ~ '\n' ~ __('If not set, main or entity administrator email name will be used.')})
                     ) }}
                 </td>
             </tr>
@@ -94,8 +92,7 @@
                         'replyto_email',
                         config('replyto_email'),
                         __('Reply-To address'),
-                        field_options|merge({'info': __('Optionnal reply to address.') ~ '\n'
-                             ~ __('If not set, main or entity administrator email address will be used.')})
+                        field_options|merge({'info': __('Optionnal reply to address.') ~ '\n' ~ __('If not set, main or entity administrator email address will be used.')})
                     ) }}
                 </td>
                 <td>
@@ -103,8 +100,7 @@
                         'replyto_email_name',
                         config('replyto_email_name'),
                         __('Reply-To name'),
-                        field_options|merge({'info': __('Optionnal reply to name.') ~ '\n'
-                             ~ __('If not set, main or entity administrator name will be used.')})
+                        field_options|merge({'info': __('Optionnal reply to name.') ~ '\n' ~ __('If not set, main or entity administrator name will be used.')})
                     ) }}
                 </td>
             </tr>
@@ -115,8 +111,7 @@
                         'noreply_email',
                         config('noreply_email'),
                         __('No-Reply address'),
-                        field_options|merge({'info': __('Optionnal No-Reply address.') ~ '\n'
-                             ~ __('If set, it will be used for notifications that doesnʼt expect a reply.')})
+                        field_options|merge({'info': __('Optionnal No-Reply address.') ~ '\n' ~ __('If set, it will be used for notifications that doesnʼt expect a reply.')})
                     ) }}
                 </td>
                 <td>
@@ -124,8 +119,7 @@
                         'noreply_email_name',
                         config('noreply_email_name'),
                         __('No-Reply name'),
-                        field_options|merge({'info': __('Optionnal No-Reply name.') ~ '\n'
-                             ~ __('If not set, main or entity administrator name will be used.')})
+                        field_options|merge({'info': __('Optionnal No-Reply name.') ~ '\n' ~ __('If not set, main or entity administrator name will be used.')})
                     ) }}
                 </td>
             </tr>
@@ -161,7 +155,7 @@
                         mail_methods,
                         __('Way of sending emails'),
                         field_options
-                    )}}
+                    ) }}
                     {% if not mail_method_php %}
                         <tr class='tab_bg_2'><td class='center' colspan='2'>
                             <span class='red'>{{ __('The PHP mail function is unknown or is not activated on your system.') }}</span><br>
@@ -198,7 +192,7 @@
                         config('smtp_max_retries'),
                         __('Max. delivery retries'),
                         field_options
-                    )}}
+                    ) }}
                 </td>
             </tr>
 
@@ -209,7 +203,7 @@
                         config('smtp_retry_time'),
                         __('Try to deliver again in (minutes)'),
                         field_options
-                    )}}
+                    ) }}
                 </td>
             </tr>
         </table>
@@ -232,8 +226,8 @@
                         config('smtp_oauth_provider'),
                         providers_values,
                         __('Oauth provider'),
-                        field_options|merge({'display_emptychoice' : true})
-                    )}}
+                        field_options|merge({'display_emptychoice': true})
+                    ) }}
                 </td>
                 <td>
                     {{ fields.textField(
@@ -244,7 +238,7 @@
                             'info': _x('oauth', 'This is the callback URL that you will have to declare in your provider application.'),
                             'copy_btn': true,
                         })
-                    )}}
+                    ) }}
                 </td>
             </tr>
 
@@ -255,7 +249,7 @@
                         config('smtp_oauth_client_id'),
                         _x('oauth', 'Client ID'),
                         field_options,
-                    )}}
+                    ) }}
                 </td>
                 <td>
                     {{ fields.passwordField(
@@ -263,7 +257,7 @@
                         '',
                         _x('oauth', 'Client secret'),
                         field_options,
-                    )}}
+                    ) }}
                 </td>
             </tr>
 
@@ -277,9 +271,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% set option_value = config('smtp_oauth_provider') == provider_class
-                                ? (provider_options[param_specs['key']] ?? param_specs['default'] ?? '')
-                                : '' %}
+                            {% set option_value = config('smtp_oauth_provider') == provider_class ? (provider_options[param_specs['key']] ?? param_specs['default'] ?? '') : '' %}
                             <input class='form-control'
                                     name='smtp_oauth_options[{{ param_specs['key'] }}]'
                                     id='smtp_oauth_options_{{ param_specs['key'] }}_{{ rand }}'
@@ -319,7 +311,7 @@
                             '',
                             _x('oauth', 'Force OAuth authentication refresh'),
                             field_options|merge({'info': _x('oauth', 'You can use this option to force redirection to the OAuth authentication process. This will trigger generation of a new OAuth token.')})
-                        )}}
+                        ) }}
                     </td>
                 </tr>
             {% endif %}
@@ -361,7 +353,7 @@
                         config('smtp_username'),
                         __('SMTP login (optional)'),
                         field_options,
-                    )}}
+                    ) }}
                 </td>
                 <td>
                     {{ fields.passwordField(
@@ -369,7 +361,7 @@
                         '',
                         __('SMTP password (optional)'),
                         field_options,
-                    )}}
+                    ) }}
                 </td>
             </tr>
 
@@ -379,8 +371,7 @@
                         'smtp_sender',
                         config('smtp_sender'),
                         __('Email sender'),
-                        field_options|merge({'info': __('May be required for some mails providers.') ~ '\n'
-                             ~ __('If not set, main administrator email will be used.')})
+                        field_options|merge({'info': __('May be required for some mails providers.') ~ '\n' ~ __('If not set, main administrator email will be used.')})
                     ) }}
                 </td>
             </tr>
