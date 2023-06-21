@@ -64,7 +64,7 @@ services:
     image: mariadb:10.11
     restart: unless-stopped
     volumes:
-      - mariadb-data:/var/lib/mysql
+      - /var/lib/mysql
     environment:
       MARIADB_ROOT_PASSWORD: glpi
       MARIADB_DATABASE: glpi
@@ -80,7 +80,3 @@ services:
     ports:
       - "8025:8025"
       - "1025:1025"
-
-volumes:
-  glpi-src:
-  mariadb-data:
