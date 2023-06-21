@@ -2457,7 +2457,14 @@ HTML;
 
             $url_base = $CFG_GLPI['url_base'] ?? null;
             // $CFG_GLPI may have not been loaded yet, load value form DB if `$CFG_GLPI['url_base']` is not set.
-            if ($url_base === null && $DB instanceof DBmysql && $DB->connected) {
+            if (
+                $url_base === null
+                && $DB instanceof DBmysql
+                && $DB->connected
+                // table/field may not exists in edge case (e.g. update from GLPI < 0.85)
+                && $DB->tableExists('glpi_configs')
+                && $DB->fieldExists('glpi_configs', 'context')
+            ) {
                 $url_base = Config::getConfigurationValue('core', 'url_base');
             }
 
