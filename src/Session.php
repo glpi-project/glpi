@@ -225,16 +225,49 @@ class Session
      **/
     public static function start()
     {
-
         if (session_status() === PHP_SESSION_NONE) {
             ini_set('session.use_only_cookies', '1'); // Force session to use cookies
-
-            session_name("glpi_" . md5(realpath(GLPI_ROOT)));
+            session_name(self::buildSessionName());
 
             @session_start();
         }
        // Define current time for sync of action timing
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+    }
+
+    /**
+     * Build the session name based on GLPI's folder path + full domain + port
+     *
+     * Adding the full domain name prevent two GLPI instances on the same
+     * domain (e.g. test.domain and prod.domain) with identical folder's
+     * path (e.g. /var/www/glpi) to compete for the same cookie name
+     *
+     * Adding the port prevent some conflicts when using docker
+     *
+     * @param string|null $path Default to GLPI_ROOT
+     * @param string|null $host Default to $_SERVER['HTTP_HOST']
+     * @param string|null $port Default to $_SERVER['SERVER_PORT']
+     *
+     * @return string An unique session name
+     */
+    public static function buildSessionName(
+        ?string $path = null,
+        ?string $host = null,
+        ?string $port = null
+    ): string {
+        if (is_null($path)) {
+            $path = realpath(GLPI_ROOT);
+        }
+
+        if (is_null($host)) {
+            $host = $_SERVER['HTTP_HOST'] ?? '';
+        }
+
+        if (is_null($port)) {
+            $port = $_SERVER['SERVER_PORT'] ?? '';
+        }
+
+        return "glpi_" . md5($path . $host . $port);
     }
 
 
