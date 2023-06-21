@@ -49,6 +49,13 @@ $migration->changeField(
     "int unsigned DEFAULT NULL",
 );
 
+$migration->changeField(
+    ComputerVirtualMachine::getTable(),
+    'ram',
+    'ram',
+    'varchar(255) DEFAULT NULL',
+);
+$migration->migrationOneTable(ComputerVirtualMachine::getTable());
 $DB->update(
     ComputerVirtualMachine::getTable(),
     ['ram' => null],
