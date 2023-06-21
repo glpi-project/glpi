@@ -5599,7 +5599,7 @@ HTML
         ]);
         $this->integer($ticket_user_observer_id)->isGreaterThan(0);
 
-        $criteria = \Ticket::showCentralCountCriteria(true);
+        $criteria = $this->callPrivateMethod($this->newTestedInstance(), 'showCentralCountCriteria', true);
         $iterator = $DB->request($criteria);
         foreach ($iterator as $data) {
             $this->array($data)

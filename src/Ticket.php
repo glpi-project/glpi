@@ -5125,7 +5125,7 @@ JAVASCRIPT;
      *
      * @param boolean $foruser Only for current login user as requester or observer (false by default)
      */
-    public static function showCentralCountCriteria(bool $foruser = false)
+    private static function showCentralCountCriteria(bool $foruser): array
     {
         $table = self::getTable();
         $criteria = [
