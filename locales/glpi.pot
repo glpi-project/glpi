@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-21 12:26+0000\n"
+"POT-Creation-Date: 2023-06-21 14:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20563,7 +20563,7 @@ msgstr ""
 #: src/Entity.php:1896 src/Config.php:3196 src/Profile.php:2090
 #: src/NotificationTargetSoftwareLicense.php:90
 msgid "Software"
-msgid_plural "Softwares"
+msgid_plural "Software"
 msgstr[0] ""
 msgstr[1] ""
 

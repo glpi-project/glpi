@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-21 12:26+0000\n"
-"PO-Revision-Date: 2023-06-21 12:26+0000\n"
+"POT-Creation-Date: 2023-06-21 14:11+0000\n"
+"PO-Revision-Date: 2023-06-21 14:11+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en_GB\n"
@@ -20762,9 +20762,9 @@ msgstr "Sodium ChaCha20-Poly1305 size constant"
 #: src/Entity.php:1896 src/Config.php:3196 src/Profile.php:2090
 #: src/NotificationTargetSoftwareLicense.php:90
 msgid "Software"
-msgid_plural "Softwares"
+msgid_plural "Software"
 msgstr[0] "Software"
-msgstr[1] "Softwares"
+msgstr[1] "Software"
 
 #: src/SoftwareCategory.php:44
 msgid "Software category"

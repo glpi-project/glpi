@@ -45,7 +45,7 @@ class Software extends DbTestCase
     {
         $this->string(\Software::getTypeName(1))->isIdenticalTo('Software');
         $this->string(\Software::getTypeName(0))->isIdenticalTo('Software');
-        $this->string(\Software::getTypeName(10))->isIdenticalTo('Softwares');
+        $this->string(\Software::getTypeName(10))->isIdenticalTo('Software');
     }
 
     public function testGetMenuShorcut()
