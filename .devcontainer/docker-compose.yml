@@ -73,6 +73,14 @@ services:
     expose:
       - "3306"
 
+  mailpit:
+    container_name: "glpi-mailpit"
+    image: "axllent/mailpit"
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
 volumes:
   glpi-src:
   mariadb-data:

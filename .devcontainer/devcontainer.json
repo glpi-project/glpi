@@ -7,5 +7,5 @@
 	"workspaceFolder": "/var/www/",
 
 	// For use with PHP (e.g.php -S localhost:9090)
-	"forwardPorts": [9090]
+	"forwardPorts": [9090, 8025]
 }
