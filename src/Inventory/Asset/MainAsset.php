@@ -256,7 +256,7 @@ abstract class MainAsset extends InventoryAsset
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_users',
                     'WHERE'  => [
-                        'name'   => $split_user[0]
+                        'name'   => Sanitizer::sanitize($split_user[0])
                     ],
                     'LIMIT'  => 1
                 ]);
@@ -301,7 +301,7 @@ abstract class MainAsset extends InventoryAsset
                         ) {
                             $ldaps = $DB->request(
                                 'glpi_authldaps',
-                                ['WHERE'  => ['inventory_domain' => $a_users->domain]]
+                                ['WHERE'  => ['inventory_domain' => Sanitizer::sanitize($a_users->domain)]]
                             );
                              $ldaps_ids = [];
                             foreach ($ldaps as $data_LDAP) {
@@ -316,7 +316,7 @@ abstract class MainAsset extends InventoryAsset
                             'SELECT' => ['id'],
                             'FROM'   => 'glpi_users',
                             'WHERE'  => [
-                                'name'   => $a_users->login
+                                'name'   => Sanitizer::sanitize($a_users->login)
                             ] + $where_add,
                             'LIMIT'  => 1
                         ]);

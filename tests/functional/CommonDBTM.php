@@ -1322,6 +1322,13 @@ class CommonDBTM extends DbTestCase
             'length'    => 500,
         ];
 
+        // value that have a `\` as 255th char
+        yield [
+            'value'     => str_repeat('a', 254) . '\\abcdefg',
+            'truncated' => str_repeat('a', 254),
+            'length'    => 262,
+        ];
+
         // 253 1-byte chars followed by a 4-bytes char
         // string should not be truncated because the size in the database is expressed in number of characters and not in bytes
         $value = str_repeat('x', 253) . '𝄠';

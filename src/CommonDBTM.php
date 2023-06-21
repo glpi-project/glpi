@@ -4281,7 +4281,12 @@ class CommonDBTM extends CommonGLPI
                                     "{$value} exceed 255 characters long ({$length}), it will be truncated.",
                                     E_USER_WARNING
                                 );
-                                $this->input[$key] = mb_substr($value, 0, 255, 'UTF-8');
+                                $length = 255;
+                                do {
+                                    $this->input[$key] = mb_substr($value, 0, $length, 'UTF-8');
+                                    $length--;
+                                    // remove last char if previous truncation makes it non escaped
+                                } while (str_ends_with($this->input[$key], '\\') && !Sanitizer::isDbEscaped($this->input[$key]));
                             }
                             break;
 
