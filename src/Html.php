@@ -1560,7 +1560,7 @@ HTML;
             }
         }
 
-        if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+        if (Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
             $menu['reservation'] = [
                 'default' => '/front/reservationitem.php',
                 'title'   => _n('Reservation', 'Reservations', Session::getPluralNumber()),
