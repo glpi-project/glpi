@@ -5595,7 +5595,7 @@ HTML;
                   '{$p['editor_id']}'
                );
                // enable submit button after upload
-               $(this).closest('form').find('button:submit').prop('disabled', '');
+               $(this).closest('form').find(':submit').prop('disabled', false);
                // remove required
                 $('#fileupload{$p['rand']}').removeAttr('required');
             },
