@@ -5555,4 +5555,58 @@ HTML
         $entities = $ticket->getEntitiesForRequesters(["_users_id_requester" => $user_id]);
         $this->array($entities)->isIdenticalTo([$entity2_id, $entity1_id]);
     }
+
+    public function testShowCentralCountCriteria()
+    {
+        global $DB;
+
+        $user = new User();
+        $user_id = $user->add([
+            'name' => 'testShowCentralCountCriteria',
+            'password' => 'testShowCentralCountCriteria',
+            'password2' => 'testShowCentralCountCriteria',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true)
+        ]);
+        $this->integer($user_id)->isGreaterThan(0);
+
+        $ticket_requester = new \Ticket();
+        $ticket_id_requester = $ticket_requester->add([
+            'name' => 'testShowCentralCountCriteria',
+            'content' => 'testShowCentralCountCriteria',
+        ]);
+        $this->integer($ticket_id_requester)->isGreaterThan(0);
+
+        $ticket_user_requester = new \Ticket_User();
+        $ticket_user_id_requester = $ticket_user_requester->add([
+            'tickets_id' => $ticket_id_requester,
+            'users_id' => $user_id,
+            'type' => CommonITILActor::REQUESTER,
+        ]);
+        $this->integer($ticket_user_id_requester)->isGreaterThan(0);
+
+        $ticket_observer = new \Ticket();
+        $ticket_id_observer = $ticket_observer->add([
+            'name' => 'testShowCentralCountCriteria',
+            'content' => 'testShowCentralCountCriteria',
+        ]);
+        $this->integer($ticket_id_observer)->isGreaterThan(0);
+
+        $ticket_user_observer = new \Ticket_User();
+        $ticket_user_observer_id = $ticket_user_observer->add([
+            'tickets_id' => $ticket_id_observer,
+            'users_id' => $user_id,
+            'type' => CommonITILActor::OBSERVER,
+        ]);
+        $this->integer($ticket_user_observer_id)->isGreaterThan(0);
+
+        $criteria = \Ticket::showCentralCountCriteria(true);
+        $iterator = $DB->request($criteria);
+        foreach ($iterator as $data) {
+            $this->array($data)
+                ->hasKey('status')
+                ->hasKey('COUNT')
+                ->integer['status']->isEqualTo(1)
+                ->integer['COUNT']->isEqualTo(2);
+        }
+    }
 }

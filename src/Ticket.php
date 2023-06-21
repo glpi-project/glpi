@@ -5121,23 +5121,12 @@ JAVASCRIPT;
     }
 
     /**
-     * Get tickets count
+     * Get central count criteria
      *
-     * @param boolean $foruser  Only for current login user as requester (false by default)
-     * @param boolean $display  il false return html
-     **/
-    public static function showCentralCount(bool $foruser = false, bool $display = true)
+     * @param boolean $foruser Only for current login user as requester or observer (false by default)
+     */
+    public static function showCentralCountCriteria(bool $foruser = false)
     {
-        global $DB, $CFG_GLPI;
-
-       // show a tab with count of jobs in the central and give link
-        if (!Session::haveRight(self::$rightname, self::READALL) && !self::canCreate()) {
-            return false;
-        }
-        if (!Session::haveRight(self::$rightname, self::READALL)) {
-            $foruser = true;
-        }
-
         $table = self::getTable();
         $criteria = [
             'SELECT'    => [
@@ -5155,8 +5144,9 @@ JAVASCRIPT;
                     'ON' => [
                         'glpi_tickets_users' => 'tickets_id',
                         $table               => 'id', [
-                            'AND' => [
-                                'glpi_tickets_users.type' => CommonITILActor::REQUESTER
+                            'OR' => [
+                                ['glpi_tickets_users.type' => CommonITILActor::REQUESTER],
+                                ['glpi_tickets_users.type' => CommonITILActor::OBSERVER]
                             ]
                         ]
                     ]
@@ -5183,14 +5173,13 @@ JAVASCRIPT;
                     ]
                 ];
             }
-        }
 
-        if ($foruser) {
-            $ORWHERE = ['OR' => [
-                'glpi_tickets_users.users_id'                => Session::getLoginUserID(),
-                'glpi_tickets.users_id_recipient'            => Session::getLoginUserID(),
-                'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID()
-            ]
+            $ORWHERE = [
+                'OR' => [
+                    'glpi_tickets_users.users_id'                => Session::getLoginUserID(),
+                    'glpi_tickets.users_id_recipient'            => Session::getLoginUserID(),
+                    'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID()
+                ]
             ];
 
             if (
@@ -5203,6 +5192,28 @@ JAVASCRIPT;
             $criteria['WHERE'][] = $ORWHERE;
         }
 
+        return $criteria;
+    }
+
+    /**
+     * Get tickets count
+     *
+     * @param boolean $foruser  Only for current login user as requester or observer (false by default)
+     * @param boolean $display  il false return html
+     **/
+    public static function showCentralCount(bool $foruser = false, bool $display = true)
+    {
+        global $DB, $CFG_GLPI;
+
+       // show a tab with count of jobs in the central and give link
+        if (!Session::haveRight(self::$rightname, self::READALL) && !self::canCreate()) {
+            return false;
+        }
+        if (!Session::haveRight(self::$rightname, self::READALL)) {
+            $foruser = true;
+        }
+
+        $criteria = self::showCentralCountCriteria($foruser);
         $deleted_criteria = $criteria;
         $criteria['WHERE']['glpi_tickets.is_deleted'] = 0;
         $deleted_criteria['WHERE']['glpi_tickets.is_deleted'] = 1;
