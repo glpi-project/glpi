@@ -410,6 +410,7 @@ class DisplayPreference extends CommonDBTM
                     if ((!in_array($data["num"], $fixed_columns)) && isset($searchopt[$data["num"]])) {
                         echo "<tr>";
                         echo "<td>";
+                        echo $this->nameOfGroupForItemInSearchopt($searchopt, $data["num"]);
                         echo $searchopt[$data["num"]]["name"] . "</td>";
 
                         if ($i != 0) {
@@ -465,6 +466,38 @@ class DisplayPreference extends CommonDBTM
         }
         echo "</div>";
     }
+
+
+    /**
+     * Return the group name of an element in the searchopt array
+     *
+     * The group names are located before the items that belong to it, and are the only string keys, every item's key are integer.
+     *
+     * We first get the keys of the array to be able to iterate trought his items, including the group names.
+     * So we iterate trought the array key's in a reverse order,
+     * starting from the position before the item which we want to get the group name.
+     * The first key of string type we encouter, is our item's group name.
+     *
+     * @param array $searchopt
+     * @param int   $searchoptkey
+     *
+     * @return string Return the name of the group or an empty string.
+     *
+     * @since 10.0.8
+     */
+    private function nameOfGroupForItemInSearchopt(array $search_options, int $search_option_key): string
+    {
+        $search_options_keys = array_keys($search_options);
+
+        for ($key = array_search($search_option_key, $search_options_keys) - 1; $key > 0; $key--) {
+            if (is_string($search_options_keys[$key])) {
+                return $search_options[$search_options_keys[$key]]['name'] . " - ";
+            }
+        }
+
+        return "";
+    }
+
 
     /**
      * Print the search config form
@@ -559,6 +592,7 @@ class DisplayPreference extends CommonDBTM
                     && isset($searchopt[$data["num"]])
                 ) {
                     echo "<tr><td>";
+                    echo $this->nameOfGroupForItemInSearchopt($searchopt, $data["num"]);
                     echo $searchopt[$data["num"]]["name"];
                     echo "</td>";
 
