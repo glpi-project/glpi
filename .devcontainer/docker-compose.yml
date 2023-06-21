@@ -41,6 +41,7 @@ services:
     restart: unless-stopped
     volumes:
       - ..:/var/www/:rw
+      - ./conf/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     depends_on:
       - db
     extra_hosts:
