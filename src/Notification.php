@@ -271,6 +271,8 @@ class Notification extends CommonDBTM implements FilterableInterface
             'types' => $types,
             'attach_documents_values' => $attach_documents_values,
         ]);
+
+        return true;
     }
 
 
