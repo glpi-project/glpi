@@ -348,11 +348,13 @@ window.GLPI.Debug = new class Debug {
     }
 
     showDebugToolbar() {
+        $('.debug-logo').prop('disabled', true);
         $('.debug-toolbar-content').removeClass('d-none');
         $('#debug-toolbar').addClass('w-100').css('width', null);
     }
 
     hideDebugToolbar() {
+        $('.debug-logo').prop('disabled', false);
         $('.debug-toolbar-content').addClass('d-none');
         $('#debug-toolbar-expanded-content').addClass('d-none');
         $('#debug-toolbar').removeClass('w-100').css('width', 'fit-content');
