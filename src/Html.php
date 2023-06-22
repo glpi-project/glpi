@@ -3810,7 +3810,10 @@ JS;
                 'language_url' => $language_url
             ]);
         }
-       // init tinymce
+
+        $mandatory_field_msg = json_encode(__('The %s field is mandatory'));
+
+        // init tinymce
         $js = <<<JS
          $(function() {
             var is_dark = $('html').css('--is-dark').trim() === 'true';
@@ -3872,7 +3875,7 @@ JS;
                      editor.on('submit', function (e) {
                         if ($('#$id').val() == '') {
                            const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
-                           alert(__('The %s field is mandatory').replace('%s', field));
+                           alert({$mandatory_field_msg}.replace('%s', field));
                            e.preventDefault();
 
                            // Prevent other events to run
