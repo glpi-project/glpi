@@ -74,6 +74,7 @@
    field_options
 ) }}
 
+{% if canpriority %}
 {% set priority_options = field_options|merge({
    'disabled': (not canpriority),
    'withmajor': true
@@ -114,3 +115,4 @@ $(function() {
    })
 });
 </script>
+{% endif %}
