@@ -419,8 +419,8 @@ window.GLPI.Debug = new class Debug {
             // if there is a button in the toolbar for this widget, make it active
             const widget_button = this.getWidgetButton(widget_id);
             if (widget_button.length > 0) {
-                $('#debug-toolbar .debug-toolbar-widgets .debug-toolbar-widget button').removeClass('active');
-                widget_button.find('button').addClass('active');
+                $('#debug-toolbar .debug-toolbar-widgets .debug-toolbar-widget').removeClass('active');
+                widget_button.addClass('active');
             }
         }
         content_area.data('active-widget', widget_id);

@@ -39,11 +39,14 @@
         box-shadow: none;
     }
 
-    .debug-toolbar-widgets .debug-toolbar-widget > button {
-        box-shadow: none;
-
+    .debug-toolbar-widgets .debug-toolbar-widget {
         &.active, &:hover {
-            color: $primary;
+            border-top: 3px solid $primary !important;
+            margin-top : -3px;
+        }
+
+        button {
+            box-shadow: none;
         }
     }
 
