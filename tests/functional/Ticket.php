@@ -5555,4 +5555,34 @@ HTML
         $entities = $ticket->getEntitiesForRequesters(["_users_id_requester" => $user_id]);
         $this->array($entities)->isIdenticalTo([$entity2_id, $entity1_id]);
     }
+
+    public function testNoPriorityWithoutCanUpdate() {
+        $this->login('normal', 'password');
+
+        $ticket = new \Ticket();
+        $ticketId = $ticket->add([
+            'name'        => "test merge 1",
+            'content'     => "test merge 1",
+            'entities_id' => 0,
+            'status'      => \CommonITILObject::INCOMING,
+        ]);
+
+        $this->checkFormOutput(
+            $ticket,
+            $name = true,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = false,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
+    }
 }
