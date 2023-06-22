@@ -234,8 +234,8 @@ abstract class CommonITILObject extends CommonDBTM
                         $actors[] = [
                             'items_id' => $group_obj->fields['id'],
                             'itemtype' => 'Group',
-                            'text'     => $group_obj->getName(),
-                            'title'    => $group_obj->getRawCompleteName(),
+                            'text'     => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getName()),
+                            'title'    => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getRawCompleteName()),
                         ];
                     }
                 }
@@ -292,6 +292,12 @@ abstract class CommonITILObject extends CommonDBTM
                                     'title'         => $actor_obj->fields['name'],
                                     'default_email' => $actor_obj->fields['email'],
                                 ];
+                            } elseif ($actor_obj instanceof CommonTreeDropdown) {
+                                // Group
+                                $actors[] = $existing_actor + [
+                                    'text'  => CommonTreeDropdown::sanitizeSeparatorInCompletename($actor_obj->getName()),
+                                    'title' => CommonTreeDropdown::sanitizeSeparatorInCompletename($actor_obj->getRawCompleteName()),
+                                ];
                             } else {
                                 $actors[] = $existing_actor + [
                                     'text'  => $actor_obj->getName(),
@@ -339,8 +345,8 @@ abstract class CommonITILObject extends CommonDBTM
                         'id'       => $group['id'],
                         'items_id' => $group['groups_id'],
                         'itemtype' => 'Group',
-                        'text'     => $group_obj->getName(),
-                        'title'    => $group_obj->getRawCompleteName(),
+                        'text'     => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getName()),
+                        'title'    => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getRawCompleteName()),
                     ];
                 }
             }
