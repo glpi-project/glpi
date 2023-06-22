@@ -598,7 +598,7 @@ window.GLPI.Debug = new class Debug {
                      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugsession${rand}">SESSION</a></li>
                      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugserver${rand}">SERVER</a></li>
                   </ul>
-            
+
                   <div class="card-body overflow-auto p-1">
                      <div class="tab-content">
                         <div id="debugpost${rand}" class="cm-s-default tab-pane active"></div>
@@ -918,7 +918,7 @@ window.GLPI.Debug = new class Debug {
                                     <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="profiler">Profiler</button>
                                 </li>
                             </ul>
-                
+
                             <div class="card-body overflow-auto p-1">
                                 <div class="tab-content request-details-content-area">
                                 </div>
