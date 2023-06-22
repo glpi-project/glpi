@@ -382,15 +382,35 @@ window.GLPI.Debug = new class Debug {
     }
 
     refreshWidgetButtons() {
-        const server_performance_button = this.getWidgetButton('server_performance');
+        // Server performance
         const server_perf = this.initial_request.server_performance;
         const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
-        server_performance_button.find('.debug-text').text(`${server_perf.execution_time}ms | ${memory_usage_mio}mio`);
+        const server_performance_button_label = __("$1s ms using $2s mio")
+            .replace("$1s", `${server_perf.execution_time} <span class="text-muted">`)
+            .replace("$2s", `</span> ${memory_usage_mio} <span class="text-muted">`)
+            + "</span>"
+        ;
+        this.getWidgetButton('server_performance').find('.debug-text').html(server_performance_button_label);
 
-        const ajax_requests_button = this.getWidgetButton('ajax_requests');
-        ajax_requests_button.find('.debug-text').text(this.ajax_requests.length);
+        // Database performance
+        const sql_data = this.getCombinedSQLData();
+        const database_button_label = __("$1s in $2s ms")
+            .replace("$1s", `${sql_data.total_requests} <span class="text-muted">`)
+            .replace("$2s", `</span> ${sql_data.total_duration} <span class="text-muted">`)
+            + "</span>"
+        ;
+        this.getWidgetButton('sql').find('.debug-text').html(database_button_label);
 
-        this.getWidgetButton('requests').find('.debug-text').text('Requests');
+        // Requests
+        this.getWidgetButton('requests').find('.debug-text').text(this.ajax_requests.length);
+
+        // Client performances
+        const dom_timing = window.performance.getEntriesByType('navigation')[0].domComplete;
+        const client_performance_button_label = __("$1s ms")
+            .replace("$1s", `${dom_timing} <span class="text-muted">`)
+            + "</span>"
+        ;
+        this.getWidgetButton('client_performance').find('.debug-text').html(client_performance_button_label);
     }
 
     showWidget(widget_id, refresh = false, content_area = undefined, data = {}) {
