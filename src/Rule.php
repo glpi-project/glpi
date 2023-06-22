@@ -2332,7 +2332,7 @@ class Rule extends CommonDBTM
         return [
             'criterion' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($criterion)),
             'condition' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($condition)),
-            'pattern'   => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($pattern)),
+            'pattern'   => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($pattern ?? '')),
         ];
     }
 
