@@ -1431,14 +1431,16 @@ function blockFormSubmit(form, e) {
     form.attr('data-submitted', 'true');
 }
 
-$(document.body).on('submit', 'form[data-submit-once]', (e) => {
-    const form = $(e.target).closest('form');
-    if (form.attr('data-submitted') === 'true') {
-        e.preventDefault();
-        return false;
-    } else {
-        blockFormSubmit(form, e);
-    }
+$(() => {
+    $(document.body).on('submit', 'form[data-submit-once]', (e) => {
+        const form = $(e.target).closest('form');
+        if (form.attr('data-submitted') === 'true') {
+            e.preventDefault();
+            return false;
+        } else {
+            blockFormSubmit(form, e);
+        }
+    });
 });
 
 /**
