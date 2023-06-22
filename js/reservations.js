@@ -229,7 +229,7 @@ var Reservations = function() {
             },
 
             // ADD EVENTS
-            selectable: true,
+            selectable: my.can_reserve,
             select: function(info) {
                 if (my.can_reserve) {
                     glpi_ajax_dialog({
