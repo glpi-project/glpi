@@ -42,7 +42,7 @@
     .debug-toolbar-widgets .debug-toolbar-widget > button {
         box-shadow: none;
 
-        &.active {
+        &.active, &:hover {
             color: $primary;
         }
     }
