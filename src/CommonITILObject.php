@@ -6770,7 +6770,10 @@ abstract class CommonITILObject extends CommonDBTM
 
         $taskClass = $objType . "Task";
         $task_obj  = new $taskClass();
-        if (!$params['expose_private'] || ($task_obj->maybePrivate() && !Session::haveRight("followup", CommonITILTask::SEEPRIVATE) && !$params['bypass_rights'])) {
+        if (
+            $task_obj->maybePrivate()
+            && (!$params['expose_private'] || (!Session::haveRight("followup", CommonITILTask::SEEPRIVATE) && !$params['bypass_rights']))
+        ) {
             $restrict_task = [
                 'OR' => [
                     'is_private'   => 0,
