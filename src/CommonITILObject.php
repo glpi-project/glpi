@@ -6759,7 +6759,7 @@ abstract class CommonITILObject extends CommonDBTM
             ];
         }
 
-        if ($params['is_self_service']) {
+        if ($params['is_self_service'] || (!$params['expose_private'] &&  $params['bypass_rights'])) {
             $restrict_fup = [
                 'is_private'   => 0
             ];
@@ -6781,7 +6781,7 @@ abstract class CommonITILObject extends CommonDBTM
             ];
         }
 
-        if ($params['is_self_service']) {
+        if ($params['is_self_service'] || (!$params['expose_private'] &&  $params['bypass_rights'])) {
             $restrict_task = [
                 'is_private'   => 0
             ];
