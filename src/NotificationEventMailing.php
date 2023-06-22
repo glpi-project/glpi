@@ -149,6 +149,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                             ],
                             [
                                 Config::getUuid('notification'),
+                                $current->fields['itemtype'],
                                 $current->fields['items_id']
                             ],
                             '<GLPI-%uuid-%itemtype-%items_id>'

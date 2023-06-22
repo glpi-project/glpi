@@ -632,6 +632,20 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
+        // Recompute priority if not predefined and impact/urgency was changed
+        if (
+            !isset($predefined_fields['priority'])
+            && (
+                isset($predefined_fields['urgency'])
+                || isset($predefined_fields['impact'])
+            )
+        ) {
+            $this->fields['priority'] = self::computePriority(
+                $this->fields['urgency'] ?? 3,
+                $this->fields['impact'] ?? 3
+            );
+        }
+
         return $predefined_fields;
     }
 
@@ -7215,7 +7229,10 @@ abstract class CommonITILObject extends CommonDBTM
                 'timeline_position'  => ['>', self::NO_TIMELINE]
             ]);
             foreach ($document_items as $document_item) {
-                $document_obj->getFromDB($document_item['documents_id']);
+                if (!$document_obj->getFromDB($document_item['documents_id'])) {
+                    // Orphan `Document_Item`
+                    continue;
+                }
 
                 $date = $document_item['date'] ?? $document_item['date_creation'];
 
@@ -9019,6 +9036,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $user_link_class::getTableField('users_id'),
                     User::getTableField('firstname'),
                     User::getTableField('realname'),
+                    User::getTableField('name'),
                 ],
                 'FROM'   => $user_link_table,
                 'LEFT JOIN' => [
@@ -9050,7 +9068,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'realname'  => $linked_user_row['realname'],
                     'name'      => formatUserName(
                         $linked_user_row['users_id'],
-                        '',
+                        $linked_user_row['name'],
                         $linked_user_row['realname'],
                         $linked_user_row['firstname']
                     ),

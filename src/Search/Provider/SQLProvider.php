@@ -310,24 +310,18 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     $SELECT = [
                         QueryFunction::groupConcat(
-                            expression: "{$table}{$addtable}.{$field}",
+                            expression: QueryFunction::concat([
+                                "{$table}{$addtable}.{$field}",
+                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                                "glpi_profiles_users{$addtable2}.entities_id",
+                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                                "glpi_profiles_users{$addtable2}.is_recursive",
+                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                                "glpi_profiles_users{$addtable2}.is_dynamic",
+                            ]),
+                            distinct: true,
                             separator: \Search::LONGSEP,
                             alias: $NAME
-                        ),
-                        QueryFunction::groupConcat(
-                            expression: "glpi_profiles_users{$addtable2}.entities_id",
-                            separator: \Search::LONGSEP,
-                            alias: "{$NAME}_entities_id"
-                        ),
-                        QueryFunction::groupConcat(
-                            expression: "glpi_profiles_users{$addtable2}.is_recursive",
-                            separator: \Search::LONGSEP,
-                            alias: "{$NAME}_is_recursive"
-                        ),
-                        QueryFunction::groupConcat(
-                            expression: "glpi_profiles_users{$addtable2}.is_dynamic",
-                            separator: \Search::LONGSEP,
-                            alias: "{$NAME}_is_dynamic"
                         ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
@@ -342,24 +336,18 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     $SELECT = [
                         QueryFunction::groupConcat(
-                            expression: "{$table}{$addtable}.completename",
+                            expression: QueryFunction::concat([
+                                "{$table}{$addtable}.completename",
+                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                                "glpi_profiles_users{$addtable2}.entities_id",
+                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                                "glpi_profiles_users{$addtable2}.is_recursive",
+                                new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                                "glpi_profiles_users{$addtable2}.is_dynamic",
+                            ]),
+                            distinct: true,
                             separator: \Search::LONGSEP,
                             alias: $NAME
-                        ),
-                        QueryFunction::groupConcat(
-                            expression: "glpi_profiles_users{$addtable2}.profiles_id",
-                            separator: \Search::LONGSEP,
-                            alias: "{$NAME}_profiles_id"
-                        ),
-                        QueryFunction::groupConcat(
-                            expression: "glpi_profiles_users{$addtable2}.is_recursive",
-                            separator: \Search::LONGSEP,
-                            alias: "{$NAME}_is_recursive"
-                        ),
-                        QueryFunction::groupConcat(
-                            expression: "glpi_profiles_users{$addtable2}.is_dynamic",
-                            separator: \Search::LONGSEP,
-                            alias: "{$NAME}_is_dynamic"
                         ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
@@ -4376,7 +4364,19 @@ final class SQLProvider implements SearchProviderInterface
                             $handled = false;
                             if ($fieldname != 'content' && is_string($val) && strpos($val, \Search::SHORTSEP) !== false) {
                                 $split2                    = \Search::explodeWithID(\Search::SHORTSEP, $val);
-                                if (is_numeric($split2[1])) {
+                                if ($j == "User_80") {
+                                    $newrow[$j][0][$fieldname] = $split2[0];
+                                    $newrow[$j][0]["profiles_id"] = $split2[1];
+                                    $newrow[$j][0]["is_recursive"] = $split2[2];
+                                    $newrow[$j][0]["is_dynamic"] = $split2[3];
+                                    $handled = true;
+                                } elseif ($j == "User_20") {
+                                    $newrow[$j][0][$fieldname] = $split2[0];
+                                    $newrow[$j][0]["entities_id"] = $split2[1];
+                                    $newrow[$j][0]["is_recursive"] = $split2[2];
+                                    $newrow[$j][0]["is_dynamic"] = $split2[3];
+                                    $handled = true;
+                                } elseif (is_numeric($split2[1])) {
                                     $newrow[$j][0][$fieldname] = $split2[0];
                                     $newrow[$j][0]['id']       = $split2[1];
                                     $handled = true;
@@ -4400,7 +4400,19 @@ final class SQLProvider implements SearchProviderInterface
                                 $handled = false;
                                 if (strpos($val2, \Search::SHORTSEP) !== false) {
                                     $split2                  = \Search::explodeWithID(\Search::SHORTSEP, $val2);
-                                    if (is_numeric($split2[1])) {
+                                    if ($j == "User_80") {
+                                        $newrow[$j][$key2][$fieldname] = $split2[0];
+                                        $newrow[$j][$key2]["profiles_id"] = $split2[1];
+                                        $newrow[$j][$key2]["is_recursive"] = $split2[2];
+                                        $newrow[$j][$key2]["is_dynamic"] = $split2[3];
+                                        $handled = true;
+                                    } elseif ($j == "User_20") {
+                                        $newrow[$j][$key2][$fieldname] = $split2[0];
+                                        $newrow[$j][$key2]["entities_id"] = $split2[1];
+                                        $newrow[$j][$key2]["is_recursive"] = $split2[2];
+                                        $newrow[$j][$key2]["is_dynamic"] = $split2[3];
+                                        $handled = true;
+                                    } elseif (is_numeric($split2[1])) {
                                         $newrow[$j][$key2]['id'] = $split2[1];
                                         if ($split2[0] == \Search::NULLVALUE) {
                                             $newrow[$j][$key2][$fieldname] = null;

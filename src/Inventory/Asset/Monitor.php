@@ -51,8 +51,7 @@ class Monitor extends InventoryAsset
         $mapping = [
             'caption'      => 'name',
             'manufacturer' => 'manufacturers_id',
-            'description'  => 'comment',
-            'type'         => 'monitortypes_id'
+            'description'  => 'comment'
         ];
 
         foreach ($this->data as &$val) {
