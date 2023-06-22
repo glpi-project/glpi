@@ -1078,7 +1078,6 @@ class Session
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
             $right_name = self::getRightNameForError($right);
-            Toolbox::handleProfileChangeRedirect();
             Html::displayRightError("User is missing the $right ($right_name) right for $module");
         }
     }
