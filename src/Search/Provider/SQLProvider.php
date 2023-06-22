@@ -1800,8 +1800,10 @@ final class SQLProvider implements SearchProviderInterface
             // Add NULL if $val = 0 and not negative search
             // Or negative search on real value
             if (
-                (!$nott && ($val == 0))
-                || ($nott && ($val != 0))
+                ($inittable !== \Entity::getTable())
+                && (!$nott && ($val == 0)
+                    || ($nott && ($val != 0))
+                )
             ) {
                 $criteria['OR'][] = ["$table.id" => null];
             }

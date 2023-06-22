@@ -2639,6 +2639,53 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             ];
         }
 
+        if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+            $visibility = [];
+            $visibility[] = [
+                'link'          => "OR",
+                'field'         => '70',
+                'searchtype'    => "equals",
+                'virtual'       => true,
+                'value'         => 'myself',
+            ];
+            foreach ($_SESSION["glpiactiveentities"] as $entity) {
+                $visibility[] = [
+                    'link'          => "OR",
+                    'field'         => '80',
+                    'searchtype'    => "equals",
+                    'virtual'       => true,
+                    'value'         => $entity,
+                ];
+            }
+            $visibility[] = [
+                'link'          => "OR",
+                'field'         => '81',
+                'searchtype'    => "equals",
+                'virtual'       => true,
+                'value'         => $_SESSION["glpiactiveprofile"]["id"]
+            ];
+            foreach ($_SESSION["glpigroups"] as $group) {
+                $visibility[] = [
+                    'link'          => "OR",
+                    'field'         => '82',
+                    'searchtype'    => "equals",
+                    'virtual'       => true,
+                    'value'         => $group,
+                ];
+            }
+            $visibility[] = [
+                'link'          => "OR",
+                'field'         => '83',
+                'searchtype'    => "equals",
+                'virtual'       => true,
+                'value'         => "myself",
+            ];
+            $params['criteria'][] = [
+                'link'     => "AND",
+                'criteria' => $visibility
+            ];
+        }
+
         $unpublished = [
             '0' => [
                 'link'          => "AND",
