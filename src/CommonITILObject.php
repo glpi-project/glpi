@@ -8646,6 +8646,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $user_link_class::getTableField('users_id'),
                     User::getTableField('firstname'),
                     User::getTableField('realname'),
+                    User::getTableField('name'),
                 ],
                 'FROM'   => $user_link_table,
                 'LEFT JOIN' => [
@@ -8677,7 +8678,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'realname'  => $linked_user_row['realname'],
                     'name'      => formatUserName(
                         $linked_user_row['users_id'],
-                        '',
+                        $linked_user_row['name'],
                         $linked_user_row['realname'],
                         $linked_user_row['firstname']
                     ),
