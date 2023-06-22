@@ -361,12 +361,12 @@ class NotificationTargetTicket extends DbTestCase
         ];
 
         //add second test for post-only
-        //simulate that is not a self-service (because of second profil tech)
+        //simulate that is a self-service (because of one profil with interface = helpdesk)
         //he can't see private because of self-service who has no right TILFollowup::SEEPRIVATE
         $basic_options = [
             'additionnaloption' => [
                 'usertype' => NotificationTarget::GLPI_USER,
-                'is_self_service' => false,
+                'is_self_service' => true,
                 'show_private'    => false,
             ]
         ];
