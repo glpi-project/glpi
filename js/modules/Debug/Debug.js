@@ -1093,7 +1093,7 @@ window.GLPI.Debug = new class Debug {
                     </tr>
                     <tr>
                         <td>
-                            ${_x('debug', 'SQL Queries')}: ${total_sql_queries}
+                            ${_x('debug', 'SQL Requests')}: ${total_sql_queries}
                             <br>
                             ${_x('debug', 'SQL Duration')}: ${total_sql_duration}ms
                         </td>
