@@ -4520,7 +4520,7 @@ class CommonDBTM extends CommonGLPI
                         }
 
                         $doubles = getAllDataFromTable($this->getTable(), $where);
-                        if (countElementsInTable($doubles) > 0) {
+                        if (count($doubles) > 0) {
                             $message = [];
                             if (
                                 $p['unicity_error_message']
