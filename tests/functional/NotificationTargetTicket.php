@@ -360,6 +360,52 @@ class NotificationTargetTicket extends DbTestCase
             ]
         ];
 
+        //add second test for post-only
+        //simulate that is not a self-service (because of second profil tech)
+        //he can't see private because of self-service who has no right TILFollowup::SEEPRIVATE
+        $basic_options = [
+            'additionnaloption' => [
+                'usertype' => NotificationTarget::GLPI_USER,
+                'is_self_service' => false,
+                'show_private'    => false,
+            ]
+        ];
+
+        $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+
+        //get only public task / followup / Solution (because is post_only)
+        $expected = [
+            [
+                "##timelineitems.type##"        => "ITILSolution",
+                "##timelineitems.typename##"    => "Solutions",
+                "##timelineitems.date##"        =>  \Html::convDateTime($solution->fields['date_creation']),
+                "##timelineitems.description##" => $solution->fields['content'],
+                "##timelineitems.position##"    => "right",
+                "##timelineitems.author##"      => "tech", //empty
+            ],[
+                "##timelineitems.type##"        => "TicketTask",
+                "##timelineitems.typename##"    => "Ticket tasks",
+                "##timelineitems.date##"        =>  \Html::convDateTime($task_tech->fields['date']),
+                "##timelineitems.description##" => $task_tech->fields['content'],
+                "##timelineitems.position##"    => "right",
+                "##timelineitems.author##"      => "tech",
+            ],[
+                "##timelineitems.type##"        => "ITILFollowup",
+                "##timelineitems.typename##"    => "Followups",
+                "##timelineitems.date##"        =>  \Html::convDateTime($fup_post_only->fields['date']),
+                "##timelineitems.description##" => $fup_post_only->fields['content'],
+                "##timelineitems.position##"    => "left",
+                "##timelineitems.author##"      => "post-only",
+            ],[
+                "##timelineitems.type##" => "ITILFollowup",
+                "##timelineitems.typename##" => "Followups",
+                "##timelineitems.date##"        =>  \Html::convDateTime($fup_tech->fields['date']),
+                "##timelineitems.description##" => $fup_tech->fields['content'],
+                "##timelineitems.position##" => "right",
+                "##timelineitems.author##" => "tech",
+            ]
+        ];
+
         $this->array($ret['timelineitems'])->isIdenticalTo($expected);
     }
 }
