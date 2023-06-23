@@ -41,17 +41,17 @@ $migration->changeField(
     Location::getTable(),
     'latitude',
     'latitude',
-    "decimal(9,6) NOT NULL DEFAULT '0.0000'",
+    "decimal(9,6) DEFAULT NULL",
 );
 $migration->changeField(
     Location::getTable(),
     'longitude',
     'longitude',
-    "decimal(9,6) NOT NULL DEFAULT '0.0000'",
+    "decimal(9,6) DEFAULT NULL",
 );
 $migration->changeField(
     Location::getTable(),
     'altitude',
     'altitude',
-    "decimal(9,6) NOT NULL DEFAULT '0.0000'",
+    "decimal(9,6) DEFAULT NULL",
 );
