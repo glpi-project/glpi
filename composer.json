@@ -79,6 +79,7 @@
     "require-dev": {
         "ext-xml": "*",
         "atoum/atoum": "^4.1",
+        "dbrekelmans/bdi": "^1.0",
         "friendsoftwig/twigcs": "^6.1",
         "glpi-project/tools": "^0.6",
         "maglnet/composer-require-checker": "^3.5",
@@ -90,7 +91,8 @@
         "squizlabs/php_codesniffer": "^3.7",
         "symfony/browser-kit": "^5.4",
         "symfony/http-client": "^5.4",
-        "symfony/mime": "^5.4"
+        "symfony/mime": "^5.4",
+        "symfony/panther": "^1.1"
     },
     "replace": {
         "paragonie/random_compat": "*",
