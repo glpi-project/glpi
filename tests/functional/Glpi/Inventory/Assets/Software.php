@@ -194,8 +194,8 @@ class Software extends AbstractInventoryAsset
 
         $ios = new \Item_OperatingSystem();
         $this->boolean($ios->getFromDBByCrit([
-          "itemtype" => 'Computer',
-          "items_id" => $computer->fields['id']
+            "itemtype" => 'Computer',
+            "items_id" => $computer->fields['id']
         ]))->isTrue();
 
         $version = new \SoftwareVersion();
