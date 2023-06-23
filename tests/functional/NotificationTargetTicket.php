@@ -363,6 +363,8 @@ class NotificationTargetTicket extends DbTestCase
         //add second test for post-only
         //simulate that is a not self-service (because of one profil with interface = central)
         //he can't see private because of self-service who has no right TILFollowup::SEEPRIVATE
+        //log as tech to trigger Session check (As if tech was at the origin of noticication )
+        $this->login("tech", "tech");
         $basic_options = [
             'additionnaloption' => [
                 'usertype' => NotificationTarget::GLPI_USER,
