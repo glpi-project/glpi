@@ -5558,13 +5558,15 @@ HTML
 
     public function testNoPriorityWithoutCanUpdate()
     {
-        $this->login('normal', 'password');
+        $this->login('tech', 'tech');
+
+        $rand = mt_rand();
 
         $ticket = new \Ticket();
         $ticketId = $ticket->add([
-            'name'        => "test merge 1",
-            'content'     => "test merge 1",
-            'entities_id' => 0,
+            'name'        => __METHOD__ . $rand,
+            'content'     => __METHOD__ . $rand,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'status'      => \CommonITILObject::INCOMING,
         ]);
 
