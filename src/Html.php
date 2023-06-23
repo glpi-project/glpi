@@ -626,6 +626,7 @@ class Html
      **/
     public static function displayRightError(string $additional_info = '')
     {
+        Toolbox::handleProfileChangeRedirect();
         $requested_url = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown');
         $user_id = Session::getLoginUserID() ?? 'Anonymous';
         if (empty($additional_info)) {
