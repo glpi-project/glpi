@@ -79,11 +79,7 @@ class FrontBaseClass extends \GLPITestCase
         );
 
         //once logged in, we reach standard interface
-        //$this->http_client->takeScreenshot('logged.png'); // see if that works...
-        //FIXME: should work :'(
-        //according to doc, we should rely on html() rather than text() for non-displayed elements
-        /*$page_title = $crawler->filter('title')->html();
-        $this->string($page_title)->isIdenticalTo('Standard interface - GLPI');*/
+        $this->string($this->http_client->getTitle())->isIdenticalTo('Standard interface - GLPI');
     }
 
     protected function addToCleanup(string $itemtype, array $criteria)
