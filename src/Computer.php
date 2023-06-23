@@ -196,11 +196,6 @@ class Computer extends CommonDBTM
         }
 
         if (count($changes)) {
-            //propage is_dynamic value if needed to prevent locked fields
-            if (isset($this->input['is_dynamic'])) {
-                $changes['is_dynamic'] = $this->input['is_dynamic'];
-            }
-
             $update_done = false;
 
             // Propagates the changes to linked items
@@ -222,6 +217,10 @@ class Computer extends CommonDBTM
                      $item->getFromDB($tID);
                     if (!$item->getField('is_global')) {
                         $changes['id'] = $item->getField('id');
+                        //propage is_dynamic value if needed to prevent locked fields
+                        if (isset($item->fields['is_dynamic'])) {
+                            $changes['is_dynamic'] = $item->fields['is_dynamic'];
+                        }
                         if ($item->update($changes)) {
                             $update_done = true;
                         }
@@ -251,9 +250,13 @@ class Computer extends CommonDBTM
                         ]
                     );
                     foreach ($devices_result as $data) {
-                           $tID = $data['id'];
-                           $item->getFromDB($tID);
-                           $changes['id'] = $item->getField('id');
+                        $tID = $data['id'];
+                        $item->getFromDB($tID);
+                        $changes['id'] = $item->getField('id');
+                        //propage is_dynamic value if needed to prevent locked fields
+                        if (isset($item->fields['is_dynamic'])) {
+                            $changes['is_dynamic'] = $item->fields['is_dynamic'];
+                        }
                         if ($item->update($changes)) {
                             $update_done = true;
                         }
