@@ -43,21 +43,18 @@ class SNMPCredential extends \FrontBaseClass
         $this->addToCleanup(\SNMPCredential::class, ['name' => 'thetestuuidtoremove']);
 
         //load snmp credential form
-        $crawler = $this->http_client->request('GET', $this->base_uri . 'front/snmpcredential.form.php');
+        $this->http_client->request('GET', $this->base_uri . 'front/snmpcredential.form.php');
 
         $auth_passphrase = '¡<av€ry$3"cur€p@ssp\'hr@se>!';
         $priv_passphrase = '>>P4ss"ph&ase<<';
-        $crawler = $this->http_client->request(
-            'POST',
-            $this->base_uri . 'front/snmpcredential.form.php',
+        $crawler = $this->http_client->submitForm(
+            'Add',
             [
-                'add'  => true,
                 'name' => 'thetestuuidtoremove',
                 'snmpversion' => 3,
                 'username' => 'snmpuser',
                 'auth_passphrase' => $auth_passphrase,
-                'priv_passphrase' => $priv_passphrase,
-                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value')
+                'priv_passphrase' => $priv_passphrase
             ]
         );
 
