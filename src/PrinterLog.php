@@ -104,13 +104,23 @@ class PrinterLog extends CommonDBChild
     /**
      * Get metrics
      *
-     * @param Printer $printer      Printer instance
-     * @param array   $user_filters User filters
+     * @param Printer       $printer      Printer instance
+     * @param array         $user_filters User filters
+     * @param string        $interval     Date interval string (e.g. 'P1Y' for 1 year)
+     * @param DateTime|null $start_date   Start date for the metrics range
+     * @param DateTime      $end_date     End date for the metrics range
+     * @param string        $format       Format for the metrics data ('dynamic', 'daily', 'weekly', 'monthly', 'yearly')
      *
-     * @return array
+     * @return array An array of printer metrics data
      */
-    public function getMetrics(Printer $printer, $user_filters = [], $interval = 'P1Y', $start_date = null, $end_date = new DateTime(), $format = 'dynamic'): array
-    {
+    public function getMetrics(
+        Printer $printer,
+        $user_filters = [],
+        $interval = 'P1Y',
+        $start_date = null,
+        $end_date = new DateTime(),
+        $format = 'dynamic'
+    ): array {
         global $DB;
 
         if (!$start_date) {
@@ -119,8 +129,8 @@ class PrinterLog extends CommonDBChild
         }
 
         $filters = [
-           ['date' => ['>=', $start_date->format('Y-m-d')]],
-           ['date' => ['<=', $end_date->format('Y-m-d')]]
+            ['date' => ['>=', $start_date->format('Y-m-d')]],
+            ['date' => ['<=', $end_date->format('Y-m-d')]]
         ];
         $filters = array_merge($filters, $user_filters);
 
