@@ -172,7 +172,7 @@ class OperatingSystem extends InventoryAsset
 
         $ioskey = 'operatingsystems_id' . $val->operatingsystems_id;
         $this->known_links[$ioskey] = $ios->fields['id'];
-        $this->operatingsystems_id = $ios->fields['id'];
+        $this->operatingsystems_id =  $input_os['operatingsystems_id'];
 
         //cleanup
         if (!$this->main_asset || !$this->main_asset->isPartial()) {
