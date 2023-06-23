@@ -91,6 +91,9 @@ class GLPITestCase extends atoum
 
         if (!$this->has_failed) {
             foreach ([$this->php_log_handler, $this->sql_log_handler] as $log_handler) {
+                if ($log_handler === null) {
+                    continue;
+                }
                 $this->array($log_handler->getRecords())->isEmpty(
                     sprintf(
                         "Unexpected entries in log in %s::%s:\n%s",
