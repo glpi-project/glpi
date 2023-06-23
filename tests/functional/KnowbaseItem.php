@@ -863,18 +863,24 @@ HTML,
                 'answer'   => 'FAQ 1',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 2',
                 'answer'   => 'FAQ 2',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 3',
                 'answer'   => 'FAQ 3',
                 'is_faq'   => false, // Not really a FAQ article
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ]
         ]);
 
@@ -922,66 +928,88 @@ HTML,
                 'answer'   => 'FAQ 1',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 2',
                 'answer'   => 'FAQ 2',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 3',
                 'answer'   => 'FAQ 3',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 4',
                 'answer'   => 'FAQ 4',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 5',
                 'answer'   => 'FAQ 5',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 6',
                 'answer'   => 'FAQ 6',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 7',
                 'answer'   => 'FAQ 7',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 8',
                 'answer'   => 'FAQ 8',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 9',
                 'answer'   => 'FAQ 9',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 10',
                 'answer'   => 'FAQ 10',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 11',
                 'answer'   => 'FAQ 11',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
         ]);
 
@@ -1125,78 +1153,104 @@ HTML,
                 'answer'   => 'KB 1',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 2',
                 'answer'   => 'KB 2',
                 'is_faq'   => false,
                 'users_id' => $tech_user, // Specific author (our test user)
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 3',
                 'answer'   => 'KB 3',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 4',
                 'answer'   => 'KB 4',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 5',
                 'answer'   => 'KB 5',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 6',
                 'answer'   => 'KB 6',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 7',
                 'answer'   => 'KB 7',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 8',
                 'answer'   => 'KB 8',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 9',
                 'answer'   => 'KB 9',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 10',
                 'answer'   => 'KB 10',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 11',
                 'answer'   => 'KB 11',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 12',
                 'answer'   => 'KB 12',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 13',
                 'answer'   => 'KB 13',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
         ]);
 
@@ -1365,5 +1419,36 @@ HTML,
         sort($result);
 
         $this->array($result)->isEqualTo($articles);
+
+        // Check that every article can be opened
+        $item = new \KnowbaseItem();
+        foreach ($articles as $name) {
+            $kb_id = getItemByTypeName('KnowbaseItem', $name, true);
+            $this->boolean($item->can($kb_id, READ))->isTrue();
+        }
+
+        // Compare with Search::showList result
+
+        // Run search and capture results
+        $params =  [
+            'display_type' => \Search::NAMES_OUTPUT,
+            'criteria'     => [],
+            'item_type'    => 'KnowbaseItem',
+            'is_deleted'   => 0,
+            'as_map'       => 0,
+            'browse'       => 0,
+            'unpublished'  => 1,
+        ];
+        ob_start();
+        \Search::showList('KnowbaseItem', $params);
+        $names = ob_get_contents();
+        ob_end_clean();
+
+        // Convert results to array
+        $names = trim($names);
+        $names = empty($names) ? [] : explode("\n", $names);
+
+        // Check results
+        $this->array($names)->isEqualTo($articles);
     }
 }

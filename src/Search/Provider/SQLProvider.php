@@ -983,6 +983,10 @@ final class SQLProvider implements SearchProviderInterface
 
                 break;
 
+            case 'KnowbaseItem':
+                $criteria = \KnowbaseItem::getVisibilityCriteria(false)['WHERE'];
+                break;
+
             default:
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
@@ -2116,6 +2120,14 @@ final class SQLProvider implements SearchProviderInterface
                             ));
                         }
                     }
+                }
+                break;
+
+            case 'KnowbaseItem':
+                $leftjoin = \KnowbaseItem::getVisibilityCriteria(false)['LEFT JOIN'];
+                $out = ['LEFT JOIN' => $leftjoin];
+                foreach ($leftjoin as $table => $criteria) {
+                    $already_link_tables[] = $table;
                 }
                 break;
 
