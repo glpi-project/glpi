@@ -5562,13 +5562,23 @@ HTML
 
         $this->login();
 
+        // Create entities
+        $entity = new Entity();
+        $entity_id = $entity->add([
+            'name' => 'testShowCentralCountCriteria',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->integer($entity_id)->isGreaterThan(0);
+
         // Create a new user
         $user = new User();
         $user_id = $user->add([
             'name' => 'testShowCentralCountCriteria',
             'password' => 'testShowCentralCountCriteria',
             'password2' => 'testShowCentralCountCriteria',
-            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true)
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+            'entities_id' => $entity_id,
         ]);
         $this->integer($user_id)->isGreaterThan(0);
 
@@ -5577,6 +5587,7 @@ HTML
         $ticket_id_requester = $ticket_requester->add([
             'name' => 'testShowCentralCountCriteria',
             'content' => 'testShowCentralCountCriteria',
+            'entities_id' => $entity_id,
         ]);
         $this->integer($ticket_id_requester)->isGreaterThan(0);
 
@@ -5594,6 +5605,7 @@ HTML
         $ticket_id_observer = $ticket_observer->add([
             'name' => 'testShowCentralCountCriteria',
             'content' => 'testShowCentralCountCriteria',
+            'entities_id' => $entity_id,
         ]);
         $this->integer($ticket_id_observer)->isGreaterThan(0);
 
@@ -5611,6 +5623,7 @@ HTML
         $ticket_id = $ticket->add([
             'name' => 'testShowCentralCountCriteria',
             'content' => 'testShowCentralCountCriteria',
+            'entities_id' => $entity_id,
         ]);
         $this->integer($ticket_id)->isGreaterThan(0);
 
