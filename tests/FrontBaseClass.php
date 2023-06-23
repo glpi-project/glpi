@@ -49,6 +49,8 @@ class FrontBaseClass extends \GLPITestCase
 
         $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
         //Firefox is buggy and will fail finding password field or submit button :'(
+        $_SERVER['PANTHER_NO_SANDBOX'] = 1;
+        $_SERVER['PANTHER_CHROME_ARGUMENTS'] = '--disable-dev-shm-usage';
         $this->http_client = Client::createChromeClient(null, null, [], $this->base_uri);
 
         $this->doCleanup();
