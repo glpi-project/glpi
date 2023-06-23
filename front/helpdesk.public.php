@@ -83,7 +83,7 @@ if (
         ])
     ) {
         Html::redirect($CFG_GLPI['root_doc'] . "/front/ticket.php");
-    } else if (Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
+    } else if (Session::haveRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM])) {
         Html::redirect($CFG_GLPI['root_doc'] . "/front/reservationitem.php");
     } else if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
         Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.faq.php");
