@@ -14,6 +14,8 @@ if [[ "$UPDATE_FILES_ACL" = true ]]; then
   setfacl --recursive --modify u:1000:rwx $APP_CONTAINER_HOME
 fi
 
+sudo apt-get install --assume-yes --no-install-recommends --quiet chromium-chromedriver
+
 # Check services health
 for CONTAINER_ID in `docker-compose ps -a -q`; do
   CONTAINER_NAME=`/usr/bin/docker inspect --format='{{print .Name}}{{if .Config.Image}} ({{print .Config.Image}}){{end}}' $CONTAINER_ID`
