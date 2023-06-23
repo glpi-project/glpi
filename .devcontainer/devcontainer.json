@@ -7,5 +7,20 @@
 	"workspaceFolder": "/var/www/",
 
 	// For use with PHP (e.g.php -S localhost:9090)
-	"forwardPorts": [9090, 8025]
+	"forwardPorts": [9090, 8025],
+
+    // automatically install these extensions when opening the dev container in vscode
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bmewburn.vscode-intelephense-client",
+                "xdebug.php-debug",
+                "eamodio.gitlens",
+                "devsense.composer-php-vscode",
+                "mrorz.language-gettext",
+                "mblode.twig-language-2",
+                "dbaeumer.vscode-eslint"
+            ]
+        }
+    }
 }
