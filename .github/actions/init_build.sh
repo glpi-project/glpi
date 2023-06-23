@@ -22,3 +22,6 @@ bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer
 
 # Compile translation files
 php bin/console locales:compile
+
+# Install Panther driver
+vendor/bin/bdi detect drivers
