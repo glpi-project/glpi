@@ -14,8 +14,6 @@ if [[ "$UPDATE_FILES_ACL" = true ]]; then
   setfacl --recursive --modify u:1000:rwx $APP_CONTAINER_HOME
 fi
 
-sudo apt-get install --assume-yes --no-install-recommends --quiet chromium-chromedriver
-
 # Check services health
 for CONTAINER_ID in `docker-compose ps -a -q`; do
   CONTAINER_NAME=`/usr/bin/docker inspect --format='{{print .Name}}{{if .Config.Image}} ({{print .Config.Image}}){{end}}' $CONTAINER_ID`
@@ -38,6 +36,8 @@ for CONTAINER_ID in `docker-compose ps -a -q`; do
     fi
   done
 done
+
+docker-compose exec -T --user root app sudo apk add --update --no-cache chromium-chromedriver
 
 # Always wait for 5 seconds, even when all services are considered as healthy,
 # as they may respond even if their startup script is still running (should not take more than 5 seconds).
