@@ -5556,7 +5556,8 @@ HTML
         $this->array($entities)->isIdenticalTo([$entity2_id, $entity1_id]);
     }
 
-    public function testNoPriorityWithoutCanUpdate() {
+    public function testNoPriorityWithoutCanUpdate()
+    {
         $this->login('normal', 'password');
 
         $ticket = new \Ticket();
