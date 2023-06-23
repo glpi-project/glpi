@@ -37,6 +37,7 @@ namespace tests\units;
 
 use Glpi\Toolbox\Sanitizer;
 use Symfony\Component\BrowserKit\HttpBrowser;
+use Symfony\Component\Panther\Client;
 
 class Computer extends \FrontBaseClass
 {
@@ -45,18 +46,15 @@ class Computer extends \FrontBaseClass
         $this->logIn();
         $this->addToCleanup(\Computer::class, ['uuid' => 'thetestuuidtoremove']);
 
-        //load computer form
-        $crawler = $this->http_client->request('GET', $this->base_uri . 'front/computer.form.php');
-
-        $crawler = $this->http_client->request(
-            'POST',
-            $this->base_uri . 'front/computer.form.php',
+        $this->http_client->request('GET', $this->base_uri . 'front/computer.form.php');
+        $this->http_client->takeScreenshot('computer_add.png'); // see if that works...
+        $this->http_client->waitFor('form[name=asset_form]');
+        $crawler = $this->http_client->submitForm(
+            'Add',
             [
-                'add'  => true,
                 'name' => 'A test > computer & name',
                 'uuid' => 'thetestuuidtoremove',
-                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value')
+                //'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             ]
         );
 
