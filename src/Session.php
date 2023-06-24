@@ -968,6 +968,9 @@ class Session
             Html::redirectToLogin();
         }
 
+        //update last access
+        //DB->request(update lastaccess)
+
         return true;
     }
 
