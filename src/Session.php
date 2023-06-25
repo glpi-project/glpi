@@ -968,8 +968,15 @@ class Session
             Html::redirectToLogin();
         }
 
-        //update last access
-        //DB->request(update lastaccess)
+        $lastAccess = time();
+
+        $result = $DB->update(
+            'glpi_users',
+            ['last_access' => $lastAccess],
+            [
+                'id'   => $user_id
+            ]
+        );
 
         return true;
     }
