@@ -215,10 +215,6 @@ class Dashboard extends \CommonDBTM
         if (!$skip_child && count($this->rights) > 0) {
             $this->saveRights($this->rights);
         }
-
-       // invalidate dashboard cache
-        $cache_key = "dashboard_card_" . $this->key;
-        $GLPI_CACHE->delete($cache_key);
     }
 
 
