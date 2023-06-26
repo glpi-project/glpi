@@ -3462,7 +3462,7 @@ $empty_data_builder = new class
                 'id'                       => 77,
                 'notifications_id'         => '77',
                 'mode'                     => 'mailing',
-                'notificationtemplates_id' => 5,
+                'notificationtemplates_id' => 32,
             ]
         ];
 
@@ -4334,6 +4334,10 @@ $empty_data_builder = new class
             ], [
                 'id'       => '31',
                 'name'     => 'Automatic reminder',
+                'itemtype' => 'Ticket',
+            ], [
+                'id'       => '32',
+                'name'     => 'New document',
                 'itemtype' => 'Ticket',
             ]
         ];
@@ -5238,6 +5242,55 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                     ##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##&lt;/a&gt;&lt;br /&gt;
                     ##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##&lt;/p&gt;
                     &lt;p&gt;##lang.ticket.reminder.text##: ##ticket.reminder.text##&lt;/p&gt;',
+            ], [
+                'id'                       => '32',
+                'notificationtemplates_id' => '32',
+                'language'                 => '',
+                'subject'                  => '##ticket.action## ##ticket.name##',
+                'content_text'             => '##lang.ticket.url## : ##ticket.url##
+
+##lang.ticket.description##
+
+
+##lang.ticket.title##  :##ticket.title##
+
+##lang.ticket.authors##  :##IFticket.authors##
+##ticket.authors## ##ENDIFticket.authors##
+##ELSEticket.authors##--##ENDELSEticket.authors##
+
+##IFticket.category## ##lang.ticket.category##  :##ticket.category##
+##ENDIFticket.category## ##ELSEticket.category##
+##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+
+##lang.ticket.content##  : ##ticket.content##
+##IFticket.itemtype##
+##lang.ticket.item.name##  : ##ticket.itemtype## - ##ticket.item.name##
+##ENDIFticket.itemtype##',
+                'content_html' => '&lt;div&gt;##lang.ticket.url## : &lt;a href="##ticket.url##"&gt;
+##ticket.url##&lt;/a&gt;&lt;/div&gt;
+&lt;div class="description b"&gt;
+##lang.ticket.description##&lt;/div&gt;
+&lt;p&gt;&lt;span
+style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+##lang.ticket.title##&lt;/span&gt;&#160;:##ticket.title##
+&lt;br /&gt; &lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+##lang.ticket.authors##&lt;/span&gt;
+##IFticket.authors## ##ticket.authors##
+##ENDIFticket.authors##
+##ELSEticket.authors##--##ENDELSEticket.authors##
+&lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+&lt;/span&gt;&lt;br /&gt; &lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt; &lt;/span&gt;
+##IFticket.category##&lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+##lang.ticket.category## &lt;/span&gt;&#160;:##ticket.category##
+##ENDIFticket.category## ##ELSEticket.category##
+##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+&lt;br /&gt; &lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+##lang.ticket.content##&lt;/span&gt;&#160;:
+##ticket.content##&lt;br /&gt;##IFticket.itemtype##
+&lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+##lang.ticket.item.name##&lt;/span&gt;&#160;:
+##ticket.itemtype## - ##ticket.item.name##
+##ENDIFticket.itemtype##&lt;/p&gt;',
             ]
         ];
 
