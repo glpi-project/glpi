@@ -971,6 +971,10 @@ final class SQLProvider implements SearchProviderInterface
 
                 break;
 
+            case 'KnowbaseItem':
+                $criteria = \KnowbaseItem::getVisibilityCriteria(false)['WHERE'];
+                break;
+
             default:
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
@@ -1788,8 +1792,10 @@ final class SQLProvider implements SearchProviderInterface
             // Add NULL if $val = 0 and not negative search
             // Or negative search on real value
             if (
-                (!$nott && ($val == 0))
-                || ($nott && ($val != 0))
+                ($inittable !== \Entity::getTable())
+                && (!$nott && ($val == 0)
+                    || ($nott && ($val != 0))
+                )
             ) {
                 $criteria['OR'][] = ["$table.id" => null];
             }
@@ -2102,6 +2108,14 @@ final class SQLProvider implements SearchProviderInterface
                             ));
                         }
                     }
+                }
+                break;
+
+            case 'KnowbaseItem':
+                $leftjoin = \KnowbaseItem::getVisibilityCriteria(false)['LEFT JOIN'];
+                $out = ['LEFT JOIN' => $leftjoin];
+                foreach ($leftjoin as $table => $criteria) {
+                    $already_link_tables[] = $table;
                 }
                 break;
 

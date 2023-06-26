@@ -463,6 +463,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             return false;
         }
 
+        if (!Session::isMultiEntitiesMode()) {
+            return true;
+        }
+
         if (isset($this->entities[0])) { // Browse root entity rights
             foreach ($this->entities[0] as $entity) {
                 if ($entity['is_recursive']) {
@@ -2624,15 +2628,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         if (!$kbi->canView()) {
             $params['criteria'][] = [
                 'link'          => "AND",
-                'field'         => '8',
+                'field'         => '8', // is_faq
                 'searchtype'    => "equals",
                 'virtual'       => true,
-                'value'         => 2,
+                'value'         => 2, // always false, to avoid any result
             ];
         } elseif (!Session::haveRight('knowbase', READ)) {
             $params['criteria'][] = [
                 'link'          => "AND",
-                'field'         => '8',
+                'field'         => '8', // is_faq
                 'searchtype'    => "equals",
                 'virtual'       => true,
                 'value'         => 1,
@@ -2642,33 +2646,42 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $unpublished = [
             '0' => [
                 'link'          => "AND",
-                'field'         => '80',
+                'field'         => '80', // entity
                 'searchtype'    => "notunder",
                 'virtual'       => true,
                 'value'         => 0,
             ],
             '1' => [
                 'link'          => "AND",
-                'field'         => '81',
+                'field'         => '81', // profile
                 'searchtype'    => "equals",
                 'virtual'       => true,
                 'value'         => "0",
             ],
             '2' => [
                 'link'          => "AND",
-                'field'         => '82',
+                'field'         => '82', // group
                 'searchtype'    => "equals",
                 'virtual'       => true,
                 'value'         => "0",
             ],
             '3' => [
                 'link'          => "AND",
-                'field'         => '83',
+                'field'         => '83', // user
                 'searchtype'    => "equals",
                 'virtual'       => true,
                 'value'         => "0",
             ],
         ];
+        if (!Session::isMultiEntitiesMode()) {
+            $unpublished['0'] = [
+                'link'          => "AND",
+                'field'         => '8', // is_faq
+                'searchtype'    => "equals",
+                'virtual'       => true,
+                'value'         => 0,
+            ];
+        }
         if (
             !Session::haveRightsOr(self::$rightname, [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN])
             || !isset($params['unpublished'])
