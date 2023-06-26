@@ -62,6 +62,8 @@ class User extends CommonDBTM
     const READAUTHENT         = 2048;
     const UPDATEAUTHENT       = 4096;
 
+    const TIME_ONLINE   = 10;
+
     public static $rightname = 'user';
 
     public static $undisclosedFields = [
@@ -2898,16 +2900,17 @@ HTML;
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2' class='center'>";
             if ($this->fields["last_access"]
-                && abs(strtotime($_SESSION['glpi_currenttime']) - $this->fields["last_access"]) < 20) {
+                && abs(strtotime($_SESSION['glpi_currenttime']) - $this->fields["last_access"]) < self::TIME_ONLINE) {
                 $bgColor = "#4cd137";
+                echo __('User is online');
             }
             else {
                 if ($this->fields["last_access"] === null) {
-                    echo  printf(__('Last seen %s'), _('never'));
+                    printf(__('Last seen %s'), _('never'));
                 }
                 else {
                     $lastseen = strtotime($_SESSION['glpi_currenttime']) - $this->fields["last_access"];
-                    printf(__('Last seen %s'), Html::timestampToString($lastseen,false));
+                    printf(__('Last seen %s'), Html::timestampToString($lastseen,$lastseen < 60 ? true : false ));
                 }
                 $bgColor = "#e84118";
             }

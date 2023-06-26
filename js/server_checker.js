@@ -63,12 +63,10 @@ var ServerChecker = {
     },
 
     check: function () {
-        let current_time = Math.floor(Date.now() / 1000);
-        
         $.ajax({
             url: ajax_url,
             type: 'POST',
-            data: { time: current_time },
+            data: { method: "user.status" },
             dataType: 'JSON',
             success: this.onSuccess.bind(this),
             error: this.onError.bind(this)
@@ -80,9 +78,9 @@ var ServerChecker = {
     },
 
     onError: function (error) {
-        this.showMessage();
+        //this.showMessage();
+        console.warn(error.responseText);
         this.prepareNext();
-        console.log('Error: ' + JSON.stringify(error));
     },
 
     showMessage: function (e) {
