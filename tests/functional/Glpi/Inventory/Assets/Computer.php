@@ -198,6 +198,13 @@ class Computer extends AbstractInventoryAsset
         global $DB, $CFG_GLPI;
         $item_monitor = new \Computer_Item();
 
+        $manual_monitor = new \Monitor();
+        $manual_monitor_id = $manual_monitor->add([
+            "name" => "manual monitor",
+            "entities_id" => 0
+        ]);
+        $this->integer($manual_monitor_id)->isGreaterThan(0);
+
         $xml =  "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -253,17 +260,34 @@ class Computer extends AbstractInventoryAsset
         $computer = new \Computer();
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
 
+        //add manual manual monitor to computer
+        $this->integer($item_monitor->add([
+            "itemtype" => "Monitor",
+            "items_id" => $manual_monitor_id,
+            "computers_id" => $computers_id
+        ]))->isGreaterThan(0);
+
         $this->integer($computer->fields['users_id'])->isGreaterThan(0);
 
         //one dynamic monitor linked
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
-        $this->integer(count($monitors))->isIdenticalTo(1);
+        $dynamic_monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($dynamic_monitors))->isIdenticalTo(1);
 
-        //load monitor
-        $monitor = new \Monitor();
-        $this->boolean($monitor->getFromDB(reset($monitors)['items_id']))->isTrue();
+        //one manual monitor linked
+        $manual_monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($manual_monitors))->isIdenticalTo(1);
+
+        //load dynamic monitor
+        $dynamic_monitor = new \Monitor();
+        $this->boolean($dynamic_monitor->getFromDB(reset($dynamic_monitors)['items_id']))->isTrue();
         //check same users
-        $this->integer($monitor->fields['users_id'])->isIdenticalTo($computer->fields['users_id']);
+        $this->integer($dynamic_monitor->fields['users_id'])->isIdenticalTo($computer->fields['users_id']);
+
+        //load manual monitor
+        $manual_monitor = new \Monitor();
+        $this->boolean($manual_monitor->getFromDB(reset($manual_monitors)['items_id']))->isTrue();
+        //check same users
+        $this->integer($manual_monitor->fields['users_id'])->isIdenticalTo($computer->fields['users_id']);
 
         //Enable option to propagate users_id on update to connected element
         $CFG_GLPI['is_user_autoupdate']     = 1;
@@ -327,15 +351,26 @@ class Computer extends AbstractInventoryAsset
         $this->integer($computer->fields['users_id'])->isGreaterThan(0);
 
         //one dynamic monitor linked
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
-        $this->integer(count($monitors))->isIdenticalTo(1);
+        $dynamic_monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($dynamic_monitors))->isIdenticalTo(1);
 
-        //load monitor
-        $monitor = new \Monitor();
-        $monitor_id = reset($monitors)['items_id'];
-        $this->boolean($monitor->getFromDB($monitor_id))->isTrue();
+        //one manual monitor linked
+        $monitors_manual = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($monitors_manual))->isIdenticalTo(1);
+
+        //load dynamic monitor
+        $dynamic_monitor = new \Monitor();
+        $dynamic_monitor_id = reset($dynamic_monitors)['items_id'];
+        $this->boolean($dynamic_monitor->getFromDB($dynamic_monitor_id))->isTrue();
         //check same users
-        $this->integer($monitor->fields['users_id'])->isIdenticalTo($computer->fields['users_id']);
+        $this->integer($dynamic_monitor->fields['users_id'])->isIdenticalTo($computer->fields['users_id']);
+
+        //load manual monitor
+        $manual_monitor = new \Monitor();
+        $manual_monitor_id = reset($monitors_manual)['items_id'];
+        $this->boolean($manual_monitor->getFromDB($manual_monitor_id))->isTrue();
+        //check same users
+        $this->integer($manual_monitor->fields['users_id'])->isIdenticalTo($computer->fields['users_id']);
 
 
         $locked_field = new \Lockedfield();
@@ -343,8 +378,12 @@ class Computer extends AbstractInventoryAsset
         $locks = $locked_field->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($locks))->isIdenticalTo(0);
 
-        //no lock from computer
-        $locks = $locked_field->find(['itemtype' => 'Monitor', 'items_id' => $monitor_id]);
+        //no lock from dynamic monitor
+        $locks = $locked_field->find(['itemtype' => 'Monitor', 'items_id' => $dynamic_monitor_id]);
+        $this->integer(count($locks))->isIdenticalTo(0);
+
+        //no lock from manual monitor
+        $locks = $locked_field->find(['itemtype' => 'Monitor', 'items_id' => $manual_monitor_id]);
         $this->integer(count($locks))->isIdenticalTo(0);
     }
 
