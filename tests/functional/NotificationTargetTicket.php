@@ -183,7 +183,7 @@ class NotificationTargetTicket extends DbTestCase
             'itemtype' => 'Ticket',
             'is_private' => 0,
             'items_id' => $tickets_id,
-            'date' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 1),
+            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 1),
         ]);
         $this->integer($fup1_id)->isGreaterThan(0);
 
@@ -196,7 +196,7 @@ class NotificationTargetTicket extends DbTestCase
             'itemtype' => 'Ticket',
             'is_private' => 0,
             'items_id' => $tickets_id,
-            'date' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 2),
+            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 2),
         ]);
         $this->integer($fup2_id)->isGreaterThan(0);
 
@@ -209,7 +209,7 @@ class NotificationTargetTicket extends DbTestCase
             'itemtype' => 'Ticket',
             'is_private' => 1,
             'items_id' => $tickets_id,
-            'date' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 3),
+            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 3),
         ]);
         $this->integer($fup3_id)->isGreaterThan(0);
 
@@ -224,7 +224,7 @@ class NotificationTargetTicket extends DbTestCase
             'actiontime'        => "172800",                                  //1hours
             'content'           => "Private Task",
             'users_id_tech'     => getItemByTypeName('User', 'tech', true),
-            'date'     => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 4),
+            'date_creation'     => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 4),
         ]);
         $this->integer($task1_id)->isGreaterThan(0);
 
@@ -239,7 +239,7 @@ class NotificationTargetTicket extends DbTestCase
             'actiontime'        => "172800",                                  //1hours
             'content'           => "Task",
             'users_id_tech'     => getItemByTypeName('User', 'tech', true),
-            'date'     => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 5),
+            'date_creation'     => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 5),
         ]);
         $this->integer($task2_id)->isGreaterThan(0);
 
