@@ -6,6 +6,7 @@
 	"service": "php",
 	"workspaceFolder": "/var/www/",
 
+    "forwardPorts": [9080, 9090, 8025],
 	"portsAttributes": {
         "9080": {
             "label": "GLPI"
