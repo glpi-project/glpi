@@ -3,7 +3,7 @@ FROM php:8.2-fpm-alpine
 # Install tools
 RUN apk add --update --no-cache \
     nodejs-current npm mysql-client curl patch gettext perl git \
-    zsh sudo vim && \
+    zsh sudo vim htop && \
     # Install PHP extensions dependencies
     apk add --virtual .build-deps openldap-dev linux-headers $PHPIZE_DEPS && \
     # Install PHP extensions
