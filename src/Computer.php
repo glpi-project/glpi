@@ -197,6 +197,7 @@ class Computer extends CommonDBTM
 
         if (count($changes)) {
             $update_done = false;
+            $is_input_dynamic = (bool) ($this->input['is_dynamic'] ?? false);
 
             // Propagates the changes to linked items
             foreach ($CFG_GLPI['directconnect_types'] as $type) {
@@ -217,11 +218,12 @@ class Computer extends CommonDBTM
                      $item->getFromDB($tID);
                     if (!$item->getField('is_global')) {
                         $changes['id'] = $item->getField('id');
+                        $item_input = $changes;
                         //propage is_dynamic value if needed to prevent locked fields
-                        if (isset($item->fields['is_dynamic'])) {
-                            $changes['is_dynamic'] = $item->fields['is_dynamic'];
+                        if ((bool) ($item->fields['is_dynamic'] ?? false) && $is_input_dynamic) {
+                            $item_input['is_dynamic'] = 1;
                         }
-                        if ($item->update($changes)) {
+                        if ($item->update($item_input)) {
                             $update_done = true;
                         }
                     }
@@ -253,11 +255,12 @@ class Computer extends CommonDBTM
                         $tID = $data['id'];
                         $item->getFromDB($tID);
                         $changes['id'] = $item->getField('id');
+                        $item_input = $changes;
                         //propage is_dynamic value if needed to prevent locked fields
-                        if (isset($item->fields['is_dynamic'])) {
-                            $changes['is_dynamic'] = $item->fields['is_dynamic'];
+                        if ((bool) ($item->fields['is_dynamic'] ?? false) && $is_input_dynamic) {
+                            $item_input['is_dynamic'] = 1;
                         }
-                        if ($item->update($changes)) {
+                        if ($item->update($item_input)) {
                             $update_done = true;
                         }
                     }
