@@ -922,9 +922,12 @@ HTML;
             }
 
             // manage cache
-            $options_footprint = sha1(serialize($card_options) .
+            $options_footprint = sha1(
+                serialize($card_options) .
                 ($_SESSION['glpiactiveentities_string'] ?? "") .
-                ($_SESSION['glpilanguage']));
+                $_SESSION['glpilanguage'] .
+                $_SESSION['glpiactiveprofile']['id'] ?? ""
+            );
 
             $use_cache = !$force
                 && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
