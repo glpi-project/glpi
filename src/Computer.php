@@ -217,8 +217,8 @@ class Computer extends CommonDBTM
                      $tID = $data['items_id'];
                      $item->getFromDB($tID);
                     if (!$item->getField('is_global')) {
-                        $changes['id'] = $item->getField('id');
                         $item_input = $changes;
+                        $item_input['id'] = $item->getID();
                         //propage is_dynamic value if needed to prevent locked fields
                         if ((bool) ($item->fields['is_dynamic'] ?? false) && $is_input_dynamic) {
                             $item_input['is_dynamic'] = 1;
@@ -254,8 +254,8 @@ class Computer extends CommonDBTM
                     foreach ($devices_result as $data) {
                         $tID = $data['id'];
                         $item->getFromDB($tID);
-                        $changes['id'] = $item->getField('id');
                         $item_input = $changes;
+                        $item_input['id'] = $item->getID();
                         //propage is_dynamic value if needed to prevent locked fields
                         if ((bool) ($item->fields['is_dynamic'] ?? false) && $is_input_dynamic) {
                             $item_input['is_dynamic'] = 1;
