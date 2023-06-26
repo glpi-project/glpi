@@ -1367,4 +1367,48 @@ class CommonDBTM extends DbTestCase
 
         $this->string($computer->fields['name'])->isEqualTo($truncated);
     }
+
+    public function testCheckUnicity()
+    {
+        $this->login();
+
+        $field_unicity = new \FieldUnicity();
+        $this->integer($field_unicity->add([
+            'name' => 'uuid uniqueness',
+            'itemtype' => 'Computer',
+            '_fields' => ['uuid'],
+            'is_active' => 1,
+            'action_refuse' => 1,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+
+        $computer = new \Computer();
+        $this->integer($computers_id1 = $computer->add([
+            'name' => __FUNCTION__ . '01',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
+        ]))->isGreaterThan(0);
+
+        $this->integer($computers_id2 = $computer->add([
+            'name' => __FUNCTION__ . '02',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'uuid' => '81fb7b20-a404-4d1e-aafa-4255b7614eae'
+        ]))->isGreaterThan(0);
+
+        $this->variable($computer->update([
+            'id' => $computers_id2,
+            'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
+        ]))->isNotTrue();
+
+        $err_msg = "Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id1 . "'  title=\"testCheckUnicity01\">testCheckUnicity01</a> - ID: {$computers_id1} - Serial number:  - Entity: Root entity &#62; _test_root_entity]";
+        $this->hasSessionMessages(1, [$err_msg]);
+
+        $this->variable($computer->add([
+            'name' => __FUNCTION__ . '03',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
+        ]))->isNotTrue();
+
+        $this->hasSessionMessages(1, [$err_msg]);
+    }
 }
