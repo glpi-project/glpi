@@ -1,9 +1,15 @@
 FROM php:8.2-fpm-alpine
 
-# Install tools
-RUN apk add --update --no-cache \
-    nodejs-current npm mysql-client curl patch gettext perl git \
+RUN apk update && \
+    # Install tools
+    apk add nodejs-current npm mysql-client curl patch gettext perl git \
     zsh sudo vim htop && \
+    # Install Python, pip and Python modules required by "plugin-release" script.
+    apk add python3-dev py3-pip && \
+    apk add libffi-dev libxml2-dev libxslt-dev && pip install lxml && \
+    apk add git && pip install gitpython && \
+    pip install PyGithub && \
+    pip install termcolor && \
     # Install PHP extensions dependencies
     apk add --virtual .build-deps openldap-dev linux-headers $PHPIZE_DEPS && \
     # Install PHP extensions
