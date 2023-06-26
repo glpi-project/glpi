@@ -298,6 +298,56 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
 
     $notificationtemplate_id = $DB->insertId();
 
+    $DB->insertOrDie('glpi_notificationtemplatetranslations', [
+        'notificationtemplates_id' => $notificationtemplate_id,
+        'language' => '',
+        'subject' => '##ticket.action## ##ticket.name##',
+        'content_text' => '##lang.ticket.url## : ##ticket.url##
+
+##lang.ticket.description##
+
+
+##lang.ticket.title##  :##ticket.title##
+
+##lang.ticket.authors##  :##IFticket.authors##
+##ticket.authors## ##ENDIFticket.authors##
+##ELSEticket.authors##--##ENDELSEticket.authors##
+
+##IFticket.category## ##lang.ticket.category##  :##ticket.category##
+##ENDIFticket.category## ##ELSEticket.category##
+##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+
+##lang.ticket.content##  : ##ticket.content##
+##IFticket.itemtype##
+##lang.ticket.item.name##  : ##ticket.itemtype## - ##ticket.item.name##
+##ENDIFticket.itemtype##',
+        'content_html' => '&lt;div&gt;##lang.ticket.url## : &lt;a href="##ticket.url##"&gt;
+##ticket.url##&lt;/a&gt;&lt;/div&gt;
+&lt;div class="description b"&gt;
+##lang.ticket.description##&lt;/div&gt;
+&lt;p&gt;&lt;span
+style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+##lang.ticket.title##&lt;/span&gt;&#160;:##ticket.title##
+&lt;br /&gt; &lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+##lang.ticket.authors##&lt;/span&gt;
+##IFticket.authors## ##ticket.authors##
+##ENDIFticket.authors##
+##ELSEticket.authors##--##ENDELSEticket.authors##
+&lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+&lt;/span&gt;&lt;br /&gt; &lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt; &lt;/span&gt;
+##IFticket.category##&lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+##lang.ticket.category## &lt;/span&gt;&#160;:##ticket.category##
+##ENDIFticket.category## ##ELSEticket.category##
+##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+&lt;br /&gt; &lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+##lang.ticket.content##&lt;/span&gt;&#160;:
+##ticket.content##&lt;br /&gt;##IFticket.itemtype##
+&lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+##lang.ticket.item.name##&lt;/span&gt;&#160;:
+##ticket.itemtype## - ##ticket.item.name##
+##ENDIFticket.itemtype##&lt;/p&gt;',
+    ]);
+
     $DB->insertOrDie(
         'glpi_notifications',
         [
