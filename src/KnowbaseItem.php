@@ -2676,7 +2676,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         if (!Session::isMultiEntitiesMode()) {
             $unpublished['0'] = [
                 'link'          => "AND",
-                'field'         => '8',
+                'field'         => '8', // is_faq
                 'searchtype'    => "equals",
                 'virtual'       => true,
                 'value'         => 0,
