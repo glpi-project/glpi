@@ -6796,7 +6796,7 @@ abstract class CommonITILObject extends CommonDBTM
        //add followups to timeline
         $followup_obj = new ITILFollowup();
         if ($followup_obj->canview() || $params['bypass_rights']) {
-            $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date DESC', 'id DESC']);
+            $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date_creation DESC', 'id DESC']);
             foreach ($followups as $followups_id => $followup) {
                 $followup_obj->getFromDB($followups_id);
                 if ($followup_obj->canViewItem() || $params['bypass_rights']) {
@@ -6813,7 +6813,7 @@ abstract class CommonITILObject extends CommonDBTM
 
        //add tasks to timeline
         if ($task_obj->canview() || $params['bypass_rights']) {
-            $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date DESC');
+            $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date_creation DESC');
             foreach ($tasks as $tasks_id => $task) {
                 $task_obj->getFromDB($tasks_id);
                 if ($task_obj->canViewItem() || $params['bypass_rights']) {
@@ -6846,6 +6846,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'can_edit'           => $objType::canUpdate() && $this->canSolve(),
                     'timeline_position'  => self::TIMELINE_RIGHT,
                     'users_id_editor'    => $solution_item['users_id_editor'],
+                    'date_creation'      => $solution_item['date_creation'],
                     'date_mod'           => $solution_item['date_mod'],
                     'users_id_approval'  => $solution_item['users_id_approval'],
                     'date_approval'      => $solution_item['date_approval'],
@@ -6927,12 +6928,10 @@ abstract class CommonITILObject extends CommonDBTM
                     continue;
                 }
 
-                $date = $document_item['date'] ?? $document_item['date_creation'];
-
                 $item = $document_obj->fields;
-                $item['date'] = $date;
+                $item['date'] = $document_item['date'] ?? $document_item['date_creation'];
                 // #1476 - set date_creation, date_mod and owner to attachment ones
-                $item['date_creation'] = $date;
+                $item['date_creation'] = $document_item['date_creation'];
                 $item['date_mod'] = $document_item['date_mod'];
                 $item['users_id'] = $document_item['users_id'];
                 $item['documents_item_id'] = $document_item['id'];
@@ -7004,7 +7003,9 @@ abstract class CommonITILObject extends CommonDBTM
        //sort timeline items by date
         $reverse = $params['sort_by_date_desc'];
         usort($timeline, function ($a, $b) use ($reverse) {
-            $diff = strtotime($a['item']['date']) - strtotime($b['item']['date']);
+            $date_a = $a['item']['date_creation'] ?? $a['item']['date'];
+            $date_b = $b['item']['date_creation'] ?? $b['item']['date'];
+            $diff = strtotime($date_a) - strtotime($date_b);
             return $reverse ? 0 - $diff : $diff;
         });
 
