@@ -288,3 +288,57 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
     ]);
 }
 /** /Add new notification for AutoBump */
+
+/** Add new notification for New document */
+if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' => 'add_document']) === 0) {
+    $DB->insertOrDie('glpi_notificationtemplates', [
+        'name' => 'New document',
+        'itemtype' => 'Ticket'
+    ]);
+
+    $notificationtemplate_id = $DB->insertId();
+
+    $DB->insertOrDie(
+        'glpi_notifications',
+        [
+            'name'            => 'New document',
+            'itemtype'        => 'Ticket',
+            'event'           => 'add_document',
+            'comment'         => null,
+            'is_recursive'    => 0,
+            'is_active'       => 0,
+        ],
+        'Add new document notification'
+    );
+    $notification_id = $DB->insertId();
+
+    $targets = [
+        [
+            'items_id' => 3,
+            'type' => 1,
+        ],
+        [
+            'items_id' => 1,
+            'type' => 1,
+        ],
+        [
+            'items_id' => 21,
+            'type' => 1,
+        ],
+    ];
+
+    foreach ($targets as $target) {
+        $DB->insertOrDie('glpi_notificationtargets', [
+            'items_id'         => $target['items_id'],
+            'type'             => $target['type'],
+            'notifications_id' => $notification_id,
+        ]);
+    }
+
+    $DB->insertOrDie('glpi_notifications_notificationtemplates', [
+        'notifications_id'         => $notification_id,
+        'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+        'notificationtemplates_id' => $notificationtemplate_id,
+    ]);
+}
+/** /Add new notification for New document */
