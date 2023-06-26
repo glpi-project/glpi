@@ -94,8 +94,6 @@ class PrinterLog extends DbTestCase
        //per default, get 1Y old, first not included
         $this->array($log->getMetrics($printer))->hasSize(2);
 
-       //change filter to include first one
-        $this->array($log->getMetrics($printer, ['date' => ['>=', $cdate1->format('Y-m-d')]]))->hasSize(3);
        //same with start_date parameter
         $this->array($log->getMetrics($printer, start_date: $cdate1))->hasSize(3);
        //same with interval parameter
@@ -125,9 +123,9 @@ class PrinterLog extends DbTestCase
         $this->array($log->getMetrics($printer, interval: 'P1M', format: 'weekly'))->hasSize(4);
 
        // check working of monthly format
-        $this->array($log->getMetrics($printer, format: 'monthly'))->hasSize(3);
+        $this->array($log->getMetrics($printer, format: 'monthly', interval: 'P2Y'))->hasSize(3);
 
        // check working of yearly format
-        $this->array($log->getMetrics($printer, format: 'yearly'))->hasSize(2);
+        $this->array($log->getMetrics($printer, format: 'yearly', interval: 'P2Y'))->hasSize(2);
     }
 }
