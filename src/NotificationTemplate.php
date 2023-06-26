@@ -445,7 +445,7 @@ class NotificationTemplate extends CommonDBTM
 
                 $condition_ok = false;
 
-                if (empty($out[2][$key]) && !strlen($out[2][$key])) { // No = : check if ot empty or not null
+                if (empty($out[2][$key]) && !strlen($out[2][$key])) { // No = : check if not empty or not null
                     if (
                         isset($data['##' . $if_field . '##'])
                         && $data['##' . $if_field . '##'] != '0'
@@ -470,8 +470,13 @@ class NotificationTemplate extends CommonDBTM
                               $condition_value = __($condition_value);
                         }
 
-                      // Compare data value and condition value
-                        $condition_ok = $condition_value == $data_value;
+                        // Compare data value and condition value
+                        if (strpos($condition_value, "%") !== false) {
+                            $condition_value = str_replace("%", ".*", $condition_value);
+                            $condition_ok = (preg_match("/^" . $condition_value . "$/i", $data_value));
+                        } else {
+                            $condition_ok = $condition_value == $data_value;
+                        }
                     }
                 }
 
