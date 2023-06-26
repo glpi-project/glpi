@@ -1400,10 +1400,7 @@ class CommonDBTM extends DbTestCase
             'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
         ]))->isNotTrue();
 
-        // Expect 1 error in session messages
-        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'][1])->size->isEqualTo(1);
-        // Clear session messages
-        unset($_SESSION['MESSAGE_AFTER_REDIRECT']);
+        $this->hasSessionMessages(1, ['Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist']);
 
         $this->variable($computer->add([
             'name' => __FUNCTION__ . '03',
@@ -1411,9 +1408,6 @@ class CommonDBTM extends DbTestCase
             'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
         ]))->isNotTrue();
 
-        // Expect 1 error in session messages
-        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'][1])->size->isEqualTo(1);
-        // Clear session messages
-        unset($_SESSION['MESSAGE_AFTER_REDIRECT']);
+        $this->hasSessionMessages(1, ['Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist']);
     }
 }
