@@ -57,7 +57,7 @@ services:
     depends_on:
       - php
     ports:
-      - "9090:80"
+      - "9080:80"
 
   db:
     container_name: "glpi-db"
@@ -80,3 +80,8 @@ services:
     ports:
       - "8025:8025"
       - "1025:1025"
+
+  adminer:
+    image: adminer:latest
+    ports:
+        - '9090:8080'

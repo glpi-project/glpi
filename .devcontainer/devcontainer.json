@@ -6,8 +6,17 @@
 	"service": "php",
 	"workspaceFolder": "/var/www/",
 
-	// For use with PHP (e.g.php -S localhost:9090)
-	"forwardPorts": [9090, 8025],
+	"portsAttributes": {
+        "9080": {
+            "label": "GLPI"
+        },
+        "9090": {
+            "label": "Adminer"
+        },
+        "8025": {
+            "label": "Mailpit"
+        }
+    },
 
     // Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": "composer build",
