@@ -3067,6 +3067,13 @@ $empty_data_builder = new class
                 'event'        => 'auto_reminder',
                 'is_recursive' => 0,
                 'is_active'    => 0,
+            ], [
+                'id'           => 77,
+                'name'         => 'New document',
+                'itemtype'     => 'Ticket',
+                'event'        => 'add_document',
+                'is_recursive' => 0,
+                'is_active'    => 0,
             ]
         ];
 
@@ -3451,6 +3458,11 @@ $empty_data_builder = new class
                 'notifications_id'         => '76',
                 'mode'                     => 'mailing',
                 'notificationtemplates_id' => 31,
+            ], [
+                'id'                       => 77,
+                'notifications_id'         => '77',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 5,
             ]
         ];
 
@@ -4180,6 +4192,21 @@ $empty_data_builder = new class
                 'items_id'         => '21',
                 'type'             => '1',
                 'notifications_id' => '76',
+            ], [
+                'id'               => '148',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '77',
+            ], [
+                'id'               => '149',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '77',
+            ], [
+                'id'               => '150',
+                'items_id'         => '21',
+                'type'             => '1',
+                'notifications_id' => '77',
             ]
         ];
 
