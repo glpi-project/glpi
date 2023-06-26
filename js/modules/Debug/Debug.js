@@ -363,10 +363,10 @@ window.GLPI.Debug = new class Debug {
         const toggle_icon = $('#debug-toolbar .debug-toolbar-controls button[name="toggle_content_area"] i');
         if (content_area.hasClass('d-none') || force_show) {
             content_area.removeClass('d-none');
-            toggle_icon.removeClass('ti-square-arrow-down').addClass('ti-square-arrow-up');
+            toggle_icon.removeClass('ti-square-arrow-up').addClass('ti-square-arrow-down');
         } else {
             content_area.addClass('d-none');
-            toggle_icon.removeClass('ti-square-arrow-up').addClass('ti-square-arrow-down');
+            toggle_icon.removeClass('ti-square-arrow-down').addClass('ti-square-arrow-up');
         }
     }
 
