@@ -5555,4 +5555,37 @@ HTML
         $entities = $ticket->getEntitiesForRequesters(["_users_id_requester" => $user_id]);
         $this->array($entities)->isIdenticalTo([$entity2_id, $entity1_id]);
     }
+
+    public function testNoPriorityWithoutCanUpdate()
+    {
+        $this->login('tech', 'tech');
+
+        $rand = mt_rand();
+
+        $ticket = new \Ticket();
+        $ticketId = $ticket->add([
+            'name'        => __METHOD__ . $rand,
+            'content'     => __METHOD__ . $rand,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'status'      => \CommonITILObject::INCOMING,
+        ]);
+
+        $this->checkFormOutput(
+            $ticket,
+            $name = true,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = false,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
+    }
 }
