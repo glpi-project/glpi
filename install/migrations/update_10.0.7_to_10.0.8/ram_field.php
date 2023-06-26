@@ -37,33 +37,31 @@
  * @var DB $DB
  * @var Migration $migration
  */
-$DB->update(
-    NetworkEquipment::getTable(),
-    ['ram' => null],
-    ['ram' => '']
-);
-$migration->changeField(
-    NetworkEquipment::getTable(),
-    'ram',
-    'ram',
-    "int unsigned DEFAULT NULL",
-);
 
-$migration->changeField(
-    ComputerVirtualMachine::getTable(),
-    'ram',
-    'ram',
-    'varchar(255) DEFAULT NULL',
-);
-$migration->migrationOneTable(ComputerVirtualMachine::getTable());
-$DB->update(
-    ComputerVirtualMachine::getTable(),
-    ['ram' => null],
-    ['ram' => '']
-);
-$migration->changeField(
-    ComputerVirtualMachine::getTable(),
-    'ram',
-    'ram',
-    "int unsigned DEFAULT NULL",
-);
+foreach (['glpi_computervirtualmachines', 'glpi_networkequipments'] as $table) {
+    // field has to be nullable to be able to set empty values to null
+    $migration->changeField(
+        $table,
+        'ram',
+        'ram',
+        'varchar(255) DEFAULT NULL',
+    );
+    $migration->migrationOneTable($table);
+
+    $DB->update(
+        $table,
+        ['ram' => null],
+        ['ram' => '']
+    );
+    $DB->update(
+        $table,
+        ['ram' => new QueryExpression(sprintf('REGEXP_SUBSTR(%s, %s)', $DB->quoteName('ram'), $DB->quoteValue('[0-9]+')))],
+        ['ram' => ['REGEXP', '[^0-9]+']]
+    );
+    $migration->changeField(
+        $table,
+        'ram',
+        'ram',
+        'int unsigned DEFAULT NULL',
+    );
+}
