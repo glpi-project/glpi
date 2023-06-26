@@ -1686,7 +1686,7 @@ class User extends CommonDBTM
                         $group_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_groups',
-                            'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($v[$i]['ou'])]
+                            'WHERE'  => ['ldap_group_dn' => Sanitizer::sanitize($v[$i]['ou'])]
                         ]);
 
                         foreach ($group_iterator as $group) {
@@ -1707,7 +1707,7 @@ class User extends CommonDBTM
                     ) {
                         unset($v[$i][$field]['count']);
                         $lgroups = [];
-                        foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
+                        foreach (Sanitizer::sanitize($v[$i][$field]) as $lgroup) {
                             $lgroups[] = [
                                 new \QueryExpression($DB->quoteValue($lgroup) .
                                              " LIKE " .
@@ -1778,7 +1778,7 @@ class User extends CommonDBTM
                 $iterator = $DB->request([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_groups',
-                    'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($result[$ldap_method["group_member_field"]])]
+                    'WHERE'  => ['ldap_group_dn' => Sanitizer::sanitize($result[$ldap_method["group_member_field"]])]
                 ]);
 
                 foreach ($iterator as $group) {
@@ -1847,7 +1847,7 @@ class User extends CommonDBTM
             }
 
            //Store user's dn
-            $this->fields['user_dn']    = addslashes($userdn);
+            $this->fields['user_dn']    = Sanitizer::sanitize($userdn);
            //Store date_sync
             $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
            // Empty array to ensure than syncDynamicEmails will be done
