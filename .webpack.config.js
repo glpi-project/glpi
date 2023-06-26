@@ -181,7 +181,7 @@ var filesToCopy = [
     // SCSS files
     {
         package: '@fontsource/inter',
-        from: '{scss/mixins.scss,files/*[0-9]00*.woff2}',
+        from: '{scss/mixins.scss,files/*all-[0-9]00*.woff,files/*[0-9]00*.woff2}',
         to: scssOutputPath,
     },
     {
