@@ -1294,7 +1294,7 @@ window.GLPI.Debug = new class Debug {
             const dividers = [];
             for (let i = 0; i < division_count; i++) {
                 dividers.push({
-                    canvasu_x: Math.round(canvas_width / division_count * i),
+                    canvas_x: Math.round(canvas_width / division_count * i),
                     time: Math.ceil((end_ts_rounded / division_count) * i / 100) * 100
                 });
             }
