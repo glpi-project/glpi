@@ -47,6 +47,7 @@ class SNMPCredential extends \FrontBaseClass
 
         $auth_passphrase = '¡<av€ry$3"cur€p@ssp\'hr@se>!';
         $priv_passphrase = '>>P4ss"ph&ase<<';
+        $this->http_client->waitFor('form[name=asset_form]');
         $crawler = $this->http_client->submitForm(
             'Add',
             [
