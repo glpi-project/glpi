@@ -185,6 +185,11 @@ var filesToCopy = [
         to: scssOutputPath,
     },
     {
+        package: '@fontsource/inter',
+        from: '{scss/mixins.scss,files/*all-[0-9]00*.woff}',
+        to: scssOutputPath,
+    },
+    {
         package: '@tabler/core',
         from: 'src/scss/**/*.scss',
         to: scssOutputPath,
