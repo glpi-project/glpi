@@ -1591,8 +1591,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 'is_self_service'   => $is_self_service,
             ];
 
-            //Toolbox::logDebug($show_private, $is_self_service);
-
             $timeline = $item->getTimelineItems($options);
 
             foreach ($timeline as $timeline_data) {
