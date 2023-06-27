@@ -860,7 +860,7 @@ class Provider
             $data[] = [
                 'number' => $result['cpt'],
                 'label'  => $result['fk_name'] ?? __("without"),
-                'url'    => $url . '&' . Toolbox::append_params([
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
                     'criteria' => $search_criteria,
                     'reset' => 'reset',
                 ]),
