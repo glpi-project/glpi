@@ -192,6 +192,142 @@ class Computer extends AbstractInventoryAsset
         $this->object($result[0])->isEqualTo(json_decode($asset));
     }
 
+    public function testAutoCleanWithoutLockedField()
+    {
+        global $DB, $CFG_GLPI;
+        $item_monitor = new \Computer_Item();
+
+        $manual_monitor = new \Monitor();
+        $manual_monitor_id = $manual_monitor->add([
+            "name" => "manual monitor",
+            "entities_id" => 0
+        ]);
+        $this->integer($manual_monitor_id)->isGreaterThan(0);
+
+         $CFG_GLPI['is_user_autoupdate']     = 1;
+
+        $xml =  "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <HARDWARE>
+      <NAME>glpixps</NAME>
+      <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+      <LASTLOGGEDUSER>tech</LASTLOGGEDUSER>
+    </HARDWARE>
+    <BIOS>
+      <ASSETTAG>SER1234</ASSETTAG>
+      <BDATE>06/02/2016</BDATE>
+      <BMANUFACTURER>Dell Inc.</BMANUFACTURER>
+      <BVERSION>1.4.3</BVERSION>
+      <MMANUFACTURER>Dell Inc.</MMANUFACTURER>
+      <MMODEL>07TYC2</MMODEL>
+      <MSN>/640HP72/CN129636460078/</MSN>
+      <SKUNUMBER>0704</SKUNUMBER>
+      <SMANUFACTURER>Dell Inc.</SMANUFACTURER>
+      <SMODEL>XPS 13 9350</SMODEL>
+      <SSN>640HP72</SSN>
+    </BIOS>
+    <MONITORS>
+          <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+          <CAPTION>DJCP6</CAPTION>
+          <DESCRIPTION>32/2015</DESCRIPTION>
+          <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+          <SERIAL>AFGHHDR0</SERIAL>
+        </MONITORS>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['users_id'])->isIdenticalTo(getItemByTypeName('User', 'tech', true));
+
+        //add manual manual monitor to computer
+        $this->integer($item_monitor->add([
+            "itemtype" => "Monitor",
+            "items_id" => $manual_monitor_id,
+            "computers_id" => $computers_id
+        ]))->isGreaterThan(0);
+
+        $this->integer($computer->fields['users_id'])->isGreaterThan(0);
+
+        //one dynamic monitor linked
+        $dynamic_monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($dynamic_monitors))->isIdenticalTo(1);
+
+        //one manual monitor linked
+        $manual_monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($manual_monitors))->isIdenticalTo(1);
+
+        //load dynamic monitor
+        $dynamic_monitor = new \Monitor();
+        $this->boolean($dynamic_monitor->getFromDB(reset($dynamic_monitors)['items_id']))->isTrue();
+        //check same users
+        $this->integer($dynamic_monitor->fields['users_id'])->isIdenticalTo($computer->fields['users_id']);
+        $this->integer($dynamic_monitor->fields['users_id'])->isIdenticalTo(getItemByTypeName('User', 'tech', true));
+
+
+        //load manual monitor
+        $manual_monitor = new \Monitor();
+        $this->boolean($manual_monitor->getFromDB(reset($manual_monitors)['items_id']))->isTrue();
+        //check same users
+        $this->integer($manual_monitor->fields['users_id'])->isIdenticalTo($computer->fields['users_id']);
+        $this->integer($manual_monitor->fields['users_id'])->isIdenticalTo(getItemByTypeName('User', 'tech', true));
+
+
+        //Enable option to clean users_id when element is disconnected
+        $CFG_GLPI['is_user_autoclean']     = 1;
+
+
+        //remove Computer_Item for dynamic monitor
+        $item_dynamic_monitor_id = reset($dynamic_monitors)['id'];
+        $this->boolean($item_monitor->getFromDB($item_dynamic_monitor_id))->isTrue();
+        $this->boolean($item_monitor->delete($item_monitor->fields, 1))->isTrue();
+        // reload dynamic monitor and check users_id
+        $this->boolean($dynamic_monitor->getFromDB($dynamic_monitor->getID()))->isTrue();
+        $this->integer($dynamic_monitor->fields['users_id'])->isIdenticalTo(0);
+
+        //remove Computer_Item for manual monitor
+        $item_manual_monitor_id = reset($manual_monitors)['id'];
+        $this->boolean($item_monitor->getFromDB($item_manual_monitor_id))->isTrue();
+        $this->boolean($item_monitor->delete($item_monitor->fields, 1))->isTrue();
+        //reload manual monitor and check users_id
+        $this->boolean($manual_monitor->getFromDB($manual_monitor->getID()))->isTrue();
+        $this->integer($manual_monitor->fields['users_id'])->isIdenticalTo(0);
+
+        $locked_field = new \Lockedfield();
+        //no lock from computer
+        $locks = $locked_field->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($locks))->isIdenticalTo(0);
+
+        //no lock from dynamic monitor
+        $locks = $locked_field->find(['itemtype' => 'Monitor', 'items_id' => $dynamic_monitor->getID()]);
+        $this->integer(count($locks))->isIdenticalTo(0);
+
+        //no lock from manual monitor
+        $locks = $locked_field->find(['itemtype' => 'Monitor', 'items_id' => $manual_monitor->getID()]);
+        $this->integer(count($locks))->isIdenticalTo(0);
+    }
 
     public function testAutoUpdateWithoutLockedField()
     {
