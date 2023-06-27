@@ -45,17 +45,16 @@ class Ticket extends \FrontBaseClass
         $this->logIn();
         $this->addToCleanup(\Ticket::class, ['name' => ['LIKE', '%thetestuuidtoremove']]);
 
-        //load computer form
-        $crawler = $this->http_client->request('GET', $this->base_uri . 'front/ticket.form.php');
+        //load ticket form
+        $this->http_client->request('GET', $this->base_uri . 'front/ticket.form.php');
 
-        $crawler = $this->http_client->request(
-            'POST',
-            $this->base_uri . 'front/ticket.form.php',
+        $this->http_client->waitFor('#itil-form');
+        $this->http_client->takeScreenshot('ticket_add.png'); // see if that works...
+        $this->http_client->submitForm(
+            'Add',
             [
-                'add'  => true,
-                'name' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
-                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value')
+                'content' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
+                //'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
             ]
         );
 
