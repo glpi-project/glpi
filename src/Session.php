@@ -1029,7 +1029,7 @@ class Session
         // Close session and force the default language so the logged right name is standardized
         session_write_close();
         $current_lang = $_SESSION['glpilanguage'];
-        $_SESSION['glpilanguage'] = 'en_GB';
+        self::loadLanguage('en_GB');
 
         $all_specific_rights = Profile::getRightsForForm(self::getCurrentInterface());
         $specific_rights = [];
@@ -1053,7 +1053,7 @@ class Session
         }
 
         // Restore language so the error displayed is in the user language
-        $_SESSION['glpilanguage'] = $current_lang;
+        self::loadLanguage($current_lang);
 
         return $specific_rights[$right] ?? $rights[$right] ?? 'unknown right name';
     }
