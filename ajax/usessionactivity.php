@@ -33,27 +33,26 @@
  * ---------------------------------------------------------------------
  */
 
- use Glpi\Http\Response;
+use Glpi\Http\Response;
 
- include('../inc/includes.php');
- header('Content-type: application/json');
- Html::header_nocache();
- 
- if (
-     isset($_POST['method'])
-     && (isset($_GET['input']) && $_GET['input'] = 'user-activity' )
- ) {
-     Session::checkLoginUser();
-     if (Session::isImpersonateActive()) {
-         //User should impersonate online time
-         echo json_encode(['message' => 'Impersonate in progress' ]);
-     } else {
-         echo json_encode(['message' => 'OK' ]);
-     }
-     exit();
- }
- 
- Response::sendError(401, "Missing method or input");
- 
- exit();
- 
+include('../inc/includes.php');
+header('Content-type: application/json');
+Html::header_nocache();
+
+if (
+    isset($_POST['method'])
+    && (isset($_GET['input']) && $_GET['input'] = 'user-activity' )
+) {
+    Session::checkLoginUser();
+    if (Session::isImpersonateActive()) {
+        //User should impersonate online time
+        echo json_encode(['message' => 'Impersonate in progress' ]);
+    } else {
+        echo json_encode(['message' => 'OK' ]);
+    }
+    exit();
+}
+
+Response::sendError(401, "Missing method or input");
+
+exit();

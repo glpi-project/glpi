@@ -73,21 +73,13 @@ var ServerChecker = {
         });
     },
 
-    onSuccess: function (response) {
+    onSuccess: function () {
         this.prepareNext();
     },
 
     onError: function (error) {
-        //this.showMessage();
         console.warn(error.responseText);
         this.prepareNext();
-    },
-
-    showMessage: function (e) {
-        if(!this.isMessageDelivered){
-            glpi_toast_info(__("Session has expired, please try log in again."));
-            this.isMessageDelivered = true;
-        }
     }
 };
 
