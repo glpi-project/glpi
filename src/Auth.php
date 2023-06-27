@@ -1818,7 +1818,7 @@ class Auth extends CommonGLPI
     /**
      * Display the authentication source dropdown for login form
      */
-    public static function dropdownLogin(bool $display = true)
+    public static function dropdownLogin(bool $display = true, $rand = 1)
     {
         $out = "";
         $elements = self::getLoginAuthMethods();
@@ -1827,7 +1827,7 @@ class Auth extends CommonGLPI
        // show dropdown of login src only when multiple src
         $out .= Dropdown::showFromArray('auth', $elements, [
             'display'   => false,
-            'rand'      => '1',
+            'rand'      => $rand,
             'value'     => $default,
             'width'     => '100%'
         ]);
