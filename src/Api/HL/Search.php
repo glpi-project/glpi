@@ -229,6 +229,17 @@ final class Search
             $rsql = new RSQLInput($this->request_params['filter']);
             $criteria['WHERE'] = $rsql->getSQLCriteria($this->schema);
         }
+        $entity_restrict = [];
+        if (!$this->union_search_mode) {
+            $itemtype = $this->schema['x-itemtype'];
+            /** @var CommonDBTM $item */
+            $item = new $itemtype();
+            $table = $item::getTable();
+            if ($item->isEntityAssign()) {
+                $entity_restrict = getEntitiesRestrictCriteria('_');
+            }
+        }
+        $criteria['WHERE'][] = ['AND' => $entity_restrict];
 
         if (isset($this->request_params['start'])) {
             $criteria['START'] = $this->request_params['start'];
