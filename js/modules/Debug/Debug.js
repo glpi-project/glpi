@@ -392,11 +392,11 @@ window.GLPI.Debug = new class Debug {
 
         // Database performance
         const sql_data = this.getCombinedSQLData();
-        const database_button_label = `${sql_data.total_requests} <span class="text-muted"> in </span> ${sql_data.total_duration} <span class="text-muted"> ms </span>`;
+        const database_button_label = `${sql_data.total_requests} <span class="text-muted"> queries </span>`;
         this.getWidgetButton('sql').find('.debug-text').html(database_button_label);
 
         // Requests
-        this.getWidgetButton('requests').find('.debug-text').text(this.ajax_requests.length);
+        this.getWidgetButton('requests').find('.debug-text').html(`${this.ajax_requests.length} <span class="text-muted"> requests </span>`);
 
         // Client performances
         const dom_timing = window.performance.getEntriesByType('navigation')[0].domComplete;
