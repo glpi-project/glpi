@@ -387,12 +387,12 @@ window.GLPI.Debug = new class Debug {
         // Server performance
         const server_perf = this.initial_request.server_performance;
         const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
-        const server_performance_button_label = `${server_perf.execution_time} <span class="text-muted"> ms using </span> ${memory_usage_mio} <span class="text-muted"> mio </span>`;
+        const server_performance_button_label = `${server_perf.execution_time} <span class="text-muted"> ms using </span> ${memory_usage_mio} <span class="text-muted"> MB </span>`;
         this.getWidgetButton('server_performance').find('.debug-text').html(server_performance_button_label);
 
         // Database performance
         const sql_data = this.getCombinedSQLData();
-        const database_button_label = `${sql_data.total_requests} <span class="text-muted"> queries </span>`;
+        const database_button_label = `${sql_data.total_requests} <span class="text-muted"> requests </span>`;
         this.getWidgetButton('sql').find('.debug-text').html(database_button_label);
 
         // Requests
