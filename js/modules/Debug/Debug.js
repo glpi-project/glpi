@@ -348,11 +348,13 @@ window.GLPI.Debug = new class Debug {
     }
 
     showDebugToolbar() {
+        $('.debug-logo').prop('disabled', true);
         $('.debug-toolbar-content').removeClass('d-none');
         $('#debug-toolbar').addClass('w-100').css('width', null);
     }
 
     hideDebugToolbar() {
+        $('.debug-logo').prop('disabled', false);
         $('.debug-toolbar-content').addClass('d-none');
         $('#debug-toolbar-expanded-content').addClass('d-none');
         $('#debug-toolbar').removeClass('w-100').css('width', 'fit-content');
@@ -382,15 +384,24 @@ window.GLPI.Debug = new class Debug {
     }
 
     refreshWidgetButtons() {
-        const server_performance_button = this.getWidgetButton('server_performance');
+        // Server performance
         const server_perf = this.initial_request.server_performance;
         const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
-        server_performance_button.find('.debug-text').text(`${server_perf.execution_time}ms | ${memory_usage_mio}mio`);
+        const server_performance_button_label = `${server_perf.execution_time} <span class="text-muted"> ms using </span> ${memory_usage_mio} <span class="text-muted"> MB </span>`;
+        this.getWidgetButton('server_performance').find('.debug-text').html(server_performance_button_label);
 
-        const ajax_requests_button = this.getWidgetButton('ajax_requests');
-        ajax_requests_button.find('.debug-text').text(this.ajax_requests.length);
+        // Database performance
+        const sql_data = this.getCombinedSQLData();
+        const database_button_label = `${sql_data.total_requests} <span class="text-muted"> requests </span>`;
+        this.getWidgetButton('sql').find('.debug-text').html(database_button_label);
 
-        this.getWidgetButton('requests').find('.debug-text').text('Requests');
+        // Requests
+        this.getWidgetButton('requests').find('.debug-text').html(`${this.ajax_requests.length} <span class="text-muted"> requests </span>`);
+
+        // Client performances
+        const dom_timing = window.performance.getEntriesByType('navigation')[0].domComplete;
+        const client_performance_button_label = `${dom_timing} <span class="text-muted"> ms </span>`;
+        this.getWidgetButton('client_performance').find('.debug-text').html(client_performance_button_label);
     }
 
     showWidget(widget_id, refresh = false, content_area = undefined, data = {}) {
@@ -399,8 +410,8 @@ window.GLPI.Debug = new class Debug {
             // if there is a button in the toolbar for this widget, make it active
             const widget_button = this.getWidgetButton(widget_id);
             if (widget_button.length > 0) {
-                $('#debug-toolbar .debug-toolbar-widgets .debug-toolbar-widget button').removeClass('active');
-                widget_button.find('button').addClass('active');
+                $('#debug-toolbar .debug-toolbar-widgets .debug-toolbar-widget').removeClass('active');
+                widget_button.addClass('active');
             }
         }
         content_area.data('active-widget', widget_id);
@@ -598,7 +609,7 @@ window.GLPI.Debug = new class Debug {
                      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugsession${rand}">SESSION</a></li>
                      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugserver${rand}">SERVER</a></li>
                   </ul>
-            
+
                   <div class="card-body overflow-auto p-1">
                      <div class="tab-content">
                         <div id="debugpost${rand}" class="cm-s-default tab-pane active"></div>
@@ -918,7 +929,7 @@ window.GLPI.Debug = new class Debug {
                                     <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="profiler">Profiler</button>
                                 </li>
                             </ul>
-                
+
                             <div class="card-body overflow-auto p-1">
                                 <div class="tab-content request-details-content-area">
                                 </div>
