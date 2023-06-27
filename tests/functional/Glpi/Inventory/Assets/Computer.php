@@ -295,7 +295,7 @@ class Computer extends AbstractInventoryAsset
         $this->integer($manual_monitor->fields['users_id'])->isIdenticalTo(getItemByTypeName('User', 'tech', true));
 
 
-        //Enable option to propagate users_id on update to connected element
+        //Enable option to clean users_id when element is disconnected
         $CFG_GLPI['is_user_autoclean']     = 1;
 
 
