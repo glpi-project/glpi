@@ -2899,18 +2899,18 @@ HTML;
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2' class='center'>";
-            if ($this->fields["last_access"]
-                && abs(strtotime($_SESSION['glpi_currenttime']) - $this->fields["last_access"]) < self::TIME_ONLINE) {
+            if (
+                $this->fields["last_access"]
+                && abs(strtotime($_SESSION['glpi_currenttime']) - $this->fields["last_access"]) < self::TIME_ONLINE
+            ) {
                 $bgColor = "#4cd137";
                 echo __('User is online');
-            }
-            else {
+            } else {
                 if ($this->fields["last_access"] === null) {
-                    printf(__('Last seen %s'), _('never'));
-                }
-                else {
+                    printf(__('Last seen %s'), __('never'));
+                } else {
                     $lastseen = strtotime($_SESSION['glpi_currenttime']) - $this->fields["last_access"];
-                    printf(__('Last seen %s'), Html::timestampToString($lastseen,$lastseen < 60 ? true : false ));
+                    printf(__('Last seen %s'), Html::timestampToString($lastseen, $lastseen < 60 ? true : false));
                 }
                 $bgColor = "#e84118";
             }
