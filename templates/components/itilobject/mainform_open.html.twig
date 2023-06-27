@@ -48,7 +48,7 @@
    {% set track_changes = 'false' %}
 {% endif %}
 
-<form method="POST" action="{{ form_path }}" enctype="{{ enctype }}"
+<form method="POST" action="{{ form_path }}" enctype="{{ enctype }}" name="itil_form"
       data-track-changes="{{ track_changes }}" id="itil-form" class="{{ new_cls }}" data-submit-once>
    <input type="hidden" name="id" value="{{ item.fields['id'] ?? 0 }}" />
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
