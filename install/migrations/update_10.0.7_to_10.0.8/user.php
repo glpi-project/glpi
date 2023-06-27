@@ -37,5 +37,4 @@
  * @var DB $DB
  * @var Migration $migration
  */
-$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
-$migration->addField('glpi_users', 'last_access', "int(11) {$default_key_sign} DEFAULT NULL");
+$migration->addField('glpi_users', 'last_access', "int DEFAULT NULL");
