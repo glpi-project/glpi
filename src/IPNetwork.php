@@ -678,7 +678,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
             if ($relation == "equals") {
                 for ($i = $startIndex; $i < 4; ++$i) {
-                    $WHERE = [
+                    $WHERE[] = [
                         new \QueryExpression("(" . $DB->quoteName($addressDB[$i]) . " & " . $DB->quoteValue($netmaskPa[$i]) . ") = (" . $DB->quoteValue($addressPa[$i]) . " & " . $DB->quoteValue($netmaskPa[$i]) . ")"),
                         $netmaskDB[$i]  => $netmaskPa[$i]
                     ];
@@ -691,7 +691,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
                         $globalNetmask = $DB->quoteName($netmaskDB[$i]);
                     }
 
-                    $WHERE = [
+                    $WHERE[] = [
                         new \QueryExpression("(" . $DB->quoteName($addressDB[$i]) . " & $globalNetmask) = (" . $DB->quoteValue($addressPa[$i]) . " & $globalNetmask)"),
                         new \QueryExpression("(" . $DB->quoteValue($netmaskPa[$i]) . " & " . $DB->quoteName($netmaskDB[$i]) . ")=$globalNetmask")
                     ];
