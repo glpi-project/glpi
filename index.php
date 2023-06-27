@@ -149,6 +149,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                               ]),
         'languages_dropdown'  => Dropdown::showLanguages('language', [
             'display'             => false,
+            'rand'                => '1',
             'display_emptychoice' => true,
             'emptylabel'          => __('Default (from user profile)'),
             'width'               => '100%'
