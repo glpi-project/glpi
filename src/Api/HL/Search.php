@@ -238,8 +238,15 @@ final class Search
             if ($item->isEntityAssign()) {
                 $entity_restrict = getEntitiesRestrictCriteria('_');
             }
+        } else {
+            //TODO What if some subtypes are entity assign and some are not?
+            $entity_restrict = [
+                getEntitiesRestrictCriteria('_'),
+            ];
         }
-        $criteria['WHERE'][] = ['AND' => $entity_restrict];
+        if (!empty($entity_restrict)) {
+            $criteria['WHERE'][] = ['AND' => $entity_restrict];
+        }
 
         if (isset($this->request_params['start'])) {
             $criteria['START'] = $this->request_params['start'];
