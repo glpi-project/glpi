@@ -45,6 +45,8 @@ if (
     exit;
 }
 
+$_SESSION['kb_cat_id'] = $_REQUEST['cat_id'] ?? 0;
+
 switch ($_REQUEST['action']) {
     case "getItemslist":
         header("Content-Type: application/json; charset=UTF-8");
