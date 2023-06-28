@@ -607,7 +607,7 @@ class Rule extends DbTestCase
 
         //rename rule with a quote, then clone
         $rules_id = $cloned;
-        $rule = new \Rule(); //needed to reset last_clone_index...
+        $rule = new \RuleAsset(); //needed to reset last_clone_index...
         $this->boolean($rule->update(['id' => $rules_id, 'name' => addslashes("User's assigned")]))->isTrue();
         $this->boolean($rule->getFromDB($rules_id))->isTrue();
 
