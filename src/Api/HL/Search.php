@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL;
 
 use CommonDBTM;
+use ExtraVisibilityCriteria;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc;
 use Glpi\DBAL\QueryFunction;
@@ -234,8 +235,20 @@ final class Search
             $itemtype = $this->schema['x-itemtype'];
             /** @var CommonDBTM $item */
             $item = new $itemtype();
-            $table = $item::getTable();
-            if ($item->isEntityAssign()) {
+            if ($item instanceof ExtraVisibilityCriteria) {
+                $visibility_restrict = $item::getVisibilityCriteria();
+                $entity_restrict = $visibility_restrict['WHERE'] ?? [];
+                $join_types = ['LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'];
+                foreach ($join_types as $join_type) {
+                    if (empty($visibility_restrict[$join_type])) {
+                        continue;
+                    }
+                    if (!isset($criteria[$join_type])) {
+                        $criteria[$join_type] = [];
+                    }
+                    $criteria[$join_type] = array_merge($criteria[$join_type], $visibility_restrict[$join_type]);
+                }
+            } else if ($item->isEntityAssign()) {
                 $entity_restrict = getEntitiesRestrictCriteria('_');
             }
         } else {
