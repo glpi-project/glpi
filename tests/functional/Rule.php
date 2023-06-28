@@ -607,6 +607,7 @@ class Rule extends DbTestCase
 
         //rename rule with a quote, then clone
         $rules_id = $cloned;
+        $rule = new \Rule(); //needed to reset last_clone_index...
         $this->boolean($rule->update(['id' => $rules_id, 'name' => addslashes("User's assigned")]))->isTrue();
         $this->boolean($rule->getFromDB($rules_id))->isTrue();
 
@@ -615,7 +616,7 @@ class Rule extends DbTestCase
         $this->boolean($rule->getFromDB($cloned))->isTrue();
 
         $this->integer($rule->fields['is_active'])->isIdenticalTo(0);
-        $this->string($rule->fields['name'])->isIdenticalTo("User's assigned (copy 2)");
+        $this->string($rule->fields['name'])->isIdenticalTo("User's assigned (copy)");
 
         foreach ($relations as $relation => $expected) {
             $this->integer(
