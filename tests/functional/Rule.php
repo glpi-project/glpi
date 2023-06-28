@@ -626,8 +626,6 @@ class Rule extends DbTestCase
                 )
             )->isIdenticalTo($expected);
         }
-
-
     }
 
     public function testRanking()
