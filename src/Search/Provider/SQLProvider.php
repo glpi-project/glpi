@@ -114,7 +114,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
                     $default_select = \Plugin::doOneHook($plug['plugin'], 'addDefaultSelect', $itemtype);
-                    if ($default_select !== "") {
+                    if (!empty($default_select)) {
                         $ret[] = new QueryExpression(rtrim($default_select, ' ,'));
                     }
                 }
@@ -979,7 +979,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
                     $default_where = \Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype);
-                    if ($default_where !== '') {
+                    if (!empty($default_where)) {
                         $criteria = [new QueryExpression($default_where)];
                     }
                 }
