@@ -111,9 +111,9 @@ final class Search
                     if (array_key_exists($join_name, $this->joins) && $this->joins[$join_name]['parent_type'] === 'array') {
                         $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
                         if ($distinct_groups) {
-                            $expression = QueryFunction::groupConcat($expression, new QueryExpression('0x1D'), true);
+                            $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), true);
                         } else {
-                            $expression = QueryFunction::groupConcat($expression, new QueryExpression('0x1D'), false);
+                            $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), false);
                         }
                     }
                 }
