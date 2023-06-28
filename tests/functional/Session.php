@@ -450,4 +450,28 @@ class Session extends \DbTestCase
         ]);
         $this->boolean($result)->isTrue();
     }
+
+    protected function getRightNameForErrorProvider()
+    {
+        return [
+            ['_nonexistant', READ, 'READ'],
+            ['_nonexistant', ALLSTANDARDRIGHT, 'ALLSTANDARDRIGHT'],
+            ['_nonexistant', UPDATENOTE, 'UPDATENOTE'],
+            ['_nonexistant', UNLOCK, 'UNLOCK'],
+            ['ticket', READ, 'See my ticket'],
+            ['ticket', \Ticket::READALL, 'See all tickets'],
+            ['user', \User::IMPORTEXTAUTHUSERS, 'Add external']
+        ];
+    }
+
+    /**
+     * @dataProvider getRightNameForErrorProvider
+     */
+    public function testGetRightNameForError($module, $right, $expected)
+    {
+        $this->login();
+        // Set language to French to ensure we always get names back as en_GB regardless of the user's language
+        \Session::loadLanguage('fr_FR');
+        $this->string(\Session::getRightNameForError($module, $right))->isEqualTo($expected);
+    }
 }
