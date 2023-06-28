@@ -148,6 +148,18 @@ final class AdministrationController extends AbstractController
                         'description' => 'Password confirmation',
                         'x-writeonly' => true,
                     ],
+                    'picture' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'picture',
+                        'x-mapper' => static function ($v) {
+                            global $CFG_GLPI;
+                            $path = \Toolbox::getPictureUrl($v, false);
+                            if (!empty($path)) {
+                                return $path;
+                            }
+                            return $CFG_GLPI["root_doc"] . '/pics/picture.png';
+                        }
+                    ]
                 ]
             ],
             'Group' => [
@@ -472,6 +484,40 @@ final class AdministrationController extends AbstractController
         return self::getNotFoundErrorResponse();
     }
 
+    /**
+     * Get the specified user picture as a Response
+     * @param string $username The username of the user. Used in Content-Disposition header.
+     * @param string|null $picture_path The path to the picture from the user's "picture" field.
+     * @return Response A response with the picture as binary content (or the placeholder user picture if the user has no picture).
+     */
+    private function getUserPictureResponse(string $username, ?string $picture_path): Response
+    {
+        if ($picture_path !== null) {
+            $picture_path = GLPI_PICTURE_DIR . '/' . $picture_path;
+        } else {
+            $picture_path = 'pics/picture.png';
+        }
+        return \Toolbox::sendFile($picture_path, $username, null, false, true);
+    }
+
+    #[Route(path: '/User/me/Picture', methods: ['GET'])]
+    #[Doc\Route(
+        description: 'Get the picture for the current user'
+    )]
+    public function getMyPicture(Request $request): Response
+    {
+        global $DB;
+        $it = $DB->request([
+            'SELECT' => ['name', 'picture'],
+            'FROM' => User::getTable(),
+            'WHERE' => [
+                'id' => $this->getMyUserID(),
+            ],
+        ]);
+        $data = $it->current();
+        return $this->getUserPictureResponse($data['name'], $data['picture']);
+    }
+
     #[Route(path: '/User', methods: ['POST'])]
     #[Doc\Route(description: 'Create a new user', parameters: [
         [
@@ -508,6 +554,42 @@ final class AdministrationController extends AbstractController
     public function getUserByUsername(Request $request): Response
     {
         return Search::getOneBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
+    }
+
+    #[Route(path: '/User/{id}/Picture', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Doc\Route(
+        description: 'Get the picture for the current user'
+    )]
+    public function getUserPictureByID(Request $request): Response
+    {
+        global $DB;
+        $it = $DB->request([
+            'SELECT' => ['name', 'picture'],
+            'FROM' => User::getTable(),
+            'WHERE' => [
+                'id' => $request->getAttribute('id'),
+            ],
+        ]);
+        $data = $it->current();
+        return $this->getUserPictureResponse($data['name'], $data['picture']);
+    }
+
+    #[Route(path: '/User/username/{username}/Picture', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
+    #[Doc\Route(
+        description: 'Get the picture for the current user'
+    )]
+    public function getUserPictureByUsername(Request $request): Response
+    {
+        global $DB;
+        $it = $DB->request([
+            'SELECT' => ['name', 'picture'],
+            'FROM' => User::getTable(),
+            'WHERE' => [
+                'name' => $request->getAttribute('username'),
+            ],
+        ]);
+        $data = $it->current();
+        return $this->getUserPictureResponse($data['name'], $data['picture']);
     }
 
     #[Route(path: '/User/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]

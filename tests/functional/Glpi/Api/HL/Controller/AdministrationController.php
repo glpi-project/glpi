@@ -368,6 +368,97 @@ class AdministrationController extends \HLAPITestCase
         });
     }
 
+    private function addCustomUserPicture(int $user_id, string $picture_path)
+    {
+        global $DB;
+        $picture_path = \Toolbox::savePicture($picture_path, '', true);
+        $this->variable($picture_path)->isNotFalse();
+        $DB->update('glpi_users', [
+            'id' => $user_id,
+            'picture' => $picture_path
+        ], [
+            'id' => $user_id
+        ]);
+    }
+
+    public function testGetMyPicture()
+    {
+        $this->login();
+        $this->api->call(new Request('GET', '/Administration/User/me/picture'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->content(function ($content) {
+                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/pics/picture.png'));
+                });
+        });
+        $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+
+        $this->api->call(new Request('GET', '/Administration/User/me'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->string($content['picture'])->contains('/front/document.send.php');
+                });
+        });
+
+        $this->api->call(new Request('GET', '/Administration/User/me/picture'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->content(function ($content) {
+                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png'));
+                });
+        });
+    }
+
+    public function testGetUserPictureByID()
+    {
+        $this->login();
+        $this->api->call(new Request('GET', '/Administration/User/' . $_SESSION['glpiID'] . '/Picture'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->content(function ($content) {
+                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/pics/picture.png'));
+                });
+        });
+        $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+
+        $this->api->call(new Request('GET', '/Administration/User/' . $_SESSION['glpiID'] . '/Picture'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->content(function ($content) {
+                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png'));
+                });
+        });
+    }
+
+    public function testGetUserPictureByUsername()
+    {
+        $this->login();
+        $this->api->call(new Request('GET', '/Administration/User/username/' . $_SESSION['glpiname'] . '/Picture'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->content(function ($content) {
+                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/pics/picture.png'));
+                });
+        });
+        $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+
+        $this->api->call(new Request('GET', '/Administration/User/username/' . $_SESSION['glpiname'] . '/Picture'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->content(function ($content) {
+                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png'));
+                });
+        });
+    }
+
     public function testCreateUpdateDeleteUser()
     {
         $this->login();

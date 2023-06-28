@@ -2859,7 +2859,7 @@ class Toolbox
      *
      * @since 9.5.0
      */
-    public static function savePicture($src, $uniq_prefix = '')
+    public static function savePicture($src, $uniq_prefix = '', $keep_src = false)
     {
 
         if (!Document::isImage($src)) {
@@ -2884,7 +2884,11 @@ class Toolbox
             return false;
         }
 
-        if (!rename($src, $dest)) {
+        if (!$keep_src) {
+            if (!rename($src, $dest)) {
+                return false;
+            }
+        } else if (!copy($src, $dest)) {
             return false;
         }
 
