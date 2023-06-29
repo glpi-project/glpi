@@ -339,6 +339,19 @@ class VirtualMachine extends InventoryAsset
                     $this->handlePorts('Computer', $computers_vm_id);
                 }
 
+                //manage operating system
+                if (property_exists($vm, 'operatingsystem')) {
+                    $os = new OperatingSystem($computervm, (array)$vm->operatingsystem);
+                    if ($os->checkConf($this->conf)) {
+                        $os->setAgent($this->getAgent());
+                        $os->setExtraData($this->data);
+                        $os->setEntityID($computervm->getEntityID());
+                        $os->prepare();
+                        $os->handleLinks();
+                        $os->handle();
+                    }
+                }
+
                 //manage extra components created form hosts information
                 if ($this->conf->vm_components) {
                     foreach ($this->vmcomponents as $key => $assetitem) {
