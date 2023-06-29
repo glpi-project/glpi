@@ -193,26 +193,24 @@ JAVASCRIPT;
         // We can remove all the SELECT fields and replace it with just the ID field
         $raw_select = $data['sql']['raw']['SELECT'];
         $replacement_select = 'SELECT DISTINCT ' . $itemtype::getTableField('id');
-        $sql = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
+        $sql_id = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
         // Remove GROUP BY and ORDER BY clauses
-        $sql = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql);
+        $sql_id = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql_id);
 
-        $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql . ') AS id_criteria )');
+        $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql_id . ') AS id_criteria )');
 
         $cat_table = $cat_itemtype::getTable();
         $cat_fk    = $cat_itemtype::getForeignKeyField();
         $cat_join = $itemtype . '_' . $cat_itemtype;
 
         // This query is used to get the IDs of all results matching the search criteria
-        $sql = $data['sql']['search'];
         // We can remove all the SELECT fields and replace it with just the ID field
-        $raw_select = $data['sql']['raw']['SELECT'];
         $replacement_select = "SELECT DISTINCT " . $cat_join::getTableField($cat_fk);
-        $sql = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
+        $sql_cat = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
         // Remove GROUP BY and ORDER BY clauses
-        $sql = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql);
+        $sql_cat = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql_cat);
 
-        $cat_criteria = new QueryExpression($cat_join::getTableField($cat_fk) . ' IN ( SELECT * FROM (' . $sql . ') AS cat_criteria )');
+        $cat_criteria = new QueryExpression($cat_join::getTableField($cat_fk) . ' IN ( SELECT * FROM (' . $sql_cat . ') AS cat_criteria )');
 
         if (class_exists($cat_join)) {
             $join = [
