@@ -76,9 +76,16 @@ final class Search
     private function getSQLFieldForProperty(string $prop_name): string
     {
         $prop = $this->flattened_properties[$prop_name];
+        $is_join = str_contains($prop_name, '.');
         $sql_field = $prop['x-field'] ?? $prop_name;
-        if (!str_contains($sql_field, '.')) {
+        if (!$is_join) {
+            // Only add the _. prefix if it isn't a join
             $sql_field = "_.$sql_field";
+        } else if ($prop_name !== $sql_field) {
+            // If the property name is different from the SQL field name, we will need to add/change the table alias
+            // $prop_name is a join where the part before the dot is the join alias (also the property on the main item), and the part after the dot is the property on the joined item
+            $join_alias = explode('.', $prop_name)[0];
+            $sql_field = "{$join_alias}.{$sql_field}";
         }
         return $sql_field;
     }
