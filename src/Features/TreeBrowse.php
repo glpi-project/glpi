@@ -203,13 +203,25 @@ JAVASCRIPT;
         $cat_fk    = $cat_itemtype::getForeignKeyField();
         $cat_join = $itemtype . '_' . $cat_itemtype;
 
+        // This query is used to get the IDs of all results matching the search criteria
+        $sql = $data['sql']['search'];
+        // We can remove all the SELECT fields and replace it with just the ID field
+        $raw_select = $data['sql']['raw']['SELECT'];
+        $replacement_select = "SELECT DISTINCT " . $cat_join::getTableField($cat_fk);
+        $sql = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
+        // Remove GROUP BY and ORDER BY clauses
+        $sql = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql);
+
+        $cat_criteria = new QueryExpression($cat_join::getTableField($cat_fk) . ' IN ( SELECT * FROM (' . $sql . ') AS cat_criteria )');
+
         if (class_exists($cat_join)) {
             $join = [
                 $cat_join::getTable() => [
                     'ON'  => [
                         $cat_join::getTable() => $itemtype::getForeignKeyField(),
                         $itemtype::getTable() => 'id'
-                    ]
+                    ],
+                    $cat_criteria,
                 ]
             ];
         } else {
