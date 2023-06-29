@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Virtual machine management
@@ -398,7 +399,7 @@ class ComputerVirtualMachine extends CommonDBChild
             }
         }
 
-        return $in;
+        return Sanitizer::sanitize($in);
     }
 
 

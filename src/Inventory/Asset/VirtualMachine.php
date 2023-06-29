@@ -228,7 +228,7 @@ class VirtualMachine extends InventoryAsset
                 foreach (ComputerVirtualMachine::getUUIDRestrictCriteria($handled_input['uuid'] ?? '') as $cleaned_uuid) {
                     $sinput = [
                         'name'                     => $handled_input['name'] ?? '',
-                        'uuid'                     => $cleaned_uuid ?? '',
+                        'uuid'                     => Sanitizer::unsanitize($cleaned_uuid ?? ''),
                         'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0
                     ];
 
