@@ -268,6 +268,7 @@ JAVASCRIPT;
 
         $inst = new $cat_itemtype();
         $categories = [];
+        $parents = [];
         foreach ($cat_iterator as $category) {
             if (DropdownTranslation::canBeTranslated($inst)) {
                 $tname = DropdownTranslation::getTranslatedValue(
@@ -278,7 +279,10 @@ JAVASCRIPT;
                     $category['name'] = $tname;
                 }
             }
-            $categories[] = $category;
+            if (($category['items_count'] > 0) || (in_array($category['id'], $parents))) {
+                $parents[] = $category[$cat_fk];
+                $categories[] = $category;
+            }
         }
 
         // Without category
