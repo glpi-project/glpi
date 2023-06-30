@@ -81,7 +81,7 @@
             __('Item link'),
             field_options
         ) }}
-        <input type="hidden" name="items_id" value="{{ items.fields['items_id'] }}">
+        <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
 
         {% set versions %}
             {% set versions_array = call("importArrayFromDB", [versions_field]) %}
