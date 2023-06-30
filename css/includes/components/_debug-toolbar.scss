@@ -81,3 +81,37 @@
         }
     }
 }
+
+body.debug-active:not(.debug-folded) {
+    .search_page {
+        .search-container {
+            @include media-breakpoint-up(lg) {
+                height: calc(100vh - #{$contextbar-height} - #{$content-margin} - 50px);
+            }
+        }
+    }
+
+    .tab-pane:not([id^="tab-Ticket_main"]) {
+        margin-bottom: 50px;
+    }
+
+    .itil-object {
+        @include media-breakpoint-up(lg) {
+            height: calc(100vh - 187px - 46px);
+        }
+    }
+
+
+    &.horizontal-layout {
+        .itil-object {
+            @include media-breakpoint-up(lg) {
+                height: calc(100vh - 257px - 46px);
+            }
+        }
+    }
+
+    .search-footer,
+    .itil-footer {
+        bottom: 46px;
+    }
+}
