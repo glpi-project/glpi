@@ -473,10 +473,19 @@ class ErrorHandler
             return;
         }
 
-        $this->logger->log(
-            $log_level,
-            '  *** ' . $type . ': ' . $description . (!empty($trace) ? "\n" . $trace : '')
-        );
+        try {
+            $this->logger->log(
+                $log_level,
+                '  *** ' . $type . ': ' . $description . (!empty($trace) ? "\n" . $trace : '')
+            );
+        } catch (\Throwable $e) {
+            $this->outputDebugMessage(
+                'Error',
+                'An error has occurred, but the trace of this error could not recorded because of a problem accessing the log file.',
+                LogLevel::CRITICAL,
+                true
+            );
+        }
     }
 
     /**
