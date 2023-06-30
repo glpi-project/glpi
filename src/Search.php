@@ -6810,7 +6810,6 @@ JAVASCRIPT;
                             }
                             return Entity::sanitizeSeparatorInCompletename($completename);
                         }
-
                     }
                     break;
                 case $table . ".completename":
