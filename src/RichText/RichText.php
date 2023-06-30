@@ -96,6 +96,7 @@ final class RichText
      * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
      * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
      * @param boolean $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param boolean $preserve_line_breaks    Indicates whether the line breaks elements have to be replaced by space
      *
      * @return string
      */
@@ -104,7 +105,8 @@ final class RichText
         bool $keep_presentation = true,
         bool $compact = false,
         bool $encode_output_entities = false,
-        bool $preserve_case = false
+        bool $preserve_case = false,
+        bool $preserve_line_breaks = false
     ): string {
         global $CFG_GLPI;
 
@@ -144,10 +146,11 @@ final class RichText
             $config['keep_bad'] = 6; // remove invalid/disallowed tag but keep content intact
             $content = htmLawed($content, $config);
 
-           // Remove supernumeraries whitespaces chars
-            $content = preg_replace('/\s+/', ' ', trim($content));
-
-           // Content is no more considered as HTML, decode its entities
+            if (!$preserve_line_breaks) {
+                // Remove supernumeraries whitespaces chars
+                $content = preg_replace('/\s+/', ' ', trim($content));
+            }
+            // Content is no more considered as HTML, decode its entities
             $content = Html::entity_decode_deep($content);
         }
 
