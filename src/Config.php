@@ -1266,6 +1266,10 @@ HTML;
             [
                 'name' => 'twig/markdown-extra',
                 'check' => 'Twig\\Extra\\Markdown\\LeagueMarkdown'
+            ],
+            [
+                'name' => 'webonyx/graphql-php',
+                'check' => 'GraphQL\\GraphQL'
             ]
         ];
         return $deps;
