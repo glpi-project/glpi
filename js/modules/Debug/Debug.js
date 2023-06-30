@@ -563,10 +563,10 @@ window.GLPI.Debug = new class Debug {
                 }
             });
             content_area.find('h2').first()
-                .text(`${total_requests} Queries took ${total_duration}`);
+                .text(`${total_requests} Queries took ${total_duration} ms`);
         } else {
             content_area.find('h2').first()
-                .text(`${sql_data.total_requests} Queries took ${sql_data.total_duration}`);
+                .text(`${sql_data.total_requests} Queries took ${sql_data.total_duration} ms`);
         }
 
         if (sql_table.data('sort')) {
