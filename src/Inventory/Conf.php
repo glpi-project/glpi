@@ -1164,5 +1164,4 @@ class Conf extends CommonGLPI
     {
         return "ti ti-adjustments";
     }
-
 }
