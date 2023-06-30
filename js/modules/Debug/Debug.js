@@ -386,7 +386,7 @@ window.GLPI.Debug = new class Debug {
     refreshWidgetButtons() {
         // Server performance
         const server_perf = this.initial_request.server_performance;
-        const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
+        const memory_usage_mio = +(server_perf.memory_usage / 1024 / 1024).toFixed(2);
         const server_performance_button_label = `${server_perf.execution_time} <span class="text-muted"> ms using </span> ${memory_usage_mio} <span class="text-muted"> MB </span>`;
         this.getWidgetButton('server_performance').find('.debug-text').html(server_performance_button_label);
 
@@ -399,7 +399,7 @@ window.GLPI.Debug = new class Debug {
         this.getWidgetButton('requests').find('.debug-text').html(`${this.ajax_requests.length} <span class="text-muted"> requests </span>`);
 
         // Client performances
-        const dom_timing = window.performance.getEntriesByType('navigation')[0].domComplete;
+        const dom_timing = +window.performance.getEntriesByType('navigation')[0].domComplete.toFixed(2);
         const client_performance_button_label = `${dom_timing} <span class="text-muted"> ms </span>`;
         this.getWidgetButton('client_performance').find('.debug-text').html(client_performance_button_label);
     }
@@ -453,10 +453,10 @@ window.GLPI.Debug = new class Debug {
             content_area.empty();
 
             content_area.append(`
-                <h1>Server performance</h1>
-                <table class="table">
-                    <tbody></tbody>
-                </table>
+                <div class="py-2 px-3 col-xxl-7 col-xl-9 col-12">
+                    <h2 class="mb-3">Server performance</h2>
+                    <div class="datagrid"></div>
+                </div>
             `);
         }
 
@@ -472,19 +472,23 @@ window.GLPI.Debug = new class Debug {
         });
         total_execution_time = total_execution_time.toFixed(2);
 
-        content_area.find('table tbody').empty().append(`
-            <tr>
-                <td>
-                    Initial Execution Time: ${this.initial_request.server_performance.execution_time}ms
-                    <br>
-                    Total Execution Time: ${total_execution_time}ms
-                </td>
-                <td>
-                    Memory Usage: ${memory_usage_mio}mio / ${memory_limit_mio}mio
-                    <br>
-                    Memory Peak: ${memory_peak_mio}mio / ${memory_limit_mio}mio
-                </td>
-            </tr>
+        content_area.find('.datagrid').empty().append(`
+            <div class="datagrid-item">
+                <div class="datagrid-title">Initial Execution Time</div>
+                <div class="datagrid-content">${+this.initial_request.server_performance.execution_time} ms</div>
+            </div>
+            <div class="datagrid-item">
+                <div class="datagrid-title">Total Execution Time</div>
+                <div class="datagrid-content">${+total_execution_time} ms</div>
+            </div>
+            <div class="datagrid-item">
+                <div class="datagrid-title">Memory Usage</div>
+                <div class="datagrid-content h-100 col-8">${+memory_usage_mio} MB / ${+memory_limit_mio} MB</div>
+            </div>
+            <div class="datagrid-item">
+                <div class="datagrid-title">Memory Peak</div>
+                <div class="datagrid-content">${+memory_peak_mio} MB / ${+memory_limit_mio} MB</div>
+            </div>
         `);
     }
 
@@ -497,8 +501,8 @@ window.GLPI.Debug = new class Debug {
         if (!refresh) {
             content_area.empty();
             content_area.append(`
-                <div class="overflow-auto">
-                   <h1></h1>
+                <div class="overflow-auto py-2 px-3">
+                   <h2 class="mb-3"></h2>
                    <table id="debug-sql-request-table" class="table card-table">
                       <thead>
                       <tr>
@@ -558,10 +562,10 @@ window.GLPI.Debug = new class Debug {
                     });
                 }
             });
-            content_area.find('h1').first()
+            content_area.find('h2').first()
                 .text(`${total_requests} Queries took ${total_duration}`);
         } else {
-            content_area.find('h1').first()
+            content_area.find('h2').first()
                 .text(`${sql_data.total_requests} Queries took ${sql_data.total_duration}`);
         }
 
@@ -686,23 +690,37 @@ window.GLPI.Debug = new class Debug {
         total_resources_size = total_resources_size / 1024 / 1024;
 
         content_area.append(`
-            <table class="table">
-                <tbody>
-                    <tr><th colspan="4">Timings</th></tr>
-                    <tr>
-                        <th>${paint_timing_label}</th><td>${time_to_first_paint.toFixed(2)}ms</td>
-                        <th>Time to DOM interactive</th><td>${time_to_dom_interactive.toFixed(2)}ms</td>
-                    </tr>
-                    <tr>
-                        <th>Time to DOM complete</th><td>${time_to_dom_complete.toFixed(2)}ms</td>
-                    </tr>
-                    <tr><th colspan="4">Resource Loading</th></tr>
-                    <tr>
-                        <th>Total resources</th><td>${total_resources}</td>
-                        <th>Total resources size</th><td>${total_resources_size.toFixed(2)}mio</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="py-2 px-3 col-xxl-7 col-xl-9 col-12">
+                <h2 class="mb-3">Client performance</h2>
+                <h3 class="mb-2">Timings</h3>
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">${paint_timing_label}</div>
+                        <div class="datagrid-content">${+time_to_first_paint.toFixed(2)} ms</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Time to DOM interactive</div>
+                        <div class="datagrid-content">${+time_to_dom_interactive.toFixed(2)} ms</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Time to DOM complete</div>
+                        <div class="datagrid-content">${+time_to_dom_complete.toFixed(2)} ms</div>
+                    </div>
+                </div>
+                <h3 class="mt-3 mb-2">Resource Loading</h3>
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Total resources</div>
+                        <div class="datagrid-content">${total_resources}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Total resources size</div>
+                        <div class="datagrid-content">${+total_resources_size.toFixed(2)} MB</div>
+                    </div>
+                    <!-- Keep empty item at the end to align with previous grid -->
+                    <div class="datagrid-item"></div>
+                </div>
+            </div>
         `);
 
         if (perf.memory != undefined) {
