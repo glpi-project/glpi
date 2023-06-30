@@ -157,6 +157,6 @@ class DeviceControl extends CommonDevice
 
     public static function getIcon()
     {
-        return "fas fa-microchip";
+        return "ti ti-cpu";
     }
 }
