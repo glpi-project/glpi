@@ -150,14 +150,6 @@ class Grid
                <i class="fas fa-spinner fa-spin fa-3x"></i>
             </div>
 HTML;
-           // manage cache
-            $dashboard_key = $this->current;
-            $footprint = sha1(serialize($card_options) .
-            ($_SESSION['glpiactiveentities_string'] ?? "") .
-            ($_SESSION['glpilanguage']));
-            $cache_key    = "dashboard_card_{$dashboard_key}_{$footprint}";
-            $card_options['cache_key'] = $cache_key;
-
             $this->addGridItem(
                 $card_html,
                 $gridstack_id,
@@ -916,20 +908,9 @@ HTML;
             }
             $card = $cards[$card_id];
 
-            // allows plugins to control uniqueness of its cards in cache system
-            if (isset($card['custom_hash'])) {
-                $card_options['custom_hash'] = $card['custom_hash'];
-            }
-
-            // manage cache
-            $options_footprint = sha1(serialize($card_options) .
-                ($_SESSION['glpiactiveentities_string'] ?? "") .
-                ($_SESSION['glpilanguage']));
-
             $use_cache = !$force
                 && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
                 && (!isset($card['cache']) || $card['cache'] == true);
-            $cache_key = "dashboard_card_{$dashboard}_{$options_footprint}";
             $cache_age = 40;
 
             if ($use_cache) {
@@ -938,12 +919,6 @@ HTML;
                 header('Cache-Control: public');
                 header('Cache-Control: max-age=' . $cache_age);
                 header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
-
-                // server cache
-                $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
-                if (isset($dashboard_cards[$gridstack_id])) {
-                    return (string)$dashboard_cards[$gridstack_id];
-                }
             }
 
             $html = "";
@@ -998,13 +973,6 @@ HTML;
             }
 
             $execution_time = round(microtime(true) - $start, 3);
-
-            // store server cache
-            if (strlen($dashboard)) {
-                $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
-                $dashboard_cards[$gridstack_id] = $html;
-                $GLPI_CACHE->set($cache_key, $dashboard_cards, new \DateInterval("PT" . $cache_age . "S"));
-            }
         } catch (\Throwable $e) {
             $html = $render_error_html;
             $execution_time = round(microtime(true) - $start, 3);
