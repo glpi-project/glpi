@@ -94,7 +94,38 @@ class PrinterLog extends DbTestCase
        //per default, get 1Y old, first not included
         $this->array($log->getMetrics($printer))->hasSize(2);
 
-       //change filter to include first one
-        $this->array($log->getMetrics($printer, ['date' => ['>=', $cdate1->format('Y-m-d')]]))->hasSize(3);
+       //same with start_date parameter
+        $this->array($log->getMetrics($printer, start_date: $cdate1))->hasSize(3);
+       //same with interval parameter
+        $this->array($log->getMetrics($printer, interval: 'P14M'))->hasSize(3);
+
+       //use end_date parameter to exclude last report
+        $this->array($log->getMetrics($printer, start_date: $cdate1, end_date: $now->sub(new \DateInterval('P1D'))))->hasSize(2);
+
+        for ($i = 0; $i < 20; $i++) {
+            $now->sub(new \DateInterval('P1D'));
+            $input = [
+                'printers_id' => $printers_id,
+                'total_pages' => 9299,
+                'bw_pages' => 6258,
+                'color_pages' => 3041,
+                'rv_pages' => 7654,
+                'scanned' => 28177,
+                'date' => $now->format('Y-m-d')
+            ];
+            $this->integer($log->add($input))->isGreaterThan(0);
+        }
+
+       // check working of daily format
+        $this->array($log->getMetrics($printer, interval: 'P2M', format: 'daily'))->hasSize(21);
+
+       // check working of weekly format
+        $this->array($log->getMetrics($printer, interval: 'P1M', format: 'weekly'))->hasSize(4);
+
+       // check working of monthly format
+        $this->array($log->getMetrics($printer, format: 'monthly', interval: 'P2Y'))->hasSize(3);
+
+       // check working of yearly format
+        $this->array($log->getMetrics($printer, format: 'yearly', interval: 'P2Y'))->hasSize(2);
     }
 }

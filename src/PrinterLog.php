@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Widget;
 
 /**
@@ -103,19 +104,33 @@ class PrinterLog extends CommonDBChild
     /**
      * Get metrics
      *
-     * @param Printer $printer      Printer instance
-     * @param array   $user_filters User filters
+     * @param Printer       $printer      Printer instance
+     * @param array         $user_filters User filters
+     * @param string        $interval     Date interval string (e.g. 'P1Y' for 1 year)
+     * @param DateTime|null $start_date   Start date for the metrics range
+     * @param DateTime      $end_date     End date for the metrics range
+     * @param string        $format       Format for the metrics data ('dynamic', 'daily', 'weekly', 'monthly', 'yearly')
      *
-     * @return array
+     * @return array An array of printer metrics data
      */
-    public function getMetrics(Printer $printer, $user_filters = []): array
-    {
+    public function getMetrics(
+        Printer $printer,
+        $user_filters = [],
+        $interval = 'P1Y',
+        $start_date = null,
+        $end_date = new DateTime(),
+        $format = 'dynamic'
+    ): array {
         global $DB;
 
-        $bdate = new DateTime();
-        $bdate->sub(new DateInterval('P1Y'));
+        if (!$start_date) {
+            $start_date = new DateTime();
+            $start_date->sub(new DateInterval($interval));
+        }
+
         $filters = [
-            'date' => ['>', $bdate->format('Y-m-d')]
+            ['date' => ['>=', $start_date->format('Y-m-d')]],
+            ['date' => ['<=', $end_date->format('Y-m-d')]]
         ];
         $filters = array_merge($filters, $user_filters);
 
@@ -128,15 +143,38 @@ class PrinterLog extends CommonDBChild
 
         $series = iterator_to_array($iterator, false);
 
-        // Reduce the data to 25 points
-        $count = count($series);
-        $max_size = 25;
-        if ($count > $max_size) {
-            // Keep one row every X entry using modulo
-            $modulo = round($count / $max_size);
+        if ($format == 'dynamic') {
+            // Reduce the data to 25 points
+            $count = count($series);
+            $max_size = 25;
+            if ($count > $max_size) {
+                // Keep one row every X entry using modulo
+                $modulo = round($count / $max_size);
+                $series = array_filter(
+                    $series,
+                    fn ($k) => (($count - ($k + 1)) % $modulo) == 0,
+                    ARRAY_FILTER_USE_KEY
+                );
+            }
+        } else {
+            $formats = [
+                'daily' => 'Ymd', // Reduce the data to one point per day max
+                'weekly' => 'YoW', // Reduce the data to one point per week max
+                'monthly' => 'Ym', // Reduce the data to one point per month max
+                'yearly' => 'Y', // Reduce the data to one point per year max
+            ];
+
             $series = array_filter(
                 $series,
-                fn($k) => (($count - ($k + 1)) % $modulo) == 0,
+                function ($k) use ($series, $format, $formats) {
+                    if (!isset($series[$k + 1])) {
+                        return true;
+                    }
+
+                    $current_date = date($formats[$format], strtotime($series[$k]['date']));
+                    $next_date = date($formats[$format], strtotime($series[$k + 1]['date']));
+                    return $current_date !== $next_date;
+                },
                 ARRAY_FILTER_USE_KEY
             );
         }
@@ -151,7 +189,27 @@ class PrinterLog extends CommonDBChild
      */
     public function showMetrics(Printer $printer)
     {
-        $raw_metrics = $this->getMetrics($printer);
+        $format = htmlspecialchars($_GET['date_format'] ?? 'dynamic');
+
+        if (isset($_GET['date_interval'])) {
+            $raw_metrics = $this->getMetrics(
+                $printer,
+                interval: htmlspecialchars($_GET['date_interval']),
+                format: $format,
+            );
+        } elseif (isset($_GET['date_start']) && isset($_GET['date_end'])) {
+            $raw_metrics = $this->getMetrics(
+                $printer,
+                start_date: new DateTime(htmlspecialchars($_GET['date_start'])),
+                end_date: new DateTime(htmlspecialchars($_GET['date_end'])),
+                format: $format,
+            );
+        } else {
+            $raw_metrics = $this->getMetrics(
+                $printer,
+                format: $format,
+            );
+        }
 
        //build graph data
         $params = [
@@ -164,9 +222,10 @@ class PrinterLog extends CommonDBChild
         $labels = [];
 
         // Formatter to display the date (months names) in the correct language
-        // Dates will be displayed as "d MMMM":
+        // Dates will be displayed as "d MMM YYYY":
         // d = short day number (1, 12, ...)
         // MMM = short month name (jan, feb, ...)
+        // YYYY = full year (2021, 2022, ...)
         // Note that PHP use ISO 8601 Date Output here which is different from
         // the "Constants for PHP Date Output" used in others functions
         // See https://framework.zend.com/manual/1.12/en/zend.date.constants.html#zend.date.constants.selfdefinedformats
@@ -176,7 +235,7 @@ class PrinterLog extends CommonDBChild
             IntlDateFormatter::NONE,
             null,
             null,
-            'd MMM'
+            'd MMM YYYY'
         );
 
         foreach ($raw_metrics as $metrics) {
@@ -202,12 +261,20 @@ class PrinterLog extends CommonDBChild
             'icon'  => $params['icon'],
             'color' => '#ffffff',
             'distributed' => false,
-            'show_points' => false,
+            'show_points' => true,
             'line_width'  => 2,
         ];
 
+       // display the printer graph buttons component
+        TemplateRenderer::getInstance()->display('components/printer_graph_buttons.html.twig', [
+            'start_date' => htmlspecialchars($_GET['date_start'] ?? ''),
+            'end_date'   => htmlspecialchars($_GET['date_end'] ?? ''),
+            'interval'   => htmlspecialchars($_GET['date_interval'] ?? 'P1Y'),
+            'format'     => $format,
+        ]);
+
        //display graph
-        echo "<div class='dashboard printer_barchart'>";
+        echo "<div class='dashboard printer_barchart pt-2'>";
         echo Widget::multipleAreas($bar_conf);
         echo "</div>";
     }
