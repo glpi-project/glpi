@@ -203,14 +203,18 @@ JAVASCRIPT;
         $cat_fk    = $cat_itemtype::getForeignKeyField();
         $cat_join = $itemtype . '_' . $cat_itemtype;
 
-        // This query is used to get the IDs of all results matching the search criteria
-        // We can remove all the SELECT fields and replace it with just the ID field
-        $replacement_select = "SELECT DISTINCT " . $cat_join::getTableField($cat_fk);
-        $sql_cat = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
-        // Remove GROUP BY and ORDER BY clauses
-        $sql_cat = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql_cat);
+        $cat_criteria = [1];
+        // If there is a category filter, apply this filter to the tree too
+        if (preg_match("/$cat_table/", $data['sql']['raw']['WHERE'])) {
+            // This query is used to get the IDs of all results matching the search criteria
+            // We can remove all the SELECT fields and replace it with just the ID field
+            $replacement_select = "SELECT DISTINCT " . $cat_join::getTableField($cat_fk);
+            $sql_cat = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
+            // Remove GROUP BY and ORDER BY clauses
+            $sql_cat = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql_cat);
 
-        $cat_criteria = new QueryExpression($cat_join::getTableField($cat_fk) . ' IN ( SELECT * FROM (' . $sql_cat . ') AS cat_criteria )');
+            $cat_criteria = new QueryExpression($cat_join::getTableField($cat_fk) . ' IN ( SELECT * FROM (' . $sql_cat . ') AS cat_criteria )');
+        }
 
         if (class_exists($cat_join)) {
             $join = [
