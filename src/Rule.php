@@ -3552,8 +3552,6 @@ class Rule extends CommonDBTM
         $input['ranking']     = $nextRanking;
         $input['uuid']        = static::getUuid();
 
-        $input = Toolbox::addslashes_deep($input);
-
         return $input;
     }
 

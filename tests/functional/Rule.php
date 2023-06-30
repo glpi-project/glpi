@@ -604,6 +604,28 @@ class Rule extends DbTestCase
                 )
             )->isIdenticalTo($expected);
         }
+
+        //rename rule with a quote, then clone
+        $rules_id = $cloned;
+        $rule = new \RuleAsset(); //needed to reset last_clone_index...
+        $this->boolean($rule->update(['id' => $rules_id, 'name' => addslashes("User's assigned")]))->isTrue();
+        $this->boolean($rule->getFromDB($rules_id))->isTrue();
+
+        $cloned = $rule->clone();
+        $this->integer($cloned)->isGreaterThan($rules_id);
+        $this->boolean($rule->getFromDB($cloned))->isTrue();
+
+        $this->integer($rule->fields['is_active'])->isIdenticalTo(0);
+        $this->string($rule->fields['name'])->isIdenticalTo("User's assigned (copy)");
+
+        foreach ($relations as $relation => $expected) {
+            $this->integer(
+                countElementsInTable(
+                    $relation::getTable(),
+                    ['rules_id' => $cloned]
+                )
+            )->isIdenticalTo($expected);
+        }
     }
 
     public function testRanking()
