@@ -101,6 +101,12 @@ body.debug-active:not(.debug-folded) {
         }
     }
 
+    form.new-itil-object .itil-object {
+        @include media-breakpoint-up(lg) {
+            height: calc(100vh - 187px - 5px);
+        }
+    }
+
 
     &.horizontal-layout {
         .itil-object {
