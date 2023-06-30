@@ -5143,12 +5143,7 @@ JAVASCRIPT;
                 'glpi_tickets_users' => [
                     'ON' => [
                         'glpi_tickets_users' => 'tickets_id',
-                        $table               => 'id', [
-                            'OR' => [
-                                ['glpi_tickets_users.type' => CommonITILActor::REQUESTER],
-                                ['glpi_tickets_users.type' => CommonITILActor::OBSERVER]
-                            ]
-                        ]
+                        $table               => 'id'
                     ]
                 ],
                 'glpi_ticketvalidations' => [
@@ -5174,9 +5169,15 @@ JAVASCRIPT;
                 ];
             }
 
-            $ORWHERE = [
+            $WHERE = [
                 'OR' => [
-                    'glpi_tickets_users.users_id'                => Session::getLoginUserID(),
+                    'AND' => [
+                        'glpi_tickets_users.users_id' => Session::getLoginUserID(),
+                        'OR' => [
+                            ['glpi_tickets_users.type' => CommonITILActor::REQUESTER],
+                            ['glpi_tickets_users.type' => CommonITILActor::OBSERVER]
+                        ],
+                    ],
                     'glpi_tickets.users_id_recipient'            => Session::getLoginUserID(),
                     'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID()
                 ]
@@ -5187,9 +5188,9 @@ JAVASCRIPT;
                 && isset($_SESSION["glpigroups"])
                 && count($_SESSION["glpigroups"])
             ) {
-                $ORWHERE['OR']['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
+                $WHERE['OR']['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
             }
-            $criteria['WHERE'][] = $ORWHERE;
+            $criteria['WHERE'][] = $WHERE;
         }
 
         return $criteria;
