@@ -48,13 +48,14 @@ class Ticket extends \FrontBaseClass
         //load ticket form
         $this->http_client->request('GET', $this->base_uri . 'front/ticket.form.php');
 
-        $this->http_client->waitFor('#itil-form');
+        $crawler = $this->http_client->waitFor('form[name=itil_form]');
+        $tinyid = $crawler->filter('textarea[name=content]')->attr('id');
+        $this->http_client->executeScript("tinymce.get('$tinyid').setContent('A \'test\' > \"ticket\" & name thetestuuidtoremove');");
         $this->http_client->takeScreenshot('ticket_add.png'); // see if that works...
         $this->http_client->submitForm(
             'Add',
             [
-                'content' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
-                //'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+                'name' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
             ]
         );
 
