@@ -36,10 +36,12 @@
 .datagrid {
     --tblr-datagrid-padding   : 1.5rem;
     --tblr-datagrid-item-width: 15rem;
+
     display                   : grid;
     grid-gap                  : var(--tblr-datagrid-padding);
     grid-template-columns     : repeat(auto-fit, minmax(var(--tblr-datagrid-item-width), 1fr));
 }
+
 .datagrid-title {
     font-size     : .625rem;
     font-weight   : 600;
