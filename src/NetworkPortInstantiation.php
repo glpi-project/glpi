@@ -853,11 +853,12 @@ class NetworkPortInstantiation extends CommonDBChild
             if ($instantiation !== false) {
                 $log = new Log();
                 //TRANS: %1$s is a type, %2$s is a table
-                return sprintf(
+
+                return $log::createTabEntry(sprintf(
                     __('%1$s - %2$s'),
-                    $instantiation->getTypeName(),
-                    $log->getTabNameForItem($instantiation)
-                );
+                    $log->getTypeName(),
+                    $instantiation->getTypeName()
+                ), 0, $item::getType());
             }
         }
         return '';

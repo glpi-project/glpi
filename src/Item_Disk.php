@@ -59,7 +59,7 @@ class Item_Disk extends CommonDBChild
 
     public static function getIcon()
     {
-        return 'fas fa-hdd';
+        return 'far fa-hdd';
     }
 
     public function post_getEmpty()
