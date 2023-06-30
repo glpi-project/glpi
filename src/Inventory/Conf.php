@@ -294,7 +294,7 @@ class Conf extends CommonGLPI
             case __CLASS__:
                 $tabs = [];
                 if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
-                    $tabs[1] = self::createTabEntry(_('Configuration'), 0, $item::getType());
+                    $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::getType());
                 }
                 if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
                     $icon = "<i class='ti ti-upload me-2'></i>";
