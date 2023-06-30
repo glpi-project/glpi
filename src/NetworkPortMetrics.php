@@ -214,4 +214,9 @@ class NetworkPortMetrics extends CommonDBChild
                 return __('Output errors');
         }
     }
+
+    public static function getIcon()
+    {
+        return 'ti ti-chart-line';
+    }
 }

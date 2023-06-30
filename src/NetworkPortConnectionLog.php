@@ -171,4 +171,9 @@ class NetworkPortConnectionLog extends CommonDBChild
         }
         echo "</tbody>";
     }
+
+    public static function getIcon()
+    {
+        return 'ti ti-history';
+    }
 }
