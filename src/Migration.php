@@ -1802,4 +1802,9 @@ class Migration
             ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;
         ", "Create link table between $class_1 and $class_2");
     }
+
+    public function buildTable(string $table_name): \Glpi\DBAL\TableBuilder
+    {
+        return new \Glpi\DBAL\TableBuilder($table_name);
+    }
 }
