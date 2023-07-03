@@ -3447,16 +3447,16 @@
         },
         {
             "name": "rlanvin/php-rrule",
-            "version": "v2.4.0",
+            "version": "v2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rlanvin/php-rrule.git",
-                "reference": "2acd9950e803ea65514d6440212d39096df9c528"
+                "reference": "7ddef3d49b7a6461dc070f671f0d94509c9a537b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rlanvin/php-rrule/zipball/2acd9950e803ea65514d6440212d39096df9c528",
-                "reference": "2acd9950e803ea65514d6440212d39096df9c528",
+                "url": "https://api.github.com/repos/rlanvin/php-rrule/zipball/7ddef3d49b7a6461dc070f671f0d94509c9a537b",
+                "reference": "7ddef3d49b7a6461dc070f671f0d94509c9a537b",
                 "shasum": ""
             },
             "require": {
@@ -3490,9 +3490,9 @@
             ],
             "support": {
                 "issues": "https://github.com/rlanvin/php-rrule/issues",
-                "source": "https://github.com/rlanvin/php-rrule/tree/v2.4.0"
+                "source": "https://github.com/rlanvin/php-rrule/tree/v2.4.1"
             },
-            "time": "2023-01-06T10:19:10+00:00"
+            "time": "2023-06-07T13:15:59+00:00"
         },
         {
             "name": "robthree/twofactorauth",
