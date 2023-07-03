@@ -364,6 +364,7 @@ HTML,
             'compact'                => false,
             'encode_output_entities' => false,
             'preserve_case'          => false,
+            'preserve_line_breaks'   => false,
             'expected_result'        => 'Some HTML text',
         ];
 
@@ -374,6 +375,7 @@ HTML,
             'compact'                => false,
             'encode_output_entities' => true,
             'preserve_case'          => false,
+            'preserve_line_breaks'   => false,
             'expected_result'        => 'Some HTML content with special chars like &gt; &amp; &lt;.',
         ];
 
@@ -395,6 +397,7 @@ PLAINTEXT;
             'compact'                => false,
             'encode_output_entities' => false,
             'preserve_case'          => false,
+            'preserve_line_breaks'   => false,
             'expected_result'        => $result,
         ];
         yield [
@@ -403,6 +406,7 @@ PLAINTEXT;
             'compact'                => false,
             'encode_output_entities' => false,
             'preserve_case'          => false,
+            'preserve_line_breaks'   => false,
             'expected_result'        => $result,
         ];
 
@@ -425,7 +429,25 @@ HTML;
             'compact'                => false,
             'encode_output_entities' => false,
             'preserve_case'          => false,
+            'preserve_line_breaks'   => false,
             'expected_result'        => 'A title Text in a paragraph el 1 el 2 Should I yell for the important words?',
+        ];
+        yield [
+            'content'                => $content,
+            'keep_presentation'      => false,
+            'compact'                => false,
+            'encode_output_entities' => false,
+            'preserve_case'          => false,
+            'preserve_line_breaks'   => true,
+            'expected_result'        => <<<PLAINTEXT
+A title
+Text in a paragraph
+
+el 1
+el 2
+
+Should I yell for the important words?
+PLAINTEXT,
         ];
 
         // Text with presentation from complex HTML
@@ -436,6 +458,7 @@ HTML;
             'compact'                => false,
             'encode_output_entities' => false,
             'preserve_case'          => false,
+            'preserve_line_breaks'   => false,
             'expected_result'        => <<<PLAINTEXT
 A TITLE
 
@@ -456,6 +479,7 @@ PLAINTEXT,
             'compact'                => true,
             'encode_output_entities' => false,
             'preserve_case'          => false,
+            'preserve_line_breaks'   => false,
             'expected_result'        => <<<PLAINTEXT
 A TITLE
 
@@ -476,6 +500,7 @@ PLAINTEXT,
             'compact'                => true,
             'encode_output_entities' => false,
             'preserve_case'          => true,
+            'preserve_line_breaks'   => false,
             'expected_result'        => <<<PLAINTEXT
 A title
 
@@ -498,11 +523,12 @@ PLAINTEXT,
         bool $compact,
         bool $encode_output_entities,
         bool $preserve_case,
+        bool $preserve_line_breaks,
         string $expected_result
     ) {
         $richtext = $this->newTestedInstance();
 
-        $this->string($richtext->getTextFromHtml($content, $keep_presentation, $compact, $encode_output_entities, $preserve_case))
+        $this->string($richtext->getTextFromHtml($content, $keep_presentation, $compact, $encode_output_entities, $preserve_case, $preserve_line_breaks))
             ->isEqualTo($expected_result);
     }
 

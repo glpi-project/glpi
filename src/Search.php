@@ -6793,14 +6793,23 @@ JAVASCRIPT;
                             }
                         }
                         return $out;
-                    } else if (($so["datatype"] ?? "") != "itemlink" && !empty($data[$ID][0]['name'])) {
+                    } elseif (($so["datatype"] ?? "") != "itemlink" && !empty($data[$ID][0]['name'])) {
                         $completename = $data[$ID][0]['name'];
-                        if (!$_SESSION['glpiuse_flat_dropdowntree_on_search_result']) {
-                            $split_name = explode(">", $completename);
-                            $entity_name = trim(end($split_name));
-                            return Entity::badgeCompletename($entity_name, CommonTreeDropdown::sanitizeSeparatorInCompletename($completename));
+                        if ($html_output) {
+                            if (!$_SESSION['glpiuse_flat_dropdowntree_on_search_result']) {
+                                $split_name = explode(">", $completename);
+                                $entity_name = trim(end($split_name));
+                                return Entity::badgeCompletename($entity_name, CommonTreeDropdown::sanitizeSeparatorInCompletename($completename));
+                            }
+                            return Entity::badgeCompletename($completename);
+                        } else { //export
+                            if (!$_SESSION['glpiuse_flat_dropdowntree_on_search_result']) {
+                                $split_name = explode(">", $completename);
+                                $entity_name = trim(end($split_name));
+                                return $entity_name;
+                            }
+                            return Entity::sanitizeSeparatorInCompletename($completename);
                         }
-                        return Entity::badgeCompletename($completename);
                     }
                     break;
                 case $table . ".completename":
@@ -7471,7 +7480,7 @@ JAVASCRIPT;
 
                             $plaintext = '';
                             if (isset($so['htmltext']) && $so['htmltext']) {
-                                $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output);
+                                $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output, false, true);
                             } else {
                                 $plaintext = nl2br($data[$ID][$k]['name']);
                             }
