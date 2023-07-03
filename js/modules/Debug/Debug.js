@@ -386,8 +386,8 @@ window.GLPI.Debug = new class Debug {
     refreshWidgetButtons() {
         // Server performance
         const server_perf = this.initial_request.server_performance;
-        const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
-        const server_performance_button_label = `${server_perf.execution_time} <span class="text-muted"> ms using </span> ${memory_usage_mio} <span class="text-muted"> MB </span>`;
+        const memory_usage = +(server_perf.memory_usage / 1024 / 1024).toFixed(2);
+        const server_performance_button_label = `${server_perf.execution_time} <span class="text-muted"> ms using </span> ${memory_usage} <span class="text-muted"> MiB </span>`;
         this.getWidgetButton('server_performance').find('.debug-text').html(server_performance_button_label);
 
         // Database performance
@@ -399,7 +399,7 @@ window.GLPI.Debug = new class Debug {
         this.getWidgetButton('requests').find('.debug-text').html(`${this.ajax_requests.length} <span class="text-muted"> requests </span>`);
 
         // Client performances
-        const dom_timing = window.performance.getEntriesByType('navigation')[0].domComplete;
+        const dom_timing = +window.performance.getEntriesByType('navigation')[0].domComplete.toFixed(2);
         const client_performance_button_label = `${dom_timing} <span class="text-muted"> ms </span>`;
         this.getWidgetButton('client_performance').find('.debug-text').html(client_performance_button_label);
     }
@@ -453,17 +453,17 @@ window.GLPI.Debug = new class Debug {
             content_area.empty();
 
             content_area.append(`
-                <h1>Server performance</h1>
-                <table class="table">
-                    <tbody></tbody>
-                </table>
+                <div class="py-2 px-3 col-xxl-7 col-xl-9 col-12">
+                    <h2 class="mb-3">Server performance</h2>
+                    <div class="datagrid"></div>
+                </div>
             `);
         }
 
         const server_perf = this.initial_request.server_performance;
-        const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
-        const memory_peak_mio = (server_perf.memory_peak / 1024 / 1024).toFixed(2);
-        const memory_limit_mio = (server_perf.memory_limit / 1024 / 1024).toFixed(2);
+        const memory_usage = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
+        const memory_peak = (server_perf.memory_peak / 1024 / 1024).toFixed(2);
+        const memory_limit = (server_perf.memory_limit / 1024 / 1024).toFixed(2);
         let total_execution_time = this.initial_request.server_performance.execution_time;
         this.ajax_requests.forEach((request) => {
             if (request.profile) {
@@ -472,19 +472,23 @@ window.GLPI.Debug = new class Debug {
         });
         total_execution_time = total_execution_time.toFixed(2);
 
-        content_area.find('table tbody').empty().append(`
-            <tr>
-                <td>
-                    Initial Execution Time: ${this.initial_request.server_performance.execution_time}ms
-                    <br>
-                    Total Execution Time: ${total_execution_time}ms
-                </td>
-                <td>
-                    Memory Usage: ${memory_usage_mio}mio / ${memory_limit_mio}mio
-                    <br>
-                    Memory Peak: ${memory_peak_mio}mio / ${memory_limit_mio}mio
-                </td>
-            </tr>
+        content_area.find('.datagrid').empty().append(`
+            <div class="datagrid-item">
+                <div class="datagrid-title">Initial Execution Time</div>
+                <div class="datagrid-content">${+this.initial_request.server_performance.execution_time} ms</div>
+            </div>
+            <div class="datagrid-item">
+                <div class="datagrid-title">Total Execution Time</div>
+                <div class="datagrid-content">${+total_execution_time} ms</div>
+            </div>
+            <div class="datagrid-item">
+                <div class="datagrid-title">Memory Usage</div>
+                <div class="datagrid-content h-100 col-8">${+memory_usage} MiB / ${+memory_limit} MiB</div>
+            </div>
+            <div class="datagrid-item">
+                <div class="datagrid-title">Memory Peak</div>
+                <div class="datagrid-content">${+memory_peak} MiB / ${+memory_limit} MiB</div>
+            </div>
         `);
     }
 
@@ -497,8 +501,8 @@ window.GLPI.Debug = new class Debug {
         if (!refresh) {
             content_area.empty();
             content_area.append(`
-                <div class="overflow-auto">
-                   <h1></h1>
+                <div class="overflow-auto py-2 px-3">
+                   <h2 class="mb-3"></h2>
                    <table id="debug-sql-request-table" class="table card-table">
                       <thead>
                       <tr>
@@ -537,7 +541,7 @@ window.GLPI.Debug = new class Debug {
                         ${filtered_request_id === undefined ? `<td><button class="btn btn-link request-link">${request_id}</button></td>` : ''}
                         <td>${query['num']}</td>
                         <td style="max-width: 50vw; white-space: break-spaces;"><code class="d-block cm-s-default border-0">${query['query']}</code></td>
-                        <td data-value-unit="ms">${query['time']}ms</td>
+                        <td data-value-unit="ms">${query['time']} ms</td>
                         <td>${query['rows']}</td>
                         <td>${escapeMarkupText(query['warnings'])}</td>
                         <td>${escapeMarkupText(query['errors'])}</td>
@@ -558,11 +562,11 @@ window.GLPI.Debug = new class Debug {
                     });
                 }
             });
-            content_area.find('h1').first()
-                .text(`${total_requests} Queries took ${total_duration}`);
+            content_area.find('h2').first()
+                .text(`${total_requests} Queries took ${total_duration} ms`);
         } else {
-            content_area.find('h1').first()
-                .text(`${sql_data.total_requests} Queries took ${sql_data.total_duration}`);
+            content_area.find('h2').first()
+                .text(`${sql_data.total_requests} Queries took ${sql_data.total_duration} ms`);
         }
 
         if (sql_table.data('sort')) {
@@ -686,23 +690,37 @@ window.GLPI.Debug = new class Debug {
         total_resources_size = total_resources_size / 1024 / 1024;
 
         content_area.append(`
-            <table class="table">
-                <tbody>
-                    <tr><th colspan="4">Timings</th></tr>
-                    <tr>
-                        <th>${paint_timing_label}</th><td>${time_to_first_paint.toFixed(2)}ms</td>
-                        <th>Time to DOM interactive</th><td>${time_to_dom_interactive.toFixed(2)}ms</td>
-                    </tr>
-                    <tr>
-                        <th>Time to DOM complete</th><td>${time_to_dom_complete.toFixed(2)}ms</td>
-                    </tr>
-                    <tr><th colspan="4">Resource Loading</th></tr>
-                    <tr>
-                        <th>Total resources</th><td>${total_resources}</td>
-                        <th>Total resources size</th><td>${total_resources_size.toFixed(2)}mio</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="py-2 px-3 col-xxl-7 col-xl-9 col-12">
+                <h2 class="mb-3">Client performance</h2>
+                <h3 class="mb-2">Timings</h3>
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">${paint_timing_label}</div>
+                        <div class="datagrid-content">${+time_to_first_paint.toFixed(2)} ms</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Time to DOM interactive</div>
+                        <div class="datagrid-content">${+time_to_dom_interactive.toFixed(2)} ms</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Time to DOM complete</div>
+                        <div class="datagrid-content">${+time_to_dom_complete.toFixed(2)} ms</div>
+                    </div>
+                </div>
+                <h3 class="mt-3 mb-2">Resource Loading</h3>
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Total resources</div>
+                        <div class="datagrid-content">${total_resources}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Total resources size</div>
+                        <div class="datagrid-content">${+total_resources_size.toFixed(2)} MiB</div>
+                    </div>
+                    <!-- Keep empty item at the end to align with previous grid -->
+                    <div class="datagrid-item"></div>
+                </div>
+            </div>
         `);
 
         if (perf.memory != undefined) {
@@ -711,15 +729,22 @@ window.GLPI.Debug = new class Debug {
             const total_heap = perf.memory.totalJSHeapSize / 1024 / 1024;
 
             // Non-standard feature supported by Chrome
-            content_area.find('tbody').append(`
-                <tr><th colspan="4">Memory</th></tr>
-                <tr>
-                    <th>Used JS Heap</th><td>${used_heap.toFixed(2)}mio</td>
-                    <th>Total JS Heap</th><td>${total_heap.toFixed(2)}mio</td>
-                </tr>
-                <tr>
-                    <th>JS Heap Limit</th><td>${heap_limit.toFixed(2)}mio</td>
-                </tr>
+            content_area.find('.datagrid:last').append(`
+                <h3 class="mt-3 mb-2">Memory</h3>
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Used JS Heap</div>
+                        <div class="datagrid-content">${+used_heap.toFixed(2)}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Total JS Heap</div>
+                        <div class="datagrid-content">${+total_heap.toFixed(2)} MiB</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">JS Heap Limit</div>
+                        <div class="datagrid-content">${+heap_limit.toFixed(2)} MiB</div>
+                    </div>
+                </div>
             `);
         }
     }
@@ -796,7 +821,7 @@ window.GLPI.Debug = new class Debug {
                         </span>
                     </td>
                     <td>${escapeMarkupText(section.name)}</td><td>${section.start}</td><td>${section.end}</td>
-                    <td data-column="duration" data-duration-raw="${duration}">${duration.toFixed(0)}ms</td>
+                    <td data-column="duration" data-duration-raw="${duration}">${duration.toFixed(0)} ms</td>
                     <td>${percent_of_parent}%</td>
                 </tr>
             `;
@@ -820,7 +845,7 @@ window.GLPI.Debug = new class Debug {
         content_area.append(`
             <div>
                <label>
-                 Hide near-instant sections (&lt;=1ms):
+                 Hide near-instant sections (&lt;= 1 ms):
                  <input type="checkbox" name="hide_instant_sections">
                </label>
             </div>
@@ -842,7 +867,7 @@ window.GLPI.Debug = new class Debug {
             table_rows.removeClass('d-none');
 
             if (hide) {
-                // hide all rows in the table that have the duration column set less than 1ms
+                // hide all rows in the table that have the duration column set less than 1 ms
                 table_rows.each((index, row) => {
                     const duration_cell = $(row).find('> td[data-column="duration"]');
                     if (duration_cell.length > 0) {
@@ -947,7 +972,7 @@ window.GLPI.Debug = new class Debug {
                     <td style="max-width: 200px; white-space: pre-wrap;" title="${window.location.pathname}" data-truncated="${is_truncated ? 'true' : 'false'}">${truncated_pathname}</td>
                     <td>-</td>
                     <td>${this.initial_request.globals.server['REQUEST_METHOD'] || '-'}</td>
-                    <td>${this.initial_request.server_performance.execution_time}ms</td>
+                    <td>${this.initial_request.server_performance.execution_time} ms</td>
                 </tr>
             `);
             if (is_truncated) {
@@ -1020,7 +1045,7 @@ window.GLPI.Debug = new class Debug {
                         <td style="max-width: 200px; white-space: pre-wrap;" title="${request.url}" data-truncated="${is_truncated ? 'true' : 'false'}">${truncated_url}</td>
                         <td>${request.status}</td>
                         <td>${request.type}</td>
-                        <td data-value-unit="ms">${request.time}ms</td>
+                        <td data-value-unit="ms">${request.time} ms</td>
                     </tr>
                 `);
                 if (is_truncated) {
@@ -1048,7 +1073,7 @@ window.GLPI.Debug = new class Debug {
                 }
             } else {
                 row.find('> td:nth-child(3)').text(request.status);
-                row.find('> td:nth-child(5)').text(`${request.time}ms`);
+                row.find('> td:nth-child(5)').text(`${request.time} ms`);
             }
         });
     }
@@ -1077,9 +1102,9 @@ window.GLPI.Debug = new class Debug {
             return;
         }
         const server_perf = profile.server_performance;
-        const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
-        const memory_peak_mio = (server_perf.memory_peak / 1024 / 1024).toFixed(2);
-        const memory_limit_mio = (server_perf.memory_limit / 1024 / 1024).toFixed(2);
+        const memory_usage = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
+        const memory_peak = (server_perf.memory_peak / 1024 / 1024).toFixed(2);
+        const memory_limit = (server_perf.memory_limit / 1024 / 1024).toFixed(2);
         let total_execution_time = profile.server_performance.execution_time;
 
         let total_sql_duration = 0;
@@ -1094,19 +1119,19 @@ window.GLPI.Debug = new class Debug {
                 <tbody>
                     <tr>
                         <td>
-                            Initial Execution Time: ${total_execution_time}ms
+                            Initial Execution Time: ${total_execution_time} ms
                         </td>
                         <td>
-                            Memory Usage: ${memory_usage_mio}mio / ${memory_limit_mio}mio
+                            Memory Usage: ${memory_usage} MiB / ${memory_limit} MiB
                             <br>
-                            Memory Peak: ${memory_peak_mio}mio / ${memory_limit_mio}mio
+                            Memory Peak: ${memory_peak} MiB / ${memory_limit} MiB
                         </td>
                     </tr>
                     <tr>
                         <td>
                             SQL Requests: ${total_sql_queries}
                             <br>
-                            SQL Duration: ${total_sql_duration}ms
+                            SQL Duration: ${total_sql_duration} ms
                         </td>
                     </tr>
                 </tbody>
@@ -1299,7 +1324,7 @@ window.GLPI.Debug = new class Debug {
             const canvas_width = canvas_el.width();
             const canvas_height = canvas_el.height();
 
-            // round end_ts to nearest 100ms
+            // round end_ts to nearest 100 ms
             const end_ts_rounded = Math.ceil(end_ts / 100) * 100;
             const division_count = Math.min(Math.ceil(canvas_width / DIVIDER_WIDTH), Math.ceil(end_ts_rounded / division_length));
             const dividers = [];
@@ -1321,7 +1346,7 @@ window.GLPI.Debug = new class Debug {
                 ctx.moveTo(divider.canvas_x, 0);
                 ctx.lineTo(divider.canvas_x, canvas_height);
                 ctx.stroke();
-                ctx.fillText(`${divider.time}ms`, divider.canvas_x + 2, 10);
+                ctx.fillText(`${divider.time} ms`, divider.canvas_x + 2, 10);
             });
 
             // draw sections
@@ -1366,7 +1391,7 @@ window.GLPI.Debug = new class Debug {
                 if (section_name.length > 100) {
                     section_name = section_name.slice(0, 100) + '...';
                 }
-                const text = `${section_name} ${hover_data.target.timing} (${duration.toFixed(0)}ms)`;
+                const text = `${section_name} ${hover_data.target.timing} (${duration.toFixed(0)} ms)`;
                 ctx.font = ctx.font.replace(/\d+px/, '14px');
                 const text_width = ctx.measureText(text).width;
 

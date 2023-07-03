@@ -31,6 +31,27 @@
  * ---------------------------------------------------------------------
  */
 
+// Our tabler version does not support datagrid
+// TODO: remove after updating tabler
+.datagrid {
+    --tblr-datagrid-padding   : 1.5rem;
+    --tblr-datagrid-item-width: 15rem;
+
+    display                   : grid;
+    grid-gap                  : var(--tblr-datagrid-padding);
+    grid-template-columns     : repeat(auto-fit, minmax(var(--tblr-datagrid-item-width), 1fr));
+}
+
+.datagrid-title {
+    font-size     : .625rem;
+    font-weight   : 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    line-height   : 1rem;
+    color         : var(--tblr-muted);
+    margin-bottom : .25rem;
+}
+
 #debug-toolbar {
     z-index: 9999;
     outline: none;
