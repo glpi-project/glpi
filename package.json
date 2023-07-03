@@ -70,7 +70,7 @@
         "spectrum-colorpicker2": "^2.0.10",
         "spin.js": "^4.1.0",
         "swagger-ui-dist": "^4.19.0",
-        "tinymce": "^6.4.2",
+        "tinymce": "^6.5.1",
         "tinymce-i18n": "^23.6.19"
     },
     "scripts": {
