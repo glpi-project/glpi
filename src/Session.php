@@ -1683,6 +1683,10 @@ class Session
             foreach ($_SESSION['glpiidortokens'] as $footprint => $token) {
                 if ($token['expires'] < $now) {
                     unset($_SESSION['glpiidortokens'][$footprint]);
+                } else {
+                    // Token are stored from oldest to youngest
+                    // If this token is still valid, all the remaining token are valid too
+                    break;
                 }
             }
         }
