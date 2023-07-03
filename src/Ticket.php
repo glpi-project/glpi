@@ -3260,7 +3260,7 @@ JAVASCRIPT;
             'id'                 => '32',
             'table'              => 'glpi_slalevels',
             'field'              => 'name',
-            'name'               => __('SLA') . ' ' . _n('Escalation level', 'Escalation levels', 1),
+            'name'               => sprintf('%s %s', __('SLA'), _n('Escalation level', 'Escalation levels', 1)),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -3311,7 +3311,7 @@ JAVASCRIPT;
             'id'                 => '192',
             'table'              => 'glpi_olalevels',
             'field'              => 'name',
-            'name'               => __('OLA') . ' ' . _n('Escalation level', 'Escalation levels', 1),
+            'name'               => sprintf('%s %s', __('OLA'), _n('Escalation level', 'Escalation levels', 1)),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
