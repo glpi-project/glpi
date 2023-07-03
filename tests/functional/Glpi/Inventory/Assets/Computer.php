@@ -1581,7 +1581,6 @@ class Computer extends AbstractInventoryAsset
 
     public function testEntityGlobalLockedField()
     {
-      $this->login();
         $computer = new \Computer();
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
         <REQUEST>
