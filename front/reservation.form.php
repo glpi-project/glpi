@@ -117,6 +117,7 @@ if (isset($_POST["update"])) {
     ksort($dates_to_add);
     if (
         count($dates_to_add)
+        && isset($_POST['items'])
         && count($_POST['items'])
         && isset($_POST['users_id'])
     ) {

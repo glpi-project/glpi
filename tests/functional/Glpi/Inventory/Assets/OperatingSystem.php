@@ -1183,12 +1183,131 @@ class OperatingSystem extends AbstractInventoryAsset
         $list = $os->find();
         $this->integer(count($list))->isIdenticalTo(2);
 
-       //but still only one linked to computer
+        //but still only one linked to computer
         $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($list))->isIdenticalTo(1);
         $theos = current($list);
         $this->integer($theos['operatingsystems_id'])->isNotIdenticalTo($os_id, 'Operating system link has not been updated');
         $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
         $this->string($theos['install_date'])->isIdenticalTo("2022-10-14");
+    }
+
+    public function testReplayRuleOnOS()
+    {
+        $os = new \OperatingSystem();
+        $cos = new \Item_OperatingSystem();
+        global $DB;
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <OPERATINGSYSTEM>
+      <ARCH>x86_64</ARCH>
+      <BOOT_TIME>2018-10-02 08:56:09</BOOT_TIME>
+      <FQDN>test-pc002</FQDN>
+      <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
+      <HOSTID>a8c07701</HOSTID>
+      <INSTALL_DATE>2022-01-01 10:35:07</INSTALL_DATE>
+      <KERNEL_NAME>linux</KERNEL_NAME>
+      <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
+      <NAME>Fedora</NAME>
+      <TIMEZONE>
+        <NAME>CEST</NAME>
+        <OFFSET>+0200</OFFSET>
+      </TIMEZONE>
+      <VERSION>28 (Workstation Edition)</VERSION>
+    </OPERATINGSYSTEM>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('test-pc002')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check found OS
+        $list = $os->find();
+        $this->integer(count($list))->isIdenticalTo(1);
+
+        //check found item_OS
+        $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($list))->isIdenticalTo(1);
+        $theos1 = current($list);
+
+        $os->getFromDBByCrit([ 'name' => 'Fedora 28 (Workstation Edition)']);
+        $this->integer($os->fields['id'])->isGreaterThan(0);
+
+        //check item_OS data
+        $this->integer($theos1['operatingsystems_id'])->isIdenticalTo($os->fields['id']);
+        $this->integer($theos1['is_dynamic'])->isIdenticalTo(1);
+        $this->string($theos1['install_date'])->isIdenticalTo("2022-01-01");
+
+        //enable rule to clean OS
+        $this->boolean(
+            $DB->update(
+                Rule::getTable(),
+                [
+                    'is_active' => 1,
+                ],
+                [
+                    "sub_type" =>
+                    [
+                        RuleDictionnaryOperatingSystem::class,
+                    ]
+                ]
+            )
+        )->isTrue();
+
+        //replay rule
+        $this->login('glpi', 'glpi');
+
+        $os_dictionnary = new \RuleDictionnaryOperatingSystemCollection();
+        $this->output(
+            function () use ($os_dictionnary) {
+                $os_dictionnary->replayRulesOnExistingDB(0, 0, [], []);
+            }
+        )->contains("Replay rules on existing database started on");
+
+
+        $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($list))->isIdenticalTo(1);
+        $theos2 = current($list);
+        //same Item_OperatingSystem before and after
+        $this->integer($theos2['id'])->isIdenticalTo($theos1['id']);
+
+        //load new OS name cleaned by dictionnary
+        $os->getFromDBByCrit([ 'name' => 'Fedora']);
+        $this->integer($os->fields['id'])->isGreaterThan(0);
+
+        //check item_OS data
+        $this->integer($theos2['operatingsystems_id'])->isIdenticalTo($os->fields['id']);
+        $this->integer($theos2['is_dynamic'])->isIdenticalTo(1);
+        $this->string($theos2['install_date'])->isIdenticalTo("2022-01-01");
+
+        //no lock
+        $lockedfield = new \Lockedfield();
+        $this->boolean($lockedfield->isHandled($computer))->isTrue();
+        $this->array($lockedfield->getLockedValues($computer->getType(), $computers_id))->isEmpty();
     }
 }

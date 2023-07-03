@@ -416,7 +416,7 @@ class Reservation extends CommonDBChild
     {
         global $CFG_GLPI;
 
-        if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+        if (!Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
             return false;
         }
 
@@ -463,6 +463,7 @@ class Reservation extends CommonDBChild
         echo "<div id='reservations_planning_$rand' class='card-body reservations-planning'></div>";
         echo "</div>"; // .reservation_panel
 
+        $can_reserve = Session::haveRight("reservation", ReservationItem::RESERVEANITEM) ? "true" : "false";
         $js = <<<JAVASCRIPT
       $(function() {
          var reservation = new Reservations();
@@ -470,6 +471,7 @@ class Reservation extends CommonDBChild
             id: $ID,
             is_all: $is_all,
             rand: $rand,
+            can_reserve: $can_reserve,
          });
          reservation.displayPlanning();
       });

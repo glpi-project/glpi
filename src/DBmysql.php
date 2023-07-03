@@ -33,9 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\System\Requirement\DbTimezones;
 
@@ -1331,32 +1332,38 @@ class DBmysql
      * @since 9.3
      *
      * @param string $table  Table name
-     * @param array  $params Query parameters ([field name => field value)
+     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
+     * @phpstan-param array<string, mixed>|QuerySubQuery $params
      *
      * @return string
      */
     public function buildInsert($table, $params)
     {
-        $query = "INSERT INTO " . self::quoteName($table) . " (";
+        $query = "INSERT INTO " . self::quoteName($table) . ' ';
 
-        $fields = [];
-        $values = [];
-        foreach ($params as $key => $value) {
-            $fields[] = $this->quoteName($key);
-            if ($value instanceof QueryExpression) {
-                $values[] = $value->getValue();
-                unset($params[$key]);
-            } elseif ($value instanceof QueryParam) {
-                $values[] = $value->getValue();
-            } else {
-                $values[] = self::quoteValue($value);
+        if ($params instanceof QuerySubQuery) {
+            // INSERT INTO ... SELECT Query where the sub-query returns all columns needed for the insert
+            $query .= $params->getQuery();
+        } else {
+            $fields = [];
+            $values = [];
+            foreach ($params as $key => $value) {
+                $fields[] = $this->quoteName($key);
+                if ($value instanceof QueryExpression) {
+                    $values[] = $value->getValue();
+                    unset($params[$key]);
+                } elseif ($value instanceof QueryParam) {
+                    $values[] = $value->getValue();
+                } else {
+                    $values[] = self::quoteValue($value);
+                }
             }
+            $query .= "(";
+            $query .= implode(', ', $fields);
+            $query .= ") VALUES (";
+            $query .= implode(", ", $values);
+            $query .= ")";
         }
-
-        $query .= implode(', ', $fields);
-        $query .= ") VALUES (";
-        $query .= implode(", ", $values);
-        $query .= ")";
 
         return $query;
     }

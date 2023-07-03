@@ -78,7 +78,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
             foreach ($iterator as $data) {
                 if (!($i % $step)) {
                     if (isCommandLine()) {
-                      //TRANS: %1$s is a row, %2$s is total rows
+                        //TRANS: %1$s is a row, %2$s is total rows
                         printf(__('Replay rules on existing database: %1$s/%2$s') . "\r", $i, $nb);
                     } else {
                         Html::changeProgressBarPosition($i, $nb, "$i / $nb");

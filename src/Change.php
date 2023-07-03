@@ -915,9 +915,15 @@ class Change extends CommonITILObject
 
     public static function getDefaultValues($entity = 0)
     {
+        if (is_numeric(Session::getLoginUserID(false))) {
+            $users_id_requester = Session::getLoginUserID();
+        } else {
+            $users_id_requester = 0;
+        }
+
         $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
         return [
-            '_users_id_requester'        => Session::getLoginUserID(),
+            '_users_id_requester'        => $users_id_requester,
             '_users_id_requester_notif'  => [
                 'use_notification'  => $default_use_notif,
                 'alternative_email' => ''

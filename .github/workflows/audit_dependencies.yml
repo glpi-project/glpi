@@ -19,7 +19,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {branch: "9.5/bugfixes", php-version: "7.2"}
           - {branch: "10.0/bugfixes", php-version: "7.4"}
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"

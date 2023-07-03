@@ -71,7 +71,7 @@
         "spin.js": "^4.1.0",
         "swagger-ui-dist": "^4.19.0",
         "tinymce": "^6.4.2",
-        "tinymce-i18n": "^23.5.29"
+        "tinymce-i18n": "^23.6.19"
     },
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
@@ -84,19 +84,19 @@
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.8.1",
         "csso-cli": "^4.0.2",
-        "eslint": "^8.41.0",
+        "eslint": "^8.44.0",
         "exports-loader": "^4.0.0",
-        "glob": "^10.2.6",
+        "glob": "^10.3.1",
         "jest": "^29.5.0",
         "jest-environment-jsdom": "^29.5.0",
-        "jest-extended": "^3.2.4",
+        "jest-extended": "^4.0.0",
         "mini-css-extract-plugin": "^2.7.6",
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
-        "stylelint": "^15.6.2",
-        "stylelint-config-standard-scss": "^9.0.0",
-        "terser": "^5.17.7",
-        "webpack": "^5.85.0",
-        "webpack-cli": "^5.1.1"
+        "stylelint": "^15.9.0",
+        "stylelint-config-standard-scss": "^10.0.0",
+        "terser": "^5.18.2",
+        "webpack": "^5.88.1",
+        "webpack-cli": "^5.1.4"
     }
 }

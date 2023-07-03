@@ -1049,7 +1049,7 @@ $RELATION = [
     ],
 
     'glpi_operatingsystems' => [
-        '_glpi_items_operatingsystems' => 'operatingsystems_id',
+        'glpi_items_operatingsystems' => 'operatingsystems_id',
         'glpi_softwareversions'        => 'operatingsystems_id',
     ],
 

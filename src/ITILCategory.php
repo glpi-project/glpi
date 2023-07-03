@@ -385,7 +385,9 @@ class ITILCategory extends CommonTreeDropdown
     {
         $input = parent::prepareInputForUpdate($input);
 
-        $input['code'] = isset($input['code']) ? trim($input['code']) : '';
+        if (isset($input['code'])) {
+            $input['code'] = trim($input['code']);
+        }
         if (
             !empty($input["code"])
             && !in_array(ITILCategory::getITILCategoryIDByCode($input["code"]), [$input['id'],-1])

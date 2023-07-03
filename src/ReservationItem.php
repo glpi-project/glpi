@@ -431,7 +431,7 @@ class ReservationItem extends CommonDBChild
     {
         global $DB, $CFG_GLPI;
 
-        if (!Session::haveRight(self::$rightname, self::RESERVEANITEM)) {
+        if (!Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM])) {
             return false;
         }
 
@@ -726,7 +726,7 @@ class ReservationItem extends CommonDBChild
                 $ok = true;
             }
         }
-        if ($ok) {
+        if ($ok && Session::haveRight("reservation", self::RESERVEANITEM)) {
             echo "<tr class='tab_bg_1'>";
             echo "<th><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></th>";
             echo "<th colspan='" . ($showentity ? "5" : "4") . "'>";
@@ -954,7 +954,7 @@ class ReservationItem extends CommonDBChild
 
         if ($item->getType() == __CLASS__) {
             $tabs = [];
-            if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+            if (Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
                 $tabs[1] = Reservation::getTypeName(1);
             }
             if (

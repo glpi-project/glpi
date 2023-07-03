@@ -42,6 +42,7 @@ var Reservations = function() {
     this.calendar    = null;
     this.currentv    = null;
     this.defaultDate = null;
+    this.can_reserve = true;
 
     var my = this;
 
@@ -54,6 +55,9 @@ var Reservations = function() {
         my.currentv     = config.currentv || 'dayGridMonth';
         my.defaultDate  = config.defaultDate || new Date();
         my.defaultPDate = new Date(my.defaultDate);
+        if (config.can_reserve != undefined) {
+            my.can_reserve = config.can_reserve;
+        }
     };
 
     my.displayPlanning = function() {
@@ -223,19 +227,21 @@ var Reservations = function() {
             },
 
             // ADD EVENTS
-            selectable: true,
+            selectable: my.can_reserve,
             select: function(info) {
-                glpi_ajax_dialog({
-                    title: __("Add reservation"),
-                    url: CFG_GLPI.root_doc+"/ajax/reservations.php",
-                    params: {
-                        action: 'add_reservation_fromselect',
-                        id:     my.id,
-                        start:  info.start.toISOString(),
-                        end:    info.end.toISOString(),
-                    },
-                    dialogclass: 'modal-lg',
-                });
+                if (my.can_reserve) {
+                    glpi_ajax_dialog({
+                        title: __("Add reservation"),
+                        url: CFG_GLPI.root_doc+"/ajax/reservations.php",
+                        params: {
+                            action: 'add_reservation_fromselect',
+                            id:     my.id,
+                            start:  info.start.toISOString(),
+                            end:    info.end.toISOString(),
+                        },
+                        dialogclass: 'modal-lg',
+                    });
+                }
 
                 my.calendar.unselect();
             },

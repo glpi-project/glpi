@@ -721,6 +721,8 @@ class Software extends InventoryAsset
                 $stmt_columns = $this->cleanInputToPrepare((array)$val, $soft_fields);
 
                 $software->handleCategoryRules($stmt_columns);
+                //set create date
+                $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
 
                 if ($stmt === null) {
                     $stmt_types = str_repeat('s', count($stmt_columns));
@@ -787,6 +789,8 @@ class Software extends InventoryAsset
                  $stmt_columns = $this->cleanInputToPrepare((array)$val, $version_fields);
                  $stmt_columns['name'] = $version_name;
                  $stmt_columns['softwares_id'] = $softwares_id;
+                 //set create date
+                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
                 if ($stmt === null) {
                     $stmt_types = str_repeat('s', count($stmt_columns));
                     $reference = array_fill_keys(

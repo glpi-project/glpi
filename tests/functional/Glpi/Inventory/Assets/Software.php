@@ -159,7 +159,7 @@ class Software extends AbstractInventoryAsset
 
         $version = new \SoftwareVersion();
         $this->boolean($version->getFromDB($sov->fields['softwareversions_id']))->isTrue();
-        $this->integer($version->fields['operatingsystems_id'])->isIdenticalTo(0);
+        $this->integer($version->fields['operatingsystems_id'])->isIdenticalTo(0); // no OS from $this->assetProvider()[0];
 
         //convert data
         $expected = $this->assetProvider()[1];
@@ -192,9 +192,15 @@ class Software extends AbstractInventoryAsset
 
         $this->integer($sov->fields['softwareversions_id'])->isNotEqualTo($version->fields['id']);
 
+        $ios = new \Item_OperatingSystem();
+        $this->boolean($ios->getFromDBByCrit([
+            "itemtype" => 'Computer',
+            "items_id" => $computer->fields['id']
+        ]))->isTrue();
+
         $version = new \SoftwareVersion();
         $this->boolean($version->getFromDB($sov->fields['softwareversions_id']))->isTrue();
-        $this->integer($version->fields['operatingsystems_id'])->isGreaterThan(0);
+        $this->integer($version->fields['operatingsystems_id'])->isEqualTo($ios->fields['operatingsystems_id']); //check linked OS from SoftwareVersion
 
         //new computer with same software
         global $DB;

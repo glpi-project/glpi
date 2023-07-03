@@ -1111,6 +1111,7 @@
                 "issues": "https://github.com/apereo/phpCAS/issues",
                 "source": "https://github.com/apereo/phpCAS/tree/1.6.1"
             },
+            "abandoned": "apereo/phpcas",
             "time": "2023-02-19T19:52:35+00:00"
         },
         {

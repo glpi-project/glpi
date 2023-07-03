@@ -45,11 +45,11 @@
                <h2 class="mx-auto">{{ __('Login to your account') }}</h2>
             </div>
             <div class="mb-3">
-               <label class="form-label">{{ __('Login') }}</label>
+               <label class="form-label" for="login_name">{{ __('Login') }}</label>
                <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="" tabindex="1" />
             </div>
             <div class="mb-4">
-               <label class="form-label">
+               <label class="form-label" for="login_password">
                   {{ __('Password') }}
 
                   {% if show_lost_password %}
@@ -60,27 +60,27 @@
                      </span>
                   {% endif %}
                </label>
-               <input type="password" class="form-control" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2" />
+               <input type="password" class="form-control" id="login_password" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2" />
             </div>
 
             {% if constant('GLPI_DEMO_MODE') %}
                <div class="mb-3">
-                  <label class="form-label">{{ __('Language') }}</label>
+                  <label class="form-label" for="dropdown_language{{ rand }}">{{ __('Language') }}</label>
                   {{ languages_dropdown|raw }}
                </div>
             {% endif %}
 
             {% if config('display_login_source') %}
                <div class="mb-3">
-                  <label class="form-label">{{ __('Login source') }}</label>
+                  <label class="form-label" for="dropdown_auth{{ rand }}">{{ __('Login source') }}</label>
                   {{ auth_dropdown_login|raw }}
                </div>
             {% endif %}
 
             {% if config('login_remember_time') %}
                <div class="mb-2">
-                  <label class="form-check">
-                     <input type="checkbox" class="form-check-input" name="{{ rmbfield }}" {{ config('login_remember_default') ? 'checked' : '' }} />
+                  <label class="form-check" for="login_remember">
+                     <input type="checkbox" class="form-check-input" id="login_remember" name="{{ rmbfield }}" {{ config('login_remember_default') ? 'checked' : '' }} />
                      <span class="form-check-label">{{ __('Remember me') }}</span>
                   </label>
                </div>

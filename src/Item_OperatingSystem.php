@@ -43,6 +43,8 @@ class Item_OperatingSystem extends CommonDBRelation
     public static $items_id_2 = 'items_id';
     public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
+    public static $mustBeAttached_1 = false;
+
 
     public static function getTypeName($nb = 0)
     {

@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRight('reservation', ReservationItem::RESERVEANITEM);
+Session::checkRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM]);
 
 if (!isset($_REQUEST["action"])) {
     exit;
@@ -46,6 +46,8 @@ if ($_REQUEST["action"] == "get_events") {
     echo json_encode(Reservation::getEvents($_REQUEST));
     exit;
 }
+
+Session::checkRight('reservation', ReservationItem::RESERVEANITEM);
 
 if ($_REQUEST["action"] == "get_resources") {
     header("Content-Type: application/json; charset=UTF-8");

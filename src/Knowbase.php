@@ -152,6 +152,7 @@ class Knowbase extends CommonGLPI
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/knowbase.php";
         $loading_txt = __s('Loading...');
         $start       = (int)($_REQUEST['start'] ?? 0);
+        $cat_id      = (int)($_SESSION['kb_cat_id'] ?? 0);
 
         $category_list = json_encode(self::getTreeCategoryList());
         $no_cat_found  = __s("No category found");
@@ -201,7 +202,8 @@ class Knowbase extends CommonGLPI
                   'start': $start
                });
             };
-            loadNode(0);
+            loadNode($cat_id);
+            $.ui.fancytree.getTree("#tree_category$rand").activateKey($cat_id);
 
             $(document).on('keyup', '#browser_tree_search$rand', function() {
                var search_text = $(this).val();

@@ -356,11 +356,13 @@ window.GLPI.Debug = new class Debug {
     }
 
     showDebugToolbar() {
+        $('.debug-logo').prop('disabled', true);
         $('.debug-toolbar-content').removeClass('d-none');
         $('#debug-toolbar').addClass('w-100').css('width', null);
     }
 
     hideDebugToolbar() {
+        $('.debug-logo').prop('disabled', false);
         $('.debug-toolbar-content').addClass('d-none');
         $('#debug-toolbar-expanded-content').addClass('d-none');
         $('#debug-toolbar').removeClass('w-100').css('width', 'fit-content');
@@ -371,10 +373,10 @@ window.GLPI.Debug = new class Debug {
         const toggle_icon = $('#debug-toolbar .debug-toolbar-controls button[name="toggle_content_area"] i');
         if (content_area.hasClass('d-none') || force_show) {
             content_area.removeClass('d-none');
-            toggle_icon.removeClass('ti-square-arrow-down').addClass('ti-square-arrow-up');
+            toggle_icon.removeClass('ti-square-arrow-up').addClass('ti-square-arrow-down');
         } else {
             content_area.addClass('d-none');
-            toggle_icon.removeClass('ti-square-arrow-up').addClass('ti-square-arrow-down');
+            toggle_icon.removeClass('ti-square-arrow-down').addClass('ti-square-arrow-up');
         }
     }
 
@@ -390,15 +392,24 @@ window.GLPI.Debug = new class Debug {
     }
 
     refreshWidgetButtons() {
-        const server_performance_button = this.getWidgetButton('server_performance');
+        // Server performance
         const server_perf = this.initial_request.server_performance;
         const memory_usage_mio = (server_perf.memory_usage / 1024 / 1024).toFixed(2);
-        server_performance_button.find('.debug-text').text(`${server_perf.execution_time}ms | ${memory_usage_mio}mio`);
+        const server_performance_button_label = `${server_perf.execution_time} <span class="text-muted"> ms using </span> ${memory_usage_mio} <span class="text-muted"> MB </span>`;
+        this.getWidgetButton('server_performance').find('.debug-text').html(server_performance_button_label);
 
-        const ajax_requests_button = this.getWidgetButton('ajax_requests');
-        ajax_requests_button.find('.debug-text').text(this.ajax_requests.length);
+        // Database performance
+        const sql_data = this.getCombinedSQLData();
+        const database_button_label = `${sql_data.total_requests} <span class="text-muted"> requests </span>`;
+        this.getWidgetButton('sql').find('.debug-text').html(database_button_label);
 
-        this.getWidgetButton('requests').find('.debug-text').text('Requests');
+        // Requests
+        this.getWidgetButton('requests').find('.debug-text').html(`${this.ajax_requests.length} <span class="text-muted"> requests </span>`);
+
+        // Client performances
+        const dom_timing = window.performance.getEntriesByType('navigation')[0].domComplete;
+        const client_performance_button_label = `${dom_timing} <span class="text-muted"> ms </span>`;
+        this.getWidgetButton('client_performance').find('.debug-text').html(client_performance_button_label);
     }
 
     showWidget(widget_id, refresh = false, content_area = undefined, data = {}) {
@@ -407,8 +418,8 @@ window.GLPI.Debug = new class Debug {
             // if there is a button in the toolbar for this widget, make it active
             const widget_button = this.getWidgetButton(widget_id);
             if (widget_button.length > 0) {
-                $('#debug-toolbar .debug-toolbar-widgets .debug-toolbar-widget button').removeClass('active');
-                widget_button.find('button').addClass('active');
+                $('#debug-toolbar .debug-toolbar-widgets .debug-toolbar-widget').removeClass('active');
+                widget_button.addClass('active');
             }
         }
         content_area.data('active-widget', widget_id);
@@ -450,7 +461,7 @@ window.GLPI.Debug = new class Debug {
             content_area.empty();
 
             content_area.append(`
-                <h1>${_x('debug', 'Server performance')}</h1>
+                <h1>Server performance</h1>
                 <table class="table">
                     <tbody></tbody>
                 </table>
@@ -472,14 +483,14 @@ window.GLPI.Debug = new class Debug {
         content_area.find('table tbody').empty().append(`
             <tr>
                 <td>
-                    ${_x('debug', 'Initial Execution Time')}: ${this.initial_request.server_performance.execution_time}ms
+                    Initial Execution Time: ${this.initial_request.server_performance.execution_time}ms
                     <br>
-                    ${_x('debug', 'Total Execution Time')}: ${total_execution_time}ms
+                    Total Execution Time: ${total_execution_time}ms
                 </td>
                 <td>
-                    ${_x('debug', 'Memory Usage')}: ${memory_usage_mio}mio / ${memory_limit_mio}mio
+                    Memory Usage: ${memory_usage_mio}mio / ${memory_limit_mio}mio
                     <br>
-                    ${_x('debug', 'Memory Peak')}: ${memory_peak_mio}mio / ${memory_limit_mio}mio
+                    Memory Peak: ${memory_peak_mio}mio / ${memory_limit_mio}mio
                 </td>
             </tr>
         `);
@@ -499,8 +510,8 @@ window.GLPI.Debug = new class Debug {
                    <table id="debug-sql-request-table" class="table card-table">
                       <thead>
                       <tr>
-                         ${filtered_request_id === undefined ? `<th>${_x('debug', 'Request ID')}</th>` : ''}
-                         <th>${_x('debug', 'Number')}</th><th>${_x('debug', 'Query')}</th><th>${_x('debug', 'Time')}</th><th>${_x('debug', 'Rows')}</th><th>${_x('debug', 'Warnings')}</th><th>${_x('debug', 'Errors')}</th>
+                         ${filtered_request_id === undefined ? '<th>Request ID</th>' : ''}
+                         <th>Number</th><th>Query</th><th>Time</th><th>Rows</th><th>Warnings</th><th>Errors</th>
                       </tr>
                       </thead>
                       <tbody></tbody>
@@ -556,10 +567,10 @@ window.GLPI.Debug = new class Debug {
                 }
             });
             content_area.find('h1').first()
-                .text(`${_x('debug', '%1 Queries took %2ms', 'glpi', total_requests, total_duration)}`);
+                .text(`${total_requests} Queries took ${total_duration}`);
         } else {
             content_area.find('h1').first()
-                .text(`${_x('debug', '%1 Queries took %2ms', 'glpi', sql_data.total_requests, sql_data.total_duration)}`);
+                .text(`${sql_data.total_requests} Queries took ${sql_data.total_duration}`);
         }
 
         if (sql_table.data('sort')) {
@@ -570,7 +581,7 @@ window.GLPI.Debug = new class Debug {
     showGlobals(content_area) {
         const appendGlobals = (data, container) => {
             if (data === undefined || data === null) {
-                container.append(`${_x('debug', 'Empty array')}`);
+                container.append('Empty array');
                 return;
             }
 
@@ -579,7 +590,7 @@ window.GLPI.Debug = new class Debug {
                 data_string = JSON.stringify(data, null, ' ');
             } catch (e) {
                 if (typeof data !== 'string') {
-                    container.append(`${_x('debug', 'Empty array')}`);
+                    container.append('Empty array');
                     return;
                 }
             }
@@ -607,7 +618,7 @@ window.GLPI.Debug = new class Debug {
                      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugsession${rand}">SESSION</a></li>
                      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugserver${rand}">SERVER</a></li>
                   </ul>
-            
+
                   <div class="card-body overflow-auto p-1">
                      <div class="tab-content">
                         <div id="debugpost${rand}" class="cm-s-default tab-pane active"></div>
@@ -645,11 +656,11 @@ window.GLPI.Debug = new class Debug {
         const resource_timings = window.performance.getEntriesByType('resource');
 
         let paint_timing = paint_timings.filter((timing) => timing.name === 'first-paint');
-        let paint_timing_label = _x('debug', 'Time to first paint');
+        let paint_timing_label = 'Time to first paint';
         if (paint_timing.length === 0) {
             // Firefox doesn't have first-paint for whatever reason
             paint_timing = paint_timings.filter((timing) => timing.name === 'first-contentful-paint');
-            paint_timing_label = _x('debug', 'Time to first contentful paint');
+            paint_timing_label = 'Time to first contentful paint';
         }
         const time_to_first_paint = paint_timing.length > 0 ? paint_timing[0].startTime : -1;
         const time_to_dom_interactive = nav_timings.domInteractive;
@@ -662,18 +673,18 @@ window.GLPI.Debug = new class Debug {
         content_area.append(`
             <table class="table">
                 <tbody>
-                    <tr><th colspan="4">${_x('debug', 'Timings')}</th></tr>
+                    <tr><th colspan="4">Timings</th></tr>
                     <tr>
                         <th>${paint_timing_label}</th><td>${time_to_first_paint.toFixed(2)}ms</td>
-                        <th>${_x('debug', 'Time to DOM interactive')}</th><td>${time_to_dom_interactive.toFixed(2)}ms</td>
+                        <th>Time to DOM interactive</th><td>${time_to_dom_interactive.toFixed(2)}ms</td>
                     </tr>
                     <tr>
-                        <th>${_x('debug', 'Time to DOM complete')}</th><td>${time_to_dom_complete.toFixed(2)}ms</td>
+                        <th>Time to DOM complete</th><td>${time_to_dom_complete.toFixed(2)}ms</td>
                     </tr>
-                    <tr><th colspan="4">${_x('debug', 'Resource Loading')}</th></tr>
+                    <tr><th colspan="4">Resource Loading</th></tr>
                     <tr>
-                        <th>${_x('debug', 'Total resources')}</th><td>${total_resources}</td>
-                        <th>${_x('debug', 'Total resources size')}</th><td>${total_resources_size.toFixed(2)}mio</td>
+                        <th>Total resources</th><td>${total_resources}</td>
+                        <th>Total resources size</th><td>${total_resources_size.toFixed(2)}mio</td>
                     </tr>
                 </tbody>
             </table>
@@ -688,11 +699,11 @@ window.GLPI.Debug = new class Debug {
             content_area.find('tbody').append(`
                 <tr><th colspan="4">Memory</th></tr>
                 <tr>
-                    <th>${_x('debug', 'Used JS Heap')}</th><td>${used_heap.toFixed(2)}mio</td>
-                    <th>${_x('debug', 'Total JS Heap')}</th><td>${total_heap.toFixed(2)}mio</td>
+                    <th>Used JS Heap</th><td>${used_heap.toFixed(2)}mio</td>
+                    <th>Total JS Heap</th><td>${total_heap.toFixed(2)}mio</td>
                 </tr>
                 <tr>
-                    <th>${_x('debug', 'JS Heap Limit')}</th><td>${heap_limit.toFixed(2)}mio</td>
+                    <th>JS Heap Limit</th><td>${heap_limit.toFixed(2)}mio</td>
                 </tr>
             `);
         }
@@ -736,12 +747,12 @@ window.GLPI.Debug = new class Debug {
                 <thead>
                     <tr>
                        ${'<th style="min-width: 2rem"></th>'.repeat(nest_level)}
-                       <th>${_x('debug', 'Category')}</th>
-                       <th>${_x('debug', 'Name')}</th>
-                       <th>${_x('debug', 'Start')}</th>
-                       <th>${_x('debug', 'End')}</th>
-                       <th>${_x('debug', 'Duration')}</th>
-                       <th>${_x('debug', 'Percent of parent')}</th>
+                       <th>Category</th>
+                       <th>Name</th>
+                       <th>Start</th>
+                       <th>End</th>
+                       <th>Duration</th>
+                       <th>Percent of parent</th>
                    </tr>
                 </thead>
                 <tbody>
@@ -794,7 +805,7 @@ window.GLPI.Debug = new class Debug {
         content_area.append(`
             <div>
                <label>
-                 ${_x('debug', 'Hide near-instant sections')} (&lt;=1ms):
+                 Hide near-instant sections (&lt;=1ms):
                  <input type="checkbox" name="hide_instant_sections">
                </label>
             </div>
@@ -874,11 +885,11 @@ window.GLPI.Debug = new class Debug {
                             <table id="debug-requests-table" class="table table-hover mb-1">
                                 <thead>
                                     <tr>
-                                        <th>${_x('debug', 'Number')}</th>
-                                        <th style="max-width: 200px; white-space: pre-wrap;">${_x('debug', 'URL')}</th>
-                                        <th>${_x('debug', 'Status')}</th>
-                                        <th>${_x('debug', 'Type')}</th>
-                                        <th>${_x('debug', 'Duration')}</th>
+                                        <th>Number</th>
+                                        <th style="max-width: 200px; white-space: pre-wrap;">URL</th>
+                                        <th>Status</th>
+                                        <th>Type</th>
+                                        <th>Duration</th>
                                     </tr>
                                 </thead>
                                 <tbody style="white-space: nowrap">
@@ -891,19 +902,19 @@ window.GLPI.Debug = new class Debug {
                         <div id="debugpanel${rand}" class="p-0 mt-n1">
                             <ul class="nav nav-tabs" data-bs-toggle="tabs">
                                 <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="request_summary">${_x('debug', 'Summary')}</button>
+                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="request_summary">Summary</button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="sql">${_x('debug', 'SQL')}</button>
+                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="sql">SQL</button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="globals">${_x('debug', 'Globals')}</button>
+                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="globals">Globals</button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="profiler">${_x('debug', 'Profiler')}</button>
+                                    <button class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="profiler">Profiler</button>
                                 </li>
                             </ul>
-                
+
                             <div class="card-body overflow-auto p-1">
                                 <div class="tab-content request-details-content-area">
                                 </div>
@@ -1031,9 +1042,9 @@ window.GLPI.Debug = new class Debug {
         content_area.empty();
         content_area.append(`
             <div class="alert alert-danger">
-            <span>${__('No debug data was found for this request immediately after it finished. Some requests like /front/locale.php will never have data as they intentionally close the session.')}</span>
+            <span>No debug data was found for this request immediately after it finished. Some requests like /front/locale.php will never have data as they intentionally close the session.</span>
             </div>
-            <button type="button" class="btn btn-primary" data-request-id="${request_id}"><i class="ti ti-reload"></i>${__('Retry')}</button>
+            <button type="button" class="btn btn-primary" data-request-id="${request_id}"><i class="ti ti-reload"></i>Retry</button>
         `);
         content_area.find('button').on('click', (e) => {
             const btn = $(e.currentTarget);
@@ -1063,24 +1074,24 @@ window.GLPI.Debug = new class Debug {
             total_sql_duration += parseFloat(query['time']);
         });
         content_area.append(`
-            <h1>${_x('debug', 'Request Summary')} (${profile.id})</h1>
+            <h1>Request Summary (${profile.id})</h1>
             <table class="table">
                 <tbody>
                     <tr>
                         <td>
-                            ${_x('debug', 'Initial Execution Time')}: ${total_execution_time}ms
+                            Initial Execution Time: ${total_execution_time}ms
                         </td>
                         <td>
-                            ${_x('debug', 'Memory Usage')}: ${memory_usage_mio}mio / ${memory_limit_mio}mio
+                            Memory Usage: ${memory_usage_mio}mio / ${memory_limit_mio}mio
                             <br>
-                            ${_x('debug', 'Memory Peak')}: ${memory_peak_mio}mio / ${memory_limit_mio}mio
+                            Memory Peak: ${memory_peak_mio}mio / ${memory_limit_mio}mio
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            ${_x('debug', 'SQL Requests')}: ${total_sql_queries}
+                            SQL Requests: ${total_sql_queries}
                             <br>
-                            ${_x('debug', 'SQL Duration')}: ${total_sql_duration}ms
+                            SQL Duration: ${total_sql_duration}ms
                         </td>
                     </tr>
                 </tbody>

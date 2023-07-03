@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-22 13:46+0000\n"
+"POT-Creation-Date: 2023-07-03 08:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr ""
 msgid "\"Migration cleaner\" tool"
 msgstr ""
 
-#: src/Agent.php:492
+#: src/Agent.php:499
 msgid "\"deviceid\" is mandatory!"
 msgstr ""
 
@@ -58,11 +58,6 @@ msgstr ""
 msgid "%.1f Gbit/s"
 msgstr ""
 
-#: js/modules/Debug/Debug.js:559 js/modules/Debug/Debug.js:562
-msgctxt "debug"
-msgid "%1 Queries took %2ms"
-msgstr ""
-
 #: src/DatabaseInstance.php:595
 #, php-format
 msgid "%1$d database"
@@ -77,7 +72,7 @@ msgid_plural "%1$d days %2$dh%3$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:4351
+#: src/Html.php:4352
 #, php-format
 msgid "%1$d on %2$d"
 msgstr ""
@@ -105,12 +100,12 @@ msgstr ""
 #. TRANS: %1$s is a number maybe float or string and %2$s the unit
 #: templates/components/search/map.html.twig src/Dropdown.php:582
 #: src/Dropdown.php:944 src/Dropdown.php:1885
-#: src/Search/Provider/SQLProvider.php:4715
-#: src/Search/Provider/SQLProvider.php:4767
-#: src/Search/Provider/SQLProvider.php:4820
-#: src/Search/Provider/SQLProvider.php:4867
-#: src/Search/Provider/SQLProvider.php:5328
-#: src/Search/Provider/SQLProvider.php:5637
+#: src/Search/Provider/SQLProvider.php:4729
+#: src/Search/Provider/SQLProvider.php:4781
+#: src/Search/Provider/SQLProvider.php:4834
+#: src/Search/Provider/SQLProvider.php:4881
+#: src/Search/Provider/SQLProvider.php:5342
+#: src/Search/Provider/SQLProvider.php:5651
 #: src/Search/Output/PDFSearchOutput.php:99
 #: src/Search/Output/PDFSearchOutput.php:103
 #: src/Search/Output/PDFSearchOutput.php:117
@@ -125,7 +120,7 @@ msgstr ""
 #: src/Search/Output/PDFSearchOutput.php:342
 #: src/Search/Output/PDFSearchOutput.php:345 src/Log.php:731 src/Log.php:749
 #: src/Project.php:1335 src/Project.php:1369 src/Item_Devices.php:299
-#: src/UserEmail.php:189 src/Html.php:123 src/Html.php:4357
+#: src/UserEmail.php:189 src/Html.php:123 src/Html.php:4358
 #: src/ProjectCost.php:403 src/Rule.php:2011 src/Rule.php:2058
 #: src/AuthLDAP.php:1159 src/AuthLDAP.php:1168 src/AuthLDAP.php:1177
 #: src/AuthLDAP.php:3906 src/AuthLDAP.php:3911 src/AuthLDAP.php:3916
@@ -136,7 +131,7 @@ msgstr ""
 #: src/CommonItilObject_Item.php:1423 src/CommonITILCost.php:647
 #: src/Toolbox.php:814 src/Contact_Supplier.php:336 src/Group.php:538
 #: src/Group.php:546 src/CommonGLPI.php:764 src/Auth.php:1763 src/Auth.php:1769
-#: src/Auth.php:1775 src/CommonDBTM.php:3657 src/ProjectTask.php:1134
+#: src/Auth.php:1775 src/CommonDBTM.php:3663 src/ProjectTask.php:1134
 #: src/ProjectTask_Ticket.php:495 src/ProjectTask_Ticket.php:510
 #: src/CommonITILObject.php:6438 src/CommonITILObject.php:6525
 #: src/CommonITILObject.php:6558 src/CommonITILObject.php:6685
@@ -148,7 +143,7 @@ msgstr ""
 #: src/CronTask.php:937 src/Contract_Item.php:107 src/Contract_Item.php:393
 #: src/Change.php:1340 src/Change.php:1538 src/Change.php:1577
 #: src/Problem.php:1032 src/Problem.php:1231 src/Problem.php:1270
-#: src/Ticket.php:4710 src/Ticket.php:5181 src/Ticket.php:5242
+#: src/Ticket.php:4710 src/Ticket.php:5193 src/Ticket.php:5254
 #, php-format
 msgid "%1$s %2$s"
 msgstr ""
@@ -158,7 +153,7 @@ msgstr ""
 msgid "%1$s %2$s (%3$s)"
 msgstr ""
 
-#: src/CommonITILObject.php:9780
+#: src/CommonITILObject.php:9784
 #, php-format
 msgid "%1$s (#%2$s) - %3$s"
 msgstr ""
@@ -177,16 +172,16 @@ msgstr ""
 #: src/Dropdown.php:650 src/Dropdown.php:3057 src/Dropdown.php:3416
 #: src/Dropdown.php:3635 src/Dropdown.php:3804 src/DbUtils.php:1603
 #: src/Change_Item.php:181 src/MailCollector.php:1686
-#: src/MailCollector.php:1700 src/Search/Provider/SQLProvider.php:4928
-#: src/Search/Provider/SQLProvider.php:5324
-#: src/Search/Provider/SQLProvider.php:5586
+#: src/MailCollector.php:1700 src/Search/Provider/SQLProvider.php:4942
+#: src/Search/Provider/SQLProvider.php:5338
+#: src/Search/Provider/SQLProvider.php:5600
 #: src/NotificationTargetProjectTask.php:640
 #: src/NotificationTargetProjectTask.php:645 src/Item_DeviceHardDrive.php:51
 #: src/KnowbaseItem_KnowbaseItemCategory.php:244 src/Log.php:178
 #: src/Log.php:186 src/Log.php:431 src/Log.php:565 src/Log.php:582
 #: src/Log.php:618 src/Log.php:631 src/Log.php:643 src/Log.php:655
 #: src/Log.php:667 src/SoftwareVersion.php:286
-#: src/ComputerVirtualMachine.php:300 src/Html.php:5492
+#: src/ComputerVirtualMachine.php:300 src/Html.php:5493
 #: src/Document_Item.php:471 src/ProjectCost.php:396 src/Rule.php:2408
 #: src/IPNetwork_Vlan.php:184 src/Document.php:461 src/Document.php:497
 #: src/Document.php:1077 src/User.php:3848 src/User.php:3906 src/User.php:5061
@@ -197,19 +192,19 @@ msgstr ""
 #: src/CommonItilObject_Item.php:873 src/CommonItilObject_Item.php:941
 #: src/CommonItilObject_Item.php:946 src/CommonItilObject_Item.php:1008
 #: src/NetworkAlias.php:340 src/RuleCollection.php:1344 src/Group_User.php:560
-#: src/Group_User.php:662 src/CommonITILCost.php:635 src/Computer_Item.php:425
+#: src/Group_User.php:662 src/CommonITILCost.php:635 src/Computer_Item.php:431
 #: src/NetworkPort_Vlan.php:189 src/NetworkPort_Vlan.php:286
 #: src/ITILTemplateMandatoryField.php:206
-#: src/ITILTemplateMandatoryField.php:208 src/Inventory/Asset/Software.php:810
+#: src/ITILTemplateMandatoryField.php:208 src/Inventory/Asset/Software.php:814
 #: src/GLPIPDF.php:175 src/Item_Problem.php:175 src/Item_Project.php:175
 #: src/Supplier.php:552 src/KnowbaseItem_Item.php:225
 #: src/Item_SoftwareVersion.php:780 src/Item_SoftwareVersion.php:819
 #: src/Item_SoftwareVersion.php:1409 src/Item_SoftwareVersion.php:1462
 #: src/Item_SoftwareVersion.php:1537 src/Item_SoftwareVersion.php:1551
-#: src/Item_DeviceGraphicCard.php:52 src/CommonDBTM.php:3736
-#: src/CommonDBTM.php:5253 src/NetworkEquipment.php:430 src/Session.php:460
+#: src/Item_DeviceGraphicCard.php:52 src/CommonDBTM.php:3742
+#: src/CommonDBTM.php:5259 src/NetworkEquipment.php:430 src/Session.php:460
 #: src/Session.php:465 src/Session.php:472 src/Session.php:477
-#: src/Item_OperatingSystem.php:262 src/Appliance_Item.php:349
+#: src/Item_OperatingSystem.php:264 src/Appliance_Item.php:349
 #: src/Item_DeviceProcessor.php:52
 #: src/Console/Ldap/SynchronizeUsersCommand.php:277
 #: src/CommonITILObject.php:6429
@@ -233,7 +228,7 @@ msgstr ""
 #: src/Contract_Supplier.php:343 src/NotificationTargetProject.php:749
 #: src/NotificationTargetProject.php:750 src/RuleMailCollector.php:200
 #: src/RuleMailCollector.php:208 src/Cartridge.php:870 src/Ticket.php:4701
-#: src/Ticket.php:5233 src/Database.php:111 src/Database.php:307
+#: src/Ticket.php:5245 src/Database.php:111 src/Database.php:307
 #: src/Database.php:459 ajax/dropdownConnectNetworkPort.php:147
 #: ajax/dropdownConnectNetworkPort.php:148 ajax/dropdownSoftwareLicense.php:70
 #: ajax/dropdownInstallVersion.php:82
@@ -265,10 +260,10 @@ msgstr ""
 #: src/State.php:416 src/State.php:428 src/State.php:440 src/State.php:452
 #: src/State.php:464 src/State.php:476 src/State.php:488 src/State.php:500
 #: src/State.php:512 src/State.php:524 src/State.php:536
-#: src/Search/Provider/SQLProvider.php:4802
-#: src/Search/Provider/SQLProvider.php:4849
+#: src/Search/Provider/SQLProvider.php:4816
+#: src/Search/Provider/SQLProvider.php:4863
 #: src/Search/Output/ExportSearchOutput.php:243 src/SoftwareVersion.php:289
-#: src/Html.php:1057 src/Document_Item.php:455 src/RuleCommonITILObject.php:840
+#: src/Html.php:1058 src/Document_Item.php:455 src/RuleCommonITILObject.php:840
 #: src/RuleCommonITILObject.php:848 src/RuleCommonITILObject.php:857
 #: src/RuleCommonITILObject.php:866 src/RuleCommonITILObject.php:875
 #: src/CommonItilObject_Item.php:788 src/CommonItilObject_Item.php:791
@@ -278,22 +273,22 @@ msgstr ""
 #: src/CommonItilObject_Item.php:1012 src/NotificationTargetContract.php:60
 #: src/NotificationTargetContract.php:128 src/RuleCollection.php:2224
 #: src/CommonITILCost.php:266 src/Stat.php:1662
-#: src/Inventory/Asset/Software.php:920 src/Inventory/Asset/Software.php:947
-#: src/Inventory/Asset/Software.php:978 src/Inventory/Asset/Software.php:987
+#: src/Inventory/Asset/Software.php:924 src/Inventory/Asset/Software.php:951
+#: src/Inventory/Asset/Software.php:982 src/Inventory/Asset/Software.php:991
 #: src/NetworkPortInstantiation.php:599 src/NetworkPortInstantiation.php:819
-#: src/NetworkPortInstantiation.php:857 src/IPNetwork.php:1170
-#: src/Item_SoftwareVersion.php:690 src/CommonDBTM.php:3640
-#: src/CommonDBTM.php:3644 src/CommonDBTM.php:3650 src/CommonDBTM.php:3741
-#: src/CommonDBTM.php:4417 src/CommonDBTM.php:4423 src/CommonDBTM.php:5542
-#: src/CommonDBTM.php:6387 src/CommonDBTM.php:6403 src/ReservationItem.php:411
+#: src/NetworkPortInstantiation.php:858 src/IPNetwork.php:1170
+#: src/Item_SoftwareVersion.php:690 src/CommonDBTM.php:3646
+#: src/CommonDBTM.php:3650 src/CommonDBTM.php:3656 src/CommonDBTM.php:3747
+#: src/CommonDBTM.php:4423 src/CommonDBTM.php:4429 src/CommonDBTM.php:5548
+#: src/CommonDBTM.php:6393 src/CommonDBTM.php:6409 src/ReservationItem.php:411
 #: src/ReservationItem.php:709 src/ReservationItem.php:832
 #: src/IPAddress.php:251 src/Consumable.php:890 src/CommonITILObject.php:6432
 #: src/NotificationTargetCommonITILObject.php:1106 src/Contract.php:810
 #: src/Contract.php:823 src/Contract.php:836 src/Contract.php:849
 #: src/Contract.php:1508 src/Contract.php:1509 src/Reservation.php:445
-#: src/Reservation.php:740 src/CartridgeItem.php:566 src/CartridgeItem.php:568
+#: src/Reservation.php:742 src/CartridgeItem.php:566 src/CartridgeItem.php:568
 #: src/Infocom.php:544 src/Item_SoftwareLicense.php:825 src/Vlan.php:175
-#: src/Cartridge.php:1168 src/Ticket.php:4704 src/Ticket.php:5236
+#: src/Cartridge.php:1168 src/Ticket.php:4704 src/Ticket.php:5248
 #: ajax/private_public.php:54 ajax/dropdownConnectNetworkPort.php:133
 #: ajax/dropdownConnectNetworkPort.php:140 ajax/dropdownValidator.php:111
 #: ajax/dropdownInstallVersion.php:85
@@ -301,15 +296,15 @@ msgstr ""
 msgid "%1$s - %2$s"
 msgstr ""
 
-#: src/DBmysql.php:487 src/DBmysql.php:1400 src/DBmysql.php:1530
-#: src/DBmysql.php:1639 src/DBmysql.php:1689
+#: src/DBmysql.php:488 src/DBmysql.php:1406 src/DBmysql.php:1536
+#: src/DBmysql.php:1645 src/DBmysql.php:1695
 #, php-format
 msgid "%1$s - Error during the database query: %2$s - Error is %3$s"
 msgstr ""
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: src/SavedSearch.php:411 src/CommonItilObject_Item.php:1346
-#: src/CommonGLPI.php:1192 src/CommonDBTM.php:1473 src/CommonDBTM.php:1916
+#: src/CommonGLPI.php:1192 src/CommonDBTM.php:1479 src/CommonDBTM.php:1922
 #: src/CommonITILObject.php:429
 #, php-format
 msgid "%1$s - ID %2$d"
@@ -387,7 +382,7 @@ msgstr ""
 #: src/Calendar_Holiday.php:159 src/SlaLevel.php:156 src/Item_Project.php:209
 #: src/Supplier.php:588 src/OlaLevel.php:160 src/Item_SoftwareVersion.php:698
 #: src/Item_SoftwareVersion.php:1061 src/Item_SoftwareVersion.php:1071
-#: src/CommonDBTM.php:4369 src/ComputerAntivirus.php:338
+#: src/CommonDBTM.php:4375 src/ComputerAntivirus.php:338
 #: src/Appliance_Item.php:136 src/Appliance_Item.php:326
 #: src/NetworkName.php:848 src/DCRoom.php:439 src/ProjectTask.php:1101
 #: src/ProjectTask_Ticket.php:219 src/ProjectTask_Ticket.php:461
@@ -489,7 +484,7 @@ msgstr ""
 msgid "%1$s adds the license %2$s"
 msgstr ""
 
-#: front/reservation.form.php:148
+#: front/reservation.form.php:149
 #, php-format
 msgid "%1$s adds the reservation %2$s for item %3$s"
 msgstr ""
@@ -586,7 +581,7 @@ msgstr ""
 msgid "%1$s of item \"%2$s\""
 msgstr ""
 
-#: src/NetworkPortInstantiation.php:946
+#: src/NetworkPortInstantiation.php:947
 #, php-format
 msgid "%1$s on %2$s"
 msgstr ""
@@ -641,7 +636,7 @@ msgid "%1$s restart rate is too high"
 msgstr ""
 
 #. TRANS: %1$s is the user login, %2$s the revision number
-#: src/KnowbaseItem.php:2557
+#: src/KnowbaseItem.php:2561
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
 msgstr ""
@@ -690,12 +685,12 @@ msgid_plural "%1$s templates"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/CommonDBTM.php:4562
+#: src/CommonDBTM.php:4568
 #, php-format
 msgid "%1$s trying to add an item that already exists: %2$s"
 msgstr ""
 
-#: src/CommonITILObject.php:8449
+#: src/CommonITILObject.php:8453
 #, php-format
 msgid "%1$s updates the item %2$s"
 msgstr ""
@@ -758,10 +753,10 @@ msgstr ""
 #. TRANS: letter 'D' for Dynamic
 #. TRANS: letter 'R' for Recursive
 #: templates/components/form/fields_macros.html.twig
-#: src/Search/Provider/SQLProvider.php:4813
-#: src/Search/Provider/SQLProvider.php:4817
-#: src/Search/Provider/SQLProvider.php:4860
-#: src/Search/Provider/SQLProvider.php:4864 src/Profile_User.php:238
+#: src/Search/Provider/SQLProvider.php:4827
+#: src/Search/Provider/SQLProvider.php:4831
+#: src/Search/Provider/SQLProvider.php:4874
+#: src/Search/Provider/SQLProvider.php:4878 src/Profile_User.php:238
 #: src/Profile_User.php:241 src/Profile_User.php:245 src/Profile_User.php:247
 #: src/Profile_User.php:430 src/Profile_User.php:433 src/Profile_User.php:436
 #: src/Profile_User.php:438 src/Profile_User.php:632 src/Profile_User.php:635
@@ -838,9 +833,9 @@ msgstr ""
 #: src/NotificationTargetProjectTask.php:630
 #: src/NotificationTargetProjectTask.php:635
 #: src/NotificationTargetProjectTask.php:650
-#: src/NotificationTargetProjectTask.php:655 src/KnowbaseItem.php:996
-#: src/KnowbaseItem.php:1191 src/KnowbaseItem.php:1269
-#: src/KnowbaseItem.php:1856 src/Log.php:413 src/Log.php:430 src/Log.php:446
+#: src/NotificationTargetProjectTask.php:655 src/KnowbaseItem.php:1000
+#: src/KnowbaseItem.php:1195 src/KnowbaseItem.php:1273
+#: src/KnowbaseItem.php:1860 src/Log.php:413 src/Log.php:430 src/Log.php:446
 #: src/Log.php:459 src/Log.php:472 src/Log.php:478 src/Log.php:484
 #: src/Log.php:497 src/Log.php:510 src/Log.php:523 src/Log.php:563
 #: src/Log.php:568 src/Log.php:580 src/Log.php:591 src/Log.php:599
@@ -878,9 +873,9 @@ msgstr ""
 #: src/Auth.php:1241 src/Auth.php:1247 src/Auth.php:1249 src/Auth.php:1256
 #: src/Auth.php:1273 src/Auth.php:1290 src/Item_Problem.php:189
 #: src/Item_Project.php:189 src/Supplier.php:525 src/Supplier.php:566
-#: src/CommonDBTM.php:1485 src/CommonDBTM.php:1928 src/CommonDBTM.php:2163
-#: src/CommonDBTM.php:2204 src/CommonDBTM.php:2323 src/CommonDBTM.php:3538
-#: src/CommonDBTM.php:4305 src/CommonDBTM.php:4413 src/Plugin.php:2473
+#: src/CommonDBTM.php:1491 src/CommonDBTM.php:1934 src/CommonDBTM.php:2169
+#: src/CommonDBTM.php:2210 src/CommonDBTM.php:2329 src/CommonDBTM.php:3544
+#: src/CommonDBTM.php:4311 src/CommonDBTM.php:4419 src/Plugin.php:2473
 #: src/Plugin.php:2503 src/Domain.php:656 src/NotificationTargetTicket.php:581
 #: src/NotificationTargetTicket.php:586 src/NotificationTargetTicket.php:591
 #: src/NotificationTargetTicket.php:596 src/NotificationTargetTicket.php:601
@@ -901,7 +896,7 @@ msgstr ""
 #: src/ProjectTask.php:1631 src/Certificate.php:785
 #: src/Console/Ldap/SynchronizeUsersCommand.php:165
 #: src/Console/Ldap/SynchronizeUsersCommand.php:192 src/IPAddress.php:140
-#: src/CommonITILObject.php:6481 src/CommonITILObject.php:10053
+#: src/CommonITILObject.php:6481 src/CommonITILObject.php:10057
 #: src/NotificationTargetMailCollector.php:91
 #: src/NotificationTargetCommonITILObject.php:1888
 #: src/NotificationTargetCommonITILObject.php:1995
@@ -976,8 +971,8 @@ msgstr ""
 #: src/NotificationTargetProject.php:741 src/NotificationTargetProject.php:742
 #: src/NotificationTargetProject.php:743 src/NotificationTargetProject.php:745
 #: src/NotificationTargetProject.php:752 src/NotificationTargetProject.php:757
-#: src/RuleMailCollector.php:128 src/Ticket.php:4646 src/Ticket.php:5162
-#: src/Ticket.php:5471 ajax/actorinformation.php:131
+#: src/RuleMailCollector.php:128 src/Ticket.php:4646 src/Ticket.php:5174
+#: src/Ticket.php:5483 ajax/actorinformation.php:131
 #: ajax/dropdownItilActors.php:128 ajax/dropdownItilActors.php:230
 #, php-format
 msgid "%1$s: %2$s"
@@ -1051,7 +1046,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANS: %d is the number of new tickets
-#: src/Ticket.php:4971
+#: src/Ticket.php:4983
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
@@ -1093,7 +1088,7 @@ msgid_plural "%d units"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/KnowbaseItem.php:1004 src/KnowbaseItem.php:1292
+#: src/KnowbaseItem.php:1008 src/KnowbaseItem.php:1296
 #, php-format
 msgid "%d view"
 msgid_plural "%d views"
@@ -1120,7 +1115,7 @@ msgstr[1] ""
 msgid "%d%%"
 msgstr ""
 
-#: src/CommonITILRecurrent.php:597
+#: src/CommonITILRecurrent.php:606
 #, php-format
 msgid "%s %d successfully created"
 msgstr ""
@@ -1150,12 +1145,12 @@ msgstr ""
 msgid "%s (copy)"
 msgstr ""
 
-#: src/Reservation.php:613
+#: src/Reservation.php:615
 #, php-format
 msgid "%s - %s"
 msgstr ""
 
-#: src/Project.php:2280 src/CommonITILObject.php:9318
+#: src/Project.php:2280 src/CommonITILObject.php:9322
 #, php-format
 msgid "%s / %s tasks complete"
 msgstr ""
@@ -1380,7 +1375,7 @@ msgstr ""
 msgid "%s associates an item and a license"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1215
+#: src/Dashboard/Grid.php:1183
 #, php-format
 msgid "%s by %s"
 msgstr ""
@@ -1391,12 +1386,12 @@ msgstr ""
 msgid "%s connects an item"
 msgstr ""
 
-#: src/CommonITILRecurrent.php:621
+#: src/CommonITILRecurrent.php:630
 #, php-format
 msgid "%s creation failed (check mandatory fields)"
 msgstr ""
 
-#: src/CommonITILRecurrent.php:627
+#: src/CommonITILRecurrent.php:636
 #, php-format
 msgid "%s creation failed (no template)"
 msgstr ""
@@ -1409,7 +1404,7 @@ msgid_plural "%s days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:6934
+#: src/Html.php:6935
 #, php-format
 msgid "%s days ago"
 msgstr ""
@@ -1549,7 +1544,7 @@ msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:6927
+#: src/Html.php:6928
 #, php-format
 msgid "%s hours ago"
 msgstr ""
@@ -1603,7 +1598,7 @@ msgstr ""
 msgid "%s makes a bad usage."
 msgstr ""
 
-#: src/Ticket.php:6221
+#: src/Ticket.php:6233
 #, php-format
 msgid "%s merges ticket %s into %s"
 msgstr ""
@@ -1624,7 +1619,7 @@ msgid_plural "%s minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:6924
+#: src/Html.php:6925
 #, php-format
 msgid "%s minutes ago"
 msgstr ""
@@ -2036,7 +2031,7 @@ msgstr ""
 msgid "%s was already promoted"
 msgstr ""
 
-#: src/Html.php:6937
+#: src/Html.php:6938
 #, php-format
 msgid "%s weeks ago"
 msgstr ""
@@ -2059,7 +2054,7 @@ msgstr ""
 msgid "%s-%s/%s"
 msgstr ""
 
-#: src/CommonITILObject.php:7291
+#: src/CommonITILObject.php:7293
 #, php-format
 msgid "%s: %s"
 msgstr ""
@@ -2076,7 +2071,7 @@ msgstr ""
 msgid "%s: send consumable alert failed"
 msgstr ""
 
-#: src/Search/Provider/SQLProvider.php:4463
+#: src/Search/Provider/SQLProvider.php:4477
 msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
@@ -2106,14 +2101,14 @@ msgstr ""
 msgid "(leave the field empty for a generation from HTML)"
 msgstr ""
 
-#: src/Html.php:3306 src/LevelAgreementLevel.php:293
+#: src/Html.php:3307 src/LevelAgreementLevel.php:293
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:3301 src/LevelAgreementLevel.php:279
+#: src/Html.php:3302 src/LevelAgreementLevel.php:279
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
@@ -2127,21 +2122,21 @@ msgid_plural "+ %d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:3318
+#: src/Html.php:3319
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:3310
+#: src/Html.php:3311
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:3326
+#: src/Html.php:3327
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
@@ -2152,42 +2147,42 @@ msgstr[1] ""
 msgid "+ sub-entities"
 msgstr ""
 
-#: src/Html.php:3265 src/LevelAgreementLevel.php:297
+#: src/Html.php:3266 src/LevelAgreementLevel.php:297
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:3256 src/LevelAgreementLevel.php:284
+#: src/Html.php:3257 src/LevelAgreementLevel.php:284
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:3260 src/LevelAgreementLevel.php:272
+#: src/Html.php:3261 src/LevelAgreementLevel.php:272
 #, php-format
 msgid "- %d minute"
 msgid_plural "- %d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:3287
+#: src/Html.php:3288
 #, php-format
 msgid "- %d month"
 msgid_plural "- %d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:3279
+#: src/Html.php:3280
 #, php-format
 msgid "- %d week"
 msgid_plural "- %d weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:3295
+#: src/Html.php:3296
 #, php-format
 msgid "- %d year"
 msgid_plural "- %d years"
@@ -2354,7 +2349,7 @@ msgstr ""
 msgid "A device ID is mandatory"
 msgstr ""
 
-#: src/Project.php:2533 src/CommonITILObject.php:9511
+#: src/Project.php:2533 src/CommonITILObject.php:9515
 msgctxt "filters"
 msgid "A group in the team of the item"
 msgstr ""
@@ -2398,7 +2393,7 @@ msgstr ""
 msgid "A pdu is required"
 msgstr ""
 
-#: src/Dashboard/Grid.php:862
+#: src/Dashboard/Grid.php:854
 msgid ""
 "A personal dashboard is not visible by other administrators unless you "
 "explicitly share the dashboard"
@@ -2434,12 +2429,12 @@ msgstr ""
 msgid "A side is required"
 msgstr ""
 
-#: src/Project.php:2537 src/CommonITILObject.php:9515
+#: src/Project.php:2537 src/CommonITILObject.php:9519
 msgctxt "filters"
 msgid "A supplier in the team of the item"
 msgstr ""
 
-#: src/Project.php:2525 src/CommonITILObject.php:9503
+#: src/Project.php:2525 src/CommonITILObject.php:9507
 msgctxt "filters"
 msgid "A team member for the item"
 msgstr ""
@@ -2448,7 +2443,7 @@ msgstr ""
 msgid "A user cannot be their own substitute."
 msgstr ""
 
-#: src/Project.php:2529 src/CommonITILObject.php:9507
+#: src/Project.php:2529 src/CommonITILObject.php:9511
 msgctxt "filters"
 msgid "A user in the team of the item"
 msgstr ""
@@ -2537,8 +2532,8 @@ msgstr ""
 msgid "Accepted mail archive folder (optional)"
 msgstr ""
 
-#: src/Html.php:526 src/Html.php:528 src/Html.php:530 src/Html.php:745
-#: src/Html.php:747 src/Html.php:749 src/Html.php:754 src/CommonDBTM.php:6366
+#: src/Html.php:526 src/Html.php:528 src/Html.php:530 src/Html.php:746
+#: src/Html.php:748 src/Html.php:750 src/Html.php:755 src/CommonDBTM.php:6372
 #: ajax/timeline.php:121 ajax/viewsubitem.php:60
 msgid "Access denied"
 msgstr ""
@@ -2587,8 +2582,8 @@ msgstr ""
 msgid "Account number"
 msgstr ""
 
-#: src/MailCollector.php:204 src/Html.php:2540 src/Rule.php:1169
-#: src/Inventory/Conf.php:896 src/RuleAction.php:103 src/RuleAction.php:752
+#: src/MailCollector.php:204 src/Html.php:2541 src/Rule.php:1169
+#: src/Inventory/Conf.php:898 src/RuleAction.php:103 src/RuleAction.php:752
 #: ajax/massiveaction.php:75
 msgid "Action"
 msgid_plural "Actions"
@@ -2730,9 +2725,9 @@ msgstr ""
 #: src/Item_SoftwareVersion.php:1250 src/CalendarSegment.php:368
 #: src/Appliance_Item.php:168 src/Appliance_Item.php:290
 #: src/ProjectTask.php:1264 src/RuleRight.php:69 src/Link_Itemtype.php:103
-#: src/AuthLdapReplicate.php:110 src/Dashboard/Grid.php:666
-#: src/Dashboard/Grid.php:784 src/Pdu_Plug.php:142 src/Calendar.php:117
-#: src/Reservation.php:840 src/Profile_User.php:160 src/Profile_User.php:308
+#: src/AuthLdapReplicate.php:110 src/Dashboard/Grid.php:658
+#: src/Dashboard/Grid.php:776 src/Pdu_Plug.php:142 src/Calendar.php:117
+#: src/Reservation.php:842 src/Profile_User.php:160 src/Profile_User.php:308
 #: src/Profile_User.php:532 src/ManualLink.php:254
 #: src/Notification_NotificationTemplate.php:303 src/Ticket_Contract.php:123
 #: src/Domain_Item.php:230 src/NetworkPort.php:780
@@ -2868,7 +2863,7 @@ msgid "Add a hidden field"
 msgstr ""
 
 #: src/Phone.php:213 src/Monitor.php:193 src/Printer.php:339
-#: src/SoftwareLicense.php:1001 src/Peripheral.php:178 src/Computer.php:362
+#: src/SoftwareLicense.php:1001 src/Peripheral.php:178 src/Computer.php:368
 #: src/NetworkEquipment.php:257
 msgctxt "button"
 msgid "Add a license"
@@ -2928,7 +2923,7 @@ msgstr ""
 msgid "Add a new criterion"
 msgstr ""
 
-#: src/Dashboard/Grid.php:304 js/dashboard.js:979
+#: src/Dashboard/Grid.php:296 js/dashboard.js:979
 msgid "Add a new dashboard"
 msgstr ""
 
@@ -3015,7 +3010,7 @@ msgstr ""
 msgid "Add a template"
 msgstr ""
 
-#: src/CommonDBTM.php:5301
+#: src/CommonDBTM.php:5307
 msgid "Add a template..."
 msgstr ""
 
@@ -3149,7 +3144,7 @@ msgstr ""
 msgid "Add external"
 msgstr ""
 
-#: src/Dashboard/Grid.php:303
+#: src/Dashboard/Grid.php:295
 msgid "Add filter"
 msgstr ""
 
@@ -3177,7 +3172,7 @@ msgstr ""
 msgid "Add group"
 msgstr ""
 
-#: src/KnowbaseItem.php:1014
+#: src/KnowbaseItem.php:1018
 msgid "Add link"
 msgstr ""
 
@@ -3222,7 +3217,7 @@ msgstr ""
 msgid "Add relation"
 msgstr ""
 
-#: js/reservations.js:229
+#: js/reservations.js:234
 msgid "Add reservation"
 msgstr ""
 
@@ -3341,7 +3336,7 @@ msgstr ""
 msgid "Addressable network"
 msgstr ""
 
-#: src/Html.php:1338 src/ReservationItem.php:964 src/Profile.php:169
+#: src/Html.php:1339 src/ReservationItem.php:964 src/Profile.php:169
 #: src/Profile.php:1888 src/Profile.php:2868
 msgid "Administration"
 msgstr ""
@@ -3418,7 +3413,7 @@ msgstr[1] ""
 msgid "Agent base URL"
 msgstr ""
 
-#: src/Inventory/Conf.php:882
+#: src/Inventory/Conf.php:884
 msgid "Agent cleanup"
 msgstr ""
 
@@ -3581,7 +3576,7 @@ msgstr ""
 msgid "All linked tickets"
 msgstr ""
 
-#: src/KnowbaseItem.php:1447
+#: src/KnowbaseItem.php:1451
 msgid "All my articles"
 msgstr ""
 
@@ -3609,7 +3604,7 @@ msgstr ""
 msgid "All plugins have been disabled."
 msgstr ""
 
-#: src/KnowbaseItem.php:1451
+#: src/KnowbaseItem.php:1455
 msgid "All published articles"
 msgstr ""
 
@@ -3621,7 +3616,11 @@ msgstr ""
 msgid "All sections"
 msgstr ""
 
-#: src/KnowbaseItem.php:1450
+#: templates/components/printer_graph_buttons.html.twig
+msgid "All time"
+msgstr ""
+
+#: src/KnowbaseItem.php:1454
 msgid "All unpublished articles"
 msgstr ""
 
@@ -3712,8 +3711,8 @@ msgstr ""
 #: src/Phone.php:290 src/Search/SearchOption.php:192 src/Monitor.php:262
 #: src/NotificationTargetProblem.php:209 src/Appliance.php:172
 #: src/Printer.php:407 src/Peripheral.php:247
-#: src/NotificationTargetChange.php:286 src/Computer.php:474
-#: src/CommonDBTM.php:3500 src/NetworkEquipment.php:326
+#: src/NotificationTargetChange.php:286 src/Computer.php:480
+#: src/CommonDBTM.php:3506 src/NetworkEquipment.php:326
 #: src/NotificationTargetTicket.php:641 src/Certificate.php:211
 #: src/Entity.php:2052 src/RuleAsset.php:117
 #: src/NotificationTargetProject.php:701
@@ -3724,14 +3723,14 @@ msgstr ""
 #: src/Search/SearchOption.php:197 src/Monitor.php:270
 #: src/NotificationTargetProblem.php:210 src/Appliance.php:180
 #: src/Printer.php:415 src/Peripheral.php:255
-#: src/NotificationTargetChange.php:287 src/Computer.php:482
-#: src/CommonDBTM.php:3506 src/NetworkEquipment.php:334
+#: src/NotificationTargetChange.php:287 src/Computer.php:488
+#: src/CommonDBTM.php:3512 src/NetworkEquipment.php:334
 #: src/NotificationTargetTicket.php:642 src/Certificate.php:219
 #: src/RuleAsset.php:119 src/NotificationTargetProject.php:702
 msgid "Alternate username number"
 msgstr ""
 
-#: src/Computer_Item.php:154 src/Computer.php:272
+#: src/Computer_Item.php:154 src/Computer.php:278
 msgid ""
 "Alternate username updated. The connected items have been updated using this "
 "alternate username."
@@ -3963,6 +3962,10 @@ msgstr ""
 msgid "Applied"
 msgstr ""
 
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Apply"
+msgstr ""
+
 #: src/ContentTemplates/Parameters/TicketParameters.php:79
 #: src/CommonITILValidation.php:104 src/Change.php:601
 msgid "Approval"
@@ -4038,11 +4041,11 @@ msgstr ""
 msgid "Approve"
 msgstr ""
 
-#: src/Ticket.php:5596
+#: src/Ticket.php:5608
 msgid "Approve solution and reply to survey for ticket created by me"
 msgstr ""
 
-#: src/Ticket.php:5595
+#: src/Ticket.php:5607
 msgid "Approve solution/Reply survey (my ticket)"
 msgstr ""
 
@@ -4072,8 +4075,8 @@ msgstr ""
 
 #: templates/pages/assets/operatingsystem.html.twig src/SoftwareVersion.php:360
 #: src/Software.php:584 src/Item_SoftwareVersion.php:1132
-#: src/Item_OperatingSystem.php:156 src/Item_OperatingSystem.php:463
-#: src/Item_OperatingSystem.php:571
+#: src/Item_OperatingSystem.php:158 src/Item_OperatingSystem.php:465
+#: src/Item_OperatingSystem.php:573
 msgid "Architecture"
 msgid_plural "Architectures"
 msgstr[0] ""
@@ -4113,7 +4116,7 @@ msgstr ""
 msgid "Are you sure you want to disable 2FA for this user?"
 msgstr ""
 
-#: src/ReservationItem.php:360 src/Reservation.php:1267
+#: src/ReservationItem.php:360 src/Reservation.php:1269
 msgid "Are you sure you want to return this non-reservable item?"
 msgstr ""
 
@@ -4157,7 +4160,7 @@ msgctxt "button"
 msgid "Ask for validation"
 msgstr ""
 
-#: templates/pages/assets/cable.html.twig src/Html.php:1283 src/Event.php:168
+#: templates/pages/assets/cable.html.twig src/Html.php:1284 src/Event.php:168
 #: src/Socket.php:1047 src/RuleLocation.php:81 src/RuleImportAsset.php:119
 #: src/RuleImportAsset.php:125 src/RuleImportAsset.php:128
 #: src/RuleImportAsset.php:131 src/RuleImportAsset.php:134
@@ -4167,7 +4170,7 @@ msgstr ""
 #: src/RuleImportAsset.php:161 src/RuleImportAsset.php:174
 #: src/Transfer.php:3912 src/ContentTemplates/Parameters/AssetParameters.php:57
 #: src/AllAssets.php:45 src/Entity.php:523 src/Entity.php:1340
-#: src/Dashboard/Grid.php:1223 src/Config.php:440 src/Config.php:2536
+#: src/Dashboard/Grid.php:1191 src/Config.php:440 src/Config.php:2536
 #: src/Profile.php:164 src/Profile.php:1361 src/Profile.php:2114
 msgid "Asset"
 msgid_plural "Assets"
@@ -4188,7 +4191,7 @@ msgstr ""
 
 #. TRANS: short for : Assign a ticket
 #: templates/components/itilobject/service_levels.html.twig
-#: src/RuleAction.php:442 src/SLM.php:291 src/Ticket.php:5583
+#: src/RuleAction.php:442 src/SLM.php:291 src/Ticket.php:5595
 msgid "Assign"
 msgstr ""
 
@@ -4196,11 +4199,11 @@ msgstr ""
 msgid "Assign a SLA"
 msgstr ""
 
-#: src/Ticket.php:5584
+#: src/Ticket.php:5596
 msgid "Assign a ticket"
 msgstr ""
 
-#: src/CommonITILObject.php:9829 src/Ticket.php:5292
+#: src/CommonITILObject.php:9833 src/Ticket.php:5304
 msgid "Assign equipment"
 msgstr ""
 
@@ -4236,7 +4239,7 @@ msgid_plural "Assigned suppliers"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Dashboard/Provider.php:382 src/Dashboard/Grid.php:1237
+#: src/Dashboard/Provider.php:382 src/Dashboard/Grid.php:1205
 msgid "Assigned tickets"
 msgstr ""
 
@@ -4263,21 +4266,21 @@ msgid "Assigned to technicians"
 msgstr ""
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:77
-#: src/CommonITILObject.php:9570
+#: src/CommonITILObject.php:9574
 msgid "Assignee"
 msgid_plural "Assignees"
 msgstr[0] ""
 msgstr[1] ""
 
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:258
-#: src/Dropdown.php:1105 src/Search/SearchOption.php:243 src/Html.php:1300
+#: src/Dropdown.php:1105 src/Search/SearchOption.php:243 src/Html.php:1301
 #: src/Event.php:170 src/Entity.php:521 src/Entity.php:1231
-#: src/Dashboard/Grid.php:1246 src/Dashboard/Grid.php:1262
-#: src/Dashboard/Grid.php:1279 src/Dashboard/Grid.php:1288
-#: src/Dashboard/Grid.php:1297 src/Dashboard/Grid.php:1306
-#: src/Dashboard/Grid.php:1315 src/Dashboard/Grid.php:1325
-#: src/Dashboard/Grid.php:1334 src/Dashboard/Grid.php:1351
-#: src/Dashboard/Grid.php:1371 src/Config.php:764 src/Config.php:1253
+#: src/Dashboard/Grid.php:1214 src/Dashboard/Grid.php:1230
+#: src/Dashboard/Grid.php:1247 src/Dashboard/Grid.php:1256
+#: src/Dashboard/Grid.php:1265 src/Dashboard/Grid.php:1274
+#: src/Dashboard/Grid.php:1283 src/Dashboard/Grid.php:1293
+#: src/Dashboard/Grid.php:1302 src/Dashboard/Grid.php:1319
+#: src/Dashboard/Grid.php:1339 src/Config.php:764 src/Config.php:1253
 #: src/Config.php:2537 src/Profile.php:158 src/Profile.php:165
 #: src/Profile.php:1184 src/Profile.php:3227
 msgid "Assistance"
@@ -4334,7 +4337,7 @@ msgstr ""
 msgid "Associate to a profile"
 msgstr ""
 
-#: src/CommonDBTM.php:4064
+#: src/CommonDBTM.php:4070
 msgctxt "button"
 msgid "Associate to an appliance"
 msgstr ""
@@ -4353,7 +4356,7 @@ msgstr[1] ""
 
 #: templates/components/itilobject/selfservice.html.twig
 #: front/commonitilobject_item.form.php:64 front/find_num.php:94
-#: src/KnowbaseItem.php:1926 src/KnowbaseItem.php:2351 src/Item_Devices.php:172
+#: src/KnowbaseItem.php:1930 src/KnowbaseItem.php:2355 src/Item_Devices.php:172
 #: src/RuleCommonITILObject.php:821 src/RuleCommonITILObject.php:827
 #: src/CommonItilObject_Item.php:1301 src/Stat.php:1638 src/Lockedfield.php:121
 #: src/KnowbaseItem_Item.php:71 src/Item_SoftwareVersion.php:82
@@ -4391,7 +4394,7 @@ msgstr[1] ""
 msgid "Associated item ID"
 msgstr ""
 
-#: src/KnowbaseItem.php:2368 src/Item_Devices.php:183 src/Socket.php:437
+#: src/KnowbaseItem.php:2372 src/Item_Devices.php:183 src/Socket.php:437
 #: src/CommonItilObject_Item.php:1312 src/Cable.php:177 src/Cable.php:199
 #: src/Link_Itemtype.php:173 src/Change.php:506 src/Problem.php:468
 #: src/Ticket.php:2855
@@ -4459,7 +4462,7 @@ msgctxt "urgency"
 msgid "At least medium"
 msgstr ""
 
-#: src/CommonDBTM.php:4306
+#: src/CommonDBTM.php:4312
 msgid "At least one field has an incorrect value"
 msgstr ""
 
@@ -4510,7 +4513,7 @@ msgctxt "theme"
 msgid "Auror"
 msgstr ""
 
-#: index.php:160 front/helpdesk.faq.php:51
+#: index.php:164 front/helpdesk.faq.php:51
 #: front/knowbaseitemtranslation.form.php:87 src/User.php:2741
 #: src/User.php:3772 src/Auth.php:116
 msgid "Authentication"
@@ -4567,8 +4570,8 @@ msgstr ""
 msgid "Authorizations assignment rules"
 msgstr ""
 
-#: src/ReservationItem.php:371 src/Reservation.php:1249
-#: src/Reservation.php:1263
+#: src/ReservationItem.php:371 src/Reservation.php:1251
+#: src/Reservation.php:1265
 msgid "Authorize reservations"
 msgstr ""
 
@@ -4618,7 +4621,7 @@ msgstr ""
 msgid "Autofill dates for financial and administrative information"
 msgstr ""
 
-#: src/CommonDBTM.php:5632
+#: src/CommonDBTM.php:5638
 msgid "Autofilled from template"
 msgstr ""
 
@@ -4657,7 +4660,7 @@ msgstr ""
 msgid "Automatic assignment of tickets, changes and problems"
 msgstr ""
 
-#: src/Ticket.php:5324
+#: src/Ticket.php:5336
 msgid "Automatic closed tickets purge"
 msgstr ""
 
@@ -4694,7 +4697,7 @@ msgid "Automatic followups / resolution"
 msgstr ""
 
 #: src/ComputerVirtualMachine.php:294 src/Item_Devices.php:645
-#: src/Computer_Item.php:414 src/Computer_Item.php:583 src/Lock.php:360
+#: src/Computer_Item.php:420 src/Computer_Item.php:589 src/Lock.php:360
 #: src/Lock.php:398 src/Lock.php:432 src/Lock.php:513 src/Lock.php:581
 #: src/Lock.php:633 src/Lock.php:671 src/Lock.php:722 src/Lock.php:759
 #: src/Lock.php:832 src/Item_SoftwareVersion.php:1133
@@ -4744,7 +4747,7 @@ msgstr ""
 msgid "Automatic resolution scheduled on %s"
 msgstr ""
 
-#: src/Ticket.php:5318
+#: src/Ticket.php:5330
 msgid "Automatic tickets closing"
 msgstr ""
 
@@ -4800,7 +4803,7 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
-#: src/Html.php:3959
+#: src/Html.php:3960
 msgid "Available variables"
 msgstr ""
 
@@ -4868,8 +4871,8 @@ msgstr ""
 #: templates/pages/admin/inventory/upload_result.html.twig
 #: install/install.php:242 front/rule.backup.php:85
 #: front/transfer.action.php:52 front/transfer.action.php:59
-#: front/ldap.group.import.php:74 front/rule.common.php:141 src/Html.php:690
-#: src/Html.php:692 src/Stat.php:474
+#: front/ldap.group.import.php:74 front/rule.common.php:141 src/Html.php:691
+#: src/Html.php:693 src/Stat.php:474
 msgid "Back"
 msgstr ""
 
@@ -4952,7 +4955,7 @@ msgid "Be careful: there is no default value"
 msgstr ""
 
 #. TRANS: short for : To be in charge of a ticket
-#: src/Ticket.php:5591
+#: src/Ticket.php:5603
 msgid "Beeing in charge"
 msgstr ""
 
@@ -4989,11 +4992,11 @@ msgstr ""
 msgid "Beginning of the installation"
 msgstr ""
 
-#: src/Html.php:3283
+#: src/Html.php:3284
 msgid "Beginning of the month"
 msgstr ""
 
-#: src/Html.php:3291
+#: src/Html.php:3292
 msgid "Beginning of the year"
 msgstr ""
 
@@ -5025,15 +5028,15 @@ msgstr ""
 msgid "Black"
 msgstr ""
 
-#: src/PrinterLog.php:245
+#: src/PrinterLog.php:313
 msgid "Black & White copies"
 msgstr ""
 
-#: src/PrinterLog.php:229
+#: src/PrinterLog.php:297
 msgid "Black & White pages"
 msgstr ""
 
-#: src/PrinterLog.php:239
+#: src/PrinterLog.php:307
 msgid "Black & White prints"
 msgstr ""
 
@@ -5056,7 +5059,7 @@ msgstr ""
 msgid "Blank"
 msgstr ""
 
-#: src/CommonDBTM.php:5240
+#: src/CommonDBTM.php:5246
 msgid "Blank Template"
 msgstr ""
 
@@ -5195,7 +5198,7 @@ msgstr ""
 
 #: templates/components/itilobject/timeline/simple_form.html.twig
 #: src/TaskTemplate.php:82 src/TaskTemplate.php:127 src/ProjectTask.php:1592
-#: src/Reservation.php:748 src/Reservation.php:1114 src/Reservation.php:1196
+#: src/Reservation.php:750 src/Reservation.php:1116 src/Reservation.php:1198
 #: src/Reminder.php:830 src/RSSFeed.php:735 src/Features/PlanningEvent.php:668
 msgid "By"
 msgstr ""
@@ -5594,9 +5597,9 @@ msgstr[1] ""
 #: templates/components/itilobject/fields_panel.html.twig
 #: templates/components/itilobject/selfservice.html.twig
 #: front/stat.tracking.php:79 front/stat.tracking.php:101
-#: front/stat.graph.php:148 front/stat.graph.php:263 src/KnowbaseItem.php:1191
-#: src/KnowbaseItem.php:1394 src/KnowbaseItem.php:1856
-#: src/KnowbaseItem.php:1923 src/KnowbaseItem.php:2335
+#: front/stat.graph.php:148 front/stat.graph.php:263 src/KnowbaseItem.php:1195
+#: src/KnowbaseItem.php:1398 src/KnowbaseItem.php:1860
+#: src/KnowbaseItem.php:1927 src/KnowbaseItem.php:2339
 #: src/KnowbaseItem_KnowbaseItemCategory.php:136
 #: src/PlanningExternalEventTemplate.php:68 src/DatabaseInstanceCategory.php:45
 #: src/AuthLDAP.php:975 src/AuthLDAP.php:1133 src/AuthLDAP.php:3926
@@ -5616,11 +5619,6 @@ msgid "Category"
 msgid_plural "Categories"
 msgstr[0] ""
 msgstr[1] ""
-
-#: js/modules/Debug/Debug.js:739
-msgctxt "debug"
-msgid "Category"
-msgstr ""
 
 #: src/NotificationTargetCommonITILObject.php:2050
 msgid "Category comment"
@@ -5784,11 +5782,11 @@ msgctxt "button"
 msgid "Change the authentication method"
 msgstr ""
 
-#: src/Ticket.php:5594
+#: src/Ticket.php:5606
 msgid "Change the priority"
 msgstr ""
 
-#: src/Inventory/Conf.php:280 src/Inventory/Conf.php:932
+#: src/Inventory/Conf.php:278 src/Inventory/Conf.php:934
 msgid "Change the status"
 msgstr ""
 
@@ -5822,7 +5820,7 @@ msgstr ""
 
 #: front/stat.tracking.php:103 src/MailCollector.php:487
 #: src/Search/SearchOption.php:133 src/Search/SearchOption.php:154
-#: src/KnowbaseItem.php:2240 src/SoftwareVersion.php:173
+#: src/KnowbaseItem.php:2244 src/SoftwareVersion.php:173
 #: src/ComputerVirtualMachine.php:461 src/Datacenter.php:84 src/Project.php:539
 #: src/Item_Devices.php:137 src/CommonTreeDropdown.php:733
 #: src/CommonDropdown.php:400 src/ProjectCost.php:129 src/Budget.php:202
@@ -5834,8 +5832,8 @@ msgstr ""
 #: src/LevelAgreement.php:635 src/Transfer.php:114
 #: src/NotificationTemplateTranslation.php:337 src/Contact.php:223
 #: src/Supplier.php:155 src/ITILFollowup.php:556
-#: src/Item_SoftwareVersion.php:66 src/CommonDBTM.php:3830 src/Plugin.php:2269
-#: src/ComputerAntivirus.php:105 src/Item_OperatingSystem.php:334
+#: src/Item_SoftwareVersion.php:66 src/CommonDBTM.php:3836 src/Plugin.php:2269
+#: src/ComputerAntivirus.php:105 src/Item_OperatingSystem.php:336
 #: src/Cable.php:126 src/DCRoom.php:275 src/ReservationItem.php:179
 #: src/ProjectTask.php:733 src/NotificationTemplate.php:167
 #: src/Item_RemoteManagement.php:243 src/Certificate.php:92 src/Entity.php:736
@@ -5849,12 +5847,12 @@ msgstr ""
 msgid "Characteristics"
 msgstr ""
 
-#: templates/components/datatable.html.twig src/Html.php:2158 src/Lock.php:914
+#: templates/components/datatable.html.twig src/Html.php:2159 src/Lock.php:914
 msgid "Check all"
 msgstr ""
 
-#: templates/components/search/table.html.twig src/Html.php:2218
-#: src/Html.php:2219
+#: templates/components/search/table.html.twig src/Html.php:2219
+#: src/Html.php:2220
 msgid "Check all as"
 msgstr ""
 
@@ -5982,7 +5980,7 @@ msgstr ""
 #: src/CommonDropdown.php:454 src/Appliance.php:272 src/Rule.php:794
 #: src/AuthLDAP.php:2304 src/Budget.php:305 src/Document.php:1051
 #: src/SoftwareLicense.php:542 src/Contact.php:385 src/Supplier.php:323
-#: src/CommonDBTM.php:3849 src/Domain.php:201 src/ProjectTask.php:929
+#: src/CommonDBTM.php:3855 src/Domain.php:201 src/ProjectTask.php:929
 #: src/FieldUnicity.php:383 src/Certificate.php:331 src/Agent.php:101
 #: src/Contract.php:714 src/LevelAgreementLevel.php:165
 #: src/Profile_User.php:1024 src/Notification.php:503
@@ -5993,7 +5991,7 @@ msgid "Child entities"
 msgstr ""
 
 #: src/Group_User.php:538 src/Group.php:133 src/Group.php:878
-#: src/Change.php:772 src/Problem.php:1355 src/Ticket.php:5083
+#: src/Change.php:772 src/Problem.php:1355 src/Ticket.php:5095
 msgid "Child groups"
 msgstr ""
 
@@ -6011,7 +6009,7 @@ msgstr ""
 msgid "Choose 'Install' for a completely new installation of GLPI."
 msgstr ""
 
-#: src/CommonDBTM.php:5238
+#: src/CommonDBTM.php:5244
 msgid "Choose a template"
 msgstr ""
 
@@ -6076,7 +6074,7 @@ msgstr[1] ""
 msgid "Clean LDAP fields and force synchronisation"
 msgstr ""
 
-#: src/Inventory/Conf.php:279
+#: src/Inventory/Conf.php:277
 msgid "Clean agents"
 msgstr ""
 
@@ -6124,11 +6122,12 @@ msgstr ""
 msgid "Cleaning kit"
 msgstr ""
 
-#: templates/components/form/fields_macros.html.twig src/MailCollector.php:269
-#: src/Html.php:2738 src/Html.php:2933 src/Html.php:3065 src/AuthLDAP.php:559
-#: src/User.php:2553 src/User.php:3057 src/User.php:3058 src/User.php:6576
-#: src/NotificationMailingSetting.php:371 src/DCRoom.php:200 src/DCRoom.php:203
-#: src/Entity.php:2099 src/Entity.php:4060 src/Config.php:2079
+#: templates/components/form/basic_inputs_macros.html.twig
+#: src/MailCollector.php:269 src/Html.php:2739 src/Html.php:2934
+#: src/Html.php:3066 src/AuthLDAP.php:559 src/User.php:2553 src/User.php:3057
+#: src/User.php:3058 src/User.php:6576 src/NotificationMailingSetting.php:371
+#: src/DCRoom.php:200 src/DCRoom.php:203 src/Entity.php:2099
+#: src/Entity.php:4060 src/Config.php:2079
 msgid "Clear"
 msgstr ""
 
@@ -6192,7 +6191,7 @@ msgctxt "button"
 msgid "Clone"
 msgstr ""
 
-#: src/Dashboard/Grid.php:300
+#: src/Dashboard/Grid.php:292
 msgid "Clone this dashboard"
 msgstr ""
 
@@ -6254,13 +6253,13 @@ msgstr ""
 msgid "Closed on %s"
 msgstr ""
 
-#: src/Dashboard/Provider.php:406 src/Dashboard/Grid.php:1240
+#: src/Dashboard/Provider.php:406 src/Dashboard/Grid.php:1208
 msgid "Closed tickets"
 msgstr ""
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:68
 #: src/CommonITILObject.php:4121 src/CommonITILObject.php:5467
-#: src/NotificationTargetCommonITILObject.php:1898 src/Ticket.php:5792
+#: src/NotificationTargetCommonITILObject.php:1898 src/Ticket.php:5804
 msgid "Closing date"
 msgstr ""
 
@@ -6317,7 +6316,7 @@ msgstr ""
 msgid "Code representing the ticket category"
 msgstr ""
 
-#: src/ITILCategory.php:374 src/ITILCategory.php:394
+#: src/ITILCategory.php:374 src/ITILCategory.php:396
 msgid "Code representing the ticket category is already used"
 msgstr ""
 
@@ -6344,11 +6343,11 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: src/PrinterLog.php:247
+#: src/PrinterLog.php:315
 msgid "Color copies"
 msgstr ""
 
-#: src/PrinterLog.php:231
+#: src/PrinterLog.php:299
 msgid "Color pages"
 msgstr ""
 
@@ -6356,7 +6355,7 @@ msgstr ""
 msgid "Color palette"
 msgstr ""
 
-#: src/PrinterLog.php:241
+#: src/PrinterLog.php:309
 msgid "Color prints"
 msgstr ""
 
@@ -6406,7 +6405,7 @@ msgid_plural "Comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/KnowbaseItem.php:2465
+#: src/KnowbaseItem.php:2469
 msgid "Comment KB entries"
 msgstr ""
 
@@ -6447,9 +6446,9 @@ msgstr ""
 #: src/NotificationTargetChange.php:312 src/NotificationTargetChange.php:325
 #: src/Group.php:244 src/LevelAgreement.php:177 src/LevelAgreement.php:696
 #: src/RuleImportAsset.php:158 src/Transfer.php:148 src/Transfer.php:3880
-#: src/Auth.php:1743 src/Computer.php:466 src/Contact.php:368
+#: src/Auth.php:1743 src/Computer.php:472 src/Contact.php:368
 #: src/Supplier.php:306 src/Lock.php:459 src/Item_SoftwareVersion.php:1472
-#: src/Item_SoftwareVersion.php:1566 src/CommonDBTM.php:3529 src/PDU.php:125
+#: src/Item_SoftwareVersion.php:1566 src/CommonDBTM.php:3535 src/PDU.php:125
 #: src/Domain.php:152 src/NetworkEquipment.php:394
 #: src/NotificationTargetReservation.php:178
 #: src/NotificationTargetTicket.php:686 src/NotificationTargetTicket.php:699
@@ -6459,8 +6458,8 @@ msgstr ""
 #: src/DatabaseInstance.php:252 src/DatabaseInstance.php:405
 #: src/FieldUnicity.php:391 src/Certificate.php:203 src/Certificate.php:428
 #: src/Entity.php:877 src/NotificationTargetCommonITILObject.php:2002
-#: src/Contract.php:688 src/Contract.php:1732 src/Reservation.php:833
-#: src/Reservation.php:1115 src/Reservation.php:1197 src/CartridgeItem.php:336
+#: src/Contract.php:688 src/Contract.php:1732 src/Reservation.php:835
+#: src/Reservation.php:1117 src/Reservation.php:1199 src/CartridgeItem.php:336
 #: src/CommonDevice.php:297 src/ConsumableItem.php:272
 #: src/RuleDictionnaryPrinter.php:82 src/Cluster.php:103 src/Config.php:3151
 #: src/ManualLink.php:113 src/Profile.php:779 src/Profile.php:2105
@@ -6514,7 +6513,7 @@ msgstr ""
 #: src/DbUtils.php:1331 src/NotificationTargetProjectTask.php:642
 #: src/CommonTreeDropdown.php:740
 #: src/ContentTemplates/Parameters/TreeDropdownParameters.php:51
-#: src/CommonDBTM.php:3434 src/Entity.php:743
+#: src/CommonDBTM.php:3440 src/Entity.php:743
 #: src/NotificationTargetCommonITILObject.php:2183
 #: src/NotificationTargetProject.php:749
 msgid "Complete name"
@@ -6562,7 +6561,7 @@ msgstr ""
 msgid "Condition"
 msgstr ""
 
-#: src/Inventory/Conf.php:299
+#: src/Inventory/Conf.php:297
 msgid "Configuration"
 msgstr ""
 
@@ -6583,7 +6582,7 @@ msgstr ""
 msgid "Configuration values added for %1$s (%2$s)."
 msgstr ""
 
-#: src/Link.php:606 src/Inventory/Conf.php:1088 src/Plugin.php:2386
+#: src/Link.php:606 src/Inventory/Conf.php:1090 src/Plugin.php:2386
 #: src/Plugin.php:2388 src/Marketplace/View.php:878
 msgid "Configure"
 msgstr ""
@@ -6619,9 +6618,9 @@ msgstr ""
 msgid "Confirm the merge? This ticket will be deleted!"
 msgstr ""
 
-#: src/Computer_Item.php:260 src/Computer_Item.php:281
-#: src/Computer_Item.php:377 src/Computer_Item.php:547
-#: src/NetworkPortInstantiation.php:968 src/Computer.php:356
+#: src/Computer_Item.php:266 src/Computer_Item.php:287
+#: src/Computer_Item.php:383 src/Computer_Item.php:553
+#: src/NetworkPortInstantiation.php:969 src/Computer.php:362
 msgctxt "button"
 msgid "Connect"
 msgstr ""
@@ -6630,11 +6629,11 @@ msgstr ""
 msgid "Connect a component"
 msgstr ""
 
-#: src/Computer_Item.php:522
+#: src/Computer_Item.php:528
 msgid "Connect a computer"
 msgstr ""
 
-#: src/Log.php:1118 src/Computer_Item.php:365
+#: src/Log.php:1118 src/Computer_Item.php:371
 msgid "Connect an item"
 msgstr ""
 
@@ -6658,7 +6657,7 @@ msgstr ""
 msgid "Connected to"
 msgstr ""
 
-#: src/Event.php:174 src/Computer_Item.php:810 src/NetworkPort.php:1728
+#: src/Event.php:174 src/Computer_Item.php:816 src/NetworkPort.php:1728
 msgid "Connection"
 msgid_plural "Connections"
 msgstr[0] ""
@@ -6761,9 +6760,9 @@ msgid "Contact your GLPI admin!"
 msgstr ""
 
 #: templates/anonymous_helpdesk.html.twig src/ITILFollowupTemplate.php:68
-#: src/ITILFollowupTemplate.php:87 src/KnowbaseItem.php:1051
-#: src/KnowbaseItem.php:1202 src/KnowbaseItem.php:1917
-#: src/KnowbaseItem.php:2265 src/Project.php:2386 src/Project.php:2428
+#: src/ITILFollowupTemplate.php:87 src/KnowbaseItem.php:1055
+#: src/KnowbaseItem.php:1206 src/KnowbaseItem.php:1921
+#: src/KnowbaseItem.php:2269 src/Project.php:2386 src/Project.php:2428
 #: src/AbstractITILChildTemplate.php:106 src/TaskTemplate.php:60
 #: src/TaskTemplate.php:99 src/BlacklistedMailContent.php:73
 #: src/BlacklistedMailContent.php:91 src/ITILValidationTemplate.php:64
@@ -6771,7 +6770,7 @@ msgstr ""
 #: src/KnowbaseItemTranslation.php:323 src/SolutionTemplate.php:67
 #: src/SolutionTemplate.php:86
 #: src/ContentTemplates/Parameters/KnowbaseItemParameters.php:69
-#: src/CommonITILObject.php:9448 src/RSSFeed.php:548
+#: src/CommonITILObject.php:9452 src/RSSFeed.php:548
 msgid "Content"
 msgstr ""
 
@@ -6896,7 +6895,7 @@ msgstr ""
 msgid "Copied"
 msgstr ""
 
-#: src/PrinterLog.php:243
+#: src/PrinterLog.php:311
 msgid "Copies"
 msgstr ""
 
@@ -6936,7 +6935,7 @@ msgstr ""
 msgid "Copy names to clipboard"
 msgstr ""
 
-#: src/Planning.php:1661 src/Dashboard/Dashboard.php:341
+#: src/Planning.php:1661 src/Dashboard/Dashboard.php:337
 #, php-format
 msgid "Copy of %s"
 msgstr ""
@@ -7038,8 +7037,8 @@ msgstr ""
 msgid "Country"
 msgstr ""
 
-#: src/DisplayPreference.php:355 src/CommonDBTM.php:5362
-#: src/Dashboard/Grid.php:1414 src/Profile.php:978
+#: src/DisplayPreference.php:355 src/CommonDBTM.php:5368
+#: src/Dashboard/Grid.php:1382 src/Profile.php:978
 msgid "Create"
 msgstr ""
 
@@ -7073,7 +7072,7 @@ msgctxt "button"
 msgid "Create a task"
 msgstr ""
 
-#: src/Html.php:1502 src/Profile.php:3234 src/Ticket.php:4870
+#: src/Html.php:1503 src/Profile.php:3234 src/Ticket.php:4882
 msgid "Create a ticket"
 msgstr ""
 
@@ -7093,11 +7092,11 @@ msgstr ""
 msgid "Create both"
 msgstr ""
 
-#: src/Inventory/Conf.php:656
+#: src/Inventory/Conf.php:658
 msgid "Create components for virtual machines"
 msgstr ""
 
-#: src/Inventory/Conf.php:644
+#: src/Inventory/Conf.php:646
 msgid "Create computer for virtual machines"
 msgstr ""
 
@@ -7148,8 +7147,8 @@ msgstr ""
 
 #. TRANS: %s is the datetime of insertion
 #. TRANS: %s is the datetime of update
-#: templates/components/form/dates.html.twig src/KnowbaseItem.php:964
-#: src/KnowbaseItem.php:1278
+#: templates/components/form/dates.html.twig src/KnowbaseItem.php:968
+#: src/KnowbaseItem.php:1282
 #, php-format
 msgid "Created on %s"
 msgstr ""
@@ -7202,7 +7201,7 @@ msgid "Creating the database..."
 msgstr ""
 
 #: src/Phone.php:349 src/NotificationTargetProjectTask.php:519
-#: src/NotificationTargetProjectTask.php:540 src/KnowbaseItem.php:2316
+#: src/NotificationTargetProjectTask.php:540 src/KnowbaseItem.php:2320
 #: src/Monitor.php:313 src/SoftwareVersion.php:213 src/Datacenter.php:120
 #: src/Project.php:622 src/Project.php:756 src/Project.php:985
 #: src/Project.php:1558 src/CommonTreeDropdown.php:818
@@ -7212,7 +7211,7 @@ msgstr ""
 #: src/QueuedNotification.php:742 src/Printer.php:466 src/Document.php:1068
 #: src/User.php:3838 src/Line.php:187 src/Rack.php:239 src/Software.php:421
 #: src/Peripheral.php:290 src/Lockedfield.php:95 src/Certificate_Item.php:466
-#: src/Transfer.php:139 src/Computer.php:517 src/Contact.php:402
+#: src/Transfer.php:139 src/Computer.php:523 src/Contact.php:402
 #: src/Supplier.php:269 src/KnowbaseItem_Item.php:205 src/PDU.php:198
 #: src/Domain.php:192 src/NetworkEquipment.php:385 src/Cable.php:295
 #: src/KnowbaseItem_Revision.php:146 src/DCRoom.php:335 src/ProjectTask.php:797
@@ -7279,7 +7278,7 @@ msgid ""
 "done."
 msgstr ""
 
-#: src/Reservation.php:1104
+#: src/Reservation.php:1106
 msgid "Current and future reservations"
 msgstr ""
 
@@ -7319,6 +7318,10 @@ msgstr ""
 msgid "Currently only available for Software dictionnary."
 msgstr ""
 
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Custom range"
+msgstr ""
+
 #: src/Inventory/Asset/Cartridge.php:72 src/Printer_CartridgeInfo.php:164
 #: src/Printer_CartridgeInfo.php:193
 msgid "Cyan"
@@ -7326,8 +7329,8 @@ msgstr ""
 
 #. TRANS: D for Dynamic
 #. TRANS: letter 'D' for Dynamic
-#: src/Search/Provider/SQLProvider.php:4817
-#: src/Search/Provider/SQLProvider.php:4864 src/UserEmail.php:189
+#: src/Search/Provider/SQLProvider.php:4831
+#: src/Search/Provider/SQLProvider.php:4878 src/UserEmail.php:189
 #: src/Profile_User.php:238 src/Profile_User.php:430 src/Profile_User.php:632
 #: src/Profile_User.php:1049 src/Profile_User.php:1274
 msgid "D"
@@ -7376,7 +7379,11 @@ msgstr ""
 msgid "DVI"
 msgstr ""
 
-#: src/Reservation.php:813
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Daily"
+msgstr ""
+
+#: src/Reservation.php:815
 msgctxt "periodicity"
 msgid "Daily"
 msgstr ""
@@ -7596,7 +7603,7 @@ msgstr ""
 #: templates/components/logs.html.twig front/report.year.php:67
 #: front/report.contract.php:66 src/Csv/LogCsvExport.php:74
 #: src/NotificationTargetProjectTask.php:560
-#: src/NotificationTargetProjectTask.php:590 src/KnowbaseItem.php:1221
+#: src/NotificationTargetProjectTask.php:590 src/KnowbaseItem.php:1225
 #: src/Project.php:1172 src/NotificationTargetProblem.php:253
 #: src/NotificationTargetProblem.php:258 src/Document_Item.php:758
 #: src/RuleMatchedLog.php:237 src/RuleMatchedLog.php:314 src/Event.php:307
@@ -7613,7 +7620,7 @@ msgstr ""
 #: src/NotImportedEmail.php:208 src/CronTask.php:1193 src/CronTask.php:1258
 #: src/NotificationTargetProject.php:675 src/NotificationTargetProject.php:717
 #: src/NotificationTargetProject.php:722 src/NotificationTargetProject.php:727
-#: src/Ticket.php:5798
+#: src/Ticket.php:5810
 msgid "Date"
 msgid_plural "Dates"
 msgstr[0] ""
@@ -7697,7 +7704,7 @@ msgstr ""
 msgid "Default %1$s template"
 msgstr ""
 
-#: index.php:176
+#: index.php:181
 msgid "Default (from user profile)"
 msgstr ""
 
@@ -7731,7 +7738,7 @@ msgid "Default email"
 msgstr ""
 
 #: src/User.php:2892 src/User.php:3275 src/User.php:3952
-#: src/Inventory/Conf.php:542 src/RuleRight.php:360
+#: src/Inventory/Conf.php:543 src/RuleRight.php:360
 msgid "Default entity"
 msgstr ""
 
@@ -7860,7 +7867,7 @@ msgstr ""
 msgid "Default url length limit"
 msgstr ""
 
-#: src/Search/Provider/SQLProvider.php:5816 src/CommonDBTM.php:4875
+#: src/Search/Provider/SQLProvider.php:5830 src/CommonDBTM.php:4881
 #: src/Entity.php:2418 src/Entity.php:2464
 msgid "Default value"
 msgstr ""
@@ -7899,7 +7906,7 @@ msgstr ""
 
 #: templates/components/form/fields_macros.html.twig
 #: templates/components/search/criteria_filter_actions.html.twig
-#: src/DisplayPreference.php:365 src/Planning.php:1042 src/CommonDBTM.php:5373
+#: src/DisplayPreference.php:365 src/Planning.php:1042 src/CommonDBTM.php:5379
 #: src/Profile.php:999 src/Notification.php:546 src/NetworkPort.php:1135
 #: js/modules/SearchTokenizer/SearchInput.js:416
 #: js/modules/Kanban/Kanban.js:477 js/modules/Kanban/Kanban.js:499
@@ -7942,7 +7949,7 @@ msgstr ""
 msgid "Delete all groups"
 msgstr ""
 
-#: src/Reservation.php:857
+#: src/Reservation.php:859
 msgid "Delete all repetition"
 msgstr ""
 
@@ -8018,10 +8025,10 @@ msgstr ""
 #: src/LevelAgreement.php:500 src/Transfer.php:3892 src/Transfer.php:3898
 #: src/Transfer.php:3916 src/Transfer.php:3924 src/Lock.php:924
 #: src/Item_SoftwareVersion.php:715 src/Item_SoftwareVersion.php:1110
-#: src/Item_SoftwareVersion.php:1325 src/CommonDBTM.php:5274
-#: src/CommonDBTM.php:5366 src/Change_Ticket.php:286 src/Consumable.php:588
-#: src/Dashboard/Grid.php:1417 src/Problem_Ticket.php:271
-#: src/Reservation.php:853 src/Profile_User.php:364 src/Profile.php:990
+#: src/Item_SoftwareVersion.php:1325 src/CommonDBTM.php:5280
+#: src/CommonDBTM.php:5372 src/Change_Ticket.php:286 src/Consumable.php:588
+#: src/Dashboard/Grid.php:1385 src/Problem_Ticket.php:271
+#: src/Reservation.php:855 src/Profile_User.php:364 src/Profile.php:990
 #: src/Profile.php:1002 src/Profile.php:1013 src/Ticket_Contract.php:138
 #: src/Item_SoftwareLicense.php:803 src/Cartridge.php:796
 #: src/Cartridge.php:1086
@@ -8065,11 +8072,11 @@ msgstr ""
 msgid "Delete the whole serie of the recurrent event"
 msgstr ""
 
-#: src/Dashboard/Grid.php:624 js/dashboard.js:609
+#: src/Dashboard/Grid.php:616 js/dashboard.js:609
 msgid "Delete this card"
 msgstr ""
 
-#: src/Dashboard/Grid.php:296 js/dashboard.js:957
+#: src/Dashboard/Grid.php:288 js/dashboard.js:957
 msgid "Delete this dashboard"
 msgstr ""
 
@@ -8077,7 +8084,7 @@ msgstr ""
 #: front/report.contract.list.php:214 front/report.year.list.php:186
 #: src/CommonGLPI.php:1129 src/CommonGLPI.php:1133
 #: src/NotificationTargetTicket.php:645 src/NetworkPort.php:1604
-#: src/Change.php:1488 src/Problem.php:1180 src/Ticket.php:4926
+#: src/Change.php:1488 src/Problem.php:1180 src/Ticket.php:4938
 msgid "Deleted"
 msgstr ""
 
@@ -8240,8 +8247,8 @@ msgstr ""
 msgid "Developer"
 msgstr ""
 
-#: src/Peripheral.php:78 src/Dashboard/Grid.php:1167
-#: src/Dashboard/Grid.php:1176 src/Dashboard/Grid.php:1188
+#: src/Peripheral.php:78 src/Dashboard/Grid.php:1135
+#: src/Dashboard/Grid.php:1144 src/Dashboard/Grid.php:1156
 msgid "Device"
 msgid_plural "Devices"
 msgstr[0] ""
@@ -8514,7 +8521,7 @@ msgstr ""
 msgid "Direct email"
 msgstr ""
 
-#: src/Dashboard/Grid.php:813
+#: src/Dashboard/Grid.php:805
 msgid "Direct link"
 msgstr ""
 
@@ -8572,7 +8579,7 @@ msgstr ""
 #: templates/pages/setup/general/general_setup.html.twig
 #: templates/pages/setup/crontask/crontask.html.twig
 #: src/NotificationAjaxSetting.php:85 src/User.php:4094
-#: src/Inventory/Conf.php:892 src/APIClient.php:257 src/Entity.php:3393
+#: src/Inventory/Conf.php:894 src/APIClient.php:257 src/Entity.php:3393
 #: src/Entity.php:3807 src/CronTask.php:747 src/CronTask.php:768
 #: src/PendingReason.php:170 src/PendingReason.php:233
 #: src/PendingReason.php:318 src/PendingReason.php:323
@@ -8585,9 +8592,9 @@ msgstr ""
 msgid "Disallow usage statistics sending to Telemetry service (%s)"
 msgstr ""
 
-#: src/Computer_Item.php:261 src/Computer_Item.php:282
-#: src/Computer_Item.php:393 src/Computer_Item.php:561
-#: src/NetworkPortInstantiation.php:933 src/Transfer.php:3917
+#: src/Computer_Item.php:267 src/Computer_Item.php:288
+#: src/Computer_Item.php:399 src/Computer_Item.php:567
+#: src/NetworkPortInstantiation.php:934 src/Transfer.php:3917
 #: src/Transfer.php:3925
 msgctxt "button"
 msgid "Disconnect"
@@ -8605,7 +8612,7 @@ msgstr ""
 msgid "Discover"
 msgstr ""
 
-#: src/Html.php:4317 src/Html.php:4321
+#: src/Html.php:4318 src/Html.php:4322
 msgid "Display (number of items)"
 msgstr ""
 
@@ -8801,7 +8808,7 @@ msgid "Document"
 msgstr ""
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: src/CommonDBTM.php:5514
+#: src/CommonDBTM.php:5520
 #, php-format
 msgid "Document Ticket %d"
 msgstr ""
@@ -8979,7 +8986,7 @@ msgstr ""
 msgid "Download user VCard"
 msgstr ""
 
-#: src/Html.php:5522
+#: src/Html.php:5523
 msgid "Drag and drop your file here, or"
 msgstr ""
 
@@ -9052,13 +9059,8 @@ msgstr ""
 #: src/CommonITILCost.php:453 src/CommonITILCost.php:611
 #: src/ContentTemplates/Parameters/LevelAgreementParameters.php:55
 #: src/ReservationItem.php:482 src/NotificationTargetCommonITILObject.php:2017
-#: src/Contract.php:260 src/Contract.php:535 src/Reservation.php:781
+#: src/Contract.php:260 src/Contract.php:535 src/Reservation.php:783
 #: src/CronTask.php:1260
-msgid "Duration"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:743 js/modules/Debug/Debug.js:881
-msgctxt "debug"
 msgid "Duration"
 msgstr ""
 
@@ -9078,6 +9080,10 @@ msgstr ""
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Dynamic display"
+msgstr ""
+
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Dynamic distribution"
 msgstr ""
 
 #: src/Console/System/CheckRequirementsCommand.php:82
@@ -9174,11 +9180,11 @@ msgstr ""
 msgid "Edit rack relation"
 msgstr ""
 
-#: js/reservations.js:255
+#: js/reservations.js:261
 msgid "Edit reservation"
 msgstr ""
 
-#: src/Dashboard/Grid.php:623 js/dashboard.js:348 js/dashboard.js:608
+#: src/Dashboard/Grid.php:615 js/dashboard.js:348 js/dashboard.js:608
 msgid "Edit this card"
 msgstr ""
 
@@ -9186,7 +9192,7 @@ msgstr ""
 msgid "Editable markdown"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1391
+#: src/Dashboard/Grid.php:1359
 msgid "Editable markdown card"
 msgstr ""
 
@@ -9194,7 +9200,7 @@ msgstr ""
 #: src/OperatingSystemEdition.php:42
 #: src/RuleDictionnaryOperatingSystemEdition.php:51
 #: src/RuleDictionnaryOperatingSystemEdition.php:81
-#: src/Item_OperatingSystem.php:522 src/Item_OperatingSystem.php:574
+#: src/Item_OperatingSystem.php:524 src/Item_OperatingSystem.php:576
 msgid "Edition"
 msgid_plural "Editions"
 msgstr[0] ""
@@ -9349,16 +9355,11 @@ msgstr ""
 msgid "Emails retrieve limit reached. Check in \"%s\" for more details."
 msgstr ""
 
-#: src/Dashboard/Grid.php:811
+#: src/Dashboard/Grid.php:803
 msgid "Embed in another application"
 msgstr ""
 
-#: src/Html.php:4145
-msgid "Empty array"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:573 js/modules/Debug/Debug.js:582
-msgctxt "debug"
+#: src/Html.php:4146
 msgid "Empty array"
 msgstr ""
 
@@ -9562,16 +9563,11 @@ msgid "Encryption type"
 msgstr ""
 
 #: templates/components/pager.html.twig
-#: templates/components/form/support_hours.html.twig src/Html.php:4070
-#: src/Html.php:4286 src/Planning.php:457 src/Holiday.php:60 src/Holiday.php:87
+#: templates/components/form/support_hours.html.twig src/Html.php:4071
+#: src/Html.php:4287 src/Planning.php:457 src/Holiday.php:60 src/Holiday.php:87
 #: src/Calendar_Holiday.php:148 src/APIClient.php:142
 #: src/CalendarSegment.php:365 src/CalendarSegment.php:393
 #: src/Contract.php:1641 src/Reminder.php:666 src/CronTask.php:1283
-msgid "End"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:742
-msgctxt "debug"
 msgid "End"
 msgstr ""
 
@@ -9602,7 +9598,7 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:2012
 #: src/NotificationTargetCommonITILObject.php:2055 src/Contract.php:319
 #: src/Contract.php:563 src/Contract.php:823 src/Contract.php:1731
-#: src/Reservation.php:1111 src/Reservation.php:1193
+#: src/Reservation.php:1113 src/Reservation.php:1195
 #: src/CommonITILRecurrent.php:187 src/CommonITILRecurrent.php:317
 #: src/NotificationTargetProject.php:734 src/Cartridge.php:838
 #: src/Cartridge.php:1122 src/Cartridge.php:1296 ajax/resaperiod.php:53
@@ -9637,7 +9633,7 @@ msgstr ""
 msgid "End of life"
 msgstr ""
 
-#: src/Html.php:3314
+#: src/Html.php:3315
 msgid "End of the month"
 msgstr ""
 
@@ -9645,7 +9641,7 @@ msgstr ""
 msgid "End of the selected timeframe is not a working hour."
 msgstr ""
 
-#: src/Html.php:3322
+#: src/Html.php:3323
 msgid "End of the year"
 msgstr ""
 
@@ -9842,7 +9838,7 @@ msgstr ""
 msgid "Error reading directory %s"
 msgstr ""
 
-#: src/Dashboard/Grid.php:910
+#: src/Dashboard/Grid.php:902
 msgid "Error rendering card!"
 msgstr ""
 
@@ -9872,11 +9868,6 @@ msgstr ""
 
 #: src/User.php:766 src/User.php:984
 msgid "Error: the two passwords do not match"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:503
-msgctxt "debug"
-msgid "Errors"
 msgstr ""
 
 #: src/Console/Migration/UnsignedKeysCommand.php:245
@@ -10017,7 +10008,7 @@ msgstr ""
 msgid "Every week"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1289
+#: src/Dashboard/Grid.php:1257
 msgid "Evolution of ticket in the past year"
 msgstr ""
 
@@ -10196,11 +10187,11 @@ msgstr ""
 #: front/knowbaseitemtranslation.form.php:82
 #: front/knowbaseitemtranslation.form.php:86
 #: front/knowbaseitemtranslation.form.php:88 src/KnowbaseItem.php:98
-#: src/Html.php:1541 src/CommonDropdown.php:936 src/CommonGLPI.php:1555
+#: src/Html.php:1542 src/CommonDropdown.php:936 src/CommonGLPI.php:1555
 msgid "FAQ"
 msgstr ""
 
-#: src/KnowbaseItem.php:2274
+#: src/KnowbaseItem.php:2278
 msgid "FAQ item"
 msgstr ""
 
@@ -10225,17 +10216,17 @@ msgstr ""
 msgid "Failed operation"
 msgstr ""
 
-#: src/Ticket.php:6085
+#: src/Ticket.php:6097
 #, php-format
 msgid "Failed to add document to ticket %d"
 msgstr ""
 
-#: src/Ticket.php:6021 src/Ticket.php:6036
+#: src/Ticket.php:6033 src/Ticket.php:6048
 #, php-format
 msgid "Failed to add followup to ticket %d"
 msgstr ""
 
-#: src/Ticket.php:6057
+#: src/Ticket.php:6069
 #, php-format
 msgid "Failed to add task to ticket %d"
 msgstr ""
@@ -10279,17 +10270,17 @@ msgstr ""
 msgid "Failed to delete the file %s"
 msgstr ""
 
-#: src/Ticket.php:6209
+#: src/Ticket.php:6221
 #, php-format
 msgid "Failed to delete ticket %d"
 msgstr ""
 
-#: src/Ticket.php:6115
+#: src/Ticket.php:6127
 #, php-format
 msgid "Failed to link tickets %d and %d"
 msgstr ""
 
-#: src/Ticket.php:6006
+#: src/Ticket.php:6018
 #, php-format
 msgid "Failed to load ticket %d"
 msgstr ""
@@ -10334,7 +10325,7 @@ msgstr ""
 #: templates/generic_show_form.html.twig src/Dropdown.php:608
 #: src/Dropdown.php:634 src/Contact_Supplier.php:173
 #: src/Contact_Supplier.php:309 src/Contact.php:280 src/Supplier.php:188
-#: src/PrinterLog.php:249
+#: src/PrinterLog.php:317
 #: src/ContentTemplates/Parameters/SupplierParameters.php:75 src/Entity.php:806
 #: src/Entity.php:1643 src/NotificationTargetCommonITILObject.php:1915
 #: src/NotificationTargetCommonITILObject.php:1939
@@ -10397,7 +10388,7 @@ msgid_plural "Fields storage of the login in the HTTP request"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/components/form/fields_macros.html.twig
+#: templates/components/form/basic_inputs_macros.html.twig
 msgid "Field will not be updated from inventory"
 msgstr ""
 
@@ -10410,7 +10401,7 @@ msgid "Fields unicity"
 msgstr ""
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
-#: src/NotificationTargetProjectTask.php:622 src/KnowbaseItem.php:1219
+#: src/NotificationTargetProjectTask.php:622 src/KnowbaseItem.php:1223
 #: src/Document_Item.php:753 src/Document.php:497 src/Document.php:1000
 #: src/NotificationTargetCommonITILObject.php:2238
 #: src/NotificationTargetProject.php:741
@@ -10454,11 +10445,11 @@ msgstr ""
 msgid "File extension"
 msgstr ""
 
-#: src/Inventory/Conf.php:235
+#: src/Inventory/Conf.php:233
 msgid "File has been successfully imported."
 msgstr ""
 
-#: src/Inventory/Conf.php:170 src/Inventory/Conf.php:231
+#: src/Inventory/Conf.php:168 src/Inventory/Conf.php:229
 #, php-format
 msgid "File has not been imported: `%s`."
 msgstr ""
@@ -10501,7 +10492,7 @@ msgstr ""
 msgid "File upload aborted"
 msgstr ""
 
-#: src/Html.php:5492
+#: src/Html.php:5493
 msgid "File(s)"
 msgstr ""
 
@@ -10566,7 +10557,7 @@ msgstr ""
 msgid "Filter to search in groups"
 msgstr ""
 
-#: src/Dashboard/Grid.php:775
+#: src/Dashboard/Grid.php:767
 msgid "Filters"
 msgstr ""
 
@@ -10919,7 +10910,7 @@ msgid "From"
 msgstr ""
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
-#: src/Html.php:4062 src/Html.php:4275
+#: src/Html.php:4063 src/Html.php:4276
 #, php-format
 msgid "From %1$d to %2$d of %3$d"
 msgstr ""
@@ -11034,7 +11025,7 @@ msgstr ""
 #: src/RuleImportAsset.php:187 src/RuleImportAsset.php:191
 #: src/RuleImportAsset.php:196 src/CommonGLPI.php:108
 #: src/CommonITILObject.php:6619 src/Config.php:3124 src/Ticket.php:4690
-#: src/Ticket.php:5222
+#: src/Ticket.php:5234
 msgid "General"
 msgstr ""
 
@@ -11052,7 +11043,7 @@ msgstr ""
 msgid "General setup"
 msgstr ""
 
-#: src/CommonITILObject.php:9919
+#: src/CommonITILObject.php:9923
 msgid "Generation of satisfaction surveys"
 msgstr ""
 
@@ -11098,10 +11089,10 @@ msgstr ""
 msgid "Given to"
 msgstr ""
 
-#: front/allassets.php:46 src/Project.php:1919 src/Html.php:1462
+#: front/allassets.php:46 src/Project.php:1919 src/Html.php:1463
 #: src/Stat.php:1718 src/Stat.php:1730 src/Stat.php:1739
 #: src/Lockedfield.php:112 src/Lock.php:239
-#: src/RuleImportAssetCollection.php:70 src/CommonITILObject.php:9526
+#: src/RuleImportAssetCollection.php:70 src/CommonITILObject.php:9530
 #: src/Config.php:489
 msgid "Global"
 msgstr ""
@@ -11156,11 +11147,6 @@ msgstr ""
 msgid "Global size"
 msgstr ""
 
-#: js/modules/Debug/Debug.js:900
-msgctxt "debug"
-msgid "Globals"
-msgstr ""
-
 #: install/update.php:184
 msgid "Go back to GLPI"
 msgstr ""
@@ -11173,7 +11159,7 @@ msgstr ""
 msgid "Go to created item after creation"
 msgstr ""
 
-#: src/Html.php:6542
+#: src/Html.php:6543
 msgid "Go to menu"
 msgstr ""
 
@@ -11257,7 +11243,7 @@ msgstr ""
 #: src/Search/SearchOption.php:223 src/Monitor.php:421
 #: src/PassiveDCEquipment.php:175 src/Enclosure.php:201 src/Printer.php:619
 #: src/Rack.php:267 src/ITILCategory.php:65 src/Peripheral.php:334
-#: src/Computer.php:553 src/PDU.php:178 src/NetworkEquipment.php:465
+#: src/Computer.php:559 src/PDU.php:178 src/NetworkEquipment.php:465
 #: src/NotificationTargetReservation.php:60 src/DatabaseInstance.php:238
 #: src/Certificate.php:271 src/CartridgeItem.php:316 src/ConsumableItem.php:252
 #: src/Cluster.php:140 src/RuleImportEntity.php:264 src/RuleAsset.php:203
@@ -11323,6 +11309,11 @@ msgstr ""
 msgid "HTML encoding has been fixed."
 msgstr ""
 
+#: templates/components/debug/debug_toolbar.html.twig
+msgctxt "debug"
+msgid "HTTP Requests"
+msgstr ""
+
 #: src/NetworkPort.php:1095
 msgid "Half"
 msgstr ""
@@ -11385,7 +11376,7 @@ msgid ""
 msgstr ""
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
-#: src/NotificationTargetProjectTask.php:616 src/KnowbaseItem.php:1220
+#: src/NotificationTargetProjectTask.php:616 src/KnowbaseItem.php:1224
 #: src/Document_Item.php:671 src/Document_Item.php:755 src/Document.php:456
 #: src/Document.php:1034 src/NotificationTargetCommonITILObject.php:2228
 #: src/NotificationTargetProject.php:739
@@ -11426,11 +11417,6 @@ msgid "Hidden field"
 msgid_plural "Hidden fields"
 msgstr[0] ""
 msgstr[1] ""
-
-#: js/modules/Debug/Debug.js:797
-msgctxt "debug"
-msgid "Hide near-instant sections"
-msgstr ""
 
 #: src/CommonITILObject.php:3371
 msgctxt "impact"
@@ -11482,7 +11468,7 @@ msgstr ""
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/parts/breadcrumbs.html.twig front/helpdesk.public.php:100
-#: src/Html.php:1494
+#: src/Html.php:1495
 msgid "Home"
 msgstr ""
 
@@ -11544,7 +11530,7 @@ msgstr ""
 #: src/Csv/LogCsvExport.php:73 src/Phone.php:230 src/Ticket_Ticket.php:65
 #: src/Search/SearchOption.php:143 src/Search/SearchOption.php:164
 #: src/NotificationTargetProjectTask.php:589
-#: src/NotificationTargetProjectTask.php:618 src/KnowbaseItem.php:2256
+#: src/NotificationTargetProjectTask.php:618 src/KnowbaseItem.php:2260
 #: src/Monitor.php:210 src/Unmanaged.php:98 src/Datacenter.php:100
 #: src/SavedSearch.php:200 src/Project.php:556 src/Project.php:1170
 #: src/NotificationTargetProblem.php:252 src/NotificationTargetProblem.php:257
@@ -11560,7 +11546,7 @@ msgstr ""
 #: src/SoftwareLicense.php:362 src/SoftwareLicense.php:1209
 #: src/Software.php:385 src/AuthMail.php:112 src/Peripheral.php:195
 #: src/NotificationTargetChange.php:390 src/NotificationTargetChange.php:395
-#: src/CommonDBRelation.php:333 src/LevelAgreement.php:651 src/Computer.php:382
+#: src/CommonDBRelation.php:333 src/LevelAgreement.php:651 src/Computer.php:388
 #: src/APIClient.php:104 src/Contact.php:247 src/Supplier.php:171
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:61
 #: src/ContentTemplates/Parameters/AssetParameters.php:69
@@ -11569,7 +11555,7 @@ msgstr ""
 #: src/ContentTemplates/Parameters/KnowbaseItemParameters.php:67
 #: src/ContentTemplates/Parameters/SupplierParameters.php:67
 #: src/ContentTemplates/Parameters/UserParameters.php:73
-#: src/Item_SoftwareVersion.php:73 src/CommonDBTM.php:4336 src/PDU.php:90
+#: src/Item_SoftwareVersion.php:73 src/CommonDBTM.php:4342 src/PDU.php:90
 #: src/Domain.php:209 src/NetworkEquipment.php:274
 #: src/NotificationTargetTicket.php:779 src/NotificationTargetTicket.php:792
 #: src/OAuthClient.php:86 src/Cable.php:143 src/NetworkName.php:174
@@ -11599,7 +11585,7 @@ msgstr ""
 #: src/NotificationTargetProject.php:716 src/NotificationTargetProject.php:721
 #: src/NotificationTargetProject.php:726 src/NotificationTargetProject.php:740
 #: src/Cartridge.php:832 src/Cartridge.php:1117 src/Ticket.php:4620
-#: src/Ticket.php:4646 src/Ticket.php:5162
+#: src/Ticket.php:4646 src/Ticket.php:5174
 msgid "ID"
 msgstr ""
 
@@ -11870,7 +11856,7 @@ msgstr ""
 msgid "If you want to reopen this item, you must specify a reason"
 msgstr ""
 
-#: src/Dashboard/Grid.php:821
+#: src/Dashboard/Grid.php:813
 msgid "Iframe"
 msgstr ""
 
@@ -11967,7 +11953,7 @@ msgstr ""
 msgid "Implementation error!"
 msgstr ""
 
-#: src/Inventory/Conf.php:1085 src/NetworkPortType.php:59
+#: src/Inventory/Conf.php:1087 src/NetworkPortType.php:59
 #: src/NetworkPortType.php:86
 msgid "Import"
 msgstr ""
@@ -11987,7 +11973,7 @@ msgstr ""
 msgid "Import category from inventory tool"
 msgstr ""
 
-#: src/Inventory/Conf.php:1089
+#: src/Inventory/Conf.php:1091
 msgid "Import configuration"
 msgstr ""
 
@@ -11999,7 +11985,7 @@ msgstr ""
 msgid "Import from directories"
 msgstr ""
 
-#: src/Inventory/Conf.php:302 src/Inventory/Conf.php:1086
+#: src/Inventory/Conf.php:301 src/Inventory/Conf.php:1088
 msgid "Import from file"
 msgstr ""
 
@@ -12016,7 +12002,7 @@ msgstr ""
 msgid "Import inventory files"
 msgstr ""
 
-#: src/Inventory/Conf.php:560
+#: src/Inventory/Conf.php:561
 msgid "Import monitor on serial partial match"
 msgstr ""
 
@@ -12045,7 +12031,7 @@ msgstr ""
 msgid "Import rules from a XML file"
 msgstr ""
 
-#: src/Inventory/Conf.php:613
+#: src/Inventory/Conf.php:615
 msgid "Import virtual machines"
 msgstr ""
 
@@ -12178,7 +12164,7 @@ msgstr ""
 msgid "Importing type \"%s\"..."
 msgstr ""
 
-#: src/CommonDBTM.php:4374
+#: src/CommonDBTM.php:4380
 #, php-format
 msgid "Impossible record for %s"
 msgstr ""
@@ -12199,31 +12185,31 @@ msgstr ""
 msgid "Impossible to write the database setup file"
 msgstr ""
 
-#: src/Html.php:6967
+#: src/Html.php:6968
 #, php-format
 msgid "In %s days"
 msgstr ""
 
-#: src/Html.php:6960
+#: src/Html.php:6961
 #, php-format
 msgid "In %s hours"
 msgstr ""
 
-#: src/Html.php:6954
+#: src/Html.php:6955
 #, php-format
 msgid "In %s minutes"
 msgstr ""
 
-#: src/Html.php:6970
+#: src/Html.php:6971
 #, php-format
 msgid "In %s weeks"
 msgstr ""
 
-#: src/Html.php:6951
+#: src/Html.php:6952
 msgid "In a minute"
 msgstr ""
 
-#: src/Html.php:6957
+#: src/Html.php:6958
 msgid "In an hour"
 msgstr ""
 
@@ -12251,7 +12237,7 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: src/ITILCategory.php:474 src/Ticket.php:3334 src/Ticket.php:3352
+#: src/ITILCategory.php:476 src/Ticket.php:3334 src/Ticket.php:3352
 msgid "Incident"
 msgstr ""
 
@@ -12296,7 +12282,7 @@ msgstr ""
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 #: templates/components/messages_after_redirect_alerts.html.twig
 #: templates/components/messages_after_redirect_toasts.html.twig
-#: src/Html.php:5957 src/Planning.php:242 src/Planning.php:264
+#: src/Html.php:5958 src/Planning.php:242 src/Planning.php:264
 #: src/CommonITILRecurrent.php:108 js/glpi_dialog.js:250 js/glpi_dialog.js:284
 #: js/glpi_dialog.js:389 js/misc.js:45
 msgid "Information"
@@ -12341,11 +12327,6 @@ msgstr ""
 
 #: src/Entity.php:2742
 msgid "Inherits configuration from the parent entity"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:475 js/modules/Debug/Debug.js:1071
-msgctxt "debug"
-msgid "Initial Execution Time"
 msgstr ""
 
 #: templates/pages/management/contract.html.twig src/Contract_Item.php:345
@@ -12397,7 +12378,7 @@ msgstr ""
 msgid "Install"
 msgstr ""
 
-#: templates/install/step0.html.twig src/Computer.php:359
+#: templates/install/step0.html.twig src/Computer.php:365
 #: src/Item_SoftwareVersion.php:1047 src/Item_SoftwareVersion.php:1322
 #: src/Plugin.php:2455 src/Plugin.php:2701 src/Cartridge.php:1059
 msgctxt "button"
@@ -12422,7 +12403,7 @@ msgstr[1] ""
 #: templates/pages/assets/operatingsystem.html.twig src/Software.php:543
 #: src/Lock.php:512 src/Item_SoftwareVersion.php:480
 #: src/Item_SoftwareVersion.php:1131 src/Item_SoftwareVersion.php:1349
-#: src/Item_OperatingSystem.php:450
+#: src/Item_OperatingSystem.php:452
 msgid "Installation date"
 msgstr ""
 
@@ -12528,7 +12509,7 @@ msgid "Internal survey"
 msgstr ""
 
 #: src/NotificationTargetTicket.php:568 src/Ticket.php:2755 src/Ticket.php:2938
-#: src/Ticket.php:5755
+#: src/Ticket.php:5767
 msgid "Internal time to own"
 msgstr ""
 
@@ -12541,7 +12522,7 @@ msgid "Internal time to own exceeded"
 msgstr ""
 
 #: src/NotificationTargetTicket.php:573 src/Ticket.php:2724 src/Ticket.php:2952
-#: src/Ticket.php:5771
+#: src/Ticket.php:5783
 msgid "Internal time to resolve"
 msgstr ""
 
@@ -12778,7 +12759,7 @@ msgstr ""
 msgid "Inventory file missing"
 msgstr ""
 
-#: src/Inventory/Conf.php:523
+#: src/Inventory/Conf.php:524
 msgid "Inventory frequency (in hours)"
 msgstr ""
 
@@ -12809,12 +12790,12 @@ msgstr ""
 #: src/Enclosure.php:148 src/Printer.php:399 src/User.php:5104 src/Rack.php:198
 #: src/Rack.php:918 src/CommonItilObject_Item.php:426
 #: src/SoftwareLicense.php:550 src/SoftwareLicense.php:639
-#: src/DeviceFirmware.php:231 src/PDU_Rack.php:601 src/Computer_Item.php:417
-#: src/Computer_Item.php:586 src/Peripheral.php:239
+#: src/DeviceFirmware.php:231 src/PDU_Rack.php:601 src/Computer_Item.php:423
+#: src/Computer_Item.php:592 src/Peripheral.php:239
 #: src/NotificationTargetChange.php:283 src/Certificate_Item.php:273
-#: src/Computer.php:442 src/Item_Problem.php:154 src/Item_Project.php:154
+#: src/Computer.php:448 src/Item_Problem.php:154 src/Item_Project.php:154
 #: src/Supplier.php:434 src/Lock.php:359 src/Item_SoftwareVersion.php:474
-#: src/CommonDBTM.php:3446 src/PDU.php:115 src/NetworkEquipment.php:318
+#: src/CommonDBTM.php:3452 src/PDU.php:115 src/NetworkEquipment.php:318
 #: src/NotificationTargetTicket.php:579 src/Appliance_Item.php:200
 #: src/Cable.php:168 src/ReservationItem.php:226 src/Certificate.php:125
 #: src/Certificate.php:402 src/ConsumableItem.php:172 src/Location.php:552
@@ -12923,8 +12904,8 @@ msgstr ""
 #: src/Appliance_Item.php:59 src/Appliance_Item.php:198
 #: src/ReservationItem.php:410 src/Item_RemoteManagement.php:340
 #: src/DatabaseInstance.php:139 src/IPAddress.php:252 src/IPAddress.php:1106
-#: src/Impact.php:292 src/Agent.php:153 src/Reservation.php:707
-#: src/Reservation.php:1112 src/Reservation.php:1194 src/Location.php:424
+#: src/Impact.php:292 src/Agent.php:153 src/Reservation.php:709
+#: src/Reservation.php:1114 src/Reservation.php:1196 src/Location.php:424
 #: src/Infocom.php:151 src/Contract_Item.php:223
 #: src/Item_SoftwareLicense.php:1016 src/NotificationTargetProject.php:780
 #: src/NotificationTargetProject.php:799
@@ -12990,7 +12971,7 @@ msgstr ""
 msgid "Item id"
 msgstr ""
 
-#: src/CommonDBTM.php:4423
+#: src/CommonDBTM.php:4429
 msgid "Item in the trashbin"
 msgstr ""
 
@@ -13015,7 +12996,7 @@ msgstr ""
 msgid "Item need to be deleted first"
 msgstr ""
 
-#: src/Html.php:535 src/CommonDBTM.php:6343 src/Api/API.php:1955
+#: src/Html.php:535 src/CommonDBTM.php:6349 src/Api/API.php:1955
 #: src/Api/API.php:2069 src/Api/API.php:2645
 msgid "Item not found"
 msgstr ""
@@ -13024,7 +13005,7 @@ msgstr ""
 msgid "Item not linked to an object"
 msgstr ""
 
-#: src/Item_OperatingSystem.php:49
+#: src/Item_OperatingSystem.php:51
 msgid "Item operating system"
 msgid_plural "Item operating systems"
 msgstr[0] ""
@@ -13039,7 +13020,7 @@ msgstr ""
 msgid "Item state"
 msgstr ""
 
-#: src/CommonItilObject_Item.php:1359 src/CommonDBTM.php:1486
+#: src/CommonItilObject_Item.php:1359 src/CommonDBTM.php:1492
 msgid "Item successfully added"
 msgstr ""
 
@@ -13047,24 +13028,24 @@ msgstr ""
 msgid "Item successfully added but duplicate record on"
 msgstr ""
 
-#: src/CommonDBTM.php:4379
+#: src/CommonDBTM.php:4385
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
 msgstr ""
 
-#: src/CommonItilObject_Item.php:1397 src/CommonDBTM.php:2163
+#: src/CommonItilObject_Item.php:1397 src/CommonDBTM.php:2169
 msgid "Item successfully deleted"
 msgstr ""
 
-#: src/CommonDBTM.php:2205
+#: src/CommonDBTM.php:2211
 msgid "Item successfully purged"
 msgstr ""
 
-#: src/CommonDBTM.php:2323
+#: src/CommonDBTM.php:2329
 msgid "Item successfully restored"
 msgstr ""
 
-#: src/CommonDBTM.php:1928
+#: src/CommonDBTM.php:1934
 msgid "Item successfully updated"
 msgstr ""
 
@@ -13124,11 +13105,6 @@ msgid_plural "Itil items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: js/modules/Debug/Debug.js:695
-msgctxt "debug"
-msgid "JS Heap Limit"
-msgstr ""
-
 #: src/Toolbox.php:2084 src/Features/PlanningEvent.php:820
 msgid "January"
 msgstr ""
@@ -13149,7 +13125,7 @@ msgstr ""
 msgid "Just follow this link:"
 msgstr ""
 
-#: src/Html.php:6921
+#: src/Html.php:6922
 msgid "Just now"
 msgstr ""
 
@@ -13186,13 +13162,13 @@ msgid "Keep tickets when purging hardware in the inventory"
 msgstr ""
 
 #: templates/pages/assets/operatingsystem.html.twig
-#: src/Item_OperatingSystem.php:481 src/OperatingSystemKernel.php:42
+#: src/Item_OperatingSystem.php:483 src/OperatingSystemKernel.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Item_OperatingSystem.php:504 src/OperatingSystemKernelVersion.php:42
+#: src/Item_OperatingSystem.php:506 src/OperatingSystemKernelVersion.php:42
 msgid "Kernel version"
 msgid_plural "Kernel versions"
 msgstr[0] ""
@@ -13214,7 +13190,7 @@ msgstr ""
 msgid "Knowledge base"
 msgstr ""
 
-#: src/KnowbaseItem.php:2463
+#: src/KnowbaseItem.php:2467
 msgid "Knowledge base administration"
 msgstr ""
 
@@ -13386,6 +13362,10 @@ msgstr ""
 msgid "Last 3 passwords"
 msgstr ""
 
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Last 30 days"
+msgstr ""
+
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Last 4 passwords"
 msgstr ""
@@ -13394,12 +13374,16 @@ msgstr ""
 msgid "Last 5 passwords"
 msgstr ""
 
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Last 7 days"
+msgstr ""
+
 #: src/DatabaseInstance.php:279 src/Database.php:128 src/Database.php:235
 #: src/Database.php:350
 msgid "Last backup date"
 msgstr ""
 
-#: templates/generic_show_form.html.twig src/Computer.php:458
+#: templates/generic_show_form.html.twig src/Computer.php:464
 #: src/DatabaseInstance.php:431
 msgid "Last boot date"
 msgstr ""
@@ -13420,6 +13404,10 @@ msgstr ""
 #: templates/components/form/inventory_info.html.twig src/Agent.php:107
 #: src/Agent.php:299
 msgid "Last contact"
+msgstr ""
+
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Last day"
 msgstr ""
 
 #: src/SavedSearch.php:233
@@ -13443,7 +13431,7 @@ msgstr ""
 msgid "Last inventory"
 msgstr ""
 
-#: src/Phone.php:282 src/Printer.php:657 src/Computer.php:450
+#: src/Phone.php:282 src/Printer.php:657 src/Computer.php:456
 #: src/NetworkEquipment.php:494
 msgid "Last inventory date"
 msgstr ""
@@ -13452,7 +13440,7 @@ msgstr ""
 msgid "Last inventory update"
 msgstr ""
 
-#: templates/components/form/fields_macros.html.twig
+#: templates/components/form/basic_inputs_macros.html.twig
 msgid "Last inventory value was:"
 msgstr ""
 
@@ -13465,7 +13453,7 @@ msgstr ""
 msgid "Last login on %s"
 msgstr ""
 
-#: src/Html.php:6940
+#: src/Html.php:6941
 msgid "Last month"
 msgstr ""
 
@@ -13479,6 +13467,10 @@ msgstr ""
 
 #: src/Problem.php:1353
 msgid "Last problems"
+msgstr ""
+
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Last quarter"
 msgstr ""
 
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:1491
@@ -13502,13 +13494,13 @@ msgstr ""
 msgid "Last synchronization on %s"
 msgstr ""
 
-#: src/Ticket.php:5081
+#: src/Ticket.php:5093
 msgid "Last tickets"
 msgstr ""
 
 #: src/Phone.php:340 src/MailCollector.php:545 src/Search/SearchOption.php:206
 #: src/NotificationTargetProjectTask.php:520
-#: src/NotificationTargetProjectTask.php:541 src/KnowbaseItem.php:2307
+#: src/NotificationTargetProjectTask.php:541 src/KnowbaseItem.php:2311
 #: src/Monitor.php:304 src/Unmanaged.php:168 src/Datacenter.php:111
 #: src/Project.php:736 src/Project.php:999 src/Project.php:1173
 #: src/Project.php:1570 src/CommonTreeDropdown.php:807
@@ -13518,7 +13510,7 @@ msgstr ""
 #: src/Printer.php:457 src/Document.php:1059 src/User.php:3829 src/Line.php:142
 #: src/RuleCommonITILObject.php:570 src/Rack.php:230 src/Software.php:412
 #: src/AuthMail.php:146 src/Peripheral.php:281 src/LevelAgreement.php:191
-#: src/Transfer.php:130 src/Transfer.php:3886 src/Computer.php:508
+#: src/Transfer.php:130 src/Transfer.php:3886 src/Computer.php:514
 #: src/Contact.php:393 src/Supplier.php:260 src/PDU.php:133 src/Domain.php:184
 #: src/NetworkEquipment.php:376 src/Cable.php:277 src/DCRoom.php:326
 #: src/ReservationItem.php:262 src/ProjectTask.php:806
@@ -13544,7 +13536,7 @@ msgstr ""
 
 #. TRANS: %s is the datetime of update
 #: templates/components/form/dates.html.twig src/MailCollector.php:348
-#: src/KnowbaseItem.php:969 src/KnowbaseItem.php:1283 src/Rule.php:953
+#: src/KnowbaseItem.php:973 src/KnowbaseItem.php:1287 src/Rule.php:953
 #: src/Document.php:434 src/AuthMail.php:208
 #, php-format
 msgid "Last update on %s"
@@ -13559,12 +13551,16 @@ msgstr ""
 msgid "Last updated"
 msgstr ""
 
-#: src/KnowbaseItem.php:2132
+#: src/KnowbaseItem.php:2136
 msgid "Last updated entries"
 msgstr ""
 
 #: src/Notepad.php:271 src/NotificationTargetCommonITILObject.php:1926
 msgid "Last updater"
+msgstr ""
+
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Last year"
 msgstr ""
 
 #: src/NotificationTargetObjectLock.php:65
@@ -13594,7 +13590,7 @@ msgstr ""
 msgid "Late solved %1$s (%2$s)"
 msgstr ""
 
-#: src/Dashboard/Provider.php:282 src/Dashboard/Grid.php:1232
+#: src/Dashboard/Provider.php:282 src/Dashboard/Grid.php:1200
 msgid "Late tickets"
 msgstr ""
 
@@ -13931,7 +13927,7 @@ msgstr ""
 msgid "List"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1263
+#: src/Dashboard/Grid.php:1231
 #, php-format
 msgid "List of %s"
 msgstr ""
@@ -13960,7 +13956,7 @@ msgstr ""
 msgid "List of not imported emails"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1383
+#: src/Dashboard/Grid.php:1351
 msgid "List of reminders"
 msgstr ""
 
@@ -14058,7 +14054,7 @@ msgstr ""
 msgid "Location tree"
 msgstr ""
 
-#: src/Computer_Item.php:123 src/Computer.php:290
+#: src/Computer_Item.php:123 src/Computer.php:296
 msgid ""
 "Location updated. The connected items have been moved in the same location."
 msgstr ""
@@ -14148,7 +14144,7 @@ msgstr ""
 msgid "Log connections"
 msgstr ""
 
-#: src/CommonITILObject.php:7293
+#: src/CommonITILObject.php:7295
 msgid "Log entry"
 msgstr ""
 
@@ -14381,7 +14377,7 @@ msgstr ""
 msgid "Make available"
 msgstr ""
 
-#: src/Reservation.php:1251 src/Reservation.php:1276
+#: src/Reservation.php:1253 src/Reservation.php:1278
 msgid "Make available for reservations"
 msgstr ""
 
@@ -14389,7 +14385,7 @@ msgstr ""
 msgid "Make unavailable"
 msgstr ""
 
-#: src/Reservation.php:1252 src/Reservation.php:1280
+#: src/Reservation.php:1254 src/Reservation.php:1282
 msgid "Make unavailable for reservations"
 msgstr ""
 
@@ -14429,7 +14425,7 @@ msgstr ""
 msgid "Managed items"
 msgstr ""
 
-#: src/Dropdown.php:1190 src/Html.php:1315 src/Event.php:173
+#: src/Dropdown.php:1190 src/Html.php:1316 src/Event.php:173
 #: src/Transfer.php:4033 src/Config.php:2538 src/Profile.php:167
 #: src/Profile.php:1410 src/Profile.php:2273 src/Infocom.php:162
 msgid "Management"
@@ -14551,7 +14547,7 @@ msgstr ""
 msgid "Marketplace"
 msgstr ""
 
-#: src/Html.php:2634
+#: src/Html.php:2635
 msgid "Massive actions"
 msgstr ""
 
@@ -14712,17 +14708,7 @@ msgid_plural "Memories"
 msgstr[0] ""
 msgstr[1] ""
 
-#: js/modules/Debug/Debug.js:482 js/modules/Debug/Debug.js:1076
-msgctxt "debug"
-msgid "Memory Peak"
-msgstr ""
-
 #: src/Item_Process.php:156
-msgid "Memory Usage"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:480 js/modules/Debug/Debug.js:1074
-msgctxt "debug"
 msgid "Memory Usage"
 msgstr ""
 
@@ -15046,7 +15032,7 @@ msgstr ""
 #: src/DeviceFirmware.php:93 src/DeviceFirmware.php:178 src/Peripheral.php:214
 #: src/NotificationTargetChange.php:285 src/RuleImportAsset.php:119
 #: src/DeviceCamera.php:66 src/DeviceCamera.php:111 src/DeviceCamera.php:181
-#: src/Computer.php:401 src/RuleDictionnaryComputerModel.php:51
+#: src/Computer.php:407 src/RuleDictionnaryComputerModel.php:51
 #: src/RuleDictionnaryComputerModel.php:69 src/CommonDCModelDropdown.php:48
 #: src/PDU.php:169 src/NetworkEquipment.php:293
 #: src/NotificationTargetTicket.php:640 src/DeviceCase.php:57
@@ -15074,7 +15060,7 @@ msgstr ""
 msgid "Model for automatic entity transfer on inventories"
 msgstr ""
 
-#: src/Search/Provider/SQLProvider.php:5212 src/ReservationItem.php:407
+#: src/Search/Provider/SQLProvider.php:5226 src/ReservationItem.php:407
 msgid "Modify the comment"
 msgstr ""
 
@@ -15116,7 +15102,11 @@ msgid_plural "Months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Reservation.php:815
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Monthly"
+msgstr ""
+
+#: src/Reservation.php:817
 msgctxt "periodicity"
 msgid "Monthly"
 msgstr ""
@@ -15142,7 +15132,7 @@ msgstr ""
 msgid "Most popular"
 msgstr ""
 
-#: src/KnowbaseItem.php:2135
+#: src/KnowbaseItem.php:2139
 msgid "Most popular questions"
 msgstr ""
 
@@ -15225,7 +15215,7 @@ msgstr ""
 msgid "My groups"
 msgstr ""
 
-#: templates/layout/parts/user_header.html.twig src/Html.php:1357
+#: templates/layout/parts/user_header.html.twig src/Html.php:1358
 msgid "My settings"
 msgstr ""
 
@@ -15233,7 +15223,7 @@ msgstr ""
 msgid "My tasks"
 msgstr ""
 
-#: src/KnowbaseItem.php:1446
+#: src/KnowbaseItem.php:1450
 msgid "My unpublished articles"
 msgstr ""
 
@@ -15306,10 +15296,10 @@ msgstr ""
 #: src/CommonITILCost.php:440 src/CommonITILCost.php:607
 #: src/SoftwareLicense.php:352 src/SoftwareLicense.php:616
 #: src/SoftwareLicense.php:941 src/SoftwareLicense.php:1288
-#: src/Software.php:570 src/Software.php:985 src/Computer_Item.php:413
-#: src/Computer_Item.php:582 src/NetworkPort_Vlan.php:172
+#: src/Software.php:570 src/Software.php:985 src/Computer_Item.php:419
+#: src/Computer_Item.php:588 src/NetworkPort_Vlan.php:172
 #: src/NetworkPort_Vlan.php:271 src/AuthMail.php:103 src/AuthMail.php:185
-#: src/ITILCategory.php:473 src/ITILTemplateMandatoryField.php:248
+#: src/ITILCategory.php:475 src/ITILTemplateMandatoryField.php:248
 #: src/Contact_Supplier.php:304 src/NotificationTargetCronTask.php:85
 #: src/ITILTemplateHiddenField.php:232 src/Certificate_Item.php:268
 #: src/Certificate_Item.php:459 src/Group.php:240 src/Group.php:954
@@ -15327,12 +15317,12 @@ msgstr ""
 #: src/ContentTemplates/Parameters/SupplierParameters.php:68
 #: src/Item_SoftwareVersion.php:471 src/Item_SoftwareVersion.php:1127
 #: src/Item_SoftwareVersion.php:1347 src/Item_SoftwareVersion.php:1470
-#: src/Item_SoftwareVersion.php:1564 src/CommonDBTM.php:3838
+#: src/Item_SoftwareVersion.php:1564 src/CommonDBTM.php:3844
 #: src/Plugin.php:2276 src/Domain.php:110 src/Domain.php:254
 #: src/ComputerAntivirus.php:112 src/ComputerAntivirus.php:153
 #: src/ComputerAntivirus.php:322 src/OAuthClient.php:79
-#: src/Item_OperatingSystem.php:154 src/Item_OperatingSystem.php:370
-#: src/Item_OperatingSystem.php:569 src/Appliance_Item.php:315
+#: src/Item_OperatingSystem.php:156 src/Item_OperatingSystem.php:372
+#: src/Item_OperatingSystem.php:571 src/Appliance_Item.php:315
 #: src/Cable.php:133 src/DCRoom.php:81 src/DCRoom.php:282 src/DCRoom.php:456
 #: src/ReservationItem.php:186 src/ProjectTask.php:740
 #: src/NotificationTemplate.php:132 src/NotificationTemplate.php:174
@@ -15341,7 +15331,7 @@ msgstr ""
 #: src/Certificate.php:379 src/AuthLdapReplicate.php:92 src/Entity.php:761
 #: src/Console/Marketplace/SearchCommand.php:127
 #: src/Console/Plugin/ListCommand.php:100 src/Consumable.php:763
-#: src/CommonITILObject.php:9445 src/NotificationTargetMailCollector.php:79
+#: src/CommonITILObject.php:9449 src/NotificationTargetMailCollector.php:79
 #: src/Pdu_Plug.php:166 src/Agent.php:89 src/Agent.php:285
 #: src/NotificationTargetCommonITILObject.php:1931
 #: src/NotificationTargetCommonITILObject.php:1967
@@ -15372,11 +15362,6 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: js/modules/Debug/Debug.js:740
-msgctxt "debug"
-msgid "Name"
-msgstr ""
-
 #: src/Console/Plugin/InstallCommand.php:81
 msgid ""
 "Name of user used during installation script (among other things to set "
@@ -15392,7 +15377,7 @@ msgid "Natural order (old items on top, recent on bottom)"
 msgstr ""
 
 #: templates/generic_show_form.html.twig src/Printer.php:592 src/Network.php:41
-#: src/Computer.php:526 src/NetworkEquipment.php:438 src/Profile.php:2163
+#: src/Computer.php:532 src/NetworkEquipment.php:438 src/Profile.php:2163
 msgid "Network"
 msgid_plural "Networks"
 msgstr[0] ""
@@ -15443,7 +15428,7 @@ msgstr ""
 msgid "Network discovery timeout"
 msgstr ""
 
-#: src/Inventory/Conf.php:812
+#: src/Inventory/Conf.php:814
 msgid "Network drives"
 msgstr ""
 
@@ -15569,7 +15554,7 @@ msgstr[1] ""
 #: templates/pages/management/contract.html.twig
 #: templates/pages/setup/general/general_setup.html.twig
 #: templates/pages/setup/general/security_setup.html.twig
-#: templates/pages/setup/crontask/crontask.html.twig src/Html.php:6904
+#: templates/pages/setup/crontask/crontask.html.twig src/Html.php:6905
 #: src/LevelAgreement.php:193 src/Transfer.php:3888
 #: src/NotificationTargetTicket.php:187 src/Entity.php:1259 src/Entity.php:1278
 #: src/Entity.php:2336 src/Entity.php:2339 src/Entity.php:2379
@@ -15655,8 +15640,8 @@ msgstr ""
 msgid "New group in requesters"
 msgstr ""
 
-#: templates/components/form/header_content.html.twig src/KnowbaseItem.php:821
-#: src/KnowbaseItem.php:844 src/CommonDBTM.php:6389
+#: templates/components/form/header_content.html.twig src/KnowbaseItem.php:825
+#: src/KnowbaseItem.php:848 src/CommonDBTM.php:6395
 msgid "New item"
 msgstr ""
 
@@ -15724,7 +15709,7 @@ msgstr ""
 msgid "New ticket"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1235
+#: src/Dashboard/Grid.php:1203
 msgid "New tickets"
 msgstr ""
 
@@ -15746,7 +15731,7 @@ msgid "New version for plugin %s: %s"
 msgstr ""
 
 #: templates/components/pager.html.twig front/stat.graph.php:363
-#: front/stat.graph.php:364 src/Html.php:4068 src/Html.php:4282
+#: front/stat.graph.php:364 src/Html.php:4069 src/Html.php:4283
 #: src/CommonGLPI.php:1154
 msgid "Next"
 msgstr ""
@@ -15770,7 +15755,7 @@ msgstr ""
 msgid "Next escalation: %s"
 msgstr ""
 
-#: src/Html.php:6973
+#: src/Html.php:6974
 msgid "Next month"
 msgstr ""
 
@@ -15786,7 +15771,7 @@ msgstr ""
 #: templates/pages/2fa/2fa_config.html.twig
 #: templates/pages/setup/general/general_setup.html.twig src/Dropdown.php:1031
 #: src/Dropdown.php:1057 src/MailCollector.php:307
-#: src/Search/Provider/SQLProvider.php:1672 src/SavedSearch.php:105
+#: src/Search/Provider/SQLProvider.php:1676 src/SavedSearch.php:105
 #: src/SavedSearch.php:427 src/SavedSearch.php:1055 src/SavedSearch.php:1112
 #: src/RuleImportAsset.php:254 src/Item_SoftwareVersion.php:1176
 #: src/Item_RemoteManagement.php:347 src/Marketplace/View.php:1114
@@ -15824,7 +15809,7 @@ msgstr ""
 msgid "No active LDAP server found."
 msgstr ""
 
-#: src/Html.php:560
+#: src/Html.php:561
 msgid "No additional information given"
 msgstr ""
 
@@ -15851,11 +15836,11 @@ msgstr ""
 msgid "No cartridge available"
 msgstr ""
 
-#: src/Knowbase.php:157 src/Features/TreeBrowse.php:81
+#: src/Knowbase.php:158 src/Features/TreeBrowse.php:81
 msgid "No category found"
 msgstr ""
 
-#: src/Inventory/Conf.php:942
+#: src/Inventory/Conf.php:944
 msgid "No change"
 msgstr ""
 
@@ -15907,13 +15892,6 @@ msgstr ""
 
 #: src/Database.php:454
 msgid "No database"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:1034
-msgid ""
-"No debug data was found for this request immediately after it finished. Some "
-"requests like /front/locale.php will never have data as they intentionally "
-"close the session."
 msgstr ""
 
 #: src/NotificationTargetCommonITILObject.php:2160
@@ -15975,7 +15953,7 @@ msgstr ""
 msgid "No free cartridge"
 msgstr ""
 
-#: src/CommonITILObject.php:10118
+#: src/CommonITILObject.php:10122
 msgid "No generated survey"
 msgstr ""
 
@@ -16002,14 +15980,14 @@ msgstr ""
 #: templates/pages/admin/events_list.html.twig
 #: templates/components/search/display_data.html.twig
 #: templates/components/search/table.html.twig src/State.php:268
-#: src/KnowbaseItem.php:2100 src/Item_Line.php:256 src/SoftwareVersion.php:394
+#: src/KnowbaseItem.php:2104 src/Item_Line.php:256 src/SoftwareVersion.php:394
 #: src/Item_Rack.php:173 src/Item_Enclosure.php:122 src/CableStrand.php:211
 #: src/Socket.php:1013 src/ProjectCost.php:436 src/Item_Cluster.php:132
 #: src/Rule.php:3137 src/Search.php:959 src/ContractCost.php:429
 #: src/DisplayPreference.php:723 src/ITILTemplateReadonlyField.php:250
 #: src/NetworkAlias.php:415 src/Group_User.php:672 src/CommonITILCost.php:701
 #: src/SoftwareLicense.php:1176 src/Software.php:1003 src/PDU_Rack.php:332
-#: src/ITILCategory.php:518 src/ITILTemplateMandatoryField.php:270
+#: src/ITILCategory.php:520 src/ITILTemplateMandatoryField.php:270
 #: src/ITILTemplateHiddenField.php:246 src/Group.php:999
 #: src/LevelAgreement.php:491 src/Transfer.php:4169
 #: src/ITILTemplatePredefinedField.php:388 src/Item_SoftwareVersion.php:522
@@ -16169,7 +16147,7 @@ msgstr ""
 msgid "No reservable item!"
 msgstr ""
 
-#: src/Reservation.php:1108 src/Reservation.php:1190
+#: src/Reservation.php:1110 src/Reservation.php:1192
 msgid "No reservation"
 msgstr ""
 
@@ -16242,11 +16220,11 @@ msgstr ""
 msgid "No template selected"
 msgstr ""
 
-#: src/Ticket.php:4986
+#: src/Ticket.php:4998
 msgid "No ticket found."
 msgstr ""
 
-#: src/Change.php:1356 src/Ticket.php:4725 src/Ticket.php:5257
+#: src/Change.php:1356 src/Ticket.php:4725 src/Ticket.php:5269
 msgid "No ticket in progress."
 msgstr ""
 
@@ -16297,7 +16275,7 @@ msgstr ""
 msgid "Non-existent function"
 msgstr ""
 
-#: src/Dropdown.php:2308 src/Search/Provider/SQLProvider.php:5207
+#: src/Dropdown.php:2308 src/Search/Provider/SQLProvider.php:5221
 #: src/Item_Rack.php:702 src/Item_Devices.php:990 src/DBConnection.php:705
 #: src/Group_User.php:300 src/HTMLTableMain.php:281 src/PlanningRecall.php:290
 #: src/ProfileRight.php:335 src/Features/Inventoriable.php:210
@@ -16305,7 +16283,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: src/Reservation.php:812
+#: src/Reservation.php:814
 msgctxt "periodicity"
 msgid "None"
 msgstr ""
@@ -16322,7 +16300,7 @@ msgstr ""
 msgid "North"
 msgstr ""
 
-#: src/Agent.php:740 src/Agent.php:761
+#: src/Agent.php:747 src/Agent.php:768
 msgid "Not allowed"
 msgstr ""
 
@@ -16335,12 +16313,12 @@ msgctxt "status"
 msgid "Not closed"
 msgstr ""
 
-#: src/Computer_Item.php:615 src/NetworkPortConnectionLog.php:139
+#: src/Computer_Item.php:621 src/NetworkPortConnectionLog.php:139
 #: src/NetworkPort.php:1225
 msgid "Not connected"
 msgstr ""
 
-#: src/NetworkPortInstantiation.php:956
+#: src/NetworkPortInstantiation.php:957
 msgid "Not connected."
 msgstr ""
 
@@ -16352,8 +16330,8 @@ msgstr ""
 msgid "Not enough rights"
 msgstr ""
 
-#: src/Ticket.php:5987 src/Ticket.php:6043 src/Ticket.php:6063
-#: src/Ticket.php:6228
+#: src/Ticket.php:5999 src/Ticket.php:6055 src/Ticket.php:6075
+#: src/Ticket.php:6240
 #, php-format
 msgid "Not enough rights to merge tickets %d and %d"
 msgstr ""
@@ -16378,7 +16356,7 @@ msgid "Not solved"
 msgstr ""
 
 #: src/NotificationTargetTicket.php:146 src/NotificationTargetTicket.php:767
-#: src/Dashboard/Grid.php:1234 src/Ticket.php:5321
+#: src/Dashboard/Grid.php:1202 src/Ticket.php:5333
 msgid "Not solved tickets"
 msgstr ""
 
@@ -16518,7 +16496,7 @@ msgstr ""
 msgid "November"
 msgstr ""
 
-#: src/Html.php:3242 src/Html.php:3493 src/Html.php:6914
+#: src/Html.php:3243 src/Html.php:3494 src/Html.php:6915
 #: js/flatpickr_buttons_plugin.js:41
 msgid "Now"
 msgstr ""
@@ -16531,11 +16509,6 @@ msgstr ""
 #: src/Stat/Data/Sglobal/StatDataTicketNumber.php:76
 #: src/Stat/Data/Graph/StatDataTicketAverageTime.php:73
 msgctxt "Quantity"
-msgid "Number"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:503 js/modules/Debug/Debug.js:877
-msgctxt "debug"
 msgid "Number"
 msgstr ""
 
@@ -16558,13 +16531,13 @@ msgstr ""
 msgid "Number format"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1149 src/Dashboard/Grid.php:1178
-#: src/Dashboard/Grid.php:1247
+#: src/Dashboard/Grid.php:1117 src/Dashboard/Grid.php:1146
+#: src/Dashboard/Grid.php:1215
 #, php-format
 msgid "Number of %s"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1159
+#: src/Dashboard/Grid.php:1127
 #, php-format
 msgid "Number of %s by type"
 msgstr ""
@@ -16827,15 +16800,15 @@ msgstr ""
 msgid "Number of tickets as requester"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1326
+#: src/Dashboard/Grid.php:1294
 msgid "Number of tickets by SLA status and technician"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1335
+#: src/Dashboard/Grid.php:1303
 msgid "Number of tickets by SLA status and technician group"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1280
+#: src/Dashboard/Grid.php:1248
 msgid "Number of tickets by month"
 msgstr ""
 
@@ -16843,7 +16816,7 @@ msgstr ""
 msgid "Number of tries of sent"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1190
+#: src/Dashboard/Grid.php:1158
 #, php-format
 msgid "Number of type of %s"
 msgstr ""
@@ -16879,8 +16852,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: templates/install/choose_language.html.twig front/tracking.injector.php:91
-#: src/ITILCategory.php:486 src/ITILCategory.php:494 src/ITILCategory.php:502
-#: src/ITILCategory.php:510 src/Console/System/CheckRequirementsCommand.php:78
+#: src/ITILCategory.php:488 src/ITILCategory.php:496 src/ITILCategory.php:504
+#: src/ITILCategory.php:512 src/Console/System/CheckRequirementsCommand.php:78
 #: src/Printer_CartridgeInfo.php:96 js/glpi_dialog.js:79 js/glpi_dialog.js:260
 msgid "OK"
 msgstr ""
@@ -16945,7 +16918,7 @@ msgstr[1] ""
 #: src/Group.php:287 src/Group.php:514
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:76
 #: src/CommonITILObject.php:3888 src/CommonITILObject.php:4538
-#: src/CommonITILObject.php:4547 src/CommonITILObject.php:9568
+#: src/CommonITILObject.php:4547 src/CommonITILObject.php:9572
 #: src/NotificationTargetCommonITILObject.php:895
 #: src/NotificationTargetCommonITILObject.php:1959
 msgid "Observer"
@@ -17104,11 +17077,11 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:1961
 #: src/NotificationTargetCommonITILObject.php:2046
 #: src/NotificationTargetCommonITILObject.php:2109 src/Problem.php:637
-#: src/NotificationTargetProject.php:652 src/Ticket.php:5745
+#: src/NotificationTargetProject.php:652 src/Ticket.php:5757
 msgid "Opening date"
 msgstr ""
 
-#: src/Item_OperatingSystem.php:363
+#: src/Item_OperatingSystem.php:365
 msgid "Operating System"
 msgstr ""
 
@@ -17221,7 +17194,7 @@ msgstr ""
 msgid "Or complete search"
 msgstr ""
 
-#: src/Dashboard/Grid.php:847
+#: src/Dashboard/Grid.php:839
 msgid "Or share the dashboard to these target objects:"
 msgstr ""
 
@@ -17289,7 +17262,7 @@ msgid ""
 "consumables)"
 msgstr ""
 
-#: src/CommonDBTM.php:4383
+#: src/CommonDBTM.php:4389
 msgid "Other item exist"
 msgstr ""
 
@@ -17321,7 +17294,7 @@ msgstr ""
 
 #: templates/layout/parts/saved_searches.html.twig src/Dropdown.php:1274
 #: src/Log.php:947 src/Log.php:970 src/Log.php:1023 src/Log.php:1037
-#: src/Auth.php:133 src/Dashboard/Grid.php:1392
+#: src/Auth.php:133 src/Dashboard/Grid.php:1360
 msgid "Others"
 msgstr ""
 
@@ -17496,7 +17469,7 @@ msgstr ""
 msgid "Package Deployment"
 msgstr ""
 
-#: src/PrinterLog.php:57
+#: src/PrinterLog.php:58
 msgid "Page counters"
 msgstr ""
 
@@ -17673,7 +17646,7 @@ msgstr ""
 msgid "Password was used too recently."
 msgstr ""
 
-#: src/Reservation.php:1186
+#: src/Reservation.php:1188
 msgid "Past reservations"
 msgstr ""
 
@@ -17707,7 +17680,7 @@ msgstr[1] ""
 msgid "Pending reason name"
 msgstr ""
 
-#: src/Dashboard/Provider.php:374 src/Dashboard/Grid.php:1236
+#: src/Dashboard/Provider.php:374 src/Dashboard/Grid.php:1204
 msgid "Pending tickets"
 msgstr ""
 
@@ -17724,11 +17697,6 @@ msgstr ""
 #: src/ProjectTask.php:1631 src/ProjectTask_Ticket.php:381
 #: src/NotificationTargetProject.php:647 src/NotificationTargetProject.php:660
 msgid "Percent done"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:744
-msgctxt "debug"
-msgid "Percent of parent"
 msgstr ""
 
 #: src/Config.php:2544
@@ -17839,7 +17807,7 @@ msgstr ""
 msgid "Permissions for upload files"
 msgstr ""
 
-#: src/Dashboard/Grid.php:861 ajax/private_public.php:52
+#: src/Dashboard/Grid.php:853 ajax/private_public.php:52
 msgid "Personal"
 msgstr ""
 
@@ -17978,7 +17946,7 @@ msgstr ""
 msgid "Planned start date"
 msgstr ""
 
-#: src/Dashboard/Provider.php:390 src/Dashboard/Grid.php:1238
+#: src/Dashboard/Provider.php:390 src/Dashboard/Grid.php:1206
 msgid "Planned tickets"
 msgstr ""
 
@@ -18097,7 +18065,7 @@ msgid_plural "Plugs"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Search/SearchOption.php:334 src/Html.php:1333 src/Event.php:181
+#: src/Search/SearchOption.php:334 src/Html.php:1334 src/Event.php:181
 #: src/Plugin.php:144 src/Marketplace/NotificationTargetController.php:113
 msgid "Plugin"
 msgid_plural "Plugins"
@@ -18365,7 +18333,7 @@ msgid ""
 "database tables."
 msgstr ""
 
-#: src/Html.php:1551 src/Config.php:3160
+#: src/Html.php:1552 src/Config.php:3160
 msgid "Plugins"
 msgstr ""
 
@@ -18442,7 +18410,7 @@ msgstr ""
 
 #: templates/pages/admin/ldap.choose_directory.html.twig
 #: src/Ticket_Ticket.php:69 src/RuleDictionnarySoftwareCollection.php:99
-#: src/KnowbaseItem.php:1397 src/KnowbaseItem.php:1455 src/Appliance.php:480
+#: src/KnowbaseItem.php:1401 src/KnowbaseItem.php:1459 src/Appliance.php:480
 #: src/User.php:3525 src/User.php:3531 src/MassiveAction.php:923
 #: src/MassiveAction.php:1233 src/MassiveAction.php:1262
 #: src/RuleCollection.php:1432 src/Lock.php:1149 src/Lock.php:1167
@@ -18568,7 +18536,7 @@ msgid "Preview results"
 msgstr ""
 
 #: templates/components/pager.html.twig front/stat.graph.php:353
-#: front/stat.graph.php:354 src/Html.php:4048 src/Html.php:4222
+#: front/stat.graph.php:354 src/Html.php:4049 src/Html.php:4223
 #: src/CommonGLPI.php:1096
 msgid "Previous"
 msgstr ""
@@ -18615,7 +18583,7 @@ msgstr[1] ""
 msgid "Printers dictionnary"
 msgstr ""
 
-#: src/PrinterLog.php:237
+#: src/PrinterLog.php:305
 msgid "Prints"
 msgstr ""
 
@@ -18786,7 +18754,7 @@ msgid "Processors number"
 msgstr ""
 
 #: templates/pages/assets/operatingsystem.html.twig
-#: src/Item_OperatingSystem.php:350 src/Item_OperatingSystem.php:437
+#: src/Item_OperatingSystem.php:352 src/Item_OperatingSystem.php:439
 msgid "Product ID"
 msgstr ""
 
@@ -18815,21 +18783,16 @@ msgstr ""
 msgid "Profile's interface"
 msgstr ""
 
-#: js/modules/Debug/Debug.js:903
-msgctxt "debug"
-msgid "Profiler"
-msgstr ""
-
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Profiles"
 msgstr ""
 
-#: src/Html.php:1000
+#: src/Html.php:1001
 msgid "Progress"
 msgstr ""
 
-#: src/ReservationItem.php:356 src/Reservation.php:1250
-#: src/Reservation.php:1272
+#: src/ReservationItem.php:356 src/Reservation.php:1252
+#: src/Reservation.php:1274
 msgid "Prohibit reservations"
 msgstr ""
 
@@ -18903,7 +18866,7 @@ msgstr ""
 msgid "Property"
 msgstr ""
 
-#: src/Inventory/Conf.php:1070
+#: src/Inventory/Conf.php:1072
 #, php-format
 msgid "Property %1$s does not exists!"
 msgstr ""
@@ -18946,7 +18909,7 @@ msgid_plural "Public saved searches"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/KnowbaseItem.php:2464
+#: src/KnowbaseItem.php:2468
 msgid "Publish in the FAQ"
 msgstr ""
 
@@ -18968,7 +18931,7 @@ msgstr ""
 msgid "Purchase version"
 msgstr ""
 
-#: src/CommonDBTM.php:5365 src/Dashboard/Grid.php:1416 src/Profile.php:989
+#: src/CommonDBTM.php:5371 src/Dashboard/Grid.php:1384 src/Profile.php:989
 #: src/Profile.php:1001 src/Profile.php:1012 js/modules/Kanban/Kanban.js:813
 msgid "Purge"
 msgstr ""
@@ -18990,7 +18953,7 @@ msgctxt "theme"
 msgid "Purple Haze"
 msgstr ""
 
-#: src/Inventory/Conf.php:281
+#: src/Inventory/Conf.php:279
 msgid "Put asset in trashbin"
 msgstr ""
 
@@ -19000,7 +18963,7 @@ msgstr ""
 
 #: templates/components/itilobject/footer.html.twig
 #: templates/components/form/buttons.html.twig src/MassiveAction.php:790
-#: src/Transfer.php:3897 src/CommonDBTM.php:5374
+#: src/Transfer.php:3897 src/CommonDBTM.php:5380
 msgctxt "button"
 msgid "Put in trashbin"
 msgstr ""
@@ -19010,7 +18973,7 @@ msgstr ""
 msgid "Put on hold on %s"
 msgstr ""
 
-#: src/KnowbaseItem.php:976
+#: src/KnowbaseItem.php:980
 msgid "Put this item in the FAQ"
 msgstr ""
 
@@ -19022,15 +18985,10 @@ msgstr ""
 msgid "Qualification"
 msgstr ""
 
-#: js/modules/Debug/Debug.js:503
-msgctxt "debug"
-msgid "Query"
-msgstr ""
-
 #. TRANS: R for Recursive
 #. TRANS: letter 'D' for Dynamic
-#: src/Search/Provider/SQLProvider.php:4811
-#: src/Search/Provider/SQLProvider.php:4858 src/Rule.php:2058
+#: src/Search/Provider/SQLProvider.php:4825
+#: src/Search/Provider/SQLProvider.php:4872 src/Rule.php:2058
 #: src/CommonDBVisible.php:333 src/CommonDBVisible.php:361
 #: src/CommonDBVisible.php:403 src/Profile_User.php:245
 #: src/Profile_User.php:436 src/Profile_User.php:638 src/Profile_User.php:1054
@@ -19115,9 +19073,9 @@ msgstr ""
 msgid "Rate to trigger survey"
 msgstr ""
 
-#: src/Log.php:1258 src/Stat.php:1806 src/Inventory/Conf.php:1084
-#: src/CommonDBTM.php:5363 src/Report.php:582 src/ReservationItem.php:924
-#: src/Dashboard/Grid.php:1412 src/Profile.php:986 src/Profile.php:997
+#: src/Log.php:1258 src/Stat.php:1806 src/Inventory/Conf.php:1086
+#: src/CommonDBTM.php:5369 src/Report.php:582 src/ReservationItem.php:924
+#: src/Dashboard/Grid.php:1380 src/Profile.php:986 src/Profile.php:997
 #: src/Profile.php:1009 src/Profile.php:1077 src/Profile.php:1139
 #: src/Profile.php:3753 src/Reminder.php:1083 src/RSSFeed.php:1054
 msgid "Read"
@@ -19132,7 +19090,7 @@ msgstr ""
 msgid "Read helpdesk parameters"
 msgstr ""
 
-#: src/CommonDBTM.php:5378
+#: src/CommonDBTM.php:5384
 msgid "Read notes"
 msgstr ""
 
@@ -19146,11 +19104,11 @@ msgstr[1] ""
 msgid "Read parameters"
 msgstr ""
 
-#: src/KnowbaseItem.php:2467
+#: src/KnowbaseItem.php:2471
 msgid "Read the FAQ"
 msgstr ""
 
-#: src/CommonDBTM.php:5379
+#: src/CommonDBTM.php:5385
 msgid "Read the item's notes"
 msgstr ""
 
@@ -19250,7 +19208,7 @@ msgstr ""
 msgid "Receivers in error: %s"
 msgstr ""
 
-#: src/KnowbaseItem.php:2129
+#: src/KnowbaseItem.php:2133
 msgid "Recent entries"
 msgstr ""
 
@@ -19291,7 +19249,7 @@ msgid_plural "Records types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/PrinterLog.php:235
+#: src/PrinterLog.php:303
 msgid "Recto/Verso pages"
 msgstr ""
 
@@ -19364,7 +19322,7 @@ msgstr ""
 msgid "Refresh rate"
 msgstr ""
 
-#: src/Dashboard/Grid.php:622 js/dashboard.js:607
+#: src/Dashboard/Grid.php:614 js/dashboard.js:607
 msgid "Refresh this card"
 msgstr ""
 
@@ -19456,7 +19414,7 @@ msgstr ""
 msgid "Reject email"
 msgstr ""
 
-#: src/Inventory/Conf.php:575
+#: src/Inventory/Conf.php:576
 msgid "Related configurations"
 msgstr ""
 
@@ -19537,7 +19495,7 @@ msgstr ""
 msgid "Remote management"
 msgstr ""
 
-#: src/Inventory/Conf.php:827
+#: src/Inventory/Conf.php:829
 msgid "Removable drives"
 msgstr ""
 
@@ -19580,7 +19538,7 @@ msgstr ""
 msgid "Remove existing core data"
 msgstr ""
 
-#: src/CommonDBTM.php:4069
+#: src/CommonDBTM.php:4075
 msgctxt "button"
 msgid "Remove from a rack"
 msgstr ""
@@ -19650,7 +19608,7 @@ msgstr ""
 msgid "Repeater"
 msgstr ""
 
-#: src/Reservation.php:809
+#: src/Reservation.php:811
 msgid "Repetition"
 msgstr ""
 
@@ -19779,20 +19737,10 @@ msgid_plural "Reports"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ITILCategory.php:475 src/NotificationTargetChange.php:306
+#: src/ITILCategory.php:477 src/NotificationTargetChange.php:306
 #: src/NotificationTargetChange.php:311 src/NotificationTargetTicket.php:680
 #: src/NotificationTargetTicket.php:685 src/Ticket.php:3335 src/Ticket.php:3355
 msgid "Request"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:502
-msgctxt "debug"
-msgid "Request ID"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:1066
-msgctxt "debug"
-msgid "Request Summary"
 msgstr ""
 
 #: templates/components/form/inventory_info.html.twig
@@ -19854,7 +19802,7 @@ msgstr ""
 msgid "Requested approver type"
 msgstr ""
 
-#: src/Agent.php:789
+#: src/Agent.php:796
 #, php-format
 msgid "Requested at %s"
 msgstr ""
@@ -19872,7 +19820,7 @@ msgstr ""
 #: src/NotificationTargetReservation.php:63
 #: src/NotificationTargetTicket.php:676 src/CommonITILObject.php:3887
 #: src/CommonITILObject.php:4456 src/CommonITILObject.php:4465
-#: src/CommonITILObject.php:6764 src/CommonITILObject.php:9566
+#: src/CommonITILObject.php:6764 src/CommonITILObject.php:9570
 #: src/NotificationTargetPlanningRecall.php:54
 #: src/NotificationTargetCommonITILObject.php:872
 #: src/NotificationTargetCommonITILObject.php:892
@@ -19929,11 +19877,6 @@ msgstr ""
 msgid "Requests"
 msgstr ""
 
-#: templates/components/debug/debug_toolbar.html.twig
-msgctxt "debug"
-msgid "Requests"
-msgstr ""
-
 #: templates/install/blocks/requirements_table.html.twig
 #: src/Console/System/CheckRequirementsCommand.php:87
 msgid "Required"
@@ -19983,14 +19926,14 @@ msgid_plural "Reservable items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:1533 src/Event.php:162 src/Event.php:177 src/Transfer.php:3943
+#: src/Html.php:1534 src/Event.php:162 src/Event.php:177 src/Transfer.php:3943
 #: src/Entity.php:2578 src/Reservation.php:54 src/Profile.php:2510
 msgid "Reservation"
 msgid_plural "Reservations"
 msgstr[0] ""
 msgstr[1] ""
 
-#: front/reservation.form.php:162
+#: front/reservation.form.php:163
 #, php-format
 msgid "Reservation added for item %s at %s"
 msgstr ""
@@ -19999,11 +19942,11 @@ msgstr ""
 msgid "Reservation expired"
 msgstr ""
 
-#: src/Reservation.php:1024
+#: src/Reservation.php:1026
 msgid "Reservations for this item"
 msgstr ""
 
-#: src/ReservationItem.php:324 src/Reservation.php:702
+#: src/ReservationItem.php:324 src/Reservation.php:704
 msgid "Reserve an item"
 msgstr ""
 
@@ -20011,7 +19954,7 @@ msgstr ""
 msgid "Reserve this item"
 msgstr ""
 
-#: src/Reservation.php:553
+#: src/Reservation.php:555
 #, php-format
 msgid "Reserved by %s"
 msgstr ""
@@ -20077,7 +20020,7 @@ msgstr[1] ""
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:67
 #: src/CommonITILObject.php:4161 src/CommonITILObject.php:5462
-#: src/Problem.php:619 src/Ticket.php:5787
+#: src/Problem.php:619 src/Ticket.php:5799
 msgid "Resolution date"
 msgstr ""
 
@@ -20091,11 +20034,6 @@ msgstr ""
 
 #: src/Ticket.php:2300
 msgid "Resolve selected tickets"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:673
-msgctxt "debug"
-msgid "Resource Loading"
 msgstr ""
 
 #: src/CommonITILSatisfaction.php:416
@@ -20195,10 +20133,6 @@ msgstr ""
 msgid "Retrieve email (Mails receivers)"
 msgstr ""
 
-#: js/modules/Debug/Debug.js:1036
-msgid "Retry"
-msgstr ""
-
 #: src/Config.php:1244
 msgid "Reverse order (old items on bottom, recent on top)"
 msgstr ""
@@ -20238,7 +20172,7 @@ msgstr ""
 msgid "Room number"
 msgstr ""
 
-#: src/Knowbase.php:339
+#: src/Knowbase.php:341
 msgid "Root category"
 msgstr ""
 
@@ -20257,11 +20191,6 @@ msgstr ""
 
 #: src/AuthLDAP.php:549
 msgid "RootDN (for non anonymous binds)"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:503
-msgctxt "debug"
-msgid "Rows"
 msgstr ""
 
 #: src/DeviceHardDrive.php:64 src/DeviceHardDrive.php:104
@@ -20514,18 +20443,7 @@ msgstr[1] ""
 msgid "SNMP version"
 msgstr ""
 
-#: js/modules/Debug/Debug.js:897
-msgctxt "debug"
-msgid "SQL"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:1083
-msgctxt "debug"
-msgid "SQL Duration"
-msgstr ""
-
 #: templates/components/debug/debug_toolbar.html.twig
-#: js/modules/Debug/Debug.js:1081
 msgctxt "debug"
 msgid "SQL Requests"
 msgstr ""
@@ -20541,7 +20459,7 @@ msgid_plural "SQL replicas"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Html.php:1668 src/Central.php:542
+#: src/Html.php:1669 src/Central.php:542
 msgid "SQL replica: read only"
 msgstr ""
 
@@ -20609,7 +20527,7 @@ msgstr ""
 msgid "Satisfaction survey configuration (%s)"
 msgstr ""
 
-#: src/CommonITILObject.php:10115
+#: src/CommonITILObject.php:10119
 msgid "Satisfaction survey expired"
 msgstr ""
 
@@ -20633,7 +20551,7 @@ msgstr ""
 #: templates/components/search/criteria_filter_actions.html.twig
 #: src/AuthLDAP.php:720 src/AuthLDAP.php:908 src/User.php:5432
 #: src/Auth.php:1816 src/Impact.php:409 src/Impact.php:1113 src/Impact.php:1826
-#: src/Dashboard/Grid.php:875
+#: src/Dashboard/Grid.php:867
 msgid "Save"
 msgstr ""
 
@@ -20649,11 +20567,11 @@ msgstr ""
 #: templates/components/itilobject/footer.html.twig
 #: templates/components/infocom.html.twig
 #: templates/components/form/buttons.html.twig src/Item_Devices.php:755
-#: src/User.php:3365 src/Inventory/Conf.php:995 src/CommonGLPI.php:1449
+#: src/User.php:3365 src/Inventory/Conf.php:997 src/CommonGLPI.php:1449
 #: src/DomainRecordType.php:407 src/ReservationItem.php:418 src/Entity.php:1722
 #: src/Entity.php:1810 src/Entity.php:2137 src/Entity.php:2690
-#: src/Entity.php:2789 src/Entity.php:3445 src/Dashboard/Grid.php:305
-#: src/PlanningRecall.php:363 src/Reservation.php:866
+#: src/Entity.php:2789 src/Entity.php:3445 src/Dashboard/Grid.php:297
+#: src/PlanningRecall.php:363 src/Reservation.php:868
 #: src/CommonITILValidation.php:1061 src/CommonITILActor.php:229
 #: src/CommonITILActor.php:293 src/Config.php:625 src/Config.php:718
 #: src/Config.php:924 src/Config.php:1501 src/Config.php:2084
@@ -20719,7 +20637,7 @@ msgstr ""
 msgid "Scanning database for items to fix..."
 msgstr ""
 
-#: src/PrinterLog.php:233
+#: src/PrinterLog.php:301
 msgid "Scans"
 msgstr ""
 
@@ -20743,7 +20661,7 @@ msgid "Search"
 msgstr ""
 
 #: front/find_num.php:84 src/Search/Input/QueryBuilder.php:77
-#: src/KnowbaseItem.php:1343 src/AuthLDAP.php:1477 src/AuthLDAP.php:3972
+#: src/KnowbaseItem.php:1347 src/AuthLDAP.php:1477 src/AuthLDAP.php:3972
 #: src/Planning.php:477 src/ReservationItem.php:479 src/Knowbase.php:69
 msgctxt "button"
 msgid "Search"
@@ -20877,16 +20795,16 @@ msgstr ""
 msgid "See all reservable items"
 msgstr ""
 
-#: src/Ticket.php:5577
+#: src/Ticket.php:5589
 msgid "See all tickets"
 msgstr ""
 
 #. TRANS: short for : See assigned tickets (group associated)
-#: src/Ticket.php:5579
+#: src/Ticket.php:5591
 msgid "See assigned"
 msgstr ""
 
-#: src/Ticket.php:5580
+#: src/Ticket.php:5592
 msgid "See assigned tickets"
 msgstr ""
 
@@ -20895,7 +20813,7 @@ msgid "See configuration"
 msgstr ""
 
 #. TRANS: short for : See tickets created by my groups
-#: src/Ticket.php:5573
+#: src/Ticket.php:5585
 msgid "See group ticket"
 msgstr ""
 
@@ -20903,7 +20821,7 @@ msgstr ""
 msgid "See hardware of my groups"
 msgstr ""
 
-#: src/Ticket.php:5571
+#: src/Ticket.php:5583
 msgid "See my ticket"
 msgstr ""
 
@@ -20911,9 +20829,9 @@ msgstr ""
 msgid "See personnal planning"
 msgstr ""
 
-#: src/Search/Provider/SQLProvider.php:5446
-#: src/Search/Provider/SQLProvider.php:5447 src/Reservation.php:1142
-#: src/Reservation.php:1144 src/Reservation.php:1227 src/Reservation.php:1229
+#: src/Search/Provider/SQLProvider.php:5460
+#: src/Search/Provider/SQLProvider.php:5461 src/Reservation.php:1144
+#: src/Reservation.php:1146 src/Reservation.php:1229 src/Reservation.php:1231
 msgid "See planning"
 msgstr ""
 
@@ -20933,7 +20851,7 @@ msgstr ""
 msgid "See the catalog of plugins"
 msgstr ""
 
-#: src/Ticket.php:5574
+#: src/Ticket.php:5586
 msgid "See tickets created by my groups"
 msgstr ""
 
@@ -21012,7 +20930,7 @@ msgstr ""
 msgid "Selected Problem can't be loaded"
 msgstr ""
 
-#: src/Html.php:2594
+#: src/Html.php:2595
 msgid "Selection too large, massive action disabled."
 msgstr ""
 
@@ -21212,16 +21130,16 @@ msgstr ""
 #: src/Blacklist.php:245 src/Rack.php:190 src/CommonItilObject_Item.php:425
 #: src/SoftwareLicense.php:374 src/SoftwareLicense.php:628
 #: src/SoftwareLicense.php:943 src/SoftwareLicense.php:1210
-#: src/Computer_Item.php:416 src/Computer_Item.php:585 src/Peripheral.php:231
+#: src/Computer_Item.php:422 src/Computer_Item.php:591 src/Peripheral.php:231
 #: src/NotificationTargetChange.php:282 src/Certificate_Item.php:272
-#: src/RuleImportAsset.php:137 src/Computer.php:434 src/Item_Problem.php:153
+#: src/RuleImportAsset.php:137 src/Computer.php:440 src/Item_Problem.php:153
 #: src/Item_Project.php:153 src/Supplier.php:433 src/Lock.php:358
 #: src/Lock.php:457 src/ContentTemplates/Parameters/AssetParameters.php:72
 #: src/Item_SoftwareVersion.php:473 src/Item_SoftwareVersion.php:1471
-#: src/Item_SoftwareVersion.php:1565 src/CommonDBTM.php:3440
-#: src/CommonDBTM.php:4337 src/PDU.php:107 src/NetworkEquipment.php:310
-#: src/NotificationTargetTicket.php:578 src/Item_OperatingSystem.php:341
-#: src/Item_OperatingSystem.php:424 src/Certificate.php:117
+#: src/Item_SoftwareVersion.php:1565 src/CommonDBTM.php:3446
+#: src/CommonDBTM.php:4343 src/PDU.php:107 src/NetworkEquipment.php:310
+#: src/NotificationTargetTicket.php:578 src/Item_OperatingSystem.php:343
+#: src/Item_OperatingSystem.php:426 src/Certificate.php:117
 #: src/Certificate.php:391 src/Location.php:551 src/RuleImportEntity.php:123
 #: src/Domain_Item.php:256 src/RefusedEquipment.php:99
 #: src/Contract_Item.php:620 src/Item_SoftwareLicense.php:834
@@ -21244,7 +21162,6 @@ msgid "Server"
 msgstr ""
 
 #: templates/components/debug/debug_toolbar.html.twig
-#: js/modules/Debug/Debug.js:453
 msgctxt "debug"
 msgid "Server performance"
 msgstr ""
@@ -21340,7 +21257,7 @@ msgstr ""
 #: templates/layout/parts/context_links.html.twig front/rule.test.php:63
 #: front/rulesengine.test.php:68 front/dropdown.php:40
 #: front/documenttype.list.php:40 front/plugin.php:45
-#: front/displaypreference.form.php:41 src/Html.php:1346 src/Event.php:175
+#: front/displaypreference.form.php:41 src/Html.php:1347 src/Event.php:175
 #: src/Auth.php:137 src/NotificationSetting.php:96 src/Config.php:87
 #: src/Profile.php:161 src/Profile.php:170 src/Profile.php:1941
 #: src/Profile.php:1991 src/Profile.php:2565
@@ -21352,7 +21269,7 @@ msgid ""
 "Several network names available! Go to the tab 'Network Name' to manage them."
 msgstr ""
 
-#: src/Dashboard/Grid.php:295 js/dashboard.js:186
+#: src/Dashboard/Grid.php:287 js/dashboard.js:186
 msgid "Share or embed this dashboard"
 msgstr ""
 
@@ -21377,7 +21294,7 @@ msgid "Show GLPI ID"
 msgstr ""
 
 #: templates/layout/parts/context_links.html.twig
-#: src/CommonItilObject_Item.php:645 src/Ticket.php:4973
+#: src/CommonItilObject_Item.php:645 src/Ticket.php:4985
 msgid "Show all"
 msgstr ""
 
@@ -21690,7 +21607,7 @@ msgstr ""
 msgid "Solved on %s"
 msgstr ""
 
-#: src/Dashboard/Provider.php:398 src/Dashboard/Grid.php:1239
+#: src/Dashboard/Provider.php:398 src/Dashboard/Grid.php:1207
 msgid "Solved tickets"
 msgstr ""
 
@@ -21707,7 +21624,7 @@ msgstr ""
 msgid "Some optional system requirements are missing."
 msgstr ""
 
-#: src/Inventory/Conf.php:1027
+#: src/Inventory/Conf.php:1029
 #, php-format
 msgid "Some properties are not known: %1$s"
 msgstr ""
@@ -21789,11 +21706,11 @@ msgstr ""
 msgid "Specificities"
 msgstr ""
 
-#: src/Html.php:3251
+#: src/Html.php:3252
 msgid "Specify a date"
 msgstr ""
 
-#: src/Planning.php:1584 src/ReservationItem.php:490 src/Reservation.php:786
+#: src/Planning.php:1584 src/ReservationItem.php:490 src/Reservation.php:788
 msgid "Specify an end date"
 msgstr ""
 
@@ -21826,16 +21743,11 @@ msgid "Staples"
 msgstr ""
 
 #: templates/components/pager.html.twig
-#: templates/components/form/support_hours.html.twig src/Html.php:4046
-#: src/Html.php:4218 src/Planning.php:451 src/Holiday.php:56 src/Holiday.php:79
+#: templates/components/form/support_hours.html.twig src/Html.php:4047
+#: src/Html.php:4219 src/Planning.php:451 src/Holiday.php:56 src/Holiday.php:79
 #: src/Calendar_Holiday.php:147 src/APIClient.php:134
 #: src/CalendarSegment.php:363 src/CalendarSegment.php:392
 #: src/CronTask.php:1273
-msgid "Start"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:741
-msgctxt "debug"
 msgid "Start"
 msgstr ""
 
@@ -21855,8 +21767,8 @@ msgstr ""
 #: src/Planning.php:1554 src/NotificationTargetReservation.php:176
 #: src/ReservationItem.php:474 src/NotificationTargetPlanningRecall.php:251
 #: src/NotificationTargetCommonITILObject.php:2054 src/Contract.php:296
-#: src/Contract.php:526 src/Contract.php:1730 src/Reservation.php:772
-#: src/Reservation.php:1110 src/Reservation.php:1192
+#: src/Contract.php:526 src/Contract.php:1730 src/Reservation.php:774
+#: src/Reservation.php:1112 src/Reservation.php:1194
 #: src/CommonITILRecurrent.php:181 src/CommonITILRecurrent.php:309
 #: src/Contract_Item.php:344 src/Contract_Supplier.php:185
 msgid "Start date"
@@ -21876,7 +21788,7 @@ msgstr ""
 msgid "Start of the selected timeframe is not a working hour."
 msgstr ""
 
-#: src/Html.php:6543
+#: src/Html.php:6544
 msgid "Start typing to find a menu"
 msgstr ""
 
@@ -21956,10 +21868,10 @@ msgstr ""
 #: src/RuleCommonITILObject.php:818 src/Rack.php:181
 #: src/NotificationTargetContract.php:182 src/SoftwareLicense.php:486
 #: src/SoftwareLicense.php:950 src/Software.php:598 src/Peripheral.php:222
-#: src/Certificate_Item.php:468 src/Computer.php:409
+#: src/Certificate_Item.php:468 src/Computer.php:415
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:69
 #: src/Item_SoftwareVersion.php:476 src/Item_SoftwareVersion.php:1128
-#: src/Item_SoftwareVersion.php:1347 src/CommonDBTM.php:3454
+#: src/Item_SoftwareVersion.php:1347 src/CommonDBTM.php:3460
 #: src/Plugin.php:2314 src/PDU.php:150 src/Report.php:109
 #: src/NetworkEquipment.php:301 src/Cable.php:304 src/ProjectTask.php:959
 #: src/ProjectTask_Ticket.php:380 src/DatabaseInstance.php:190
@@ -21980,11 +21892,6 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: js/modules/Debug/Debug.js:879
-msgctxt "debug"
-msgid "Status"
-msgstr ""
-
 #: src/State.php:52
 msgid "Status of items"
 msgid_plural "Statuses of items"
@@ -21995,7 +21902,7 @@ msgstr[1] ""
 msgid "Status of the approval request"
 msgstr ""
 
-#: src/Computer_Item.php:166 src/Computer.php:284
+#: src/Computer_Item.php:166 src/Computer.php:290
 msgid ""
 "Status updated. The connected items have been updated using this status."
 msgstr ""
@@ -22006,11 +21913,11 @@ msgid "Status value in database"
 msgstr ""
 
 #. TRANS: short for : Steal a ticket
-#: src/Ticket.php:5587
+#: src/Ticket.php:5599
 msgid "Steal"
 msgstr ""
 
-#: src/Ticket.php:5588
+#: src/Ticket.php:5600
 msgid "Steal a ticket"
 msgstr ""
 
@@ -22049,8 +21956,8 @@ msgstr ""
 msgid "Sub-D"
 msgstr ""
 
-#: src/KnowbaseItem.php:1044 src/KnowbaseItem.php:1194
-#: src/KnowbaseItem.php:1914 src/KnowbaseItem.php:2247
+#: src/KnowbaseItem.php:1048 src/KnowbaseItem.php:1198
+#: src/KnowbaseItem.php:1918 src/KnowbaseItem.php:2251
 #: src/QueuedNotification.php:187 src/QueuedNotification.php:786
 #: src/KnowbaseItemTranslation.php:168 src/KnowbaseItemTranslation.php:239
 #: src/KnowbaseItemTranslation.php:317
@@ -22150,11 +22057,6 @@ msgstr ""
 
 #: src/ContentTemplates/TemplateDocumentation.php:92
 msgctxt "Documentation"
-msgid "Summary"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:894
-msgctxt "debug"
 msgid "Summary"
 msgstr ""
 
@@ -22384,7 +22286,7 @@ msgstr ""
 
 #: src/Stat.php:588 src/Stat/Data/Graph/StatDataTicketNumber.php:86
 #: src/CommonITILObject.php:5480 src/CommonITILObject.php:6774
-#: src/Ticket.php:5750
+#: src/Ticket.php:5762
 msgid "Take into account"
 msgstr ""
 
@@ -22400,9 +22302,9 @@ msgstr ""
 msgid "Take me home"
 msgstr ""
 
-#: src/KnowbaseItem.php:256 src/KnowbaseItem.php:1072 src/KnowbaseItem.php:2384
-#: src/KnowbaseItem.php:2402 src/KnowbaseItem.php:2420
-#: src/KnowbaseItem.php:2438 src/Console/Database/UpdateCommand.php:161
+#: src/KnowbaseItem.php:256 src/KnowbaseItem.php:1076 src/KnowbaseItem.php:2388
+#: src/KnowbaseItem.php:2406 src/KnowbaseItem.php:2424
+#: src/KnowbaseItem.php:2442 src/Console/Database/UpdateCommand.php:161
 #: src/Reminder.php:553 src/RSSFeed.php:554 src/DomainRecord.php:610
 msgid "Target"
 msgid_plural "Targets"
@@ -22535,7 +22437,7 @@ msgstr ""
 #: src/Search/SearchOption.php:217 src/Monitor.php:411
 #: src/PassiveDCEquipment.php:157 src/Enclosure.php:191 src/Printer.php:609
 #: src/Rack.php:257 src/ITILCategory.php:58 src/ITILCategory.php:160
-#: src/Peripheral.php:324 src/Computer.php:543 src/CommonDBTM.php:3493
+#: src/Peripheral.php:324 src/Computer.php:549 src/CommonDBTM.php:3499
 #: src/PDU.php:160 src/NetworkEquipment.php:455
 #: src/NotificationTargetReservation.php:56
 #: src/NotificationTargetReservation.php:181 src/Cable.php:287
@@ -22605,7 +22507,7 @@ msgstr ""
 #: src/Monitor.php:430 src/Project.php:745 src/Project.php:1581
 #: src/Budget.php:285 src/PassiveDCEquipment.php:184 src/Enclosure.php:210
 #: src/Printer.php:628 src/Rack.php:276 src/SoftwareLicense.php:505
-#: src/Software.php:458 src/Peripheral.php:343 src/Computer.php:562
+#: src/Software.php:458 src/Peripheral.php:343 src/Computer.php:568
 #: src/PDU.php:187 src/NetworkEquipment.php:474 src/ProjectTask.php:910
 #: src/Certificate.php:280 src/Contract.php:758
 msgid "Template name"
@@ -22621,7 +22523,7 @@ msgstr[1] ""
 msgid "Template variables documentation"
 msgstr ""
 
-#: templates/layout/parts/context_links.html.twig src/CommonDBTM.php:5247
+#: templates/layout/parts/context_links.html.twig src/CommonDBTM.php:5253
 msgid "Templates"
 msgstr ""
 
@@ -22717,7 +22619,7 @@ msgstr ""
 msgid "Thank you for using our automatic helpdesk system."
 msgstr ""
 
-#: src/ReservationItem.php:361 src/Reservation.php:1269
+#: src/ReservationItem.php:361 src/Reservation.php:1271
 msgid "That will remove all the reservations in progress."
 msgstr ""
 
@@ -22731,7 +22633,7 @@ msgstr ""
 msgid "The \"%s\" extension is installed"
 msgstr ""
 
-#: src/Html.php:3792
+#: src/Html.php:3793
 #, php-format
 msgid "The %s field is mandatory"
 msgstr ""
@@ -22793,7 +22695,7 @@ msgid ""
 "it."
 msgstr ""
 
-#: src/CommonITILObject.php:9495
+#: src/CommonITILObject.php:9499
 msgctxt "filters"
 msgid "The category of the item"
 msgstr ""
@@ -22817,7 +22719,7 @@ msgstr ""
 msgid "The constant %s is present."
 msgstr ""
 
-#: src/Project.php:2517 src/CommonITILObject.php:9499
+#: src/Project.php:2517 src/CommonITILObject.php:9503
 msgctxt "filters"
 msgid "The content of the item"
 msgstr ""
@@ -23007,7 +22909,7 @@ msgstr ""
 msgid "The server answered: %s"
 msgstr ""
 
-#: src/Project.php:2505 src/CommonITILObject.php:9487
+#: src/Project.php:2505 src/CommonITILObject.php:9491
 msgctxt "filters"
 msgid "The title of the item"
 msgstr ""
@@ -23016,7 +22918,7 @@ msgstr ""
 msgid "The two passwords do not match"
 msgstr ""
 
-#: src/Project.php:2509 src/CommonITILObject.php:9491
+#: src/Project.php:2509 src/CommonITILObject.php:9495
 msgctxt "filters"
 msgid "The type of the item"
 msgstr ""
@@ -23120,7 +23022,7 @@ msgstr ""
 msgid "This category contains "
 msgstr ""
 
-#: src/Knowbase.php:357
+#: src/Knowbase.php:359
 msgid "This category contains articles"
 msgstr ""
 
@@ -23145,17 +23047,17 @@ msgid ""
 "application."
 msgstr ""
 
-#: src/KnowbaseItem.php:985 src/KnowbaseItem.php:1297
+#: src/KnowbaseItem.php:989 src/KnowbaseItem.php:1301
 msgid "This item is not part of the FAQ"
 msgstr ""
 
-#: src/Search/Provider/SQLProvider.php:5520 src/KnowbaseItem.php:1989
+#: src/Search/Provider/SQLProvider.php:5534 src/KnowbaseItem.php:1993
 msgid "This item is not published yet"
 msgstr ""
 
-#: src/Search/Provider/SQLProvider.php:5515 src/KnowbaseItem.php:983
-#: src/KnowbaseItem.php:1295 src/KnowbaseItem.php:1983
-#: src/KnowbaseItem.php:2215 src/KnowbaseItem.php:2219
+#: src/Search/Provider/SQLProvider.php:5529 src/KnowbaseItem.php:987
+#: src/KnowbaseItem.php:1299 src/KnowbaseItem.php:1987
+#: src/KnowbaseItem.php:2219 src/KnowbaseItem.php:2223
 msgid "This item is part of the FAQ"
 msgstr ""
 
@@ -23267,7 +23169,7 @@ msgstr ""
 #: src/NotificationTargetProjectTask.php:674
 #: src/NotificationTargetProjectTask.php:688
 #: src/NotificationTargetProblem.php:224 src/NotificationTargetProblem.php:238
-#: src/Html.php:1513 src/Event.php:169 src/NotificationTargetChange.php:360
+#: src/Html.php:1514 src/Event.php:169 src/NotificationTargetChange.php:360
 #: src/NotificationTargetChange.php:376 src/Transfer.php:3923
 #: src/Entity.php:2597 src/Profile.php:1561
 #: src/NotificationTargetProject.php:779 src/NotificationTargetProject.php:797
@@ -23365,15 +23267,15 @@ msgstr ""
 msgid "Tickets on pending status"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1298
+#: src/Dashboard/Grid.php:1266
 msgid "Tickets status by month"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1316
+#: src/Dashboard/Grid.php:1284
 msgid "Tickets summary"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1307
+#: src/Dashboard/Grid.php:1275
 msgid "Tickets times (in hours)"
 msgstr ""
 
@@ -23385,8 +23287,8 @@ msgstr ""
 msgid "Tickets waiting for validation"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1233 src/Ticket.php:173 src/Ticket.php:175
-#: src/Ticket.php:4906
+#: src/Dashboard/Grid.php:1201 src/Ticket.php:173 src/Ticket.php:175
+#: src/Ticket.php:4918
 msgid "Tickets waiting for your approval"
 msgstr ""
 
@@ -23395,11 +23297,6 @@ msgid "Time"
 msgid_plural "Times"
 msgstr[0] ""
 msgstr[1] ""
-
-#: js/modules/Debug/Debug.js:503
-msgctxt "debug"
-msgid "Time"
-msgstr ""
 
 #: src/LevelAgreement.php:660
 msgctxt "hour"
@@ -23424,16 +23321,6 @@ msgid_plural "Time ranges"
 msgstr[0] ""
 msgstr[1] ""
 
-#: js/modules/Debug/Debug.js:671
-msgctxt "debug"
-msgid "Time to DOM complete"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:668
-msgctxt "debug"
-msgid "Time to DOM interactive"
-msgstr ""
-
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Time to allow \"Remember Me\""
 msgstr ""
@@ -23446,23 +23333,13 @@ msgstr ""
 msgid "Time to close"
 msgstr ""
 
-#: js/modules/Debug/Debug.js:652
-msgctxt "debug"
-msgid "Time to first contentful paint"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:648
-msgctxt "debug"
-msgid "Time to first paint"
-msgstr ""
-
 #: templates/components/itilobject/service_levels.html.twig
 #: src/LevelAgreement.php:912 src/SlaLevel.php:185 src/OlaLevel.php:189
 #: src/ContentTemplates/Parameters/TicketParameters.php:80
 #: src/NotificationTargetTicket.php:558 src/Dashboard/Provider.php:1578
 #: src/RuleTicket.php:231 src/RuleTicket.php:253 src/RuleTicket.php:317
 #: src/RuleTicket.php:339 src/LevelAgreementLevel.php:307 src/Ticket.php:2693
-#: src/Ticket.php:2887 src/Ticket.php:5763
+#: src/Ticket.php:2887 src/Ticket.php:5775
 msgid "Time to own"
 msgstr ""
 
@@ -23483,7 +23360,7 @@ msgstr ""
 #: src/CommonITILObject.php:6482 src/RuleTicket.php:220 src/RuleTicket.php:242
 #: src/RuleTicket.php:306 src/RuleTicket.php:328
 #: src/NotificationTargetCommonITILObject.php:1900
-#: src/LevelAgreementLevel.php:309 src/Ticket.php:2901 src/Ticket.php:5779
+#: src/LevelAgreementLevel.php:309 src/Ticket.php:2901 src/Ticket.php:5791
 msgid "Time to resolve"
 msgstr ""
 
@@ -23499,7 +23376,7 @@ msgstr ""
 msgid "Time zone"
 msgstr ""
 
-#: js/reservations.js:120
+#: js/reservations.js:124
 msgid "Timeline Week"
 msgstr ""
 
@@ -23555,16 +23432,11 @@ msgstr ""
 msgid "Timezones usage cannot be activated due to missing requirements."
 msgstr ""
 
-#: js/modules/Debug/Debug.js:665
-msgctxt "debug"
-msgid "Timings"
-msgstr ""
-
 #: src/Toolbox.php:805
 msgid "Tio"
 msgstr ""
 
-#: templates/layout/parts/profile_selector.html.twig src/Html.php:6545
+#: templates/layout/parts/profile_selector.html.twig src/Html.php:6546
 #, php-format
 msgid "Tip: You can call this modal with %s keys combination"
 msgstr ""
@@ -23580,7 +23452,7 @@ msgstr ""
 #: src/NotificationTargetChange.php:398 src/Contact.php:343
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:64
 #: src/NotificationTargetTicket.php:785 src/NotificationTargetTicket.php:798
-#: src/Dashboard/Grid.php:660 src/CommonITILObject.php:4046
+#: src/Dashboard/Grid.php:652 src/CommonITILObject.php:4046
 #: src/CommonITILObject.php:6754 src/NotificationTargetPlanningRecall.php:246
 #: src/PlanningExternalEvent.php:233
 #: src/NotificationTargetCommonITILObject.php:1883
@@ -23625,7 +23497,7 @@ msgid ""
 "disabled."
 msgstr ""
 
-#: src/Ticket.php:5592
+#: src/Ticket.php:5604
 msgid "To be in charge of a ticket"
 msgstr ""
 
@@ -23653,7 +23525,7 @@ msgstr ""
 msgid "To empty the list of elements to be transferred"
 msgstr ""
 
-#: src/Html.php:2596
+#: src/Html.php:2597
 msgid ""
 "To increase the limit: change max_input_vars or suhosin.post.max_vars in php "
 "configuration."
@@ -23676,7 +23548,7 @@ msgstr ""
 msgid "To validate"
 msgstr ""
 
-#: src/Html.php:3244 src/Html.php:3247 js/flatpickr_buttons_plugin.js:41
+#: src/Html.php:3245 src/Html.php:3248 js/flatpickr_buttons_plugin.js:41
 msgid "Today"
 msgstr ""
 
@@ -23684,7 +23556,7 @@ msgstr ""
 msgid "Toggle auto refresh"
 msgstr ""
 
-#: src/Dashboard/Grid.php:297
+#: src/Dashboard/Grid.php:289
 msgid "Toggle auto-refresh"
 msgstr ""
 
@@ -23696,15 +23568,15 @@ msgstr ""
 msgid "Toggle collapse"
 msgstr ""
 
-#: src/Dashboard/Grid.php:301
+#: src/Dashboard/Grid.php:293
 msgid "Toggle edit mode"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1394
+#: src/Dashboard/Grid.php:1362
 msgid "Toggle edit mode to edit content"
 msgstr ""
 
-#: src/Dashboard/Grid.php:302
+#: src/Dashboard/Grid.php:294
 msgid "Toggle filter mode"
 msgstr ""
 
@@ -23712,11 +23584,11 @@ msgstr ""
 msgid "Toggle filters"
 msgstr ""
 
-#: src/Dashboard/Grid.php:299
+#: src/Dashboard/Grid.php:291
 msgid "Toggle fullscreen"
 msgstr ""
 
-#: src/Dashboard/Grid.php:298
+#: src/Dashboard/Grid.php:290
 msgid "Toggle night mode"
 msgstr ""
 
@@ -23732,7 +23604,7 @@ msgstr ""
 msgid "Token"
 msgstr ""
 
-#: src/Html.php:6964
+#: src/Html.php:6965
 msgid "Tomorrow"
 msgstr ""
 
@@ -23744,8 +23616,8 @@ msgstr ""
 msgid "Too large attached file"
 msgstr ""
 
-#: src/Dropdown.php:1197 src/Html.php:1324 src/Event.php:172
-#: src/Dashboard/Grid.php:1384 src/Profile.php:160 src/Profile.php:168
+#: src/Dropdown.php:1197 src/Html.php:1325 src/Event.php:172
+#: src/Dashboard/Grid.php:1352 src/Profile.php:160 src/Profile.php:168
 #: src/Profile.php:1316 src/Profile.php:1477 src/Profile.php:2489
 #: src/Ticket.php:3173
 msgid "Tools"
@@ -23767,43 +23639,43 @@ msgstr ""
 msgid "Top right"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1365
+#: src/Dashboard/Grid.php:1333
 msgid "Top ticket's assignee groups"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1364
+#: src/Dashboard/Grid.php:1332
 msgid "Top ticket's assignees"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1342
+#: src/Dashboard/Grid.php:1310
 msgid "Top ticket's categories"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1343
+#: src/Dashboard/Grid.php:1311
 msgid "Top ticket's entities"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1345
+#: src/Dashboard/Grid.php:1313
 msgid "Top ticket's locations"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1363
+#: src/Dashboard/Grid.php:1331
 msgid "Top ticket's observer groups"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1362
+#: src/Dashboard/Grid.php:1330
 msgid "Top ticket's observers"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1344
+#: src/Dashboard/Grid.php:1312
 msgid "Top ticket's request types"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1361
+#: src/Dashboard/Grid.php:1329
 msgid "Top ticket's requester groups"
 msgstr ""
 
-#: src/Dashboard/Grid.php:1360
+#: src/Dashboard/Grid.php:1328
 msgid "Top ticket's requesters"
 msgstr ""
 
@@ -23815,16 +23687,6 @@ msgstr ""
 #: src/Consumable.php:905 src/Item_SoftwareLicense.php:502
 #: src/Cartridge.php:400 src/Cartridge.php:457
 msgid "Total"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:477
-msgctxt "debug"
-msgid "Total Execution Time"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:692
-msgctxt "debug"
-msgid "Total JS Heap"
 msgstr ""
 
 #: front/report.infocom.php:367 front/report.infocom.conso.php:339
@@ -23862,7 +23724,7 @@ msgstr ""
 msgid "Total number of reminders before automatic resolution"
 msgstr ""
 
-#: src/PrinterLog.php:227
+#: src/PrinterLog.php:295
 msgid "Total pages"
 msgstr ""
 
@@ -23872,16 +23734,6 @@ msgstr ""
 
 #: src/Budget.php:898
 msgid "Total remaining on the budget"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:675
-msgctxt "debug"
-msgid "Total resources"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:676
-msgctxt "debug"
-msgid "Total resources size"
 msgstr ""
 
 #: src/Budget.php:848 src/Budget.php:894
@@ -24034,12 +23886,12 @@ msgstr ""
 #: src/SoftwareLicense.php:394 src/SoftwareLicense.php:662
 #: src/SoftwareLicense.php:946 src/DeviceFirmware.php:54
 #: src/DeviceFirmware.php:101 src/DeviceFirmware.php:158
-#: src/DeviceFirmware.php:258 src/PDU_Rack.php:586 src/Computer_Item.php:412
+#: src/DeviceFirmware.php:258 src/PDU_Rack.php:586 src/Computer_Item.php:418
 #: src/Peripheral.php:206 src/Contact_Supplier.php:311
 #: src/Certificate_Item.php:267 src/Certificate_Item.php:463 src/Group.php:867
 #: src/Group.php:954 src/LevelAgreement.php:197 src/LevelAgreement.php:398
 #: src/LevelAgreement.php:680 src/NotificationTemplateTranslation.php:416
-#: src/Computer.php:393 src/NetworkEquipmentType.php:46
+#: src/Computer.php:399 src/NetworkEquipmentType.php:46
 #: src/Item_Problem.php:150 src/Contact.php:335
 #: src/NotificationTargetFieldUnicity.php:84 src/Item_Project.php:150
 #: src/Supplier.php:430 src/NetworkPortFiberchannelType.php:46
@@ -24081,11 +23933,6 @@ msgid "Type"
 msgid_plural "Types"
 msgstr[0] ""
 msgstr[1] ""
-
-#: js/modules/Debug/Debug.js:880
-msgctxt "debug"
-msgid "Type"
-msgstr ""
 
 #: src/Dashboard/Widget.php:1591
 msgid "Type markdown text here"
@@ -24129,11 +23976,6 @@ msgstr ""
 #: src/NotificationTargetSoftwareLicense.php:94
 #: src/NotificationTargetProject.php:629 src/NotificationTargetProject.php:737
 #: src/NotificationTargetProject.php:747 ajax/commonitilsatisfaction.php:178
-msgid "URL"
-msgstr ""
-
-#: js/modules/Debug/Debug.js:878
-msgctxt "debug"
 msgid "URL"
 msgstr ""
 
@@ -24189,7 +24031,7 @@ msgstr[1] ""
 #: templates/components/form/computervirtualmachine.html.twig
 #: src/Monitor.php:278 src/ComputerVirtualMachine.php:298
 #: src/ComputerVirtualMachine.php:477 src/ComputerVirtualMachine.php:611
-#: src/Blacklist.php:246 src/RuleImportAsset.php:140 src/Computer.php:426
+#: src/Blacklist.php:246 src/RuleImportAsset.php:140 src/Computer.php:432
 #: src/Lock.php:430 src/NetworkEquipment.php:422 src/Cluster.php:95
 #: src/RefusedEquipment.php:108 src/RefusedEquipment.php:193
 msgid "UUID"
@@ -24545,7 +24387,7 @@ msgstr ""
 msgid "Uncategorized software"
 msgstr ""
 
-#: src/Html.php:2162 src/Lock.php:917
+#: src/Html.php:2163 src/Lock.php:917
 msgid "Uncheck all"
 msgstr ""
 
@@ -24597,8 +24439,8 @@ msgstr ""
 msgid "Unit management"
 msgstr ""
 
-#: templates/components/form/inventory_info.html.twig src/Agent.php:743
-#: src/Agent.php:764 src/NetworkPort.php:1033 src/NetworkPort.php:1238
+#: templates/components/form/inventory_info.html.twig src/Agent.php:750
+#: src/Agent.php:771 src/NetworkPort.php:1033 src/NetworkPort.php:1238
 #: src/GLPINetwork.php:121 src/GLPINetwork.php:126
 #: src/Features/Inventoriable.php:206
 msgid "Unknown"
@@ -24639,7 +24481,7 @@ msgstr ""
 
 #: templates/pages/management/softwarelicense.html.twig
 #: templates/pages/management/contract.html.twig
-#: src/Search/Provider/SQLProvider.php:5198 src/NotificationAjaxSetting.php:121
+#: src/Search/Provider/SQLProvider.php:5212 src/NotificationAjaxSetting.php:121
 #: src/AuthLDAP.php:666 src/SoftwareLicense.php:1134
 #: src/SoftwareLicense.php:1161
 msgid "Unlimited"
@@ -24695,7 +24537,7 @@ msgstr ""
 msgid "Unlock forgotten locked objects"
 msgstr ""
 
-#: src/CommonDBTM.php:4054
+#: src/CommonDBTM.php:4060
 msgctxt "button"
 msgid "Unlock items"
 msgstr ""
@@ -24718,7 +24560,7 @@ msgstr ""
 msgid "Unplan"
 msgstr ""
 
-#: src/KnowbaseItem.php:1289
+#: src/KnowbaseItem.php:1293
 msgid "Unpublished"
 msgstr ""
 
@@ -24765,8 +24607,8 @@ msgstr ""
 #: templates/components/notepad/form.html.twig src/Item_Devices.php:1003
 #: src/User.php:5119 src/RuleCommonITILObject.php:96
 #: src/RuleCommonITILObject.php:100 src/MassiveAction.php:1294
-#: src/Supplier.php:396 src/CommonDBTM.php:5364 src/Marketplace/View.php:832
-#: src/Dashboard/Grid.php:1413 src/Profile.php:979 src/Profile.php:987
+#: src/Supplier.php:396 src/CommonDBTM.php:5370 src/Marketplace/View.php:832
+#: src/Dashboard/Grid.php:1381 src/Profile.php:979 src/Profile.php:987
 #: src/Profile.php:998 src/Profile.php:1010 src/Profile.php:1078
 #: src/Profile.php:1140 src/RuleAsset.php:78 src/RuleAsset.php:82
 msgid "Update"
@@ -24807,7 +24649,7 @@ msgstr ""
 msgid "Update a link with an item"
 msgstr ""
 
-#: src/Inventory/Conf.php:884
+#: src/Inventory/Conf.php:886
 msgid "Update agents who have not contacted the server for (in days)"
 msgstr ""
 
@@ -24869,7 +24711,7 @@ msgstr ""
 msgid "Update needed"
 msgstr ""
 
-#: src/CommonDBTM.php:5381
+#: src/CommonDBTM.php:5387
 msgid "Update notes"
 msgstr ""
 
@@ -24945,7 +24787,7 @@ msgstr ""
 msgid "Update the item"
 msgstr ""
 
-#: src/CommonDBTM.php:5382
+#: src/CommonDBTM.php:5388
 msgid "Update the item's notes"
 msgstr ""
 
@@ -25111,7 +24953,7 @@ msgstr ""
 msgid "Use a code from your authenticator app"
 msgstr ""
 
-#: src/KnowbaseItem.php:2071
+#: src/KnowbaseItem.php:2075
 msgid "Use as a solution"
 msgstr ""
 
@@ -25183,11 +25025,6 @@ msgid "Used"
 msgid_plural "Used"
 msgstr[0] ""
 msgstr[1] ""
-
-#: js/modules/Debug/Debug.js:691
-msgctxt "debug"
-msgid "Used JS Heap"
-msgstr ""
 
 #: src/Cartridge.php:1102
 msgid "Used cartridges"
@@ -25315,7 +25152,7 @@ msgstr ""
 msgid "User of project team"
 msgstr ""
 
-#: src/Computer_Item.php:140 src/Computer.php:278
+#: src/Computer_Item.php:140 src/Computer.php:284
 msgid ""
 "User or group updated. The connected items have been moved in the same "
 "values."
@@ -25333,7 +25170,7 @@ msgstr ""
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: templates/components/form/inventory_info.html.twig src/Agent.php:133
-#: src/Features/Inventoriable.php:191
+#: src/Agent.php:327 src/Features/Inventoriable.php:191
 msgid "Useragent"
 msgstr ""
 
@@ -25445,12 +25282,12 @@ msgstr ""
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: src/NotificationTargetChange.php:63 src/NotificationTargetChange.php:345
 #: src/NotificationTargetTicket.php:141 src/NotificationTargetTicket.php:776
-#: src/CommonITILObject.php:7167
+#: src/CommonITILObject.php:7171
 msgid "Validation request"
 msgstr ""
 
 #: src/NotificationTargetChange.php:64 src/NotificationTargetTicket.php:142
-#: src/CommonITILObject.php:7205
+#: src/CommonITILObject.php:7209
 msgid "Validation request answer"
 msgstr ""
 
@@ -25535,8 +25372,8 @@ msgstr ""
 #: src/Item_SoftwareVersion.php:93 src/Item_SoftwareVersion.php:469
 #: src/Item_SoftwareVersion.php:1129 src/Item_SoftwareVersion.php:1348
 #: src/Plugin.php:2296 src/ComputerAntivirus.php:121
-#: src/ComputerAntivirus.php:167 src/Item_OperatingSystem.php:155
-#: src/Item_OperatingSystem.php:388 src/Item_OperatingSystem.php:570
+#: src/ComputerAntivirus.php:167 src/Item_OperatingSystem.php:157
+#: src/Item_OperatingSystem.php:390 src/Item_OperatingSystem.php:572
 #: src/DatabaseInstance.php:214 src/DatabaseInstance.php:381
 #: src/DatabaseInstance.php:582 src/Console/Plugin/ListCommand.php:100
 #: src/Agent.php:126 src/Agent.php:306
@@ -25604,7 +25441,7 @@ msgctxt "urgency"
 msgid "Very low"
 msgstr ""
 
-#: src/KnowbaseItem.php:2282 src/Item_Devices.php:1005
+#: src/KnowbaseItem.php:2286 src/Item_Devices.php:1005
 msgid "View"
 msgid_plural "Views"
 msgstr[0] ""
@@ -25639,7 +25476,7 @@ msgstr ""
 msgid "View graphical representation"
 msgstr ""
 
-#: src/Ticket.php:5598
+#: src/Ticket.php:5610
 msgid "View new tickets"
 msgstr ""
 
@@ -25674,7 +25511,7 @@ msgstr ""
 msgid "Virtual memory"
 msgstr ""
 
-#: src/Inventory/Conf.php:753
+#: src/Inventory/Conf.php:755
 msgid "Virtual network cards"
 msgstr ""
 
@@ -25708,11 +25545,11 @@ msgstr[1] ""
 msgid "Visibility"
 msgstr ""
 
-#: src/KnowbaseItem.php:2299 src/Reminder.php:439
+#: src/KnowbaseItem.php:2303 src/Reminder.php:439
 msgid "Visibility end date"
 msgstr ""
 
-#: src/KnowbaseItem.php:2291 src/Reminder.php:431
+#: src/KnowbaseItem.php:2295 src/Reminder.php:431
 msgid "Visibility start date"
 msgstr ""
 
@@ -25752,11 +25589,11 @@ msgstr ""
 msgid "Visible on tickets"
 msgstr ""
 
-#: src/KnowbaseItem.php:1030
+#: src/KnowbaseItem.php:1034
 msgid "Visible since"
 msgstr ""
 
-#: src/KnowbaseItem.php:1036
+#: src/KnowbaseItem.php:1040
 msgid "Visible until"
 msgstr ""
 
@@ -25837,18 +25674,13 @@ msgstr ""
 msgid "Warning: using deprecated %s format"
 msgstr ""
 
-#: js/modules/Debug/Debug.js:503
-msgctxt "debug"
-msgid "Warnings"
-msgstr ""
-
 #: templates/components/infocom.html.twig src/Infocom.php:1326
 #: src/Infocom.php:1558
 msgid "Warranty duration"
 msgstr ""
 
 #: front/report.contract.list.php:220 front/report.year.list.php:192
-#: front/report.infocom.php:173 src/CommonDBTM.php:3514 src/Infocom.php:630
+#: front/report.infocom.php:173 src/CommonDBTM.php:3520 src/Infocom.php:630
 #: src/Infocom.php:1351
 msgid "Warranty expiration date"
 msgstr ""
@@ -25947,7 +25779,11 @@ msgstr ""
 msgid "Wednesday"
 msgstr ""
 
-#: src/Reservation.php:814
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Weekly"
+msgstr ""
+
+#: src/Reservation.php:816
 msgctxt "periodicity"
 msgid "Weekly"
 msgstr ""
@@ -26050,7 +25886,7 @@ msgstr ""
 msgid "Wifi protocol version"
 msgstr ""
 
-#: src/Inventory/Conf.php:670
+#: src/Inventory/Conf.php:672
 msgid ""
 "Will attempt to create components from VM information sent from host, do not "
 "use if you plan to inventory any VM directly!"
@@ -26082,7 +25918,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/NetworkPortConnectionLog.php:157 src/NetworkPortInstantiation.php:943
+#: src/NetworkPortConnectionLog.php:157 src/NetworkPortInstantiation.php:944
 #: src/Profile.php:736
 msgid "Without name"
 msgstr ""
@@ -26122,10 +25958,11 @@ msgid "Write access to %s has been validated."
 msgstr ""
 
 #: front/stat.tracking.php:97 src/NotificationTargetProjectTask.php:526
-#: src/KnowbaseItem.php:996 src/KnowbaseItem.php:1269 src/KnowbaseItem.php:1921
-#: src/CommonITILTask.php:880 src/ITILFollowup.php:717
-#: src/NotificationTargetReservation.php:175 src/Notepad.php:239
-#: src/CommonITILObject.php:4525 src/NotificationTargetPlanningRecall.php:244
+#: src/KnowbaseItem.php:1000 src/KnowbaseItem.php:1273
+#: src/KnowbaseItem.php:1925 src/CommonITILTask.php:880
+#: src/ITILFollowup.php:717 src/NotificationTargetReservation.php:175
+#: src/Notepad.php:239 src/CommonITILObject.php:4525
+#: src/NotificationTargetPlanningRecall.php:244
 #: src/NotificationTargetCommonITILObject.php:873
 #: src/NotificationTargetCommonITILObject.php:875
 #: src/NotificationTargetCommonITILObject.php:1925
@@ -26156,12 +25993,16 @@ msgstr ""
 msgid "Y-m-d"
 msgstr ""
 
-#: src/Agent.php:790
+#: src/Agent.php:797
 msgid "Y-m-d H:i:s"
 msgstr ""
 
 #: src/Toolbox.php:2728
 msgid "YYYY-MM-DD"
+msgstr ""
+
+#: templates/components/printer_graph_buttons.html.twig
+msgid "Yearly"
 msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:76 src/Printer_CartridgeInfo.php:168
@@ -26172,7 +26013,7 @@ msgstr ""
 #: templates/pages/2fa/2fa_config.html.twig
 #: templates/pages/setup/general/general_setup.html.twig src/Dropdown.php:1035
 #: src/Dropdown.php:1055 src/MailCollector.php:308
-#: src/Search/Provider/SQLProvider.php:1674 src/SavedSearch.php:104
+#: src/Search/Provider/SQLProvider.php:1678 src/SavedSearch.php:104
 #: src/SavedSearch.php:426 src/SavedSearch.php:1058 src/SavedSearch.php:1111
 #: src/Rule.php:2371 src/RuleImportAsset.php:275 src/RuleImportAsset.php:277
 #: src/RuleImportAsset.php:279 src/RuleImportAsset.php:298
@@ -26200,7 +26041,7 @@ msgstr ""
 msgid "Yes if equal"
 msgstr ""
 
-#: src/Html.php:6931
+#: src/Html.php:6932
 msgid "Yesterday"
 msgstr ""
 
@@ -26278,7 +26119,7 @@ msgid ""
 "now"
 msgstr ""
 
-#: src/CommonDBTM.php:5620
+#: src/CommonDBTM.php:5626
 msgid "You can define an autofill template"
 msgstr ""
 
@@ -26397,7 +26238,7 @@ msgid ""
 "deactivated or removed"
 msgstr ""
 
-#: src/Html.php:571 src/Api/API.php:1046 src/Api/API.php:1833
+#: src/Html.php:572 src/Api/API.php:1046 src/Api/API.php:1833
 #: src/Api/API.php:1964 src/Api/API.php:2098 src/Api/API.php:2705
 msgid "You don't have permission to perform this action."
 msgstr ""
@@ -26764,7 +26605,7 @@ msgstr ""
 msgid "email parameter missing"
 msgstr ""
 
-#: src/Dashboard/Grid.php:906
+#: src/Dashboard/Grid.php:898
 msgid "empty card!"
 msgstr ""
 
@@ -26911,31 +26752,31 @@ msgstr ""
 msgid "just now"
 msgstr ""
 
-#: src/Html.php:3274
+#: src/Html.php:3275
 msgid "last Friday"
 msgstr ""
 
-#: src/Html.php:3270
+#: src/Html.php:3271
 msgid "last Monday"
 msgstr ""
 
-#: src/Html.php:3275
+#: src/Html.php:3276
 msgid "last Saturday"
 msgstr ""
 
-#: src/Html.php:3269
+#: src/Html.php:3270
 msgid "last Sunday"
 msgstr ""
 
-#: src/Html.php:3273
+#: src/Html.php:3274
 msgid "last Thursday"
 msgstr ""
 
-#: src/Html.php:3271
+#: src/Html.php:3272
 msgid "last Tuesday"
 msgstr ""
 
-#: src/Html.php:3272
+#: src/Html.php:3273
 msgid "last Wednesday"
 msgstr ""
 
@@ -26959,7 +26800,7 @@ msgstr ""
 msgid "less than"
 msgstr ""
 
-#: src/KnowbaseItem.php:1020
+#: src/KnowbaseItem.php:1024
 #, php-format
 msgid "link with %1$s"
 msgstr ""
@@ -27066,7 +26907,7 @@ msgstr ""
 msgid "orientation"
 msgstr ""
 
-#: src/Dashboard/Grid.php:722
+#: src/Dashboard/Grid.php:714
 msgid "others"
 msgstr ""
 

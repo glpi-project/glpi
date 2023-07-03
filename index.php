@@ -153,35 +153,40 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             $totp->showTOTPPrompt((int) $_SESSION['mfa_pre_auth']['user']['id']);
         }
     } else {
+        // Random number for html id/label
+        $rand = mt_rand();
+
         // Regular login
         TemplateRenderer::getInstance()->display('pages/login.html.twig', [
-            'card_bg_width' => true,
-            'lang' => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
-            'title' => __('Authentication'),
-            'noAuto' => $_GET["noAUTO"] ?? 0,
-            'redirect' => $redirect,
-            'text_login' => $CFG_GLPI['text_login'],
-            'namfield' => ($_SESSION['namfield'] = uniqid('fielda')),
-            'pwdfield' => ($_SESSION['pwdfield'] = uniqid('fieldb')),
-            'rmbfield' => ($_SESSION['rmbfield'] = uniqid('fieldc')),
-            'show_lost_password' => $CFG_GLPI["notifications_mailing"]
+            'rand'                => $rand,
+            'card_bg_width'       => true,
+            'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+            'title'               => __('Authentication'),
+            'noAuto'              => $_GET["noAUTO"] ?? 0,
+            'redirect'            => $redirect,
+            'text_login'          => $CFG_GLPI['text_login'],
+            'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
+            'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),
+            'rmbfield'            => ($_SESSION['rmbfield'] = uniqid('fieldc')),
+            'show_lost_password'  => $CFG_GLPI["notifications_mailing"]
                 && countElementsInTable('glpi_notifications', [
                     'itemtype' => 'User',
                     'event' => 'passwordforget',
                     'is_active' => 1
                 ]),
-            'languages_dropdown' => Dropdown::showLanguages('language', [
-                'display' => false,
+            'languages_dropdown'  => Dropdown::showLanguages('language', [
+                'display'             => false,
+                'rand'                => $rand,
                 'display_emptychoice' => true,
-                'emptylabel' => __('Default (from user profile)'),
-                'width' => '100%'
+                'emptylabel'          => __('Default (from user profile)'),
+                'width'               => '100%'
             ]),
-            'right_panel' => strlen($CFG_GLPI['text_login']) > 0
+            'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
                 || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
                 || $CFG_GLPI["use_public_faq"],
-            'auth_dropdown_login' => Auth::dropdownLogin(false),
-            'copyright_message' => Html::getCopyrightMessage(false),
-            'errors' => $errors
+            'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
+            'copyright_message'   => Html::getCopyrightMessage(false),
+            'errors'              => $errors
         ]);
     }
 }
