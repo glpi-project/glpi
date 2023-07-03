@@ -138,7 +138,8 @@ class PrinterLog extends CommonDBChild
             'FROM'   => $this->getTable(),
             'WHERE'  => [
                 'printers_id'  => $printer->fields['id']
-            ] + $filters
+            ] + $filters,
+            'ORDER'  => 'date ASC',
         ]);
 
         $series = iterator_to_array($iterator, false);
