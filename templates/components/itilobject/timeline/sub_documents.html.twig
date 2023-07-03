@@ -32,7 +32,7 @@
  #}
 
 {% set documents = entry['documents'] ?? [] %}
-<ul class="list-group list-group-hoverable sub-documents">
+<div class="list-group list-group-hoverable sub-documents">
    {% set media_docs = documents|filter(d => d['_is_image'] or d['item']['mime'] starts with 'video') %}
    {% set other_docs = documents|filter(d => not (d['_is_image'] or d['item']['mime'] starts with 'video')) %}
 
@@ -107,11 +107,11 @@
    {% endif %}
 
    {% for document in other_docs %}
-      <li class="list-group-item border-0">
+      <div class="list-group-item border-0">
          {{ include('components/itilobject/timeline/form_document_item.html.twig', {
             'form_mode': 'view',
             'entry_i': document['item'],
          }) }}
-      </li>
+      </div>
    {% endfor %}
-</ul>
+</div>

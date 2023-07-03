@@ -336,6 +336,15 @@
             display: inline-block;
         }
     }
+
+    .sub-documents {
+        max-width: 820px;
+        min-width: 100%;
+
+        .pswp-horizontal-gallery {
+            flex-wrap: wrap;
+        }
+    }
 }
 
 #new-itilobject-form {
