@@ -729,15 +729,22 @@ window.GLPI.Debug = new class Debug {
             const total_heap = perf.memory.totalJSHeapSize / 1024 / 1024;
 
             // Non-standard feature supported by Chrome
-            content_area.find('tbody').append(`
-                <tr><th colspan="4">Memory</th></tr>
-                <tr>
-                    <th>Used JS Heap</th><td>${used_heap.toFixed(2)}mio</td>
-                    <th>Total JS Heap</th><td>${total_heap.toFixed(2)}mio</td>
-                </tr>
-                <tr>
-                    <th>JS Heap Limit</th><td>${heap_limit.toFixed(2)}mio</td>
-                </tr>
+            content_area.find('.datagrid:last').append(`
+                <<h3 class="mt-3 mb-2">Memory</h3>
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Used JS Heap</div>
+                        <div class="datagrid-content">${+used_heap.toFixed(2)}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Total JS Heap</div>
+                        <div class="datagrid-content">${+total_heap.toFixed(2)} MiB</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">JS Heap Limit</div>
+                        <div class="datagrid-content">${+heap_limit.toFixed(2)} MiB</div>
+                    </div>
+                </div>
             `);
         }
     }
