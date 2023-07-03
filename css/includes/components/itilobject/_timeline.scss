@@ -530,7 +530,9 @@
                 }
 
                 .sub-documents {
-                    width: 100%;
+                    flex-wrap: wrap;
+                    max-width: 820px;
+                    min-width: 100%;
 
                     .list-group-item {
                         width: max-content;
