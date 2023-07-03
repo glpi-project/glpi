@@ -386,7 +386,7 @@ window.GLPI.Debug = new class Debug {
     refreshWidgetButtons() {
         // Server performance
         const server_perf = this.initial_request.server_performance;
-        const memory_usage_mio = +(server_perf.memory_usage / 1024 / 1024).toFixed(2);
+        const memory_usage_mb = +(server_perf.memory_usage / 1000 / 1000).toFixed(2);
         const server_performance_button_label = `${server_perf.execution_time} <span class="text-muted"> ms using </span> ${memory_usage_mio} <span class="text-muted"> MB </span>`;
         this.getWidgetButton('server_performance').find('.debug-text').html(server_performance_button_label);
 
