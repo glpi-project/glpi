@@ -351,67 +351,6 @@ HTML;
         return new JSONResponse(null, 204, $response_headers);
     }
 
-    #[Route(path: '/Session', methods: ['POST'], security_level: Route::SECURITY_NONE, tags: ['Session'])]
-    #[Doc\Route(
-        description: 'Authenticate with the GLPI API using HTTP basic authentication or a user token.'
-    )]
-    public function startSession(Request $request): Response
-    {
-        global $CFG_GLPI;
-
-        $auth = new \Auth();
-
-        $finalize_session = static function ($session_id) use ($request) {
-            session_write_close();
-            if ($request->hasParameter('debug') && filter_var($request->getParameter('debug'), FILTER_VALIDATE_BOOLEAN)) {
-                session_id($session_id);
-                Session::setPath();
-                Session::start();
-                $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
-                session_write_close();
-            }
-        };
-
-        if ($request->hasHeader('Authorization')) {
-            $allow_basic_auth = $CFG_GLPI['enable_api_login_credentials'] ?? false;
-
-            if (!$allow_basic_auth) {
-                return new JSONResponse(null, 401, ['WWW-Authenticate' => 'Basic realm="GLPI API"']);
-            }
-            $authorization = $request->getHeader('Authorization')[0];
-            if (str_starts_with($authorization, 'Basic ')) {
-                $authorization = substr($authorization, 6);
-                $authorization = base64_decode($authorization);
-                $authorization = explode(':', $authorization);
-                if (count($authorization) === 2) {
-                    [$login, $password] = $authorization;
-                    if ($auth->login($login, $password, true, false)) {
-                        $finalize_session($_SESSION['valid_id']);
-                        return new JSONResponse(['session_token' => $_SESSION['valid_id']]);
-                    }
-                }
-            }
-        } else if ($request->hasHeader('Glpi-User-Token')) {
-            $_REQUEST['user_token'] = $request->getHeader('Glpi-User-Token')[0];
-            if ($auth->login('', '', false, false)) {
-                $finalize_session($_SESSION['valid_id']);
-                return new JSONResponse(['session_token' => $_SESSION['valid_id']]);
-            }
-        }
-        // Invalid authorization header
-        return new JSONResponse(null, 401);
-    }
-
-    #[Route(path: '/session', methods: ['DELETE'], tags: ['Session'])]
-    #[Doc\Route(
-        description: 'End the API session.'
-    )]
-    public function endSession(Request $request): Response
-    {
-        Session::destroy();
-        return new JSONResponse(null, 204);
-    }
-
     #[Route(path: '/session', methods: ['GET'], tags: ['Session'])]
     #[Doc\Route(
         description: 'Get information about the session',
