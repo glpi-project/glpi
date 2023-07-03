@@ -1920,6 +1920,7 @@ JAVASCRIPT;
             $params['value'] = floor(($params['value']) / $params['step']) * $params['step'];
         }
 
+        // Generate array keys
         $values = [];
 
         if ($params['value']) {
@@ -1944,47 +1945,46 @@ JAVASCRIPT;
             ksort($values);
         }
 
+        // Generate array values
         foreach ($values as $i => $val) {
-            if (empty($val)) {
-                if ($params['inhours']) {
-                    $day  = 0;
-                    $hour = floor($i / HOUR_TIMESTAMP);
-                } else {
-                    $day  = floor($i / DAY_TIMESTAMP);
-                    $hour = floor(($i % DAY_TIMESTAMP) / HOUR_TIMESTAMP);
-                }
-                $minute     = floor(($i % HOUR_TIMESTAMP) / MINUTE_TIMESTAMP);
-                if ($minute === '0') {
-                    $minute = '00';
-                }
-                $values[$i] = '';
-                if ($day > 0) {
-                    if (($hour > 0) || ($minute > 0)) {
-                        if ($minute < 10) {
-                             $minute = '0' . $minute;
-                        }
-
-                       //TRANS: %1$d is the number of days, %2$d the number of hours,
-                       //       %3$s the number of minutes : display 1 day 3h15
-                        $values[$i] = sprintf(
-                            _n('%1$d day %2$dh%3$s', '%1$d days %2$dh%3$s', $day),
-                            $day,
-                            $hour,
-                            $minute
-                        );
-                    } else {
-                        $values[$i] = sprintf(_n('%d day', '%d days', $day), $day);
-                    }
-                } else if ($hour > 0 || $minute > 0) {
+            if ($params['inhours']) {
+                $day  = 0;
+                $hour = floor($i / HOUR_TIMESTAMP);
+            } else {
+                $day  = floor($i / DAY_TIMESTAMP);
+                $hour = floor(($i % DAY_TIMESTAMP) / HOUR_TIMESTAMP);
+            }
+            $minute     = floor(($i % HOUR_TIMESTAMP) / MINUTE_TIMESTAMP);
+            if ($minute === '0') {
+                $minute = '00';
+            }
+            if ($day > 0) {
+                if (($hour > 0) || ($minute > 0)) {
                     if ($minute < 10) {
-                        $minute = '0' . $minute;
+                         $minute = '0' . $minute;
                     }
 
-                   //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
-                    $values[$i] = sprintf(__('%1$dh%2$s'), $hour, $minute);
+                   //TRANS: %1$d is the number of days, %2$d the number of hours,
+                   //       %3$s the number of minutes : display 1 day 3h15
+                    $values[$i] = sprintf(
+                        _n('%1$d day %2$dh%3$s', '%1$d days %2$dh%3$s', $day),
+                        $day,
+                        $hour,
+                        $minute
+                    );
+                } else {
+                    $values[$i] = sprintf(_n('%d day', '%d days', $day), $day);
                 }
+            } else if ($hour > 0 || $minute > 0) {
+                if ($minute < 10) {
+                    $minute = '0' . $minute;
+                }
+
+               //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
+                $values[$i] = sprintf(__('%1$dh%2$s'), $hour, $minute);
             }
         }
+
         return Dropdown::showFromArray($myname, $values, [
             'value'               => $params['value'],
             'display'             => $params['display'],
