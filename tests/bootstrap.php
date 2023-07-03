@@ -110,7 +110,7 @@ function loadDataset()
    // Unit test data definition
     $data = [
       // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.10',
+        '_version' => '4.11',
 
       // Type => array of entries
         'Entity' => [
@@ -303,7 +303,15 @@ function loadDataset()
                 'completename' => '_cat_1 > _subcat_1',
                 'comment'      => 'Comment for sub-category _subcat_1',
                 'level'        => 2,
-            ]
+            ],
+            [
+                'is_recursive' => 1,
+                'taskcategories_id' => '_cat_1',
+                'name'         => 'R&#38;D', // sanitized value for "R&D"
+                'completename' => '_cat_1 > R&#38;D',
+                'comment'      => 'Comment for sub-category _subcat_2',
+                'level'        => 2,
+            ],
         ], 'DropdownTranslation' => [
             [
                 'items_id'   => '_cat_1',
