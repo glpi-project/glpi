@@ -730,7 +730,7 @@ window.GLPI.Debug = new class Debug {
 
             // Non-standard feature supported by Chrome
             content_area.find('.datagrid:last').append(`
-                <<h3 class="mt-3 mb-2">Memory</h3>
+                <h3 class="mt-3 mb-2">Memory</h3>
                 <div class="datagrid">
                     <div class="datagrid-item">
                         <div class="datagrid-title">Used JS Heap</div>
