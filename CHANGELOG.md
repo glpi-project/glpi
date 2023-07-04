@@ -93,6 +93,7 @@ The present file will list all changes made to the project; according to the
 - `QueryParam` class moved to `Glpi\DBAL` namespace.
 - `QuerySubQuery` class moved to `Glpi\DBAL` namespace.
 - `QueryUnion` class moved to `Glpi\DBAL` namespace.
+- `PrinterLog::getMetrics()` method has been made final.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.

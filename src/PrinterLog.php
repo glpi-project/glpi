@@ -113,13 +113,13 @@ class PrinterLog extends CommonDBChild
      *
      * @return array An array of printer metrics data
      */
-    public function getMetrics(
+    final public function getMetrics(
         Printer $printer,
-        $user_filters = [],
-        $interval = 'P1Y',
-        $start_date = null,
-        $end_date = new DateTime(),
-        $format = 'dynamic'
+        array $user_filters = [],
+        string $interval = 'P1Y',
+        ?DateTime $start_date = null,
+        DateTime $end_date = new DateTime(),
+        string $format = 'dynamic'
     ): array {
         global $DB;
 
