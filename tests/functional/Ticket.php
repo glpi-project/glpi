@@ -1837,6 +1837,129 @@ class Ticket extends DbTestCase
         }
     }
 
+    public function testCloneActor()
+    {
+        $this->login();
+        $this->setEntity('Root entity', true);
+        $ticket = getItemByTypeName('Ticket', '_ticket01');
+
+        $ticket_user = new Ticket_User();
+        $this->integer((int)$ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'post-only', true), //requester
+            'type' => 1
+        ]))->isGreaterThan(0);
+
+        $this->integer($ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'tech', true), //assign
+            'type' => 2
+        ]))->isGreaterThan(0);
+
+        $this->integer($ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'normal', true), //observer
+            'type' => 3
+        ]))->isGreaterThan(0);
+
+        $group_ticket = new Group_Ticket();
+        $this->integer($group_ticket->add([
+            'tickets_id' => $ticket->getID(),
+            'groups_id' => (int)getItemByTypeName('Group', '_test_group_1', true), //observer
+            'type' => 3
+        ]))->isGreaterThan(0);
+
+        $this->integer($group_ticket->add([
+            'tickets_id' => $ticket->getID(),
+            'groups_id' => (int)getItemByTypeName('Group', '_test_group_2', true), //assign
+            'type' => 3
+        ]))->isGreaterThan(0);
+
+
+
+        $date = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date;
+
+       // Test item cloning
+        $added = $ticket->clone();
+        $this->integer((int)$added)->isGreaterThan(0);
+
+        $clonedTicket = new \Ticket();
+        $this->boolean($clonedTicket->getFromDB($added))->isTrue();
+
+        // Check timeline items are not cloned except log
+        $this->integer(count($clonedTicket->getTimelineItems([
+            'with_logs'         => false,
+        ])))->isEqualTo(0);
+
+        $this->integer(count($clonedTicket->getTimelineItems([
+            'with_logs'         => true,
+        ])))->isEqualTo(6);
+        //User: Add a link with an item: 3 times
+        //Group: Add a link with an item: 2 times
+        //Status: Change New to Processing (assigned): once
+
+        //check actors
+        $this->boolean($ticket_user->getFromDBByCrit([
+            'tickets_id' => $clonedTicket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'post-only', true), //requester
+            'type' => 1
+        ]))->isTrue();
+
+        $this->boolean($ticket_user->getFromDBByCrit([
+            'tickets_id' => $clonedTicket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'tech', true), //assign
+            'type' => 2
+        ]))->isTrue(0);
+
+        $this->boolean($ticket_user->getFromDBByCrit([
+            'tickets_id' => $clonedTicket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'normal', true), //observer
+            'type' => 3
+        ]))->isTrue(0);
+
+        $this->boolean($group_ticket->getFromDBByCrit([
+            'tickets_id' => $clonedTicket->getID(),
+            'groups_id' => (int)getItemByTypeName('Group', '_test_group_1', true), //observer
+            'type' => 3
+        ]))->isTrue(0);
+
+        $this->boolean($group_ticket->getFromDBByCrit([
+            'tickets_id' => $clonedTicket->getID(),
+            'groups_id' => (int)getItemByTypeName('Group', '_test_group_2', true), //assign
+            'type' => 3
+        ]))->isTrue(0);
+
+
+
+        $fields = $ticket->fields;
+       // Check the ticket values. Id and dates must be different, everything else must be equal
+        foreach ($fields as $k => $v) {
+            switch ($k) {
+                case 'id':
+                    $this->variable($clonedTicket->getField($k))->isNotEqualTo($ticket->getField($k));
+                    break;
+                case 'date_mod':
+                case 'date_creation':
+                    $dateClone = new \DateTime($clonedTicket->getField($k));
+                    $expectedDate = new \DateTime($date);
+                    $this->dateTime($dateClone)->isEqualTo($expectedDate);
+                    break;
+                case 'name':
+                    $this->variable($clonedTicket->getField($k))->isEqualTo("{$ticket->getField($k)} (copy)");
+                    break;
+                default:
+                    $this->executeOnFailure(
+                        function () use ($k) {
+                            dump($k);
+                        }
+                    )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k));
+            }
+        }
+
+
+    }
+
     protected function testGetTimelinePosition2($tlp, $tickets_id)
     {
         foreach ($tlp as $users_name => $user) {

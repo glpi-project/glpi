@@ -2728,7 +2728,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function getCloneRelations(): array
     {
-        return [];
+        return [$this->userlinkclass, $this->grouplinkclass];
     }
 
 
