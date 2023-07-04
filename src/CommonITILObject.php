@@ -2729,7 +2729,7 @@ abstract class CommonITILObject extends CommonDBTM
     public function getCloneRelations(): array
     {
         $relations = [];
-        
+
         if (is_a($this->userlinkclass, CommonITILActor::class, true)) {
             $relations[] = $this->userlinkclass;
         }
@@ -2739,7 +2739,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (is_a($this->supplierlinkclass, CommonITILActor::class, true)) {
             $relations[] = $this->supplierlinkclass;
         }
-        
+
         return $relations;
     }
 
