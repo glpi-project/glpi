@@ -115,10 +115,10 @@
 
 <script>
     var date_range_data = {
-        'format': '{{ format }}',
-        'interval': '{{ interval }}',
-        'start_date': '{{ start_date }}',
-        'end_date': '{{ end_date }}',
+        'format': {{ format|json_encode|raw }},
+        'interval': {{ interval|json_encode|raw }},
+        'start_date': {{ start_date|json_encode|raw }},
+        'end_date': {{ end_date|json_encode|raw }},
     }
 
     function reloadTab_{{ options['rand'] }}() {
@@ -194,7 +194,7 @@
         });
 
         {% if start_date and end_date %}
-            range_date._flatpickr.setDate([new Date('{{ start_date }}'), new Date('{{ end_date }}')]);
+            range_date._flatpickr.setDate([new Date({{ start_date|json_encode|raw }}), new Date({{ end_date|json_encode|raw }})]);
         {% endif %}
     });
 </script>
