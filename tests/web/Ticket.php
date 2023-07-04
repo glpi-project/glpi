@@ -42,6 +42,46 @@ class Ticket extends \FrontBaseClass
 {
     public function testTicketCreate()
     {
+        $this->addToCleanup(\Ticket::class, ['name' => ['LIKE', '%thetestuuidtoremove']]);
+
+        //create non panther browser
+        $http_client = new HttpBrowser();
+
+        //login
+        $crawler = $http_client->request('GET', $this->base_uri . 'index.php');
+        $login_name = $crawler->filter('#login_name')->attr('name');
+        $pass_name = $crawler->filter('input[type=password]')->attr('name');
+        $form = $crawler->selectButton('submit')->form();
+        $form[$login_name] = TU_USER;
+        $form[$pass_name] = TU_PASS;
+        //proceed form submission
+        $crawler = $http_client->submit($form);
+        $page_title = $crawler->filter('title')->text();
+        $this->string($page_title)->isIdenticalTo('Standard interface - GLPI');
+
+        //load ticket form
+        $crawler = $http_client->request('GET', $this->base_uri . 'front/ticket.form.php');
+
+        $crawler = $http_client->request(
+            'POST',
+            $this->base_uri . 'front/ticket.form.php',
+            [
+                'add'  => true,
+                'name' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
+                'content' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value')
+            ]
+        );
+
+        $ticket = new \Ticket();
+        $this->boolean($ticket->getFromDBByCrit(['name' => ['LIKE', '%thetestuuidtoremove']]))->isTrue();
+        $this->string(Sanitizer::unsanitize($ticket->fields['name'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
+        $this->string(Sanitizer::unsanitize($ticket->fields['content'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
+    }
+
+    /*public function testTicketCreatePanther()
+    {
         $this->logIn();
         $this->addToCleanup(\Ticket::class, ['name' => ['LIKE', '%thetestuuidtoremove']]);
 
@@ -63,5 +103,5 @@ class Ticket extends \FrontBaseClass
         $this->boolean($ticket->getFromDBByCrit(['name' => ['LIKE', '%thetestuuidtoremove']]))->isTrue();
         $this->string(Sanitizer::unsanitize($ticket->fields['name'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
         $this->string(Sanitizer::unsanitize($ticket->fields['content'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
-    }
+    }*/
 }
