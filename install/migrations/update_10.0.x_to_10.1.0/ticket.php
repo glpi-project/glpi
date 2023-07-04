@@ -42,8 +42,8 @@ $migration->addRight('ticket', \Ticket::READNEWTICKET, [
     'ticket' => \Ticket::ASSIGN
 ]);
 
-if (!$DB->fieldExists('glpi_tickets', 'external_id')) {
-    $migration->addField('glpi_tickets', 'external_id', 'string', [
+if (!$DB->fieldExists('glpi_tickets', 'externalid')) {
+    $migration->addField('glpi_tickets', 'externalid', 'string', [
         'null' => true,
     ]);
 }
