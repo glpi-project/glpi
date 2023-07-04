@@ -1981,8 +1981,6 @@ class Ticket extends DbTestCase
                     )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k));
             }
         }
-
-
     }
 
     protected function testGetTimelinePosition2($tlp, $tickets_id)
