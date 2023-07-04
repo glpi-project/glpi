@@ -1856,6 +1856,19 @@ class Ticket extends DbTestCase
             'type' => 2
         ]))->isGreaterThan(0);
 
+        $ticket_Supplier = new Supplier_Ticket();
+        $this->integer((int)$ticket_Supplier->add([
+            'tickets_id' => $ticket->getID(),
+            'suppliers_id' => (int)getItemByTypeName('Supplier', '_suplier01_name', true), //observer
+            'type' => 3
+        ]))->isGreaterThan(0);
+
+        $this->integer((int)$ticket_Supplier->add([
+            'tickets_id' => $ticket->getID(),
+            'suppliers_id' => (int)getItemByTypeName('Supplier', '_suplier02_name', true), //requester
+            'type' => 1
+        ]))->isGreaterThan(0);
+
         $this->integer($ticket_user->add([
             'tickets_id' => $ticket->getID(),
             'users_id' => (int)getItemByTypeName('User', 'normal', true), //observer
@@ -1894,8 +1907,8 @@ class Ticket extends DbTestCase
 
         $this->integer(count($clonedTicket->getTimelineItems([
             'with_logs'         => true,
-        ])))->isEqualTo(6);
-        //User: Add a link with an item: 3 times
+        ])))->isEqualTo(8);
+        //User: Add a link with an item: 5 times
         //Group: Add a link with an item: 2 times
         //Status: Change New to Processing (assigned): once
 
@@ -1910,25 +1923,37 @@ class Ticket extends DbTestCase
             'tickets_id' => $clonedTicket->getID(),
             'users_id' => (int)getItemByTypeName('User', 'tech', true), //assign
             'type' => 2
-        ]))->isTrue(0);
+        ]))->isTrue();
 
         $this->boolean($ticket_user->getFromDBByCrit([
             'tickets_id' => $clonedTicket->getID(),
             'users_id' => (int)getItemByTypeName('User', 'normal', true), //observer
             'type' => 3
-        ]))->isTrue(0);
+        ]))->isTrue();
+
+        $this->boolean($ticket_Supplier->getFromDBByCrit([
+            'tickets_id' => $ticket->getID(),
+            'suppliers_id' => (int)getItemByTypeName('Supplier', '_suplier01_name', true), //observer
+            'type' => 3
+        ]))->isTrue();
+
+        $this->boolean($ticket_Supplier->getFromDBByCrit([
+            'tickets_id' => $ticket->getID(),
+            'suppliers_id' => (int)getItemByTypeName('Supplier', '_suplier02_name', true), //requester
+            'type' => 1
+        ]))->isTrue();
 
         $this->boolean($group_ticket->getFromDBByCrit([
             'tickets_id' => $clonedTicket->getID(),
             'groups_id' => (int)getItemByTypeName('Group', '_test_group_1', true), //observer
             'type' => 3
-        ]))->isTrue(0);
+        ]))->isTrue();
 
         $this->boolean($group_ticket->getFromDBByCrit([
             'tickets_id' => $clonedTicket->getID(),
             'groups_id' => (int)getItemByTypeName('Group', '_test_group_2', true), //assign
             'type' => 3
-        ]))->isTrue(0);
+        ]))->isTrue();
 
 
 
