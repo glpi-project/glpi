@@ -2189,6 +2189,67 @@ class AuthLDAP extends DbTestCase
         $this->integer($user->fields['is_deleted_ldap'])->isEqualTo(0);
     }
 
+    /**
+     * @extensions ldap
+     */
+    public function testLdapDeletionOnLogin()
+    {
+        $connection = $this->ldap->connect();
+        $this->checkLdapConnection($connection);
+
+        // Add a new user in directory
+        $this->boolean(
+            ldap_add(
+                $connection,
+                'uid=logintest,ou=people,ou=ldap3,dc=glpi,dc=org',
+                [
+                    'uid'          => 'logintest',
+                    'sn'           => 'A SN',
+                    'cn'           => 'A CN',
+                    'userpassword' => 'password',
+                    'objectClass'  => [
+                        'top',
+                        'inetOrgPerson'
+                    ]
+                ]
+            )
+        )->isTrue();
+
+        //Import user that doesn't exist yet
+        $auth = $this->login('logintest', 'password');
+
+        $user = new \User();
+        $user->getFromDBbyName('logintest');
+        $this->array($user->fields)
+            ->string['name']->isIdenticalTo('logintest')
+            ->string['user_dn']->isIdenticalTo('uid=logintest,ou=people,ou=ldap3,dc=glpi,dc=org');
+        $this->boolean($auth->user_present)->isFalse();
+        $this->boolean($auth->user_dn)->isFalse();
+        $this->checkLdapConnection($auth->ldap_connection);
+
+        // Add a second LDAP server that is accessible but where user will not be found.
+        $input = $this->ldap->fields;
+        unset($input['id']);
+        $input['rootdn_passwd'] = 'insecure'; // cannot reuse encrypted password from `$this->ldap->fields`
+        $input['basedn'] = 'dc=notglpi'; // use a non-matching base DN to ensure user cannot login on it
+        $ldap = new \AuthLDAP();
+        $this->integer($ldap->add($input))->isGreaterThan(0);
+
+        // Delete the user
+        $this->boolean(
+            ldap_delete(
+                $connection,
+                'uid=logintest,ou=people,ou=ldap3,dc=glpi,dc=org'
+            )
+        )->isTrue();
+
+        $auth = new \Auth();
+        $this->boolean($auth->login('logintest', 'password'))->isFalse();
+
+        $user->getFromDBbyName('logintest');
+        $this->integer($user->fields['is_deleted_ldap'])->isEqualTo(1);
+    }
+
     private function checkLdapConnection($ldap_connection)
     {
         if (version_compare(phpversion(), '8.1.0-dev', '<')) {

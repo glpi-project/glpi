@@ -283,7 +283,8 @@ class Auth extends CommonGLPI
                 $info = false;
             }
 
-            if ($info === false && ldap_errno($this->ldap_connection) !== 32) {
+            $ldap_errno = ldap_errno($this->ldap_connection);
+            if ($info === false && $ldap_errno > 0 && $ldap_errno !== 32) {
                 // 32 = LDAP_NO_SUCH_OBJECT => This should not be considered as a connection error, as it just means that user was not found.
                 $this->addToError(__('Unable to connect to the LDAP directory'));
                 $error = true;
@@ -943,7 +944,7 @@ class Auth extends CommonGLPI
                                 $login_password,
                                 $this->user->fields["auths_id"]
                             );
-                            if ($this->user_ldap_error === false && (!$this->auth_succeded && !$this->user_found)) {
+                            if ($this->user_ldap_error === false && !$this->auth_succeded && !$this->user_found) {
                                  // Mark user as deleted, unless an error occured during connection to user LDAP server.
                                  $search_params = [
                                      'name'     => addslashes($login_name),
