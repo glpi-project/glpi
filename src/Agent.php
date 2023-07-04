@@ -327,13 +327,6 @@ class Agent extends CommonDBTM
             'datatype'   => 'text',
         ] + $baseopts;
 
-        $tab[] = [
-            'id'         => 907,
-            'field'      => 'tag',
-            'name'       => __('TAG'),
-            'datatype'   => 'text',
-        ] + $baseopts;
-
         return $tab;
     }
 
