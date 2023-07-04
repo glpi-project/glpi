@@ -1746,6 +1746,11 @@ class CommonDBTM extends CommonGLPI
                 if ($lock == 'states_id' && $config['states_id_default']) {
                     continue;
                 }
+                //bypass for entities_id // default inventory conf is 0 'root entity')
+                if ($lock == 'entities_id') {
+                    continue;
+                }
+
                 if (array_key_exists($lock, $this->input)) {
                     $lockedfield->setLastValue($this->getType(), 0, $lock, $this->input[$lock]);
                     unset($this->input[$lock]);
