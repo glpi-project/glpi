@@ -351,6 +351,7 @@ window.GLPI.Debug = new class Debug {
         $('.debug-logo').prop('disabled', true);
         $('.debug-toolbar-content').removeClass('d-none');
         $('#debug-toolbar').addClass('w-100').css('width', null);
+        $('body').removeClass('debug-folded');
     }
 
     hideDebugToolbar() {
@@ -358,6 +359,7 @@ window.GLPI.Debug = new class Debug {
         $('.debug-toolbar-content').addClass('d-none');
         $('#debug-toolbar-expanded-content').addClass('d-none');
         $('#debug-toolbar').removeClass('w-100').css('width', 'fit-content');
+        $('body').addClass('debug-folded');
     }
 
     toggleExtraContentArea(force_show = false) {
