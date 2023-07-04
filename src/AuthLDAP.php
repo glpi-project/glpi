@@ -3076,7 +3076,8 @@ class AuthLDAP extends CommonDBTM
                     "Unable to connect to LDAP server %s:%s",
                     $host,
                     $port
-                )
+                ),
+                E_USER_WARNING
             );
             return false;
         }

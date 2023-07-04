@@ -2151,9 +2151,15 @@ class AuthLDAP extends DbTestCase
         $this->boolean($auth->user_dn)->isFalse();
         $this->checkLdapConnection($auth->ldap_connection);
 
-        // Get original LDAP server port
-        $original_port = $this->ldap->fields['port'];
-        // Update LDAP to have inaccessible server
+        // Add a second LDAP server that is accessible but where user will not be found.
+        $input = $this->ldap->fields;
+        unset($input['id']);
+        $input['rootdn_passwd'] = 'insecure'; // cannot reuse encrypted password from `$this->ldap->fields`
+        $input['basedn'] = 'dc=notglpi'; // use a non-matching base DN to ensure user cannot login on it
+        $ldap = new \AuthLDAP();
+        $this->integer($ldap->add($input))->isGreaterThan(0);
+
+        // Update first LDAP server to make it inaccessible.
         $this->boolean(
             $this->ldap->update([
                 'id'     => $this->ldap->getID(),
@@ -2161,15 +2167,21 @@ class AuthLDAP extends DbTestCase
             ])
         )->isTrue();
 
-        $auth = $this->login('brazil5', 'password', false, false);
-
-        // Restore original port
-        $this->boolean(
-            $this->ldap->update([
-                'id'     => $this->ldap->getID(),
-                'port'   => $original_port,
-            ])
-        )->isTrue();
+        $this->when(
+            function () {
+                $this->login('brazil5', 'password', false, false);
+            }
+        )
+            // AuthLDAP::tryToConnectToServer() will first try to bind connection with root DN
+            ->error()
+                ->withType(E_USER_WARNING)
+                ->withMessage("Unable to bind to LDAP server `openldap:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)")
+                ->exists()
+            // then will try to bind connection with user DN (login)
+            ->error()
+                ->withType(E_USER_WARNING)
+                ->withMessage("Unable to bind to LDAP server `openldap:1234` with RDN `brazil5`\nerror: Can't contact LDAP server (-1)")
+                ->exists();
 
         $user->getFromDBbyName('brazil5');
         // Verify trying to log in while LDAP unavailable does not disable user's GLPI account
