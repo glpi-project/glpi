@@ -491,7 +491,7 @@ class DisplayPreference extends CommonDBTM
 
         for ($key = array_search($search_option_key, $search_options_keys) - 1; $key > 0; $key--) {
             if (is_string($search_options_keys[$key])) {
-                return $search_options[$search_options_keys[$key]]['name'] . " - ";
+                return ($search_options[$search_options_keys[$key]]['name'] ?? $key) . " - ";
             }
         }
 
