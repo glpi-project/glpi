@@ -45,11 +45,49 @@ use Glpi\Http\Response;
  */
 class HLAPITestCase extends \DbTestCase
 {
+    private $bearer_token = null;
+
     public function afterTestMethod($method)
     {
         // kill session
         Session::destroy();
         parent::afterTestMethod($method);
+    }
+
+    protected function loginWeb(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): \Auth
+    {
+        return parent::login($user_name, $user_pass, $noauto, $expected);
+    }
+
+    protected function login(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): \Auth
+    {
+        $request = new Request('POST', '/token', [
+            'Content-Type' => 'application/json'
+        ], json_encode([
+            'grant_type' => 'password',
+            'client_id' => TU_OAUTH_CLIENT_ID,
+            'client_secret' => TU_OAUTH_CLIENT_SECRET,
+            'username' => $user_name,
+            'password' => $user_pass,
+            'scope' => ''
+        ]));
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['token_type', 'expires_in', 'access_token', 'refresh_token']);
+                    $this->string($content['token_type'])->isEqualTo('Bearer');
+                    $this->string($content['access_token'])->isNotEmpty();
+                    $this->bearer_token = $content['access_token'];
+                });
+        });
+        return new \Auth();
+    }
+
+    public function getCurrentBearerToken(): ?string
+    {
+        return $this->bearer_token;
     }
 
     protected function checkSimpleContentExpect(array $content, array $expected): void
@@ -109,7 +147,9 @@ final class HLAPIHelper
 
     public function hasMatch(Request $request)
     {
-        $request = $request->withHeader('Glpi-Session-Token', session_id());
+        if ($this->test->getCurrentBearerToken() !== null) {
+            $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
+        }
         $match = $this->router->match($request);
         $is_default_route = false;
         if (
@@ -126,10 +166,10 @@ final class HLAPIHelper
      * @param callable(HLAPICallAsserter): void $fn
      * @return self
      */
-    public function call(Request $request, callable $fn, bool $auto_session_header = true): self
+    public function call(Request $request, callable $fn, bool $auto_auth_header = true): self
     {
-        if ($auto_session_header) {
-            $request = $request->withHeader('Glpi-Session-Token', session_id());
+        if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
+            $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
         }
         $response = $this->router->handleRequest($request);
         $fn(new HLAPICallAsserter($this->test, $this->router, $response));

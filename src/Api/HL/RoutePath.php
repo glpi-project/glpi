@@ -98,6 +98,11 @@ final class RoutePath
     private int $security;
 
     /**
+     * @var AbstractController|null The controller instance
+     */
+    private $controller_instance;
+
+    /**
      * @param class-string<AbstractController> $class
      * @param string $method
      */
@@ -249,12 +254,11 @@ final class RoutePath
     public function getControllerInstance(): AbstractController
     {
         /** @var ?AbstractController $instance */
-        static $instance = null;
-        if ($instance === null) {
+        if ($this->controller_instance === null) {
             $this->hydrate();
-            $instance = $this->controller->newInstance();
+            $this->controller_instance = $this->controller->newInstance();
         }
-        return $instance;
+        return $this->controller_instance;
     }
 
     /**
