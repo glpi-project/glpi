@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\Panther\Client;
 
 class FrontBaseClass extends \GLPITestCase
