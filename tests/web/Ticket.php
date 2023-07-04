@@ -53,7 +53,7 @@ class Ticket extends \FrontBaseClass
         $this->http_client->executeScript("tinymce.get('$tinyid').setContent('A \'test\' > \"ticket\" & name thetestuuidtoremove');");
         $this->http_client->takeScreenshot('ticket_add.png'); // see if that works...
         $this->http_client->submitForm(
-            'Add',
+            'add_btn',
             [
                 'name' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
             ]
@@ -62,5 +62,6 @@ class Ticket extends \FrontBaseClass
         $ticket = new \Ticket();
         $this->boolean($ticket->getFromDBByCrit(['name' => ['LIKE', '%thetestuuidtoremove']]))->isTrue();
         $this->string(Sanitizer::unsanitize($ticket->fields['name'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
+        $this->string(Sanitizer::unsanitize($ticket->fields['content'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
     }
 }
