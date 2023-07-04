@@ -244,6 +244,8 @@
 
             {{ include('components/itilobject/fields/global_validation.html.twig') }}
 
+            {{ fields.textField('external_id', item.fields['external_id'], __('External ID'), field_options) }}
+
             {{ call_plugin_hook('post_item_form', {"item": item, 'options': params}) }}
          </div>
       </div>
