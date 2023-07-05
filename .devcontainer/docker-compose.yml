@@ -45,7 +45,7 @@ services:
     depends_on:
       - db
     extra_hosts:
-    - "host.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway"
 
   nginx:
     container_name: "glpi-nginx"
@@ -82,6 +82,8 @@ services:
       - "1025:1025"
 
   adminer:
+    container_name: "glpi-adminer"
     image: adminer:latest
+    restart: unless-stopped
     ports:
         - '9090:8080'
