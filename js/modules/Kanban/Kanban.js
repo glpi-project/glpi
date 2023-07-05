@@ -1051,7 +1051,6 @@ class GLPIKanbanRights {
                 form_content.empty();
                 form_content.append("<input type='text' class='form-control' name='column-name-filter' placeholder='" + __('Search') + "'/>");
                 let list = "<ul class='kanban-columns-list'>";
-                console.log(data);
                 $.each(data, function(key, column) {
                     let list_item = "<li data-list-id='"+column['id']+"'>";
                     if (columns_used.includes(column['id'])) {
