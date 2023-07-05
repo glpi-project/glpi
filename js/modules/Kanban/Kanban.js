@@ -1051,9 +1051,10 @@ class GLPIKanbanRights {
                 form_content.empty();
                 form_content.append("<input type='text' class='form-control' name='column-name-filter' placeholder='" + __('Search') + "'/>");
                 let list = "<ul class='kanban-columns-list'>";
-                $.each(data, function(column_id, column) {
-                    let list_item = "<li data-list-id='"+column_id+"'>";
-                    if (columns_used.includes(column_id)) {
+                console.log(data);
+                $.each(data, function(key, column) {
+                    let list_item = "<li data-list-id='"+column['id']+"'>";
+                    if (columns_used.includes(column['id'])) {
                         list_item += "<input type='checkbox' checked='true' class='form-check-input' />";
                     } else {
                         list_item += "<input type='checkbox' class='form-check-input' />";

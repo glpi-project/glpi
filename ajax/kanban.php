@@ -240,7 +240,7 @@ if (($_POST['action'] ?? null) === 'update') {
 } else if ($_REQUEST['action'] === 'list_columns') {
     $checkParams(['column_field']);
     header("Content-Type: application/json; charset=UTF-8", true);
-    echo json_encode($itemtype::getAllKanbanColumns($_REQUEST['column_field']));
+    echo json_encode(array_values($itemtype::getAllKanbanColumns($_REQUEST['column_field'])));
 } else if ($_REQUEST['action'] === 'get_column') {
     Session::writeClose();
     $checkParams(['column_id', 'column_field', 'items_id']);

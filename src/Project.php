@@ -1963,10 +1963,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             if (!empty($column_ids) && !$get_default) {
                 $restrict = ['id' => $column_ids];
             }
-            $allstates = $projectstate->find($restrict, ['is_finished ASC', 'id']);
+            $allstates = $projectstate->find($restrict, ['name ASC']);
             foreach ($allstates as $state) {
                 $columns['projectstates_id'][$state['id']] = [
                     'name'            => $state['name'],
+                    'id'              => $state['id'],
                     'header_color'    => $state['color'],
                     'header_fg_color' => Toolbox::getFgColor($state['color'], 50),
                 ];
