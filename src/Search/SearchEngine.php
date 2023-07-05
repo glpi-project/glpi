@@ -39,6 +39,7 @@ use CommonGLPI;
 use CommonITILObject;
 use Glpi\Agent\Communication\Headers\Common;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Debug\Profiler;
 use Glpi\Features\TreeBrowse;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Input\QueryBuilder;
@@ -585,6 +586,7 @@ final class SearchEngine
      */
     public static function show(string $itemtype, array $params = []): void
     {
+        Profiler::getInstance()->start('SearchEngine::show', Profiler::CATEGORY_SEARCH);
         Plugin::doHook(Hooks::PRE_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
 
         /** @var SearchInputInterface $search_input_class */
@@ -615,6 +617,7 @@ final class SearchEngine
         echo "</div>";
 
         Plugin::doHook(Hooks::POST_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
+        Profiler::getInstance()->stop('SearchEngine::show');
     }
 
     public static function getData(string $itemtype, array $params, array $forced_display = []): array
