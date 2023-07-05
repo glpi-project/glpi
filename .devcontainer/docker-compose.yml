@@ -1,0 +1,89 @@
+#
+# ---------------------------------------------------------------------
+#
+# GLPI - Gestionnaire Libre de Parc Informatique
+#
+# http://glpi-project.org
+#
+# @copyright 2015-2023 Teclib' and contributors.
+# @copyright 2003-2014 by the INDEPNET Development Team.
+# @licence   https://www.gnu.org/licenses/gpl-3.0.html
+#
+# ---------------------------------------------------------------------
+#
+# LICENSE
+#
+# This file is part of GLPI.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# ---------------------------------------------------------------------
+#
+
+version: '3.9'
+
+services:
+  php:
+    container_name: "glpi-php-fpm"
+    build:
+      context: conf/php
+    restart: unless-stopped
+    volumes:
+      - ..:/var/www/:rw
+      - ./conf/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  nginx:
+    container_name: "glpi-nginx"
+    image: "nginx:alpine"
+    restart: unless-stopped
+    volumes:
+      - ..:/var/www:ro
+      - ./conf/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    ports:
+      - "9080:80"
+
+  db:
+    container_name: "glpi-db"
+    image: mariadb:10.11
+    restart: unless-stopped
+    volumes:
+      - /var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: glpi
+      MARIADB_DATABASE: glpi
+      MARIADB_USER: glpi
+      MARIADB_PASSWORD: glpi
+    expose:
+      - "3306"
+
+  mailpit:
+    container_name: "glpi-mailpit"
+    image: "axllent/mailpit"
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+  adminer:
+    container_name: "glpi-adminer"
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+        - '9090:8080'
