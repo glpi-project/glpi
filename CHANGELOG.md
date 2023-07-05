@@ -24,7 +24,7 @@ The present file will list all changes made to the project; according to the
 #### Removed
 
 
-## [10.0.8] unreleased
+## [10.0.8] 2023-07-05
 
 ### Added
 - Unified Debug bar feature has been added to display debug information in the browser as a replacement and expansion on the previous, individual debug panels.
