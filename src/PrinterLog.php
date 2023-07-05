@@ -113,13 +113,13 @@ class PrinterLog extends CommonDBChild
      *
      * @return array An array of printer metrics data
      */
-    public function getMetrics(
+    final public function getMetrics(
         Printer $printer,
-        $user_filters = [],
-        $interval = 'P1Y',
-        $start_date = null,
-        $end_date = new DateTime(),
-        $format = 'dynamic'
+        array $user_filters = [],
+        string $interval = 'P1Y',
+        ?DateTime $start_date = null,
+        DateTime $end_date = new DateTime(),
+        string $format = 'dynamic'
     ): array {
         global $DB;
 
@@ -190,19 +190,19 @@ class PrinterLog extends CommonDBChild
      */
     public function showMetrics(Printer $printer)
     {
-        $format = htmlspecialchars($_GET['date_format'] ?? 'dynamic');
+        $format = $_GET['date_format'] ?? 'dynamic';
 
         if (isset($_GET['date_interval'])) {
             $raw_metrics = $this->getMetrics(
                 $printer,
-                interval: htmlspecialchars($_GET['date_interval']),
+                interval: $_GET['date_interval'],
                 format: $format,
             );
         } elseif (isset($_GET['date_start']) && isset($_GET['date_end'])) {
             $raw_metrics = $this->getMetrics(
                 $printer,
-                start_date: new DateTime(htmlspecialchars($_GET['date_start'])),
-                end_date: new DateTime(htmlspecialchars($_GET['date_end'])),
+                start_date: new DateTime($_GET['date_start']),
+                end_date: new DateTime($_GET['date_end']),
                 format: $format,
             );
         } else {
@@ -268,9 +268,9 @@ class PrinterLog extends CommonDBChild
 
        // display the printer graph buttons component
         TemplateRenderer::getInstance()->display('components/printer_graph_buttons.html.twig', [
-            'start_date' => htmlspecialchars($_GET['date_start'] ?? ''),
-            'end_date'   => htmlspecialchars($_GET['date_end'] ?? ''),
-            'interval'   => htmlspecialchars($_GET['date_interval'] ?? 'P1Y'),
+            'start_date' => $_GET['date_start'] ?? '',
+            'end_date'   => $_GET['date_end'] ?? '',
+            'interval'   => $_GET['date_interval'] ?? 'P1Y',
             'format'     => $format,
         ]);
 
