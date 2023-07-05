@@ -243,6 +243,18 @@ class OperatingSystem extends AbstractInventoryAsset
                 "version" => "8.5",
                 "edition" => "Arctic Sphynx"
             ],
+            "amzn_01" => [
+                "full_name" => "Amazon Linux 2",
+                "name" => "Amazon Linux",
+                "version" => "2",
+                "edition" => ""
+            ],
+            "amzn_02" => [
+                "full_name" => "Amazon Linux 2023",
+                "name" => "Amazon Linux",
+                "version" => "2023",
+                "edition" => ""
+            ],
             "windows_01" => [
                 "full_name" => "Microsoft Windows XP Professionnel",
                 "name" => "Windows",
