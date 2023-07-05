@@ -81,7 +81,7 @@ trait FilterableTrait
                 // Search engine seems to expect "contains" here, even if the
                 // real search will be done with "equals
                 'searchtype' => "contains",
-                'value' => $item->fields['id'],
+                'value' => $item->fields[$id_field],
             ],
         ];
 
