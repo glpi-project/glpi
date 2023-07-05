@@ -284,14 +284,18 @@ class Auth extends CommonGLPI
             }
 
             $ldap_errno = ldap_errno($this->ldap_connection);
-            if ($info === false && $ldap_errno > 0 && $ldap_errno !== 32) {
-                // 32 = LDAP_NO_SUCH_OBJECT => This should not be considered as a connection error, as it just means that user was not found.
-                $this->addToError(__('Unable to connect to the LDAP directory'));
-                $error = true;
+            if ($info === false) {
+                if ($ldap_errno > 0 && $ldap_errno !== 32) {
+                    $this->addToError(__('Unable to connect to the LDAP directory'));
+                    $error = true;
+                } else {
+                    // 32 = LDAP_NO_SUCH_OBJECT => This should not be considered as a connection error, as it just means that user was not found.
+                    $this->addToError(__('Incorrect username or password'));
+                }
                 return false;
             }
 
-            $dn = $info !== false ? $info['dn'] : '';
+            $dn = $info['dn'];
             $this->user_found = $dn != '';
 
             $bind_result = $this->user_found ? @ldap_bind($this->ldap_connection, $dn, $password) : false;
