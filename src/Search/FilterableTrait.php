@@ -51,6 +51,22 @@ trait FilterableTrait
             return true;
         }
 
+        // The ID is not always search option 2
+        $opts = SearchOption::getOptionsForItemtype($item::getType());
+        $item_table = $item::getTable();
+        $id_opt_num = null;
+        foreach ($opts as $opt_num => $opt) {
+            if (isset($opt['field']) && $opt['field'] === 'id' && $opt['table'] === $item_table) {
+                $id_opt_num = $opt_num;
+                break;
+            }
+        }
+
+        if ($id_opt_num === null) {
+            trigger_error("Could not find ID option for itemtype {$item::getType()}. Cannot use FilterableTrait on this itemtype.", E_USER_WARNING);
+            return false;
+        }
+
         // Intersect current item's id with the filter
         $criteria = [
             [
@@ -60,7 +76,7 @@ trait FilterableTrait
             [
                 'link' => 'AND',
                 // Id field
-                'field' => 2,
+                'field' => $id_opt_num,
                 // Search engine seems to expect "contains" here, even if the
                 // real search will be done with "equals
                 'searchtype' => "contains",
