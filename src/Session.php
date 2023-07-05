@@ -1037,13 +1037,15 @@ class Session
 
     /**
      * Get the name of the right.
+     * This should only be used when it is expected that the request going to be terminated.
+     * The session will be closed by this method.
      *
-     * This only works for well-known rights.
+     * @param string $module The module
      * @param int $right The right
      * @return string The right name
      * @internal No backwards compatibility promise. Use in core only.
      */
-    public static function getRightNameForError(int $right): string
+    public static function getRightNameForError(string $module, int $right): string
     {
         // Well known rights
         $rights = [
@@ -1057,10 +1059,36 @@ class Session
             UPDATENOTE => 'UPDATENOTE',
             UNLOCK => 'UNLOCK',
         ];
-        if (array_key_exists($right, $rights)) {
-            return $rights[$right];
+        // Close session and force the default language so the logged right name is standardized
+        session_write_close();
+        $current_lang = $_SESSION['glpilanguage'];
+        self::loadLanguage('en_GB');
+
+        $all_specific_rights = Profile::getRightsForForm(self::getCurrentInterface());
+        $specific_rights = [];
+        foreach ($all_specific_rights as $forms) {
+            foreach ($forms as $group_rights) {
+                foreach ($group_rights as $right_definition) {
+                    if ($right_definition['field'] === $module) {
+                        $rights_arr = $right_definition['rights'];
+                        foreach ($rights_arr as $right_val => $right_label) {
+                            $label = $right_label;
+                            if (is_array($label) && isset($label['short'])) {
+                                $label = $label['short'];
+                            }
+                            if (!is_array($label)) {
+                                $specific_rights[$right_val] = $label;
+                            }
+                        }
+                    }
+                }
+            }
         }
-        return "unknown right name";
+
+        // Restore language so the error displayed is in the user language
+        self::loadLanguage($current_lang);
+
+        return $specific_rights[$right] ?? $rights[$right] ?? 'unknown right name';
     }
 
     /**
@@ -1077,7 +1105,7 @@ class Session
         if (!self::haveRight($module, $right)) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            $right_name = self::getRightNameForError($right);
+            $right_name = self::getRightNameForError($module, $right);
             Html::displayRightError("User is missing the $right ($right_name) right for $module");
         }
     }
@@ -1097,7 +1125,7 @@ class Session
             self::redirectIfNotLoggedIn();
             $info = "User is missing all of the following rights: ";
             foreach ($rights as $right) {
-                $right_name = self::getRightNameForError($right);
+                $right_name = self::getRightNameForError($module, $right);
                 $info .= $right . "($right_name), ";
             }
             $info = substr($info, 0, -2);
@@ -1141,7 +1169,7 @@ class Session
             self::redirectIfNotLoggedIn();
             $info = "User is missing all of the following rights: ";
             foreach ($modules as $mod => $right) {
-                $right_name = self::getRightNameForError($right);
+                $right_name = self::getRightNameForError($mod, $right);
                 $info .= $right . "($right_name) for module $mod, ";
             }
             $info = substr($info, 0, -2);
