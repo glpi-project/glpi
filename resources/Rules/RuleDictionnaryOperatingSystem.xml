@@ -8,7 +8,7 @@
         <description></description>
         <match>AND</match>
         <is_active>0</is_active>
-        <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]*) ?(?:\(?([\w ]+)\)?)?/
+        <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle|Amazon Linux)(?:\D+|)([\d.]*) ?(?:\(?([\w ]+)\)?)?/
 
             Example :
             Ubuntu 22.04.1 LTS -&amp;#62; #0 = Ubuntu
@@ -19,7 +19,8 @@
             Fedora release 36 (Thirty Six) -&amp;#62; #0 = Fedora
             Debian GNU/Linux 9.5 (stretch) -&amp;#62; #0 = Debian
             CentOS Stream release 8 -&amp;#62; #0 = CentOS
-            AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #0 = AlmaLinux</comment>
+            AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #0 = AlmaLinux
+            Amazon Linux 2023 -&amp;#62; #0 = Amazon Linux</comment>
         <is_recursive>1</is_recursive>
         <uuid>clean_linux_os_name</uuid>
         <condition>0</condition>
@@ -27,7 +28,7 @@
         <rulecriteria>
             <criteria>os_name</criteria>
             <condition>6</condition>
-            <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]*) ?(?:\(?([\w ]+)\)?)?/</pattern>
+            <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle|Amazon Linux)(?:\D+|)([\d.]*) ?(?:\(?([\w ]+)\)?)?/</pattern>
         </rulecriteria>
         <ruleaction>
             <action_type>append_regex_result</action_type>
