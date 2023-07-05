@@ -2625,7 +2625,7 @@ msgstr "Typ Aktora"
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetCommonITILObject.php:1975
 msgid "Actors"
-msgstr "Ucestnicy"
+msgstr "Uczestnicy"
 
 #: src/WifiNetwork.php:71
 msgid "Ad-hoc"
