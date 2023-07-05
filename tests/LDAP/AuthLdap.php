@@ -2172,15 +2172,9 @@ class AuthLDAP extends DbTestCase
                 $this->login('brazil5', 'password', false, false);
             }
         )
-            // AuthLDAP::tryToConnectToServer() will first try to bind connection with root DN
             ->error()
                 ->withType(E_USER_WARNING)
                 ->withMessage("Unable to bind to LDAP server `openldap:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)")
-                ->exists()
-            // then will try to bind connection with user DN (login)
-            ->error()
-                ->withType(E_USER_WARNING)
-                ->withMessage("Unable to bind to LDAP server `openldap:1234` with RDN `brazil5`\nerror: Can't contact LDAP server (-1)")
                 ->exists();
 
         $user->getFromDBbyName('brazil5');
@@ -2248,6 +2242,18 @@ class AuthLDAP extends DbTestCase
 
         $user->getFromDBbyName('logintest');
         $this->integer($user->fields['is_deleted_ldap'])->isEqualTo(1);
+    }
+
+    /**
+     * @extensions ldap
+     */
+    public function testLdapLoginWithWrongPassword()
+    {
+        $auth = new \Auth();
+        $this->boolean($auth->login('brazil5', 'wrong-password', false))->isFalse();
+
+        $user = new \User();
+        $this->boolean($user->getFromDBbyName('brazil5'))->isFalse();
     }
 
     private function checkLdapConnection($ldap_connection)

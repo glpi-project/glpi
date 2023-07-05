@@ -3043,15 +3043,16 @@ class AuthLDAP extends CommonDBTM
     /**
      * Connect to a LDAP server
      *
-     * @param string  $host          LDAP host to connect
-     * @param string  $port          port to use
-     * @param string  $login         login to use (default '')
-     * @param string  $password      password to use (default '')
-     * @param boolean $use_tls       use a TLS connection? (false by default)
-     * @param integer $deref_options deref options used
-     * @param string  $tls_certfile  TLS CERT file name within config directory (default '')
-     * @param string  $tls_keyfile   TLS KEY file name within config directory (default '')
-     * @param boolean $use_bind      do we need to do an ldap_bind? (true by default)
+     * @param string  $host                 LDAP host to connect
+     * @param string  $port                 port to use
+     * @param string  $login                login to use (default '')
+     * @param string  $password             password to use (default '')
+     * @param boolean $use_tls              use a TLS connection? (false by default)
+     * @param integer $deref_options        deref options used
+     * @param string  $tls_certfile         TLS CERT file name within config directory (default '')
+     * @param string  $tls_keyfile          TLS KEY file name within config directory (default '')
+     * @param boolean $use_bind             do we need to do an ldap_bind? (true by default)
+     * @param bool    $silent_bind_errors   Indicates whether bind errors must be silented
      *
      * @return resource|false|\LDAP\Connection link to the LDAP server : false if connection failed
      */
@@ -3065,7 +3066,8 @@ class AuthLDAP extends CommonDBTM
         $tls_certfile = "",
         $tls_keyfile = "",
         $use_bind = true,
-        $timeout = 0
+        $timeout = 0,
+        bool $silent_bind_errors = false
     ) {
 
         $ds = @ldap_connect($host, intval($port));
@@ -3140,18 +3142,20 @@ class AuthLDAP extends CommonDBTM
             $b = @ldap_bind($ds);
         }
         if ($b === false) {
-            trigger_error(
-                static::buildError(
-                    $ds,
-                    sprintf(
-                        "Unable to bind to LDAP server `%s:%s` %s",
-                        $host,
-                        $port,
-                        ($login != '' ? "with RDN `$login`" : 'anonymously')
-                    )
-                ),
-                E_USER_WARNING
-            );
+            if ($silent_bind_errors === false) {
+                trigger_error(
+                    static::buildError(
+                        $ds,
+                        sprintf(
+                            "Unable to bind to LDAP server `%s:%s` %s",
+                            $host,
+                            $port,
+                            ($login != '' ? "with RDN `$login`" : 'anonymously')
+                        )
+                    ),
+                    E_USER_WARNING
+                );
+            }
             return false;
         }
 
@@ -3187,10 +3191,11 @@ class AuthLDAP extends CommonDBTM
             $ldap_method['timeout']
         );
 
-       // Test with login and password of the user if exists
+        // Test with login and password of the user if exists
         if (
             !$ds
             && !empty($login)
+            && (bool) $ldap_method['use_bind']
         ) {
             $ds = self::connectToServer(
                 $ldap_method['host'],
@@ -3202,7 +3207,8 @@ class AuthLDAP extends CommonDBTM
                 $ldap_method['tls_certfile'] ?? '',
                 $ldap_method['tls_keyfile'] ?? '',
                 $ldap_method['use_bind'],
-                $ldap_method['timeout']
+                $ldap_method['timeout'],
+                true // silent bind error when trying to bind with user login/password
             );
         }
 
@@ -3229,6 +3235,7 @@ class AuthLDAP extends CommonDBTM
                 if (
                     !$ds
                     && !empty($login)
+                    && (bool) $ldap_method['use_bind']
                 ) {
                      $ds = self::connectToServer(
                          $replicate["host"],
@@ -3240,7 +3247,8 @@ class AuthLDAP extends CommonDBTM
                          $ldap_method['tls_certfile'] ?? '',
                          $ldap_method['tls_keyfile'] ?? '',
                          $ldap_method['use_bind'],
-                         $ldap_method['timeout']
+                         $ldap_method['timeout'],
+                         true // silent bind error when trying to bind with user login/password
                      );
                 }
                 if ($ds) {
