@@ -82,17 +82,26 @@ final class Search
 
     private function getSQLFieldForProperty(string $prop_name): string
     {
-        $prop = $this->flattened_properties[$prop_name];
-        $is_join = str_contains($prop_name, '.') && array_key_exists(explode('.', $prop_name)[0], $this->joins);
-        $sql_field = $prop['x-field'] ?? $prop_name;
+        $real_prop_name = str_replace(chr(0x1F), '.', $prop_name);
+        $prop = $this->flattened_properties[$real_prop_name];
+        $is_join = str_contains($real_prop_name, '.') && array_key_exists(explode('.', $real_prop_name)[0], $this->joins);
+        $sql_field = $prop['x-field'] ?? $real_prop_name;
         if (!$is_join) {
             // Only add the _. prefix if it isn't a join
             $sql_field = "_.$sql_field";
-        } else if ($prop_name !== $sql_field) {
+        } else if ($real_prop_name !== $sql_field) {
             // If the property name is different from the SQL field name, we will need to add/change the table alias
             // $prop_name is a join where the part before the dot is the join alias (also the property on the main item), and the part after the dot is the property on the joined item
-            $join_alias = explode('.', $prop_name)[0];
+            $parts = explode('.', $prop_name);
+            array_pop($parts); // Get rid of the field
+            $join_alias = implode('.', $parts);
             $sql_field = "{$join_alias}.{$sql_field}";
+        }
+        $parts = explode('.', $sql_field);
+        if (count($parts) > 2) {
+            $field = array_pop($parts);
+            $table = implode(chr(0x1F), $parts);
+            $sql_field = "{$table}.{$field}";
         }
         return $sql_field;
     }
@@ -105,6 +114,7 @@ final class Search
     {
         global $DB;
 
+        $prop_name = str_replace(chr(0x1F), '.', $prop_name);
         $prop = $this->flattened_properties[$prop_name];
         if ($prop['x-writeonly'] ?? false) {
             // Do not expose write-only fields
@@ -164,6 +174,7 @@ final class Search
             if (!isset($joins[$join_type])) {
                 $joins[$join_type] = [];
             }
+            $join_alias = str_replace('.', chr(0x1F), $join_alias);
             $join_table = $join['table'] . ' AS ' . $join_alias;
             $join_parent = (isset($join['ref_join']) && $join['ref_join']) ? "{$join_alias}_ref" : '_';
             if (isset($join['ref_join'])) {
@@ -390,6 +401,7 @@ final class Search
             $criteria['GROUPBY'] = ['_itemtype', '_.id'];
         } else {
             foreach ($this->joins as $join_alias => $join) {
+                $join_alias = str_replace('.', chr(0x1F), $join_alias);
                 $s = $this->getSelectCriteriaForProperty("$join_alias.id", true);
                 if ($s !== null) {
                     $criteria['SELECT'][] = $s;
@@ -495,6 +507,11 @@ final class Search
                         }
                     } else {
                         foreach ($this->joins as $join_alias => $join) {
+                            $parts = explode(chr(0x1F), $fkey);
+                            if (count($parts) > 1) {
+                                $field = array_pop($parts);
+                                $fkey = implode('.', $parts) . chr(0x1F) . $field;
+                            }
                             if ($fkey === $join_alias . chr(0x1F) . 'id') {
                                 $fkey_tables[$fkey] = $join['table'];
                                 break;
@@ -543,9 +560,12 @@ final class Search
                             $criteria['SELECT'][] = new QueryExpression($DB::quoteValue($schema_name), '_itemtype');
                         }
                     } else {
-                        $join_name = explode(chr(0x1F), $fkey)[0];
-                        $props_to_use = array_filter($this->flattened_properties, static function ($prop_name) use ($join_name) {
-                            return str_starts_with($prop_name, $join_name . '.');
+                        $join_name_parts = explode(chr(0x1F), $fkey);
+                        array_pop($join_name_parts);
+                        $join_name = implode(chr(0x1F), $join_name_parts);
+                        $join_name_dotted = str_replace(chr(0x1F), '.', $join_name);
+                        $props_to_use = array_filter($this->flattened_properties, static function ($prop_name) use ($join_name_dotted) {
+                            return str_starts_with($prop_name, $join_name_dotted . '.');
                         }, ARRAY_FILTER_USE_KEY);
 
                         $criteria['FROM'] = "$table AS " . $DB::quoteName($join_name);
@@ -553,7 +573,7 @@ final class Search
                     }
                     $criteria['WHERE'] = [$id_field => $ids_to_fetch];
                     foreach ($props_to_use as $prop_name => $prop) {
-                        if ($prop['x-writeonly'] ?? false) {
+                        if ($prop['x-writeonly'] ?? false || isset($prop['x-mapped-from'])) {
                             continue;
                         }
                         $sql_field = $this->getSQLFieldForProperty($prop_name);

@@ -213,9 +213,9 @@ class Schema implements \ArrayAccess
         $joins = [];
         foreach ($props as $name => $prop) {
             if ($prop['type'] === self::TYPE_OBJECT && isset($prop['x-join'])) {
-                $joins[$name] = $prop['x-join'] + ['parent_type' => self::TYPE_OBJECT];
+                $joins[$prefix . $name] = $prop['x-join'] + ['parent_type' => self::TYPE_OBJECT];
             } else if ($prop['type'] === self::TYPE_ARRAY && isset($prop['items']['x-join'])) {
-                $joins[$name] = $prop['items']['x-join'] + ['parent_type' => self::TYPE_ARRAY];
+                $joins[$prefix . $name] = $prop['items']['x-join'] + ['parent_type' => self::TYPE_ARRAY];
             } else if ($prop['type'] === self::TYPE_OBJECT && isset($prop['properties'])) {
                 $joins += self::getJoins($prop['properties'], $prefix . $name . '.');
             }
