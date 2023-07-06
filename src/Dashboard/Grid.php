@@ -413,6 +413,7 @@ HTML;
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string '] ?? "");
 
+        $is_recursive = $_SESSION['glpiactive_entity_recursive'] ? 1 : 0;
         $js = <<<JAVASCRIPT
       $(function () {
          new GLPIDashboard({
@@ -429,7 +430,7 @@ HTML;
             embed:       {$embed_str},
             token:       {$token_str},
             entities_id: {$_SESSION['glpiactive_entity']},
-            is_recursive:{$_SESSION['glpiactive_entity_recursive']},
+            is_recursive: {$is_recursive},
          })
       });
 JAVASCRIPT;
