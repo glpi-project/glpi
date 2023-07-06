@@ -1248,14 +1248,14 @@ abstract class API
        // Check if we need to add raw names later on
         $add_keys_names = count($params['add_keys_names']) > 0;
 
-       // build query
+        // build query
         $query = "SELECT DISTINCT " . $DB->quoteName("$table.id") . ",  " . $DB->quoteName("$table.*") . "
                 FROM " . $DB->quoteName($table) . "
                 $join
                 WHERE $where
                 ORDER BY " . $DB->quoteName($params['sort']) . " " . $params['order'] . "
                 LIMIT " . (int)$params['start'] . ", " . (int)$params['list_limit'];
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             while ($data = $DB->fetchAssoc($result)) {
                 if ($add_keys_names) {
                     // Insert raw names into the data row
@@ -1276,7 +1276,7 @@ abstract class API
 
        // get result full row counts
         $count_query = "SELECT COUNT(*) FROM {$DB->quoteName($table)} $join WHERE $where";
-        $totalcount = $DB->query($count_query)->fetch_row()[0];
+        $totalcount = $DB->doQuery($count_query)->fetch_row()[0];
 
         if ($params['range'][0] > $totalcount) {
             $this->returnError(
