@@ -36,41 +36,30 @@
 namespace tests\units;
 
 use Glpi\Toolbox\Sanitizer;
-use Symfony\Component\BrowserKit\HttpBrowser;
 
 class Ticket extends \FrontBaseClass
 {
     public function testTicketCreate()
     {
+        $this->logIn();
+
         $this->addToCleanup(\Ticket::class, ['name' => ['LIKE', '%thetestuuidtoremove']]);
 
-        //create non panther browser
-        $http_client = new HttpBrowser();
-
-        //login
-        $crawler = $http_client->request('GET', $this->base_uri . 'index.php');
-        $login_name = $crawler->filter('#login_name')->attr('name');
-        $pass_name = $crawler->filter('input[type=password]')->attr('name');
-        $form = $crawler->selectButton('submit')->form();
-        $form[$login_name] = TU_USER;
-        $form[$pass_name] = TU_PASS;
-        //proceed form submission
-        $crawler = $http_client->submit($form);
-        $page_title = $crawler->filter('title')->text();
-        $this->string($page_title)->isIdenticalTo('Standard interface - GLPI');
-
         //load ticket form
-        $crawler = $http_client->request('GET', $this->base_uri . 'front/ticket.form.php');
+        $this->http_client->request('GET', $this->base_uri . 'front/ticket.form.php');
 
-        $crawler = $http_client->request(
-            'POST',
-            $this->base_uri . 'front/ticket.form.php',
+        $crawler = $this->http_client->waitFor('form[name=itil_form]');
+
+        // Cannot find a way to make TinyMCE works properly.
+        // Destroy TinyMCE instance to be able to define textarea contents.
+        $tinyid = $crawler->filter('textarea[name=content]')->attr('id');
+        $this->http_client->executeScript("tinymce.get('$tinyid').destroy();");
+
+        $this->http_client->submitForm(
+            'add_btn',
             [
-                'add'  => true,
                 'name' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
                 'content' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
-                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value')
             ]
         );
 
@@ -79,29 +68,4 @@ class Ticket extends \FrontBaseClass
         $this->string(Sanitizer::unsanitize($ticket->fields['name'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
         $this->string(Sanitizer::unsanitize($ticket->fields['content'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
     }
-
-    /*public function testTicketCreatePanther()
-    {
-        $this->logIn();
-        $this->addToCleanup(\Ticket::class, ['name' => ['LIKE', '%thetestuuidtoremove']]);
-
-        //load ticket form
-        $this->http_client->request('GET', $this->base_uri . 'front/ticket.form.php');
-
-        $crawler = $this->http_client->waitFor('form[name=itil_form]');
-        $tinyid = $crawler->filter('textarea[name=content]')->attr('id');
-        $this->http_client->executeScript("tinymce.get('$tinyid').setContent('A \'test\' > \"ticket\" & name thetestuuidtoremove');");
-        $this->http_client->takeScreenshot('ticket_add.png'); // see if that works...
-        $this->http_client->submitForm(
-            'add_btn',
-            [
-                'name' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
-            ]
-        );
-
-        $ticket = new \Ticket();
-        $this->boolean($ticket->getFromDBByCrit(['name' => ['LIKE', '%thetestuuidtoremove']]))->isTrue();
-        $this->string(Sanitizer::unsanitize($ticket->fields['name'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
-        $this->string(Sanitizer::unsanitize($ticket->fields['content'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
-    }*/
 }
