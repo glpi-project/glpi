@@ -71,7 +71,7 @@ function update0800to0801()
                             $query = "DELETE
                                FROM `glpi_groups_tickets`
                                WHERE `id` ='" . $data2['id'] . "'";
-                            $DB->queryOrDie($query, "0.80.1 clean to update glpi_groups_tickets");
+                            $DB->doQueryOrDie($query, "0.80.1 clean to update glpi_groups_tickets");
                         }
                     }
                 }
@@ -110,7 +110,7 @@ function update0800to0801()
                             $query = "DELETE
                                FROM `glpi_tickets_users`
                                WHERE `id` ='" . $data2['id'] . "'";
-                            $DB->queryOrDie($query, "0.80.1 clean to update glpi_tickets_users");
+                            $DB->doQueryOrDie($query, "0.80.1 clean to update glpi_tickets_users");
                         }
                     }
                 }
@@ -143,7 +143,7 @@ function update0800to0801()
                                         FROM `glpi_slas`
                                         WHERE `entities_id` = $entID
                                               AND `is_recursive` = 0)";
-            $DB->queryOrDie($query3, "0.80.1 update entities_id and is_recursive=0 in glpi_slalevels");
+            $DB->doQueryOrDie($query3, "0.80.1 update entities_id and is_recursive=0 in glpi_slalevels");
 
            // Recursive ones
             $query3 = "UPDATE `glpi_slalevels`
@@ -152,7 +152,7 @@ function update0800to0801()
                                         FROM `glpi_slas`
                                         WHERE `entities_id` = $entID
                                               AND `is_recursive` = 1)";
-            $DB->queryOrDie($query3, "0.80.1 update entities_id and is_recursive=1 in glpi_slalevels");
+            $DB->doQueryOrDie($query3, "0.80.1 update entities_id and is_recursive=1 in glpi_slalevels");
         }
     }
 

@@ -92,7 +92,7 @@ function update0850to0853()
                   UNIQUE KEY `unicity` (`itemtype`, `items_id`, `tickets_id`),
                   KEY `tickets_id` (`tickets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "0.85 add table glpi_items_tickets");
+        $DB->doQueryOrDie($query, "0.85 add table glpi_items_tickets");
 
         $query = "SELECT `itemtype`, `items_id`, `id`
                 FROM `glpi_tickets`
@@ -106,7 +106,7 @@ function update0850to0853()
                     $query = "INSERT INTO `glpi_items_tickets`
                              (`id`, `items_id`, `itemtype`, `tickets_id`)
                           VALUES (NULL, '" . $data['items_id'] . "', '" . $data['itemtype'] . "', '" . $data['id'] . "')";
-                    $DB->queryOrDie($query, "0.85 associated ticket sitems migration");
+                    $DB->doQueryOrDie($query, "0.85 associated ticket sitems migration");
                 }
             }
         }
@@ -120,7 +120,7 @@ function update0850to0853()
     $query = "UPDATE `glpi_changes`
              SET `status` = 1
              WHERE `status` = 2";
-    $DB->queryOrDie($query, "0.85.3 correct status for change");
+    $DB->doQueryOrDie($query, "0.85.3 correct status for change");
 
     if (
         $migration->addField(
@@ -135,7 +135,7 @@ function update0850to0853()
         $query = 'UPDATE `glpi_entities`
                 SET `is_notif_enable_default` = 1
                 WHERE `id` = 0';
-        $DB->queryOrDie($query, "0.85.3 default value for is_notif_enable_default for root entity");
+        $DB->doQueryOrDie($query, "0.85.3 default value for is_notif_enable_default for root entity");
     }
 
    // ************ Keep it at the end **************

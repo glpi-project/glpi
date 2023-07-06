@@ -76,7 +76,7 @@ function update0840to0841()
                    INNER JOIN `glpi_documents` as `doc`
                      ON  `doc`.`id` = `doc_i`.`documents_id`
                    SET `doc_i`.`date_mod` = `doc`.`date_mod`";
-    $DB->queryOrDie(
+    $DB->doQueryOrDie(
         $query_doc_i,
         "0.84.1 update date_mod in glpi_documents_items"
     );
@@ -87,7 +87,7 @@ function update0840to0841()
                      ON  `doc`.`id` = `doc_i`.`documents_id`
                    SET `doc_i`.`entities_id` = `doc`.`entities_id`,
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
-    $DB->queryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
+    $DB->doQueryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
 
    // add delete_problem
     $migration->addField(

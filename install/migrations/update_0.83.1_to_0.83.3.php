@@ -75,7 +75,7 @@ function update0831to0833()
                      ON  `doc`.`id` = `doc_i`.`documents_id`
                    SET `doc_i`.`entities_id` = `doc`.`entities_id`,
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
-    $DB->queryOrDie($query_doc_i, "0.83 update entities_id and is_recursive in glpi_documents_items");
+    $DB->doQueryOrDie($query_doc_i, "0.83 update entities_id and is_recursive in glpi_documents_items");
 
    // ************ Keep it at the end **************
     $migration->displayMessage('Migration of glpi_displaypreferences');

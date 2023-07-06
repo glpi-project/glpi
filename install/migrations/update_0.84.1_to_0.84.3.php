@@ -152,7 +152,7 @@ function update0841to0843()
                        SET `query` = '" . addslashes(Toolbox::append_params($options)) . "'
                        WHERE `id` = '" . $data['id'] . "'";
 
-                $DB->queryOrDie($query2, "0.84.3 update bookmarks");
+                $DB->doQueryOrDie($query2, "0.84.3 update bookmarks");
             }
         }
     }

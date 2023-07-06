@@ -465,6 +465,24 @@ class DBmysql
      */
     public function queryOrDie($query, $message = '')
     {
+        debug_print_backtrace();
+        Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.');
+        return $this->doQueryOrDie($query, $message);
+    }
+
+    /**
+     * Execute a MySQL query and die
+     * (optionnaly with a message) if it fails
+     *
+     * @since 0.84
+     *
+     * @param string $query   Query to execute
+     * @param string $message Explanation of query (default '')
+     *
+     * @return mysqli_result Query result handler
+     */
+    public function doQueryOrDie($query, $message = '')
+    {
         $res = $this->doQuery($query);
         if (!$res) {
            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message

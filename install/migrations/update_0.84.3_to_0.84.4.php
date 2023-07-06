@@ -110,7 +110,7 @@ function update0843to0844()
                            `content_text` = '" . addslashes($text) . "',
                            `content_html` = '" . addslashes($html) . "'
                         WHERE `id` = " . $data['id'] . "";
-                $DB->queryOrDie($query, "0.84.4 fix tags usage for storestatus");
+                $DB->doQueryOrDie($query, "0.84.4 fix tags usage for storestatus");
             }
         }
     }
