@@ -293,11 +293,11 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
 
         $this->array($this->queries)->isIdenticalTo([
-            "ALTER TABLE `change_table` DROP `id`  ,\n" .
+            "ALTER TABLE `change_table` DROP `id`,\n" .
          "CHANGE `ID` `id` INT NOT NULL DEFAULT '0'   FIRST  ",
         ]);
 
-       // Test change field with move to after an other column
+       // Test change field with move to after another column
         $this->queries = [];
         $this->calling($this->db)->fieldExists = true;
 
