@@ -774,4 +774,42 @@ OTHER EXPRESSION;"
             LogLevel::WARNING
         );
     }
+
+    protected function dataDrop()
+    {
+        return [
+            [
+                'tablename',
+                'TABLE',
+                'DROP TABLE `tablename`'
+            ], [
+                'viewname',
+                'VIEW',
+                'DROP VIEW `viewname`'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider dataDrop
+     */
+    public function testBuildDrop($name, $type, $expected)
+    {
+        $this
+            ->if($this->newTestedInstance)
+            ->then
+            ->string($this->testedInstance->buildDrop($name, $type))->isIdenticalTo($expected);
+    }
+
+    public function testBuildDropWException()
+    {
+        $this->exception(
+            function () {
+                $this
+                    ->if($this->newTestedInstance)
+                    ->then
+                    ->string($this->testedInstance->buildDrop('aname', 'UNKNOWN'))->isIdenticalTo('');
+            }
+        )->hasMessage('Unknown type to drop: UNKNOWN');
+    }
 }

@@ -1666,6 +1666,63 @@ class DBmysql
     }
 
     /**
+     * Drops a table
+     *
+     * @param $name Table name
+     *
+     * @return bool|mysqli_result
+     */
+    public function dropTable(string $name)
+    {
+        $res = $this->query(
+            $this->buildDrop(
+                $name,
+                'TABLE'
+            )
+        );
+        return $res;
+    }
+
+    /**
+     * Drops a view
+     *
+     * @param $name View name
+     *
+     * @return bool|mysqli_result
+     */
+    public function dropView(string $name)
+    {
+        $res = $this->query(
+            $this->buildDrop(
+                $name,
+                'VIEW'
+            )
+        );
+        return $res;
+    }
+
+    /**
+     * Builds a DROP query
+     * @param $name
+     * @param $type
+     *
+     * @return string
+     */
+    public function buildDrop($name, $type)
+    {
+        $known_types = [
+            'TABLE',
+            'VIEW'
+        ];
+        if (!in_array($type, $known_types)) {
+            throw new \InvalidArgumentException('Unknown type to drop: ' . $type);
+        }
+
+        $name = $this::quoteName($name);
+        return "DROP $type $name";
+    }
+
+    /**
      * Get database raw version
      *
      * @return string
