@@ -346,6 +346,7 @@ class DBmysql
      */
     public function query($query)
     {
+        debug_print_backtrace();
         Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.');
         return $this->doQuery($query);
     }
