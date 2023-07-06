@@ -255,6 +255,9 @@ class NotificationTargetTicket extends DbTestCase
         ]);
         $this->integer($solutions_id)->isGreaterThan(0);
 
+        // Must be logged out to ensure session rights are not checked.
+        $this->resetSession();
+
         $basic_options = [
             'additionnaloption' => [
                 'usertype' => NotificationTarget::GLPI_USER,
@@ -362,7 +365,6 @@ class NotificationTargetTicket extends DbTestCase
 
         //add a test for tech, but force the `show_private` option to false to ensure that presence of this option will
         //hide private items
-        $this->login("tech", "tech");
         $basic_options = [
             'additionnaloption' => [
                 'usertype' => NotificationTarget::GLPI_USER,
