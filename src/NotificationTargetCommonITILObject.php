@@ -1582,13 +1582,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data['timelineitems'] = [];
 
             $options = [
-                'with_documents'    => false,
-                'with_logs'         => false,
-                'with_validations'  => false,
-                'expose_private'    => $show_private,
-                'bypass_rights'     => true,
-                'sort_by_date_desc' => true,
-                'is_self_service'   => $is_self_service,
+                'with_documents'     => false,
+                'with_logs'          => false,
+                'with_validations'   => false,
+                'sort_by_date_desc'  => true,
+
+                'check_view_rights'  => false,
+                'hide_private_items' => $is_self_service || !$show_private,
             ];
 
             $timeline = $item->getTimelineItems($options);

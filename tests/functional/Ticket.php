@@ -2118,7 +2118,7 @@ class Ticket extends DbTestCase
         return $ticket->getID();
     }
 
-    public function testGetTimelineItems()
+    public function testGetTimelineItemsPosition()
     {
 
         $tkt_id = $this->testGetTimelinePosition();
@@ -5797,5 +5797,223 @@ HTML
                 ->integer['status']->isEqualTo(1)
                 ->integer['COUNT']->isEqualTo(3);
         }
+    }
+
+    protected function timelineItemsProvider(): iterable
+    {
+        $now = time();
+
+        $postonly_user_id = getItemByTypeName(\User::class, 'post-only', true);
+        $normal_user_id   = getItemByTypeName(\User::class, 'normal', true);
+        $tech_user_id     = getItemByTypeName(\User::class, 'tech', true);
+
+        $this->login();
+
+        $ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'                => __FUNCTION__,
+                'content'             => __FUNCTION__,
+                '_users_id_requester' => $postonly_user_id,
+                '_users_id_observer'  => $normal_user_id,
+                '_users_id_assign'    => $tech_user_id,
+            ]
+        );
+
+        $this->createItem(
+            \ITILFollowup::class,
+            [
+                'itemtype'      => \Ticket::class,
+                'items_id'      => $ticket->getID(),
+                'content'       => 'public followup',
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+10s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \ITILFollowup::class,
+            [
+                'itemtype'      => \Ticket::class,
+                'items_id'      => $ticket->getID(),
+                'content'       => 'private followup of tech user',
+                'is_private'    => 1,
+                'users_id'      => $tech_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+20s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \ITILFollowup::class,
+            [
+                'itemtype'   => \Ticket::class,
+                'items_id'   => $ticket->getID(),
+                'content'    => 'private followup of normal user',
+                'is_private' => 1,
+                'users_id'   => $normal_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'    => $ticket->getID(),
+                'content'       => 'public task',
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+10s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'    => $ticket->getID(),
+                'content'       => 'private task of tech user',
+                'is_private'    => 1,
+                'users_id'      => $tech_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+20s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'    => $ticket->getID(),
+                'content'       => 'private task of normal user',
+                'is_private'    => 1,
+                'users_id'      => $normal_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        // tech has rights to see all private followups/tasks
+        yield [
+            'login'              => 'tech',
+            'pass'               => 'tech',
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [],
+            'expected_followups' => [
+                'private followup of normal user',
+                'private followup of tech user',
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'private task of normal user',
+                'private task of tech user',
+                'public task',
+            ],
+        ];
+
+        // normal will only see own private followups/tasks
+        yield [
+            'login'              => 'normal',
+            'pass'               => 'normal',
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [],
+            'expected_followups' => [
+                'private followup of normal user',
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'private task of normal user',
+                'public task',
+            ],
+        ];
+
+        // post-only will only see public followup/tasks
+        yield [
+            'login'              => 'post-only',
+            'pass'               => 'postonly',
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [],
+            'expected_followups' => [
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'public task',
+            ],
+        ];
+
+        // sessionless call with private items (used for notifications)
+        yield [
+            'login'              => null,
+            'pass'               => null,
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [
+                'check_view_rights'  => false,
+                'hide_private_items' => false,
+            ],
+            'expected_followups' => [
+                'private followup of normal user',
+                'private followup of tech user',
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'private task of normal user',
+                'private task of tech user',
+                'public task',
+            ],
+        ];
+
+        // sessionless call without private items (used for notifications)
+        yield [
+            'login'              => null,
+            'pass'               => null,
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [
+                'check_view_rights'  => false,
+                'hide_private_items' => true,
+            ],
+            'expected_followups' => [
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'public task',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider timelineItemsProvider
+     */
+    public function testGetTimelineItems(
+        ?string $login,
+        ?string $pass,
+        int $ticket_id,
+        array $options,
+        array $expected_followups,
+        array $expected_tasks
+    ): void {
+        if ($login !== null) {
+            $this->login($login, $pass);
+        } else {
+            $this->resetSession();
+        }
+
+        $ticket = new \Ticket();
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+
+        $this->array($timeline = $ticket->getTimelineItems($options));
+
+        $followups_content = array_map(
+            fn($entry) => $entry['item']['content'],
+            array_values(
+                array_filter(
+                    $timeline,
+                    fn($entry) => $entry['type'] === \ITILFollowup::class
+                )
+            ),
+        );
+        $this->array($followups_content)->isEqualTo($expected_followups);
+
+        $tasks_content = array_map(
+            fn($entry) => $entry['item']['content'],
+            array_values(
+                array_filter(
+                    $timeline,
+                    fn($entry) => $entry['type'] === \TicketTask::class
+                )
+            ),
+        );
+        $this->array($tasks_content)->isEqualTo($expected_tasks);
     }
 }
