@@ -249,8 +249,6 @@ HTML;
             $this->cell_margin = 3;
         }
 
-        $embed_str     = self::$embed ? "true" : "false";
-        $token_str     = $token !== null ? "'{$token}'" : "null";
         $embed_class   = self::$embed ? "embed" : "";
         $mini_class    = $mini ? "mini" : "";
 
@@ -413,25 +411,25 @@ HTML;
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string '] ?? "");
 
-        $is_recursive = $_SESSION['glpiactive_entity_recursive'] ? 1 : 0;
+        $js_params = json_encode([
+            'current'       => $this->current,
+            'cols'          => $this->grid_cols,
+            'rows'          => $this->grid_rows,
+            'cell_margin'   => $this->cell_margin,
+            'rand'          => $rand,
+            'ajax_cards'    => $ajax_cards,
+            'all_cards'     => $cards_json,
+            'all_widgets'   => $all_widgets_json,
+            'context'       => $this->context,
+            'cache_key'     => $cache_key,
+            'embed'         => self::$embed,
+            'token'         => $token,
+            'entities_id'   => $_SESSION['glpiactive_entity'],
+            'is_recursive'  => $_SESSION['glpiactive_entity_recursive'] ? 1 : 0
+        ]);
         $js = <<<JAVASCRIPT
       $(function () {
-         new GLPIDashboard({
-            current:     '{$this->current}',
-            cols:        {$this->grid_cols},
-            rows:        {$this->grid_rows},
-            cell_margin: {$this->cell_margin},
-            rand:        '{$rand}',
-            ajax_cards:  {$ajax_cards},
-            all_cards:   {$cards_json},
-            all_widgets: {$all_widgets_json},
-            context:     "{$this->context}",
-            cache_key:   "{$cache_key}",
-            embed:       {$embed_str},
-            token:       {$token_str},
-            entities_id: {$_SESSION['glpiactive_entity']},
-            is_recursive: {$is_recursive},
-         })
+         new GLPIDashboard({$js_params})
       });
 JAVASCRIPT;
         $js = Html::scriptBlock($js);
