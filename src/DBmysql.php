@@ -346,6 +346,23 @@ class DBmysql
      */
     public function query($query)
     {
+        Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.');
+        return $this->doQuery($query);
+    }
+
+    /**
+     * Execute a MySQL query
+     *
+     * @param string $query Query to execute
+     *
+     * @var array   $CFG_GLPI
+     * @var array   $DEBUG_SQL
+     * @var integer $SQL_TOTAL_REQUEST
+     *
+     * @return mysqli_result|boolean Query result handler
+     */
+    public function doQuery($query)
+    {
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
         //FIXME Remove use of $DEBUG_SQL and $SQL_TOTAL_REQUEST
@@ -1400,7 +1417,7 @@ class DBmysql
      */
     public function buildUpdate($table, $params, $clauses, array $joins = [])
     {
-       //when no explicit "WHERE", we only have a WHEre clause.
+       //when no explicit "WHERE", we only have a WHERE clause.
         if (!isset($clauses['WHERE'])) {
             $clauses  = ['WHERE' => $clauses];
         } else {
