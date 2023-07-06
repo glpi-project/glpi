@@ -275,11 +275,9 @@ HTML;
 
         // prepare all available cards
         $cards = $this->getAllDasboardCards();
-        $cards_json = json_encode($cards);
 
        // prepare all available widgets
         $all_widgets = Widget::getAllTypes();
-        $all_widgets_json = json_encode($all_widgets);
 
        // prepare labels
         $embed_label      = __("Share or embed this dashboard");
@@ -418,8 +416,8 @@ HTML;
             'cell_margin'   => $this->cell_margin,
             'rand'          => $rand,
             'ajax_cards'    => $ajax_cards,
-            'all_cards'     => $cards_json,
-            'all_widgets'   => $all_widgets_json,
+            'all_cards'     => $cards,
+            'all_widgets'   => $all_widgets,
             'context'       => $this->context,
             'cache_key'     => $cache_key,
             'embed'         => self::$embed,
