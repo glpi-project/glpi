@@ -1671,8 +1671,9 @@ class Provider
             array_push($s_criteria, ...$filter_criteria);
         }
 
-        if ($default_criteria_on_empty === true && count($s_criteria) === 0) {
-            $s_criteria = Search::getDefaultCriteria();
+        $itemtype = getItemTypeForTable($table);
+        if (is_a($itemtype, CommonDBTM::class, true) && $default_criteria_on_empty === true && count($s_criteria) === 0) {
+            $s_criteria = Search::getDefaultCriteria($itemtype);
         }
 
         return ['criteria' => $s_criteria];
