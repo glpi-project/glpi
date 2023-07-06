@@ -2266,7 +2266,7 @@ Regards,',
     ];
     foreach ($tables as $table => $fields) {
         $add = true;
-        $result = $DB->query("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
+        $result = $DB->doQuery("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
         if ($result && $DB->numrows($result)) {
             $row = $DB->fetchAssoc($result);
             if ($row['Non_unique'] == 1) {

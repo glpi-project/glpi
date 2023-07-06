@@ -318,7 +318,7 @@ function update080xto0830()
                            = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
                 WHERE `glpi_notificationtemplates`.`itemtype` = 'Ticket'";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result)) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "UPDATE `glpi_notificationtemplatetranslations`
@@ -344,7 +344,7 @@ function update080xto0830()
              FROM `glpi_notificationtemplates`
              WHERE `name` = 'Problems'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) == 0) {
             $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
@@ -645,7 +645,7 @@ function update080xto0830()
         $query = "SELECT *
                 FROM `glpi_documenttypes`
                 WHERE `ext` = '$ext'";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) == 0) {
                 $query = "INSERT INTO `glpi_documenttypes`
                              (`name`, `ext`, `icon`, `is_uploadable`, `date_mod`)
@@ -667,7 +667,7 @@ function update080xto0830()
         $query = "SELECT `id`
                 FROM `glpi_documenttypes`
                 WHERE `ext` = '$ext'";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) == 1) {
                 $query = "UPDATE `glpi_documenttypes`
                       SET `icon` = '$icon', `date_mod` = NOW()
@@ -748,7 +748,7 @@ function update080xto0830()
                 FROM `glpi_users`
                 WHERE `email` <> '' AND `email` IS NOT NULL";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $is_dynamic = 0;
@@ -792,7 +792,7 @@ function update080xto0830()
         $query = "UPDATE `glpi_fieldunicities`
                 SET `is_active` = '0'
                 WHERE `id` = '" . $data['id'] . "'";
-        $DB->query($query);
+        $DB->doQuery($query);
         echo "<div class='red'><p>A unicity check use email for users. ";
         echo "Due to new feature permit several email per users, this rule have been disabled.</p></div>";
     }
@@ -815,7 +815,7 @@ function update080xto0830()
                 FROM `glpi_groups`
                 WHERE `users_id` > 0";
         $user = new User();
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     if ($user->getFromDB($data['users_id'])) {
@@ -823,7 +823,7 @@ function update080xto0830()
                             FROM `glpi_groups_users`
                             WHERE `groups_id` = '" . $data['id'] . "'
                                  AND `users_id` = '" . $data['users_id'] . "'";
-                        if ($result2 = $DB->query($query)) {
+                        if ($result2 = $DB->doQuery($query)) {
                           // add manager to groups_users setting if not present
                             if ($DB->numrows($result2) == 0) {
                                  $query2 = "INSERT INTO`glpi_groups_users`
@@ -878,14 +878,14 @@ function update080xto0830()
 
     $changes['RuleTicket'] = ['ticketcategories_id' => 'itilcategories_id'];
 
-    $DB->query("SET SESSION group_concat_max_len = 4194304;");
+    $DB->doQuery("SET SESSION group_concat_max_len = 4194304;");
     foreach ($changes as $ruletype => $tab) {
        // Get rules
         $query = "SELECT GROUP_CONCAT(`id`)
                 FROM `glpi_rules`
                 WHERE `sub_type` = '" . $ruletype . "'
                 GROUP BY `sub_type`";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 // Get rule string
                 $rules = $DB->result($result, 0, 0);
@@ -1458,7 +1458,7 @@ function update080xto0830()
                 FROM `glpi_reminders`
                 WHERE `is_helpdesk_visible` = 1";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 // Grab helpdesk profiles
                 $helpdesk_profiles = [];
@@ -1492,7 +1492,7 @@ function update080xto0830()
                 FROM `glpi_reminders`
                 WHERE `is_private` = 0";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "INSERT INTO `glpi_entities_reminders`
@@ -1581,7 +1581,7 @@ function update080xto0830()
         $query = "SELECT *
                 FROM `glpi_knowbaseitems`";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "INSERT INTO `glpi_entities_knowbaseitems`
@@ -1768,7 +1768,7 @@ function update080xto0830()
     $query = "SELECT *
              FROM `glpi_configs`";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
             if ($data = $DB->fetchAssoc($result)) {
                 foreach ($fieldconfig as $field_config) {
@@ -1809,7 +1809,7 @@ function update080xto0830()
     $query = "SELECT *
              FROM `glpi_configs`";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
             if ($data = $DB->fetchAssoc($result)) {
                 foreach ($fieldconfig as $field_config) {
@@ -1881,21 +1881,21 @@ function update080xto0830()
               SET `num` = '86'
               WHERE `itemtype` = 'Group'
                     AND `num` = '6'");
-    $DB->query($query);
+    $DB->doQuery($query);
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
         $query = "SELECT DISTINCT `users_id`
                 FROM `glpi_displaypreferences`
                 WHERE `itemtype` = '$type'";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "SELECT MAX(`rank`)
                          FROM `glpi_displaypreferences`
                          WHERE `users_id` = '" . $data['users_id'] . "'
                                AND `itemtype` = '$type'";
-                    $result = $DB->query($query);
+                    $result = $DB->doQuery($query);
                     $rank   = $DB->result($result, 0, 0);
                     $rank++;
 
@@ -1905,13 +1905,13 @@ function update080xto0830()
                             WHERE `users_id` = '" . $data['users_id'] . "'
                                   AND `num` = '$newval'
                                   AND `itemtype` = '$type'";
-                        if ($result2 = $DB->query($query)) {
+                        if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
                                  $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                 $DB->query($query);
+                                 $DB->doQuery($query);
                             }
                         }
                     }
@@ -1922,7 +1922,7 @@ function update080xto0830()
                     $query = "INSERT INTO `glpi_displaypreferences`
                                 (`itemtype` ,`num` ,`rank` ,`users_id`)
                          VALUES ('$type', '$newval', '" . $rank++ . "', '0')";
-                    $DB->query($query);
+                    $DB->doQuery($query);
                 }
             }
         }

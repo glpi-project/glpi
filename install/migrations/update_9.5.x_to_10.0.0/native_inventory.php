@@ -529,7 +529,7 @@ if (!$DB->tableExists('glpi_printerlogs')) {
                 $DB->quoteName('date')
             )
         );
-        $to_preserve_result = $DB->query($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
+        $to_preserve_result = $DB->doQuery($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
             $DB->deleteOrDie(
                 'glpi_printerlogs',
@@ -609,7 +609,7 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
                 $DB->quoteName('date')
             )
         );
-        $to_preserve_result = $DB->query($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
+        $to_preserve_result = $DB->doQuery($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
             $DB->deleteOrDie(
                 'glpi_networkportmetrics',

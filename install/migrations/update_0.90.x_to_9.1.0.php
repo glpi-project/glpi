@@ -344,7 +344,7 @@ function update090xto910()
                   KEY `wwn` (`wwn`),
                   KEY `speed` (`speed`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->query($query);
+        $DB->doQuery($query);
     }
 
    /************** Kernel version for os *************/

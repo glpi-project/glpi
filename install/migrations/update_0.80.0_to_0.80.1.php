@@ -54,7 +54,7 @@ function update0800to0801()
              FROM `glpi_groups_tickets`
              GROUP BY `tickets_id`, `type`, `groups_id`
              HAVING CPT > 1";
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetchArray($result)) {
                 // Skip first
@@ -65,7 +65,7 @@ function update0800to0801()
                             AND `groups_id` = '" . $data['groups_id'] . "'
                       ORDER BY `id` DESC
                       LIMIT 1,99999";
-                if ($result2 = $DB->query($query)) {
+                if ($result2 = $DB->doQuery($query)) {
                     if ($DB->numrows($result2)) {
                         while ($data2 = $DB->fetchArray($result2)) {
                             $query = "DELETE
@@ -92,7 +92,7 @@ function update0800to0801()
              FROM `glpi_tickets_users`
              GROUP BY `tickets_id`, `type`, `users_id`, `alternative_email`
              HAVING CPT > 1";
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetchArray($result)) {
                 // Skip first
@@ -104,7 +104,7 @@ function update0800to0801()
                             AND `alternative_email` = '" . $data['alternative_email'] . "'
                       ORDER BY `id` DESC
                       LIMIT 1,99999";
-                if ($result2 = $DB->query($query)) {
+                if ($result2 = $DB->doQuery($query)) {
                     if ($DB->numrows($result2)) {
                         while ($data2 = $DB->fetchArray($result2)) {
                             $query = "DELETE

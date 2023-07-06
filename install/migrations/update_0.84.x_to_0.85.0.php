@@ -96,7 +96,7 @@ function update084xto0850()
         $query  = "SELECT *
                  FROM `glpi_configs`
                  WHERE `id` = '1'";
-        $result_of_configs = $DB->query($query);
+        $result_of_configs = $DB->doQuery($query);
 
        // Update glpi_configs
         $migration->addField(
@@ -131,7 +131,7 @@ function update084xto0850()
                 $query = "INSERT INTO `glpi_configs`
                              (`context`, `name`, `value`)
                       VALUES ('core', '$name', '" . addslashes($value ?? '') . "');";
-                $DB->query($query);
+                $DB->doQuery($query);
             }
         }
         $migration->dropField('glpi_configs', 'version');
@@ -186,7 +186,7 @@ function update084xto0850()
                 $query = "INSERT INTO `glpi_profilerights`
                              (`profiles_id`, `name`, `rights`)
                       VALUES ('$profiles_id', '$right', '" . $new_right . "')";
-                $DB->query($query);
+                $DB->doQuery($query);
             }
         }
         $migration->migrationOneTable('glpi_profiles');
@@ -1479,7 +1479,7 @@ function update084xto0850()
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'Change'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) == 0) {
             $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
@@ -1913,13 +1913,13 @@ function update084xto0850()
         $query = "SELECT *
                 FROM `glpi_slas`
                 WHERE `resolution_time` <= '3000'";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 $a_ids = [];
                 while ($data = $DB->fetchAssoc($result)) {
                     $a_ids[] = $data['id'];
                 }
-                $DB->query("UPDATE `glpi_slas`
+                $DB->doQuery("UPDATE `glpi_slas`
                         SET `definition_time` = 'minute',
                             `resolution_time` = `resolution_time`/60
                         WHERE `id` IN (" . implode(",", $a_ids) . ")");
@@ -1930,13 +1930,13 @@ function update084xto0850()
                 FROM `glpi_slas`
                 WHERE `resolution_time` > '3000'
                       AND `resolution_time` <= '82800'";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 $a_ids = [];
                 while ($data = $DB->fetchAssoc($result)) {
                     $a_ids[] = $data['id'];
                 }
-                $DB->query("UPDATE `glpi_slas`
+                $DB->doQuery("UPDATE `glpi_slas`
                         SET `definition_time` = 'hour',
                             `resolution_time` = `resolution_time`/3600
                         WHERE `id` IN (" . implode(",", $a_ids) . ")");
@@ -1946,13 +1946,13 @@ function update084xto0850()
         $query = "SELECT *
                 FROM `glpi_slas`
                 WHERE `resolution_time` > '82800'";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 $a_ids = [];
                 while ($data = $DB->fetchAssoc($result)) {
                     $a_ids[] = $data['id'];
                 }
-                $DB->query("UPDATE `glpi_slas`
+                $DB->doQuery("UPDATE `glpi_slas`
                         SET `definition_time` = 'day',
                             `resolution_time` = `resolution_time`/86400
                         WHERE `id` IN (" . implode(",", $a_ids) . ")");
@@ -1970,7 +1970,7 @@ function update084xto0850()
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'MailCollector'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) == 0) {
             $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
@@ -2405,7 +2405,7 @@ function update084xto0850()
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'Project'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) == 0) {
             $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
@@ -2498,7 +2498,7 @@ function update084xto0850()
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'ProjectTask'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) == 0) {
             $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
@@ -2708,7 +2708,7 @@ function update084xto0850()
                    OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%validation.storestatus=%'
                    OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%validation.storestatus=%'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result)) {
             while ($data = $DB->fetchAssoc($result)) {
                 $subject = $data['subject'];
@@ -2745,7 +2745,7 @@ function update084xto0850()
     $query = "SELECT *
              FROM `glpi_bookmarks`";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetchAssoc($result)) {
                 $num     = 0;
@@ -3026,7 +3026,7 @@ function update084xto0850()
              FROM `glpi_bookmarks`
              WHERE `type` = '" . Bookmark::SEARCH . "'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetchAssoc($result)) {
                 $num     = 0;
@@ -3126,11 +3126,11 @@ function update084xto0850()
              SET `num` = 90
              WHERE `itemtype` = 'Entity'
                    AND `num` = 28";
-    $DB->query($query);
+    $DB->doQuery($query);
     $query = "UPDATE `glpi_displaypreferences`
              SET `num` = 200
              WHERE `num` = 90";
-    $DB->query($query);
+    $DB->doQuery($query);
 
     $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 

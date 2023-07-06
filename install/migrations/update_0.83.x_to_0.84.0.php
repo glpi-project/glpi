@@ -112,7 +112,7 @@ function update083xto0840()
              SET `num` = 160
              WHERE `itemtype` = 'Software'
                    AND `num` = 7";
-    $DB->query($query);
+    $DB->doQuery($query);
 
    // Update bookmarks from States to AllAssets
     foreach ($DB->request("glpi_bookmarks", "`itemtype` = 'States'") as $data) {
@@ -120,17 +120,17 @@ function update083xto0840()
         $query = "UPDATE `glpi_bookmarks`
                 SET query = '" . addslashes($query) . "'
                 WHERE `id` = '" . $data['id'] . "'";
-        $DB->query($query);
+        $DB->doQuery($query);
     }
     $query = "UPDATE `glpi_bookmarks`
              SET `itemtype` = 'AllAssets', `path` = 'front/allassets.php'
              WHERE `itemtype` = 'States'";
-    $DB->query($query);
+    $DB->doQuery($query);
 
     $query = "UPDATE `glpi_displaypreferences`
              SET `itemtype` = 'AllAssets'
              WHERE `itemtype` = 'States'";
-    $DB->query($query);
+    $DB->doQuery($query);
 
     if ($DB->tableExists('glpi_networkportmigrations')) {
         $migration->displayWarning("You should have a look at the \"migration cleaner\" tool!", true);
@@ -203,7 +203,7 @@ function update083xto0840()
                    OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%storestatus=%'
                    OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%storestatus=%'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result)) {
             while ($data = $DB->fetchAssoc($result)) {
                 $subject = $data['subject'];
@@ -231,14 +231,14 @@ function update083xto0840()
     $changes                = [];
     $changes['RuleTicket']  = 'status';
 
-    $DB->query("SET SESSION group_concat_max_len = 4194304;");
+    $DB->doQuery("SET SESSION group_concat_max_len = 4194304;");
     foreach ($changes as $ruletype => $field) {
        // Get rules
         $query = "SELECT GROUP_CONCAT(`id`)
                 FROM `glpi_rules`
                 WHERE `sub_type` = '" . $ruletype . "'
                 GROUP BY `sub_type`";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 // Get rule string
                 $rules = $DB->result($result, 0, 0);
@@ -802,7 +802,7 @@ function update083xto0840()
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'PlanningRecall'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) == 0) {
             $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
@@ -882,11 +882,11 @@ function update083xto0840()
     $query = 'UPDATE `glpi_entities`
              SET `default_consumables_alarm_threshold` = -10
              WHERE `default_consumables_alarm_threshold` = -1';
-    $DB->query($query);
+    $DB->doQuery($query);
     $query = 'UPDATE `glpi_entities`
              SET `default_cartridges_alarm_threshold` = -10
              WHERE `default_cartridges_alarm_threshold` = -1';
-    $DB->query($query);
+    $DB->doQuery($query);
 
     $migration->addField(
         "glpi_entities",
@@ -1092,7 +1092,7 @@ function update083xto0840()
     $query  = "SELECT `id`
               FROM `glpi_rulerightparameters`
               WHERE `name` = '(LDAP) MemberOf'";
-    $result = $DB->query($query);
+    $result = $DB->doQuery($query);
     if (!$DB->numrows($result)) {
         $query = "INSERT INTO `glpi_rulerightparameters`
                 VALUES (NULL, '(LDAP) MemberOf', 'memberof', '')";
@@ -1124,7 +1124,7 @@ function update083xto0840()
        //Get configuration
         $query = "SELECT `existing_auth_server_field`
                 FROM `glpi_configs`";
-        $result = $DB->query($query);
+        $result = $DB->doQuery($query);
 
         $existing_auth_server_field = $DB->result($result, 0, "existing_auth_server_field");
         if ($existing_auth_server_field) {
@@ -1132,7 +1132,7 @@ function update083xto0840()
             $query = "SELECT `id`
                    FROM `glpi_ssovariables`
                    WHERE `name` = '$existing_auth_server_field'";
-            $result = $DB->query($query);
+            $result = $DB->doQuery($query);
            //Update config
             if ($DB->numrows($result) > 0) {
                 $query = "UPDATE `glpi_configs`
@@ -1176,12 +1176,12 @@ function update083xto0840()
     $migration->copyTable('glpi_rulecriterias', 'ocs_glpi_rulecriterias');
 
    // Delete OCS rules
-    $DB->query("SET SESSION group_concat_max_len = 4194304;");
+    $DB->doQuery("SET SESSION group_concat_max_len = 4194304;");
     $query = "SELECT GROUP_CONCAT(`id`)
              FROM `glpi_rules`
              WHERE `sub_type` = 'RuleImportEntity'
              GROUP BY `sub_type`";
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
            // Get rule string
             $rules = $DB->result($result, 0, 0);
@@ -1264,7 +1264,7 @@ function update083xto0840()
         $query = "SELECT MIN(id) AS id
                 FROM `glpi_notificationtemplates`
                 WHERE `itemtype` = 'Ticket'";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) == 1) {
                 $notid = $DB->result($result, 0, 0);
             }
@@ -1313,7 +1313,7 @@ function update083xto0840()
                           (`suppliers_id`, `type`, `problems_id`)
                    VALUES ('" . $data['suppliers_id_assign'] . "', '" . CommonITILActor::ASSIGN . "',
                            '" . $data['id'] . "')";
-            $DB->query($query);
+            $DB->doQuery($query);
         }
         $migration->dropField('glpi_problems', 'suppliers_id_assign');
     }
@@ -1336,7 +1336,7 @@ function update083xto0840()
                           (`suppliers_id`, `type`, `tickets_id`)
                    VALUES ('" . $data['suppliers_id_assign'] . "', '" . CommonITILActor::ASSIGN . "',
                            '" . $data['id'] . "')";
-            $DB->query($query);
+            $DB->doQuery($query);
         }
         $migration->dropField('glpi_tickets', 'suppliers_id_assign');
     }
@@ -1352,14 +1352,14 @@ function update083xto0840()
     $changes['RuleImportEntity']        = ['_ignore_ocs_import' => '_ignore_import'];
     $changes['RuleDictionnaryPrinter']  = ['_ignore_ocs_import' => '_ignore_import'];
 
-    $DB->query("SET SESSION group_concat_max_len = 4194304;");
+    $DB->doQuery("SET SESSION group_concat_max_len = 4194304;");
     foreach ($changes as $ruletype => $tab) {
        // Get rules
         $query = "SELECT GROUP_CONCAT(`id`)
                 FROM `glpi_rules`
                 WHERE `sub_type` = '" . $ruletype . "'
                 GROUP BY `sub_type`";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 // Get rule string
                 $rules = $DB->result($result, 0, 0);
@@ -1396,7 +1396,7 @@ function update083xto0840()
                   ON `glpi_manufacturers`.`id` = `glpi_ruleactions`.`value`
              WHERE `sub_type` = 'RuleDictionnarySoftware'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetchAssoc($result)) {
                 // Update manufacturer
@@ -1426,7 +1426,7 @@ function update083xto0840()
             $query = "UPDATE `glpi_ticketrecurrents`
                    SET `periodicity` = '$periodicity'
                    WHERE `id` = '" . $data['id'] . "'";
-            $DB->query($query);
+            $DB->doQuery($query);
         }
     }
 
@@ -1503,7 +1503,7 @@ function update083xto0840()
               SET `num` = '5'
               WHERE `itemtype` = 'Budget'
                     AND `num` = '2'");
-    $DB->query($query);
+    $DB->doQuery($query);
 
     migrateComputerDevice('DeviceProcessor', 'frequency', 'integer', ['serial' => 'string']);
 
@@ -1732,14 +1732,14 @@ function update083xto0840()
                 FROM `glpi_displaypreferences`
                 WHERE `itemtype` = '$type'";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "SELECT MAX(`rank`)
                          FROM `glpi_displaypreferences`
                          WHERE `users_id` = '" . $data['users_id'] . "'
                                AND `itemtype` = '$type'";
-                    $result = $DB->query($query);
+                    $result = $DB->doQuery($query);
                     $rank   = $DB->result($result, 0, 0);
                     $rank++;
 
@@ -1749,13 +1749,13 @@ function update083xto0840()
                             WHERE `users_id` = '" . $data['users_id'] . "'
                                   AND `num` = '$newval'
                                   AND `itemtype` = '$type'";
-                        if ($result2 = $DB->query($query)) {
+                        if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
                                  $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                 $DB->query($query);
+                                 $DB->doQuery($query);
                             }
                         }
                     }
@@ -1766,7 +1766,7 @@ function update083xto0840()
                     $query = "INSERT INTO `glpi_displaypreferences`
                                 (`itemtype` ,`num` ,`rank` ,`users_id`)
                          VALUES ('$type', '$newval', '" . $rank++ . "', '0')";
-                    $DB->query($query);
+                    $DB->doQuery($query);
                 }
             }
         }
@@ -1827,7 +1827,7 @@ function createNetworkNameFromItem(
         $query    = "SELECT `id`
                    FROM `glpi_fqdns`
                    WHERE `fqdn` = '$domain'";
-        $result = $DB->query($query);
+        $result = $DB->doQuery($query);
 
         if ($DB->numrows($result) == 1) {
             $data     = $DB->fetchAssoc($result);
@@ -1931,7 +1931,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard)
                    WHERE link.`computers_id` = " . $portInformation['items_id'] . "
                          AND device.`id` = link.`devicenetworkcards_id`
                          AND link.`specificity` = '" . $portInformation['mac'] . "'";
-            $result = $DB->query($query);
+            $result = $DB->doQuery($query);
 
             if ($DB->numrows($result) > 0) {
                 $set_first = ($DB->numrows($result) == 1);
@@ -2231,7 +2231,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF)
                                AND `netmask` = '$netmask'
                                AND `gateway` = '$gateway'
                                AND `entities_id` = '$entities_id'";
-                    $result = $DB->query($query);
+                    $result = $DB->doQuery($query);
                     foreach ($DB->request($query) as $data) {
                         // phpcs:ignore SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions
                         addNetworkPortMigrationError($data['id'], 'invalid_gateway');
@@ -2253,7 +2253,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF)
                             AND `netmask` = '$netmask'
                             AND `gateway` = '$gateway'
                             AND `entities_id` = '$entities_id'";
-                $result = $DB->query($query);
+                $result = $DB->doQuery($query);
                 foreach ($DB->request($query) as $data) {
                    // phpcs:ignore SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions
                     addNetworkPortMigrationError($data['id'], 'invalid_network');
@@ -2631,12 +2631,12 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF)
                          FROM `glpi_networknames`
                          WHERE `itemtype` = 'NetworkPort'
                                AND `items_id` = '$aggregated_networkports_id'";
-                     $DB->query($query);
+                     $DB->doQuery($query);
 
                      $query = "UPDATE `glpi_networkports`
                          SET `mac` = ''
                          WHERE `id` = '$aggregated_networkports_id'";
-                     $DB->query($query);
+                     $DB->doQuery($query);
                 }
             }
         }
@@ -2680,7 +2680,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF)
     $query = "SELECT `id`, `address_3`, `netmask_3`
              FROM `glpi_ipnetworks`";
 
-    if ($network_result = $DB->query($query)) {
+    if ($network_result = $DB->doQuery($query)) {
         unset($query);
         while ($ipnetwork_row = $DB->fetchAssoc($network_result)) {
             $ipnetworks_id = $ipnetwork_row['id'];
@@ -2693,13 +2693,13 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF)
                          AND `glpi_ipaddresses`.`version` = '4'
                    GROUP BY `items_id`";
 
-            if ($ipaddress_result = $DB->query($query)) {
+            if ($ipaddress_result = $DB->doQuery($query)) {
                 unset($query);
                 while ($link = $DB->fetchAssoc($ipaddress_result)) {
                     $query = "INSERT INTO `glpi_ipaddresses_ipnetworks`
                                 (`ipaddresses_id`, `ipnetworks_id`)
                          VALUES ('" . $link['id'] . "', '$ipnetworks_id')";
-                    $DB->query($query);
+                    $DB->doQuery($query);
                     unset($query);
                 }
             }
