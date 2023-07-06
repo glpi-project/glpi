@@ -514,7 +514,7 @@ class Migration
                 ($oldfield != $newfield)
                 && $DB->fieldExists($table, $newfield)
             ) {
-                $this->change[$table][] = "DROP `$newfield` ";
+                $this->change[$table][] = $DB->buildDrop($newfield, 'FIELD');
             }
 
             if ($format) {
@@ -541,7 +541,7 @@ class Migration
         global $DB;
 
         if ($DB->fieldExists($table, $field, false)) {
-            $this->change[$table][] = "DROP `$field`";
+            $this->change[$table][] = $DB->buildDrop($field, 'FIELD');
         }
     }
 
@@ -620,9 +620,9 @@ class Migration
      **/
     public function dropKey($table, $indexname)
     {
-
+        global $DB;
         if (isIndex($table, $indexname)) {
-            $this->change[$table][] = "DROP INDEX `$indexname`";
+            $this->change[$table][] = $DB->buildDrop($indexname, 'INDEX');
         }
     }
 
@@ -637,9 +637,9 @@ class Migration
      **/
     public function dropForeignKeyContraint($table, $keyname)
     {
-
+        global $DB;
         if (isForeignKeyContraint($table, $keyname)) {
-            $this->change[$table][] = "DROP FOREIGN KEY `$keyname`";
+            $this->change[$table][] = $DB->buildDrop($keyname, 'FOREIGN KEY');
         }
     }
 
