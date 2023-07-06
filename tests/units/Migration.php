@@ -64,7 +64,7 @@ class Migration extends \GLPITestCase
             $this->db->disableTableCaching();
             $queries = [];
             $this->queries = &$queries;
-            $this->calling($this->db)->query = function ($query) use (&$queries) {
+            $this->calling($this->db)->doQuery = function ($query) use (&$queries) {
                 $queries[] = $query;
                 return true;
             };
@@ -821,7 +821,7 @@ class Migration extends \GLPITestCase
 
         $queries = [];
         $this->queries = &$queries;
-        $this->calling($this->db)->query = function ($query) use (&$queries) {
+        $this->calling($this->db)->doQuery = function ($query) use (&$queries) {
             if ($query === 'SHOW INDEX FROM `glpi_oldtable`') {
                   // Make DbUtils::isIndex return false
                   return false;

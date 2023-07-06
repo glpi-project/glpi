@@ -697,8 +697,8 @@ SQL,
         $table = sprintf('glpitests_%s', uniqid());
         $this->when(
             function () use ($db, $create_query_template, $drop_query_template, $table) {
-                $db->query(sprintf($create_query_template, $table));
-                $db->query(sprintf($drop_query_template, $table));
+                $db->doQuery(sprintf($create_query_template, $table));
+                $db->doQuery(sprintf($drop_query_template, $table));
             }
         )->error()
             ->withType(E_USER_WARNING)
@@ -742,7 +742,7 @@ SQL,
     {
         $db = new \mock\DB();
 
-        $db->query('SELECT 1/0');
+        $db->doQuery('SELECT 1/0');
         $this->array($db->getLastQueryWarnings())->isEqualTo(
             [
                 [
@@ -754,7 +754,7 @@ SQL,
         );
         $this->hasSqlLogRecordThatContains('1365: Division by 0', LogLevel::WARNING);
 
-        $db->query('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
+        $db->doQuery('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
         $this->array($db->getLastQueryWarnings())->isEqualTo(
             [
                 [
