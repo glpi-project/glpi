@@ -455,6 +455,9 @@ trait InventoryNetworkPort
                     } else {
                         if (!empty($datadb['name'])) {
                             $netname = \Toolbox::slugify($datadb['name']);
+                            if (!\FQDNLabel::checkFQDNLabel($netname)) {
+                                $netname = null;
+                            }
                         } else {
                             $netname = null;
                         }
@@ -619,6 +622,9 @@ trait InventoryNetworkPort
             if (count(($port->ipaddress ?? []))) {
                 if (property_exists($port, 'name')) {
                     $netname = \Toolbox::slugify($port->name);
+                    if (!\FQDNLabel::checkFQDNLabel($netname)) {
+                        $netname = null;
+                    }
                 } else {
                     $netname = null;
                 }
