@@ -37,8 +37,6 @@ for CONTAINER_ID in `docker-compose ps -a -q`; do
   done
 done
 
-docker-compose exec -T --user root app sudo apk add --update --no-cache chromium-chromedriver
-
 # Always wait for 5 seconds, even when all services are considered as healthy,
 # as they may respond even if their startup script is still running (should not take more than 5 seconds).
 # This problem was encountered on mariadb:10.1 service.
