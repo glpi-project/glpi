@@ -531,7 +531,7 @@ if (!$DB->tableExists('glpi_printerlogs')) {
         );
         $to_preserve_result = $DB->query($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
-            $DB->delete(
+            $DB->deleteOrDie(
                 'glpi_printerlogs',
                 [
                     'NOT' => ['id' => array_column($to_preserve_result, 'id')]
@@ -611,7 +611,7 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
         );
         $to_preserve_result = $DB->query($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
-            $DB->delete(
+            $DB->deleteOrDie(
                 'glpi_networkportmetrics',
                 [
                     'NOT' => ['id' => array_column($to_preserve_result, 'id')]

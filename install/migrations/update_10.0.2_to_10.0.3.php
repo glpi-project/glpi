@@ -79,7 +79,7 @@ function update1002to1003()
         }
     }
     foreach ($DELFROMDISPLAYPREF as $type => $tab) {
-        $DB->delete(
+        $DB->deleteOrDie(
             'glpi_displaypreferences',
             Toolbox::addslashes_deep(
                 [

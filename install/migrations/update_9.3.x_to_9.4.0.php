@@ -126,7 +126,7 @@ function update93xto940()
     $migration->createRule($rule, $criteria, $action);
 
     if (!countElementsInTable('glpi_profilerights', ['profiles_id' => 4, 'name' => 'rule_asset'])) {
-        $DB->insert("glpi_profilerights", [
+        $DB->insertOrDie("glpi_profilerights", [
             'id'           => null,
             'profiles_id'  => "4",
             'name'         => "rule_asset",

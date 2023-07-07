@@ -48,7 +48,7 @@ if ($DB->fieldExists(\Unmanaged::getTable(), 'domains_id')) {
     ]);
     if (count($iterator)) {
         foreach ($iterator as $row) {
-            $DB->insert("glpi_domains_items", [
+            $DB->insertOrDie("glpi_domains_items", [
                 'domains_id'   => $row['domains_id'],
                 'itemtype'     => 'Unmanaged',
                 'items_id'     => $row['id']
