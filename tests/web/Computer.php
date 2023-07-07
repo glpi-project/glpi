@@ -53,7 +53,6 @@ class Computer extends \FrontBaseClass
             [
                 'name' => 'A test > computer & name',
                 'uuid' => 'thetestuuidtoremove',
-                //'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             ]
         );
 
