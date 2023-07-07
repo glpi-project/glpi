@@ -358,6 +358,10 @@ JAVASCRIPT
     private static function getLinkHtml(array $fields): string
     {
 
+        if (empty($fields['url'])) {
+            return '';
+        }
+
         $html = '';
 
         // decode `&` to prevent doube encoding when value will be printed using `htmlspecialchars()`
