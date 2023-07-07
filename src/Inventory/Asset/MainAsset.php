@@ -532,7 +532,7 @@ abstract class MainAsset extends InventoryAsset
                 $dataEntity = $ruleEntity->processAllRules($entity_input, []);
 
                 if (isset($dataEntity['_ignore_import'])) {
-                    $input['rules_id'] = $dataEntity['rules_id'];
+                    $input['rules_id'] = $dataEntity['_ruleid'];
                     $this->addRefused($input);
                     return;
                 }
