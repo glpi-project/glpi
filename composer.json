@@ -79,7 +79,6 @@
     "require-dev": {
         "ext-xml": "*",
         "atoum/atoum": "^4.1",
-        "dbrekelmans/bdi": "^1.0",
         "friendsoftwig/twigcs": "^6.1",
         "glpi-project/tools": "^0.6",
         "maglnet/composer-require-checker": "^3.5",
