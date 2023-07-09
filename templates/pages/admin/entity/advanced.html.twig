@@ -1,0 +1,75 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{# TODO Fields can be consolidated more in GLPI 10.1. They currently match the old display. #}
+{% block form_fields %}
+   {% block more_fields %}
+      {{ fields.largeTitle(
+         __('Values for the generic rules for assignment to entities'),
+         'Entity'|itemtype_icon,
+         false,
+          __('These parameters are used as actions in generic rules for assignment to entities')
+      ) }}
+
+      {{ fields.textField('tag', item.fields['tag'], __('Information in inventory tool (TAG) representing the entity'), {
+         full_width: true
+      }) }}
+      {% if can_use_ldap %}
+         {{ fields.textField('ldap_dn', item.fields['ldap_dn'], __('LDAP directory information attribute representing the entity'), {
+            full_width: true
+         }) }}
+      {% endif %}
+      {{ fields.textField('mail_domain', item.fields['mail_domain'], __('Mail domain surrogates entity'), {
+         full_width: true
+      }) }}
+
+      {% if can_use_ldap %}
+         {{ fields.largeTitle(__('Values used in the interface to search users from a LDAP directory'), 'AuthLDAP'|itemtype_icon) }}
+         {{ fields.dropdownField('AuthLDAP', 'authldaps_id', item.fields['authldaps_id'], 'AuthLDAP'|itemtype_name, {
+            full_width: true,
+            emptylabel: __('Default server'),
+            condition: {
+               is_active: 1
+            }
+         }) }}
+         {{ fields.nullField() }}
+         {{ fields.textField('entity_ldapfilter', item.fields['entity_ldapfilter'], __('LDAP filter associated to the entity (if necessary)'), {
+            full_width: true
+         }) }}
+      {% endif %}
+   {% endblock %}
+{% endblock %}
