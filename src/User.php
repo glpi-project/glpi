@@ -565,7 +565,7 @@ class User extends CommonDBTM
             'WHERE' =>
                 [
                     'RAW' => [
-                        'LOWER(' . UserEmail::getTable() . '.email' . ')'  => strtolower($email)
+                        'LOWER(' . UserEmail::getTable() . '.email' . ')'  => Toolbox::strtolower($email)
                     ]
                 ]
              + $condition
