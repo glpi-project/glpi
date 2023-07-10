@@ -1743,6 +1743,11 @@ class CommonDBTM extends CommonGLPI
                 if ($lock == 'states_id' && $config['states_id_default']) {
                     continue;
                 }
+                //bypass for entities_id // default inventory conf is 0 'root entity')
+                if ($lock == 'entities_id') {
+                    continue;
+                }
+
                 if (array_key_exists($lock, $this->input)) {
                     $lockedfield->setLastValue($this->getType(), 0, $lock, $this->input[$lock]);
                     unset($this->input[$lock]);
@@ -3013,8 +3018,9 @@ class CommonDBTM extends CommonGLPI
             if (!$this->can($ID, $right, $input)) {
                // Gestion timeout session
                 Session::redirectIfNotLoggedIn();
-                $right_name = Session::getRightNameForError($right);
+                /** @var class-string<CommonDBTM> $itemtype */
                 $itemtype = static::getType();
+                $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
                 $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
                 Html::displayRightError($info);
             }
@@ -3061,7 +3067,9 @@ class CommonDBTM extends CommonGLPI
         if (!$this->canGlobal($right)) {
            // Gestion timeout session
             Session::redirectIfNotLoggedIn();
-            $right_name = Session::getRightNameForError($right);
+            /** @var class-string<CommonDBTM> $itemtype */
+            $itemtype = static::getType();
+            $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
             $itemtype = static::getType();
             $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
             Html::displayRightError($info);

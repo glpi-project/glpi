@@ -31,6 +31,27 @@
  * ---------------------------------------------------------------------
  */
 
+// Our tabler version does not support datagrid
+// TODO: remove after updating tabler
+.datagrid {
+    --tblr-datagrid-padding   : 1.5rem;
+    --tblr-datagrid-item-width: 15rem;
+
+    display                   : grid;
+    grid-gap                  : var(--tblr-datagrid-padding);
+    grid-template-columns     : repeat(auto-fit, minmax(var(--tblr-datagrid-item-width), 1fr));
+}
+
+.datagrid-title {
+    font-size     : .625rem;
+    font-weight   : 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    line-height   : 1rem;
+    color         : var(--tblr-muted);
+    margin-bottom : .25rem;
+}
+
 #debug-toolbar {
     z-index: 9999;
     outline: none;
@@ -79,5 +100,45 @@
                 margin-right: -0.25rem;
             }
         }
+    }
+}
+
+body.debug-active:not(.debug-folded) {
+    .search_page {
+        .search-container {
+            @include media-breakpoint-up(lg) {
+                height: calc(100vh - #{$contextbar-height} - #{$content-margin} - 50px);
+            }
+        }
+    }
+
+    .tab-pane:not([id^="tab-Ticket_main"]) {
+        margin-bottom: 50px;
+    }
+
+    .itil-object {
+        @include media-breakpoint-up(lg) {
+            height: calc(100vh - 187px - 46px);
+        }
+    }
+
+    form.new-itil-object .itil-object {
+        @include media-breakpoint-up(lg) {
+            height: calc(100vh - 187px - 5px);
+        }
+    }
+
+
+    &.horizontal-layout {
+        .itil-object {
+            @include media-breakpoint-up(lg) {
+                height: calc(100vh - 257px - 46px);
+            }
+        }
+    }
+
+    .search-footer,
+    .itil-footer {
+        bottom: 46px;
     }
 }

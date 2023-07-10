@@ -48,16 +48,24 @@ foreach (['glpi_computervirtualmachines', 'glpi_networkequipments'] as $table) {
     );
     $migration->migrationOneTable($table);
 
-    $DB->update(
+    $DB->updateOrDie(
         $table,
         ['ram' => null],
         ['ram' => '']
     );
-    $DB->update(
-        $table,
-        ['ram' => new QueryExpression(sprintf('REGEXP_SUBSTR(%s, %s)', $DB->quoteName('ram'), $DB->quoteValue('[0-9]+')))],
-        ['ram' => ['REGEXP', '[^0-9]+']]
-    );
+    $iterator = $DB->request([
+        'FROM'  => $table,
+        'WHERE' => [
+            'ram' => ['REGEXP', '[^0-9]+'],
+        ],
+    ]);
+    foreach ($iterator as $row) {
+        $DB->updateOrDie(
+            $table,
+            ['ram' => preg_replace('/[^0-9]+/', '', $row['ram'])],
+            ['id'  => $row['id']]
+        );
+    }
     $migration->changeField(
         $table,
         'ram',

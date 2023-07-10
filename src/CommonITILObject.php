@@ -2936,7 +2936,19 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function getCloneRelations(): array
     {
-        return [];
+        $relations = [];
+
+        if (is_a($this->userlinkclass, CommonITILActor::class, true)) {
+            $relations[] = $this->userlinkclass;
+        }
+        if (is_a($this->grouplinkclass, CommonITILActor::class, true)) {
+            $relations[] = $this->grouplinkclass;
+        }
+        if (is_a($this->supplierlinkclass, CommonITILActor::class, true)) {
+            $relations[] = $this->supplierlinkclass;
+        }
+
+        return $relations;
     }
 
 
@@ -7006,12 +7018,12 @@ abstract class CommonITILObject extends CommonDBTM
      * Retrieves all timeline items for this ITILObject
      *
      * @param array $options Possible options:
-     * - with_documents    : include documents elements
-     * - with_logs         : include log entries
-     * - with_validations  : include validation elements
-     * - expose_private    : force presence of private items (followup/tasks), even if session does not allow it
-     * - bypass_rights     : bypass current session rights
-     * - sort_by_date_desc : false,
+     * - with_documents     : include documents elements
+     * - with_logs          : include log entries
+     * - with_validations   : include validation elements
+     * - sort_by_date_desc  : sort timeline items by date
+     * - check_view_rights  : indicates whether current session rights should be checked for view rights
+     * - hide_private_items : force hiding private items (followup/tasks), even if session allow it
      * @since 9.4.0
      *
      * @param bool $with_logs include logs ?
@@ -7022,14 +7034,28 @@ abstract class CommonITILObject extends CommonDBTM
     {
 
         $params = [
-            'with_documents'    => true,
-            'with_logs'         => true,
-            'with_validations'  => true,
-            'expose_private'    => false,
-            'bypass_rights'     => false,
-            'sort_by_date_desc' => $_SESSION['glpitimeline_order'] == CommonITILObject::TIMELINE_ORDER_REVERSE,
-            'is_self_service'   => false,
+            'with_documents'     => true,
+            'with_logs'          => true,
+            'with_validations'   => true,
+            'sort_by_date_desc'  => $_SESSION['glpitimeline_order'] == CommonITILObject::TIMELINE_ORDER_REVERSE,
+
+            // params used by notifications process (as session cannot be used there)
+            'check_view_rights'  => true,
+            'hide_private_items' => false,
         ];
+
+        if (array_key_exists('bypass_rights', $options) && $options['bypass_rights']) {
+            Toolbox::deprecated('Using `bypass_rights` parameter is deprecated.');
+            $params['check_view_rights'] = false;
+        }
+        if (array_key_exists('expose_private', $options) && $options['expose_private']) {
+            Toolbox::deprecated('Using `expose_private` parameter is deprecated.');
+            $params['hide_private_items'] = false;
+        }
+        if (array_key_exists('is_self_service', $options) && $options['is_self_service']) {
+            Toolbox::deprecated('Using `is_self_service` parameter is deprecated.');
+            $params['hide_private_items'] = false;
+        }
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -7037,31 +7063,38 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
+        if ($this->isNewItem()) {
+            return [];
+        }
+
+        if ($params['check_view_rights'] && !$this->canViewItem()) {
+            return [];
+        }
+
         $objType    = static::getType();
         $foreignKey = static::getForeignKeyField();
         $timeline = [];
-
-        if ($this->isNewItem()) {
-            return $timeline;
-        }
 
         $canupdate_parent = $this->canUpdateItem() && !in_array($this->fields['status'], $this->getClosedStatusArray());
 
        //checks rights
         $restrict_fup = $restrict_task = [];
-        if (!$params['expose_private'] || (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE) && !$params['bypass_rights'])) {
-            $restrict_fup = [
-                'OR' => [
+        if (
+            $params['hide_private_items']
+            || ($params['check_view_rights'] && !Session::haveRight("followup", ITILFollowup::SEEPRIVATE))
+        ) {
+            if (Session::getLoginUserID() !== false && Session::getCurrentInterface() === "central") {
+                $restrict_fup = [
+                    'OR' => [
+                        'is_private' => 0,
+                        'users_id'   => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
+                    ]
+                ];
+            } else {
+                $restrict_fup = [
                     'is_private' => 0,
-                    'users_id'   => Session::getLoginUserID()
-                ]
-            ];
-        }
-
-        if ($params['is_self_service'] || !$params['expose_private']) {
-            $restrict_fup = [
-                'is_private'   => 0
-            ];
+                ];
+            }
         }
 
         $restrict_fup['itemtype'] = static::getType();
@@ -7071,31 +7104,32 @@ abstract class CommonITILObject extends CommonDBTM
         $task_obj  = new $taskClass();
         if (
             $task_obj->maybePrivate()
-            && (!$params['expose_private'] || (!Session::haveRight("followup", CommonITILTask::SEEPRIVATE) && !$params['bypass_rights']))
+            && (
+                $params['hide_private_items']
+                || ($params['check_view_rights'] && !Session::haveRight($task_obj::$rightname, CommonITILTask::SEEPRIVATE))
+            )
         ) {
-            $restrict_task = [
-                'OR' => [
-                    'is_private'   => 0,
-                    'users_id'     => Session::getCurrentInterface() == "central"
-                                    ? Session::getLoginUserID()
-                                    : 0
-                ]
-            ];
-        }
-
-        if ($params['is_self_service'] || !$params['expose_private']) {
-            $restrict_task = [
-                'is_private'   => 0
-            ];
+            if (Session::getLoginUserID() !== false && Session::getCurrentInterface() === "central") {
+                $restrict_task = [
+                    'OR' => [
+                        'is_private' => 0,
+                        'users_id'   => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
+                    ]
+                ];
+            } else {
+                $restrict_task = [
+                    'is_private' => 0,
+                ];
+            }
         }
 
        //add followups to timeline
         $followup_obj = new ITILFollowup();
-        if ($followup_obj->canview() || $params['bypass_rights']) {
+        if (!$params['check_view_rights'] || $followup_obj->canview()) {
             $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date_creation DESC', 'id DESC']);
             foreach ($followups as $followups_id => $followup) {
                 $followup_obj->getFromDB($followups_id);
-                if ($followup_obj->canViewItem() || $params['bypass_rights']) {
+                if (!$params['check_view_rights'] || $followup_obj->canViewItem()) {
                     $followup['can_edit'] = $followup_obj->canUpdateItem();
                     $followup['can_promote'] = Session::getCurrentInterface() === 'central' && $this instanceof Ticket && Ticket::canCreate();
                     $timeline["ITILFollowup_" . $followups_id] = [
@@ -7108,11 +7142,11 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
        //add tasks to timeline
-        if ($task_obj->canview() || $params['bypass_rights']) {
+        if (!$params['check_view_rights'] || $task_obj->canview()) {
             $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date_creation DESC');
             foreach ($tasks as $tasks_id => $task) {
                 $task_obj->getFromDB($tasks_id);
-                if ($task_obj->canViewItem() || $params['bypass_rights']) {
+                if (!$params['check_view_rights'] || $task_obj->canViewItem()) {
                     $task['can_edit'] = $task_obj->canUpdateItem();
                     $task['can_promote'] = Session::getCurrentInterface() === 'central' && $this instanceof Ticket && Ticket::canCreate();
                     $timeline[$task_obj::getType() . "_" . $tasks_id] = [
@@ -7154,7 +7188,7 @@ abstract class CommonITILObject extends CommonDBTM
         $validation_class = $objType . "Validation";
         if (
             class_exists($validation_class) && $params['with_validations']
-            && ($validation_class::canView() || $params['bypass_rights'])
+            && (!$params['check_view_rights'] || $validation_class::canView())
         ) {
             $validation_obj   = new $validation_class();
             $validations = $validation_obj->find([$foreignKey => $this->getID()]);
@@ -7229,7 +7263,7 @@ abstract class CommonITILObject extends CommonDBTM
             $document_item_obj = new Document_Item();
             $document_obj      = new Document();
             $document_items    = $document_item_obj->find([
-                $this->getAssociatedDocumentsCriteria($params['bypass_rights']),
+                $this->getAssociatedDocumentsCriteria(!$params['check_view_rights']),
                 'timeline_position'  => ['>', self::NO_TIMELINE]
             ]);
             foreach ($document_items as $document_item) {

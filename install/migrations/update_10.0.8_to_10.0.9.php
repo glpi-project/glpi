@@ -33,26 +33,36 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+/**
+ * Update from 10.0.8 to 10.0.9
+ *
+ * @return bool for success (will die for most error)
+ **/
+function update1008to1009()
+{
+    global $DB, $migration;
 
-Session::checkCentralAccess();
+    $updateresult       = true;
+    $ADDTODISPLAYPREF   = [];
+    $DELFROMDISPLAYPREF = [];
+    $update_dir = __DIR__ . '/update_10.0.8_to_10.0.9/';
 
-if (!isset($_POST['kbitem_id'])) {
-    throw new \RuntimeException('Required argument missing!');
+    //TRANS: %s is the number of new version
+    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.9'));
+    $migration->setVersion('10.0.9');
+
+    $update_scripts = scandir($update_dir);
+    foreach ($update_scripts as $update_script) {
+        if (preg_match('/\.php$/', $update_script) !== 1) {
+            continue;
+        }
+        require $update_dir . $update_script;
+    }
+
+    // ************ Keep it at the end **************
+    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
+
+    $migration->executeMigration();
+
+    return $updateresult;
 }
-
-$item = new \KnowbaseItem();
-if (!$item->getFromDB($_POST['kbitem_id']) || !$item->can($_POST['kbitem_id'], READ)) {
-    return;
-}
-
-$kbitem_id = $_POST['kbitem_id'];
-$lang = $_POST['language'] ?? null;
-
-$edit = $_POST['edit'] ?? false;
-
-$answer = $_POST['answer'] ?? false;
-
-echo KnowbaseItem_Comment::getCommentForm($kbitem_id, $lang, $edit, $answer);

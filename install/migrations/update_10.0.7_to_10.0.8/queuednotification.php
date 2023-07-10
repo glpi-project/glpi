@@ -33,26 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-Session::checkCentralAccess();
-
-if (!isset($_POST['kbitem_id'])) {
-    throw new \RuntimeException('Required argument missing!');
+/* Add `event` to some glpi_queuednotifications */
+if (!$DB->fieldExists('glpi_queuednotifications', 'event')) {
+    $migration->addField('glpi_queuednotifications', 'event', 'varchar(255) DEFAULT NULL', ['value' => null]);
 }
-
-$item = new \KnowbaseItem();
-if (!$item->getFromDB($_POST['kbitem_id']) || !$item->can($_POST['kbitem_id'], READ)) {
-    return;
-}
-
-$kbitem_id = $_POST['kbitem_id'];
-$lang = $_POST['language'] ?? null;
-
-$edit = $_POST['edit'] ?? false;
-
-$answer = $_POST['answer'] ?? false;
-
-echo KnowbaseItem_Comment::getCommentForm($kbitem_id, $lang, $edit, $answer);

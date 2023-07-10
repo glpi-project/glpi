@@ -331,7 +331,7 @@ final class SearchOption implements \ArrayAccess
                 $plugsearch = \Plugin::getAddSearchOptions($itemtype);
                 $plugsearch = $plugsearch + \Plugin::getAddSearchOptionsNew($itemtype);
                 if (count($plugsearch)) {
-                    $search[$itemtype] += ['plugins' => _n('Plugin', 'Plugins', \Session::getPluralNumber())];
+                    $search[$itemtype] += ['plugins' => ['name' => _n('Plugin', 'Plugins', \Session::getPluralNumber())]];
                     $search[$itemtype] += $plugsearch;
                 }
             }

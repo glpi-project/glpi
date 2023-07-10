@@ -131,7 +131,7 @@
                         'enable_anonymization': anonym_user
                      }, with_context = false) }}
                   </span>
-                  {% if not anonym_user %}
+                  {% if not anonym_user and entry_user.canView() %}
                      {% do call('Html::showToolTip', [
                         include('components/user/info_card.html.twig', {
                            'user': user_fields,

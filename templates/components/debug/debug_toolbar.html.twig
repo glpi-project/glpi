@@ -44,7 +44,7 @@
    </li>
 {% endmacro %}
 
-<div id="debug-toolbar" class="position-sticky bottom-0 w-100 card" tabindex="0">
+<div id="debug-toolbar" class="position-fixed bottom-0 w-100 card" tabindex="0">
    <div class="resize-handle mt-n2" style="cursor: row-resize; height: 10px; z-index: 1030"></div>
    <div class="d-flex flex-row align-items-center">
       <div class="debug-toolbar-badge d-flex">
@@ -54,10 +54,10 @@
       </div>
       <div class="debug-toolbar-content d-flex w-100 justify-content-between align-items-center">
          <ul class="debug-toolbar-widgets nav nav-tabs align-items-center border-0" data-bs-toggle="tabs">
-            {{ _self.widget_button('server_performance', _x('debug', 'Server performance'), 'ti ti-clock-play') }}
-            {{ _self.widget_button('sql', _x('debug', 'SQL Requests'), 'ti ti-database') }}
-            {{ _self.widget_button('requests', _x('debug', 'HTTP Requests'), 'ti ti-refresh') }}
-            {{ _self.widget_button('client_performance', _x('debug', 'Client performance'), 'ti ti-brand-javascript') }}
+            {{ _self.widget_button('server_performance', 'Server performance', 'ti ti-clock-play') }}
+            {{ _self.widget_button('sql', 'SQL Requests', 'ti ti-database') }}
+            {{ _self.widget_button('requests', 'HTTP Requests', 'ti ti-refresh') }}
+            {{ _self.widget_button('client_performance', 'Client performance', 'ti ti-brand-javascript') }}
          </ul>
          <div class="debug-toolbar-controls">
             <div class="debug-toolbar-control">

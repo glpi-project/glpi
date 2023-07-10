@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\ErrorHandler;
+use Glpi\Event;
 use Glpi\Mail\SMTP\OauthConfig;
 
 include('../inc/includes.php');
@@ -46,6 +47,10 @@ if (isset($_POST["test_smtp_send"])) {
 } else if (isset($_POST["update"])) {
     $config = new Config();
     $config->update($_POST);
+    Event::log(0, "system", 3, "setup", sprintf(
+        __('%1$s edited the emails notifications configuration'),
+        $_SESSION["glpiname"] ?? __("Unknown"),
+    ));
 
     $redirect_to_smtp_oauth = $_SESSION['redirect_to_smtp_oauth'] ?? false;
     unset($_SESSION['redirect_to_smtp_oauth']);

@@ -43,10 +43,15 @@ include('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
+Session::checkCentralAccess();
 
 if (!isset($_POST['kbid']) || !isset($_POST['oldid']) || !isset($_POST['diffid'])) {
     throw new \RuntimeException('Required argument missing!');
+}
+
+$item = new \KnowbaseItem();
+if (!$item->getFromDB($_POST['kbid']) || !$item->can($_POST['kbid'], READ)) {
+    return;
 }
 
 $oldid = $_POST['oldid'];

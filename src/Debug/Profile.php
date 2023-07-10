@@ -78,7 +78,7 @@ final class Profile
         return self::$current;
     }
 
-    public static function load(string $id, bool $delete = true): ?self
+    public static function pull(string $id): ?self
     {
         if (!isset($_SESSION['debug_profiles'][$id])) {
             return null;
@@ -90,9 +90,8 @@ final class Profile
             $profile->is_readonly = true;
             $profile->debug_info = $profile_data;
 
-            if ($delete) {
-                unset($_SESSION['debug_profiles'][$id]);
-            }
+            unset($_SESSION['debug_profiles'][$id]);
+
             return $profile;
         } catch (\Throwable $e) {
             return null;

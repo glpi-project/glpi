@@ -1910,6 +1910,152 @@ class Ticket extends DbTestCase
         }
     }
 
+    public function testCloneActor()
+    {
+        $this->login();
+        $this->setEntity('Root entity', true);
+        $ticket = getItemByTypeName('Ticket', '_ticket01');
+
+        $ticket_user = new Ticket_User();
+        $this->integer((int)$ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'post-only', true), //requester
+            'type' => 1
+        ]))->isGreaterThan(0);
+
+        $this->integer($ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'tech', true), //assign
+            'type' => 2
+        ]))->isGreaterThan(0);
+
+        $ticket_Supplier = new Supplier_Ticket();
+        $this->integer((int)$ticket_Supplier->add([
+            'tickets_id' => $ticket->getID(),
+            'suppliers_id' => (int)getItemByTypeName('Supplier', '_suplier01_name', true), //observer
+            'type' => 3
+        ]))->isGreaterThan(0);
+
+        $this->integer((int)$ticket_Supplier->add([
+            'tickets_id' => $ticket->getID(),
+            'suppliers_id' => (int)getItemByTypeName('Supplier', '_suplier02_name', true), //requester
+            'type' => 1
+        ]))->isGreaterThan(0);
+
+        $this->integer($ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'normal', true), //observer
+            'type' => 3
+        ]))->isGreaterThan(0);
+
+        $group_ticket = new Group_Ticket();
+        $this->integer($group_ticket->add([
+            'tickets_id' => $ticket->getID(),
+            'groups_id' => (int)getItemByTypeName('Group', '_test_group_1', true), //observer
+            'type' => 3
+        ]))->isGreaterThan(0);
+
+        $this->integer($group_ticket->add([
+            'tickets_id' => $ticket->getID(),
+            'groups_id' => (int)getItemByTypeName('Group', '_test_group_2', true), //assign
+            'type' => 3
+        ]))->isGreaterThan(0);
+
+
+
+        $date = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date;
+
+       // Test item cloning
+        $added = $ticket->clone();
+        $this->integer((int)$added)->isGreaterThan(0);
+
+        $clonedTicket = new \Ticket();
+        $this->boolean($clonedTicket->getFromDB($added))->isTrue();
+
+        // Check timeline items are not cloned except log
+        $this->integer(count($clonedTicket->getTimelineItems([
+            'with_logs'         => false,
+        ])))->isEqualTo(0);
+
+        $this->integer(count($clonedTicket->getTimelineItems([
+            'with_logs'         => true,
+        ])))->isEqualTo(8);
+        //User: Add a link with an item: 5 times
+        //Group: Add a link with an item: 2 times
+        //Status: Change New to Processing (assigned): once
+
+        //check actors
+        $this->boolean($ticket_user->getFromDBByCrit([
+            'tickets_id' => $clonedTicket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'post-only', true), //requester
+            'type' => 1
+        ]))->isTrue();
+
+        $this->boolean($ticket_user->getFromDBByCrit([
+            'tickets_id' => $clonedTicket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'tech', true), //assign
+            'type' => 2
+        ]))->isTrue();
+
+        $this->boolean($ticket_user->getFromDBByCrit([
+            'tickets_id' => $clonedTicket->getID(),
+            'users_id' => (int)getItemByTypeName('User', 'normal', true), //observer
+            'type' => 3
+        ]))->isTrue();
+
+        $this->boolean($ticket_Supplier->getFromDBByCrit([
+            'tickets_id' => $ticket->getID(),
+            'suppliers_id' => (int)getItemByTypeName('Supplier', '_suplier01_name', true), //observer
+            'type' => 3
+        ]))->isTrue();
+
+        $this->boolean($ticket_Supplier->getFromDBByCrit([
+            'tickets_id' => $ticket->getID(),
+            'suppliers_id' => (int)getItemByTypeName('Supplier', '_suplier02_name', true), //requester
+            'type' => 1
+        ]))->isTrue();
+
+        $this->boolean($group_ticket->getFromDBByCrit([
+            'tickets_id' => $clonedTicket->getID(),
+            'groups_id' => (int)getItemByTypeName('Group', '_test_group_1', true), //observer
+            'type' => 3
+        ]))->isTrue();
+
+        $this->boolean($group_ticket->getFromDBByCrit([
+            'tickets_id' => $clonedTicket->getID(),
+            'groups_id' => (int)getItemByTypeName('Group', '_test_group_2', true), //assign
+            'type' => 3
+        ]))->isTrue();
+
+
+
+        $fields = $ticket->fields;
+       // Check the ticket values. Id and dates must be different, everything else must be equal
+        foreach ($fields as $k => $v) {
+            switch ($k) {
+                case 'id':
+                    $this->variable($clonedTicket->getField($k))->isNotEqualTo($ticket->getField($k));
+                    break;
+                case 'date_mod':
+                case 'date_creation':
+                    $dateClone = new \DateTime($clonedTicket->getField($k));
+                    $expectedDate = new \DateTime($date);
+                    $this->dateTime($dateClone)->isEqualTo($expectedDate);
+                    break;
+                case 'name':
+                    $this->variable($clonedTicket->getField($k))->isEqualTo("{$ticket->getField($k)} (copy)");
+                    break;
+                default:
+                    $this->executeOnFailure(
+                        function () use ($k) {
+                            dump($k);
+                        }
+                    )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k));
+            }
+        }
+    }
+
     protected function testGetTimelinePosition2($tlp, $tickets_id)
     {
         foreach ($tlp as $users_name => $user) {
@@ -2046,7 +2192,7 @@ class Ticket extends DbTestCase
         return $ticket->getID();
     }
 
-    public function testGetTimelineItems()
+    public function testGetTimelineItemsPosition()
     {
 
         $tkt_id = $this->testGetTimelinePosition();
@@ -6044,5 +6190,223 @@ HTML
                 ->integer['status']->isEqualTo(1)
                 ->integer['COUNT']->isEqualTo(3);
         }
+    }
+
+    protected function timelineItemsProvider(): iterable
+    {
+        $now = time();
+
+        $postonly_user_id = getItemByTypeName(\User::class, 'post-only', true);
+        $normal_user_id   = getItemByTypeName(\User::class, 'normal', true);
+        $tech_user_id     = getItemByTypeName(\User::class, 'tech', true);
+
+        $this->login();
+
+        $ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'                => __FUNCTION__,
+                'content'             => __FUNCTION__,
+                '_users_id_requester' => $postonly_user_id,
+                '_users_id_observer'  => $normal_user_id,
+                '_users_id_assign'    => $tech_user_id,
+            ]
+        );
+
+        $this->createItem(
+            \ITILFollowup::class,
+            [
+                'itemtype'      => \Ticket::class,
+                'items_id'      => $ticket->getID(),
+                'content'       => 'public followup',
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+10s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \ITILFollowup::class,
+            [
+                'itemtype'      => \Ticket::class,
+                'items_id'      => $ticket->getID(),
+                'content'       => 'private followup of tech user',
+                'is_private'    => 1,
+                'users_id'      => $tech_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+20s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \ITILFollowup::class,
+            [
+                'itemtype'   => \Ticket::class,
+                'items_id'   => $ticket->getID(),
+                'content'    => 'private followup of normal user',
+                'is_private' => 1,
+                'users_id'   => $normal_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'    => $ticket->getID(),
+                'content'       => 'public task',
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+10s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'    => $ticket->getID(),
+                'content'       => 'private task of tech user',
+                'is_private'    => 1,
+                'users_id'      => $tech_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+20s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'    => $ticket->getID(),
+                'content'       => 'private task of normal user',
+                'is_private'    => 1,
+                'users_id'      => $normal_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        // tech has rights to see all private followups/tasks
+        yield [
+            'login'              => 'tech',
+            'pass'               => 'tech',
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [],
+            'expected_followups' => [
+                'private followup of normal user',
+                'private followup of tech user',
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'private task of normal user',
+                'private task of tech user',
+                'public task',
+            ],
+        ];
+
+        // normal will only see own private followups/tasks
+        yield [
+            'login'              => 'normal',
+            'pass'               => 'normal',
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [],
+            'expected_followups' => [
+                'private followup of normal user',
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'private task of normal user',
+                'public task',
+            ],
+        ];
+
+        // post-only will only see public followup/tasks
+        yield [
+            'login'              => 'post-only',
+            'pass'               => 'postonly',
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [],
+            'expected_followups' => [
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'public task',
+            ],
+        ];
+
+        // sessionless call with private items (used for notifications)
+        yield [
+            'login'              => null,
+            'pass'               => null,
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [
+                'check_view_rights'  => false,
+                'hide_private_items' => false,
+            ],
+            'expected_followups' => [
+                'private followup of normal user',
+                'private followup of tech user',
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'private task of normal user',
+                'private task of tech user',
+                'public task',
+            ],
+        ];
+
+        // sessionless call without private items (used for notifications)
+        yield [
+            'login'              => null,
+            'pass'               => null,
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [
+                'check_view_rights'  => false,
+                'hide_private_items' => true,
+            ],
+            'expected_followups' => [
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'public task',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider timelineItemsProvider
+     */
+    public function testGetTimelineItems(
+        ?string $login,
+        ?string $pass,
+        int $ticket_id,
+        array $options,
+        array $expected_followups,
+        array $expected_tasks
+    ): void {
+        if ($login !== null) {
+            $this->login($login, $pass);
+        } else {
+            $this->resetSession();
+        }
+
+        $ticket = new \Ticket();
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+
+        $this->array($timeline = $ticket->getTimelineItems($options));
+
+        $followups_content = array_map(
+            fn($entry) => $entry['item']['content'],
+            array_values(
+                array_filter(
+                    $timeline,
+                    fn($entry) => $entry['type'] === \ITILFollowup::class
+                )
+            ),
+        );
+        $this->array($followups_content)->isEqualTo($expected_followups);
+
+        $tasks_content = array_map(
+            fn($entry) => $entry['item']['content'],
+            array_values(
+                array_filter(
+                    $timeline,
+                    fn($entry) => $entry['type'] === \TicketTask::class
+                )
+            ),
+        );
+        $this->array($tasks_content)->isEqualTo($expected_tasks);
     }
 }
