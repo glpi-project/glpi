@@ -45,12 +45,11 @@
             background: $tabs-bg;
             color: $tabs-fg;
             border-color: $tabs-border;
-            border-right-width: 0px;
+            border-right-width: 0;
 
             &.active {
                 border-right: 1px solid transparent !important;
                 margin-right : -1px; // Hack for border overlap
-
                 background: $tabs-active-bg;
                 color: $tabs-active-fg;
                 border-color: $tabs-active-border;
