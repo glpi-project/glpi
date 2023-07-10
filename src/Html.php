@@ -1370,16 +1370,15 @@ HTML;
      *
      * @since  9.2
      *
-     * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
-     * @return array          the menu array
+     * @return array the menu array
      */
-    public static function generateMenuSession($force = false)
+    public static function generateMenuSession()
     {
         global $PLUGIN_HOOKS;
         $menu = [];
 
         if (
-            $force
+            GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT
             || !isset($_SESSION['glpimenu'])
             || !is_array($_SESSION['glpimenu'])
             || (count($_SESSION['glpimenu']) == 0)
@@ -1645,7 +1644,7 @@ HTML;
 
         $tmp_active_item = explode("/", $item);
         $active_item     = array_pop($tmp_active_item);
-        $menu            = self::generateMenuSession($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
+        $menu            = self::generateMenuSession();
         $menu_active     = $menu[$sector]['content'][$active_item]['title'] ?? "";
 
         $menu = Plugin::doHookFunction("redefine_menus", $menu);

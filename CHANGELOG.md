@@ -89,6 +89,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `DBmysql::query()` method is prohibited to ensure that legacy unsafe DB are no more executed. To execute DB queries,
   either `DBmysql::request()` can be used to craft query using the GLPI query builder,
   either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
+- `Html::generateMenuSession()` `$force` argument has been removed.
 - `QueryExpression` class moved to `Glpi\DBAL` namespace.
 - `QueryParam` class moved to `Glpi\DBAL` namespace.
 - `QuerySubQuery` class moved to `Glpi\DBAL` namespace.
