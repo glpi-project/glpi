@@ -558,7 +558,7 @@ class Migration
         global $DB;
 
         if ($DB->tableExists($table)) {
-            $DB->query("DROP TABLE `$table`");
+            $DB->dropTable($table);
         }
     }
 
