@@ -1011,41 +1011,8 @@ class ReservationItem extends CommonDBChild
      */
     public static function ajaxDropdown(array $post)
     {
-        global $DB;
-
         if ($post['idtable'] && class_exists($post['idtable'])) {
-            $itemtype = $post['idtable'];
-            $itemtype_obj = new $itemtype();
-
-            $item_table = $itemtype::getTable();
-            $resi_table = ReservationItem::getTable();
-
-            $criteria = [
-                'SELECT' => [
-                    "$resi_table.id",
-                    "$item_table.name"
-                ],
-                'FROM' => $item_table,
-                'INNER JOIN' => [
-                    $resi_table => [
-                        'ON' => [
-                            $resi_table => 'items_id',
-                            $item_table => 'id',
-                            ['AND' => ["$resi_table.itemtype" => $itemtype]],
-                        ]
-                    ]
-                ],
-                'WHERE' => [
-                    "$resi_table.is_active"   => 1,
-                    "$item_table.is_deleted"  => 0,
-                ]
-            ];
-
-            if ($itemtype_obj->maybeTemplate()) {
-                $criteria['WHERE']["$item_table.is_template"] = 0;
-            }
-
-            $result = $DB->request($criteria);
+            $result = self::getAvailableItems($post['idtable']);
 
             if ($result->count() == 0) {
                  echo __('No reservable item!');
@@ -1061,5 +1028,82 @@ class ReservationItem extends CommonDBChild
                 Dropdown::showFromArray($post['name'], $items);
             }
         }
+    }
+
+    /**
+     * Get available items for a given itemtype
+     *
+     * @param string $itemtype
+     *
+     * @return DBmysqlIterator
+     */
+    public static function getAvailableItems(string $itemtype): DBmysqlIterator
+    {
+        global $DB;
+
+        $reservation_table = ReservationItem::getTable();
+        $item_table = $itemtype::getTable();
+
+        $criteria = self::getAvailableItemsCriteria($itemtype);
+        $criteria['SELECT'] = [
+            "$reservation_table.id",
+            "$item_table.name"
+        ];
+
+        return $DB->request($criteria);
+    }
+
+    /**
+     * Get available items for a given itemtype
+     *
+     * @param string $itemtype
+     *
+     * @return int
+     */
+    public static function countAvailableItems(string $itemtype): int
+    {
+        global $DB;
+
+        $criteria = self::getAvailableItemsCriteria($itemtype);
+        $criteria['COUNT'] = 'total';
+        $results = $DB->request($criteria);
+        return $results->current()['total'];
+    }
+
+    /**
+     * Get common criteria for getAvailableItems and countAvailableItems functions
+     *
+     * @param string $itemtype
+     *
+     * @return array
+     */
+    private static function getAvailableItemsCriteria(string $itemtype): array
+    {
+        $reservation_table = ReservationItem::getTable();
+        $item = new $itemtype();
+        $item_table = $itemtype::getTable();
+
+        $criteria = [
+            'FROM' => $item_table,
+            'INNER JOIN' => [
+                $reservation_table => [
+                    'ON' => [
+                        $reservation_table => 'items_id',
+                        $item_table => 'id',
+                        ['AND' => ["$reservation_table.itemtype" => $itemtype]],
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                "$reservation_table.is_active"   => 1,
+                "$item_table.is_deleted"  => 0,
+            ]
+        ];
+
+        if ($item->maybeTemplate()) {
+            $criteria['WHERE']["$item_table.is_template"] = 0;
+        }
+
+        return $criteria;
     }
 }
