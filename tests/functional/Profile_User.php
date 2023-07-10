@@ -88,7 +88,7 @@ class Profile_User extends DbTestCase
         $entity2  = getItemByTypeName(\Entity::class, '_test_child_1');
 
         // Create items
-        $DB->truncate(\Log::getTable());
+        $DB->delete(\Log::getTable(), [1]);
 
         $input1 = [
             'users_id'     => $user->getId(),
@@ -253,7 +253,7 @@ class Profile_User extends DbTestCase
         }
 
         // Delete items
-        $DB->truncate(\Log::getTable());
+        $DB->delete(\Log::getTable(), [1]);
 
         $profile_user = new \Profile_User();
         $this->boolean($profile_user->deleteByCriteria($input1))->isTrue();
