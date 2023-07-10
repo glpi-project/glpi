@@ -116,6 +116,8 @@ The present file will list all changes made to the project; according to the
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
 - `Config::validatePassword()`
+- `DBmysql::truncate()`
+- `DBmysql::truncateOrDie()`
 - `Glpi\Application\View\Extension::getVerbatimValue()`
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`

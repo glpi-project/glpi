@@ -229,7 +229,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         ];
 
         foreach ($core_tables as $table) {
-            $result = $this->db->doQuery('TRUNCATE ' . $this->db->quoteName($table));
+            $result = $this->db->delete($table, [1]);
 
             if (!$result) {
                 throw new \Symfony\Component\Console\Exception\RuntimeException(

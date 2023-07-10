@@ -1664,12 +1664,15 @@ class DBmysql
      *
      * @since 10.0.0
      *
-     * @param string $table  Table name
+     * @param string $table Table name
      *
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 10.1.0
      */
     public function truncate($table)
     {
+        Toolbox::deprecated();
         // Use delete to prevent table corruption on some MySQL operations
         // (i.e. when using mysqldump without `--single-transaction` option)
         return $this->delete($table, [1]);
@@ -1685,26 +1688,13 @@ class DBmysql
      * @param string $message Explanation of query (default '')
      *
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 10.1.0
      */
     public function truncateOrDie($table, $message = '')
     {
-        $table_name = $this::quoteName($table);
-        $res = $this->doQuery("TRUNCATE $table_name");
-        if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-            $message = sprintf(
-                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                $message,
-                "TRUNCATE $table",
-                $this->error()
-            );
-            if (isCommandLine()) {
-                 throw new \RuntimeException($message);
-            }
-            echo $message . "\n";
-            die(1);
-        }
-        return $res;
+        Toolbox::deprecated();
+        return $this->deleteOrDie($table, [1], $message);
     }
 
     /**
