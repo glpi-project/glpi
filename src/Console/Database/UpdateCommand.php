@@ -210,11 +210,33 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         $migration->setOutputHandler($output);
         $update->setMigration($migration);
         $update->doUpdates($current_version, $force);
-        $output->writeln('<info>' . __('Migration done.') . '</info>');
 
         (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data
 
+        $output->writeln('<info>' . __('Migration done.') . '</info>');
+
         $this->handTelemetryActivation($input, $output);
+
+        if (!$update->isUpdatedSchemaConsistent()) {
+            // Exit with an error if database schema is not consistent.
+            // Keep this code at end of command to ensure that the whole migration is still executed.
+            // Many old GLPI instances will likely have differences, and people will have to fix them manually.
+            //
+            // Exiting with an exit code will permit to warn non-interactive automated scripts about the failure.
+            // Administrators will likely receive a failure notification and will be able to do manual actions in order to
+            // fix schema integrity.
+            $this->output->writeln(
+                [
+                    '<error>' . __('The database schema is not consistent with the current GLPI version.') . '</error>',
+                    '<error>' . sprintf(
+                        __('It is recommended to run the "%s" command to see the differences.'),
+                        'php bin/console database:check_schema_integrity'
+                    ) . '</error>'
+                ],
+                OutputInterface::VERBOSITY_QUIET
+            );
+            return self::ERROR_DATABASE_INTEGRITY_CHECK_FAILED;
+        }
 
         return 0; // Success
     }

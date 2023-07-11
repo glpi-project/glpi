@@ -167,9 +167,9 @@ class Update
     /**
      * Verify the database schema integrity.
      *
-     * @return void
+     * @return bool
      */
-    private function checkSchemaIntegrity(): void
+    final public function isUpdatedSchemaConsistent(): bool
     {
         global $DB;
 
@@ -179,16 +179,7 @@ class Update
             true
         );
 
-        if (count($differences) > 0) {
-            $this->migration->displayError(
-                __('The database schema is not consistent with the current GLPI version.')
-                . "\n"
-                . sprintf(
-                    __('It is recommended to run the "%s" command to see the differences.'),
-                    'php bin/console database:check_schema_integrity'
-                )
-            );
-        }
+        return count($differences) === 0;
     }
 
     /**
@@ -352,9 +343,6 @@ class Update
                 true
             );
         }
-
-        // Check if schema has differences from the expected one but do not block the upgrade
-        $this->checkSchemaIntegrity();
     }
 
     /**
