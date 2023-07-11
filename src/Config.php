@@ -2292,7 +2292,7 @@ HTML;
                 'check'   => 'Symfony\\Mime\\Message'
             ],
             [
-                'name'  => 'jasig/phpcas',
+                'name'  => 'apereo/phpcas',
                 'check' => 'phpCAS'
             ],
             [
