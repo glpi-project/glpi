@@ -781,11 +781,23 @@ OTHER EXPRESSION;"
             [
                 'tablename',
                 'TABLE',
+                false,
                 'DROP TABLE `tablename`'
             ], [
                 'viewname',
                 'VIEW',
+                false,
                 'DROP VIEW `viewname`'
+            ], [
+                'tablename',
+                'TABLE',
+                true,
+                'DROP TABLE IF EXISTS `tablename`'
+            ], [
+                'viewname',
+                'VIEW',
+                true,
+                'DROP VIEW IF EXISTS `viewname`'
             ]
         ];
     }
@@ -793,12 +805,12 @@ OTHER EXPRESSION;"
     /**
      * @dataProvider dataDrop
      */
-    public function testBuildDrop($name, $type, $expected)
+    public function testBuildDrop($name, $type, $exists, $expected)
     {
         $this
             ->if($this->newTestedInstance)
             ->then
-            ->string($this->testedInstance->buildDrop($name, $type))->isIdenticalTo($expected);
+            ->string($this->testedInstance->buildDrop($name, $type, $exists))->isIdenticalTo($expected);
     }
 
     public function testBuildDropWException()
