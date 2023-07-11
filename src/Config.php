@@ -2972,6 +2972,10 @@ HTML;
             $CFG_GLPI['planning_work_days'] = importArrayFromDB($CFG_GLPI['planning_work_days']);
         }
 
+        if (isset($CFG_GLPI['mailing_signature'])) {
+            $CFG_GLPI['mailing_signature'] = Sanitizer::unsanitize($CFG_GLPI['mailing_signature']);
+        }
+
         return true;
     }
 
