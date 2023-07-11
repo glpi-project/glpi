@@ -7480,7 +7480,11 @@ JAVASCRIPT;
 
                             $plaintext = '';
                             if (isset($so['htmltext']) && $so['htmltext']) {
-                                $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output, false, true);
+                                if ($html_output) {
+                                    $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output);
+                                } else {
+                                    $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], true, true, $html_output);
+                                }
                             } else {
                                 $plaintext = nl2br($data[$ID][$k]['name']);
                             }
