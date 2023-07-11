@@ -562,7 +562,13 @@ class User extends CommonDBTM
                     ]
                 ]
             ],
-            'WHERE' => [UserEmail::getTable() . '.email' => $email] + $condition
+            'WHERE' =>
+                [
+                    'RAW' => [
+                        'LOWER(' . UserEmail::getTable() . '.email' . ')'  => Toolbox::strtolower($email)
+                    ]
+                ]
+             + $condition
         ];
 
         $data = iterator_to_array($DB->request($query));
