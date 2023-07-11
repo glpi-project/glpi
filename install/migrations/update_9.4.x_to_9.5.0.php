@@ -417,7 +417,7 @@ function update94xto950()
         foreach ($elements_to_fix as $data) {
             $data['picture_front'] = $DB->escape($fix_picture_fct($data['picture_front']));
             $data['picture_rear']  = $DB->escape($fix_picture_fct($data['picture_rear']));
-            $DB->update($table, $data, ['id' => $data['id']]);
+            $DB->updateOrDie($table, $data, ['id' => $data['id']]);
         }
     }
 
@@ -432,7 +432,7 @@ function update94xto950()
     );
     foreach ($elements_to_fix as $data) {
         $data['blueprint'] = $DB->escape($fix_picture_fct($data['blueprint']));
-        $DB->update('glpi_dcrooms', $data, ['id' => $data['id']]);
+        $DB->updateOrDie('glpi_dcrooms', $data, ['id' => $data['id']]);
     }
     /** /Make datacenter pictures path relative */
 
@@ -1137,7 +1137,7 @@ function update94xto950()
                  //migrate existing data
                  $migration->migrationOneTable('glpi_domains_items');
                 foreach ($iterator as $row) {
-                    $DB->insert("glpi_domains_items", [
+                    $DB->insertOrDie("glpi_domains_items", [
                         'domains_id'   => $row['domains_id'],
                         'itemtype'     => $itemtype,
                         'items_id'     => $row['id']

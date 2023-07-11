@@ -64,7 +64,7 @@ if ($DB->fieldExists('glpi_knowbaseitems', 'knowbaseitemcategories_id')) {
     if (count($iterator)) {
        //migrate existing data
         foreach ($iterator as $row) {
-            $DB->insert("glpi_knowbaseitems_knowbaseitemcategories", [
+            $DB->insertOrDie("glpi_knowbaseitems_knowbaseitemcategories", [
                 'knowbaseitemcategories_id'   => $row['knowbaseitemcategories_id'],
                 'knowbaseitems_id'            => $row['id']
             ]);

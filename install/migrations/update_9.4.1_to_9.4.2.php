@@ -124,7 +124,7 @@ function update941to942()
             );
             foreach ($elements_to_fix as $data) {
                  $data['content'] = $DB->escape($fix_content_fct($data['content'], $data['items_id'], $itil_fkey));
-                 $DB->update($itil_element_table, $data, ['id' => $data['id']]);
+                 $DB->updateOrDie($itil_element_table, $data, ['id' => $data['id']]);
             }
         }
 
@@ -140,7 +140,7 @@ function update941to942()
         );
         foreach ($tasks_to_fix as $data) {
             $data['content'] = $DB->escape($fix_content_fct($data['content'], $data[$itil_fkey], $itil_fkey));
-            $DB->update($task_table, $data, ['id' => $data['id']]);
+            $DB->updateOrDie($task_table, $data, ['id' => $data['id']]);
         }
     }
     /** /Fix URL of images inside ITIL objects contents */

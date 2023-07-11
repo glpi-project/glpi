@@ -49,7 +49,7 @@ function update953to954()
     $migration->setVersion('9.5.4');
 
    /* Remove invalid Profile SO */
-    $DB->delete('glpi_displaypreferences', ['itemtype' => 'Profile', 'num' => 62]);
+    $DB->deleteOrDie('glpi_displaypreferences', ['itemtype' => 'Profile', 'num' => 62]);
    /* /Remove invalid Profile SO */
 
    /* Add is_default_profile */

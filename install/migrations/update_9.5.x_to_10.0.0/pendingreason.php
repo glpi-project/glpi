@@ -103,9 +103,7 @@ if (empty($config['system_user'])) {
         'password'      => '',
         'authtype'      => 1,
     ];
-    if (!$DB->insert('glpi_users', $system_user_params)) {
-        die("Can't add 'glpi-system' user");
-    }
+    $DB->insertOrDie('glpi_users', $system_user_params, "Can't add 'glpi-system' user");
 
     Config::setConfigurationValues('core', ['system_user' => $DB->insertId()]);
 }

@@ -860,7 +860,7 @@ function update92xto930()
             'WHERE'  => ['id' => $row['items_id']]
         ]);
         if (!count($exists)) {
-            $DB->delete(
+            $DB->deleteOrDie(
                 Item_Rack::getTable(),
                 [
                     'id' => $row['id']
