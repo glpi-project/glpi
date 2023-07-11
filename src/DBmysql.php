@@ -1668,16 +1668,18 @@ class DBmysql
     /**
      * Drops a table
      *
-     * @param $name Table name
+     * @param string $name   Table name
+     * @param bool   $exists Add IF EXISTS clause
      *
      * @return bool|mysqli_result
      */
-    public function dropTable(string $name)
+    public function dropTable(string $name, $exists = false)
     {
         $res = $this->query(
             $this->buildDrop(
                 $name,
-                'TABLE'
+                'TABLE',
+                $exists
             )
         );
         return $res;
@@ -1686,16 +1688,18 @@ class DBmysql
     /**
      * Drops a view
      *
-     * @param $name View name
+     * @param string $name   View name
+     * @param bool   $exists Add IF EXISTS clause
      *
      * @return bool|mysqli_result
      */
-    public function dropView(string $name)
+    public function dropView(string $name, $exists = false)
     {
         $res = $this->query(
             $this->buildDrop(
                 $name,
-                'VIEW'
+                'VIEW',
+                $exists
             )
         );
         return $res;
@@ -1703,12 +1707,14 @@ class DBmysql
 
     /**
      * Builds a DROP query
-     * @param $name
-     * @param $type
+     *
+     * @param string $name   Name to drop
+     * @param string $type   Type to drop
+     * @param bool   $exists Add IF EXISTS clause
      *
      * @return string
      */
-    public function buildDrop($name, $type)
+    public function buildDrop($name, $type, $exists = false)
     {
         $known_types = [
             'TABLE',
@@ -1719,7 +1725,12 @@ class DBmysql
         }
 
         $name = $this::quoteName($name);
-        return "DROP $type $name";
+        $query = "DROP $type";
+        if ($exists) {
+            $query .= ' IF EXISTS';
+        }
+        $query .= " $name";
+        return $query;
     }
 
     /**
