@@ -547,7 +547,7 @@ class Migration
 
 
     /**
-     * Drop immediatly a table if it exists
+     * Drop immediately a table if it exists
      *
      * @param string $table Table name
      *
@@ -558,7 +558,7 @@ class Migration
         global $DB;
 
         if ($DB->tableExists($table)) {
-            $DB->query("DROP TABLE `$table`");
+            $DB->dropTable($table);
         }
     }
 
