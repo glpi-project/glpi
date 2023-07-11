@@ -1673,7 +1673,7 @@ class DBmysql
      *
      * @return bool|mysqli_result
      */
-    public function dropTable(string $name, $exists = false)
+    public function dropTable(string $name, bool $exists = false)
     {
         $res = $this->query(
             $this->buildDrop(
@@ -1693,7 +1693,7 @@ class DBmysql
      *
      * @return bool|mysqli_result
      */
-    public function dropView(string $name, $exists = false)
+    public function dropView(string $name, bool $exists = false)
     {
         $res = $this->query(
             $this->buildDrop(
@@ -1714,7 +1714,7 @@ class DBmysql
      *
      * @return string
      */
-    public function buildDrop($name, $type, $exists = false)
+    public function buildDrop(string $name, string $type, bool $exists = false): string
     {
         $known_types = [
             'TABLE',
