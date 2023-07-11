@@ -3128,7 +3128,7 @@ class AuthLDAP extends CommonDBTM
         }
 
         if (!$use_bind) {
-            return true;
+            return $ds;
         }
 
         if ($login != '') {
