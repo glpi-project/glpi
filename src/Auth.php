@@ -520,8 +520,14 @@ class Auth extends CommonGLPI
                     return false;
                 }
 
-                if (version_compare(phpCAS::getVersion(), '1.6.0', '<')) {
-                    // Prior to version 1.6.0, 5th argument was `$changeSessionID`.
+                // Adapt phpCAS::client() signature.
+                // A new signature has been introduced in 1.6.0 version of the official package.
+                // This new signature has been backported in the `1.3.6-1` version of the debian package,
+                // so we have to check for method argument counts too.
+                $has_service_base_url_arg = version_compare(phpCAS::getVersion(), '1.6.0', '>=')
+                    || count((new ReflectionMethod(phpCAS::class, 'client'))->getParameters()) > 6;
+                if (!$has_service_base_url_arg) {
+                    // Prior to version 1.6.0, `$service_base_url` argument was not present, and 5th argument was `$changeSessionID`.
                     phpCAS::client(
                         constant($CFG_GLPI["cas_version"]),
                         $CFG_GLPI["cas_host"],
@@ -530,7 +536,8 @@ class Auth extends CommonGLPI
                         false
                     );
                 } else {
-                    // Starting from version 1.6.0, 5th argument is `$service_base_url`.
+                    // Starting from version 1.6.0, `$service_base_url` argument was added at 5th position, and `$changeSessionID`
+                    // was moved at 6th position.
                     phpCAS::client(
                         constant($CFG_GLPI["cas_version"]),
                         $CFG_GLPI["cas_host"],
