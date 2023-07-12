@@ -44,6 +44,11 @@ use Psr\Log\LogLevel;
  **/
 class GLPI
 {
+    public const ENV_PRODUCTION  = 'production';
+    public const ENV_STAGING     = 'staging';
+    public const ENV_TESTING     = 'testing';
+    public const ENV_DEVELOPMENT = 'development';
+
     private $error_handler;
     private $log_level;
 

@@ -37,6 +37,7 @@ namespace Glpi\Dashboard;
 
 use DateInterval;
 use Dropdown;
+use GLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Html;
@@ -266,11 +267,6 @@ HTML;
             for ($x = 0; $x < $this->grid_cols; $x++) {
                 $add_controls .= "<div class='cell-add' data-x='$x' data-y='$y'>&nbsp;</div>";
             }
-        }
-
-        // Force clear the cards cache in debug mode
-        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            $GLPI_CACHE->delete(self::getAllDashboardCardsCacheKey());
         }
 
         // prepare all available cards
@@ -911,7 +907,7 @@ HTML;
             $card = $cards[$card_id];
 
             $use_cache = !$force
-                && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
+                && GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT
                 && (!isset($card['cache']) || $card['cache'] == true);
             $cache_age = 40;
 
@@ -1360,7 +1356,11 @@ HTML;
                     'content' => __("Toggle edit mode to edit content"),
                 ]
             ];
-            $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
+
+            if (GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT) {
+                // Do not cache dashboard cards on `development` envs
+                $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
+            }
         }
 
         $more_cards = Plugin::doHookFunction(Hooks::DASHBOARD_CARDS);

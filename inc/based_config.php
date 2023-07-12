@@ -173,6 +173,20 @@ if (!isCommandLine()) {
         }
     }
 
+    // GLPI environment, possible values are: `production`, `staging`, `testing`, `development`.
+    $allowed_envs = ['production', 'staging', 'testing', 'development'];
+    if (!defined('GLPI_ENVIRONMENT_TYPE')) {
+        define('GLPI_ENVIRONMENT_TYPE', 'production');
+    } elseif (!in_array(GLPI_ENVIRONMENT_TYPE, $allowed_envs)) {
+        throw new \UnexpectedValueException(
+            sprintf(
+                'Invalid GLPI_ENVIRONMENT_TYPE constant value `%s`. Allowed values are: `%s`',
+                GLPI_ENVIRONMENT_TYPE,
+                implode('`, `', $allowed_envs)
+            )
+        );
+    }
+
    // Where to load plugins.
    // Order in this array is important (priority to first found).
     if (!defined('PLUGINS_DIRECTORIES')) {

@@ -39,6 +39,8 @@ use Glpi\Cache\SimpleCache;
 use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
+define('GLPI_ENVIRONMENT_TYPE', 'development');
+
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
