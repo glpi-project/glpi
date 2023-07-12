@@ -268,6 +268,9 @@ class GLPIDashboard {
             var is_private;
             $.each(button.closest('.display-rights-form').serializeArray(), function() {
                 var current_val = this.value.split('-');
+                if (current_val.length !== 2) {
+                    return;
+                }
                 var right_name  = current_val[0];
                 var value       = current_val[1];
                 if (!(right_name in form_data)) {
