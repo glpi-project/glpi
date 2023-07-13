@@ -966,9 +966,9 @@ class Item_Devices extends CommonDBRelation
         }
 
         // Will be loaded only if/when data is needed from the device model
+        $device_type = static::getDeviceType();
         /** @var CommonDevice $device */
-        $device = new (static::getDeviceType());
-        $iterator = $DB->request($criteria);
+        $device = new $device_type();
         foreach ($iterator as $link) {
             Session::addToNavigateListItems(static::getType(), $link["id"]);
             $this->getFromDB($link['id']);
