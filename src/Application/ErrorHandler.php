@@ -526,7 +526,7 @@ class ErrorHandler
         $is_debug_mode      = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
         $is_console_context = $this->output_handler instanceof OutputInterface;
 
-        if ((!$force && !$is_dev_env && !$is_debug_mode && !$is_console_context) || isAPI()) {
+        if (!$force && !$is_dev_env && !$is_debug_mode && !$is_console_context) {
             return;
         }
 
