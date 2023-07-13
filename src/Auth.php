@@ -523,9 +523,9 @@ class Auth extends CommonGLPI
                 // Adapt phpCAS::client() signature.
                 // A new signature has been introduced in 1.6.0 version of the official package.
                 // This new signature has been backported in the `1.3.6-1` version of the debian package,
-                // so we have to check for method argument counts too.
+                // so we have to check for method argument names too.
                 $has_service_base_url_arg = version_compare(phpCAS::getVersion(), '1.6.0', '>=')
-                    || count((new ReflectionMethod(phpCAS::class, 'client'))->getParameters()) > 6;
+                    || ((new ReflectionMethod(phpCAS::class, 'client'))->getParameters()[4]->getName() ?? null) === 'service_base_url';
                 if (!$has_service_base_url_arg) {
                     // Prior to version 1.6.0, `$service_base_url` argument was not present, and 5th argument was `$changeSessionID`.
                     phpCAS::client(
