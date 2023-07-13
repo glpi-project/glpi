@@ -1042,7 +1042,6 @@ class Item_Devices extends CommonDBRelation
                                     $device->getFromDB($link[$device::getForeignKeyField()]);
                                 }
 
-                                // Let percent be 100 by default so the label is visible when there is missing data
                                 $percent = 100;
                                 $message = sprintf(__('%1$s (%2$s%%) '), Html::formatNumber($this->fields[$field], false, 0), __('Unknown'));
                                 if ($device->fields[$attributs['max']] > 0) {
