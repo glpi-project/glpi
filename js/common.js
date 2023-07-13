@@ -944,6 +944,29 @@ var templateItilStatus = function(option) {
     return $(`<span><i class="itilstatus ${classes}"></i> ${option.text}</span>`);
 };
 
+var templateTaskStatus = function(option) {
+    if (option === false) {
+        // Option is false when element does not match searched terms
+        return null;
+    }
+    var status = option.id;
+    var classes = "";
+    switch (parseInt(status)) {
+        case 0 :
+            classes = 'planned ti ti-info-square-filled';
+            break;
+        case 1 :
+            classes = 'waiting ti ti-alert-square-filled';
+            break;
+        case 2 :
+            classes = 'new ti ti-square-check-filled';
+            break;
+
+    }
+
+    return $(`<span><i class="itilstatus ${classes}"></i> ${option.text}</span>`);
+};
+
 var templateValidation = function(option) {
     if (option === false) {
         // Option is false when element does not match searched terms

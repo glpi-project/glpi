@@ -250,6 +250,66 @@ class Planning extends CommonGLPI
 
 
     /**
+     * Get status icon
+     *
+     * @since 10.0.9
+     *
+     * @return string
+     */
+    public static function getStatusIcon($status)
+    {
+        $class = Planning::getStatusClass($status);
+        $color = Planning::getStatusColor($status);
+        $label = Planning::getState($status);
+        return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip'></i><span>" . $label . "</span>";
+    }
+
+
+    /**
+     * Get status class
+     *
+     * @since 10.0.9
+     *
+     * @return string
+     */
+    public static function getStatusClass($status)
+    {
+        switch ($status) {
+            case Planning::INFO:
+                return "ti ti-info-square-filled";
+
+            case Planning::TODO:
+                return "ti ti-alert-square-filled";
+
+            case Planning::DONE:
+                return "ti ti-square-check-filled";
+        }
+    }
+
+
+    /**
+     * Get status color
+     *
+     * @since 10.0.9
+     *
+     * @return string
+     */
+    public static function getStatusColor($status)
+    {
+        switch ($status) {
+            case Planning::INFO:
+                return "planned";
+
+            case Planning::TODO:
+                return "waiting";
+
+            case Planning::DONE:
+                return "new";
+        }
+    }
+
+
+    /**
      * Dropdown of planning state
      *
      * @param $name   select name
@@ -260,14 +320,20 @@ class Planning extends CommonGLPI
     public static function dropdownState($name, $value = '', $display = true, $options = [])
     {
 
+        $p = [
+            'value'             => $value,
+            'showtype'          => 'normal',
+            'display'           => $display,
+            'templateResult'    => "templateTaskStatus",
+            'templateSelection' => "templateTaskStatus",
+        ];
+
         $values = [static::INFO => _n('Information', 'Information', 1),
             static::TODO => __('To do'),
             static::DONE => __('Done')
         ];
 
-        return Dropdown::showFromArray($name, $values, array_merge(['value'   => $value,
-            'display' => $display
-        ], $options));
+        return Dropdown::showFromArray($name, $values, array_merge($p, $options));
     }
 
 
