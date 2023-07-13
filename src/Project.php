@@ -931,6 +931,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
+            'additionalfields'   => ['color'],
             'joinparams'         => [
                 'jointype'          => 'item_revert',
                 'specific_itemtype' => 'ProjectState',
