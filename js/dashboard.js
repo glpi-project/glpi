@@ -856,10 +856,10 @@ class GLPIDashboard {
                     duration: 800,
                     easing: 'swing',
                     step: function () {
-                        number.text(this.Counter.toFixed(precision))+suffix;
+                        number.text(this.Counter.toFixed(precision) + suffix);
                     },
                     complete: function () {
-                        number.text(targetNumber)+suffix;
+                        number.text(targetNumber + suffix);
                     }
                 });
             });
