@@ -39,6 +39,7 @@ use Config;
 use DateInterval;
 use Dropdown;
 use GLPI;
+use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Plugin\Hooks;
@@ -1029,9 +1030,7 @@ HTML;
         } catch (\Throwable $e) {
             $html = $render_error_html;
             // Log the error message without exiting
-            /** @var \GLPI $GLPI */
-            global $GLPI;
-            $GLPI->getErrorHandler()->handleException($e, true);
+            ErrorHandler::getInstance()->handleException($e, true);
         }
         Profiler::getInstance()->stop(__METHOD__ . ' get card data');
 

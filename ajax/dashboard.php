@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
+use Glpi\Dashboard\Grid;
+
 /**
  * @var string|null $SECURITY_STRATEGY
  */
@@ -41,8 +44,6 @@ global $SECURITY_STRATEGY;
 $SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to embed dashboards
 
 include('../inc/includes.php');
-
-use Glpi\Dashboard\Grid;
 
 if (!isset($_REQUEST["action"])) {
     exit;
@@ -229,9 +230,7 @@ switch ($_REQUEST['action']) {
             } catch (\Throwable $e) {
                 // Send exception to logger without actually exiting.
                 // Use quiet mode to not break JSON result.
-                /** @var \GLPI $GLPI */
-                global $GLPI;
-                $GLPI->getErrorHandler()->handleException($e, true);
+                ErrorHandler::getInstance()->handleException($e, true);
             }
         }
         \Glpi\Debug\Profiler::getInstance()->stop('Get cards HTML');

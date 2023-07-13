@@ -214,7 +214,7 @@ class Application extends BaseApplication
         global $CFG_GLPI;
 
         $this->output = $output;
-        $this->error_handler->setOutputHandler($output);
+        ErrorHandler::getInstance()->setOutputHandler($output);
 
         parent::configureIO($input, $output);
 
@@ -320,7 +320,7 @@ class Application extends BaseApplication
         global $GLPI;
         $GLPI = new GLPI();
         $GLPI->initLogger();
-        $this->error_handler = $GLPI->initErrorHandler();
+        $GLPI->initErrorHandler();
     }
 
     /**

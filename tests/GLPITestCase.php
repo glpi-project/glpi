@@ -158,6 +158,26 @@ class GLPITestCase extends atoum
         return $method->invoke($instance, ...$args);
     }
 
+    /**
+     * Call a private constructor, and get the created instance.
+     *
+     * @param string    $classname  Class to instanciate
+     * @param mixed     $arg        Constructor arguments
+     *
+     * @return mixed
+     */
+    protected function callPrivateConstructor($classname, $args)
+    {
+        $class = new ReflectionClass($classname);
+        $instance = $class->newInstanceWithoutConstructor();
+
+        $constructor = $class->getConstructor();
+        $constructor->setAccessible(true);
+        $constructor->invokeArgs($instance, $args);
+
+        return $instance;
+    }
+
     protected function resetSession()
     {
         Session::destroy();

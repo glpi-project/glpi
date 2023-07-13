@@ -57,13 +57,13 @@ class GLPI
 
     /**
      * Testing environment.
-     * Suitable for quality control and internal acceptance tests.
+     * Suitable for CI runners, quality control and internal acceptance tests.
      */
     public const ENV_TESTING     = 'testing';
 
     /**
      * Development environment.
-     * Suitable for developer machines and servers and CI tests runners.
+     * Suitable for developer machines and development servers.
      */
     public const ENV_DEVELOPMENT = 'development';
 
@@ -127,23 +127,10 @@ class GLPI
     /**
      * Init and register error handler.
      *
-     * @return ErrorHandler
+     * @return void
      */
-    public function initErrorHandler()
+    public function initErrorHandler(): void
     {
-        $this->error_handler = ErrorHandler::getInstance();
-        $this->error_handler->register();
-
-        return $this->error_handler;
-    }
-
-    /**
-     * Get registered error handler.
-     *
-     * @return null|ErrorHandler
-     */
-    public function getErrorHandler()
-    {
-        return $this->error_handler;
+        ErrorHandler::getInstance()->register();
     }
 }

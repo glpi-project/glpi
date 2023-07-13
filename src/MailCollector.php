@@ -490,9 +490,8 @@ class MailCollector extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \GLPI $GLPI
          */
-        global $CFG_GLPI, $GLPI;
+        global $CFG_GLPI;
 
         if ($this->getFromDB($mailgateID)) {
             $this->uid          = -1;
@@ -578,7 +577,7 @@ class MailCollector extends CommonDBTM
 
                         $messages[$message_id] = $message;
                     } catch (\Throwable $e) {
-                        $GLPI->getErrorHandler()->handleException($e);
+                        ErrorHandler::getInstance()->handleException($e);
                         Toolbox::logInFile(
                             'mailgate',
                             sprintf(
@@ -626,7 +625,7 @@ class MailCollector extends CommonDBTM
                         }
                     } catch (\Throwable $e) {
                         $error++;
-                        $GLPI->getErrorHandler()->handleException($e);
+                        ErrorHandler::getInstance()->handleException($e);
                         Toolbox::logInFile(
                             'mailgate',
                             sprintf(
