@@ -57,13 +57,13 @@ class GLPI
 
     /**
      * Testing environment.
-     * Suitable for quality control and internal acceptance tests.
+     * Suitable for CI runners, quality control and internal acceptance tests.
      */
     public const ENV_TESTING     = 'testing';
 
     /**
      * Development environment.
-     * Suitable for developer machines and servers and CI tests runners.
+     * Suitable for developer machines and development servers.
      */
     public const ENV_DEVELOPMENT = 'development';
 
