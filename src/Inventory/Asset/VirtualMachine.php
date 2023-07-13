@@ -117,6 +117,8 @@ class VirtualMachine extends InventoryAsset
                 } else if (strstr($vm_val->ram, 'B')) {
                     $vm_val->ram = str_replace('B', '', $vm_val->ram) / 1000000;
                 }
+            } else {
+                $vm_val->ram = null;
             }
 
             if (property_exists($vm_val, 'comment') && is_array($vm_val->comment)) {
@@ -229,7 +231,8 @@ class VirtualMachine extends InventoryAsset
                     $sinput = [
                         'name'                     => $handled_input['name'] ?? '',
                         'uuid'                     => Sanitizer::unsanitize($cleaned_uuid ?? ''),
-                        'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0
+                        'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0,
+                        'ram'                      => $handled_input['ram'] ?? null,
                     ];
 
                     //strtolower to be the same as getUUIDRestrictCriteria()
