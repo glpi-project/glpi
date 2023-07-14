@@ -61,6 +61,26 @@ final class AdministrationController extends AbstractController
             'User' => [
                 'x-itemtype' => User::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
+                'x-rights-conditions' => [ // Object-level extra permissions
+                    'read' => static function () {
+                        if (!\Session::canViewAllEntities()) {
+                            return [
+                                'LEFT JOIN' => [
+                                    'glpi_profiles_users' => [
+                                        'ON' => [
+                                            'glpi_profiles_users' => 'users_id',
+                                            'glpi_users' => 'id'
+                                        ]
+                                    ]
+                                ],
+                                'WHERE' => [
+                                    'glpi_profiles_users.entities_id' => $_SESSION['glpiactiveentities']
+                                ]
+                            ];
+                        }
+                        return true;
+                    }
+                ],
                 'properties' => [
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,

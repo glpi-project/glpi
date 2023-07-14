@@ -221,6 +221,14 @@ final class ITILController extends AbstractController
 
         $base_task_schema = [
             'type' => Doc\Schema::TYPE_OBJECT,
+            'x-rights-conditions' => [ // Object-level extra permissions
+                'read' => static function () {
+                    if (!\Session::haveRight(\CommonITILTask::$rightname, \CommonITILTask::SEEPRIVATE)) {
+                        return ['WHERE' => ['is_private' => 0]];
+                    }
+                    return true; // Allow reading by default. No extra SQL conditions needed.
+                }
+            ],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -245,8 +253,16 @@ final class ITILController extends AbstractController
         $schemas['ProblemTask']['properties'][Problem::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
 
         $schemas['Followup'] = [
-            'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => \ITILFollowup::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-rights-conditions' => [ // Object-level extra permissions
+                'read' => static function () {
+                    if (!\Session::haveRight(\ITILFollowup::$rightname, \ITILFollowup::SEEPRIVATE)) {
+                        return ['WHERE' => ['is_private' => 0]];
+                    }
+                    return true; // Allow reading by default. No extra SQL conditions needed.
+                }
+            ],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,

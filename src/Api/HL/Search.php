@@ -296,6 +296,29 @@ final class Search
 
         if ($this->union_search_mode) {
             unset($criteria['LEFT JOIN'], $criteria['INNER JOIN'], $criteria['RIGHT JOIN'], $criteria['WHERE']);
+        } else {
+            $read_right_criteria = $this->schema['x-rights-conditions']['read'] ?? [];
+            if (is_callable($read_right_criteria)) {
+                $read_right_criteria = $read_right_criteria();
+            }
+            if (!empty($read_right_criteria)) {
+                $join_types = ['LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'];
+                foreach ($join_types as $join_type) {
+                    if (isset($read_right_criteria[$join_type])) {
+                        foreach ($read_right_criteria[$join_type] as $join_table => $join_clauses) {
+                            if (!isset($criteria[$join_type][$join_table])) {
+                                $criteria[$join_type][$join_table] = $join_clauses;
+                            }
+                        }
+                    }
+                }
+                if (isset($read_right_criteria['WHERE'])) {
+                    if (!isset($criteria['WHERE'])) {
+                        $criteria['WHERE'] = [];
+                    }
+                    $criteria['WHERE'][] = $read_right_criteria['WHERE'];
+                }
+            }
         }
 
         $criteria['SELECT'] = ['_.id'];
