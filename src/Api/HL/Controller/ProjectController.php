@@ -67,7 +67,7 @@ final class ProjectController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'enum' => [1, 2, 3, 4, 5, 6],
                     ],
-                    'entity' => self::getDropdownTypeSchema(\Entity::class),
+                    'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity'),
                     'tasks' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [

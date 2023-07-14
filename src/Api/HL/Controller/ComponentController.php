@@ -73,7 +73,7 @@ class ComponentController extends AbstractController
             ],
             'designation' => ['type' => Doc\Schema::TYPE_STRING],
             'comment' => ['type' => Doc\Schema::TYPE_STRING],
-            'manufacturer' => self::getDropdownTypeSchema(\Manufacturer::class),
+            'manufacturer' => self::getDropdownTypeSchema(class: \Manufacturer::class, full_schema: 'Manufacturer'),
             'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity'),
             'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -91,21 +91,58 @@ class ComponentController extends AbstractController
             'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             'serial' => ['type' => Doc\Schema::TYPE_STRING],
             'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
-            'location' => self::getDropdownTypeSchema(\Location::class),
-            'status' => self::getDropdownTypeSchema(\State::class),
+            'location' => self::getDropdownTypeSchema(class: \Location::class, full_schema: 'Location'),
+            'status' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
             'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
         ];
+        $common_device_type_properties = [
+            'id' => [
+                'type' => Doc\Schema::TYPE_INTEGER,
+                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                'x-readonly' => true,
+            ],
+            'name' => ['type' => Doc\Schema::TYPE_STRING],
+            'comment' => ['type' => Doc\Schema::TYPE_STRING],
+            'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+        ];
+        $common_device_model_properties = [
+            'id' => [
+                'type' => Doc\Schema::TYPE_INTEGER,
+                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                'x-readonly' => true,
+            ],
+            'name' => ['type' => Doc\Schema::TYPE_STRING],
+            'comment' => ['type' => Doc\Schema::TYPE_STRING],
+            'product_number' => ['type' => Doc\Schema::TYPE_STRING],
+        ];
+
         return [
+            'BatteryType' => [
+                'x-itemtype' => \DeviceBatteryType::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_type_properties
+            ],
+            'BatteryModel' => [
+                'x-itemtype' => \DeviceBatteryModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
+            ],
             'Battery' => [
                 'x-itemtype' => \DeviceBattery::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
                     'voltage' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                     'capacity' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
-                    'type' => self::getDropdownTypeSchema(\DeviceBatteryType::class),
-                    'model' => self::getDropdownTypeSchema(\DeviceBatteryModel::class),
+                    'type' => self::getDropdownTypeSchema(class: \DeviceBatteryType::class, full_schema: 'BatteryType'),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceBatteryModel::class, full_schema: 'BatteryModel'),
                 ]
+            ],
+            'CameraModel' => [
+                'x-itemtype' => \DeviceCameraModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'Camera' => [
                 'x-itemtype' => \DeviceCamera::class,
@@ -116,26 +153,46 @@ class ComponentController extends AbstractController
                     'orientation' => ['type' => Doc\Schema::TYPE_STRING],
                     'focal_length' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'focallength'],
                     'sensor_size' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'sensorsize'],
-                    'model' => self::getDropdownTypeSchema(\DeviceCameraModel::class),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceCameraModel::class, full_schema: 'CameraModel'),
                     'support' => ['type' => Doc\Schema::TYPE_STRING],
                 ]
+            ],
+            'CaseType' => [
+                'x-itemtype' => \DeviceCaseType::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_type_properties
+            ],
+            'CaseModel' => [
+                'x-itemtype' => \DeviceCaseModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'Case' => [
                 'x-itemtype' => \DeviceCase::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
-                    'type' => self::getDropdownTypeSchema(\DeviceCaseType::class),
-                    'model' => self::getDropdownTypeSchema(\DeviceCaseModel::class),
+                    'type' => self::getDropdownTypeSchema(class: \DeviceCaseType::class, full_schema: 'CaseType'),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceCaseModel::class, full_schema: 'CaseModel'),
                 ]
+            ],
+            'ControllerModel' => [
+                'x-itemtype' => \DeviceControlModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'Controller' => [
                 'x-itemtype' => \DeviceControl::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
                     'is_raid' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                    'interface' => self::getDropdownTypeSchema(\InterfaceType::class),
-                    'model' => self::getDropdownTypeSchema(\DeviceControlModel::class),
+                    'interface' => self::getDropdownTypeSchema(class: \InterfaceType::class, full_schema: 'InterfaceType'),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceControlModel::class, full_schema: 'ControllerModel'),
                 ]
+            ],
+            'DriveModel' => [
+                'x-itemtype' => \DeviceDriveModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'Drive' => [
                 'x-itemtype' => \DeviceDrive::class,
@@ -143,9 +200,19 @@ class ComponentController extends AbstractController
                 'properties' => $common_device_properties + [
                     'is_writer' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                     'speed' => ['type' => Doc\Schema::TYPE_STRING],
-                    'interface' => self::getDropdownTypeSchema(\InterfaceType::class),
-                    'model' => self::getDropdownTypeSchema(\DeviceDriveModel::class),
+                    'interface' => self::getDropdownTypeSchema(class: \InterfaceType::class, full_schema: 'InterfaceType'),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceDriveModel::class, full_schema: 'DriveModel'),
                 ]
+            ],
+            'FirmwareType' => [
+                'x-itemtype' => \DeviceFirmwareType::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_type_properties
+            ],
+            'FirmwareModel' => [
+                'x-itemtype' => \DeviceFirmwareModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'Firmware' => [
                 'x-itemtype' => \DeviceFirmware::class,
@@ -153,19 +220,34 @@ class ComponentController extends AbstractController
                 'properties' => $common_device_properties + [
                     'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'version' => ['type' => Doc\Schema::TYPE_STRING],
-                    'type' => self::getDropdownTypeSchema(\DeviceFirmwareType::class),
-                    'model' => self::getDropdownTypeSchema(\DeviceFirmwareModel::class),
+                    'type' => self::getDropdownTypeSchema(class: \DeviceFirmwareType::class, full_schema: 'FirmwareType'),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceFirmwareModel::class, full_schema: 'FirmwareModel'),
                 ]
+            ],
+            'GenericDeviceType' => [
+                'x-itemtype' => \DeviceGenericType::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_type_properties
+            ],
+            'GenericDeviceModel' => [
+                'x-itemtype' => \DeviceGenericModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'GenericDevice' => [
                 'x-itemtype' => \DeviceGeneric::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
-                    'type' => self::getDropdownTypeSchema(\DeviceGenericType::class),
-                    'model' => self::getDropdownTypeSchema(\DeviceGenericModel::class),
-                    'location' => self::getDropdownTypeSchema(\Location::class),
-                    'state' => self::getDropdownTypeSchema(\State::class),
+                    'type' => self::getDropdownTypeSchema(class: \DeviceGenericType::class, full_schema: 'GenericDeviceType'),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceGenericModel::class, full_schema: 'GenericDeviceModel'),
+                    'location' => self::getDropdownTypeSchema(class: \Location::class, full_schema: 'Location'),
+                    'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
                 ]
+            ],
+            'GraphicCardModel' => [
+                'x-itemtype' => \DeviceGraphicCardModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'GraphicCard' => [
                 'x-itemtype' => \DeviceGraphicCard::class,
@@ -173,9 +255,14 @@ class ComponentController extends AbstractController
                 'properties' => $common_device_properties + [
                     'chipset' => ['type' => Doc\Schema::TYPE_STRING],
                     'memory_default' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
-                    'interface' => self::getDropdownTypeSchema(\InterfaceType::class),
-                    'model' => self::getDropdownTypeSchema(\DeviceGraphicCardModel::class),
+                    'interface' => self::getDropdownTypeSchema(class: \InterfaceType::class, full_schema: 'InterfaceType'),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceGraphicCardModel::class, full_schema: 'GraphicCardModel'),
                 ]
+            ],
+            'HardDriveModel' => [
+                'x-itemtype' => \DeviceHardDriveModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'HardDrive' => [
                 'x-itemtype' => \DeviceHardDrive::class,
@@ -184,9 +271,24 @@ class ComponentController extends AbstractController
                     'rpm' => ['type' => Doc\Schema::TYPE_STRING],
                     'cache' => ['type' => Doc\Schema::TYPE_STRING],
                     'capacity_default' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
-                    'interface' => self::getDropdownTypeSchema(\InterfaceType::class),
-                    'model' => self::getDropdownTypeSchema(\DeviceHardDriveModel::class),
+                    'interface' => self::getDropdownTypeSchema(class: \InterfaceType::class, full_schema: 'InterfaceType'),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceHardDriveModel::class, full_schema: 'HardDriveModel'),
                 ]
+            ],
+            'InterfaceType' => [
+                'x-itemtype' => \InterfaceType::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_type_properties
+            ],
+            'MemoryType' => [
+                'x-itemtype' => \DeviceMemoryType::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_type_properties
+            ],
+            'MemoryModel' => [
+                'x-itemtype' => \DeviceMemoryModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'Memory' => [
                 'x-itemtype' => \DeviceMemory::class,
@@ -194,9 +296,14 @@ class ComponentController extends AbstractController
                 'properties' => $common_device_properties + [
                     'frequency' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'frequence'],
                     'size_default' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
-                    'type' => self::getDropdownTypeSchema(\DeviceMemoryType::class),
-                    'model' => self::getDropdownTypeSchema(\DeviceMemoryModel::class),
+                    'type' => self::getDropdownTypeSchema(class: \DeviceMemoryType::class, full_schema: 'MemoryType'),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceMemoryModel::class, full_schema: 'MemoryModel'),
                 ]
+            ],
+            'NetworkCardModel' => [
+                'x-itemtype' => \DeviceNetworkCardModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'NetworkCard' => [
                 'x-itemtype' => \DeviceNetworkCard::class,
@@ -204,15 +311,25 @@ class ComponentController extends AbstractController
                 'properties' => $common_device_properties + [
                     'bandwidth' => ['type' => Doc\Schema::TYPE_STRING],
                     'mac_default' => ['type' => Doc\Schema::TYPE_STRING],
-                    'model' => self::getDropdownTypeSchema(\DeviceNetworkCardModel::class),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceNetworkCardModel::class, full_schema: 'NetworkCardModel'),
                 ]
+            ],
+            'PCIModel' => [
+                'x-itemtype' => \DevicePciModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'PCIDevice' => [
                 'x-itemtype' => \DevicePci::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
-                    'model' => self::getDropdownTypeSchema(\DevicePciModel::class),
+                    'model' => self::getDropdownTypeSchema(class: \DevicePciModel::class, full_schema: 'PCIModel'),
                 ]
+            ],
+            'PowerSupplyModel' => [
+                'x-itemtype' => \DevicePowerSupplyModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'PowerSupply' => [
                 'x-itemtype' => \DevicePowerSupply::class,
@@ -220,8 +337,13 @@ class ComponentController extends AbstractController
                 'properties' => $common_device_properties + [
                     'power' => ['type' => Doc\Schema::TYPE_STRING],
                     'is_atx' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                    'model' => self::getDropdownTypeSchema(\DevicePowerSupplyModel::class),
+                    'model' => self::getDropdownTypeSchema(class: \DevicePowerSupplyModel::class, full_schema: 'PowerSupplyModel'),
                 ]
+            ],
+            'ProcessorModel' => [
+                'x-itemtype' => \DeviceProcessorModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'Processor' => [
                 'x-itemtype' => \DeviceProcessor::class,
@@ -231,18 +353,33 @@ class ComponentController extends AbstractController
                     'frequency_default' => ['type' => Doc\Schema::TYPE_STRING],
                     'nbcores_default' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                     'nbthreads_default' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
-                    'model' => self::getDropdownTypeSchema(\DeviceProcessorModel::class),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceProcessorModel::class, full_schema: 'ProcessorModel'),
                 ]
+            ],
+            'SensorType' => [
+                'x-itemtype' => \DeviceSensorType::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_type_properties
+            ],
+            'SensorModel' => [
+                'x-itemtype' => \DeviceSensorModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'Sensor' => [
                 'x-itemtype' => \DeviceSensor::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
-                    'type' => self::getDropdownTypeSchema(\DeviceSensorType::class),
-                    'model' => self::getDropdownTypeSchema(\DeviceSensorModel::class),
-                    'location' => self::getDropdownTypeSchema(\Location::class),
-                    'state' => self::getDropdownTypeSchema(\State::class),
+                    'type' => self::getDropdownTypeSchema(class: \DeviceSensorType::class, full_schema: 'SensorType'),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceSensorModel::class, full_schema: 'SensorModel'),
+                    'location' => self::getDropdownTypeSchema(class: \Location::class, full_schema: 'Location'),
+                    'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
                 ]
+            ],
+            'SIMCardType' => [
+                'x-itemtype' => \DeviceSimcardType::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_type_properties
             ],
             'SIMCard' => [
                 'x-itemtype' => \DeviceSimcard::class,
@@ -250,14 +387,26 @@ class ComponentController extends AbstractController
                 'properties' => $common_device_properties + [
                     'voltage' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                     'allow_voip' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                    'type' => self::getDropdownTypeSchema(\DeviceSimcardType::class),
+                    'type' => self::getDropdownTypeSchema(class: \DeviceSimcardType::class, full_schema: 'SIMCardType'),
                 ]
+            ],
+            'SoundCardModel' => [
+                'x-itemtype' => \DeviceSoundCardModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties
             ],
             'SoundCard' => [
                 'x-itemtype' => \DeviceSoundCard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
-                    'model' => self::getDropdownTypeSchema(\DeviceSoundCardModel::class),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceSoundCardModel::class, full_schema: 'SoundCardModel'),
+                ]
+            ],
+            'SystemboardModel' => [
+                'x-itemtype' => \DeviceMotherboardModel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $common_device_model_properties + [
+                    'chipset' => ['type' => Doc\Schema::TYPE_STRING],
                 ]
             ],
             'Systemboard' => [
@@ -265,7 +414,7 @@ class ComponentController extends AbstractController
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
                     'chipset' => ['type' => Doc\Schema::TYPE_STRING],
-                    'model' => self::getDropdownTypeSchema(\DeviceMotherboardModel::class),
+                    'model' => self::getDropdownTypeSchema(class: \DeviceMotherboardModel::class, full_schema: 'SystemboardModel'),
                 ]
             ],
             'BatteryItem' => [
@@ -404,9 +553,9 @@ class ComponentController extends AbstractController
                     'puk' => ['type' => Doc\Schema::TYPE_STRING],
                     'puk2' => ['type' => Doc\Schema::TYPE_STRING],
                     'msin' => ['type' => Doc\Schema::TYPE_STRING],
-                    'line' => self::getDropdownTypeSchema(\Line::class),
-                    'user' => self::getDropdownTypeSchema(\User::class),
-                    'group' => self::getDropdownTypeSchema(\Group::class),
+                    'line' => self::getDropdownTypeSchema(class: \Line::class, full_schema: 'Line'),
+                    'user' => self::getDropdownTypeSchema(class: \User::class, full_schema: 'User'),
+                    'group' => self::getDropdownTypeSchema(class: \Group::class, full_schema: 'Group'),
                 ]
             ],
             'SoundCardItem' => [

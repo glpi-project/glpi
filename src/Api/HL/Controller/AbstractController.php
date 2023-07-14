@@ -102,9 +102,11 @@ abstract class AbstractController
     }
 
     /**
-     * @param class-string<CommonDBTM> $class
-     * @param string|null $field
-     * @return array
+     * @param class-string<CommonDBTM> $class The class this schema represents. Used in the SQL join.
+     * @param string|null $field The SQL field to use as a reference in the SQL join.
+     * @param string $name_field The field that contains the name
+     * @param string|null $full_schema The name of the schema that represents the full object
+     * @return array The schema
      */
     protected static function getDropdownTypeSchema(string $class, ?string $field = null, string $name_field = 'name', ?string $full_schema = null): array
     {

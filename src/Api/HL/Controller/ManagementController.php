@@ -116,11 +116,11 @@ final class ManagementController extends AbstractController
             }
 
             if (in_array($m_class, $CFG_GLPI['state_types'], true)) {
-                $schemas[$m_name]['properties']['status'] = self::getDropdownTypeSchema(State::class);
+                $schemas[$m_name]['properties']['status'] = self::getDropdownTypeSchema(class: State::class, full_schema: 'State');
             }
 
             if (in_array($m_class, $CFG_GLPI['location_types'], true)) {
-                $schemas[$m_name]['properties']['location'] = self::getDropdownTypeSchema(Location::class);
+                $schemas[$m_name]['properties']['location'] = self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location');
             }
 
             if ($item->isEntityAssign()) {
@@ -137,7 +137,7 @@ final class ManagementController extends AbstractController
                 $schemas[$m_name]['properties']['type'] = self::getDropdownTypeSchema($type_class);
             }
             if ($item->isField('manufacturers_id')) {
-                $schemas[$m_name]['properties']['manufacturer'] = self::getDropdownTypeSchema(Manufacturer::class);
+                $schemas[$m_name]['properties']['manufacturer'] = self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer');
             }
             $model_class = $item->getModelClass();
             if ($model_class !== null) {
