@@ -106,12 +106,12 @@ abstract class AbstractController
      * @param string|null $field
      * @return array
      */
-    protected static function getDropdownTypeSchema(string $class, ?string $field = null, string $name_field = 'name'): array
+    protected static function getDropdownTypeSchema(string $class, ?string $field = null, string $name_field = 'name', ?string $full_schema = null): array
     {
         if ($field === null) {
             $field = $class::getForeignKeyField();
         }
-        return [
+        $schema = [
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-field' => $field,
             'x-join' => [
@@ -128,6 +128,10 @@ abstract class AbstractController
                 $name_field => ['type' => Doc\Schema::TYPE_STRING],
             ]
         ];
+        if ($full_schema !== null) {
+            $schema['x-full-schema'] = $full_schema;
+        }
+        return $schema;
     }
 
     /**

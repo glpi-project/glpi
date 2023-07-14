@@ -124,7 +124,7 @@ final class ManagementController extends AbstractController
             }
 
             if ($item->isEntityAssign()) {
-                $schemas[$m_name]['properties']['entity'] = self::getDropdownTypeSchema(Entity::class);
+                $schemas[$m_name]['properties']['entity'] = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
                 // Add completename field
                 $schemas[$m_name]['properties']['entity']['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
                 $schemas[$m_name]['properties']['is_recursive'] = ['type' => Doc\Schema::TYPE_BOOLEAN];
@@ -149,16 +149,16 @@ final class ManagementController extends AbstractController
             }
 
             if (in_array($m_class, $CFG_GLPI['linkuser_tech_types'], true)) {
-                $schemas[$m_name]['properties']['user_tech'] = self::getDropdownTypeSchema(User::class, 'users_id_tech');
+                $schemas[$m_name]['properties']['user_tech'] = self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User');
             }
             if (in_array($m_class, $CFG_GLPI['linkgroup_tech_types'], true)) {
-                $schemas[$m_name]['properties']['group_tech'] = self::getDropdownTypeSchema(Group::class, 'groups_id_tech');
+                $schemas[$m_name]['properties']['group_tech'] = self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group');
             }
             if (in_array($m_class, $CFG_GLPI['linkuser_types'], true)) {
-                $schemas[$m_name]['properties']['user'] = self::getDropdownTypeSchema(User::class, 'users_id');
+                $schemas[$m_name]['properties']['user'] = self::getDropdownTypeSchema(class: User::class, full_schema: 'User');
             }
             if (in_array($m_class, $CFG_GLPI['linkgroup_types'], true)) {
-                $schemas[$m_name]['properties']['group'] = self::getDropdownTypeSchema(Group::class, 'groups_id');
+                $schemas[$m_name]['properties']['group'] = self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group');
             }
 
             if ($item->isField('contact')) {

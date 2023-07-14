@@ -98,6 +98,7 @@ final class AdministrationController extends AbstractController
                         'description' => 'Email addresses',
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'EmailAddress',
                             'x-join' => [
                                 'table' => 'glpi_useremails',
                                 'fkey' => 'id',
@@ -187,6 +188,7 @@ final class AdministrationController extends AbstractController
                     'parent' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
                         'x-itemtype' => Group::class,
+                        'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups',
                             'fkey' => 'groups_id',
@@ -235,6 +237,7 @@ final class AdministrationController extends AbstractController
                     'parent' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
                         'x-itemtype' => Entity::class,
+                        'x-full-schema' => 'Entity',
                         'x-join' => [
                             'table' => 'glpi_entities',
                             'fkey' => 'entities_id',

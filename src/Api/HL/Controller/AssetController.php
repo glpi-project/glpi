@@ -116,7 +116,7 @@ final class AssetController extends AbstractController
             }
 
             if ($asset->isEntityAssign()) {
-                $schemas[$schema_name]['properties']['entity'] = self::getDropdownTypeSchema(Entity::class);
+                $schemas[$schema_name]['properties']['entity'] = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
                 // Add completename field
                 $schemas[$schema_name]['properties']['entity']['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
                 $schemas[$schema_name]['properties']['is_recursive'] = ['type' => Doc\Schema::TYPE_BOOLEAN];
@@ -135,16 +135,32 @@ final class AssetController extends AbstractController
             }
 
             if (in_array($asset_type, $CFG_GLPI['linkuser_tech_types'], true)) {
-                $schemas[$schema_name]['properties']['user_tech'] = self::getDropdownTypeSchema(User::class, 'users_id_tech');
+                $schemas[$schema_name]['properties']['user_tech'] = self::getDropdownTypeSchema(
+                    class: User::class,
+                    field: 'users_id_tech',
+                    full_schema: 'User'
+                );
             }
             if (in_array($asset_type, $CFG_GLPI['linkgroup_tech_types'], true)) {
-                $schemas[$schema_name]['properties']['group_tech'] = self::getDropdownTypeSchema(Group::class, 'groups_id_tech');
+                $schemas[$schema_name]['properties']['group_tech'] = self::getDropdownTypeSchema(
+                    class: Group::class,
+                    field: 'groups_id_tech',
+                    full_schema: 'Group'
+                );
             }
             if (in_array($asset_type, $CFG_GLPI['linkuser_types'], true)) {
-                $schemas[$schema_name]['properties']['user'] = self::getDropdownTypeSchema(User::class, 'users_id');
+                $schemas[$schema_name]['properties']['user'] = self::getDropdownTypeSchema(
+                    class: User::class,
+                    field: 'users_id',
+                    full_schema: 'User'
+                );
             }
             if (in_array($asset_type, $CFG_GLPI['linkgroup_types'], true)) {
-                $schemas[$schema_name]['properties']['group'] = self::getDropdownTypeSchema(Group::class, 'groups_id');
+                $schemas[$schema_name]['properties']['group'] = self::getDropdownTypeSchema(
+                    class: Group::class,
+                    field: 'groups_id',
+                    full_schema: 'Group'
+                );
             }
 
             if ($asset->isField('contact')) {
@@ -184,8 +200,8 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'entities_id' => self::getDropdownTypeSchema(Entity::class),
-                'cartridgeitems_id' => self::getDropdownTypeSchema(\CartridgeItem::class),
+                'entities_id' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'cartridgeitems_id' => self::getDropdownTypeSchema(class: \CartridgeItem::class, full_schema: 'CartridgeItem'),
                 'pages' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'date_in' => [
                     'type' => Doc\Schema::TYPE_STRING,
@@ -259,6 +275,7 @@ final class AssetController extends AbstractController
                     'description' => 'List of cartridges',
                     'items' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Cartridge',
                         'x-join' => [
                             'table' => \Cartridge::getTable(),
                             'fkey' => 'id',
@@ -291,8 +308,8 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'entities_id' => self::getDropdownTypeSchema(Entity::class),
-                'consumableitems_id' => self::getDropdownTypeSchema(\ConsumableItem::class),
+                'entities_id' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'consumableitems_id' => self::getDropdownTypeSchema(class: \ConsumableItem::class, full_schema: 'ConsumableItem'),
                 'date_in' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
@@ -336,6 +353,7 @@ final class AssetController extends AbstractController
                     'description' => 'List of consumables',
                     'items' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Consumable',
                         'x-join' => [
                             'table' => \Consumable::getTable(),
                             'fkey' => 'id',
@@ -370,17 +388,17 @@ final class AssetController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(Entity::class),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(Location::class),
                 'category' => self::getDropdownTypeSchema(\SoftwareCategory::class),
                 'manufacturer' => self::getDropdownTypeSchema(Manufacturer::class),
-                'parent' => self::getDropdownTypeSchema(\Software::class),
+                'parent' => self::getDropdownTypeSchema(class: \Software::class, full_schema: 'Software'),
                 'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'user' => self::getDropdownTypeSchema(User::class),
-                'group' => self::getDropdownTypeSchema(Group::class),
-                'user_tech' => self::getDropdownTypeSchema(User::class, 'users_id_tech'),
-                'group_tech' => self::getDropdownTypeSchema(Group::class, 'groups_id_tech'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_update' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_valid' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -401,9 +419,9 @@ final class AssetController extends AbstractController
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'arch' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(Entity::class),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'software' => self::getDropdownTypeSchema(\Software::class),
+                'software' => self::getDropdownTypeSchema(class: \Software::class, full_schema: 'Software'),
                 'state' => self::getDropdownTypeSchema(State::class),
                 'operating_system' => self::getDropdownTypeSchema(\OperatingSystem::class),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -422,7 +440,7 @@ final class AssetController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(Entity::class),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(Location::class),
                 'serial' => ['type' => Doc\Schema::TYPE_STRING],
@@ -431,8 +449,8 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(Manufacturer::class),
                 'type' => self::getDropdownTypeSchema(\RackType::class),
                 'state' => self::getDropdownTypeSchema(\State::class),
-                'user_tech' => self::getDropdownTypeSchema(User::class, 'users_id_tech'),
-                'group_tech' => self::getDropdownTypeSchema(Group::class, 'groups_id_tech'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
                 'width' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'height' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'depth' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
@@ -465,7 +483,7 @@ final class AssetController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(Entity::class),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(Location::class),
                 'serial' => ['type' => Doc\Schema::TYPE_STRING],
@@ -473,8 +491,8 @@ final class AssetController extends AbstractController
                 'model' => self::getDropdownTypeSchema(\EnclosureModel::class),
                 'manufacturer' => self::getDropdownTypeSchema(Manufacturer::class),
                 'state' => self::getDropdownTypeSchema(\State::class),
-                'user_tech' => self::getDropdownTypeSchema(User::class, 'users_id_tech'),
-                'group_tech' => self::getDropdownTypeSchema(Group::class, 'groups_id_tech'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'orientation' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'power_supplies' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
@@ -494,7 +512,7 @@ final class AssetController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(Entity::class),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(Location::class),
                 'serial' => ['type' => Doc\Schema::TYPE_STRING],
@@ -503,8 +521,8 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(Manufacturer::class),
                 'type' => self::getDropdownTypeSchema(\PDUType::class),
                 'state' => self::getDropdownTypeSchema(\State::class),
-                'user_tech' => self::getDropdownTypeSchema(User::class, 'users_id_tech'),
-                'group_tech' => self::getDropdownTypeSchema(Group::class, 'groups_id_tech'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -522,7 +540,7 @@ final class AssetController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(Entity::class),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(Location::class),
                 'serial' => ['type' => Doc\Schema::TYPE_STRING],
@@ -531,8 +549,8 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(Manufacturer::class),
                 'type' => self::getDropdownTypeSchema(\PassiveDCEquipmentType::class),
                 'state' => self::getDropdownTypeSchema(\State::class),
-                'user_tech' => self::getDropdownTypeSchema(User::class, 'users_id_tech'),
-                'group_tech' => self::getDropdownTypeSchema(Group::class, 'groups_id_tech'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -550,7 +568,7 @@ final class AssetController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(Entity::class),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                 'state' => self::getDropdownTypeSchema(\State::class),
