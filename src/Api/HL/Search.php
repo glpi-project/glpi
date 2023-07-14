@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL;
 
 use CommonDBTM;
+use Entity;
 use ExtraVisibilityCriteria;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc;
@@ -250,6 +251,14 @@ final class Search
                 }
             } else if ($item->isEntityAssign()) {
                 $entity_restrict = getEntitiesRestrictCriteria('_');
+            }
+            if ($item instanceof Entity) {
+                $entity_restrict = [
+                    'OR' => [
+                        [$entity_restrict],
+                        [getEntitiesRestrictCriteria('_', 'id')]
+                    ]
+                ];
             }
         } else {
             //TODO What if some subtypes are entity assign and some are not?
