@@ -88,6 +88,11 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
 
 include_once __DIR__ . '/../inc/includes.php';
 
+// Errors that are not explicitely validated by `$this->error()` asserter will already make test fails,
+// and error log entries that not explicitely validated by `$this->has*LogRecord*()` asserters will also make test fails.
+// There is no need to pollute the output with error message.
+ErrorHandler::getInstance()->disableOutput();
+
 include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
 include_once __DIR__ . '/CsvTestCase.php';
