@@ -152,7 +152,7 @@ class Knowbase extends CommonGLPI
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/knowbase.php";
         $loading_txt = __s('Loading...');
         $start       = (int)($_REQUEST['start'] ?? 0);
-        $cat_id      = (int)($_SESSION['kb_cat_id'] ?? 0);
+        $cat_id      = (int)($_GET["knowbaseitemcategories_id"] ?? $_SESSION['kb_cat_id'] ?? 0);
 
         $category_list = json_encode(self::getTreeCategoryList());
         $no_cat_found  = __s("No category found");
