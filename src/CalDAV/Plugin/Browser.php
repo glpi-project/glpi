@@ -36,6 +36,7 @@
 namespace Glpi\CalDAV\Plugin;
 
 use Config;
+use GLPI;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
 use Sabre\DAV\Browser\Plugin;
 use Sabre\HTTP\RequestInterface;
@@ -66,12 +67,6 @@ class Browser extends Plugin
      */
     private function canDisplayDebugInterface()
     {
-        /** @var $authPlugin \Sabre\DAV\Auth\Plugin */
-        $authPlugin = $this->server->getPlugin('auth');
-        if (!$authPlugin) {
-            return false;
-        }
-
-        return Config::canUpdate();
+        return GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT || Config::canUpdate();
     }
 }
