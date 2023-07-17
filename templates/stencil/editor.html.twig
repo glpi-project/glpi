@@ -1,0 +1,158 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+
+<div id="#stencil-editor-{{ rand }}">
+    <form id="stencil-editor-form-{{ rand }}" method='post' class="mb-2" action="{{ path('front/stencil.form.php') }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+
+        {% if id > 0 %}
+            <input type="hidden" name="id" value="{{ id }}">
+        {% else %}
+            <input type="hidden" name="itemtype" value="{{ itemtype }}">
+            <input type="hidden" name="items_id" value="{{ items_id }}">
+        {% endif %}
+
+        {% if id <= 0 %}
+            <label for="nb_zones" class="form-label">{{ params['nb_zones_label']|default(__("Set number of zones")) }}</label>
+            <input type="number" id="nb_zones-{{ rand }}" name="nb_zones" class="form-control d-inline-block" style="width: 65px" min="1" value="{{ nb_zones }}">
+
+        {% else %}
+            <label class="form-label">
+                {% if params.define_zones_label is defined %}
+                    {{ params['define_zones_label'] }}
+                {% else %}
+                    {{ __("Define zone in image") }}
+                {% endif %}
+            </label>
+            <div class="col-12 d-flex flex-wrap gap-1">
+                {% if nb_zones > 0 %}
+                    {% set start_zone_index = params.start_zone_index ?? 1 %}
+                    {% for zone_number in start_zone_index..nb_zones %}
+                        {% set zone_defined = (zones[zone_number]|length > 0) %}
+                        <button type="button" data-zone-index="{{ zone_number }}" class="btn btn-sm btn-icon {{ zone_defined ? " btn-success" : " btn-outline-secondary" }} px-1 set-zone-data" style="min-width: 4%;">
+                            <span class="overflow-hidden">{{ zones[zone_number]['label'] ?? zone_number }}</span>
+                            <i class="ti {{ zone_defined ? " ti-check" : " ti-file-unknown" }} ms-1"></i>
+                        </button>
+                    {% endfor %}
+
+                    <div class="d-flex gap-1 justify-content-center" style="min-width: 4%;">
+                        <button type="submit" name="add-new-zone" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['add_zone_label'] ?? __("Add zone") }}" class="btn btn-sm btn-ghost-secondary px-1">
+                            <i class="ti ti-plus"></i>
+                        </button>
+                        <button type="submit" name="remove-zone" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['remove_zone_label'] ?? __("Add zone") }}" class="btn btn-sm btn-ghost-danger px-1">
+                            <i class="ti ti-minus"></i>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div id="zone-data-{{ rand }}" class="row d-none mt-2">
+            <form id="zone-data-form-{{ rand }}">
+                <div class="col-auto">
+                    <div class="row">
+                        {% if params.zone_label is defined %}
+                            <label for="zone_label" class="col-auto col-form-label">{{ params['zone_label'] }}</label>
+                        {% else %}
+                            <label for="zone_label" class="col-auto col-form-label">{{ __("Zone label") }}</label>
+                        {% endif %}
+                        <div class="col-auto">
+                            <input type="text" id="zone_label-{{ rand }}" class="form-control" placeholder="" form="zone-data-form-{{ rand }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="row">
+                        {% if params.zone_number_label is defined %}
+                            <label for="zone_number" class="col-auto col-form-label">{{ params['zone_number_label'] }}</label>
+                        {% else %}
+                            <label for="zone_number" class="col-auto col-form-label">{{ __("Zone number") }}</label>
+                        {% endif %}
+                        <div class="col-auto">
+                            <input type="text" id="zone_number-{{ rand }}" class="form-control" placeholder="" form="zone-data-form-{{ rand }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button type="button" id="save-zone-data-{{ rand }}" class="btn btn-primary">
+                        <i class="ti ti-device-floppy"></i>
+                        {% if params.save_zone_data_label is defined %}
+                            <span>{{ params['save_zone_data_label'] }}</span>
+                        {% else %}
+                            <span>{{ __("Save zone data") }}</span>
+                        {% endif %}
+                    </button>
+                    <button type="button" id="cancel-zone-data-{{ rand }}" class="btn btn-outline-danger">
+                        <i class="ti ti-x"></i>
+                        <span>{{ __("Cancel") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-12 my-2" id="general-submit-{{ rand }}">
+            {% if id > 0 %}
+                <button id="clear-data-{{ rand }}" type="submit" name="purge" class="btn btn-outline-danger" form="stencil-editor-form-{{ rand }}">
+                    <i class="ti ti-trash-x"></i>
+                    <span>{{ __("Clear data") }}</span>
+                </button>
+            {% else %}
+                <button type="submit" name="add" class="btn btn-primary" form="stencil-editor-form-{{ rand }}">
+                    <i class="ti ti-plus"></i>
+                    <span>{{ __("Add") }}</span>
+                </button>
+            {% endif %}
+        </div>
+    </form>
+
+    {% if id > 0 %}
+        {% for picture in pictures %}
+            <div class="cropper-container mb-2">
+                <img src="{{ picture }}" class="cropper-hidden stencil-image" data-side="{{ loop.index - 1 }}">
+                {% include 'stencil/parts/zones.html.twig' with {
+                    'item': item,
+                    'stencil': stencil,
+                    'zones': zones,
+                    'current_side': loop.index - 1,
+                    'params': params
+                } only %}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <script>
+        new StencilEditor(document.getElementById('#stencil-editor-{{ rand }}'), {{ rand }}, {{ zones_json|raw }});
+    </script>
+</div>

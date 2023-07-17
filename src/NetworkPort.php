@@ -784,6 +784,11 @@ class NetworkPort extends CommonDBChild
 
         Plugin::doHook(Hooks::DISPLAY_NETPORT_LIST_BEFORE, ['item' => $item]);
 
+        $stencil = NetworkEquipmentModelStencil::getStencilFromItem($item);
+        if ($stencil) {
+            $stencil->displayStencil();
+        }
+
         $search_config_top    = '';
         if (
             Session::haveRightsOr('search_config', [

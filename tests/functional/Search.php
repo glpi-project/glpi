@@ -586,6 +586,7 @@ class Search extends DbTestCase
                 \NetworkPortInstantiation::class, // should be abstract
                 \NotificationSettingConfig::class, // not searchable
                 \PendingReasonCron::class, // not searchable
+                '/^[A-z]+Stencil/', // not searchable
             ]
         );
         foreach ($classes as $class) {
@@ -2207,7 +2208,8 @@ class Search extends DbTestCase
                 'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
                 'NetworkPortMigration', // Tables only exists in specific cases
                 'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
-                'PendingReasonCron'
+                'PendingReasonCron',
+                '/^[A-z]+Stencil/'
             ]
         );
         $searchable_classes = [];

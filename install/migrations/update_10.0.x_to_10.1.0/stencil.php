@@ -33,26 +33,31 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class NetworkEquipmentModel
-class NetworkEquipmentModel extends CommonDCModelDropdown
-{
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Networking equipment model', 'Networking equipment models', $nb);
-    }
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-    public function defineTabs($options = [])
-    {
-        $ong = parent::defineTabs($options);
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-        // Add stencil tab if there is at least one picture field defined
-        foreach ((new NetworkEquipmentModelStencil())->getPicturesFields() as $picture_field) {
-            if (!empty($this->getItemtypeOrModelPicture($picture_field))) {
-                $this->addStandardTab('NetworkEquipmentModelStencil', $ong, $options);
-                break;
-            }
-        }
+$table = 'glpi_stencils';
 
-        return $ong;
-    }
+// Add Stencil table
+if (!$DB->tableExists($table)) {
+    $query = "CREATE TABLE `$table` (
+        `id` int $default_key_sign NOT NULL AUTO_INCREMENT,
+        `itemtype` varchar(100) NOT NULL,
+        `items_id` int $default_key_sign NOT NULL DEFAULT '0',
+        `nb_zones` int NOT NULL DEFAULT '1',
+        `zones` JSON,
+        `date_mod` timestamp NULL DEFAULT NULL,
+        `date_creation` timestamp NULL DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `unicity` (`itemtype`,`items_id`),
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
+    $DB->queryOrDie($query, '10.1 add table $table');
 }

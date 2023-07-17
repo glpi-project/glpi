@@ -33,26 +33,23 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class NetworkEquipmentModel
-class NetworkEquipmentModel extends CommonDCModelDropdown
-{
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Networking equipment model', 'Networking equipment models', $nb);
+use Glpi\Http\Response;
+
+include('../inc/includes.php');
+
+Session::checkLoginUser();
+
+if (isset($_POST['id'])) {
+    $stencil = Stencil::getStencilFromID($_POST['id']);
+
+    if (!$stencil) {
+        Response::sendError(404, 'Stencil not found');
     }
 
-    public function defineTabs($options = [])
-    {
-        $ong = parent::defineTabs($options);
+    $stencil->check($_POST['id'], READ);
 
-        // Add stencil tab if there is at least one picture field defined
-        foreach ((new NetworkEquipmentModelStencil())->getPicturesFields() as $picture_field) {
-            if (!empty($this->getItemtypeOrModelPicture($picture_field))) {
-                $this->addStandardTab('NetworkEquipmentModelStencil', $ong, $options);
-                break;
-            }
-        }
-
-        return $ong;
+    if (isset($_POST['update'])) {
+        $stencil->check($_POST['id'], UPDATE);
+        $stencil->update($_POST);
     }
 }
