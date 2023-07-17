@@ -805,7 +805,7 @@ function update090xto910()
                           ],
                       ]);
                     if (count($iterator) == 0) {
-                         $DB->insert("glpi_displaypreferences", [
+                         $DB->insertOrDie("glpi_displaypreferences", [
                              'itemtype'  => $type,
                              'num'       => $newval,
                              'rank'      => $rank++,
@@ -817,7 +817,7 @@ function update090xto910()
         } else { // Add for default user
             $rank = 1;
             foreach ($tab as $newval) {
-                $DB->insert("glpi_displaypreferences", [
+                $DB->insertOrDie("glpi_displaypreferences", [
                     'itemtype'  => $type,
                     'num'       => $newval,
                     'rank'      => $rank++,

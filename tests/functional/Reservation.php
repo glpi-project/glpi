@@ -33,31 +33,30 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Update from 9.5.3 to 9.5.4
- *
- * @return bool for success (will die for most error)
- **/
-function update953to954()
+namespace tests\units;
+
+use DbTestCase;
+
+class Reservation extends DbTestCase
 {
-    global $DB, $migration;
+    public function testGetReservableItemtypes(): void
+    {
+        // No reservable items
+        $this->array(\Reservation::getReservableItemtypes())->isEqualTo([]);
 
-    $updateresult = true;
+        $root = getItemByTypeName("Entity", "_test_root_entity", true);
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.4'));
-    $migration->setVersion('9.5.4');
-
-   /* Remove invalid Profile SO */
-    $DB->deleteOrDie('glpi_displaypreferences', ['itemtype' => 'Profile', 'num' => 62]);
-   /* /Remove invalid Profile SO */
-
-   /* Add is_default_profile */
-    $migration->addField("glpi_profiles_users", "is_default_profile", "bool");
-   /* /Add is_default_profile */
-
-   // ************ Keep it at the end **************
-    $migration->executeMigration();
-
-    return $updateresult;
+        // Enable reservation on a computer
+        $computer = $this->createItem("Computer", [
+            "name"        => "test",
+            "entities_id" => $root,
+        ]);
+        $this->createItem("ReservationItem", [
+            "itemtype"    => "Computer",
+            "items_id"    => $computer->getID(),
+            "is_active"   => true,
+            "entities_id" => $root,
+        ]);
+        $this->array(\Reservation::getReservableItemtypes())->isEqualTo(["Computer"]);
+    }
 }

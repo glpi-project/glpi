@@ -78,6 +78,12 @@ class Auth extends CommonGLPI
      */
     private int $auth_type = 0;
 
+    /**
+     * Indicates if an error occurs during connection to the user LDAP.
+     * @var boolean
+     */
+    public $user_ldap_error = false;
+
     /** @var resource|boolean LDAP connection descriptor */
     public $ldap_connection;
     /** @var bool Store user LDAP dn */
@@ -244,17 +250,20 @@ class Auth extends CommonGLPI
      * Find a user in a LDAP and return is BaseDN
      * Based on GRR auth system
      *
-     * @param string $ldap_method ldap_method array to use
-     * @param string $login       User Login
-     * @param string $password    User Password
+     * @param string    $ldap_method ldap_method array to use
+     * @param string    $login       User Login
+     * @param string    $password    User Password
+     * @param bool|null $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
      *
      * @return string basedn of the user / false if not founded
      */
-    public function connection_ldap($ldap_method, $login, $password)
+    public function connection_ldap($ldap_method, $login, $password, ?bool &$error = null)
     {
+        $error = false;
 
        // we prevent some delay...
         if (empty($ldap_method['host'])) {
+            $error = true;
             return false;
         }
 
@@ -272,7 +281,7 @@ class Auth extends CommonGLPI
                 $params['fields']['sync_field'] = $ldap_method['sync_field'];
             }
             try {
-                $infos = AuthLDAP::searchUserDn($this->ldap_connection, [
+                $info = AuthLDAP::searchUserDn($this->ldap_connection, [
                     'basedn'            => $ldap_method['basedn'],
                     'login_field'       => $ldap_method['login_field'],
                     'search_parameters' => $params,
@@ -285,19 +294,30 @@ class Auth extends CommonGLPI
                 ]);
             } catch (\Throwable $e) {
                 ErrorHandler::getInstance()->handleException($e, true);
-                $this->addToError(__('Unable to connect to the LDAP directory'));
+                $info = false;
+            }
+
+            $ldap_errno = ldap_errno($this->ldap_connection);
+            if ($info === false) {
+                if ($ldap_errno > 0 && $ldap_errno !== 32) {
+                    $this->addToError(__('Unable to connect to the LDAP directory'));
+                    $error = true;
+                } else {
+                    // 32 = LDAP_NO_SUCH_OBJECT => This should not be considered as a connection error, as it just means that user was not found.
+                    $this->addToError(__('Incorrect username or password'));
+                }
                 return false;
             }
 
-            $dn = $infos['dn'];
+            $dn = $info['dn'];
             $this->user_found = $dn != '';
 
             $bind_result = $this->user_found ? @ldap_bind($this->ldap_connection, $dn, $password) : false;
 
             if ($this->user_found && $bind_result !== false) {
                 //Hook to implement to restrict access by checking the ldap directory
-                if (Plugin::doHookFunction(Hooks::RESTRICT_LDAP_AUTH, $infos)) {
-                    return $infos;
+                if (Plugin::doHookFunction(Hooks::RESTRICT_LDAP_AUTH, $info)) {
+                    return $info;
                 }
                 $this->addToError(__('User not authorized to connect in GLPI'));
                 //Use is present by has no right to connect because of a plugin
@@ -309,8 +329,9 @@ class Auth extends CommonGLPI
                 return false;
             }
         } else {
-            $this->addToError(__('Unable to connect to the LDAP directory'));
             //Directory is not available
+            $this->addToError(__('Unable to connect to the LDAP directory'));
+            $error = true;
             return false;
         }
     }
@@ -926,7 +947,7 @@ class Auth extends CommonGLPI
                                 $login_password,
                                 $this->user->fields["auths_id"]
                             );
-                            if ($this->ldap_connection !== false && (!$this->auth_succeded && !$this->user_found)) {
+                            if ($this->user_ldap_error === false && !$this->auth_succeded && !$this->user_found) {
                                 $search_params = [
                                     'name'     => $login_name,
                                     'authtype' => $this::LDAP

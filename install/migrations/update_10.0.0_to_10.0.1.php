@@ -77,7 +77,7 @@ function update1000to1001()
         }
     }
     foreach ($DELFROMDISPLAYPREF as $type => $tab) {
-        $DB->delete(
+        $DB->deleteOrDie(
             'glpi_displaypreferences',
             [
                 'itemtype'  => $type,

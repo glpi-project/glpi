@@ -10,9 +10,9 @@ bin/console database:configure \
   --strict-configuration
 
 # Execute update
-## First run should do the migration (with no warnings).
+## First run should do the migration (with no warnings/errors).
 bin/console database:update --config-dir=./tests/config --ansi --no-interaction --allow-unstable | tee $LOG_FILE
-if [[ -n $(grep "Warning\|No migration needed." $LOG_FILE) ]];
+if [[ -n $(grep "Error\|Warning\|No migration needed." $LOG_FILE) ]];
   then echo "bin/console database:update command FAILED" && exit 1;
 fi
 ## Second run should do nothing.

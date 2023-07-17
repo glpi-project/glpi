@@ -1708,6 +1708,74 @@ class DBmysql
     }
 
     /**
+     * Drops a table
+     *
+     * @param string $name   Table name
+     * @param bool   $exists Add IF EXISTS clause
+     *
+     * @return bool|mysqli_result
+     */
+    public function dropTable(string $name, bool $exists = false)
+    {
+        $res = $this->doQuery(
+            $this->buildDrop(
+                $name,
+                'TABLE',
+                $exists
+            )
+        );
+        return $res;
+    }
+
+    /**
+     * Drops a view
+     *
+     * @param string $name   View name
+     * @param bool   $exists Add IF EXISTS clause
+     *
+     * @return bool|mysqli_result
+     */
+    public function dropView(string $name, bool $exists = false)
+    {
+        $res = $this->doQuery(
+            $this->buildDrop(
+                $name,
+                'VIEW',
+                $exists
+            )
+        );
+        return $res;
+    }
+
+    /**
+     * Builds a DROP query
+     *
+     * @param string $name   Name to drop
+     * @param string $type   Type to drop
+     * @param bool   $exists Add IF EXISTS clause
+     *
+     * @return string
+     */
+    public function buildDrop(string $name, string $type, bool $exists = false): string
+    {
+        $known_types = [
+            'TABLE',
+            'VIEW'
+        ];
+        if (!in_array($type, $known_types)) {
+            throw new \InvalidArgumentException('Unknown type to drop: ' . $type);
+        }
+
+        $name = $this::quoteName($name);
+        $query = "DROP $type";
+        if ($exists) {
+            $query .= ' IF EXISTS';
+        }
+        $query .= " $name";
+        return $query;
+    }
+
+    /**
      * Get database raw version
      *
      * @return string

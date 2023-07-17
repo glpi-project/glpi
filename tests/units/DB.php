@@ -863,4 +863,54 @@ OTHER EXPRESSION;"
         $this->newTestedInstance();
         $this->variable($this->testedInstance->{$method}($mysqli_result))->isEqualTo($expected);
     }
+
+    protected function dataDrop()
+    {
+        return [
+            [
+                'tablename',
+                'TABLE',
+                false,
+                'DROP TABLE `tablename`'
+            ], [
+                'viewname',
+                'VIEW',
+                false,
+                'DROP VIEW `viewname`'
+            ], [
+                'tablename',
+                'TABLE',
+                true,
+                'DROP TABLE IF EXISTS `tablename`'
+            ], [
+                'viewname',
+                'VIEW',
+                true,
+                'DROP VIEW IF EXISTS `viewname`'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider dataDrop
+     */
+    public function testBuildDrop($name, $type, $exists, $expected)
+    {
+        $this
+            ->if($this->newTestedInstance)
+            ->then
+            ->string($this->testedInstance->buildDrop($name, $type, $exists))->isIdenticalTo($expected);
+    }
+
+    public function testBuildDropWException()
+    {
+        $this->exception(
+            function () {
+                $this
+                    ->if($this->newTestedInstance)
+                    ->then
+                    ->string($this->testedInstance->buildDrop('aname', 'UNKNOWN'))->isIdenticalTo('');
+            }
+        )->hasMessage('Unknown type to drop: UNKNOWN');
+    }
 }

@@ -230,7 +230,7 @@ final class SQLProvider implements SearchProviderInterface
                             distinct: true,
                             order_by: $tocomputeid
                         ),
-                        value: new QueryExpression($DB::quoteValue(\Search::NULLVALUE . \Search::SHORTSEP)),
+                        value: new QueryExpression($DB::quoteValue(\Search::NULLVALUE)),
                         alias: "{$NAME}_{$key}"
                     );
                 } else {
@@ -5661,7 +5661,11 @@ final class SQLProvider implements SearchProviderInterface
 
                             $plaintext = '';
                             if (isset($so['htmltext']) && $so['htmltext']) {
-                                $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output, false, true);
+                                if ($html_output) {
+                                    $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output);
+                                } else {
+                                    $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], true, true, $html_output);
+                                }
                             } else {
                                 $plaintext = nl2br($data[$ID][$k]['name']);
                             }

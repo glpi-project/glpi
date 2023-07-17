@@ -358,6 +358,10 @@ JAVASCRIPT
     private static function getLinkHtml(array $fields): string
     {
 
+        if (empty($fields['url'])) {
+            return '';
+        }
+
         $html = '';
 
         $target = $fields['open_window'] == 1 ? '_blank' : '_self';

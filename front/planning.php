@@ -33,6 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+if (isset($_GET['genical'])) {
+    // A new sssion is generated and destroyed during the ical/webcal export.
+    // Prevent sending cookies to browser to ensure that user will not be disconnected when using the export feature.
+    // It will also prevent to send a session cookie related to another user in case an error made the script exit before session destroying.
+    ini_set('session.use_cookies', 0);
+}
+
 include('../inc/includes.php');
 
 if (!isset($_GET['genical'])) {
@@ -85,31 +92,6 @@ if (isset($_GET['checkavailability'])) {
                     Session::changeProfile(key($_SESSION['glpiprofiles']));
                 }
             }
-
-            // Clean rights to keep only `READ` rights on planning itemtypes and their parent.
-            // This should permit to avoid leak of unexpected data.
-            $planning_types_rights = [];
-            foreach ($CFG_GLPI['planning_types'] as $planning_itemtype) {
-                if (!is_a($planning_itemtype, CommonGLPI::class, true)) {
-                    continue;
-                }
-                $planning_types_rights[] = $planning_itemtype::$rightname;
-
-                if (is_a($planning_itemtype, CommonITILTask::class, true)) {
-                    $planning_types_rights[] = (new $planning_itemtype())->getItilObjectItemType()::$rightname;
-                } elseif (is_a($planning_itemtype, CommonDBChild::class, true)) {
-                    $planning_types_rights[] = $planning_itemtype::$itemtype::$rightname;
-                }
-            }
-            $all_possible_rights = array_keys(ProfileRight::getAllPossibleRights());
-            foreach ($_SESSION['glpiactiveprofile'] as $key => $value) {
-                if (in_array($key, $all_possible_rights) && !in_array($key, $planning_types_rights)) {
-                    $_SESSION['glpiactiveprofile'][$key] = 0;
-                } elseif (is_int($_SESSION['glpiactiveprofile'][$key])) {
-                    $_SESSION['glpiactiveprofile'][$key] = $_SESSION['glpiactiveprofile'][$key] & READ;
-                }
-            }
-
             //// check if the request is valid: rights on uID / gID
             // First check mine : user then groups
             $ismine = false;

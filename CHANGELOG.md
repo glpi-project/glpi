@@ -63,6 +63,7 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+
 - `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
 - `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 
@@ -213,7 +214,29 @@ The present file will list all changes made to the project; according to the
 - Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.
 - `CommonDBTM::$fkfield` property.
 
-## [10.0.9] unreleased
+
+## [10.0.10] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.9] 2023-07-11
 
 ### Added
 
