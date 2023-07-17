@@ -887,13 +887,11 @@ class Budget extends CommonDropdown
         echo "<tr class='tab_bg_1 noHover'>";
         echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total spent on the budget') . "</td>";
         echo "<td class='numeric b'>" . Html::formatNumber($total) . "</td></tr>";
-        if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
-            echo "<tr class='tab_bg_1 noHover'>";
-            echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total remaining on the budget') .
-               "</td>";
-            echo "<td class='numeric b'>" . Html::formatNumber($budget->fields['value'] - $total) .
-               "</td></tr>";
-        }
+        echo "<tr class='tab_bg_1 noHover'>";
+        echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total remaining on the budget') .
+            "</td>";
+        echo "<td class='numeric b'>" . Html::formatNumber($budget->fields['value'] - $total) .
+            "</td></tr>";
         echo "</table></div>";
     }
 
