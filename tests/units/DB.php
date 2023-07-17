@@ -396,7 +396,7 @@ class DB extends \GLPITestCase
         // Tables that don't have an itemtype on purpose
         $excluded_tables = [
             'glpi_appliancerelations', 'glpi_oauth_access_tokens', 'glpi_oauth_auth_codes',
-            'glpi_oauth_refresh_tokens',
+            'glpi_oauth_refresh_tokens', 'glpi_stencils',
         ];
 
        //check if each table has a corresponding itemtype

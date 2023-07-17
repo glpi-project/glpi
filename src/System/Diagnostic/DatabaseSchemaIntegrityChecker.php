@@ -468,6 +468,8 @@ class DatabaseSchemaIntegrityChecker
             '/(DEFAULT) \'([-|+]?\d+(\.\d+)?)\'/i' => '$1 $2',
             // Remove surrounding quotes on collate values (quotes are optional)
             '/(COLLATE) \'([-|+]?\w+(\.\d+)?)\'/i' => '$1 $2',
+            // MariaDB does not have a JSON type and instead uses an alias
+            '/longtext (?:CHARACTER SET \w+ COLLATE \w+ )?((\S\s?)*)CHECK \(json_valid\(`(\w+)`\)\)/' => 'json $1',
         ];
         if ($this->ignore_timestamps_migration) {
             $column_replacements['/(`\w+`)\s*timestamp/i'] = '$1 datetime';

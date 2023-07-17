@@ -33,26 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class NetworkEquipmentModel
-class NetworkEquipmentModel extends CommonDCModelDropdown
+namespace Glpi\Features;
+
+interface ZonableModelPicture
 {
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Networking equipment model', 'Networking equipment models', $nb);
-    }
+    /**
+     * Display the stencil with the zones
+     *
+     * @return void
+     */
+    public function displayStencil(): void;
 
-    public function defineTabs($options = [])
-    {
-        $ong = parent::defineTabs($options);
-
-        // Add stencil tab if there is at least one picture field defined
-        foreach ((new NetworkEquipmentModelStencil())->getPicturesFields() as $picture_field) {
-            if (!empty($this->getItemtypeOrModelPicture($picture_field))) {
-                $this->addStandardTab('NetworkEquipmentModelStencil', $ong, $options);
-                break;
-            }
-        }
-
-        return $ong;
-    }
+    /**
+     * Display the stencil editor
+     *
+     * @return void
+     */
+    public function displayStencilEditor(): void;
 }

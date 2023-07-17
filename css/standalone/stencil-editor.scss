@@ -1,6 +1,4 @@
-<?php
-
-/**
+/*!
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,26 +31,40 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class NetworkEquipmentModel
-class NetworkEquipmentModel extends CommonDCModelDropdown
-{
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Networking equipment model', 'Networking equipment models', $nb);
+.cropper-container {
+    max-height: 500px;
+    position: relative;
+
+    cropper-canvas {
+        min-height: 100px;
     }
+}
 
-    public function defineTabs($options = [])
-    {
-        $ong = parent::defineTabs($options);
+.defined-zone {
+    background: #e2ffd19a;
+    border: 1px solid #6c9654;
+    box-sizing: border-box;
+    position: absolute;
+    direction: inherit;
+    font-size: 13px;
+    line-height: 23px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        // Add stencil tab if there is at least one picture field defined
-        foreach ((new NetworkEquipmentModelStencil())->getPicturesFields() as $picture_field) {
-            if (!empty($this->getItemtypeOrModelPicture($picture_field))) {
-                $this->addStandardTab('NetworkEquipmentModelStencil', $ong, $options);
-                break;
-            }
+.stencil-view {
+    position: relative;
+
+    .defined-zone {
+        background: #c2c2c24f;
+        border: #8d8d8d;
+
+        .zone-number {
+            color: white;
+            mix-blend-mode: difference;
+            font-size: 15px;
+            font-weight: normal;
         }
-
-        return $ong;
     }
 }
