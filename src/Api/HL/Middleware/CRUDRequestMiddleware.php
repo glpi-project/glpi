@@ -80,7 +80,7 @@ class CRUDRequestMiddleware extends AbstractMiddleware implements RequestMiddlew
         if ($passed && $specific_item) {
             // Specific permission checks
             $passed = match ($input->request->getMethod()) {
-                'GET' => $item->canViewItem(),
+                // Specific item read permissions are checked at the API Search engine level to preserve pagination and allow filtering at the search operation level (getting multiple items)
                 'POST' => $item->canCreateItem(),
                 'PATCH' => $item->canUpdateItem(),
                 'DELETE' => $force ? $item->canPurgeItem() : $item->canDeleteItem()
