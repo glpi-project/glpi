@@ -39,6 +39,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Dashboard\Grid;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
@@ -853,6 +854,9 @@ class Plugin extends CommonDBTM
                 'state'   => self::NOTINSTALLED,
             ]);
             $this->unload($this->fields['directory']);
+
+            $this->resetHookableCacheEntries($this->fields['directory']);
+
             self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
 
             $type = INFO;
@@ -935,6 +939,9 @@ class Plugin extends CommonDBTM
                         ]);
                         $message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
                     }
+
+                    $this->resetHookableCacheEntries($this->fields['directory']);
+
                     self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
 
                     Event::log(
@@ -1026,6 +1033,8 @@ class Plugin extends CommonDBTM
                     'state' => self::ACTIVATED
                 ]);
 
+                $this->resetHookableCacheEntries($this->fields['directory']);
+
                // Initialize session for the plugin
                 if (
                     isset($PLUGIN_HOOKS[Hooks::INIT_SESSION][$this->fields['directory']])
@@ -1109,6 +1118,9 @@ class Plugin extends CommonDBTM
                 'state' => self::NOTACTIVATED
             ]);
             $this->unload($this->fields['directory']);
+
+            $this->resetHookableCacheEntries($this->fields['directory']);
+
             self::doHook(Hooks::POST_PLUGIN_DISABLE, $this->fields['directory']);
 
            // reset menu
@@ -3023,5 +3035,37 @@ class Plugin extends CommonDBTM
                 return;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
+
+    /**
+     * Reset cache entries that may be indirectly altered by plugins.
+     *
+     * @param string $plugin_key
+     *
+     * @return bool
+     */
+    private function resetHookableCacheEntries(string $plugin_key): bool
+    {
+        global $CFG_GLPI, $GLPI_CACHE;
+
+        $to_clear = [
+            // Plugin lowercase/case-sensitive class names mapping.
+            // see `DbUtils::fixItemtypeCase()`
+            sprintf('itemtype-case-mapping-%s', $plugin_key),
+
+            // Hookable using `$CFG_GLPI['*_types']` and `$CFG_GLPI['itemdevices_itemaffinity']`.
+            'item_device_affinities',
+
+            // Will be stale as long as a plugin adds/remove a custom right.
+            'all_possible_rights',
+        ];
+
+        foreach (array_keys($CFG_GLPI['languages']) as $language) {
+            // Hookable using `$CFG_GLPI['itemdevices']`, `$CFG_GLPI['device_types']`, `$CFG_GLPI['asset_types']`,
+            // and `Hooks::DASHBOARD_FILTERS`.
+            $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
+        }
+
+        return $GLPI_CACHE->deleteMultiple($to_clear);
     }
 }

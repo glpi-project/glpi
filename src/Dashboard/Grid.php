@@ -1075,12 +1075,16 @@ HTML;
      *
      * @return string
      */
-    public static function getAllDashboardCardsCacheKey(): string
+    public static function getAllDashboardCardsCacheKey(?string $language = null): string
     {
+        if ($language === null) {
+            $language = Session::getLanguage() ?? '';
+        }
+
         return sprintf(
             'getAllDashboardCards_%s_%s',
             sha1(json_encode(Filter::getRegisteredFilterClasses())),
-            Session::getLanguage() ?? ''
+            $language
         );
     }
 
