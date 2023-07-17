@@ -62,33 +62,7 @@ class CRUDRequestMiddleware extends AbstractMiddleware implements RequestMiddlew
                 $input->response = AbstractController::getNotFoundErrorResponse();
                 return;
             }
-            if (!$item->canViewItem()) {
-                $input->response = AbstractController::getAccessDeniedErrorResponse();
-                return;
-            }
             $input->request->setParameter('_item', $item);
-        }
-
-        $force = $input->request->hasParameter('force');
-        // Global permission checks
-        $passed = match ($input->request->getMethod()) {
-            'GET' => $itemtype::canView(),
-            'POST' => $itemtype::canCreate(),
-            'PATCH' => $itemtype::canUpdate(),
-            'DELETE' => $force ? $itemtype::canPurge() : $itemtype::canDelete()
-        };
-        if ($passed && $specific_item) {
-            // Specific permission checks
-            $passed = match ($input->request->getMethod()) {
-                // Specific item read permissions are checked at the API Search engine level to preserve pagination and allow filtering at the search operation level (getting multiple items)
-                'POST' => $item->canCreateItem(),
-                'PATCH' => $item->canUpdateItem(),
-                'DELETE' => $force ? $item->canPurgeItem() : $item->canDeleteItem()
-            };
-        }
-        if (!$passed) {
-            $input->response = AbstractController::getAccessDeniedErrorResponse();
-            return;
         }
 
         $next($input);

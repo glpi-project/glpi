@@ -605,6 +605,22 @@ final class Search
         if (($itemtype !== null) && !$itemtype::canView()) {
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_LIST);
         }
+        if (isset($schema['x-subtypes'])) {
+            // For this case, we need to filter out the schemas that the user doesn't have read rights on
+            $schemas = $schema['x-subtypes'];
+            $schemas = array_filter($schemas, static function ($k, $v) {
+                $itemtype = $v['itemtype'];
+                if (class_exists($itemtype) && is_subclass_of($itemtype, CommonDBTM::class)) {
+                    return $itemtype::canView();
+                }
+                return false;
+            });
+            $schema['x-subtypes'] = $schemas;
+            if (empty($schema['x-subtypes'])) {
+                // No right on any subtypes. Could be useful to return an access denied error here instead of an empty list
+                return AbstractController::getAccessDeniedErrorResponse();
+            }
+        }
         $results = self::getSearchResultsBySchema($schema, $request_params);
         $has_more = $results['start'] + $results['limit'] < $results['total'];
         $end = max(0, ($results['start'] + $results['limit'] - 1));
@@ -731,6 +747,9 @@ final class Search
 
         /** @var CommonDBTM $item */
         $item = new $itemtype();
+        if (!$item->can($item->getID(), CREATE, $input)) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
         $items_id = $item->add($input);
         [$controller, $method] = $get_route;
 
@@ -761,6 +780,9 @@ final class Search
         $input['id'] = $items_id;
         /** @var CommonDBTM $item */
         $item = new $itemtype();
+        if (!$item->can($item->getID(), UPDATE, $input)) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
         $result = $item->update($input);
 
         if ($result === false) {
@@ -778,7 +800,11 @@ final class Search
         /** @var CommonDBTM $item */
         $item = new $itemtype();
         $force = $request_params['force'] ?? false;
-        $result = $item->delete(['id' => (int) $items_id], $force ? 1 : 0);
+        $input = [(int) $items_id];
+        if (!$item->can($item->getID(), $force ? PURGE : DELETE, $input)) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        $result = $item->delete($input, $force ? 1 : 0);
 
         if ($result === false) {
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_DELETE);
