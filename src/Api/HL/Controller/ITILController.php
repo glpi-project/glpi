@@ -125,6 +125,10 @@ final class ITILController extends AbstractController
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'enum' => [Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE]
                 ];
+                $schemas[$itil_type]['properties']['external_id'] = [
+                    'x-field' => 'externalid',
+                    'type' => Doc\Schema::TYPE_STRING,
+                ];
             }
             $schemas[$itil_type]['x-itemtype'] = $itil_type;
             $schemas[$itil_type]['properties']['status'] = [
