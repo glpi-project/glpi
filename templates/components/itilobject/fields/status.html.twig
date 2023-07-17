@@ -70,8 +70,3 @@
    __('Status'),
    field_options
 ) }}
-
-{% if not item.isNewItem() %}
-   <input type="hidden" name="global_validation" value="{{ item.fields.global_validation }}">
-{% endif %}
-
