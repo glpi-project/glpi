@@ -68,11 +68,7 @@ class DBmysqlIterator extends DbTestCase
         global $DB;
 
         $expected_error = "Table '{$DB->dbdefault}.fakeTable' doesn't exist";
-        $this->output(
-            function () use ($DB) {
-                $DB->request('fakeTable');
-            }
-        )->contains($expected_error);
+        $DB->request('fakeTable');
         $this->hasSqlLogRecordThatContains($expected_error, LogLevel::ERROR);
     }
 

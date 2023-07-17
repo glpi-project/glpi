@@ -100,11 +100,7 @@ class Item_OperatingSystem extends DbTestCase
         )->isIdenticalTo(1);
 
         $expected_error = "/Duplicate entry '{$computer->getID()}-Computer-{$objects['']->getID()}-{$objects['Architecture']->getID()}' for key '(glpi_items_operatingsystems\.)?unicity'/";
-        $this->output(
-            function () use ($ios, $input) {
-                $this->boolean($ios->add($input))->isFalse();
-            }
-        )->matches($expected_error);
+        $this->boolean($ios->add($input))->isFalse();
         $this->hasSqlLogRecordThatMatches($expected_error, LogLevel::ERROR);
 
         $this->integer(
