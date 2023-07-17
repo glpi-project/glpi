@@ -1591,6 +1591,17 @@ class Session
     public static function checkCSRF($data)
     {
 
+        $message = __("The action you have requested is not allowed.");
+        $requestToken = $data['_glpi_csrf_token'];
+        if (
+            isset($_SESSION['glpicsrftokens'][$requestToken])
+            && ($_SESSION['glpicsrftokens'][$requestToken] < time())
+        ) {
+            $link = $_SERVER['HTTP_REFERER'] ?? '';
+            $message = __("Your session has expired.") . "<br>";
+            $message .= sprintf(__("<a href='%s'>Click here</a> to go back to the previous page."), $link);
+        }
+
         if (
             GLPI_USE_CSRF_CHECK
             && (!Session::validateCSRF($data))
@@ -1601,10 +1612,10 @@ class Session
             // Output JSON if requested by client
             if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
                 http_response_code(403);
-                die(json_encode(["message" => __("The action you have requested is not allowed.")]));
+                die(json_encode(["message" => $message]));
             }
 
-            Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
+            Html::displayErrorAndDie($message, true);
         }
     }
 
