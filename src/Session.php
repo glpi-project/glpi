@@ -1597,9 +1597,7 @@ class Session
             isset($_SESSION['glpicsrftokens'][$requestToken])
             && ($_SESSION['glpicsrftokens'][$requestToken] < time())
         ) {
-            $link = $_SERVER['HTTP_REFERER'] ?? '';
             $message = __("Your session has expired.") . "<br>";
-            $message .= sprintf(__("<a href='%s'>Click here</a> to go back to the previous page."), $link);
         }
 
         if (
