@@ -1315,7 +1315,7 @@ final class AssetController extends AbstractController
     )]
     public function searchSoftwareVersions(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Socket'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('SoftwareVersion'), $request->getParameters());
     }
 
     #[Route(path: '/SoftwareVersion/{id}', methods: ['GET'], requirements: [
