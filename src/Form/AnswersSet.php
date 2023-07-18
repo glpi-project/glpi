@@ -44,7 +44,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class AnswersSet extends CommonDBChild
 {
-    public static $itemtype = 'Glpi\Form\Form';
+    public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
 
     public static function getTypeName($nb = 0)

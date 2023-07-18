@@ -42,6 +42,6 @@ use CommonDBChild;
  */
 class Question extends CommonDBChild
 {
-    public static $itemtype = 'Glpi\Form\Section';
+    public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
 }
