@@ -242,6 +242,4 @@ class RuleBuilder
     {
         return $this->actions;
     }
-
-
 }
