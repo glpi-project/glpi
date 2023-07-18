@@ -67,11 +67,12 @@ final class ProjectController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'enum' => [1, 2, 3, 4, 5, 6],
                     ],
-                    'entity' => self::getDropdownTypeSchema(\Entity::class),
+                    'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity'),
                     'tasks' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'Task',
                             'x-join' => [
                                 'table' => 'glpi_projecttasks',
                                 'fkey' => 'id',
@@ -103,8 +104,8 @@ final class ProjectController extends AbstractController
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
                     'content' => ['type' => Doc\Schema::TYPE_STRING],
-                    'project' => self::getDropdownTypeSchema(Project::class),
-                    'parent_task' => self::getDropdownTypeSchema(ProjectTask::class),
+                    'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
+                    'parent_task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'Task'),
                 ]
             ],
         ];

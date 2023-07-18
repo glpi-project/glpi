@@ -78,7 +78,7 @@ final class OpenAPIGenerator
 
     private function getPublicVendorExtensions(): array
     {
-        return ['x-writeonly', 'x-readonly'];
+        return ['x-writeonly', 'x-readonly', 'x-full-schema'];
     }
 
     private function cleanVendorExtensions(array $schema, ?string $parent_key = null): array
@@ -214,6 +214,8 @@ EOT;
     {
         global $CFG_GLPI;
 
+        $component_schemas = self::getComponentSchemas();
+        ksort($component_schemas);
         $schema = [
             'openapi' => self::OPENAPI_VERSION,
             'info' => $this->getInfo(),
@@ -225,7 +227,7 @@ EOT;
             ],
             'components' => [
                 'securitySchemes' => $this->getSecuritySchemeComponents(),
-                'schemas' => self::getComponentSchemas(),
+                'schemas' => $component_schemas,
             ]
         ];
 

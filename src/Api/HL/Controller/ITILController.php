@@ -80,6 +80,54 @@ final class ITILController extends AbstractController
     {
         $schemas = [];
 
+        $schemas['ITILCategory'] = [
+            'x-itemtype' => 'ITILCategory',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'completename' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'parent' => self::getDropdownTypeSchema(class: \ITILCategory::class, full_schema: 'ITILCategory'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ]
+        ];
+
+        $common_itiltemplate_properties = [
+            'id' => [
+                'type' => Doc\Schema::TYPE_INTEGER,
+                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                'x-readonly' => true,
+            ],
+            'name' => ['type' => Doc\Schema::TYPE_STRING],
+            'completename' => ['type' => Doc\Schema::TYPE_STRING],
+            'comment' => ['type' => Doc\Schema::TYPE_STRING],
+            'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity'),
+            'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+        ];
+        $schemas['TicketTemplate'] = [
+            'x-itemtype' => 'TicketTemplate',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => $common_itiltemplate_properties
+        ];
+        $schemas['ChangeTemplate'] = [
+            'x-itemtype' => 'ChangeTemplate',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => $common_itiltemplate_properties
+        ];
+        $schemas['ProblemTemplate'] = [
+            'x-itemtype' => 'ProblemTemplate',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => $common_itiltemplate_properties
+        ];
+
         $base_schema = [
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -91,8 +139,8 @@ final class ITILController extends AbstractController
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'category' => self::getDropdownTypeSchema(\ITILCategory::class),
-                'location' => self::getDropdownTypeSchema(\Location::class),
+                'category' => self::getDropdownTypeSchema(class: \ITILCategory::class, full_schema: 'ITILCategory'),
+                'location' => self::getDropdownTypeSchema(class: \Location::class, full_schema: 'Location'),
                 'urgency' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'enum' => [1, 2, 3, 4, 5]
@@ -150,12 +198,13 @@ final class ITILController extends AbstractController
                     ],
                 ]
             ];
-            $schemas[$itil_type]['properties']['entity'] = self::getDropdownTypeSchema(Entity::class);
+            $schemas[$itil_type]['properties']['entity'] = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
             // Add completename field
             $schemas[$itil_type]['properties']['entity']['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
 
             $schemas[$itil_type]['properties']['team'] = [
                 'type' => Doc\Schema::TYPE_ARRAY,
+                'x-full-schema' => 'TeamMember',
                 'items' => [
                     'x-mapped-from' => 'id',
                     'x-mapper' => function ($v) use ($itil_type) {
@@ -234,8 +283,8 @@ final class ITILController extends AbstractController
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'requester' => self::getDropdownTypeSchema(User::class),
-                'approver' => self::getDropdownTypeSchema(User::class, 'users_id_validate'),
+                'requester' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_validate', full_schema: 'User'),
                 'requested_approver_type' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-field' => 'itemtype_target',
@@ -300,10 +349,10 @@ final class ITILController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(Entity::class),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'template' => self::getDropdownTypeSchema(TicketTemplate::class),
+                'template' => self::getDropdownTypeSchema(class: TicketTemplate::class, full_schema: 'TicketTemplate'),
                 'date_begin' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
@@ -321,7 +370,7 @@ final class ITILController extends AbstractController
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-field' => 'next_creation_date',
                 ],
-                'calendar' => self::getDropdownTypeSchema(Calendar::class),
+                'calendar' => self::getDropdownTypeSchema(class: Calendar::class, full_schema: 'Calendar'),
                 'ticket_per_item' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             ]
         ];
@@ -338,10 +387,10 @@ final class ITILController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(Entity::class),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'template' => self::getDropdownTypeSchema(ChangeTemplate::class),
+                'template' => self::getDropdownTypeSchema(class: ChangeTemplate::class, full_schema: 'ChangeTemplate'),
                 'date_begin' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
@@ -359,14 +408,59 @@ final class ITILController extends AbstractController
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-field' => 'next_creation_date',
                 ],
-                'calendar' => self::getDropdownTypeSchema(Calendar::class),
+                'calendar' => self::getDropdownTypeSchema(class: Calendar::class, full_schema: 'Calendar'),
+            ]
+        ];
+
+        $schemas['ExternalEventTemplate'] = [
+            'x-itemtype' => \PlanningExternalEventTemplate::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'description' => \PlanningExternalEventTemplate::getTypeName(1),
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'text' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'before_time' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'rrule' => ['type' => Doc\Schema::TYPE_STRING],
+                'category' => self::getDropdownTypeSchema(class: PlanningEventCategory::class, full_schema: 'EventCategory'),
+                'state' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [\Planning::INFO, \Planning::TODO, \Planning::DONE]
+                ],
+                'is_background' => ['x-field' => 'background', 'type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ]
+        ];
+
+        $schemas['EventCategory'] = [
+            'x-itemtype' => \PlanningEventCategory::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'description' => \PlanningEventCategory::getTypeName(1),
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'color' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ]
         ];
 
         $schemas['ExternalEvent'] = [
             'x-itemtype' => \PlanningExternalEvent::class,
             'type' => Doc\Schema::TYPE_OBJECT,
-            'description' => 'External event',
+            'description' => \PlanningExternalEvent::getTypeName(1),
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -376,12 +470,12 @@ final class ITILController extends AbstractController
                 'uuid' => ['type' => Doc\Schema::TYPE_STRING, 'pattern' => Doc\Schema::PATTERN_UUIDV4],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'text' => ['type' => Doc\Schema::TYPE_STRING],
-                'template' => self::getDropdownTypeSchema(PlanningExternalEventTemplate::class),
-                'category' => self::getDropdownTypeSchema(PlanningEventCategory::class),
-                'entity' => self::getDropdownTypeSchema(Entity::class),
+                'template' => self::getDropdownTypeSchema(class: PlanningExternalEventTemplate::class, full_schema: 'ExternalEventTemplate'),
+                'category' => self::getDropdownTypeSchema(class: PlanningEventCategory::class, full_schema: 'EventCategory'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'user' => self::getDropdownTypeSchema(User::class),
-                'group' => self::getDropdownTypeSchema(Group::class),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
                 'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_begin' => [
                     'type' => Doc\Schema::TYPE_STRING,
