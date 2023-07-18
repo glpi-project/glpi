@@ -223,16 +223,13 @@ $(document).ready(function() {
    });
 
    $('.default-filter').change(function(event) {
-      var url = window.location.href;
-      url = url.replace(/&?nodefault/g, '');
+      const search_params = new URLSearchParams(window.location.search);
       if (!$(this).is(":checked")) {
-         if (url.indexOf('?') == -1)
-            url += '?nodefault';
-         else
-            url += '&nodefault';
+          search_params.set('nodefault', '1');
+      } else {
+          search_params.delete('nodefault');
       }
-      url = url.replace(/\?$/g, '');
-      window.location.replace(url);
+      window.location.replace('?' + search_params.toString());
    });
 
    // Callbacks for copy success/failure

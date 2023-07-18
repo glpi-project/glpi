@@ -47,40 +47,44 @@ $defaultfilter = new DefaultFilter();
 if (isset($_POST["add"])) {
     $defaultfilter->check(-1, CREATE, $_POST);
 
-    $newID = $defaultfilter->add($_POST);
-    Event::log(
-        $newID,
-        "defaultfilters",
-        4,
-        "defaultfilter",
-        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
-    );
-    Html::redirect($_SERVER['PHP_SELF'] . "?id=$newID");
+    if ($newID = $defaultfilter->add($_POST)) {
+        Event::log(
+            $newID,
+            "defaultfilters",
+            4,
+            "defaultfilter",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        Html::redirect($_SERVER['PHP_SELF'] . "?id=$newID");
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
     $defaultfilter->check($_POST["id"], PURGE);
-    $defaultfilter->delete($_POST, 1);
 
-    Event::log(
-        $_POST["id"],
-        "defaultfilters",
-        4,
-        "defaultfilter",
-        //TRANS: %s is the user login
-        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
-    );
+    if ($defaultfilter->delete($_POST, 1)) {
+        Event::log(
+            $_POST["id"],
+            "defaultfilters",
+            4,
+            "defaultfilter",
+            //TRANS: %s is the user login
+            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        );
+    }
     $defaultfilter->redirectToList();
 } else if (isset($_POST["update"])) {
     $defaultfilter->check($_POST["id"], UPDATE);
 
-    $defaultfilter->update($_POST);
-    Event::log(
-        $_POST["id"],
-        "defaultfilters",
-        4,
-        "defaultfilter",
-        //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
-    );
+    if ($defaultfilter->update($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "defaultfilters",
+            4,
+            "defaultfilter",
+            //TRANS: %s is the user login
+            sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        );
+    }
     Html::back();
 } else {
     $menus = ["config", "commondropdown", "DefaultFilter"];

@@ -113,7 +113,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
         ];
     }
 
-    public static function getSearchCriteria($itemtype)
+    public static function getSearchCriteria(string $itemtype): ?array
     {
         global $DB;
 
@@ -160,7 +160,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
                 ]
             ];
         }
-        return [];
+        return null;
     }
 
     private function prepareInput($input)
