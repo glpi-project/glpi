@@ -487,7 +487,7 @@ class AuthLDAP extends CommonDBTM
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td><label for='use_bind'>";
-            echo __('Use simple bind') . "</label>&nbsp;";
+            echo __('Use bind') . "</label>&nbsp;";
             Html::showToolTip(__("Indicates whether a simple bind operation should be used during connection to LDAP server. Disabling this behaviour can be required when LDAPS bind is used."));
             echo "</td>";
             echo "<td colspan='3'>";
