@@ -6469,6 +6469,11 @@ JAVASCRIPT;
                 }
             }
         }
+
+        // Add global validation
+        if (!$this->isNewItem() && !isset($input['global_validation'])) {
+            $input['global_validation'] = $this->fields['global_validation'];
+        }
     }
 
     /**

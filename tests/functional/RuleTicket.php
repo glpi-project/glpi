@@ -39,16 +39,22 @@ use CommonITILValidation;
 use Contract;
 use ContractType;
 use DbTestCase;
+use Entity;
 use Glpi\Toolbox\Sanitizer;
 use Group_User;
+use ITILCategory;
 use ITILFollowup;
 use ITILFollowupTemplate;
+use Rule;
 use RuleAction;
+use RuleBuilder;
 use RuleCriteria;
 use TaskTemplate;
+use Ticket;
 use Ticket_Contract;
 use TicketTask;
 use Toolbox;
+use User;
 
 /* Test for inc/ruleticket.class.php */
 
@@ -3323,5 +3329,64 @@ class RuleTicket extends DbTestCase
         $ticket = $this->createItem('Ticket', $input);
         $ticket->getFromDB($ticket->getID());
         $this->integer($ticket->fields['locations_id'])->isEqualTo($expected_location_after_creation);
+    }
+
+    /**
+     * Ensure a rule using the "global_validation" criteria work as expected on
+     * ticket updates
+     *
+     * @return void
+     */
+    public function testGlobalValidationCriteria(): void
+    {
+        $this->login(TU_USER, TU_PASS);
+
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $urgency_if_rule_triggered = 5;
+
+        // Test category that will be used as a secondary rule criteria
+        $category1 = $this->createItem(ITILCategory::class, [
+            'name'         => 'Test category 1',
+            'entities_id'  => $entity,
+            'is_recursive' => true,
+        ]);
+        $category2 = $this->createItem(ITILCategory::class, [
+            'name'         => 'Test category 2',
+            'entities_id'  => $entity,
+            'is_recursive' => true,
+        ]);
+
+        $builder = new RuleBuilder('Test global_validation criteria rule');
+        $builder
+            ->addCriteria('global_validation', Rule::PATTERN_IS, CommonITILValidation::WAITING)
+            ->addCriteria('itilcategories_id', Rule::PATTERN_IS, $category1->getID())
+            ->addAction('assign', 'urgency', $urgency_if_rule_triggered);
+        $this->createRule($builder);
+
+        // Create ticket with validation request
+        $ticket = $this->createItem(Ticket::class, [
+            'name'              => 'Test ticket',
+            'entities_id'       => $entity,
+            'content'           => 'Test ticket content',
+            'validatortype'     => 'user',
+            'users_id_validate' => [getItemByTypeName(User::class, 'glpi', true)],
+            '_add_validation'   => false,
+        ], ['validatortype', 'users_id_validate']);
+        $this->integer($ticket->fields['urgency'])->isNotEqualTo($urgency_if_rule_triggered);
+        $this->integer($ticket->fields['global_validation'])->isEqualTo(CommonITILValidation::WAITING);
+
+        // Change category without triggering the rule
+        $this->updateItem(Ticket::class, $ticket->getID(), [
+            'itilcategories_id' => $category2->getID()
+        ]);
+        $ticket->getFromDB($ticket->getID());
+        $this->integer($ticket->fields['urgency'])->isNotEqualTo($urgency_if_rule_triggered);
+
+        // Change category and trigger the rule
+        $this->updateItem(Ticket::class, $ticket->getID(), [
+            'itilcategories_id' => $category1->getID()
+        ]);
+        $ticket->getFromDB($ticket->getID());
+        $this->integer($ticket->fields['urgency'])->isEqualTo($urgency_if_rule_triggered);
     }
 }
