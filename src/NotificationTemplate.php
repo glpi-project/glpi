@@ -34,6 +34,12 @@
  */
 
 use Glpi\RichText\RichText;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
+use Twig\Extension\SandboxExtension;
+use Twig\Extra\String\StringExtension;
+use Twig\Sandbox\SecurityPolicy;
+use Twig\Source;
 
 /**
  * NotificationTemplate Class
@@ -423,6 +429,46 @@ class NotificationTemplate extends CommonDBTM
        //Now process IF statements
         $string = self::processIf($string, $cleandata);
         $string = strtr($string, $cleandata);
+
+        $twig = new Environment(new ArrayLoader(['template' => $string]));
+        $twig->addExtension(new StringExtension());
+        $twig->addExtension(
+            new SandboxExtension(
+                new SecurityPolicy(
+                    [
+                        'if',
+                        'for',
+                    ],
+                    [
+                        'capitalize',
+                        'date',
+                        'default',
+                        'escape',
+                        'first',
+                        'last',
+                        'length',
+                        'lower',
+                        'number_format',
+                        'replace',
+                        'reverse',
+                        'round',
+                        'slug',
+                        'title',
+                        'upper'
+                    ],
+                    [],
+                    [],
+                    []
+                ),
+                true
+            )
+        );
+
+        try {
+            $string = $twig->render('template', []);
+        } catch (\Twig\Error\Error $e) {
+            // ignore error
+        }
 
         return $string;
     }
