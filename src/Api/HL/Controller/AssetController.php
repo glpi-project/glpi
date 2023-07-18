@@ -1316,7 +1316,7 @@ final class AssetController extends AbstractController
     public function searchSoftwareVersions(Request $request): Response
     {
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';software.id=='.$request->getAttribute('software_id');
+        $filters .= ';software.id==' . $request->getAttribute('software_id');
         $request->setParameter('filter', $filters);
         return Search::searchBySchema($this->getKnownSchema('SoftwareVersion'), $request->getParameters());
     }
@@ -1330,7 +1330,7 @@ final class AssetController extends AbstractController
     public function getSoftwareVersion(Request $request): Response
     {
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';software.id=='.$request->getAttribute('software_id');
+        $filters .= ';software.id==' . $request->getAttribute('software_id');
         $request->setParameter('filter', $filters);
         return Search::getOneBySchema($this->getKnownSchema('SoftwareVersion'), $request->getAttributes(), $request->getParameters());
     }
