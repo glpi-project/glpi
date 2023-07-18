@@ -608,7 +608,7 @@ final class Search
         if (isset($schema['x-subtypes'])) {
             // For this case, we need to filter out the schemas that the user doesn't have read rights on
             $schemas = $schema['x-subtypes'];
-            $schemas = array_filter($schemas, static function ($k, $v) {
+            $schemas = array_filter($schemas, static function ($v) {
                 $itemtype = $v['itemtype'];
                 if (class_exists($itemtype) && is_subclass_of($itemtype, CommonDBTM::class)) {
                     return $itemtype::canView();
@@ -800,7 +800,7 @@ final class Search
         /** @var CommonDBTM $item */
         $item = new $itemtype();
         $force = $request_params['force'] ?? false;
-        $input = [(int) $items_id];
+        $input = ['id' => (int) $items_id];
         if (!$item->can($item->getID(), $force ? PURGE : DELETE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
