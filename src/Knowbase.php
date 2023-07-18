@@ -159,9 +159,27 @@ class Knowbase extends CommonGLPI
 
         $JS = <<<JAVASCRIPT
          $(function() {
+            var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
+            $('#items_list$rand').html(loadingindicator); // loadingindicator on doc ready
+            var loadNode = function(cat_id) {
+               $('#items_list$rand').html(loadingindicator);
+               $('#items_list$rand').load('$ajax_url', {
+                  'action': 'getItemslist',
+                  'cat_id': cat_id,
+                  'start': $start
+               });
+            };
+
             $('#tree_category$rand').fancytree({
                // load plugins
-               extensions: ['filter', 'glyph'],
+               extensions: ['filter', 'glyph', 'persist'],
+
+               persist: {
+                  cookiePrefix: 'fancytree-kb-',
+                  expandLazy: true,
+                  overrideSource: true,
+                  store: "auto"
+               },
 
                // Scroll node into visible area, when focused by keyboard
                autoScroll: true,
@@ -192,16 +210,6 @@ class Knowbase extends CommonGLPI
 
             });
 
-            var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
-            $('#items_list$rand').html(loadingindicator); // loadingindicator on doc ready
-            var loadNode = function(cat_id) {
-               $('#items_list$rand').html(loadingindicator);
-               $('#items_list$rand').load('$ajax_url', {
-                  'action': 'getItemslist',
-                  'cat_id': cat_id,
-                  'start': $start
-               });
-            };
             loadNode($cat_id);
             $.ui.fancytree.getTree("#tree_category$rand").activateKey($cat_id);
 
