@@ -36,7 +36,7 @@
         'id': '%id%',
         'type': 'text',
         'input_addclass': '',
-        'more_atributes': '',
+        'additional_attributes': {},
         'readonly': false,
         'disabled': false,
         'multiple': false,
@@ -58,7 +58,9 @@
         <input type="{{ options.type }}" id="{{ options.id }}"
                class="form-control {{ options.input_addclass }}"
                name="{{ name }}" value="{{ value }}"
-               {{ options.more_atributes }}
+            {% for attr, value in options.additional_attributes %}
+               {{ attr }}="{{ value }}"
+            {% endfor %}
                {{ options.maxlength ? 'maxlength=' ~ options.maxlength : '' }}
                {{ options.readonly ? 'readonly' : '' }}
                {{ options.disabled ? 'disabled' : '' }}
@@ -212,7 +214,7 @@
         {{ _self.input(name, value, options|merge({
             'type': 'text',
             'id': options.id ~ '_input',
-            'more_atributes': 'data-input',
+            'additional_attributes': { 'data-input': '' },
             'input_addclass': options.input_addclass ~ final_expiration_class
         })) }}
 
