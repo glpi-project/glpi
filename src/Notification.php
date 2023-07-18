@@ -261,7 +261,7 @@ class Notification extends CommonDBTM implements FilterableInterface
         $attach_documents_values = [
             NotificationMailingSetting::INHERIT           => __('Use global config'),
             NotificationMailingSetting::NO_DOCUMENT       => __('No documents'),
-            NotificationMailingSetting::ALL_TICKET        => __('All ticket documents'),
+            NotificationMailingSetting::ALL_DOCUMENTS     => __('All documents'),
             NotificationMailingSetting::ONLY_TRIGGERED    => __('Only documents related to the triggering event'),
         ];
 

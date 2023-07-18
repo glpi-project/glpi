@@ -183,9 +183,8 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 $documents_ids = [];
                 $documents_to_attach = [];
-                $documents_data = json_decode($current->fields['documents_data'], true);
-                $itemtype = $documents_data['itemtype'] ?? '';
-                $items_id = $documents_data['items_id'] ?? 0;
+                $itemtype = $current->fields['itemtype_of_documents'] ?? $current->fields['itemtype'];
+                $items_id = $current->fields['items_id_of_documents'] ?? $current->fields['items_id'];
                 if ($is_html || $items_id > 0) {
                     // Retieve document list if mail is in HTML format (for inline images)
                     // or if documents are attached to mail.

@@ -291,4 +291,5 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
 
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 $migration->addField("glpi_notifications", "attach_documents", "tinyint NOT NULL DEFAULT '-2'");
-$migration->addField("glpi_queuednotifications", "documents_data", "varchar(255) DEFAULT NULL");
+$migration->addField("glpi_queuednotifications", "itemtype_of_documents", "varchar(255) DEFAULT NULL");
+$migration->addField("glpi_queuednotifications", "items_id_of_documents", "fkey");

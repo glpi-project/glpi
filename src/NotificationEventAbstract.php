@@ -141,7 +141,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     $send_data['mode']                      = $data['mode'];
                                     $send_data['event']                     = $event;
 
-                                    $send_data['documents_data'] = '';
                                     foreach ($options as $k => $v) {
                                         $itemtype = getItemtypeForForeignKeyField($k);
                                         if (class_exists($itemtype)) {
@@ -149,24 +148,13 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                                 $data['attach_documents'] = $CFG_GLPI['attach_ticket_documents_to_mail'];
                                             }
                                             switch ($data['attach_documents']) {
-                                                case NotificationMailingSetting::NO_DOCUMENT:
-                                                    $send_data['documents_data'] = '';
-                                                    break;
-                                                case NotificationMailingSetting::ALL_TICKET:
-                                                    $send_data['documents_data'] = json_encode(
-                                                        [
-                                                            'itemtype' => $send_data['_itemtype'],
-                                                            'items_id' => $send_data['_items_id']
-                                                        ]
-                                                    );
+                                                case NotificationMailingSetting::ALL_DOCUMENTS:
+                                                    $send_data['itemtype_of_documents'] = $send_data['_itemtype'];
+                                                    $send_data['items_id_of_documents'] = $send_data['_items_id'];
                                                     break;
                                                 case NotificationMailingSetting::ONLY_TRIGGERED:
-                                                    $send_data['documents_data'] = json_encode(
-                                                        [
-                                                            'itemtype' => $itemtype,
-                                                            'items_id' => $v
-                                                        ]
-                                                    );
+                                                    $send_data['itemtype_of_documents'] = $itemtype;
+                                                    $send_data['items_id_of_documents'] = $v;
                                                     break;
                                             }
                                         }
