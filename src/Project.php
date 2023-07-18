@@ -1956,9 +1956,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false)
     {
+        $result = [];
+
         if ($column_field === null || $column_field == 'projectstates_id') {
             global $DB;
-            $columns = ['projectstates_id' => []];
+
             $projectstate = new ProjectState();
             $restrict = [];
             if (!empty($column_ids) && !$get_default) {
@@ -1996,7 +1998,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
             if (count($iterator)) {
                 foreach ($iterator as $projectstate) {
-                    $columns['projectstates_id'][$projectstate['id']] = [
+                    $result[$projectstate['id']] = [
                         'name'            => $projectstate['transname'] ?? $projectstate['name'],
                         'id'              => $projectstate['id'],
                         'header_color'    => $projectstate['color'],
@@ -2005,13 +2007,13 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 }
             }
 
-            //sort by name ASC
-            $key_name = array_column($columns['projectstates_id'], 'name');
-            array_multisort($key_name, SORT_ASC, $columns['projectstates_id']);
-            return $columns['projectstates_id'];
-        } else {
-            return [];
+            // sort by name ASC
+            usort($result, function($a, $b) {
+                return strnatcasecmp($a['name'], $b['name']);
+            });
         }
+
+        return $result;
     }
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
