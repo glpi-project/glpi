@@ -1592,9 +1592,9 @@ class Session
     {
 
         $message = __("The action you have requested is not allowed.");
-        $requestToken = $data['_glpi_csrf_token'];
         if (
-            isset($_SESSION['glpicsrftokens'][$requestToken])
+            ($requestToken = $data['_glpi_csrf_token'] ?? null) !== null
+            && isset($_SESSION['glpicsrftokens'][$requestToken])
             && ($_SESSION['glpicsrftokens'][$requestToken] < time())
         ) {
             $message = __("Your session has expired.");
