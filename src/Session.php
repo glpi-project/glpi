@@ -1597,7 +1597,7 @@ class Session
             isset($_SESSION['glpicsrftokens'][$requestToken])
             && ($_SESSION['glpicsrftokens'][$requestToken] < time())
         ) {
-            $message = __("Your session has expired.") . "<br>";
+            $message = __("Your session has expired.");
         }
 
         if (
