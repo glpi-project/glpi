@@ -1956,25 +1956,64 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false)
     {
+        $result = [];
+
         if ($column_field === null || $column_field == 'projectstates_id') {
-            $columns = ['projectstates_id' => []];
+            global $DB;
+
             $projectstate = new ProjectState();
             $restrict = [];
             if (!empty($column_ids) && !$get_default) {
                 $restrict = ['id' => $column_ids];
             }
-            $allstates = $projectstate->find($restrict, ['is_finished ASC', 'id']);
-            foreach ($allstates as $state) {
-                $columns['projectstates_id'][$state['id']] = [
-                    'name'            => $state['name'],
-                    'header_color'    => $state['color'],
-                    'header_fg_color' => Toolbox::getFgColor($state['color'], 50),
+
+            $addselect = [];
+            $ljoin = [];
+            if (Session::haveTranslations(ProjectState::getType(), 'name')) {
+                $addselect[] = "namet2.value AS transname";
+                $ljoin['glpi_dropdowntranslations AS namet2'] = [
+                    'ON' => [
+                        'namet2' => 'items_id',
+                        ProjectState::getTable()   => 'id', [
+                            'AND' => [
+                                'namet2.itemtype' => ProjectState::getType(),
+                                'namet2.language' => $_SESSION['glpilanguage'],
+                                'namet2.field'    => 'name'
+                            ]
+                        ]
+                    ]
                 ];
             }
-            return $columns['projectstates_id'];
-        } else {
-            return [];
+
+            $criteria = [
+                'SELECT'   => array_merge([ProjectState::getTable() . ".*"], $addselect),
+                'DISTINCT' => true,
+                'FROM'     => ProjectState::getTable(),
+                'WHERE'    => $restrict
+            ];
+            if (count($ljoin)) {
+                $criteria['LEFT JOIN'] = $ljoin;
+            }
+            $iterator = $DB->request($criteria);
+
+            if (count($iterator)) {
+                foreach ($iterator as $projectstate) {
+                    $result[$projectstate['id']] = [
+                        'name'            => $projectstate['transname'] ?? $projectstate['name'],
+                        'id'              => $projectstate['id'],
+                        'header_color'    => $projectstate['color'],
+                        'header_fg_color' => Toolbox::getFgColor($projectstate['color'], 50),
+                    ];
+                }
+            }
+
+            // sort by name ASC
+            usort($result, function ($a, $b) {
+                return strnatcasecmp($a['name'], $b['name']);
+            });
         }
+
+        return $result;
     }
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
