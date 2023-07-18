@@ -75,15 +75,25 @@ class CommonITILValidationCron extends CommonDBTM
                 ChangeValidation::class,
             ];
 
-            foreach ($targets as $itemtype) {
-                $validation = new $itemtype();
+            foreach ($targets as $target) {
+                $validation = new $target();
+                $itemtype = $validation->getItilObjectItemType($target);
                 foreach (Entity::getEntitiesToNotify('approval_reminder_repeat_interval') as $entity => $repeat) {
                     $iterator = $DB->request([
-                        'FROM'   => $itemtype::getTable(),
+                        'SELECT' => 'validation.*',
+                        'FROM'   => $validation->getTable() . ' AS validation',
+                        'JOIN'   => [
+                            $itemtype::getTable() => [
+                                'ON' => [
+                                    $itemtype::getTable() => 'id',
+                                    'validation' => $itemtype::getForeignKeyField(),
+                                ]
+                            ]
+                        ],
                         'WHERE'  => [
-                            'status'          => CommonITILValidation::WAITING,
-                            'entities_id'     => $entity,
-                            'submission_date' => ['<',
+                            'validation.status'          => CommonITILValidation::WAITING,
+                            'validation.entities_id'     => $entity,
+                            'validation.submission_date' => ['<',
                                 QueryFunction::dateSub(
                                     date: QueryFunction::now(),
                                     interval: $repeat,
@@ -91,9 +101,9 @@ class CommonITILValidationCron extends CommonDBTM
                                 )
                             ],
                             'OR'              => [
-                                ['last_reminder_date' => null],
+                                ['validation.last_reminder_date' => null],
                                 [
-                                    'last_reminder_date' => ['<',
+                                    'validation.last_reminder_date' => ['<',
                                         QueryFunction::dateSub(
                                             date: QueryFunction::now(),
                                             interval: $repeat,
@@ -102,6 +112,7 @@ class CommonITILValidationCron extends CommonDBTM
                                     ]
                                 ],
                             ],
+                            $itemtype::getOpenCriteria(),
                         ]
                     ]);
 
