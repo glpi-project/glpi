@@ -81,7 +81,7 @@ class CommonITILValidationCron extends CommonDBTM
                 foreach (Entity::getEntitiesToNotify('approval_reminder_repeat_interval') as $entity => $repeat) {
                     $iterator = $DB->request([
                         'SELECT' => 'validation.*',
-                        'FROM'   => new QueryExpression($validation->getTable() . " validation"),
+                        'FROM'   => $validation->getTable() . ' AS validation',
                         'JOIN'   => [
                             $itemtype::getTable() => [
                                 'ON' => [
