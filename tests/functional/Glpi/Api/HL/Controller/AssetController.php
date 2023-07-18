@@ -273,13 +273,13 @@ class AssetController extends \HLAPITestCase
         $request = new Request('POST', '/Assets/Software/' . $software_id . '/Version');
         $request->setParameter('name', '1.0');
         $new_item_location = null;
-        $this->api->call($request, function ($call) use (&$new_item_location) {
+        $this->api->call($request, function ($call) use ($software_id, &$new_item_location) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
-                ->headers(function ($headers) use (&$new_item_location) {
+                ->headers(function ($headers) use ($software_id, &$new_item_location) {
                     $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith("/Assets/SoftwareVersion/");
+                    $this->string($headers['Location'])->startWith("/Assets/Software/$software_id/Version/");
                     $new_item_location = $headers['Location'];
                 });
         });
