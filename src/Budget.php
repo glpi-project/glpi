@@ -678,6 +678,7 @@ class Budget extends CommonDropdown
         );
 
         $total               = 0;
+        $subtotal            = 0;
         $totalbytypes        = [];
 
         $itemtypes           = [];
@@ -720,7 +721,7 @@ class Budget extends CommonDropdown
                         ],
                         'WHERE'        => [
                             'glpi_contractcosts.budgets_id'     => $budgets_id
-                        ] + getEntitiesRestrictCriteria($table, 'entities_id'),
+                        ],
                         'GROUPBY'      => [
                             $table . '.entities_id'
                         ]
@@ -745,7 +746,7 @@ class Budget extends CommonDropdown
                         ],
                         'WHERE'        => [
                             'glpi_projectcosts.budgets_id'  => $budgets_id
-                        ] + getEntitiesRestrictCriteria($table, 'entities_id'),
+                        ],
                         'GROUPBY'      => [
                             $item->getTable() . '.entities_id'
                         ]
@@ -777,7 +778,7 @@ class Budget extends CommonDropdown
                         ],
                         'WHERE'        => [
                             $costtable . '.budgets_id' => $budgets_id
-                        ] + getEntitiesRestrictCriteria($table, 'entities_id'),
+                        ],
                         'GROUPBY'      => [
                             $item->getTable() . '.entities_id'
                         ]
@@ -802,7 +803,7 @@ class Budget extends CommonDropdown
                         'WHERE'        => [
                             'glpi_infocoms.itemtype'            => $itemtype,
                             'glpi_infocoms.budgets_id'          => $budgets_id
-                        ] + getEntitiesRestrictCriteria($table, 'entities_id'),
+                        ],
                         'GROUPBY'      => [
                             $table . '.entities_id'
                         ]
@@ -820,16 +821,19 @@ class Budget extends CommonDropdown
                 $totalbytypes[$itemtype] = 0;
                //Store, for each entity, the budget spent
                 foreach ($iterator as $values) {
-                    if (!isset($entities_values[$values['entities_id']])) {
-                        $entities_values[$values['entities_id']] = 0;
+                    if (in_array($values['entities_id'], $_SESSION['glpiactiveentities'])) {
+                        if (!isset($entities_values[$values['entities_id']])) {
+                            $entities_values[$values['entities_id']] = 0;
+                        }
+                        if (!isset($entitiestype_values[$values['entities_id']][$itemtype])) {
+                            $entitiestype_values[$values['entities_id']][$itemtype] = 0;
+                        }
+                        $entities_values[$values['entities_id']]                 += $values['sumvalue'];
+                        $entitiestype_values[$values['entities_id']][$itemtype]  += $values['sumvalue'];
+                        $subtotal                                                += $values['sumvalue'];
+                        $totalbytypes[$itemtype]                                 += $values['sumvalue'];
                     }
-                    if (!isset($entitiestype_values[$values['entities_id']][$itemtype])) {
-                        $entitiestype_values[$values['entities_id']][$itemtype] = 0;
-                    }
-                    $entities_values[$values['entities_id']]                 += $values['sumvalue'];
-                    $entitiestype_values[$values['entities_id']][$itemtype]  += $values['sumvalue'];
-                    $total                                                   += $values['sumvalue'];
-                    $totalbytypes[$itemtype]                                 += $values['sumvalue'];
+                    $total += $values['sumvalue'];
                 }
             }
         }
@@ -839,7 +843,7 @@ class Budget extends CommonDropdown
 
         $colspan = count($found_types) + 2;
         echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='$colspan'>" . __('Total spent on the budget') . "</th></tr>";
+        echo "<tr class='noHover'><th colspan='$colspan'>" . __('Total spent on the budget of active entities') . "</th></tr>";
         echo "<tr><th>" . Entity::getTypeName(1) . "</th>";
         if (count($found_types)) {
             foreach ($found_types as $type => $typename) {
@@ -880,15 +884,15 @@ class Budget extends CommonDropdown
                 echo Html::formatNumber($totalbytypes[$type]);
                 echo "</td>";
             }
-            echo "<td class='numeric b'>" . Html::formatNumber($total) . "</td>";
+            echo "<td class='numeric b'>" . Html::formatNumber($subtotal) . "</td>";
             echo "</tr>";
         }
         echo "<tr class='tab_bg_1 noHover'><th colspan='$colspan'><br></th></tr>";
         echo "<tr class='tab_bg_1 noHover'>";
-        echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total spent on the budget') . "</td>";
+        echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total spent on the budget (all entities)') . "</td>";
         echo "<td class='numeric b'>" . Html::formatNumber($total) . "</td></tr>";
         echo "<tr class='tab_bg_1 noHover'>";
-        echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total remaining on the budget') .
+        echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total remaining on the budget (all entities)') .
             "</td>";
         echo "<td class='numeric b'>" . Html::formatNumber($budget->fields['value'] - $total) .
             "</td></tr>";
