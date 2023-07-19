@@ -341,8 +341,8 @@ class Document extends CommonDBTM
                 'items_id'     => $this->input["items_id"]
             ]);
 
-            if ($this->input["itemtype"] == 'Ticket') {
-                $main_item = new Ticket();
+            if (is_a($this->input["itemtype"], CommonITILObject::class, true)) {
+                $main_item = new $this->input["itemtype"]();
                 $main_item->getFromDB($this->input["items_id"]);
                 NotificationEvent::raiseEvent('add_document', $main_item);
             }
