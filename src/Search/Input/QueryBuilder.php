@@ -343,6 +343,11 @@ final class QueryBuilder implements SearchInputInterface
 
         $num         = (int) $request['num'];
         $p           = $request['p'];
+
+        if ($p['criteria'][$num]['_hidden'] ?? false) {
+            return;
+        }
+
         $options     = \Search::getCleanedOptions($request["itemtype"]);
         $randrow     = mt_rand();
         $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
@@ -672,6 +677,7 @@ final class QueryBuilder implements SearchInputInterface
             $params['defaultfilter'] = $defaultfilter;
             $can_disablefilter = \Session::haveRightsOr('search_config', [\DisplayPreference::PERSONAL, \DisplayPreference::GENERAL]);
             if (!isset($params['nodefault']) || !$can_disablefilter) {
+                $defaultfilter['search_criteria']['_hidden'] = true;
                 $params['criteria'][] = $defaultfilter['search_criteria'];
             }
         }
