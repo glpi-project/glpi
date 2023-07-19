@@ -1593,10 +1593,13 @@ final class AssetController extends AbstractController
     )]
     public function searchSoftwareVersions(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Socket'), $request->getParameters());
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';software.id==' . $request->getAttribute('software_id');
+        $request->setParameter('filter', $filters);
+        return Search::searchBySchema($this->getKnownSchema('SoftwareVersion'), $request->getParameters());
     }
 
-    #[Route(path: '/SoftwareVersion/{id}', methods: ['GET'], requirements: [
+    #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
@@ -1604,6 +1607,9 @@ final class AssetController extends AbstractController
     )]
     public function getSoftwareVersion(Request $request): Response
     {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';software.id==' . $request->getAttribute('software_id');
+        $request->setParameter('filter', $filters);
         return Search::getOneBySchema($this->getKnownSchema('SoftwareVersion'), $request->getAttributes(), $request->getParameters());
     }
 
@@ -1616,10 +1622,16 @@ final class AssetController extends AbstractController
     public function createSoftwareVersion(Request $request): Response
     {
         $request->setParameter('software', $request->getAttribute('software_id'));
-        return Search::createBySchema($this->getKnownSchema('SoftwareVersion'), $request->getParameters(), [self::class, 'getSoftwareVersion']);
+        return Search::createBySchema($this->getKnownSchema('SoftwareVersion'), $request->getParameters(), [
+            self::class, 'getSoftwareVersion'
+        ], [
+            'mapped' => [
+                'software_id' => $request->getAttribute('software_id')
+            ]
+        ]);
     }
 
-    #[Route(path: '/SoftwareVersion/{id}', methods: ['PATCH'], requirements: [
+    #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[Doc\Route(
@@ -1630,7 +1642,7 @@ final class AssetController extends AbstractController
         return Search::updateBySchema($this->getKnownSchema('SoftwareVersion'), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/SoftwareVersion/{id}', methods: ['DELETE'], requirements: [
+    #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[Doc\Route(
