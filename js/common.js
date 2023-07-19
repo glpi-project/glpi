@@ -37,6 +37,11 @@
 
 var timeoutglobalvar;
 
+// Store configuration of tinymce editors
+// This is needed if an editor need to be destroyed and recreated as tinymce
+// api does not provide any method to get the current configuration
+var tinymce_editor_configs = {};
+
 /**
  * modifier la propriete display d'un element
  *
@@ -1497,6 +1502,19 @@ $(() => {
             blockFormSubmit(form, e);
         }
     });
+
+    // Clear focus on content-editable-tinymce items when clicking outside of their content
+    $(document).on('click focus', 'body', function(e) {
+        if (
+            // Event must be outside of our simulate-focus item
+            $(e.target).closest('.simulate-focus').length == 0
+            // Special case when target is part of tinymce toolbar/aux, must NOT drop focus in this case
+            && $(e.target).closest('.tox-toolbar__overflow').length == 0
+            && $(e.target).closest('.tox-tinymce-aux').length == 0
+        ) {
+            $('.content-editable-tinymce').removeClass('simulate-focus');
+        }
+    });
 });
 
 /**
@@ -1655,4 +1673,90 @@ function waitForElement(selector) {
             subtree: true
         });
     });
+}
+
+/**
+ * Get the ideal width of an input element based on its content.
+ * This allow to make dynamic inputs that grow and shrink based on their content.
+ *
+ * Inspired by: https://phuoc.ng/collection/html-dom/resize-the-width-of-a-text-box-to-fit-its-content-automatically/
+ *
+ * @param {HTMLElement} input
+ * @param {String} real_font_size It seems the font size computed by styles.fontSize
+ *                                 is not really accurate when using rem units.
+ *                                 This parameter allows to directly provide the
+ *                                 accurate font size if it's known.
+ *
+ * @return {String} The ideal width of the input element
+ */
+function getRealInputWidth(input, real_font_size = null)
+{
+    let fakeEle = $("#fake_dom_getRealInputWidth");
+
+    // Initialize our fake element only once to prevent useless computations
+    if (fakeEle.length === 0) {
+        // Create a div element
+        fakeEle = document.createElement('div');
+        fakeEle.id = "fake_dom_getRealInputWidth";
+
+        // Hide it completely
+        fakeEle.style.position = 'absolute';
+        fakeEle.style.top = '0';
+        fakeEle.style.left = '0';
+        fakeEle.style.left = '-9999px';
+        fakeEle.style.overflow = 'hidden';
+        fakeEle.style.visibility = 'hidden';
+        fakeEle.style.whiteSpace = 'nowrap';
+        fakeEle.style.height = '0';
+
+        // Append the fake element to `body`
+        document.body.appendChild(fakeEle);
+    } else {
+        fakeEle = fakeEle[0];
+    }
+
+    // We copy some styles from the textbox that effect the width
+    const styles = window.getComputedStyle(input);
+
+    // Copy font styles from the textbox
+    fakeEle.style.fontFamily = styles.fontFamily;
+    fakeEle.style.fontSize = real_font_size ?? styles.fontSize;
+    fakeEle.style.fontStyle = styles.fontStyle;
+    fakeEle.style.fontWeight = styles.fontWeight;
+    fakeEle.style.letterSpacing = styles.letterSpacing;
+    fakeEle.style.textTransform = styles.textTransform;
+
+    fakeEle.style.borderLeftWidth = styles.borderLeftWidth;
+    fakeEle.style.borderRightWidth = styles.borderRightWidth;
+    fakeEle.style.paddingLeft = styles.paddingLeft;
+    fakeEle.style.paddingRight = styles.paddingRight;
+
+    // Compute width
+    const string = input.value || input.getAttribute('placeholder') || '';
+    fakeEle.innerHTML = string.replace(/\s/g, '&' + 'nbsp;');
+
+    const fakeEleStyles = window.getComputedStyle(fakeEle);
+    const width = fakeEleStyles.width;
+
+    return width;
+}
+
+/**
+ * Get UUID using crypto.randomUUID() if possible
+ * Else fallback to uniqid()
+ */
+function getUUID() {
+    if (typeof crypto.randomUUID === "undefined") {
+        // Only available for HTTPS
+        return crypto.randomUUID();
+    } else {
+        // Always available but collisions are possible (very unlikely to happen)
+        return uniqid();
+    }
+}
+
+// Init the AJAX controller
+/* global GlpiCommonAjaxController */
+if (typeof GlpiCommonAjaxController == "function") {
+    new GlpiCommonAjaxController();
 }
