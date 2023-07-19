@@ -551,7 +551,7 @@ class AdministrationController extends \HLAPITestCase
 
     public function testCreateUpdateDeleteGroup()
     {
-        $this->login();
+        $this->login('glpi', 'glpi');
 
         $unique_id = __FUNCTION__;
 

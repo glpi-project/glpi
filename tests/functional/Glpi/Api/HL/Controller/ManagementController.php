@@ -57,7 +57,7 @@ class ManagementController extends \HLAPITestCase
             \Supplier::class => 'Supplier',
         ];
 
-        $this->login();
+        $this->login('glpi', 'glpi');
 
         foreach ($management_types as $m_class => $m_name) {
             $request = new Request('POST', '/Management/' . $m_name);

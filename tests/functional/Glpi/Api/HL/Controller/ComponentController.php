@@ -78,7 +78,7 @@ class ComponentController extends \HLAPITestCase
      */
     public function testCRUD(string $type)
     {
-        $this->login();
+        $this->login('glpi', 'glpi');
 
         $func_name = __FUNCTION__;
 

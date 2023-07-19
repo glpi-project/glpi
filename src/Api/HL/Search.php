@@ -602,6 +602,7 @@ final class Search
     public static function searchBySchema(array $schema, array $request_params): Response
     {
         $itemtype = $schema['x-itemtype'] ?? null;
+        // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
         if (($itemtype !== null) && !$itemtype::canView()) {
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_LIST);
         }
@@ -801,10 +802,11 @@ final class Search
         $item = new $itemtype();
         $force = $request_params['force'] ?? false;
         $input = ['id' => (int) $items_id];
-        if (!$item->can($item->getID(), $force ? PURGE : DELETE, $input)) {
+        $purge = !$item->maybeDeleted() || $force;
+        if (!$item->can($items_id, $purge ? PURGE : DELETE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
-        $result = $item->delete($input, $force ? 1 : 0);
+        $result = $item->delete($input, $purge ? 1 : 0);
 
         if ($result === false) {
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_DELETE);
