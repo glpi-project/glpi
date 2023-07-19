@@ -222,6 +222,16 @@ $(document).ready(function() {
       });
    });
 
+   $('.default-filter').change(function(event) {
+      const search_params = new URLSearchParams(window.location.search);
+      if (!$(this).is(":checked")) {
+          search_params.set('nodefault', '1');
+      } else {
+          search_params.delete('nodefault');
+      }
+      window.location.replace('?' + search_params.toString());
+   });
+
    // Callbacks for copy success/failure
    function copy_success() {
       glpi_toast_info(__('Results copied to clipboard'));

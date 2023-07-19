@@ -84,6 +84,10 @@ switch ($_REQUEST['action']) {
             $results['searchform_id'] = $_REQUEST['searchform_id'] ?? null;
             Search::displayData($results, $params);
         }
+
+        if (isset($_SESSION['glpisearch'][$itemtype]['reset'])) {
+            unset($_SESSION['glpisearch'][$itemtype]);
+        }
         break;
 }
 

@@ -51,6 +51,20 @@
          let {{ nbsearchcountvar }} = {{ criteria|length }};
       </script>
       <div class="list-group list-group-flush list-group-hoverable criteria-list pt-2" id="criteriatable{{ normalized_itemtype }}{{ random() }}">
+         {% if p.defaultfilter is defined %}
+            <div class="p-2 b-0">
+               <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
+                     data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
+                     title="{{ __('Toggle additional default filters') }}">
+                  <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 default-filter" role="button"
+                        {{ p.nodefault is defined ? '' : 'checked' }} autocomplete="off" {{ (can_disablefilter) ? '' : 'disabled' }} />
+                  <span class="form-check-label mb-1 mb-sm-0">
+                     <i class="ti fa-lg ti-filter"></i>
+                  </span>
+               </label>
+               <span title="{{ p.defaultfilter['comment'] }}">{{ p.defaultfilter['name'] }}</span>
+            </div>
+         {% endif %}
          {% for i in p['criteria']|keys %}
             {{ call("Glpi\\Search\\Input\\QueryBuilder::displayCriteria", [{
                itemtype: itemtype,
@@ -99,6 +113,8 @@
                   href="{{ p['target'] ~ ('?' in p['target'] ? '&amp;' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
                   <i class="ti ti-circle-x"></i>
                </a>
+            {% elseif p['forcereset'] %}
+               <input type="hidden" name="reset" value="reset">
             {% endif %}
          {% endif %}
          {% for template, params in extra_actions_templates %}

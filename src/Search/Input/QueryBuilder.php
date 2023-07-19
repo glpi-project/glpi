@@ -67,6 +67,7 @@ final class QueryBuilder implements SearchInputInterface
             $p['target']       = \Toolbox::getItemTypeSearchURL($itemtype);
         }
         $p['showreset']                     = true;
+        $p['forcereset']                    = false;
         $p['showbookmark']                  = true;
         $p['showfolding']                   = true;
         $p['mainform']                      = true;
@@ -88,6 +89,8 @@ final class QueryBuilder implements SearchInputInterface
         $normalized_itemtype = Toolbox::getNormalizedItemtype($itemtype);
         $linked = SearchEngine::getMetaItemtypeAvailable($itemtype);
 
+        $can_disablefilter = \Session::haveRightsOr('search_config', [\DisplayPreference::PERSONAL, \DisplayPreference::GENERAL]);
+
         TemplateRenderer::getInstance()->display('components/search/query_builder/main.html.twig', [
             'mainform'            => $p['mainform'],
             'showaction'          => $p['showaction'],
@@ -96,6 +99,7 @@ final class QueryBuilder implements SearchInputInterface
             'criteria'            => $p['criteria'],
             'p'                   => $p,
             'linked'              => $linked,
+            'can_disablefilter'   => $can_disablefilter,
         ]);
     }
 
@@ -339,6 +343,11 @@ final class QueryBuilder implements SearchInputInterface
 
         $num         = (int) $request['num'];
         $p           = $request['p'];
+
+        if ($p['criteria'][$num]['_hidden'] ?? false) {
+            return;
+        }
+
         $options     = \Search::getCleanedOptions($request["itemtype"]);
         $randrow     = mt_rand();
         $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
@@ -661,6 +670,15 @@ final class QueryBuilder implements SearchInputInterface
                     $params[$key]                    = $val;
                     $_SESSION['glpisearch'][$itemtype][$key] = $val;
                 }
+            }
+        }
+
+        if ($defaultfilter = \DefaultFilter::getSearchCriteria($itemtype)) {
+            $params['defaultfilter'] = $defaultfilter;
+            $can_disablefilter = \Session::haveRightsOr('search_config', [\DisplayPreference::PERSONAL, \DisplayPreference::GENERAL]);
+            if (!isset($params['nodefault']) || !$can_disablefilter) {
+                $defaultfilter['search_criteria']['_hidden'] = true;
+                $params['criteria'][] = $defaultfilter['search_criteria'];
             }
         }
 

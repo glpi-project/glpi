@@ -1111,6 +1111,7 @@ class Profile extends CommonDBTM
                             $fn_get_rights(SLM::class, 'central', ['label' => __('SLM')]),
                             $fn_get_rights(LineOperator::class, 'central'),
                             $fn_get_rights(OAuthClient::class, 'central'),
+                            $fn_get_rights(DefaultFilter::class, 'central'),
                         ],
                     ]
                 ],
@@ -2859,6 +2860,20 @@ class Profile extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => OAuthClient::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '176',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => DefaultFilter::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => DefaultFilter::class,
+            'rightname'          => DefaultFilter::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => DefaultFilter::$rightname]
             ]
         ];
 
