@@ -1387,7 +1387,8 @@ HTML;
                 'title' => __('Administration'),
                 'types' => [
                     'User', 'Group', 'Entity', 'Rule',
-                    'Profile', 'QueuedNotification', 'Glpi\System\Log\LogViewer', 'Glpi\Inventory\Inventory'
+                    'Profile', 'QueuedNotification', 'Glpi\System\Log\LogViewer',
+                    'Glpi\Inventory\Inventory', 'Glpi\Form\Form',
                 ],
                 'icon'  => 'ti ti-shield-check'
             ],
