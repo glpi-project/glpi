@@ -58,7 +58,7 @@ class RuleSoftwareCategory extends DbTestCase
     {
         $category = new \RuleSoftwareCategory();
         $actions  = $category->getActions();
-        $this->array($actions)->hasSize(4);
+        $this->array($actions)->hasSize(3);
     }
 
     public function testDefaultRuleExists()
