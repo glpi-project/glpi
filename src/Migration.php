@@ -1849,4 +1849,23 @@ class Migration
             ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;
         ", "Create link table between $class_1 and $class_2");
     }
+
+    /**
+     * Boilerplate code to handle table create in migrations
+     *
+     * @param string $table              Table name
+     * @param string $create_table_query SQL query
+     *
+     * @return void
+     */
+    public function createTable(
+        string $table,
+        string $create_table_query
+    ): void {
+        global $DB;
+
+        if (!$DB->tableExists($table)) {
+            $DB->queryOrDie($create_table_query, "Failed to create $table");
+        }
+    }
 }
