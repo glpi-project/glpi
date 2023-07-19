@@ -4183,7 +4183,7 @@ JAVASCRIPT;
             'results' => $results,
             'count'   => count($results),
         ];
-        if ($total_results > count($results)) {
+        if (count($results) >= $post['page_limit']) {
             $return['pagination'] = [
                 'more' => true,
             ];
