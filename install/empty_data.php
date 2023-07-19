@@ -3067,6 +3067,27 @@ $empty_data_builder = new class
                 'event'        => 'auto_reminder',
                 'is_recursive' => 0,
                 'is_active'    => 0,
+            ], [
+                'id'           => 77,
+                'name'         => 'New document',
+                'itemtype'     => 'Ticket',
+                'event'        => 'add_document',
+                'is_recursive' => 0,
+                'is_active'    => 0,
+            ], [
+                'id'           => 78,
+                'name'         => 'New document',
+                'itemtype'     => 'Change',
+                'event'        => 'add_document',
+                'is_recursive' => 0,
+                'is_active'    => 0,
+            ], [
+                'id'           => 79,
+                'name'         => 'New document',
+                'itemtype'     => 'Problem',
+                'event'        => 'add_document',
+                'is_recursive' => 0,
+                'is_active'    => 0,
             ]
         ];
 
@@ -3451,6 +3472,21 @@ $empty_data_builder = new class
                 'notifications_id'         => '76',
                 'mode'                     => 'mailing',
                 'notificationtemplates_id' => 31,
+            ], [
+                'id'                       => 77,
+                'notifications_id'         => '77',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 4,
+            ], [
+                'id'                       => 78,
+                'notifications_id'         => '78',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 19,
+            ], [
+                'id'                       => 79,
+                'notifications_id'         => '79',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 17,
             ]
         ];
 
@@ -4180,6 +4216,51 @@ $empty_data_builder = new class
                 'items_id'         => '21',
                 'type'             => '1',
                 'notifications_id' => '76',
+            ], [
+                'id'               => '148',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '77',
+            ], [
+                'id'               => '149',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '77',
+            ], [
+                'id'               => '150',
+                'items_id'         => '21',
+                'type'             => '1',
+                'notifications_id' => '77',
+            ], [
+                'id'               => '151',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '78',
+            ], [
+                'id'               => '152',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '78',
+            ], [
+                'id'               => '153',
+                'items_id'         => '21',
+                'type'             => '1',
+                'notifications_id' => '78',
+            ], [
+                'id'               => '154',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '79',
+            ], [
+                'id'               => '155',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '79',
+            ], [
+                'id'               => '156',
+                'items_id'         => '21',
+                'type'             => '1',
+                'notifications_id' => '79',
             ]
         ];
 
