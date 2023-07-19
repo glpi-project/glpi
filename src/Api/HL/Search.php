@@ -780,7 +780,7 @@ final class Search
         $input['id'] = $items_id;
         /** @var CommonDBTM $item */
         $item = new $itemtype();
-        if (!$item->can($item->getID(), UPDATE, $input)) {
+        if (!$item->can($items_id, UPDATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
         $result = $item->update($input);
