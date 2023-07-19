@@ -821,6 +821,7 @@ class Html
         TemplateRenderer::getInstance()->display('display_and_die.html.twig', [
             'title'   => __('Access denied'),
             'message' => $message,
+            'link'    => Html::getBackUrl(),
         ]);
 
         self::nullFooter();
