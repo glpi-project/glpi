@@ -207,18 +207,29 @@ class TestUpdatedDataCommand extends Command
     private function getExcludedTables(): array
     {
         return [
-         // Root entity configuration is never updated during migration
+            // Root entity configuration is never updated during migration
             'glpi_entities',
 
-         // Migration may produce logs
+            // Migration may produce logs
             'glpi_logs',
 
-         // Profiles are not automatically updated
+            // Notifications update is complex and following cases can result in differences between updated data and fresh install:
+            // - existing templates are never updated;
+            // - existing templates are rarely reused, as they can have been modified/deleted;
+            // - new notifications events/targets defaults are not always applied during update, to let administrator decide how to configure them;
+            // - ...
+            'glpi_notifications',
+            'glpi_notifications_notificationtemplates',
+            'glpi_notificationtargets',
+            'glpi_notificationtemplate',
+            'glpi_notificationtemplatetranslations',
+
+            // Profiles are not automatically updated
             'glpi_profilerights',
             'glpi_profiles',
             'glpi_profiles_users',
 
-         // Rules are not automatically updated
+            // Rules are not automatically updated
             'glpi_rules',
             'glpi_rulecriterias',
             'glpi_ruleactions',
@@ -251,15 +262,6 @@ class TestUpdatedDataCommand extends Command
             ],
             'glpi_displaypreferences' => [
                 'rank', // New display preferences are added with next available rank by migrations
-            ],
-            'glpi_notifications' => [
-                'is_active', // Active status was not changed by migration (9.1.x to 9.2.0)
-            ],
-            'glpi_notificationtemplatetranslations' => [
-            // Notification content is not automatically updated
-                'content_text',
-                'content_html',
-                'subject',
             ],
             'glpi_requesttypes' => [
                 'is_followup_default', // Field value was not forced by migration (0.90.x to 9.1.0)
