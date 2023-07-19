@@ -9470,6 +9470,73 @@ CREATE TABLE `glpi_snmpcredentials` (
    KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_forms_forms`;
+CREATE TABLE `glpi_forms_forms` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `entities_id` int unsigned NOT NULL DEFAULT '0',
+    `is_recursive` tinyint NOT NULL DEFAULT '0',
+    `is_active` tinyint NOT NULL DEFAULT '0',
+    `is_deleted` tinyint NOT NULL DEFAULT '0',
+    `name` varchar(255) NOT NULL DEFAULT '',
+    `header` text,
+    `date_mod` timestamp NULL DEFAULT NULL,
+    `date_creation` timestamp NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `entities_id` (`entities_id`),
+    KEY `is_recursive` (`is_recursive`),
+    KEY `is_active` (`is_active`),
+    KEY `is_deleted` (`is_deleted`),
+    KEY `date_mod` (`date_mod`),
+    KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_forms_sections`;
+CREATE TABLE `glpi_forms_sections` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+    `name` varchar(255) NOT NULL DEFAULT '',
+    `description` text,
+    `rank` int NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `forms_forms_id` (`forms_forms_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_forms_questions`;
+CREATE TABLE `glpi_forms_questions` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `forms_sections_id` int unsigned NOT NULL DEFAULT '0',
+    `name` varchar(255) NOT NULL DEFAULT '',
+    `type` varchar(255) NOT NULL DEFAULT '',
+    `subtype` varchar(255) NOT NULL DEFAULT '',
+    `is_mandatory` tinyint NOT NULL DEFAULT '0',
+    `rank` int NOT NULL DEFAULT '0',
+    `description` text,
+    `default_value` text COMMENT 'JSON - The default value type may not be the same for all questions type',
+    `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `forms_sections_id` (`forms_sections_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_forms_answerssets`;
+CREATE TABLE `glpi_forms_answerssets` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+    `users_id` int unsigned NOT NULL DEFAULT '0',
+    `name` varchar(255) NOT NULL DEFAULT '',
+    `date_creation` timestamp NULL DEFAULT NULL,
+    `date_mod` timestamp NULL DEFAULT NULL,
+    `index` int NOT NULL DEFAULT '0',
+    `answers` text COMMENT 'JSON - Answers for each questions of the parent form',
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `date_creation` (`date_creation`),
+    KEY `date_mod` (`date_mod`),
+    KEY `forms_forms_id` (`forms_forms_id`),
+    KEY `users_id` (`users_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_items_ticketrecurrents`;
 CREATE TABLE `glpi_items_ticketrecurrents` (

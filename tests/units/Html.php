@@ -346,7 +346,8 @@ class Html extends \GLPITestCase
             'Profile',
             'QueuedNotification',
             'Glpi\System\Log\LogViewer',
-            'Glpi\Inventory\Inventory'
+            'Glpi\Inventory\Inventory',
+            'Glpi\Form\Form',
         ];
         $this->string($menu['admin']['title'])->isIdenticalTo('Administration');
         $this->array($menu['admin']['types'])->isIdenticalTo($expected);
