@@ -294,7 +294,7 @@ $migration->addField("glpi_notifications", "attach_documents", "tinyint NOT NULL
 $migration->addField("glpi_queuednotifications", "itemtype_of_documents", "varchar(255) DEFAULT NULL");
 $migration->addField("glpi_queuednotifications", "items_id_of_documents", "fkey");
 $migration->addKey(
-    "glpi_queuednotifications", 
+    "glpi_queuednotifications",
     ["itemtype_of_documents", "items_id_of_documents"],
     "item_of_documents"
 );
