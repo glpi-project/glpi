@@ -583,6 +583,7 @@ $RELATION = [
         '_glpi_entities_rssfeeds'          => 'entities_id',
         'glpi_fieldblacklists'             => 'entities_id',
         'glpi_fieldunicities'              => 'entities_id',
+        'glpi_forms_forms'                 => 'entities_id',
         'glpi_fqdns'                       => 'entities_id',
         'glpi_groups'                      => 'entities_id',
         'glpi_groups_knowbaseitems'        => 'entities_id',
@@ -690,6 +691,15 @@ $RELATION = [
 
     'glpi_filesystems' => [
         'glpi_items_disks' => 'filesystems_id',
+    ],
+
+    'glpi_forms_forms' => [
+        "_glpi_forms_answerssets" => "forms_forms_id",
+        "_glpi_forms_sections"    => "forms_forms_id",
+    ],
+
+    'glpi_forms_sections' => [
+        "_glpi_forms_questions" => "forms_sections_id",
     ],
 
     'glpi_fqdns' => [
@@ -1542,6 +1552,7 @@ $RELATION = [
         'glpi_documents'                => 'users_id',
         'glpi_documents_items'          => 'users_id',
         'glpi_enclosures'               => 'users_id_tech',
+        'glpi_forms_answerssets'        => 'users_id',
         '_glpi_groups_users'            => 'users_id',
         'glpi_items_devicesimcards'     => 'users_id',
         '_glpi_items_kanbans'           => 'users_id',

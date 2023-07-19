@@ -105,6 +105,12 @@
         }
     }
 
+    &:not(.asset-deleted) {
+        #header-is-deleted {
+            display: none;
+        }
+    }
+
     .main-header {
         padding-top: 0;
         padding-bottom: 0;

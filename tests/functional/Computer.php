@@ -831,4 +831,66 @@ class Computer extends DbTestCase
         $this->object($printer1_agent)->isInstanceOf(\Agent::class);
         $this->array($computer_agent->fields)->isEqualTo($printer1_agent->fields);
     }
+
+    /**
+     * Data provider for the testFormatSessionMessageAfterAction method
+     *
+     * @return iterable
+     */
+    protected function testFormatSessionMessageAfterActionProvider(): iterable
+    {
+        $this->login();
+
+        $entity = $this->getTestRootEntity();
+
+        list (
+            $c1,
+            $c2,
+            $c3,
+        ) = $this->createItems(\Computer::class, [
+            ['name' => 'Computer 1', 'entities_id' => $entity->fields['id']],
+            ['name' => 'Computer 2', 'entities_id' => $entity->fields['id']],
+            ['name' => 'Computer 3', 'entities_id' => $entity->fields['id']],
+        ]);
+
+        // Test message with link to item
+        yield [
+            $c1,
+            "Test",
+            "Test: <a  href='/glpi/front/computer.form.php?id={$c1->getId()}'  title=\"Computer 1\">Computer 1</a>"
+        ];
+        yield [
+            $c2,
+            "Test",
+            "Test: <a  href='/glpi/front/computer.form.php?id={$c2->getId()}'  title=\"Computer 2\">Computer 2</a>"
+        ];
+
+        // Test message without link
+        $c3->input["_no_message_link"] = true;
+        yield [
+            $c3,
+            "Test",
+            "Test: Computer 3"
+        ];
+    }
+
+    /**
+     * Test the formatSessionMessageAfterAction method
+     *
+     * @dataProvider testFormatSessionMessageAfterActionProvider
+     *
+     * @param \Computer $item                        Test subject
+     * @param string    $raw_message                 Raw message to format
+     * @param string    $expected_formatted_message  Expected formatted message
+     *
+     * @return void
+     */
+    public function testFormatSessionMessageAfterAction(
+        \Computer $item,
+        string $raw_message,
+        string $expected_formatted_message
+    ): void {
+        $message = $item->formatSessionMessageAfterAction($raw_message);
+        $this->string($message)->isEqualTo($expected_formatted_message);
+    }
 }

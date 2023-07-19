@@ -41,6 +41,7 @@ use CommonITILObject;
 use DBmysqlIterator;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
+use Glpi\Form\Form;
 use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchEngine;
@@ -979,6 +980,11 @@ final class SQLProvider implements SearchProviderInterface
 
             case 'KnowbaseItem':
                 $criteria = \KnowbaseItem::getVisibilityCriteria(false)['WHERE'];
+                break;
+
+            case Form::class:
+                // Do not show unsaved drafts in the form list
+                $criteria = ['is_draft' => 0];
                 break;
 
             default:
