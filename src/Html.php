@@ -3568,6 +3568,7 @@ JS;
      *   - img : string / url of a specific img to use
      *   - display : boolean / display the item : false return the datas
      *   - autoclose : boolean / autoclose the item : default true (false permit to scroll)
+     *   - url: ?string If defined, load tooltip using an AJAX request on the supplied URL
      *
      * @return void|string
      *    void if option display=true
@@ -3575,6 +3576,8 @@ JS;
      **/
     public static function showToolTip($content, $options = [])
     {
+        global $CFG_GLPI;
+
         $param = [
             'applyto'       => '',
             'title'         => '',
@@ -3589,6 +3592,7 @@ JS;
             'autoclose'     => true,
             'onclick'       => false,
             'link_class'    => '',
+            'url'           => null,
         ];
 
         if (is_array($options) && count($options)) {
@@ -3656,7 +3660,18 @@ JS;
         $js = "$(function(){";
         $js .= Html::jsGetElementbyID($param['applyto']) . ".qtip({
          position: { viewport: $(window) },
-         content: {text: " . Html::jsGetElementbyID($param['contentid']);
+         content: {";
+        if (!is_null($param['url'])) {
+            $js .= "
+                ajax: {
+                    url: '" . $CFG_GLPI['root_doc'] . $param['url'] . "',
+                    type: 'GET',
+                    data: {},
+                },
+            ";
+        }
+
+        $js .= "text: " .  Html::jsGetElementbyID($param['contentid']);
         if (!$param['autoclose']) {
             $js .= ", title: {text: ' ',button: true}";
         }

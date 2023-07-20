@@ -7235,8 +7235,7 @@ JAVASCRIPT;
                 case 'glpi_problems.name':
                 case 'glpi_changes.name':
                     if (
-                        isset($data[$ID][0]['content'])
-                        && isset($data[$ID][0]['id'])
+                        isset($data[$ID][0]['id'])
                         && isset($data[$ID][0]['status'])
                     ) {
                         $link = $itemtype::getFormURLWithID($data[$ID][0]['id']);
@@ -7257,15 +7256,20 @@ JAVASCRIPT;
                             $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][0]['id']);
                         }
                         $out    .= $name . "</a>";
+
+                        // Add tooltip
+                        $id = $data[$ID][0]['id'];
+                        $itemtype = getItemTypeForTable($table);
                         $out     = sprintf(
                             __('%1$s %2$s'),
                             $out,
                             Html::showToolTip(
-                                RichText::getEnhancedHtml($data[$ID][0]['content']),
+                                __('Loading...'),
                                 [
                                     'applyto'        => $itemtype . $data[$ID][0]['id'],
                                     'display'        => false,
-                                    'images_gallery' => false, // don't show photoswipe gallery in tooltips
+                                    'images_gallery' => false,  // don't show photoswipe gallery in tooltips
+                                    'url'            => "/ajax/tooltip.php?itemtype=$itemtype&items_id=$id"
                                 ]
                             )
                         );
