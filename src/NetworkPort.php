@@ -1629,7 +1629,7 @@ class NetworkPort extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'itemtype',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'itemtype',
+            'datatype'           => 'itemtypename',
             'massiveaction'      => false
         ];
 

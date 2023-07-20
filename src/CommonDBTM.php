@@ -3775,6 +3775,8 @@ class CommonDBTM extends CommonGLPI
         $options[$type] = [];
 
         foreach ($this->rawSearchOptions() as $opt) {
+            // FIXME In GLPI 10.1, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
+
             $missingFields = [];
             if (!isset($opt['id'])) {
                 $missingFields[] = 'id';
@@ -3895,6 +3897,8 @@ class CommonDBTM extends CommonGLPI
         }
 
         foreach ($classname::$method_name($itemtype) as $opt) {
+            // FIXME In GLPI 10.1, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
+
             if (!isset($opt['id'])) {
                 throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
             }

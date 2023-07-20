@@ -534,6 +534,91 @@ class Search extends DbTestCase
     }
 
     /**
+     * This test will ensure that search options are using a valid datatype.
+     */
+    public function testSearchOptionsDatatype(): void
+    {
+        // Valid search options datatype
+        $valid_datatypes = [
+            // relational datatypes
+            'dropdown',
+            'itemlink',
+            'itemtypename',
+
+            // basic datatypes
+            'bool',
+
+            'number',
+            'integer',
+            'decimal',
+            'count',
+
+            'datetime',
+            'date',
+
+            'string',
+            'text',
+
+            // specific datatypes
+            'color',
+            'date_delay',
+            'email',
+            'language',
+            'mac',
+            'mio',
+            'progressbar',
+            'right',
+            'timestamp',
+            'weblink',
+
+            'specific',
+        ];
+
+        $classes = $this->getClasses(
+            false,
+            [
+                \CommonDBTM::class, // should be abstract
+                \CommonImplicitTreeDropdown::class, // should be abstract
+                \CommonITILRecurrentCron::class, // not searchable
+                \Item_Devices::class, // should be abstract
+                \NetworkPortMigration::class, // has no table by default
+                \NetworkPortInstantiation::class, // should be abstract
+                \NotificationSettingConfig::class, // not searchable
+                \PendingReasonCron::class, // not searchable
+            ]
+        );
+        foreach ($classes as $class) {
+            if (!is_a($class, \CommonDBTM::class, true)) {
+                continue;
+            }
+
+            $item = new $class();
+
+            $search_options = $item->searchOptions();
+
+            if (method_exists($class, 'rawSearchOptionsToAdd')) {
+                // `rawSearchOptionsToAdd` parameters are not identical on all methods, so we can
+                // only check classes on which this method has no parameters.
+                $reflection = new \ReflectionMethod($class, 'rawSearchOptionsToAdd');
+                if (count($reflection->getParameters()) === 0) {
+                    $search_options = array_merge($search_options, $item->getSearchOptionsToAdd());
+                }
+            }
+
+            foreach ($search_options as $so) {
+                $this->array($so);
+
+                if (!array_key_exists('datatype', $so)) {
+                    continue; // datatype can be undefined
+                }
+
+                $this->boolean(in_array($so['datatype'], $valid_datatypes))
+                    ->isTrue(sprintf('Unexpected `%s` search option datatype.', $so['datatype']));
+            }
+        }
+    }
+
+    /**
      * This test will add all searchoptions in each itemtype and check if the
      * search give a SQL error
      *
