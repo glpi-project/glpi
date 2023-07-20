@@ -3535,6 +3535,8 @@ JAVASCRIPT;
 
             switch ($searchopt[$ID]["datatype"]) {
                 case "datetime":
+                    // FIXME `addHaving` should produce same kind of criterion as `addWhere`
+                    //  (i.e. using a comparison with `ADDDATE(NOW(), INTERVAL {$val} MONTH)`).
                     if (in_array($searchtype, ['contains', 'notcontains'])) {
                         break;
                     }
@@ -3567,8 +3569,11 @@ JAVASCRIPT;
                 case "count":
                 case "mio":
                 case "number":
+                // FIXME Should also apply to integer
                 case "decimal":
                 case "timestamp":
+                    // FIXME Negative search are not supported. For instance, `>-10` result in a `LIKE '%>-10%'` SQL criterion.
+
                     $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                         if ($NOT) {
@@ -4676,6 +4681,23 @@ JAVASCRIPT;
                 $nott = !$nott;
                //negated, use contains case
             case "contains":
+                // FIXME
+                // `field LIKE '%test%'` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
+                // or at least to unexpected results, when following datatype are used:
+                //  - integer
+                //  - number
+                //  - decimal
+                //  - count
+                //  - mio
+                //  - percentage
+                //  - timestamp
+                //  - datetime
+                //  - date_delay
+                //  - mac
+                //  - color
+                //  - language
+                // Values should be filtered to accept only valid pattern according to given datatype.
+
                 if (isset($searchopt[$ID]["datatype"]) && ($searchopt[$ID]["datatype"] === 'decimal')) {
                     $matches = [];
                     if (preg_match('/^(\d+.?\d?)/', $val, $matches)) {
@@ -5196,6 +5218,7 @@ JAVASCRIPT;
                         $date_computation = $tocompute;
                     }
                     if (in_array($searchtype, ["contains", "notcontains"])) {
+                        // FIXME `CONVERT` operation should not be necessary if we only allow legitimate date/time chars
                         $default_charset = DBConnection::getDefaultCharset();
                         $date_computation = "CONVERT($date_computation USING {$default_charset})";
                     }
@@ -5223,6 +5246,7 @@ JAVASCRIPT;
                     $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
                         if (is_numeric($regs[2])) {
+                            // FIXME Comparison operator should be "reversed" whne `$nott === true`.
                             return $link . " $date_computation " . $regs[1] . "
                             ADDDATE(NOW(), INTERVAL " . $regs[2] . " $search_unit) ";
                         }
@@ -5272,6 +5296,7 @@ JAVASCRIPT;
                 case "count":
                 case "mio":
                 case "number":
+                // FIXME Should also apply to integer
                 case "decimal":
                 case "timestamp":
                 case "progressbar":
@@ -7598,6 +7623,7 @@ JAVASCRIPT;
 
                 case "count":
                 case "number":
+                // FIXME Should also apply to integer
                 case "mio":
                     $out           = "";
                     $count_display = 0;
@@ -8398,6 +8424,7 @@ HTML;
                 switch ($searchopt[$field_num]['datatype']) {
                     case 'mio':
                     case 'count':
+                    // FIXME Should also apply to integer
                     case 'number':
                         $opt = [
                             'contains'    => __('contains'),
@@ -9115,6 +9142,23 @@ HTML;
        // mange empty field (string with length = 0)
         $sql_or = "";
         if (strtolower($val) == "null") {
+            // FIXME Should operator be `<>` when `$not === true`?
+
+            // FIXME
+            // `OR field = ''` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
+            // when following datatype are used:
+            //  - integer
+            //  - number
+            //  - decimal
+            //  - count
+            //  - mio
+            //  - percentage
+            //  - timestamp
+            //  - datetime
+            //  - date_delay
+            //
+            // Removing this condition requires, at least, to use the `int`/`float`/`double`/`timestamp`/`date` types in DB,
+            // to ensure that the `''` value will not be stored in DB.
             $sql_or = "OR $field = ''";
         }
 
