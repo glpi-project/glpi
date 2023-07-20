@@ -7269,7 +7269,7 @@ JAVASCRIPT;
                                     'applyto'        => $itemtype . $data[$ID][0]['id'],
                                     'display'        => false,
                                     'images_gallery' => false,  // don't show photoswipe gallery in tooltips
-                                    'url'            => "/ajax/tooltip.php?itemtype=$itemtype&items_id=$id"
+                                    'url'            => "/ajax/get_item_content.php?itemtype=$itemtype&items_id=$id"
                                 ]
                             )
                         );
