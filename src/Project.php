@@ -2008,7 +2008,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             }
 
             // sort by name ASC
-            usort($result, function ($a, $b) {
+            uasort($result, function ($a, $b) {
                 return strnatcasecmp($a['name'], $b['name']);
             });
         }
