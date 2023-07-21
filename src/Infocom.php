@@ -1672,6 +1672,7 @@ class Infocom extends CommonDBChild
             'field'              => 'itemtype',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'infocom_types',
             'massiveaction'      => false
         ];
 

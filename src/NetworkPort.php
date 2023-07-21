@@ -1630,6 +1630,7 @@ class NetworkPort extends CommonDBChild
             'field'              => 'itemtype',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'networkport_types',
             'massiveaction'      => false
         ];
 
