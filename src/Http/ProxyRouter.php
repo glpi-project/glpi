@@ -197,6 +197,8 @@ final class ProxyRouter
             '\.(js|css)$',
             // JS/CSS files sourcemaps used in dev env (it is to the publisher responsibility to remove them in dist packages)
             '\.(js|css)\.map$',
+            // Vue components
+            '\.vue$',
             // images
             '\.(gif|jpe?g|png|svg)$',
             // audios
@@ -280,6 +282,7 @@ final class ProxyRouter
                 $mime = 'text/css';
                 break;
             case 'js':
+            case 'vue':
                 $mime = 'application/javascript';
                 break;
             case 'woff':

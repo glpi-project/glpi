@@ -1260,10 +1260,6 @@ HTML;
         $tpl_vars['js_modules'][] = ['path' => 'public/build/vue/app.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
-        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            $tpl_vars['js_modules'][] = ['path' => 'js/modules/Debug/Debug.js'];
-        }
-
        // Search
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/ResultsView.js'];
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/Table.js'];
