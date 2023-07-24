@@ -678,7 +678,6 @@ class Budget extends CommonDropdown
         );
 
         $total               = 0;
-        $subtotal            = 0;
         $totalbytypes        = [];
 
         $itemtypes           = [];
@@ -830,8 +829,13 @@ class Budget extends CommonDropdown
                         }
                         $entities_values[$values['entities_id']]                 += $values['sumvalue'];
                         $entitiestype_values[$values['entities_id']][$itemtype]  += $values['sumvalue'];
-                        $subtotal                                                += $values['sumvalue'];
                         $totalbytypes[$itemtype]                                 += $values['sumvalue'];
+                    } else {
+                        if (!isset($entities_values[-1])) {
+                            $entities_values[-1] = 0;
+                        }
+                        $entities_values[-1]                 += $values['sumvalue'];
+                        $entitiestype_values[-1][$itemtype] = '-';
                     }
                     $total += $values['sumvalue'];
                 }
@@ -843,23 +847,31 @@ class Budget extends CommonDropdown
 
         $colspan = count($found_types) + 2;
         echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='$colspan'>" . __('Total spent on the budget of active entities') . "</th></tr>";
+        echo "<tr class='noHover'><th colspan='$colspan'>" . __('Total spent on the budget') . "</th></tr>";
         echo "<tr><th>" . Entity::getTypeName(1) . "</th>";
         if (count($found_types)) {
             foreach ($found_types as $type => $typename) {
-                echo "<th>$typename</th>";
+                echo "<th class='right'>$typename</th>";
             }
         }
-        echo "<th>" . __('Total') . "</th>";
+        echo "<th class='right'>" . __('Total') . "</th>";
         echo "</tr>";
 
        // get all entities ordered by names
         $allentities = getAllDataFromTable('glpi_entities', ['ORDER' => 'completename'], true);
+        $allentities[-1] = -1;
+        ksort($allentities);
 
         foreach (array_keys($allentities) as $entity) {
             if (isset($entities_values[$entity])) {
                 echo "<tr class='tab_bg_1'>";
-                echo "<td class='b'>" . Dropdown::getDropdownName('glpi_entities', $entity) . "</td>";
+                echo "<td class='b'>";
+                if ($entity == -1) {
+                    echo __('Other entities');
+                } else {
+                    echo Dropdown::getDropdownName('glpi_entities', $entity);
+                }
+                echo "</td>";
                 if (count($found_types)) {
                     foreach ($found_types as $type => $typename) {
                         echo "<td class='numeric'>";
@@ -884,15 +896,15 @@ class Budget extends CommonDropdown
                 echo Html::formatNumber($totalbytypes[$type]);
                 echo "</td>";
             }
-            echo "<td class='numeric b'>" . Html::formatNumber($subtotal) . "</td>";
+            echo "<td class='numeric b'>" . Html::formatNumber($total) . "</td>";
             echo "</tr>";
         }
         echo "<tr class='tab_bg_1 noHover'><th colspan='$colspan'><br></th></tr>";
         echo "<tr class='tab_bg_1 noHover'>";
-        echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total spent on the budget (all entities)') . "</td>";
+        echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total spent on the budget') . "</td>";
         echo "<td class='numeric b'>" . Html::formatNumber($total) . "</td></tr>";
         echo "<tr class='tab_bg_1 noHover'>";
-        echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total remaining on the budget (all entities)') .
+        echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total remaining on the budget') .
             "</td>";
         echo "<td class='numeric b'>" . Html::formatNumber($budget->fields['value'] - $total) .
             "</td></tr>";
