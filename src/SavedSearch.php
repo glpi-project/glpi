@@ -658,6 +658,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
         $itemtype = $this->fields['itemtype'];
         $url = $itemtype::getSearchURL();
+
+        // Prevents parameter duplication
         $parse_url = parse_url($url);
         if (isset($parse_url['query'])) {
             parse_str($parse_url['query'], $url_params);
