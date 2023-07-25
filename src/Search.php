@@ -3572,10 +3572,8 @@ JAVASCRIPT;
                 case "integer":
                 case "decimal":
                 case "timestamp":
-                    // FIXME Negative search are not supported. For instance, `>-10` result in a `LIKE '%>-10%'` SQL criterion.
-
                     $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
-                    if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
+                    if (preg_match("/([<>])(=?)[[:space:]]*(-?)[[:space:]]*([0-9]+(.[0-9]+)?)/", $val, $regs)) {
                         if ($NOT) {
                             if ($regs[1] == '<') {
                                 $regs[1] = '>';
@@ -3584,7 +3582,7 @@ JAVASCRIPT;
                             }
                         }
                         $regs[1] .= $regs[2];
-                        return " $LINK (`$NAME` " . $regs[1] . " " . $regs[3] . " ) ";
+                        return " $LINK (`$NAME` " . $regs[1] . " " . $regs[3] . $regs[4] . " ) ";
                     }
 
                     if (is_numeric($val)) {
@@ -5303,7 +5301,7 @@ JAVASCRIPT;
                     $decimal_contains = $searchopt[$ID]["datatype"] === 'decimal' && $searchtype === 'contains';
                     $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
 
-                    if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
+                    if (preg_match("/([<>])(=?)[[:space:]]*(-?)[[:space:]]*([0-9]+(.[0-9]+)?)/", $val, $regs)) {
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
                             $nott = !$nott;
                         }
@@ -5315,7 +5313,7 @@ JAVASCRIPT;
                             }
                         }
                         $regs[1] .= $regs[2];
-                        return $link . " ($tocompute " . $regs[1] . " " . $regs[3] . ") ";
+                        return $link . " ($tocompute " . $regs[1] . " " . $regs[3] . $regs[4] . ") ";
                     }
 
                     if (is_numeric($val) && !$decimal_contains) {
