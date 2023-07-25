@@ -2365,7 +2365,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     /**
      * Show Kanban view.
-     * @param int $ID ID of the parent Project or -1 for a global view.
+     * @param int $ID ID of the parent Project or 0 for a global view.
      * @return bool|void False if the Kanban cannot be shown.
      */
     public static function showKanban($ID)
