@@ -3569,7 +3569,7 @@ JAVASCRIPT;
                 case "count":
                 case "mio":
                 case "number":
-                // FIXME Should also apply to integer
+                case "integer":
                 case "decimal":
                 case "timestamp":
                     // FIXME Negative search are not supported. For instance, `>-10` result in a `LIKE '%>-10%'` SQL criterion.
@@ -5296,7 +5296,7 @@ JAVASCRIPT;
                 case "count":
                 case "mio":
                 case "number":
-                // FIXME Should also apply to integer
+                case "integer":
                 case "decimal":
                 case "timestamp":
                 case "progressbar":
@@ -7623,7 +7623,7 @@ JAVASCRIPT;
 
                 case "count":
                 case "number":
-                // FIXME Should also apply to integer
+                case "integer":
                 case "mio":
                     $out           = "";
                     $count_display = 0;
@@ -8424,7 +8424,7 @@ HTML;
                 switch ($searchopt[$field_num]['datatype']) {
                     case 'mio':
                     case 'count':
-                    // FIXME Should also apply to integer
+                    case "integer":
                     case 'number':
                         $opt = [
                             'contains'    => __('contains'),
