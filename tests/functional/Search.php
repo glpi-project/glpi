@@ -3295,8 +3295,8 @@ class Search extends DbTestCase
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 4, // port
             'value'             => '123',
-            'expected_and'      => "(`glpi_authldaps`.`port` LIKE '%123%')",
-            'expected_and_not'  => "(`glpi_authldaps`.`port` NOT LIKE '%123%' OR `glpi_authldaps`.`port` IS NULL)",
+            'expected_and'      => "(`glpi_authldaps`.`port` = 123)",
+            'expected_and_not'  => "(`glpi_authldaps`.`port` <> 123)",
         ];
 
         // datatype=number
@@ -4220,8 +4220,8 @@ class Search extends DbTestCase
                         'itemtype'          => \AuthLDAP::class,
                         'search_option'     => 4, // port
                         'value'             => $searched_value,
-                        'expected_and'      => "(`glpi_authldaps`.`port` LIKE '%{$searched_value}%')",
-                        'expected_and_not'  => "(`glpi_authldaps`.`port` NOT LIKE '%{$searched_value}%' OR `glpi_authldaps`.`port` IS NULL)",
+                        'expected_and'      => "(`glpi_authldaps`.`port` {$operator} {$int_value})",
+                        'expected_and_not'  => "(`glpi_authldaps`.`port` {$not_operator} {$int_value})",
                     ];
 
                     // datatype=number
