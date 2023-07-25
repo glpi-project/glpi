@@ -59,10 +59,16 @@ if (!is_a($itemtype, CommonITILObject::class, true)) {
 $item = new $itemtype();
 
 // Validate item
-if (!$item->getFromDB($items_id) || !$item->canViewItem()) {
+if (
+    !$item->getFromDB($items_id)
+    || !$item->canViewItem()
+    || !$item->isField('content')
+) {
     Response::sendError(404, "Item not found");
 }
 
 // Display content
 header('Content-type: text/html');
-echo RichText::getEnhancedHtml($item->fields['content']);
+echo RichText::getEnhancedHtml($item->fields['content'], [
+    'images_gallery' => false, // Don't show photoswipe gallery
+]);
