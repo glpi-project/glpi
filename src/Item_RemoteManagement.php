@@ -220,6 +220,9 @@ class Item_RemoteManagement extends CommonDBChild
             case self::SUPREMO:
                 $href = "supremo:$id";
                 break;
+            case self::RUSTDESK:
+                $href = "rustdesk://connection/new/$id";
+                break;
         }
 
         if ($href === null) {
