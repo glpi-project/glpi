@@ -4209,19 +4209,27 @@ class Search extends DbTestCase
         // It should result in usage of the corresponding SQL operator.
 
         foreach (['>', '>=', '<', '<='] as $operator) {
-            foreach (['', ' '] as $spacing) {
-                foreach ([15, 2.3, 1.125] as $value) {
-                    $searched_value = "{$operator}{$spacing}{$value}";
-                    $int_value      = round($value);
-                    $not_operator   = str_contains($operator, '>') ? str_replace('>', '<', $operator) : str_replace('<', '>', $operator);
+            foreach ([15, 2.3, 1.125] as $value) {
+                $searched_values = [
+                    // positive values, with or without spaces
+                    "{$operator}{$value}"       => "{$value}",
+                    " {$operator}  {$value} "   => "{$value}",
 
+                    // negative values, with or without spaces
+                    "{$operator}-{$value}"      => "-{$value}",
+                    " {$operator} -{$value} "   => "-{$value}",
+                    "{$operator} - {$value} "   => "-{$value}",
+                ];
+                $not_operator   = str_contains($operator, '>') ? str_replace('>', '<', $operator) : str_replace('<', '>', $operator);
+
+                foreach ($searched_values as $searched_value => $signed_value) {
                     // datatype=integer
                     yield [
                         'itemtype'          => \AuthLDAP::class,
                         'search_option'     => 4, // port
                         'value'             => $searched_value,
-                        'expected_and'      => "(`glpi_authldaps`.`port` {$operator} {$int_value})",
-                        'expected_and_not'  => "(`glpi_authldaps`.`port` {$not_operator} {$int_value})",
+                        'expected_and'      => "(`glpi_authldaps`.`port` {$operator} {$signed_value})",
+                        'expected_and_not'  => "(`glpi_authldaps`.`port` {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=number
@@ -4229,8 +4237,8 @@ class Search extends DbTestCase
                         'itemtype'          => \AuthLDAP::class,
                         'search_option'     => 32, // timeout
                         'value'             => $searched_value,
-                        'expected_and'      => "(`glpi_authldaps`.`timeout` {$operator} {$int_value})",
-                        'expected_and_not'  => "(`glpi_authldaps`.`timeout` {$not_operator} {$int_value})",
+                        'expected_and'      => "(`glpi_authldaps`.`timeout` {$operator} {$signed_value})",
+                        'expected_and_not'  => "(`glpi_authldaps`.`timeout` {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=number (usehaving=true)
@@ -4238,8 +4246,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Computer::class,
                         'search_option'     => 115, // harddrive capacity
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Computer_115` {$operator} {$int_value})",
-                        'expected_and_not'  => "(`ITEM_Computer_115` {$not_operator} {$int_value})",
+                        'expected_and'      => "(`ITEM_Computer_115` {$operator} {$signed_value})",
+                        'expected_and_not'  => "(`ITEM_Computer_115` {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=decimal
@@ -4247,8 +4255,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Budget::class,
                         'search_option'     => 7, // value
                         'value'             => $searched_value,
-                        'expected_and'      => "(`glpi_budgets`.`value` {$operator} {$int_value})",
-                        'expected_and_not'  => "(`glpi_budgets`.`value` {$not_operator} {$int_value})",
+                        'expected_and'      => "(`glpi_budgets`.`value` {$operator} {$signed_value})",
+                        'expected_and_not'  => "(`glpi_budgets`.`value` {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=decimal (usehaving=true)
@@ -4256,8 +4264,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Contract::class,
                         'search_option'     => 11, // totalcost
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Contract_11` {$operator} {$int_value})",
-                        'expected_and_not'  => "(`ITEM_Contract_11` {$not_operator} {$int_value})",
+                        'expected_and'      => "(`ITEM_Contract_11` {$operator} {$signed_value})",
+                        'expected_and_not'  => "(`ITEM_Contract_11` {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=count (usehaving=true)
@@ -4265,8 +4273,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Ticket::class,
                         'search_option'     => 27, // number of followups
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Ticket_27` {$operator} {$int_value})",
-                        'expected_and_not'  => "(`ITEM_Ticket_27` {$not_operator} {$int_value})",
+                        'expected_and'      => "(`ITEM_Ticket_27` {$operator} {$signed_value})",
+                        'expected_and_not'  => "(`ITEM_Ticket_27` {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=mio (usehaving=true)
@@ -4274,8 +4282,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Computer::class,
                         'search_option'     => 111, // memory size
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Computer_111` {$operator} {$int_value})",
-                        'expected_and_not'  => "(`ITEM_Computer_111` {$not_operator} {$int_value})",
+                        'expected_and'      => "(`ITEM_Computer_111` {$operator} {$signed_value})",
+                        'expected_and_not'  => "(`ITEM_Computer_111` {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=progressbar (with computation)
@@ -4283,8 +4291,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Computer::class,
                         'search_option'     => 152, // harddrive freepercent
                         'value'             => $searched_value,
-                        'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) {$operator} {$int_value})",
-                        'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) {$not_operator} {$int_value})",
+                        'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) {$operator} {$signed_value})",
+                        'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=timestamp
@@ -4292,8 +4300,8 @@ class Search extends DbTestCase
                         'itemtype'          => \CronTask::class,
                         'search_option'     => 6, // frequency
                         'value'             => $searched_value,
-                        'expected_and'      => "(`glpi_crontasks`.`frequency` {$operator} {$int_value})",
-                        'expected_and_not'  => "(`glpi_crontasks`.`frequency` {$not_operator} {$int_value})",
+                        'expected_and'      => "(`glpi_crontasks`.`frequency` {$operator} {$signed_value})",
+                        'expected_and_not'  => "(`glpi_crontasks`.`frequency` {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=timestamp (usehaving=true)
@@ -4301,8 +4309,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Ticket::class,
                         'search_option'     => 49, // actiontime
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Ticket_49` {$operator} {$int_value})",
-                        'expected_and_not'  => "(`ITEM_Ticket_49` {$not_operator} {$int_value})",
+                        'expected_and'      => "(`ITEM_Ticket_49` {$operator} {$signed_value})",
+                        'expected_and_not'  => "(`ITEM_Ticket_49` {$not_operator} {$signed_value})",
                     ];
                 }
             }
