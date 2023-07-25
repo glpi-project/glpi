@@ -3804,7 +3804,7 @@ abstract class CommonITILObject extends CommonDBTM
             'datatype'           => 'itemlink',
             'searchtype'         => 'contains',
             'massiveaction'      => false,
-            'additionalfields'   => ['id', 'content', 'status']
+            'additionalfields'   => ['id', 'status']
         ];
 
         $tab[] = [
