@@ -141,23 +141,26 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     $send_data['mode']                      = $data['mode'];
                                     $send_data['event']                     = $event;
 
-                                    foreach ($options as $k => $v) {
-                                        $itemtype = getItemtypeForForeignKeyField($k);
-                                        if (class_exists($itemtype)) {
-                                            if ($data['attach_documents'] == NotificationMailingSetting::INHERIT) {
-                                                $data['attach_documents'] = $CFG_GLPI['attach_ticket_documents_to_mail'];
-                                            }
-                                            switch ($data['attach_documents']) {
-                                                case NotificationMailingSetting::ALL_DOCUMENTS:
-                                                    $send_data['itemtype_of_documents'] = $send_data['_itemtype'];
-                                                    $send_data['items_id_of_documents'] = $send_data['_items_id'];
-                                                    break;
-                                                case NotificationMailingSetting::ONLY_TRIGGERED:
+                                    if ($data['attach_documents'] == NotificationMailingSetting::INHERIT) {
+                                        $data['attach_documents'] = $CFG_GLPI['attach_ticket_documents_to_mail'];
+                                    }
+                                    switch ($data['attach_documents']) {
+                                        case NotificationMailingSetting::ALL_DOCUMENTS:
+                                            $send_data['itemtype_of_documents'] = $send_data['_itemtype'];
+                                            $send_data['items_id_of_documents'] = $send_data['_items_id'];
+                                            break;
+                                        case NotificationMailingSetting::ONLY_TRIGGERED:
+                                            // Default parent item
+                                            $send_data['itemtype_of_documents'] = $send_data['_itemtype'];
+                                            $send_data['items_id_of_documents'] = $send_data['_items_id'];
+                                            foreach ($options as $k => $v) {
+                                                $itemtype = getItemtypeForForeignKeyField($k);
+                                                if (class_exists($itemtype)) {
                                                     $send_data['itemtype_of_documents'] = $itemtype;
                                                     $send_data['items_id_of_documents'] = $v;
-                                                    break;
+                                                }
                                             }
-                                        }
+                                            break;
                                     }
 
                                     Notification::send($send_data);
