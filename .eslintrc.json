@@ -69,7 +69,7 @@
     },
     "overrides": [
         {
-            "files": ["js/modules/**"],
+            "files": ["js/modules/**", "js/src/**"],
             "parserOptions": {
                 "sourceType": "module"
             }
