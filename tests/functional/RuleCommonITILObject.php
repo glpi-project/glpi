@@ -2632,7 +2632,8 @@ abstract class RuleCommonITILObject extends DbTestCase
             '_validation_targets' => [
                 [
                     'itemtype_target' => User::class,
-                    'items_id_target' => getItemByTypeName(User::class, 'glpi', true)],
+                    'items_id_target' => getItemByTypeName(User::class, 'glpi', true)
+                ],
             ],
             '_add_validation'   => false,
         ], ['validatortype']);

@@ -2832,7 +2832,7 @@ class Search extends DbTestCase
                 'search_option'     => 4, // type
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_computertypes`.`name` IS NULL OR `glpi_computertypes`.`name` = '')",
-                'expected_and_not'  => "(`glpi_computertypes`.`name` IS NOT NULL OR `glpi_computertypes`.`name` = '')",
+                'expected_and_not'  => "(`glpi_computertypes`.`name` IS NOT NULL AND `glpi_computertypes`.`name` <> '')",
             ];
 
             // datatype=dropdown (usehaving=true)
@@ -2841,7 +2841,7 @@ class Search extends DbTestCase
                 'search_option'     => 142, // document name
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Ticket_142` IS NULL OR `ITEM_Ticket_142` = '')",
-                'expected_and_not'  => "(`ITEM_Ticket_142` IS NOT NULL OR `ITEM_Ticket_142` = '')",
+                'expected_and_not'  => "(`ITEM_Ticket_142` IS NOT NULL AND `ITEM_Ticket_142` <> '')",
             ];
 
             // datatype=itemlink
@@ -2850,7 +2850,7 @@ class Search extends DbTestCase
                 'search_option'     => 1, // name
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_computers`.`name` IS NULL OR `glpi_computers`.`name` = '')",
-                'expected_and_not'  => "(`glpi_computers`.`name` IS NOT NULL OR `glpi_computers`.`name` = '')",
+                'expected_and_not'  => "(`glpi_computers`.`name` IS NOT NULL AND `glpi_computers`.`name` <> '')",
             ];
 
             // datatype=itemlink (usehaving=true)
@@ -2859,7 +2859,7 @@ class Search extends DbTestCase
                 'search_option'     => 50, // parent tickets
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Ticket_50` IS NULL OR `ITEM_Ticket_50` = '')",
-                'expected_and_not'  => "(`ITEM_Ticket_50` IS NOT NULL OR `ITEM_Ticket_50` = '')",
+                'expected_and_not'  => "(`ITEM_Ticket_50` IS NOT NULL AND `ITEM_Ticket_50` <> '')",
             ];
 
             // datatype=string
@@ -2868,7 +2868,7 @@ class Search extends DbTestCase
                 'search_option'     => 47, // uuid
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_computers`.`uuid` IS NULL OR `glpi_computers`.`uuid` = '')",
-                'expected_and_not'  => "(`glpi_computers`.`uuid` IS NOT NULL OR `glpi_computers`.`uuid` = '')",
+                'expected_and_not'  => "(`glpi_computers`.`uuid` IS NOT NULL AND `glpi_computers`.`uuid` <> '')",
             ];
 
             // datatype=text
@@ -2877,7 +2877,7 @@ class Search extends DbTestCase
                 'search_option'     => 16, // comment
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_computers`.`comment` IS NULL OR `glpi_computers`.`comment` = '')",
-                'expected_and_not'  => "(`glpi_computers`.`comment` IS NOT NULL OR `glpi_computers`.`comment` = '')",
+                'expected_and_not'  => "(`glpi_computers`.`comment` IS NOT NULL AND `glpi_computers`.`comment` <> '')",
             ];
 
             // datatype=integer
@@ -2886,11 +2886,14 @@ class Search extends DbTestCase
                 'search_option'     => 4, // port
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_authldaps`.`port` IS NULL OR `glpi_authldaps`.`port` = '')",
-                'expected_and_not'  => "(`glpi_authldaps`.`port` IS NOT NULL OR `glpi_authldaps`.`port` = '')",
+                'expected_and_not'  => "(`glpi_authldaps`.`port` IS NOT NULL AND `glpi_authldaps`.`port` <> '')",
             ];
+            // log for both AND and AND NOT cases
             if ($is_mariadb_10_2) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
+                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
             } elseif ($is_mariadb) {
+                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
@@ -2900,11 +2903,14 @@ class Search extends DbTestCase
                 'search_option'     => 32, // timeout
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_authldaps`.`timeout` IS NULL OR `glpi_authldaps`.`timeout` = '')",
-                'expected_and_not'  => "(`glpi_authldaps`.`timeout` IS NOT NULL OR `glpi_authldaps`.`timeout` = '')",
+                'expected_and_not'  => "(`glpi_authldaps`.`timeout` IS NOT NULL AND `glpi_authldaps`.`timeout` <> '')",
             ];
+            // log for both AND and AND NOT cases
             if ($is_mariadb_10_2) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
+                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
             } elseif ($is_mariadb) {
+                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
@@ -2914,7 +2920,7 @@ class Search extends DbTestCase
                 'search_option'     => 115, // harddrive capacity
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Computer_115` IS NULL OR `ITEM_Computer_115` = '')",
-                'expected_and_not'  => "(`ITEM_Computer_115` IS NOT NULL OR `ITEM_Computer_115` = '')",
+                'expected_and_not'  => "(`ITEM_Computer_115` IS NOT NULL AND `ITEM_Computer_115` <> '')",
             ];
 
             // datatype=decimal
@@ -2923,8 +2929,10 @@ class Search extends DbTestCase
                 'search_option'     => 7, // value
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_budgets`.`value` IS NULL OR `glpi_budgets`.`value` = '')",
-                'expected_and_not'  => "(`glpi_budgets`.`value` IS NOT NULL OR `glpi_budgets`.`value` = '')",
+                'expected_and_not'  => "(`glpi_budgets`.`value` IS NOT NULL AND `glpi_budgets`.`value` <> '')",
             ];
+            // log for both AND and AND NOT cases
+            $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
 
             // datatype=decimal (usehaving=true)
@@ -2933,7 +2941,7 @@ class Search extends DbTestCase
                 'search_option'     => 11, // totalcost
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Contract_11` IS NULL OR `ITEM_Contract_11` = '')",
-                'expected_and_not'  => "(`ITEM_Contract_11` IS NOT NULL OR `ITEM_Contract_11` = '')",
+                'expected_and_not'  => "(`ITEM_Contract_11` IS NOT NULL AND `ITEM_Contract_11` <> '')",
             ];
 
             // datatype=count (usehaving=true)
@@ -2942,11 +2950,14 @@ class Search extends DbTestCase
                 'search_option'     => 27, // number of followups
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Ticket_27` IS NULL OR `ITEM_Ticket_27` = '')",
-                'expected_and_not'  => "(`ITEM_Ticket_27` IS NOT NULL OR `ITEM_Ticket_27` = '')",
+                'expected_and_not'  => "(`ITEM_Ticket_27` IS NOT NULL AND `ITEM_Ticket_27` <> '')",
             ];
+            // log for both AND and AND NOT cases
             if ($is_mariadb_10_2) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
+                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
             } elseif ($is_mariadb) {
+                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
@@ -2956,7 +2967,7 @@ class Search extends DbTestCase
                 'search_option'     => 111, // memory size
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Computer_111` IS NULL OR `ITEM_Computer_111` = '')",
-                'expected_and_not'  => "(`ITEM_Computer_111` IS NOT NULL OR `ITEM_Computer_111` = '')",
+                'expected_and_not'  => "(`ITEM_Computer_111` IS NOT NULL AND `ITEM_Computer_111` <> '')",
             ];
 
             // datatype=progressbar (with computation)
@@ -2965,7 +2976,7 @@ class Search extends DbTestCase
                 'search_option'     => 152, // harddrive freepercent
                 'value'             => $null_value,
                 'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') = '')",
-                'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NOT NULL OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') = '')",
+                'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NOT NULL AND LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') <> '')",
             ];
 
             // datatype=timestamp
@@ -2974,11 +2985,14 @@ class Search extends DbTestCase
                 'search_option'     => 6, // frequency
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_crontasks`.`frequency` IS NULL OR `glpi_crontasks`.`frequency` = '')",
-                'expected_and_not'  => "(`glpi_crontasks`.`frequency` IS NOT NULL OR `glpi_crontasks`.`frequency` = '')",
+                'expected_and_not'  => "(`glpi_crontasks`.`frequency` IS NOT NULL AND `glpi_crontasks`.`frequency` <> '')",
             ];
+            // log for both AND and AND NOT cases
             if ($is_mariadb_10_2) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
+                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
             } elseif ($is_mariadb) {
+                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
@@ -2988,7 +3002,7 @@ class Search extends DbTestCase
                 'search_option'     => 49, // actiontime
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Ticket_49` IS NULL OR `ITEM_Ticket_49` = '')",
-                'expected_and_not'  => "(`ITEM_Ticket_49` IS NOT NULL OR `ITEM_Ticket_49` = '')",
+                'expected_and_not'  => "(`ITEM_Ticket_49` IS NOT NULL AND `ITEM_Ticket_49` <> '')",
             ];
 
             // datatype=datetime
@@ -2997,7 +3011,7 @@ class Search extends DbTestCase
                 'search_option'     => 9, // last_inventory_update
                 'value'             => $null_value,
                 'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NULL OR CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) = '')",
-                'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NOT NULL OR CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) = '')",
+                'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NOT NULL AND CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) <> '')",
             ];
 
             // datatype=datetime computed field
@@ -3006,7 +3020,7 @@ class Search extends DbTestCase
                 'search_option'     => 188, // next_escalation_level
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Ticket_188` IS NULL OR `ITEM_Ticket_188` = '')",
-                'expected_and_not'  => "(`ITEM_Ticket_188` IS NOT NULL OR `ITEM_Ticket_188` = '')",
+                'expected_and_not'  => "(`ITEM_Ticket_188` IS NOT NULL AND `ITEM_Ticket_188` <> '')",
             ];
 
             // datatype=date
@@ -3015,7 +3029,7 @@ class Search extends DbTestCase
                 'search_option'     => 5, // begin_date
                 'value'             => $null_value,
                 'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) IS NULL OR CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) = '')",
-                'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) IS NOT NULL OR CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) = '')",
+                'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) IS NOT NULL AND CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) <> '')",
             ];
 
             // datatype=date_delay
@@ -3036,7 +3050,7 @@ class Search extends DbTestCase
                 'search_option'     => 6, // email
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_contacts`.`email` IS NULL OR `glpi_contacts`.`email` = '')",
-                'expected_and_not'  => "(`glpi_contacts`.`email` IS NOT NULL OR `glpi_contacts`.`email` = '')",
+                'expected_and_not'  => "(`glpi_contacts`.`email` IS NOT NULL AND `glpi_contacts`.`email` <> '')",
             ];
 
             // datatype=weblink
@@ -3045,7 +3059,7 @@ class Search extends DbTestCase
                 'search_option'     => 4, // link
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_documents`.`link` IS NULL OR `glpi_documents`.`link` = '')",
-                'expected_and_not'  => "(`glpi_documents`.`link` IS NOT NULL OR `glpi_documents`.`link` = '')",
+                'expected_and_not'  => "(`glpi_documents`.`link` IS NOT NULL AND `glpi_documents`.`link` <> '')",
             ];
 
             // datatype=mac
@@ -3054,7 +3068,7 @@ class Search extends DbTestCase
                 'search_option'     => 11, // mac_default
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` IS NULL OR `glpi_devicenetworkcards`.`mac_default` = '')",
-                'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` IS NOT NULL OR `glpi_devicenetworkcards`.`mac_default` = '')",
+                'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` IS NOT NULL AND `glpi_devicenetworkcards`.`mac_default` <> '')",
             ];
 
             // datatype=color
@@ -3063,7 +3077,7 @@ class Search extends DbTestCase
                 'search_option'     => 15, // color
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_cables`.`color` IS NULL OR `glpi_cables`.`color` = '')",
-                'expected_and_not'  => "(`glpi_cables`.`color` IS NOT NULL OR `glpi_cables`.`color` = '')",
+                'expected_and_not'  => "(`glpi_cables`.`color` IS NOT NULL AND `glpi_cables`.`color` <> '')",
             ];
 
             // datatype=language
@@ -3072,7 +3086,7 @@ class Search extends DbTestCase
                 'search_option'     => 17, // language
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_users`.`language` IS NULL OR `glpi_users`.`language` = '')",
-                'expected_and_not'  => "(`glpi_users`.`language` IS NOT NULL OR `glpi_users`.`language` = '')",
+                'expected_and_not'  => "(`glpi_users`.`language` IS NOT NULL AND `glpi_users`.`language` <> '')",
             ];
         }
 
