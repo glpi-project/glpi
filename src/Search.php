@@ -9147,11 +9147,8 @@ HTML;
     {
 
         $sql = $field . self::makeTextSearch($val, $not);
-       // mange empty field (string with length = 0)
-        $sql_or = "";
-        if (strtolower($val) == "null") {
-            // FIXME Should operator be `<>` when `$not === true`?
 
+        if (strtolower($val) == "null") {
             // FIXME
             // `OR field = ''` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
             // when following datatype are used:
@@ -9167,7 +9164,12 @@ HTML;
             //
             // Removing this condition requires, at least, to use the `int`/`float`/`double`/`timestamp`/`date` types in DB,
             // to ensure that the `''` value will not be stored in DB.
-            $sql_or = "OR $field = ''";
+
+            if ($not) {
+                $sql .= " AND $field <> ''";
+            } else {
+                $sql .= " OR $field = ''";
+            }
         }
 
         if (
@@ -9176,7 +9178,8 @@ HTML;
         ) {   // Empty
             $sql = "($sql OR $field IS NULL)";
         }
-        return " $link ($sql $sql_or)";
+
+        return " $link ($sql)";
     }
 
     /**
