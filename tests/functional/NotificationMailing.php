@@ -241,11 +241,13 @@ class NotificationMailing extends DbTestCase
         ]);
         $this->integer($ticketID)->isGreaterThan(0);
 
-        $data = getAllDataFromTable('glpi_queuednotifications',
-        [
-            'itemtype' => 'Ticket',
-            'items_id' => $ticketID
-        ]);
+        $data = getAllDataFromTable(
+            'glpi_queuednotifications',
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticketID
+            ]
+        );
         $this->array($data)->hasSize(1);
 
         $row = array_pop($data);
@@ -279,11 +281,13 @@ class NotificationMailing extends DbTestCase
         ]);
         $this->integer($ITILFollowUpID)->isGreaterThan(0);
 
-        $data = getAllDataFromTable('glpi_queuednotifications',
-        [
-            'itemtype' => 'Ticket',
-            'items_id' => $ticketID
-        ]);
+        $data = getAllDataFromTable(
+            'glpi_queuednotifications',
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticketID
+            ]
+        );
         $this->array($data)->hasSize(2);
 
         $row = array_pop($data);
@@ -314,11 +318,13 @@ class NotificationMailing extends DbTestCase
         ]);
         $this->integer($ITILFollowUpID)->isGreaterThan(0);
 
-        $data = getAllDataFromTable('glpi_queuednotifications',
-        [
-            'itemtype' => 'Ticket',
-            'items_id' => $ticketID
-        ]);
+        $data = getAllDataFromTable(
+            'glpi_queuednotifications',
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticketID
+            ]
+        );
         $this->array($data)->hasSize(3);
 
         $row = array_pop($data);
@@ -353,11 +359,13 @@ class NotificationMailing extends DbTestCase
         ]);
         $this->integer($ticketID)->isGreaterThan(0);
 
-        $data = getAllDataFromTable('glpi_queuednotifications',
-        [
-            'itemtype' => 'Ticket',
-            'items_id' => $ticketID
-        ]);
+        $data = getAllDataFromTable(
+            'glpi_queuednotifications',
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticketID
+            ]
+        );
         $this->array($data)->hasSize(1);
 
         $row = array_pop($data);
@@ -390,11 +398,13 @@ class NotificationMailing extends DbTestCase
         ]);
         $this->integer($ITILFollowUpID)->isGreaterThan(0);
 
-        $data = getAllDataFromTable('glpi_queuednotifications',
-        [
-            'itemtype' => 'Ticket',
-            'items_id' => $ticketID
-        ]);
+        $data = getAllDataFromTable(
+            'glpi_queuednotifications',
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticketID
+            ]
+        );
         $this->array($data)->hasSize(2);
 
         $row = array_pop($data);
@@ -425,11 +435,13 @@ class NotificationMailing extends DbTestCase
         ]);
         $this->integer($ITILFollowUpID)->isGreaterThan(0);
 
-        $data = getAllDataFromTable('glpi_queuednotifications',
-        [
-            'itemtype' => 'Ticket',
-            'items_id' => $ticketID
-        ]);
+        $data = getAllDataFromTable(
+            'glpi_queuednotifications',
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticketID
+            ]
+        );
         $this->array($data)->hasSize(3);
 
         $row = array_pop($data);
@@ -464,11 +476,13 @@ class NotificationMailing extends DbTestCase
         ]);
         $this->integer($ticketID)->isGreaterThan(0);
 
-        $data = getAllDataFromTable('glpi_queuednotifications',
-        [
-            'itemtype' => 'Ticket',
-            'items_id' => $ticketID
-        ]);
+        $data = getAllDataFromTable(
+            'glpi_queuednotifications',
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticketID
+            ]
+        );
         $this->array($data)->hasSize(1);
 
         $row = array_pop($data);
@@ -501,11 +515,13 @@ class NotificationMailing extends DbTestCase
         ]);
         $this->integer($ITILFollowUpID)->isGreaterThan(0);
 
-        $data = getAllDataFromTable('glpi_queuednotifications',
-        [
-            'itemtype' => 'Ticket',
-            'items_id' => $ticketID
-        ]);
+        $data = getAllDataFromTable(
+            'glpi_queuednotifications',
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticketID
+            ]
+        );
         $this->array($data)->hasSize(2);
 
         $row = array_pop($data);$result = [
@@ -535,11 +551,13 @@ class NotificationMailing extends DbTestCase
         ]);
         $this->integer($ITILFollowUpID)->isGreaterThan(0);
 
-        $data = getAllDataFromTable('glpi_queuednotifications',
-        [
-            'itemtype' => 'Ticket',
-            'items_id' => $ticketID
-        ]);
+        $data = getAllDataFromTable(
+            'glpi_queuednotifications',
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticketID
+            ]
+        );
         $this->array($data)->hasSize(3);
 
         $row = array_pop($data);
