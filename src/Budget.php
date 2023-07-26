@@ -724,7 +724,7 @@ class Budget extends CommonDropdown
                         ],
                         'WHERE'        => [
                             'glpi_contractcosts.budgets_id'     => $budgets_id
-                        ] + getEntitiesRestrictCriteria($table, 'entities_id'),
+                        ],
                         'GROUPBY'      => [
                             $table . '.entities_id'
                         ]
@@ -749,7 +749,7 @@ class Budget extends CommonDropdown
                         ],
                         'WHERE'        => [
                             'glpi_projectcosts.budgets_id'  => $budgets_id
-                        ] + getEntitiesRestrictCriteria($table, 'entities_id'),
+                        ],
                         'GROUPBY'      => [
                             $item->getTable() . '.entities_id'
                         ]
@@ -783,7 +783,7 @@ class Budget extends CommonDropdown
                         ],
                         'WHERE'        => [
                             $costtable . '.budgets_id' => $budgets_id
-                        ] + getEntitiesRestrictCriteria($table, 'entities_id'),
+                        ],
                         'GROUPBY'      => [
                             $item->getTable() . '.entities_id'
                         ]
@@ -808,7 +808,7 @@ class Budget extends CommonDropdown
                         'WHERE'        => [
                             'glpi_infocoms.itemtype'            => $itemtype,
                             'glpi_infocoms.budgets_id'          => $budgets_id
-                        ] + getEntitiesRestrictCriteria($table, 'entities_id'),
+                        ],
                         'GROUPBY'      => [
                             $table . '.entities_id'
                         ]
@@ -826,16 +826,24 @@ class Budget extends CommonDropdown
                 $totalbytypes[$itemtype] = 0;
                //Store, for each entity, the budget spent
                 foreach ($iterator as $values) {
-                    if (!isset($entities_values[$values['entities_id']])) {
-                        $entities_values[$values['entities_id']] = 0;
+                    if (in_array($values['entities_id'], $_SESSION['glpiactiveentities'])) {
+                        if (!isset($entities_values[$values['entities_id']])) {
+                            $entities_values[$values['entities_id']] = 0;
+                        }
+                        if (!isset($entitiestype_values[$values['entities_id']][$itemtype])) {
+                            $entitiestype_values[$values['entities_id']][$itemtype] = 0;
+                        }
+                        $entities_values[$values['entities_id']]                 += $values['sumvalue'];
+                        $entitiestype_values[$values['entities_id']][$itemtype]  += $values['sumvalue'];
+                        $totalbytypes[$itemtype]                                 += $values['sumvalue'];
+                    } else {
+                        if (!isset($entities_values[-1])) {
+                            $entities_values[-1] = 0;
+                        }
+                        $entities_values[-1]                 += $values['sumvalue'];
+                        $entitiestype_values[-1][$itemtype] = '-';
                     }
-                    if (!isset($entitiestype_values[$values['entities_id']][$itemtype])) {
-                        $entitiestype_values[$values['entities_id']][$itemtype] = 0;
-                    }
-                    $entities_values[$values['entities_id']]                 += $values['sumvalue'];
-                    $entitiestype_values[$values['entities_id']][$itemtype]  += $values['sumvalue'];
-                    $total                                                   += $values['sumvalue'];
-                    $totalbytypes[$itemtype]                                 += $values['sumvalue'];
+                    $total += $values['sumvalue'];
                 }
             }
         }
@@ -849,19 +857,27 @@ class Budget extends CommonDropdown
         echo "<tr><th>" . Entity::getTypeName(1) . "</th>";
         if (count($found_types)) {
             foreach ($found_types as $type => $typename) {
-                echo "<th>$typename</th>";
+                echo "<th class='right'>$typename</th>";
             }
         }
-        echo "<th>" . __('Total') . "</th>";
+        echo "<th class='right'>" . __('Total') . "</th>";
         echo "</tr>";
 
        // get all entities ordered by names
         $allentities = getAllDataFromTable('glpi_entities', ['ORDER' => 'completename'], true);
+        $allentities[-1] = -1;
+        ksort($allentities);
 
         foreach (array_keys($allentities) as $entity) {
             if (isset($entities_values[$entity])) {
                 echo "<tr class='tab_bg_1'>";
-                echo "<td class='b'>" . Dropdown::getDropdownName('glpi_entities', $entity) . "</td>";
+                echo "<td class='b'>";
+                if ($entity == -1) {
+                    echo __('Other entities');
+                } else {
+                    echo Dropdown::getDropdownName('glpi_entities', $entity);
+                }
+                echo "</td>";
                 if (count($found_types)) {
                     foreach ($found_types as $type => $typename) {
                         echo "<td class='numeric'>";
@@ -893,13 +909,11 @@ class Budget extends CommonDropdown
         echo "<tr class='tab_bg_1 noHover'>";
         echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total spent on the budget') . "</td>";
         echo "<td class='numeric b'>" . Html::formatNumber($total) . "</td></tr>";
-        if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
-            echo "<tr class='tab_bg_1 noHover'>";
-            echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total remaining on the budget') .
-               "</td>";
-            echo "<td class='numeric b'>" . Html::formatNumber($budget->fields['value'] - $total) .
-               "</td></tr>";
-        }
+        echo "<tr class='tab_bg_1 noHover'>";
+        echo "<td class='right' colspan='" . ($colspan - 1) . "'>" . __('Total remaining on the budget') .
+            "</td>";
+        echo "<td class='numeric b'>" . Html::formatNumber($budget->fields['value'] - $total) .
+            "</td></tr>";
         echo "</table></div>";
     }
 

@@ -1666,6 +1666,15 @@ class Session
             );
         }
 
+        $message = __("The action you have requested is not allowed.");
+        if (
+            ($requestToken = $data['_glpi_csrf_token'] ?? null) !== null
+            && isset($_SESSION['glpicsrftokens'][$requestToken])
+            && ($_SESSION['glpicsrftokens'][$requestToken] < time())
+        ) {
+            $message = __("Your session has expired.");
+        }
+
         if (!Session::validateCSRF($data)) {
             $requested_url = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown');
             $user_id = self::getLoginUserID() ?? 'Anonymous';
@@ -1674,10 +1683,10 @@ class Session
             // Output JSON if requested by client
             if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
                 http_response_code(403);
-                die(json_encode(["message" => __("The action you have requested is not allowed.")]));
+                die(json_encode(["message" => $message]));
             }
 
-            Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
+            Html::displayErrorAndDie($message, true);
         }
     }
 

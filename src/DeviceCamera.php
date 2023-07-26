@@ -117,7 +117,7 @@ class DeviceCamera extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'flashunit',
             'name'               => __('Flashunit'),
-            'datatype'           => 'boolean',
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [

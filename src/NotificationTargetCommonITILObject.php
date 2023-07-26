@@ -141,7 +141,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'add_followup'      => __("New followup"),
             'update_followup'   => __('Update of a followup'),
             'delete_followup'   => __('Deletion of a followup'),
-            'user_mention'      => __('User mentionned'),
+            'user_mention'      => __('User mentioned'),
             'auto_reminder'     => ITILReminder::getTypeName(1),
             'add_document'      => __('New document'),
         ];
@@ -858,7 +858,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     {
 
         if ($event === 'user_mention') {
-            $this->addTarget(Notification::MENTIONNED_USER, __('Mentionned user'));
+            $this->addTarget(Notification::MENTIONNED_USER, __('Mentioned user'));
             return; // Do not propose more targets
         }
 

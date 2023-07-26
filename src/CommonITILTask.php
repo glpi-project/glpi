@@ -764,7 +764,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'table'              => $this->getTable(),
             'field'              => 'actiontime',
             'name'               => __('Total duration'),
-            'datatype'           => 'actiontime',
+            'datatype'           => 'timestamp',
             'massiveaction'      => false
         ];
 

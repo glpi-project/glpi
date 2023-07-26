@@ -144,7 +144,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'table'              => $this->getTable(),
             'field'              => 'actiontime',
             'name'               => __('Total duration'),
-            'datatype'           => 'actiontime',
+            'datatype'           => 'timestamp',
             'massiveaction'      => false
         ];
 

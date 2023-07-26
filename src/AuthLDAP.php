@@ -519,8 +519,8 @@ class AuthLDAP extends CommonDBTM
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td><label for='use_bind'>";
-            echo __('Use Bind (for non-anonymous binds)') . "</label>&nbsp;";
-            Html::showToolTip(__("Allow to use RootDN and Password for non-anonymous binds."));
+            echo __('Use bind') . "</label>&nbsp;";
+            Html::showToolTip(__("Indicates whether a simple bind operation should be used during connection to LDAP server. Disabling this behaviour can be required when LDAPS bind is used."));
             echo "</td>";
             echo "<td colspan='3'>";
             $rand_use_bind = mt_rand();

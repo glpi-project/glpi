@@ -588,7 +588,15 @@ class Rule extends CommonDBTM
      **/
     public function getCollectionClassName()
     {
-        return $this->getType() . 'Collection';
+        $parent = static::class;
+        do {
+            $collection_class = $parent . 'Collection';
+            $parent = get_parent_class($parent);
+        } while ($parent !== 'CommonDBTM' && $parent !== false && !class_exists($collection_class));
+        if ($collection_class === null) {
+            trigger_error('Unable to find collection class for ' . static::getType(), E_USER_ERROR);
+        }
+        return $collection_class;
     }
 
 
@@ -2971,12 +2979,17 @@ class Rule extends CommonDBTM
 
     public function getActions()
     {
-        return [
-            '_stop_rules_processing' => [
+        $actions = [];
+        $collection_class = $this->getCollectionClassName();
+        /** @var RuleCollection $collection */
+        $collection = new $collection_class();
+        if (!$collection->stop_on_first_match) {
+            $actions['_stop_rules_processing'] = [
                 'name' => __('Skip remaining rules'),
                 'type' => 'yesonly',
-            ]
-        ];
+            ];
+        }
+        return $actions;
     }
 
 

@@ -657,19 +657,15 @@ class MailCollector extends DbTestCase
         ];
 
         $msg = null;
-        $this->output(
+        $this->when(
             function () use (&$msg) {
-                $this->when(
-                    function () use (&$msg) {
-                        $msg = $this->collector->collect($this->mailgate_id);
-                    }
-                )
-                ->error()
-                    ->withType(E_USER_WARNING)
-                    ->withMessage('Invalid header "X-Invalid-Encoding"')
-                    ->exists();
+                $msg = $this->collector->collect($this->mailgate_id);
             }
-        )->matches('/^(.*\n){' . count($expected_logged_errors) . '}$/'); // Ensure that output has same count of lines than expected error count
+        )
+        ->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage('Invalid header "X-Invalid-Encoding"')
+            ->exists();
 
         // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
         foreach ($expected_logged_errors as $error_message => $error_level) {

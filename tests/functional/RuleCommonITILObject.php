@@ -38,6 +38,7 @@ namespace tests\units;
 use CommonITILActor;
 use CommonITILValidation;
 use DbTestCase;
+use Entity;
 use Generator;
 use Group;
 use Group_Ticket;
@@ -47,11 +48,12 @@ use ITILFollowup;
 use ITILFollowupTemplate;
 use Rule;
 use RuleAction;
+use RuleBuilder;
 use RuleCriteria;
 use SingletonRuleList;
 use TaskTemplate;
 use Ticket;
-use Toolbox;
+use User;
 
 abstract class RuleCommonITILObject extends DbTestCase
 {
@@ -2580,5 +2582,75 @@ abstract class RuleCommonITILObject extends DbTestCase
             $action,
             $item
         ))->isEqualTo($expected_value);
+    }
+
+    /**
+     * Ensure a rule using the "global_validation" criteria work as expected on updates.
+     *
+     * @return void
+     */
+    public function testGlobalValidationCriteria(): void
+    {
+        $itil_object = $this->getITILObjectInstance();
+
+        if (!$itil_object->isField('global_validation')) {
+            // Nothing to check if field not exists.
+            $this->boolean(true)->isTrue();
+            return;
+        }
+
+        $this->login(TU_USER, TU_PASS);
+
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $urgency_if_rule_triggered = 5;
+
+        // Test category that will be used as a secondary rule criteria
+        $category1 = $this->createItem(ITILCategory::class, [
+            'name'         => 'Test category 1',
+            'entities_id'  => $entity,
+            'is_recursive' => true,
+        ]);
+        $category2 = $this->createItem(ITILCategory::class, [
+            'name'         => 'Test category 2',
+            'entities_id'  => $entity,
+            'is_recursive' => true,
+        ]);
+
+        $builder = new RuleBuilder('Test global_validation criteria rule');
+        $builder
+            ->addCriteria('global_validation', Rule::PATTERN_IS, CommonITILValidation::WAITING)
+            ->addCriteria('itilcategories_id', Rule::PATTERN_IS, $category1->getID())
+            ->addAction('assign', 'urgency', $urgency_if_rule_triggered);
+        $this->createRule($builder, $this->getTestedClass());
+
+        // Create ITIL object with validation request
+        $itil_object = $this->createItem($this->getITILObjectClass(), [
+            'name'              => 'Test ITIL object',
+            'entities_id'       => $entity,
+            'content'           => 'Test ITIL object content',
+            'validatortype'     => 'user',
+            '_validation_targets' => [
+                [
+                    'itemtype_target' => User::class,
+                    'items_id_target' => getItemByTypeName(User::class, 'glpi', true)],
+            ],
+            '_add_validation'   => false,
+        ], ['validatortype']);
+        $this->integer($itil_object->fields['urgency'])->isNotEqualTo($urgency_if_rule_triggered);
+        $this->integer($itil_object->fields['global_validation'])->isEqualTo(CommonITILValidation::WAITING);
+
+        // Change category without triggering the rule
+        $this->updateItem($this->getITILObjectClass(), $itil_object->getID(), [
+            'itilcategories_id' => $category2->getID()
+        ]);
+        $itil_object->getFromDB($itil_object->getID());
+        $this->integer($itil_object->fields['urgency'])->isNotEqualTo($urgency_if_rule_triggered);
+
+        // Change category and trigger the rule
+        $this->updateItem($this->getITILObjectClass(), $itil_object->getID(), [
+            'itilcategories_id' => $category1->getID()
+        ]);
+        $itil_object->getFromDB($itil_object->getID());
+        $this->integer($itil_object->fields['urgency'])->isEqualTo($urgency_if_rule_triggered);
     }
 }

@@ -1077,6 +1077,23 @@ final class SQLProvider implements SearchProviderInterface
                 $nott = !$nott;
             //negated, use contains case
             case "contains":
+                // FIXME
+                // `field LIKE '%test%'` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
+                // or at least to unexpected results, when following datatype are used:
+                //  - integer
+                //  - number
+                //  - decimal
+                //  - count
+                //  - mio
+                //  - percentage
+                //  - timestamp
+                //  - datetime
+                //  - date_delay
+                //  - mac
+                //  - color
+                //  - language
+                // Values should be filtered to accept only valid pattern according to given datatype.
+
                 if (isset($opt["datatype"]) && ($opt["datatype"] === 'decimal')) {
                     $matches = [];
                     if (preg_match('/^(\d+.?\d?)/', $val, $matches)) {
@@ -1600,6 +1617,7 @@ final class SQLProvider implements SearchProviderInterface
                         $date_computation = $tocompute;
                     }
                     if (in_array($searchtype, ["contains", "notcontains"])) {
+                        // FIXME `CONVERT` operation should not be necessary if we only allow legitimate date/time chars
                         $default_charset = \DBConnection::getDefaultCharset();
                         $date_computation = QueryFunction::convert($date_computation, $default_charset);
                     }
@@ -1623,29 +1641,41 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         return $criteria;
                     }
-                    if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
-                        if (is_numeric($regs[2])) {
+                    if (preg_match("/^\s*([<>])(=?)(.+)$/", $val, $regs)) {
+                        $numeric_matches = [];
+                        if (preg_match('/^\s*(-?)\s*([0-9]+(.[0-9]+)?)\s*$/', $regs[3], $numeric_matches)) {
+                            if ($searchtype === "notcontains") {
+                                $nott = !$nott;
+                            }
+                            if ($nott) {
+                                if ($regs[1] == '<') {
+                                    $regs[1] = '>';
+                                } else {
+                                    $regs[1] = '<';
+                                }
+                            }
+                            $regs[1] .= $regs[2];
                             return [
-                                new QueryExpression("$date_computation " . $regs[1] .
+                                new QueryExpression("$date_computation " . $regs[1] . " " .
                                     QueryFunction::dateAdd(
                                         date: QueryFunction::now(),
-                                        interval: new QueryExpression($regs[2]),
+                                        interval: new QueryExpression($numeric_matches[1] . $numeric_matches[2]),
                                         interval_unit: $search_unit
                                     ))
                             ];
                         }
                         // ELSE Reformat date if needed
-                        $regs[2] = preg_replace(
+                        $regs[3] = preg_replace(
                             '@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@',
                             '\5-\3-\1',
-                            $regs[2]
+                            $regs[3]
                         );
-                        if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[2])) {
+                        if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[3])) {
                             $ret = '';
                             if ($nott) {
                                 $ret .= " NOT(";
                             }
-                            $ret .= " $date_computation {$regs[1]} '{$regs[2]}'";
+                            $ret .= " $date_computation {$regs[1]}{$regs[2]} '{$regs[3]}'";
                             if ($nott) {
                                 $ret .= ")";
                             }
@@ -1685,12 +1715,13 @@ final class SQLProvider implements SearchProviderInterface
                 case "count":
                 case "mio":
                 case "number":
+                case "integer":
                 case "decimal":
                 case "timestamp":
                 case "progressbar":
                     $decimal_contains = $searchopt[$ID]["datatype"] === 'decimal' && $searchtype === 'contains';
 
-                    if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
+                    if (preg_match("/([<>])(=?)[[:space:]]*(-?)[[:space:]]*([0-9]+(.[0-9]+)?)/", $val, $regs)) {
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
                             $nott = !$nott;
                         }
@@ -1702,11 +1733,11 @@ final class SQLProvider implements SearchProviderInterface
                             }
                         }
                         $regs[1] .= $regs[2];
-                        return [new QueryExpression("$tocompute {$regs[1]} {$regs[3]}")];
+                        return [new QueryExpression("$tocompute {$regs[1]} {$regs[3]}{$regs[4]}")];
                     }
 
                     if (is_numeric($val) && !$decimal_contains) {
-                        $numeric_val = (float) $val;
+                        $numeric_val = floatval($val);
 
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
                             $nott = !$nott;
@@ -1718,29 +1749,33 @@ final class SQLProvider implements SearchProviderInterface
                                 $nott
                                 && ($val != 'NULL') && ($val != 'null')
                             ) {
-                                $ADD = [$tocompute => null];
+                                $ADD = [new QueryExpression("$tocompute IS NULL")];
                             }
                             $val1 = $numeric_val - $searchopt[$ID]["width"];
                             $val2 = $numeric_val + $searchopt[$ID]["width"];
                             if ($nott) {
                                 return [
-                                    'OR' => [
-                                        new QueryExpression("$tocompute < $val1"),
-                                        new QueryExpression("$tocompute > $val2"),
-                                    ] + $ADD
+                                    'OR' => array_merge(
+                                        [
+                                            new QueryExpression("$tocompute < $val1"),
+                                            new QueryExpression("$tocompute > $val2"),
+                                        ],
+                                        $ADD
+                                    )
                                 ];
                             }
-                            return [
-                                'OR' => [
+                            return array_merge(
+                                [
                                     new QueryExpression("$tocompute >= $val1"),
                                     new QueryExpression("$tocompute <= $val2"),
-                                ] + $ADD
-                            ];
+                                ],
+                                $ADD
+                            );
                         }
                         if (!$nott) {
-                            return [new QueryExpression($tocompute . ' = ' . $DB::quoteValue($numeric_val))];
+                            return [new QueryExpression($tocompute . ' = ' . $numeric_val)];
                         }
-                        return [new QueryExpression($tocompute . ' <> ' . $DB::quoteValue($numeric_val))];
+                        return [new QueryExpression($tocompute . ' <> ' . $numeric_val)];
                     }
 
                     if ($searchtype === 'empty') {
@@ -3189,6 +3224,9 @@ final class SQLProvider implements SearchProviderInterface
 
             switch ($searchopt[$ID]["datatype"]) {
                 case "datetime":
+                    // FIXME `addHaving` should produce same kind of criterion as `addWhere`
+                    //  (i.e. using a comparison with `ADDDATE(NOW(), INTERVAL {$val} MONTH)`).
+
                     if (in_array($searchtype, ['contains', 'notcontains'])) {
                         break;
                     }
@@ -3223,9 +3261,10 @@ final class SQLProvider implements SearchProviderInterface
                 case "count":
                 case "mio":
                 case "number":
+                case "integer":
                 case "decimal":
                 case "timestamp":
-                    if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
+                    if (preg_match("/([<>])(=?)[[:space:]]*(-?)[[:space:]]*([0-9]+(.[0-9]+)?)/", $val, $regs)) {
                         if ($NOT) {
                             if ($regs[1] === '<') {
                                 $regs[1] = '>';
@@ -3235,7 +3274,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $regs[1] .= $regs[2];
                         return [
-                            $NAME => [$regs[1], $regs[3]]
+                            $NAME => [$regs[1], floatval($regs[3] . $regs[4])]
                         ];
                     }
 
@@ -3249,8 +3288,10 @@ final class SQLProvider implements SearchProviderInterface
                                 ];
                             }
                             return [
-                                [$NAME => ['>', $num_val + $searchopt[$ID]["width"]]],
-                                [$NAME => ['<', $num_val - $searchopt[$ID]["width"]]]
+                                'OR' => [
+                                    [$NAME => ['>', $num_val + $searchopt[$ID]["width"]]],
+                                    [$NAME => ['<', $num_val - $searchopt[$ID]["width"]]]
+                                ]
                             ];
                         }
                         // Exact search
@@ -4519,6 +4560,24 @@ final class SQLProvider implements SearchProviderInterface
         // mange empty field (string with length = 0)
         $sql_or = "";
         if (strtolower($val) == "null") {
+            // FIXME Should operator be `<>` when `$not === true`?
+
+            // FIXME
+            // `OR field = ''` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
+            // when following datatype are used:
+            //  - integer
+            //  - number
+            //  - decimal
+            //  - count
+            //  - mio
+            //  - percentage
+            //  - timestamp
+            //  - datetime
+            //  - date_delay
+            //
+            // Removing this condition requires, at least, to use the `int`/`float`/`double`/`timestamp`/`date` types in DB,
+            // to ensure that the `''` value will not be stored in DB.
+
             $sql_or = "OR $field = ''";
         }
 
@@ -5342,8 +5401,7 @@ final class SQLProvider implements SearchProviderInterface
                 case 'glpi_problems.name':
                 case 'glpi_changes.name':
                     if (
-                        isset($data[$ID][0]['content'])
-                        && isset($data[$ID][0]['id'])
+                        isset($data[$ID][0]['id'])
                         && isset($data[$ID][0]['status'])
                     ) {
                         $link = $itemtype::getFormURLWithID($data[$ID][0]['id']);
@@ -5365,15 +5423,20 @@ final class SQLProvider implements SearchProviderInterface
                             $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][0]['id']);
                         }
                         $out    .= $name . "</a>";
+
+                        // Add tooltip
+                        $id = $data[$ID][0]['id'];
+                        $itemtype = getItemTypeForTable($table);
+
                         $out     = sprintf(
                             __('%1$s %2$s'),
                             $out,
                             \Html::showToolTip(
-                                RichText::getEnhancedHtml($data[$ID][0]['content']),
+                                __('Loading...'),
                                 [
-                                    'applyto'        => $itemtype . $data[$ID][0]['id'],
-                                    'display'        => false,
-                                    'images_gallery' => false, // don't show photoswipe gallery in tooltips
+                                    'applyto' => $itemtype . $data[$ID][0]['id'],
+                                    'display' => false,
+                                    'url'     => "/ajax/get_item_content.php?itemtype=$itemtype&items_id=$id"
                                 ]
                             )
                         );
@@ -5776,6 +5839,7 @@ final class SQLProvider implements SearchProviderInterface
 
                 case "count":
                 case "number":
+                case "integer":
                 case "mio":
                     $out           = "";
                     $count_display = 0;

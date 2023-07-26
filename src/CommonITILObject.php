@@ -4059,7 +4059,7 @@ abstract class CommonITILObject extends CommonDBTM
             'datatype'           => 'itemlink',
             'searchtype'         => 'contains',
             'massiveaction'      => false,
-            'additionalfields'   => ['id', 'content', 'status']
+            'additionalfields'   => ['id', 'status']
         ];
 
         $tab[] = [
@@ -9947,6 +9947,11 @@ abstract class CommonITILObject extends CommonDBTM
         $existing_cat_id = $this->fields['itilcategories_id'] ?? 0;
         if ($existing_cat_id > 0 && $category = ITILCategory::getById($existing_cat_id)) {
             $this->fields['itilcategories_id_code'] = $category->fields['code'];
+        }
+
+        // Add global validation
+        if (!$this->isNewItem() && $this->isField('global_validation') && !isset($input['global_validation'])) {
+            $input['global_validation'] = $this->fields['global_validation'];
         }
     }
 

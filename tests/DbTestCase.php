@@ -262,4 +262,44 @@ class DbTestCase extends \GLPITestCase
         $success = $item->delete($input);
         $this->boolean($success)->isTrue();
     }
+
+    /**
+     * Helper method to avoid writting the same boilerplate code for rule creation
+     *
+     * @param RuleBuilder $builder RuleConfiguration
+     *
+     * @return Rule Created rule
+     */
+    protected function createRule(RuleBuilder $builder, string $ruleclass): Rule
+    {
+        $rule = $this->createItem(Rule::class, [
+            'is_active'    => 1,
+            'sub_type'     => $ruleclass,
+            'name'         => $builder->getName(),
+            'match'        => $builder->getOperator(),
+            'condition'    => $builder->getCondition(),
+            'is_recursive' => $builder->isRecursive(),
+            'entities_id'  => $builder->getEntity(),
+        ]);
+
+        foreach ($builder->getCriteria() as $criterion) {
+            $this->createItem(RuleCriteria::class, [
+                'rules_id'  => $rule->getID(),
+                'criteria'  => $criterion['criteria'],
+                'condition' => $criterion['condition'],
+                'pattern'   => $criterion['pattern'],
+            ]);
+        }
+
+        foreach ($builder->getActions() as $criterion) {
+            $this->createItem(RuleAction::class, [
+                'rules_id'    => $rule->getID(),
+                'action_type' => $criterion['action_type'],
+                'field'       => $criterion['field'],
+                'value'       => $criterion['value'],
+            ]);
+        }
+
+        return $rule;
+    }
 }

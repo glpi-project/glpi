@@ -33,44 +33,42 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+use Glpi\Http\Response;
+use Glpi\RichText\RichText;
 
-use DbTestCase;
+/*
+ * Ajax tooltip endpoint for CommonITILObjects
+ */
 
-/* Test for inc/ruledictionnarysoftware.class.php */
+include('../inc/includes.php');
+Session::checkLoginUser();
 
-class RuleDictionnarySoftware extends DbTestCase
-{
-    public function testMaxActionsCount()
-    {
-        $rule = new \RuleDictionnarySoftware();
-        $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
-    }
+// Read parameters
+$itemtype = $_GET['itemtype'] ?? null;
+$items_id = $_GET['items_id'] ?? null;
 
-    public function testGetCriteria()
-    {
-        $rule     = new \RuleDictionnarySoftware();
-        $criteria = $rule->getCriterias();
-        $this->array($criteria)->hasSize(4);
-    }
-
-    public function testGetActions()
-    {
-        $rule    = new \RuleDictionnarySoftware();
-        $actions = $rule->getActions();
-        $this->array($actions)->hasSize(7);
-    }
-
-    public function testAddSpecificParamsForPreview()
-    {
-        $rule    = new \RuleDictionnarySoftware();
-
-        $input = ['param1' => 'test'];
-        $result = $rule->addSpecificParamsForPreview($input);
-        $this->array($result)->isIdenticalTo(['param1' => 'test']);
-
-        $_POST['version'] = '1.0';
-        $result = $rule->addSpecificParamsForPreview($input);
-        $this->array($result)->isIdenticalTo(['param1' => 'test', 'version' => '1.0']);
-    }
+// Validate mandatory parameters
+if (is_null($itemtype) || is_null($items_id)) {
+    Response::sendError(400, "Missing required parameters");
 }
+
+// Validate itemtype (only CommonITILObject allowed for now)
+if (!is_a($itemtype, CommonITILObject::class, true)) {
+    Response::sendError(400, "Invalid itemtype");
+}
+$item = new $itemtype();
+
+// Validate item
+if (
+    !$item->getFromDB($items_id)
+    || !$item->canViewItem()
+    || !$item->isField('content')
+) {
+    Response::sendError(404, "Item not found");
+}
+
+// Display content
+header('Content-type: text/html');
+echo RichText::getEnhancedHtml($item->fields['content'], [
+    'images_gallery' => false, // Don't show photoswipe gallery
+]);

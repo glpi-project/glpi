@@ -181,14 +181,20 @@
                         .kanban-column-header-content {
                             flex-direction: column;
 
-                            .kanban-collapse-column,
-                            .kanban-column-title,
-                            .kanban_nb {
+                            .kanban-collapse-column {
                                 transform: rotate(90deg);
                                 transform-origin: center;
                                 display: inline-block;
                                 margin: calc(50% - 8px) 0;
                                 white-space: nowrap;
+                            }
+
+                            .kanban-column-title,
+                            .kanban_nb {
+                                writing-mode: vertical-lr;
+                                margin-top: 10px;
+                                margin-left: 0;
+                                padding: 12px 3px;
                             }
 
                             .kanban-collapse-column {
