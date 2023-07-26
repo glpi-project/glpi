@@ -199,4 +199,366 @@ class NotificationMailing extends DbTestCase
             "users_id" => \Session::getLoginUserID()
         ], true))->isFalse();
     }
+
+
+    public function testSendNotificationAttachedDocument()
+    {
+        global $DB, $CFG_GLPI;
+
+        $this->login();
+
+        // Notification settings
+        \Config::setConfigurationValues('core', [
+            'use_notifications' => 1,
+            'notifications_mailing' => 1,
+        ]);
+
+        // Create documents
+        $doc = new \Document();
+        $did1 = (int)$doc->add([
+            'name'   => 'test doc 1'
+        ]);
+        $this->integer($did1)->isGreaterThan(0);
+        $did2 = (int)$doc->add([
+            'name'   => 'test doc 2'
+        ]);
+        $this->integer($did2)->isGreaterThan(0);
+
+        $ticket = new \Ticket();
+        $ITILFollowUp = new \ITILFollowup();
+
+
+    // NO_DOCUMENT
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationMailingSetting::NO_DOCUMENT;
+
+
+        // create a ticket and link one document
+        $ticketID = $ticket->add([
+            'name'                  => "test",
+            'content'               => "test",
+            'entities_id'           => 0,
+            '_documents_id'         => [$did1]
+        ]);
+        $this->integer($ticketID)->isGreaterThan(0);
+
+        $data = getAllDataFromTable('glpi_queuednotifications',
+        [
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID
+        ]);
+        $this->array($data)->hasSize(1);
+
+        $row = array_pop($data);
+
+        $result = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'mode' => $row['mode'],
+            'event' => $row['event'],
+            'itemtype_of_documents' => $row['itemtype_of_documents'],
+            'items_id_of_documents' => $row['items_id_of_documents'],
+        ];
+
+        $this->array($result)->isIdenticalTo([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID,
+            'mode' => 'mailing',
+            'event' => 'new',
+            'itemtype_of_documents' => '',
+            'items_id_of_documents' => 0,
+        ]);
+
+
+        // add a followup with one document
+        $ITILFollowUpID = $ITILFollowUp->add([
+            'users_id'                        => \Session::getLoginUserID(),
+            'content'                         => "followup with one document",
+            'items_id'                        => $ticketID,
+            'itemtype'                        => \Ticket::class,
+            '_documents_id'                   => [$did2]
+        ]);
+        $this->integer($ITILFollowUpID)->isGreaterThan(0);
+
+        $data = getAllDataFromTable('glpi_queuednotifications',
+        [
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID
+        ]);
+        $this->array($data)->hasSize(2);
+
+        $row = array_pop($data);
+        $result = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'mode' => $row['mode'],
+            'event' => $row['event'],
+            'itemtype_of_documents' => $row['itemtype_of_documents'],
+            'items_id_of_documents' => $row['items_id_of_documents'],
+        ];
+
+        $this->array($result)->isIdenticalTo([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID,
+            'mode' => 'mailing',
+            'event' => 'add_followup',
+            'itemtype_of_documents' => '',
+            'items_id_of_documents' => 0,
+        ]);
+
+        // add a followup without document
+        $ITILFollowUpID = $ITILFollowUp->add([
+            'users_id'                        => \Session::getLoginUserID(),
+            'content'                         => "followup without document",
+            'items_id'                        => $ticketID,
+            'itemtype'                        => \Ticket::class,
+        ]);
+        $this->integer($ITILFollowUpID)->isGreaterThan(0);
+
+        $data = getAllDataFromTable('glpi_queuednotifications',
+        [
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID
+        ]);
+        $this->array($data)->hasSize(3);
+
+        $row = array_pop($data);
+        $result = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'mode' => $row['mode'],
+            'event' => $row['event'],
+            'itemtype_of_documents' => $row['itemtype_of_documents'],
+            'items_id_of_documents' => $row['items_id_of_documents'],
+        ];
+
+        $this->array($result)->isIdenticalTo([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID,
+            'mode' => 'mailing',
+            'event' => 'add_followup',
+            'itemtype_of_documents' => '',
+            'items_id_of_documents' => 0,
+        ]);
+
+
+    // ALL_DOCUMENTS
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationMailingSetting::ALL_DOCUMENTS;
+
+        // create a ticket and link one document
+        $ticketID = $ticket->add([
+            'name'                  => "test",
+            'content'               => "test",
+            'entities_id'           => 0,
+            '_documents_id'         => [$did1]
+        ]);
+        $this->integer($ticketID)->isGreaterThan(0);
+
+        $data = getAllDataFromTable('glpi_queuednotifications',
+        [
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID
+        ]);
+        $this->array($data)->hasSize(1);
+
+        $row = array_pop($data);
+        $result = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'mode' => $row['mode'],
+            'event' => $row['event'],
+            'itemtype_of_documents' => $row['itemtype_of_documents'],
+            'items_id_of_documents' => $row['items_id_of_documents'],
+        ];
+
+        $this->array($result)->isIdenticalTo([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID,
+            'mode' => 'mailing',
+            'event' => 'new',
+            'itemtype_of_documents' => 'Ticket',
+            'items_id_of_documents' => $ticketID,
+        ]);
+
+
+        // add a followup with one document
+        $ITILFollowUpID = $ITILFollowUp->add([
+            'users_id'                        => \Session::getLoginUserID(),
+            'content'                         => "followup with one document",
+            'items_id'                        => $ticketID,
+            'itemtype'                        => \Ticket::class,
+            '_documents_id'                   => [$did2]
+        ]);
+        $this->integer($ITILFollowUpID)->isGreaterThan(0);
+
+        $data = getAllDataFromTable('glpi_queuednotifications',
+        [
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID
+        ]);
+        $this->array($data)->hasSize(2);
+
+        $row = array_pop($data);
+        $result = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'mode' => $row['mode'],
+            'event' => $row['event'],
+            'itemtype_of_documents' => $row['itemtype_of_documents'],
+            'items_id_of_documents' => $row['items_id_of_documents'],
+        ];
+
+        $this->array($result)->isIdenticalTo([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID,
+            'mode' => 'mailing',
+            'event' => 'add_followup',
+            'itemtype_of_documents' => 'Ticket',
+            'items_id_of_documents' => $ticketID,
+        ]);
+
+        // add a followup without document
+        $ITILFollowUpID = $ITILFollowUp->add([
+            'users_id'                        => \Session::getLoginUserID(),
+            'content'                         => "followup without document",
+            'items_id'                        => $ticketID,
+            'itemtype'                        => \Ticket::class,
+        ]);
+        $this->integer($ITILFollowUpID)->isGreaterThan(0);
+
+        $data = getAllDataFromTable('glpi_queuednotifications',
+        [
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID
+        ]);
+        $this->array($data)->hasSize(3);
+
+        $row = array_pop($data);
+        $result = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'mode' => $row['mode'],
+            'event' => $row['event'],
+            'itemtype_of_documents' => $row['itemtype_of_documents'],
+            'items_id_of_documents' => $row['items_id_of_documents'],
+        ];
+
+        $this->array($result)->isIdenticalTo([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID,
+            'mode' => 'mailing',
+            'event' => 'add_followup',
+            'itemtype_of_documents' => 'Ticket',
+            'items_id_of_documents' => $ticketID,
+        ]);
+
+
+    // ONLY_TRIGGERED
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationMailingSetting::ONLY_TRIGGERED;
+
+        // create a ticket and link one document
+        $ticketID = $ticket->add([
+            'name'                  => "test",
+            'content'               => "test",
+            'entities_id'           => 0,
+            '_documents_id'         => [$did1]
+        ]);
+        $this->integer($ticketID)->isGreaterThan(0);
+
+        $data = getAllDataFromTable('glpi_queuednotifications',
+        [
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID
+        ]);
+        $this->array($data)->hasSize(1);
+
+        $row = array_pop($data);
+        $result = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'mode' => $row['mode'],
+            'event' => $row['event'],
+            'itemtype_of_documents' => $row['itemtype_of_documents'],
+            'items_id_of_documents' => $row['items_id_of_documents'],
+        ];
+
+        $this->array($result)->isIdenticalTo([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID,
+            'mode' => 'mailing',
+            'event' => 'new',
+            'itemtype_of_documents' => 'Ticket',
+            'items_id_of_documents' => $ticketID,
+        ]);
+
+
+        // add a followup with one document
+        $ITILFollowUpID = $ITILFollowUp->add([
+            'users_id'                        => \Session::getLoginUserID(),
+            'content'                         => "followup with one document",
+            'items_id'                        => $ticketID,
+            'itemtype'                        => \Ticket::class,
+            '_documents_id'                   => [$did2]
+        ]);
+        $this->integer($ITILFollowUpID)->isGreaterThan(0);
+
+        $data = getAllDataFromTable('glpi_queuednotifications',
+        [
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID
+        ]);
+        $this->array($data)->hasSize(2);
+
+        $row = array_pop($data);$result = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'mode' => $row['mode'],
+            'event' => $row['event'],
+            'itemtype_of_documents' => $row['itemtype_of_documents'],
+            'items_id_of_documents' => $row['items_id_of_documents'],
+        ];
+
+        $this->array($result)->isIdenticalTo([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID,
+            'mode' => 'mailing',
+            'event' => 'add_followup',
+            'itemtype_of_documents' => 'ITILFollowup',
+            'items_id_of_documents' => $ITILFollowUpID,
+        ]);
+
+        // add a followup without document
+        $ITILFollowUpID = $ITILFollowUp->add([
+            'users_id'                        => \Session::getLoginUserID(),
+            'content'                         => "followup without document",
+            'items_id'                        => $ticketID,
+            'itemtype'                        => \Ticket::class,
+        ]);
+        $this->integer($ITILFollowUpID)->isGreaterThan(0);
+
+        $data = getAllDataFromTable('glpi_queuednotifications',
+        [
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID
+        ]);
+        $this->array($data)->hasSize(3);
+
+        $row = array_pop($data);
+        $result = [
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'mode' => $row['mode'],
+            'event' => $row['event'],
+            'itemtype_of_documents' => $row['itemtype_of_documents'],
+            'items_id_of_documents' => $row['items_id_of_documents'],
+        ];
+
+        $this->array($result)->isIdenticalTo([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticketID,
+            'mode' => 'mailing',
+            'event' => 'add_followup',
+            'itemtype_of_documents' => 'ITILFollowup',
+            'items_id_of_documents' => $ITILFollowUpID,
+        ]);
+    }
 }
