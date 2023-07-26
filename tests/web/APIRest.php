@@ -2501,6 +2501,7 @@ class APIRest extends atoum
             __DIR__ . "/../deprecated-searchoptions/$deprecated_itemtype.json"
         );
         $this->string($expected)->isNotEmpty();
+        $expected = trim($expected);
 
         unset($data['headers']);
         $json_data = json_encode($data, JSON_PRETTY_PRINT);
