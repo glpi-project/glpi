@@ -5261,17 +5261,17 @@ JAVASCRIPT;
                             ADDDATE(NOW(), INTERVAL " . $numeric_matches[1] . $numeric_matches[2] . " $search_unit) ";
                         }
                        // ELSE Reformat date if needed
-                        $regs[2] = preg_replace(
+                        $regs[3] = preg_replace(
                             '@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@',
                             '\5-\3-\1',
-                            $regs[2]
+                            $regs[3]
                         );
-                        if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[2])) {
+                        if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[3])) {
                              $ret = $link;
                             if ($nott) {
                                 $ret .= " NOT(";
                             }
-                             $ret .= " $date_computation {$regs[1]} '{$regs[2]}'";
+                             $ret .= " $date_computation {$regs[1]}{$regs[2]} '{$regs[3]}'";
                             if ($nott) {
                                 $ret .= ")";
                             }
