@@ -73,7 +73,7 @@
         "uid": "TicketFollowup.User.name"
     },
     "7": {
-    "name": "ID",
+        "name": "ID",
         "table": "glpi_ticketfollowups",
         "field": "id",
         "datatype": "number",
