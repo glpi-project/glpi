@@ -4320,27 +4320,37 @@ class Search extends DbTestCase
         // It should result in a criterion based on a relative date expressed in months, and using the corresponding SQL operator.
 
         foreach (['>', '>=', '<', '<='] as $operator) {
-            foreach (['', ' '] as $spacing) {
-                foreach ([-3, 6] as $value) {
-                    $searched_value = "{$operator}{$spacing}{$value}";
-                    $not_operator   = $operator;
+            foreach ([3, 6.5] as $value) {
+                $searched_values = [
+                    // positive values, with or without spaces
+                    "{$operator}{$value}"       => "{$value}",
+                    " {$operator}  {$value} "   => "{$value}",
 
+                    // negative values, with or without spaces
+                    "{$operator}-{$value}"      => "-{$value}",
+                    " {$operator} -{$value} "   => "-{$value}",
+                    "{$operator} - {$value} "   => "-{$value}",
+                ];
+                $not_operator   = str_contains($operator, '>') ? str_replace('>', '<', $operator) : str_replace('<', '>', $operator);
+
+                foreach ($searched_values as $searched_value => $signed_value) {
                     // datatype=datetime
                     yield [
                         'itemtype'          => \Computer::class,
                         'search_option'     => 9, // last_inventory_update
                         'value'             => $searched_value,
-                        'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$operator} ADDDATE(NOW(), INTERVAL {$value} MONTH))",
-                        'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$not_operator} ADDDATE(NOW(), INTERVAL {$value} MONTH))",
+                        'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$not_operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
                     ];
 
                     // datatype=datetime computed field
+                    $like_value = trim(str_replace('  ', ' ', $searched_value));
                     yield [
                         'itemtype'          => \Ticket::class,
                         'search_option'     => 188, // next_escalation_level
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Ticket_188` LIKE '%{$searched_value}%')",
-                        'expected_and_not'  => "(`ITEM_Ticket_188` NOT LIKE '%{$searched_value}%' OR `ITEM_Ticket_188` IS NULL)",
+                        'expected_and'      => "(`ITEM_Ticket_188` LIKE '%{$like_value}%')",
+                        'expected_and_not'  => "(`ITEM_Ticket_188` NOT LIKE '%{$like_value}%' OR `ITEM_Ticket_188` IS NULL)",
                     ];
 
                     // datatype=date
@@ -4348,8 +4358,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Budget::class,
                         'search_option'     => 5, // begin_date
                         'value'             => $searched_value,
-                        'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) {$operator} ADDDATE(NOW(), INTERVAL {$value} MONTH))",
-                        'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) {$not_operator} ADDDATE(NOW(), INTERVAL {$value} MONTH))",
+                        'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) {$operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) {$not_operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
                     ];
 
                     // datatype=date_delay
@@ -4357,8 +4367,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Contract::class,
                         'search_option'     => 20, // end_date
                         'value'             => $searched_value,
-                        'expected_and'      => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) {$operator} ADDDATE(NOW(), INTERVAL {$value} MONTH))",
-                        'expected_and_not'  => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) {$not_operator} ADDDATE(NOW(), INTERVAL {$value} MONTH))",
+                        'expected_and'      => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) {$operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and_not'  => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) {$not_operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
                     ];
                 }
             }

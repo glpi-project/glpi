@@ -5242,24 +5242,34 @@ JAVASCRIPT;
                         return " $link ($date_computation " . $SEARCH . ') ';
                     }
                     $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
-                    if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
-                        if (is_numeric($regs[2])) {
-                            // FIXME Comparison operator should be "reversed" whne `$nott === true`.
-                            return $link . " $date_computation " . $regs[1] . "
-                            ADDDATE(NOW(), INTERVAL " . $regs[2] . " $search_unit) ";
+                    if (preg_match("/^\s*([<>])(=?)(.+)$/", $val, $regs)) {
+                        $numeric_matches = [];
+                        if (preg_match('/^\s*(-?)\s*([0-9]+(.[0-9]+)?)\s*$/', $regs[3], $numeric_matches)) {
+                            if ($searchtype === "notcontains") {
+                                $nott = !$nott;
+                            }
+                            if ($nott) {
+                                if ($regs[1] == '<') {
+                                    $regs[1] = '>';
+                                } else {
+                                    $regs[1] = '<';
+                                }
+                            }
+                            return $link . " $date_computation " . $regs[1] . $regs[2] . "
+                            ADDDATE(NOW(), INTERVAL " . $numeric_matches[1] . $numeric_matches[2] . " $search_unit) ";
                         }
                        // ELSE Reformat date if needed
-                        $regs[2] = preg_replace(
+                        $regs[3] = preg_replace(
                             '@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@',
                             '\5-\3-\1',
-                            $regs[2]
+                            $regs[3]
                         );
-                        if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[2])) {
+                        if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[3])) {
                              $ret = $link;
                             if ($nott) {
                                 $ret .= " NOT(";
                             }
-                             $ret .= " $date_computation {$regs[1]} '{$regs[2]}'";
+                             $ret .= " $date_computation {$regs[1]}{$regs[2]} '{$regs[3]}'";
                             if ($nott) {
                                 $ret .= ")";
                             }
