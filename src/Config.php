@@ -2318,6 +2318,10 @@ HTML;
             [
                 'name' => 'league/html-to-markdown',
                 'check' => 'League\\HTMLToMarkdown\\HtmlConverter'
+            ],
+            [
+                'name' => 'twig/markdown-extra',
+                'check' => 'Twig\\Extra\\Markdown\\LeagueMarkdown'
             ]
         ];
         return $deps;
