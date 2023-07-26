@@ -2728,7 +2728,14 @@ JAVASCRIPT;
             if (isset($post['condition']['WHERE'])) {
                 $where = array_merge($where, $post['condition']['WHERE']);
             } else {
-                $where = array_merge($where, $post['condition']);
+                foreach ($post['condition'] as $key => $value) {
+                    if (strpos($key, '.') === false) {
+                        // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
+                        $where["$table.$key"] = $value;
+                    } else {
+                        $where[$key] = $value;
+                    }
+                }
             }
         }
 
@@ -2835,7 +2842,13 @@ JAVASCRIPT;
                 }
 
                 if ($multi) {
-                    array_unshift($order, "$table.entities_id");
+                    $ljoin['glpi_entities'] = [
+                        'ON' => [
+                            'glpi_entities' => 'id',
+                            $table          => 'entities_id'
+                        ]
+                    ];
+                    array_unshift($order, "glpi_entities.completename");
                 }
             }
 
