@@ -96,11 +96,11 @@ class GLPITestCase extends atoum
             foreach ([$this->php_log_handler, $this->sql_log_handler] as $log_handler) {
                 $this->array($log_handler->getRecords());
                 $clean_logs = array_map(
-                    static function (array $entry): array {
+                    static function (\Monolog\LogRecord $entry): array {
                         return [
-                            'channel' => $entry['channel'],
-                            'level'   => $entry['level_name'],
-                            'message' => $entry['message'],
+                            'channel' => $entry->channel,
+                            'level'   => $entry->level->name,
+                            'message' => $entry->message,
                         ];
                     },
                     $log_handler->getRecords()
