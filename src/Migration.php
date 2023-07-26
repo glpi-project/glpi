@@ -1086,8 +1086,8 @@ class Migration
      *
      * @since 9.2
      *
-     * @param string|array $values  Value(s) to add
-     * @param string       $context Context to add on (optional)
+     * @param array  $values  Value(s) to add
+     * @param string $context Context to add on (optional)
      *
      * @return Migration
      */
