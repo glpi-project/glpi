@@ -2315,6 +2315,10 @@ HTML;
                 'name' => 'league/oauth2-server',
                 'check' => 'League\\OAuth2\\Server\\AuthorizationServer'
             ],
+            [
+                'name' => 'league/html-to-markdown',
+                'check' => 'League\\HTMLToMarkdown\\HtmlConverter'
+            ]
         ];
         return $deps;
     }
