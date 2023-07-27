@@ -33,20 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * ChangeValidation class
- */
-class ChangeValidation extends CommonITILValidation
-{
-   // From CommonDBChild
-    public static $itemtype           = 'Change';
-    public static $items_id           = 'changes_id';
+include('../inc/includes.php');
 
-    public static $rightname                 = 'changevalidation';
+Session::checkRight("config", READ);
 
+Html::header(Webhook::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", Webhook::class);
 
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Change approval', 'Change approvals', $nb);
-    }
-}
+Search::show(Webhook::class);
+
+Html::footer();

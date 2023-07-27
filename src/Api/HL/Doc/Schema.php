@@ -73,7 +73,7 @@ class Schema implements \ArrayAccess
         private ?string $pattern = null
     ) {
         if ($this->format === null) {
-            $this->format = $this->getDefaultFormatForType($this->type);
+            $this->format = self::getDefaultFormatForType($this->type);
         }
     }
 
@@ -83,7 +83,7 @@ class Schema implements \ArrayAccess
      * @return ?string
      * @phpstan-return self::FORMAT_*|null
      */
-    private function getDefaultFormatForType(string $type): ?string
+    public static function getDefaultFormatForType(string $type): ?string
     {
         return match ($type) {
             self::TYPE_STRING => self::FORMAT_STRING_STRING,

@@ -1,6 +1,4 @@
-<?php
-
-/**
+/*!
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,20 +31,33 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * ChangeValidation class
- */
-class ChangeValidation extends CommonITILValidation
-{
-   // From CommonDBChild
-    public static $itemtype           = 'Change';
-    public static $items_id           = 'changes_id';
+.aa-InputWrapperPrefix {
+   display: none;
+}
 
-    public static $rightname                 = 'changevalidation';
+.aa-InputWrapperSuffix {
+   display: none;
+}
 
+.aa-Panel {
+   position: absolute; z-index: 1000;
+   background-color: var(--input-bg);
+   color: var(--input-color);
+   max-height: 200px;
+   overflow: auto;
+}
 
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Change approval', 'Change approvals', $nb);
-    }
+.aa-List {
+   list-style: none;
+   padding-left: 0;
+}
+
+.aa-List .aa-Item {
+   padding: 5px 10px;
+   cursor: pointer;
+}
+
+.aa-Autocomplete .aa-InputWrapper input.aa-Input {
+   color: var(--input-color) !important;
+   background-color: var(--input-bg) !important;
 }

@@ -614,7 +614,7 @@ class Search extends DbTestCase
                 }
 
                 $this->boolean(in_array($so['datatype'], $valid_datatypes))
-                    ->isTrue(sprintf('Unexpected `%s` search option datatype.', $so['datatype']));
+                    ->isTrue(sprintf('Unexpected `%s` search option datatype in `%s` class.', $so['datatype'], $class));
             }
         }
     }

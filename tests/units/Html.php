@@ -355,6 +355,7 @@ class Html extends \GLPITestCase
             'CommonDropdown',
             'CommonDevice',
             'Notification',
+            'Webhook',
             'SLM',
             'Config',
             'FieldUnicity',

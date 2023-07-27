@@ -174,7 +174,8 @@
       'enable_fileupload': false,
       'enable_mentions': false,
       'entities_id': session('glpiactive_entity'),
-      'uploads': []
+      'uploads': [],
+      'rows': 3,
    }|merge(options) %}
 
    {% set field %}
@@ -248,6 +249,7 @@
 {% macro passwordField(name, value, label = '', options = {}) %}
    {% set options = {
       'id': options.id is defined ? options.id : name ~ random(),
+      'can_regenerate' : options.can_regenerate,
       'clearable': options.clearable is defined ? options.clearable : not options.is_disclosable,
       'is_copyable': options.is_disclosable ?? false
    }|merge(options) %}
@@ -256,6 +258,14 @@
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
         {{ _inputs.password(name, value, options) }}
     {% endset %}
+
+   {# Add checkbox if needed to regenerate password (controler side) #}
+   {% if options.can_regenerate %}
+      {% set regenerate_chk %}
+         <input type="checkbox" name="_regenerate_{{ name }}" id="_regenerate_{{ name }}">&nbsp;<label for="_regenerate_{{ name }}">{{ __('Regenerate') }}</label>
+      {% endset %}
+      {% set field = field ~ regenerate_chk %}
+   {% endif %}
 
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
@@ -727,6 +737,7 @@
       'field_class': 'col-12 col-sm-6',
       'label_class': 'col-xxl-5',
       'input_class': 'col-xxl-7',
+      'container_id' : '',
       'add_field_class': '',
       'add_field_attribs': {},
       'center': false,
@@ -764,13 +775,20 @@
       {% set extra_attribs = '' %}
    {% endif %}
 
+   {# Usefull for Ajax::updateItemOnSelectEvent (DOM to update) #}
+   {% if options.container_id is not empty %}
+      {% set container_id = 'id=' ~ options.container_id %}
+   {% else %}
+      {% set container_id = '' %}
+   {% endif %}
+
    <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
       {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
       {% if options.center %}
          {% set flex_class = "d-flex align-items-center" %}
       {% endif %}
-      <div class="{{ options.input_class }} {{ flex_class }} field-container">
+      <div {{ container_id }} class="{{ options.input_class }} {{ flex_class }} field-container">
          {{ field|raw }}
          {{ add_field_html|raw }}
       </div>

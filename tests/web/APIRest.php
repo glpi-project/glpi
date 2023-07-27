@@ -2503,8 +2503,7 @@ class APIRest extends atoum
         $this->string($expected)->isNotEmpty();
 
         unset($data['headers']);
-        $json_data = json_encode($data, JSON_PRETTY_PRINT);
-        $this->string($json_data)->isEqualTo($expected);
+        $this->array($data)->isEqualTo(json_decode($expected, true));
     }
 
     /**
