@@ -4196,7 +4196,8 @@ class Profile extends CommonDBTM
                     'name'   => static::$rightname,
                     'rights' => ["&", UPDATE],
                 ]
-            ])
+            ]),
+            'interface' => 'central',
         ]);
 
         return array_column($super_admin_profiles, 'id');
