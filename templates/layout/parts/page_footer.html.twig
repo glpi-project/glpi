@@ -48,6 +48,10 @@
       <div id="maintenance-float">
          <a href="{{ path('front/config.form.php?forcetab=Config$5') }}">GLPI MAINTENANCE MODE</a>
       </div>
+   {% else %}
+      <div id="maintenance-float">
+         <h4 style="background-color: yellow;color: red;">WARNING: GLPI MAINTENANCE STARTING AT..</h4>
+      </div>
    {% endif %}
 
    {% for js_file in js_files %}
