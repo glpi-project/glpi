@@ -2243,7 +2243,7 @@ JAVASCRIPT;
             && Session::isMultiEntitiesMode()
         ) {
             $rules[] = [
-                'label' => __('Transfer'),
+                'label' => Transfer::getTypeName(),
                 'link'  => Transfer::getSearchURL(),
                 'icon'  => Transfer::getIcon(),
             ];

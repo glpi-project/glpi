@@ -686,7 +686,9 @@
    {% if item_type == 'Contract' %}
       {{ include('components/form/support_hours.html.twig') }}
    {% endif %}
-   {{ include('components/form/buttons.html.twig') }}
+   {% if no_form_buttons is not defined or no_form_buttons == false %}
+      {{ include('components/form/buttons.html.twig') }}
+   {% endif %}
    {% if no_inventory_footer is not defined or no_inventory_footer == false %}
       {{ include('components/form/inventory_info.html.twig') }}
    {% endif %}
