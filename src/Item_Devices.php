@@ -965,6 +965,7 @@ class Item_Devices extends CommonDBRelation
             $peer = null;
         }
 
+        $iterator = $DB->request($criteria);
         // Will be loaded only if/when data is needed from the device model
         $device_type = static::getDeviceType();
         /** @var CommonDevice $device */
