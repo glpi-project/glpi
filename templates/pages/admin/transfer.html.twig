@@ -36,6 +36,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 {% set params  = params ?? [] %}
 {% set edit_mode = edit_mode|default(false) %}
+{% set no_header = not edit_mode %}
 {% set no_form_buttons = not edit_mode %}
 
 {% block form_fields %}
@@ -51,6 +52,8 @@
             input_class: 'col-xxl-7 d-flex',
             add_field_html: execute_btn,
          }) }}
+         {# The regular form buttons aren't added so the CSRF token isn't added either. Need to add it manually here #}
+         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
       {% endif %}
 
       {% if edit_mode %}

@@ -3856,7 +3856,8 @@ class Transfer extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/admin/transfer.html.twig', [
             'item' => $this,
             'edit_mode' => $edit_form,
-            'can_change_options' => Session::haveRightsOr("transfer", [CREATE, UPDATE, PURGE])
+            'can_change_options' => Session::haveRightsOr("transfer", [CREATE, UPDATE, PURGE]),
+            'params' => $options
         ]);
         return true;
     }
@@ -3870,95 +3871,46 @@ class Transfer extends CommonDBTM
     {
         global $DB, $CFG_GLPI;
 
+        $transfer_list = [];
         if (isset($_SESSION['glpitransfer_list']) && count($_SESSION['glpitransfer_list'])) {
-            echo "<div class='center b'>" .
-                __('You can continue to add elements to be transferred or execute the transfer now');
-            echo "<br>" . __('Think of making a backup before transferring items.') . "</div>";
-            echo "<table class='tab_cadre_fixe' >";
-            echo '<tr><th>' . __('Items to transfer') . '</th><th>' . __('Transfer mode') . "&nbsp;";
-            $rand = Transfer::dropdown(['name'     => 'id',
-                'comments' => false,
-                'toupdate' => ['value_fieldname'
-                                                                           => 'id',
-                    'to_update'  => "transfer_form",
-                    'url'        => $CFG_GLPI["root_doc"] .
-                                                                              "/ajax/transfers.php"
-                ]
-            ]);
-            echo '</th></tr>';
-
-            echo "<tr><td class='tab_bg_1 top'>";
-
             /** @var class-string<CommonDBTM> $itemtype */
             foreach ($_SESSION['glpitransfer_list'] as $itemtype => $tab) {
                 if (count($tab)) {
-                    if (!($item = getItemForItemtype($itemtype))) {
-                        continue;
-                    }
                     $table = $itemtype::getTable();
 
                     $iterator = $DB->request([
-                        'SELECT'    => [
+                        'SELECT' => [
                             "$table.id",
                             "$table.name",
                             'entities.completename AS locname',
                             'entities.id AS entID'
                         ],
-                        'FROM'      => $table,
+                        'FROM' => $table,
                         'LEFT JOIN' => [
-                            'glpi_entities AS entities'   => [
+                            'glpi_entities AS entities' => [
                                 'ON' => [
                                     'entities' => 'id',
-                                    $table     => 'entities_id'
+                                    $table => 'entities_id'
                                 ]
                             ]
                         ],
-                        'WHERE'     => ["$table.id" => $tab],
-                        'ORDERBY'   => ['locname', "$table.name"]
+                        'WHERE' => ["$table.id" => $tab],
+                        'ORDERBY' => ['locname', "$table.name"]
                     ]);
-                    $entID = -1;
 
                     if (count($iterator)) {
-                            echo '<h3>' . $item->getTypeName() . '</h3>';
                         foreach ($iterator as $data) {
-                            if ($entID != $data['entID']) {
-                                if ($entID != -1) {
-                                    echo '<br>';
-                                }
-                                $entID = $data['entID'];
-                                echo "<span class='b spaced'>" . $data['locname'] . "</span><br>";
-                            }
-                                echo ($data['name'] ? $data['name'] : "(" . $data['id'] . ")") . "<br>";
+                            $transfer_list[$itemtype] ??= [];
+                            $transfer_list[$itemtype][] = $data;
                         }
                     }
                 }
             }
-            echo "</td><td class='tab_bg_2 top'>";
-
-            if (countElementsInTable('glpi_transfers') == 0) {
-                echo __('No item found');
-            } else {
-                $params = ['id' => '__VALUE__'];
-                Ajax::updateItemOnSelectEvent(
-                    "dropdown_id$rand",
-                    "transfer_form",
-                    $CFG_GLPI["root_doc"] . "/ajax/transfers.php",
-                    $params
-                );
-            }
-
-            echo "<div class='center' id='transfer_form'><br>";
-            Html::showSimpleForm(
-                $CFG_GLPI["root_doc"] . "/front/transfer.action.php",
-                'clear',
-                __('To empty the list of elements to be transferred')
-            );
-            echo "</div>";
-            echo '</td></tr>';
-            echo '</table>';
-        } else {
-            echo __('No selected element or badly defined operation');
         }
+
+        TemplateRenderer::getInstance()->display('pages/admin/transfer_list.html.twig', [
+            'transfer_list' => $transfer_list
+        ]);
     }
 
     public static function getIcon()
