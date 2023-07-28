@@ -96,6 +96,8 @@
         {% endset %}
     {% endif %}
 
+    {{ input }}
+
     {% if options.clearable %}
         <span class="d-inline-flex">
             <input type="checkbox" name="_blank_{{ name }}" id="_blank_{{ name }}" class="ms-1">
@@ -104,8 +106,6 @@
             </label>
         <span>
     {% endif %}
-
-    {{ input }}
 {% endmacro %}
 
 

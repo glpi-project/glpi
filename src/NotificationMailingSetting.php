@@ -64,13 +64,9 @@ class NotificationMailingSetting extends NotificationSetting
     }
 
 
-    public function showFormConfig($options = [])
+    public function showFormConfig()
     {
         global $CFG_GLPI;
-
-        if (!isset($options['display'])) {
-            $options['display'] = true;
-        }
 
         $attach_documents_values = [
             self::NO_DOCUMENT       => __('No documents'),
@@ -84,10 +80,10 @@ class NotificationMailingSetting extends NotificationSetting
             MAIL_SMTPS      => __('SMTPS'),
             MAIL_SMTPOAUTH  => __('SMTP+OAUTH'),
         ];
-        $mail_method_php = true;
+        $is_mail_function_available = true;
         if (!function_exists('mail')) {
             unset($mail_methods[MAIL_MAIL]);
-            $mail_method_php = false;
+            $is_mail_function_available = false;
         }
 
         $providers_values = [];
@@ -101,20 +97,13 @@ class NotificationMailingSetting extends NotificationSetting
 
         $supported_providers = OauthConfig::getInstance()->getSupportedProviders();
 
-        if ($CFG_GLPI['notifications_mailing']) {
-            $options['addbuttons'] = ['test_smtp_send' => __('Send a test email to the administrator')];
-        }
-
         TemplateRenderer::getInstance()->display('pages/setup/notification/mailing_setting.html.twig', [
-            'form_url' => Toolbox::getItemTypeFormURL(__CLASS__),
             'attach_documents_values' => $attach_documents_values,
             'mail_methods' => $mail_methods,
-            'mail_method_php' => $mail_method_php,
-            'authmail_name' => AuthMail::getTypeName(1),
+            'is_mail_function_available' => $is_mail_function_available,
             'providers_values' => $providers_values,
             'provider_options' => $provider_options,
             'supported_providers' => $supported_providers,
-            'params' => $options,
         ]);
     }
 
