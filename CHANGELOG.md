@@ -102,6 +102,7 @@ The present file will list all changes made to the project; according to the
 - `PrinterLog::getMetrics()` method has been made final.
 - `SavedSearch::showSaveButton()` replaced with `pages/tools/savedsearch/save_button.html.twig` template.
 - `showSystemInformations` method for `$CFG_GLPI['systeminformations_types']` types renamed to `getSystemInformation` and should return an array with a label and content.
+- `DisplayPreference` config form POST handling moved to `ajax/displaypreference.php` script. The front file is for displaying the tabs only.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
@@ -225,7 +226,13 @@ The present file will list all changes made to the project; according to the
 - Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.
 - `CommonDBTM::$fkfield` property.
 - `getHTML` action for `ajax/fuzzysearch.php` endpoint.
+<<<<<<< HEAD
 - `Config::showLibrariesInformation()`
+=======
+- `DisplayPreference::showFormGlobal` `target` parameter.
+- `DisplayPreference::showFormPerso` `target_id` parameter.
+
+>>>>>>> 9f421e80d2 (migrate display pref config to twig)
 
 ## [10.0.10] unreleased
 

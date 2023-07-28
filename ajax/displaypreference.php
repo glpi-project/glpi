@@ -33,20 +33,37 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
-}
+include('../inc/includes.php');
+Html::header_nocache();
 
-Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL,
-    DisplayPreference::GENERAL
-]);
+Session::checkLoginUser();
 
 $setupdisplay = new DisplayPreference();
 
-Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
-// Datas may come from GET or POST : use REQUEST
-if (isset($_REQUEST["itemtype"])) {
-    $setupdisplay->display(['displaytype' => $_REQUEST['itemtype']]);
+if (isset($_POST['users_id']) && (int) $_POST['users_id'] !== (int) Session::getLoginUserID()) {
+    Session::checkRight('search_config', DisplayPreference::GENERAL);
 }
 
-Html::popFooter();
+if (isset($_POST["activate"])) {
+    $setupdisplay->activatePerso($_POST);
+} else if (isset($_POST["disable"])) {
+    if ($_POST['users_id'] == Session::getLoginUserID()) {
+        $setupdisplay->deleteByCriteria(['users_id' => $_POST['users_id'],
+            'itemtype' => $_POST['itemtype']
+        ]);
+    }
+} else if (isset($_POST["add"])) {
+    $setupdisplay->add($_POST);
+} else if ((isset($_POST["purge"]) || isset($_POST["purge_x"])) && isset($_POST['num'])) {
+    $setupdisplay->deleteByCriteria([
+        'itemtype' => $_POST['itemtype'],
+        'users_id' => $_POST['users_id'],
+        'num'      => $_POST['num']
+    ], true);
+} else if ((isset($_POST["up"]) || isset($_POST["up_x"])) && isset($_POST['num'])) {
+    $setupdisplay->orderItem($_POST, 'up');
+} else if ((isset($_POST["down"]) || isset($_POST["down_x"])) && isset($_POST['num'])) {
+    $setupdisplay->orderItem($_POST, 'down');
+} else {
+    die(400);
+}

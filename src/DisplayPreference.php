@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchOption;
 
 class DisplayPreference extends CommonDBTM
@@ -73,7 +74,6 @@ class DisplayPreference extends CommonDBTM
         return $input;
     }
 
-
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -110,7 +110,6 @@ class DisplayPreference extends CommonDBTM
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
-
 
     /**
      * Get display preference for a user for an itemtype
@@ -149,7 +148,6 @@ class DisplayPreference extends CommonDBTM
 
         return count($user_prefs) ? $user_prefs : $default_prefs;
     }
-
 
     /**
      * Active personal config based on global one
@@ -205,7 +203,6 @@ class DisplayPreference extends CommonDBTM
         }
     }
 
-
     /**
      * Order to move an item
      *
@@ -217,12 +214,26 @@ class DisplayPreference extends CommonDBTM
         global $DB;
 
        // Get current item
+        $criteria = [];
+        if (isset($input['num'])) {
+            $criteria = [
+                'itemtype'  => $input['itemtype'],
+                'users_id'  => $input['users_id'],
+                'num'       => $input['num']
+            ];
+        } else {
+            $criteria['id'] = $input['id'];
+        }
         $result = $DB->request([
-            'SELECT' => 'rank',
+            'SELECT' => ['id', 'rank'],
             'FROM'   => $this->getTable(),
-            'WHERE'  => ['id' => $input['id']]
+            'WHERE'  => $criteria
         ])->current();
+        if (!$result) {
+            return false;
+        }
         $rank1  = $result['rank'];
+        $input['id'] = $result['id'];
 
        // Get previous or next item
         $where = [];
@@ -313,14 +324,11 @@ class DisplayPreference extends CommonDBTM
     }
 
     /**
-     * Print the search config form
-     *
-     * @param string $target    form target
-     * @param string $itemtype  item type
-     *
-     * @return void|boolean (display) Returns false if there is a rights error.
-     **/
-    public function showFormPerso($target, $itemtype)
+     * @param string $itemtype The itemtype
+     * @param bool $global True if global config, false if personal config
+     * @return void|false
+     */
+    private function showConfigForm(string $itemtype, bool $global)
     {
         global $DB;
 
@@ -329,146 +337,78 @@ class DisplayPreference extends CommonDBTM
             return false;
         }
 
-        $IDuser = Session::getLoginUserID();
+        $IDuser = $global ? 0 : Session::getLoginUserID();
 
-        echo "<div id='tabsbody' class='m-n2'>";
-        // Defined items
-        $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-                'itemtype'  => $itemtype,
-                'users_id'  => $IDuser
-            ],
-            'ORDER'  => 'rank'
-        ]);
-        $numrows = count($iterator);
+        $has_personal = false;
+        if (!$global) {
+            $iterator = $DB->request([
+                'COUNT' => 'cpt',
+                'FROM' => $this->getTable(),
+                'WHERE' => [
+                    'itemtype' => $itemtype,
+                    'users_id' => $IDuser
+                ],
+                'ORDER' => 'rank'
+            ]);
+            $has_personal = $iterator->current()['cpt'] > 0;
+        }
 
         // Get fixed columns
         $fixed_columns = $this->getFixedColumns($itemtype);
-
-        if ($numrows == 0) {
-            Session::checkRight(self::$rightname, self::PERSONAL);
-            echo "<form method='post' action='$target' class='m-2'>";
-            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-            echo "<input type='hidden' name='users_id' value='$IDuser'>";
-            echo __('No personal criteria. Create personal parameters?');
-            echo "<input type='submit' name='activate' value=\"" . __('Create') . "\"
-                class='btn btn-primary ms-3'>";
-            Html::closeForm();
-        } else {
-            $already_added = self::getForTypeUser($itemtype, $IDuser);
-
-            echo "<table class='table table-striped card-table m-n2'><tr><th colspan='4'>";
-            echo "<form method='post' action='$target'>";
-            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-            echo "<input type='hidden' name='users_id' value='$IDuser'>";
-            echo "<input type='submit' name='disable' value=\"" . __('Delete') . "\"
-                class='btn'>";
-            Html::closeForm();
-
-            echo "</th></tr>";
-            echo "<tr><td colspan='4'>";
-            echo "<form method='post' action=\"$target\">";
-            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-            echo "<input type='hidden' name='users_id' value='$IDuser'>";
-            $group  = '';
-            $values = [];
-            foreach ($searchopt as $key => $val) {
-                if (!is_array($val)) {
-                    $group = $val;
-                } elseif (count($val) === 1) {
-                    $group = $val['name'];
-                } elseif (
-                    !in_array($key, $fixed_columns)
-                    && !in_array($key, $already_added)
-                    && (!isset($val['nodisplay']) || !$val['nodisplay'])
-                ) {
-                    $values[$group][$key] = $val["name"];
-                }
+        $group  = '';
+        $already_added = self::getForTypeUser($itemtype, $IDuser);
+        $available_to_add = [];
+        foreach ($searchopt as $key => $val) {
+            if (!is_array($val)) {
+                $group = $val;
+            } elseif (count($val) === 1) {
+                $group = $val['name'];
+            } elseif (
+                !in_array($key, $fixed_columns)
+                && !in_array($key, $already_added)
+                && (!isset($val['nodisplay']) || !$val['nodisplay'])
+            ) {
+                $available_to_add[$group][$key] = $val["name"];
             }
-            if ($values) {
-                Dropdown::showFromArray('num', $values);
-                echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary ms-1'>";
-            }
-            Html::closeForm();
-            echo "</td></tr>\n";
-
-            foreach ($fixed_columns as $searchoption_index) {
-                if (!isset($searchopt[$searchoption_index])) {
-                    // Missing search option; do nothing
-                    continue;
-                }
-
-                // Print fixed column
-                echo "<tr class='tab_bg_2'>";
-                echo "<td>" . $searchopt[$searchoption_index]["name"] . "</td>";
-                echo "<td colspan='3'>&nbsp;</td>";
-                echo "</tr>";
-            }
-
-            $i = 0;
-            if ($numrows) {
-                foreach ($iterator as $data) {
-                    if ((!in_array($data["num"], $fixed_columns)) && isset($searchopt[$data["num"]])) {
-                        echo "<tr>";
-                        echo "<td>";
-                        echo $this->nameOfGroupForItemInSearchopt($searchopt, $data["num"]);
-                        echo $searchopt[$data["num"]]["name"] . "</td>";
-
-                        if ($i != 0) {
-                            echo "<td>";
-                            echo "<form method='post' action='$target'>";
-                            echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
-                            echo "<input type='hidden' name='users_id' value='$IDuser'>";
-                            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                            echo "<button type='submit' name='up'" .
-                             " title=\"" . __s('Bring up') . "\"" .
-                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-up'></i></button>";
-                            Html::closeForm();
-                            echo "</td>\n";
-                        } else {
-                            echo "<td>&nbsp;</td>";
-                        }
-
-                        if ($i != ($numrows - 1)) {
-                            echo "<td>";
-                            echo "<form method='post' action='$target'>";
-                            echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
-                            echo "<input type='hidden' name='users_id' value='$IDuser'>";
-                            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                            echo "<button type='submit' name='down'" .
-                            " title=\"" . __s('Bring down') . "\"" .
-                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-down'></i></button>";
-                            Html::closeForm();
-                            echo "</td>\n";
-                        } else {
-                            echo "<td>&nbsp;</td>";
-                        }
-
-                        if (!isset($searchopt[$data["num"]]["noremove"]) || $searchopt[$data["num"]]["noremove"] !== true) {
-                            echo "<td>";
-                            echo "<form method='post' action='$target'>";
-                            echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
-                            echo "<input type='hidden' name='users_id' value='$IDuser'>";
-                            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                            echo "<button type='submit' name='purge'" .
-                             " title=\"" . _sx('button', 'Delete permanently') . "\"" .
-                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-x'></i></button>";
-                            Html::closeForm();
-                            echo "</td>\n";
-                        } else {
-                            echo "<td>&nbsp;</td>\n";
-                        }
-                        echo "</tr>";
-                        $i++;
-                    }
-                }
-            }
-            echo "</table>";
         }
-        echo "</div>";
+        $entries = [];
+        foreach ($fixed_columns as $key => $val) {
+            $entries[] = [
+                'id'   => $val,
+                'name' => $searchopt[$val]['name'],
+                'group' => $this->nameOfGroupForItemInSearchopt($searchopt, $val),
+                'fixed' => true
+            ];
+        }
+        foreach ($already_added as $key => $val) {
+            $entries[] = [
+                'id'   => $val,
+                'name' => $searchopt[$val]['name'],
+                'group' => $this->nameOfGroupForItemInSearchopt($searchopt, $val)
+            ];
+        }
+
+        TemplateRenderer::getInstance()->display('components/search/displaypreference_config.html.twig', [
+            'itemtype' => $itemtype,
+            'users_id' => $IDuser,
+            'available_to_add' => $available_to_add,
+            'entries' => $entries,
+            'has_personal' => $has_personal,
+            'is_global' => $global,
+        ]);
     }
 
+    /**
+     * Print the search config form
+     *
+     * @param string $itemtype  item type
+     *
+     * @return null|false (display) Returns false if there is a rights error.
+     **/
+    public function showFormPerso($itemtype)
+    {
+        return $this->showConfigForm($itemtype, false);
+    }
 
     /**
      * Return the group name of an element in the searchopt array
@@ -500,161 +440,17 @@ class DisplayPreference extends CommonDBTM
         return "";
     }
 
-
     /**
      * Print the search config form
      *
-     * @param string $target    form target
      * @param string $itemtype  item type
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return null|false (display) Returns false if there is a rights error.
      **/
-    public function showFormGlobal($target, $itemtype)
+    public function showFormGlobal($itemtype)
     {
-        global $DB;
-
-        $searchopt = Search::getCleanedOptions($itemtype);
-        if (!is_array($searchopt)) {
-            return false;
-        }
-        $IDuser = 0;
-
-        $global_write = Session::haveRight(self::$rightname, self::GENERAL);
-
-        echo "<div id='tabsbody' class='m-n2'>";
-        // Defined items
-        $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-                'itemtype'  => $itemtype,
-                'users_id'  => $IDuser
-            ],
-            'ORDER'  => 'rank'
-        ]);
-        $numrows = count($iterator);
-
-        echo "<table class='table table-striped card-table'>";
-
-        // Get fixed columns
-        $fixed_columns = $this->getFixedColumns($itemtype);
-
-        if ($global_write) {
-            $already_added = self::getForTypeUser($itemtype, $IDuser);
-            echo "<tr><td colspan='4'>";
-            echo "<form method='post' action='$target'>";
-            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-            echo "<input type='hidden' name='users_id' value='$IDuser'>";
-            $group  = '';
-            $values = [];
-            foreach ($searchopt as $key => $val) {
-                if (!is_array($val)) {
-                    $group = $val;
-                } elseif (count($val) === 1) {
-                    $group = $val['name'];
-                } elseif (
-                    !in_array($key, $fixed_columns)
-                    && !in_array($key, $already_added)
-                    && (!isset($val['nodisplay']) || !$val['nodisplay'])
-                ) {
-                    $values[$group][$key] = $val["name"];
-                }
-            }
-            if ($values) {
-                Dropdown::showFromArray('num', $values);
-                echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary ms-1'>";
-            }
-            Html::closeForm();
-            echo "</td></tr>";
-        }
-
-
-        foreach ($fixed_columns as $searchoption_index) {
-            if (!isset($searchopt[$searchoption_index])) {
-                // Missing search option; do nothing
-                continue;
-            }
-
-            // Print fixed column
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>" . $searchopt[$searchoption_index]["name"] . "</td>";
-
-            // Some extra table cells are only shown if the user can edit the data
-            if ($global_write) {
-                echo "<td colspan='3'>&nbsp;</td>";
-            }
-
-            echo "</tr>";
-        }
-
-        $i = 0;
-
-        if ($numrows) {
-            foreach ($iterator as $data) {
-                if (
-                    (!in_array($data["num"], $fixed_columns))
-                    && isset($searchopt[$data["num"]])
-                ) {
-                    echo "<tr><td>";
-                    echo $this->nameOfGroupForItemInSearchopt($searchopt, $data["num"]);
-                    echo $searchopt[$data["num"]]["name"];
-                    echo "</td>";
-
-                    if ($global_write) {
-                        if ($i != 0) {
-                            echo "<td>";
-                            echo "<form method='post' action='$target'>";
-                            echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
-                            echo "<input type='hidden' name='users_id' value='$IDuser'>";
-                            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                            echo "<button type='submit' name='up'" .
-                            " title=\"" . __s('Bring up') . "\"" .
-                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-up'></i></button>";
-                            Html::closeForm();
-                            echo "</td>";
-                        } else {
-                            echo "<td>&nbsp;</td>\n";
-                        }
-
-                        if ($i != ($numrows - 1)) {
-                            echo "<td>";
-                            echo "<form method='post' action='$target'>";
-                            echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
-                            echo "<input type='hidden' name='users_id' value='$IDuser'>";
-                            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                            echo "<button type='submit' name='down'" .
-                             " title=\"" . __s('Bring down') . "\"" .
-                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-down'></i></button>";
-                            Html::closeForm();
-                            echo "</td>";
-                        } else {
-                            echo "<td>&nbsp;</td>\n";
-                        }
-
-                        if (!isset($searchopt[$data["num"]]["noremove"]) || $searchopt[$data["num"]]["noremove"] !== true) {
-                            echo "<td>";
-                            echo "<form method='post' action='$target'>";
-                            echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
-                            echo "<input type='hidden' name='users_id' value='$IDuser'>";
-                            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                            echo "<button type='submit' name='purge'" .
-                            " title=\"" . _sx('button', 'Delete permanently') . "\"" .
-                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-x'></i></button>";
-                            Html::closeForm();
-                            echo "</td>\n";
-                        } else {
-                            echo "<td>&nbsp;</td>\n";
-                        }
-                    }
-
-                    echo "</tr>";
-                    $i++;
-                }
-            }
-        }
-        echo "</table>";
-        echo "</div>";
+        return $this->showConfigForm($itemtype, true);
     }
-
 
     /**
      * show defined display preferences for a user
@@ -725,7 +521,6 @@ class DisplayPreference extends CommonDBTM
         }
     }
 
-
     /**
      * For tab management : force isNewItem
      *
@@ -736,7 +531,6 @@ class DisplayPreference extends CommonDBTM
         return false;
     }
 
-
     public function defineTabs($options = [])
     {
 
@@ -746,10 +540,8 @@ class DisplayPreference extends CommonDBTM
         return $ong;
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         switch ($item->getType()) {
             case 'Preference':
                 if (Session::haveRight(self::$rightname, self::PERSONAL)) {
@@ -768,10 +560,8 @@ class DisplayPreference extends CommonDBTM
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         switch ($item->getType()) {
             case 'Preference':
                 self::showForUser(Session::getLoginUserID());
@@ -780,22 +570,20 @@ class DisplayPreference extends CommonDBTM
             case __CLASS__:
                 switch ($tabnum) {
                     case 1:
-                        $item->showFormGlobal(Toolbox::cleanTarget($_GET['_target']), $_GET["displaytype"]);
+                        $item->showFormGlobal($_GET["displaytype"]);
                         return true;
 
                     case 2:
                         Session::checkRight(self::$rightname, self::PERSONAL);
-                        $item->showFormPerso(Toolbox::cleanTarget($_GET['_target']), $_GET["displaytype"]);
+                        $item->showFormPerso($_GET["displaytype"]);
                         return true;
                 }
         }
         return false;
     }
 
-
     public function getRights($interface = 'central')
     {
-
        //TRANS: short for : Search result user display
         $values[self::PERSONAL]  = ['short' => __('User display'),
             'long'  => __('Search result user display')

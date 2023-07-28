@@ -1,0 +1,156 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div id="tabsbody" class="m-n2 display_preference_config">
+   <input type="hidden" name="itemtype" value="{{ itemtype }}">
+   <input type="hidden" name="users_id" value="{{ users_id }}">
+   {% if not is_global and not has_personal %}
+      <div class="alert alert-info">
+         {{ __('No personal criteria. Create personal parameters?') }}
+      </div>
+      <button type="button" class="btn btn-primary" name="activate" value="1">{{ __('Create') }}</button>
+   {% else %}
+      <table class="table table-striped card-table m-n2">
+         <thead>
+            <tr>
+               <th colspan="4">
+                  {% if not is_global %}
+                     <button type="button" class="btn btn-danger" name="disable" value="1">{{ __('Delete') }}</button>
+                  {% endif %}
+               </th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr>
+               <td colspan="4">
+                  {% if available_to_add|length > 0 %}
+                     {% set add_opt_btn %}
+                        <button type="button" name="add_opt" class="btn btn-primary ms-1">{{ _x('button', 'Add') }}</button>
+                     {% endset %}
+                     {{ fields.dropdownArrayField('num', null, available_to_add, '', {
+                        no_label: true,
+                        add_field_html: add_opt_btn,
+                        used: entries|map(v => v['id']),
+                     }) }}
+                  {% endif %}
+               </td>
+            </tr>
+            {% for opt in entries|filter(v => v['fixed'] == true) %}
+               <tr data-opt-id="{{ opt['id'] }}">
+                  <td>{{ opt['name'] }}</td>
+                  <td colspan="3"></td>
+               </tr>
+            {% endfor %}
+            {% for opt in entries|filter(v => v['fixed'] != true) %}
+               {% set name_prefix = opt['group'] is not empty ? (opt['group']) : '' %}
+               <tr data-opt-id="{{ opt['id'] }}">
+                  <td>{{ name_prefix ~ opt['name'] }}</td>
+                  <td>
+                     <button type="button" name="move_up" class="btn btn-icon btn-sm btn-ghost-secondary" title="{{ __('Bring up') }}" {{ loop.first ? 'style="visibility: hidden"' : '' }}>
+                        <i class="ti ti-arrow-up"></i>
+                     </button>
+                     <button type="button" name="move_down" class="btn btn-icon btn-sm btn-ghost-secondary" title="{{ __('Bring down') }}" {{ loop.last ? 'style="visibility: hidden"' : '' }}>
+                        <i class="ti ti-arrow-down"></i>
+                     </button>
+                     {% if opt['noremove'] is not defined or opt['noremove'] != true %}
+                        <button type="button" name="remove_opt" class="btn btn-icon btn-sm btn-ghost-danger" title="{{ _x('button', 'Delete permanently') }}">
+                           <i class="ti ti-x"></i>
+                        </button>
+                     {% endif %}
+                  </td>
+               </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+   {% endif %}
+</div>
+<script>
+   $(() => {
+       const config_forms = $(`#tabsbody.display_preference_config`);
+       const submitForm = (specific_form, data) => {
+           data['itemtype'] = specific_form.find(`input[name="itemtype"]`).val();
+           data['users_id'] = specific_form.find(`input[name="users_id"]`).val();
+           // Disable all buttons since there can only be one action done at a time
+           config_forms.find(`button`).prop('disabled', true);
+           $.ajax({
+               url: "{{ path('/ajax/displaypreference.php') }}",
+               type: 'POST',
+               data: data,
+           }).then(() => {
+               // This script is inside an iframe, so this only reloads the iframe
+               window.location.reload();
+           }, () => {
+               // This script is inside an iframe, so this only reloads the iframe
+               window.location.reload();
+           });
+       };
+       config_forms.find(`button[name="activate"]`).on(`click`, (e) => {
+          submitForm($(e.target).closest('.display_preference_config'), {activate: 1});
+       });
+
+       config_forms.find(`button[name="disable"]`).on(`click`, (e) => {
+          submitForm($(e.target).closest('.display_preference_config'), {disable: 1});
+       });
+
+       config_forms.find(`button[name="add_opt"]`).on(`click`, (e) => {
+           const specific_form = $(e.target).closest('.display_preference_config');
+           submitForm(specific_form, {
+               add: 1,
+               num: specific_form.find(`select[name="num"]`).val(),
+           });
+       });
+
+       config_forms.find(`button[name="move_up"]`).on(`click`, (e) => {
+          submitForm($(e.target).closest('.display_preference_config'), {
+             up: 1,
+             num: $(e.target).closest('tr').data('opt-id')
+          });
+       });
+
+       config_forms.find(`button[name="move_down"]`).on(`click`, (e) => {
+          submitForm($(e.target).closest('.display_preference_config'), {
+             down: 1,
+             num: $(e.target).closest('tr').data('opt-id')
+          });
+       });
+
+       config_forms.find(`button[name="remove_opt"]`).on(`click`, (e) => {
+          submitForm($(e.target).closest('.display_preference_config'), {
+             purge: 1,
+             num: $(e.target).closest('tr').data('opt-id')
+          });
+       });
+   });
+</script>

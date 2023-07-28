@@ -103,10 +103,27 @@
    <div class="d-inline-flex" role="group">
 
       {% if can_config and count > 0 %}
-      <button class="btn btn-sm btn-icon btn-ghost-secondary show_displaypreference_modal me-1 me-sm-2"
-             title="{{ __('Select default items to show') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-         <i class="ti fa-lg ti-tool"></i>
-      </button>
+         <button class="btn btn-sm btn-icon btn-ghost-secondary show_displaypreference_modal me-1 me-sm-2"
+                title="{{ __('Select default items to show') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+            <i class="ti fa-lg ti-tool"></i>
+         </button>
+         <template id="displaypreference_modal_template{{ rand }}">
+            <div id="displaypreference_modal{{ rand }}" class="modal fade" role="dialog">
+               <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h4 class="modal-title">{{ __('Select default items to show') }}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                     </div>
+                     <div class="modal-body">
+                        <div class="ratio ratio-4x3">
+                           <iframe src="{{ path('/front/displaypreference.form.php?itemtype=' ~ itemtype|escape('url')) }}"></iframe>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </template>
       {% endif %}
 
       {% if count > 0 %}
@@ -177,31 +194,29 @@ $(document).ready(function() {
    $('.show_displaypreference_modal').click(function(e) {
       e.preventDefault();
 
-      var modal = '<div class="modal fade" id="displayprefence_modal{{ rand }}" role="dialog">';
-      modal += '<div class="modal-dialog modal-lg">';
-      modal += '<div class="modal-content">';
-      modal += '<div class="modal-header">';
-      modal += '<h4 class="modal-title">{{ __('Select default items to show') }}</h4>';
-      modal += '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close modal') }}"></button>';
-      modal += '</div>';
-      modal += '<div class="modal-body">';
-      modal += '<div class="ratio ratio-4x3">';
-      modal += '<iframe src="{{ path('front/displaypreference.form.php?itemtype=' ~ itemtype|escape('url')) }}"></iframe>'
-      modal += '</div>';
-      modal += '</div>';
-      modal += '</div>';
-      modal += '</div>';
-
       // remove old modal
       $('#displayprefence_modal{{ rand }}').remove();
 
       // create new one
-      $('body').append(modal);
-      $('#displayprefence_modal{{ rand }}').modal('show');
+      $('body').append($('#displaypreference_modal_template{{ rand }}').html());
+      const modal_el = $('#displaypreference_modal{{ rand }}');
+      modal_el.modal('show');
    });
 
-   $("body").on('hide.bs.modal', '#displayprefence_modal{{ rand }}', function() {
-      location.reload();
+   $("body").on('hide.bs.modal', '#displaypreference_modal{{ rand }}', function() {
+      // Try finding a fluid search instance
+      const search_display = $('.ajax-container.search-display-data');
+      try {
+          if (search_display.length === 1 && search_display.data('js_class') !== undefined) {
+              // Trigger a reload of just the results
+              search_display.data('js_class').view.refreshResults();
+          } else {
+              // There is no (or multiple) search results, reload the page
+              window.location.reload();
+          }
+      } catch (err) {
+          window.location.reload();
+      }
    });
 
    $('.fold-search').change(function(event) {
