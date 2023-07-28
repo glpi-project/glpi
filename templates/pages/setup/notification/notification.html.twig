@@ -69,17 +69,15 @@
          }
     ]) %}
 
-    {% set initial_field %}
-        {% do call('NotificationEvent::dropdownEvents', [
-            item.fields['itemtype'],
-            {
-                'value': item.fields['event']
-            }
-        ]) %}
-    {% endset %}
     {{ fields.ajaxField(
         'show_events',
-        initial_field,
+        call('NotificationEvent::dropdownEvents', [
+            item.fields['itemtype'],
+            {
+                'value': item.fields['event'],
+                'display': false,
+            }
+        ]),
         __('Events'),
         field_options
     ) }}
