@@ -258,7 +258,7 @@ class Notification extends CommonDBTM implements FilterableInterface
             NotificationMailingSetting::INHERIT           => __('Use global config'),
             NotificationMailingSetting::NO_DOCUMENT       => __('No documents'),
             NotificationMailingSetting::ALL_DOCUMENTS     => __('All documents'),
-            NotificationMailingSetting::ONLY_TRIGGERED    => __('Only documents related to the triggering event'),
+            NotificationMailingSetting::ONLY_FROM_TRIGGER => __('Only documents related to the item that triggers the event'),
         ];
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/notification.html.twig', [

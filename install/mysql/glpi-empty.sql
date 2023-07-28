@@ -6174,8 +6174,9 @@ CREATE TABLE `glpi_queuednotifications` (
   `documents` text,
   `mode` varchar(20) NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
   `event` varchar(255) DEFAULT NULL,
-  `itemtype_of_documents` varchar(255) DEFAULT NULL,
-  `items_id_of_documents` int unsigned NOT NULL DEFAULT '0',
+  `attach_documents` tinyint NOT NULL DEFAULT '0',
+  `itemtype_trigger` varchar(255) DEFAULT NULL,
+  `items_id_trigger` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`,`notificationtemplates_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -6186,7 +6187,7 @@ CREATE TABLE `glpi_queuednotifications` (
   KEY `sent_time` (`sent_time`),
   KEY `mode` (`mode`),
   KEY `notificationtemplates_id` (`notificationtemplates_id`),
-  KEY `item_of_documents` (`itemtype_of_documents`,`items_id_of_documents`)
+  KEY `item_trigger` (`itemtype_trigger`,`items_id_trigger`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

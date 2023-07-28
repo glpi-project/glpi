@@ -41,10 +41,10 @@ use Glpi\Mail\SMTP\OauthConfig;
  */
 class NotificationMailingSetting extends NotificationSetting
 {
-    public const INHERIT        = -2;   // Inherit from global config
-    public const NO_DOCUMENT    = 0;    // No document
-    public const ALL_DOCUMENTS  = 1;    // All documents
-    public const ONLY_TRIGGERED = 2;    // Only documents related to the triggering event
+    public const INHERIT           = -2;   // Inherit from global config
+    public const NO_DOCUMENT       = 0;    // No document
+    public const ALL_DOCUMENTS     = 1;    // All documents
+    public const ONLY_FROM_TRIGGER = 2;    // Only documents related to the item that triggers the event
 
     public static function getTypeName($nb = 0)
     {
@@ -71,7 +71,7 @@ class NotificationMailingSetting extends NotificationSetting
         $attach_documents_values = [
             self::NO_DOCUMENT       => __('No documents'),
             self::ALL_DOCUMENTS     => __('All documents'),
-            self::ONLY_TRIGGERED    => __('Only documents related to the triggering event'),
+            self::ONLY_FROM_TRIGGER => __('Only documents related to the item that triggers the event'),
         ];
 
         $mail_methods = [

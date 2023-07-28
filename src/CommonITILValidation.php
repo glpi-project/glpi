@@ -357,7 +357,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 $options = ['validation_id'     => $this->fields["id"],
                     'validation_status' => $this->fields["status"]
                 ];
-                $mailsend = NotificationEvent::raiseEvent('validation', $item, $options);
+                $mailsend = NotificationEvent::raiseEvent('validation', $item, $options, $this);
             }
             if ($mailsend) {
                 if ($this->fields['itemtype_target'] === 'User') {
@@ -466,7 +466,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 $options  = ['validation_id'     => $this->fields["id"],
                     'validation_status' => $this->fields["status"]
                 ];
-                NotificationEvent::raiseEvent('validation_answer', $item, $options);
+                NotificationEvent::raiseEvent('validation_answer', $item, $options, $this);
             }
 
             //if status is updated, update global approval status

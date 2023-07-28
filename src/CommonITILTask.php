@@ -263,7 +263,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 'task_users_id_tech'  => $this->fields['users_id_tech'],
                 'task_groups_id_tech' => $this->fields['groups_id_tech']
             ];
-            NotificationEvent::raiseEvent('delete_task', $item, $options);
+            NotificationEvent::raiseEvent('delete_task', $item, $options, $this);
         }
     }
 
@@ -447,7 +447,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     $options = ['task_id'    => $this->fields["id"],
                         'is_private' => $this->isPrivate()
                     ];
-                    NotificationEvent::raiseEvent('update_task', $item, $options);
+                    NotificationEvent::raiseEvent('update_task', $item, $options, $this);
                 }
             }
         }
@@ -634,7 +634,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $options = ['task_id'             => $this->fields["id"],
                 'is_private'          => $this->isPrivate()
             ];
-            NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
+            NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options, $this);
         }
 
        // Add log entry in the ITIL object

@@ -263,7 +263,7 @@ class ITILFollowup extends CommonDBChild
             $options = ['followup_id' => $this->fields["id"],
                 'is_private'  => $this->fields['is_private']
             ];
-            NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
+            NotificationEvent::raiseEvent("add_followup", $parentitem, $options, $this);
         }
 
        // Add log entry in the ITILObject
@@ -316,7 +316,7 @@ class ITILFollowup extends CommonDBChild
                            // Force is_private with data / not available
                 'is_private'  => $this->fields['is_private']
             ];
-            NotificationEvent::raiseEvent('delete_followup', $job, $options);
+            NotificationEvent::raiseEvent('delete_followup', $job, $options, $this);
         }
     }
 
@@ -488,7 +488,7 @@ class ITILFollowup extends CommonDBChild
                     'is_private'  => $this->fields['is_private']
                 ];
 
-                NotificationEvent::raiseEvent("update_followup", $job, $options);
+                NotificationEvent::raiseEvent("update_followup", $job, $options, $this);
             }
         }
 

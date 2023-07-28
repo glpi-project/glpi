@@ -183,9 +183,17 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 $documents_ids = [];
                 $documents_to_attach = [];
-                $itemtype = $current->fields['itemtype_of_documents'] ?? $current->fields['itemtype'];
-                $items_id = $current->fields['items_id_of_documents'] ?? $current->fields['items_id'];
-                if ($is_html || $items_id > 0) {
+
+
+                if ($is_html || $current->fields['attach_documents'] !== NotificationMailingSetting::NO_DOCUMENT) {
+                    if ($current->fields['attach_documents'] === NotificationMailingSetting::ONLY_FROM_TRIGGER) {
+                        $itemtype = $current->fields['itemtype_trigger'];
+                        $items_id = $current->fields['items_id_trigger'];
+                    } else {
+                        $itemtype = $current->fields['itemtype'];
+                        $items_id = $current->fields['items_id'];
+                    }
+
                     // Retieve document list if mail is in HTML format (for inline images)
                     // or if documents are attached to mail.
                     $item = getItemForItemtype($itemtype);
@@ -227,7 +235,10 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 if (!$is_html) {
                     $mail->text($current->fields['body_text']);
-                    $documents_to_attach = $documents_ids; // Attach all documents
+                    if ($current->fields['attach_documents'] !== NotificationMailingSetting::NO_DOCUMENT) {
+                        // Attach all documents
+                        $documents_to_attach = $documents_ids;
+                    }
                 } else {
                     $inline_docs = [];
                     foreach ($documents_ids as $document_id) {
@@ -257,8 +268,10 @@ class NotificationEventMailing extends NotificationEventAbstract
                             $mail->embedFromPath($image_path, $doc->fields['filename']);
                             $inline_docs[$document_id] = $doc->fields['filename'];
                         } else {
-                            // Attach only documents that are not inlined images
-                            $documents_to_attach[] = $document_id;
+                            if ($current->fields['attach_documents'] !== NotificationMailingSetting::NO_DOCUMENT) {
+                                // Attach only documents that are not inlined images
+                                $documents_to_attach[] = $document_id;
+                            }
                         }
                     }
 
@@ -360,9 +373,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
                 }
 
-                if (!empty($documents_to_attach)) {
-                    self::attachDocuments($mail, $documents_to_attach);
-                }
+                self::attachDocuments($mail, $documents_to_attach);
 
                 $recipient = $current->getField('recipient');
                 if (defined('GLPI_FORCE_MAIL')) {
@@ -484,13 +495,6 @@ class NotificationEventMailing extends NotificationEventAbstract
      */
     private static function attachDocuments(Email $mail, array $documents_ids)
     {
-        global $CFG_GLPI;
-
-        $attach_documents = $CFG_GLPI['attach_ticket_documents_to_mail'];
-        if ($attach_documents === NotificationMailingSetting::NO_DOCUMENT) {
-            return;
-        }
-
         $document = new Document();
         foreach ($documents_ids as $document_id) {
             if ($document->getFromDB($document_id) === false) {

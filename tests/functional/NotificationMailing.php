@@ -111,8 +111,8 @@ class NotificationMailing extends DbTestCase
              'documents'                => '',
              'mode'                     => 'mailing',
              'event'                    => 'test_notification',
-             'itemtype_of_documents'    => '',
-             'items_id_of_documents'    => 0,
+             'itemtype_trigger'    => '',
+             'items_id_trigger'    => 0,
          ]);
     }
 
@@ -228,7 +228,7 @@ class NotificationMailing extends DbTestCase
         $ITILFollowUp = new \ITILFollowup();
 
 
-    // NO_DOCUMENT
+        // NO_DOCUMENT
         $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationMailingSetting::NO_DOCUMENT;
 
 
@@ -257,8 +257,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $row['items_id'],
             'mode' => $row['mode'],
             'event' => $row['event'],
-            'itemtype_of_documents' => $row['itemtype_of_documents'],
-            'items_id_of_documents' => $row['items_id_of_documents'],
+            'itemtype_trigger' => $row['itemtype_trigger'],
+            'items_id_trigger' => $row['items_id_trigger'],
         ];
 
         $this->array($result)->isIdenticalTo([
@@ -266,8 +266,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $ticketID,
             'mode' => 'mailing',
             'event' => 'new',
-            'itemtype_of_documents' => '',
-            'items_id_of_documents' => 0,
+            'itemtype_trigger' => '',
+            'items_id_trigger' => 0,
         ]);
 
 
@@ -296,8 +296,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $row['items_id'],
             'mode' => $row['mode'],
             'event' => $row['event'],
-            'itemtype_of_documents' => $row['itemtype_of_documents'],
-            'items_id_of_documents' => $row['items_id_of_documents'],
+            'itemtype_trigger' => $row['itemtype_trigger'],
+            'items_id_trigger' => $row['items_id_trigger'],
         ];
 
         $this->array($result)->isIdenticalTo([
@@ -305,8 +305,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $ticketID,
             'mode' => 'mailing',
             'event' => 'add_followup',
-            'itemtype_of_documents' => '',
-            'items_id_of_documents' => 0,
+            'itemtype_trigger' => '',
+            'items_id_trigger' => 0,
         ]);
 
         // add a followup without document
@@ -333,8 +333,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $row['items_id'],
             'mode' => $row['mode'],
             'event' => $row['event'],
-            'itemtype_of_documents' => $row['itemtype_of_documents'],
-            'items_id_of_documents' => $row['items_id_of_documents'],
+            'itemtype_trigger' => $row['itemtype_trigger'],
+            'items_id_trigger' => $row['items_id_trigger'],
         ];
 
         $this->array($result)->isIdenticalTo([
@@ -342,12 +342,12 @@ class NotificationMailing extends DbTestCase
             'items_id' => $ticketID,
             'mode' => 'mailing',
             'event' => 'add_followup',
-            'itemtype_of_documents' => '',
-            'items_id_of_documents' => 0,
+            'itemtype_trigger' => '',
+            'items_id_trigger' => 0,
         ]);
 
 
-    // ALL_DOCUMENTS
+        // ALL_DOCUMENTS
         $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationMailingSetting::ALL_DOCUMENTS;
 
         // create a ticket and link one document
@@ -374,8 +374,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $row['items_id'],
             'mode' => $row['mode'],
             'event' => $row['event'],
-            'itemtype_of_documents' => $row['itemtype_of_documents'],
-            'items_id_of_documents' => $row['items_id_of_documents'],
+            'itemtype_trigger' => $row['itemtype_trigger'],
+            'items_id_trigger' => $row['items_id_trigger'],
         ];
 
         $this->array($result)->isIdenticalTo([
@@ -383,8 +383,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $ticketID,
             'mode' => 'mailing',
             'event' => 'new',
-            'itemtype_of_documents' => 'Ticket',
-            'items_id_of_documents' => $ticketID,
+            'itemtype_trigger' => 'Ticket',
+            'items_id_trigger' => $ticketID,
         ]);
 
 
@@ -413,8 +413,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $row['items_id'],
             'mode' => $row['mode'],
             'event' => $row['event'],
-            'itemtype_of_documents' => $row['itemtype_of_documents'],
-            'items_id_of_documents' => $row['items_id_of_documents'],
+            'itemtype_trigger' => $row['itemtype_trigger'],
+            'items_id_trigger' => $row['items_id_trigger'],
         ];
 
         $this->array($result)->isIdenticalTo([
@@ -422,8 +422,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $ticketID,
             'mode' => 'mailing',
             'event' => 'add_followup',
-            'itemtype_of_documents' => 'Ticket',
-            'items_id_of_documents' => $ticketID,
+            'itemtype_trigger' => 'Ticket',
+            'items_id_trigger' => $ticketID,
         ]);
 
         // add a followup without document
@@ -450,8 +450,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $row['items_id'],
             'mode' => $row['mode'],
             'event' => $row['event'],
-            'itemtype_of_documents' => $row['itemtype_of_documents'],
-            'items_id_of_documents' => $row['items_id_of_documents'],
+            'itemtype_trigger' => $row['itemtype_trigger'],
+            'items_id_trigger' => $row['items_id_trigger'],
         ];
 
         $this->array($result)->isIdenticalTo([
@@ -459,13 +459,13 @@ class NotificationMailing extends DbTestCase
             'items_id' => $ticketID,
             'mode' => 'mailing',
             'event' => 'add_followup',
-            'itemtype_of_documents' => 'Ticket',
-            'items_id_of_documents' => $ticketID,
+            'itemtype_trigger' => 'Ticket',
+            'items_id_trigger' => $ticketID,
         ]);
 
 
-    // ONLY_TRIGGERED
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationMailingSetting::ONLY_TRIGGERED;
+        // ONLY_FROM_TRIGGER
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationMailingSetting::ONLY_FROM_TRIGGER;
 
         // create a ticket and link one document
         $ticketID = $ticket->add([
@@ -491,8 +491,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $row['items_id'],
             'mode' => $row['mode'],
             'event' => $row['event'],
-            'itemtype_of_documents' => $row['itemtype_of_documents'],
-            'items_id_of_documents' => $row['items_id_of_documents'],
+            'itemtype_trigger' => $row['itemtype_trigger'],
+            'items_id_trigger' => $row['items_id_trigger'],
         ];
 
         $this->array($result)->isIdenticalTo([
@@ -500,8 +500,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $ticketID,
             'mode' => 'mailing',
             'event' => 'new',
-            'itemtype_of_documents' => 'Ticket',
-            'items_id_of_documents' => $ticketID,
+            'itemtype_trigger' => 'Ticket',
+            'items_id_trigger' => $ticketID,
         ]);
 
 
@@ -529,8 +529,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $row['items_id'],
             'mode' => $row['mode'],
             'event' => $row['event'],
-            'itemtype_of_documents' => $row['itemtype_of_documents'],
-            'items_id_of_documents' => $row['items_id_of_documents'],
+            'itemtype_trigger' => $row['itemtype_trigger'],
+            'items_id_trigger' => $row['items_id_trigger'],
         ];
 
         $this->array($result)->isIdenticalTo([
@@ -538,8 +538,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $ticketID,
             'mode' => 'mailing',
             'event' => 'add_followup',
-            'itemtype_of_documents' => 'ITILFollowup',
-            'items_id_of_documents' => $ITILFollowUpID,
+            'itemtype_trigger' => 'ITILFollowup',
+            'items_id_trigger' => $ITILFollowUpID,
         ]);
 
         // add a followup without document
@@ -566,8 +566,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $row['items_id'],
             'mode' => $row['mode'],
             'event' => $row['event'],
-            'itemtype_of_documents' => $row['itemtype_of_documents'],
-            'items_id_of_documents' => $row['items_id_of_documents'],
+            'itemtype_trigger' => $row['itemtype_trigger'],
+            'items_id_trigger' => $row['items_id_trigger'],
         ];
 
         $this->array($result)->isIdenticalTo([
@@ -575,8 +575,8 @@ class NotificationMailing extends DbTestCase
             'items_id' => $ticketID,
             'mode' => 'mailing',
             'event' => 'add_followup',
-            'itemtype_of_documents' => 'ITILFollowup',
-            'items_id_of_documents' => $ITILFollowUpID,
+            'itemtype_trigger' => 'ITILFollowup',
+            'items_id_trigger' => $ITILFollowUpID,
         ]);
     }
 }

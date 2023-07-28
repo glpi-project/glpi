@@ -289,12 +289,31 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
 }
 /** /Add new notification for AutoBump */
 
-$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+/** Add handling of source item of attached documents in notification */
 $migration->addField("glpi_notifications", "attach_documents", "tinyint NOT NULL DEFAULT '-2'");
-$migration->addField("glpi_queuednotifications", "itemtype_of_documents", "varchar(255) DEFAULT NULL");
-$migration->addField("glpi_queuednotifications", "items_id_of_documents", "fkey");
+
+$attach_documents_value = $DB->request([
+    'SELECT' => ['value'],
+    'FROM'   => 'glpi_configs',
+    'WHERE'  => [
+        'context' => 'core',
+        'name'    => 'attach_ticket_documents_to_mail'
+    ],
+])->current()['value'] ?? '0';
+$migration->addField(
+    "glpi_queuednotifications",
+    "attach_documents",
+    "tinyint NOT NULL DEFAULT '0'",
+    [
+        'update' => $attach_documents_value,
+    ]
+);
+
+$migration->addField("glpi_queuednotifications", "itemtype_trigger", "varchar(255) DEFAULT NULL");
+$migration->addField("glpi_queuednotifications", "items_id_trigger", "fkey");
 $migration->addKey(
     "glpi_queuednotifications",
-    ["itemtype_of_documents", "items_id_of_documents"],
-    "item_of_documents"
+    ["itemtype_trigger", "items_id_trigger"],
+    "item_trigger"
 );
+/** /Add handling of source item of attached documents in notification */
