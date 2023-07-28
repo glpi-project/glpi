@@ -658,10 +658,6 @@
       'locked_fields': [],
    }|merge(options) %}
 
-   {% if options.info is defined %}
-      {% set label = label ~ ' <i class="pointer fa fa-info" title="' ~ options.info|escape('html_attr') ~ '"></i>' %}
-   {% endif %}
-
    {% if options.locked_fields[name] is defined %}
       {% set options = options|merge({'locked': true, 'locked_value': options.locked_fields[name]}) %}
    {% elseif name in options.locked_fields %}

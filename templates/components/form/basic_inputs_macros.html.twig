@@ -375,7 +375,7 @@
               data-bs-toggle="popover"
               data-bs-placement="top"
               data-bs-html="true"
-              data-bs-content="{{ options.helper }}">
+              data-bs-content="{{ options.helper|nl2br|escape('html_attr') }}">
             ?
         </span>
         {% endset %}

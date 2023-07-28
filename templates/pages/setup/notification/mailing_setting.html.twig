@@ -64,7 +64,7 @@
                 config('from_email'),
                 __('Email sender address'),
                 field_options|merge({
-                    'info': __('Address to use in from for sent emails.') ~ '\n' ~ __('If not set, main or entity administrator email address will be used.')
+                    'helper': __('Address to use in from for sent emails.') ~ '\n' ~ __('If not set, main or entity administrator email address will be used.')
                 })
             ) }}
 
@@ -73,7 +73,7 @@
                 config('from_email_name'),
                 __('Email sender name'),
                 field_options|merge({
-                    'info': __('Name to use in from for sent emails.') ~ '\n' ~ __('If not set, main or entity administrator email name will be used.')
+                    'helper': __('Name to use in from for sent emails.') ~ '\n' ~ __('If not set, main or entity administrator email name will be used.')
                 })
             ) }}
 
@@ -82,7 +82,7 @@
                 config('replyto_email'),
                 __('Reply-To address'),
                 field_options|merge({
-                    'info': __('Optionnal reply to address.') ~ '\n' ~ __('If not set, main or entity administrator email address will be used.')
+                    'helper': __('Optionnal reply to address.') ~ '\n' ~ __('If not set, main or entity administrator email address will be used.')
                 })
             ) }}
 
@@ -91,7 +91,7 @@
                 config('replyto_email_name'),
                 __('Reply-To name'),
                 field_options|merge({
-                    'info': __('Optionnal reply to name.') ~ '\n' ~ __('If not set, main or entity administrator name will be used.'
+                    'helper': __('Optionnal reply to name.') ~ '\n' ~ __('If not set, main or entity administrator name will be used.'
                 )})
             ) }}
 
@@ -100,7 +100,7 @@
                 config('noreply_email'),
                 __('No-Reply address'),
                 field_options|merge({
-                    'info': __('Optionnal No-Reply address.') ~ '\n' ~ __('If set, it will be used for notifications that doesnʼt expect a reply.')
+                    'helper': __('Optionnal No-Reply address.') ~ '\n' ~ __('If set, it will be used for notifications that doesnʼt expect a reply.')
                 })
             ) }}
 
@@ -109,7 +109,7 @@
                 config('noreply_email_name'),
                 __('No-Reply name'),
                 field_options|merge({
-                    'info': __('Optionnal No-Reply name.') ~ '\n' ~ __('If not set, main or entity administrator name will be used.')
+                    'helper': __('Optionnal No-Reply name.') ~ '\n' ~ __('If not set, main or entity administrator name will be used.')
                 })
             ) }}
 
@@ -135,7 +135,7 @@
             {% set extra_options = {} %}
             {% if not is_mail_function_available %}
                 {% set extra_options = {
-                    'info': __('The PHP mail function is unknown or is not activated on your system.')  ~ '\n' ~ __('The use of a SMTP is needed.')
+                    'helper': __('The PHP mail function is unknown or is not activated on your system.')  ~ '\n' ~ __('The use of a SMTP is needed.')
                 } %}
             {% endif %}
             {{ fields.dropdownArrayField(
@@ -217,7 +217,7 @@
                 config('url_base') ~ '/front/smtp_oauth2_callback.php',
                 _x('oauth', 'Callback URL'),
                 field_options|merge({
-                    'info': _x('oauth', 'This is the callback URL that you will have to declare in your provider application.'),
+                    'helper': _x('oauth', 'This is the callback URL that you will have to declare in your provider application.'),
                     'is_copyable': true,
                     'readonly': true,
                 })
@@ -252,7 +252,7 @@
                     } %}
                     {% if param_specs.helper is defined %}
                         {% set extra_options = extra_options|merge({
-                            'info': param_specs['helper'],
+                            'helper': param_specs['helper'],
                         }) %}
                     {% endif %}
 
@@ -291,7 +291,7 @@
                     '',
                     _x('oauth', 'Force OAuth authentication refresh'),
                     field_options|merge({
-                        'info': _x('oauth', 'You can use this option to force redirection to the OAuth authentication process. This will trigger generation of a new OAuth token.')
+                        'helper': _x('oauth', 'You can use this option to force redirection to the OAuth authentication process. This will trigger generation of a new OAuth token.')
                     })
                 ) }}
 
@@ -346,7 +346,7 @@
                 config('smtp_sender'),
                 __('Email sender'),
                 field_options|merge({
-                    'info': __('May be required for some mails providers.') ~ '\n' ~ __('If not set, main administrator email will be used.')
+                    'helper': __('May be required for some mails providers.') ~ '\n' ~ __('If not set, main administrator email will be used.')
                 })
             ) }}
         </div>
