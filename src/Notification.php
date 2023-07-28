@@ -244,14 +244,10 @@ class Notification extends CommonDBTM implements FilterableInterface
     {
         global $CFG_GLPI;
 
-        if (!Session::haveRight(static::$rightname, UPDATE)) {
-            $types = [$this->fields['itemtype']];
-        } else if (
-            Config::canUpdate()
-            && ($this->getEntityID() == 0)
-        ) {
+        if (Config::canUpdate() && $this->getEntityID() == 0) {
             $types = $CFG_GLPI["notificationtemplates_types"];
         } else {
+            // Prevent attaching notification to system items
             $types = array_diff(
                 $CFG_GLPI["notificationtemplates_types"],
                 ['CronTask', 'DBConnection', 'User']

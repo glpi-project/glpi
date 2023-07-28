@@ -50,6 +50,7 @@
         __('Item type'),
         field_options|merge({
             'types': types,
+            'readonly': not item.isNewItem() and not item.canUpdate()
         }),
     ) }}
     {% do call('Ajax::updateItemOnSelectEvent', [
