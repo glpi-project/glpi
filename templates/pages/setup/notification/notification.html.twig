@@ -31,95 +31,64 @@
  # ---------------------------------------------------------------------
  #}
 
+{% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{{ include('components/form/header.html.twig') }}
-{% set rand = random() %}
-{% set field_options = {
-    'full_width': true,
-    'rand': rand
-} %}
+{% block more_fields %}
+    {% set rand = rand|default(random()) %}
+    {% set field_options = field_options|merge({'rand': rand}) %}
 
-{% block form_fields %}
-    <table class='tab_cadre_fixe'>
-        <tr class='tab_bg_2'>
-            <td>
-                {{ fields.textField(
-                    'name',
-                    item.fields['name'],
-                    __('Name'),
-                    field_options
-                ) }}
-                {{ fields.dropdownYesNo(
-                    'is_active',
-                    item.fields['is_active'],
-                    __('Active'),
-                    field_options,
-                ) }}
-                {{ fields.dropdownYesNo(
-                    'allow_response',
-                    item.fields['allow_response'],
-                    __('Allow response'),
-                    field_options,
-                ) }}
-                {{ fields.dropdownItemTypes(
-                    'itemtype',
-                    item.fields['itemtype'],
-                    __('Item type'),
-                    field_options|merge({
-                        'types': types,
-                    }),
-                ) }}
-                {% do call('Ajax::updateItemOnSelectEvent', [
-                    'dropdown_itemtype' ~ rand,
-                    'show_events',
-                    config('root_doc') ~ '/ajax/dropdownNotificationEvent.php',
-                    {
-                        'itemtype': '__VALUE__',
-                     }
-                ]) %}
-                {% do call('Ajax::updateItemOnSelectEvent', [
-                    'dropdown_itemtype' ~ rand,
-                    'show_templates',
-                    config('root_doc') ~ '/ajax/dropdownNotificationTemplate.php',
-                    {
-                        'itemtype': '__VALUE__',
-                     }
-                ]) %}
+    {{ fields.dropdownYesNo(
+        'allow_response',
+        item.fields['allow_response'],
+        __('Allow response'),
+        field_options,
+    ) }}
+    {{ fields.dropdownItemTypes(
+        'itemtype',
+        item.fields['itemtype'],
+        __('Item type'),
+        field_options|merge({
+            'types': types,
+        }),
+    ) }}
+    {% do call('Ajax::updateItemOnSelectEvent', [
+        'dropdown_itemtype' ~ rand,
+        'show_events',
+        config('root_doc') ~ '/ajax/dropdownNotificationEvent.php',
+        {
+            'itemtype': '__VALUE__',
+         }
+    ]) %}
+    {% do call('Ajax::updateItemOnSelectEvent', [
+        'dropdown_itemtype' ~ rand,
+        'show_templates',
+        config('root_doc') ~ '/ajax/dropdownNotificationTemplate.php',
+        {
+            'itemtype': '__VALUE__',
+         }
+    ]) %}
 
-                {% set initial_field %}
-                    {% do call('NotificationEvent::dropdownEvents', [
-                        item.fields['itemtype'],
-                        {
-                            'value': item.fields['event']
-                        }
-                    ]) %}
-                {% endset %}
-                {{ fields.ajaxField(
-                    'show_events',
-                    initial_field,
-                    __('Events'),
-                    field_options
-                ) }}
+    {% set initial_field %}
+        {% do call('NotificationEvent::dropdownEvents', [
+            item.fields['itemtype'],
+            {
+                'value': item.fields['event']
+            }
+        ]) %}
+    {% endset %}
+    {{ fields.ajaxField(
+        'show_events',
+        initial_field,
+        __('Events'),
+        field_options
+    ) }}
 
-                {{ fields.dropdownArrayField(
-                    "attach_documents",
-                    item.fields['attach_documents'],
-                    attach_documents_values,
-                    __('Add documents'),
-                    field_options
-                ) }}
-            </td>
-            <td>
-                {{ fields.textareaField(
-                    'comment',
-                    item.fields['comment'],
-                    _n('Comment', 'Comments', get_plural_number()),
-                    field_options
-                ) }}
-            </td>
-        </tr>
-    </table>
+    {{ fields.dropdownArrayField(
+        "attach_documents",
+        item.fields['attach_documents'],
+        attach_documents_values,
+        __('Add documents'),
+        field_options
+    ) }}
 {% endblock %}
-
-{{ include('components/form/buttons.html.twig') }}
