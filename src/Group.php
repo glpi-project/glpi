@@ -169,7 +169,7 @@ class Group extends CommonTreeDropdown
                         return true;
 
                     case 3:
-                        $item->showLDAPForm($item->getID());
+                        $item->showLDAPForm();
                         return true;
 
                     case 4:
@@ -519,54 +519,18 @@ class Group extends CommonTreeDropdown
         return $tab;
     }
 
-
     /**
-     * @param $ID
-     **/
-    public function showLDAPForm($ID)
+     * Show the LDAP options form for this group
+     * @return void
+     */
+    public function showLDAPForm()
     {
-        $options = [];
-        $this->initForm($ID, $options);
-
-        echo "<form name='groupldap_form' id='groupldap_form' method='post' action='" .
-             $this->getFormURL() . "'>";
-        echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-
-        if (
-            Group::canUpdate()
-            && Session::haveRight("user", User::UPDATEAUTHENT)
-            && AuthLDAP::useAuthLdap()
-        ) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='2' class='center'>" . __('In users') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Attribute of the user containing its groups') . "</td>";
-            echo "<td>";
-            echo Html::input('ldap_field', ['value' => $this->fields['ldap_field']]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Attribute value') . "</td>";
-            echo "<td>";
-            echo Html::input('ldap_value', ['value' => $this->fields['ldap_value']]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='2' class='center'>" . __('In groups') . "</th>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Group DN') . "</td>";
-            echo "<td>";
-            echo Html::input('ldap_group_dn', ['value' => $this->fields['ldap_group_dn']]);
-            echo "</td></tr>";
-        }
-
-        $options = ['colspan' => 1,
-            'candel'  => false
-        ];
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/admin/group_ldap.html.twig', [
+            'item' => $this,
+            'params' => [
+                'candel' => false,
+            ]
+        ]);
     }
 
     /**
