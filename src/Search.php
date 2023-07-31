@@ -4464,7 +4464,7 @@ JAVASCRIPT;
                 break;
 
             case 'Config':
-                $availableContexts = ['core'] + Plugin::getPlugins();
+                $availableContexts = array_merge(['core', 'inventory'], Plugin::getPlugins());
                 $availableContexts = implode("', '", $availableContexts);
                 $condition = "`context` IN ('$availableContexts')";
                 break;
