@@ -268,6 +268,10 @@ class NotificationTemplate extends CommonDBTM
             $bak_language = $_SESSION["glpilanguage"];
             $_SESSION["glpilanguage"] = $language;
 
+            // Switch to the user's ID
+            $bak_glpiID = $_SESSION['glpiID'];
+            $_SESSION['glpiID'] = $user_infos['users_id'];
+
            //If event is raised by a plugin, load it in order to get the language file available
             if ($plug = isPluginItemType(get_class($target->obj))) {
                 Plugin::loadLang(strtolower($plug['plugin']), $language);
@@ -333,6 +337,7 @@ class NotificationTemplate extends CommonDBTM
             }
 
            // Restore default language
+            $_SESSION['glpiID'] = $bak_glpiID;
             $_SESSION["glpilanguage"] = $bak_language;
             Session::loadLanguage();
             if ($bak_dropdowntranslations !== null) {
