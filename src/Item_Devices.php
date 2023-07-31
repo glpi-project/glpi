@@ -966,6 +966,10 @@ class Item_Devices extends CommonDBRelation
         }
 
         $iterator = $DB->request($criteria);
+        // Will be loaded only if/when data is needed from the device model
+        $device_type = static::getDeviceType();
+        /** @var CommonDevice $device */
+        $device = new $device_type();
         foreach ($iterator as $link) {
             Session::addToNavigateListItems(static::getType(), $link["id"]);
             $this->getFromDB($link['id']);
@@ -1035,14 +1039,20 @@ class Item_Devices extends CommonDBRelation
                                 break;
 
                             case 'progressbar':
-                                $percent = 0;
-                                if ($peer->fields[$attributs['max']] > 0) {
-                                    $percent = round(100 * $this->fields[$field] / $peer->fields[$attributs['max']]);
+                                if ($device->getID() !== $link[$device::getForeignKeyField()]) {
+                                    $device->getFromDB($link[$device::getForeignKeyField()]);
+                                }
+
+                                $percent = 100;
+                                $message = sprintf(__('%1$s (%2$s%%) '), Html::formatNumber($this->fields[$field], false, 0), __('Unknown'));
+                                if ($device->fields[$attributs['max']] > 0) {
+                                    $percent = round(100 * $this->fields[$field] / $device->fields[$attributs['max']]);
+                                    $message = sprintf(__('%1$s (%2$d%%) '), Html::formatNumber($this->fields[$field], false, 0), $percent);
                                 }
                                 $content = Html::progressBar("percent" . mt_rand(), [
                                     'create'  => true,
                                     'percent' => $percent,
-                                    'message' => sprintf(__('%1$s (%2$d%%) '), Html::formatNumber($this->fields[$field], false, 0), $percent),
+                                    'message' => $message,
                                     'display' => false
                                 ]);
                                 break;

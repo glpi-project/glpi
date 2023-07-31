@@ -923,7 +923,7 @@ class Html
             $out = <<<HTML
             <div class="progress" style="height: 16px" id="{$id}">
                <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                     style="width: 0%;"
+                     style="width: 0%; overflow: visible"
                      aria-valuenow="0"
                      aria-valuemin="0" aria-valuemax="100"
                      id="{$id}_text">
