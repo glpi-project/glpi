@@ -134,7 +134,8 @@ if (isset($_POST["add"])) {
         $menus = ["tools", "project"];
         Project::displayFullPageForItem($_GET["id"], $menus, [
             'withtemplate' => $_GET["withtemplate"],
-            'formoptions'  => "data-track-changes=true"
+            'formoptions'  => "data-track-changes=true",
+            'is_deleted'    => $_GET["is_deleted"] ?? 0,
         ]);
     }
 }

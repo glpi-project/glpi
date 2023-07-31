@@ -63,7 +63,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public static $items_id     = 'projects_id';
 
     protected $team             = [];
-    public static $rightname           = 'projecttask';
+    public static $rightname    = 'projecttask';
     protected $usenotepad       = true;
 
     public $can_be_translated   = true;
@@ -81,12 +81,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public static function getIcon()
     {
         return 'ti ti-list-check';
-    }
-
-
-    public static function canPurge()
-    {
-        return static::canChild('canUpdate');
     }
 
 
@@ -182,7 +176,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
 
         $values = parent::getRights();
-        unset($values[READ], $values[CREATE], $values[UPDATE], $values[DELETE], $values[PURGE]);
+        unset($values[READ], $values[CREATE], $values[UPDATE]);
 
         $values[self::READMY]   = __('See (actor)');
         $values[self::UPDATEMY] = __('Update (actor)');
@@ -320,6 +314,39 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $this->getFromDB($this->fields['id']);
 
             NotificationEvent::raiseEvent('new', $this);
+        }
+    }
+
+    public function post_deleteItem()
+    {
+        // Delete all sub-tasks
+        foreach (
+            (new self())->find([
+                'projecttasks_id' => $this->getID()
+            ]) as $task
+        ) {
+            self::getById($task['id'])->delete($task);
+        }
+    }
+
+
+    public function post_restoreItem()
+    {
+        // If task has a parent, restore it
+        if ($this->fields['projecttasks_id'] > 0) {
+            $parent = self::getById($this->fields['projecttasks_id']);
+            if ($parent->isDeleted()) {
+                $parent->restore($parent->fields);
+            }
+        }
+
+        // Restore all sub-tasks
+        foreach (
+            (new self())->find([
+                'projecttasks_id' => $this->getID()
+            ]) as $task
+        ) {
+            self::getById($task['id'])->restore($task);
         }
     }
 
@@ -605,6 +632,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $this->initForm($ID, $options);
+
+        $a = $this->isDeleted();
+        $b = $this->can($ID, DELETE);
+
         TemplateRenderer::getInstance()->display('pages/tools/project_task.html.twig', [
             'id'                       => $ID,
             'item'                     => $this,
@@ -739,7 +770,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
-            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -747,7 +777,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => 'glpi_projects',
             'field'              => 'name',
             'name'               => Project::getTypeName(1),
-            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -757,7 +786,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'field'              => 'name',
             'name'               => __('Father'),
             'datatype'           => 'dropdown',
-            'massiveaction'      => false,
+            'massiveaction'      => true,
          // Add virtual condition to relink table
             'joinparams'         => [
                 'condition'          => 'AND 1=1'
@@ -769,7 +798,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => $this->getTable(),
             'field'              => 'content',
             'name'               => __('Description'),
-            'massiveaction'      => false,
             'datatype'           => 'text',
             'htmltext'           => true,
         ];
@@ -943,7 +971,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return void
      **/
-    public static function showFor($item)
+    public static function showFor($item, $deleted = false)
     {
         global $DB;
 
@@ -995,7 +1023,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     ]
                 ]
             ],
-            'WHERE'  => [], //$where
+            'WHERE'  => [
+                'glpi_projecttasks.is_deleted' => $deleted
+            ], //$where
             'ORDERBY'   => [] // $sort $order";
         ];
 
@@ -1045,11 +1075,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             echo "</div>";
         }
 
+        $rand = mt_rand();
         if (
             ($item->getType() == 'ProjectTask')
             && $item->can($ID, UPDATE)
         ) {
-            $rand = mt_rand();
             echo "<div class='firstbloc'>";
             echo "<form name='projecttask_form$rand' id='projecttask_form$rand' method='post'
                 action='" . Toolbox::getItemTypeFormURL('ProjectTask') . "'>";
@@ -1106,9 +1136,51 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $iterator = $DB->request($criteria);
         if (count($criteria)) {
+            $massive_action_form_id = 'mass' . str_replace('\\', '', static::class) . $rand;
+            if ($canedit) {
+                Html::openMassiveActionsForm($massive_action_form_id);
+                if ($deleted) {
+                    $massiveactionparams = [
+                        'num_displayed' => min($_SESSION['glpilist_limit'], count($criteria)),
+                        'is_deleted' => $deleted,
+                        'specific_actions' => [
+                            'restore' => _x('button', 'Restore'),
+                            'purge' => _x('button', 'Delete permanently')
+                        ]
+                    ];
+                } else {
+                    $massiveactionparams = [
+                        'num_displayed' => min($_SESSION['glpilist_limit'], count($criteria)),
+                        'is_deleted' => $deleted,
+                        'specific_actions' => [
+                            'update' => _x('button', 'Update'),
+                            'clone' => _x('button', 'Clone'),
+                            'delete' => _x('button', 'Put in trashbin')
+                        ]
+                    ];
+                }
+                Html::showMassiveActions($massiveactionparams);
+
+                echo "<label class='form-check form-switch btn btn-sm btn-ghost-danger me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row'
+                    data-bs-toggle='tooltip' data-bs-placement='bottom' title='" . __('Show the trashbin') . "'>";
+                echo "<input type='checkbox' class='form-check-input ms-0 me-1 mt-0' role='button'
+                    name='is_deleted' value='1' autocomplete='off'
+                    onclick=\"document.location.search = document.location.search.replaceAll(/&is_deleted=(1|0)/g, '') + '&is_deleted=' + (this.checked ? 1 : 0)\"
+                    " . ($deleted ? "checked" : "") . " />";
+                echo "<span class='form-check-label mb-1 mb-sm-0'>";
+                echo "<i class='ti fa-lg ti-trash'></i>";
+                echo "</span>";
+                echo "</label>";
+            }
+
             echo "<table class='tab_cadre_fixehov'>";
 
             $header = '<tr>';
+            if ($canedit) {
+                $header  .= "<th width='10'>";
+                $header    .= Html::getCheckAllAsCheckbox($massive_action_form_id);
+                $header    .= "</th>";
+            }
             foreach ($columns as $key => $val) {
                 // Non order column
                 if ($key[0] == '_') {
@@ -1126,6 +1198,17 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 Session::addToNavigateListItems('ProjectTask', $data['id']);
                 $rand = mt_rand();
                 echo "<tr class='tab_bg_2'>";
+
+                if ($canedit) {
+                    echo "<td width='10'>";
+                    Html::showMassiveActionCheckBox(__CLASS__, $data['id']);
+                    echo "</td>";
+                    echo "<td><a href='" . ProjectTask::getFormURLWithID($data['id'])
+                                    . "&amp;onglet=1'>" . $data["name"] . "</a></td>";
+                } else {
+                    echo "<td></td>";
+                }
+
                 echo "<td>";
                 $link = "<a id='ProjectTask" . $data["id"] . $rand . "' href='" .
                         ProjectTask::getFormURLWithID($data['id']) . "'>" . $data['name'] .
@@ -1168,6 +1251,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
             echo $header;
             echo "</table>\n";
+
+            if ($canedit) {
+                $massiveactionparams['ontop'] = false;
+                Html::showMassiveActions($massiveactionparams);
+                Html::closeForm();
+            }
         } else {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . __('No item found') . "</th></tr>";
@@ -1210,11 +1299,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         switch ($item->getType()) {
             case 'Project':
-                self::showFor($item);
+                self::showFor($item, $_GET['is_deleted'] ?? false);
                 break;
 
             case __CLASS__:
-                self::showFor($item);
+                self::showFor($item, $_GET['is_deleted'] ?? false);
                 break;
         }
         return true;

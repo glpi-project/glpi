@@ -71,6 +71,18 @@ if (isset($_POST["add"])) {
     } else {
         Html::redirect(ProjectTask::getFormURL() . "?projects_id=" . $task->fields['projects_id']);
     }
+} else if (isset($_POST["delete"])) {
+    $task->check($_POST['id'], DELETE);
+    $task->delete($_POST);
+
+    Event::log(
+        $task->fields['projects_id'],
+        'project',
+        4,
+        "maintain",
+        //TRANS: %s is the user login
+        sprintf(__('%s delete a task'), $_SESSION["glpiname"])
+    );
 } else if (isset($_POST["purge"])) {
     $task->check($_POST['id'], PURGE);
     $task->delete($_POST, 1);
