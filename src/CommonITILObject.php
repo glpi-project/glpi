@@ -6790,16 +6790,17 @@ abstract class CommonITILObject extends CommonDBTM
             $params['hide_private_items']
             || ($params['check_view_rights'] && !Session::haveRight("followup", ITILFollowup::SEEPRIVATE))
         ) {
-            if (Session::getLoginUserID() !== false && Session::getCurrentInterface() === "central") {
+            if (!$params['check_view_rights']) {
+                // notification case, we cannot rely on session
+                $restrict_fup = [
+                    'is_private' => 0,
+                ];
+            } else {
                 $restrict_fup = [
                     'OR' => [
                         'is_private' => 0,
                         'users_id'   => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
                     ]
-                ];
-            } else {
-                $restrict_fup = [
-                    'is_private' => 0,
                 ];
             }
         }
@@ -6816,16 +6817,17 @@ abstract class CommonITILObject extends CommonDBTM
                 || ($params['check_view_rights'] && !Session::haveRight($task_obj::$rightname, CommonITILTask::SEEPRIVATE))
             )
         ) {
-            if (Session::getLoginUserID() !== false && Session::getCurrentInterface() === "central") {
+            if (!$params['check_view_rights']) {
+                // notification case, we cannot rely on session
+                $restrict_task = [
+                    'is_private' => 0,
+                ];
+            } else {
                 $restrict_task = [
                     'OR' => [
                         'is_private' => 0,
                         'users_id'   => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
                     ]
-                ];
-            } else {
-                $restrict_task = [
-                    'is_private' => 0,
                 ];
             }
         }
