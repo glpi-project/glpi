@@ -4854,9 +4854,9 @@ HTML;
                 'glpi_groups_users.groups_id',
                 'glpi_groups.name'
             ],
-            'FROM'      => 'glpi_groups_users',
-            'LEFT JOIN' => [
-                'glpi_groups' => [
+            'FROM'      => 'glpi_groups',
+            'JOIN' => [
+                'glpi_groups_users' => [
                     'FKEY' => [
                         'glpi_groups_users'  => 'groups_id',
                         'glpi_groups'        => 'id'
