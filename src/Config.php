@@ -118,9 +118,11 @@ class Config extends CommonDBTM
     public function canViewItem()
     {
         if (
-            isset($this->fields['context']) &&
-            ($this->fields['context'] == 'core' ||
-            Plugin::isPluginActive($this->fields['context']))
+            isset($this->fields['context'])
+            && (
+                in_array($this->fields['context'], ['core', 'inventory'], true) // GLPI config contexts
+                || Plugin::isPluginActive($this->fields['context'])
+            )
         ) {
             return true;
         }
