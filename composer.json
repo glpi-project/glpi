@@ -77,7 +77,7 @@
         "symfony/polyfill-mbstring": "^1.27",
         "symfony/polyfill-php82": "^1.27",
         "tecnickcom/tcpdf": "^6.6",
-        "thenetworg/oauth2-azure": "^2.1",
+        "thenetworg/oauth2-azure": "^2.2",
         "twig/markdown-extra": "^3.7",
         "twig/string-extra": "^3.7",
         "twig/twig": "^3.7",

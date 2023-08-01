@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09f83148435c16273a5dce74d6d3cf31",
+    "content-hash": "28b20a1f84b87dfdf10980352d25c1dc",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -623,25 +623,25 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v6.4.0",
+            "version": "v6.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "4dd1e007f22a927ac77da5a3fbb067b42d3bc224"
+                "reference": "71278f20b0a623389beefe87a641d03948a38870"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/4dd1e007f22a927ac77da5a3fbb067b42d3bc224",
-                "reference": "4dd1e007f22a927ac77da5a3fbb067b42d3bc224",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/71278f20b0a623389beefe87a641d03948a38870",
+                "reference": "71278f20b0a623389beefe87a641d03948a38870",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1||^8.0"
+                "php": "^7.4||^8.0"
             },
             "require-dev": {
                 "guzzlehttp/guzzle": "^6.5||^7.4",
-                "phpspec/prophecy-phpunit": "^1.1",
-                "phpunit/phpunit": "^7.5||^9.5",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.5",
                 "psr/cache": "^1.0||^2.0",
                 "psr/http-client": "^1.0",
                 "psr/http-factory": "^1.0"
@@ -680,9 +680,9 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v6.4.0"
+                "source": "https://github.com/firebase/php-jwt/tree/v6.7.0"
             },
-            "time": "2023-02-09T21:01:23+00:00"
+            "time": "2023-06-14T15:29:26+00:00"
         },
         {
             "name": "glpi-project/inventory_format",
@@ -6064,24 +6064,27 @@
         },
         {
             "name": "thenetworg/oauth2-azure",
-            "version": "v2.1.1",
+            "version": "v2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheNetworg/oauth2-azure.git",
-                "reference": "06fb2d620fb6e6c934f632c7ec7c5ea2e978a844"
+                "reference": "e092f6fca469f8109aab4694e9e2dee98717af17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheNetworg/oauth2-azure/zipball/06fb2d620fb6e6c934f632c7ec7c5ea2e978a844",
-                "reference": "06fb2d620fb6e6c934f632c7ec7c5ea2e978a844",
+                "url": "https://api.github.com/repos/TheNetworg/oauth2-azure/zipball/e092f6fca469f8109aab4694e9e2dee98717af17",
+                "reference": "e092f6fca469f8109aab4694e9e2dee98717af17",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-openssl": "*",
-                "firebase/php-jwt": "~3.0||~4.0||~5.0||~6.0",
+                "firebase/php-jwt": "~3.0||~4.0||~5.0||~6.0 < 6.8",
                 "league/oauth2-client": "~2.0",
                 "php": "^7.1|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6"
             },
             "type": "library",
             "autoload": {
@@ -6115,9 +6118,9 @@
             ],
             "support": {
                 "issues": "https://github.com/TheNetworg/oauth2-azure/issues",
-                "source": "https://github.com/TheNetworg/oauth2-azure/tree/v2.1.1"
+                "source": "https://github.com/TheNetworg/oauth2-azure/tree/v2.2.1"
             },
-            "time": "2022-06-23T10:35:36+00:00"
+            "time": "2023-08-01T09:16:29+00:00"
         },
         {
             "name": "twig/markdown-extra",
