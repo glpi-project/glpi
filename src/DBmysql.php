@@ -2063,7 +2063,7 @@ class DBmysql
     public function executeStatement(mysqli_stmt $stmt): void
     {
         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
+            throw new \RuntimeException($stmt->error);
         }
     }
 

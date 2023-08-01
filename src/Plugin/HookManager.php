@@ -87,7 +87,7 @@ class HookManager
         // Check if the given hook is a valid file hook
         $allowed_file_hooks = Hooks::getFileHooks();
         if (!in_array($hook, $allowed_file_hooks)) {
-            trigger_error("Invalid file hook: '$hook'", E_USER_ERROR);
+            throw new \LogicException(sprintf('Invalid file hook `%s`.', $hook));
         }
 
         // Init target array if needed
@@ -114,7 +114,7 @@ class HookManager
         // Check if the given hook is a valid functional hook
         $allowed_file_hooks = Hooks::getFunctionalHooks();
         if (!in_array($hook, $allowed_file_hooks)) {
-            trigger_error("Invalid functional hook: '$hook'", E_USER_ERROR);
+            throw new \LogicException(sprintf('Invalid functional hook `%s`.', $hook));
         }
 
         $PLUGIN_HOOKS[$hook][$this->plugin] = $function;
@@ -137,7 +137,7 @@ class HookManager
         // Check if the given hook is a valid item hook
         $allowed_file_hooks = Hooks::getItemHooks();
         if (!in_array($hook, $allowed_file_hooks)) {
-            trigger_error("Invalid item hook: '$hook'", E_USER_ERROR);
+            throw new \LogicException(sprintf('Invalid item hook `%s`.', $hook));
         }
 
         $PLUGIN_HOOKS[$hook][$this->plugin][$itemtype] = $function;
