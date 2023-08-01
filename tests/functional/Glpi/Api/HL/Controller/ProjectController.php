@@ -189,8 +189,22 @@ class ProjectController extends \HLAPITestCase
                 });
         });
 
-        // Delete
+        // Delete (Trash)
         $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        // Get (Trash)
+        $this->api->call(new Request('GET', $new_item_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        // Delete (Purge)
+        $request = new Request('DELETE', $new_item_location);
+        $request->setParameter('force', 1);
+        $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
