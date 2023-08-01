@@ -80,7 +80,7 @@
         "thenetworg/oauth2-azure": "^2.1",
         "twig/markdown-extra": "^3.6",
         "twig/string-extra": "^3.6",
-        "twig/twig": "^3.6",
+        "twig/twig": "^3.7",
         "wapmorgan/unified-archive": "^1.2"
     },
     "require-dev": {
