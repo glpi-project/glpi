@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f12ffc689e6b6f222055384d36090c2a",
+    "content-hash": "09f83148435c16273a5dce74d6d3cf31",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -6189,7 +6189,7 @@
         },
         {
             "name": "twig/string-extra",
-            "version": "v3.6.0",
+            "version": "v3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/string-extra.git",
@@ -6240,7 +6240,7 @@
                 "unicode"
             ],
             "support": {
-                "source": "https://github.com/twigphp/string-extra/tree/v3.6.0"
+                "source": "https://github.com/twigphp/string-extra/tree/v3.7.0"
             },
             "funding": [
                 {
