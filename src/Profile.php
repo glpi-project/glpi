@@ -417,6 +417,15 @@ class Profile extends CommonDBTM
             unset($input['_profile']);
         }
 
+        if (isset($input['interface']) && $input['interface'] == 'helpdesk' && $this->isLastSuperAdminProfile()) {
+            Session::addMessageAfterRedirect(
+                __("Can't change the interface on this profile as it is the only remaining profile with rights to modify profiles with this interface."),
+                false,
+                ERROR
+            );
+            unset($input['interface']);
+        }
+
         // KEEP AT THE END
         $this->profileRight = [];
         foreach (array_keys(ProfileRight::getAllPossibleRights()) as $right) {
@@ -757,7 +766,10 @@ class Profile extends CommonDBTM
         Dropdown::showFromArray(
             'interface',
             self::getInterfaces(),
-            ['value' => $this->fields["interface"]]
+            [
+                'value' => $this->fields["interface"],
+                'readonly' => $this->isLastSuperAdminProfile() && $this->fields['interface'] == 'central'
+            ]
         );
         echo "</td></tr>\n";
 
@@ -4184,7 +4196,8 @@ class Profile extends CommonDBTM
                     'name'   => static::$rightname,
                     'rights' => ["&", UPDATE],
                 ]
-            ])
+            ]),
+            'interface' => 'central',
         ]);
 
         return array_column($super_admin_profiles, 'id');
