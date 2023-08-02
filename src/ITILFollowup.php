@@ -46,7 +46,7 @@ class ITILFollowup extends CommonDBChild
    // From CommonDBTM
     public $auto_message_on_action = false;
     public static $rightname              = 'followup';
-    private $item                  = null;
+    protected $item                  = null;
 
     public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
     public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
@@ -523,9 +523,7 @@ class ITILFollowup extends CommonDBChild
 
     public function post_getFromDB()
     {
-
-        $this->item = new $this->fields['itemtype']();
-        $this->item->getFromDB($this->fields['items_id']);
+        self::loadParent();
     }
 
 

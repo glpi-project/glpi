@@ -44,7 +44,7 @@ class ITILSolution extends CommonDBChild
 {
    // From CommonDBTM
     public $dohistory                   = true;
-    private $item                       = null;
+    protected $item                       = null;
 
     public static $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
     public static $items_id = 'items_id'; // Field name
@@ -113,8 +113,7 @@ class ITILSolution extends CommonDBChild
 
     public function post_getFromDB()
     {
-        $this->item = new $this->fields['itemtype']();
-        $this->item->getFromDB($this->fields['items_id']);
+        self::loadParent();
     }
 
     /**

@@ -1028,4 +1028,50 @@ abstract class CommonDBChild extends CommonDBConnexity
         }
         echo "</td>";
     }
+
+    /**
+     * Allow to set the parent item
+     * Some subclasses will load their parent item in their `post_getFromDB` function
+     * If the parent is already loaded, it might be useful to set it with this method
+     * before loading the item, thus avoiding one useless DB query (or many more queries
+     * when looping on children items)
+     *
+     * @param $parent Parent item
+     *
+     * @return void
+     */
+    public function setParentItem($parent): void
+    {
+        if (static::$itemtype !== 'itemtype' && !is_a($parent, static::$itemtype)) {
+            throw new LogicException("Invalid parent type");
+        }
+
+        $this->item = $parent;
+    }
+
+    /**
+     * Load parent into $this->iem
+     * TODO: in 10.1, the item property should be moved into this class directly,
+     * and this method should be called from this class post_getFromDB method (which
+     * child class should properly override)
+     *
+     * @return void
+     */
+    public function loadParent(): void
+    {
+        if (!property_exists($this, 'item')) {
+            return;
+        }
+
+        // Bandaid to avoid loading parent item if not needed
+        // TODO: replace by proper lazy loading in GLPI 10.1
+        if (
+            $this->item == null // No item loaded
+            || $this->item->getType() !== $this->fields['itemtype'] // Another item is loaded
+            || $this->item->getID() !== $this->fields['items_id']   // Another item is loaded
+        ) {
+            $this->item = new $this->fields['itemtype']();
+            $this->item->getFromDB($this->fields['items_id']);
+        }
+    }
 }
