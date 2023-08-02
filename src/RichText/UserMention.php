@@ -41,10 +41,10 @@ use CommonITILObject;
 use CommonITILTask;
 use CommonITILValidation;
 use Glpi\Toolbox\Sanitizer;
+use DOMDocument;
 use ITILFollowup;
 use ITILSolution;
 use NotificationEvent;
-use SimpleXMLElement;
 use User;
 
 final class UserMention
@@ -190,8 +190,10 @@ final class UserMention
 
         try {
             $content = Sanitizer::getVerbatimValue($content);
+            $dom = new DOMDocument();
+            $dom->loadHTML($content);
             libxml_use_internal_errors(true);
-            $content_as_xml = new SimpleXMLElement('<div>' . $content . '</div>');
+            $content_as_xml = simplexml_import_dom($dom);
         } catch (\Throwable $e) {
            // Sanitize process does not handle correctly `<` and `>` chars that are not surrounding html tags.
            // This generates invalid HTML that cannot be loaded by `SimpleXMLElement`.
