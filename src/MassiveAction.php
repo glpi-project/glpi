@@ -835,6 +835,7 @@ class MassiveAction
         }
 
         Lock::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+        Consumable::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
        // Manage forbidden actions : try complete action name or MassiveAction:action_name
         $forbidden_actions = $item->getForbiddenStandardMassiveAction();

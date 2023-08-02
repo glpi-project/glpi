@@ -106,10 +106,11 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
         \Session::initNavigateListItems($data['itemtype'], '', $href);
 
+        $rand = mt_rand();
         TemplateRenderer::getInstance()->display('components/search/display_data.html.twig', [
             'data'                => $data,
             'union_search_type'   => $CFG_GLPI["union_search_type"],
-            'rand'                => mt_rand(),
+            'rand'                => $rand,
             'no_sort'             => $search['no_sort'] ?? false,
             'order'               => $search['order'] ?? [],
             'sort'                => $search['sort'] ?? [],
@@ -123,6 +124,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             'posthref'            => $globallinkto,
             'push_history'        => $params['push_history'] ?? true,
             'hide_controls'       => $params['hide_controls'] ?? false,
+            'hide_search_toggle'  => $params['no_search'] ?? false,
             'showmassiveactions'  => ($params['showmassiveactions'] ?? $search['showmassiveactions'] ?? true)
                 && $data['display_type'] != \Search::GLOBAL_SEARCH
                 && ($itemtype == \AllAssets::getType()
@@ -130,7 +132,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                 ),
             'massiveactionparams' => $data['search']['massiveactionparams'] + [
                 'is_deleted' => $is_deleted,
-                'container'  => "massform$itemtype",
+                'container'  => "massform$itemtype$rand",
             ],
             'can_config'          => \Session::haveRightsOr('search_config', [
                 \DisplayPreference::PERSONAL,

@@ -35,10 +35,11 @@
 {% set mainform = mainform is not defined ? true : mainform %}
 {% set main_block_class = mainform ? '' : 'sub_criteria' %}
 {% set card_class = mainform ? 'search-form card card-sm mb-4' : 'border d-inline-block ms-1' %}
+{% set no_search = not(p.no_search is defined and not p.no_search) %}
 {% set extra_actions_templates = p.extra_actions_templates|default([]) %}
 {% set hide_controls = p.hide_controls is defined and p.hide_controls %}
 {% set showmassiveactions = not p.showmassiveactions is defined or p.showmassiveactions %}
-{% set fold_search = session('glpifold_search') and not hide_controls %}
+{% set fold_search = (session('glpifold_search') or no_search) and not hide_controls %}
 
 {% if mainform and showaction %}
    <form name="searchform{{ normalized_itemtype }}" class="search-form-container" method="get" action="{{ p['target'] }}">
@@ -80,6 +81,7 @@
       {% endif %}
 
       {# Keep track of display params affecting the results, they must be kept on refresh #}
+      <input type="hidden" name="params[no_search]" value="{{ no_search ? "1" : "0" }}">
       <input type="hidden" name="params[hide_controls]" value="{{ hide_controls ? "1" : "0" }}">
       <input type="hidden" name="params[showmassiveactions]" value="{{ showmassiveactions ? "1" : "0" }}">
 
@@ -172,7 +174,7 @@
              });
          });
 
-         {% if mainform %}
+         {% if mainform and not no_search %}
             const toggle_fold_search = function(show_search) {
                 $('#searchcriteria{{ rand }}').closest('.search-form').toggle(show_search);
             };

@@ -88,15 +88,17 @@
       </label>
    {% endif %}
 
-   <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
-          data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
-          title="{{ __('Toggle search filters') }}">
-      <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 fold-search" role="button"
-             {{ session('glpifold_search') ? '' : 'checked' }} autocomplete="off" />
-      <span class="form-check-label mb-1 mb-sm-0">
-         <i class="ti fa-lg ti-search"></i>
-      </span>
-   </label>
+   {% if not hide_search_toggle %}
+      <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
+            data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
+            title="{{ __('Toggle search filters') }}">
+         <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 fold-search" role="button"
+               {{ session('glpifold_search') ? '' : 'checked' }} autocomplete="off" />
+         <span class="form-check-label mb-1 mb-sm-0">
+            <i class="ti fa-lg ti-search"></i>
+         </span>
+      </label>
+   {% endif %}
 
    <div class="d-inline-flex" role="group">
 

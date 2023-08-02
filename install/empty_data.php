@@ -1985,6 +1985,7 @@ $empty_data_builder = new class
         $ADDTODISPLAYPREF[KnowbaseItem::class] = [79, 131, 13];
         $ADDTODISPLAYPREF[Webhook::class] = [3, 4, 5];
         $ADDTODISPLAYPREF[QueuedWebhook::class] = [80, 2, 22, 20, 21, 7, 30, 16];
+        $ADDTODISPLAYPREF[Consumable::class] = [2, 8, 3, 4, 5, 6, 7];
 
         foreach ($ADDTODISPLAYPREF as $type => $options) {
             $rank = 1;

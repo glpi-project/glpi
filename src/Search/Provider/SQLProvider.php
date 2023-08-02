@@ -4309,6 +4309,7 @@ final class SQLProvider implements SearchProviderInterface
                     'itemtype'  => $data['itemtype'],
                     'id'        => $opt_id,
                     'name'      => $searchopt[$opt_id]["name"],
+                    'htmlname'  => $searchopt[$opt_id]["htmlname"] ?? false,
                     'meta'      => 0,
                     'searchopt' => $searchopt[$opt_id],
                 ];
@@ -4323,6 +4324,7 @@ final class SQLProvider implements SearchProviderInterface
                         'itemtype'  => $m_itemtype,
                         'id'        => $opt_id,
                         'name'      => $m_searchopt[$opt_id]["name"],
+                        'htmlname'  => $m_searchopt[$opt_id]["htmlname"] ?? false,
                         'meta'      => 1,
                         'searchopt' => $m_searchopt[$opt_id],
                         'groupname' => $m_itemtype,
@@ -4348,6 +4350,7 @@ final class SQLProvider implements SearchProviderInterface
                                 'itemtype'  => $metacriteria['itemtype'],
                                 'id'        => $metacriteria['field'],
                                 'name'      => $m_searchopt[$metacriteria['field']]["name"],
+                                'htmlname'  => $m_searchopt[$metacriteria['field']]["htmlname"] ?? false,
                                 'meta'      => 1,
                                 'searchopt' => $m_searchopt[$metacriteria['field']],
                                 'groupname' => $metacriteria['itemtype'],
@@ -4718,6 +4721,7 @@ final class SQLProvider implements SearchProviderInterface
             return self::giveItem($data["TYPE"], $ID, $data, $meta, $oparams, $itemtype);
         }
         $so = $searchopt[$ID];
+        $so['id'] = $ID; // Keep track of search option id so it can be used by functions using $so as a parameter
         $orig_id = $ID;
         $ID = ($orig_itemtype !== null ? $orig_itemtype : $itemtype) . '_' . $ID;
 
