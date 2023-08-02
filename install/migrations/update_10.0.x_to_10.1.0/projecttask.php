@@ -39,12 +39,10 @@
  */
 $table = ProjectTask::getTable();
 $key_to_add = 'is_deleted';
-if ($DB->tableExists($table) && !$DB->fieldExists($table, $key_to_add, false)) {
-    $migration->addField($table, $key_to_add, "tinyint NOT NULL DEFAULT '0'", [
-        'after' => 'projecttasks_id'
-    ]);
-    $migration->addKey($table, $key_to_add);
-}
+$migration->addField($table, $key_to_add, "tinyint NOT NULL DEFAULT '0'", [
+    'after' => 'projecttasks_id'
+]);
+$migration->addKey($table, $key_to_add);
 
 // new right value for projecttask
 $migration->updateRight('projecttask', DELETE | PURGE | ProjectTask::READMY | ProjectTask::UPDATEMY | READNOTE | UPDATENOTE, [

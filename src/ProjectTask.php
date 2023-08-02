@@ -633,9 +633,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $this->initForm($ID, $options);
 
-        $a = $this->isDeleted();
-        $b = $this->can($ID, DELETE);
-
         TemplateRenderer::getInstance()->display('pages/tools/project_task.html.twig', [
             'id'                       => $ID,
             'item'                     => $this,
@@ -1203,8 +1200,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     echo "<td width='10'>";
                     Html::showMassiveActionCheckBox(__CLASS__, $data['id']);
                     echo "</td>";
-                    echo "<td><a href='" . ProjectTask::getFormURLWithID($data['id'])
-                                    . "&amp;onglet=1'>" . $data["name"] . "</a></td>";
+                    echo "<td><a href='" . ProjectTask::getFormURLWithID($data['id']) . "'>"
+                        . $data["name"] . "</a></td>";
                 } else {
                     echo "<td></td>";
                 }
