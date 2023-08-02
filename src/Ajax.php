@@ -361,7 +361,6 @@ JAVASCRIPT;
             const href_url_params = new URLSearchParams($(tablink).prop('href'));
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
-            var index = tablink.closest('.nav-item').index();
 
             const updateCurrentTab = () => {
                 $.get(
