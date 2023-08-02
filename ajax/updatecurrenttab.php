@@ -50,7 +50,7 @@ if (
     )
 ) {
     if (isset($_GET['tab_key'])) {
-        // Prefered way, load tab key directly - avoid unneeded call to Toolbox::getAvailablesTabs
+        // Prefered way, load tab key directly, avoid unneeded call to Toolbox::getAvailablesTabs
         Session::setActiveTab($_UGET['itemtype'], $_UGET['tab_key']);
     } else {
         // Deprecated, use tab_key if possible
@@ -66,5 +66,4 @@ if (
             $current++;
         }
     }
-
 }
