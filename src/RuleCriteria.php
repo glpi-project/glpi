@@ -596,9 +596,9 @@ class RuleCriteria extends CommonDBChild
     /**
      * Return the condition label by giving his ID
      *
-     * @param $ID        condition's ID
-     * @param $itemtype  itemtype
-     * @param $criterion (default '')
+     * @param int $ID        condition's ID
+     * @param string $itemtype  itemtype
+     * @param string $criterion (default '')
      *
      * @return condition's label
      **/

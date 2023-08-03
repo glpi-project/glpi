@@ -80,12 +80,12 @@ class PhpExtension extends AbstractExtension
     /**
      * Call function of static method.
      *
-     * @param string $callable
+     * @param string|array $callable
      * @param array $parameters
      *
      * @return mixed
      */
-    public function call(string $callable, array $parameters = [])
+    public function call(string|array $callable, array $parameters = [])
     {
         if (is_callable($callable)) {
             return call_user_func_array($callable, $parameters);

@@ -31,16 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="center mb-3">
-   <a class="btn btn-primary me-2" href="{{ path('front/rule.backup.php?action=import') }}">
-      <i class="fas fa-upload"></i>
-      <span>{{ _x('button', 'Import') }}</span>
-   </a>
-   <a class="btn btn-primary me-2" href="{{ path('front/rule.backup.php?action=export') }}">
-      <i class="fas fa-download"></i>
-      <span>{{ _x('button', 'Export') }}</span>
-   </a>
-</div>
+{{ include('pages/admin/rules/backup_header.html.twig') }}
 
 <div class="container px-4">
    <div class="row g-3 justify-content-evenly">
