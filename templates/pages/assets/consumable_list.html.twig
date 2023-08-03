@@ -31,6 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 <div class="px-3 py-2">
     <form method="POST" action="{{ item.getFormURL() }}">
         <h2 class="mb-4">
@@ -42,18 +44,25 @@
                 )) }}
             </span>
             {% if can_edit %}
-                <input type="hidden" name="consumableitems_id" value="{{ parent.getID() }}">
-                {% do call('Dropdown::showNumber', ['to_add', {
-                    'value': 1,
-                    'min'  : 1,
-                    'max'  : 100,
-                }]) %}
+                <input type="hidden" name="consumableitems_id" value="{{ parent.getID() }}" />
+                {{ fields.dropdownNumberField(
+                    'to_add',
+                    1,
+                    '',
+                    {
+                        min: 1,
+                        max: 100,
+                        step: 1,
+                        include_field: false,
+                        width: '',
+                    }
+                ) }}
                 <input
                     type="submit"
                     name="add_several"
                     value="{{ _x('button', 'Add consumables') }}"
                     class='btn btn-primary'
-                >
+                />
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
             {% endif %}
         </h2>
