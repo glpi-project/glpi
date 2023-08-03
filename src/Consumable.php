@@ -1197,10 +1197,11 @@ class Consumable extends CommonDBChild
             case '6': // Given to
                 $itemtype = $values['itemtype'];
                 $items_id = $values['items_id'];
-                if (!is_null($itemtype)) {
+                if (is_a($itemtype, CommonDBTM::class, true)) {
                     $item = new $itemtype();
-                    $item->getFromDB($items_id);
-                    return $item->getLink();
+                    if ($item->getFromDB($items_id)) {
+                        return $item->getLink();
+                    }
                 }
 
                 // Must not be empty
