@@ -44,7 +44,7 @@
                      {{ fields.smallTitle(_n('Criterion', 'Criteria', get_plural_number())) }}
                      {% for criterion in input %}
                         {% set field_content %}
-                           {% do call([rule,'displayCriteriaSelectPattern'], [criterion, criterion, constant('Rule::PATTERN_IS'), values[criterion]|default('')]) %}
+                           {% do call([rule, 'displayCriteriaSelectPattern'], [criterion, criterion, constant('Rule::PATTERN_IS'), values[criterion]|default('')]) %}
                         {% endset %}
                         {{ fields.htmlField(
                            criterion,
