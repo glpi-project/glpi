@@ -224,14 +224,25 @@ class Consumable extends CommonDBChild
         $input = $ma->getInput();
         switch ($ma->getAction()) {
             case 'give':
-                // Guess entity from first item
-                $consumable = current($input['items'][self::getType()]);
-                $entities_id = $consumable->fields['entities_id'];
+                // Retrieve entity restrict from consumable item
+                $consumable_id = current($input['items'][self::getType()]);
+                $consumable = new self();
+                if (
+                    $consumable_id === false
+                    || !$consumable->getFromDB($consumable_id)
+                    || ($consumable_item = $consumable->getItem()) === false
+                ) {
+                    // Cannot show form
+                    break;
+                }
+                $entity_restrict = $consumable_item->isRecursive()
+                    ? getSonsOf('glpi_entities', $consumable_item->getEntityID())
+                    : $consumable_item->getEntityID();
 
                 Dropdown::showSelectItemFromItemtypes([
                     'itemtype_name'   => 'give_itemtype',
                     'items_id_name'   => 'give_items_id',
-                    'entity_restrict' => $entities_id,
+                    'entity_restrict' => $entity_restrict,
                     'itemtypes'       => $CFG_GLPI["consumables_types"]
                 ]);
                 echo "<br><br>" . Html::submit(
