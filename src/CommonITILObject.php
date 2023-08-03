@@ -6988,6 +6988,7 @@ abstract class CommonITILObject extends CommonDBTM
                         'class'       => 'validation-answer',
                         'itiltype'    => 'Validation',
                         'item_action' => 'validation-answer',
+                        'object'      => $validation,
                     ];
                 }
             }

@@ -432,13 +432,13 @@ class ITILSolution extends CommonDBChild
      * before loading the item, thus avoiding one useless DB query (or many more queries
      * when looping on children items)
      *
-     * TODO 10.1 move method and `item` property into parent class with
+     * TODO 10.1 move method and `item` property into parent class
      *
-     * @param $parent Parent item
+     * @param CommonITILObject $parent Parent item
      *
      * @return void
      */
-    public function setParentItem($parent): void
+    final public function setParentItem(CommonITILObject $parent): void
     {
         if (static::$itemtype !== 'itemtype' && !is_a($parent, static::$itemtype)) {
             throw new LogicException("Invalid parent type");
