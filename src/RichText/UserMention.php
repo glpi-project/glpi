@@ -190,6 +190,7 @@ final class UserMention
 
         try {
             $content = Sanitizer::getVerbatimValue($content);
+            $content = htmlentities($content, ENT_QUOTES, 'UTF-8', false);
             $dom = new DOMDocument();
             $dom->loadHTML($content);
             libxml_use_internal_errors(true);
