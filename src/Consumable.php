@@ -543,6 +543,7 @@ class Consumable extends CommonDBChild
         Toolbox::deprecated('Replaced by Consumable::displayConsumableList()');
 
         $ID = $consitem->getField('id');
+
         if (!$consitem->can($ID, UPDATE)) {
             return;
         }
@@ -565,6 +566,7 @@ class Consumable extends CommonDBChild
             echo "</div>";
         }
     }
+
 
     /**
      * Print out the consumables of a defined type
