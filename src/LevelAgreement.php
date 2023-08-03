@@ -856,6 +856,19 @@ abstract class LevelAgreement extends CommonDBChild
         return null;
     }
 
+    /**
+     * Should calculation on this LevelAgreement target date be done using
+     * the "work_in_day" parameter set to true ?
+     *
+     * @return bool
+     */
+    public function shouldUseWorkInDayMode(): bool
+    {
+        return
+            $this->fields['definition_time'] == 'day'
+            || $this->fields['definition_time'] == 'month'
+        ;
+    }
 
     /**
      * Get execution date of a level
@@ -875,22 +888,39 @@ abstract class LevelAgreement extends CommonDBChild
 
             if ($level->getFromDB($levels_id)) { // level exists
                 if ($level->fields[$fk] == $this->fields['id']) { // correct level
-                    $work_in_days = ($this->fields['definition_time'] == 'day' || $this->fields['definition_time'] == 'month');
                     $delay        = $this->getTime();
 
-                   // Based on a calendar
+                    // Based on a calendar
                     if ($this->fields['calendars_id'] > 0) {
                         $cal = new Calendar();
                         if ($cal->getFromDB($this->fields['calendars_id']) && $cal->hasAWorkingDay()) {
-                            return $cal->computeEndDate(
+                            // Take SLA into account
+                            $date_with_sla = $cal->computeEndDate(
                                 $start_date,
                                 $delay,
-                                $level->fields['execution_time'] + $additional_delay,
-                                $work_in_days
+                                0,
+                                $this->shouldUseWorkInDayMode(),
+                                $this->fields['end_of_working_day']
                             );
+
+                            // Take waiting duration time which give us the final date
+                            $date_with_waiting_time = $cal->computeEndDate(
+                                $date_with_sla,
+                                $additional_delay,
+                            );
+
+                            // Take current SLA escalation level into account
+                            $date_with_sla_and_escalation_level = $cal->computeEndDate(
+                                $date_with_waiting_time,
+                                $level->fields['execution_time'],
+                                0,
+                                $level->shouldUseWorkInDayMode(),
+                            );
+
+                            return $date_with_sla_and_escalation_level;
                         }
                     }
-                   // No calendar defined or invalid calendar
+                    // No calendar defined or invalid calendar
                     $delay    += $additional_delay + $level->fields['execution_time'];
                     $starttime = strtotime($start_date);
                     $endtime   = $starttime + $delay;
@@ -1113,5 +1143,25 @@ abstract class LevelAgreement extends CommonDBChild
         }
 
         Rule::cleanForItemAction($this);
+    }
+
+    /**
+     * Getter for the protected $levelclass static property
+     *
+     * @return string
+     */
+    public function getLevelClass(): string
+    {
+        return static::$levelclass;
+    }
+
+    /**
+     * Getter for the protected $levelticketclass static property
+     *
+     * @return string
+     */
+    public function getLevelTicketClass(): string
+    {
+        return static::$levelticketclass;
     }
 }
