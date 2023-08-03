@@ -36,7 +36,6 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
-use Glpi\Search\SearchEngine;
 
 //!  Consumable Class
 /**
