@@ -190,10 +190,9 @@ final class UserMention
 
         try {
             $content = Sanitizer::getVerbatimValue($content);
-            $content = htmlentities($content, ENT_QUOTES, 'UTF-8', false);
             $dom = new DOMDocument();
-            $dom->loadHTML($content);
             libxml_use_internal_errors(true);
+            $dom->loadHTML($content);
             $content_as_xml = simplexml_import_dom($dom);
         } catch (\Throwable $e) {
            // Sanitize process does not handle correctly `<` and `>` chars that are not surrounding html tags.
