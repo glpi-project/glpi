@@ -63,6 +63,7 @@ final class GraphQLController extends AbstractController
     )]
     public function getSchema(Request $request): Response
     {
-        return new Response(200, [], GraphQLGenerator::getSchema());
+        $graphql_generator = new GraphQLGenerator();
+        return new Response(200, [], $graphql_generator->getSchema());
     }
 }
