@@ -4854,12 +4854,12 @@ HTML;
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_groups_users.groups_id',
+                'glpi_groups.id',
                 'glpi_groups.name'
             ],
-            'FROM'      => 'glpi_groups_users',
+            'FROM'      => 'glpi_groups',
             'LEFT JOIN' => [
-                'glpi_groups' => [
+                'glpi_groups_users' => [
                     'FKEY' => [
                         'glpi_groups_users'  => 'groups_id',
                         'glpi_groups'        => 'id'
@@ -4872,8 +4872,8 @@ HTML;
 
         $group_where = [];
         foreach ($iterator as $data) {
-            $group_where[$field_group][] = $data['groups_id'];
-            $groups[$data["groups_id"]] = $data["name"];
+            $group_where[$field_group][] = $data['id'];
+            $groups[$data["id"]] = $data["name"];
         }
 
         echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
