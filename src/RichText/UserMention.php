@@ -188,6 +188,10 @@ final class UserMention
     {
         $ids = [];
 
+        if (empty($content)) {
+            return $ids;
+        }
+
         try {
             $content = Sanitizer::getVerbatimValue($content);
             $dom = new DOMDocument();
