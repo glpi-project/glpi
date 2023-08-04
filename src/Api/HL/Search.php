@@ -172,7 +172,6 @@ final class Search
                 $joins[$join_type][$join_table]['ON'][] = ['AND' => $join['condition']];
             }
         };
-        //TODO Need to handle translatable dropdowns
         $fn_append_join($join_alias, $join_definition);
 
         return $joins;
@@ -426,6 +425,7 @@ final class Search
                 // Make sure we have all the needed data
                 foreach ($row as $fkey => $record_ids) {
                     $table = $fn_get_table($fkey);
+                    $itemtype = getItemTypeForTable($table);
 
                     if ($record_ids === null) {
                         continue;
@@ -441,6 +441,7 @@ final class Search
                         'SELECT' => [],
                     ];
                     $id_field = 'id';
+                    $join_name = '_';
 
                     if ($fkey === 'id') {
                         $props_to_use = array_filter($this->flattened_properties, static function ($prop_params, $prop_name) {
@@ -467,7 +468,38 @@ final class Search
                         if ($prop['x-writeonly'] ?? false) {
                             continue;
                         }
-                        $criteria['SELECT'][] = $this->getSQLFieldForProperty($prop_name) . ' AS ' . str_replace('.', chr(0x1F), $prop_name);
+                        $sql_field = $this->getSQLFieldForProperty($prop_name);
+                        $field_parts = explode('.', $sql_field);
+                        $field_only = end($field_parts);
+                        $translatable = \Session::haveTranslations($itemtype, $field_only);
+                        $trans_alias = "{$join_name}__{$field_only}__trans";
+                        $trans_alias = hash('xxh3', $trans_alias);
+                        if ($translatable) {
+                            if (!isset($criteria['LEFT JOIN'])) {
+                                $criteria['LEFT JOIN'] = [];
+                            }
+                            $criteria['LEFT JOIN']["glpi_dropdowntranslations AS {$trans_alias}"] = [
+                                'ON' => [
+                                    $join_name => 'id',
+                                    $trans_alias => 'items_id', [
+                                        'AND' => [
+                                            "$trans_alias.language" => \Session::getLanguage(),
+                                            "$trans_alias.itemtype" => $itemtype,
+                                            "$trans_alias.field" => $field_only,
+                                        ]
+                                    ]
+                                ]
+                            ];
+                        }
+                        if ($translatable) {
+                            $criteria['SELECT'][] = QueryFunction::ifnull(
+                                expression: "{$trans_alias}.value",
+                                value: $sql_field,
+                                alias: str_replace('.', chr(0x1F), $prop_name)
+                            );
+                        } else {
+                            $criteria['SELECT'][] = $sql_field . ' AS ' . str_replace('.', chr(0x1F), $prop_name);
+                        }
                     }
 
                     $it = $DB->request($criteria);
@@ -721,7 +753,6 @@ final class Search
             }
         }
 
-        //TODO Return a 202 response if one or more fields are not valid (don't exist in the schema at least or are read-only)
         return AbstractController::getCRUDCreateResponse($items_id, $controller::getAPIPathForRouteFunction($controller, $method, $request_params));
     }
 
@@ -744,7 +775,6 @@ final class Search
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_UPDATE);
         }
         // We should return the updated item but we NEVER return the GLPI item fields directly. Need to use special API methods.
-        //TODO Return a 202 response if one or more fields are not valid (don't exist in the schema at least or are read-only)
         return self::getOneBySchema($schema, $request_attrs + ['id' => $items_id], $request_params);
     }
 
