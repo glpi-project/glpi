@@ -65,7 +65,6 @@ final class GraphQL
                     }
                     if ($resolve_obj) {
                         $field_selection = $info->getFieldSelection(self::MAX_QUERY_FIELD_DEPTH);
-                        $fields_requested = array_keys($info->getFieldSelection());
                         // Get the raw Schema for the type
                         $requested_type = $info->fieldName;
                         $schema = OpenAPIGenerator::getComponentSchemas()[$requested_type] ?? null;
@@ -73,12 +72,6 @@ final class GraphQL
                             return null;
                         }
                         $completed_schema = self::expandSchemaFromRequestedFields($schema, $field_selection);
-
-                        foreach ($completed_schema['properties'] as $schema_field => $schema_field_data) {
-                            if (!in_array($schema_field, $fields_requested)) {
-                                unset($completed_schema['properties'][$schema_field]);
-                            }
-                        }
 
                         if (isset($args['id'])) {
                             $result = json_decode(Search::getOneBySchema($completed_schema, ['id' => $args['id']], [])->getBody(), true);
@@ -96,9 +89,10 @@ final class GraphQL
         return $result->toArray();
     }
 
-    private static function expandSchemaFromRequestedFields(array $schema, array $fields_requested): array
+    private static function expandSchemaFromRequestedFields(array $schema, array $fields_requested, ?string $object_prop_key = null): array
     {
         $is_schema_array = array_key_exists('items', $schema) && !array_key_exists('properties', $schema);
+        $itemtype = self::getSchemaItemtype($schema);
         if ($is_schema_array) {
             $properties = $schema['items']['properties'];
         } else {
@@ -119,9 +113,9 @@ final class GraphQL
         }
         foreach ($properties as $schema_field => $schema_field_data) {
             if (!in_array($schema_field, $field_names, true)) {
-                unset($properties[$schema_field]);
+                $properties = self::hideOrRemoveProperty($itemtype, $schema_field, $properties, array_keys($fields_requested), $object_prop_key);
             } else if (isset($fields_requested[$schema_field]) && is_array($fields_requested[$schema_field])) {
-                $properties[$schema_field] = self::expandSchemaFromRequestedFields($schema_field_data, $fields_requested[$schema_field]);
+                $properties[$schema_field] = self::expandSchemaFromRequestedFields($schema_field_data, $fields_requested[$schema_field], $schema_field);
             }
         }
         if ($is_schema_array) {
@@ -150,5 +144,78 @@ final class GraphQL
             $schema['properties'] = $full_schema['properties'];
         }
         return $schema;
+    }
+
+    /**
+     * Find the related itemtype of the given partial or complete schema.
+     * @param array $schema The schema to find the itemtype of.
+     * @return string|null The itemtype of the given schema or null if it could not be found.
+     */
+    private static function getSchemaItemtype(array $schema): ?string
+    {
+        $is_schema_array = array_key_exists('items', $schema) && !array_key_exists('properties', $schema);
+        $real_schema = $is_schema_array ? $schema['items'] : $schema;
+        if (isset($real_schema['x-itemtype'])) {
+            return $real_schema['x-itemtype'];
+        }
+        if (isset($real_schema['x-full-schema'])) {
+            $full_schema = OpenAPIGenerator::getComponentSchemas()[$real_schema['x-full-schema']] ?? null;
+            if ($full_schema !== null) {
+                return $full_schema['x-itemtype'] ?? null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Attempt to remove a property that was not requested.
+     * This function will evaluate if the property is required in a few ways and if it is, it will be kept but hidden from the final result.
+     * Otherwise, the property will be simply removed.
+     * <br>
+     * Evaluations:
+     * <ul>
+     *    <li>Is this a primary key?</li>
+     *    <li>Is this referenced by an `x-mapped-from` property?</li>
+     * </ul>
+     * @param class-string<\CommonDBTM>|null $itemtype The itemtype of the object that contains the property. Used to determine the index field name.
+     * @param string $property The key of the property to remove or hide.
+     * @param array $schema_properties The schema properties of the object that contains the property.
+     * @param array $other_requested The other properties that were requested.
+     * @param string|null $object_prop_key The key of the object in the parent object. If not null, this is used complete the $other_requested properties.
+     * @return array The modified object schema
+     */
+    private static function hideOrRemoveProperty(?string $itemtype, string $property, array $schema_properties, array $other_requested, ?string $object_prop_key = null): array
+    {
+        $field = $schema_properties[$property]['x-field'] ?? $property;
+        $is_primary_key = $field === 'id';
+        if ($itemtype !== null) {
+            $is_primary_key = $is_primary_key || $field === $itemtype::getIndexName();
+        }
+
+        if ($is_primary_key) {
+            $schema_properties[$property]['x-hidden'] = true;
+            return $schema_properties;
+        }
+
+        $is_hidden = false;
+        foreach ($other_requested as $requested_property) {
+            $requested_property_schema = $schema_properties[$requested_property] ?? null;
+            if ($requested_property_schema === null) {
+                continue;
+            }
+            $mapped_from = $requested_property_schema['x-mapped-from'] ?? null;
+            if ($mapped_from === $property) {
+                $schema_properties[$property]['x-hidden'] = true;
+                $is_hidden = true;
+            }
+            if ($object_prop_key !== null && $mapped_from === "{$object_prop_key}.{$property}") {
+                $schema_properties[$property]['x-hidden'] = true;
+                $is_hidden = true;
+            }
+        }
+        if (!$is_hidden) {
+            unset($schema_properties[$property]);
+        }
+        return $schema_properties;
     }
 }
