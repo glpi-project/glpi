@@ -83,7 +83,7 @@ final class Search
     private function getSQLFieldForProperty(string $prop_name): string
     {
         $prop = $this->flattened_properties[$prop_name];
-        $is_join = str_contains($prop_name, '.');
+        $is_join = str_contains($prop_name, '.') && array_key_exists(explode('.', $prop_name)[0], $this->joins);
         $sql_field = $prop['x-field'] ?? $prop_name;
         if (!$is_join) {
             // Only add the _. prefix if it isn't a join
@@ -530,11 +530,12 @@ final class Search
                     $join_name = '_';
 
                     if ($fkey === 'id') {
-                        $props_to_use = array_filter($this->flattened_properties, static function ($prop_params, $prop_name) {
+                        $props_to_use = array_filter($this->flattened_properties, function ($prop_params, $prop_name) {
                             $prop_field = $prop_params['x-field'] ?? $prop_name;
                             $mapped_from_other = isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field;
                             // We aren't handling joins or mapped fields here
-                            return !str_contains($prop_name, '.') && !$mapped_from_other;
+                            $is_join = str_contains($prop_name, '.') && array_key_exists(explode('.', $prop_name)[0], $this->joins);
+                            return !$is_join && !$mapped_from_other;
                         }, ARRAY_FILTER_USE_BOTH);
                         $criteria['FROM'] = "$table AS " . $DB::quoteName('_');
                         if ($this->union_search_mode) {
@@ -592,8 +593,14 @@ final class Search
                     foreach ($it as $data) {
                         $cleaned_data = [];
                         foreach ($data as $k => $v) {
-                            if (!str_contains($k, chr(0x1F))) {
-                                $cleaned_data[$k] = $v;
+                            $is_join = str_contains($k, chr(0x1F)) && array_key_exists(explode(chr(0x1F), $k)[0], $this->joins);
+                            if (!$is_join) {
+                                if (str_contains($k, chr(0x1F))) {
+                                    $kp = explode(chr(0x1F), $k);
+                                    $cleaned_data[$kp[0]][$kp[1]] = $v;
+                                } else {
+                                    $cleaned_data[$k] = $v;
+                                }
                                 continue;
                             }
                             $cleaned_data[explode(chr(0x1F), $k)[1]] = $v;
