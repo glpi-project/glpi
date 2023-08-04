@@ -78,7 +78,7 @@ class Project extends DbTestCase
         $this->integer((int) $projecttask_id_1)->isGreaterThan(0);
         $projecttask_id_2 = $projecttask->add([
             'name' => 'Project Task 2',
-            'projects_id' => 0,
+            'projects_id' => $project_id_2,
             'projecttasks_id' => $projecttask_id_1,
             'projecttasktemplates_id' => 0
         ]);

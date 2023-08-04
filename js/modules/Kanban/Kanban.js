@@ -35,7 +35,7 @@ import SearchInput from "../SearchTokenizer/SearchInput.js";
 
 /* global escapeMarkupText */
 /* global sortable */
-/* global glpi_toast_error */
+/* global glpi_toast_error, glpi_toast_warning, glpi_toast_info */
 
 /**
  * Kanban rights structure
