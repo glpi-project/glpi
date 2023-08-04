@@ -194,7 +194,8 @@ final class Search
                 $query = $criteria;
                 // Remove join props from the select for now (complex to handle)
                 $query['SELECT'] = array_filter($query['SELECT'], static function ($select) use ($DB) {
-                    return str_contains($select, $DB::quoteName('_') . '.');
+                    $select_str = (string) $select;
+                    return str_starts_with($select_str, $DB::quoteName('_.id'));
                 });
                 //Inject a field for the schema name as the first select
                 $schema_name = $this->table_schemas[$table];
