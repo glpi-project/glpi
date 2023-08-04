@@ -143,7 +143,11 @@ if (($_POST['action'] ?? null) === 'update') {
     $inputs = [];
     parse_str($_UPOST['inputs'], $inputs);
 
-    $item->add(Sanitizer::sanitize($inputs));
+    $result = $item->add(Sanitizer::sanitize($inputs));
+    if (!$result) {
+        http_response_code(400);
+        return;
+    }
 } else if (($_POST['action'] ?? null) === 'bulk_add_item') {
     $checkParams(['inputs']);
     $item = new $itemtype();
