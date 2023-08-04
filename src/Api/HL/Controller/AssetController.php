@@ -951,8 +951,8 @@ final class AssetController extends AbstractController
                 'schema_name' => $schema_name,
                 'itemtype' => $itemtype,
             ];
-            if ($shared_properties === []) {
-                $shared_properties = Doc\Schema::flattenProperties($schema['properties']);
+            if (empty($shared_properties)) {
+                $shared_properties = $schema['properties'];
                 // Remove array properties (complex handling may be required. No support added for now)
                 $shared_properties = array_filter($shared_properties, static function ($property) {
                     return !isset($property['type']) || $property['type'] !== Doc\Schema::TYPE_ARRAY;
