@@ -429,108 +429,21 @@ class Config extends CommonDBTM
             return;
         }
 
-        $rand = mt_rand();
-        $canedit = Config::canUpdate();
-        if ($canedit) {
-            echo "<form name='form' action=\"" . Toolbox::getItemTypeFormURL(__CLASS__) . "\" method='post' data-track-changes='true'>";
-        }
-        echo "<div class='center' id='tabsbody'>";
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr><th colspan='4'>" . _n('Asset', 'Assets', Session::getPluralNumber()) . "</th></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td width='30%'><label for='dropdown_auto_create_infocoms$rand'>" . __('Enable the financial and administrative information by default') . "</label></td>";
-        echo "<td  width='20%'>";
-        Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"], -1, ['rand' => $rand]);
-        echo "</td><td width='20%'><label for='dropdown_monitors_management_restrict$rand'>" . __('Restrict monitor management') . "</label></td>";
-        echo "<td width='30%'>";
-        $this->dropdownGlobalManagement(
-            "monitors_management_restrict",
-            $CFG_GLPI["monitors_management_restrict"],
-            $rand
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td><label for='dropdown_softwarecategories_id_ondelete$rand'>" . __('Software category deleted by the dictionary rules') .
-           "</label></td><td>";
-        SoftwareCategory::dropdown(['value' => $CFG_GLPI["softwarecategories_id_ondelete"],
-            'name'  => "softwarecategories_id_ondelete",
-            'rand'  => $rand
-        ]);
-        echo "</td><td><label for='dropdown_peripherals_management_restrict$rand'>" . __('Restrict device management') . "</label></td><td>";
-        $this->dropdownGlobalManagement(
-            "peripherals_management_restrict",
-            $CFG_GLPI["peripherals_management_restrict"],
-            $rand
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='showdate$rand'>" . __('End of fiscal year') . "</label></td><td>";
-        Html::showDateField("date_tax", ['value'      => $CFG_GLPI["date_tax"],
-            'maybeempty' => false,
-            'canedit'    => true,
-            'min'        => '',
-            'max'        => '',
-            'showyear'   => false,
-            'rand'       => $rand
-        ]);
-        echo "</td><td><label for='dropdown_phones_management_restrict$rand'>" . __('Restrict phone management') . "</label></td><td>";
-        $this->dropdownGlobalManagement(
-            "phones_management_restrict",
-            $CFG_GLPI["phones_management_restrict"],
-            $rand
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_use_autoname_by_entity$rand'>" . __('Automatic fields (marked by *)') . "</label></td><td>";
-        $tab = [0 => __('Global'),
-            1 => __('By entity')
-        ];
-        Dropdown::showFromArray(
-            'use_autoname_by_entity',
-            $tab,
-            ['value' => $CFG_GLPI["use_autoname_by_entity"], 'rand' => $rand]
-        );
-        echo "</td><td><label for='dropdown_printers_management_restrict$rand'>" . __('Restrict printer management') . "</label></td><td>";
-        $this->dropdownGlobalManagement(
-            "printers_management_restrict",
-            $CFG_GLPI["printers_management_restrict"],
-            $rand
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='devices_in_menu$rand'>" . __('Devices displayed in menu') . "</label></td>";
-        echo "<td>";
-
-        $dd_params = [
-            'name'      => 'devices_in_menu',
-            'values'    => $CFG_GLPI['devices_in_menu'],
-            'display'   => true,
-            'rand'      => $rand,
-            'multiple'  => true,
-            'size'      => 3
-        ];
-
+        $canedit = static::canUpdate();
         $item_devices_types = [];
         foreach ($CFG_GLPI['itemdevices'] as $key => $itemtype) {
-            if ($item = getItemForItemtype($itemtype)) {
-                $item_devices_types[$itemtype] = $item->getTypeName();
+            if (is_subclass_of($itemtype, CommonDBTM::class)) {
+                $item_devices_types[$itemtype] = $itemtype::getTypeName();
             } else {
                 unset($CFG_GLPI['itemdevices'][$key]);
             }
         }
 
-        Dropdown::showFromArray($dd_params['name'], $item_devices_types, $dd_params);
-
-        echo "<input type='hidden' name='_update_devices_in_menu' value='1'>";
-        echo "</td></tr>\n";
-
-        echo "</table></div>";
-        Html::closeForm();
+        TemplateRenderer::getInstance()->display('pages/setup/general/assets_setup.html.twig', [
+            'config' => $CFG_GLPI,
+            'item_devices_types' => $item_devices_types,
+            'canedit' => $canedit,
+        ]);
     }
 
 
@@ -566,67 +479,29 @@ class Config extends CommonDBTM
     {
         global $DB, $CFG_GLPI, $DBslave;
 
-        if (!Config::canUpdate()) {
+        if (!static::canUpdate()) {
             return;
         }
 
-        echo "<form name='form' action=\"" . Toolbox::getItemTypeFormURL(__CLASS__) . "\" method='post' data-track-changes='true'>";
-        echo "<div class='center' id='tabsbody'>";
-        echo "<input type='hidden' name='_dbslave_status' value='1'>";
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('SQL replica', 'SQL replicas', Session::getPluralNumber()) .
-           "</th></tr>";
         $DBslave = DBConnection::getDBSlaveConf();
-
-        if (is_array($DBslave->dbhost)) {
-            $host = implode(' ', $DBslave->dbhost);
-        } else {
-            $host = $DBslave->dbhost;
-        }
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('SQL server (MariaDB or MySQL)') . "</td>";
-        echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
-        echo "<td>" . _n('Database', 'Databases', 1) . "</td>";
-        echo "<td><input type='text' name='_dbreplicate_dbdefault' value='" . $DBslave->dbdefault . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('SQL user') . "</td>";
-        echo "<td><input type='text' name='_dbreplicate_dbuser' value='" . $DBslave->dbuser . "'></td>";
-        echo "<td>" . __('SQL password') . "</td>";
-        echo "<td><input type='password' name='_dbreplicate_dbpassword' value='" .
-                 rawurldecode($DBslave->dbpassword) . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Use the replica for the search engine') . "</td><td>";
-        $values = [0 => __('Never'),
-            1 => __('If synced (all changes)'),
-            2 => __('If synced (current user changes)'),
-            3 => __('If synced or read-only account'),
-            4 => __('Always')
+        $replica_config = [
+            'host' => is_array($DBslave->dbhost) ? implode(' ', $DBslave->dbhost) : $DBslave->dbhost,
+            'default' => $DBslave->dbdefault,
+            'user' => $DBslave->dbuser,
+            'password' => rawurldecode($DBslave->dbpassword),
         ];
-        Dropdown::showFromArray(
-            'use_slave_for_search',
-            $values,
-            ['value' => $CFG_GLPI["use_slave_for_search"]]
-        );
-        echo "<td colspan='2'>&nbsp;</td>";
-        echo "</tr>";
 
+        $replica_delays = '';
         if ($DBslave->connected && !$DB->isSlave()) {
-            echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-            DBConnection::showAllReplicateDelay();
-            echo "</td></tr>";
+            $replica_delays = DBConnection::showAllReplicateDelay(true);
         }
 
-        echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-        echo "<input type='submit' name='update' class='btn btn-primary' value=\"" . _sx('button', 'Save') . "\">";
-        echo "</td></tr>";
-
-        echo "</table></div>";
-        Html::closeForm();
+        TemplateRenderer::getInstance()->display('pages/setup/general/dbreplica_setup.html.twig', [
+            'config' => $CFG_GLPI,
+            'replica_config' => $replica_config,
+            'canedit' => static::canUpdate(),
+            'replica_delays' => $replica_delays
+        ]);
     }
 
 
@@ -644,87 +519,22 @@ class Config extends CommonDBTM
             return;
         }
 
-        echo "<div class='center spaced' id='tabsbody'>";
-
-        $rand = mt_rand();
-        $canedit = Config::canUpdate();
-        if ($canedit) {
-            echo "<form name='form' action=\"" . Toolbox::getItemTypeFormURL(__CLASS__) . "\" method='post' data-track-changes='true'>";
-        }
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr><th colspan='4'>" . __('General API') . "</th></tr>";
-        // Option to enable API (affects legacy and newer API)
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_enable_api$rand'>" . __("Enable Rest API") . "</label></td>";
-        echo "<td>";
-        Dropdown::showYesNo("enable_api", $CFG_GLPI["enable_api"], -1, ['rand' => $rand]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr><th colspan='4'>" . __('API') . "</th></tr>";
         // Options just for new API
         $api_versions = \Glpi\Api\HL\Router::getAPIVersions();
         $current_version = array_filter($api_versions, static fn ($version) => $version['version'] === \Glpi\Api\HL\Router::API_VERSION);
         $current_version = reset($current_version);
         $getting_started_doc = $current_version['endpoint'] . '/getting-started';
         $endpoint_doc = $current_version['endpoint'] . '/doc';
-        if ($CFG_GLPI["enable_api"]) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='2'>";
-            echo "<a href='$getting_started_doc'>" . __("API Getting Started") . "</a>";
-            echo "</td>";
-            echo "<td colspan='2'>";
-            echo "<a href='$endpoint_doc'>" . __("API Endpoints") . "</a>";
-            echo "</td>";
-            echo "</tr>";
-        }
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
-        echo "<td colspan='3' class='copy_to_clipboard_wrapper'><input type='url' name='url_base_api' id='url_base_api' value='" . $current_version['endpoint'] . "' class='form-control' readonly></td>";
-        echo "</tr>";
 
-        echo "<tr><th colspan='4'>" . __('Legacy API') . "</th></tr>";
-        // Options just for legacy API
-        echo "<tr class='tab_bg_2'>";
-        if ($CFG_GLPI["enable_api"]) {
-            echo "<td colspan='2'>";
-            $inline_doc_api = trim($CFG_GLPI['url_base_api'], '/') . "/";
-            echo "<a href='$inline_doc_api'>" . __("API inline Documentation") . "</a>";
-            echo "</td>";
-        }
-        echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
-        echo "<td colspan='3' class='copy_to_clipboard_wrapper'><input type='url' name='url_base_api' id='url_base_api' value='" . $CFG_GLPI["url_base_api"] . "' class='form-control' readonly></td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_enable_api_login_credentials$rand'>";
-        echo __("Enable login with credentials") . "</label>&nbsp;";
-        Html::showToolTip(__("Allow to login to API and get a session token with user credentials"));
-        echo "</td>";
-        echo "<td>";
-        Dropdown::showYesNo("enable_api_login_credentials", $CFG_GLPI["enable_api_login_credentials"], -1, ['rand' => $rand]);
-        echo "</td>";
-        echo "<td><label for='dropdown_enable_api_login_external_token$rand'>";
-        echo __("Enable login with external token") . "</label>&nbsp;";
-        Html::showToolTip(__("Allow to login to API and get a session token with user external token. See Remote access key in user Settings tab "));
-        echo "</td>";
-        echo "<td>";
-        Dropdown::showYesNo("enable_api_login_external_token", $CFG_GLPI["enable_api_login_external_token"], -1, ['rand' => $rand]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-        echo "<input type='submit' name='update' class='btn btn-primary' value=\"" . _sx('button', 'Save') . "\">";
-        echo "<br><br><br>";
-        echo "</td></tr>";
-
-        echo "</table>";
-        Html::closeForm();
-
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><td>";
-        echo "<hr>";
+        TemplateRenderer::getInstance()->display('pages/setup/general/api_setup.html.twig', [
+            'config' => $CFG_GLPI,
+            'canedit' => static::canUpdate(),
+            'getting_started_doc_url' => $getting_started_doc,
+            'endpoint_doc_url' => $endpoint_doc,
+            'api_url' => $current_version['endpoint'],
+            'legacy_doc_url' => trim($CFG_GLPI['url_base_api'], '/') . "/",
+            'legacy_api_url' => $CFG_GLPI["url_base_api"],
+        ]);
         $buttons = [
             'apiclient.form.php' => __('Add API client'),
         ];
@@ -735,8 +545,6 @@ class Config extends CommonDBTM
             $buttons
         );
         Search::show("APIClient");
-        echo "</td></tr>";
-        echo "</table></div>";
     }
 
 
@@ -752,181 +560,30 @@ class Config extends CommonDBTM
         if (!self::canView()) {
             return;
         }
-
-        $rand = mt_rand();
-        $canedit = Config::canUpdate();
-        if ($canedit) {
-            echo "<form name='form' action=\"" . Toolbox::getItemTypeFormURL(__CLASS__) . "\" method='post' data-track-changes='true'>";
-        }
-        echo "<div class='center spaced' id='tabsbody'>";
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr><th colspan='4'>" . __('Assistance') . "</th></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td width='30%'><label for='dropdown_time_step$rand'>" . __('Step for the hours (minutes)') . "</label></td>";
-        echo "<td width='20%'>";
-        Dropdown::showNumber('time_step', ['value' => $CFG_GLPI["time_step"],
-            'min'   => 30,
-            'max'   => 60,
-            'step'  => 30,
-            'toadd' => [1  => 1,
-                5  => 5,
-                10 => 10,
-                15 => 15,
-                20 => 20
-            ],
-            'rand'  => $rand
-        ]);
-        echo "</td>";
-        echo "<td width='30%'><label for='dropdown_planning_begin$rand'>" . __('Limit of the schedules for planning') . "</label></td>";
-        echo "<td width='20%'>";
-        Dropdown::showHours('planning_begin', ['value' => $CFG_GLPI["planning_begin"], 'rand' => $rand]);
-        echo "&nbsp;<label for='dropdown_planning_end$rand'>-></label>&nbsp;";
-        Dropdown::showHours('planning_end', ['value' => $CFG_GLPI["planning_end"], 'rand' => $rand]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_default_mailcollector_filesize_max$rand'>" . __('Default file size limit imported by the mails receiver') . "</label></td><td>";
-        MailCollector::showMaxFilesize(
-            'default_mailcollector_filesize_max',
-            $CFG_GLPI["default_mailcollector_filesize_max"],
-            $rand
-        );
-        echo "</td>";
-
-        echo "<td><label for='dropdown_documentcategories_id_forticket$rand'>" . __('Default heading when adding a document to a ticket') . "</label></td><td>";
-        DocumentCategory::dropdown(['value' => $CFG_GLPI["documentcategories_id_forticket"],
-            'name'  => "documentcategories_id_forticket",
-            'rand'  => $rand
-        ]);
-        echo "</td></tr>";
-        echo "<tr class='tab_bg_2'><td><label for='dropdown_default_software_helpdesk_visible$rand'>" . __('By default, a software may be linked to a ticket') . "</label></td><td>";
-        Dropdown::showYesNo(
-            "default_software_helpdesk_visible",
-            $CFG_GLPI["default_software_helpdesk_visible"],
-            -1,
-            ['rand' => $rand]
-        );
-        echo "</td>";
-
-        echo "<td><label for='dropdown_keep_tickets_on_delete$rand'>" . __('Keep tickets when purging hardware in the inventory') . "</label></td><td>";
-        Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"], -1, ['rand' => $rand]);
-        echo "</td></tr><tr class='tab_bg_2'><td><label for='dropdown_use_check_pref$rand'>" . __('Show personnal information in new ticket form (simplified interface)');
-        echo "</label></td>";
-        echo "<td>";
-        Dropdown::showYesNo('use_check_pref', $CFG_GLPI['use_check_pref'], -1, ['rand' => $rand]);
-        echo "</td>";
-
-        echo "<td><label for='dropdown_use_anonymous_helpdesk$rand'>" . __('Allow anonymous ticket creation (helpdesk.receiver)') . "</label></td><td>";
-        Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"], -1, ['rand' => $rand]);
-        echo "</td></tr><tr class='tab_bg_2'><td><label for='dropdown_use_anonymous_followups$rand'>" . __('Allow anonymous followups (receiver)') . "</label></td><td>";
-        Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"], -1, ['rand' => $rand]);
-        echo "</td><td colspan='2'></td></tr>";
-
-        echo "<tr>";
-        echo "<td>";
-        echo "<label for='dropdown_planning_work_days$rand'>" . __('Planning work days') . "</label>";
-        echo "</td>";
-        echo "<td colspan='3'>";
-        Dropdown::showFromArray(
-            "planning_work_days",
-            [
-                1 => __("Monday"),
-                2 => __("Tuesday"),
-                3 => __("Wednesday"),
-                4 => __("Thursday"),
-                5 => __("Friday"),
-                6 => __("Saturday"),
-                0 => __("Sunday"),
-            ],
-            [
-                'values'   => $CFG_GLPI["planning_work_days"],
-                'multiple' => true,
-                'rand'     => $rand,
-            ]
-        );
-        echo "</td>";
-        echo "</tr>";
-        echo "</table>";
-
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='7'>" . __('Matrix of calculus for priority');
-        echo "<input type='hidden' name='_matrix' value='1'></th></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td class='b right' colspan='2'>" . __('Impact') . "</td>";
-
         $isimpact = [];
         for ($impact = 5; $impact >= 1; $impact--) {
-            echo "<td class='center'>" . Ticket::getImpactName($impact) . '<br>';
-
-            if ($impact == 3) {
+            if ($impact === 3) {
                 $isimpact[3] = 1;
-                echo "<input type='hidden' name='_impact_3' value='1'>";
             } else {
                 $isimpact[$impact] = (($CFG_GLPI['impact_mask'] & (1 << $impact)) > 0);
-                Dropdown::showYesNo("_impact_{$impact}", $isimpact[$impact]);
             }
-            echo "</td>";
         }
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='b' colspan='2'>" . __('Urgency') . "</td>";
-
-        for ($impact = 5; $impact >= 1; $impact--) {
-            echo "<td>&nbsp;</td>";
-        }
-        echo "</tr>";
 
         $isurgency = [];
         for ($urgency = 5; $urgency >= 1; $urgency--) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . Ticket::getUrgencyName($urgency) . "&nbsp;</td>";
-            echo "<td>";
-
-            if ($urgency == 3) {
+            if ($urgency === 3) {
                 $isurgency[3] = 1;
-                echo "<input type='hidden' name='_urgency_3' value='1'>";
             } else {
                 $isurgency[$urgency] = (($CFG_GLPI['urgency_mask'] & (1 << $urgency)) > 0);
-                Dropdown::showYesNo("_urgency_{$urgency}", $isurgency[$urgency]);
             }
-            echo "</td>";
-
-            for ($impact = 5; $impact >= 1; $impact--) {
-                $pri = round(($urgency + $impact) / 2);
-
-                if (isset($CFG_GLPI['priority_matrix'][$urgency][$impact])) {
-                    $pri = $CFG_GLPI['priority_matrix'][$urgency][$impact];
-                }
-
-                if ($isurgency[$urgency] && $isimpact[$impact]) {
-                    $bgcolor = $_SESSION["glpipriority_$pri"];
-                    echo "<td class='center' bgcolor='$bgcolor'>";
-                    Ticket::dropdownPriority([
-                        'value' => $pri,
-                        'name'  => "_matrix_{$urgency}_{$impact}",
-                        'enable_filtering' => false,
-                    ]);
-                    echo "</td>";
-                } else {
-                    echo "<td><input type='hidden' name='_matrix_{$urgency}_{$impact}' value='$pri'>
-                     </td>";
-                }
-            }
-            echo "</tr>\n";
-        }
-        if ($canedit) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='7' class='center'>";
-            echo "<input type='submit' name='update' class='btn btn-primary' value=\"" . _sx('button', 'Save') . "\">";
-            echo "</td></tr>";
         }
 
-        echo "</table></div>";
-        Html::closeForm();
+        TemplateRenderer::getInstance()->display('pages/setup/general/assistance_setup.html.twig', [
+            'config' => $CFG_GLPI,
+            'is_impact' => $isimpact,
+            'is_urgency' => $isurgency,
+            'canedit' => static::canUpdate(),
+        ]);
     }
 
 

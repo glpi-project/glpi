@@ -676,35 +676,37 @@ class DBConnection extends CommonDBTM
     /**
      * Display in HTML, delay between master and slave
      * 1 line per slave is multiple
+     * @param boolean $no_display if true, the function returns the HTML string to display
+     * @return string|null
+     * @phpstan-return $no_display ? string : null
      **/
-    public static function showAllReplicateDelay()
+    public static function showAllReplicateDelay($no_display = false)
     {
-
         $DBslave = self::getDBSlaveConf();
-
-        if (is_array($DBslave->dbhost)) {
-            $hosts = $DBslave->dbhost;
-        } else {
-            $hosts = [$DBslave->dbhost];
-        }
+        $hosts = is_array($DBslave->dbhost) ? $DBslave->dbhost : [$DBslave->dbhost];
+        $output = '';
 
         foreach ($hosts as $num => $name) {
             $diff = self::getReplicateDelay($num);
            //TRANS: %s is namez of server Mysql
-            printf(__('%1$s: %2$s'), __('SQL server'), $name);
-            echo " - ";
+            $output .= sprintf(__('%1$s: %2$s'), __('SQL server'), $name);
+            $output .= " - ";
             if ($diff > 1000000000) {
-                echo __("can't connect to the database") . "<br>";
+                $output .= __("can't connect to the database") . "<br>";
             } else if ($diff) {
-                printf(
+                $output .= sprintf(
                     __('%1$s: %2$s') . "<br>",
                     __('Difference between main and replica'),
                     Html::timestampToString($diff, 1)
                 );
             } else {
-                printf(__('%1$s: %2$s') . "<br>", __('Difference between main and replica'), __('None'));
+                $output .= sprintf(__('%1$s: %2$s') . "<br>", __('Difference between main and replica'), __('None'));
             }
         }
+        if ($no_display) {
+            return $output;
+        }
+        echo $output;
     }
 
 
