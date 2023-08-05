@@ -110,7 +110,13 @@
 
 
 {% macro text(name, value, options = {}) %}
+    {% if options.copyable %}
+        <div class="copy_to_clipboard_wrapper">
+    {% endif %}
     {{ _self.input(name, value, options|merge({'type': 'text'})) }}
+    {% if options.copyable %}
+        </div>
+    {% endif %}
 {% endmacro %}
 
 
