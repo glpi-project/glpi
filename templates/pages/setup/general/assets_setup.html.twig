@@ -54,7 +54,7 @@
       0: __('Global'),
       1: __('By entity'),
    }, __('Automatic fields (marked by *)')) }}
-   {{ fields.dropdownArrayField('printers_management_restrict', config['printers_management_restrict'], global_management_options,  __('Restrict printer management')) }}
+   {{ fields.dropdownArrayField('printers_management_restrict', config['printers_management_restrict'], global_management_options, __('Restrict printer management')) }}
    {{ fields.dropdownArrayField('devices_in_menu', null, item_devices_types, __('Devices displayed in menu'), {
       multiple: true,
       size: 3,
