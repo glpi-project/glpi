@@ -1321,22 +1321,18 @@ class AuthLDAP extends CommonDBTM
     }
 
     /**
-     * Show system information form
+     * Get system information
      *
-     * @param integer $width The number of characters at which the string will be wrapped.
-     *
-     * @return void
+     * @return array
+     * @phpstan-return array{label: string, content: string}
      */
-    public function showSystemInformations($width)
+    public function getSystemInformation(): array
     {
-
-       // No need to translate, this part always display in english (for copy/paste to forum)
-
+        // No need to translate, this part always display in english (for copy/paste to forum)
         $ldap_servers = self::getLdapServers();
+        $content = '';
 
         if (!empty($ldap_servers)) {
-            echo "<tr class='tab_bg_2'><th class='section-header'>" . self::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
-            echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
             foreach ($ldap_servers as $value) {
                 $fields = ['Server'            => 'host',
                     'Port'              => 'port',
@@ -1349,14 +1345,18 @@ class AuthLDAP extends CommonDBTM
                 $first = true;
                 foreach ($fields as $label => $field) {
                     $msg .= (!$first ? ', ' : '') .
-                        $label . ': ' .
+                        ($label !== 'Server' ? "\n\t" : '') . $label . ': ' .
                         ($value[$field] ? '\'' . $value[$field] . '\'' : 'none');
                     $first = false;
                 }
-                echo wordwrap($msg . "\n", $width, "\n\t\t");
+                $content .= $msg . "\n\n";
             }
-            echo "\n</pre></td></tr>";
         }
+
+        return [
+            'label' => self::getTypeName(Session::getPluralNumber()),
+            'content' => $content
+        ];
     }
 
 

@@ -1313,15 +1313,15 @@ class Plugin extends CommonDBTM
 
 
     /**
-     * @param integer $width
-     **/
-    public function showSystemInformations($width)
+     * Get system information
+     *
+     * @return array
+     * @phpstan-return array{label: string, content: string}
+     */
+    public function getSystemInformation()
     {
-
-       // No need to translate, this part always display in english (for copy/paste to forum)
-
-        echo "\n<tr class='tab_bg_2'><th class='section-header'>Plugins list</th></tr>";
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
+        // No need to translate, this part always display in english (for copy/paste to forum)
+        $content = '';
 
         $plug     = new Plugin();
         $pluglist = $plug->find([], "name, directory");
@@ -1338,12 +1338,12 @@ class Plugin extends CommonDBTM
                  " Version: " . str_pad($version, 10) .
                  " State: " . str_pad($state, 40) .
                  " Install Method: " . $install_method;
-
-
-
-            echo wordwrap("\t" . $msg . "\n", $width, "\n\t\t");
+            $content .= "\n" . $msg;
         }
-        echo "\n</pre></td></tr>";
+        return [
+            'label' => 'Plugins list',
+            'content' => $content
+        ];
     }
 
 

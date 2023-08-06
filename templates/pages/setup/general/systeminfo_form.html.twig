@@ -1,0 +1,95 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/setup/general/base_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set field_options = {
+   'label_class': 'col-xxl-7',
+   'input_class': 'col-xxl-5',
+} %}
+
+{% block config_fields %}
+   {{ fields.largeTitle(__('System'), 'ti ti-adjustments') }}
+   {{ fields.dropdownArrayField('event_loglevel', config['event_loglevel'], {
+      1: __('1- Critical (login error only)'),
+      2: __('2- Severe (not used)'),
+      3: __('3- Important (successful logins)'),
+      4: __('4- Notices (add, delete, tracking)'),
+      5: __('5- Complete (all)'),
+   }, __('Log Level'), field_options) }}
+   {{ fields.dropdownNumberField('cron_limit', config['cron_limit'], __('Maximum number of automatic actions (run by CLI)'), field_options|merge({
+      min: 1,
+      max: 30
+   })) }}
+   {{ fields.sliderField('use_log_in_files', config['use_log_in_files'], __('Logs in files (SQL, email, automatic action...)'), field_options) }}
+   {{ fields.sliderField('_dbslave_status', call('DBConnection::isDBSlaveActive'), _n('SQL replica', 'SQL replicas', 1), field_options) }}
+
+   {{ fields.smallTitle(__('Maintenance mode')) }}
+   {{ fields.sliderField('maintenance_mode', config['maintenance_mode'], __('Maintenance mode'), field_options) }}
+   {{ fields.textareaField('maintenance_text', config['maintenance_text'], __('Maintenance text'), field_options) }}
+
+   {{ fields.smallTitle(__('Proxy configuration')) }}
+   {{ fields.textField('proxy_name', config['proxy_name'], __('Server'), field_options) }}
+   {{ fields.textField('proxy_port', config['proxy_port'], _n('Port', 'Ports', 1), field_options) }}
+   {{ fields.textField('proxy_user', config['proxy_user'], __('Login'), field_options) }}
+   {{ fields.passwordField('proxy_passwd', config['proxy_passwd'], __('Password'), field_options|merge({
+      readonly: true,
+      additional_attributes: {
+         autocomplete: 'off',
+         onfocus: 'this.removeAttribute("readonly");'
+      }
+   })) }}
+
+   {{ fields.smallTitle(__('Telemetry data')) }}
+   {% set telemetry_enabled = call('Telemetry::isEnabled') %}
+   {{ fields.htmlField('', telemetry_enabled ? __('Yes') : __('No'), __('Telemetry enabled'), field_options|merge({
+      helper: __('To enable or disable sending telemetry, please change the "telemetry" automatic action.')
+   })) }}
+   {{ fields.htmlField('', call('Telemetry::getViewLink'), __('Telemetry data'), field_options) }}
+
+   {{ fields.smallTitle(__('GLPI update')) }}
+   {% set btn_check_updates %}
+      <a class="btn btn-secondary" href="?check_version"><i class="ti ti-reload"></i>
+         <span>{{ __('Check if a new version is available') }}</span>
+      </a>
+   {% endset %}
+   {{ fields.htmlField(
+      '',
+      btn_check_updates,
+      "GLPI " ~ constant('GLPI_VERSION') ~ " Copyright (C) 2015-" ~ constant('GLPI_YEAR') ~ " Teclib' and contributors",
+      field_options|merge({
+         full_width: true
+      })
+   ) }}
+{% endblock %}
