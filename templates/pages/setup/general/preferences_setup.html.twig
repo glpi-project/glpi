@@ -175,9 +175,7 @@
       {{ fields.smallTitle(__('Assistance'), 'ti ti-headset') }}
 
       {{ fields.dropdownYesNo('followup_private', config['followup_private'], __('Private followups by default')) }}
-      {% if has_profile_right('ticket', constant('Ticket::READMY')) or
-         has_profile_right('ticket', constant('Ticket::READALL')) or
-         has_profile_right('ticket', constant('Ticket::READASSIGN')) %}
+      {% if has_profile_right('ticket', constant('Ticket::READMY')) or has_profile_right('ticket', constant('Ticket::READALL')) or has_profile_right('ticket', constant('Ticket::READASSIGN')) %}
          {{ fields.dropdownYesNo('show_jobs_at_login', config['show_jobs_at_login'], __('Show new tickets on the home page')) }}
       {% else %}
          {{ fields.htmlField('', __('No')) }}
