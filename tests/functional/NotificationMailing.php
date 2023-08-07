@@ -200,6 +200,10 @@ class NotificationMailing extends DbTestCase
         ], true))->isFalse();
     }
 
+    // TODO check that trigger is correctly set for some events
+    // TODO check that attach_document is correctly set according to config
+    // TODO check generated notifications, if possible
+
 
     public function testSendNotificationAttachedDocument()
     {
@@ -228,8 +232,8 @@ class NotificationMailing extends DbTestCase
         $ITILFollowUp = new \ITILFollowup();
 
 
-        // NO_DOCUMENT
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationMailingSetting::NO_DOCUMENT;
+        // ATTACH_NO_DOCUMENT
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_NO_DOCUMENT;
 
 
         // create a ticket and link one document
@@ -347,8 +351,8 @@ class NotificationMailing extends DbTestCase
         ]);
 
 
-        // ALL_DOCUMENTS
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationMailingSetting::ALL_DOCUMENTS;
+        // ATTACH_ALL_DOCUMENTS
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_ALL_DOCUMENTS;
 
         // create a ticket and link one document
         $ticketID = $ticket->add([
@@ -464,8 +468,8 @@ class NotificationMailing extends DbTestCase
         ]);
 
 
-        // ONLY_FROM_TRIGGER
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationMailingSetting::ONLY_FROM_TRIGGER;
+        // ATTACH_FROM_TRIGGER_ONLY
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
 
         // create a ticket and link one document
         $ticketID = $ticket->add([

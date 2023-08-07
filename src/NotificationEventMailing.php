@@ -39,6 +39,12 @@ use Symfony\Component\Mime\Email;
 
 class NotificationEventMailing extends NotificationEventAbstract
 {
+    /**
+     * Mailer service.
+     * @var GLPIMailer
+     */
+    private static $mailer = null;
+
     public static function getTargetFieldName()
     {
         return 'email';
@@ -123,7 +129,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
         foreach ($data as $row) {
             //make sure mailer is reset on each mail
-            $mmail = new GLPIMailer($transport);
+            $mmail = self::$mailer ?? new GLPIMailer($transport);
             $mail = $mmail->getEmail();
             $current = new QueuedNotification();
             $current->getFromResultSet($row);
@@ -185,8 +191,8 @@ class NotificationEventMailing extends NotificationEventAbstract
                 $documents_to_attach = [];
 
 
-                if ($is_html || $current->fields['attach_documents'] !== NotificationMailingSetting::NO_DOCUMENT) {
-                    if ($current->fields['attach_documents'] === NotificationMailingSetting::ONLY_FROM_TRIGGER) {
+                if ($is_html || $current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT) {
+                    if ($current->fields['attach_documents'] === NotificationSetting::ATTACH_FROM_TRIGGER_ONLY) {
                         $itemtype = $current->fields['itemtype_trigger'];
                         $items_id = $current->fields['items_id_trigger'];
                     } else {
@@ -210,7 +216,10 @@ class NotificationEventMailing extends NotificationEventAbstract
                             'itemtype' => $itemtype,
                         ];
                         if ($item instanceof CommonITILObject) {
-                            $doc_crit = $item->getAssociatedDocumentsCriteria(true);
+                            if ($current->fields['attach_documents'] !== NotificationSetting::ATTACH_FROM_TRIGGER_ONLY) {
+                                // Attach documents from child, unless only documents from trigger should be attached
+                                $doc_crit = $item->getAssociatedDocumentsCriteria(true);
+                            }
                             if ($is_html) {
                                 // Remove documents having "NO_TIMELINE" position if mail is HTML, as
                                 // these documents corresponds to inlined images.
@@ -235,7 +244,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 if (!$is_html) {
                     $mail->text($current->fields['body_text']);
-                    if ($current->fields['attach_documents'] !== NotificationMailingSetting::NO_DOCUMENT) {
+                    if ($current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT) {
                         // Attach all documents
                         $documents_to_attach = $documents_ids;
                     }
@@ -268,7 +277,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                             $mail->embedFromPath($image_path, $doc->fields['filename']);
                             $inline_docs[$document_id] = $doc->fields['filename'];
                         } else {
-                            if ($current->fields['attach_documents'] !== NotificationMailingSetting::NO_DOCUMENT) {
+                            if ($current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT) {
                                 // Attach only documents that are not inlined images
                                 $documents_to_attach[] = $document_id;
                             }
@@ -518,5 +527,10 @@ class NotificationEventMailing extends NotificationEventAbstract
        //Set notification's signature (the one which corresponds to the entity)
         $entity = $params['notificationtarget']->getEntity();
         $params['template']->setSignature(Notification::getMailingSignature($entity));
+    }
+
+    public static function setMailer(GLPIMailer $mailer): void
+    {
+        self::$mailer = $mailer;
     }
 }

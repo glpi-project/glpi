@@ -41,11 +41,6 @@ use Glpi\Mail\SMTP\OauthConfig;
  */
 class NotificationMailingSetting extends NotificationSetting
 {
-    public const INHERIT           = -2;   // Inherit from global config
-    public const NO_DOCUMENT       = 0;    // No document
-    public const ALL_DOCUMENTS     = 1;    // All documents
-    public const ONLY_FROM_TRIGGER = 2;    // Only documents related to the item that triggers the event
-
     public static function getTypeName($nb = 0)
     {
         return __('Email followups configuration');
@@ -69,9 +64,9 @@ class NotificationMailingSetting extends NotificationSetting
         global $CFG_GLPI;
 
         $attach_documents_values = [
-            self::NO_DOCUMENT       => __('No documents'),
-            self::ALL_DOCUMENTS     => __('All documents'),
-            self::ONLY_FROM_TRIGGER => __('Only documents related to the item that triggers the event'),
+            self::ATTACH_NO_DOCUMENT       => __('No documents'),
+            self::ATTACH_ALL_DOCUMENTS     => __('All documents'),
+            self::ATTACH_FROM_TRIGGER_ONLY => __('Only documents related to the item that triggers the event'),
         ];
 
         $mail_methods = [

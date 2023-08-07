@@ -255,10 +255,10 @@ class Notification extends CommonDBTM implements FilterableInterface
         }
 
         $attach_documents_values = [
-            NotificationMailingSetting::INHERIT           => __('Use global config'),
-            NotificationMailingSetting::NO_DOCUMENT       => __('No documents'),
-            NotificationMailingSetting::ALL_DOCUMENTS     => __('All documents'),
-            NotificationMailingSetting::ONLY_FROM_TRIGGER => __('Only documents related to the item that triggers the event'),
+            NotificationSetting::ATTACH_INHERIT           => __('Use global config'),
+            NotificationSetting::ATTACH_NO_DOCUMENT       => __('No documents'),
+            NotificationSetting::ATTACH_ALL_DOCUMENTS     => __('All documents'),
+            NotificationSetting::ATTACH_FROM_TRIGGER_ONLY => __('Only documents related to the item that triggers the event'),
         ];
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/notification.html.twig', [

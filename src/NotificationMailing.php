@@ -180,6 +180,8 @@ class NotificationMailing implements NotificationInterface
 
         $data['mode'] = Notification_NotificationTemplate::MODE_MAIL;
 
+        $data['attach_documents'] = $options['attach_documents'];
+
         $queue = new QueuedNotification();
 
         if (!$queue->add($data)) {

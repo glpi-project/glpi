@@ -128,7 +128,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     $send_data['_entities_id']              = $entity;
                                     $send_data['mode']                      = $data['mode'];
                                     $send_data['event']                     = $event;
-                                    $send_data['attach_documents']          = $data['attach_documents'] == NotificationMailingSetting::INHERIT
+                                    $send_data['attach_documents']          = $data['attach_documents'] == NotificationSetting::ATTACH_INHERIT
                                         ? $CFG_GLPI['attach_ticket_documents_to_mail']
                                         : $data['attach_documents'];
                                     $send_data['itemtype_trigger']          = $trigger !== null ? $trigger->getType() : $itemtype;
