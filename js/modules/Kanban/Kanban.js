@@ -2694,7 +2694,7 @@ class GLPIKanbanRights {
                     _backgroundRefreshTimer = window.setTimeout(_backgroundRefresh, self.background_refresh_interval * 60 * 1000);
                 }, false);
             }).fail(() => {
-                glpi_toast_error(__('Failed to add team member'), __('Error'));
+                glpi_toast_error(__('Failed to add team member'));
             });
         };
 
@@ -2715,7 +2715,7 @@ class GLPIKanbanRights {
                     _backgroundRefreshTimer = window.setTimeout(_backgroundRefresh, self.background_refresh_interval * 60 * 1000);
                 }, false);
             }).fail(() => {
-                glpi_toast_error(__('Failed to remove team member'), __('Error'));
+                glpi_toast_error(__('Failed to remove team member'));
             });
         };
 
@@ -2843,7 +2843,7 @@ class GLPIKanbanRights {
                 // Reload page
                 window.location.reload();
             }).fail(function() {
-                glpi_toast_error(__('Failed to reset Kanban view'), __('Error'));
+                glpi_toast_error(__('Failed to reset Kanban view'));
             });
         };
 

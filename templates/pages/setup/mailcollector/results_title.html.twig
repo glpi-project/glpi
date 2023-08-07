@@ -31,29 +31,18 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set messages = pull_messages() %}
-{% if messages|length %}
-
-   {% for type, message in messages %}
-      {% set message = message|join('<br />') %}
-      {% set class = '' %}
-      {% set title = '' %}
-      {% if type == constant('ERROR') %}
-         {% set class = 'alert-danger' %}
-         {% set title = _n('Error', 'Errors', 1) %}
-      {% elseif type == constant('WARNING') %}
-         {% set class = 'alert-warning' %}
-         {% set title = __('Warning') %}
-      {% else %}
-         {% set class = 'alert-info' %}
-         {% set title = _n('Information', 'Informations', 1) %}
-      {% endif %}
-
-      <div class="alert alert-important {{ class }}" role="alert">
-         <h3>{{ title }}</h3>
-         <p>
-            {{ message|raw }}
-         </p>
-      </div>
-   {% endfor %}
-{% endif %}
+<div class="btn-group flex-wrap mb-3">
+   {% if servers|length > 0 %}
+      <span class="border-danger text-danger border-1 border p-0 ps-2 rounded-start">
+         <i class="ti ti-alert-triangle me-2"></i>
+         {% set server_links = servers|map((v) => '<a class="btn btn-ghost-danger align-baseline" href="' ~ v['link'] ~ '">' ~ v['name']|e ~ '</a>')|join(' ') %}
+         <span>{{ __('Receivers in error: %s')|format(server_links)|raw }}</span>
+      </span>
+   {% endif %}
+   {% if has_collector %}
+      <a class="btn btn-outline-warning" href="{{ path('/front/notimportedemail.php') }}">
+         <i class="ti ti-list me-2"></i>
+         <span>{{ __('List of not imported emails') }}</span>
+      </a>
+   {% endif %}
+</div>

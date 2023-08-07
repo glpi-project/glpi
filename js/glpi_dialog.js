@@ -408,6 +408,6 @@ const glpi_toast_warning = (message, caption, options = {}) => {
  * @param {ToastOptions} options Toast options
  */
 const glpi_toast_error = (message, caption, options = {}) => {
-    glpi_toast(caption || __('Error'), message, 'bg-danger text-white border-0', options);
+    glpi_toast(caption || _n('Error', 'Errors', 1), message, 'bg-danger text-white border-0', options);
 };
 

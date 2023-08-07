@@ -41,7 +41,7 @@
             {% set title = '' %}
             {% if type == constant('ERROR') %}
                 {% set class = 'bg-danger text-white' %}
-                {% set title = __('Error') %}
+                {% set title = _n('Error', 'Errors', 1) %}
             {% elseif type == constant('WARNING') %}
                 {% set class = 'bg-warning text-white' %}
                 {% set title = __('Warning') %}

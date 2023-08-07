@@ -1137,7 +1137,11 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('submit', 'form', function() {
+    $(document).on('submit', 'form', (e) => {
+        // if the submitter has a data-block-on-unsaved attribute, do not clear the unsaved changes flag
+        if ($(e.originalEvent.submitter).attr('data-block-on-unsaved') === 'true') {
+            return;
+        }
         window.glpiUnsavedFormChanges = false;
     });
 });
@@ -1438,6 +1442,25 @@ $(() => {
             e.preventDefault();
             return false;
         } else {
+            let submitter = null;
+            if (e.originalEvent && e.originalEvent.submitter) {
+                submitter = $(e.originalEvent.submitter);
+            }
+            if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && window.glpiUnsavedFormChanges) {
+                // This submit may be cancelled by the unsaved changes warning so we cannot permanently block it
+                // We fall back to a timed block
+                const block = function(e) {
+                    e.preventDefault();
+                };
+                submitter.on('click', block);
+                submitter.data('original_html', submitter.html());
+                submitter.html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
+                window.setTimeout(() => {
+                    submitter.off('click', block);
+                    submitter.html(submitter.data('original_html'));
+                }, 100);
+                return;
+            }
             blockFormSubmit(form, e);
         }
     });
