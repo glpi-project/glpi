@@ -61,6 +61,7 @@ class SessionExtension extends AbstractExtension
             new TwigFunction('pull_messages', [$this, 'pullMessages']),
             new TwigFunction('session', [$this, 'session']),
             new TwigFunction('user_pref', [$this, 'userPref']),
+            new TwigFunction('get_saved_option', [Session::class, 'getSavedOption'])
         ];
     }
 

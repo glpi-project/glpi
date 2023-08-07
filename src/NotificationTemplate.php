@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 
 /**
@@ -109,51 +110,13 @@ class NotificationTemplate extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
-
         if (!Config::canUpdate()) {
             return false;
         }
 
-        $spotted = false;
-
-        if (empty($ID)) {
-            if ($this->getEmpty()) {
-                $spotted = true;
-            }
-        } else {
-            if ($this->getFromDB($ID)) {
-                $spotted = true;
-            }
-        }
-
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-        echo "<td colspan='3'>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . _n('Type', 'Types', 1) . "</td><td colspan='3'>";
-        Dropdown::showItemTypes(
-            'itemtype',
-            $CFG_GLPI["notificationtemplates_types"],
-            ['value' => ($this->fields['itemtype']
-            ? $this->fields['itemtype'] : 'Ticket')
-            ]
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-        echo "<td colspan='3'>";
-        echo "<textarea cols='60' rows='5' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('CSS') . "</td>";
-        echo "<td colspan='3'>";
-        echo "<textarea cols='60' rows='5' name='css' >" . $this->fields["css"] . "</textarea></td></tr>";
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/setup/notification/template.html.twig', [
+            'item' => $this,
+        ]);
         return true;
     }
 

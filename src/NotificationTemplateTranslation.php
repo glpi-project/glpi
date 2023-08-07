@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 
 /**
@@ -101,8 +102,6 @@ class NotificationTemplateTranslation extends CommonDBChild
 
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
-
         if (!Config::canUpdate()) {
             return false;
         }
@@ -114,74 +113,13 @@ class NotificationTemplateTranslation extends CommonDBChild
         if ($this->getFromDB($ID)) {
             $notificationtemplates_id = $this->getField('notificationtemplates_id');
         }
-
-        $this->initForm($ID, $options);
         $template = new NotificationTemplate();
         $template->getFromDB($notificationtemplates_id);
 
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . NotificationTemplate::getTypeName() . "</td>";
-        echo "<td colspan='2'><a href='" . Toolbox::getItemTypeFormURL('NotificationTemplate') .
-                           "?id=" . $notificationtemplates_id . "'>" . $template->getField('name') . "</a>";
-        echo "</td><td>";
-        $rand = mt_rand();
-        Ajax::createIframeModalWindow(
-            "tags" . $rand,
-            $CFG_GLPI['root_doc'] . "/front/notification.tags.php?sub_type=" .
-            $template->getField('itemtype')
-        );
-        echo "<a class='btn btn-primary' href='#' data-bs-toggle='modal' data-bs-target='#tags$rand'>" . __('Show list of available tags') . "</a>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Language') . "</td><td colspan='3'>";
-
-       //Get all used languages
-        $used = self::getAllUsedLanguages($notificationtemplates_id);
-        if ($ID > 0) {
-            if (isset($used[$this->getField('language')])) {
-                unset($used[$this->getField('language')]);
-            }
-        }
-        Dropdown::showLanguages("language", ['display_emptychoice'  => true,
-            'value'              => $this->fields['language'],
-            'emptylabel'         => __('Default translation'),
+        TemplateRenderer::getInstance()->display('pages/setup/notification/translation.html.twig', [
+            'item' => $this,
+            'template' => $template
         ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Subject') . "</td>";
-        echo "<td colspan='3'>";
-        echo Html::input('subject', ['value' => $this->fields['subject'], 'size' => 100]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>";
-        echo __('Email text body');
-        echo "<br>" . __('(leave the field empty for a generation from HTML)');
-        echo "</td><td colspan='3'>";
-        echo "<textarea cols='100' rows='15' name='content_text' >" . $this->fields["content_text"];
-        echo "</textarea></td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo __('Email HTML body');
-        echo "</td><td colspan='3'>";
-        $content_id = "content$rand";
-        Html::textarea(['name'              => 'content_html',
-            'value'             => RichText::getSafeHtml($this->fields['content_html'], true),
-            'rand'              => $rand,
-            'editor_id'         => $content_id,
-            'enable_fileupload' => false,
-            'enable_richtext'   => true,
-            'cols'              => 100,
-            'rows'              => 15
-        ]);
-
-        echo "<input type='hidden' name='notificationtemplates_id' value='" .
-             $template->getField('id') . "'>";
-        echo "</td></tr>";
-        $this->showFormButtons($options);
         return true;
     }
 
@@ -407,16 +345,6 @@ class NotificationTemplateTranslation extends CommonDBChild
     {
         $target = NotificationTarget::getInstanceByType($itemtype);
         $target->getTags();
-
-        echo "<div class='center'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th>" . __('Tag') . "</th>
-                <th>" . __('Label') . "</th>
-                <th>" . _n('Event', 'Events', 1) . "</th>
-                <th>" . _n('Type', 'Types', 1) . "</th>
-                <th>" . __('Possible values') . "</th>
-            </tr>";
-
         $tags = [];
 
         foreach ($target->tag_descriptions as $tag_type => $infos) {
@@ -426,14 +354,14 @@ class NotificationTemplateTranslation extends CommonDBChild
             $tags = array_merge($tags, $infos);
         }
         ksort($tags);
+
+        $rows = [];
         foreach ($tags as $tag => $values) {
             if ($values['events'] == NotificationTarget::TAG_FOR_ALL_EVENTS) {
                 $event = __('All');
             } else {
                 $event = implode(', ', $values['events']);
             }
-
-            $action = '';
 
             if ($values['foreach']) {
                 $action = __('List of values');
@@ -447,19 +375,35 @@ class NotificationTemplateTranslation extends CommonDBChild
                 $allowed_values = '';
             }
 
-            echo "<tr class='tab_bg_1'><td>" . $tag . "</td>" .
-              "<td>";
             if ($values['type'] == NotificationTarget::TAG_LANGUAGE) {
-                printf(__('%1$s: %2$s'), __('Label'), $values['label']);
+                $label = sprintf(__('%1$s: %2$s'), __('Label'), $values['label']);
             } else {
-                echo $values['label'];
+                $label = $values['label'];
             }
-            echo "</td><td>" . $event . "</td>" .
-              "<td>" . $action . "</td>" .
-              "<td>" . $allowed_values . "</td>" .
-              "</tr>";
+            $rows[] = [
+                'values' => [
+                    ['content' => $tag],
+                    ['content' => $label],
+                    ['content' => $event],
+                    ['content' => $action],
+                    ['content' => $allowed_values],
+                ]
+            ];
         }
-        echo "</table></div>";
+
+        TemplateRenderer::getInstance()->display('components/table.html.twig', [
+            'class' => 'table table-borderless',
+            'header_rows' => [
+                [
+                    ['content' => __('Tag')],
+                    ['content' => __('Label')],
+                    ['content' => _n('Event', 'Events', 1)],
+                    ['content' => _n('Type', 'Types', 1)],
+                    ['content' => __('Possible values')],
+                ]
+            ],
+            'rows' => $rows
+        ]);
     }
 
 
@@ -502,7 +446,6 @@ class NotificationTemplateTranslation extends CommonDBChild
      **/
     public function showDebug()
     {
-
         $template = new NotificationTemplate();
         if (!$template->getFromDB($this->fields['notificationtemplates_id'])) {
             return;
@@ -513,44 +456,25 @@ class NotificationTemplateTranslation extends CommonDBChild
             return;
         }
 
-        echo "<div class='spaced'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . __('Preview') . "</th></tr>";
-
         $oktypes = ['CartridgeItem', 'Change', 'ConsumableItem', 'Contract', 'CronTask',
             'Problem', 'Project', 'Ticket', 'User'
         ];
 
         if (!in_array($itemtype, $oktypes)) {
-           // this itemtype doesn't work, need to be fixed
-            echo "<tr class='tab_bg_2 center'><td>" . NOT_AVAILABLE . "</td>";
-            echo "</table></div>";
+            // this itemtype doesn't work, need to be fixed
             return;
         }
 
-       // Criteria Form
+        // Criteria Form
         $key   = getForeignKeyFieldForItemType($item->getType());
         $id    = Session::getSavedOption(__CLASS__, $key, 0);
         $event = Session::getSavedOption(__CLASS__, $key . '_event', '');
 
-        echo "<tr class='tab_bg_2'><td>" . $item->getTypeName(1) . "&nbsp;";
-        $item->dropdown(['value'     => $id,
-            'on_change' => 'reloadTab("' . $key . '="+this.value)'
-        ]);
-        echo "</td><td>" . NotificationEvent::getTypeName(1) . "&nbsp;";
-        NotificationEvent::dropdownEvents(
-            $item->getType(),
-            ['value'     => $event,
-                'on_change' => 'reloadTab("' . $key . '_event="+this.value)'
-            ]
-        );
-        echo "</td>";
+
+        $data = null;
 
        // Preview
-        if (
-            $event
-            && $item->getFromDB($id)
-        ) {
+        if ($event && $item->getFromDB($id)) {
             $options = ['_debug' => true];
 
             // TODO Awfull Hack waiting for https://forge.indepnet.net/issues/3439
@@ -571,16 +495,12 @@ class NotificationTemplateTranslation extends CommonDBChild
             $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));
             if ($tid = $template->getTemplateByLanguage($target, $infos, $event, $options)) {
                 $data = $template->templates_by_languages[$tid];
-
-                echo "<tr><th colspan='2'>" . __('Subject') . "</th></tr>";
-                echo "<tr class='tab_bg_2 b'><td colspan='2'>" . $data['subject'] . "</td></tr>";
-
-                echo "<tr><th>" . __('Email text body') . "</th>";
-                echo "<th>" . __('Email HTML body') . "</th></tr>";
-                echo "<tr class='tab_bg_2'><td>" . nl2br($data['content_text']) . "</td>";
-                echo "<td>" . $data['content_html'] . "</td></tr>";
             }
         }
         echo "</table></div>";
+        TemplateRenderer::getInstance()->display('pages/setup/notification/translation_debug.html.twig', [
+            'template' => $template,
+            'data' => $data
+        ]);
     }
 }

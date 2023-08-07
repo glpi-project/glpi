@@ -354,7 +354,7 @@
 
 
 {% macro submit(name, label = '', value = '', options = {}) %}
-    {{ _self.button(name, value, 'submit', label, options) }}
+    {{ _self.button(name, label, 'submit', value, options) }}
 {% endmacro %}
 
 {% macro label(label, id, options = {}, class = 'form-label') %}
