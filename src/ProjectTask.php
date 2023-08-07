@@ -968,7 +968,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return void
      **/
-    public static function showFor($item, $deleted = false)
+    public static function showFor($item)
     {
         global $DB;
 
@@ -1020,9 +1020,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     ]
                 ]
             ],
-            'WHERE'  => [
-                'glpi_projecttasks.is_deleted' => $deleted
-            ], //$where
+            'WHERE'  => [], //$where
             'ORDERBY'   => [] // $sort $order";
         ];
 
@@ -1136,38 +1134,17 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $massive_action_form_id = 'mass' . str_replace('\\', '', static::class) . $rand;
             if ($canedit) {
                 Html::openMassiveActionsForm($massive_action_form_id);
-                if ($deleted) {
-                    $massiveactionparams = [
-                        'num_displayed' => min($_SESSION['glpilist_limit'], count($criteria)),
-                        'is_deleted' => $deleted,
-                        'specific_actions' => [
-                            'restore' => _x('button', 'Restore'),
-                            'purge' => _x('button', 'Delete permanently')
-                        ]
-                    ];
-                } else {
-                    $massiveactionparams = [
-                        'num_displayed' => min($_SESSION['glpilist_limit'], count($criteria)),
-                        'is_deleted' => $deleted,
-                        'specific_actions' => [
-                            'update' => _x('button', 'Update'),
-                            'clone' => _x('button', 'Clone'),
-                            'delete' => _x('button', 'Put in trashbin')
-                        ]
-                    ];
-                }
+                $massiveactionparams = [
+                    'num_displayed' => min($_SESSION['glpilist_limit'], count($criteria)),
+                    'specific_actions' => [
+                        'update' => _x('button', 'Update'),
+                        'clone' => _x('button', 'Clone'),
+                        'delete' => _x('button', 'Put in trashbin'),
+                        'restore' => _x('button', 'Restore'),
+                        'purge' => _x('button', 'Delete permanently')
+                    ]
+                ];
                 Html::showMassiveActions($massiveactionparams);
-
-                echo "<label class='form-check form-switch btn btn-sm btn-ghost-danger me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row'
-                    data-bs-toggle='tooltip' data-bs-placement='bottom' title='" . __('Show the trashbin') . "'>";
-                echo "<input type='checkbox' class='form-check-input ms-0 me-1 mt-0' role='button'
-                    name='is_deleted' value='1' autocomplete='off'
-                    onclick=\"document.location.search = document.location.search.replaceAll(/&is_deleted=(1|0)/g, '') + '&is_deleted=' + (this.checked ? 1 : 0)\"
-                    " . ($deleted ? "checked" : "") . " />";
-                echo "<span class='form-check-label mb-1 mb-sm-0'>";
-                echo "<i class='ti fa-lg ti-trash'></i>";
-                echo "</span>";
-                echo "</label>";
             }
 
             echo "<table class='tab_cadre_fixehov'>";
@@ -1194,7 +1171,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             foreach ($iterator as $data) {
                 Session::addToNavigateListItems('ProjectTask', $data['id']);
                 $rand = mt_rand();
-                echo "<tr class='tab_bg_2'>";
+                echo "<tr class='" . ($data['is_deleted'] ? "tab_bg_1_2" : "tab_bg_2") . "'>";
 
                 if ($canedit) {
                     echo "<td width='10'>";
@@ -1296,11 +1273,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         switch ($item->getType()) {
             case 'Project':
-                self::showFor($item, $_GET['is_deleted'] ?? false);
+                self::showFor($item);
                 break;
 
             case __CLASS__:
-                self::showFor($item, $_GET['is_deleted'] ?? false);
+                self::showFor($item);
                 break;
         }
         return true;
