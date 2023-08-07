@@ -1177,8 +1177,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     echo "<td width='10'>";
                     Html::showMassiveActionCheckBox(__CLASS__, $data['id']);
                     echo "</td>";
-                    echo "<td><a href='" . ProjectTask::getFormURLWithID($data['id']) . "'>"
-                        . $data["name"] . "</a></td>";
                 } else {
                     echo "<td></td>";
                 }
