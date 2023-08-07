@@ -1,0 +1,123 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{{ fields.textField('mail_server', connect_opts['address'], __('Server')) }}
+
+{% set protocols = {} %}
+{% for k, protocol in call('Toolbox::getMailServerProtocols') %}
+   {% set protocols = protocols|merge({
+      ('/' ~ k): protocol['label']
+   }) %}
+{% endfor %}
+
+{% set connection_options_fields %}
+   <div class="d-flex">
+      {% set type_value = connect_opts['type'] is not empty ? ('/' ~ connect_opts['type']) : '' %}
+      {{ fields.dropdownArrayField('server_type', type_value, protocols, '', {
+         no_label: true,
+         display_emptychoice: true,
+         field_class: 'col-5'
+      }) }}
+      {% set ssl_value = connect_opts['ssl'] ? '/ssl' : '' %}
+      {{ fields.dropdownArrayField('server_ssl', ssl_value, {
+         '/ssl': __('SSL')
+      }, '', {
+         no_label: true,
+         display_emptychoice: true,
+         field_class: 'col-5'
+      }) }}
+      {% set tls_value = connect_opts['tls'] is same as(true) ? '/tls' : (connect_opts['tls'] is same as (false) ? '/notls' : '') %}
+      {{ fields.dropdownArrayField('server_tls', tls_value, {
+         '/tls': __('TLS'),
+         '/notls': __('NO-TLS')
+      }, '', {
+         no_label: true,
+         display_emptychoice: true,
+         field_class: 'col-5'
+      }) }}
+      {% set cert_value = connect_opts['validate-cert']is same as(true) ? '/validate-cert' : (connect_opts['validate-cert'] is same as(false) ? '/novalidate-cert' : '') %}
+      {{ fields.dropdownArrayField('server_cert', cert_value, {
+         '/novalidate-cert': __('NO-VALIDATE-CERT'),
+         '/validate-cert': __('VALIDATE-CERT')
+      }, '', {
+         no_label: true,
+         display_emptychoice: true,
+         field_class: 'col-5'
+      }) }}
+      {{ fields.dropdownArrayField('server_rsh', connect_opts['norsh'] == true ? '/norsh' : '', {
+         '/norsh': __('NORSH'),
+      }, '', {
+         no_label: true,
+         display_emptychoice: true,
+         field_class: 'col-5'
+      }) }}
+      {{ fields.dropdownArrayField('server_secure', connect_opts['secure'] == true ? '/secure' : '', {
+         '/secure': __('SECURE'),
+      }, '', {
+         no_label: true,
+         display_emptychoice: true,
+         field_class: 'col-5'
+      }) }}
+      {{ fields.dropdownArrayField('server_debug', connect_opts['debug'] == true ? '/debug' : '', {
+         '/debug': __('DEBUG'),
+      }, '', {
+         no_label: true,
+         display_emptychoice: true,
+         field_class: 'col-5'
+      }) }}
+   </div>
+{% endset %}
+{{ fields.nullField() }}
+{{ fields.htmlField('', connection_options_fields, __('Connection options')) }}
+{{ fields.nullField() }}
+{{ inputs.hidden('imap_string', host) }}
+
+{% if connect_opts['type'] != 'pop' %}
+   {% set get_imap_folder_btn %}
+      <div class="btn btn-outline-secondary get-imap-folder cursor-pointer">
+         <i class="fa fa-list"></i>
+      </div>
+   {% endset %}
+   {{ fields.textField('server_mailbox', connect_opts['mailbox'], __('Incoming mail folder (optional, often INBOX)'), {
+      add_field_html: get_imap_folder_btn,
+      input_class: 'col-xxl-7 d-flex'
+   }) }}
+{% endif %}
+
+{{ fields.textField('server_port', connect_opts['port'], __('Port (optional)')) }}
+{{ fields.htmlField('', host, __('Connection string'), {
+   add_field_class: 'fw-bold'
+}) }}

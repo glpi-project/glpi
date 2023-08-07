@@ -135,7 +135,12 @@
 
          {% if canedit and params['addbuttons']|length > 0 %}
             {% for key, val in params['addbuttons'] %}
-               <button class="btn btn-outline-secondary me-2" type="{{ val.type ?? 'submit' }}" name="{{ key }}" value="1" title="{{ val.title ?? '' }}" onclick="{{ val.onclick ?? '' }}">
+                {% if val.add_attribs is not empty %}
+                    {% set extra_attribs = call('Html::parseAttributes', {options: val.add_attribs}) %}
+                {% else %}
+                    {% set extra_attribs = '' %}
+                {% endif %}
+               <button class="btn btn-outline-secondary me-2 {{ val.add_class ?? '' }}" type="{{ val.type ?? 'submit' }}" name="{{ key }}" value="1" title="{{ val.title ?? '' }}" onclick="{{ val.onclick ?? '' }}" {{ extra_attribs|raw }}>
                   {% if val is iterable %}
                      {% if val.icon is defined %}
                         <i class="{{ val.icon }}"></i>

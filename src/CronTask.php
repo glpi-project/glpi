@@ -1300,7 +1300,7 @@ class CronTask extends CommonDBTM
                         break;
 
                     case CronTaskLog::STATE_ERROR:
-                        echo "<td>" . __('Error') . "</td>";
+                        echo "<td>" . _n('Error', 'Errors', 1) . "</td>";
                         // Pass content to gettext
                         $content = __($data['content']);
                         break;

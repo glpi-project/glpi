@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
@@ -1747,158 +1748,15 @@ class Toolbox
      **/
     public static function showMailServerConfig($value)
     {
-
         if (!Config::canUpdate()) {
             return false;
         }
 
         $tab = Toolbox::parseMailServerConnectString($value);
-
-        echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
-        echo "<td><input size='30' class='form-control' type='text' name='mail_server' value=\"" . $tab['address'] . "\">";
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
-        $values = [];
-        $protocols = Toolbox::getMailServerProtocols();
-        foreach ($protocols as $key => $params) {
-            $values['/' . $key] = $params['label'];
-        }
-        $svalue = (!empty($tab['type']) ? '/' . $tab['type'] : '');
-
-        Dropdown::showFromArray(
-            'server_type',
-            $values,
-            ['value'               => $svalue,
-                'display_emptychoice' => true
-            ]
-        );
-        $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-            '/ssl' => __('SSL')
-        ];
-
-        $svalue = ($tab['ssl'] ? '/ssl' : '');
-
-        Dropdown::showFromArray(
-            'server_ssl',
-            $values,
-            ['value'               => $svalue,
-                'display_emptychoice' => true
-            ]
-        );
-
-        $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-            '/tls' => __('TLS'),
-                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-            '/notls' => __('NO-TLS'),
-        ];
-
-        $svalue = '';
-        if (($tab['tls'] === true)) {
-            $svalue = '/tls';
-        }
-        if (($tab['tls'] === false)) {
-            $svalue = '/notls';
-        }
-
-        Dropdown::showFromArray(
-            'server_tls',
-            $values,
-            ['value'               => $svalue,
-                'width'               => '14%',
-                'display_emptychoice' => true
-            ]
-        );
-
-        $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-            '/novalidate-cert' => __('NO-VALIDATE-CERT'),
-                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-            '/validate-cert' => __('VALIDATE-CERT'),
-        ];
-
-        $svalue = '';
-        if (($tab['validate-cert'] === false)) {
-            $svalue = '/novalidate-cert';
-        }
-        if (($tab['validate-cert'] === true)) {
-            $svalue = '/validate-cert';
-        }
-
-        Dropdown::showFromArray(
-            'server_cert',
-            $values,
-            ['value'               => $svalue,
-                'display_emptychoice' => true
-            ]
-        );
-
-        $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-            '/norsh' => __('NORSH')
-        ];
-
-        $svalue = ($tab['norsh'] === true ? '/norsh' : '');
-
-        Dropdown::showFromArray(
-            'server_rsh',
-            $values,
-            ['value'               => $svalue,
-                'display_emptychoice' => true
-            ]
-        );
-
-        $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-            '/secure' => __('SECURE')
-        ];
-
-        $svalue = ($tab['secure'] === true ? '/secure' : '');
-
-        Dropdown::showFromArray(
-            'server_secure',
-            $values,
-            ['value'               => $svalue,
-                'display_emptychoice' => true
-            ]
-        );
-
-        $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-            '/debug' => __('DEBUG')
-        ];
-
-        $svalue = ($tab['debug'] === true ? '/debug' : '');
-
-        Dropdown::showFromArray(
-            'server_debug',
-            $values,
-            ['value'               => $svalue,
-                'width'               => '12%',
-                'display_emptychoice' => true
-            ]
-        );
-
-        echo "<input type=hidden name=imap_string value='" . $value . "'>";
-        echo "</td></tr>\n";
-
-        if ($tab['type'] != 'pop') {
-            echo "<tr class='tab_bg_1'><td>" . __('Incoming mail folder (optional, often INBOX)') . "</td>";
-            echo "<td>";
-            echo "<div class='btn-group btn-group-sm'>";
-            echo "<input size='30' class='form-control' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
-            echo "<div class='btn btn-outline-secondary get-imap-folder'>";
-            echo "<i class='fa fa-list pointer'></i>";
-            echo "</div>";
-            echo "</div></td></tr>\n";
-        }
-
-       //TRANS: for mail connection system
-        echo "<tr class='tab_bg_1'><td>" . __('Port (optional)') . "</td>";
-        echo "<td><input size='10' class='form-control' type='text' name='server_port' value='" . $tab['port'] . "'></td></tr>\n";
-        if (empty($value)) {
-            $value = "&nbsp;";
-        }
-       //TRANS: for mail connection system
-        echo "<tr class='tab_bg_1'><td>" . __('Connection string') . "</td>";
-        echo "<td class='b'>$value</td></tr>\n";
-
+        TemplateRenderer::getInstance()->display('pages/setup/mailcollector/server_config_fields.html.twig', [
+            'connect_opts' => $tab,
+            'host' => $value
+        ]);
         return $tab['type'];
     }
 
@@ -1961,7 +1819,7 @@ class Toolbox
      *
      * @return array
      */
-    private static function getMailServerProtocols(): array
+    public static function getMailServerProtocols(): array
     {
         $protocols = [
             'imap' => [

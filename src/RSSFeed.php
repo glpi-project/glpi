@@ -465,7 +465,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'id'                 => '6',
             'table'              => $this->getTable(),
             'field'              => 'have_error',
-            'name'               => __('Error'),
+            'name'               => _n('Error', 'Errors', 1),
             'datatype'           => 'bool',
             'massiveaction'      => true
         ];
@@ -701,7 +701,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
             echo "<div class='center'>";
             printf(__('Check permissions to the directory: %s'), GLPI_RSS_DIR);
-            echo "<p class='red b'>" . __('Error') . "</p>";
+            echo "<p class='red b'>" . _n('Error', 'Errors', 1) . "</p>";
             echo "</div>";
             return false;
         }
