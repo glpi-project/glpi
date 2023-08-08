@@ -48,6 +48,9 @@
     }
 
     .search-container {
+        border: var(--tblr-card-border-width) solid var(--tblr-card-border-color);
+        border-radius: var(--tblr-border-radius);
+
         @include media-breakpoint-up(lg) {
             overflow: auto;
             padding: 0;
@@ -90,6 +93,14 @@
         }
 
         .search-card {
+            &.card {
+                // Borders are unreliable here as they will scroll out of sight
+                // due to the sticky header behavior
+                // Its better to move it to a parent item that wont scroll like
+                // .search-container
+                border: unset;
+            }
+
             @include media-breakpoint-up(lg) {
                 min-width: 100%;
                 width: fit-content;
