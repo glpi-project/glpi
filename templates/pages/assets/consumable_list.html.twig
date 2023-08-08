@@ -115,4 +115,22 @@
     {
         display: none;
     }
+
+    /* Hack to display an icon as a column header */
+    .unused-consumables th[data-searchopt-id="7"],
+    .used-consumables td[data-searchopt-id="7"]
+    {
+        font-size: 0;
+    }
+    .unused-consumables th[data-searchopt-id="7"]::before,
+    .used-consumables th[data-searchopt-id="7"]::before
+    {
+        font-family: "tabler-icons" !important;
+        content: "\f65d";
+        font-size: 0.8rem;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 2; /* Easiest way to deal with vertical align here */
+    }
+
 </style>
