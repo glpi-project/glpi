@@ -124,7 +124,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             'posthref'            => $globallinkto,
             'push_history'        => $params['push_history'] ?? true,
             'hide_controls'       => $params['hide_controls'] ?? false,
-            'hide_search_toggle'  => $params['no_search'] ?? false,
+            'hide_search_toggle'  => $params['hide_criteria'] ?? false,
             'showmassiveactions'  => ($params['showmassiveactions'] ?? $search['showmassiveactions'] ?? true)
                 && $data['display_type'] != \Search::GLOBAL_SEARCH
                 && ($itemtype == \AllAssets::getType()
