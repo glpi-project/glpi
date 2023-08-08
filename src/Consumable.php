@@ -1164,7 +1164,7 @@ class Consumable extends CommonDBChild
             'field'              => 'id',
             'name'               => $infocom_label,
             // Content will be very short so using an icon here save space
-            'htmlname'           => "<i class=\"fa fa-coins\" title=\"$infocom_label\"></i>",
+            'htmlname'           => "<i class=\"ti ti-coins\" title=\"$infocom_label\"></i>",
             'massiveaction'      => false,
             'nosearch'           => true,
             'datatype'           => 'specific',
