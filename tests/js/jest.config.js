@@ -32,17 +32,41 @@
  */
 
 module.exports = {
-    setupFilesAfterEnv: ["<rootDir>/jest-setup.mjs"],
-    setupFiles: ['<rootDir>/bootstrap.mjs'],
-    moduleDirectories: ['js/modules', 'tests/js/modules', 'node_modules'],
-    moduleNameMapper: {
-        '^/js/modules/(.*)$': '<rootDir>/../../js/modules/$1',
-    },
-    transform: {},
-    transformIgnorePatterns: [
-        // Change MODULE_NAME_HERE to your module that isn't being compiled
-        "/node_modules/(?!@tabler).+\\.js$"
-    ],
-    testEnvironment: 'jsdom',
-    slowTestThreshold: 10,
+    projects: [
+        {
+            displayName: 'units',
+            testMatch: ['<rootDir>/modules/**/*.test.js'],
+            setupFilesAfterEnv: ["<rootDir>/jest-setup.mjs"],
+            setupFiles: ['<rootDir>/bootstrap.mjs'],
+            moduleDirectories: ['js/modules', 'tests/js/modules', 'node_modules'],
+            moduleFileExtensions: ['js'],
+            moduleNameMapper: {
+                '^/js/modules/(.*)$': '<rootDir>/../../js/modules/$1',
+            },
+            transform: {},
+            transformIgnorePatterns: [
+                "/node_modules/(?!@tabler).+\\.js$"
+            ],
+            testEnvironment: 'jsdom',
+            slowTestThreshold: 10,
+        },
+        {
+            displayName: 'vue',
+            testMatch: ['<rootDir>/vue/**/*.test.js'],
+            setupFilesAfterEnv: ["<rootDir>/jest-setup.mjs"],
+            setupFiles: ['<rootDir>/bootstrap.mjs'],
+            transform: {
+                '^.+\\.vue$': '@vue/vue3-jest',
+                '^.+\\.js$': 'babel-jest'
+            },
+            transformIgnorePatterns: [
+                // Vue, @vue and @tabler are not transpiled by babel
+                "<rootDir>/../../node_modules/(?!(@vue|vue|@tabler)/)"
+            ],
+            testEnvironment: 'jsdom',
+            testEnvironmentOptions: {
+                customExportConditions: ['node', 'node-addons']
+            }
+        }
+    ]
 };

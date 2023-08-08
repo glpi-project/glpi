@@ -99,6 +99,8 @@ The present file will list all changes made to the project; according to the
 - `QueryUnion` class moved to `Glpi\DBAL` namespace.
 - `PrinterLog::getMetrics()` method has been made final.
 - `SavedSearch::showSaveButton()` replaced with `pages/tools/savedsearch/save_button.html.twig` template.
+- `js/fuzzysearch.js` replaced with `FuzzySearch/Modal` Vue component.
+- `Html::fuzzySearch` replaced with `Html::getMenuFuzzySearchList` function.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
@@ -220,6 +222,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
 - Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.
 - `CommonDBTM::$fkfield` property.
+- `getHTML` action for `ajax/fuzzysearch.php` endpoint.
 
 
 ## [10.0.10] unreleased

@@ -75,7 +75,7 @@
             }
         },
         {
-            "files": [".stylelintrc.js", ".webpack.config.js", "vite.config.ts"],
+            "files": [".stylelintrc.js", ".webpack.config.js", ".vue.webpack.config.js"],
             "env": {
                 "node": true
             }
