@@ -6842,7 +6842,8 @@ abstract class CommonITILObject extends CommonDBTM
                 // Safer to use a clean object to load our data
                 $followup = new ITILFollowup();
                 $followup->setParentItem($this);
-                $followup->getFromResultSet($followup_row);
+                $followup->fields = $followup_row;
+                $followup->post_getFromDB();
 
                 if (!$params['check_view_rights'] || $followup->canViewItem()) {
                     $followup_row['can_edit'] = $followup->canUpdateItem();
@@ -6871,7 +6872,8 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($tasks as $tasks_id => $task_row) {
                 // Safer to use a clean object to load our data
                 $task = new $taskClass();
-                $task->getFromResultSet($task_row);
+                $task->fields = $task_row;
+                $task->post_getFromDB();
 
                 if (!$params['check_view_rights'] || $task->canViewItem()) {
                     $task_row['can_edit'] = $task->canUpdateItem();
@@ -6901,7 +6903,8 @@ abstract class CommonITILObject extends CommonDBTM
             // Safer to use a clean object to load our data
             $solution = new ITILSolution();
             $solution->setParentItem($this);
-            $solution->getFromResultSet($solution_item);
+            $solution->fields = $solution_item;
+            $solution->post_getFromDB();
 
             $timeline["ITILSolution_" . $solution_item['id'] ] = [
                 'type'     => ITILSolution::class,
@@ -6939,7 +6942,8 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($validations as $validations_id => $validation_row) {
                 // Safer to use a clean object to load our data
                 $validation = new $validation_class();
-                $validation->getFromResultSet($validation_row);
+                $validation->fields = $validation_row;
+                $validation->post_getFromDB();
 
                 $canedit = $valitation_obj->can($validations_id, UPDATE);
                 $cananswer = ($validation_row['users_id_validate'] === Session::getLoginUserID() &&
@@ -7062,7 +7066,8 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($log_items as $log_row) {
                 // Safer to use a clean object to load our data
                 $log = new Log();
-                $log->getFromResultSet($log_row);
+                $log->fields = $log_row;
+                $log->post_getFromDB();
 
                 $content = $log_row['change'];
                 if (strlen($log_row['field']) > 0) {
