@@ -41,7 +41,16 @@
     background-color: $danger;
 }
 
+// Prevent search results from filling all available vertical space
+// Useful when displaying multipler search results on the same page
+.search-no-forced-height {
+    .search-container {
+        height: unset !important;
+    }
+}
+
 .search_page {
+
     @include media-breakpoint-up(lg) {
         display: flex;
         align-items: stretch;
@@ -53,6 +62,7 @@
 
         @include media-breakpoint-up(lg) {
             overflow: auto;
+            height: calc(100vh - #{$contextbar-height} - #{$content-margin});
             padding: 0;
             margin-left: calc(var(--tblr-gutter-x) / 2);
             margin-right: calc(var(--tblr-gutter-x) / 2);
