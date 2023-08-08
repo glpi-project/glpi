@@ -44,10 +44,10 @@ if (isset($_GET["id"])) {
     $printer = Printer::getById($_GET["id"]);
 
     if ($printer) {
-        $interval = empty($_GET['interval']) ? 'P1Y' : $_GET['interval'];
+        $interval = $_GET['interval'] ?? 'P1Y';
         $start = empty($_GET['start']) ? null : new DateTime($_GET['start']);
         $end = empty($_GET['end']) ? new DateTime() : new DateTime($_GET['end']);
-        $format = empty($_GET['format']) ? 'dynamic' : $_GET['format'];
+        $format = $_GET['format'] ?? 'dynamic';
 
         CsvResponse::output(
             new PrinterLogCsvExport(

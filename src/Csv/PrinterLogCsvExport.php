@@ -63,7 +63,9 @@ class PrinterLogCsvExport implements ExportToCsvInterface
 
     public function getFileName(): string
     {
-        return "{$this->printer->fields['name']}.csv";
+        return !empty($this->printer->fields['name'])
+            ? "{$this->printer->fields['name']}.csv"
+            : "printer_{$this->printer->getID()}.csv";
     }
 
     public function getFileHeader(): array

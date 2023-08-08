@@ -272,7 +272,7 @@ class PrinterLog extends CommonDBChild
             'end_date'   => $_GET['date_end'] ?? '',
             'interval'   => $_GET['date_interval'] ?? 'P1Y',
             'format'     => $format,
-            'export_url' => 'printerlogcsv.php?' . Toolbox::append_params([
+            'export_url' => '/front/printerlogcsv.php?' . Toolbox::append_params([
                 'id' => $printer->getID(),
                 'start' => $_GET['date_start'] ?? '',
                 'end'   => $_GET['date_end'] ?? '',
