@@ -136,6 +136,7 @@ class NotificationMailing implements NotificationInterface
 
     public function sendNotification($options = [])
     {
+        global $CFG_GLPI;
 
         $data = [];
         $data['itemtype']                             = $options['_itemtype'];
@@ -150,7 +151,7 @@ class NotificationMailing implements NotificationInterface
         $data['sendername']                           = $options['fromname'];
 
         $data['event'] = $options['event'] ?? null; // `event` has been added in GLPI 10.0.7
-        $data['itemtype_trigger'] = $options['itemtype_trigger'] ?? '';
+        $data['itemtype_trigger'] = $options['itemtype_trigger'] ?? null;
         $data['items_id_trigger'] = $options['items_id_trigger'] ?? 0;
 
         if (isset($options['replyto']) && $options['replyto']) {
@@ -180,7 +181,7 @@ class NotificationMailing implements NotificationInterface
 
         $data['mode'] = Notification_NotificationTemplate::MODE_MAIL;
 
-        $data['attach_documents'] = $options['attach_documents'];
+        $data['attach_documents'] = $options['attach_documents'] ?? $CFG_GLPI['attach_ticket_documents_to_mail'];
 
         $queue = new QueuedNotification();
 
