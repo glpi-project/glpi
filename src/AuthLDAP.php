@@ -3090,12 +3090,6 @@ class AuthLDAP extends CommonDBTM
             LDAP_OPT_DEREF            => $deref_options,
             LDAP_OPT_NETWORK_TIMEOUT  => $timeout
         ];
-        if (!empty($tls_certfile) && file_exists($tls_certfile)) {
-            $ldap_options[LDAP_OPT_X_TLS_CERTFILE] = $tls_certfile;
-        }
-        if (!empty($tls_keyfile) && file_exists($tls_keyfile)) {
-            $ldap_options[LDAP_OPT_X_TLS_KEYFILE] = $tls_keyfile;
-        }
 
         foreach ($ldap_options as $option => $value) {
             if (!@ldap_set_option($ds, $option, $value)) {
@@ -3111,6 +3105,20 @@ class AuthLDAP extends CommonDBTM
                     E_USER_WARNING
                 );
             }
+        }
+        if (
+            !empty($tls_certfile)
+            && file_exists($tls_certfile)
+            && !@ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile)
+        ) {
+            trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+        }
+        if (
+            !empty($tls_keyfile)
+            && file_exists($tls_keyfile)
+            && !@ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile)
+        ) {
+            trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
         }
 
         if ($use_tls) {
