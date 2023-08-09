@@ -117,7 +117,7 @@ trait Clonable
             $override_input[$classname::getItemField($this->getType())] = $this->getID();
 
            // Force entity / recursivity based on cloned parent, with fallback on session values
-            if ($classname::$disableAutoEntityForwarding !== false) {
+            if ($classname::$disableAutoEntityForwarding !== true) {
                 $override_input['entities_id'] = $this->isEntityAssign() ? $this->getEntityID() : Session::getActiveEntity();
                 $override_input['is_recursive'] = $this->maybeRecursive() ? $this->isRecursive() : Session::getIsActiveEntityRecursive();
             }
