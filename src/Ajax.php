@@ -381,7 +381,7 @@ HTML;
          var loadTabContents = function (tablink, force_reload = false, update_current_tab = true) {
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
-            var index = tablink.closest('.nav-item').index();
+            const href_url_params = new URLSearchParams(url);
 
             const updateCurrentTab = () => {
                 $.get(
@@ -389,7 +389,7 @@ HTML;
                   {
                      itemtype: $json_type,
                      id: '$ID',
-                     tab: index,
+                     tab_key: href_url_params.get('_glpi_tab'),
                      withtemplate: $withtemplate
                   }
                );

@@ -6326,43 +6326,45 @@ HTML
             ],
         ];
 
-        // sessionless call with private items (used for notifications)
-        yield [
-            'login'              => null,
-            'pass'               => null,
-            'ticket_id'          => $ticket->getID(),
-            'options'            => [
-                'check_view_rights'  => false,
-                'hide_private_items' => false,
-            ],
-            'expected_followups' => [
-                'private followup of normal user',
-                'private followup of tech user',
-                'public followup',
-            ],
-            'expected_tasks'     => [
-                'private task of normal user',
-                'private task of tech user',
-                'public task',
-            ],
-        ];
+        foreach ([null => null, 'post-only' => 'postonly', 'tech' => 'tech'] as $login => $pass) {
+            // usage of `check_view_rights` should produce the same result whoever is logged-in (used for notifications)
+            yield [
+                'login'              => $login,
+                'pass'               => $pass,
+                'ticket_id'          => $ticket->getID(),
+                'options'            => [
+                    'check_view_rights'  => false,
+                    'hide_private_items' => false,
+                ],
+                'expected_followups' => [
+                    'private followup of normal user',
+                    'private followup of tech user',
+                    'public followup',
+                ],
+                'expected_tasks'     => [
+                    'private task of normal user',
+                    'private task of tech user',
+                    'public task',
+                ],
+            ];
 
-        // sessionless call without private items (used for notifications)
-        yield [
-            'login'              => null,
-            'pass'               => null,
-            'ticket_id'          => $ticket->getID(),
-            'options'            => [
-                'check_view_rights'  => false,
-                'hide_private_items' => true,
-            ],
-            'expected_followups' => [
-                'public followup',
-            ],
-            'expected_tasks'     => [
-                'public task',
-            ],
-        ];
+            // usage of `check_view_rights` should produce the same result whoever is logged-in (used for notifications)
+            yield [
+                'login'              => $login,
+                'pass'               => $pass,
+                'ticket_id'          => $ticket->getID(),
+                'options'            => [
+                    'check_view_rights'  => false,
+                    'hide_private_items' => true,
+                ],
+                'expected_followups' => [
+                    'public followup',
+                ],
+                'expected_tasks'     => [
+                    'public task',
+                ],
+            ];
+        }
     }
 
     /**
@@ -6376,7 +6378,7 @@ HTML
         array $expected_followups,
         array $expected_tasks
     ): void {
-        if ($login !== null) {
+        if ($pass !== null) {
             $this->login($login, $pass);
         } else {
             $this->resetSession();

@@ -493,7 +493,7 @@ class NetworkPort extends InventoryAsset
                         $reference
                     );
                     if (!$this->vlan_stmt = $DB->prepare($insert_query)) {
-                           trigger_error("Error preparing query $insert_query", E_USER_ERROR);
+                        throw new \RuntimeException(sprintf('Error preparing query `%s`.', $insert_query));
                     }
                 }
 
@@ -523,7 +523,7 @@ class NetworkPort extends InventoryAsset
                     $reference
                 );
                 if (!$this->pvlan_stmt = $DB->prepare($insert_query)) {
-                     trigger_error("Error preparing query $insert_query", E_USER_ERROR);
+                    throw new \RuntimeException(sprintf('Error preparing query `%s`.', $insert_query));
                 }
             }
 

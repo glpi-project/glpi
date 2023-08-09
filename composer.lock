@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "28b20a1f84b87dfdf10980352d25c1dc",
+    "content-hash": "ab72cb36795e6e73bea30ac624afa4a9",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -6491,16 +6491,16 @@
     "packages-dev": [
         {
             "name": "atoum/atoum",
-            "version": "4.1",
+            "version": "4.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "e866f3d4ad683c35757cd73fc6da3e3d5e563667"
+                "reference": "fd9a339de252ea774ab755b3fd25dd19be2dbefb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/e866f3d4ad683c35757cd73fc6da3e3d5e563667",
-                "reference": "e866f3d4ad683c35757cd73fc6da3e3d5e563667",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/fd9a339de252ea774ab755b3fd25dd19be2dbefb",
+                "reference": "fd9a339de252ea774ab755b3fd25dd19be2dbefb",
                 "shasum": ""
             },
             "require": {
@@ -6508,7 +6508,7 @@
                 "ext-json": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
-                "php": "^7.4 || ^8.0"
+                "php": "^8.0"
             },
             "replace": {
                 "mageekguy/atoum": "*"
@@ -6572,9 +6572,9 @@
             ],
             "support": {
                 "issues": "https://github.com/atoum/atoum/issues",
-                "source": "https://github.com/atoum/atoum/tree/4.1"
+                "source": "https://github.com/atoum/atoum/tree/4.2.0"
             },
-            "time": "2022-11-20T20:18:31+00:00"
+            "time": "2023-07-30T12:52:23+00:00"
         },
         {
             "name": "friendsoftwig/twigcs",
@@ -6973,16 +6973,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.22",
+            "version": "1.10.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "97d694dfd4ceb57bcce4e3b38548f13ea62e4287"
+                "reference": "5d660cbb7e1b89253a47147ae44044f49832351f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/97d694dfd4ceb57bcce4e3b38548f13ea62e4287",
-                "reference": "97d694dfd4ceb57bcce4e3b38548f13ea62e4287",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/5d660cbb7e1b89253a47147ae44044f49832351f",
+                "reference": "5d660cbb7e1b89253a47147ae44044f49832351f",
                 "shasum": ""
             },
             "require": {
@@ -7031,7 +7031,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-30T20:04:11+00:00"
+            "time": "2023-07-19T12:44:37+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",

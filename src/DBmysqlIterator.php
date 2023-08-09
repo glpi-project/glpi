@@ -252,7 +252,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     $this->sql .= "" . DBmysql::quoteName($field);
                 } else {
                     if ($distinct) {
-                        trigger_error("With COUNT and DISTINCT, you must specify exactly one field, or use 'COUNT DISTINCT'", E_USER_ERROR);
+                        throw new \LogicException("With COUNT and DISTINCT, you must specify exactly one field, or use 'COUNT DISTINCT'.");
                     }
                     $this->sql .= "*";
                 }
@@ -287,7 +287,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     $table = array_map([DBmysql::class, 'quoteName'], $table);
                     $this->sql .= ' FROM ' . implode(", ", $table);
                 } else {
-                    trigger_error("Missing table name", E_USER_ERROR);
+                    throw new \LogicException("Missing table name.");
                 }
             } else if ($table) {
                 if ($table instanceof \AbstractQuery) {
@@ -304,7 +304,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 * TODO filter with if ($where || !empty($crit)) {
                 * but not usefull for now, as we CANNOT write something like "SELECT NOW()"
                 */
-                trigger_error("Missing table name", E_USER_ERROR);
+                throw new \LogicException("Missing table name.");
             }
 
             // JOIN
@@ -331,7 +331,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     $groupby = array_map([DBmysql::class, 'quoteName'], $groupby);
                     $this->sql .= ' GROUP BY ' . implode(", ", $groupby);
                 } else {
-                    trigger_error("Missing group by field", E_USER_ERROR);
+                    throw new \LogicException("Missing group by field.");
                 }
             } else if ($groupby) {
                 $groupby = DBmysql::quoteName($groupby);
@@ -387,7 +387,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
             } else if ($o instanceof QueryExpression) {
                 $cleanorderby[] = $o->getValue();
             } else {
-                trigger_error("Invalid order clause", E_USER_ERROR);
+                throw new \LogicException("Invalid order clause.");
             }
         }
 
@@ -664,7 +664,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         $query = '';
         foreach ($joinarray as $jointype => $jointables) {
             if (!in_array($jointype, ['JOIN', 'LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'])) {
-                throw new \RuntimeException('BAD JOIN');
+                throw new \LogicException(sprintf('Invalid JOIN type `%s`.', $jointype));
             }
 
             if ($jointype == 'JOIN') {
@@ -672,7 +672,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
 
             if (!is_array($jointables)) {
-                trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
+                throw new \LogicException("BAD JOIN, value must be [ table => criteria ].");
                 continue;
             }
 
@@ -688,7 +688,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     $jointablekey = $jointablecrit['TABLE'];
                     unset($jointablecrit['TABLE']);
                 } else if (is_numeric($jointablekey) || $jointablekey == 'FKEY' || $jointablekey == 'ON') {
-                    throw new \RuntimeException('BAD JOIN');
+                    throw new \LogicException('BAD JOIN');
                 }
 
                 if ($jointablekey instanceof QuerySubQuery) {
@@ -738,7 +738,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         } else if ($values instanceof QueryExpression) {
             return $values->getValue();
         }
-        trigger_error("BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]]", E_USER_ERROR);
+        throw new \LogicException('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]].');
     }
 
     /**

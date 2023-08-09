@@ -594,7 +594,7 @@ class Rule extends CommonDBTM
             $parent = get_parent_class($parent);
         } while ($parent !== 'CommonDBTM' && $parent !== false && !class_exists($collection_class));
         if ($collection_class === null) {
-            trigger_error('Unable to find collection class for ' . static::getType(), E_USER_ERROR);
+            throw new \LogicException(sprintf('Unable to find collection class for `%s`.', static::getType()));
         }
         return $collection_class;
     }

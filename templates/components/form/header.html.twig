@@ -61,7 +61,9 @@
 
 {% if open_form and item.canEdit(item.fields['id']) %}
 <form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
-   <input type="hidden" name="entities_id" value="{{ entity_id }}" />
+   {% if item.isField("entities_id") %}
+       <input type="hidden" name="entities_id" value="{{ entity_id }}" />
+   {% endif %}
    {% if _request['_in_modal'] is defined and _request['_in_modal'] == "1" %}
       <input type="hidden" name="_in_modal" value="1"/>
    {% endif %}

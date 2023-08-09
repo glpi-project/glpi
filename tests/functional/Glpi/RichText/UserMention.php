@@ -164,6 +164,7 @@ HTML
                     // Created content => no notification to private users
                         'add_content'            => <<<HTML
                      <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
+                     <br>
                      <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
 HTML
                   ,

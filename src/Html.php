@@ -873,7 +873,7 @@ class Html
                     $outer_style .= 'border: 1px solid ' . $params['colors']['border'] . ';';
                 }
             }
-            $inner_style = 'width: 0%;';
+            $inner_style = 'width: 0%; overflow: visible;';
             $inner_class = 'progress-bar';
             if (!$apply_custom_colors) {
                 $inner_class .= ' progress-bar-striped bg-info';

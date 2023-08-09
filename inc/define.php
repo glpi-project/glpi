@@ -49,7 +49,7 @@ if (!defined('GLPI_MARKETPLACE_PRERELEASES')) {
 }
 
 define('GLPI_MIN_PHP', '8.1'); // Must also be changed in top of index.php
-define('GLPI_MAX_PHP', '8.2'); // Must also be changed in top of index.php
+define('GLPI_MAX_PHP', '8.3'); // Must also be changed in top of index.php
 define('GLPI_YEAR', '2023');
 
 //Define a global recipient address for email notifications

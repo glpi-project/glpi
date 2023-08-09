@@ -531,7 +531,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
             $classname = 'Notification' . ucfirst($mode) . 'Setting';
         } else {
             if ($extratype != '') {
-                trigger_error("Unknown type $extratype", E_USER_ERROR);
+                throw new \LogicException(sprintf('Unknown type `%s`.', $extratype));
             }
             $classname = 'Notification' . ucfirst($mode);
         }

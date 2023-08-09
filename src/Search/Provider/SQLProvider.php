@@ -876,7 +876,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case 'Config':
-                $availableContexts = ['core'] + \Plugin::getPlugins();
+                $availableContexts = array_merge(['core', 'inventory'], \Plugin::getPlugins());
                 $criteria = ["`context`" => $availableContexts];
                 break;
 

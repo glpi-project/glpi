@@ -2095,7 +2095,7 @@ class DBmysql
     public function executeStatement(mysqli_stmt $stmt): void
     {
         if (!$stmt->execute()) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 sprintf(
                     'Error executing statement "%s": %s',
                     $this->current_query,

@@ -3506,6 +3506,8 @@ JAVASCRIPT;
                                                       _x('button', 'Change the authentication method');
             $actions[$prefix . 'force_user_ldap_update'] = "<i class='fas fa-sync'></i>" .
                                                       __('Force synchronization');
+            $actions[$prefix . 'clean_ldap_fields'] = "<i class='fas fa-broom'></i>" .
+                                                    __('Clean LDAP fields and force synchronisation');
             $actions[$prefix . 'disable_2fa']           = "<i class='fas fa-user-lock'></i>" .
                                                       __('Disable 2FA');
         }
@@ -3549,13 +3551,14 @@ JAVASCRIPT;
 
         switch ($ma->getAction()) {
             case 'force_user_ldap_update':
+            case 'clean_ldap_fields':
                 foreach ($ids as $id) {
                     if ($item->can($id, UPDATE)) {
                         if (
                             ($item->fields["authtype"] == Auth::LDAP)
                             || ($item->fields["authtype"] == Auth::EXTERNAL)
                         ) {
-                            if (AuthLDAP::forceOneUserSynchronization($item, false, false)) {
+                            if (AuthLDAP::forceOneUserSynchronization($item, ($ma->getAction() == 'clean_ldap_fields'), false)) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -5008,12 +5011,12 @@ JAVASCRIPT;
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_groups_users.groups_id',
+                'glpi_groups.id',
                 'glpi_groups.name'
             ],
-            'FROM'      => 'glpi_groups_users',
+            'FROM'      => 'glpi_groups',
             'LEFT JOIN' => [
-                'glpi_groups' => [
+                'glpi_groups_users' => [
                     'FKEY' => [
                         'glpi_groups_users'  => 'groups_id',
                         'glpi_groups'        => 'id'
@@ -5026,8 +5029,8 @@ JAVASCRIPT;
 
         $group_where = [];
         foreach ($iterator as $data) {
-            $group_where[$field_group][] = $data['groups_id'];
-            $groups[$data["groups_id"]] = $data["name"];
+            $group_where[$field_group][] = $data['id'];
+            $groups[$data["id"]] = $data["name"];
         }
 
         $entries = [];

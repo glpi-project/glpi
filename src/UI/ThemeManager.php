@@ -196,7 +196,7 @@ class ThemeManager
         }
         // If the theme is still null, trigger an error
         if ($theme === null) {
-            trigger_error('Theme "' . $current . '" not found', E_USER_ERROR);
+            throw new \RuntimeException('Theme "' . $current . '" not found');
         }
         return $theme;
     }

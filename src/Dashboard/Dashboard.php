@@ -193,7 +193,7 @@ class Dashboard extends \CommonDBTM
             return true;
         }
 
-        return self::canDelete();
+        return self::canPurge();
     }
 
 

@@ -2436,7 +2436,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 ],
                 'is_recursive' => [
                     'type'   => 'hidden',
-                    'value'  => 0
+                    'value'  => $ID > 0 ? $project->fields["is_recursive"] : 0
                 ]
             ],
             'team_itemtypes'  => Project::getTeamItemtypes(),
@@ -2482,7 +2482,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 ],
                 'is_recursive' => [
                     'type'   => 'hidden',
-                    'value'  => 0
+                    'value'  => $ID > 0 ? $project->fields["is_recursive"] : 0
                 ]
             ],
             'team_itemtypes'  => ProjectTask::getTeamItemtypes(),

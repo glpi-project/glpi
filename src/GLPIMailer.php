@@ -459,10 +459,7 @@ class GLPIMailer
                 // Trigger fatal error to block execution.
                 // As we cannot know which return value type is expected, it is safer to to ensure
                 // that caller will not continue execution using a void return value.
-                trigger_error(
-                    sprintf('Call to undefined method %s::%s()', __CLASS__, $method),
-                    E_USER_ERROR
-                );
+                throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', __CLASS__, $method));
                 break;
         }
 
@@ -474,9 +471,6 @@ class GLPIMailer
         // Trigger fatal error to block execution.
         // As we cannot know which return value type is expected, it is safer to to ensure
         // that caller will not continue execution using a void return value.
-        trigger_error(
-            sprintf('Call to undefined method %s::%s()', __CLASS__, $method),
-            E_USER_ERROR
-        );
+        throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', __CLASS__, $method));
     }
 }

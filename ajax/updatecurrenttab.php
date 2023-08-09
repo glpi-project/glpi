@@ -40,14 +40,6 @@ if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
 }
 
 // Manage tabs
-if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
-    $tabs = Toolbox::getAvailablesTabs($_GET['itemtype'], $_GET['id'] ?? null);
-    $current      = 0;
-    foreach (array_keys($tabs) as $key) {
-        if ($current == $_GET['tab']) {
-            Session::setActiveTab($_GET['itemtype'], $key);
-            break;
-        }
-        $current++;
-    }
+if (isset($_GET['itemtype']) && isset($_GET['tab_key'])) {
+    Session::setActiveTab($_GET['itemtype'], $_GET['tab_key']);
 }

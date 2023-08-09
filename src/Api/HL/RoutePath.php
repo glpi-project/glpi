@@ -152,7 +152,11 @@ final class RoutePath
                 }
                 $this->route = $route_attributes[0]->newInstance();
             } catch (\Throwable $e) {
-                trigger_error("Unable to hydrate RoutePath {$this->key}: {$e->getMessage()}", E_USER_ERROR);
+                throw new \RuntimeException(
+                    "Unable to hydrate RoutePath {$this->key}: {$e->getMessage()}",
+                    0,
+                    $e
+                );
             }
             $this->mergeControllerRouteData();
             $this->compilePath();
