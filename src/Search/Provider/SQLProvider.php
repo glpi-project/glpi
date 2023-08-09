@@ -42,6 +42,7 @@ use DBmysqlIterator;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\RichText\RichText;
+use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Group;
@@ -1006,6 +1007,15 @@ final class SQLProvider implements SearchProviderInterface
         $table     = $opt["table"];
         $field     = $opt["field"];
 
+        if (
+            $searchtype == 'contains'
+            && !preg_match(QueryBuilder::getInputValidationPattern($opt['datatype'] ?? '')['pattern'], $val)
+        ) {
+            return [ // Invalid search
+                '1=0'
+            ];
+        }
+
         $inittable = $table;
         $addtable  = '';
         $is_fkey_composite_on_self = getTableNameForForeignKeyField($opt["linkfield"]) === $table
@@ -1107,7 +1117,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case "equals":
-                $SEARCH = [$nott ? "<>>" : "=", $val];
+                $SEARCH = [$nott ? "<>" : "=", $val];
                 break;
 
             case "notequals":

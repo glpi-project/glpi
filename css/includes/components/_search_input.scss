@@ -97,3 +97,17 @@ div.search-input {
         }
     }
 }
+
+input:invalid {
+    background-color: $warning !important;
+}
+
+input + span.info {
+    display: none;
+}
+
+input:invalid + span.info {
+    display: inline;
+    color: $warning;
+    font-size: 0.8rem;
+}

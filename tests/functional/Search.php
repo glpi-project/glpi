@@ -364,12 +364,12 @@ class Search extends DbTestCase
                     'criteria'   => [
                         [
                             'link'       => 'AND',
-                            'field'      => 2,
+                            'field'      => 5, //serial
                             'searchtype' => 'contains',
                             'value'      => 'test',
                         ], [
                             'link'       => 'OR',
-                            'field'      => 2,
+                            'field'      => 5, //serial
                             'searchtype' => 'contains',
                             'value'      => 'test2',
                         ], [
@@ -430,7 +430,7 @@ class Search extends DbTestCase
                     " AND `glpi_computers`.`entities_id` IN (0))")
          ->contains("`glpi_computers`.`name` LIKE '%test%'")
          ->contains("AND `glpi_softwares`.`id` = '10784'")
-         ->contains("OR (`glpi_computers`.`id` LIKE '%test2%'")
+         ->contains("OR (`glpi_computers`.`serial` LIKE '%test2%'")
          ->contains("AND (`glpi_locations`.`id` = '11')")
          ->contains("(`glpi_users`.`id` = '2')")
          ->contains("OR (`glpi_users`.`id` = '3')")
@@ -471,7 +471,7 @@ class Search extends DbTestCase
          ->matches("/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/");
+         ->matches("/OR\s*\(1=0\s*\)/")->notmatches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/");
     }
 
     public function testSearchOnRelationTable()
@@ -1902,16 +1902,6 @@ class Search extends DbTestCase
             [
                 'link' => ' AND ',
                 'nott' => 0,
-                'itemtype' => \Monitor::class,
-                'ID' => 11, // Search ID 11 (size field)
-                'searchtype' => 'contains',
-                'val' => '70.5%',
-                'meta' => false,
-                'expected' => "AND (`glpi_monitors`.`size` LIKE '%70.5%')",
-            ],
-            [
-                'link' => ' AND ',
-                'nott' => 0,
                 'itemtype' => \Computer::class,
                 'ID' => 121, // Search ID 121 (date_creation field)
                 'searchtype' => 'contains',
@@ -2522,8 +2512,8 @@ class Search extends DbTestCase
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 4, // port
             'value'             => 'test',
-            'expected_and'      => "(`glpi_authldaps`.`port` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_authldaps`.`port` NOT LIKE '%test%' OR `glpi_authldaps`.`port` IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \AuthLDAP::class,
@@ -2538,8 +2528,8 @@ class Search extends DbTestCase
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 32, // timeout
             'value'             => 'test',
-            'expected_and'      => "(`glpi_authldaps`.`timeout` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_authldaps`.`timeout` NOT LIKE '%test%' OR `glpi_authldaps`.`timeout` IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \AuthLDAP::class,
@@ -2570,8 +2560,8 @@ class Search extends DbTestCase
             'itemtype'          => \Budget::class,
             'search_option'     => 7, // value
             'value'             => 'test',
-            'expected_and'      => "(`glpi_budgets`.`value` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_budgets`.`value` NOT LIKE '%test%' OR `glpi_budgets`.`value` IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \Budget::class,
@@ -2657,8 +2647,8 @@ class Search extends DbTestCase
             'itemtype'          => \CronTask::class,
             'search_option'     => 6, // frequency
             'value'             => 'test',
-            'expected_and'      => "(`glpi_crontasks`.`frequency` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_crontasks`.`frequency` NOT LIKE '%test%' OR `glpi_crontasks`.`frequency` IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \CronTask::class,
@@ -2689,8 +2679,8 @@ class Search extends DbTestCase
             'itemtype'          => \Computer::class,
             'search_option'     => 9, // last_inventory_update
             'value'             => 'test',
-            'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) LIKE '%test%')",
-            'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) NOT LIKE '%test%' OR CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \Computer::class,
@@ -2721,8 +2711,8 @@ class Search extends DbTestCase
             'itemtype'          => \Budget::class,
             'search_option'     => 5, // begin_date
             'value'             => 'test',
-            'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) LIKE '%test%')",
-            'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) NOT LIKE '%test%' OR CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \Budget::class,
@@ -2737,8 +2727,8 @@ class Search extends DbTestCase
             'itemtype'          => \Contract::class,
             'search_option'     => 20, // end_date
             'value'             => 'test',
-            'expected_and'      => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) LIKE '%test%')",
-            'expected_and_not'  => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) NOT LIKE '%test%' OR DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         if ($is_mysql_5_7) {
             // log for both AND and AND NOT cases
@@ -2797,8 +2787,8 @@ class Search extends DbTestCase
             'itemtype'          => \Cable::class,
             'search_option'     => 15, // color
             'value'             => 'test',
-            'expected_and'      => "(`glpi_cables`.`color` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '%test%' OR `glpi_cables`.`color` IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \Cable::class,
@@ -3438,8 +3428,8 @@ class Search extends DbTestCase
                     'itemtype'          => \Cable::class,
                     'search_option'     => 15, // color
                     'value'             => $searched_value,
-                    'expected_and'      => "(`glpi_cables`.`color` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '%{$searched_value}%' OR `glpi_cables`.`color` IS NULL)",
+                    'expected_and'      => "(1=0)", // invalid pattern
+                    'expected_and_not'  => "(1=0)", // invalid pattern
                 ];
 
                 // datatype=language
