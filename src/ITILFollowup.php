@@ -1039,10 +1039,6 @@ class ITILFollowup extends CommonDBChild
      */
     final public function setParentItem(CommonITILObject $parent): void
     {
-        if (static::$itemtype !== 'itemtype' && !is_a($parent, static::$itemtype)) {
-            throw new LogicException("Invalid parent type");
-        }
-
         $this->item = $parent;
     }
 }
