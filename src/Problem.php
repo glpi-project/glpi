@@ -992,31 +992,23 @@ class Problem extends CommonITILObject
                         ];
 
                         $requesters = [];
-                        if (
-                            isset($problem->users[CommonITILActor::REQUESTER])
-                            && count($problem->users[CommonITILActor::REQUESTER])
-                        ) {
-                            foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
-                                if ($d["users_id"] > 0) {
-                                    $userdata = getUserName($d["users_id"], 2);
-                                    $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
-                                        $userdata['name'];
-                                    $requesters[] = $name;
-                                } else {
-                                    $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
-                                        $d['alternative_email'];
-                                }
+
+                        foreach ($problem->getUsers(CommonITILActor::REQUESTER) as $d) {
+                            if ($d["users_id"] > 0) {
+                                $userdata = getUserName($d["users_id"], 2);
+                                $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
+                                    $userdata['name'];
+                                $requesters[] = $name;
+                            } else {
+                                $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
+                                    $d['alternative_email'];
                             }
                         }
 
-                        if (
-                            isset($problem->groups[CommonITILActor::REQUESTER])
-                            && count($problem->groups[CommonITILActor::REQUESTER])
-                        ) {
-                            foreach ($problem->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
-                                    Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
-                            }
+
+                        foreach ($problem->getGroups(CommonITILActor::REQUESTER) as $d) {
+                            $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
+                                Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                         }
                         $row['values'][] = implode('<br>', $requesters);
 
@@ -1217,42 +1209,32 @@ class Problem extends CommonITILObject
          </td>";
             echo "<td class='center'>";
 
-            if (
-                isset($problem->users[CommonITILActor::REQUESTER])
-                && count($problem->users[CommonITILActor::REQUESTER])
-            ) {
-                foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
-                    if ($d["users_id"] > 0) {
-                         $userdata = getUserName($d["users_id"], 2);
-                         $name     = "<span class='b'>" . $userdata['name'] . "</span>";
-                        if ($viewusers) {
-                            $name = sprintf(
-                                __('%1$s %2$s'),
-                                $name,
-                                Html::showToolTip(
-                                    $userdata["comment"],
-                                    ['link'    => $userdata["link"],
-                                        'display' => false
-                                    ]
-                                )
-                            );
-                        }
-                         echo $name;
-                    } else {
-                        echo $d['alternative_email'] . "&nbsp;";
+            foreach ($problem->getUsers(CommonITILActor::REQUESTER) as $d) {
+                if ($d["users_id"] > 0) {
+                        $userdata = getUserName($d["users_id"], 2);
+                        $name     = "<span class='b'>" . $userdata['name'] . "</span>";
+                    if ($viewusers) {
+                        $name = sprintf(
+                            __('%1$s %2$s'),
+                            $name,
+                            Html::showToolTip(
+                                $userdata["comment"],
+                                ['link'    => $userdata["link"],
+                                    'display' => false
+                                ]
+                            )
+                        );
                     }
-                    echo "<br>";
+                        echo $name;
+                } else {
+                    echo $d['alternative_email'] . "&nbsp;";
                 }
+                echo "<br>";
             }
 
-            if (
-                isset($problem->groups[CommonITILActor::REQUESTER])
-                && count($problem->groups[CommonITILActor::REQUESTER])
-            ) {
-                foreach ($problem->groups[CommonITILActor::REQUESTER] as $d) {
-                    echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
-                    echo "<br>";
-                }
+            foreach ($problem->getGroups(CommonITILActor::REQUESTER) as $d) {
+                echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                echo "<br>";
             }
 
             echo "</td>";
