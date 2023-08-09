@@ -282,7 +282,7 @@ class Inventory
             unset($all_props['versionclient'], $all_props['versionprovider']); //already handled in extractMetadata
 
             $empty_props = [];
-            if (!property_exists($this->raw_data, 'partial') || !$this->raw_data->partial) {
+            if ($this->raw_data->itemtype == 'Computer' && (!property_exists($this->raw_data, 'partial') || !$this->raw_data->partial)) {
                 //if inventory is not partial, we consider following properties are empty if not present; so they'll be removed
                 $empty_props = [
                     'virtualmachines'
