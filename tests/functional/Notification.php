@@ -169,6 +169,7 @@ class Notification extends DbTestCase
 
         $update_ticket_notif   = getItemByTypeName('Notification', 'Update Ticket');
         $update_followup_notif = getItemByTypeName('Notification', 'Update Followup');
+        $update_task_notif     = getItemByTypeName('Notification', 'Update Task');
 
         // Create a ticket and attach documents to it
         $filename = $this->createUploadedImage($prefix = uniqid('', true));
@@ -192,11 +193,11 @@ HTML,
         ]);
         $this->integer($ticket_id)->isGreaterThan(0);
 
-        $document_1 = $this->createTxtDocument();
+        $ticket_doc = $this->createTxtDocument();
         $this->createItem(
             \Document_Item::class,
             [
-                'documents_id' => $document_1->getID(),
+                'documents_id' => $ticket_doc->getID(),
                 'itemtype'     => $ticket->getType(),
                 'items_id'     => $ticket->getID(),
             ]
@@ -209,14 +210,14 @@ HTML,
             'itemtype'     => $ticket->getType(),
             'items_id'     => $ticket->getID(),
             'content'     => <<<HTML
-<p>Test ticket with image</p>
-<p><img id="aaaaaaaa-aaaaaaaa-aaaaaaaaaaaaaa.00000000" src="data:image/png;base64,aaa=" /></p>
+<p>Test followup with image</p>
+<p><img id="bbbbbbbb-bbbbbbbb-bbbbbbbbbbbbbb.00000000" src="data:image/png;base64,bbb=" /></p>
 HTML,
             '_filename' => [
                 $filename,
             ],
             '_tag_filename' => [
-                'aaaaaaaa-aaaaaaaa-aaaaaaaaaaaaaa.00000000',
+                'bbbbbbbb-bbbbbbbb-bbbbbbbbbbbbbb.00000000',
             ],
             '_prefix_filename' => [
                 $prefix,
@@ -224,13 +225,44 @@ HTML,
         ]);
         $this->integer($followup_id)->isGreaterThan(0);
 
-        $document_2 = $this->createTxtDocument();
+        $followup_doc = $this->createTxtDocument();
         $this->createItem(
             \Document_Item::class,
             [
-                'documents_id' => $document_2->getID(),
+                'documents_id' => $followup_doc->getID(),
                 'itemtype'     => $followup->getType(),
                 'items_id'     => $followup->getID(),
+            ]
+        );
+
+        // Create a task and attach documents to it
+        $filename = $this->createUploadedImage($prefix = uniqid('', true));
+        $task = new \TicketTask();
+        $task_id = $task->add([
+            'tickets_id'  => $ticket->getID(),
+            'content'     => <<<HTML
+<p>Test task with image</p>
+<p><img id="cccccccc-cccccccc-cccccccccccccc.00000000" src="data:image/png;base64,ccc=" /></p>
+HTML,
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [
+                'cccccccc-cccccccc-cccccccccccccc.00000000',
+            ],
+            '_prefix_filename' => [
+                $prefix,
+            ]
+        ]);
+        $this->integer($task_id)->isGreaterThan(0);
+
+        $task_doc = $this->createTxtDocument();
+        $this->createItem(
+            \Document_Item::class,
+            [
+                'documents_id' => $task_doc->getID(),
+                'itemtype'     => $task->getType(),
+                'items_id'     => $task->getID(),
             ]
         );
 
@@ -243,6 +275,22 @@ HTML,
             'expected_documents' => [
             ],
         ];
+        yield [
+            'global_config'      => \NotificationSetting::ATTACH_NO_DOCUMENT,
+            'notif_config'       => \NotificationSetting::ATTACH_INHERIT,
+            'item_to_update'     => $followup,
+            'notification'       => $update_followup_notif,
+            'expected_documents' => [
+            ],
+        ];
+        yield [
+            'global_config'      => \NotificationSetting::ATTACH_NO_DOCUMENT,
+            'notif_config'       => \NotificationSetting::ATTACH_INHERIT,
+            'item_to_update'     => $task,
+            'notification'       => $update_task_notif,
+            'expected_documents' => [
+            ],
+        ];
 
         // All documents, inherited from global config
         yield [
@@ -251,8 +299,31 @@ HTML,
             'item_to_update'     => $ticket,
             'notification'       => $update_ticket_notif,
             'expected_documents' => [
-                $document_1,
-                $document_2,
+                $ticket_doc,
+                $followup_doc,
+                $task_doc,
+            ],
+        ];
+        yield [
+            'global_config'      => \NotificationSetting::ATTACH_ALL_DOCUMENTS,
+            'notif_config'       => \NotificationSetting::ATTACH_INHERIT,
+            'item_to_update'     => $followup,
+            'notification'       => $update_followup_notif,
+            'expected_documents' => [
+                $ticket_doc,
+                $followup_doc,
+                $task_doc,
+            ],
+        ];
+        yield [
+            'global_config'      => \NotificationSetting::ATTACH_ALL_DOCUMENTS,
+            'notif_config'       => \NotificationSetting::ATTACH_INHERIT,
+            'item_to_update'     => $task,
+            'notification'       => $update_task_notif,
+            'expected_documents' => [
+                $ticket_doc,
+                $followup_doc,
+                $task_doc,
             ],
         ];
 
@@ -263,7 +334,25 @@ HTML,
             'item_to_update'     => $ticket,
             'notification'       => $update_ticket_notif,
             'expected_documents' => [
-                $document_1,
+                $ticket_doc,
+            ],
+        ];
+        yield [
+            'global_config'      => \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY,
+            'notif_config'       => \NotificationSetting::ATTACH_INHERIT,
+            'item_to_update'     => $followup,
+            'notification'       => $update_followup_notif,
+            'expected_documents' => [
+                $followup_doc,
+            ],
+        ];
+        yield [
+            'global_config'      => \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY,
+            'notif_config'       => \NotificationSetting::ATTACH_INHERIT,
+            'item_to_update'     => $task,
+            'notification'       => $update_task_notif,
+            'expected_documents' => [
+                $task_doc,
             ],
         ];
     }
@@ -368,7 +457,7 @@ HTML,
      */
     private function createUploadedImage(string $prefix): string
     {
-        $filename = $prefix. uniqid('glpitest_', true) . '.png';
+        $filename = $prefix . uniqid('glpitest_', true) . '.png';
 
         $image = imagecreate(100, 100);
         $this->object($image)->isInstanceOf(\GdImage::class);
