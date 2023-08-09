@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard;
 
+use Config;
 use DateInterval;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
@@ -1442,6 +1443,8 @@ HTML;
      */
     public static function getDefaultDashboardForMenu(string $menu = "", bool $strict = false): string
     {
+        global $CFG_GLPI;
+
         $grid = new self();
 
         if (!$strict) {
@@ -1451,6 +1454,7 @@ HTML;
             }
         }
 
+        // Try loading default from user preferences
         $config_key = 'default_dashboard_' . $menu;
         $default    = $_SESSION["glpi$config_key"] ?? "";
         if (strlen($default)) {
@@ -1461,7 +1465,17 @@ HTML;
             }
         }
 
-       // if default not found, return first dashboards
+        // Try loading default from config
+        $default = $CFG_GLPI[$config_key] ?? "";
+        if (strlen($default)) {
+            $dasboard = new Dashboard($default);
+
+            if ($dasboard->load() && $dasboard->canViewCurrent()) {
+                return $default;
+            }
+        }
+
+        // if default not found, return first dashboard
         if (!$strict) {
             self::loadAllDashboards();
             $first_dashboard = array_shift(self::$all_dashboards);
