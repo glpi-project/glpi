@@ -6832,47 +6832,82 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       //add followups to timeline
+        // Add followups to timeline
         $followup_obj = new ITILFollowup();
         if (!$params['check_view_rights'] || $followup_obj->canview()) {
-            $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date_creation DESC', 'id DESC']);
-            foreach ($followups as $followups_id => $followup) {
-                $followup_obj->getFromDB($followups_id);
-                if (!$params['check_view_rights'] || $followup_obj->canViewItem()) {
-                    $followup['can_edit'] = $followup_obj->canUpdateItem();
-                    $followup['can_promote'] = Session::getCurrentInterface() === 'central' && $this instanceof Ticket && Ticket::canCreate();
+            $followups = $followup_obj->find(
+                ['items_id'  => $this->getID()] + $restrict_fup,
+                ['date_creation DESC', 'id DESC']
+            );
+
+            foreach ($followups as $followups_id => $followup_row) {
+                // Safer to use a clean object to load our data
+                $followup = new ITILFollowup();
+                $followup->setParentItem($this);
+                $followup->fields = $followup_row;
+                $followup->post_getFromDB();
+
+                if (!$params['check_view_rights'] || $followup->canViewItem()) {
+                    $followup_row['can_edit'] = $followup->canUpdateItem();
+                    $followup_row['can_promote'] =
+                        Session::getCurrentInterface() === 'central'
+                        && $this instanceof Ticket
+                        && Ticket::canCreate()
+                    ;
                     $timeline["ITILFollowup_" . $followups_id] = [
-                        'type' => ITILFollowup::class,
-                        'item' => $followup,
+                        'type'     => ITILFollowup::class,
+                        'item'     => $followup_row,
+                        'object'   => $followup,
                         'itiltype' => 'Followup'
                     ];
                 }
             }
         }
 
-       //add tasks to timeline
+        // Add tasks to timeline
         if (!$params['check_view_rights'] || $task_obj->canview()) {
-            $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date_creation DESC');
-            foreach ($tasks as $tasks_id => $task) {
-                $task_obj->getFromDB($tasks_id);
-                if (!$params['check_view_rights'] || $task_obj->canViewItem()) {
-                    $task['can_edit'] = $task_obj->canUpdateItem();
-                    $task['can_promote'] = Session::getCurrentInterface() === 'central' && $this instanceof Ticket && Ticket::canCreate();
-                    $timeline[$task_obj::getType() . "_" . $tasks_id] = [
-                        'type' => $taskClass,
-                        'item' => $task,
+            $tasks = $task_obj->find(
+                [$foreignKey => $this->getID()] + $restrict_task,
+                'date_creation DESC'
+            );
+
+            foreach ($tasks as $tasks_id => $task_row) {
+                // Safer to use a clean object to load our data
+                $task = new $taskClass();
+                $task->fields = $task_row;
+                $task->post_getFromDB();
+
+                if (!$params['check_view_rights'] || $task->canViewItem()) {
+                    $task_row['can_edit'] = $task->canUpdateItem();
+                    $task_row['can_promote'] =
+                        Session::getCurrentInterface() === 'central'
+                        && $this instanceof Ticket
+                        && Ticket::canCreate()
+                    ;
+                    $timeline[$task::getType() . "_" . $tasks_id] = [
+                        'type'     => $taskClass,
+                        'item'     => $task_row,
+                        'object'   => $task,
                         'itiltype' => 'Task'
                     ];
                 }
             }
         }
 
+        // Add solutions to timeline
         $solution_obj   = new ITILSolution();
         $solution_items = $solution_obj->find([
             'itemtype'  => static::getType(),
             'items_id'  => $this->getID()
         ]);
+
         foreach ($solution_items as $solution_item) {
+            // Safer to use a clean object to load our data
+            $solution = new ITILSolution();
+            $solution->setParentItem($this);
+            $solution->fields = $solution_item;
+            $solution->post_getFromDB();
+
             $timeline["ITILSolution_" . $solution_item['id'] ] = [
                 'type'     => ITILSolution::class,
                 'itiltype' => 'Solution',
@@ -6890,70 +6925,82 @@ abstract class CommonITILObject extends CommonDBTM
                     'users_id_approval'  => $solution_item['users_id_approval'],
                     'date_approval'      => $solution_item['date_approval'],
                     'status'             => $solution_item['status']
-                ]
+                ],
+                'object' => $solution,
             ];
         }
 
+        // Add validation to timeline
         $validation_class = $objType . "Validation";
         if (
             class_exists($validation_class) && $params['with_validations']
             && (!$params['check_view_rights'] || $validation_class::canView())
         ) {
-            $valitation_obj   = new $validation_class();
-            $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
-            foreach ($validations as $validations_id => $validation) {
+            $valitation_obj = new $validation_class();
+            $validations = $valitation_obj->find([
+                $foreignKey => $this->getID()
+            ]);
+
+            foreach ($validations as $validations_id => $validation_row) {
+                // Safer to use a clean object to load our data
+                $validation = new $validation_class();
+                $validation->fields = $validation_row;
+                $validation->post_getFromDB();
+
                 $canedit = $valitation_obj->can($validations_id, UPDATE);
-                $cananswer = ($validation['users_id_validate'] === Session::getLoginUserID() &&
-                $validation['status'] == CommonITILValidation::WAITING);
+                $cananswer = ($validation_row['users_id_validate'] === Session::getLoginUserID() &&
+                $validation_row['status'] == CommonITILValidation::WAITING);
                 $user = new User();
-                $user->getFromDB($validation['users_id_validate']);
+                $user->getFromDB($validation_row['users_id_validate']);
 
                 $request_key = $valitation_obj::getType() . '_' . $validations_id
-                    . (empty($validation['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
+                    . (empty($validation_row['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
                 $timeline[$request_key] = [
                     'type' => $validation_class,
                     'item' => [
                         'id'        => $validations_id,
-                        'date'      => $validation['submission_date'],
+                        'date'      => $validation_row['submission_date'],
                         'content'   => __('Validation request') . " <i class='ti ti-arrow-right'></i><i class='ti ti-user text-muted me-1'></i>" . $user->getlink(),
-                        'comment_submission' => $validation['comment_submission'],
-                        'users_id'  => $validation['users_id'],
+                        'comment_submission' => $validation_row['comment_submission'],
+                        'users_id'  => $validation_row['users_id'],
                         'can_edit'  => $canedit,
                         'can_answer'   => $cananswer,
-                        'users_id_validate'  => $validation['users_id_validate'],
-                        'timeline_position' => $validation['timeline_position']
+                        'users_id_validate'  => $validation_row['users_id_validate'],
+                        'timeline_position' => $validation_row['timeline_position']
                     ],
                     'itiltype' => 'Validation',
                     'class'    => 'validation-request ' .
-                    ($validation['status'] == CommonITILValidation::WAITING  ? "validation-waiting"  : "") .
-                    ($validation['status'] == CommonITILValidation::ACCEPTED ? "validation-accepted" : "") .
-                    ($validation['status'] == CommonITILValidation::REFUSED  ? "validation-refused"  : ""),
+                    ($validation_row['status'] == CommonITILValidation::WAITING  ? "validation-waiting"  : "") .
+                    ($validation_row['status'] == CommonITILValidation::ACCEPTED ? "validation-accepted" : "") .
+                    ($validation_row['status'] == CommonITILValidation::REFUSED  ? "validation-refused"  : ""),
                     'item_action' => 'validation-request',
+                    'object'      => $validation,
                 ];
 
-                if (!empty($validation['validation_date'])) {
+                if (!empty($validation_row['validation_date'])) {
                     $timeline[$valitation_obj::getType() . "_" . $validations_id] = [
                         'type' => $validation_class,
                         'item' => [
                             'id'        => $validations_id,
-                            'date'      => $validation['validation_date'],
+                            'date'      => $validation_row['validation_date'],
                             'content'   => __('Validation request answer') . " : " .
-                            _sx('status', ucfirst($validation_class::getStatus($validation['status']))),
-                            'comment_validation' => $validation['comment_validation'],
-                            'users_id'  => $validation['users_id_validate'],
-                            'status'    => "status_" . $validation['status'],
-                            'can_edit'  => $validation['users_id_validate'] === Session::getLoginUserID(),
-                            'timeline_position' => $validation['timeline_position'],
+                            _sx('status', ucfirst($validation_class::getStatus($validation_row['status']))),
+                            'comment_validation' => $validation_row['comment_validation'],
+                            'users_id'  => $validation_row['users_id_validate'],
+                            'status'    => "status_" . $validation_row['status'],
+                            'can_edit'  => $validation_row['users_id_validate'] === Session::getLoginUserID(),
+                            'timeline_position' => $validation_row['timeline_position'],
                         ],
-                        'class'    => 'validation-answer',
-                        'itiltype' => 'Validation',
+                        'class'       => 'validation-answer',
+                        'itiltype'    => 'Validation',
                         'item_action' => 'validation-answer',
+                        'object'      => $validation,
                     ];
                 }
             }
         }
 
-       //add documents to timeline
+        // Add documents to timeline
         if ($params['with_documents']) {
             $document_item_obj = new Document_Item();
             $document_obj      = new Document();
@@ -6984,9 +7031,10 @@ abstract class CommonITILObject extends CommonDBTM
                   // document associated directly to itilobject
                     $timeline["Document_" . $document_item['documents_id']] = [
                         'type' => 'Document_Item',
-                        'item' => $item
+                        'item' => $item,
+                        'object' => $document_obj,
                     ];
-                } else if (isset($timeline[$timeline_key])) {
+                } elseif (isset($timeline[$timeline_key])) {
                  // document associated to a sub item of itilobject
                     if (!isset($timeline[$timeline_key]['documents'])) {
                         $timeline[$timeline_key]['documents'] = [];
@@ -7007,6 +7055,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
+        // Add logs to timeline
         if ($params['with_logs'] && Session::getCurrentInterface() == "central") {
            //add logs to timeline
             $log_items = Log::getHistoryData($this, 0, 0, [
@@ -7016,23 +7065,29 @@ abstract class CommonITILObject extends CommonDBTM
                 ]
             ]);
 
-            foreach ($log_items as $log_item) {
-                $content = $log_item['change'];
-                if (strlen($log_item['field']) > 0) {
-                    $content = sprintf(__("%s: %s"), $log_item['field'], $content);
+            foreach ($log_items as $log_row) {
+                // Safer to use a clean object to load our data
+                $log = new Log();
+                $log->fields = $log_row;
+                $log->post_getFromDB();
+
+                $content = $log_row['change'];
+                if (strlen($log_row['field']) > 0) {
+                    $content = sprintf(__("%s: %s"), $log_row['field'], $content);
                 }
                 $content = "<i class='fas fa-history me-1' title='" . __("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;
-                $timeline["Log_" . $log_item['id'] ] = [
+                $timeline["Log_" . $log_row['id'] ] = [
                     'type'     => 'Log',
                     'class'    => 'text-muted d-none',
                     'item'     => [
-                        'id'                 => $log_item['id'],
+                        'id'                 => $log_row['id'],
                         'content'            => $content,
-                        'date'               => $log_item['date_mod'],
+                        'date'               => $log_row['date_mod'],
                         'users_id'           => 0,
                         'can_edit'           => false,
                         'timeline_position'  => self::TIMELINE_LEFT,
-                    ]
+                    ],
+                    'object' => $log,
                 ];
             }
         }
