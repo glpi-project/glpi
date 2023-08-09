@@ -246,7 +246,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             $itemtype = static::getItemtype();
             $item = new $itemtype();
             if ($item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
-                NotificationEvent::raiseEvent("satisfaction", $item);
+                NotificationEvent::raiseEvent("satisfaction", $item, [], $this);
             }
         }
     }
@@ -260,7 +260,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             $itemtype = static::getItemtype();
             $item = new $itemtype();
             if ($item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
-                NotificationEvent::raiseEvent("replysatisfaction", $item);
+                NotificationEvent::raiseEvent("replysatisfaction", $item, [], $this);
             }
         }
     }

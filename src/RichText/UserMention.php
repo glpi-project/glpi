@@ -140,7 +140,7 @@ final class UserMention
        // Send a "you have been mentioned" notification
         foreach ($mentionned_actors_ids as $user_id) {
             $options['users_id'] = $user_id;
-            NotificationEvent::raiseEvent('user_mention', $main_item, $options);
+            NotificationEvent::raiseEvent('user_mention', $main_item, $options, $item);
         }
 
         if ($main_item instanceof CommonITILObject) {

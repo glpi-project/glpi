@@ -39,6 +39,12 @@ use Symfony\Component\Mime\Email;
 
 class NotificationEventMailing extends NotificationEventAbstract
 {
+    /**
+     * Mailer service.
+     * @var GLPIMailer
+     */
+    private static $mailer = null;
+
     public static function getTargetFieldName()
     {
         return 'email';
@@ -123,7 +129,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
         foreach ($data as $row) {
             //make sure mailer is reset on each mail
-            $mmail = new GLPIMailer($transport);
+            $mmail = self::$mailer ?? new GLPIMailer($transport);
             $mail = $mmail->getEmail();
             $current = new QueuedNotification();
             $current->getFromResultSet($row);
@@ -183,24 +189,44 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 $documents_ids = [];
                 $documents_to_attach = [];
-                if ($is_html || $CFG_GLPI['attach_ticket_documents_to_mail']) {
+
+                if ($is_html || $current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT) {
+                    if ($current->fields['attach_documents'] === NotificationSetting::ATTACH_FROM_TRIGGER_ONLY) {
+                        $itemtype_for_docs = $current->fields['itemtype_trigger'];
+                        $items_id_for_docs = $current->fields['items_id_trigger'];
+                    } else {
+                        $itemtype_for_docs = $current->fields['itemtype'];
+                        $items_id_for_docs = $current->fields['items_id'];
+                    }
+
                     // Retieve document list if mail is in HTML format (for inline images)
                     // or if documents are attached to mail.
-                    $item = getItemForItemtype($current->fields['itemtype']);
+                    $item_for_docs = getItemForItemtype($itemtype_for_docs);
                     if (
-                        $item !== false
+                        $item_for_docs !== false
                         && (
-                            $current->fields['items_id'] > 0
-                            || ($current->fields['itemtype'] == Entity::class && $current->fields['items_id'] == 0)
+                            $items_id_for_docs > 0
+                            || ($itemtype_for_docs == Entity::class && $items_id_for_docs == 0)
                         )
-                        && $item->getFromDB($current->fields['items_id'])
+                        && $item_for_docs->getFromDB($items_id_for_docs)
                     ) {
                         $doc_crit = [
-                            'items_id' => $current->fields['items_id'],
-                            'itemtype' => $current->fields['itemtype'],
+                            'items_id' => $items_id_for_docs,
+                            'itemtype' => $itemtype_for_docs,
                         ];
-                        if ($item instanceof CommonITILObject) {
-                            $doc_crit = $item->getAssociatedDocumentsCriteria(true);
+
+                        if (is_a($current->fields['itemtype'], CommonITILObject::class, true)) {
+                            // Main item is a `CommonITILObject`.
+                            // Adapt documents filtering to attach child items documents (if needed)
+                            // and exclude inline images.
+                            $main_item = new $current->fields['itemtype']();
+                            if (
+                                $current->fields['attach_documents'] !== NotificationSetting::ATTACH_FROM_TRIGGER_ONLY
+                                && $main_item->getFromDB($current->fields['items_id'])
+                            ) {
+                                // Attach documents from child, unless only documents from trigger should be attached
+                                $doc_crit = $item_for_docs->getAssociatedDocumentsCriteria(true);
+                            }
                             if ($is_html) {
                                 // Remove documents having "NO_TIMELINE" position if mail is HTML, as
                                 // these documents corresponds to inlined images.
@@ -225,7 +251,10 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 if (!$is_html) {
                     $mail->text($current->fields['body_text']);
-                    $documents_to_attach = $documents_ids; // Attach all documents
+                    if ($current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT) {
+                        // Attach all documents
+                        $documents_to_attach = $documents_ids;
+                    }
                 } else {
                     $inline_docs = [];
                     foreach ($documents_ids as $document_id) {
@@ -255,8 +284,10 @@ class NotificationEventMailing extends NotificationEventAbstract
                             $mail->embedFromPath($image_path, $doc->fields['filename']);
                             $inline_docs[$document_id] = $doc->fields['filename'];
                         } else {
-                            // Attach only documents that are not inlined images
-                            $documents_to_attach[] = $document_id;
+                            if ($current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT) {
+                                // Attach only documents that are not inlined images
+                                $documents_to_attach[] = $document_id;
+                            }
                         }
                     }
 
@@ -480,12 +511,6 @@ class NotificationEventMailing extends NotificationEventAbstract
      */
     private static function attachDocuments(Email $mail, array $documents_ids)
     {
-        global $CFG_GLPI;
-
-        if (!$CFG_GLPI['attach_ticket_documents_to_mail']) {
-            return;
-        }
-
         $document = new Document();
         foreach ($documents_ids as $document_id) {
             if ($document->getFromDB($document_id) === false) {
@@ -509,5 +534,10 @@ class NotificationEventMailing extends NotificationEventAbstract
        //Set notification's signature (the one which corresponds to the entity)
         $entity = $params['notificationtarget']->getEntity();
         $params['template']->setSignature(Notification::getMailingSignature($entity));
+    }
+
+    public static function setMailer(?GLPIMailer $mailer): void
+    {
+        self::$mailer = $mailer;
     }
 }

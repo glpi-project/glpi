@@ -91,6 +91,8 @@ The present file will list all changes made to the project; according to the
   either `DBmysql::request()` can be used to craft query using the GLPI query builder,
   either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
 - `Html::generateMenuSession()` `$force` argument has been removed.
+- `NotificationEvent::raiseEvent()` signature cahnged. A new `$trigger` parameter has been added at 4th position, and `$label` is now the 5th parameter.
+- `NotificationEventInterface::raise()` has a new `$trigger` parameter.
 - `QueryExpression` class moved to `Glpi\DBAL` namespace.
 - `QueryParam` class moved to `Glpi\DBAL` namespace.
 - `QuerySubQuery` class moved to `Glpi\DBAL` namespace.

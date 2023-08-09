@@ -248,7 +248,6 @@
 
 {% macro passwordField(name, value, label = '', options = {}) %}
    {% set options = {
-      'id': options.id is defined ? options.id : name ~ random(),
       'can_regenerate' : options.can_regenerate,
       'clearable': options.clearable is defined ? options.clearable : not options.is_disclosable,
       'is_copyable': options.is_disclosable ?? false

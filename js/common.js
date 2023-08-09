@@ -1496,14 +1496,19 @@ function hideDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be copied
  */
 function copyDisclosablePasswordFieldToClipboard(item) {
-    showDisclosablePasswordField(item);
+    const is_password_input = $("#" + item).prop("type") === "password";
+    if (is_password_input) {
+        showDisclosablePasswordField(item);
+    }
     $("#" + item).select();
     try {
         document.execCommand("copy");
     } catch (e) {
         alert("Copy to clipboard failed'");
     }
-    hideDisclosablePasswordField(item);
+    if (is_password_input) {
+        hideDisclosablePasswordField(item);
+    }
 }
 
 /**

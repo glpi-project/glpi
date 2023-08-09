@@ -443,7 +443,7 @@ class PlanningRecall extends CommonDBChild
                     }
                 }
 
-                if (NotificationEvent::raiseEvent('planningrecall', $pr, $options)) {
+                if (NotificationEvent::raiseEvent('planningrecall', $pr, $options, $itemToNotify)) {
                     $cron_status         = 1;
                     $task->addVolume(1);
                     $alert               = new Alert();

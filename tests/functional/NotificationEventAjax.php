@@ -219,6 +219,9 @@ TEXT,
             'documents' => '',
             'mode' => 'ajax',
             'event' => 'new',
+            'attach_documents' => 0,
+            'itemtype_trigger' => null,
+            'items_id_trigger' => 0,
         ];
         $this->array($data)->isIdenticalTo($expected);
 

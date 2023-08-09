@@ -1,0 +1,93 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block more_fields %}
+    {% set rand = rand|default(random()) %}
+    {% set field_options = field_options|merge({'rand': rand}) %}
+
+    {{ fields.dropdownYesNo(
+        'allow_response',
+        item.fields['allow_response'],
+        __('Allow response'),
+        field_options,
+    ) }}
+    {{ fields.dropdownItemTypes(
+        'itemtype',
+        item.fields['itemtype'],
+        __('Item type'),
+        field_options|merge({
+            'types': types,
+            'readonly': not item.isNewItem() and not item.canUpdate()
+        }),
+    ) }}
+    {% do call('Ajax::updateItemOnSelectEvent', [
+        'dropdown_itemtype' ~ rand,
+        'show_events',
+        config('root_doc') ~ '/ajax/dropdownNotificationEvent.php',
+        {
+            'itemtype': '__VALUE__',
+         }
+    ]) %}
+    {% do call('Ajax::updateItemOnSelectEvent', [
+        'dropdown_itemtype' ~ rand,
+        'show_templates',
+        config('root_doc') ~ '/ajax/dropdownNotificationTemplate.php',
+        {
+            'itemtype': '__VALUE__',
+         }
+    ]) %}
+
+    {{ fields.ajaxField(
+        'show_events',
+        call('NotificationEvent::dropdownEvents', [
+            item.fields['itemtype'],
+            {
+                'value': item.fields['event'],
+                'display': false,
+            }
+        ]),
+        __('Events'),
+        field_options
+    ) }}
+
+    {{ fields.dropdownArrayField(
+        "attach_documents",
+        item.fields['attach_documents'],
+        attach_documents_values,
+        __('Add documents'),
+        field_options
+    ) }}
+{% endblock %}

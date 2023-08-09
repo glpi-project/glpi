@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
 
@@ -243,78 +244,30 @@ class Notification extends CommonDBTM implements FilterableInterface
     {
         global $CFG_GLPI;
 
-        $this->initForm($ID, $options);
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-
-        echo "<td rowspan='4' class='middle right'>" . __('Comments') . "</td>";
-        echo "<td class='center middle' rowspan='4'><textarea class='form-control' rows='9' name='comment' >" .
-             $this->fields["comment"] . "</textarea></td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Active') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_active', $this->fields['is_active']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Allow response') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('allow_response', $this->allowResponse());
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . _n('Type', 'Types', 1) . "</td>";
-        echo "<td>";
-        if (!Session::haveRight(static::$rightname, UPDATE)) {
-            $itemtype = $this->fields['itemtype'];
-            echo $itemtype::getTypeName(1);
-            $rand = '';
-        } else if (
-            Config::canUpdate()
-            && ($this->getEntityID() == 0)
-        ) {
-            $rand = Dropdown::showItemTypes(
-                'itemtype',
-                $CFG_GLPI["notificationtemplates_types"],
-                ['value' => $this->fields['itemtype']]
-            );
+        if (Config::canUpdate() && $this->getEntityID() == 0) {
+            $types = $CFG_GLPI["notificationtemplates_types"];
         } else {
-            $rand = Dropdown::showItemTypes(
-                'itemtype',
-                array_diff(
-                    $CFG_GLPI["notificationtemplates_types"],
-                    ['CronTask', 'DBConnection', 'User']
-                ),
-                ['value' => $this->fields['itemtype']]
+            // Prevent attaching notification to system items
+            $types = array_diff(
+                $CFG_GLPI["notificationtemplates_types"],
+                ['CronTask', 'DBConnection', 'User']
             );
         }
 
-        $params = ['itemtype' => '__VALUE__'];
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_itemtype$rand",
-            "show_events",
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownNotificationEvent.php",
-            $params
-        );
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_itemtype$rand",
-            "show_templates",
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownNotificationTemplate.php",
-            $params
-        );
-        echo "</td></tr>";
+        $attach_documents_values = [
+            NotificationSetting::ATTACH_INHERIT           => __('Use global config'),
+            NotificationSetting::ATTACH_NO_DOCUMENT       => __('No documents'),
+            NotificationSetting::ATTACH_ALL_DOCUMENTS     => __('All documents'),
+            NotificationSetting::ATTACH_FROM_TRIGGER_ONLY => __('Only documents related to the item that triggers the event'),
+        ];
 
-        echo "<tr class='tab_bg_1'><td>" . NotificationEvent::getTypeName(1) . "</td>";
-        echo "<td><span id='show_events'>";
-        NotificationEvent::dropdownEvents(
-            $this->fields['itemtype'],
-            ['value' => $this->fields['event']]
-        );
-        echo "</span></td></tr>";
+        TemplateRenderer::getInstance()->display('pages/setup/notification/notification.html.twig', [
+            'item' => $this,
+            'params' => $options,
+            'types' => $types,
+            'attach_documents_values' => $attach_documents_values,
+        ]);
 
-        $this->showFormButtons($options);
         return true;
     }
 

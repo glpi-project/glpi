@@ -103,14 +103,17 @@ class NotificationEvent extends CommonDBTM
     /**
      * Raise a notification event
      *
-     * @param string     $event   the event raised for the itemtype
-     * @param CommonGLPI $item    the object which raised the event
-     * @param array      $options array   of options used
-     * @param string     $label   used for debugEvent() (default '')
+     * @param string            $event   the event raised for the itemtype
+     * @param CommonGLPI        $item    the object which raised the event
+     * @param array             $options array of options used
+     * @param CommonDBTM|null   $trigger item that raises the notification (in case notification was raised by a child item)
+     * @param string            $label   used for debugEvent()
      *
      * @return boolean
+     *
+     * @since 10.1.0 Param `$trigger` has been added.
      **/
-    public static function raiseEvent($event, $item, $options = [], $label = '')
+    public static function raiseEvent($event, $item, $options = [], ?CommonDBTM $trigger = null, $label = '')
     {
         global $CFG_GLPI;
 
@@ -198,7 +201,8 @@ class NotificationEvent extends CommonDBTM
                         $notificationtarget->setEvent($eventclass),
                         $template,
                         $notify_me,
-                        $emitter
+                        $emitter,
+                        $trigger
                     );
                 } else {
                     trigger_error(
@@ -246,7 +250,7 @@ class NotificationEvent extends CommonDBTM
                  "<th>" . _n('Recipient', 'Recipients', 1) . "</th></tr>";
 
                 foreach ($events as $event => $label) {
-                    self::raiseEvent($event, $item, $options, $label);
+                    self::raiseEvent($event, $item, $options, null, $label);
                 }
             } else {
                 echo "<tr class='tab_bg_2 center'><td colspan='4'>" . __('No item to display') . "</td></tr>";
