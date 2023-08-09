@@ -43,7 +43,6 @@
  */
 
 use Glpi\Event;
-use Glpi\Toolbox\DuplicatedFileUpload;
 
 // autoload include in objecttask.form (ticketvalidation, changevalidation,...)
 if (!defined('GLPI_ROOT')) {
@@ -69,17 +68,7 @@ if (isset($_POST["add"])) {
         && (count($_POST['users_id_validate']) > 0)
     ) {
         $users = $_POST['users_id_validate'];
-
-        // Handle case were files have to be submited multiple times
-        $use_duplicated_files = isset($_POST['_filename']) && count($users) > 1;
-        $duplicated_files = $use_duplicated_files ? new DuplicatedFileUpload($users) : null;
-
         foreach ($users as $user) {
-            if ($duplicated_files !== null) {
-                // Load the correct file data into $_POST
-                $duplicated_files->loadIntoPostForKey($user);
-            }
-
             $_POST['users_id_validate'] = $user;
             $validation->add($_POST);
             Event::log(
