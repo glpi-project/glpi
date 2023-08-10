@@ -6018,4 +6018,156 @@ HTML
         );
         $this->array($tasks_content)->isEqualTo($expected_tasks);
     }
+
+
+    /**
+     * Data provider for the testCountActors function
+     *
+     * @return iterable
+     */
+    protected function testCountActorsProvider(): iterable
+    {
+        $this->login();
+        $root = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Get tests users
+        $user_1 = getItemByTypeName('User', 'glpi', true);
+        $user_2 = getItemByTypeName('User', 'tech', true);
+
+        // Create groups
+        $this->createItems('Group', [
+            [
+                'name' => 'Group 1',
+                'entities_id' => $root,
+            ],
+            [
+                'name' => 'Group 2',
+                'entities_id' => $root,
+            ],
+        ]);
+        $group_1 = getItemByTypeName('Group', 'Group 1', true);
+        $group_2 = getItemByTypeName('Group', 'Group 2', true);
+
+        // Create suppliers
+        $this->createItems('Supplier', [
+            [
+                'name' => 'Supplier 1',
+                'entities_id' => $root,
+            ],
+            [
+                'name' => 'Supplier 2',
+                'entities_id' => $root,
+            ],
+        ]);
+        $supplier_1 = getItemByTypeName('Supplier', 'Supplier 1', true);
+        $supplier_2 = getItemByTypeName('Supplier', 'Supplier 2', true);
+
+        // Run tests cases
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => []
+        ]);
+        yield [$ticket, 0];
+
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                ],
+            ]
+        ]);
+        yield [$ticket, 1];
+
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
+                ],
+            ]
+        ]);
+        yield [$ticket, 3];
+
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
+                ],
+                'observer' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_2],
+                ],
+            ]
+        ]);
+        yield [$ticket, 4];
+
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
+                ],
+                'observer' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_2],
+                ],
+                'requester' => [
+                    ['itemtype' => 'User', 'items_id' => $user_1],
+                ],
+            ]
+        ]);
+        yield [$ticket, 5];
+
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
+                ],
+                'observer' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_2],
+                ],
+                'requester' => [
+                    ['itemtype' => 'User', 'items_id' => $user_1],
+                    ['itemtype' => 'User', 'items_id' => $user_2],
+                ],
+            ]
+        ]);
+        yield [$ticket, 6];
+    }
+
+    /**
+     * Test the testCountActors method
+     *
+     * @dataProvider testCountActorsProvider
+     *
+     * @param \Ticket $ticket
+     * @param int $expected
+     *
+     * @return void
+     */
+    public function testCountActors(\Ticket $ticket, int $expected): void
+    {
+        $this->integer($ticket->countActors())->isEqualTo($expected);
+    }
 }
