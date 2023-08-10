@@ -9609,7 +9609,7 @@ abstract class CommonITILObject extends CommonDBTM
             $itemtype = $item['_itemtype'];
             $card = [
                 'id'              => "{$itemtype}-{$item['id']}",
-                'title'           => '<span class="pointer">' . $item['name'] . '</span>',
+                'title'           => $item['name'],
                 'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true), 100),
                 'is_deleted'      => $item['is_deleted'] ?? false,
             ];
@@ -9673,13 +9673,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $category_ids = [];
         foreach ($columns as $column_id => $column) {
-            if (
-                $column_id !== 0 && !in_array($column_id, $column_ids) &&
-                (!isset($column['items']) || !count($column['items']))
-            ) {
-                // If no specific columns were asked for, drop empty columns.
-                // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
-                // We always preserve the 'No Status' column.
+            if ($column_id !== 0 && !in_array($column_id, $column_ids)) {
                 unset($columns[$column_id]);
             } else if (isset($column['items'])) {
                 foreach ($column['items'] as $item) {

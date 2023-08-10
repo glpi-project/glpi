@@ -74,7 +74,8 @@
         "spin.js": "^4.1.0",
         "swagger-ui-dist": "^5.9.1",
         "tinymce": "^6.7.2",
-        "tinymce-i18n": "^23.10.9"
+        "tinymce-i18n": "^23.10.9",
+        "vue": "^3.3.4"
     },
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
@@ -104,13 +105,14 @@
         "jest-extended": "^4.0.2",
         "mini-css-extract-plugin": "^2.7.6",
         "monaco-editor-webpack-plugin": "^7.0.1",
+        "sass": "^1.65.1",
+        "sass-loader": "^13.3.2",
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
         "style-loader": "^3.3.3",
         "stylelint": "^15.11.0",
         "stylelint-config-standard-scss": "^11.0.0",
         "terser": "^5.24.0",
-        "vue": "^3.3.4",
         "vue-loader": "^17.2.2",
         "webpack": "^5.89.0",
         "webpack-cli": "^5.1.4"

@@ -20,12 +20,17 @@ const config = {
             {
                 // Vue SFC
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                use: ['vue-loader']
             },
             {
                 // Build styles
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
+            },
+            {
+                // Build styles
+                test: /\.scss$/,
+                use: ['style-loader', 'css-loader', 'sass-loader'],
             },
         ]
     },

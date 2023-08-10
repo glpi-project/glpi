@@ -2066,7 +2066,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $required_project_fields = [
             'id', 'name', 'content', 'plan_start_date', 'plan_end_date', 'real_start_date',
-            'real_end_date', 'percent_done', 'projects_id', 'projectstates_id', 'is_deleted'
+            'real_end_date', 'percent_done', 'projects_id', 'projectstates_id', 'is_deleted',
+            'date_creation'
         ];
         $request = [
             'SELECT' => [
@@ -2291,7 +2292,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $itemtype = $item['_itemtype'];
             $card = [
                 'id'              => "{$itemtype}-{$item['id']}",
-                'title'           => '<span class="pointer">' . $item['name'] . '</span>',
+                'title'           => $item['name'],
                 'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'] ?? "", false, true), 100),
             ];
 
@@ -2353,7 +2354,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
             $card['_metadata'] = [];
             $metadata_values = ['name', 'content', 'is_milestone', 'plan_start_date', 'plan_end_date', 'real_start_date', 'real_end_date',
-                'planned_duration', 'effective_duration', 'percent_done', 'is_deleted'
+                'planned_duration', 'effective_duration', 'percent_done', 'is_deleted', 'date_creation'
             ];
             foreach ($metadata_values as $metadata_value) {
                 if (isset($item[$metadata_value])) {
@@ -2373,14 +2374,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $columns[$item['projectstates_id']]['items'][] = $card;
         }
 
-       // If no specific columns were asked for, drop empty columns.
-       // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
-       // We always preserve the 'No Status' column.
         foreach ($columns as $column_id => $column) {
-            if (
-                $column_id !== 0 && !in_array($column_id, $column_ids) &&
-                (!isset($column['items']) || !count($column['items']))
-            ) {
+            if ($column_id !== 0 && !in_array($column_id, $column_ids)) {
                 unset($columns[$column_id]);
             }
         }

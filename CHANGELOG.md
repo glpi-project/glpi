@@ -104,6 +104,8 @@ The present file will list all changes made to the project; according to the
 - `showSystemInformations` method for `$CFG_GLPI['systeminformations_types']` types renamed to `getSystemInformation` and should return an array with a label and content.
 - `DisplayPreference` config form POST handling moved to `ajax/displaypreference.php` script. The front file is for displaying the tabs only.
 - `Document::send()` signature changed. The `$context` parameter has been removed.
+- `title` property of Kanban items must be text only. HTML no longer supported.
+- `kanban:filter` JS event now includes the columns in the event data. Filtering must set the `_filtered_out` property of cards to hide them instead of changing the elements in the DOM.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.

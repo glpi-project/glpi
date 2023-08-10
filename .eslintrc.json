@@ -72,13 +72,35 @@
     },
     "overrides": [
         {
-            "files": ["js/modules/**", "js/src/**"],
+            "files": ["js/modules/**"],
             "parserOptions": {
                 "sourceType": "module"
             }
         },
         {
-            "files": [".stylelintrc.js", ".webpack.config.js", ".vue.webpack.config.js"],
+            "files": ["js/src/**"],
+            "extends": ["plugin:vue/essential", "eslint:recommended"],
+            "plugins": ["vue"],
+            "parser": "vue-eslint-parser",
+            "parserOptions": {
+                "sourceType": "module"
+            },
+            "rules": {
+                "vue/script-indent": ["error", 4, {
+                    "baseIndent": 1,
+                    "switchCase": 1
+                }],
+                "vue/html-indent": ["error", 4, {
+                    "baseIndent": 1,
+                    "switchCase": 1
+                }],
+                "vue/multi-word-component-names": "off",
+                // do not use regular indent rule. Handled by the vue rules instead
+                "indent": "off"
+            }
+        },
+        {
+            "files": [".stylelintrc.js", ".webpack.config.js"],
             "env": {
                 "node": true
             }
