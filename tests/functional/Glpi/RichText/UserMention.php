@@ -62,6 +62,7 @@ class UserMention extends DbTestCase
         $notification_targets->deleteByCriteria(['NOT' => ['items_id' => Notification::MENTIONNED_USER]]);
 
        // Add email to users for notifications
+        $this->login(); // must be authenticated to update emails
         $user = new User();
         $update = $user->update(['id' => $tech_id, '_useremails' => ['tech@glpi-project.org']]);
         $this->boolean($update)->isTrue();
@@ -304,6 +305,7 @@ HTML
         $notification_targets->deleteByCriteria(['NOT' => ['items_id' => Notification::MENTIONNED_USER]]);
 
        // Add email to users for notifications
+        $this->login(); // must be authenticated to update emails
         $user = new User();
         $update = $user->update(['id' => $tech_id, '_useremails' => ['tech@glpi-project.org']]);
         $this->boolean($update)->isTrue();
