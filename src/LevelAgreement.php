@@ -903,7 +903,7 @@ abstract class LevelAgreement extends CommonDBChild
                                 $this->fields['end_of_working_day']
                             );
 
-                            // Take waiting duration time which give us the final date
+                            // Take waiting duration time into account
                             $date_with_waiting_time = $cal->computeEndDate(
                                 $date_with_sla,
                                 $additional_delay,
