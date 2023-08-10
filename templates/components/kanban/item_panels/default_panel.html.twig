@@ -34,12 +34,12 @@
 <div class="item-details-panel" data-itemtype="{{ itemtype }}" data-items_id="{{ item_fields.id }}">
    <div class="card d-flex flex-column h-100">
       <div class="card-header d-block">
-         <h5 class="card-title">
+         <h5 class="card-title d-flex justify-content-between w-100">
             <a href="{{ itemtype|itemtype_form_path(item_fields.id) }}">
                <i class="{{ itemtype|itemtype_icon }}" title="{{ itemtype|itemtype_name }}"></i>
                {{ item_fields.name }}
             </a>
-            <button type="button" class="btn-link" onclick="$(this).closest('.item-details-panel').remove()"><i class="ti ti-x"></i></button>
+            <button type="button" class="btn-link"><i class="ti ti-x"></i></button>
          </h5>
          <h6 class="card-subtitle">
             {% if item_fields.is_milestone %}

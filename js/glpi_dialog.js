@@ -374,7 +374,7 @@ const glpi_toast = (title, message, css_class, options = {}) => {
  * @param {string} caption       Caption for the toast
  * @param {ToastOptions} options Toast options
  */
-const glpi_toast_success = (message, caption, options = {}) => {
+const glpi_toast_success = (message, caption = undefined, options = {}) => {
     glpi_toast(caption || __('Success'), message, 'bg-success text-white border-0', options);
 };
 
@@ -385,7 +385,7 @@ const glpi_toast_success = (message, caption, options = {}) => {
  * @param {string} caption       Caption for the toast
  * @param {ToastOptions} options Toast options
  */
-const glpi_toast_info = function(message, caption, options = {}) {
+const glpi_toast_info = function(message, caption = undefined, options = {}) {
     glpi_toast(caption || _n("Information", "Informations", 1), message, 'bg-info text-white border-0', options);
 };
 
@@ -396,7 +396,7 @@ const glpi_toast_info = function(message, caption, options = {}) {
  * @param {string} caption       Caption for the toast
  * @param {ToastOptions} options Toast options
  */
-const glpi_toast_warning = (message, caption, options = {}) => {
+const glpi_toast_warning = (message, caption = undefined, options = {}) => {
     glpi_toast(caption || __('Warning'), message, 'bg-warning text-white border-0', options);
 };
 
@@ -407,7 +407,7 @@ const glpi_toast_warning = (message, caption, options = {}) => {
  * @param {string} caption       Caption for the toast
  * @param {ToastOptions} options Toast options
  */
-const glpi_toast_error = (message, caption, options = {}) => {
+const glpi_toast_error = (message, caption = undefined, options = {}) => {
     glpi_toast(caption || _n('Error', 'Errors', 1), message, 'bg-danger text-white border-0', options);
 };
 

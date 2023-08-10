@@ -49,9 +49,10 @@ class Item_Kanban extends CommonDBRelation
      * @param string $itemtype Type of the item.
      * @param int $items_id ID of the item.
      * @param array $state Array of Kanban column state data.
+     * @param array $columns Array of columns to save state for. If empty, all columns are saved.
      * @return bool
      */
-    public static function saveStateForItem($itemtype, $items_id, $state)
+    public static function saveStateForItem($itemtype, $items_id, $state, array $columns = [])
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -92,6 +93,33 @@ class Item_Kanban extends CommonDBRelation
             ] + $common_input);
         }
         return true;
+    }
+
+    /**
+     * Check if a state is saved for a specific item.
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @return bool
+     */
+    public static function hasStateForItem(string $itemtype, int $items_id): bool
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        /** @var Kanban|CommonDBTM $item */
+        $item = new $itemtype();
+        $item->getFromDB($items_id);
+        $force_global = $item->forceGlobalState();
+
+        return $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_items_kanbans',
+            'WHERE'  => [
+                'users_id' => $force_global ? 0 : Session::getLoginUserID(),
+                'itemtype' => $itemtype,
+                'items_id' => $items_id
+            ]
+        ])->count() > 0;
     }
 
     /**
@@ -199,9 +227,9 @@ class Item_Kanban extends CommonDBRelation
         }, ARRAY_FILTER_USE_BOTH));
         if (count($new_column_index)) {
             $new_column_index = reset($new_column_index);
-            if (isset($all_columns[$new_column_index])) {
-                $drop_only = $all_columns[$new_column_index]['drop_only'] ?? false;
-                if (isset($all_columns[$new_column_index]) && !$drop_only) {
+            if (isset($all_columns[(int) $column])) {
+                $drop_only = $all_columns[(int) $column]['drop_only'] ?? false;
+                if (isset($all_columns[(int) $column]) && !$drop_only) {
                     array_splice($state[$new_column_index]['cards'], $position, 0, $card);
                 }
             }

@@ -39,7 +39,16 @@ if (window.Vue !== undefined && window.Vue.components !== undefined) {
     existing_components = window.Vue.components;
 }
 window.Vue = {
-    createApp: createApp,
+    createApp: (...args) => {
+        // pass arguments directly to createApp
+        const app = createApp.apply(null, args);
+        // add default global properties so they can be used within the templates
+        app.config.globalProperties.__ = __;
+        app.config.globalProperties._n = _n;
+        app.config.globalProperties._x = _x;
+        app.config.globalProperties._nx = _nx;
+        return app;
+    },
     defineAsyncComponent: vue.defineAsyncComponent,
     components: existing_components,
     getComponentsByName: (pattern) => {
