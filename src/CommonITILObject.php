@@ -51,15 +51,14 @@ abstract class CommonITILObject extends CommonDBTM
     use Glpi\Features\Teamwork;
 
    /// Users by type
-    protected $users       = null;
+    protected $users       = [];
     public $userlinkclass  = '';
    /// Groups by type
-    protected $groups      = null;
+    protected $groups      = [];
     public $grouplinkclass = '';
 
    /// Suppliers by type
-    protected $suppliers      = null;
-
+    protected $suppliers      = [];
     public $supplierlinkclass = '';
 
    /// Use user entity to select entity of the object
@@ -101,53 +100,32 @@ abstract class CommonITILObject extends CommonDBTM
 
     abstract public static function getTaskClass();
 
-    /**
-     * Load linked groups
-     *
-     * @return void
-     */
-    public function loadGroups(): void
+    public function post_getFromDB()
     {
-        if (!empty($this->grouplinkclass)) {
-            $class               = new $this->grouplinkclass();
-            $this->groups        = $class->getActors($this->fields['id']);
-        }
+        $this->loadActors();
     }
 
-    /**
-     * Load linked users
-     *
-     * @return void
-     */
-    public function loadUsers(): void
-    {
-        if (!empty($this->userlinkclass)) {
-            $class               = new $this->userlinkclass();
-            $this->users         = $class->getActors($this->fields['id']);
-        }
-    }
-
-    /**
-     * Load linked suppliers
-     *
-     * @return void
-     */
-    public function loadSuppliers(): void
-    {
-        if (!empty($this->supplierlinkclass)) {
-            $class                  = new $this->supplierlinkclass();
-            $this->suppliers        = $class->getActors($this->fields['id']);
-        }
-    }
 
     /**
      * @since 0.84
      **/
     public function loadActors()
     {
-        $this->loadUsers();
-        $this->loadGroups();
-        $this->loadSuppliers();
+
+        if (!empty($this->grouplinkclass)) {
+            $class        = new $this->grouplinkclass();
+            $this->groups = $class->getActors($this->fields['id']);
+        }
+
+        if (!empty($this->userlinkclass)) {
+            $class        = new $this->userlinkclass();
+            $this->users  = $class->getActors($this->fields['id']);
+        }
+
+        if (!empty($this->supplierlinkclass)) {
+            $class            = new $this->supplierlinkclass();
+            $this->suppliers  = $class->getActors($this->fields['id']);
+        }
     }
 
 
@@ -160,7 +138,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function countActors(): int
     {
-        return $this->countGroups() + $this->countUsers() + $this->countSuppliers();
+        return count($this->groups) + count($this->users) + count($this->suppliers);
     }
 
 
@@ -344,44 +322,50 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
        // load existing actors (from existing itilobject)
-        foreach ($this->getUsers($actortype) as $user) {
-            $name = getUserName($user['users_id']);
-            $actors[] = [
-                'id'                => $user['id'],
-                'items_id'          => $user['users_id'],
-                'itemtype'          => 'User',
-                'text'              => $name,
-                'title'             => $name,
-                'use_notification'  => $user['use_notification'],
-                'default_email'     => UserEmail::getDefaultForUser($user['users_id']),
-                'alternative_email' => $user['alternative_email'],
-            ];
-        }
-        foreach ($this->getGroups($actortype) as $group) {
-            $group_obj = new Group();
-            if ($group_obj->getFromDB($group['groups_id'])) {
+        if (isset($this->users[$actortype])) {
+            foreach ($this->users[$actortype] as $user) {
+                $name = getUserName($user['users_id']);
                 $actors[] = [
-                    'id'       => $group['id'],
-                    'items_id' => $group['groups_id'],
-                    'itemtype' => 'Group',
-                    'text'     => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getName()),
-                    'title'    => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getRawCompleteName()),
+                    'id'                => $user['id'],
+                    'items_id'          => $user['users_id'],
+                    'itemtype'          => 'User',
+                    'text'              => $name,
+                    'title'             => $name,
+                    'use_notification'  => $user['use_notification'],
+                    'default_email'     => UserEmail::getDefaultForUser($user['users_id']),
+                    'alternative_email' => $user['alternative_email'],
                 ];
             }
         }
-        foreach ($this->getSuppliers($actortype) as $supplier) {
-            $supplier_obj = new Supplier();
-            if ($supplier_obj->getFromDB($supplier['suppliers_id'])) {
-                $actors[] = [
-                    'id'                => $supplier['id'],
-                    'items_id'          => $supplier['suppliers_id'],
-                    'itemtype'          => 'Supplier',
-                    'text'              => $supplier_obj->fields['name'],
-                    'title'             => $supplier_obj->fields['name'],
-                    'use_notification'  => $supplier['use_notification'],
-                    'default_email'     => $supplier_obj->fields['email'],
-                    'alternative_email' => $supplier['alternative_email'],
-                ];
+        if (isset($this->groups[$actortype])) {
+            foreach ($this->groups[$actortype] as $group) {
+                $group_obj = new Group();
+                if ($group_obj->getFromDB($group['groups_id'])) {
+                    $actors[] = [
+                        'id'       => $group['id'],
+                        'items_id' => $group['groups_id'],
+                        'itemtype' => 'Group',
+                        'text'     => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getName()),
+                        'title'    => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getRawCompleteName()),
+                    ];
+                }
+            }
+        }
+        if (isset($this->suppliers[$actortype])) {
+            foreach ($this->suppliers[$actortype] as $supplier) {
+                $supplier_obj = new Supplier();
+                if ($supplier_obj->getFromDB($supplier['suppliers_id'])) {
+                    $actors[] = [
+                        'id'                => $supplier['id'],
+                        'items_id'          => $supplier['suppliers_id'],
+                        'itemtype'          => 'Supplier',
+                        'text'              => $supplier_obj->fields['name'],
+                        'title'             => $supplier_obj->fields['name'],
+                        'use_notification'  => $supplier['use_notification'],
+                        'default_email'     => $supplier_obj->fields['email'],
+                        'alternative_email' => $supplier['alternative_email'],
+                    ];
+                }
             }
         }
 
@@ -968,9 +952,12 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function isUser($type, $users_id)
     {
-        foreach ($this->getUsers($type) as $data) {
-            if ($data['users_id'] == $users_id) {
-                return true;
+
+        if (isset($this->users[$type])) {
+            foreach ($this->users[$type] as $data) {
+                if ($data['users_id'] == $users_id) {
+                    return true;
+                }
             }
         }
 
@@ -989,9 +976,11 @@ abstract class CommonITILObject extends CommonDBTM
     // FIXME add params typehint in GLPI 10.1
     public function isGroup($type, $groups_id): bool
     {
-        foreach ($this->getGroups($type) as $data) {
-            if ($data['groups_id'] == $groups_id) {
-                return true;
+        if (isset($this->groups[$type])) {
+            foreach ($this->groups[$type] as $data) {
+                if ($data['groups_id'] == $groups_id) {
+                    return true;
+                }
             }
         }
         return false;
@@ -1010,9 +999,12 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function isSupplier($type, $suppliers_id)
     {
-        foreach ($this->getSuppliers($type) as $data) {
-            if ($data['suppliers_id'] == $suppliers_id) {
-                return true;
+
+        if (isset($this->suppliers[$type])) {
+            foreach ($this->suppliers[$type] as $data) {
+                if ($data['suppliers_id'] == $suppliers_id) {
+                    return true;
+                }
             }
         }
         return false;
@@ -1022,52 +1014,36 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * get users linked to a object
      *
-     * @param null|integer $type type to search (see constants)
+     * @param integer $type type to search (see constants)
      *
      * @return array
      **/
-    public function getUsers($type = null)
+    public function getUsers($type)
     {
-        // Lazy load users
-        if ($this->users === null) {
-            $this->loadUsers();
+
+        if (isset($this->users[$type])) {
+            return $this->users[$type];
         }
 
-        if ($type === null) {
-            return $this->users;
-        } else {
-            if (isset($this->users[$type])) {
-                return $this->users[$type];
-            }
-
-            return [];
-        }
+        return [];
     }
 
 
     /**
      * get groups linked to a object
      *
-     * @param null|integer $type type to search (see constants)
+     * @param integer $type type to search (see constants)
      *
      * @return array
      **/
-    public function getGroups($type = null)
+    public function getGroups($type)
     {
-        // Lazy load groups
-        if ($this->groups === null) {
-            $this->loadGroups();
+
+        if (isset($this->groups[$type])) {
+            return $this->groups[$type];
         }
 
-        if ($type === null) {
-            return $this->groups;
-        } else {
-            if (isset($this->groups[$type])) {
-                return $this->groups[$type];
-            }
-
-            return [];
-        }
+        return [];
     }
 
 
@@ -1104,26 +1080,18 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @since 0.84
      *
-     * @param null|integer $type type to search (see constants)
+     * @param integer $type type to search (see constants)
      *
      * @return array
      **/
-    public function getSuppliers($type = null)
+    public function getSuppliers($type)
     {
-        // Lazy load suppliers
-        if ($this->suppliers === null) {
-            $this->loadSuppliers();
+
+        if (isset($this->suppliers[$type])) {
+            return $this->suppliers[$type];
         }
 
-        if ($type === null) {
-            return $this->suppliers;
-        } else {
-            if (isset($this->suppliers[$type])) {
-                return $this->suppliers[$type];
-            }
-
-            return [];
-        }
+        return [];
     }
 
 
@@ -1138,11 +1106,13 @@ abstract class CommonITILObject extends CommonDBTM
     {
 
         if ($type > 0) {
-            return count($this->getUsers($type));
+            if (isset($this->users[$type])) {
+                return count($this->users[$type]);
+            }
         } else {
-            if (count($this->getUsers())) {
+            if (count($this->users)) {
                 $count = 0;
-                foreach ($this->getUsers() as $u) {
+                foreach ($this->users as $u) {
                     $count += count($u);
                 }
                 return $count;
@@ -1163,11 +1133,13 @@ abstract class CommonITILObject extends CommonDBTM
     {
 
         if ($type > 0) {
-            return count($this->getGroups($type));
+            if (isset($this->groups[$type])) {
+                return count($this->groups[$type]);
+            }
         } else {
-            if (count($this->getGroups())) {
+            if (count($this->groups)) {
                 $count = 0;
-                foreach ($this->getGroups() as $u) {
+                foreach ($this->groups as $u) {
                     $count += count($u);
                 }
                 return $count;
@@ -1190,11 +1162,13 @@ abstract class CommonITILObject extends CommonDBTM
     {
 
         if ($type > 0) {
-            return count($this->getSuppliers($type));
+            if (isset($this->suppliers[$type])) {
+                return count($this->suppliers[$type]);
+            }
         } else {
-            if (count($this->getSuppliers())) {
+            if (count($this->suppliers)) {
                 $count = 0;
-                foreach ($this->getSuppliers() as $u) {
+                foreach ($this->suppliers as $u) {
                     $count += count($u);
                 }
                 return $count;
@@ -1217,10 +1191,10 @@ abstract class CommonITILObject extends CommonDBTM
 
         if (
             is_array($groups) && count($groups)
-            && isset($this->getGroups()[$type])
+            && isset($this->groups[$type])
         ) {
             foreach ($groups as $groups_id) {
-                foreach ($this->getGroups($type) as $data) {
+                foreach ($this->groups[$type] as $data) {
                     if ($data['groups_id'] == $groups_id) {
                         return true;
                     }

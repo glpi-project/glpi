@@ -1277,21 +1277,31 @@ class Change extends CommonITILObject
                         ];
 
                         $requesters = [];
-                        foreach ($change->getUsers(CommonITILActor::REQUESTER) as $d) {
-                            if ($d["users_id"] > 0) {
-                                $userdata = getUserName($d["users_id"], 2);
-                                $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
-                                    $userdata['name'];
-                                $requesters[] = $name;
-                            } else {
-                                $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
-                                    $d['alternative_email'];
+                        if (
+                            isset($change->users[CommonITILActor::REQUESTER])
+                            && count($change->users[CommonITILActor::REQUESTER])
+                        ) {
+                            foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
+                                if ($d["users_id"] > 0) {
+                                    $userdata = getUserName($d["users_id"], 2);
+                                    $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
+                                        $userdata['name'];
+                                    $requesters[] = $name;
+                                } else {
+                                    $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
+                                        $d['alternative_email'];
+                                }
                             }
                         }
 
-                        foreach ($change->getGroups(CommonITILActor::REQUESTER) as $d) {
-                            $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
-                                Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                        if (
+                            isset($change->groups[CommonITILActor::REQUESTER])
+                            && count($change->groups[CommonITILActor::REQUESTER])
+                        ) {
+                            foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
+                                $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
+                                    Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                            }
                         }
                         $row['values'][] = implode('<br>', $requesters);
 
@@ -1491,32 +1501,42 @@ class Change extends CommonITILObject
          </td>";
             echo "<td class='center'>";
 
-            foreach ($change->getUsers(CommonITILActor::REQUESTER) as $d) {
-                if ($d["users_id"] > 0) {
-                        $userdata = getUserName($d["users_id"], 2);
-                        $name     = "<span class='b'>" . $userdata['name'] . "</span>";
-                    if ($viewusers) {
-                        $name = sprintf(
-                            __('%1$s %2$s'),
-                            $name,
-                            Html::showToolTip(
-                                $userdata["comment"],
-                                ['link'    => $userdata["link"],
-                                    'display' => false
-                                ]
-                            )
-                        );
+            if (
+                isset($change->users[CommonITILActor::REQUESTER])
+                && count($change->users[CommonITILActor::REQUESTER])
+            ) {
+                foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
+                    if ($d["users_id"] > 0) {
+                         $userdata = getUserName($d["users_id"], 2);
+                         $name     = "<span class='b'>" . $userdata['name'] . "</span>";
+                        if ($viewusers) {
+                            $name = sprintf(
+                                __('%1$s %2$s'),
+                                $name,
+                                Html::showToolTip(
+                                    $userdata["comment"],
+                                    ['link'    => $userdata["link"],
+                                        'display' => false
+                                    ]
+                                )
+                            );
+                        }
+                         echo $name;
+                    } else {
+                        echo $d['alternative_email'] . "&nbsp;";
                     }
-                        echo $name;
-                } else {
-                    echo $d['alternative_email'] . "&nbsp;";
+                    echo "<br>";
                 }
-                echo "<br>";
             }
 
-            foreach ($change->getGroups(CommonITILActor::REQUESTER) as $d) {
-                echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
-                echo "<br>";
+            if (
+                isset($change->groups[CommonITILActor::REQUESTER])
+                && count($change->groups[CommonITILActor::REQUESTER])
+            ) {
+                foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
+                    echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                    echo "<br>";
+                }
             }
 
             echo "</td>";
