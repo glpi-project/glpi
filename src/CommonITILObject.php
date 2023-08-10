@@ -101,14 +101,6 @@ abstract class CommonITILObject extends CommonDBTM
 
     abstract public static function getTaskClass();
 
-    public function post_getFromDB()
-    {
-        // Clear linked actors in case object was reused
-        $this->users = null;
-        $this->groups = null;
-        $this->suppliers = null;
-    }
-
     /**
      * Load linked groups
      *
@@ -117,8 +109,8 @@ abstract class CommonITILObject extends CommonDBTM
     public function loadGroups(): void
     {
         if (!empty($this->grouplinkclass)) {
-            $class        = new $this->grouplinkclass();
-            $this->groups = $class->getActors($this->fields['id']);
+            $class               = new $this->grouplinkclass();
+            $this->groups        = $class->getActors($this->fields['id']);
         }
     }
 
@@ -130,8 +122,8 @@ abstract class CommonITILObject extends CommonDBTM
     public function loadUsers(): void
     {
         if (!empty($this->userlinkclass)) {
-            $class       = new $this->userlinkclass();
-            $this->users = $class->getActors($this->fields['id']);
+            $class               = new $this->userlinkclass();
+            $this->users         = $class->getActors($this->fields['id']);
         }
     }
 
@@ -143,8 +135,8 @@ abstract class CommonITILObject extends CommonDBTM
     public function loadSuppliers(): void
     {
         if (!empty($this->supplierlinkclass)) {
-            $class           = new $this->supplierlinkclass();
-            $this->suppliers = $class->getActors($this->fields['id']);
+            $class                  = new $this->supplierlinkclass();
+            $this->suppliers        = $class->getActors($this->fields['id']);
         }
     }
 
