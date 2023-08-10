@@ -45,8 +45,12 @@ $user      = new User();
 $groupuser = new Group_User();
 
 if (empty($_GET["id"]) && isset($_GET["name"])) {
-    $user->getFromDBbyName($_GET["name"]);
-    Html::redirect($user->getFormURLWithID($user->fields['id']));
+    Session::checkRight(User::$rightname, READ);
+    if ($user->getFromDBbyName($_GET["name"])) {
+        $user->check($user->fields['id'], READ);
+        Html::redirect($user->getFormURLWithID($user->fields['id']));
+    }
+    Html::displayNotFoundError();
 }
 
 if (empty($_GET["name"])) {
