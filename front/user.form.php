@@ -37,6 +37,16 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
+
+if (isset($_POST['language']) && !Session::getLoginUserID()) {
+    // Offline lang change, keep it before session validity check
+    $_SESSION["glpilanguage"] = $_POST['language'];
+    Session::addMessageAfterRedirect(__('Lang has been changed!'));
+    Html::back();
+}
+
+Session::checkLoginUser();
+
 if (empty($_GET["id"])) {
     $_GET["id"] = "";
 }
@@ -176,16 +186,12 @@ if (isset($_GET['getvcard'])) {
     }
     Html::back();
 } else if (isset($_POST['language']) && !GLPI_DEMO_MODE) {
-    if (Session::getLoginUserID()) {
-        $user->update(
-            [
-                'id'        => Session::getLoginUserID(),
-                'language'  => $_POST['language']
-            ]
-        );
-    } else {
-        $_SESSION["glpilanguage"] = $_POST['language'];
-    }
+    $user->update(
+        [
+            'id'        => Session::getLoginUserID(),
+            'language'  => $_POST['language']
+        ]
+    );
     Session::addMessageAfterRedirect(__('Lang has been changed!'));
     Html::back();
 } else if (isset($_POST['impersonate']) && $_POST['impersonate']) {
