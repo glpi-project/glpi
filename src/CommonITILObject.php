@@ -196,20 +196,20 @@ abstract class CommonITILObject extends CommonDBTM
         switch ($property_name) {
             case 'users':
                 if ($this->lazy_loaded_users === null) {
+                    $this->loadUsers();
                 }
-                $this->loadUsers();
                 return $this->lazy_loaded_users;
 
             case 'groups':
                 if ($this->lazy_loaded_groups === null) {
+                    $this->loadGroups();
                 }
-                $this->loadGroups();
                 return $this->lazy_loaded_groups;
 
             case 'suppliers':
                 if ($this->lazy_loaded_suppliers === null) {
+                    $this->loadSuppliers();
                 }
-                $this->loadSuppliers();
                 return $this->lazy_loaded_suppliers;
 
             default:
