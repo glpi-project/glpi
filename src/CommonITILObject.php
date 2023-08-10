@@ -138,7 +138,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function countActors(): int
     {
-        return count($this->groups) + count($this->users) + count($this->suppliers);
+        return $this->countGroups() + $this->countUsers() + $this->countSuppliers();
     }
 
 
