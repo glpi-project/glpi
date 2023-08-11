@@ -214,8 +214,28 @@ abstract class CommonITILObject extends CommonDBTM
 
             default:
                 // Log error and keep running
-                // trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
+                // TODO 10.1: throw exception instead
+                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
                 return null;
+        }
+    }
+
+    /**
+     * Magic setter for lazy loaded properties
+     *
+     * @param string $property_name
+     * @param mixed $value
+     */
+    public function __set(string $property_name, $value)
+    {
+        switch ($property_name) {
+            case 'users':
+            case 'groups':
+            case 'suppliers':
+                // Log error and keep running
+                // TODO 10.1: throw exception instead
+                trigger_error("Readonly field: '$property_name'", E_USER_WARNING);
+                break;
         }
     }
 
@@ -234,7 +254,8 @@ abstract class CommonITILObject extends CommonDBTM
 
             default:
                 // Log error and keep running
-                // trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
+                // TODO 10.1: throw exception instead
+                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
                 return false;
         }
     }
@@ -261,6 +282,7 @@ abstract class CommonITILObject extends CommonDBTM
 
             default:
                 // Log error and keep running
+                // TODO 10.1: throw exception instead
                 trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
                 break;
         }
@@ -275,7 +297,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function countActors(): int
     {
-        return count($this->groups) + count($this->users) + count($this->suppliers);
+        return $this->countGroups() + $this->countUsers() + $this->countSuppliers();
     }
 
 
