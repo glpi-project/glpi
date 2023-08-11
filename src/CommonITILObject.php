@@ -42,6 +42,10 @@ use Glpi\Toolbox\Sanitizer;
 
 /**
  * CommonITILObject Class
+ *
+ * @property-read array $users
+ * @property-read array $groups
+ * @property-read array $suppliers
  **/
 abstract class CommonITILObject extends CommonDBTM
 {
@@ -51,14 +55,14 @@ abstract class CommonITILObject extends CommonDBTM
     use Glpi\Features\Teamwork;
 
    /// Users by type
-    protected $users       = [];
+    protected $lazy_loaded_users = null;
     public $userlinkclass  = '';
    /// Groups by type
-    protected $groups      = [];
+    protected $lazy_loaded_groups = null;
     public $grouplinkclass = '';
 
    /// Suppliers by type
-    protected $suppliers      = [];
+    protected $lazy_loaded_suppliers = null;
     public $supplierlinkclass = '';
 
    /// Use user entity to select entity of the object
@@ -102,32 +106,187 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function post_getFromDB()
     {
-        $this->loadActors();
+        // Object may be reused to load multiples tickets thus we must clear all
+        // cached data when a new mysql row is loaded
+        $this->clearLazyLoadedActors();
     }
 
+    /**
+     * Load linked users
+     *
+     * @return void
+     */
+    public function loadUsers(): void
+    {
+        if (!empty($this->userlinkclass) && isset($this->fields['id'])) {
+            $class = new $this->userlinkclass();
+            $this->lazy_loaded_users = $class->getActors($this->fields['id']);
+        } else {
+            $this->lazy_loaded_users = [];
+        }
+    }
+
+    /**
+     * Load linked groups
+     *
+     * @return void
+     */
+    protected function loadGroups(): void
+    {
+        if (!empty($this->grouplinkclass) && isset($this->fields['id'])) {
+            $class = new $this->grouplinkclass();
+            $this->lazy_loaded_groups = $class->getActors($this->fields['id']);
+        } else {
+            $this->lazy_loaded_groups = [];
+        }
+    }
+
+    /**
+     * Load linked suppliers
+     *
+     * @return void
+     */
+    public function loadSuppliers(): void
+    {
+        if (!empty($this->supplierlinkclass) && isset($this->fields['id'])) {
+            $class = new $this->supplierlinkclass();
+            $this->lazy_loaded_suppliers = $class->getActors($this->fields['id']);
+        } else {
+            $this->lazy_loaded_suppliers = [];
+        }
+    }
 
     /**
      * @since 0.84
      **/
     public function loadActors()
     {
+        // TODO 10.1 (breaking change): method should be protected instead of public
 
-        if (!empty($this->grouplinkclass)) {
-            $class        = new $this->grouplinkclass();
-            $this->groups = $class->getActors($this->fields['id']);
-        }
+        // Might not be 100% needed to clear cache here but lets be safe
+        // This way, any direct call to loadActors is assured to return accurate data
+        $this->clearLazyLoadedActors();
 
-        if (!empty($this->userlinkclass)) {
-            $class        = new $this->userlinkclass();
-            $this->users  = $class->getActors($this->fields['id']);
-        }
+        // Load each actors type
+        $this->loadUsers();
+        $this->loadGroups();
+        $this->loadSuppliers();
+    }
 
-        if (!empty($this->supplierlinkclass)) {
-            $class            = new $this->supplierlinkclass();
-            $this->suppliers  = $class->getActors($this->fields['id']);
+    /**
+     * Clear lazy loaded actor data so it can be recomputed again next time its
+     * accessed
+     *
+     * @return void
+     */
+    protected function clearLazyLoadedActors(): void
+    {
+        $this->lazy_loaded_users = null;
+        $this->lazy_loaded_groups = null;
+        $this->lazy_loaded_suppliers = null;
+    }
+
+    /**
+     * Magic getter for lazy loaded properties
+     *
+     * @param string $property_name
+     */
+    public function __get(string $property_name)
+    {
+        switch ($property_name) {
+            case 'users':
+                if ($this->lazy_loaded_users === null) {
+                    $this->loadUsers();
+                }
+                return $this->lazy_loaded_users;
+
+            case 'groups':
+                if ($this->lazy_loaded_groups === null) {
+                    $this->loadGroups();
+                }
+                return $this->lazy_loaded_groups;
+
+            case 'suppliers':
+                if ($this->lazy_loaded_suppliers === null) {
+                    $this->loadSuppliers();
+                }
+                return $this->lazy_loaded_suppliers;
+
+            default:
+                // Log error and keep running
+                // TODO 10.1: throw exception instead
+                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
+                return null;
         }
     }
 
+    /**
+     * Magic setter for lazy loaded properties
+     *
+     * @param string $property_name
+     * @param mixed $value
+     */
+    public function __set(string $property_name, $value)
+    {
+        switch ($property_name) {
+            case 'users':
+            case 'groups':
+            case 'suppliers':
+                // Log error and keep running
+                // TODO 10.1: throw exception instead
+                trigger_error("Readonly field: '$property_name'", E_USER_WARNING);
+                break;
+        }
+    }
+
+    /**
+     * Magic handler for isset() calls on lazy loaded properties
+     *
+     * @param string $property_name
+     */
+    public function __isset(string $property_name)
+    {
+        switch ($property_name) {
+            case 'users':
+            case 'groups':
+            case 'suppliers':
+                return true;
+
+            default:
+                // Log error and keep running
+                // TODO 10.1: throw exception instead
+                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
+                return false;
+        }
+    }
+
+    /**
+     * Magic handler for unset() calls on lazy loaded properties
+     *
+     * @param string $property_name
+     */
+    public function __unset(string $property_name)
+    {
+        switch ($property_name) {
+            case 'users':
+                $this->lazy_loaded_users = null;
+                break;
+
+            case 'groups':
+                $this->lazy_loaded_groups = null;
+                break;
+
+            case 'suppliers':
+                $this->lazy_loaded_suppliers = null;
+                break;
+
+            default:
+                // Log error and keep running
+                // TODO 10.1: throw exception instead
+                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
+                break;
+        }
+    }
 
     /**
      * Return the number of actors currently assigned to the object
@@ -8500,6 +8659,9 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
         }
+
+        // We just updated actors, clear any cached data
+        $this->clearLazyLoadedActors();
     }
 
 
