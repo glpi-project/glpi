@@ -163,7 +163,7 @@
                {% endif %}
 
                {% if la_displayed %}
-                  <div class="{{ item.isNewItem ? '' : 'collapsed' }} w-100 mt-1 d-none" id="dropdown_{{ assign_la_id }}">
+                  <div class="{{ item.isNewItem() ? '' : 'collapsed' }} w-100 mt-1 d-none" id="dropdown_{{ assign_la_id }}">
                      {{ fields.dropdownField(
                         la_field.la.getType(),
                         la_field.lafieldname,

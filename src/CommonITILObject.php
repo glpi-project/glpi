@@ -1459,7 +1459,7 @@ abstract class CommonITILObject extends CommonDBTM
         $type = null;
         if (isset($input['type'])) {
             $type = $input['type'];
-        } else if (isset($this->field['type'])) {
+        } else if (isset($this->fields['type'])) {
             $type = $this->fields['type'];
         }
 
