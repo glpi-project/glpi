@@ -613,7 +613,7 @@ class NotificationTemplate extends CommonDBTM
         $mailing_options['items_id']     = method_exists($target->obj, "getField")
          ? $target->obj->getField('id')
          : 0;
-        if (isset($target->obj->documents)) {
+        if (property_exists($target, 'documents') && isset($target->obj->documents)) {
             $mailing_options['documents'] = $target->obj->documents;
         }
 

@@ -359,7 +359,7 @@
                               rand_group: {{ random() }},
                               itemtype: "{{ subitem.type }}",
                               items_id: {{ subitem.fields['id']|default(-1) }},
-                              parent_itemtype: "{{ item.type }}",
+                              parent_itemtype: "{{ item.getType() }}",
                               parent_items_id: {{ item.fields['id'] }},
                               parent_fk_field: "{{ item.getForeignKeyField() }}",
                               begin: "{{ subitem.fields['begin'] }}",
