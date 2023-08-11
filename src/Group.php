@@ -176,7 +176,7 @@ class Group extends CommonTreeDropdown
                         return true;
 
                     case 3:
-                        $item->showLDAPForm($item->getID());
+                        $item->showLDAPForm();
                         return true;
 
                     case 4:
@@ -239,105 +239,9 @@ class Group extends CommonTreeDropdown
      **/
     public function showForm($ID, array $options = [])
     {
-
-        $this->initForm($ID, $options);
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-        echo "<td rowspan='15' class='middle'>" . __('Comments') . "</td>";
-        echo "<td class='middle' rowspan='15'>";
-        echo "<textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Code') . "</td>";
-        echo "<td>";
-        echo Html::input('code', ['value' => $this->fields['code']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('As child of') . "</td><td>";
-        self::dropdown(['value'  => $this->fields['groups_id'],
-            'name'   => 'groups_id',
-            'entity' => $this->fields['entities_id'],
-            'used'   => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : [])
+        TemplateRenderer::getInstance()->display('pages/admin/group.html.twig', [
+            'item' => $this,
         ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Recursive membership') . "</td><td>";
-        Dropdown::showYesNo(
-            'recursive_membership',
-            $this->isNewItem() ? 1 : $this->fields['recursive_membership'],
-            -1,
-        );
-        Html::showToolTip(
-            __("If enabled, members of this group will also become implicit members of its children groups")
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='subheader' colspan='2'>" . __('Visible in a ticket');
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Requester', 'Requesters', 1) . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_requester', $this->fields['is_requester']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Observer', 'Observers', 1) . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_watcher', $this->fields['is_watcher']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Assigned to') . "</td><td>";
-        Dropdown::showYesNo('is_assign', $this->fields['is_assign']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Task', 'Tasks', 1) . "</td><td>";
-        Dropdown::showYesNo('is_task', $this->fields['is_task']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Can be notified') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_notify', $this->fields['is_notify']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='subheader' colspan='2'>" . __('Visible in a project');
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Can be manager') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_manager', $this->fields['is_manager']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='subheader' colspan='2'>" . __('Can contain');
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Item', 'Items', Session::getPluralNumber()) . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . User::getTypeName(Session::getPluralNumber()) . "</td><td>";
-        Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
-        echo "</td></tr>";
-
-        $this->showFormButtons($options);
 
         return true;
     }
@@ -622,54 +526,27 @@ class Group extends CommonTreeDropdown
         return $tab;
     }
 
-
     /**
-     * @param $ID
-     **/
-    public function showLDAPForm($ID)
+     * Show the LDAP options form for this group
+     * @return void
+     */
+    public function showLDAPForm()
     {
-        $options = [];
-        $this->initForm($ID, $options);
-
-        echo "<form name='groupldap_form' id='groupldap_form' method='post' action='" .
-             $this->getFormURL() . "'>";
-        echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-
         if (
-            Group::canUpdate()
-            && Session::haveRight("user", User::UPDATEAUTHENT)
-            && AuthLDAP::useAuthLdap()
+            !$this->fields['is_usergroup']
+            || !Group::canUpdate()
+            || !Session::haveRight("user", User::UPDATEAUTHENT)
+            || !AuthLDAP::useAuthLdap()
         ) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='2' class='center'>" . __('In users') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Attribute of the user containing its groups') . "</td>";
-            echo "<td>";
-            echo Html::input('ldap_field', ['value' => $this->fields['ldap_field']]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Attribute value') . "</td>";
-            echo "<td>";
-            echo Html::input('ldap_value', ['value' => $this->fields['ldap_value']]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='2' class='center'>" . __('In groups') . "</th>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Group DN') . "</td>";
-            echo "<td>";
-            echo Html::input('ldap_group_dn', ['value' => $this->fields['ldap_group_dn']]);
-            echo "</td></tr>";
+            return;
         }
 
-        $options = ['colspan' => 1,
-            'candel'  => false
-        ];
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/admin/group_ldap.html.twig', [
+            'item' => $this,
+            'params' => [
+                'candel' => false,
+            ]
+        ]);
     }
 
     /**
