@@ -81,6 +81,20 @@ class User extends CommonDBTM
         ];
     }
 
+    public function prepareInputForClone($input)
+    {
+        unset($input['last_login']);
+        unset($input['password_forget_token']);
+        unset($input['password_forget_token_date']);
+        unset($input['personal_token']);
+        unset($input['personal_token_date']);
+        unset($input['api_token']);
+        unset($input['api_token_date']);
+        unset($input['cookie_token']);
+        unset($input['cookie_token_date']);
+        return $input;
+    }
+
     public function post_clone($source, $history)
     {
        //FIXME? clone config
