@@ -525,6 +525,15 @@ class Group extends CommonTreeDropdown
      */
     public function showLDAPForm()
     {
+        if (
+            !$this->fields['is_usergroup']
+            || !Group::canUpdate()
+            || !Session::haveRight("user", User::UPDATEAUTHENT)
+            || !AuthLDAP::useAuthLdap()
+        ) {
+            return;
+        }
+
         TemplateRenderer::getInstance()->display('pages/admin/group_ldap.html.twig', [
             'item' => $this,
             'params' => [
