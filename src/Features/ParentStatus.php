@@ -135,7 +135,12 @@ trait ParentStatus
                     || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
                 ) {
                     $needupdateparent = true;
-                    $update['status'] = CommonITILObject::ASSIGNED;
+                    // If begin date is defined, the status must be planned if it exists, rather than assigned.
+                    if (!empty($this->fields['begin']) && $parentitem->isStatusExists(CommonITILObject::PLANNED)) {
+                        $update['status'] = CommonITILObject::PLANNED;
+                    } else {
+                        $update['status'] = CommonITILObject::ASSIGNED;
+                    }
                 }
             } else {
                //check if lifecycle allowed new status
