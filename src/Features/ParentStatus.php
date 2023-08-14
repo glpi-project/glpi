@@ -159,7 +159,8 @@ trait ParentStatus
         }
 
         if (
-            !empty($this->fields['begin'])
+            !$is_set_pending
+            && !empty($this->fields['begin'])
             && $parentitem->isStatusExists(CommonITILObject::PLANNED)
             && (($parentitem->fields["status"] == CommonITILObject::INCOMING)
               || ($parentitem->fields["status"] == CommonITILObject::ASSIGNED)
