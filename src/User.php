@@ -2856,7 +2856,7 @@ HTML;
                     'value'         => $this->fields["users_id_supervisor"],
                     'rand'          => $userrand,
                     'entity'        => $_SESSION["glpiactive_entity"],
-                    'entity_sons'   => true,
+                    'entity_sons'   => $_SESSION["glpiactive_entity_recursive"],
                     'used'          => [$this->getID()],
                     'right'         => 'all'
                 ]);
