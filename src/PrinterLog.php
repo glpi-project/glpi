@@ -190,26 +190,35 @@ class PrinterLog extends CommonDBChild
      */
     public function showMetrics(Printer $printer)
     {
-        $format = $_GET['date_format'] ?? 'dynamic';
+        $compare_printer_stat = $_GET['compare_printer_stat'] ?? 'total_pages';
+        $compare_printers = array_reduce(array_merge(
+            explode(',', $_GET['compare_printers'] ?? ''),
+            [$printer->getID()]
+        ), fn ($acc, $id) => !empty($id) && !in_array($id, $acc, false) ? array_merge($acc, [$id]) : $acc, []);
+        $is_comparison = count($compare_printers) > 1;
 
-        if (isset($_GET['date_interval'])) {
-            $raw_metrics = self::getMetrics(
-                $printer,
-                interval: $_GET['date_interval'],
-                format: $format,
-            );
-        } elseif (isset($_GET['date_start']) && isset($_GET['date_end'])) {
-            $raw_metrics = self::getMetrics(
-                $printer,
-                start_date: new DateTime($_GET['date_start']),
-                end_date: new DateTime($_GET['date_end']),
-                format: $format,
-            );
-        } else {
-            $raw_metrics = self::getMetrics(
-                $printer,
-                format: $format,
-            );
+        $raw_metrics = [];
+        $format = $_GET['date_format'] ?? 'dynamic';
+        foreach ($compare_printers as $printer_id) {
+            if (isset($_GET['date_interval'])) {
+                $raw_metrics[$printer_id] = self::getMetrics(
+                    Printer::getById($printer_id),
+                    interval: $_GET['date_interval'],
+                    format: $format,
+                );
+            } elseif (isset($_GET['date_start']) && isset($_GET['date_end'])) {
+                $raw_metrics[$printer_id] = self::getMetrics(
+                    Printer::getById($printer_id),
+                    start_date: new DateTime($_GET['date_start']),
+                    end_date: new DateTime($_GET['date_end']),
+                    format: $format,
+                );
+            } else {
+                $raw_metrics[$printer_id] = self::getMetrics(
+                    Printer::getById($printer_id),
+                    format: $format,
+                );
+            }
         }
 
         // build graph data
@@ -239,16 +248,40 @@ class PrinterLog extends CommonDBChild
             'd MMM YYYY'
         );
 
-        foreach ($raw_metrics as $metrics) {
-            $date = new DateTime($metrics['date']);
-            $labels[] = $fmt->format($date);
-            unset($metrics['id'], $metrics['date'], $metrics['printers_id']);
+        // Adds missing dates to the labels array and null values to the series data array
+        // for comparison printers if the date is not present in the metrics array.
+        foreach ($raw_metrics as $printer_id => $metrics) {
+            foreach ($metrics as $metric) {
+                if (!in_array($metric['date'], $labels)) {
+                    $labels[] = $metric['date'];
+                    if ($is_comparison) {
+                        foreach ($compare_printers as $printer_id) {
+                            $series[$printer_id]['data'][] = null;
+                        }
+                    }
+                }
+            }
+        }
 
-            foreach ($metrics as $key => $value) {
-                $label = $this->getLabelFor($key);
-                if ($label && $value > 0) {
-                    $series[$key]['name'] = $label;
-                    $series[$key]['data'][] = $value;
+        // Sort the labels array
+        sort($labels);
+
+        // Loops through the raw metrics and creates a series array for each printer or metric.
+        // If $is_comparison is true, it sets the name and data for the comparison printer.
+        // Otherwise, it sets the name and data for each metric key with a positive value.
+        foreach ($raw_metrics as $printer_id => $metrics) {
+            foreach ($metrics as $metric) {
+                if ($is_comparison) {
+                    $series[$printer_id]['name'] = Printer::getById($printer_id)->fields['name'];
+                    $series[$printer_id]['data'][array_search($metric['date'], $labels, false)] = $metric[$compare_printer_stat];
+                } else {
+                    foreach ($metric as $key => $value) {
+                        $label = $this->getLabelFor($key);
+                        if ($label && $value > 0) {
+                            $series[$key]['name'] = $label;
+                            $series[$key]['data'][] = $value;
+                        }
+                    }
                 }
             }
         }
@@ -266,7 +299,7 @@ class PrinterLog extends CommonDBChild
             'line_width'  => 2,
         ];
 
-        // display the printer graph buttons component
+         // display the printer graph buttons component
         TemplateRenderer::getInstance()->display('components/printer_graph_buttons.html.twig', [
             'start_date' => $_GET['date_start'] ?? '',
             'end_date'   => $_GET['date_end'] ?? '',
@@ -279,6 +312,8 @@ class PrinterLog extends CommonDBChild
                 'interval'   => $_GET['date_interval'] ?? 'P1Y',
                 'format'     => $format,
             ]),
+            'compare_printers' => $compare_printers,
+            'compare_printer_stat' => $compare_printer_stat,
         ]);
 
         // display graph
