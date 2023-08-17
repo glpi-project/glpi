@@ -416,6 +416,25 @@ class TicketTask extends DbTestCase
         $date_end_string = $date_end->format('Y-m-d H:i:s');
 
         $this->integer($task->add([
+            'pending'            => 1,
+            'tickets_id'         => $ticket_id,
+            'content'            => "Task with schedule",
+            'state'              => \Planning::TODO,
+            'users_id_tech'      => $uid,
+            'begin'              => $date_begin_string,
+            'end'                => $date_end_string,
+        ]))->isGreaterThan(0);
+
+        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::WAITING);
+
+        $date_begin = new \DateTime(); // ==> +3days
+        $date_begin->add(new \DateInterval('P3D'));
+        $date_begin_string = $date_begin->format('Y-m-d H:i:s');
+        $date_end = new \DateTime(); // ==> +4days
+        $date_end->add(new \DateInterval('P4D'));
+        $date_end_string = $date_end->format('Y-m-d H:i:s');
+
+        $this->integer($task->add([
             'pending'            => 0,
             'tickets_id'         => $ticket_id,
             'content'            => "Task with schedule",
@@ -427,11 +446,11 @@ class TicketTask extends DbTestCase
 
         $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
 
-        $date_begin = new \DateTime(); // ==> +3days
-        $date_begin->add(new \DateInterval('P3D'));
+        $date_begin = new \DateTime(); // ==> +5days
+        $date_begin->add(new \DateInterval('P5D'));
         $date_begin_string = $date_begin->format('Y-m-d H:i:s');
-        $date_end = new \DateTime(); // ==> +4days
-        $date_end->add(new \DateInterval('P4D'));
+        $date_end = new \DateTime(); // ==> +6days
+        $date_end->add(new \DateInterval('P6D'));
         $date_end_string = $date_end->format('Y-m-d H:i:s');
 
         $this->integer($task->add([
@@ -445,24 +464,5 @@ class TicketTask extends DbTestCase
         ]))->isGreaterThan(0);
 
         $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::WAITING);
-
-        $date_begin = new \DateTime(); // ==> +5days
-        $date_begin->add(new \DateInterval('P5D'));
-        $date_begin_string = $date_begin->format('Y-m-d H:i:s');
-        $date_end = new \DateTime(); // ==> +6days
-        $date_end->add(new \DateInterval('P6D'));
-        $date_end_string = $date_end->format('Y-m-d H:i:s');
-
-        $this->integer($task->add([
-            'pending'            => 0,
-            'tickets_id'         => $ticket_id,
-            'content'            => "Task with schedule",
-            'state'              => \Planning::TODO,
-            'users_id_tech'      => $uid,
-            'begin'              => $date_begin_string,
-            'end'                => $date_end_string,
-        ]))->isGreaterThan(0);
-
-        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
     }
 }
