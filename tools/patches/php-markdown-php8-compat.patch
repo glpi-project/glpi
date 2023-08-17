@@ -1,0 +1,13 @@
+diff --git a/Michelf/MarkdownExtra.php b/Michelf/MarkdownExtra.php
+index 060a4ae..7fdbdbf 100644
+--- a/Michelf/MarkdownExtra.php
++++ b/Michelf/MarkdownExtra.php
+@@ -229,7 +229,7 @@ protected function doExtraAttributes($tag_name, $attr, $defaultIdValue = null, $
+ 		}
+
+ 		// Split on components
+-		preg_match_all('/[#.a-z][-_:a-zA-Z0-9=]+/', $attr, $matches);
++		preg_match_all('/[#.a-z][-_:a-zA-Z0-9=]+/', $attr ?? '', $matches);
+ 		$elements = $matches[0];
+
+ 		// Handle classes and IDs (only first ID taken into account)
