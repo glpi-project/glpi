@@ -1360,7 +1360,6 @@ class SLM extends DbTestCase
      * @return void
      */
     public function testLaChange(): void
-    // public function testLaChange(string $la_class, string $la_type): void
     {
         $this->login();
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
