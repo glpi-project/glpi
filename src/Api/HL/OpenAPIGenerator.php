@@ -262,13 +262,14 @@ EOT;
         foreach ($paths as $path_url => $path) {
             foreach ($path as $method => $route) {
                 $is_expanded = false;
-                foreach ($route['parameters'] as $param) {
+                foreach ($route['parameters'] as $param_key => $param) {
                     if (isset($param['schema']['pattern']) && preg_match('/^[\w+|]+$/', $param['schema']['pattern'])) {
                         $itemtypes = explode('|', $param['schema']['pattern']);
                         foreach ($itemtypes as $itemtype) {
                             $new_url = str_replace('{itemtype}', $itemtype, $path_url);
                             // Check there isn't already a route for this URL
                             if (!isset($paths[$new_url][$method])) {
+                                unset($route['parameters'][$param_key]);
                                 $expanded[$new_url][$method] = $route;
                                 $is_expanded = true;
                             }
