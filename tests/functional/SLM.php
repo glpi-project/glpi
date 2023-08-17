@@ -1451,6 +1451,14 @@ class SLM extends DbTestCase
             'content'     => '',
         ]);
 
+        // Create another ticket as a control subject that shouldn't be impacted
+        // by changes on the other ticket
+        $control_ticket = $this->createItem(Ticket::class, [
+            'entities_id' => $entity,
+            'name'        => $test_ticket_name,
+            'content'     => '',
+        ]);
+
         // Check that each LA TTO and TTR are set as expected
         foreach ([\OLA::class, \SLA::class] as $la_class) {
             $la = new $la_class();
@@ -1524,6 +1532,42 @@ class SLM extends DbTestCase
             $this->array(
                 array_unique(array_column($sa_levels_ticket, 'date'))
             )->isEqualTo(['2034-08-16 14:00:00']);
+        }
+
+        // Check that the control ticket LA and escalation levels are valid
+        // These checks are needed to ensure the clearInvalidLevels() method only
+        // impacted the correct ticket
+        foreach ([\OLA::class, \SLA::class] as $la_class) {
+            $la = new $la_class();
+            $level_class = $la->getLevelClass();
+            $expected_la_levels = [];
+
+            foreach ([\SLM::TTO, \SLM::TTR] as $la_type) {
+                list($la_date_field, $la_fk_field) = $la->getFieldNames($la_type);
+
+                // Check that the correct LA is assigned to the ticket
+                $expected_la = getItemByTypeName($la_class, "$la_class $la_type 1", true);
+                $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type 1 level", true);
+                $this->integer($control_ticket->fields[$la_fk_field])->isEqualTo($expected_la);
+
+                // Check that the target date is correct (+ 4 hours)
+                $this->string($control_ticket->fields[$la_date_field])->isEqualTo('2034-08-16 17:00:00');
+            }
+
+            // Check that all escalations levels are sets
+            $level_ticket_class = $la->getLevelTicketClass();
+            $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $control_ticket->getID()]);
+            $this->array($sa_levels_ticket)->hasSize(2); // One TTO and one TTR
+
+            // Check that they match the expected la levels
+            $this->array(
+                array_column($sa_levels_ticket, $level_class::getForeignKeyField())
+            )->isEqualTo($expected_la_levels);
+
+            // Check that they match the expected date (- 1 hour)
+            $this->array(
+                array_unique(array_column($sa_levels_ticket, 'date'))
+            )->isEqualTo(['2034-08-16 16:00:00']);
         }
     }
 }

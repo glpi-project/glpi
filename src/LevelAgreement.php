@@ -1166,17 +1166,20 @@ abstract class LevelAgreement extends CommonDBChild
     }
 
     /**
-     * Remove level of previously assigned level agreements
+     * Remove level of previously assigned level agreements for a given ticket
+     *
+     * @param int $tickets_id
      *
      * @return void
      */
-    public function clearInvalidLevels(): void
+    public function clearInvalidLevels(int $tickets_id): void
     {
         // CLear levels of others LA of the same type
         // e.g. if a new LA TTR was assigned, clear levels from others (= previous) LA TTR
         $level_ticket_class = $this->getLevelTicketClass();
         $level_class = $this->getLevelClass();
         $levels = (new $level_ticket_class())->find([
+            'tickets_id' => $tickets_id,
             [$level_class::getForeignKeyField() => ['!=', $this->getID()]],
             [
                 $level_class::getForeignKeyField() => new QuerySubQuery([
