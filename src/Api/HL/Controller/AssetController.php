@@ -869,6 +869,8 @@ final class AssetController extends AbstractController
             ]
         ];
 
+        $schemas['CommonAsset'] = self::getGlobalAssetSchema($schemas);
+
         return $schemas;
     }
 
@@ -930,9 +932,8 @@ final class AssetController extends AbstractController
         return new JSONResponse($asset_paths);
     }
 
-    private function getGlobalAssetSchema()
+    private static function getGlobalAssetSchema($asset_schemas)
     {
-        $asset_schemas = self::getKnownSchemas();
         $asset_types = self::getAssetTypes();
         $asset_schemas = array_filter($asset_schemas, static function ($key) use ($asset_types) {
             return !str_starts_with($key, '_') && in_array($key, $asset_types, true);
@@ -974,9 +975,15 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Global', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'List or search assets of all types',
+        responses: [
+            ['schema' => 'CommonAsset[]']
+        ]
+    )]
     public function searchAll(Request $request): Response
     {
-        return Search::searchBySchema($this->getGlobalAssetSchema(), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('CommonAsset'), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
