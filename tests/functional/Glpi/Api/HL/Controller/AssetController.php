@@ -66,7 +66,24 @@ class AssetController extends \HLAPITestCase
             ['schema' => 'Computer', 'filters' => [], 'expected' => ['count' => ['>=', 9]]],
             ['schema' => 'Computer', 'filters' => ['name==_test_pc1'], 'expected' => ['count' => ['=', 0]]],
             ['schema' => 'Computer', 'filters' => ['name=like=_test_pc1*'], 'expected' => ['count' => ['>=', 3]]],
+            [
+                'schema' => 'Computer', 'filters' => [
+                    'name=like=_test_pc1*;name=like=*3*'
+                ], 'expected' => ['count' => ['>=', 1]]
+            ],
+            [
+                'schema' => 'Computer', 'filters' => [
+                    '(name=like=_test_pc1*;name=like=*3*)'
+                ], 'expected' => ['count' => ['>=', 1]]
+            ],
+            [
+                'schema' => 'Computer', 'filters' => [
+                    '(name=like=_test_pc1*;name=like=*3*),name==_test_pc_with_encoded_comment'
+                ], 'expected' => ['count' => ['>=', 2]]
+            ],
             ['schema' => 'Monitor', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
+            ['schema' => 'Monitor', 'filters' => ['name=="_test_monitor_1"'], 'expected' => ['count' => ['>=', 1]]],
+            ['schema' => 'Monitor', 'filters' => ['name=like="_test_monitor*"'], 'expected' => ['count' => ['>=', 2]]],
             ['schema' => 'NetworkEquipment', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
             ['schema' => 'Peripheral', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
             ['schema' => 'Phone', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
