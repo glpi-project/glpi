@@ -566,4 +566,72 @@ HTML
         $this->string($fup->fields['content'])->isEqualTo('test template2');
         $this->integer($fup->fields['is_private'])->isEqualTo(0);
     }
+
+    /**
+     * Data provider for testIsParentAlreadyLoaded
+     *
+     * @return iterable
+     */
+    protected function testIsParentAlreadyLoadedProvider(): iterable
+    {
+        $this->login();
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Obviously false, no data was loaded
+        $followup = new CoreITILFollowup();
+        yield [$followup, false];
+
+        // Create two tickets and a followup
+        $parent_1 = $this->createItem('Ticket', [
+            'entities_id' => $entity,
+            'name'        => 'Test ticket 1',
+            'content'     => '',
+        ]);
+        $parent_2 = $this->createItem('Ticket', [
+            'entities_id' => $entity,
+            'name'        => 'Test ticket 2',
+            'content'     => '',
+        ]);
+        $parent_3 = $this->createItem('Problem', [
+            'entities_id' => $entity,
+            'name'        => 'Test problem 1',
+            'content'     => '',
+        ]);
+        $followup = $this->createItem('ITILFollowup', [
+            'itemtype' => Ticket::getType(),
+            'items_id' => $parent_1->getID(),
+            'content'  => 'Test followup',
+        ]);
+
+        // Correct parent
+        $followup->setParentItem($parent_1);
+        yield [$followup, true];
+
+        // Invadid parent (wrong id)
+        $followup->setParentItem($parent_2);
+        yield [$followup, false];
+
+        // Invadid parent (wrong itemtype)
+        $followup->setParentItem($parent_3);
+        yield [$followup, false];
+    }
+
+    /**
+     * Tests for the isParentAlreadyLoaded method
+     *
+     * @dataProvider testIsParentAlreadyLoadedProvider
+     *
+     * @param CoreITILFollowup $followup
+     * @param bool $is_parent_loaded
+     *
+     * @return void
+     */
+    public function testIsParentAlreadyLoaded(
+        CoreITILFollowup $followup,
+        bool $is_parent_loaded
+    ): void {
+        $this->boolean(
+            $this->callPrivateMethod($followup, 'isParentAlreadyLoaded')
+        )->isEqualTo($is_parent_loaded);
+    }
 }
