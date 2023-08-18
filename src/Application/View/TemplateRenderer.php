@@ -52,10 +52,15 @@ use Glpi\Application\View\Extension\TeamExtension;
 use Glpi\Debug\Profiler;
 use Plugin;
 use Session;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
+use Twig\Extra\Cache\CacheExtension;
+use Twig\Extra\Cache\CacheRuntime;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
+use Twig\RuntimeLoader\RuntimeLoaderInterface;
 
 /**
  * @since 10.0.0
@@ -98,10 +103,12 @@ class TemplateRenderer
             $loader,
             $env_params
         );
-       // Vendor extensions
+        // Vendor extensions
         $this->environment->addExtension(new DebugExtension());
         $this->environment->addExtension(new StringExtension());
-       // GLPI extensions
+        $this->environment->addExtension(new CacheExtension());
+
+        // GLPI extensions
         $this->environment->addExtension(new ConfigExtension());
         $this->environment->addExtension(new SecurityExtension());
         $this->environment->addExtension(new DataHelpersExtension());
@@ -116,10 +123,21 @@ class TemplateRenderer
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
 
-       // add superglobals
+        // add superglobals
         $this->environment->addGlobal('_post', $_POST);
         $this->environment->addGlobal('_get', $_GET);
         $this->environment->addGlobal('_request', $_REQUEST);
+
+        // Register cache extension runtime
+        // See https://twig.symfony.com/doc/3.x/tags/cache.html
+        $this->environment->addRuntimeLoader(new class implements RuntimeLoaderInterface {
+            public function load($class)
+            {
+                if (CacheRuntime::class === $class) {
+                    return new CacheRuntime(new TagAwareAdapter(new FilesystemAdapter()));
+                }
+            }
+        });
     }
 
     /**

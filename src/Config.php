@@ -2275,6 +2275,9 @@ HTML;
             [ 'name'    => 'twig/twig',
                 'check'   => 'Twig\\Environment'
             ],
+            [ 'name'    => 'twig/cache-extra',
+                'check'   => 'Twig\\Extra\\Cache\\CacheExtension'
+            ],
             [ 'name'    => 'twig/string-extra',
                 'check'   => 'Twig\\Extra\\String\\StringExtension'
             ],

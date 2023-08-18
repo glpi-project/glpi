@@ -33,12 +33,31 @@
 
 {% set enable_anonymization = enable_anonymization ?? false %}
 
+{#
+   5 minute cache on info cards
+
+   Note: to use a cache with no set duration we would need to take into account updates on
+   linked items (location, groups, ...) which is not pratical as it would require
+   storing their last update date in our cache key (and thus force us to loading them from the
+   database, which would defeat the purpose of this cache) or using cache tags to invalidate them
+   on change (which our cache system does not support yet)
+
+   The main goal here is to avoid reloading the same card multiple times for a single ticket
+#}
+{% cache [
+   "user_info_card",
+   user['id'],
+   enable_anonymization ? "1" : "0",
+   user['date_mod']|date('U')
+]|join("_") ttl(300) %}
+
 <div class="p-0 user-info-card">
    <div class="row">
       <div class="col pt-1">
          {% if user['id'] %}
             {{ include('components/user/picture.html.twig', {
                'users_id': user['id'],
+               'user_object': user_object,
                'enable_anonymization': enable_anonymization
             }) }}
          {% endif %}
@@ -117,3 +136,5 @@
       {% endif %}
    </div>
 </div>
+
+{% endcache %}
