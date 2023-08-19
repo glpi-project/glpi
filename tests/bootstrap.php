@@ -842,6 +842,7 @@ function getItemByTypeName($type, $name, $onlyid = false)
 
 loadDataset();
 
-$tu_oauth_client = getItemByTypeName('OAuthClient', 'Test OAuth Client');
+$tu_oauth_client = new OAuthClient();
+$tu_oauth_client->getFromDBByCrit(['name' => 'Test OAuth Client']);
 define('TU_OAUTH_CLIENT_ID', $tu_oauth_client->fields['identifier']);
 define('TU_OAUTH_CLIENT_SECRET', $tu_oauth_client->fields['secret']);
