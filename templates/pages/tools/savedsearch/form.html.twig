@@ -1,0 +1,74 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% set params  = params ?? [] %}
+
+{% block form_fields %}
+   {% block more_fields %}
+      {% if params['itemtype'] is defined %}
+         {{ inputs.hidden('itemtype', params['itemtype']) }}
+      {% endif %}
+      {% if params['type'] is defined and params['type'] != 0 %}
+         {{ inputs.hidden('type', params['type']) }}
+      {% endif %}
+      {% if params['url'] is defined %}
+         {{ inputs.hidden('url', params['url']) }}
+      {% endif %}
+      {% if item.isNewItem() %}
+         {{ inputs.hidden('users_id', item.fields['users_id']) }}
+         {% if not can_create %}
+            {{ inputs.hidden('is_private', 1) }}
+         {% endif %}
+      {% endif %}
+
+      {{ fields.textField('name', item.fields['name'], __('Name')) }}
+      {{ fields.dropdownArrayField('do_count', item.fields['do_count'], {
+         (constant('SavedSearch::COUNT_AUTO')): __('Auto'),
+         (constant('SavedSearch::COUNT_YES')): __('Yes'),
+         (constant('SavedSearch::COUNT_NO')): __('No')
+      }, __('Do count')) }}
+      {% if can_create %}
+         {{ fields.dropdownArrayField('is_private', item.fields['is_private'], {
+            1: __('Private'),
+            0: __('Public')
+         }, __('Visibility')) }}
+         {{ fields.dropdownField('Entity', 'entities_id', item.fields['entities_id'], 'Entity'|itemtype_name(1)) }}
+         {{ fields.dropdownYesNo('is_recursive', item.fields['is_recursive'], __('Child entities')) }}
+      {% else %}
+         {{ fields.htmlField('', item.fields['is_private']|default(1) ? __('Private') : __('Public'), __('Visibility')) }}
+      {% endif %}
+   {% endblock %}
+{% endblock %}
