@@ -259,6 +259,23 @@ final class Search
                         [getEntitiesRestrictCriteria('_', 'id')]
                     ]
                 ];
+                // if $entity_restrict has nothing except empty values as leafs, replace with a simple empty array.
+                // Expected in root entity when recursive. Having empty arrays will fail the query (thinks it is empty IN).
+                $fn_is_empty = static function ($where) use (&$fn_is_empty) {
+                    foreach ($where as $where_field => $where_value) {
+                        if (is_array($where_value)) {
+                            if (!$fn_is_empty($where_value)) {
+                                return false;
+                            }
+                        } else if (!empty($where_value)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                };
+                if ($fn_is_empty($entity_restrict)) {
+                    $entity_restrict = [];
+                }
             }
         } else {
             //TODO What if some subtypes are entity assign and some are not?
