@@ -79,8 +79,7 @@ if (isset($itemtype)) {
         }
     }
     if (in_array($action, ['update', 'load_item_panel', 'delete_teammember'])) {
-        $item->getFromDB($_REQUEST['items_id']);
-        if (!$item->canUpdateItem()) {
+        if (!$item->can($_REQUEST['items_id'], UPDATE)) {
             // Missing rights
             http_response_code(403);
             return;
@@ -88,7 +87,7 @@ if (isset($itemtype)) {
     }
     if (in_array($action, ['add_teammember'])) {
         $item->getFromDB($_REQUEST['items_id']);
-        $can_assign = method_exists($item, 'canAssign') ? $item->canAssign() : $item->canUpdateItem();
+        $can_assign = method_exists($item, 'canAssign') ? $item->canAssign() : $item->can($_REQUEST['items_id'], UPDATE);
         if (!$can_assign) {
            // Missing rights
             http_response_code(403);
