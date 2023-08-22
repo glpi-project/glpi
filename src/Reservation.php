@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\RichText\RichText;
+
 /**
  * Reservation Class
  **/
@@ -704,7 +706,7 @@ JAVASCRIPT;
         }
 
         echo "<table class='tab_cadre' width='100%'>";
-        echo "<tr><th colspan='2'>" . __('Reserve an item') . "</th></tr>\n";
+        echo "<tr><th colspan='3'>" . __('Reserve an item') . "</th></tr>\n";
 
        // Add Hardware name
         $r = new ReservationItem();
@@ -714,6 +716,7 @@ JAVASCRIPT;
 
         $temp_item  = $options['item'];
         $first_item = array_pop($temp_item);
+        $comment    = '';
         if (count($options['item']) == 1 && $first_item == 0) {
            // only one id = 0, display an item dropdown
             Dropdown::showSelectItemFromItemtypes([
@@ -742,10 +745,14 @@ JAVASCRIPT;
                     }
                 }
 
+                $comment = $r->fields['comment'] ?? '';
+
                 echo "<span class='b'>" . sprintf(__('%1$s - %2$s'), $type, $name) . "</span><br>";
                 echo "<input type='hidden' name='items[$itemID]' value='$itemID'>";
             }
         }
+
+        echo "<td rowspan='5' class='top'>" .  RichText::getEnhancedHtml($comment);
 
         echo "</td></tr>";
 
@@ -836,12 +843,12 @@ JAVASCRIPT;
         }
 
         echo "<tr class='tab_bg_2'><td>" . __('Comments') . "</td>";
-        echo "<td><textarea name='comment' rows='8' class='form-control'>" . $resa->fields["comment"] . "</textarea>";
+        echo "<td colspan='2'><textarea name='comment' rows='8' class='form-control'>" . $resa->fields["comment"] . "</textarea>";
         echo "</td></tr>";
 
         if (empty($ID)) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='2' class='top center'>";
+            echo "<td colspan='3' class='top center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "</td></tr>";
         } else {
