@@ -113,7 +113,7 @@ class PrinterLog extends CommonDBChild
      *
      * @return array An array of printer metrics data
      */
-    final public function getMetrics(
+    final public static function getMetrics(
         Printer $printer,
         array $user_filters = [],
         string $interval = 'P1Y',
@@ -135,7 +135,7 @@ class PrinterLog extends CommonDBChild
         $filters = array_merge($filters, $user_filters);
 
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => self::getTable(),
             'WHERE'  => [
                 'printers_id'  => $printer->fields['id']
             ] + $filters,
@@ -193,26 +193,26 @@ class PrinterLog extends CommonDBChild
         $format = $_GET['date_format'] ?? 'dynamic';
 
         if (isset($_GET['date_interval'])) {
-            $raw_metrics = $this->getMetrics(
+            $raw_metrics = self::getMetrics(
                 $printer,
                 interval: $_GET['date_interval'],
                 format: $format,
             );
         } elseif (isset($_GET['date_start']) && isset($_GET['date_end'])) {
-            $raw_metrics = $this->getMetrics(
+            $raw_metrics = self::getMetrics(
                 $printer,
                 start_date: new DateTime($_GET['date_start']),
                 end_date: new DateTime($_GET['date_end']),
                 format: $format,
             );
         } else {
-            $raw_metrics = $this->getMetrics(
+            $raw_metrics = self::getMetrics(
                 $printer,
                 format: $format,
             );
         }
 
-       //build graph data
+        // build graph data
         $params = [
             'label'         => $this->getTypeName(),
             'icon'          => Printer::getIcon(),
@@ -266,15 +266,22 @@ class PrinterLog extends CommonDBChild
             'line_width'  => 2,
         ];
 
-       // display the printer graph buttons component
+        // display the printer graph buttons component
         TemplateRenderer::getInstance()->display('components/printer_graph_buttons.html.twig', [
             'start_date' => $_GET['date_start'] ?? '',
             'end_date'   => $_GET['date_end'] ?? '',
             'interval'   => $_GET['date_interval'] ?? 'P1Y',
             'format'     => $format,
+            'export_url' => '/front/printerlogcsv.php?' . Toolbox::append_params([
+                'id' => $printer->getID(),
+                'start' => $_GET['date_start'] ?? '',
+                'end'   => $_GET['date_end'] ?? '',
+                'interval'   => $_GET['date_interval'] ?? 'P1Y',
+                'format'     => $format,
+            ]),
         ]);
 
-       //display graph
+        // display graph
         echo "<div class='dashboard printer_barchart pt-2'>";
         echo Widget::multipleAreas($bar_conf);
         echo "</div>";
