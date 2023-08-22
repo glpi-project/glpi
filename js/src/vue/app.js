@@ -33,9 +33,15 @@
 
 import { createApp } from 'vue/dist/vue.esm-bundler.js';
 import {defineAsyncComponent} from "vue";
+
+let existing_components = {};
+if (window.Vue !== undefined && window.Vue.components !== undefined) {
+    existing_components = window.Vue.components;
+}
 window.Vue = {
     createApp: createApp,
-    components: {},
+    defineAsyncComponent: defineAsyncComponent,
+    components: existing_components,
     getComponentsByName: (pattern) => {
         const components = {};
         Object.keys(window.Vue.components).forEach((component_name) => {
