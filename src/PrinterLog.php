@@ -270,9 +270,12 @@ class PrinterLog extends CommonDBChild
         // If $is_comparison is true, it sets the name and data for the comparison printer.
         // Otherwise, it sets the name and data for each metric key with a positive value.
         foreach ($raw_metrics as $printer_id => $metrics) {
+            if ($is_comparison) {
+                $series[$printer_id]['name'] = Printer::getById($printer_id)->fields['name'];
+            }
+
             foreach ($metrics as $metric) {
                 if ($is_comparison) {
-                    $series[$printer_id]['name'] = Printer::getById($printer_id)->fields['name'];
                     $series[$printer_id]['data'][array_search($metric['date'], $labels, false)] = $metric[$compare_printer_stat];
                 } else {
                     foreach ($metric as $key => $value) {
