@@ -32,7 +32,7 @@
  */
 
 import { createApp } from 'vue/dist/vue.esm-bundler.js';
-import {defineAsyncComponent} from "vue";
+import * as vue from "vue";
 
 let existing_components = {};
 if (window.Vue !== undefined && window.Vue.components !== undefined) {
@@ -40,7 +40,7 @@ if (window.Vue !== undefined && window.Vue.components !== undefined) {
 }
 window.Vue = {
     createApp: createApp,
-    defineAsyncComponent: defineAsyncComponent,
+    defineAsyncComponent: vue.defineAsyncComponent,
     components: existing_components,
     getComponentsByName: (pattern) => {
         const components = {};
@@ -50,7 +50,7 @@ window.Vue = {
             }
         });
         return components;
-    }
+    },
 };
 // Require all Vue SFCs in js/src directory
 const component_context = import.meta.webpackContext('.', {
@@ -64,8 +64,12 @@ component_context.keys().forEach((f) => {
     // Ex: ./Debug/Toolbar.vue => DebugToolbar
     const component_name = f.replace(/^\.\/(.+)\.vue$/, '$1');
     components[component_name] = {
-        component: defineAsyncComponent(() => component_context(f)),
+        component: vue.defineAsyncComponent(() => component_context(f)),
     };
 });
 // Save components in global scope
 window.Vue.components = Object.assign(window.Vue.components, components);
+
+// export vue module to be used in other webpack bundles as an external dependency without uselessly bundling it
+// For example, plugins can import from 'vue' as usual, but use the webpack externals option to map 'vue' to 'window _vue'
+window._vue = vue;
