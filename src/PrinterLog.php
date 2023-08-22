@@ -289,6 +289,20 @@ class PrinterLog extends CommonDBChild
             }
         }
 
+        // Loops through the series and replace null values with the previous value
+        if ($is_comparison) {
+            foreach ($series as $key => $data) {
+                $previous_value = null;
+                foreach ($data['data'] as $k => $value) {
+                    if ($value === null) {
+                        $series[$key]['data'][$k] = $previous_value;
+                    } else {
+                        $previous_value = $value;
+                    }
+                }
+            }
+        }
+
         $bar_conf = [
             'data'  => [
                 'labels' => array_map(fn ($date) => $fmt->format(new DateTime($date)), $labels), // Format the labels array
