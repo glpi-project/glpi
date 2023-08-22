@@ -288,7 +288,7 @@ class PrinterLog extends CommonDBChild
 
         $bar_conf = [
             'data'  => [
-                'labels' => $labels,
+                'labels' => array_map(fn ($date) => $fmt->format(new DateTime($date)), $labels), // Format the labels array
                 'series' => array_values($series),
             ],
             'label' => $params['label'],
