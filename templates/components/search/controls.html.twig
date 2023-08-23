@@ -122,7 +122,7 @@
         'order': order,
         'start': start,
       }|url_encode ~ '&' ~ posthref %}
-      <ul class="dropdown-menu move-to-end-of-body" style="z-index: 10001" aria-labelledby="dropdown-export{{ rand }}">
+      <ul class="dropdown-menu" style="z-index: 10001" aria-labelledby="dropdown-export{{ rand }}">
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
             <i class="far fa-lg fa-file-pdf"></i>
             {{ __('Current page in landscape PDF') }}
