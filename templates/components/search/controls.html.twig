@@ -110,7 +110,7 @@
       {% endif %}
 
       {% if count > 0 %}
-         <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary me-1 me-sm-2" type="button" id="dropdown-export"
+         <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary me-1 me-sm-2" type="button" id="dropdown-export-{{ rand }}"
                data-bs-toggle="dropdown" aria-expanded="false" data-bs-popper-config='{"strategy":"fixed"}'>
             <span class="py-1 px-2 my-n1 mx-n2"data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ _x('button', 'Export') }}">
                <i id="export_dropdown_icon" class="ti fa-lg ti-file-download"></i>
@@ -122,7 +122,7 @@
         'order': order,
         'start': start,
       }|url_encode ~ '&' ~ posthref %}
-      <ul class="dropdown-menu" aria-labelledby="dropdown-export">
+      <ul class="dropdown-menu move-to-end-of-body" style="z-index: 10001" aria-labelledby="dropdown-export{{ rand }}">
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
             <i class="far fa-lg fa-file-pdf"></i>
             {{ __('Current page in landscape PDF') }}
@@ -162,6 +162,12 @@
          </a></li>
          {% endif %}
       </ul>
+      <script>
+            // Ugly trick to fix z-index context issue by placing our dropdown at the end of the body
+            $("#dropdown-export-{{ rand }}").on("show.bs.dropdown", function() {
+               $(document.body).append($("ul[aria-labelledby=dropdown-export{{ rand }}]").detach());
+            });
+      </script>
       {% endif %}
    </div>
 </div>
