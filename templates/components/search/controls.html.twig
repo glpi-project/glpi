@@ -111,7 +111,7 @@
 
       {% if count > 0 %}
          <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary me-1 me-sm-2" type="button" id="dropdown-export"
-               data-bs-toggle="dropdown" aria-expanded="false" >
+               data-bs-toggle="dropdown" aria-expanded="false" data-bs-popper-config='{"strategy":"fixed"}'>
             <span class="py-1 px-2 my-n1 mx-n2"data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ _x('button', 'Export') }}">
                <i id="export_dropdown_icon" class="ti fa-lg ti-file-download"></i>
             </span>
