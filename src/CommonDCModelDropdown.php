@@ -212,6 +212,36 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
+    public function getItemRackForModel(): array
+    {
+        $itemtype = str_replace('Model', '', get_called_class());
+        return array_filter(
+            (new Item_Rack())->find([
+                'itemtype' => $itemtype,
+            ]),
+            // Filter out items that are not using the model
+            fn ($item_rack) => $itemtype::getById($item_rack['items_id'])->fields[strtolower(get_called_class()) . 's_id'] == $this->fields['id']
+        );
+    }
+
+    private function checkCellFilled(array $cell, int $orientation, int $hpos, float $depth): bool
+    {
+        if ($hpos == Rack::POS_NONE) {
+            return $this->checkCellFilled($cell, $orientation, Rack::POS_LEFT, $depth)
+                || $this->checkCellFilled($cell, $orientation, Rack::POS_RIGHT, $depth);
+        }
+
+        if (isset($cell[$hpos])) {
+            $accurateCell = array_slice($orientation ? array_reverse($cell[$hpos]) : $cell[$hpos], 0, $depth * 4);
+
+            if (in_array(1, $accurateCell)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function prepareInputForAdd($input)
     {
         return $this->managePictures($input);
@@ -219,7 +249,93 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
     public function prepareInputForUpdate($input)
     {
-        return $this->managePictures($input);
+        $input = $this->managePictures($input);
+
+        // Check if the model is used by an asset in a rack
+        // If so, check whether the new units required fit into the rack without modifying the positions
+        if (
+            isset($input['required_units']) && $input['required_units'] > $this->fields['required_units']
+            || isset($input['is_half_rack']) && $input['is_half_rack'] != $this->fields['is_half_rack']
+            || isset($input['depth']) && $input['depth'] != $this->fields['depth']
+        ) {
+            $errors = [];
+            $itemtype = str_replace('Model', '', get_called_class());
+            foreach ($this->getItemRackForModel() as $item_rack) {
+                $rack = Rack::getById($item_rack['racks_id']);
+                $filled = $rack->getFilled($itemtype, $item_rack['items_id']);
+                $requiredUnits = $input['required_units'] ?? $this->fields['required_units'];
+                $orientation = $item_rack['orientation'];
+                $hpos = $input['is_half_rack'] ?? $this->fields['is_half_rack'] ? $item_rack['hpos'] : Rack::POS_NONE;
+                $depth = $input['depth'] ?? $this->fields['depth'];
+
+                for ($i = 0; $i < $requiredUnits; $i++) {
+                    $position = $item_rack['position'] + $i;
+
+                    if (isset($filled[$position]) && $this->checkCellFilled($filled[$position], $orientation, $hpos, $depth)) {
+                        $errors = [
+                            sprintf(
+                                __(
+                                    'Unable to update model because it is used by an asset in a rack %s and the new required units do not fit into the rack'
+                                ),
+                                $rack->getLink()
+                            )
+                        ];
+                        break;
+                    }
+
+                    if ($position > $rack->fields['number_units']) {
+                        for ($j = 1; $j <= $requiredUnits - $i; $j++) {
+                            $position = $item_rack['position'] - $j;
+                            if (
+                                isset($filled[$position]) && $this->checkCellFilled($filled[$position], $orientation, $hpos, $depth)
+                                || $position < 1
+                            ) {
+                                $errors = [
+                                    sprintf(
+                                        __(
+                                            'Unable to update model because it is used by an asset in a rack %s and the new required units do not fit into the rack'
+                                        ),
+                                        $rack->getLink()
+                                    )
+                                ];
+                                break 2;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if (!empty($errors)) {
+                foreach ($errors as $error) {
+                    Session::addMessageAfterRedirect(
+                        $error,
+                        true,
+                        ERROR
+                    );
+                }
+                return false;
+            }
+        }
+
+        return $input;
+    }
+
+    public function post_updateItem($history = 1)
+    {
+        if (!$this->fields['is_half_rack']) {
+            $item_rack = new Item_Rack();
+            foreach ($this->getItemRackForModel() as $item) {
+                if ($item['hpos'] == Rack::POS_NONE) {
+                    continue;
+                }
+
+                $item_rack->update([
+                    'id' => $item['id'],
+                    'hpos' => Rack::POS_NONE,
+                ]);
+            }
+        }
     }
 
     public function cleanDBonPurge()
