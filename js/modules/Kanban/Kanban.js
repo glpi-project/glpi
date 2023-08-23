@@ -1047,13 +1047,34 @@ class GLPIKanbanRights {
                     column_field: self.column_field.id
                 }
             }).done(function(data) {
+                // Data is sent by the server as an associative array using sorted
+                // ids as property names.
+                // This is unreliable as js object keys are not ordered.
+                // To fix this, we'll convert data into an array which can be
+                // reliably sorted.
+                let sorted_data = Object.values(data); // Cast Object to array
+                sorted_data.sort((a, b) => { // Sort by name
+                    const name_a = a.name.toUpperCase();
+                    const name_b = b.name.toUpperCase();
+                    if (name_a < name_b) {
+                        return -1;
+                    } else if (name_a > name_b) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                });
+
                 const form_content = $(self.add_column_form + " .kanban-item-content");
                 form_content.empty();
                 form_content.append("<input type='text' class='form-control' name='column-name-filter' placeholder='" + __('Search') + "'/>");
                 let list = "<ul class='kanban-columns-list'>";
-                $.each(data, function(column_id, column) {
-                    let list_item = "<li data-list-id='"+column_id+"'>";
-                    if (columns_used.includes(column_id)) {
+
+                sorted_data.forEach(function(column) {
+                    let list_item = "<li data-list-id='"+column.id+"'>";
+                    // The `columns_used` array seems to store the ids as strings
+                    // We'll check if the values exist as they are or as strings to cover both formats
+                    if (columns_used.includes(column.id) || columns_used.includes(column.id.toString())) {
                         list_item += "<input type='checkbox' checked='true' class='form-check-input' />";
                     } else {
                         list_item += "<input type='checkbox' class='form-check-input' />";
