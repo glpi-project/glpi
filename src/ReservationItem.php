@@ -404,7 +404,7 @@ class ReservationItem extends CommonDBChild
 
             $options['candel'] = false;
             $this->initForm($ID, $options);
-            TemplateRenderer::getInstance()->display('components/form/reservationitem.html.twig', [
+            TemplateRenderer::getInstance()->display('components/form/reservationitem_comment.html.twig', [
                 'item'      => $r,
                 'type_name' => sprintf(__('%1$s - %2$s'), $type, $name),
                 'params'    => $options,
