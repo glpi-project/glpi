@@ -198,7 +198,6 @@ class Item_Ticket extends CommonItilObject_Item
         ];
 
         $opt = [];
-       
         unset($options['entities_id']);
 
         foreach ($options as $key => $val) {
