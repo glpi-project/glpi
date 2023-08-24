@@ -197,7 +197,7 @@ class Item_Ticket extends CommonItilObject_Item
             '_canupdate'          => false
         ];
 
-        $opt = [];    
+        $opt = [];      
         unset($options['entities_id']);
 
         foreach ($options as $key => $val) {

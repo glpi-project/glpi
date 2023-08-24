@@ -41,7 +41,7 @@ use Printer_CartridgeInfo;
 
 class Cartridge extends InventoryAsset
 {
-    public function knownTags(): array
+    public function knownTags(bool $withstates = true): array
     {
         $tags = [];
 
@@ -93,19 +93,30 @@ class Cartridge extends InventoryAsset
                 $tags[$type] = [
                     'name'   => $label
                 ];
-
-                foreach ($states as $state => $slabel) {
-                    $tags[$type . $state] = [
-                    //TRANS first argument is a type, second a state
-                        'name'   => sprintf(
-                            '%1$s %2$s',
-                            $label,
-                            $slabel
-                        )
+                if ($withstates) {
+                    foreach ($states as $state => $slabel) {
+                        $tags[$type . $state] = [
+                        //TRANS first argument is a type, second a state
+                            'name'   => sprintf(
+                                '%1$s %2$s',
+                                $label,
+                                $slabel
+                            )
+                        ];
+                        if (isset($aliases[$type . $state])) {
+                            foreach ($aliases[$type . $state] as $alias) {
+                                $tags[$alias] = $tags[$type . $state];
+                            }
+                        }
+                    }
+                } else {
+                    $tags[$type] = [
+                    //TRANS first argument is a type
+                        'name'   => $label
                     ];
-                    if (isset($aliases[$type . $state])) {
-                        foreach ($aliases[$type . $state] as $alias) {
-                            $tags[$alias] = $tags[$type . $state];
+                    if (isset($aliases[$type])) {
+                        foreach ($aliases[$type] as $alias) {
+                            $tags[$alias] = $tags[$type];
                         }
                     }
                 }
@@ -127,23 +138,38 @@ class Cartridge extends InventoryAsset
                         }
                     }
 
-                    foreach ($states as $state => $slabel) {
-                        $tags[$type . $color . $state] = [
-                        //TRANS first argument is a type, second a color and third a state
+                    if ($withstates) {
+                        foreach ($states as $state => $slabel) {
+                            $tags[$type . $color . $state] = [
+                            //TRANS first argument is a type, second a color and third a state
+                                'name'   => sprintf(
+                                    '%1$s %2$s %3$s',
+                                    $label,
+                                    $clabel,
+                                    $slabel
+                                )
+                            ];
+                            if (isset($aliases[$type . $color . $state])) {
+                                foreach ($aliases[$type . $color . $state] as $alias) {
+                                    $tags[$alias] = $tags[$type . $color . $state];
+                                }
+                            }
+                        }
+                    } else {
+                        $tags[$type . $color] = [
+                        //TRANS first argument is a type, second a color
                             'name'   => sprintf(
-                                '%1$s %2$s %3$s',
+                                '%1$s %2$s',
                                 $label,
-                                $clabel,
-                                $slabel
+                                $clabel
                             )
                         ];
-                        if (isset($aliases[$type . $color . $state])) {
-                            foreach ($aliases[$type . $color . $state] as $alias) {
-                                $tags[$alias] = $tags[$type . $color . $state];
+                        if (isset($aliases[$type . $color])) {
+                            foreach ($aliases[$type . $color] as $alias) {
+                                $tags[$alias] = $tags[$type . $color];
                             }
                         }
                     }
-
                     if (in_array($type, $w_extras_types) && $color == 'black') {
                         $extras = [
                             'photo'  => __('Photo'),

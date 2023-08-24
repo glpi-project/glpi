@@ -110,6 +110,7 @@ class Entity extends CommonTreeDropdown
             'default_consumables_alarm_threshold',
             'default_contract_alert', 'default_infocom_alert',
             'mailing_signature', 'cartridges_alert_repeat',
+            'printer_cartridge_levels_alert_repeat',
             'consumables_alert_repeat', 'notclosed_delay',
             'use_licenses_alert', 'use_certificates_alert',
             'send_licenses_alert_before_delay',
@@ -1050,6 +1051,16 @@ class Entity extends CommonTreeDropdown
             'table'              => $this->getTable(),
             'field'              => 'consumables_alert_repeat',
             'name'               => __('Alarms on consumables'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific'
+        ];
+
+        $tab[] = [
+            'id'                 => '28',
+            'table'              => $this->getTable(),
+            'field'              => 'printer_cartridge_levels_alert_repeat',
+            'name'               => __('Alarms on low printer cartridge levels'),
             'massiveaction'      => false,
             'nosearch'           => true,
             'datatype'           => 'specific'
@@ -2150,7 +2161,7 @@ class Entity extends CommonTreeDropdown
         echo "<tr><th colspan='4'>" . __('Alarms options') . "</th></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<th colspan='2' rowspan='2'>";
+        echo "<th colspan='2' rowspan='3'>";
         echo _n('Cartridge', 'Cartridges', Session::getPluralNumber());
         echo "</th>";
         echo "<td>" . __('Reminders frequency for alarms on cartridges') . "</td><td>";
@@ -2166,6 +2177,20 @@ class Entity extends CommonTreeDropdown
         }
 
         echo "</td></tr>";
+        echo "<td>" . __('Reminders frequency for alarms on low printer cartridge levels') . "</td><td>";
+        $default_value = $entity->fields['printer_cartridge_levels_alert_repeat'];
+        Alert::dropdown(['name'           => 'printer_cartridge_levels_alert_repeat',
+            'value'          => $default_value,
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
+
+        if ($entity->fields['printer_cartridge_levels_alert_repeat'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('printer_cartridge_levels_alert_repeat', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('printer_cartridge_levels_alert_repeat', $tid), true);
+        }
+
+        echo "</td></tr>";
+
         echo "<tr class='tab_bg_1'><td>" . __('Default threshold for cartridges count') . "</td><td>";
         if ($ID > 0) {
             $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
@@ -3642,6 +3667,7 @@ class Entity extends CommonTreeDropdown
                 return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
 
             case 'cartridges_alert_repeat':
+            case 'printer_cartridge_levels_alert_repeat':
             case 'consumables_alert_repeat':
                 switch ($values[$field]) {
                     case self::CONFIG_PARENT:
@@ -3809,6 +3835,7 @@ class Entity extends CommonTreeDropdown
                 return Alert::dropdownYesNo($options);
 
             case 'cartridges_alert_repeat':
+            case 'printer_cartridge_levels_alert_repeat':
             case 'consumables_alert_repeat':
                 $options['name']  = $name;
                 $options['value'] = $values[$field];

@@ -1373,7 +1373,7 @@ HTML;
                 'title' => __('Administration'),
                 'types' => [
                     'User', 'Group', 'Entity', 'Rule',
-                    'Profile', 'QueuedNotification', 'Glpi\\Event', 'Glpi\Inventory\Inventory'
+                    'Profile', 'QueuedNotification', 'PrinterCartridgeLevelAlert', 'Glpi\\Event', 'Glpi\Inventory\Inventory'
                 ],
                 'icon'  => 'ti ti-shield-check'
             ],
