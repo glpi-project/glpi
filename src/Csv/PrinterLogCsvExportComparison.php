@@ -117,6 +117,15 @@ class PrinterLogCsvExportComparison implements ExportToCsvInterface
 
         usort($content, fn ($a, $b) => $a['date'] <=> $b['date']);
 
+        // Fill null values with previous non-null value
+        foreach ($content as $key => $value) {
+            foreach ($value as $printerId => $metric) {
+                if ($metric === null) {
+                    $content[$key][$printerId] = $content[$key - 1][$printerId] ?? null;
+                }
+            }
+        }
+
         return $content;
     }
 }
