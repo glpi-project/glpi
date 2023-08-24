@@ -122,7 +122,7 @@
         'order': order,
         'start': start,
       }|url_encode ~ '&' ~ posthref %}
-      <ul class="dropdown-menu" style="z-index: 10001" aria-labelledby="dropdown-export{{ rand }}">
+      <ul class="dropdown-menu" style="z-index: 10001" aria-labelledby="dropdown-export-{{ rand }}">
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
             <i class="far fa-lg fa-file-pdf"></i>
             {{ __('Current page in landscape PDF') }}
@@ -165,7 +165,7 @@
       <script>
             // Ugly trick to fix z-index context issue by placing our dropdown at the end of the body
             $("#dropdown-export-{{ rand }}").on("show.bs.dropdown", function() {
-               $(document.body).append($("ul[aria-labelledby=dropdown-export{{ rand }}]").detach());
+               $(document.body).append($("ul[aria-labelledby=dropdown-export-{{ rand }}]").detach());
             });
       </script>
       {% endif %}
