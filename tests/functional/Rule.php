@@ -816,9 +816,5 @@ class Rule extends DbTestCase
                 )
             )->isFalse();
         }
-
-
-
-
     }
 }
