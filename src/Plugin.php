@@ -39,6 +39,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Dashboard\Grid;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
@@ -130,7 +131,14 @@ class Plugin extends CommonDBTM
      *
      * @var array
      */
-    private ?array $plugins_information = null;
+    private array $plugins_information = [];
+
+    /**
+     * Store keys of plugins found on filesystem.
+     *
+     * @var array|null
+     */
+    private ?array $filesystem_plugin_keys = null;
 
     public static function getTypeName($nb = 0)
     {
@@ -259,7 +267,9 @@ class Plugin extends CommonDBTM
 
         if ($load_plugins) {
             foreach ($directories_to_load as $directory) {
+                \Glpi\Debug\Profiler::getInstance()->start("{$directory}:init", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
                 Plugin::load($directory);
+                \Glpi\Debug\Profiler::getInstance()->stop("{$directory}:init");
             }
             // For plugins which require action after all plugin init
             Plugin::doHook(Hooks::POST_INIT);
@@ -476,21 +486,7 @@ class Plugin extends CommonDBTM
         }
 
         if ($scan_inactive_and_new_plugins) {
-            // Add found directories to the check list
-            foreach (PLUGINS_DIRECTORIES as $plugins_directory) {
-                if (!is_dir($plugins_directory)) {
-                    continue;
-                }
-                $directory_handle  = opendir($plugins_directory);
-                while (false !== ($filename = readdir($directory_handle))) {
-                    if (
-                        !in_array($filename, ['.svn', '.', '..'])
-                        && is_dir($plugins_directory . DIRECTORY_SEPARATOR . $filename)
-                    ) {
-                        $directories[] = $filename;
-                    }
-                }
-            }
+            array_push($directories, ...$this->getFilesystemPluginKeys());
         }
 
         // Prevent duplicated checks
@@ -501,45 +497,54 @@ class Plugin extends CommonDBTM
             if (in_array($directory, $excluded_plugins)) {
                 continue;
             }
-            $this->checkPluginState($directory);
+            $this->checkPluginState($directory, $scan_inactive_and_new_plugins);
         }
 
         self::$plugins_state_checked = true;
     }
 
     /**
-     * Get information for all plugins found on filesystem.
-     *
-     * @return array
+     * Get information for a given plugin.
      */
-    private function getPluginsInformation(): array
+    private function getPluginInformation(string $plugin_key): ?array
     {
-        // Run once
-        if ($this->plugins_information !== null) {
-            return $this->plugins_information;
+        if (!array_key_exists($plugin_key, $this->plugins_information)) {
+            $information = $this->getInformationsFromDirectory($plugin_key);
+            $this->plugins_information[$plugin_key] = !empty($information) ? $information : null;
         }
 
-        $plugins_information = [];
-        $plugins_directories = new AppendIterator();
-        foreach (PLUGINS_DIRECTORIES as $base_dir) {
-            $plugins_directories->append(new DirectoryIterator($base_dir));
-        }
-        foreach ($plugins_directories as $plugin_directory) {
-            $plugin_name = $plugin_directory->getFilename();
+        return $this->plugins_information[$plugin_key];
+    }
 
-            if (
-                in_array($plugin_name, ['.svn', '.', '..'])
-                || !is_dir($plugin_directory->getRealPath())
-            ) {
-                continue;
+    /**
+     * Return plugin keys corresponding to directories found in filesystem.
+     */
+    private function getFilesystemPluginKeys(): array
+    {
+        if ($this->filesystem_plugin_keys === null) {
+            $this->filesystem_plugin_keys = [];
+
+            $plugins_directories = new AppendIterator();
+            foreach (PLUGINS_DIRECTORIES as $base_dir) {
+                if (!is_dir($base_dir)) {
+                    continue;
+                }
+                $plugins_directories->append(new DirectoryIterator($base_dir));
             }
 
-            $info = $this->getInformationsFromDirectory($plugin_name);
-            $plugins_information[$plugin_name] = $info;
-        }
-        $this->plugins_information = $plugins_information;
+            foreach ($plugins_directories as $plugin_directory) {
+                if (
+                    str_starts_with($plugin_directory->getFilename(), '.') // ignore hidden files
+                    || !is_dir($plugin_directory->getRealPath())
+                ) {
+                    continue;
+                }
 
-        return $this->plugins_information;
+                $this->filesystem_plugin_keys[] = $plugin_directory->getFilename();
+            }
+        }
+
+        return $this->filesystem_plugin_keys;
     }
 
     /**
@@ -549,14 +554,15 @@ class Plugin extends CommonDBTM
      *
      * return void
      */
-    public function checkPluginState($plugin_key)
+    public function checkPluginState($plugin_key, bool $check_for_replacement = false)
     {
         $plugin = new self();
 
-        $information = $this->getPluginsInformation()[$plugin_key] ?? [];
-        $new_specs    = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
+        $information      = $this->getPluginInformation($plugin_key) ?? [];
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
         $is_loadable      = !empty($information);
+
+        $new_specs        = $check_for_replacement ? $this->getNewInfoAndDirBasedOnOldName($plugin_key) : null;
         $is_replaced      = $new_specs !== null;
 
         if (!$is_already_known && !$is_loadable) {
@@ -771,11 +777,13 @@ class Plugin extends CommonDBTM
      */
     private function getNewInfoAndDirBasedOnOldName($oldname)
     {
-        foreach ($this->getPluginsInformation() as $plugin_name => $information) {
-            if (array_key_exists('oldname', $information) && $information['oldname'] === $oldname) {
-               // Return information if oldname specified in parsed directory matches passed value
+        foreach ($this->getFilesystemPluginKeys() as $plugin_key) {
+            $information = $this->getPluginInformation($plugin_key);
+
+            if (($information['oldname'] ?? null) === $oldname) {
+                // Return information if oldname specified in parsed directory matches passed value
                 return [
-                    'directory'    => $plugin_name,
+                    'directory'   => $plugin_key,
                     'information' => $information,
                 ];
             }
@@ -846,6 +854,9 @@ class Plugin extends CommonDBTM
                 'state'   => self::NOTINSTALLED,
             ]);
             $this->unload($this->fields['directory']);
+
+            $this->resetHookableCacheEntries($this->fields['directory']);
+
             self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
 
             $type = INFO;
@@ -928,6 +939,9 @@ class Plugin extends CommonDBTM
                         ]);
                         $message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
                     }
+
+                    $this->resetHookableCacheEntries($this->fields['directory']);
+
                     self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
 
                     Event::log(
@@ -1000,7 +1014,7 @@ class Plugin extends CommonDBTM
                     $this->unload($this->fields['directory']);
 
                     Session::addMessageAfterRedirect(
-                        sprintf(__('Plugin prerequisites are not matching, it cannot be activated.') . ' ' . $msg, $this->fields['name']),
+                        sprintf(__('Plugin %1$s prerequisites are not matching, it cannot be activated.'), $this->fields['name']) . ' ' . $msg,
                         true,
                         ERROR
                     );
@@ -1018,6 +1032,8 @@ class Plugin extends CommonDBTM
                 $this->update(['id'    => $ID,
                     'state' => self::ACTIVATED
                 ]);
+
+                $this->resetHookableCacheEntries($this->fields['directory']);
 
                // Initialize session for the plugin
                 if (
@@ -1064,7 +1080,7 @@ class Plugin extends CommonDBTM
                 $this->unload($this->fields['directory']);
 
                 Session::addMessageAfterRedirect(
-                    sprintf(__('Plugin configuration must be done, it cannot be activated.') . ' ' . $msg, $this->fields['name']),
+                    sprintf(__('Plugin %1$s configuration must be done, it cannot be activated.'), $this->fields['name']),
                     true,
                     ERROR
                 );
@@ -1102,6 +1118,9 @@ class Plugin extends CommonDBTM
                 'state' => self::NOTACTIVATED
             ]);
             $this->unload($this->fields['directory']);
+
+            $this->resetHookableCacheEntries($this->fields['directory']);
+
             self::doHook(Hooks::POST_PLUGIN_DISABLE, $this->fields['directory']);
 
            // reset menu
@@ -1640,10 +1659,12 @@ class Plugin extends CommonDBTM
                     }
 
                     if (isset($tab[$itemtype])) {
+                        \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:{$name}", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
                         self::includeHook($plugin_key);
                         if (is_callable($tab[$itemtype])) {
                             call_user_func($tab[$itemtype], $data);
                         }
+                        \Glpi\Debug\Profiler::getInstance()->stop("{$plugin_key}:{$name}");
                     }
                 }
             }
@@ -1654,10 +1675,12 @@ class Plugin extends CommonDBTM
                         continue;
                     }
 
+                    \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:{$name}", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
                     self::includeHook($plugin_key);
                     if (is_callable($function)) {
                         call_user_func($function, $data);
                     }
+                    \Glpi\Debug\Profiler::getInstance()->stop("{$plugin_key}:{$name}");
                 }
             }
         }
@@ -1876,7 +1899,7 @@ class Plugin extends CommonDBTM
                 // variables used in this function.
                 // For example, if the included files contains a $key variable, it will
                 // replace the $key variable used here.
-                $include_fct = function () use ($plugin_key, $file_path) {
+                $include_fct = function () use ($file_path) {
                     include_once($file_path);
                 };
                 $include_fct();
@@ -3012,5 +3035,37 @@ class Plugin extends CommonDBTM
                 return;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
+
+    /**
+     * Reset cache entries that may be indirectly altered by plugins.
+     *
+     * @param string $plugin_key
+     *
+     * @return bool
+     */
+    private function resetHookableCacheEntries(string $plugin_key): bool
+    {
+        global $CFG_GLPI, $GLPI_CACHE;
+
+        $to_clear = [
+            // Plugin lowercase/case-sensitive class names mapping.
+            // see `DbUtils::fixItemtypeCase()`
+            sprintf('itemtype-case-mapping-%s', $plugin_key),
+
+            // Hookable using `$CFG_GLPI['*_types']` and `$CFG_GLPI['itemdevices_itemaffinity']`.
+            'item_device_affinities',
+
+            // Will be stale as long as a plugin adds/remove a custom right.
+            'all_possible_rights',
+        ];
+
+        foreach (array_keys($CFG_GLPI['languages']) as $language) {
+            // Hookable using `$CFG_GLPI['itemdevices']`, `$CFG_GLPI['device_types']`, `$CFG_GLPI['asset_types']`,
+            // and `Hooks::DASHBOARD_FILTERS`.
+            $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
+        }
+
+        return $GLPI_CACHE->deleteMultiple($to_clear);
     }
 }

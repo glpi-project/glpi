@@ -634,6 +634,7 @@ class Toolbox
         if (isset($mode)) {
             $_SESSION['glpi_use_mode'] = $mode;
         }
+        //FIXME Deprecate the debug_sql and debug_vars parameters in GLPI 10.1.0
         if (isset($debug_sql)) {
             $CFG_GLPI['debug_sql'] = $debug_sql;
         }
@@ -1070,6 +1071,10 @@ class Toolbox
                 $source_res = imagecreatefrompng($source_path);
                 break;
 
+            case IMAGETYPE_WEBP:
+                $source_res = imagecreatefromwebp($source_path);
+                break;
+
             default:
                 return false;
         }
@@ -1077,8 +1082,8 @@ class Toolbox
        //create new img resource for store thumbnail
         $source_dest = imagecreatetruecolor($new_width, $new_height);
 
-       // set transparent background for PNG/GIF
-        if ($img_type === IMAGETYPE_GIF || $img_type === IMAGETYPE_PNG) {
+       // set transparent background for PNG/GIF/WebP
+        if ($img_type === IMAGETYPE_GIF || $img_type === IMAGETYPE_PNG || $img_type === IMAGETYPE_WEBP) {
             imagecolortransparent($source_dest, imagecolorallocatealpha($source_dest, 0, 0, 0, 127));
             imagealphablending($source_dest, false);
             imagesavealpha($source_dest, true);
@@ -1104,6 +1109,10 @@ class Toolbox
             case IMAGETYPE_GIF:
             case IMAGETYPE_PNG:
                 $result = imagepng($source_dest, $dest_path);
+                break;
+
+            case IMAGETYPE_WEBP:
+                $result = imagewebp($source_dest, $dest_path);
                 break;
 
             case IMAGETYPE_JPEG:

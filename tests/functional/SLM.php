@@ -35,8 +35,10 @@
 
 namespace tests\units;
 
+use CommonITILObject;
 use DbTestCase;
 use OlaLevel_Ticket;
+use Rule;
 use SlaLevel_Ticket;
 
 class SLM extends DbTestCase
@@ -931,5 +933,419 @@ class SLM extends DbTestCase
         $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 3600); // 60 minutes escalation level
         $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
         $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
+    }
+
+    protected function laProvider(): iterable
+    {
+        // WARNING: dates must be in the future or escalation levels will be
+        // computed immediately and removed from the database (and thus wont be able
+        // to be tested properly)
+
+        // Note: while it is possible to add multiple escalation levels,
+        // only one at a time is set in the database so we can only
+        // really test one level here
+        // With that in mind, escalation_time and escalation_target_date will be
+        // individual parameters instead of an array that could support multiple levels
+
+        foreach ([\OLA::class, \SLA::class] as $la_class) {
+            foreach ([\SLM::TTO, \SLM::TTR] as $la_type) {
+                // 30 minutes LA without pauses
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 30,
+                        'definition_time' => 'minute',
+                    ],
+                    'begin_date'             => '2034-06-09 08:46:12',
+                    'pauses'                 => [],
+                    'target_date'            => '2034-06-09 09:16:12',
+                    'waiting_duration'       => 0,
+                    // Negative 10 minutes escalation level
+                    'escalation_time'        => - 10 * MINUTE_TIMESTAMP,
+                    'target_escalation_date' => '2034-06-09 09:06:12',
+                ];
+
+                // 30 minutes LA with many pauses within the same day
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 30,
+                        'definition_time' => 'minute',
+                    ],
+                    'begin_date'        => '2034-06-09 08:46:12',
+                    'pauses'            => [
+                        [
+                            // pause: 1 h 18 m 12 s (4692 s)
+                            'from' => '2034-06-09 08:47:42',
+                            'to'   => '2034-06-09 10:05:54',
+                        ],
+                        [
+                            // pause: 25 m 25 s (1525 s)
+                            'from' => '2034-06-09 10:09:13',
+                            'to'   => '2034-06-09 10:34:38',
+                        ],
+                        [
+                            // pause: 45 m 36 s (2736 s)
+                            'from' => '2034-06-09 10:43:41',
+                            'to'   => '2034-06-09 11:29:17',
+                        ],
+                    ],
+                    'target_date'       => $la_type == \SLM::TTR
+                        // 2034-06-09 08:46:12 + 30 m (LA time) + 2 h 29 m 13 s (waiting time)
+                        ? '2034-06-09 11:45:25'
+                        // TTO does is not impacted by waiting times
+                        : '2034-06-09 09:16:12'
+                    ,
+                    'waiting_duration'  => $la_type == \SLM::TTR
+                        ? 8953 // 4692 + 1525 + 2736
+                        : 0,
+                    // Negative 5 minutes escalation level
+                    'escalation_time'        => - 5 * MINUTE_TIMESTAMP,
+                    'target_escalation_date' => $la_type == \SLM::TTR
+                        // 5 minutes before each target date
+                        ? '2034-06-09 11:40:25'
+                        : '2034-06-09 09:11:12'
+                ];
+
+                // 4 hours LA without pauses
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 4,
+                        'definition_time' => 'hour',
+                    ],
+                    'begin_date'        => '2034-06-09 08:46:12',
+                    'pauses'            => [],
+                    'target_date'       => '2034-06-09 12:46:12',
+                    'waiting_duration'  => 0,
+                    // Positive 1 hour escalation level
+                    'escalation_time'   => HOUR_TIMESTAMP,
+                    'target_escalation_date' => '2034-06-09 13:46:12',
+                ];
+
+                // 4 hours LA with a pause within the same day
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 4,
+                        'definition_time' => 'hour',
+                    ],
+                    'begin_date'        => '2034-06-09 08:46:12',
+                    'pauses'            => [
+                        [
+                            // pause: 2 h 8 m 22 s (7702 s)
+                            'from' => '2034-06-09 09:15:27',
+                            'to'   => '2034-06-09 11:23:49',
+                        ],
+                    ],
+                    'target_date'       => $la_type == \SLM::TTR
+                        // 2034-06-09 08:46:12 + 4 h (LA time) + 2h 8 m 22 s (waiting time)
+                        ? '2034-06-09 14:54:34'
+                        // TTO does is not impacted by waiting times
+                        : '2034-06-09 12:46:12'
+                    ,
+                    'waiting_duration'  => $la_type == \SLM::TTR ? 7702 : 0,
+                    // Positive 10 hour escalation level
+                    'escalation_time'   => 10 * HOUR_TIMESTAMP,
+                    'target_escalation_date' => $la_type == \SLM::TTR
+                        // Start on 2034-06-09 14:54:34 (target TTR date) - 10 hours to add
+                        // 4h06 to reach end of day (19h)
+                        // There is still 5h54 remaining hours to add
+                        // 2034-06-10 is outside our calendar (saturday)
+                        // 2034-06-11 is outside our calendar (sunday)
+                        // Start again on 2034-06-12 on 10h30 (monday)
+                        // Add the remaining 5h54 hours -> 16h24
+                        ? '2034-06-12 16:24:34'
+                        // Start on 2034-06-09 12:46:12 (target TTO date) - 10 hours to add
+                        // 6h14 to reach end of day (19h)
+                        // There is still 3h46 remaining hours to add
+                        // 2034-06-10 is outside our calendar (saturday)
+                        // 2034-06-11 is outside our calendar (sunday)
+                        // Start again on 2034-06-12 on 10h30 (monday)
+                        // Add the remaining 3h46 hours -> 14h16
+                        : '2034-06-12 14:16:12'
+                ];
+
+                // 4 hours LA with pauses accross multiple days
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 4,
+                        'definition_time' => 'hour',
+                    ],
+                    'begin_date'        => '2034-06-05 10:00:00', // LA will start at 10:30
+                    'pauses'            => [
+                        [
+                            // From calendar POV, pause is
+                            // from 11:00:00 to 19:00:00 on 2034-06-05 (8 h),
+                            // from 08:30:00 to 19:00:00 on 2034-06-06 (10 h 30 m),
+                            // from 08:30:00 to 09:30:00 on 2034-06-07 (1 h).
+                            // pause: 8 h + 10 h 30 m + 1 h = 19 h 30 m (70 200 s)
+                            'from' => '2034-06-05 11:00:00',
+                            'to'   => '2034-06-07 09:30:00',
+                        ],
+                        [
+                            // From calendar POV, pause is
+                            // from 10:00:00 to 19:00:00 on 2034-06-07 (9 h),
+                            // from 08:30:00 to 09:00:00 on 2034-06-08 (30 m).
+                            // pause: 9 h + 30 m = 9 h 30 m (34 200 s)
+                            'from' => '2034-06-07 10:00:00',
+                            'to'   => '2034-06-08 09:00:00',
+                        ],
+                    ],
+                    'target_date'       => $la_type == \SLM::TTR
+                        // 2034-06-05 10:30:00 + 4 h (LA time) + 29 h (waiting time) + non-working hours
+                        ? '2034-06-08 12:00:00'
+                        // TTO is not impacted by waiting times
+                        : '2034-06-05 14:30:00'
+                    ,
+                    'waiting_duration'  => $la_type == \SLM::TTR ? 104400 : 0,
+                    // Positive 3 days escalation level
+                    'escalation_time'   => 3 * DAY_TIMESTAMP,
+                    'target_escalation_date' => $la_type == \SLM::TTR
+                         // 3 days after TTR
+                         // Skip saturday and sunday (2034-06-10 and 2034-06-11)
+                         // The fact that monday start later (+ 2 hours) SHOULD NOT
+                         // be taken into account as we work in days not in hours
+                         ? '2034-06-13 12:00:00'
+                         // 3 day after TTO
+                         : '2034-06-08 14:30:00'
+                ];
+
+                // 5 days LA over a week-end without pauses
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 5,
+                        'definition_time' => 'day',
+                    ],
+                    'begin_date'        => '2034-06-09 08:46:12',
+                    'pauses'            => [],
+                    'target_date'       => '2034-06-16 08:46:12',
+                    'waiting_duration'  => 0,
+                    // Negative 8 hours escalation level
+                    'escalation_time'   => - 8 * HOUR_TIMESTAMP,
+                    // Count back from 2034-06-16 08:46:12 (friday) - 8 hours to remove
+                    // 16m to reach start of day (8h30)
+                    // 7h44 hours remaining
+                    // Start counting back again from 2034-06-15 19h00 (thurday)
+                    // Remove the remaining 7h44 hours -> 11h16
+                    'target_escalation_date' =>  '2034-06-15 11:16:12'
+                ];
+
+                // 5 days LA over a week-end without pauses
+                // + `end_of_working_day`
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'               => $la_type,
+                        'number_time'        => 5,
+                        'definition_time'    => 'day',
+                        'end_of_working_day' => 1,
+                    ],
+                    'begin_date'        => '2034-06-09 08:46:12',
+                    'pauses'            => [],
+                    'target_date'       => '2034-06-16 19:00:00',
+                    'waiting_duration'  => 0,
+                    // Negative 2 days escalation level
+                    'escalation_time'   => - 2 * DAY_TIMESTAMP,
+                    // Remove two days
+                    'target_escalation_date' =>  '2034-06-14 19:00:00'
+                ];
+
+                // 5 days LA with multiple pauses, including a pause of multiple days over a week-end
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'            => $la_type,
+                        'number_time'     => 5,
+                        'definition_time' => 'day',
+                    ],
+                    'begin_date'        => '2034-06-07 10:00:00',
+                    'pauses'            => [
+                        [
+                            // From calendar POV, pause is
+                            // from 11:00:00 to 19:00:00 on 2034-06-07 (8 h),
+                            // from 08:30:00 to 19:00:00 on 2034-06-08 (10 h 30 m),
+                            // from 08:30:00 to 19:00:00 on 2034-06-09 (10 h 30 m),
+                            // not counted on 2034-06-10 as it is not a working day,
+                            // not counted on 2034-06-11 as it is not a working day,
+                            // from 10:30:00 to 19:00:00 on 2034-06-12 (08 h 30 m),
+                            // from 08:30:00 to 11:00:00 on 2034-06-13 (2 h 30 m).
+                            // pause: 8 h + 10 h 30 m + 10 h 30 m + 10 h 30 m + 2 h 30 m = 40 h (144 000 s)
+                            'from' => '2034-06-07 11:00:00',
+                            'to'   => '2034-06-13 11:00:00',
+                        ],
+                        [
+                            // From calendar POV, pause is from 08:30:00 to 18:00:00 on 2034-06-07 (9 h 30 m),
+                            // pause: 9 h 30 m (34 200 s)
+                            'from' => '2034-06-14 07:00:00',
+                            'to'   => '2034-06-14 18:00:00',
+                        ],
+                    ],
+                    'target_date'       => $la_type == \SLM::TTR
+                        // 2034-06-07 10:00:00 + 5 days (LA time)
+                        // -> 2034-06-14 10:00:00 + 49 h 30 m (waiting time) + non-working hours
+                        ? '2034-06-21 09:00:00'
+                        : '2034-06-14 10:00:00' // TTO does is not impacted by waiting times
+                    ,
+                    'waiting_duration'  => $la_type == \SLM::TTR ? 178200 : 0,
+                    // Positive 3 week escalation level
+                    'escalation_time'   => 15 * DAY_TIMESTAMP,
+                    'target_escalation_date' => $la_type == \SLM::TTR
+                        ? '2034-07-12 09:00:00'
+                        : '2034-07-05 10:00:00'
+                ];
+
+                // 5 days LA with multiple pauses, including a pause of multiple days over a week-end
+                // + `end_of_working_day`
+                yield [
+                    'la_class'          => $la_class,
+                    'la_params'         => [
+                        'type'               => $la_type,
+                        'number_time'        => 5,
+                        'definition_time'    => 'day',
+                        'end_of_working_day' => 1,
+                    ],
+                    'begin_date'        => '2034-06-07 10:00:00',
+                    'pauses'            => [
+                        [
+                            // From calendar POV, pause is
+                            // from 11:00:00 to 19:00:00 on 2034-06-07 (8 h),
+                            // from 08:30:00 to 19:00:00 on 2034-06-08 (10 h 30 m),
+                            // from 08:30:00 to 19:00:00 on 2034-06-09 (10 h 30 m),
+                            // not counted on 2034-06-10 as it is not a working day,
+                            // not counted on 2034-06-11 as it is not a working day,
+                            // from 10:30:00 to 19:00:00 on 2034-06-12 (08 h 30 m),
+                            // from 08:30:00 to 11:00:00 on 2034-06-13 (2 h 30 m).
+                            // pause: 8 h + 10 h 30 m + 10 h 30 m + 10 h 30 m + 2 h 30 m = 40 h (144 000 s)
+                            'from' => '2034-06-07 11:00:00',
+                            'to'   => '2034-06-13 11:00:00',
+                        ],
+                        [
+                            // From calendar POV, pause is from 08:30:00 to 18:00:00 on 2034-06-07 (9 h 30 m),
+                            // pause: 9 h 30 m (34 200 s)
+                            'from' => '2034-06-14 07:00:00',
+                            'to'   => '2034-06-14 18:00:00',
+                        ],
+                    ],
+                    'target_date'       => $la_type == \SLM::TTR
+                        // 2034-06-07 10:00:00 + 5 days/end of working day(LA time)
+                        // -> 2034-06-14 19:00:00 + 49 h 30 m (waiting time) + non-working hours
+                        ? '2034-06-21 18:00:00'
+                        // TTO does is not impacted by waiting times
+                        : '2034-06-14 19:00:00'
+                    ,
+                    'waiting_duration'  => $la_type == \SLM::TTR ? 178200 : 0,
+                    // Positive 2 hours escalation level
+                    'escalation_time'   => 2 * HOUR_TIMESTAMP,
+                    'target_escalation_date' => $la_type == \SLM::TTR
+                        // Must be two hours after their respetive target date
+                        ? '2034-06-22 09:30:00'
+                        : '2034-06-15 10:30:00'
+                ];
+            }
+        }
+    }
+
+    /**
+     * @dataProvider laProvider
+     */
+    public function testComputation(
+        string $la_class,
+        array $la_params,
+        string $begin_date,
+        array $pauses,
+        string $target_date,
+        int $waiting_duration,
+        int $escalation_time,
+        string $target_escalation_date
+    ): void {
+        $this->login(); // must be logged in to be able to change ticket status
+
+        // Create a calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
+        $calendar = $this->createItem(\Calendar::class, ['name' => __FUNCTION__]);
+        for ($i = 1; $i <= 5; $i++) {
+            $this->createItem(
+                \CalendarSegment::class,
+                [
+                    'calendars_id' => $calendar->getID(),
+                    'day'          => $i,
+                    'begin'        => $i == 1 ? '10:30:00' : '08:30:00', // monday starts later
+                    'end'          => '19:00:00',
+                ]
+            );
+        }
+
+        // Create a service level
+        $slm = $this->createItem(
+            \SLM::class,
+            [
+                'name'         => __FUNCTION__,
+                'calendars_id' => $calendar->getID(),
+            ]
+        );
+
+        // Create a level agreement item
+        $la = $this->createItem(
+            $la_class,
+            [
+                'name'    => __FUNCTION__,
+                'slms_id' => $slm->getID(),
+            ] + $la_params
+        );
+
+        // Create escalation level
+        $this->createItem($la->getLevelClass(), [
+            'name'                          => 'Test escalation level',
+            'execution_time'                => $escalation_time,
+            'is_active'                     => 1,
+            'is_recursive'                  => 1,
+            'match'                         => "OR",
+            $la_class::getForeignKeyField() => $la->getID(),
+        ]);
+
+        // Create a ticket
+        $_SESSION['glpi_currenttime'] = $begin_date;
+
+        list($la_date_field, $la_fk_field) = $la->getFieldNames($la->fields['type']);
+        $ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'       => __FUNCTION__,
+                'content'    => __FUNCTION__,
+                $la_fk_field => $la->getID(),
+            ]
+        );
+
+        // Apply pauses
+        foreach ($pauses as $pause) {
+            $_SESSION['glpi_currenttime'] = $pause['from'];
+            $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => \Ticket::WAITING]);
+
+            $_SESSION['glpi_currenttime'] = $pause['to'];
+            $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => \Ticket::ASSIGNED]);
+        }
+
+        // Reload ticket
+        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
+
+        $this->integer($ticket->fields[$la_class::getWaitingFieldName()])->isEqualTo($waiting_duration);
+        $this->string($ticket->fields[$la_date_field])->isEqualTo($target_date);
+
+        // Check escalation date
+        $la_level_class = $la->getLevelTicketClass();
+        $la_level_ticket = (new $la_level_class())->find([
+            'tickets_id' => $ticket->getID(),
+        ]);
+        $this->array($la_level_ticket)->hasSize(1);
+        $escalation_data = array_pop($la_level_ticket)["date"];
+        $this->string($escalation_data)->isEqualTo($target_escalation_date);
     }
 }

@@ -761,7 +761,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'table'              => $this->getTable(),
             'field'              => 'actiontime',
             'name'               => __('Total duration'),
-            'datatype'           => 'actiontime',
+            'datatype'           => 'timestamp',
             'massiveaction'      => false
         ];
 
@@ -1730,6 +1730,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $item_link = new Change();
                 $item_link->getFromDB($job->fields['changes_id']);
                 $tab_name = "ChangeTask";
+            } else {
+                throw new \RuntimeException(sprintf('Unexpected `%s` itemtype.', $itemtype));
             }
 
             $bgcolor = $_SESSION["glpipriority_" . $item_link->fields["priority"]];

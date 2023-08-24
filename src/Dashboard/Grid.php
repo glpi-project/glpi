@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard;
 
+use Config;
 use DateInterval;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
@@ -150,14 +151,6 @@ class Grid
                <i class="fas fa-spinner fa-spin fa-3x"></i>
             </div>
 HTML;
-           // manage cache
-            $dashboard_key = $this->current;
-            $footprint = sha1(serialize($card_options) .
-            ($_SESSION['glpiactiveentities_string'] ?? "") .
-            ($_SESSION['glpilanguage']));
-            $cache_key    = "dashboard_card_{$dashboard_key}_{$footprint}";
-            $card_options['cache_key'] = $cache_key;
-
             $this->addGridItem(
                 $card_html,
                 $gridstack_id,
@@ -195,7 +188,6 @@ HTML;
      */
     public static function canViewOneDashboard($context = null): bool
     {
-       // check global (admin) right
         if (Dashboard::canView()) {
             return true;
         }
@@ -240,7 +232,7 @@ HTML;
      *
      * @return void display html of the grid
      */
-    public function show(bool $mini = false)
+    public function show(bool $mini = false, ?string $token = null)
     {
         global $GLPI_CACHE;
 
@@ -258,7 +250,6 @@ HTML;
             $this->cell_margin = 3;
         }
 
-        $embed_str     = self::$embed ? "true" : "false";
         $embed_class   = self::$embed ? "embed" : "";
         $mini_class    = $mini ? "mini" : "";
 
@@ -285,11 +276,9 @@ HTML;
 
         // prepare all available cards
         $cards = $this->getAllDasboardCards();
-        $cards_json = json_encode($cards);
 
        // prepare all available widgets
         $all_widgets = Widget::getAllTypes();
-        $all_widgets_json = json_encode($all_widgets);
 
        // prepare labels
         $embed_label      = __("Share or embed this dashboard");
@@ -421,21 +410,25 @@ HTML;
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string '] ?? "");
 
+        $js_params = json_encode([
+            'current'       => $this->current,
+            'cols'          => $this->grid_cols,
+            'rows'          => $this->grid_rows,
+            'cell_margin'   => $this->cell_margin,
+            'rand'          => $rand,
+            'ajax_cards'    => $ajax_cards,
+            'all_cards'     => $cards,
+            'all_widgets'   => $all_widgets,
+            'context'       => $this->context,
+            'cache_key'     => $cache_key,
+            'embed'         => self::$embed,
+            'token'         => $token,
+            'entities_id'   => $_SESSION['glpiactive_entity'],
+            'is_recursive'  => $_SESSION['glpiactive_entity_recursive'] ? 1 : 0
+        ]);
         $js = <<<JAVASCRIPT
       $(function () {
-         new GLPIDashboard({
-            current:     '{$this->current}',
-            cols:        {$this->grid_cols},
-            rows:        {$this->grid_rows},
-            cell_margin: {$this->cell_margin},
-            rand:        '{$rand}',
-            embed:       {$embed_str},
-            ajax_cards:  {$ajax_cards},
-            all_cards:   {$cards_json},
-            all_widgets: {$all_widgets_json},
-            context:     "{$this->context}",
-            cache_key:   "{$cache_key}",
-         })
+         new GLPIDashboard({$js_params})
       });
 JAVASCRIPT;
         $js = Html::scriptBlock($js);
@@ -495,7 +488,7 @@ JAVASCRIPT;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
 
        // show embeded dashboard
-        $this->show(true);
+        $this->show(true, $params['token']);
     }
 
     public static function getToken(string $dasboard = "", int $entities_id = 0, int $is_recursive = 0): string
@@ -536,8 +529,6 @@ JAVASCRIPT;
 
         if ($token !== $params['token']) {
             return false;
-            Html::displayRightError();
-            exit;
         }
 
         return true;
@@ -916,20 +907,9 @@ HTML;
             }
             $card = $cards[$card_id];
 
-            // allows plugins to control uniqueness of its cards in cache system
-            if (isset($card['custom_hash'])) {
-                $card_options['custom_hash'] = $card['custom_hash'];
-            }
-
-            // manage cache
-            $options_footprint = sha1(serialize($card_options) .
-                ($_SESSION['glpiactiveentities_string'] ?? "") .
-                ($_SESSION['glpilanguage']));
-
             $use_cache = !$force
                 && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
                 && (!isset($card['cache']) || $card['cache'] == true);
-            $cache_key = "dashboard_card_{$dashboard}_{$options_footprint}";
             $cache_age = 40;
 
             if ($use_cache) {
@@ -938,12 +918,6 @@ HTML;
                 header('Cache-Control: public');
                 header('Cache-Control: max-age=' . $cache_age);
                 header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
-
-                // server cache
-                $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
-                if (isset($dashboard_cards[$gridstack_id])) {
-                    return (string)$dashboard_cards[$gridstack_id];
-                }
             }
 
             $html = "";
@@ -998,13 +972,6 @@ HTML;
             }
 
             $execution_time = round(microtime(true) - $start, 3);
-
-            // store server cache
-            if (strlen($dashboard)) {
-                $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
-                $dashboard_cards[$gridstack_id] = $html;
-                $GLPI_CACHE->set($cache_key, $dashboard_cards, new \DateInterval("PT" . $cache_age . "S"));
-            }
         } catch (\Throwable $e) {
             $html = $render_error_html;
             $execution_time = round(microtime(true) - $start, 3);
@@ -1109,12 +1076,16 @@ HTML;
      *
      * @return string
      */
-    public static function getAllDashboardCardsCacheKey(): string
+    public static function getAllDashboardCardsCacheKey(?string $language = null): string
     {
+        if ($language === null) {
+            $language = Session::getLanguage() ?? '';
+        }
+
         return sprintf(
             'getAllDashboardCards_%s_%s',
             sha1(json_encode(Filter::getRegisteredFilterClasses())),
-            Session::getLanguage() ?? ''
+            $language
         );
     }
 
@@ -1472,6 +1443,8 @@ HTML;
      */
     public static function getDefaultDashboardForMenu(string $menu = "", bool $strict = false): string
     {
+        global $CFG_GLPI;
+
         $grid = new self();
 
         if (!$strict) {
@@ -1481,6 +1454,7 @@ HTML;
             }
         }
 
+        // Try loading default from user preferences
         $config_key = 'default_dashboard_' . $menu;
         $default    = $_SESSION["glpi$config_key"] ?? "";
         if (strlen($default)) {
@@ -1491,7 +1465,17 @@ HTML;
             }
         }
 
-       // if default not found, return first dashboards
+        // Try loading default from config
+        $default = $CFG_GLPI[$config_key] ?? "";
+        if (strlen($default)) {
+            $dasboard = new Dashboard($default);
+
+            if ($dasboard->load() && $dasboard->canViewCurrent()) {
+                return $default;
+            }
+        }
+
+        // if default not found, return first dashboard
         if (!$strict) {
             self::loadAllDashboards();
             $first_dashboard = array_shift(self::$all_dashboards);

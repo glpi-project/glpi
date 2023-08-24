@@ -632,7 +632,7 @@ class Migration extends \GLPITestCase
         $this->calling($this->db)->fieldExists = false;
         $this->queries = [];
 
-        $this->when(
+        $this->exception(
             function () {
                 $this->migration->addField('my_table', 'my_field', 'bool', ['value' => 2]);
 
@@ -642,10 +642,8 @@ class Migration extends \GLPITestCase
                     }
                 )->isEqualTo('Change of the database layout - my_tableTask completed.');
             }
-        )->error()
-         ->withType(E_USER_ERROR)
-         ->withMessage('default_value must be 0 or 1')
-         ->exists();
+        )->isInstanceOf(\LogicException::class)
+         ->hasMessage('Default value must be 0 or 1.');
     }
 
     public function testFormatIntegerBadDefault()
@@ -655,7 +653,7 @@ class Migration extends \GLPITestCase
         $this->calling($this->db)->fieldExists = false;
         $this->queries = [];
 
-        $this->when(
+        $this->exception(
             function () {
                 $this->migration->addField('my_table', 'my_field', 'integer', ['value' => 'foo']);
 
@@ -665,10 +663,8 @@ class Migration extends \GLPITestCase
                     }
                 )->isEqualTo('Change of the database layout - my_tableTask completed.');
             }
-        )->error()
-         ->withType(E_USER_ERROR)
-         ->withMessage('default_value must be numeric')
-         ->exists();
+        )->isInstanceOf(\LogicException::class)
+         ->hasMessage('Default value must be numeric.');
     }
 
     public function testAddRight()

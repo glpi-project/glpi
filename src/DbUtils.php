@@ -931,7 +931,7 @@ final class DbUtils
                 $db_sons = $iterator->current()['sons_cache'];
                 $db_sons = $db_sons !== null ? trim($db_sons) : null;
                 if (!empty($db_sons)) {
-                    $sons = $this->importArrayFromDB($db_sons, true);
+                    $sons = $this->importArrayFromDB($db_sons);
                 }
             }
         }
@@ -1054,7 +1054,7 @@ final class DbUtils
 
                   // Return datas from cache in DB
                     if (!empty($rancestors)) {
-                        $ancestors = array_replace($ancestors, $this->importArrayFromDB($rancestors, true));
+                        $ancestors = array_replace($ancestors, $this->importArrayFromDB($rancestors));
                     } else {
                         $loc_id_found = [];
                      // Recursive solution for table with-cache
@@ -1580,9 +1580,9 @@ final class DbUtils
      * Format a user name
      *
      * @param integer $ID           ID of the user.
-     * @param string  $login        login of the user
-     * @param string  $realname     realname of the user
-     * @param string  $firstname    firstname of the user
+     * @param string|null  $login        login of the user
+     * @param string|null  $realname     realname of the user
+     * @param string|null  $firstname    firstname of the user
      * @param integer $link         include link (only if $link==1) (default =0)
      * @param integer $cut          limit string length (0 = no limit) (default =0)
      * @param boolean $force_config force order and id_visible to use common config (false by default)
@@ -1624,12 +1624,12 @@ final class DbUtils
                 $formatted = Toolbox::substr($formatted, 0, $cut) . " ...";
             }
         } else {
-            $formatted = $login;
+            $formatted = $login ?? '';
         }
 
         if (
             $ID > 0
-            && ((strlen($formatted ?? '') == 0) || $id_visible)
+            && ((strlen($formatted) == 0) || $id_visible)
         ) {
             $formatted = sprintf(__('%1$s (%2$s)'), $formatted, $ID);
         }

@@ -277,15 +277,17 @@ class KnowbaseItemTranslation extends CommonDBChild
      */
     public function showForm($ID = -1, array $options = [])
     {
-        if (isset($options['parent']) && !empty($options['parent'])) {
-            $item = $options['parent'];
+        if (!($ID > 0) && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
+            // parent is mandatory in new item form
+            trigger_error('Parent item must be defined in `$options["parent"]`.', E_USER_WARNING);
+            return false;
         }
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
            // Create item
-            $options['itemtype']         = get_class($item);
-            $options['knowbaseitems_id'] = $item->getID();
+            $options['itemtype']         = get_class($options['parent']);
+            $options['knowbaseitems_id'] = $options['parent']->getID();
             $this->check(-1, CREATE, $options);
         }
         $this->showFormHeader($options);
@@ -301,7 +303,7 @@ class KnowbaseItemTranslation extends CommonDBChild
                 "language",
                 ['display_none' => false,
                     'value'        => $_SESSION['glpilanguage'],
-                    'used'         => self::getAlreadyTranslatedForItem($item)
+                    'used'         => self::getAlreadyTranslatedForItem($options['parent'])
                 ]
             );
         }

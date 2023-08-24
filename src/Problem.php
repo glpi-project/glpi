@@ -176,6 +176,7 @@ class Problem extends CommonITILObject
         if (static::canView()) {
             switch ($item->getType()) {
                 case __CLASS__:
+                    $ong = [];
                     if ($item->canUpdate()) {
                         $ong[1] = __('Statistics');
                     }
@@ -489,7 +490,8 @@ class Problem extends CommonITILObject
             'field'              => 'impactcontent',
             'name'               => __('Impacts'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -498,7 +500,8 @@ class Problem extends CommonITILObject
             'field'              => 'causecontent',
             'name'               => __('Causes'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -507,7 +510,8 @@ class Problem extends CommonITILObject
             'field'              => 'symptomcontent',
             'name'               => __('Symptoms'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());

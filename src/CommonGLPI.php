@@ -507,6 +507,7 @@ class CommonGLPI implements CommonGLPIInterface
             $newmenu['is_multi_entries'] = true;
             $menu = $newmenu;
         }
+
         if (count($menu)) {
             return $menu;
         }
@@ -686,7 +687,9 @@ class CommonGLPI implements CommonGLPIInterface
                     $options['tabnum'] = $tabnum;
                     $options['itemtype'] = $itemtype;
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
+                    \Glpi\Debug\Profiler::getInstance()->start(get_class($obj) . '::displayTabContentForItem');
                     $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
+                    \Glpi\Debug\Profiler::getInstance()->stop(get_class($obj) . '::displayTabContentForItem');
 
                     Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
                     return $ret;
@@ -1077,7 +1080,7 @@ class CommonGLPI implements CommonGLPIInterface
                 ]);
                 if ($this->isField('is_deleted') && $this->fields['is_deleted']) {
                     $title = $this->isField('date_mod')
-                                ? sprintf(__s('Item has been deleted on %1$s'), Html::convDateTime($this->fields['date_mod']))
+                                ? sprintf(__s('Item has been deleted on %s'), Html::convDateTime($this->fields['date_mod']))
                                 : __s('Deleted');
                     echo "<span class='mx-2 bg-danger status rounded-1' title=\"" . $title . "\"
                         data-bs-toggle='tooltip'>
@@ -1364,7 +1367,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         global $CFG_GLPI;
 
-        $options      = static::getAvailableDisplayOptions($sub_itemtype);
+        $options      = static::getAvailableDisplayOptions();
 
         if (count($options)) {
             if (empty($sub_itemtype)) {

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+
 include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
@@ -44,6 +46,10 @@ if (!empty($_POST["test_ajax_send"])) {
 } else if (!empty($_POST["update"])) {
     $config = new Config();
     $config->update($_POST);
+    Event::log(0, "system", 3, "setup", sprintf(
+        __('%1$s edited the browsers notifications configuration'),
+        $_SESSION["glpiname"] ?? __("Unknown"),
+    ));
     Html::back();
 }
 

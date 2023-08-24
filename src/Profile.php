@@ -417,6 +417,15 @@ class Profile extends CommonDBTM
             unset($input['_profile']);
         }
 
+        if (isset($input['interface']) && $input['interface'] == 'helpdesk' && $this->isLastSuperAdminProfile()) {
+            Session::addMessageAfterRedirect(
+                __("Can't change the interface on this profile as it is the only remaining profile with rights to modify profiles with this interface."),
+                false,
+                ERROR
+            );
+            unset($input['interface']);
+        }
+
         // KEEP AT THE END
         $this->profileRight = [];
         foreach (array_keys(ProfileRight::getAllPossibleRights()) as $right) {
@@ -757,7 +766,10 @@ class Profile extends CommonDBTM
         Dropdown::showFromArray(
             'interface',
             self::getInterfaces(),
-            ['value' => $this->fields["interface"]]
+            [
+                'value' => $this->fields["interface"],
+                'readonly' => $this->isLastSuperAdminProfile() && $this->fields['interface'] == 'central'
+            ]
         );
         echo "</td></tr>\n";
 
@@ -788,9 +800,8 @@ class Profile extends CommonDBTM
      * @param string $interface The interface name
      * @phpstan-param 'central'|'helpdesk' $interface
      * @return array
-     * @phpstan-return array<string, array{
-     *     rights?: array{}, itemtype?: class-string<CommonDBTM>, label: string, field: string, group: string, scope: string
-     * }>
+     * @phpstan-type RightDefinition = array{rights: array{}, label: string, field: string, scope: string}
+     * @phpstan-return $interface == 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form == 'all' ? array<string, array<string, RightDefinition[]>> : ($group == 'all' ? array<string, RightDefinition[]> : RightDefinition[]))
      * @internal BC not guaranteed. Only public so it can be used in tests to ensure search options are made for all rights.
      */
     public static function getRightsForForm(string $interface = 'all', string $form = 'all', string $group = 'all'): array
@@ -3677,7 +3688,8 @@ class Profile extends CommonDBTM
             'ORDER'  => 'name'
         ]);
 
-       //New rule -> get the next free ranking
+        // New rule -> get the next free ranking
+        $profiles = [];
         foreach ($iterator as $data) {
             $profiles[$data['id']] = $data['name'];
         }
@@ -4184,7 +4196,8 @@ class Profile extends CommonDBTM
                     'name'   => static::$rightname,
                     'rights' => ["&", UPDATE],
                 ]
-            ])
+            ]),
+            'interface' => 'central',
         ]);
 
         return array_column($super_admin_profiles, 'id');

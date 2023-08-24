@@ -32,7 +32,8 @@
  #}
 
 <!DOCTYPE html>
-<html lang="{{ lang }}" {% if high_contrast %}data-high-contrast="1"{% endif %}>
+<html lang="{{ lang }}" {% if high_contrast %}data-high-contrast="1"{% endif %}
+      {{ glpi_request_id is defined ? 'data-glpi-request-id=' ~ glpi_request_id : '' }}>
 <head>
    <title>{{ title }} - GLPI</title>
 

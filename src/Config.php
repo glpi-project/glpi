@@ -118,9 +118,11 @@ class Config extends CommonDBTM
     public function canViewItem()
     {
         if (
-            isset($this->fields['context']) &&
-            ($this->fields['context'] == 'core' ||
-            Plugin::isPluginActive($this->fields['context']))
+            isset($this->fields['context'])
+            && (
+                in_array($this->fields['context'], ['core', 'inventory'], true) // GLPI config contexts
+                || Plugin::isPluginActive($this->fields['context'])
+            )
         ) {
             return true;
         }
@@ -171,7 +173,7 @@ class Config extends CommonDBTM
             return false;
         }
 
-       // Trim automatically endig slash for url_base config as, for all existing occurences,
+       // Trim automatically ending slash for url_base config as, for all existing occurrences,
        // this URL will be prepended to something that starts with a slash.
         if (isset($input["url_base"]) && !empty($input["url_base"])) {
             if (Toolbox::isValidWebUrl($input["url_base"])) {
@@ -2083,6 +2085,14 @@ class Config extends CommonDBTM
 
         echo "</table>";
         Html::closeForm();
+        $cleaner_script = <<<JS
+        // Search all .section-content text content and Replace all instances of a '#' followed by a number so that there is a zero-width space between the # and the number
+        $('.section-content').each(function() {
+          $(this).text($(this).text().replace(/#(\d+)/g, '#\u200B$1'));
+        });
+JS;
+        echo Html::scriptBlock($cleaner_script);
+
 
         echo "<p>" . Telemetry::getViewLink() . "</p>";
 
@@ -2457,7 +2467,14 @@ HTML;
 
             $url_base = $CFG_GLPI['url_base'] ?? null;
             // $CFG_GLPI may have not been loaded yet, load value form DB if `$CFG_GLPI['url_base']` is not set.
-            if ($url_base === null && $DB instanceof DBmysql && $DB->connected) {
+            if (
+                $url_base === null
+                && $DB instanceof DBmysql
+                && $DB->connected
+                // table/field may not exists in edge case (e.g. update from GLPI < 0.85)
+                && $DB->tableExists('glpi_configs')
+                && $DB->fieldExists('glpi_configs', 'context')
+            ) {
                 $url_base = Config::getConfigurationValue('core', 'url_base');
             }
 
@@ -3010,6 +3027,14 @@ HTML;
                 ];
 
                 $config->add($input);
+            }
+        }
+
+        //reload config for loggedin user
+        if ($_SESSION['glpiID'] ?? false) {
+            $user = new \User();
+            if ($user->getFromDB($_SESSION['glpiID'])) {
+                $user->loadPreferencesInSession();
             }
         }
     }
@@ -3614,22 +3639,21 @@ HTML;
 
     public function post_updateItem($history = 1)
     {
-        global $DB;
-
-       // Check if password expiration mechanism has been activated
+        global $DB, $CFG_GLPI;
+        // Check if password expiration mechanism has been activated
         if (
             $this->fields['name'] == 'password_expiration_delay'
             && array_key_exists('value', $this->oldvalues)
             && (int)$this->oldvalues['value'] === -1
         ) {
-           // As passwords will now expire, consider that "now" is the reference date of expiration delay
+            // As passwords will now expire, consider that "now" is the reference date of expiration delay
             $DB->update(
                 User::getTable(),
                 ['password_last_update' => $_SESSION['glpi_currenttime']],
                 ['authtype' => Auth::DB_GLPI]
             );
 
-           // Activate passwordexpiration automated task
+            // Activate passwordexpiration automated task
             $DB->update(
                 CronTask::getTable(),
                 ['state' => 1,],
@@ -3652,6 +3676,8 @@ HTML;
             if (strlen($oldvalue) > 255 && Toolbox::isJSON($oldvalue)) {
                 $oldvalue = "{...}";
             }
+
+            $CFG_GLPI[$this->fields['name']] = $newvalue; // Ensure post update actions and hook that are using `$CFG_GLPI` will use the new value
 
             $this->logConfigChange(
                 $this->fields['context'],

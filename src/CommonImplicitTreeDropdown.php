@@ -127,6 +127,10 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
     {
         global $DB;
 
+        $oldParent     = null;
+        $newParent     = null;
+        $potentialSons = [];
+
         switch ($step) {
             case 'add':
                 $newParent     = $this->input[$this->getForeignKeyField()];

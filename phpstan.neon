@@ -1,7 +1,7 @@
 parameters:
     parallel:
         maximumNumberOfProcesses: 2
-    level: 0
+    level: 1
     bootstrapFiles:
         - inc/based_config.php
     paths:
@@ -13,6 +13,7 @@ parameters:
     ignoreErrors:
         - '/Call to static method \w+\(\) on an unknown class phpCAS/'
         - '/Class Ldap\\Connection not found/'
+        - '/Class phpCAS not found/'
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
         - '/\w+ has been replaced by \w+/'

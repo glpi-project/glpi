@@ -1393,7 +1393,7 @@ class MailCollector extends CommonDBTM
         }
 
         if (!empty($config['mailbox'])) {
-            $params['folder'] = $config['mailbox'];
+            $params['folder'] = mb_convert_encoding($config['mailbox'], 'UTF7-IMAP', 'UTF-8');
         }
 
         if ($config['validate-cert'] === false) {
@@ -1608,8 +1608,7 @@ class MailCollector extends CommonDBTM
 
            // Try to get filename from Content-Disposition header
             if (
-                empty($filename)
-                && $part->getHeaders()->has('content-disposition')
+                $part->getHeaders()->has('content-disposition')
                 && ($content_disp_header = $part->getHeader('content-disposition')) instanceof ContentDisposition
             ) {
                 $filename = $content_disp_header->getParameter('filename') ?? '';
@@ -1650,11 +1649,6 @@ class MailCollector extends CommonDBTM
                 } else {
                     $filename = "msg_$subpart.EML"; // default trivial one :)!
                 }
-            }
-
-           // if no filename found, ignore this part
-            if (empty($filename)) {
-                return false;
             }
 
             $filename = Toolbox::filename($filename);

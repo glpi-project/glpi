@@ -152,15 +152,34 @@ class Knowbase extends CommonGLPI
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/knowbase.php";
         $loading_txt = __s('Loading...');
         $start       = (int)($_REQUEST['start'] ?? 0);
+        $cat_id      = (int)($_GET["knowbaseitemcategories_id"] ?? $_SESSION['kb_cat_id'] ?? 0);
 
         $category_list = json_encode(self::getTreeCategoryList());
         $no_cat_found  = __s("No category found");
 
         $JS = <<<JAVASCRIPT
          $(function() {
+            var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
+            $('#items_list$rand').html(loadingindicator); // loadingindicator on doc ready
+            var loadNode = function(cat_id) {
+               $('#items_list$rand').html(loadingindicator);
+               $('#items_list$rand').load('$ajax_url', {
+                  'action': 'getItemslist',
+                  'cat_id': cat_id,
+                  'start': $start
+               });
+            };
+
             $('#tree_category$rand').fancytree({
                // load plugins
-               extensions: ['filter', 'glyph'],
+               extensions: ['filter', 'glyph', 'persist'],
+
+               persist: {
+                  cookiePrefix: 'fancytree-kb-',
+                  expandLazy: true,
+                  overrideSource: true,
+                  store: "auto"
+               },
 
                // Scroll node into visible area, when focused by keyboard
                autoScroll: true,
@@ -191,17 +210,8 @@ class Knowbase extends CommonGLPI
 
             });
 
-            var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
-            $('#items_list$rand').html(loadingindicator); // loadingindicator on doc ready
-            var loadNode = function(cat_id) {
-               $('#items_list$rand').html(loadingindicator);
-               $('#items_list$rand').load('$ajax_url', {
-                  'action': 'getItemslist',
-                  'cat_id': cat_id,
-                  'start': $start
-               });
-            };
-            loadNode(0);
+            loadNode($cat_id);
+            $.ui.fancytree.getTree("#tree_category$rand").activateKey($cat_id);
 
             $(document).on('keyup', '#browser_tree_search$rand', function() {
                var search_text = $(this).val();

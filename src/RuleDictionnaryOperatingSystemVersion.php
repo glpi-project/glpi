@@ -49,9 +49,9 @@ class RuleDictionnaryOperatingSystemVersion extends RuleDictionnaryDropdown
             return $criterias;
         }
 
-        $criterias['os_version']['field'] = 'name';
-        $criterias['os_version']['name']  = _n('Version', 'Versions', 1);
-        $criterias['os_version']['table'] = 'glpi_operatingsystemversions';
+        $criterias['name']['field'] = 'name';
+        $criterias['name']['name']  = _n('Version', 'Versions', 1);
+        $criterias['name']['table'] = 'glpi_operatingsystemversions';
 
         $criterias['os_name']['field'] = 'name';
         $criterias['os_name']['name']  = OperatingSystem::getTypeName(1);

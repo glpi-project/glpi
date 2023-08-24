@@ -481,11 +481,16 @@ class DropdownTranslation extends CommonDBChild
      */
     public function showForm($ID = -1, array $options = [])
     {
+        if (!isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
+            // parent is mandatory
+            trigger_error('Parent item must be defined in `$options["parent"]`.', E_USER_WARNING);
+            return false;
+        }
+
         global $CFG_GLPI;
 
-        if (isset($options['parent']) && !empty($options['parent'])) {
-            $item = $options['parent'];
-        }
+        $item = $options['parent'];
+
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {

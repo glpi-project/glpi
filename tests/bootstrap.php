@@ -39,7 +39,7 @@ use Glpi\Cache\SimpleCache;
 use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-ini_set('display_errors', 'On');
+ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstraping are always displayed
 error_reporting(E_ALL);
 
 define('GLPI_ROOT', __DIR__ . '/../');
@@ -88,11 +88,22 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
 
 include_once __DIR__ . '/../inc/includes.php';
 
+// Errors/exceptions that are not explicitely validated by `$this->error()` or `$this->exception` asserter will already make test fails.
+// There is no need to pollute the output with error messages.
+ini_set('display_errors', 'Off');
+ErrorHandler::getInstance()->disableOutput();
+// To ensure that errors/exceptions will be catched by `atoum`, unregister GLPI error/exception handlers.
+// Errors that are pushed directly to logs (SQL errors/warnings for instance) will still have to be explicitely
+// validated by `$this->has*LogRecord*()` asserters, otherwise it will make make test fails.
+set_error_handler(null);
+set_exception_handler(null);
+
 include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
 include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/APIBaseClass.php';
 include_once __DIR__ . '/FrontBaseClass.php';
+include_once __DIR__ . '/RuleBuilder.php';
 include_once __DIR__ . '/InventoryTestCase.php';
 include_once __DIR__ . '/functional/CommonITILRecurrent.php';
 include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
@@ -110,7 +121,7 @@ function loadDataset()
    // Unit test data definition
     $data = [
       // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.10',
+        '_version' => '4.11',
 
       // Type => array of entries
         'Entity' => [
@@ -303,7 +314,15 @@ function loadDataset()
                 'completename' => '_cat_1 > _subcat_1',
                 'comment'      => 'Comment for sub-category _subcat_1',
                 'level'        => 2,
-            ]
+            ],
+            [
+                'is_recursive' => 1,
+                'taskcategories_id' => '_cat_1',
+                'name'         => 'R&#38;D', // sanitized value for "R&D"
+                'completename' => '_cat_1 > R&#38;D',
+                'comment'      => 'Comment for sub-category _subcat_2',
+                'level'        => 2,
+            ],
         ], 'DropdownTranslation' => [
             [
                 'items_id'   => '_cat_1',

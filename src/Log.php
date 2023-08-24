@@ -527,6 +527,7 @@ class Log extends CommonDBTM
                             if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
                                 $as = $SEARCHOPTION[$data['id_search_option']]['name'];
                             } else { // Old record
+                                $is = $isr = $isa = $iso = false;
                                 switch ($data['itemtype_link']) {
                                     case 'Group':
                                         $is = 'isGroup';
@@ -538,10 +539,6 @@ class Log extends CommonDBTM
 
                                     case 'Supplier':
                                         $is = 'isSupplier';
-                                        break;
-
-                                    default:
-                                        $is = $isr = $isa = $iso = false;
                                         break;
                                 }
                                 if ($is) {

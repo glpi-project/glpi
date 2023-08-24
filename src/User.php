@@ -81,6 +81,20 @@ class User extends CommonDBTM
         ];
     }
 
+    public function prepareInputForClone($input)
+    {
+        unset($input['last_login']);
+        unset($input['password_forget_token']);
+        unset($input['password_forget_token_date']);
+        unset($input['personal_token']);
+        unset($input['personal_token_date']);
+        unset($input['api_token']);
+        unset($input['api_token_date']);
+        unset($input['cookie_token']);
+        unset($input['cookie_token_date']);
+        return $input;
+    }
+
     public function post_clone($source, $history)
     {
        //FIXME? clone config
@@ -223,7 +237,7 @@ class User extends CommonDBTM
 
         if (isset($this->fields['id'])) {
             foreach ($CFG_GLPI['user_pref_field'] as $f) {
-                if (is_null($this->fields[$f])) {
+                if (array_key_exists($f, $CFG_GLPI) && (!array_key_exists($f, $this->fields) || is_null($this->fields[$f]))) {
                     $this->fields[$f] = $CFG_GLPI[$f];
                 }
             }
@@ -234,6 +248,22 @@ class User extends CommonDBTM
         }
     }
 
+    /**
+     * Cache preferences for the current user in session.
+     *
+     * @return void
+     */
+    final public function loadPreferencesInSession(): void
+    {
+        global $CFG_GLPI;
+
+        $this->computePreferences();
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (isset($this->fields[$field])) {
+                $_SESSION["glpi$field"] = $this->fields[$field];
+            }
+        }
+    }
 
     /**
      * Load minimal session for user.
@@ -247,20 +277,13 @@ class User extends CommonDBTM
      */
     public function loadMinimalSession($entities_id, $is_recursive)
     {
-        global $CFG_GLPI;
-
         if (isset($this->fields['id']) && !isset($_SESSION["glpiID"])) {
             Session::destroy();
             Session::start();
             $_SESSION["glpiID"]                      = $this->fields['id'];
             $_SESSION["glpi_use_mode"]               = Session::NORMAL_MODE;
             Session::loadEntity($entities_id, $is_recursive);
-            $this->computePreferences();
-            foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                if (isset($this->fields[$field])) {
-                    $_SESSION["glpi$field"] = $this->fields[$field];
-                }
-            }
+            $this->loadPreferencesInSession();
             Session::loadGroups();
             Session::loadLanguage();
         }
@@ -553,7 +576,13 @@ class User extends CommonDBTM
                     ]
                 ]
             ],
-            'WHERE' => [UserEmail::getTable() . '.email' => $email] + $condition
+            'WHERE' =>
+                [
+                    'RAW' => [
+                        'LOWER(' . UserEmail::getTable() . '.email' . ')'  => Toolbox::strtolower($email)
+                    ]
+                ]
+             + $condition
         ];
 
         $data = iterator_to_array($DB->request($query));
@@ -1376,8 +1405,7 @@ class User extends CommonDBTM
                     $info = AuthLDAP::getUserByDn(
                         $ds,
                         $this->fields['user_dn'],
-                        [$picture_field],
-                        false
+                        [$picture_field]
                     );
 
                    //getUserByDn returns an array. If the picture is empty,
@@ -1639,11 +1667,24 @@ class User extends CommonDBTM
             $group_fields[] = Toolbox::strtolower($data["ldap_field"]);
         }
         if (count($group_fields)) {
-           //Need to sort the array because edirectory don't like it!
+            //Need to sort the array because edirectory don't like it!
             sort($group_fields);
 
-           // If the groups must be retrieve from the ldap user object
-            $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
+            // If the groups must be retrieved from the ldap user object
+            $sr = @ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
+            if ($sr === false) {
+                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                if (ldap_errno($ldap_connection) !== 32) {
+                    trigger_error(
+                        AuthLDAP::buildError(
+                            $ldap_connection,
+                            sprintf('Unable to get LDAP groups for user having DN `%s` with filter `%s', $userdn, "objectClass=*")
+                        ),
+                        E_USER_WARNING
+                    );
+                }
+                return;
+            }
             $v  = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
             for ($i = 0; $i < $v['count']; $i++) {
@@ -1665,7 +1706,7 @@ class User extends CommonDBTM
                         $group_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_groups',
-                            'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($v[$i]['ou'])]
+                            'WHERE'  => ['ldap_group_dn' => Sanitizer::sanitize($v[$i]['ou'])]
                         ]);
 
                         foreach ($group_iterator as $group) {
@@ -1686,7 +1727,7 @@ class User extends CommonDBTM
                     ) {
                         unset($v[$i][$field]['count']);
                         $lgroups = [];
-                        foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
+                        foreach (Sanitizer::sanitize($v[$i][$field]) as $lgroup) {
                             $lgroups[] = [
                                 new \QueryExpression($DB->quoteValue($lgroup) .
                                              " LIKE " .
@@ -1757,7 +1798,7 @@ class User extends CommonDBTM
                 $iterator = $DB->request([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_groups',
-                    'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($result[$ldap_method["group_member_field"]])]
+                    'WHERE'  => ['ldap_group_dn' => Sanitizer::sanitize($result[$ldap_method["group_member_field"]])]
                 ]);
 
                 foreach ($iterator as $group) {
@@ -1801,7 +1842,20 @@ class User extends CommonDBTM
             $fields  = array_filter($fields);
             $f       = self::getLdapFieldNames($fields);
 
-            $sr      = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
+            $sr      = @ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
+            if ($sr === false) {
+                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                if (ldap_errno($ldap_connection) !== 32) {
+                    trigger_error(
+                        AuthLDAP::buildError(
+                            $ldap_connection,
+                            sprintf('Unable to get LDAP user having DN `%s` with filter `%s`', $userdn, "objectClass=*")
+                        ),
+                        E_USER_WARNING
+                    );
+                }
+                return false;
+            }
             $v       = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
             if (
@@ -1813,7 +1867,7 @@ class User extends CommonDBTM
             }
 
            //Store user's dn
-            $this->fields['user_dn']    = addslashes($userdn);
+            $this->fields['user_dn']    = Sanitizer::sanitize($userdn);
            //Store date_sync
             $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
            // Empty array to ensure than syncDynamicEmails will be done
@@ -2054,7 +2108,21 @@ class User extends CommonDBTM
         }
 
        //Perform the search
-        $sr     = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
+        $sr = @ldap_search($ds, $ldap_base_dn, $filter, $attrs);
+
+        if ($sr === false) {
+            // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+            if (ldap_errno($ds) !== 32) {
+                trigger_error(
+                    AuthLDAP::buildError(
+                        $ds,
+                        sprintf('LDAP search with base DN `%s` and filter `%s` failed', $ldap_base_dn, $filter)
+                    ),
+                    E_USER_WARNING
+                );
+            }
+            return $groups;
+        }
 
        //Get the result of the search as an array
         $info = AuthLDAP::get_entries_clean($ds, $sr);
@@ -2818,29 +2886,6 @@ HTML;
                 echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
 
                 echo "<tr class='tab_bg_1'><td>";
-                echo __("Personal token");
-                echo "</td><td colspan='2'>";
-
-                if (!empty($this->fields["personal_token"])) {
-                    echo "<div class='copy_to_clipboard_wrapper'>";
-                    echo Html::input('_personal_token', [
-                        'value'    => $this->fields["personal_token"],
-                        'style'    => 'width:90%'
-                    ]);
-                    echo "</div>";
-                    echo "(" . sprintf(
-                        __('generated on %s'),
-                        Html::convDateTime($this->fields["personal_token_date"])
-                    ) . ")";
-                }
-                echo "</td><td>";
-                Html::showCheckbox(['name'  => '_reset_personal_token',
-                    'title' => __('Regenerate')
-                ]);
-                echo "&nbsp;&nbsp;" . __('Regenerate');
-                echo "</td></tr>";
-
-                echo "<tr class='tab_bg_1'><td>";
                 echo __("API token");
                 echo "</td><td colspan='2'>";
                 if (!empty($this->fields["api_token"])) {
@@ -3228,29 +3273,6 @@ HTML;
             echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
 
             echo "<tr class='tab_bg_1'><td>";
-            echo __("Personal token");
-            echo "</td><td colspan='2'>";
-
-            if (!empty($this->fields["personal_token"])) {
-                echo "<div class='copy_to_clipboard_wrapper'>";
-                echo Html::input('_personal_token', [
-                    'value'    => $this->fields["personal_token"],
-                    'style'    => 'width:90%'
-                ]);
-                echo "</div>";
-                echo "(" . sprintf(
-                    __('generated on %s'),
-                    Html::convDateTime($this->fields["personal_token_date"])
-                ) . ")";
-            }
-            echo "</td><td>";
-            Html::showCheckbox(['name'  => '_reset_personal_token',
-                'title' => __('Regenerate')
-            ]);
-            echo "&nbsp;&nbsp;" . __('Regenerate');
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'><td>";
             echo __("API token");
             echo "</td><td colspan='2'>";
             if (!empty($this->fields["api_token"])) {
@@ -3409,6 +3431,8 @@ HTML;
                                                       _x('button', 'Change the authentication method');
             $actions[$prefix . 'force_user_ldap_update'] = "<i class='fas fa-sync'></i>" .
                                                       __('Force synchronization');
+            $actions[$prefix . 'clean_ldap_fields'] = "<i class='fas fa-broom'></i>" .
+                                                    __('Clean LDAP fields and force synchronisation');
         }
         return $actions;
     }
@@ -3443,13 +3467,14 @@ HTML;
 
         switch ($ma->getAction()) {
             case 'force_user_ldap_update':
+            case 'clean_ldap_fields':
                 foreach ($ids as $id) {
                     if ($item->can($id, UPDATE)) {
                         if (
                             ($item->fields["authtype"] == Auth::LDAP)
                             || ($item->fields["authtype"] == Auth::EXTERNAL)
                         ) {
-                            if (AuthLDAP::forceOneUserSynchronization($item, false, false)) {
+                            if (AuthLDAP::forceOneUserSynchronization($item, ($ma->getAction() == 'clean_ldap_fields'), false)) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -4843,12 +4868,12 @@ HTML;
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_groups_users.groups_id',
+                'glpi_groups.id',
                 'glpi_groups.name'
             ],
-            'FROM'      => 'glpi_groups_users',
+            'FROM'      => 'glpi_groups',
             'LEFT JOIN' => [
-                'glpi_groups' => [
+                'glpi_groups_users' => [
                     'FKEY' => [
                         'glpi_groups_users'  => 'groups_id',
                         'glpi_groups'        => 'id'
@@ -4861,8 +4886,8 @@ HTML;
 
         $group_where = [];
         foreach ($iterator as $data) {
-            $group_where[$field_group][] = $data['groups_id'];
-            $groups[$data["groups_id"]] = $data["name"];
+            $group_where[$field_group][] = $data['id'];
+            $groups[$data["id"]] = $data["name"];
         }
 
         echo "<div class='spaced'><table class='tab_cadre_fixehov'>";

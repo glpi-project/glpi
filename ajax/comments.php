@@ -61,23 +61,28 @@ if (
                     'comment' => "",
                 ];
             } else {
+                $user = new \User();
                 if (is_array($_POST["value"])) {
                     $comments = [];
                     foreach ($_POST["value"] as $users_id) {
-                        $username   = getUserName($users_id, 2);
-                        $comments[] = $username['comment'] ?? "";
+                        if ($user->getFromDB($users_id) && $user->canView()) {
+                            $username   = getUserName($users_id, 2);
+                            $comments[] = $username['comment'] ?? "";
+                        }
                     }
                     $tmpname = [
                         'comment' => implode("<br>", $comments),
                     ];
                     unset($_POST['withlink']);
                 } else {
-                    $tmpname = getUserName($_POST["value"], 2);
+                    if ($user->getFromDB($_POST['value']) && $user->canView()) {
+                        $tmpname = getUserName($_POST["value"], 2);
+                    }
                 }
             }
-            echo $tmpname["comment"];
+            echo ($tmpname["comment"] ?? '');
 
-            if (isset($_POST['withlink'])) {
+            if (isset($_POST['withlink']) && isset($tmpname['link'])) {
                 echo "<script type='text/javascript' >\n";
                 echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . $tmpname['link'] . "');";
                 echo "</script>\n";

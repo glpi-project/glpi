@@ -1224,6 +1224,11 @@ JAVASCRIPT;
                 }
 
                 foreach ($rule['rulecriteria'] as $k_crit => $criteria) {
+                    // Fix patterns decoded as empty arrays to prevent empty IN clauses in SQL generation.
+                    if (is_array($criteria['pattern']) && empty($criteria['pattern'])) {
+                        $criteria['pattern'] = '';
+                    }
+
                     $available_criteria = $tmprule->getCriterias();
                     $crit               = $criteria['criteria'];
                    //check FK (just in case of "is", "is_not" and "under" criteria)
@@ -1261,6 +1266,10 @@ JAVASCRIPT;
                 }
 
                 foreach ($rule['ruleaction'] as $k_action => $action) {
+                    // Fix values decoded as empty arrays to prevent empty IN clauses in SQL generation.
+                    if (is_array($action['value']) && empty($action['value'])) {
+                        $action['value'] = '';
+                    }
                     $available_actions = $tmprule->getActions();
                     $act               = $action['field'];
 
@@ -1271,9 +1280,9 @@ JAVASCRIPT;
                     ) {
                        //pass root entity and empty array (N/A value)
                         if (
-                            ($action['field'] == "entities_id")
+                            (in_array($action['value'], ['entities_id', 'new_entities_id'], true))
                             && (($action['value'] == 0)
-                            || ($action['value'] == []))
+                            || ($action['value'] == ''))
                         ) {
                             continue;
                         }
@@ -1587,14 +1596,14 @@ JAVASCRIPT;
     /**
      * Process all the rules collection
      *
-     * @param input            array the input data used to check criterias (need to be clean slashes)
-     * @param output           array the initial ouput array used to be manipulate by actions (need to be clean slashes)
-     * @param params           array parameters for all internal functions (need to be clean slashes)
-     * @param options          array options :
-     *                            - condition : specific condition to limit rule list
-     *                            - only_criteria : only react on specific criteria
+     * @param array $input    Input data used to check criterias (need to be clean slashes)
+     * @param array $output   Initial ouput array used to be manipulate by actions (need to be clean slashes)
+     * @param array $params   Parameters for all internal functions (need to be clean slashes)
+     * @param array $options  Options :
+     *                         - condition : specific condition to limit rule list
+     *                         - only_criteria : only react on specific criteria
      *
-     * @return the output array updated by actions (addslashes datas)
+     * @return array the output array updated by actions (addslashes datas)
      **/
     public function processAllRules($input = [], $output = [], $params = [], $options = [])
     {
@@ -1608,23 +1617,32 @@ JAVASCRIPT;
             }
         }
 
-       // Get Collection datas
+        // Get Collection datas
         $this->getCollectionDatas(1, 1, $p['condition']);
         $input                      = $this->prepareInputDataForProcessWithPlugins($input, $params);
         $output["_no_rule_matches"] = true;
-       //Store rule type being processed (for plugins)
+
+        //Store rule type being processed (for plugins)
         $params['rule_itemtype']    = $this->getRuleClassName();
 
         if (count($this->RuleList->list)) {
             /** @var Rule $rule */
             foreach ($this->RuleList->list as $rule) {
+                if ($p['condition'] && !($rule->fields['condition'] & $p['condition'])) {
+                    // Rule is loaded in the cache but is not relevant for the current condition
+                    continue;
+                }
+
                //If the rule is active, process it
 
                 if ($rule->fields["is_active"]) {
                     $output["_rule_process"] = false;
                     $rule->process($input, $output, $params, $p);
 
-                    if ((isset($output['_stop_rules_processing']) && (int) $output['_stop_rules_processing'] === 1) || ($output["_rule_process"] && $this->stop_on_first_match)) {
+                    if (
+                        (isset($output['_stop_rules_processing']) && (int) $output['_stop_rules_processing'] === 1)
+                        || ($output["_rule_process"] && $this->stop_on_first_match)
+                    ) {
                         unset($output["_stop_rules_processing"], $output["_rule_process"]);
                         $output["_ruleid"] = $rule->fields["id"];
                         return Toolbox::addslashes_deep($output);

@@ -90,7 +90,7 @@ class Dropdown
     {
         global $CFG_GLPI;
 
-        if ($itemtype && !($item = getItemForItemtype($itemtype))) {
+        if (!($item = getItemForItemtype($itemtype))) {
             return false;
         }
 
@@ -158,6 +158,7 @@ class Dropdown
             $params['used'] = array_diff($params['used'], [$params['value']]);
         }
 
+        $names = [];
         if (!$params['multiple'] && isset($params['toadd'][$params['value']])) {
             $name = $params['toadd'][$params['value']];
         } else if (
@@ -171,8 +172,6 @@ class Dropdown
                 $comment = $tmpname["comment"];
             }
         } else if ($params['multiple']) {
-            $names = [];
-
             foreach ($params['values'] as $value) {
                 if (isset($params['toadd'][$value])) {
                     // Specific case, value added by the "toadd" param
@@ -866,6 +865,7 @@ class Dropdown
                 closedir($dh);
                 sort($files);
 
+                $values = [];
                 foreach ($files as $file) {
                     if (preg_match("/\.png$/i", $file)) {
                         $values[$file] = $file;
@@ -968,6 +968,7 @@ JAVASCRIPT;
      **/
     public static function showYesNo($name, $value = 0, $restrict_to = -1, $params = [])
     {
+        $options = [];
 
         if (!array_key_exists('use_checkbox', $params)) {
            // TODO: switch to true when Html::showCheckbox() is validated
@@ -1312,6 +1313,7 @@ JAVASCRIPT;
         echo "<label class='col-sm-1 col-form-label'>$title</label>";
         $selected = '';
 
+        $values = [];
         foreach ($optgroup as $label => $dp) {
             foreach ($dp as $key => $val) {
                 $search = $key::getSearchURL();
@@ -1918,6 +1920,7 @@ JAVASCRIPT;
             $params['value'] = floor(($params['value']) / $params['step']) * $params['step'];
         }
 
+        // Generate array keys
         $values = [];
 
         if ($params['value']) {
@@ -1942,47 +1945,46 @@ JAVASCRIPT;
             ksort($values);
         }
 
+        // Generate array values
         foreach ($values as $i => $val) {
-            if (empty($val)) {
-                if ($params['inhours']) {
-                    $day  = 0;
-                    $hour = floor($i / HOUR_TIMESTAMP);
-                } else {
-                    $day  = floor($i / DAY_TIMESTAMP);
-                    $hour = floor(($i % DAY_TIMESTAMP) / HOUR_TIMESTAMP);
-                }
-                $minute     = floor(($i % HOUR_TIMESTAMP) / MINUTE_TIMESTAMP);
-                if ($minute === '0') {
-                    $minute = '00';
-                }
-                $values[$i] = '';
-                if ($day > 0) {
-                    if (($hour > 0) || ($minute > 0)) {
-                        if ($minute < 10) {
-                             $minute = '0' . $minute;
-                        }
-
-                       //TRANS: %1$d is the number of days, %2$d the number of hours,
-                       //       %3$s the number of minutes : display 1 day 3h15
-                        $values[$i] = sprintf(
-                            _n('%1$d day %2$dh%3$s', '%1$d days %2$dh%3$s', $day),
-                            $day,
-                            $hour,
-                            $minute
-                        );
-                    } else {
-                        $values[$i] = sprintf(_n('%d day', '%d days', $day), $day);
-                    }
-                } else if ($hour > 0 || $minute > 0) {
+            if ($params['inhours']) {
+                $day  = 0;
+                $hour = floor($i / HOUR_TIMESTAMP);
+            } else {
+                $day  = floor($i / DAY_TIMESTAMP);
+                $hour = floor(($i % DAY_TIMESTAMP) / HOUR_TIMESTAMP);
+            }
+            $minute     = floor(($i % HOUR_TIMESTAMP) / MINUTE_TIMESTAMP);
+            if ($minute === '0') {
+                $minute = '00';
+            }
+            if ($day > 0) {
+                if (($hour > 0) || ($minute > 0)) {
                     if ($minute < 10) {
-                        $minute = '0' . $minute;
+                         $minute = '0' . $minute;
                     }
 
-                   //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
-                    $values[$i] = sprintf(__('%1$dh%2$s'), $hour, $minute);
+                   //TRANS: %1$d is the number of days, %2$d the number of hours,
+                   //       %3$s the number of minutes : display 1 day 3h15
+                    $values[$i] = sprintf(
+                        _n('%1$d day %2$dh%3$s', '%1$d days %2$dh%3$s', $day),
+                        $day,
+                        $hour,
+                        $minute
+                    );
+                } else {
+                    $values[$i] = sprintf(_n('%d day', '%d days', $day), $day);
                 }
+            } else if ($hour > 0 || $minute > 0) {
+                if ($minute < 10) {
+                    $minute = '0' . $minute;
+                }
+
+               //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
+                $values[$i] = sprintf(__('%1$dh%2$s'), $hour, $minute);
             }
         }
+
         return Dropdown::showFromArray($myname, $values, [
             'value'               => $params['value'],
             'display'             => $params['display'],
@@ -2099,8 +2101,8 @@ JAVASCRIPT;
             }
         }
 
+        $other_select_option = $name . '_other_value';
         if ($param['other'] !== false) {
-            $other_select_option = $name . '_other_value';
             $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
 
            // If $param['other'] is a string, then we must highlight "other" option
@@ -2230,7 +2232,7 @@ JAVASCRIPT;
                             $output .= ' title="' . $param['option_tooltips'][$key] . '"';
                         }
                         $output .= ">" . Html::entities_deep($val) . "</option>";
-                        if ($max_option_size < strlen($val)) {
+                        if (!is_null($val) && ($max_option_size < strlen($val))) {
                             $max_option_size = strlen($val);
                         }
                     }
@@ -2712,13 +2714,16 @@ JAVASCRIPT;
                 $where["$table.id"] = $one_item;
             } else {
                 if (!empty($post['searchText'])) {
-                    $search = Search::makeTextSearchValue($post['searchText']);
+                    $raw_search     = Search::makeTextSearchValue($post['searchText']);
+                    $encoded_search = Sanitizer::encodeHtmlSpecialChars($raw_search);
 
                     $swhere = [
-                        "$table.completename" => ['LIKE', $search],
+                        ["$table.completename" => ['LIKE', $raw_search]],
+                        ["$table.completename" => ['LIKE', $encoded_search]],
                     ];
                     if (Session::haveTranslations($post['itemtype'], 'completename')) {
-                        $swhere["namet.value"] = ['LIKE', $search];
+                        $swhere[] = ["namet.value" => ['LIKE', $raw_search]];
+                        $swhere[] = ["namet.value" => ['LIKE', $encoded_search]];
                     }
 
                     if (
@@ -2731,7 +2736,8 @@ JAVASCRIPT;
                    // search also in displaywith columns
                     if ($displaywith && count($post['displaywith'])) {
                         foreach ($post['displaywith'] as $with) {
-                            $swhere["$table.$with"] = ['LIKE', $search];
+                            $swhere[] = ["$table.$with" => ['LIKE', $raw_search]];
+                            $swhere[] = ["$table.$with" => ['LIKE', $encoded_search]];
                         }
                     }
 
@@ -2886,10 +2892,9 @@ JAVASCRIPT;
 
            // Ignore first item for all pages except first page
             $firstitem = (($post['page'] > 1));
+            $firstitem_entity = -1;
+            $prev             = -1;
             if (count($iterator)) {
-                $prev             = -1;
-                $firstitem_entity = -1;
-
                 foreach ($iterator as $data) {
                     $ID    = $data['id'];
                     $level = $data['level'];
@@ -3104,8 +3109,13 @@ JAVASCRIPT;
             }
 
             if (!empty($post['searchText'])) {
-                $search = Search::makeTextSearchValue($post['searchText']);
-                $orwhere = ["$table.$field" => ['LIKE', $search]];
+                $raw_search     = Search::makeTextSearchValue($post['searchText']);
+                $encoded_search = Sanitizer::encodeHtmlSpecialChars($raw_search);
+
+                $orwhere = [
+                    ["$table.$field" => ['LIKE', $raw_search]],
+                    ["$table.$field" => ['LIKE', $encoded_search]],
+                ];
 
                 if (
                     $_SESSION['glpiis_ids_visible']
@@ -3115,20 +3125,24 @@ JAVASCRIPT;
                 }
 
                 if ($item instanceof CommonDCModelDropdown) {
-                    $orwhere[$table . '.product_number'] = ['LIKE', $search];
+                    $orwhere[] = [$table . '.product_number' => ['LIKE', $raw_search]];
+                    $orwhere[] = [$table . '.product_number' => ['LIKE', $encoded_search]];
                 }
 
                 if (Session::haveTranslations($post['itemtype'], $field)) {
-                    $orwhere['namet.value'] = ['LIKE', $search];
+                    $orwhere[] = ['namet.value' => ['LIKE', $raw_search]];
+                    $orwhere[] = ['namet.value' => ['LIKE', $encoded_search]];
                 }
                 if ($post['itemtype'] == "SoftwareLicense") {
-                    $orwhere['glpi_softwares.name'] = ['LIKE', $search];
+                    $orwhere[] = ['glpi_softwares.name' => ['LIKE', $raw_search]];
+                    $orwhere[] = ['glpi_softwares.name' => ['LIKE', $encoded_search]];
                 }
 
                // search also in displaywith columns
                 if ($displaywith && count($post['displaywith'])) {
                     foreach ($post['displaywith'] as $with) {
-                        $orwhere["$table.$with"] = ['LIKE', $search];
+                        $orwhere[] = ["$table.$with" => ['LIKE', $raw_search]];
+                        $orwhere[] = ["$table.$with" => ['LIKE', $encoded_search]];
                     }
                 }
 
@@ -3454,11 +3468,15 @@ JAVASCRIPT;
         }
 
         if (isset($post['searchText']) && (strlen($post['searchText']) > 0)) {
-            $search = Search::makeTextSearchValue($post['searchText']);
+            $raw_search     = Search::makeTextSearchValue($post['searchText']);
+            $encoded_search = Sanitizer::encodeHtmlSpecialChars($raw_search);
             $where['OR'] = [
-                "$table.name"        => ['LIKE', $search],
-                "$table.otherserial" => ['LIKE', $search],
-                "$table.serial"      => ['LIKE', $search]
+                ["$table.name"        => ['LIKE', $raw_search]],
+                ["$table.name"        => ['LIKE', $encoded_search]],
+                ["$table.otherserial" => ['LIKE', $raw_search]],
+                ["$table.otherserial" => ['LIKE', $encoded_search]],
+                ["$table.serial"      => ['LIKE', $raw_search]],
+                ["$table.serial"      => ['LIKE', $encoded_search]],
             ];
         }
 
@@ -3852,6 +3870,7 @@ JAVASCRIPT;
                     $value = $post['max'];
                 }
 
+                $txt = $value;
                 if (isset($post['unit'])) {
                     $decimals = Toolbox::isFloat($value) ? Toolbox::getDecimalNumbers($post['step']) : 0;
                     $txt = Dropdown::getValueWithUnit($value, $post['unit'], $decimals);
@@ -3947,6 +3966,7 @@ JAVASCRIPT;
 
        // Count real items returned
         $count = 0;
+        $logins = [];
         if (count($result)) {
             foreach ($result as $data) {
                 $users[$data["id"]] = formatUserName(
@@ -4064,7 +4084,8 @@ JAVASCRIPT;
                     'itemtype'          => "User",
                     'items_id'          => $ID,
                     'use_notification'  => strlen($user['default_email'] ?? "") > 0 ? 1 : 0,
-                    'alternative_email' => $user['default_email'],
+                    'default_email'     => $user['default_email'],
+                    'alternative_email' => '',
                 ];
             }
         }
@@ -4128,7 +4149,8 @@ JAVASCRIPT;
                         $children['id']                = "Supplier_" . $children['id'];
                         $children['itemtype']          = "Supplier";
                         $children['use_notification']  = strlen($supplier_obj->fields['email']) > 0 ? 1 : 0;
-                        $children['alternative_email'] = $supplier_obj->fields['email'];
+                        $children['default_email']     = $supplier_obj->fields['email'];
+                        $children['alternative_email'] = '';
                     }
                 }
 
@@ -4161,7 +4183,7 @@ JAVASCRIPT;
             'results' => $results,
             'count'   => count($results),
         ];
-        if ($total_results > count($results)) {
+        if (count($results) >= $post['page_limit']) {
             $return['pagination'] = [
                 'more' => true,
             ];

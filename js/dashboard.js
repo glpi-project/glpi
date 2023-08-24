@@ -86,6 +86,9 @@ class GLPIDashboard {
             cell_margin: 5,
             rand:        '',
             embed:       false,
+            token:       null,
+            entities_id: null,
+            is_recursive:null,
             ajax_cards:  true,
             all_cards:   [],
             context:     "core"
@@ -98,6 +101,9 @@ class GLPIDashboard {
         this.elem_dom     = this.element[0];
         this.current_name = $(this.elem_id+' .dashboard_select').val() || options.current;
         this.embed        = options.embed;
+        this.token        = options.token;
+        this.entities_id  = options.entities_id;
+        this.is_recursive = options.is_recursive;
         this.ajax_cards   = options.ajax_cards;
         this.all_cards    = options.all_cards;
         this.all_widgets  = options.all_widgets;
@@ -262,6 +268,9 @@ class GLPIDashboard {
             var is_private;
             $.each(button.closest('.display-rights-form').serializeArray(), function() {
                 var current_val = this.value.split('-');
+                if (current_val.length !== 2) {
+                    return;
+                }
                 var right_name  = current_val[0];
                 var value       = current_val[1];
                 if (!(right_name in form_data)) {
@@ -336,6 +345,7 @@ class GLPIDashboard {
                 url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
                 params: {
                     action:       'display_edit_widget',
+                    dashboard:    that.current_name,
                     gridstack_id: item.attr('gs-id'),
                     card_id:      card_opt.card_id,
                     x:            item.attr('gs-x'),
@@ -356,6 +366,7 @@ class GLPIDashboard {
                 url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
                 params: {
                     action: 'display_add_widget',
+                    dashboard: that.current_name,
                     x: add_ctrl.data('x'),
                     y: add_ctrl.data('y')
                 },
@@ -381,6 +392,7 @@ class GLPIDashboard {
                 url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
                 params: {
                     action: 'display_add_filter',
+                    dashboard: that.current_name,
                     used: filter_names
                 },
             });
@@ -637,13 +649,20 @@ class GLPIDashboard {
         var gridstack = $(this.elem_id+" .grid-stack");
         this.grid.removeAll();
 
+        let data = {
+            dashboard: this.current_name,
+            action: 'get_dashboard_items',
+        };
+        if (this.embed) {
+            data.embed        = 1;
+            data.token        = this.token;
+            data.entities_id  = this.entities_id;
+            data.is_recursive = this.is_recursive;
+        }
+
         $.get({
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
-            data: {
-                dashboard: this.current_name,
-                action: 'get_dashboard_items',
-                embed: (this.embed ? 1 : 0),
-            }
+            data: data
         }).done(function(html) {
             gridstack.prepend(html);
             gridstack.find('.grid-stack-item').each(function() {
@@ -828,7 +847,6 @@ class GLPIDashboard {
                 var count        = $(this);
                 var precision    = count.data('precision');
                 var number       = count.children('.number');
-                var suffix       = count.children('.suffix').text();
                 var targetNumber = number.text();
 
                 // Some custom formats may contain text in the number field, no animation in this case
@@ -840,10 +858,10 @@ class GLPIDashboard {
                     duration: 800,
                     easing: 'swing',
                     step: function () {
-                        number.text(this.Counter.toFixed(precision))+suffix;
+                        number.text(this.Counter.toFixed(precision));
                     },
                     complete: function () {
-                        number.text(targetNumber)+suffix;
+                        number.text(targetNumber);
                     }
                 });
             });
@@ -1024,16 +1042,24 @@ class GLPIDashboard {
             const promises = [];
             requested_cards.forEach(function(requested_card) {
                 const card = requested_card.card_el;
-                promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
+
+                let data = {
                     'action':      'get_card',
                     'dashboard':   that.current_name,
                     'card_id':     requested_card.card_id,
                     'force':       force,
-                    'embed':       (that.embed ? 1 : 0),
                     'args':        requested_card.args,
                     'd_cache_key': that.cache_key,
                     'c_cache_key': requested_card.args.cache_key || ""
-                }).then(function(html) {
+                };
+                if (that.embed) {
+                    data.embed        = 1;
+                    data.token        = that.token;
+                    data.entities_id  = that.entities_id;
+                    data.is_recursive = that.is_recursive;
+                }
+
+                promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then(function(html) {
                     card.children('.grid-stack-item-content').html(html);
 
                     that.fitNumbers(card);
@@ -1046,18 +1072,25 @@ class GLPIDashboard {
             return promises;
         } else {
             // Single ajax mode, spawn a single request
+            let data = {
+                'dashboard': this.current_name,
+                'force': (specific_one.length > 0 ? 1 : 0),
+                'd_cache_key': this.cache_key,
+                'cards': card_ajax_data
+            };
+            if (this.embed) {
+                data.embed        = 1;
+                data.token        = this.token;
+                data.entities_id  = this.entities_id;
+                data.is_recursive = this.is_recursive;
+            }
+
             return $.ajax({
                 url:CFG_GLPI.root_doc+"/ajax/dashboard.php",
                 method: 'POST',
                 data: {
                     'action': 'get_cards',
-                    data: JSON.stringify({ //Preserve integers
-                        'dashboard': this.current_name,
-                        'force': (specific_one.length > 0 ? 1 : 0),
-                        'embed': (this.embed ? 1 : 0),
-                        'd_cache_key': this.cache_key,
-                        'cards': card_ajax_data
-                    })
+                    data: JSON.stringify(data)
                 }
             }).then(function(results) {
                 $.each(requested_cards, (i2, crd) => {

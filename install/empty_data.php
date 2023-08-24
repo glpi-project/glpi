@@ -271,7 +271,7 @@ $empty_data_builder = new class
             'translate_kb' => '0',
             'translate_dropdowns' => '0',
             'translate_reminders' => '0',
-            'pdffont' => 'helvetica',
+            'pdffont' => 'dejavusans',
             'keep_devices_when_purging_item' => '0',
             'maintenance_mode' => '0',
             'maintenance_text' => '',
@@ -5032,7 +5032,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'domain',
-                'rights' => READ | UPDATE | CREATE | PURGE,
+                'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'profile',
@@ -5901,7 +5901,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'domain',
-                'rights' => READ | UPDATE | CREATE | PURGE,
+                'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'profile',
@@ -6200,7 +6200,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'domain',
-                'rights' => READ | UPDATE | CREATE | PURGE,
+                'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'profile',

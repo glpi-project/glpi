@@ -142,8 +142,19 @@ function doUpdateDb()
 
     $update->doUpdates($current_version);
 
-   // Force cache cleaning to ensure it will not contain stale data
+    // Force cache cleaning to ensure it will not contain stale data
     (new CacheManager())->resetAllCaches();
+
+    if (!$update->isUpdatedSchemaConsistent()) {
+        $migration->displayError(
+            __('The database schema is not consistent with the current GLPI version.')
+            . "\n"
+            . sprintf(
+                __('It is recommended to run the "%s" command to see the differences.'),
+                'php bin/console database:check_schema_integrity'
+            )
+        );
+    }
 }
 
 /**

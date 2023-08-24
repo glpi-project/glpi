@@ -97,19 +97,20 @@ class KnowbaseItem_Revision extends CommonDBTM
             $start = 0;
         }
 
-       // Total Number of revisions
+        $kb_item_id = 0;
+        $language   = '';
         if ($item->getType() == KnowbaseItem::getType()) {
-            $where = [
-                'knowbaseitems_id' => $item->getID(),
-                'language'         => ''
-            ];
+            $kb_item_id = $item->getID();
         } else {
-            $where = [
-                'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                'language'         => $item->fields['language']
-            ];
+            $kb_item_id = $item->fields['knowbaseitems_id'];
+            $language   = $item->fields['language'];
         }
+        $where = [
+            'knowbaseitems_id' => $kb_item_id,
+            'language'         => $language,
+        ];
 
+        // Total Number of revisions
         $number = countElementsInTable(
             'glpi_knowbaseitems_revisions',
             $where
@@ -242,7 +243,7 @@ class KnowbaseItem_Revision extends CommonDBTM
                   data: {
                      oldid :  _oldid,
                      diffid: _diffid,
-                     kbid  : '{$revision['knowbaseitems_id']}'
+                     kbid  : '{$kb_item_id}'
                   }
                }).done(function(data) {
                   if (_diffid == 0) {

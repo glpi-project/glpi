@@ -846,22 +846,22 @@ class Provider
         $iterator = $DB->request($criteria);
 
         $search_criteria = self::getSearchFiltersCriteria($fk_table, $params['apply_filters'])['criteria'] ?? [];
-        $search_criteria[] = [
-            'field'      => $params['searchoption_id'],
-            'searchtype' => 'equals',
-            'value'      => 0
-        ];
 
         $url = $item::getSearchURL();
 
         $data = [];
         foreach ($iterator as $result) {
-            $search_criteria['criteria'][0]['value'] = $result['fk_id'] ?? 0;
+            $result_criteria = $search_criteria;
+            $result_criteria[] = [
+                'field'      => $params['searchoption_id'],
+                'searchtype' => 'equals',
+                'value'      => $result['fk_id'] ?? 0,
+            ];
             $data[] = [
                 'number' => $result['cpt'],
                 'label'  => $result['fk_name'] ?? __("without"),
-                'url'    => $url . '&' . Toolbox::append_params([
-                    'criteria' => $search_criteria,
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                    'criteria' => $result_criteria,
                     'reset' => 'reset',
                 ]),
             ];
@@ -1393,6 +1393,7 @@ class Provider
         }
 
         $type = 0;
+        $soption = 0;
         switch ($case) {
             case "user_requester":
                 $type     = CommonITILActor::REQUESTER;
@@ -1670,8 +1671,9 @@ class Provider
             array_push($s_criteria, ...$filter_criteria);
         }
 
-        if ($default_criteria_on_empty === true && count($s_criteria) === 0) {
-            $s_criteria = Search::getDefaultCriteria();
+        $itemtype = getItemTypeForTable($table);
+        if (is_a($itemtype, CommonDBTM::class, true) && $default_criteria_on_empty === true && count($s_criteria) === 0) {
+            $s_criteria = Search::getDefaultCriteria($itemtype);
         }
 
         return ['criteria' => $s_criteria];

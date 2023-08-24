@@ -1710,12 +1710,6 @@ abstract class API
             $raw = $row['raw'];
             $id = $raw['id'];
 
-           // keep row itemtype for all asset
-            if ($itemtype == AllAssets::getType()) {
-                $current_id       = $raw['id'];
-                $current_itemtype = $raw['TYPE'];
-            }
-
            // retrive value (and manage multiple values)
             $clean_values = [];
             foreach ($rawdata['data']['cols'] as $col) {
@@ -1742,8 +1736,8 @@ abstract class API
 
            // if all asset, provide type in returned data
             if ($itemtype == AllAssets::getType()) {
-                $current_line['id']       = $current_id;
-                $current_line['itemtype'] = $current_itemtype;
+                $current_line['id']       = $raw['id'];
+                $current_line['itemtype'] = $raw['TYPE'];
             }
 
            // append to final array
@@ -1973,16 +1967,16 @@ abstract class API
                             'message'    => __("You don't have permission to perform this action.")
                         ];
                     } else {
-                     // if parent key not provided in input and present in parameter
-                     // (detected from url for example), try to appent it do input
-                     // This is usefull to have logs in parent (and avoid some warnings in commonDBTM)
+                        // if parent key not provided in input and present in parameter
+                        // (detected from url for example), try to appent it do input
+                        // This is usefull to have logs in parent (and avoid some warnings in commonDBTM)
                         if (
                             isset($params['parent_itemtype'])
                             && isset($params['parent_id'])
                         ) {
-                              $fk_parent = getForeignKeyFieldForItemType($params['parent_itemtype']);
-                            if (!property_exists($input, $fk_parent)) {
-                                $input->$fk_parent = $params['parent_id'];
+                            $fk_parent = getForeignKeyFieldForItemType($params['parent_itemtype']);
+                            if (!property_exists($object, $fk_parent)) {
+                                $object->$fk_parent = $params['parent_id'];
                             }
                         }
 
@@ -3338,12 +3332,14 @@ abstract class API
 
         if ($results['ok'] == 0 && $results['noaction'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
            // No items were processed, invalid action key -> 400
-            $this->returnError(
+            return $this->returnError(
                 "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
                 400,
                 "ERROR_MASSIVEACTION_KEY"
             );
-        } else if ($results['ok'] > 0 && $results['ko'] == 0) {
+        }
+
+        if ($results['ok'] > 0 && $results['ko'] == 0) {
            // Success -> 200
             $code = 200;
         } else if ($results['ko'] > 0 && $results['ok'] > 0) {

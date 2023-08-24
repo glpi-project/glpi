@@ -5121,23 +5121,12 @@ JAVASCRIPT;
     }
 
     /**
-     * Get tickets count
+     * Get central count criteria
      *
-     * @param boolean $foruser  Only for current login user as requester (false by default)
-     * @param boolean $display  il false return html
-     **/
-    public static function showCentralCount(bool $foruser = false, bool $display = true)
+     * @param boolean $foruser Only for current login user as requester or observer (false by default)
+     */
+    private static function showCentralCountCriteria(bool $foruser): array
     {
-        global $DB, $CFG_GLPI;
-
-       // show a tab with count of jobs in the central and give link
-        if (!Session::haveRight(self::$rightname, self::READALL) && !self::canCreate()) {
-            return false;
-        }
-        if (!Session::haveRight(self::$rightname, self::READALL)) {
-            $foruser = true;
-        }
-
         $table = self::getTable();
         $criteria = [
             'SELECT'    => [
@@ -5154,11 +5143,7 @@ JAVASCRIPT;
                 'glpi_tickets_users' => [
                     'ON' => [
                         'glpi_tickets_users' => 'tickets_id',
-                        $table               => 'id', [
-                            'AND' => [
-                                'glpi_tickets_users.type' => CommonITILActor::REQUESTER
-                            ]
-                        ]
+                        $table               => 'id'
                     ]
                 ],
                 'glpi_ticketvalidations' => [
@@ -5183,14 +5168,19 @@ JAVASCRIPT;
                     ]
                 ];
             }
-        }
 
-        if ($foruser) {
-            $ORWHERE = ['OR' => [
-                'glpi_tickets_users.users_id'                => Session::getLoginUserID(),
-                'glpi_tickets.users_id_recipient'            => Session::getLoginUserID(),
-                'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID()
-            ]
+            $WHERE = [
+                'OR' => [
+                    'AND' => [
+                        'glpi_tickets_users.users_id' => Session::getLoginUserID(),
+                        'OR' => [
+                            ['glpi_tickets_users.type' => CommonITILActor::REQUESTER],
+                            ['glpi_tickets_users.type' => CommonITILActor::OBSERVER]
+                        ],
+                    ],
+                    'glpi_tickets.users_id_recipient'            => Session::getLoginUserID(),
+                    'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID()
+                ]
             ];
 
             if (
@@ -5198,11 +5188,33 @@ JAVASCRIPT;
                 && isset($_SESSION["glpigroups"])
                 && count($_SESSION["glpigroups"])
             ) {
-                $ORWHERE['OR']['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
+                $WHERE['OR']['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
             }
-            $criteria['WHERE'][] = $ORWHERE;
+            $criteria['WHERE'][] = $WHERE;
         }
 
+        return $criteria;
+    }
+
+    /**
+     * Get tickets count
+     *
+     * @param boolean $foruser  Only for current login user as requester or observer (false by default)
+     * @param boolean $display  il false return html
+     **/
+    public static function showCentralCount(bool $foruser = false, bool $display = true)
+    {
+        global $DB, $CFG_GLPI;
+
+       // show a tab with count of jobs in the central and give link
+        if (!Session::haveRight(self::$rightname, self::READALL) && !self::canCreate()) {
+            return false;
+        }
+        if (!Session::haveRight(self::$rightname, self::READALL)) {
+            $foruser = true;
+        }
+
+        $criteria = self::showCentralCountCriteria($foruser);
         $deleted_criteria = $criteria;
         $criteria['WHERE']['glpi_tickets.is_deleted'] = 0;
         $deleted_criteria['WHERE']['glpi_tickets.is_deleted'] = 1;
@@ -6442,6 +6454,25 @@ JAVASCRIPT;
         }
         if (count($calendars)) {
             $input['_date_creation_calendars_id'] = $calendars;
+        }
+
+        // add SLA/OLA (for business rules)
+        if (!$this->isNewItem()) {
+            foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+                list($dateField, $slaField) = SLA::getFieldNames($slmType);
+                if (!isset($input[$slaField]) && isset($this->fields[$slaField]) && $this->fields[$slaField] > 0) {
+                    $input[$slaField] = $this->fields[$slaField];
+                }
+                list($dateField, $olaField) = OLA::getFieldNames($slmType);
+                if (!isset($input[$olaField]) && isset($this->fields[$olaField]) && $this->fields[$olaField] > 0) {
+                    $input[$olaField] = $this->fields[$olaField];
+                }
+            }
+        }
+
+        // Add global validation
+        if (!$this->isNewItem() && !isset($input['global_validation'])) {
+            $input['global_validation'] = $this->fields['global_validation'];
         }
     }
 

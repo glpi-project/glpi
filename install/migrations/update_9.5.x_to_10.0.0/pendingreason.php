@@ -87,8 +87,6 @@ if (!$DB->tableExists('glpi_pendingreasons_items')) {
 $migration->addRight('pendingreason', ALLSTANDARDRIGHT, ['itiltemplate' => UPDATE]);
 
 // Add user for automatic bump and followup
-$migration->addConfig('system_user', 'core');
-
 $config = Config::getConfigurationValues('core');
 if (empty($config['system_user'])) {
     $user = new User();
@@ -103,11 +101,9 @@ if (empty($config['system_user'])) {
         'password'      => '',
         'authtype'      => 1,
     ];
-    if (!$DB->insert('glpi_users', $system_user_params)) {
-        die("Can't add 'glpi-system' user");
-    }
+    $DB->insertOrDie('glpi_users', $system_user_params, "Can't add 'glpi-system' user");
 
-    Config::setConfigurationValues('core', ['system_user' => $DB->insertId()]);
+    $migration->addConfig(['system_user' => $DB->insertId()], 'core');
 }
 
 // Add crontask for auto bump and auto solve

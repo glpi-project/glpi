@@ -40,7 +40,7 @@
 
 {% if not enable_anonymization %}
     {% set user = get_item('User', users_id) %}
-    {% if user is not null %}
+    {% if user is not null and user.canView() %}
         {% set user_fields = user.fields %}
         {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
         {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}

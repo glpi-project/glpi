@@ -144,6 +144,13 @@ class DB extends \GLPITestCase
                     'other'  => new \QueryParam()
                 ],
                 'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)'
+            ], [
+                'table', new \QuerySubQuery([
+                    'SELECT' => ['id', 'name'],
+                    'FROM' => 'other',
+                    'WHERE' => ['NOT' => ['name' => null]]
+                ]),
+                'INSERT INTO `table` (SELECT `id`, `name` FROM `other` WHERE NOT (`name` IS NULL))'
             ]/*, [
                 'table', [
                     'field'  => new \QueryParam('field'),
@@ -766,5 +773,55 @@ OTHER EXPRESSION;"
             '1292: Truncated incorrect INTEGER value: \'1a\'' . "\n" . '1292: Truncated incorrect INTEGER value: \'123b\'',
             LogLevel::WARNING
         );
+    }
+
+    protected function dataDrop()
+    {
+        return [
+            [
+                'tablename',
+                'TABLE',
+                false,
+                'DROP TABLE `tablename`'
+            ], [
+                'viewname',
+                'VIEW',
+                false,
+                'DROP VIEW `viewname`'
+            ], [
+                'tablename',
+                'TABLE',
+                true,
+                'DROP TABLE IF EXISTS `tablename`'
+            ], [
+                'viewname',
+                'VIEW',
+                true,
+                'DROP VIEW IF EXISTS `viewname`'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider dataDrop
+     */
+    public function testBuildDrop($name, $type, $exists, $expected)
+    {
+        $this
+            ->if($this->newTestedInstance)
+            ->then
+            ->string($this->testedInstance->buildDrop($name, $type, $exists))->isIdenticalTo($expected);
+    }
+
+    public function testBuildDropWException()
+    {
+        $this->exception(
+            function () {
+                $this
+                    ->if($this->newTestedInstance)
+                    ->then
+                    ->string($this->testedInstance->buildDrop('aname', 'UNKNOWN'))->isIdenticalTo('');
+            }
+        )->hasMessage('Unknown type to drop: UNKNOWN');
     }
 }

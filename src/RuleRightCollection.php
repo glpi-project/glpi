@@ -248,13 +248,27 @@ class RuleRightCollection extends RuleCollection
            //Get all the field to retrieve to be able to process rule matching
             $rule_fields = $this->getFieldsToLookFor();
 
-           //Get all the datas we need from ldap to process the rules
-            $sz         = @ldap_read(
+           //Get all the data we need from ldap to process the rules
+            $sz = @ldap_read(
                 $params_lower["connection"],
                 $params_lower["userdn"],
                 "objectClass=*",
                 $rule_fields
             );
+            if ($sz === false) {
+                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                if (ldap_errno($params_lower["connection"]) !== 32) {
+                    trigger_error(
+                        AuthLDAP::buildError(
+                            $params_lower["connection"],
+                            sprintf('Unable to get LDAP user having DN `%s` with filter `%s`', $params_lower["userdn"], 'objectClass=*')
+                        ),
+                        E_USER_WARNING
+                    );
+                }
+                return $rule_parameters;
+            }
+
             $rule_input = AuthLDAP::get_entries_clean($params_lower["connection"], $sz);
 
             if (count($rule_input)) {

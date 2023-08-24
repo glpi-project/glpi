@@ -585,7 +585,15 @@ class Rule extends CommonDBTM
      **/
     public function getCollectionClassName()
     {
-        return $this->getType() . 'Collection';
+        $parent = static::class;
+        do {
+            $collection_class = $parent . 'Collection';
+            $parent = get_parent_class($parent);
+        } while ($parent !== 'CommonDBTM' && $parent !== false && !class_exists($collection_class));
+        if ($collection_class === null) {
+            throw new \LogicException(sprintf('Unable to find collection class for `%s`.', static::getType()));
+        }
+        return $collection_class;
     }
 
 
@@ -1039,7 +1047,7 @@ class Rule extends CommonDBTM
         if ($ID == "") {
             return $this->getEmpty();
         }
-        if ($ret = $this->getFromDB($ID)) {
+        if ($this->getFromDB($ID)) {
             if (
                 $withactions
                 && ($RuleAction = getItemForItemtype($this->ruleactionclass))
@@ -2332,7 +2340,7 @@ class Rule extends CommonDBTM
         return [
             'criterion' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($criterion)),
             'condition' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($condition)),
-            'pattern'   => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($pattern)),
+            'pattern'   => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($pattern ?? '')),
         ];
     }
 
@@ -2949,12 +2957,17 @@ class Rule extends CommonDBTM
 
     public function getActions()
     {
-        return [
-            '_stop_rules_processing' => [
+        $actions = [];
+        $collection_class = $this->getCollectionClassName();
+        /** @var RuleCollection $collection */
+        $collection = new $collection_class();
+        if (!$collection->stop_on_first_match) {
+            $actions['_stop_rules_processing'] = [
                 'name' => __('Skip remaining rules'),
                 'type' => 'yesonly',
-            ]
-        ];
+            ];
+        }
+        return $actions;
     }
 
 
@@ -3551,8 +3564,6 @@ class Rule extends CommonDBTM
         $input['is_active']   = 0;
         $input['ranking']     = $nextRanking;
         $input['uuid']        = static::getUuid();
-
-        $input = Toolbox::addslashes_deep($input);
 
         return $input;
     }

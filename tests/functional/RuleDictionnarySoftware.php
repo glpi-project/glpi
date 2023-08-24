@@ -58,7 +58,7 @@ class RuleDictionnarySoftware extends DbTestCase
     {
         $rule    = new \RuleDictionnarySoftware();
         $actions = $rule->getActions();
-        $this->array($actions)->hasSize(8);
+        $this->array($actions)->hasSize(7);
     }
 
     public function testAddSpecificParamsForPreview()

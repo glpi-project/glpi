@@ -35,6 +35,7 @@
 
 namespace Glpi\CalDAV\Plugin;
 
+use Config;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
 use Sabre\DAV\Browser\Plugin;
 use Sabre\HTTP\RequestInterface;
@@ -71,8 +72,6 @@ class Browser extends Plugin
             return false;
         }
 
-        $user = $this->getPrincipalItemFromUri($authPlugin->getCurrentPrincipal());
-
-        return $user instanceof \User && \Session::DEBUG_MODE == $user->fields['use_mode'];
+        return Config::canUpdate();
     }
 }

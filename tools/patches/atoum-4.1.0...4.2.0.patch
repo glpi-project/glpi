@@ -1,0 +1,588 @@
+diff --git a/.github/workflows/unit-tests.yml b/.github/workflows/unit-tests.yml
+index 22825021..b51f16a4 100644
+--- a/.github/workflows/unit-tests.yml
++++ b/.github/workflows/unit-tests.yml
+@@ -14,10 +14,10 @@ jobs:
+     strategy:
+       matrix:
+         os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+-        php-version: [ '7.4', '8.0', '8.1' ]
++        php-version: [ '8.0', '8.1', '8.2' ]
+         experimental: [ false ]
+         include:
+-          - {os: 'ubuntu-latest', php-version: '8.2', experimental: true}
++          - {os: 'ubuntu-latest', php-version: '8.3', experimental: true}
+       fail-fast: false
+ 
+     env:
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 996e9116..d2a5e033 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,12 @@
+ # `dev-master`
+ 
++# 4.2.0 - 2023-07-30
++
++* [#893](https://github.com/atoum/atoum/pull/893) Drop PHP 7.4 support ([@cedric-anne])
++* [#892](https://github.com/atoum/atoum/pull/892) Fix `null`, `true` and `false` type handling ([@cedric-anne])
++* [#891](https://github.com/atoum/atoum/pull/891) Update tested PHP versions ([@cedric-anne])
++* [#890](https://github.com/atoum/atoum/pull/890) Fix duplicate variable declaration on PHP 8.3 ([@cedric-anne])
++
+ # 4.1.0 - 2022-11-20
+ 
+ * [#883](https://github.com/atoum/atoum/pull/883) and [#884](https://github.com/atoum/atoum/pull/884) Handle `static` return type in mock generator ([@shavounet])
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index bf1bafc4..8b07197b 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -110,9 +110,9 @@ $ vendor/bin/php-cs-fixer fix --verbose
+ 
+ ### Compatibility
+ 
+-Your code **must** work on PHP from version 7.4 to the latest stable.
++Your code **must** work on PHP from version 8.0 to the latest stable.
+ 
+-When you need to use a feature that is only available on PHP version greater than 7.4, you **must** either:
++When you need to use a feature that is only available on PHP version greater than 8.0, you **must** either:
+ 
+ * Use version sniffing (`version_compare`),
+ * Check if class exists,
+diff --git a/README.md b/README.md
+index df3c140e..295eaf81 100644
+--- a/README.md
++++ b/README.md
+@@ -2,10 +2,11 @@
+ 
+ # *atoum* [![Package version](https://img.shields.io/packagist/v/atoum/atoum.svg)](https://packagist.org/packages/atoum/atoum) [![Build Status](https://github.com/atoum/atoum/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/atoum/atoum/actions/workflows/unit-tests.yml?query=branch%3Amaster) [![Coverage Status](https://coveralls.io/repos/github/atoum/atoum/badge.svg?branch=master)](https://coveralls.io/github/atoum/atoum?branch=master) [![Lint](https://github.com/atoum/atoum/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/atoum/atoum/actions/workflows/lint.yml?query=branch%3Amaster) [![Gitter](https://badges.gitter.im/atoum/atoum.svg)](https://gitter.im/atoum/atoum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+ 
+-| PHP version | atoum version |
+-| ------------- | ------------- |
+-| 5.3 -> 5.6  | 1.x -> 3.x  |
+-| 7.2 -> 8.x  | 4.x (current) |
++| PHP version | atoum version       |
++|-------------|---------------------|
++| 5.3 -> 5.6  | 1.x -> 3.x          |
++| 7.2 -> 8.1  | 4.X -> 4.1          |
++| 8.x         | 4.1 < 4.X (current) |
+ 
+ ## A simple, modern and intuitive unit testing framework for PHP!
+ 
+diff --git a/classes/mock/generator.php b/classes/mock/generator.php
+index 64263c29..382e7e05 100644
+--- a/classes/mock/generator.php
++++ b/classes/mock/generator.php
+@@ -664,7 +664,7 @@ class generator
+ 
+         $returnType = $this->getReflectionType($method);
+         $returnTypeName = $this->getReflectionTypeName($returnType);
+-        $isNullable = $returnTypeName !== 'mixed' && $this->isNullable($returnType);
++        $isNullable = $returnType->allowsNull() === true;
+ 
+         switch (true) {
+             case $returnTypeName === 'self':
+@@ -685,6 +685,11 @@ class generator
+                 $returnTypeCode = ': ' . implode('|', $types);
+                 break;
+ 
++            case in_array($this->getReflectionTypeName($returnType), ['mixed', 'null']):
++                // 'mixed' and 'null' cannot be marked as nullable
++                $returnTypeCode = ': ' . $returnTypeName;
++                break;
++
+             case $returnTypeName === 'static':
+             case $returnType->isBuiltin():
+                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . $returnTypeName;
+@@ -697,11 +702,6 @@ class generator
+         return $returnTypeCode;
+     }
+ 
+-    protected function isNullable(\reflectionType $type)
+-    {
+-        return $type->allowsNull() === true;
+-    }
+-
+     protected function hasReturnType(\reflectionMethod $method)
+     {
+         $hasReturnType = $method->hasReturnType() === true;
+diff --git a/classes/test.php b/classes/test.php
+index 3ae710ed..3874076f 100644
+--- a/classes/test.php
++++ b/classes/test.php
+@@ -533,7 +533,7 @@ abstract class test implements observable, \countable
+         $asserterGenerator = $this->asserterGenerator;
+ 
+         $this->assertionManager->setDefaultHandler(
+-            function ($keyword, $arguments) use ($asserterGenerator, $assertionAliaser, & $lastAsserter) {
++            function ($keyword, $arguments) use ($asserterGenerator, $assertionAliaser) {
+                 static $lastAsserter = null;
+ 
+                 if ($lastAsserter !== null) {
+diff --git a/classes/tools/parameter/analyzer.php b/classes/tools/parameter/analyzer.php
+index f2c9d068..3766ca43 100644
+--- a/classes/tools/parameter/analyzer.php
++++ b/classes/tools/parameter/analyzer.php
+@@ -12,9 +12,12 @@ class analyzer
+ 
+         $parameterType = $parameter->getType();
+ 
+-        if ($parameterType instanceof \reflectionNamedType && $parameterType->getName() === 'mixed') {
+-            // 'mixed' cannot be prefixed by nullable flag '?' and cannot be part of union types
+-            return 'mixed';
++        if (
++            $parameterType instanceof \reflectionNamedType
++            && in_array($parameterType->getName(), ['mixed', 'null'])
++        ) {
++            // 'mixed' and 'null' cannot be prefixed by nullable flag '?'
++            return $parameterType->getName();
+         }
+ 
+         $parameterTypes = $parameterType instanceof \ReflectionUnionType
+diff --git a/composer.json b/composer.json
+index af5a5035..3ecf6f9d 100644
+--- a/composer.json
++++ b/composer.json
+@@ -31,7 +31,7 @@
+ 	],
+ 	"require":
+ 	{
+-		"php": "^7.4 || ^8.0",
++		"php": "^8.0",
+ 		"ext-hash": "*",
+ 		"ext-json": "*",
+ 		"ext-tokenizer": "*",
+diff --git a/tests/units/classes/mock/generator.php b/tests/units/classes/mock/generator.php
+index 6dbaeada..7ac60b7a 100644
+--- a/tests/units/classes/mock/generator.php
++++ b/tests/units/classes/mock/generator.php
+@@ -2516,7 +2516,6 @@ class generator extends atoum\test
+         ;
+     }
+ 
+-    /** @php >= 8.0 */
+     public function testGetMockedClassCodeForMethodWithStaticReturnType()
+     {
+         $this
+@@ -2611,7 +2610,291 @@ class generator extends atoum\test
+         ;
+     }
+ 
+-    /** @php >= 8.0 */
++    /** @php >= 8.2 */
++    public function testGetMockedClassCodeForMethodWithNullReturnType()
++    {
++        $this
++            ->if($generator = new testedClass())
++            ->and($reflectionTypeController = new mock\controller())
++            ->and($reflectionTypeController->__construct = function () {
++            })
++            ->and($reflectionTypeController->__toString = 'null')
++            ->and($reflectionTypeController->isBuiltIn = true)
++            ->and($reflectionTypeController->allowsNull = true)
++            ->and($reflectionType = new \mock\reflectionType())
++            ->and($reflectionMethodController = new mock\controller())
++            ->and($reflectionMethodController->__construct = function () {
++            })
++            ->and($reflectionMethodController->getName = $methodName = 'returnNull')
++            ->and($reflectionMethodController->isConstructor = false)
++            ->and($reflectionMethodController->getParameters = [])
++            ->and($reflectionMethodController->isPublic = true)
++            ->and($reflectionMethodController->isProtected = false)
++            ->and($reflectionMethodController->isPrivate = false)
++            ->and($reflectionMethodController->isFinal = false)
++            ->and($reflectionMethodController->isStatic = false)
++            ->and($reflectionMethodController->isAbstract = false)
++            ->and($reflectionMethodController->returnsReference = false)
++            ->and($reflectionMethodController->hasReturnType = true)
++            ->and($reflectionMethodController->getReturnType = $reflectionType)
++            ->and($reflectionMethodController->hasTentativeReturnType = false)
++            ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
++            ->and($reflectionClassController = new mock\controller())
++            ->and($reflectionClassController->__construct = function () {
++            })
++            ->and($reflectionClassController->getName = function () use (& $realClass) {
++                return $realClass;
++            })
++            ->and($reflectionClassController->isFinal = false)
++            ->and($reflectionClassController->isInterface = false)
++            ->and($reflectionClassController->getMethods = [$reflectionMethod])
++            ->and($reflectionClassController->getConstructor = null)
++            ->and($reflectionClassController->isAbstract = false)
++            ->and($reflectionClass = new \mock\reflectionClass(uniqid()))
++            ->and($reflectionMethodController->getDeclaringClass = $reflectionClass)
++            ->and($generator->setReflectionClassFactory(function () use ($reflectionClass) {
++                return $reflectionClass;
++            }))
++            ->and($adapter = new atoum\test\adapter())
++            ->and($adapter->class_exists = function ($class) use (& $realClass) {
++                return ($class == '\\' . $realClass);
++            })
++            ->and($generator->setAdapter($adapter))
++            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
++                'namespace mock {' . PHP_EOL .
++                'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
++                '{' . PHP_EOL .
++                $this->getMockControllerMethods() .
++                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
++                "\t" . '{' . PHP_EOL .
++                "\t\t" . 'if ($mockController === null)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$mockController = \atoum\atoum\mock\controller::get();' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t\t" . 'if ($mockController !== null)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$this->getMockController()->invoke(\'__construct\', func_get_args());' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t" . '}' . PHP_EOL .
++                "\t" . 'public function ' . $methodName . '(): null' . PHP_EOL .
++                "\t" . '{' . PHP_EOL .
++                "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0));' . PHP_EOL .
++                "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL .
++                "\t\t\t" . 'return $return;' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t\t" . 'else' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL .
++                "\t\t\t" . '$return = call_user_func_array([parent::class, \'' . $methodName . '\'], $arguments);' . PHP_EOL .
++                "\t\t\t" . 'return $return;' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t" . '}' . PHP_EOL .
++                "\t" . 'public static function getMockedMethods()' . PHP_EOL .
++                "\t" . '{' . PHP_EOL .
++                "\t\t" . 'return ' . var_export(['__construct', strtolower($methodName)], true) . ';' . PHP_EOL .
++                "\t" . '}' . PHP_EOL .
++                '}' . PHP_EOL .
++                '}'
++            )
++        ;
++    }
++
++    /** @php >= 8.2 */
++    public function testGetMockedClassCodeForMethodWithNullableTrueReturnType()
++    {
++        $this
++            ->if($generator = new testedClass())
++            ->and($reflectionTypeController = new mock\controller())
++            ->and($reflectionTypeController->__construct = function () {
++            })
++            ->and($reflectionTypeController->__toString = 'true')
++            ->and($reflectionTypeController->isBuiltIn = true)
++            ->and($reflectionTypeController->allowsNull = true)
++            ->and($reflectionType = new \mock\reflectionType())
++            ->and($reflectionMethodController = new mock\controller())
++            ->and($reflectionMethodController->__construct = function () {
++            })
++            ->and($reflectionMethodController->getName = $methodName = 'returnNullableTrue')
++            ->and($reflectionMethodController->isConstructor = false)
++            ->and($reflectionMethodController->getParameters = [])
++            ->and($reflectionMethodController->isPublic = true)
++            ->and($reflectionMethodController->isProtected = false)
++            ->and($reflectionMethodController->isPrivate = false)
++            ->and($reflectionMethodController->isFinal = false)
++            ->and($reflectionMethodController->isStatic = false)
++            ->and($reflectionMethodController->isAbstract = false)
++            ->and($reflectionMethodController->returnsReference = false)
++            ->and($reflectionMethodController->hasReturnType = true)
++            ->and($reflectionMethodController->getReturnType = $reflectionType)
++            ->and($reflectionMethodController->hasTentativeReturnType = false)
++            ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
++            ->and($reflectionClassController = new mock\controller())
++            ->and($reflectionClassController->__construct = function () {
++            })
++            ->and($reflectionClassController->getName = function () use (& $realClass) {
++                return $realClass;
++            })
++            ->and($reflectionClassController->isFinal = false)
++            ->and($reflectionClassController->isInterface = false)
++            ->and($reflectionClassController->getMethods = [$reflectionMethod])
++            ->and($reflectionClassController->getConstructor = null)
++            ->and($reflectionClassController->isAbstract = false)
++            ->and($reflectionClass = new \mock\reflectionClass(uniqid()))
++            ->and($reflectionMethodController->getDeclaringClass = $reflectionClass)
++            ->and($generator->setReflectionClassFactory(function () use ($reflectionClass) {
++                return $reflectionClass;
++            }))
++            ->and($adapter = new atoum\test\adapter())
++            ->and($adapter->class_exists = function ($class) use (& $realClass) {
++                return ($class == '\\' . $realClass);
++            })
++            ->and($generator->setAdapter($adapter))
++            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
++                'namespace mock {' . PHP_EOL .
++                'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
++                '{' . PHP_EOL .
++                $this->getMockControllerMethods() .
++                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
++                "\t" . '{' . PHP_EOL .
++                "\t\t" . 'if ($mockController === null)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$mockController = \atoum\atoum\mock\controller::get();' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t\t" . 'if ($mockController !== null)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$this->getMockController()->invoke(\'__construct\', func_get_args());' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t" . '}' . PHP_EOL .
++                "\t" . 'public function ' . $methodName . '(): ?true' . PHP_EOL .
++                "\t" . '{' . PHP_EOL .
++                "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0));' . PHP_EOL .
++                "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL .
++                "\t\t\t" . 'return $return;' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t\t" . 'else' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL .
++                "\t\t\t" . '$return = call_user_func_array([parent::class, \'' . $methodName . '\'], $arguments);' . PHP_EOL .
++                "\t\t\t" . 'return $return;' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t" . '}' . PHP_EOL .
++                "\t" . 'public static function getMockedMethods()' . PHP_EOL .
++                "\t" . '{' . PHP_EOL .
++                "\t\t" . 'return ' . var_export(['__construct', strtolower($methodName)], true) . ';' . PHP_EOL .
++                "\t" . '}' . PHP_EOL .
++                '}' . PHP_EOL .
++                '}'
++            )
++        ;
++    }
++
++    /** @php >= 8.2 */
++    public function testGetMockedClassCodeForMethodWithFalseReturnType()
++    {
++        $this
++            ->if($generator = new testedClass())
++            ->and($reflectionTypeController = new mock\controller())
++            ->and($reflectionTypeController->__construct = function () {
++            })
++            ->and($reflectionTypeController->__toString = 'false')
++            ->and($reflectionTypeController->isBuiltIn = true)
++            ->and($reflectionTypeController->allowsNull = false)
++            ->and($reflectionType = new \mock\reflectionType())
++            ->and($reflectionMethodController = new mock\controller())
++            ->and($reflectionMethodController->__construct = function () {
++            })
++            ->and($reflectionMethodController->getName = $methodName = 'returnFalse')
++            ->and($reflectionMethodController->isConstructor = false)
++            ->and($reflectionMethodController->getParameters = [])
++            ->and($reflectionMethodController->isPublic = true)
++            ->and($reflectionMethodController->isProtected = false)
++            ->and($reflectionMethodController->isPrivate = false)
++            ->and($reflectionMethodController->isFinal = false)
++            ->and($reflectionMethodController->isStatic = false)
++            ->and($reflectionMethodController->isAbstract = false)
++            ->and($reflectionMethodController->returnsReference = false)
++            ->and($reflectionMethodController->hasReturnType = true)
++            ->and($reflectionMethodController->getReturnType = $reflectionType)
++            ->and($reflectionMethodController->hasTentativeReturnType = false)
++            ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
++            ->and($reflectionClassController = new mock\controller())
++            ->and($reflectionClassController->__construct = function () {
++            })
++            ->and($reflectionClassController->getName = function () use (& $realClass) {
++                return $realClass;
++            })
++            ->and($reflectionClassController->isFinal = false)
++            ->and($reflectionClassController->isInterface = false)
++            ->and($reflectionClassController->getMethods = [$reflectionMethod])
++            ->and($reflectionClassController->getConstructor = null)
++            ->and($reflectionClassController->isAbstract = false)
++            ->and($reflectionClass = new \mock\reflectionClass(uniqid()))
++            ->and($reflectionMethodController->getDeclaringClass = $reflectionClass)
++            ->and($generator->setReflectionClassFactory(function () use ($reflectionClass) {
++                return $reflectionClass;
++            }))
++            ->and($adapter = new atoum\test\adapter())
++            ->and($adapter->class_exists = function ($class) use (& $realClass) {
++                return ($class == '\\' . $realClass);
++            })
++            ->and($generator->setAdapter($adapter))
++            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
++                'namespace mock {' . PHP_EOL .
++                'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
++                '{' . PHP_EOL .
++                $this->getMockControllerMethods() .
++                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
++                "\t" . '{' . PHP_EOL .
++                "\t\t" . 'if ($mockController === null)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$mockController = \atoum\atoum\mock\controller::get();' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t\t" . 'if ($mockController !== null)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$this->getMockController()->invoke(\'__construct\', func_get_args());' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t" . '}' . PHP_EOL .
++                "\t" . 'public function ' . $methodName . '(): false' . PHP_EOL .
++                "\t" . '{' . PHP_EOL .
++                "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0));' . PHP_EOL .
++                "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL .
++                "\t\t\t" . 'return $return;' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t\t" . 'else' . PHP_EOL .
++                "\t\t" . '{' . PHP_EOL .
++                "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL .
++                "\t\t\t" . '$return = call_user_func_array([parent::class, \'' . $methodName . '\'], $arguments);' . PHP_EOL .
++                "\t\t\t" . 'return $return;' . PHP_EOL .
++                "\t\t" . '}' . PHP_EOL .
++                "\t" . '}' . PHP_EOL .
++                "\t" . 'public static function getMockedMethods()' . PHP_EOL .
++                "\t" . '{' . PHP_EOL .
++                "\t\t" . 'return ' . var_export(['__construct', strtolower($methodName)], true) . ';' . PHP_EOL .
++                "\t" . '}' . PHP_EOL .
++                '}' . PHP_EOL .
++                '}'
++            )
++        ;
++    }
++
+     public function testGetMockedClassCodeForMethodWithUnionedReturnType()
+     {
+         $this
+@@ -2725,7 +3008,6 @@ class generator extends atoum\test
+         ;
+     }
+ 
+-    /** @php >= 8.0 */
+     public function testGetMockedClassCodeForMethodWithMixedReturnType()
+     {
+         $this
+diff --git a/tests/units/classes/mock/streams/fs/file.php b/tests/units/classes/mock/streams/fs/file.php
+index 2d013c15..ded182ab 100644
+--- a/tests/units/classes/mock/streams/fs/file.php
++++ b/tests/units/classes/mock/streams/fs/file.php
+@@ -409,8 +409,8 @@ class file extends atoum\test
+                 ->string($fileObject->current())->isEqualTo($line0)
+             ->if($fileObject->seek(6))
+             ->then
+-                ->boolean($fileObject->eof())->isEqualTo(version_compare(PHP_VERSION, '8.0.1', '<'))
+-                ->boolean($fileObject->valid())->isEqualTo(!version_compare(PHP_VERSION, '8.0.1', '<'))
++                ->boolean($fileObject->eof())->isFalse()
++                ->boolean($fileObject->valid())->isTrue()
+                 ->string($fileObject->current())->isEmpty()
+             ->if($fileObject->seek(5))
+             ->then
+diff --git a/tests/units/classes/superglobals.php b/tests/units/classes/superglobals.php
+index a6b53dcf..90ba0101 100644
+--- a/tests/units/classes/superglobals.php
++++ b/tests/units/classes/superglobals.php
+@@ -34,16 +34,6 @@ class superglobals extends atoum\test
+         }
+     }
+ 
+-    /** @php <= 8.0 */
+-    public function test__get_globals()
+-    {
+-        $this
+-            ->if($superglobals = new testedClass())
+-            ->then
+-                ->array->setByReferenceWith($superglobals->GLOBALS)->isReferenceTo($GLOBALS)
+-        ;
+-    }
+-
+     public function test__set()
+     {
+         $this
+diff --git a/tests/units/classes/tools/parameter/analyzer.php b/tests/units/classes/tools/parameter/analyzer.php
+index c4133645..97c89e2d 100644
+--- a/tests/units/classes/tools/parameter/analyzer.php
++++ b/tests/units/classes/tools/parameter/analyzer.php
+@@ -162,7 +162,6 @@ class analyzer extends atoum\test
+         ;
+     }
+ 
+-    /** @php >= 8.0 */
+     public function getTypeHintStringForMixed()
+     {
+         $this
+@@ -190,7 +189,72 @@ class analyzer extends atoum\test
+         ;
+     }
+ 
+-    /** @php >= 8.0 */
++    /** @php >= 8.2 */
++    public function getTypeHintStringForNull()
++    {
++        $this
++            ->if($analyzer = new testedClass())
++            ->and($reflectionNamedTypeController = new mock\controller())
++            ->and($reflectionNamedTypeController->__construct = function () {
++            })
++            ->and($reflectionNamedTypeController->getName = 'null')
++            ->and($reflectionNamedTypeController->isBuiltin = true)
++            ->and($reflectionNamedType = new \mock\reflectionNamedType())
++            ->and($reflectionParameterController = new mock\controller())
++            ->and($reflectionParameterController->__construct = function () {
++            })
++            ->and($reflectionParameterController->getName = 'param')
++            ->and($reflectionParameterController->isPassedByReference = false)
++            ->and($reflectionParameterController->isDefaultValueAvailable = false)
++            ->and($reflectionParameterController->isOptional = false)
++            ->and($reflectionParameterController->isVariadic = false)
++            ->and($reflectionParameterController->allowsNull = true)
++            ->and($reflectionParameterController->hasType = true)
++            ->and($reflectionParameterController->getType = $reflectionNamedType)
++            ->and($reflectionParameter = new \mock\reflectionParameter([uniqid(), uniqid()], 0))
++            ->then
++                ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('null')
++        ;
++    }
++
++    /** @php >= 8.2 */
++    public function getTypeHintStringForTrueAndFalse()
++    {
++        $this
++            ->if($analyzer = new testedClass())
++            ->and($reflectionNamedTypeController = new mock\controller())
++            ->and($reflectionNamedTypeController->__construct = function () {
++            })
++            ->and($reflectionNamedTypeController->isBuiltin = true)
++            ->and($reflectionNamedType = new \mock\reflectionNamedType())
++            ->and($reflectionParameterController = new mock\controller())
++            ->and($reflectionParameterController->__construct = function () {
++            })
++            ->and($reflectionParameterController->getName = 'param')
++            ->and($reflectionParameterController->isPassedByReference = false)
++            ->and($reflectionParameterController->isDefaultValueAvailable = false)
++            ->and($reflectionParameterController->isOptional = false)
++            ->and($reflectionParameterController->isVariadic = false)
++            ->and($reflectionParameterController->hasType = true)
++            ->and($reflectionParameterController->getType = $reflectionNamedType)
++            ->and($reflectionParameter = new \mock\reflectionParameter([uniqid(), uniqid()], 0))
++
++            ->if($reflectionNamedTypeController->getName = 'true')
++            ->and($reflectionParameterController->allowsNull = false)
++            ->then
++                ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('true')
++            ->if($reflectionParameterController->allowsNull = true)
++                ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('?true')
++
++            ->if($reflectionNamedTypeController->getName = 'false')
++            ->and($reflectionParameterController->allowsNull = false)
++            ->then
++                ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('false')
++            ->if($reflectionParameterController->allowsNull = true)
++                ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('?false')
++        ;
++    }
++
+     public function getTypeHintStringForUnionType()
+     {
+         $this

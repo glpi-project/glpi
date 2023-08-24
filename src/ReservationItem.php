@@ -428,7 +428,7 @@ class ReservationItem extends CommonDBChild
     {
         global $DB, $CFG_GLPI;
 
-        if (!Session::haveRight(self::$rightname, self::RESERVEANITEM)) {
+        if (!Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM])) {
             return false;
         }
 
@@ -512,7 +512,7 @@ class ReservationItem extends CommonDBChild
         ]);
 
         foreach ($iterator as $data) {
-            if (is_a($data['itemtype'], CommonDBTM::class, true) && $data['itemtype']::canView()) {
+            if (is_a($data['itemtype'], CommonDBTM::class, true)) {
                 $values[$data['itemtype']] = $data['itemtype']::getTypeName();
             }
         }
@@ -554,6 +554,18 @@ class ReservationItem extends CommonDBChild
             'class'               => "form-select",
             'value'               => $_POST['reservation_types'],
             'display_emptychoice' => true,
+        ]);
+
+        echo "</td></tr>";
+
+        // Location dropdown
+        $locrand = mt_rand();
+        echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . __('Item location') . "</label></td><td>";
+        Location::dropdown([
+            // Fill with submitted data if any, otherwise use user's location
+            'value'  => (int)($_POST['locations_id'] ?? User::getById(Session::getLoginUserID())->fields['locations_id'] ?? 0),
+            'rand'   => $locrand,
+            'entity' => $_SESSION['glpiactiveentities'],
         ]);
 
         echo "</td></tr>";
@@ -662,6 +674,13 @@ class ReservationItem extends CommonDBChild
                 }
             }
 
+            // Filter locations if location was provided/submitted
+            if ((int)($_POST['locations_id'] ?? 0) > 0) {
+                $criteria['WHERE'][] = [
+                    'glpi_locations.id' => getSonsOf('glpi_locations', (int) $_POST['locations_id']),
+                ];
+            }
+
             $iterator = $DB->request($criteria);
             foreach ($iterator as $row) {
                 echo "<tr><td>";
@@ -704,7 +723,7 @@ class ReservationItem extends CommonDBChild
                 $ok = true;
             }
         }
-        if ($ok) {
+        if ($ok && Session::haveRight("reservation", self::RESERVEANITEM)) {
             echo "<tr class='tab_bg_1'>";
             echo "<th><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></th>";
             echo "<th colspan='" . ($showentity ? "5" : "4") . "'>";
@@ -929,7 +948,7 @@ class ReservationItem extends CommonDBChild
 
         if ($item->getType() == __CLASS__) {
             $tabs = [];
-            if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+            if (Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
                 $tabs[1] = Reservation::getTypeName(1);
             }
             if (
@@ -992,41 +1011,8 @@ class ReservationItem extends CommonDBChild
      */
     public static function ajaxDropdown(array $post)
     {
-        global $DB;
-
         if ($post['idtable'] && class_exists($post['idtable'])) {
-            $itemtype = $post['idtable'];
-            $itemtype_obj = new $itemtype();
-
-            $item_table = $itemtype::getTable();
-            $resi_table = ReservationItem::getTable();
-
-            $criteria = [
-                'SELECT' => [
-                    "$resi_table.id",
-                    "$item_table.name"
-                ],
-                'FROM' => $item_table,
-                'INNER JOIN' => [
-                    $resi_table => [
-                        'ON' => [
-                            $resi_table => 'items_id',
-                            $item_table => 'id',
-                            ['AND' => ["$resi_table.itemtype" => $itemtype]],
-                        ]
-                    ]
-                ],
-                'WHERE' => [
-                    "$resi_table.is_active"   => 1,
-                    "$item_table.is_deleted"  => 0,
-                ]
-            ];
-
-            if ($itemtype_obj->maybeTemplate()) {
-                $criteria['WHERE']["$item_table.is_template"] = 0;
-            }
-
-            $result = $DB->request($criteria);
+            $result = self::getAvailableItems($post['idtable']);
 
             if ($result->count() == 0) {
                  echo __('No reservable item!');
@@ -1042,5 +1028,82 @@ class ReservationItem extends CommonDBChild
                 Dropdown::showFromArray($post['name'], $items);
             }
         }
+    }
+
+    /**
+     * Get available items for a given itemtype
+     *
+     * @param string $itemtype
+     *
+     * @return DBmysqlIterator
+     */
+    public static function getAvailableItems(string $itemtype): DBmysqlIterator
+    {
+        global $DB;
+
+        $reservation_table = ReservationItem::getTable();
+        $item_table = $itemtype::getTable();
+
+        $criteria = self::getAvailableItemsCriteria($itemtype);
+        $criteria['SELECT'] = [
+            "$reservation_table.id",
+            "$item_table.name"
+        ];
+
+        return $DB->request($criteria);
+    }
+
+    /**
+     * Get available items for a given itemtype
+     *
+     * @param string $itemtype
+     *
+     * @return int
+     */
+    public static function countAvailableItems(string $itemtype): int
+    {
+        global $DB;
+
+        $criteria = self::getAvailableItemsCriteria($itemtype);
+        $criteria['COUNT'] = 'total';
+        $results = $DB->request($criteria);
+        return $results->current()['total'];
+    }
+
+    /**
+     * Get common criteria for getAvailableItems and countAvailableItems functions
+     *
+     * @param string $itemtype
+     *
+     * @return array
+     */
+    private static function getAvailableItemsCriteria(string $itemtype): array
+    {
+        $reservation_table = ReservationItem::getTable();
+        $item = new $itemtype();
+        $item_table = $itemtype::getTable();
+
+        $criteria = [
+            'FROM' => $item_table,
+            'INNER JOIN' => [
+                $reservation_table => [
+                    'ON' => [
+                        $reservation_table => 'items_id',
+                        $item_table => 'id',
+                        ['AND' => ["$reservation_table.itemtype" => $itemtype]],
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                "$reservation_table.is_active"   => 1,
+                "$item_table.is_deleted"  => 0,
+            ]
+        ];
+
+        if ($item->maybeTemplate()) {
+            $criteria['WHERE']["$item_table.is_template"] = 0;
+        }
+
+        return $criteria;
     }
 }

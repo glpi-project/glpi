@@ -202,9 +202,8 @@
                itemtype: "{{ actor['itemtype'] }}",
                items_id: "{{ actor['items_id'] }}",
                use_notification: {{ actor['use_notification'] ? "1" : "0" }},
-               {% if actor['alternative_email'] is defined %}
-                  alternative_email: "{{ actor['alternative_email'] }}",
-               {% endif %}
+               alternative_email: "{{ actor['alternative_email'] ?? '' }}",
+               default_email: "{{ actor['default_email'] ?? '' }}",
             },
             {% endfor %}
          ],
@@ -229,6 +228,7 @@
       modal.find("input[name=_notifications_actorindex]").val(actorIndex);
       modal.find("input[name=_notifications_actorname]").removeAttr('readonly').val(text).attr('readonly', 'true');
       modal.find("input[name=_notifications_use_notification]").prop('checked', parseInt(actor.use_notification));
+      modal.find("input[name=_notifications_alternative_email]").attr('placeholder', actor.default_email);
       modal.find("input[name=_notifications_alternative_email]").val(actor.alternative_email);
 
       editActorNotifySettings_modal.show();

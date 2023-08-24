@@ -66,53 +66,25 @@ class Transfer extends DbTestCase
                 '/^DB.*/',
                 '/^SlaLevel.*/',
                 '/^OlaLevel.*/',
-                'Reservation',
-                'ReservationItem',
                 'Event',
                 'Glpi\\Event',
                 'KnowbaseItem',
-                'NetworkPortMigration',
-                '/^TicketTemplate.*/',
-                '/^Computer_Software.*/',
                 '/SavedSearch.*/',
                 '/.*Notification.*/',
-                '/.*Cost.*/',
-                '/^Item_.*/',
                 '/^Device.*/',
-                '/.*Validation$/',
                 '/^Network.*/',
-                'CalendarSegment',
-                'IPAddress',
                 'IPNetwork',
                 'FQDN',
                 '/^SoftwareVersion.*/',
                 '/^SoftwareLicense.*/',
-                '/.*Predefined.*/',
-                '/.*Mandatory.*/',
-                '/.*Hidden.*/',
-                'Entity_Reminder',
-                'Document_Item',
-                'Cartridge',
-                '/.*Task.*/',
-                'Entity_RSSFeed',
-                'ComputerVirtualMachine',
                 'FieldUnicity',
                 'PurgeLogs',
-                '/.*_?KnowbaseItem_?.*/',
-                'Consumable',
-                'Infocom',
-                'ComputerAntivirus',
                 'TicketRecurrent',
                 'Agent',
-                'Printer_CartridgeInfo',
-                'PrinterLog',
                 'USBVendor',
                 'PCIVendor',
                 'PendingReasonCron',
-                'Database',
-                'Socket',
                 'Netpoint',
-                'Link_Itemtype',
             ]
         );
 
@@ -127,6 +99,11 @@ class Transfer extends DbTestCase
 
         $count = 0;
         foreach ($itemtypeslist as $itemtype) {
+            if (is_a($itemtype, \CommonDBConnexity::class, true)) {
+                // Do not check transfer of child items, they are not supposed to be transfered directly.
+                continue;
+            }
+
             $item_class = new \ReflectionClass($itemtype);
             if ($item_class->isAbstract()) {
                 continue;

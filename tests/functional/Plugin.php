@@ -475,7 +475,7 @@ class Plugin extends DbTestCase
         // Create files for original plugin
         $old_information = [
             'name'      => 'Old plugin',
-            'version'   => '1.1',
+            'version'   => '1.0',
         ];
         $this->createTestPluginFiles(
             true,
@@ -483,10 +483,24 @@ class Plugin extends DbTestCase
             $old_directory
         );
 
-       // Check state
+       // Check state without checking if there is a replacement plugin
         $this->when(
             function () use ($plugin, $old_directory) {
                 $plugin->checkPluginState($old_directory);
+            }
+        )->error()->notExists();
+
+        // Assert old plugin entry has not been updated
+        $this->boolean($plugin->getFromDBByCrit(['directory' => $old_directory]))->isTrue();
+        $this->string($plugin->fields['directory'])->isIdenticalTo($old_directory);
+        $this->string($plugin->fields['name'])->isIdenticalTo($old_information['name']);
+        $this->string($plugin->fields['version'])->isIdenticalTo($old_information['version']);
+        $this->integer((int)$plugin->fields['state'])->isIdenticalTo(\Plugin::ACTIVATED);
+
+       // Check state and check if there is a replacement plugin
+        $this->when(
+            function () use ($plugin, $old_directory) {
+                $plugin->checkPluginState($old_directory, true);
             }
         )->error()
          ->withType(E_USER_WARNING)
@@ -784,7 +798,7 @@ class Plugin extends DbTestCase
              ->withMessage($expected_warning)
                ->exists();
         } else {
-            $plugin->checkPluginState($plugin_directory);
+            $plugin->checkPluginState($plugin_directory, true);
         }
 
        // Assert that data in DB matches expected

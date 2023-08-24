@@ -348,15 +348,24 @@ class DBmysql
     {
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
+        //FIXME Remove use of $DEBUG_SQL and $SQL_TOTAL_REQUEST
+
+        $debug_data = [
+            'query' => $query,
+            'time' => 0,
+            'rows' => 0,
+            'errors' => '',
+            'warnings' => '',
+        ];
+
         $is_debug = isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
         if ($is_debug && $CFG_GLPI["debug_sql"]) {
             $SQL_TOTAL_REQUEST++;
             $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST] = $query;
         }
-        if ($is_debug && $CFG_GLPI["debug_sql"] || $this->execution_time === true) {
-            $TIMER                                    = new Timer();
-            $TIMER->start();
-        }
+
+        $TIMER = new Timer();
+        $TIMER->start();
 
         $this->checkForDeprecatedTableOptions($query);
 
@@ -373,11 +382,14 @@ class DBmysql
 
             if (($is_debug || isAPI()) && $CFG_GLPI["debug_sql"]) {
                 $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
+                $debug_data['errors'] = $this->error();
             }
         }
 
         if ($is_debug && $CFG_GLPI["debug_sql"]) {
-            $TIME                                   = $TIMER->getTime();
+            $TIME = $TIMER->getTime();
+            $debug_data['time'] = (int) ($TIME * 1000);
+            $debug_data['rows'] = $this->affectedRows();
             $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
             $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
         }
@@ -385,20 +397,23 @@ class DBmysql
         $this->last_query_warnings = $this->fetchQueryWarnings();
         $DEBUG_SQL['warnings'][$SQL_TOTAL_REQUEST] = $this->last_query_warnings;
 
+        $warnings_string = implode(
+            "\n",
+            array_map(
+                static function ($warning) {
+                    return sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                },
+                $this->last_query_warnings
+            )
+        );
+        $debug_data['warnings'] = $warnings_string;
+
         // Output warnings in SQL log
         if (!empty($this->last_query_warnings)) {
             $message = sprintf(
                 "  *** MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s\n",
                 $query,
-                implode(
-                    "\n",
-                    array_map(
-                        function ($warning) {
-                            return sprintf('%s: %s', $warning['Code'], $warning['Message']);
-                        },
-                        $this->last_query_warnings
-                    )
-                )
+                $warnings_string
             );
             $message .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
             Toolbox::logSqlWarning($message);
@@ -406,6 +421,13 @@ class DBmysql
             ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
         }
 
+        \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
+            $debug_data['query'],
+            $debug_data['time'],
+            $debug_data['rows'],
+            $debug_data['errors'],
+            $debug_data['warnings']
+        );
         if ($this->execution_time === true) {
             $this->execution_time = $TIMER->getTime(0, true);
         }
@@ -1282,24 +1304,31 @@ class DBmysql
      * @since 9.3
      *
      * @param string $table  Table name
-     * @param array  $params Query parameters ([field name => field value)
+     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
+     * @phpstan-param array<string, mixed>|QuerySubQuery $params
      *
      * @return string
      */
     public function buildInsert($table, $params)
     {
-        $query = "INSERT INTO " . self::quoteName($table) . " (";
+        $query = "INSERT INTO " . self::quoteName($table) . ' ';
 
         $fields = [];
-        foreach ($params as $key => &$value) {
-            $fields[] = $this->quoteName($key);
-            $value = $this->quoteValue($value);
-        }
+        if ($params instanceof QuerySubQuery) {
+            // INSERT INTO ... SELECT Query where the sub-query returns all columns needed for the insert
+            $query .= $params->getQuery();
+        } else {
+            $query .= "(";
+            foreach ($params as $key => &$value) {
+                $fields[] = $this->quoteName($key);
+                $value = $this->quoteValue($value);
+            }
 
-        $query .= implode(', ', $fields);
-        $query .= ") VALUES (";
-        $query .= implode(", ", $params);
-        $query .= ")";
+            $query .= implode(', ', $fields);
+            $query .= ") VALUES (";
+            $query .= implode(", ", $params);
+            $query .= ")";
+        }
 
         return $query;
     }
@@ -1637,6 +1666,74 @@ class DBmysql
     }
 
     /**
+     * Drops a table
+     *
+     * @param string $name   Table name
+     * @param bool   $exists Add IF EXISTS clause
+     *
+     * @return bool|mysqli_result
+     */
+    public function dropTable(string $name, bool $exists = false)
+    {
+        $res = $this->query(
+            $this->buildDrop(
+                $name,
+                'TABLE',
+                $exists
+            )
+        );
+        return $res;
+    }
+
+    /**
+     * Drops a view
+     *
+     * @param string $name   View name
+     * @param bool   $exists Add IF EXISTS clause
+     *
+     * @return bool|mysqli_result
+     */
+    public function dropView(string $name, bool $exists = false)
+    {
+        $res = $this->query(
+            $this->buildDrop(
+                $name,
+                'VIEW',
+                $exists
+            )
+        );
+        return $res;
+    }
+
+    /**
+     * Builds a DROP query
+     *
+     * @param string $name   Name to drop
+     * @param string $type   Type to drop
+     * @param bool   $exists Add IF EXISTS clause
+     *
+     * @return string
+     */
+    public function buildDrop(string $name, string $type, bool $exists = false): string
+    {
+        $known_types = [
+            'TABLE',
+            'VIEW'
+        ];
+        if (!in_array($type, $known_types)) {
+            throw new \InvalidArgumentException('Unknown type to drop: ' . $type);
+        }
+
+        $name = $this::quoteName($name);
+        $query = "DROP $type";
+        if ($exists) {
+            $query .= ' IF EXISTS';
+        }
+        $query .= " $name";
+        return $query;
+    }
+
+    /**
      * Get database raw version
      *
      * @return string
@@ -1966,7 +2063,7 @@ class DBmysql
     public function executeStatement(mysqli_stmt $stmt): void
     {
         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
+            throw new \RuntimeException($stmt->error);
         }
     }
 

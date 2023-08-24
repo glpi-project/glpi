@@ -44,6 +44,7 @@ include_once GLPI_ROOT . '/inc/based_config.php';
 // Init Timer to compute time of display
 $TIMER_DEBUG = new Timer();
 $TIMER_DEBUG->start();
+\Glpi\Debug\Profiler::getInstance()->start('php_request');
 
 
 /// TODO try to remove them if possible
@@ -62,6 +63,8 @@ if (
     isset($_SESSION['glpi_use_mode'])
     && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
 ) {
+    // Start the debug profile
+    $profile = \Glpi\Debug\Profile::getCurrent();
     $SQL_TOTAL_REQUEST    = 0;
     $DEBUG_SQL = [
         'queries' => [],

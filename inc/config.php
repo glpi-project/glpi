@@ -185,6 +185,9 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
     }
     // Check version
     if (!isset($_GET["donotcheckversion"]) && !Update::isDbUpToDate()) {
+        // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
+        Toolbox::setDebugMode(Session::NORMAL_MODE);
+
         Session::loadLanguage('', false);
 
         if (isCommandLine()) {

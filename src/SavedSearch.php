@@ -656,7 +656,16 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             return;
         }
 
-        $url = Toolbox::getItemTypeSearchURL($this->fields['itemtype']);
+        $itemtype = $this->fields['itemtype'];
+        $url = $itemtype::getSearchURL();
+
+        // Prevents parameter duplication
+        $parse_url = parse_url($url);
+        if (isset($parse_url['query'])) {
+            parse_str($parse_url['query'], $url_params);
+            $url = $parse_url['path'];
+            $params = array_merge($url_params, $params);
+        }
         $url .= "?" . Toolbox::append_params($params);
 
        // keep last loaded to set an active state on saved search panel

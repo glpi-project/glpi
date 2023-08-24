@@ -66,7 +66,16 @@ class Session
        // write_close may cause troubles (no login / back to login page)
     }
 
-
+    /**
+     * Write and close session, but only if not in debug mode (allows proper use of the debug bar for AJAX calls).
+     * @return void
+     */
+    public static function writeClose()
+    {
+        if ($_SESSION['glpi_use_mode'] !== self::DEBUG_MODE) {
+            session_write_close();
+        }
+    }
 
     /**
      * Init session for the user is defined
@@ -216,16 +225,49 @@ class Session
      **/
     public static function start()
     {
-
         if (session_status() === PHP_SESSION_NONE) {
             ini_set('session.use_only_cookies', '1'); // Force session to use cookies
-
-            session_name("glpi_" . md5(realpath(GLPI_ROOT)));
+            session_name(self::buildSessionName());
 
             @session_start();
         }
        // Define current time for sync of action timing
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+    }
+
+    /**
+     * Build the session name based on GLPI's folder path + full domain + port
+     *
+     * Adding the full domain name prevent two GLPI instances on the same
+     * domain (e.g. test.domain and prod.domain) with identical folder's
+     * path (e.g. /var/www/glpi) to compete for the same cookie name
+     *
+     * Adding the port prevent some conflicts when using docker
+     *
+     * @param string|null $path Default to GLPI_ROOT
+     * @param string|null $host Default to $_SERVER['HTTP_HOST']
+     * @param string|null $port Default to $_SERVER['SERVER_PORT']
+     *
+     * @return string An unique session name
+     */
+    public static function buildSessionName(
+        ?string $path = null,
+        ?string $host = null,
+        ?string $port = null
+    ): string {
+        if (is_null($path)) {
+            $path = realpath(GLPI_ROOT);
+        }
+
+        if (is_null($host)) {
+            $host = $_SERVER['HTTP_HOST'] ?? '';
+        }
+
+        if (is_null($port)) {
+            $port = $_SERVER['SERVER_PORT'] ?? '';
+        }
+
+        return "glpi_" . md5($path . $host . $port);
     }
 
 
@@ -995,13 +1037,15 @@ class Session
 
     /**
      * Get the name of the right.
+     * This should only be used when it is expected that the request going to be terminated.
+     * The session will be closed by this method.
      *
-     * This only works for well-known rights.
+     * @param string $module The module
      * @param int $right The right
      * @return string The right name
      * @internal No backwards compatibility promise. Use in core only.
      */
-    public static function getRightNameForError(int $right): string
+    public static function getRightNameForError(string $module, int $right): string
     {
         // Well known rights
         $rights = [
@@ -1015,10 +1059,36 @@ class Session
             UPDATENOTE => 'UPDATENOTE',
             UNLOCK => 'UNLOCK',
         ];
-        if (array_key_exists($right, $rights)) {
-            return $rights[$right];
+        // Close session and force the default language so the logged right name is standardized
+        session_write_close();
+        $current_lang = $_SESSION['glpilanguage'];
+        self::loadLanguage('en_GB');
+
+        $all_specific_rights = Profile::getRightsForForm(self::getCurrentInterface());
+        $specific_rights = [];
+        foreach ($all_specific_rights as $forms) {
+            foreach ($forms as $group_rights) {
+                foreach ($group_rights as $right_definition) {
+                    if ($right_definition['field'] === $module) {
+                        $rights_arr = $right_definition['rights'];
+                        foreach ($rights_arr as $right_val => $right_label) {
+                            $label = $right_label;
+                            if (is_array($label) && isset($label['short'])) {
+                                $label = $label['short'];
+                            }
+                            if (!is_array($label)) {
+                                $specific_rights[$right_val] = $label;
+                            }
+                        }
+                    }
+                }
+            }
         }
-        return "unknown right name";
+
+        // Restore language so the error displayed is in the user language
+        self::loadLanguage($current_lang);
+
+        return $specific_rights[$right] ?? $rights[$right] ?? 'unknown right name';
     }
 
     /**
@@ -1035,7 +1105,7 @@ class Session
         if (!self::haveRight($module, $right)) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            $right_name = self::getRightNameForError($right);
+            $right_name = self::getRightNameForError($module, $right);
             Html::displayRightError("User is missing the $right ($right_name) right for $module");
         }
     }
@@ -1055,7 +1125,7 @@ class Session
             self::redirectIfNotLoggedIn();
             $info = "User is missing all of the following rights: ";
             foreach ($rights as $right) {
-                $right_name = self::getRightNameForError($right);
+                $right_name = self::getRightNameForError($module, $right);
                 $info .= $right . "($right_name), ";
             }
             $info = substr($info, 0, -2);
@@ -1099,7 +1169,7 @@ class Session
             self::redirectIfNotLoggedIn();
             $info = "User is missing all of the following rights: ";
             foreach ($modules as $mod => $right) {
-                $right_name = self::getRightNameForError($right);
+                $right_name = self::getRightNameForError($mod, $right);
                 $info .= $right . "($right_name) for module $mod, ";
             }
             $info = substr($info, 0, -2);
@@ -1521,6 +1591,15 @@ class Session
     public static function checkCSRF($data)
     {
 
+        $message = __("The action you have requested is not allowed.");
+        if (
+            ($requestToken = $data['_glpi_csrf_token'] ?? null) !== null
+            && isset($_SESSION['glpicsrftokens'][$requestToken])
+            && ($_SESSION['glpicsrftokens'][$requestToken] < time())
+        ) {
+            $message = __("Your session has expired.");
+        }
+
         if (
             GLPI_USE_CSRF_CHECK
             && (!Session::validateCSRF($data))
@@ -1531,10 +1610,10 @@ class Session
             // Output JSON if requested by client
             if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
                 http_response_code(403);
-                die(json_encode(["message" => __("The action you have requested is not allowed.")]));
+                die(json_encode(["message" => $message]));
             }
 
-            Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
+            Html::displayErrorAndDie($message, true);
         }
     }
 

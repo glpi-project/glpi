@@ -931,6 +931,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
+            'additionalfields'   => ['color'],
             'joinparams'         => [
                 'jointype'          => 'item_revert',
                 'specific_itemtype' => 'ProjectState',
@@ -1955,25 +1956,64 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false)
     {
+        $result = [];
+
         if ($column_field === null || $column_field == 'projectstates_id') {
-            $columns = ['projectstates_id' => []];
+            global $DB;
+
             $projectstate = new ProjectState();
             $restrict = [];
             if (!empty($column_ids) && !$get_default) {
                 $restrict = ['id' => $column_ids];
             }
-            $allstates = $projectstate->find($restrict, ['is_finished ASC', 'id']);
-            foreach ($allstates as $state) {
-                $columns['projectstates_id'][$state['id']] = [
-                    'name'            => $state['name'],
-                    'header_color'    => $state['color'],
-                    'header_fg_color' => Toolbox::getFgColor($state['color'], 50),
+
+            $addselect = [];
+            $ljoin = [];
+            if (Session::haveTranslations(ProjectState::getType(), 'name')) {
+                $addselect[] = "namet2.value AS transname";
+                $ljoin['glpi_dropdowntranslations AS namet2'] = [
+                    'ON' => [
+                        'namet2' => 'items_id',
+                        ProjectState::getTable()   => 'id', [
+                            'AND' => [
+                                'namet2.itemtype' => ProjectState::getType(),
+                                'namet2.language' => $_SESSION['glpilanguage'],
+                                'namet2.field'    => 'name'
+                            ]
+                        ]
+                    ]
                 ];
             }
-            return $columns['projectstates_id'];
-        } else {
-            return [];
+
+            $criteria = [
+                'SELECT'   => array_merge([ProjectState::getTable() . ".*"], $addselect),
+                'DISTINCT' => true,
+                'FROM'     => ProjectState::getTable(),
+                'WHERE'    => $restrict
+            ];
+            if (count($ljoin)) {
+                $criteria['LEFT JOIN'] = $ljoin;
+            }
+            $iterator = $DB->request($criteria);
+
+            if (count($iterator)) {
+                foreach ($iterator as $projectstate) {
+                    $result[$projectstate['id']] = [
+                        'name'            => $projectstate['transname'] ?? $projectstate['name'],
+                        'id'              => $projectstate['id'],
+                        'header_color'    => $projectstate['color'],
+                        'header_fg_color' => Toolbox::getFgColor($projectstate['color'], 50),
+                    ];
+                }
+            }
+
+            // sort by name ASC
+            uasort($result, function ($a, $b) {
+                return strnatcasecmp($a['name'], $b['name']);
+            });
         }
+
+        return $result;
     }
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
@@ -2045,7 +2085,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
        // Build team member data
         $supported_teamtypes = [
-            'User' => ['id', 'firstname', 'realname'],
+            'User' => ['id', 'name', 'firstname', 'realname'],
             'Group' => ['id', 'name'],
             'Supplier' => ['id', 'name'],
             'Contact' => ['id', 'name', 'firstname']
@@ -2114,8 +2154,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         if (count($contact_matches)) {
                               $match = reset($contact_matches);
                               // contact -> name, user -> realname
-                              $realname = $match['name'] ?? $match['realname'] ?? "";
-                              $match['name'] = formatUserName($match['id'], '', $realname, $match['firstname']);
+                              $realname = $teammember['itemtype'] === 'User' ? $match['realname'] : $match['name'];
+                              $name = $teammember['itemtype'] === 'User' ? $match['name'] : '';
+                              $match['name'] = formatUserName($match['id'], $name, $realname, $match['firstname']);
                               $item['_team'][] = array_merge($teammember, $match);
                         }
                         break;
@@ -2162,7 +2203,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         if (count($contact_matches)) {
                               $match = reset($contact_matches);
                             if ($teammember['itemtype'] === 'User') {
-                                $match['name'] = formatUserName($match['id'], '', $match['realname'], $match['firstname']);
+                                $match['name'] = formatUserName($match['id'], $match['name'], $match['realname'], $match['firstname']);
                             } else {
                                 $match['name'] = formatUserName($match['id'], '', $match['name'], $match['firstname']);
                             }
@@ -2324,7 +2365,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     /**
      * Show Kanban view.
-     * @param int $ID ID of the parent Project or -1 for a global view.
+     * @param int $ID ID of the parent Project or 0 for a global view.
      * @return bool|void False if the Kanban cannot be shown.
      */
     public static function showKanban($ID)
@@ -2372,7 +2413,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 ],
                 'is_recursive' => [
                     'type'   => 'hidden',
-                    'value'  => 0
+                    'value'  => $ID > 0 ? $project->fields["is_recursive"] : 0
                 ]
             ],
             'team_itemtypes'  => Project::getTeamItemtypes(),
@@ -2418,7 +2459,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 ],
                 'is_recursive' => [
                     'type'   => 'hidden',
-                    'value'  => 0
+                    'value'  => $ID > 0 ? $project->fields["is_recursive"] : 0
                 ]
             ],
             'team_itemtypes'  => ProjectTask::getTeamItemtypes(),

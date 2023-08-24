@@ -416,7 +416,7 @@ class Reservation extends CommonDBChild
     {
         global $CFG_GLPI;
 
-        if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+        if (!Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
             return false;
         }
 
@@ -469,6 +469,10 @@ class Reservation extends CommonDBChild
         echo "<div id='reservations_planning_$rand' class='card-body reservations-planning'></div>";
         echo "</div>"; // .reservation_panel
 
+        $can_reserve = (
+            Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
+            && count(self::getReservableItemtypes()) > 0
+        ) ? "true" : "false";
         $js = <<<JAVASCRIPT
       $(function() {
          var reservation = new Reservations();
@@ -477,6 +481,7 @@ class Reservation extends CommonDBChild
             is_all: $is_all,
             rand: $rand,
             license_key: '$scheduler_key',
+            can_reserve: $can_reserve,
          });
          reservation.displayPlanning();
       });
@@ -720,7 +725,7 @@ JAVASCRIPT;
            // only one id = 0, display an item dropdown
             Dropdown::showSelectItemFromItemtypes([
                 'items_id_name'   => 'items[]',
-                'itemtypes'       => $CFG_GLPI['reservation_types'],
+                'itemtypes'       => self::getReservableItemtypes(),
                 'entity_restrict' => Session::getActiveEntity(),
                 'checkright'      => false,
                 'ajax_page'       => $CFG_GLPI['root_doc'] . '/ajax/reservable_items.php'
@@ -1248,6 +1253,21 @@ JAVASCRIPT;
         echo "</table></div>\n";
     }
 
+    /**
+     * Get reservable itemtypes from GLPI config, filtering out itemtype with no
+     * reservable items
+     *
+     * @return array
+     */
+    public static function getReservableItemtypes(): array
+    {
+        global $CFG_GLPI;
+
+        return array_filter(
+            $CFG_GLPI['reservation_types'],
+            fn ($type) => ReservationItem::countAvailableItems($type) > 0
+        );
+    }
 
     public static function getIcon()
     {

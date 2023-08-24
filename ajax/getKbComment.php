@@ -37,10 +37,15 @@ include('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
+Session::checkCentralAccess();
 
 if (!isset($_POST['kbitem_id'])) {
     throw new \RuntimeException('Required argument missing!');
+}
+
+$item = new \KnowbaseItem();
+if (!$item->getFromDB($_POST['kbitem_id']) || !$item->can($_POST['kbitem_id'], READ)) {
+    return;
 }
 
 $kbitem_id = $_POST['kbitem_id'];

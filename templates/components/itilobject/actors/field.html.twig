@@ -46,7 +46,7 @@
 {% endif %}
 
 {% set onchange = '' %}
-{% if item.isNewItem() %}
+{% if item.isNewItem() and actortype == "requester" %}
    {% set onchange = 'this.form.submit();' %}
 {% endif %}
 
@@ -58,7 +58,8 @@
       <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
             data-use-notification="{{ actor['use_notification'] }}"
-            data-alternative-email="{{ actor['alternative_email'] }}"
+            data-default-email="{{ actor['default_email'] ?? '' }}"
+            data-alternative-email="{{ actor['alternative_email'] ?? '' }}"
             {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype)) %}
                disabled="disabled" style="display: none;"
             {% endif %}
@@ -305,6 +306,7 @@
             var itemtype  = selection.itemtype ?? element.data('itemtype');
             var items_id  = selection.items_id ?? element.data('items-id');
             var use_notif = selection.use_notification  ?? element.data('use-notification')  ?? false;
+            var def_email = selection.default_email ?? element.data('default-email') ?? '';
             var alt_email = selection.alternative_email ?? element.data('alternative-email') ?? '';
 
             if (itemtype == "Email") {
@@ -317,6 +319,7 @@
                itemtype: itemtype,
                items_id: items_id,
                use_notification: use_notif,
+               default_email: def_email,
                alternative_email: alt_email,
             });
          });
