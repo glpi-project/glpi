@@ -35,27 +35,29 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
-
-    <h3 class="card-title">
-        {{ __('Reserve an item') }}
-    </h3>
-
     {% if items|length > 0 %}
         {% for item in items %}
-            {{ _n('Item', 'Items', items|length) }}
-            {{ item.type_name }}
-            {{ item.comment|safe_html }}
+            {{ fields.htmlField(
+                '',
+                item.type_name,
+                _n('Item', 'Items', items|length)
+            ) }}
+            {{ fields.htmlField(
+                '',
+                item.comment,
+                __('Notes')
+            ) }}
         {% endfor %}
     {% else %}
         {{ fields.dropdownItemsFromItemtypes(
             'items[]',
             _n('Item', 'Items', 1),
             {
-                'items_id_name'   : 'items[]',
-                'itemtypes'       : itemtypes,
-                'entity_restrict' : session('glpiactive_entity'),
-                'checkright'      : false,
-                'ajax_page'       : config('root_doc') ~ '/ajax/reservable_items.php',
+                items_id_name   : 'items[]',
+                itemtypes       : itemtypes,
+                entity_restrict : session('glpiactive_entity'),
+                checkright      : false,
+                ajax_page       : config('root_doc') ~ '/ajax/reservable_items.php'
             }
         ) }}
     {% endif %}
@@ -66,8 +68,8 @@
         '',
         __('By'),
         {
-            'entity': item.fields['entities_id'],
-            'right': 'all'
+            entity      : item.fields['entities_id'],
+            right       : 'all'
         }
     ) }}
 
@@ -84,24 +86,24 @@
         default_delay,
         __('Duration'),
         {
-            'rand'      : rand,
-            'min'       : 0,
-            'max'       : 24 * constant('HOUR_TIMESTAMP'),
-            'value'     : default_delay,
-            'emptylabel': __('Specify an end date')
+            rand        : rand,
+            min         : 0,
+            max         : 24 * constant('HOUR_TIMESTAMP'),
+            value       : default_delay,
+            emptylabel  : __('Specify an end date')
         }
     ) }}
 
-    <br><div id='date_end{{ rand }}'></div>
+    {{ fields.ajaxField('date_end' ~ rand, '') }}
 
     {% do call('Ajax::updateItemOnSelectEvent', [
         'dropdown_resa__duration_' ~ rand,
         'date_end' ~ rand,
         config('root_doc') ~ '/ajax/planningend.php',
         {
-            'duration'     : '__VALUE__',
-            'end'          : item.fields['end'],
-            'name'         : "resa[end]"
+            duration    : '__VALUE__',
+            end         : item.fields['end'],
+            name        : "resa[end]"
         }
     ]) %}
 
@@ -110,9 +112,9 @@
             'date_end' ~ rand,
             config('root_doc') ~ '/ajax/planningend.php',
             {
-                'duration'     : 0,
-                'end'          : item.fields['end'],
-                'name'         : "resa[end]"
+                duration    : 0,
+                end         : item.fields['end'],
+                name        : "resa[end]"
             }
         ]) %}
     {% endif %}
@@ -134,19 +136,20 @@
             },
             __('Repetition'),
             {
-                'rand' : rand
+                rand : rand
             }
         ) }}
-        <br><div id='resaperiodcontent{{ rand }}'></div>
+
+        {{ fields.ajaxField('resaperiodcontent' ~ rand, '') }}
 
         {% do call('Ajax::updateItemOnSelectEvent', [
             'dropdown_periodicity__type_' ~ rand,
             'resaperiodcontent' ~ rand,
             config('root_doc') ~ '/ajax/resaperiod.php',
             {
-                'type'     : '__VALUE__',
-                'end'          : item.fields['end'],
-                'name'         : "resa[end]"
+                type    : '__VALUE__',
+                end     : item.fields['end'],
+                name    : "resa[end]"
             }
         ]) %}
     {% endif %}
@@ -156,10 +159,10 @@
         item.fields['comment'],
         __("Comments"),
         {
-            'enable_richtext'   : true,
-            'enable_fileupload' : false,
-            'cols'              : 30,
-            'rows'              : 10
+            enable_richtext     : true,
+            enable_fileupload   : false,
+            cols                : 30,
+            rows                : 10
         }
     ) }}
 
