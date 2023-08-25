@@ -598,7 +598,6 @@ class Contract extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'periodicity',
             'name'               => __('Periodicity'),
-            'massiveaction'      => false,
             'datatype'           => 'number',
             'min'                => 12,
             'max'                => 60,
@@ -618,7 +617,6 @@ class Contract extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'billing',
             'name'               => __('Invoice period'),
-            'massiveaction'      => false,
             'datatype'           => 'number',
             'min'                => 12,
             'max'                => 60,
@@ -646,7 +644,6 @@ class Contract extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'renewal',
             'name'               => __('Renewal'),
-            'massiveaction'      => false,
             'datatype'           => 'specific',
             'searchtype'         => ['equals', 'notequals']
         ];
