@@ -578,13 +578,22 @@ final class SearchEngine
 
     /**
      * @param class-string<CommonGLPI> $itemtype
-     * @param array $params
+     * @param array $params Array of options:
+     *                       - (bool) init_session_data - default: false
      * @return void
      */
     public static function show(string $itemtype, array $params = []): void
     {
         Profiler::getInstance()->start('SearchEngine::show', Profiler::CATEGORY_SEARCH);
         Plugin::doHook(Hooks::PRE_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
+
+        if (($params['init_session_data'] ?? false) && isset($params['criteria'])) {
+            // Search engine need session data to display criteria properly.
+            // This parameter is needed when rendering multiple searches with
+            // different criteria from a twig template (as we can't set the
+            // session data from twig).
+            $_SESSION['glpisearch'][$itemtype]['criteria'] = $params['criteria'];
+        }
 
         /** @var SearchInputInterface $search_input_class */
         $search_input_class = self::getSearchInputClass($params);

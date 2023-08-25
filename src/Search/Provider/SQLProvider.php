@@ -4728,6 +4728,7 @@ final class SQLProvider implements SearchProviderInterface
             return self::giveItem($data["TYPE"], $ID, $data, $meta, $oparams, $itemtype);
         }
         $so = $searchopt[$ID];
+        $so['id'] = $ID; // Keep track of search option id so it can be used by functions using $so as a parameter
         $orig_id = $ID;
         $ID = ($orig_itemtype !== null ? $orig_itemtype : $itemtype) . '_' . $ID;
 
