@@ -128,7 +128,7 @@
             </button>
          {% else %}
 
-            <div class="btn-group" role="group">
+            <div class="btn-group" role="group" id="right-actions">
                {% if item.canDeleteItem() %}
                   {% if item.isDeleted() %}
                      <button class="btn btn-outline-secondary" type="submit" name="restore" form="itil-form"
@@ -204,14 +204,17 @@
       {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_MERGED') %}
          // hide answer button after clicking on it only for merge btn
          $(this).closest(".main-actions").hide();
+         // hide also itil object action to prevent confusion
+         $("#right-actions").hide();
       {% endif %}
    });
 
    $(function() {
-      // when close button of new answer block is clicked, show again the new answer button
+      // when close button of new answer block is clicked, show again the new answer button (and the itil object actions)
       {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_MERGED') %}
          $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
             $("#itil-footer .main-actions").show();
+            $("#right-actions").show();
          });
       {% endif %}
 
