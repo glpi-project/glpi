@@ -373,6 +373,9 @@ class DisplayPreference extends CommonDBTM
         }
         $entries = [];
         foreach ($fixed_columns as $key => $val) {
+            if (!isset($searchopt[$val])) {
+                continue;
+            }
             $entries[] = [
                 'id'   => $val,
                 'name' => $searchopt[$val]['name'],
@@ -381,6 +384,9 @@ class DisplayPreference extends CommonDBTM
             ];
         }
         foreach ($already_added as $key => $val) {
+            if (!isset($searchopt[$val])) {
+                continue;
+            }
             $entries[] = [
                 'id'   => $val,
                 'name' => $searchopt[$val]['name'],
