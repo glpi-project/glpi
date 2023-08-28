@@ -36,7 +36,6 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% block config_fields %}
-   {{ fields.largeTitle(__('Assistance'), 'ti ti-headset') }}
    {{ fields.dropdownNumberField('time_step', config['time_step'], __('Step for the hours (minutes)'), {
       min: 30,
       max: 60,

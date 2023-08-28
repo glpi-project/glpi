@@ -35,8 +35,6 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block config_fields %}
-   {{ fields.largeTitle(_n('SQL replica', 'SQL replicas', get_plural_number()), 'ti ti-database') }}
-
    {{ fields.textField('_dbreplicate_dbhost', replica_config['host'], __('SQL server (MariaDB or MySQL)')) }}
    {{ fields.textField('_dbreplicate_dbdefault', replica_config['default'], _n('Database', 'Databases', 1)) }}
 

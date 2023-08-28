@@ -41,7 +41,6 @@
       (constant('Config::NO_MANAGEMENT')): __('No'),
    } %}
 
-   {{ fields.largeTitle(_n('Asset', 'Assets', get_plural_number()), 'ti ti-package') }}
    {{ fields.dropdownYesNo('auto_create_infocoms', config['auto_create_infocoms'], __('Enable the financial and administrative information by default')) }}
    {{ fields.dropdownArrayField('monitors_management_restrict', config['monitors_management_restrict'], global_management_options, __('Restrict monitor management')) }}
    {{ fields.dropdownField('SoftwareCategory', 'softwarecategories_id_ondelete', config['softwarecategories_id_ondelete'], __('Software category deleted by the dictionary rules')) }}
