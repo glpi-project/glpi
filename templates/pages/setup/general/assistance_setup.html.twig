@@ -35,8 +35,13 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
+{% set field_options = {
+   'label_class': 'col-xxl-9',
+   'input_class': 'col-xxl-3',
+} %}
+
 {% block config_fields %}
-   {{ fields.dropdownNumberField('time_step', config['time_step'], __('Step for the hours (minutes)'), {
+   {{ fields.dropdownNumberField('time_step', config['time_step'], __('Step for the hours (minutes)'), field_options|merge({
       min: 30,
       max: 60,
       step: 30,
@@ -47,28 +52,55 @@
          15: 15,
          20: 20,
       }
-   }) }}
+   })) }}
    {% set planning_end_field %}
       <span class="mx-1">-></span>
-      {{ fields.dropdownHoursField(planning_end, config['planning_end'], '', {
+      {{ fields.dropdownHoursField(planning_end, config['planning_end'], '', field_options|merge({
          no_label: true
-      }) }}
+      })) }}
    {% endset %}
-   {{ fields.dropdownHoursField(planning_begin, config['planning_begin'], __('Limit of the schedules for planning'), {
+   {{ fields.dropdownHoursField(planning_begin, config['planning_begin'], __('Limit of the schedules for planning'), field_options|merge({
       add_field_html: planning_end_field
-   }) }}
+   })) }}
 
    {% set max_filesize_dropdown %}
       {% do call('MailCollector::showMaxFilesize', ['default_mailcollector_filesize_max', config['default_mailcollector_filesize_max']]) %}
    {% endset %}
-   {{ fields.htmlField('', max_filesize_dropdown, __('Default file size limit imported by the mails receiver')) }}
-   {{ fields.dropdownField('DocumentCategory', 'documentcategories_id_forticket', config['documentcategories_id_forticket'], __('Default heading when adding a document to a ticket')) }}
+   {{ fields.htmlField('', max_filesize_dropdown, __('Default file size limit imported by the mails receiver'), field_options) }}
+   {{ fields.dropdownField(
+      'DocumentCategory',
+      'documentcategories_id_forticket',
+      config['documentcategories_id_forticket'],
+      __('Default heading when adding a document to a ticket'),
+      field_options
+   ) }}
 
-   {{ fields.dropdownYesNo('default_software_helpdesk_visible', config['default_software_helpdesk_visible'], __('By default, a software may be linked to a ticket')) }}
-   {{ fields.dropdownYesNo('keep_tickets_on_delete', config['keep_tickets_on_delete'], __('Keep tickets when purging hardware in the inventory')) }}
-   {{ fields.dropdownYesNo('use_check_pref', config['use_check_pref'], __('Show personnal information in new ticket form (simplified interface)')) }}
-   {{ fields.dropdownYesNo('use_anonymous_helpdesk', config['use_anonymous_helpdesk'], __('Allow anonymous ticket creation (helpdesk.receiver)')) }}
-   {{ fields.dropdownYesNo('use_anonymous_followups', config['use_anonymous_followups'], __('Allow anonymous followups (receiver)')) }}
+   {{ fields.dropdownYesNo(
+      'default_software_helpdesk_visible',
+      config['default_software_helpdesk_visible'],
+      __('By default, a software may be linked to a ticket'),
+      field_options
+   ) }}
+   {{ fields.dropdownYesNo(
+      'keep_tickets_on_delete',
+      config['keep_tickets_on_delete'],
+      __('Keep tickets when purging hardware in the inventory'),
+      field_options) }}
+   {{ fields.dropdownYesNo(
+      'use_check_pref',
+      config['use_check_pref'],
+      __('Show personnal information in new ticket form (simplified interface)'),
+      field_options) }}
+   {{ fields.dropdownYesNo(
+      'use_anonymous_helpdesk',
+      config['use_anonymous_helpdesk'],
+      __('Allow anonymous ticket creation (helpdesk.receiver)'),
+      field_options) }}
+   {{ fields.dropdownYesNo(
+      'use_anonymous_followups',
+      config['use_anonymous_followups'],
+      __('Allow anonymous followups (receiver)'),
+      field_options) }}
 
    {{ fields.dropdownArrayField('planning_work_days', null, {
       1: __('Monday'),
@@ -78,10 +110,10 @@
       5: __('Friday'),
       6: __('Saturday'),
       7: __('Sunday'),
-   }, __('Planning work days'), {
+   }, __('Planning work days'), field_options|merge({
       values: config['planning_work_days'],
       multiple: true,
-   }) }}
+   })) }}
 
    {{ fields.smallTitle(__('Matrix of calculus for priority')) }}
    {{ inputs.hidden('_matrix', 1) }}
