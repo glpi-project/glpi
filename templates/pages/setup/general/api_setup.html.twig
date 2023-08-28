@@ -71,6 +71,7 @@
       readonly: true,
       copyable: true
    }) }}
+   {{ fields.nullField() }}
    {{ fields.dropdownYesNo('enable_api_login_credentials', config['enable_api_login_credentials'], __("Enable login with credentials"), {
       helper: __("Allow to login to API and get a session token with user credentials")
    }) }}
