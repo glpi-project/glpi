@@ -224,7 +224,14 @@ final class ITILController extends AbstractController
             'x-rights-conditions' => [ // Object-level extra permissions
                 'read' => static function () {
                     if (!\Session::haveRight(\CommonITILTask::$rightname, \CommonITILTask::SEEPRIVATE)) {
-                        return ['WHERE' => ['is_private' => 0]];
+                        return [
+                            'WHERE' => [
+                                'OR' => [
+                                    'is_private' => 0,
+                                    'users_id' => \Session::getLoginUserID()
+                                ]
+                            ]
+                        ];
                     }
                     return true; // Allow reading by default. No extra SQL conditions needed.
                 }
@@ -258,7 +265,14 @@ final class ITILController extends AbstractController
             'x-rights-conditions' => [ // Object-level extra permissions
                 'read' => static function () {
                     if (!\Session::haveRight(\ITILFollowup::$rightname, \ITILFollowup::SEEPRIVATE)) {
-                        return ['WHERE' => ['is_private' => 0]];
+                        return [
+                            'WHERE' => [
+                                'OR' => [
+                                    'is_private' => 0,
+                                    'users_id' => \Session::getLoginUserID()
+                                ]
+                            ]
+                        ];
                     }
                     return true; // Allow reading by default. No extra SQL conditions needed.
                 }
