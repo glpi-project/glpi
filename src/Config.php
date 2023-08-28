@@ -535,16 +535,7 @@ class Config extends CommonDBTM
             'legacy_doc_url' => trim($CFG_GLPI['url_base_api'], '/') . "/",
             'legacy_api_url' => $CFG_GLPI["url_base_api"],
         ]);
-        $buttons = [
-            'apiclient.form.php' => __('Add API client'),
-        ];
-        Html::displayTitle(
-            "",
-            self::getTypeName(Session::getPluralNumber()),
-            "",
-            $buttons
-        );
-        Search::show("APIClient");
+        TemplateRenderer::getInstance()->display('pages/setup/general/api_apiclients_section.html.twig');
     }
 
 
