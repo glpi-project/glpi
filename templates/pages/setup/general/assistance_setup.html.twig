@@ -84,6 +84,7 @@
    }) }}
 
    {{ fields.smallTitle(__('Matrix of calculus for priority')) }}
+   {{ inputs.hidden('_matrix', 1) }}
    <table class="table table-borderless table-sm">
       <tbody>
          <tr>
@@ -116,7 +117,7 @@
                   {% if urgency == 3 %}
                      {{ inputs.hidden('_urgency_3', 1) }}
                   {% else %}
-                     {{ fields.dropdownYesNo('_urgency_' ~ impact, is_urgency[urgency], '', {
+                     {{ fields.dropdownYesNo('_urgency_' ~ urgency, is_urgency[urgency], '', {
                         nolabel: true
                      }) }}
                   {% endif %}
