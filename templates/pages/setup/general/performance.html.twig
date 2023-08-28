@@ -47,7 +47,7 @@
    <tbody>
    <tr><th colspan="4">{{ __('PHP opcode cache') }}</th></tr>
       <tr>
-         <th>{{ msg }}</th>
+         <th class="fw-normal">{{ msg }}</th>
          <td>{{ opcache_version }}</td>
          <td></td>
          <td class="icons_block">
@@ -61,7 +61,7 @@
          {% set max = free + used %}
          {% set rate = (100 * used / max)|round %}
          <tr>
-            <th>{{ _n('Memory', 'Memories', 1) }}</th>
+            <th class="fw-normal">{{ _n('Memory', 'Memories', 1) }}</th>
             <td>{{ __('%1$s / %2$s')|format(used|formatted_size, max|formatted_size) }}</td>
             <td>
                {{ call('Html::displayProgressBar', [100, rate, {
@@ -86,7 +86,7 @@
          {% set num_requests = hits + misses %}
          {% set hit_rate = opcache_info['opcache_statistics']['opcache_hit_rate']|round %}
          <tr>
-            <th>{{ __('Hits rate') }}</th>
+            <th class="fw-normal">{{ __('Hits rate') }}</th>
             <td>{{ __('%1$s / %2$s')|format(hits, num_requests) }}</td>
             <td>
                {{ call('Html::displayProgressBar', [100, hit_rate, {
@@ -108,7 +108,7 @@
          </tr>
          {% set oom_restarts = opcache_info['opcache_statistics']['oom_restarts'] %}
          <tr>
-            <th>{{ __('Out of memory restart') }}</th>
+            <th class="fw-normal">{{ __('Out of memory restart') }}</th>
             <td>{{ oom_restarts }}</td>
             <td></td>
             <td class="icons_block">
@@ -139,7 +139,7 @@
       {% endif %}
       <tr><th colspan="4">{{ __('User data cache') }}</th></tr>
       <tr>
-         <th>{{ __('You can use "php bin/console cache:configure" command to configure cache system.') }}</th>
+         <th class="fw-normal">{{ __('You can use "php bin/console cache:configure" command to configure cache system.') }}</th>
          <td></td>
          <td></td>
          <td></td>
@@ -150,7 +150,7 @@
          {% else %}
             {% set msg = __('"%s" cache system is used')|format(user_cache_ext) %}
          {% endif %}
-         <th>
+         <th class="fw-normal">
             {{ msg }}
          </th>
          <td>{{ user_cache_version }}</td>
@@ -176,7 +176,7 @@
       <tr><th colspan="4">{{ __('Translation cache') }}</th></tr>
       <tr>
          {% set msg = __('"%s" cache system is used')|format(trans_cache_adapter) %}
-         <th>
+         <th class="fw-normal">
             {{ msg }}
          </th>
          <td></td>
