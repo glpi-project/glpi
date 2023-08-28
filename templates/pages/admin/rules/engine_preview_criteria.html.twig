@@ -35,34 +35,38 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% if input|length %}
-   <form name="testrule_form" id="testrulesengine_form" method="post" action="{{ params.target }}">
+   <div class="card">
+      <div class="card-header">
+         <h3 class="card-title">{{ _n('Criterion', 'Criteria', get_plural_number()) }}</h3>
+      </div>
       <div class="card-body d-flex flex-wrap">
-         <div class="col-12 col-xxl12 flex-column">
-            <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
-               <div class="row flex-row align-items-start flex-grow-1">
-                  <div class="row flex-row">
-                     {{ fields.smallTitle(_n('Criterion', 'Criteria', get_plural_number())) }}
-                     {% for criterion in input %}
-                        {% set field_content %}
-                           {% do call([rule, 'displayCriteriaSelectPattern'], [criterion, criterion, constant('Rule::PATTERN_IS'), values[criterion]|default('')]) %}
-                        {% endset %}
-                        {{ fields.htmlField(
-                           criterion,
-                           field_content,
-                           criteria[criterion] is defined ? criteria[criterion]['name'] : criterion,
-                        ) }}
-                     {% endfor %}
-                     {% do call([rule, 'showSpecificCriteriasForPreview'], [_request]) %}
+         <form name="testrule_form" id="testrulesengine_form" method="post" action="{{ params.target }}">
+            <div class="col-12 col-xxl12 flex-column">
+               <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+                  <div class="row flex-row align-items-start flex-grow-1">
+                     <div class="row flex-row">
+                        {% for criterion in input %}
+                           {% set field_content %}
+                              {% do call([rule, 'displayCriteriaSelectPattern'], [criterion, criterion, constant('Rule::PATTERN_IS'), values[criterion]|default('')]) %}
+                           {% endset %}
+                           {{ fields.htmlField(
+                              criterion,
+                              field_content,
+                              criteria[criterion] is defined ? criteria[criterion]['name'] : criterion,
+                           ) }}
+                        {% endfor %}
+                        {% do call([rule, 'showSpecificCriteriasForPreview'], [_request]) %}
+                     </div>
                   </div>
                </div>
             </div>
-         </div>
-         {{ inputs.submit('test_all_rules', _x('button', 'Test'), 1) }}
-         {{ inputs.hidden('sub_type', rule_classname) }}
-         {{ inputs.hidden('condition', condition) }}
-         {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+            {{ inputs.submit('test_all_rules', _x('button', 'Test'), 1) }}
+            {{ inputs.hidden('sub_type', rule_classname) }}
+            {{ inputs.hidden('condition', condition) }}
+            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+         </form>
       </div>
-   </form>
+   </div>
 {% else %}
    <div class="alert alert-danger">
       <span>{{ __('No element to be tested') }}</span>
