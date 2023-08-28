@@ -38,7 +38,7 @@
    {{ fields.largeTitle(__('API'), 'ti ti-api-app') }}
 
    {{ fields.smallTitle(__('General API')) }}
-   {{ fields.dropdownYesNo('enable_api', config['enable_api'], __("Enable REST API")) }}
+   {{ fields.sliderField('enable_api', config['enable_api'], __("Enable REST API")) }}
 
    {{ fields.smallTitle(__('API')) }}
    {% if config['enable_api'] %}
@@ -72,10 +72,10 @@
       copyable: true
    }) }}
    {{ fields.nullField() }}
-   {{ fields.dropdownYesNo('enable_api_login_credentials', config['enable_api_login_credentials'], __("Enable login with credentials"), {
+   {{ fields.sliderField('enable_api_login_credentials', config['enable_api_login_credentials'], __("Enable login with credentials"), {
       helper: __("Allow to login to API and get a session token with user credentials")
    }) }}
-   {{ fields.dropdownYesNo('enable_api_login_external_token', config['enable_api_login_external_token'], __("Enable login with external token"), {
+   {{ fields.sliderField('enable_api_login_external_token', config['enable_api_login_external_token'], __("Enable login with external token"), {
       helper: __("Allow to login to API and get a session token with user external token. See Remote access key in user Settings tab")
    }) }}
 {% endblock %}
