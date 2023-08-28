@@ -3572,10 +3572,8 @@ JAVASCRIPT;
                 case "integer":
                 case "decimal":
                 case "timestamp":
-                    // FIXME Negative search are not supported. For instance, `>-10` result in a `LIKE '%>-10%'` SQL criterion.
-
                     $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
-                    if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
+                    if (preg_match("/([<>])(=?)[[:space:]]*(-?)[[:space:]]*([0-9]+(.[0-9]+)?)/", $val, $regs)) {
                         if ($NOT) {
                             if ($regs[1] == '<') {
                                 $regs[1] = '>';
@@ -3584,7 +3582,7 @@ JAVASCRIPT;
                             }
                         }
                         $regs[1] .= $regs[2];
-                        return " $LINK (`$NAME` " . $regs[1] . " " . $regs[3] . " ) ";
+                        return " $LINK (`$NAME` " . $regs[1] . " " . $regs[3] . $regs[4] . " ) ";
                     }
 
                     if (is_numeric($val)) {
@@ -4466,7 +4464,7 @@ JAVASCRIPT;
                 break;
 
             case 'Config':
-                $availableContexts = ['core'] + Plugin::getPlugins();
+                $availableContexts = array_merge(['core', 'inventory'], Plugin::getPlugins());
                 $availableContexts = implode("', '", $availableContexts);
                 $condition = "`context` IN ('$availableContexts')";
                 break;
@@ -5244,24 +5242,34 @@ JAVASCRIPT;
                         return " $link ($date_computation " . $SEARCH . ') ';
                     }
                     $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
-                    if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
-                        if (is_numeric($regs[2])) {
-                            // FIXME Comparison operator should be "reversed" whne `$nott === true`.
-                            return $link . " $date_computation " . $regs[1] . "
-                            ADDDATE(NOW(), INTERVAL " . $regs[2] . " $search_unit) ";
+                    if (preg_match("/^\s*([<>])(=?)(.+)$/", $val, $regs)) {
+                        $numeric_matches = [];
+                        if (preg_match('/^\s*(-?)\s*([0-9]+(.[0-9]+)?)\s*$/', $regs[3], $numeric_matches)) {
+                            if ($searchtype === "notcontains") {
+                                $nott = !$nott;
+                            }
+                            if ($nott) {
+                                if ($regs[1] == '<') {
+                                    $regs[1] = '>';
+                                } else {
+                                    $regs[1] = '<';
+                                }
+                            }
+                            return $link . " $date_computation " . $regs[1] . $regs[2] . "
+                            ADDDATE(NOW(), INTERVAL " . $numeric_matches[1] . $numeric_matches[2] . " $search_unit) ";
                         }
                        // ELSE Reformat date if needed
-                        $regs[2] = preg_replace(
+                        $regs[3] = preg_replace(
                             '@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@',
                             '\5-\3-\1',
-                            $regs[2]
+                            $regs[3]
                         );
-                        if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[2])) {
+                        if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[3])) {
                              $ret = $link;
                             if ($nott) {
                                 $ret .= " NOT(";
                             }
-                             $ret .= " $date_computation {$regs[1]} '{$regs[2]}'";
+                             $ret .= " $date_computation {$regs[1]}{$regs[2]} '{$regs[3]}'";
                             if ($nott) {
                                 $ret .= ")";
                             }
@@ -5303,7 +5311,7 @@ JAVASCRIPT;
                     $decimal_contains = $searchopt[$ID]["datatype"] === 'decimal' && $searchtype === 'contains';
                     $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
 
-                    if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
+                    if (preg_match("/([<>])(=?)[[:space:]]*(-?)[[:space:]]*([0-9]+(.[0-9]+)?)/", $val, $regs)) {
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
                             $nott = !$nott;
                         }
@@ -5315,7 +5323,7 @@ JAVASCRIPT;
                             }
                         }
                         $regs[1] .= $regs[2];
-                        return $link . " ($tocompute " . $regs[1] . " " . $regs[3] . ") ";
+                        return $link . " ($tocompute " . $regs[1] . " " . $regs[3] . $regs[4] . ") ";
                     }
 
                     if (is_numeric($val) && !$decimal_contains) {
@@ -9139,11 +9147,8 @@ HTML;
     {
 
         $sql = $field . self::makeTextSearch($val, $not);
-       // mange empty field (string with length = 0)
-        $sql_or = "";
-        if (strtolower($val) == "null") {
-            // FIXME Should operator be `<>` when `$not === true`?
 
+        if (strtolower($val) == "null") {
             // FIXME
             // `OR field = ''` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
             // when following datatype are used:
@@ -9159,7 +9164,12 @@ HTML;
             //
             // Removing this condition requires, at least, to use the `int`/`float`/`double`/`timestamp`/`date` types in DB,
             // to ensure that the `''` value will not be stored in DB.
-            $sql_or = "OR $field = ''";
+
+            if ($not) {
+                $sql .= " AND $field <> ''";
+            } else {
+                $sql .= " OR $field = ''";
+            }
         }
 
         if (
@@ -9168,7 +9178,8 @@ HTML;
         ) {   // Empty
             $sql = "($sql OR $field IS NULL)";
         }
-        return " $link ($sql $sql_or)";
+
+        return " $link ($sql)";
     }
 
     /**

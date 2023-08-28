@@ -35,7 +35,7 @@
 {% set new_cls = item.isNewItem() ? 'new-itil-object' : '' %}
 
 {% set form_path = item.getFormURL() %}
-{% if not item.isNewItem %}
+{% if not item.isNewItem() %}
    {% set form_path = form_path ~ '?id=' ~ item.fields['id'] %}
 {% endif %}
 
@@ -44,7 +44,7 @@
 {% endif %}
 
 {% set track_changes = 'true' %}
-{% if item.isNewItem %}
+{% if item.isNewItem() %}
    {% set track_changes = 'false' %}
 {% endif %}
 

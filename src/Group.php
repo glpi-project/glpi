@@ -38,12 +38,19 @@
  **/
 class Group extends CommonTreeDropdown
 {
+    use Glpi\Features\Clonable;
+
     public $dohistory       = true;
 
     public static $rightname       = 'group';
 
     protected $usenotepad  = true;
 
+
+    public function getCloneRelations(): array
+    {
+        return [];
+    }
 
     public static function getTypeName($nb = 0)
     {

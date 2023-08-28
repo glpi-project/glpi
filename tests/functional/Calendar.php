@@ -35,31 +35,76 @@
 
 namespace tests\units;
 
+use CalendarSegment;
 use DbTestCase;
 
 /* Test for inc/calendar.class.php */
 
 class Calendar extends DbTestCase
 {
-    public function testComputeEndDate()
+    /**
+     * Data provider for the testComputeEndDate function
+     *
+     * @return iterable
+     */
+    protected function testComputeEndDateProvider(): iterable
     {
-        $calendar = new \Calendar();
-       //get default calendar
-        $this->boolean($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)))->isTrue();
+        // Default calendar
+        $default_calendar = getItemByTypeName('Calendar', 'Default');
 
-       // ## test future dates
-        $end_date = $calendar->ComputeEndDate("2018-11-19 10:00:00", 7 * DAY_TIMESTAMP, 0, true);
-        $this->string($end_date)->isEqualTo("2018-11-28 10:00:00");
-       // end of day
-        $end_date = $calendar->ComputeEndDate("2018-11-19 10:00:00", 7 * DAY_TIMESTAMP, 0, true, true);
-        $this->string($end_date)->isEqualTo("2018-11-28 20:00:00");
+        // 5x24h (monday to friday)
+        $five_by_twentyfour = $this->createItem(\Calendar::class, [
+            'name' => "5x24",
+        ]);
+        $parent = $five_by_twentyfour->getID();
+        $this->createItems(CalendarSegment::class, [
+            ['calendars_id' => $parent, 'day' => 1, 'begin' => '00:00:00', 'end' => '24:00:00'],
+            ['calendars_id' => $parent, 'day' => 2, 'begin' => '00:00:00', 'end' => '24:00:00'],
+            ['calendars_id' => $parent, 'day' => 3, 'begin' => '00:00:00', 'end' => '24:00:00'],
+            ['calendars_id' => $parent, 'day' => 4, 'begin' => '00:00:00', 'end' => '24:00:00'],
+            ['calendars_id' => $parent, 'day' => 5, 'begin' => '00:00:00', 'end' => '24:00:00'],
+        ]);
 
-       // ## test past dates
-        $end_date = $calendar->ComputeEndDate("2018-11-19 10:00:00", -7 * DAY_TIMESTAMP, 0, true);
-        $this->string($end_date)->isEqualTo("2018-11-08 10:00:00");
-       // end of day
-        $end_date = $calendar->ComputeEndDate("2018-11-19 10:00:00", -7 * DAY_TIMESTAMP, 0, true, true);
-        $this->string($end_date)->isEqualTo("2018-11-08 20:00:00");
+        // 1st case: future date
+        $parameters = ["2018-11-19 10:00:00", 7 * DAY_TIMESTAMP, 0, true];
+        yield [$default_calendar, $parameters, "2018-11-28 10:00:00"];
+        yield [$five_by_twentyfour, $parameters, "2018-11-28 10:00:00"];
+
+        // 2nd case: future date + end of day parameter
+        $parameters = ["2018-11-19 10:00:00", 7 * DAY_TIMESTAMP, 0, true, true];
+        yield [$default_calendar, $parameters, "2018-11-28 20:00:00"];
+        yield [$five_by_twentyfour, $parameters, "2018-11-29 00:00:00"];
+
+        // 3rd case: past date
+        $parameters = ["2018-11-19 10:00:00", -7 * DAY_TIMESTAMP, 0, true];
+        yield [$default_calendar, $parameters, "2018-11-08 10:00:00"];
+        yield [$five_by_twentyfour, $parameters, "2018-11-08 10:00:00"];
+
+        // 4th case: past date + end of day parameter
+        $parameters = ["2018-11-19 10:00:00", -7 * DAY_TIMESTAMP, 0, true, true];
+        yield [$default_calendar, $parameters, "2018-11-08 20:00:00"];
+        yield [$five_by_twentyfour, $parameters, "2018-11-09 00:00:00"];
+    }
+
+    /**
+     * Test cases for the computeEndDate function
+     *
+     * @dataprovider testComputeEndDateProvider
+     *
+     * @param \Calendar $calendar                    Test calendar
+     * @param array     $compute_end_date_parameters Arguments for the computeEndDate function
+     * @param string    $expected_date               Expected date
+     *
+     * @return void
+     */
+    public function testComputeEndDate(
+        \Calendar $calendar,
+        array $compute_end_date_parameters,
+        string $expected_date
+    ): void {
+        $this->string($expected_date)->isEqualTo(
+            $calendar->computeEndDate(...$compute_end_date_parameters)
+        );
     }
 
     protected function activeProvider()

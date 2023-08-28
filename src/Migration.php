@@ -273,7 +273,7 @@ class Migration
                     } else if (in_array($default_value, ['0', '1'])) {
                         $format .= " DEFAULT '$default_value'";
                     } else {
-                        trigger_error(__('default_value must be 0 or 1'), E_USER_ERROR);
+                        throw new \LogicException('Default value must be 0 or 1.');
                     }
                 }
                 break;
@@ -311,7 +311,7 @@ class Migration
                     } else if (is_numeric($default_value)) {
                         $format .= " DEFAULT '$default_value'";
                     } else {
-                        trigger_error(__('default_value must be numeric'), E_USER_ERROR);
+                        throw new \LogicException('Default value must be numeric.');
                     }
                 }
                 break;
@@ -1086,8 +1086,8 @@ class Migration
      *
      * @since 9.2
      *
-     * @param string|array $values  Value(s) to add
-     * @param string       $context Context to add on (optional)
+     * @param array  $values  Value(s) to add
+     * @param string $context Context to add on (optional)
      *
      * @return Migration
      */

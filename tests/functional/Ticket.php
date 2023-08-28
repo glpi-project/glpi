@@ -5933,43 +5933,45 @@ HTML
             ],
         ];
 
-        // sessionless call with private items (used for notifications)
-        yield [
-            'login'              => null,
-            'pass'               => null,
-            'ticket_id'          => $ticket->getID(),
-            'options'            => [
-                'check_view_rights'  => false,
-                'hide_private_items' => false,
-            ],
-            'expected_followups' => [
-                'private followup of normal user',
-                'private followup of tech user',
-                'public followup',
-            ],
-            'expected_tasks'     => [
-                'private task of normal user',
-                'private task of tech user',
-                'public task',
-            ],
-        ];
+        foreach ([null => null, 'post-only' => 'postonly', 'tech' => 'tech'] as $login => $pass) {
+            // usage of `check_view_rights` should produce the same result whoever is logged-in (used for notifications)
+            yield [
+                'login'              => $login,
+                'pass'               => $pass,
+                'ticket_id'          => $ticket->getID(),
+                'options'            => [
+                    'check_view_rights'  => false,
+                    'hide_private_items' => false,
+                ],
+                'expected_followups' => [
+                    'private followup of normal user',
+                    'private followup of tech user',
+                    'public followup',
+                ],
+                'expected_tasks'     => [
+                    'private task of normal user',
+                    'private task of tech user',
+                    'public task',
+                ],
+            ];
 
-        // sessionless call without private items (used for notifications)
-        yield [
-            'login'              => null,
-            'pass'               => null,
-            'ticket_id'          => $ticket->getID(),
-            'options'            => [
-                'check_view_rights'  => false,
-                'hide_private_items' => true,
-            ],
-            'expected_followups' => [
-                'public followup',
-            ],
-            'expected_tasks'     => [
-                'public task',
-            ],
-        ];
+            // usage of `check_view_rights` should produce the same result whoever is logged-in (used for notifications)
+            yield [
+                'login'              => $login,
+                'pass'               => $pass,
+                'ticket_id'          => $ticket->getID(),
+                'options'            => [
+                    'check_view_rights'  => false,
+                    'hide_private_items' => true,
+                ],
+                'expected_followups' => [
+                    'public followup',
+                ],
+                'expected_tasks'     => [
+                    'public task',
+                ],
+            ];
+        }
     }
 
     /**
@@ -5983,7 +5985,7 @@ HTML
         array $expected_followups,
         array $expected_tasks
     ): void {
-        if ($login !== null) {
+        if ($pass !== null) {
             $this->login($login, $pass);
         } else {
             $this->resetSession();
@@ -6015,5 +6017,315 @@ HTML
             ),
         );
         $this->array($tasks_content)->isEqualTo($expected_tasks);
+    }
+
+
+    /**
+     * Data provider for the testCountActors function
+     *
+     * @return iterable
+     */
+    protected function testCountActorsProvider(): iterable
+    {
+        $this->login();
+        $root = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Get tests users
+        $user_1 = getItemByTypeName('User', 'glpi', true);
+        $user_2 = getItemByTypeName('User', 'tech', true);
+
+        // Create groups
+        $this->createItems('Group', [
+            [
+                'name' => 'Group 1',
+                'entities_id' => $root,
+            ],
+            [
+                'name' => 'Group 2',
+                'entities_id' => $root,
+            ],
+        ]);
+        $group_1 = getItemByTypeName('Group', 'Group 1', true);
+        $group_2 = getItemByTypeName('Group', 'Group 2', true);
+
+        // Create suppliers
+        $this->createItems('Supplier', [
+            [
+                'name' => 'Supplier 1',
+                'entities_id' => $root,
+            ],
+            [
+                'name' => 'Supplier 2',
+                'entities_id' => $root,
+            ],
+        ]);
+        $supplier_1 = getItemByTypeName('Supplier', 'Supplier 1', true);
+        $supplier_2 = getItemByTypeName('Supplier', 'Supplier 2', true);
+
+        // Run tests cases
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => []
+        ]);
+        yield [$ticket, 0];
+
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                ],
+            ]
+        ]);
+        yield [$ticket, 1];
+
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
+                ],
+            ]
+        ]);
+        yield [$ticket, 3];
+
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
+                ],
+                'observer' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_2],
+                ],
+            ]
+        ]);
+        yield [$ticket, 4];
+
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
+                ],
+                'observer' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_2],
+                ],
+                'requester' => [
+                    ['itemtype' => 'User', 'items_id' => $user_1],
+                ],
+            ]
+        ]);
+        yield [$ticket, 5];
+
+        $ticket = $this->createItem('Ticket', [
+            'name'        => 'Ticket supplier 1 + supplier 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
+                ],
+                'observer' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_2],
+                ],
+                'requester' => [
+                    ['itemtype' => 'User', 'items_id' => $user_1],
+                    ['itemtype' => 'User', 'items_id' => $user_2],
+                ],
+            ]
+        ]);
+        yield [$ticket, 6];
+    }
+
+    /**
+     * Test the testCountActors method
+     *
+     * @dataProvider testCountActorsProvider
+     *
+     * @param \Ticket $ticket
+     * @param int $expected
+     *
+     * @return void
+     */
+    public function testCountActors(\Ticket $ticket, int $expected): void
+    {
+        $this->integer($ticket->countActors())->isEqualTo($expected);
+    }
+
+    /**
+     * Data provider for the testActorsMagicProperties function
+     *
+     * @return iterable
+     */
+    protected function testActorsMagicPropertiesProvider(): iterable
+    {
+        $this->login();
+
+        $root = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Get tests users
+        $user_1 = getItemByTypeName('User', 'glpi', true);
+        $user_2 = getItemByTypeName('User', 'tech', true);
+
+        // Create tests groups
+        $this->createItems('Group', [
+            [
+                'name' => 'Group 1',
+                'entities_id' => $root,
+            ],
+            [
+                'name' => 'Group 2',
+                'entities_id' => $root,
+            ],
+        ]);
+        $group_1 = getItemByTypeName('Group', 'Group 1', true);
+        $group_2 = getItemByTypeName('Group', 'Group 2', true);
+
+        // Create tests suppliers
+        $this->createItems('Supplier', [
+            [
+                'name' => 'Supplier 1',
+                'entities_id' => $root,
+            ],
+            [
+                'name' => 'Supplier 2',
+                'entities_id' => $root,
+            ],
+        ]);
+        $supplier_1 = getItemByTypeName('Supplier', 'Supplier 1', true);
+        $supplier_2 = getItemByTypeName('Supplier', 'Supplier 2', true);
+
+        // Case 1: ticket without actors
+        $ticket_1 = $this->createItem('Ticket', [
+            'name'        => 'Ticket 1',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => []
+        ]);
+        yield [$ticket_1, [], [], []];
+
+        // Case 2: add actors to our ticket
+        $this->updateItem('Ticket', $ticket_1->getID(), [
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
+                ],
+                'observer' => [
+                    ['itemtype' => 'Group', 'items_id' => $group_2],
+                ],
+                'requester' => [
+                    ['itemtype' => 'User', 'items_id' => $user_1],
+                    ['itemtype' => 'User', 'items_id' => $user_2],
+                ],
+            ]
+        ]);
+        $ticket_1->getFromDB($ticket_1->getID());
+        yield [
+            $ticket_1,
+            [CommonITILActor::REQUESTER => [$user_1, $user_2]],
+            [
+                CommonITILActor::ASSIGN => [$group_1,],
+                CommonITILActor::OBSERVER => [$group_2],
+            ],
+            [CommonITILActor::ASSIGN => [$supplier_1, $supplier_2]]
+        ];
+
+        // Case 3: create another ticket directly with actors
+        $ticket_2 = $this->createItem('Ticket', [
+            'name'        => 'Ticket 2',
+            'content'     => '',
+            'entities_id' => $root,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'User', 'items_id' => $user_1],
+                    ['itemtype' => 'User', 'items_id' => $user_2],
+                    ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ['itemtype' => 'Group', 'items_id' => $group_2],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
+                    ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
+                ],
+            ]
+        ]);
+        yield [
+            $ticket_2,
+            [CommonITILActor::ASSIGN => [$user_1, $user_2]],
+            [CommonITILActor::ASSIGN => [$group_1, $group_2]],
+            [CommonITILActor::ASSIGN => [$supplier_1, $supplier_2]]
+        ];
+
+        // Case 4: load ticket 2 into ticket 1 variable (simulate reusing an object for multiple rows)
+        $ticket_1->getFromDb($ticket_2->getID());
+        yield [
+            $ticket_1,
+            [CommonITILActor::ASSIGN => [$user_1, $user_2]],
+            [CommonITILActor::ASSIGN => [$group_1, $group_2]],
+            [CommonITILActor::ASSIGN => [$supplier_1, $supplier_2]]
+        ];
+    }
+
+    /**
+     * Test the magic properties used to lazy load actors
+     *
+     * @dataProvider testActorsMagicPropertiesProvider
+     *
+     * @param \Ticket $ticket
+     * @param array $expected_users
+     * @param array $expected_groups
+     * @param array $exptected_suppliers
+     *
+     * @return void
+     */
+    public function testActorsMagicProperties(
+        \Ticket $ticket,
+        array $expected_users,
+        array $expected_groups,
+        array $expected_suppliers
+    ) {
+        $actors = [
+            User::class => $ticket->users,
+            Group::class => $ticket->groups,
+            Supplier::class => $ticket->suppliers,
+        ];
+
+        // Simplify data to be able to compare it easily to our expected values
+        $simplied_actors = [
+            User::class => [],
+            Group::class => [],
+            Supplier::class => [],
+        ];
+        foreach ($actors as $itemtype => $actor_types) {
+            foreach ($actor_types as $actor_type => $values) {
+                // Extract users_id / groups_id / suppliers_id
+                $simplied_actors[$itemtype][$actor_type] = array_column(
+                    $values,
+                    $itemtype::getForeignKeyField()
+                );
+            }
+        }
+
+        $this->array($simplied_actors[User::class])->isEqualTo($expected_users);
+        $this->array($simplied_actors[Group::class])->isEqualTo($expected_groups);
+        $this->array($simplied_actors[Supplier::class])->isEqualTo($expected_suppliers);
     }
 }

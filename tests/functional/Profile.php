@@ -213,9 +213,18 @@ class Profile extends DbTestCase
         $this->boolean($super_admin->isLastSuperAdminProfile())->isTrue();
         $this->boolean($super_admin_2->isLastSuperAdminProfile())->isFalse();
 
-        // Two super admin account, both can be deleted
+        // Two super admin account, can't be deleted because only one has central interface
         $this->updateItem("Profile", $super_admin_2->getID(), [
             '_profile' => [UPDATE . "_0" => true]
+        ]);
+        $this->boolean($super_admin->isLastSuperAdminProfile())->isTrue();
+        $this->boolean($super_admin->canPurgeItem())->isFalse();
+        $this->boolean($super_admin_2->isLastSuperAdminProfile())->isFalse();
+        $this->boolean($super_admin_2->canPurgeItem())->isTrue();
+
+        // Two super admin account, both can be deleted
+        $this->updateItem("Profile", $super_admin_2->getID(), [
+            'interface' => 'central'
         ]);
         $this->boolean($super_admin->isLastSuperAdminProfile())->isFalse();
         $this->boolean($super_admin->canPurgeItem())->isTrue();

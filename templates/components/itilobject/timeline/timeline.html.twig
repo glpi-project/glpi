@@ -44,7 +44,7 @@
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
    {% for entry in timeline %}
       {% set entry_i = entry['item'] %}
-      {% set entry_object = get_item(entry['type'], entry_i['id']) %}
+      {% set entry_object = entry['object'] ?? get_item(entry['type'], entry_i['id']) %}
       {% set users_id = entry_i['users_id'] %}
       {% set is_private = entry_i['is_private'] ?? false %}
       {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}

@@ -33,37 +33,36 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+/**
+ * Update from 10.0.9 to 10.0.10
+ *
+ * @return bool for success (will die for most error)
+ **/
+function update1009to10010()
+{
+    global $DB, $migration;
 
-if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
-    Session::checkLoginUser();
-}
+    $updateresult       = true;
+    $ADDTODISPLAYPREF   = [];
+    $DELFROMDISPLAYPREF = [];
+    $update_dir = __DIR__ . '/update_10.0.9_to_10.0.10/';
 
-/** @global array $_UGET */
+    //TRANS: %s is the number of new version
+    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.10'));
+    $migration->setVersion('10.0.10');
 
-// Manage tabs
-if (
-    isset($_GET['itemtype'])
-    && (
-        isset($_GET['tab'])
-        || isset($_GET['tab_key'])
-    )
-) {
-    if (isset($_GET['tab_key'])) {
-        // Prefered way, load tab key directly, avoid unneeded call to Toolbox::getAvailablesTabs
-        Session::setActiveTab($_UGET['itemtype'], $_UGET['tab_key']);
-    } else {
-        // Deprecated, use tab_key if possible
-        Toolbox::deprecated("'tab' parameter is deprecated, use 'tab_key' instead");
-
-        $tabs = Toolbox::getAvailablesTabs($_UGET['itemtype'], $_GET['id'] ?? null);
-        $current      = 0;
-        foreach (array_keys($tabs) as $key) {
-            if ($current == $_GET['tab']) {
-                Session::setActiveTab($_UGET['itemtype'], $key);
-                break;
-            }
-            $current++;
+    $update_scripts = scandir($update_dir);
+    foreach ($update_scripts as $update_script) {
+        if (preg_match('/\.php$/', $update_script) !== 1) {
+            continue;
         }
+        require $update_dir . $update_script;
     }
+
+    // ************ Keep it at the end **************
+    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
+
+    $migration->executeMigration();
+
+    return $updateresult;
 }

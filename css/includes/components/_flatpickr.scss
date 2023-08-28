@@ -226,6 +226,11 @@ body {
         box-shadow: 1px 0 0 $picker-shadow-color;
     }
 
+    .flatpickr-weekwrapper span.flatpickr-day,
+    .flatpickr-weekwrapper span.flatpickr-day:hover {
+        color: $picker-text-faded-color;
+    }
+
     .flatpickr-time .numInputWrapper span.arrowUp::after {
         border-bottom-color: $picker-text-color;
     }

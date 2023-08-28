@@ -523,9 +523,16 @@ class ITILFollowup extends CommonDBChild
 
     public function post_getFromDB()
     {
-
-        $this->item = new $this->fields['itemtype']();
-        $this->item->getFromDB($this->fields['items_id']);
+        // Bandaid to avoid loading parent item if not needed
+        // TODO: replace by proper lazy loading in GLPI 10.1
+        if (
+            $this->item == null // No item loaded
+            || $this->item->getType() !== $this->fields['itemtype'] // Another item is loaded
+            || $this->item->getID() !== $this->fields['items_id']   // Another item is loaded
+        ) {
+            $this->item = new $this->fields['itemtype']();
+            $this->item->getFromDB($this->fields['items_id']);
+        }
     }
 
 
@@ -1015,5 +1022,23 @@ class ITILFollowup extends CommonDBChild
            // support agent that is no longer assigned to the ticket
             return true;
         }
+    }
+
+    /**
+     * Allow to set the parent item
+     * Some subclasses will load their parent item in their `post_getFromDB` function
+     * If the parent is already loaded, it might be useful to set it with this method
+     * before loading the item, thus avoiding one useless DB query (or many more queries
+     * when looping on children items)
+     *
+     * TODO 10.1 move method and `item` property into parent class
+     *
+     * @param CommonITILObject Parent item
+     *
+     * @return void
+     */
+    final public function setParentItem(CommonITILObject $parent): void
+    {
+        $this->item = $parent;
     }
 }
