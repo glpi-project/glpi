@@ -34,6 +34,11 @@
 {% extends "pages/setup/general/base_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set field_options = {
+   'label_class': 'col-xxl-9',
+   'input_class': 'col-xxl-3',
+} %}
+
 {% block config_fields %}
    {% set global_management_options = {
       (constant('Config::UNIT_MANAGEMENT')): __('Yes - Restrict to unit management'),
@@ -41,22 +46,65 @@
       (constant('Config::NO_MANAGEMENT')): __('No'),
    } %}
 
-   {{ fields.dropdownYesNo('auto_create_infocoms', config['auto_create_infocoms'], __('Enable the financial and administrative information by default')) }}
-   {{ fields.dropdownArrayField('monitors_management_restrict', config['monitors_management_restrict'], global_management_options, __('Restrict monitor management')) }}
-   {{ fields.dropdownField('SoftwareCategory', 'softwarecategories_id_ondelete', config['softwarecategories_id_ondelete'], __('Software category deleted by the dictionary rules')) }}
-   {{ fields.dropdownArrayField('peripherals_management_restrict', config['peripherals_management_restrict'], global_management_options, __('Restrict device management')) }}
-   {{ fields.dateField('date_tax', config['date_tax'], __('End of fiscal year'), {
+   {{ fields.dropdownYesNo(
+      'auto_create_infocoms',
+      config['auto_create_infocoms'],
+      __('Enable the financial and administrative information by default'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownArrayField(
+      'monitors_management_restrict',
+      config['monitors_management_restrict'],
+      global_management_options,
+      __('Restrict monitor management'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownField(
+      'SoftwareCategory',
+      'softwarecategories_id_ondelete',
+      config['softwarecategories_id_ondelete'],
+      __('Software category deleted by the dictionary rules'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownArrayField(
+      'peripherals_management_restrict',
+      config['peripherals_management_restrict'],
+      global_management_options,
+      __('Restrict device management'),
+      field_options
+   ) }}
+
+   {{ fields.dateField('date_tax', config['date_tax'], __('End of fiscal year'), field_options|merge({
       maybeempty: false,
-   }) }}
-   {{ fields.dropdownArrayField('phones_management_restrict', config['phones_management_restrict'], global_management_options, __('Restrict phone management')) }}
+   })) }}
+
+   {{ fields.dropdownArrayField(
+      'phones_management_restrict',
+      config['phones_management_restrict'],
+      global_management_options,
+      __('Restrict phone management'),
+      field_options
+   ) }}
+
    {{ fields.dropdownArrayField('use_autoname_by_entity', config['use_autoname_by_entity'], {
       0: __('Global'),
       1: __('By entity'),
-   }, __('Automatic fields (marked by *)')) }}
-   {{ fields.dropdownArrayField('printers_management_restrict', config['printers_management_restrict'], global_management_options, __('Restrict printer management')) }}
-   {{ fields.dropdownArrayField('devices_in_menu', null, item_devices_types, __('Devices displayed in menu'), {
+   }, __('Automatic fields (marked by *)'), field_options) }}
+
+   {{ fields.dropdownArrayField(
+      'printers_management_restrict',
+      config['printers_management_restrict'],
+      global_management_options,
+      __('Restrict printer management'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownArrayField('devices_in_menu', null, item_devices_types, __('Devices displayed in menu'), field_options|merge({
       multiple: true,
       size: 3,
       values: config['devices_in_menu']
-   }) }}
+   })) }}
 {% endblock %}
