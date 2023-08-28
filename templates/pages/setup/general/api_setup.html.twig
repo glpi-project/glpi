@@ -40,8 +40,8 @@
    {{ fields.smallTitle(__('General API')) }}
    {{ fields.sliderField('enable_api', config['enable_api'], __("Enable REST API")) }}
 
-   {{ fields.smallTitle(__('API')) }}
    {% if config['enable_api'] %}
+      {{ fields.smallTitle(__('API')) }}
       {% set getting_started_doc %}<a href="{{ getting_started_doc_url }}">{{ __('API Getting Started') }}</a>{% endset %}
       {% set endpoint_doc %}<a href="{{ endpoint_doc_url }}">{{ __('API Endpoints') }}</a>{% endset %}
       {{ fields.htmlField(
@@ -52,30 +52,28 @@
          '',
          endpoint_doc
       ) }}
-   {% endif %}
-   {{ fields.textField('url_base_api', api_url, __('URL of the API'), {
-      readonly: true,
-      copyable: true
-   }) }}
+      {{ fields.textField('url_base_api', api_url, __('URL of the API'), {
+         readonly: true,
+         copyable: true
+      }) }}
 
-   {{ fields.smallTitle(__('Legacy API')) }}
-   {% if config['enable_api'] %}
+      {{ fields.smallTitle(__('Legacy API')) }}
       {% set legacy_doc %}<a href="{{ legacy_doc_url }}">{{ __('API inline Documentation') }}</a>{% endset %}
       {{ fields.htmlField(
          '',
          legacy_doc
       ) }}
       {{ fields.nullField() }}
+      {{ fields.textField('legacy_url_base_api', legacy_api_url, __('URL of the API'), {
+         readonly: true,
+         copyable: true
+      }) }}
+      {{ fields.nullField() }}
+      {{ fields.sliderField('enable_api_login_credentials', config['enable_api_login_credentials'], __("Enable login with credentials"), {
+         helper: __("Allow to login to API and get a session token with user credentials")
+      }) }}
+      {{ fields.sliderField('enable_api_login_external_token', config['enable_api_login_external_token'], __("Enable login with external token"), {
+         helper: __("Allow to login to API and get a session token with user external token. See Remote access key in user Settings tab")
+      }) }}
    {% endif %}
-   {{ fields.textField('legacy_url_base_api', legacy_api_url, __('URL of the API'), {
-      readonly: true,
-      copyable: true
-   }) }}
-   {{ fields.nullField() }}
-   {{ fields.sliderField('enable_api_login_credentials', config['enable_api_login_credentials'], __("Enable login with credentials"), {
-      helper: __("Allow to login to API and get a session token with user credentials")
-   }) }}
-   {{ fields.sliderField('enable_api_login_external_token', config['enable_api_login_external_token'], __("Enable login with external token"), {
-      helper: __("Allow to login to API and get a session token with user external token. See Remote access key in user Settings tab")
-   }) }}
 {% endblock %}
