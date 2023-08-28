@@ -493,293 +493,343 @@ class Item_Rack extends DbTestCase
     }
 
     /**
-     * Test for update items models into rack
+     * Test for rack issues when updating models
      */
-    public function testAlterModels()
+    public function testRackIssues()
     {
         // Create a ComputerModel
-        $model1 = new \ComputerModel();
-        $this->integer(
-            (int)$model1->add([
+        $model1 = $this->createItem(
+            'ComputerModel',
+            [
                 'required_units'  => 1,
                 'depth'           => 1,
-                'is_half_rack'    => 0,
-                'entities_id'     => 0,
-            ])
-        )->isGreaterThan(0);
+                'is_half_rack'    => 0
+            ]
+        );
 
         // Create a Computer
-        $computer = new \Computer();
-        $this->integer(
-            (int)$computer->add([
+        $computer = $this->createItem(
+            'Computer',
+            [
                 'computermodels_id' => $model1->getID(),
-                'entities_id'  => 0,
-            ])
-        )->isGreaterThan(0);
+                'entities_id'       => 0,
+            ]
+        );
 
         // Create a 10u rack
-        $rack = new \Rack();
-        $this->integer(
-            (int)$rack->add([
+        $rack = $this->createItem(
+            'Rack',
+            [
                 'name'         => 'Test rack',
                 'number_units' => 10,
                 'dcrooms_id'   => 0,
                 'position'     => 0,
                 'entities_id'  => 0,
-            ])
-        )->isGreaterThan(0);
+            ]
+        );
 
         // Create an Item_Rack
-        $itemRack1 = new \Item_Rack();
-        $this->integer(
-            (int)$itemRack1->add([
+        $itemRack1 = $this->createItem(
+            'Item_Rack',
+            [
                 'racks_id'    => $rack->getID(),
                 'position'    => 2,
                 'orientation' => 0,
                 'itemtype'    => 'Computer',
                 'items_id'    => $computer->getID()
-            ])
-        )->isGreaterThan(0);
+            ]
+        );
 
         // Update the ComputerModel
         for ($i = 1; $i < 15; $i++) {
-            $this->boolean(
-                $model1->update([
-                    'id'              => $model1->getID(),
-                    'required_units'  => $i,
-                ])
-            )->isEqualTo($i <= 10);
+            $this->boolean($model1->update([
+                'id'              => $model1->getID(),
+                'required_units'  => $i,
+            ]))->isEqualTo($i <= 10);
         }
 
-        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in a rack Test rack and the new required units do not fit into the rack']);
+        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
 
         // Update the ComputerModel
-        $this->boolean(
-            $model1->update([
-                'id'              => $model1->getID(),
-                'required_units'  => 1,
-            ])
-        )->isTrue();
+        $this->boolean($model1->update([
+            'id'              => $model1->getID(),
+            'required_units'  => 1,
+        ]))->isTrue();
 
         // Add a new Computer with a new ComputerModel
-        $model2 = new \ComputerModel();
-        $this->integer(
-            (int)$model2->add([
+        $model2 = $this->createItem(
+            'ComputerModel',
+            [
                 'required_units'  => 1,
                 'depth'           => 1,
                 'is_half_rack'    => 0,
-                'entities_id'     => 0,
-            ])
-        )->isGreaterThan(0);
+            ]
+        );
 
-        $computer2 = new \Computer();
-        $this->integer(
-            (int)$computer2->add([
+        $computer2 = $this->createItem(
+            'Computer',
+            [
                 'computermodels_id' => $model2->getID(),
-                'entities_id'  => 0,
-            ])
-        )->isGreaterThan(0);
+                'entities_id'       => 0,
+            ]
+        );
 
         // Add the new Computer into the rack
-        $itemRack2 = new \Item_Rack();
-        $this->integer(
-            (int)$itemRack2->add([
+        $itemRack2 = $this->createItem(
+            'Item_Rack',
+            [
                 'racks_id'    => $rack->getID(),
                 'position'    => 4,
                 'orientation' => 0,
                 'itemtype'    => 'Computer',
                 'items_id'    => $computer2->getID()
-            ])
-        )->isGreaterThan(0);
+            ]
+        );
 
         // Update the ComputerModel
         for ($i = 1; $i < 15; $i++) {
-            $this->boolean(
-                $model2->update([
-                    'id'              => $model2->getID(),
-                    'required_units'  => $i,
-                ])
-            )->isEqualTo($i <= 8);
+            $this->boolean($model2->update([
+                'id'              => $model2->getID(),
+                'required_units'  => $i,
+            ]))->isEqualTo($i <= 8);
         }
 
-        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in a rack Test rack and the new required units do not fit into the rack']);
+        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
 
         // Update the ComputerModel
-        $this->boolean(
-            $model2->update([
-                'id'              => $model2->getID(),
-                'required_units'  => 1,
-            ])
-        )->isTrue();
+        $this->boolean($model2->update([
+            'id'              => $model2->getID(),
+            'required_units'  => 1,
+        ]))->isTrue();
 
         // Update the ComputerModel
-        $this->boolean(
-            $model1->update([
-                'id'              => $model1->getID(),
-                'is_half_rack'    => 1,
-            ])
-        )->isTrue();
+        $this->boolean($model1->update([
+            'id'              => $model1->getID(),
+            'is_half_rack'    => 1,
+        ]))->isTrue();
 
-        $this->boolean(
-            $model2->update([
-                'id'              => $model2->getID(),
-                'is_half_rack'    => 1,
-            ])
-        )->isTrue();
+        $this->boolean($model2->update([
+            'id'              => $model2->getID(),
+            'is_half_rack'    => 1,
+        ]))->isTrue();
 
         // Update the Item_Rack
-        $this->boolean(
-            $itemRack1->update([
-                'id'   => $itemRack1->getID(),
-                'hpos' => 1,
-            ])
-        )->isTrue();
+        $this->boolean($itemRack1->update([
+            'id'   => $itemRack1->getID(),
+            'hpos' => 1,
+        ]))->isTrue();
 
-        $this->boolean(
-            $itemRack2->update([
-                'id'   => $itemRack2->getID(),
-                'hpos' => 2,
-            ])
-        )->isTrue();
+        $this->boolean($itemRack2->update([
+            'id'   => $itemRack2->getID(),
+            'hpos' => 2,
+        ]))->isTrue();
 
         // Update the ComputerModel
         for ($i = 1; $i <= 10; $i++) {
-            $this->boolean(
-                $model1->update([
-                    'id'              => $model1->getID(),
-                    'required_units'  => $i,
-                ])
-            )->isTrue();
+            $this->boolean($model1->update([
+                'id'              => $model1->getID(),
+                'required_units'  => $i,
+            ]))->isTrue();
 
-            $this->boolean(
-                $model2->update([
-                    'id'              => $model2->getID(),
-                    'required_units'  => $i,
-                ])
-            )->isTrue();
+            $this->boolean($model2->update([
+                'id'              => $model2->getID(),
+                'required_units'  => $i,
+            ]))->isTrue();
         }
 
         // Update the ComputerModel
-        $this->boolean(
-            $model1->update([
-                'id'              => $model1->getID(),
-                'required_units'  => 1,
-            ])
-        )->isTrue();
+        $this->boolean($model1->update([
+            'id'              => $model1->getID(),
+            'required_units'  => 1,
+        ]))->isTrue();
 
-        $this->boolean(
-            $model2->update([
-                'id'              => $model2->getID(),
-                'is_half_rack'    => 0,
-                'required_units'  => 1,
-            ])
-        )->isTrue();
+        $this->boolean($model2->update([
+            'id'              => $model2->getID(),
+            'is_half_rack'    => 0,
+            'required_units'  => 1,
+        ]))->isTrue();
 
         // Update the ComputerModel
         for ($i = 1; $i <= 5; $i++) {
-            $this->boolean(
-                $model1->update([
-                    'id'              => $model1->getID(),
-                    'required_units'  => $i,
-                ])
-            )->isEqualTo($i < 3);
+            $this->boolean($model1->update([
+                'id'              => $model1->getID(),
+                'required_units'  => $i,
+            ]))->isEqualTo($i < 3);
         }
 
-        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in a rack Test rack and the new required units do not fit into the rack']);
+        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
 
         // Update the ComputerModel
-        $this->boolean(
-            $model1->update([
-                'id'              => $model1->getID(),
-                'required_units'  => 1,
-            ])
-        )->isTrue();
+        $this->boolean($model1->update([
+            'id'              => $model1->getID(),
+            'required_units'  => 1,
+        ]))->isTrue();
 
         // Test orientation
-        $this->boolean(
-            $itemRack1->update([
-                'id'   => $itemRack1->getID(),
-                'orientation' => Rack::REAR,
-                'hpos' => Rack::POS_LEFT,
-            ])
-        )->isTrue();
+        $this->boolean($itemRack1->update([
+            'id'   => $itemRack1->getID(),
+            'orientation' => Rack::REAR,
+            'hpos' => Rack::POS_LEFT,
+        ]))->isTrue();
 
-        $this->boolean(
-            $itemRack2->update([
-                'id'   => $itemRack2->getID(),
-                'orientation' => Rack::FRONT,
-                'is_half_rack' => 0,
-            ])
-        )->isTrue();
+        $this->boolean($itemRack2->update([
+            'id'   => $itemRack2->getID(),
+            'orientation' => Rack::FRONT,
+            'is_half_rack' => 0,
+        ]))->isTrue();
 
         for ($i = 1; $i <= 10; $i++) {
-            $this->boolean(
-                $model1->update([
-                    'id'              => $model1->getID(),
-                    'required_units'  => $i,
-                ])
-            )->isEqualTo($i < 3);
+            $this->boolean($model1->update([
+                'id'              => $model1->getID(),
+                'required_units'  => $i,
+            ]))->isEqualTo($i < 3);
         }
 
-        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in a rack Test rack and the new required units do not fit into the rack']);
+        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
 
         // Test depth
-        $this->boolean(
-            $model1->update([
-                'id'              => $model1->getID(),
-                'required_units'  => 1,
-                'depth'           => 0.5,
-            ])
-        )->isTrue();
+        $this->boolean($model1->update([
+            'id'              => $model1->getID(),
+            'required_units'  => 1,
+            'depth'           => 0.5,
+        ]))->isTrue();
 
-        $this->boolean(
-            $model2->update([
-                'id'              => $model2->getID(),
-                'depth'           => 0.5,
-            ])
-        )->isTrue();
+        $this->boolean($model2->update([
+            'id'              => $model2->getID(),
+            'depth'           => 0.5,
+        ]))->isTrue();
 
         for ($i = 1; $i <= 10; $i++) {
-            $this->boolean(
-                $model1->update([
-                    'id'              => $model1->getID(),
-                    'required_units'  => $i,
-                ])
-            )->isTrue();
+            $this->boolean($model1->update([
+                'id'              => $model1->getID(),
+                'required_units'  => $i,
+            ]))->isTrue();
 
-            $this->boolean(
-                $model2->update([
-                    'id'              => $model2->getID(),
-                    'required_units'  => $i,
-                ])
-            )->isTrue();
+            $this->boolean($model2->update([
+                'id'              => $model2->getID(),
+                'required_units'  => $i,
+            ]))->isTrue();
         }
 
-        $this->boolean(
-            $model1->update([
-                'id'              => $model1->getID(),
-                'required_units'  => 1,
-                'depth'           => 0.5,
-            ])
-        )->isTrue();
+        $this->boolean($model1->update([
+            'id'              => $model1->getID(),
+            'required_units'  => 1,
+            'depth'           => 0.5,
+        ]))->isTrue();
 
-        $this->boolean(
-            $model2->update([
-                'id'              => $model2->getID(),
+        $this->boolean($model2->update([
+            'id'              => $model2->getID(),
+            'required_units'  => 1,
+            'depth'           => 1,
+        ]))->isTrue();
+
+        for ($i = 1; $i <= 10; $i++) {
+            $this->boolean($model1->update([
+                'id'              => $model1->getID(),
+                'required_units'  => $i,
+            ]))->isEqualTo($i < 3);
+        }
+
+        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
+    }
+
+    /**
+     * Test for updating horizontal position of items rack
+     */
+    public function testUpdateItemHorizontalPosition()
+    {
+        // Create a ComputerModel
+        $model = $this->createItem(
+            'ComputerModel',
+            [
                 'required_units'  => 1,
                 'depth'           => 1,
-            ])
-        )->isTrue();
+                'is_half_rack'    => 0
+            ]
+        );
 
-        for ($i = 1; $i <= 10; $i++) {
-            $this->boolean(
-                $model1->update([
-                    'id'              => $model1->getID(),
-                    'required_units'  => $i,
-                ])
-            )->isEqualTo($i < 3);
-        }
+        // Create a Computer
+        $computer = $this->createItem(
+            'Computer',
+            [
+                'computermodels_id' => $model->getID(),
+                'entities_id'       => 0,
+            ]
+        );
 
-        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in a rack Test rack and the new required units do not fit into the rack']);
+        // Create a 10u rack
+        $rack = $this->createItem(
+            'Rack',
+            [
+                'name'         => 'Test rack',
+                'number_units' => 10,
+                'dcrooms_id'   => 0,
+                'position'     => 0,
+                'entities_id'  => 0,
+            ]
+        );
+
+        // Create an Item_Rack
+        $itemRack = $this->createItem(
+            'Item_Rack',
+            [
+                'racks_id'    => $rack->getID(),
+                'position'    => 2,
+                'orientation' => 0,
+                'itemtype'    => 'Computer',
+                'items_id'    => $computer->getID()
+            ]
+        );
+
+        // Check horizontal position
+        $this->integer($itemRack->fields['hpos'])->isEqualTo(Rack::POS_NONE);
+
+        // Update model
+        $this->updateItem(
+            'ComputerModel',
+            $model->getID(),
+            [
+                'is_half_rack'    => 1,
+            ]
+        );
+        $itemRack->getFromDB($itemRack->getID());
+
+        // Check horizontal position
+        $this->integer($itemRack->fields['hpos'])->isEqualTo(Rack::POS_LEFT);
+
+        // Update model
+        $this->updateItem(
+            'ComputerModel',
+            $model->getID(),
+            [
+                'is_half_rack'    => 0,
+            ]
+        );
+        $itemRack->getFromDB($itemRack->getID());
+
+        // Check horizontal position
+        $this->integer($itemRack->fields['hpos'])->isEqualTo(Rack::POS_NONE);
+
+        // Update item rack
+        $this->updateItem(
+            'Item_Rack',
+            $itemRack->getID(),
+            [
+                'hpos'    => Rack::POS_RIGHT,
+            ]
+        );
+
+        // Update model
+        $this->updateItem(
+            'ComputerModel',
+            $model->getID(),
+            [
+                'is_half_rack'    => 1,
+            ]
+        );
+        $itemRack->getFromDB($itemRack->getID());
+
+        // Check horizontal position
+        $this->integer($itemRack->fields['hpos'])->isEqualTo(Rack::POS_RIGHT);
     }
 }
