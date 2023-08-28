@@ -65,6 +65,7 @@
          '',
          legacy_doc
       ) }}
+      {{ fields.nullField() }}
    {% endif %}
    {{ fields.textField('legacy_url_base_api', legacy_api_url, __('URL of the API'), {
       readonly: true,
