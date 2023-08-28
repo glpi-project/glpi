@@ -34,8 +34,6 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
-{{ fields.largeTitle(__('Performance'), 'ti ti-dashboard') }}
-
 {% if opcache_enabled %}
    {% set msg = __('The "%s" extension is installed')|format(opcache_ext) %}
    {% set short_msg = __('%s extension is installed')|format(opcache_ext) %}
