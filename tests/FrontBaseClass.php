@@ -59,14 +59,26 @@ class FrontBaseClass extends \GLPITestCase
         parent::afterTestMethod($method);
     }
 
-    protected function logIn()
+    protected function loginProvider()
+    {
+        return [
+            [TU_USER, TU_PASS],
+            ['jsmith123', TU_PASS],
+            ['john+doe@doe.com', TU_PASS],
+        ];
+    }
+
+    /**
+     * @dataProvider loginProvider
+     */
+    protected function logIn($login, $pass)
     {
         $crawler = $this->http_client->request('GET', $this->base_uri . 'index.php');
         $login_name = $crawler->filter('#login_name')->attr('name');
         $pass_name = $crawler->filter('input[type=password]')->attr('name');
         $form = $crawler->selectButton('submit')->form();
-        $form[$login_name] = TU_USER;
-        $form[$pass_name] = TU_PASS;
+        $form[$login_name] = $login;
+        $form[$pass_name] = $pass;
         //proceed form submission
         $crawler = $this->http_client->submit($form);
 
