@@ -72,11 +72,11 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         $this->data['##lang.document.filename##']               = __('Document filename');
         $this->data['##lang.document.weblink##']                = __('Document weblink');
         $this->data['##lang.document.id##']                     = __('Document ID');
-        $this->data['##lang.document.heading##']                = _n('Document heading', 'Documents headings', 2);
+        $this->data['##lang.document.heading##']                = _n('Document heading', 'Documents headings', 0);
         $this->data['##lang.target.url##']                      = __('URL');
         $this->data['##lang.target.name##']                     = __('Name');
-        $this->data['##lang.target.itemtype##']                 = _n('Type', 'Types', 2);
-        $this->data['##lang.target.action##']                   = __('Event');
+        $this->data['##lang.target.itemtype##']                 = _n('Type', 'Types', 0);
+        $this->data['##lang.target.action##']                   = _n('Event', 'Events', 0);
 
         // Set data
         $this->data['##knowbaseitem.url##']          = $knowbase->getLink();
