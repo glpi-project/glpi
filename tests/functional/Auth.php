@@ -51,6 +51,7 @@ class Auth extends DbTestCase
             ['john.doe', true],
             ['john \'o doe', true],
             ['john@doe.com', true],
+            ['john+doe@doe.com', true],
             ['@doe.com', true],
             ['john " doe', false],
             ['john^doe', false],
