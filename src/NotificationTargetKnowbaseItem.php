@@ -87,6 +87,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
 
         //Check all possible types of targets
         $groupsknowbaseitem = new Group_KnowbaseItem();
+        $targets = [];
         foreach (
             $groupsknowbaseitem->find([
                 'knowbaseitems_id' => $knowbase->getID()
