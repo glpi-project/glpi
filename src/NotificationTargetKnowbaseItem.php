@@ -63,8 +63,8 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         $this->data['##lang.knowbaseitem.content##']            = __('Content');
         $this->data['##lang.knowbaseitem.categories##']         = __('Categories');
         $this->data['##lang.knowbaseitem.is_faq##']             = __('FAQ');
-        $this->data['##lang.knowbaseitem.begin_date##']         = __('Begin Date');
-        $this->data['##lang.knowbaseitem.end_date##']           = __('End Date');
+        $this->data['##lang.knowbaseitem.begin_date##']         = __('Visible since');
+        $this->data['##lang.knowbaseitem.end_date##']           = __('Visible until');
         $this->data['##lang.knowbaseitem.numberofdocuments##']  = __('Number of documents');
         $this->data['##lang.document.name##']                   = __('Document name');
         $this->data['##lang.document.downloadurl##']            = __('Document download URL');
@@ -155,8 +155,8 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
             'knowbaseitem.categories'               => __('Categories'),
             'knowbaseitem.content'                  => __('Content'),
             'knowbaseitem.subject'                  => __('Subject'),
-            'knowbaseitem.begin_date'               => __('Begin Date'),
-            'knowbaseitem.end_date'                 => __('End Date'),
+            'knowbaseitem.begin_date'               => __('Visible since'),
+            'knowbaseitem.end_date'                 => __('Visible until'),
             'knowbaseitem.is_faq'                   => __('FAQ'),
             'knowbaseitem.numberofdocuments'        => __('Number of documents'),
             'document.name'                         => __('Document name'),
