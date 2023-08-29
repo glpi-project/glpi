@@ -72,10 +72,11 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         $this->data['##lang.document.filename##']               = __('Document filename');
         $this->data['##lang.document.weblink##']                = __('Document weblink');
         $this->data['##lang.document.id##']                     = __('Document ID');
-        $this->data['##lang.document.heading##']                = __('Document heading');
+        $this->data['##lang.document.heading##']                = _n('Document heading', 'Documents headings', 2);
         $this->data['##lang.target.url##']                      = __('URL');
         $this->data['##lang.target.name##']                     = __('Name');
-        $this->data['##lang.target.itemtype##']                 = __('Type');
+        $this->data['##lang.target.itemtype##']                 = _n('Type', 'Types', 2);
+        $this->data['##lang.target.action##']                   = __('Event');
 
         // Set data
         $this->data['##knowbaseitem.url##']          = $knowbase->getLink();
@@ -150,24 +151,24 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
     public function getTags()
     {
         $tags = [
-            'knowbaseitem.url'           => __('URL'),
-            'knowbaseitem.categories' => __('Categories'),
-            'knowbaseitem.content'       => __('Content'),
-            'knowbaseitem.subject'         => __('Subject'),
-            'knowbaseitem.begin_date'   => __('Begin Date'),
-            'knowbaseitem.end_date'  => __('End Date'),
-            'knowbaseitem.is_faq'        => __('FAQ'),
-            'knowbaseitem.numberofdocuments'       => __('Number of documents'),
-            'document.name'       => __('Document name'),
-            'document.downloadurl'       => __('Document download URL'),
-            'document.url'       => __('Document URL'),
-            'document.filename'       => __('Document filename'),
-            'document.weblink'       => __('Document weblink'),
-            'document.id'       => __('Document ID'),
-            'document.heading'      => __('Document heading'),
-            'target.url'           => __('URL'),
-            'target.name'           => __('Name'),
-            'target.itemtype'           => __('Type')
+            'knowbaseitem.url'                      => __('URL'),
+            'knowbaseitem.categories'               => __('Categories'),
+            'knowbaseitem.content'                  => __('Content'),
+            'knowbaseitem.subject'                  => __('Subject'),
+            'knowbaseitem.begin_date'               => __('Begin Date'),
+            'knowbaseitem.end_date'                 => __('End Date'),
+            'knowbaseitem.is_faq'                   => __('FAQ'),
+            'knowbaseitem.numberofdocuments'        => __('Number of documents'),
+            'document.name'                         => __('Document name'),
+            'document.downloadurl'                  => __('Document download URL'),
+            'document.url'                          => __('Document URL'),
+            'document.filename'                     => __('Document filename'),
+            'document.weblink'                      => __('Document weblink'),
+            'document.id'                           => __('Document ID'),
+            'document.heading'                      => _n('Document heading', 'Documents headings', 2),
+            'target.url'                            => __('URL'),
+            'target.name'                           => __('Name'),
+            'target.itemtype'                       => _n('Type', 'Types', 2),
         ];
 
         foreach ($tags as $tag => $label) {
