@@ -98,17 +98,25 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                     'knowbaseitems_id' => $knowbase->getID()
                 ]) as $value
             ) {
-                if ($type instanceof Group_KnowbaseItem) {
-                    $targets[] = Group::getById($value['groups_id']);
-                } elseif ($type instanceof KnowbaseItem_User) {
-                    $targets[] = User::getById($value['users_id']);
-                } elseif ($type instanceof KnowbaseItem_Profile) {
-                    $targets[] = Profile::getById($value['profiles_id']);
-                } elseif ($type instanceof Entity_KnowbaseItem) {
-                    $targets[] = Entity::getById($value['entities_id']);
-                } elseif ($type instanceof KnowbaseItem_KnowbaseItemCategory) {
-                    $category = KnowbaseItemCategory::getById($value['knowbaseitemcategories_id']);
-                    $listofcategories[]      = $category->fields['name'];
+                $classname = get_class($type);
+                switch ($classname) {
+                    case Group_KnowbaseItem::class:
+                        $targets[] = Group::getById($value['groups_id']);
+                        break;
+                    case KnowbaseItem_User::class:
+                        $targets[] = User::getById($value['users_id']);
+                        break;
+                    case KnowbaseItem_Profile::class:
+                        $targets[] = Profile::getById($value['profiles_id']);
+                        break;
+                    case Entity_KnowbaseItem::class:
+                        $targets[] = Entity::getById($value['entities_id']);
+                        break;
+                    case KnowbaseItem_KnowbaseItemCategory::class:
+                        $category = KnowbaseItemCategory::getById($value['knowbaseitemcategories_id']);
+                        $listofcategories[] = $category->fields['name'];
+                        break;
+                }
                 }
             }
         }
