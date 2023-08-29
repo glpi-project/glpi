@@ -292,7 +292,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (in_array('projects_id', $this->updates)) {
             foreach (self::getAllForProjectTask($this->getID()) as $task) {
                 $task['projects_id'] = $this->fields['projects_id'];
-                $a = self::getById($task['id'])->update($task);
+                self::getById($task['id'])->update($task);
             }
         }
     }
