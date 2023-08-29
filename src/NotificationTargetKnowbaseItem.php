@@ -117,7 +117,6 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                         $listofcategories[] = $category->fields['name'];
                         break;
                 }
-                }
             }
         }
         foreach ($targets as $target) {
