@@ -111,6 +111,14 @@
             }
         },
         {
+            id: 'search_options',
+            title: 'Search Options',
+            icon: 'ti ti-list-search',
+            main_widget: true, // This widget shows directly in the toolbar
+            component_registered_name: 'widget-search-options',
+            refreshButton: (button) => {}
+        },
+        {
             id: 'globals',
             main_widget: false,
             component_registered_name: 'widget-globals',

@@ -67,5 +67,47 @@ if (isset($_GET['ajax_id'])) {
     die();
 }
 
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+    if ($action === 'get_itemtypes') {
+        $loaded = get_declared_classes();
+        $glpi_classes = array_filter($loaded, static function ($class) {
+            return is_subclass_of($class, 'CommonDBTM');
+        });
+        sort($glpi_classes);
+        header('Content-Type: application/json');
+        echo json_encode($glpi_classes);
+        die();
+    }
+    if ($action === 'get_search_options' && isset($_GET['itemtype'])) {
+        try {
+            /** @var CommonGLPI $item */
+            $item = new $_GET['itemtype']();
+            $options = Search::getOptions($item::getType());
+        } catch (Throwable $e) {
+            $options = [];
+        }
+        $options = array_filter($options, static function ($k) {
+            return is_numeric($k);
+        }, ARRAY_FILTER_USE_KEY);
+
+        // In some cases, a class that isn't a proper itemtype may show in the selection box and this would trigger a SQL error that cannot be caught.
+        // Need to clear the output to avoid breaking the JSON response in debug mode.
+        $ob_config = ini_get('output_buffering');
+        $max_buffering_level = $ob_config !== false && (strtolower($ob_config) === 'on' || (is_numeric($ob_config) && (int)$ob_config > 0))
+            ? 1
+            : 0;
+        while (ob_get_level() > $max_buffering_level) {
+            ob_end_clean();
+        }
+        if (ob_get_level() > 0) {
+            ob_clean();
+        }
+        header('Content-Type: application/json');
+        echo json_encode($options);
+        die();
+    }
+}
+
 http_response_code(400);
 die();
