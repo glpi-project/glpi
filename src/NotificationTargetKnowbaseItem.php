@@ -1,5 +1,38 @@
 <?php
 
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
@@ -42,22 +75,50 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         $this->data['##lang.document.heading##']           = __('Document heading');
         $this->data['##lang.target.url##']                 = __('URL');
         $this->data['##lang.target.name##']                = __('Name');
-        $this->data['##lang.target.itemtype##']                = __('Type');
+        $this->data['##lang.target.itemtype##']            = __('Type');
 
         // Set data
-        $this->data['##knowbaseitem.url##']           = $knowbase->getLink();
+        $this->data['##knowbaseitem.url##']          = $knowbase->getLink();
         $this->data['##knowbaseitem.subject##']      = $knowbase->fields['name'];
         $this->data['##knowbaseitem.content##']      = $knowbase->fields['answer'];
-        $knowbaseitemcategory = new KnowbaseItem_KnowbaseItemCategory();
-        foreach (
-            $knowbaseitemcategory->find([
-                'knowbaseitems_id' => $knowbase->getID()
-            ]) as $knowbasecategory
-        ) {
-            $category = KnowbaseItemCategory::getById($knowbasecategory['knowbaseitemcategories_id']);
-            $listofcategories[]      = $category->fields['name'];
+
+        //Check all possible types of targets
+        $typeSearch = [
+            new Group_KnowbaseItem(),
+            new KnowbaseItem_User(),
+            new KnowbaseItem_Profile(),
+            new Entity_KnowbaseItem(),
+            new KnowbaseItem_KnowbaseItemCategory()
+        ];
+        $targets = [];
+        foreach ($typeSearch as $type) {
+            foreach (
+                $type->find([
+                    'knowbaseitems_id' => $knowbase->getID()
+                ]) as $value
+            ) {
+                if ($type instanceof Group_KnowbaseItem) {
+                    $targets[] = Group::getById($value['groups_id']);
+                } elseif ($type instanceof KnowbaseItem_User) {
+                    $targets[] = User::getById($value['users_id']);
+                } elseif ($type instanceof KnowbaseItem_Profile) {
+                    $targets[] = Profile::getById($value['profiles_id']);
+                } elseif ($type instanceof Entity_KnowbaseItem) {
+                    $targets[] = Entity::getById($value['entities_id']);
+                } elseif ($type instanceof KnowbaseItem_KnowbaseItemCategory) {
+                    $category = KnowbaseItemCategory::getById($value['knowbaseitemcategories_id']);
+                    $listofcategories[]      = $category->fields['name'];
+                }
+            }
         }
-        if (isset($listofcategories)) {
+        foreach ($targets as $target) {
+            $this->data['targets'][] = [
+                '##target.url##'             => $target->getLink(),
+                '##target.name##'            => $target->fields['name'],
+                '##target.itemtype##'        => $target->getType()
+            ];
+        }
+        if (isset($listofcategories) && !empty($listofcategories)) {
             $this->data['##knowbaseitem.categories##']      = implode(', ', $listofcategories);
         } else {
             $this->data['##knowbaseitem.categories##']      = '';
@@ -84,71 +145,29 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                 '##document.name##'                    => $document->fields['name']
             ];
         }
-
-        //Check all possible types of targets
-        $groupsknowbaseitem = new Group_KnowbaseItem();
-        $targets = [];
-        foreach (
-            $groupsknowbaseitem->find([
-                'knowbaseitems_id' => $knowbase->getID()
-            ]) as $groupid
-        ) {
-            $targets[] = Group::getById($groupid['groups_id']);
-        }
-        $usersknowbaseitem = new KnowbaseItem_User();
-        foreach (
-            $usersknowbaseitem->find([
-                'knowbaseitems_id' => $knowbase->getID()
-            ]) as $userid
-        ) {
-            $targets[] = User::getById($userid['users_id']);
-        }
-        $profiles = new KnowbaseItem_Profile();
-        foreach (
-            $profiles->find([
-                'knowbaseitems_id' => $knowbase->getID()
-            ]) as $profileid
-        ) {
-            $targets[] = Profile::getById($profileid['profiles_id']);
-        }
-        $entities = new Entity_KnowbaseItem();
-        foreach (
-            $entities->find([
-                'knowbaseitems_id' => $knowbase->getID()
-            ]) as $entityid
-        ) {
-            $targets[] = Entity::getById($entityid['entities_id']);
-        }
-        foreach ($targets as $target) {
-            $this->data['targets'][] = [
-                '##target.url##'             => $target->getLink(),
-                '##target.name##'            => $target->fields['name'],
-                '##target.itemtype##'        => $target->getType()
-            ];
-        }
     }
 
     public function getTags()
     {
         $tags = [
-            'knowbaseitem.url'           => __('URL'),
-            'knowbaseitem.categories' => __('Categories'),
-            'knowbaseitem.content'       => __('Content'),
-            'knowbaseitem.subject'         => __('Subject'),
-            'knowbaseitem.begin_date'   => __('Begin Date'),
-            'knowbaseitem.end_date'  => __('End Date'),
-            'knowbaseitem.is_faq'        => __('FAQ'),
-            'knowbaseitem.numberofdocuments'       => __('Number of documents'),
-            'document.name'       => __('Document name'),
-            'document.downloadurl'       => __('Document download URL'),
-            'document.url'       => __('Document URL'),
-            'document.filename'       => __('Document filename'),
-            'document.weblink'       => __('Document weblink'),
-            'document.id'       => __('Document ID'),
-            'document.heading'      => __('Document heading'),
-            'target.url'           => __('URL'),
-            'target.name'           => __('Name'),
-            'target.itemtype'           => __('Type')
+            'knowbaseitem.url'                      => __('URL'),
+            'knowbaseitem.categories'               => __('Categories'),
+            'knowbaseitem.content'                  => __('Content'),
+            'knowbaseitem.subject'                  => __('Subject'),
+            'knowbaseitem.begin_date'               => __('Begin Date'),
+            'knowbaseitem.end_date'                 => __('End Date'),
+            'knowbaseitem.is_faq'                   => __('FAQ'),
+            'knowbaseitem.numberofdocuments'        => __('Number of documents'),
+            'document.name'                         => __('Document name'),
+            'document.downloadurl'                  => __('Document download URL'),
+            'document.url'                          => __('Document URL'),
+            'document.filename'                     => __('Document filename'),
+            'document.weblink'                      => __('Document weblink'),
+            'document.id'                           => __('Document ID'),
+            'document.heading'                      => __('Document heading'),
+            'target.url'                            => __('URL'),
+            'target.name'                           => __('Name'),
+            'target.itemtype'                       => __('Type')
         ];
 
         foreach ($tags as $tag => $label) {
