@@ -90,7 +90,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
             new Entity_KnowbaseItem(),
             new KnowbaseItem_KnowbaseItemCategory()
         ];
-        $targets = [];
+        $targets = $listofcategories = [];
         foreach ($typeSearch as $type) {
             foreach (
                 $type->find([
@@ -118,7 +118,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                 '##target.itemtype##'        => $target->getType()
             ];
         }
-        if (isset($listofcategories) && !empty($listofcategories)) {
+        if (!empty($listofcategories)) {
             $this->data['##knowbaseitem.categories##']      = implode(', ', $listofcategories);
         } else {
             $this->data['##knowbaseitem.categories##']      = '';
