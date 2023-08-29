@@ -25,24 +25,24 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         $knowbase = $this->obj;
 
         // Define all language tags
-        $this->data['##lang.knowbaseitem.url##']           = __('URL');
-        $this->data['##lang.knowbaseitem.subject##']       = __('Name');
-        $this->data['##lang.knowbaseitem.content##']       = __('Content');
-        $this->data['##lang.knowbaseitem.categories##']    = __('Categories');
-        $this->data['##lang.knowbaseitem.is_faq##']        = __('FAQ');
-        $this->data['##lang.knowbaseitem.begin_date##']    = __('Begin Date');
-        $this->data['##lang.knowbaseitem.end_date##']      = __('End Date');
-        $this->data['##lang.knowbaseitem.numberofdocuments##'] = __('Number of documents');
-        $this->data['##lang.document.name##']              = __('Document name');
-        $this->data['##lang.document.downloadurl##']       = __('Document download URL');
-        $this->data['##lang.document.url##']               = __('Document URL');
-        $this->data['##lang.document.filename##']          = __('Document filename');
-        $this->data['##lang.document.weblink##']           = __('Document weblink');
-        $this->data['##lang.document.id##']                = __('Document ID');
-        $this->data['##lang.document.heading##']           = __('Document heading');
-        $this->data['##lang.target.url##']                 = __('URL');
-        $this->data['##lang.target.name##']                = __('Name');
-        $this->data['##lang.target.itemtype##']                = __('Type');
+        $this->data['##lang.knowbaseitem.url##']                = __('URL');
+        $this->data['##lang.knowbaseitem.subject##']            = __('Name');
+        $this->data['##lang.knowbaseitem.content##']            = __('Content');
+        $this->data['##lang.knowbaseitem.categories##']         = __('Categories');
+        $this->data['##lang.knowbaseitem.is_faq##']             = __('FAQ');
+        $this->data['##lang.knowbaseitem.begin_date##']         = __('Begin Date');
+        $this->data['##lang.knowbaseitem.end_date##']           = __('End Date');
+        $this->data['##lang.knowbaseitem.numberofdocuments##']  = __('Number of documents');
+        $this->data['##lang.document.name##']                   = __('Document name');
+        $this->data['##lang.document.downloadurl##']            = __('Document download URL');
+        $this->data['##lang.document.url##']                    = __('Document URL');
+        $this->data['##lang.document.filename##']               = __('Document filename');
+        $this->data['##lang.document.weblink##']                = __('Document weblink');
+        $this->data['##lang.document.id##']                     = __('Document ID');
+        $this->data['##lang.document.heading##']                = __('Document heading');
+        $this->data['##lang.target.url##']                      = __('URL');
+        $this->data['##lang.target.name##']                     = __('Name');
+        $this->data['##lang.target.itemtype##']                 = __('Type');
 
         // Set data
         $this->data['##knowbaseitem.url##']           = $knowbase->getLink();
