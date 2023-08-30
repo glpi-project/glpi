@@ -2871,6 +2871,27 @@ $empty_data_builder = new class
                 'event' => 'user_mention',
                 'is_recursive' => 1,
                 'is_active' => 1,
+            ], [
+                'id' => 73,
+                'name' => 'New KnowbaseItem created',
+                'itemtype' => 'KnowbaseItem',
+                'event' => 'newknowbase',
+                'is_recursive' => 1,
+                'is_active' => 0,
+            ], [
+                'id' => 74,
+                'name' => 'Deleting KnowbaseItem',
+                'itemtype' => 'KnowbaseItem',
+                'event' => 'deletingknowbase',
+                'is_recursive' => 1,
+                'is_active' => 0,
+            ], [
+                'id' => 75,
+                'name' => 'Updating KnowbaseItem',
+                'itemtype' => 'KnowbaseItem',
+                'event' => 'updateknowbase',
+                'is_recursive' => 1,
+                'is_active' => 0,
             ],
         ];
 
@@ -3235,6 +3256,21 @@ $empty_data_builder = new class
                 'notifications_id' => '72',
                 'mode' => 'mailing',
                 'notificationtemplates_id' => 4,
+            ], [
+                'id' => 73,
+                'notifications_id' => '73',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 29,
+            ], [
+                'id' => 74,
+                'notifications_id' => '74',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 29,
+            ], [
+                'id' => 75,
+                'notifications_id' => '75',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 29,
             ],
         ];
 
@@ -4045,6 +4081,10 @@ $empty_data_builder = new class
                 'id' => '28',
                 'name' => 'Plugin updates',
                 'itemtype' => 'Glpi\\Marketplace\\Controller',
+            ], [
+                'id' => '29',
+                'name' => 'KnowbaseItems',
+                'itemtype' => 'KnowbasesItem',
             ],
         ];
 
@@ -4905,6 +4945,67 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 &lt;li&gt;##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##&lt;/li&gt;
 ##ENDFOREACHplugins##&lt;/ul&gt;
 &lt;p&gt;##lang.marketplace.url## : &lt;a title="##lang.marketplace.url##" href="##marketplace.url##" target="_blank" rel="noopener"&gt;##marketplace.url##&lt;/a&gt;&lt;/p&gt;'
+            ], [
+                'id' => '29',
+                'notificationtemplates_id' => '29',
+                'language' => '',
+                'subject' => '##knowbaseitem.action## - ##knowbaseitem.subject##',
+                'content_text' => '##lang.knowbaseitem.url## : ##knowbaseitem.url##
+
+                ##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+
+                ##lang.knowbaseitem.content## : ##knowbaseitem.content##
+
+                ##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
+                ##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
+                ##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
+                ##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
+
+                ##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##
+
+                ##FOREACHdocuments##
+                    ##lang.document.downloadurl## : ##document.downloadurl##
+                    ##lang.document.filename## : ##document.filename##
+                    ##lang.document.heading## : ##document.heading##
+                    ##lang.document.id## : ##document.id##
+                    ##lang.document.name## : ##document.name##
+                    ##lang.document.url## : ##document.url##
+                    ##lang.document.weblink## : ##document.weblink##
+                ##ENDFOREACHdocuments##
+
+                ##FOREACHtargets##
+                    ##lang.target.itemtype## : ##target.type##
+                    ##lang.target.name## : ##target.name##
+                    ##lang.target.url## : ##target.url##
+                ##ENDFOREACHtargets##',
+                'content_html' => '##lang.knowbaseitem.url## : ##knowbaseitem.url##
+
+                ##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+
+                ##lang.knowbaseitem.content## : ##knowbaseitem.content##
+
+                ##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
+                ##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
+                ##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
+                ##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
+
+                ##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##
+
+                ##FOREACHdocuments##
+                    ##lang.document.downloadurl## : ##document.downloadurl##
+                    ##lang.document.filename## : ##document.filename##
+                    ##lang.document.heading## : ##document.heading##
+                    ##lang.document.id## : ##document.id##
+                    ##lang.document.name## : ##document.name##
+                    ##lang.document.url## : ##document.url##
+                    ##lang.document.weblink## : ##document.weblink##
+                ##ENDFOREACHdocuments##
+
+                ##FOREACHtargets##
+                    ##lang.target.itemtype## : ##target.type##
+                    ##lang.target.name## : ##target.name##
+                    ##lang.target.url## : ##target.url##
+                ##ENDFOREACHtargets##'
             ],
         ];
 
