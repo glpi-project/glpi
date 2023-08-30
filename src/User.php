@@ -5879,17 +5879,24 @@ HTML;
      */
     public static function dropPictureFiles($picture)
     {
-
         if (!empty($picture)) {
-           // unlink main file
-            if (file_exists(GLPI_PICTURE_DIR . "/$picture")) {
-                @unlink(GLPI_PICTURE_DIR . "/$picture");
+            $filepath = realpath(GLPI_PICTURE_DIR . "/$picture");
+            if (!str_starts_with($filepath, realpath(GLPI_PICTURE_DIR))) {
+                throw new \Exception("Invalid file path");
             }
-           // unlink Thunmnail
+            // unlink main file
+            if (file_exists($filepath)) {
+                @unlink($filepath);
+            }
+            // unlink Thunmnail
             $tmp = explode(".", $picture);
             if (count($tmp) == 2) {
-                if (file_exists(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1])) {
-                    @unlink(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1]);
+                $thumbpath = realpath(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1]));
+                if (!str_starts_with($thumbpath, realpath(GLPI_PICTURE_DIR))) {
+                    throw new \Exception("Invalid file path");
+                }
+                if (file_exists($thumbpath)) {
+                    @unlink($thumbpath);
                 }
             }
         }
