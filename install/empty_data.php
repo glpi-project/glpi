@@ -4084,7 +4084,7 @@ $empty_data_builder = new class
             ], [
                 'id' => '29',
                 'name' => 'KnowbaseItems',
-                'itemtype' => 'KnowbasesItem',
+                'itemtype' => 'KnowbaseItem',
             ],
         ];
 
@@ -4978,34 +4978,28 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                     ##lang.target.name## : ##target.name##
                     ##lang.target.url## : ##target.url##
                 ##ENDFOREACHtargets##',
-                'content_html' => '##lang.knowbaseitem.url## : ##knowbaseitem.url##
+                'content_html' => '&lt;p&gt;##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+                &lt;br&gt;##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
+                &lt;br&gt;##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
+                &lt;br&gt;##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
+                &lt;br&gt;##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
+                &lt;br&gt;##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##&lt;/p&gt
 
-                ##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+                &lt;ul&gt;##FOREACHdocuments##
+                &lt;li&gt;##lang.document.downloadurl## : ##document.downloadurl##&lt;/li&gt
+                &lt;li&gt;##lang.document.filename## : ##document.filename##&lt;/li&gt
+                &lt;li&gt;##lang.document.heading## : ##document.heading##&lt;/li&gt
+                &lt;li&gt;##lang.document.id## : ##document.id##&lt;/li&gt
+                &lt;li&gt;##lang.document.name## : ##document.name##&lt;/li&gt
+                &lt;li&gt;##lang.document.url## : ##document.url##&lt;/li&gt
+                &lt;li&gt;##lang.document.weblink## : ##document.weblink##&lt;/li&gt
+                ##ENDFOREACHdocuments##&lt;/ul&gt
 
-                ##lang.knowbaseitem.content## : ##knowbaseitem.content##
-
-                ##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
-                ##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
-                ##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
-                ##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
-
-                ##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##
-
-                ##FOREACHdocuments##
-                    ##lang.document.downloadurl## : ##document.downloadurl##
-                    ##lang.document.filename## : ##document.filename##
-                    ##lang.document.heading## : ##document.heading##
-                    ##lang.document.id## : ##document.id##
-                    ##lang.document.name## : ##document.name##
-                    ##lang.document.url## : ##document.url##
-                    ##lang.document.weblink## : ##document.weblink##
-                ##ENDFOREACHdocuments##
-
-                ##FOREACHtargets##
-                    ##lang.target.itemtype## : ##target.type##
-                    ##lang.target.name## : ##target.name##
-                    ##lang.target.url## : ##target.url##
-                ##ENDFOREACHtargets##'
+                &lt;ul&gt##FOREACHtargets##
+                &lt;li&gt;##lang.target.itemtype## : ##target.type##&lt;/li&gt
+                &lt;li&gt;##lang.target.name## : ##target.name##&lt;/li&gt
+                &lt;li&gt;##lang.target.url## : ##target.url##&lt;/li&gt
+                ##ENDFOREACHtargets##&lt;/ul&gt;'
             ],
         ];
 

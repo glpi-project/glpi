@@ -34,14 +34,7 @@
  */
 
 /** KnowbaseItem notifications */
-$DB->deleteOrDie(
-    'glpi_notifications',
-    [
-        'itemtype' => 'KnowbaseItem',
-    ],
-    'Delete knowbase notifications'
-);
-if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) < 3) {
+if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) === 0) {
     $DB->insertOrDie(
         'glpi_notificationtemplates',
         [
@@ -59,34 +52,60 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) <
             'notificationtemplates_id' => $notificationtemplate_id,
             'language'                 => '',
             'subject'                  => '##knowbaseitem.action## - ##knowbaseitem.subject##',
-            'content_text'             => '##lang.knowbaseitem.url## : ##knowbaseitem.url##
-                ##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+            'content_text'             => <<<PLAINTEXT
+            ##lang.knowbaseitem.url## : ##knowbaseitem.url##
 
-                ##lang.knowbaseitem.content## : ##knowbaseitem.content##
+            ##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
 
-                ##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
-                ##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
-                ##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
-                ##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
+            ##lang.knowbaseitem.content## : ##knowbaseitem.content##
 
-                ##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##
+            ##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
+            ##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
+            ##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
+            ##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
 
-                ##FOREACHdocuments##
-                    ##lang.document.downloadurl## : ##document.downloadurl##
-                    ##lang.document.filename## : ##document.filename##
-                    ##lang.document.heading## : ##document.heading##
-                    ##lang.document.id## : ##document.id##
-                    ##lang.document.name## : ##document.name##
-                    ##lang.document.url## : ##document.url##
-                    ##lang.document.weblink## : ##document.weblink##
-                ##ENDFOREACHdocuments##
+            ##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##
 
-                ##FOREACHtargets##
-                    ##lang.target.itemtype## : ##target.type##
-                    ##lang.target.name## : ##target.name##
-                    ##lang.target.url## : ##target.url##
-                ##ENDFOREACHtargets##'
-            ,
+            ##FOREACHdocuments##
+                ##lang.document.downloadurl## : ##document.downloadurl##
+                ##lang.document.filename## : ##document.filename##
+                ##lang.document.heading## : ##document.heading##
+                ##lang.document.id## : ##document.id##
+                ##lang.document.name## : ##document.name##
+                ##lang.document.url## : ##document.url##
+                ##lang.document.weblink## : ##document.weblink##
+            ##ENDFOREACHdocuments##
+
+            ##FOREACHtargets##
+                ##lang.target.itemtype## : ##target.type##
+                ##lang.target.name## : ##target.name##
+                ##lang.target.url## : ##target.url##
+            ##ENDFOREACHtargets##
+            PLAINTEXT,
+            'content_html'            => <<<HTML
+            &lt;p&gt;##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+            &lt;br&gt;##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
+            &lt;br&gt;##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
+            &lt;br&gt;##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
+            &lt;br&gt;##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
+            &lt;br&gt;##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##&lt;/p&gt
+
+            &lt;ul&gt;##FOREACHdocuments##
+            &lt;li&gt;##lang.document.downloadurl## : ##document.downloadurl##&lt;/li&gt
+            &lt;li&gt;##lang.document.filename## : ##document.filename##&lt;/li&gt
+            &lt;li&gt;##lang.document.heading## : ##document.heading##&lt;/li&gt
+            &lt;li&gt;##lang.document.id## : ##document.id##&lt;/li&gt
+            &lt;li&gt;##lang.document.name## : ##document.name##&lt;/li&gt
+            &lt;li&gt;##lang.document.url## : ##document.url##&lt;/li&gt
+            &lt;li&gt;##lang.document.weblink## : ##document.weblink##&lt;/li&gt
+            ##ENDFOREACHdocuments##&lt;/ul&gt
+
+            &lt;ul&gt##FOREACHtargets##
+            &lt;li&gt;##lang.target.itemtype## : ##target.type##&lt;/li&gt
+            &lt;li&gt;##lang.target.name## : ##target.name##&lt;/li&gt
+            &lt;li&gt;##lang.target.url## : ##target.url##&lt;/li&gt
+            ##ENDFOREACHtargets##&lt;/ul&gt;
+            HTML
         ],
         'Add new knowbase notification template translation'
     );
