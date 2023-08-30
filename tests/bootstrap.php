@@ -278,18 +278,6 @@ function loadDataset()
                 '_entities_id'  => 0,
                 '_profiles_id'  => 4,
                 '_is_recursive' => 1,
-            ],
-            [
-                'name'          => 'john+doe@doe.com',
-                'realname'      => 'Doe',
-                'firstname'     => 'John',
-                'password'      => TU_PASS,
-                'password2'     => TU_PASS,
-                'entities_id'   => '_test_root_entity',
-                'profiles_id'   => 4,
-                '_entities_id'  => 0,
-                '_profiles_id'  => 4,
-                '_is_recursive' => 1,
             ]
         ], 'Group'   => [
             [
