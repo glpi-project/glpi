@@ -5894,7 +5894,7 @@ HTML;
             // unlink Thunmnail
             $tmp = explode(".", $picture);
             if (count($tmp) == 2) {
-                $thumbpath = realpath(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1]));
+                $thumbpath = realpath(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1]);
                 if (!str_starts_with($thumbpath, realpath(GLPI_PICTURE_DIR))) {
                     throw new \Exception("Invalid file path");
                 }
