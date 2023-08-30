@@ -187,8 +187,31 @@ class Notepad extends CommonDBChild
             $query['WHERE']['visible_from_ticket'] = true;
         }
         $iterator = $DB->request($query);
+        $document_obj = new Document();
 
         foreach ($iterator as $note) {
+            $document_items = Document_Item::getItemsAssociatedTo(__CLASS__, $note['id']);
+            foreach ($document_items as $document_item) {
+                if (!$document_obj->getFromDB($document_item->fields['documents_id'])) {
+                    continue;
+                }
+
+                $item = $document_obj->fields;
+                $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
+                $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem();
+
+                $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
+                $is_image = Document::isImage($docpath);
+                $sub_document = [
+                    'type' => 'Document_Item',
+                    'item' => $item,
+                ];
+                if ($is_image) {
+                    $sub_document['_is_image'] = true;
+                    $sub_document['_size'] = getimagesize($docpath);
+                }
+                $note['documents'][] = $sub_document;
+            }
             $data[] = $note;
         }
         return $data;
@@ -315,5 +338,19 @@ class Notepad extends CommonDBChild
             ]);
         }
         return true;
+    }
+
+    public function post_updateItem($history = 1)
+    {
+        // Handle rich-text images and uploaded documents
+        $this->input = $this->addFiles($this->input, ['force_update' => true]);
+        parent::post_updateItem($history);
+    }
+
+    public function post_addItem()
+    {
+        // Handle rich-text images and uploaded documents
+        $this->input = $this->addFiles($this->input, ['force_update' => true]);
+        parent::post_addItem();
     }
 }

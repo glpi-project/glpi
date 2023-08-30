@@ -461,6 +461,8 @@ class Document_Item extends CommonDBRelation
                         $linkname = $data["designation"];
                     } else if ($item instanceof Item_Devices) {
                         $linkname = $data["itemtype"];
+                    } else if ($item instanceof Notepad) {
+                        $linkname = $data["itemtype"];
                     } else {
                         $linkname = $data[$item::getNameField()];
                     }

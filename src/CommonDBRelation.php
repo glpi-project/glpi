@@ -1993,7 +1993,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $order_col = "designation";
         } else if ($item instanceof Item_Devices) {
             $order_col = "itemtype";
-        } else if ($item instanceof Ticket || $item instanceof CommonITILValidation) {
+        } else if ($item instanceof Ticket || $item instanceof CommonITILValidation || $item instanceof Notepad) {
             $order_col = 'id';
         }
 
