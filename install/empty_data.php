@@ -2873,7 +2873,7 @@ $empty_data_builder = new class
                 'is_active' => 1,
             ], [
                 'id' => 73,
-                'name' => 'New KnowbaseItem created',
+                'name' => 'New KnowbaseItem',
                 'itemtype' => 'KnowbaseItem',
                 'event' => 'newknowbase',
                 'is_recursive' => 1,
