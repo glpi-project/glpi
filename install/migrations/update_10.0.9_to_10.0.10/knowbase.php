@@ -114,7 +114,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
             'name'  => 'Updating KnowbaseItem',
         ],
         [
-            'event' => 'deleteknowbase',
+            'event' => 'deletingknowbase',
             'name'  => 'Deleting KnowbaseItem',
         ],
     ];
