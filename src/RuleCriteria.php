@@ -411,7 +411,7 @@ class RuleCriteria extends CommonDBChild
                    //Perform comparison with fields in lower case
                     $field                        = Toolbox::strtolower($field);
                     $pattern                      = Toolbox::strtolower($pattern);
-                    if ($field == $pattern) {
+                    if (Sanitizer::unsanitize($field) == $pattern) {
                         $criterias_results[$criteria] = $pattern;
                         return true;
                     }
@@ -422,7 +422,7 @@ class RuleCriteria extends CommonDBChild
                //Perform comparison with fields in lower case
                 $field   = Toolbox::strtolower($field);
                 $pattern = Toolbox::strtolower($pattern);
-                if ($field != $pattern) {
+                if (Sanitizer::unsanitize($field) != $pattern) {
                     $criterias_results[$criteria] = $pattern;
                     return true;
                 }
@@ -449,7 +449,7 @@ class RuleCriteria extends CommonDBChild
                     return false;
                 }
 
-                if (str_ends_with(mb_strtolower($field), mb_strtolower($pattern))) {
+                if (str_ends_with(mb_strtolower(Sanitizer::unsanitize($field)), mb_strtolower($pattern))) {
                     $criterias_results[$criteria] = $pattern;
                     return true;
                 }
@@ -459,7 +459,7 @@ class RuleCriteria extends CommonDBChild
                 if (empty($pattern) || empty($field)) {
                     return false;
                 }
-                $value = mb_stripos($field, $pattern, 0, 'UTF-8');
+                $value = mb_stripos(Sanitizer::unsanitize($field), $pattern, 0, 'UTF-8');
                 if (($value !== false) && ($value == 0)) {
                     $criterias_results[$criteria] = $pattern;
                     return true;
@@ -470,7 +470,7 @@ class RuleCriteria extends CommonDBChild
                 if (empty($pattern) || empty($field)) {
                     return false;
                 }
-                $value = mb_stripos($field, $pattern, 0, 'UTF-8');
+                $value = mb_stripos(Sanitizer::unsanitize($field), $pattern, 0, 'UTF-8');
                 if (($value !== false) && ($value >= 0)) {
                     $criterias_results[$criteria] = $pattern;
                     return true;
@@ -481,7 +481,7 @@ class RuleCriteria extends CommonDBChild
                 if (empty($pattern)) {
                     return false;
                 }
-                $value = mb_stripos($field ?? '', $pattern, 0, 'UTF-8');
+                $value = mb_stripos(Sanitizer::unsanitize($field) ?? '', $pattern, 0, 'UTF-8');
                 if ($value === false) {
                     $criterias_results[$criteria] = $pattern;
                     return true;
