@@ -894,7 +894,10 @@ class User extends CommonDBTM
                 $newPicture = true;
             }
             if ($newPicture) {
-                $fullpath = GLPI_TMP_DIR . "/" . $input["_picture"];
+                $fullpath = realpath(GLPI_TMP_DIR . "/" . $input["_picture"]);
+                if (!str_starts_with($fullpath, GLPI_TMP_DIR)) {
+                    throw new Exception('Invalid picture path');
+                }
                 if (Document::isImage($fullpath)) {
                    // Unlink old picture (clean on changing format)
                     self::dropPictureFiles($this->fields['picture']);
