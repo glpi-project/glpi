@@ -1554,7 +1554,10 @@ class Auth extends CommonGLPI
      */
     public static function isValidLogin($login)
     {
-        return $login !== null && preg_match("/^[[:alnum:]'@.\-_ ]+$/iu", $login);
+        return $login !== null && (
+            preg_match("/^[[:alnum:]'@.\-_ ]+$/iu", $login)
+            || filter_var($login, FILTER_VALIDATE_EMAIL) != false
+        );
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
