@@ -229,6 +229,7 @@ $(function() {
       timeline_item.find('.close-edit-content').removeClass('d-none');
 
       $("#itil-footer").find(".main-actions").hide();
+      $("#right-actions").hide();
    });
 
    $(document).on("click", ".close-edit-content", function() {
@@ -240,6 +241,7 @@ $(function() {
       timeline_item.find('.read-only-content').show();
 
       $("#itil-footer .main-actions").show();
+      $("#right-actions").show();
    });
 });
 </script>
