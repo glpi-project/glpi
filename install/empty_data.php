@@ -4978,26 +4978,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                     ##lang.target.name## : ##target.name##
                     ##lang.target.url## : ##target.url##
                 ##ENDFOREACHtargets##',
-                'content_html' => '&lt;p&gt;##lang.knowbaseitem.subject## : ##knowbaseitem.subject##&lt;/p&gt
-&lt;br&gt;##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
-&lt;br&gt;##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
-&lt;br&gt;##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
-&lt;br&gt;##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
-&lt;br&gt;##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##&lt;/p&gt
-&lt;ul&gt;##FOREACHdocuments##
-&lt;li&gt;##lang.document.downloadurl## : ##document.downloadurl##&lt;/li&gt
-&lt;li&gt;##lang.document.filename## : ##document.filename##&lt;/li&gt
-&lt;li&gt;##lang.document.heading## : ##document.heading##&lt;/li&gt
-&lt;li&gt;##lang.document.id## : ##document.id##&lt;/li&gt
-&lt;li&gt;##lang.document.name## : ##document.name##&lt;/li&gt
-&lt;li&gt;##lang.document.url## : ##document.url##&lt;/li&gt
-&lt;li&gt;##lang.document.weblink## : ##document.weblink##&lt;/li&gt
-##ENDFOREACHdocuments##&lt;/ul&gt
-&lt;ul&gt##FOREACHtargets##
-&lt;li&gt;##lang.target.itemtype## : ##target.type##&lt;/li&gt
-&lt;li&gt;##lang.target.name## : ##target.name##&lt;/li&gt
-&lt;li&gt;##lang.target.url## : ##target.url##&lt;/li&gt
-##ENDFOREACHtargets##&lt;/ul&gt;'
+                'content_html' => '&lt;p&gt;##lang.knowbaseitem.subject## : ##knowbaseitem.subject##&lt;/p&gt'
             ],
         ];
 
