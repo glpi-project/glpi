@@ -3115,7 +3115,28 @@ $empty_data_builder = new class
                 'event'        => 'add_document',
                 'is_recursive' => 0,
                 'is_active'    => 0,
-            ]
+            ], [
+                'id' => 80,
+                'name' => 'New KnowbaseItem',
+                'itemtype' => 'KnowbaseItem',
+                'event' => 'newknowbase',
+                'is_recursive' => 1,
+                'is_active' => 0,
+            ], [
+                'id' => 81,
+                'name' => 'Deleting KnowbaseItem',
+                'itemtype' => 'KnowbaseItem',
+                'event' => 'deletingknowbase',
+                'is_recursive' => 1,
+                'is_active' => 0,
+            ], [
+                'id' => 82,
+                'name' => 'Updating KnowbaseItem',
+                'itemtype' => 'KnowbaseItem',
+                'event' => 'updateknowbase',
+                'is_recursive' => 1,
+                'is_active' => 0,
+            ],
         ];
 
         $tables['glpi_notifications_notificationtemplates'] = [
@@ -3514,7 +3535,22 @@ $empty_data_builder = new class
                 'notifications_id'         => '79',
                 'mode'                     => 'mailing',
                 'notificationtemplates_id' => 17,
-            ]
+            ], [
+                'id' => 80,
+                'notifications_id' => '80',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 32,
+            ], [
+                'id' => 81,
+                'notifications_id' => '81',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 32,
+            ], [
+                'id' => 82,
+                'notifications_id' => '82',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 32,
+            ],
         ];
 
         $tables['glpi_notificationtargets'] = [
@@ -4416,7 +4452,11 @@ $empty_data_builder = new class
                 'id'       => '31',
                 'name'     => 'Automatic reminder',
                 'itemtype' => 'Ticket',
-            ]
+            ], [
+                'id'        => '32',
+                'name'      => 'KnowbaseItems',
+                'itemtype'  => 'KnowbaseItem',
+            ],
         ];
 
         $tables['glpi_notificationtemplatetranslations'] = [
@@ -5319,7 +5359,56 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                     ##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##&lt;/a&gt;&lt;br /&gt;
                     ##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##&lt;/p&gt;
                     &lt;p&gt;##lang.ticket.reminder.text##: ##ticket.reminder.text##&lt;/p&gt;',
-            ]
+            ], [
+                'id' => '32',
+                'notificationtemplates_id' => '32',
+                'language' => '',
+                'subject' => '##knowbaseitem.action## - ##knowbaseitem.subject##',
+                'content_text' => '##lang.knowbaseitem.url## : ##knowbaseitem.url##
+
+                ##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+
+                ##lang.knowbaseitem.content## : ##knowbaseitem.content##
+
+                ##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
+                ##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
+                ##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
+                ##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
+
+                ##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##
+
+                ##FOREACHdocuments##
+                    ##lang.document.downloadurl## : ##document.downloadurl##
+                    ##lang.document.filename## : ##document.filename##
+                    ##lang.document.heading## : ##document.heading##
+                    ##lang.document.id## : ##document.id##
+                    ##lang.document.name## : ##document.name##
+                    ##lang.document.url## : ##document.url##
+                    ##lang.document.weblink## : ##document.weblink##
+                ##ENDFOREACHdocuments##
+
+                ##FOREACHtargets##
+                    ##lang.target.itemtype## : ##target.type##
+                    ##lang.target.name## : ##target.name##
+                    ##lang.target.url## : ##target.url##
+                ##ENDFOREACHtargets##',
+                'content_html' => '&lt;p&gt;##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+&lt;br&gt;##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
+&lt;br&gt;##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
+&lt;br&gt;##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
+&lt;br&gt;##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
+&lt;br&gt;##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##&lt;/p&gt;
+&lt;ul&gt;##FOREACHdocuments## &lt;li&gt;##lang.document.downloadurl## : ##document.downloadurl##&lt;/li&gt;
+&lt;li&gt;##lang.document.filename## : ##document.filename##&lt;/li&gt;
+&lt;li&gt;##lang.document.heading## : ##document.heading##&lt;/li&gt;
+&lt;li&gt;##lang.document.id## : ##document.id##&lt;/li&gt;
+&lt;li&gt;##lang.document.name## : ##document.name##&lt;/li&gt;
+&lt;li&gt;##lang.document.url## : ##document.url##&lt;/li&gt;
+&lt;li&gt;##lang.document.weblink## : ##document.weblink##&lt;/li&gt; ##ENDFOREACHdocuments##&lt;/ul&amp;gt
+&lt;ul&gt;##FOREACHtargets## &lt;li&gt;##lang.target.itemtype## : ##target.type##&lt;/li&gt;
+&lt;li&gt;##lang.target.name## : ##target.name##&lt;/li&gt;
+&lt;li&gt;##lang.target.url## : ##target.url##&lt;/li&gt; ##ENDFOREACHtargets##&lt;/ul&gt;'
+            ],
         ];
 
         $tables['glpi_profilerights'] = [
