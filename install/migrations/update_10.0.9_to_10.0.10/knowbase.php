@@ -130,8 +130,8 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
                 'comment'         => null,
                 'is_recursive'    => 1,
                 'is_active'       => 0,
-                'date_creation'   => new \QueryExpression('NOW()'),
-                'date_mod'        => new \QueryExpression('NOW()'),
+                'date_creation'   => null,
+                'date_mod'        => null,
             ],
             'Add 3 knowbase notification'
         );
