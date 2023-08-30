@@ -66,6 +66,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         $this->data['##lang.knowbaseitem.begin_date##']         = __('Visible since');
         $this->data['##lang.knowbaseitem.end_date##']           = __('Visible until');
         $this->data['##lang.knowbaseitem.numberofdocuments##']  = __('Number of documents');
+        $this->data['##lang.knowbaseitem.action##']             = _n('Event', 'Events', 0);
         $this->data['##lang.document.name##']                   = __('Document name');
         $this->data['##lang.document.downloadurl##']            = __('Document download URL');
         $this->data['##lang.document.url##']                    = __('Document URL');
@@ -76,12 +77,26 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         $this->data['##lang.target.url##']                      = __('URL');
         $this->data['##lang.target.name##']                     = __('Name');
         $this->data['##lang.target.itemtype##']                 = _n('Type', 'Types', 0);
-        $this->data['##lang.target.action##']                   = _n('Event', 'Events', 0);
 
         // Set data
         $this->data['##knowbaseitem.url##']          = $knowbase->getLink();
         $this->data['##knowbaseitem.subject##']      = $knowbase->fields['name'];
         $this->data['##knowbaseitem.content##']      = $knowbase->fields['answer'];
+
+        //Display event
+        $eventname = '';
+        switch ($event) {
+            case 'newknowbase':
+                $eventname = __('New knowbase');
+                break;
+            case 'deletingknowbase':
+                $eventname = __('Deleting a knowbase');
+                break;
+            case 'updateknowbase':
+                $eventname = __('Update of a knowbase');
+                break;
+        }
+        $this->data['##knowbaseitem.action##'] = $eventname;
 
         //Check all possible types of targets
         $typeSearch = [
@@ -166,25 +181,35 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
             'knowbaseitem.end_date'                 => __('Visible until'),
             'knowbaseitem.is_faq'                   => __('FAQ'),
             'knowbaseitem.numberofdocuments'        => __('Number of documents'),
+            'knowbaseitem.action'                   => _n('Event', 'Events', 0),
             'document.name'                         => __('Document name'),
             'document.downloadurl'                  => __('Document download URL'),
             'document.url'                          => __('Document URL'),
             'document.filename'                     => __('Document filename'),
             'document.weblink'                      => __('Document weblink'),
             'document.id'                           => __('Document ID'),
-            'document.heading'                      => _n('Document heading', 'Documents headings', 2),
+            'document.heading'                      => _n('Document heading', 'Documents headings', 0),
             'target.url'                            => __('URL'),
             'target.name'                           => __('Name'),
-            'target.itemtype'                       => _n('Type', 'Types', 2),
+            'target.itemtype'                       => _n('Type', 'Types', 0),
         ];
 
         foreach ($tags as $tag => $label) {
-            $this->addTagToList([
-                'tag'   => $tag,
-                'label' => $label,
-                'value' => true,
-                'events'  => ['newknowbase', 'updateknowbase']
-            ]);
+            if (strpos($tag, 'document.') != false || strpos($tag, 'target.') != false) {
+                $this->addTagToList([
+                    'tag'   => $tag,
+                    'label' => $label,
+                    'value' => true,
+                    'events'  => ['newknowbase', 'updateknowbase']
+                ]);
+            } else {
+                $this->addTagToList([
+                    'tag'   => $tag,
+                    'label' => $label,
+                    'value' => true,
+                    'events'  => ['newknowbase', 'updateknowbase', 'deletingknowbase']
+                ]);
+            }
         }
 
         $foreachtags = [
