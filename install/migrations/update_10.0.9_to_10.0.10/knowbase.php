@@ -98,6 +98,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) <
             'name'  => 'Alert delete knowbaseitem',
         ],
     ];
+
     foreach ($notifications_data as $notification_data) {
         $DB->insertOrDie(
             'glpi_notifications',
