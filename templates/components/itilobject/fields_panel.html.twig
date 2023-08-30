@@ -297,7 +297,7 @@
                   </div>
                {% else %}
                   {% for note in notes %}
-                     <div class="alert alert-info entitynote" role="alert">{{ note['content'] }}</div>
+                     <div class="alert alert-info entitynote rich_text_container" role="alert">{{ note['content']|safe_html }}</div>
                   {% endfor %}
                {% endif %}
             </div>

@@ -31,6 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 <div id="new-note-form" class="ms-auto ps-3">
     <div class="timeline-item mb-3 NotepadItem collapse show"
         id="new-note-block" aria-expanded="false" data-bs-parent="#new-note-form">
@@ -46,7 +48,18 @@
                                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                                 <input type="hidden" name="itemtype" value="{{ itemtype }}" />
                                 <input type="hidden" name="items_id" value="{{ items_id }}" />
-                                <textarea name='content' class='form-control' rows='7'></textarea>
+                                {{ fields.textareaField(
+                                    'content',
+                                    '',
+                                    '',
+                                    {
+                                        full_width: true,
+                                        full_width_adapt_column: false,
+                                        is_horizontal: false,
+                                        enable_richtext: true,
+                                        enable_fileupload: true,
+                                    }
+                                ) }}
                                 <label class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Visible on tickets') }}">
                                     <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
@@ -118,8 +131,21 @@
                                     <i class="ti ti-x"></i>
                                 </button>
                             </div>
-                            <div class="entitynote" role="alert" id='contentread{{ id }}'>{{ note['content'] }}</div>
-                            <textarea name='content' class='form-control d-none' rows='5' id='content{{ id }}'>{{ note['content'] }}</textarea>
+                            <div class="entitynote rich_text_container" id="contentread{{ id }}">{{ note['content']|safe_html }}</div>
+                            {{ fields.textareaField(
+                                'content',
+                                note['content'],
+                                '',
+                                {
+                                    id: 'content' ~ id,
+                                    add_field_class: 'content' ~ id,
+                                    full_width: true,
+                                    full_width_adapt_column: false,
+                                    is_horizontal: false,
+                                    enable_richtext: true,
+                                    enable_fileupload: true,
+                                }
+                            ) }}
                             <br>
                             <label id='visible{{ id }}' class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0 d-none"
                                     data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Visible on tickets') }}">
@@ -148,6 +174,10 @@
                         </form>
                     </div>
                 </span>
+                {{ include('components/itilobject/timeline/sub_documents.html.twig', {
+                    'item': note,
+                    'entry': note
+                }) }}
             </div>
         </div>
     </div>
