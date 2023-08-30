@@ -34,6 +34,13 @@
  */
 
 /** KnowbaseItem notifications */
+$DB->deleteOrDie(
+    'glpi_notifications',
+    [
+        'itemtype' => 'KnowbaseItem',
+    ],
+    'Delete knowbase notifications'
+);
 if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) < 3) {
     $DB->insertOrDie(
         'glpi_notificationtemplates',
