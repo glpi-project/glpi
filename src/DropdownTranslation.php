@@ -1,5 +1,4 @@
 <?php
-use Glpi\RichText\RichText;
 
 /**
  * ---------------------------------------------------------------------
@@ -33,6 +32,8 @@ use Glpi\RichText\RichText;
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\RichText\RichText;
 
 /**
  * DropdownTranslation Class
