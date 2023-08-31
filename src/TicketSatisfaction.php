@@ -201,8 +201,10 @@ class TicketSatisfaction extends CommonDBTM
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
             $ticket = new Ticket();
-            if ($ticket->getFromDB($this->fields['tickets_id'])) {
-                NotificationEvent::raiseEvent("replysatisfaction", $ticket);
+            if (count($this->updates) > 1) {
+                if ($ticket->getFromDB($this->fields['tickets_id'])) {
+                    NotificationEvent::raiseEvent("replysatisfaction", $ticket);
+                }
             }
         }
     }
