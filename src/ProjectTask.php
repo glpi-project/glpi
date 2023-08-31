@@ -446,6 +446,15 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
         }
 
+        if (isset($input['projects_id']) && $input['projects_id'] <= 0) {
+            Session::addMessageAfterRedirect(
+                __('A linked project is mandatory'),
+                false,
+                ERROR
+            );
+            unset($input['projects_id']);
+        }
+
         if (isset($input['projecttasks_id']) && $input['projecttasks_id'] > 0) {
             if (self::checkCircularRelation($input['id'], $input['projecttasks_id'])) {
                 Session::addMessageAfterRedirect(

@@ -267,4 +267,32 @@ class ProjectTask extends DbTestCase
         $this->integer($team[0]['items_id'])->isEqualTo(5);
         $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
     }
+
+    public function testTaskMustHaveLinkedProject()
+    {
+        // Create a project
+        $project = $this->createItem('Project', [
+            'name' => 'Project 1',
+        ]);
+
+        // Create a task
+        $task = $this->createItem('ProjectTask', [
+            'name' => 'Task 1',
+            'projects_id' => $project->getID(),
+        ]);
+
+        // Update the task with a projects_id at 0
+        $this->updateItem('ProjectTask', $task->getID(), [
+            'projects_id' => 0,
+        ], ['projects_id']);
+
+        // Reload task from DB
+        $task->getFromDB($task->getID());
+
+        // Check that the task is still linked to the project
+        $this->integer($task->fields['projects_id'])->isEqualTo($project->getID());
+
+        // Check if session has an error message
+        $this->hasSessionMessages(ERROR, ['A linked project is mandatory']);
+    }
 }
