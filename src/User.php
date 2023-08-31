@@ -5885,7 +5885,7 @@ HTML;
         if (!empty($picture)) {
             $filepath = realpath(GLPI_PICTURE_DIR . "/$picture");
             if (!str_starts_with($filepath, realpath(GLPI_PICTURE_DIR))) {
-                throw new \Exception("Invalid file path");
+                throw new \Exception("Invalid file path $filepath");
             }
             // unlink main file
             if (file_exists($filepath)) {
