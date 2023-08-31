@@ -42,9 +42,9 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
     public function getEvents()
     {
         return [
-            'newknowbase'     => __('New knowbase'),
-            'deletingknowbase' => __('Deleting a knowbase'),
-            'updateknowbase' => __('Update of a knowbase')
+            'newknowbaseitem'     => __('New knowbase'),
+            'deletingknowbaseitem' => __('Deleting a knowbase'),
+            'updateknowbaseitem' => __('Update of a knowbase')
         ];
     }
 
@@ -86,13 +86,13 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         //Display event
         $eventname = '';
         switch ($event) {
-            case 'newknowbase':
+            case 'newknowbaseitem':
                 $eventname = __('New knowbase');
                 break;
-            case 'deletingknowbase':
+            case 'deletingknowbaseitem':
                 $eventname = __('Deleting a knowbase');
                 break;
-            case 'updateknowbase':
+            case 'updateknowbaseitem':
                 $eventname = __('Update of a knowbase');
                 break;
         }
@@ -200,14 +200,14 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                     'tag'   => $tag,
                     'label' => $label,
                     'value' => true,
-                    'events'  => ['newknowbase', 'updateknowbase']
+                    'events'  => ['newknowbaseitem', 'updateknowbaseitem']
                 ]);
             } else {
                 $this->addTagToList([
                     'tag'   => $tag,
                     'label' => $label,
                     'value' => true,
-                    'events'  => ['newknowbase', 'updateknowbase', 'deletingknowbase']
+                    'events'  => ['newknowbaseitem', 'updateknowbaseitem', 'deletingknowbaseitem']
                 ]);
             }
         }
@@ -222,7 +222,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                 'label'   => $label,
                 'value'   => false,
                 'foreach' => true,
-                'events'  => ['newknowbase', 'updateknowbase']
+                'events'  => ['newknowbaseitem', 'updateknowbaseitem']
             ]);
         }
 
