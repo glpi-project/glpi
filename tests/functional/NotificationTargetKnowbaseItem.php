@@ -79,17 +79,14 @@ class NotificationTargetKnowbaseItem extends DbTestCase
             $this->array($kbnotif)->isIdenticalTo($datawant);
         }
         //search glpi user
-        $user = new \User();
-        $user->getFromDBByCrit(['name' => 'glpi']);
-        $userid = $user->getID();
         $email = new \UserEmail();
-        $emailid = $email->add(
+        $this->integer($email->add(
             [
-                'users_id' => $userid,
+                'users_id' => getItemByTypeName('User', 'glpi', true),
                 'email' => 'test@test.com',
                 'is_default' => 1,
             ]
-        );
+        ))->isGreaterThan(0);
 
         // test create group
         $groups = new Group();
