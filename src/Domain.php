@@ -228,7 +228,7 @@ class Domain extends CommonDBTM
             'id'                 => '81',
             'table'              => self::getTable(),
             'field'              => 'entities_id',
-            'name'               => __('Entity-ID')
+            'name'               => sprintf('%s-%s', Entity::getTypeName(1), __('ID'))
         ];
 
         return $tab;
