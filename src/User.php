@@ -894,7 +894,9 @@ class User extends CommonDBTM
                 $newPicture = true;
             }
             if ($newPicture) {
-                $fullpath = realpath(GLPI_TMP_DIR . "/" . $input["_picture"]);
+                if (!$fullpath = realpath(GLPI_TMP_DIR . "/" . $input["_picture"])) {
+                    return;
+                }
                 if (!str_starts_with($fullpath, GLPI_TMP_DIR)) {
                     throw new Exception('Invalid picture path');
                 }
@@ -5883,18 +5885,22 @@ HTML;
     public static function dropPictureFiles($picture)
     {
         if (!empty($picture)) {
-            $filepath = realpath(GLPI_PICTURE_DIR . "/$picture");
+            if (!$filepath = realpath(GLPI_PICTURE_DIR . "/$picture")) {
+                return;
+            }
             if (!str_starts_with($filepath, realpath(GLPI_PICTURE_DIR))) {
-                throw new \Exception("Invalid file path $filepath");
+                throw new \Exception("Invalid file path");
             }
             // unlink main file
             if (file_exists($filepath)) {
                 @unlink($filepath);
             }
-            // unlink Thunmnail
+            // unlink Thumbnail
             $tmp = explode(".", $picture);
             if (count($tmp) == 2) {
-                $thumbpath = realpath(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1]);
+                if (!$thumbpath = realpath(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1])) {
+                    return;
+                }
                 if (!str_starts_with($thumbpath, realpath(GLPI_PICTURE_DIR))) {
                     throw new \Exception("Invalid file path");
                 }
