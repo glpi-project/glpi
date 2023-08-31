@@ -351,6 +351,9 @@ const setRichTextEditorContent = function(editor_id, content) {
         editor.execCommand('mceInsertClipboardContent', false, {
             html: content
         });
+        // force trigger of event handlers that will save editor contents
+        // and remove "required" state
+        editor.fire('keyup');
     }
 };
 
