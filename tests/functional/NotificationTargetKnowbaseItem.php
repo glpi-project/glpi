@@ -98,6 +98,7 @@ class NotificationTargetKnowbaseItem extends DbTestCase
                 'name' => 'testknowbasegroup',
             ]
         );
+        $this->integer($groupid)->isGreaterThan(0);
         $group = $groups->getById($groupid)->fields;
         $this->string($group['name'])->isEqualTo('testknowbasegroup');
 
