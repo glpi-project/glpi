@@ -309,7 +309,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      */
     private function checkForRackIssues(array $input)
     {
-        // Check if t
+        // Checks whether any fields that might be causing a problem have been modified
         if (
             (!isset($input['required_units'])
                 || $input['required_units'] <= $this->fields['required_units']
@@ -337,6 +337,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
             $hpos = $input['is_half_rack'] ?? $this->fields['is_half_rack'] ? $item_rack['hpos'] : Rack::POS_NONE;
             $depth = $input['depth'] ?? $this->fields['depth'];
 
+            // Collect the positions to check
             for ($i = 0; $i < $requiredUnits; $i++) {
                 $positionsToCheck[] = $item_rack['position'] + $i;
 
@@ -348,6 +349,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 }
             }
 
+            // Check if any of the positions to check are filled or out of bounds
             foreach ($positionsToCheck as $position) {
                 if (
                     isset($filled[$position]) && $this->isCellFilled($filled[$position], $orientation, $hpos, $depth)
