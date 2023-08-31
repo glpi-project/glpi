@@ -56,12 +56,6 @@ class NotificationTargetKnowbaseItem extends DbTestCase
 
         //set notification by mail to active
         $config = new Config();
-        $config->getFromDBByCrit([
-            'name' => 'use_notifications',
-        ]);
-        $config->getFromDBByCrit([
-            'name' => 'notifications_mailing',
-        ]);
 
         $notif = new Notification();
         $knowbasenotifs = $notif->find(
@@ -104,7 +98,7 @@ class NotificationTargetKnowbaseItem extends DbTestCase
         $groupsusers->add(
             [
                 'groups_id' => $group['id'],
-                'users_id' => $user->getID(),
+                'users_id' => getItemByTypeName('User', 'glpi', true),
             ]
         );
 
