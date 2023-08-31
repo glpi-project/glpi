@@ -50,13 +50,10 @@ class NotificationTargetKnowbaseItem extends DbTestCase
     {
         $this->login();
 
-        global $CFG_GLPI;
         Config::setConfigurationValues('core', ['use_notifications' => 1]);
         Config::setConfigurationValues('core', ['notifications_mailing' => 1]);
 
         //set notification by mail to active
-        $config = new Config();
-
         $notif = new Notification();
         $knowbasenotifs = $notif->find(
             [
@@ -108,7 +105,7 @@ class NotificationTargetKnowbaseItem extends DbTestCase
             $ntargetid = $notiftarget->add(
                 [
                     'notifications_id' => $kbnotif['id'],
-                    'type' => 3,
+                    'type' => Notification::GROUP_TYPE,
                     'items_id' => $group['id'],
                 ]
             );
@@ -117,7 +114,7 @@ class NotificationTargetKnowbaseItem extends DbTestCase
                 [
                     'id' => $ntargetid,
                     'items_id' => $group['id'],
-                    'type' => 3,
+                    'type' => Notification::GROUP_TYPE,
                     'notifications_id' => $kbnotif['id']
                 ]
             );
@@ -129,7 +126,7 @@ class NotificationTargetKnowbaseItem extends DbTestCase
             [
                 'name' => 'testknowbaseitem',
                 'answer' => 'testknowbaseitem',
-                'users_id' => 2,
+                'users_id' => getItemByTypeName('User', 'glpi', true),
             ]
         );
         $knowbaseitem->update(
@@ -137,7 +134,7 @@ class NotificationTargetKnowbaseItem extends DbTestCase
                 'id' => $id,
                 'name' => 'testknowbaseitemupdate',
                 'answer' => 'testknowbaseitemupdate',
-                'users_id' => 2,
+                'users_id' => getItemByTypeName('User', 'glpi', true),
             ]
         );
         $knowbaseitem->delete(['id' => $id]);
