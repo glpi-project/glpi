@@ -757,7 +757,8 @@ class Ticket extends CommonITILObject
                             [
                                 'glpi_tickets_users.tickets_id'  => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
                                 'glpi_tickets_users.users_id'    => $item->getID(),
-                                'glpi_tickets_users.type'        => CommonITILActor::REQUESTER
+                                'glpi_tickets_users.type'        => CommonITILActor::REQUESTER,
+                                'glpi_tickets.is_deleted'        => 0
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                          $title = __('Created tickets');
@@ -768,7 +769,8 @@ class Ticket extends CommonITILObject
                             ['glpi_tickets', 'glpi_suppliers_tickets'],
                             [
                                 'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
-                                'glpi_suppliers_tickets.suppliers_id'  => $item->getID()
+                                'glpi_suppliers_tickets.suppliers_id'  => $item->getID(),
+                                'glpi_tickets.is_deleted'              => 0
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                         break;
@@ -780,7 +782,8 @@ class Ticket extends CommonITILObject
                                 'OR'  => [
                                     'slas_id_tto'  => $item->getID(),
                                     'slas_id_ttr'  => $item->getID()
-                                ]
+                                ],
+                                'is_deleted' => 0
                             ]
                         );
                         break;
@@ -791,7 +794,8 @@ class Ticket extends CommonITILObject
                                 'OR'  => [
                                     'olas_id_tto'  => $item->getID(),
                                     'olas_id_ttr'  => $item->getID()
-                                ]
+                                ],
+                                'is_deleted' => 0
                             ]
                         );
                         break;
@@ -802,7 +806,8 @@ class Ticket extends CommonITILObject
                               [
                                   'glpi_groups_tickets.tickets_id' => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
                                   'glpi_groups_tickets.groups_id'  => $item->getID(),
-                                  'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER
+                                  'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER,
+                                  'glpi_tickets.is_deleted'        => 0
                               ] + getEntitiesRestrictCriteria(self::getTable())
                           );
                          $title = __('Created tickets');
