@@ -58,7 +58,9 @@
 {% endif %}
 <table class="table table-borderless table-sm">
    <tbody>
-   <tr><th colspan="4">{{ __('PHP opcode cache') }}</th></tr>
+      <tr class="table-active">
+         <th colspan="4">{{ __('PHP opcode cache') }}</th>
+      </tr>
       <tr>
          <th class="fw-normal">{{ msg }}</th>
          <td>{{ opcache_version }}</td>
@@ -129,7 +131,9 @@
             </tr>
          {% endif %}
       {% endif %}
-      <tr><th colspan="4">{{ __('User data cache') }}</th></tr>
+      <tr class="table-active">
+         <th colspan="4">{{ __('User data cache') }}</th>
+      </tr>
       <tr>
          <th class="fw-normal">{{ __('You can use "php bin/console cache:configure" command to configure cache system.') }}</th>
          <td></td>
@@ -162,7 +166,9 @@
             <td></td>
          </tr>
       {% endif %}
-      <tr><th colspan="4">{{ __('Translation cache') }}</th></tr>
+      <tr class="table-active">
+         <th colspan="4">{{ __('Translation cache') }}</th>
+      </tr>
       <tr>
          {% set msg = __('"%s" cache system is used')|format(trans_cache_adapter) %}
          <th class="fw-normal">
