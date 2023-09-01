@@ -110,7 +110,7 @@
                     </div>
                     <input type="text" class="form-control" :placeholder="placeholder" v-model="input_text">
                     <ul class="results list-group mt-2">
-                        <li v-for="result in results" :key="result.original.url" class="list-group-item">
+                        <li v-for="result in results" :key="result.index" class="list-group-item">
                             <a :href="result.original.url"><b>{{ result.string }}</b></a>
                         </li>
                     </ul>
