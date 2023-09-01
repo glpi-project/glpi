@@ -2815,51 +2815,12 @@ HTML;
         global $CFG_GLPI;
 
         if (!self::canView()) {
-            return;
+            return false;
         }
-
-        $rand = mt_rand();
-        $canedit = Session::haveRight(self::$rightname, UPDATE);
-
-        echo '<div class="center" id="tabsbody">';
-        if ($canedit) {
-            echo '<form name="form" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '" method="post" data-track-changes="true">';
-        }
-        echo '<table class="tab_cadre_fixe">';
-        echo '<tr><th colspan="4">' . __('Documents setup') . '</th></tr>';
-
-        echo '<tr class="tab_bg_2">';
-        echo '<td>';
-        echo '<label for="document_max_size' . $rand . '">';
-        echo __('Document files maximum size (Mio)');
-        echo '</label>';
-        echo '</td>';
-        echo '<td>';
-        echo Html::input('document_max_size', [
-            'type' => 'number',
-            'min'  => 1,
-            'value' => $CFG_GLPI['document_max_size'],
-            'id' => 'document_max_size' . $rand,
+        TemplateRenderer::getInstance()->display('pages/setup/general/management_setup.html.twig', [
+            'config' => $CFG_GLPI,
+            'canedit' => static::canUpdate()
         ]);
-        echo '</td>';
-        echo '<td colspan="2"></td>';
-        echo '</tr>';
-
-        if ($canedit) {
-            echo '<tr class="tab_bg_2">';
-            echo '<td colspan="4" class="center">';
-            echo '<input type="submit" name="update" class="btn btn-primary" value="' . _sx('button', 'Save') . '">';
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '</table>';
-
-        if ($canedit) {
-            Html::closeForm();
-        }
-
-        echo '</div>';
     }
 
     public function rawSearchOptions()
