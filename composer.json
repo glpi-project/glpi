@@ -74,7 +74,7 @@
         "symfony/mime": "^6.3",
         "symfony/polyfill-ctype": "^1.27",
         "symfony/polyfill-iconv": "^1.27",
-        "symfony/polyfill-mbstring": "^1.27",
+        "symfony/polyfill-mbstring": "^1.28",
         "symfony/polyfill-php82": "^1.27",
         "tecnickcom/tcpdf": "^6.6",
         "thenetworg/oauth2-azure": "^2.2",
