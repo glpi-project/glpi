@@ -1,27 +1,13 @@
-<div markdown="1" class="sidebar">
-## Summary
-
-* [Introduction](#introduction)
-* [Authentication](#authentication)
-  * [Client Setup](#client-setup)
-  * [Password Grant](#password-grant)
-  * [Authorization Code Grant](#authorization-code-grant)
-* [RSQL Filtering](#rsql-filtering)
-  * [Operators](#operators)
-* [Endpoints](#endpoints)
-</div>
-
-<div markdown="1" class="main-content">
 # GLPI API Documentation
 
-## Introduction {#introduction}
+## Introduction
 
 The GLPI API is a RESTful API. This version of the API is referred to as the "High-level API".
 The original API is now referred to as the "legacy API" but it is still available and in some cases, allows more functionality at the cost of user-friendliness.
 
-For more information on the legacy API, see the [legacy API documentation](../apirest.md).
+For more information on the legacy API, see the [legacy API documentation](/apirest.php).
 
-## Authentication {#authentication}
+## Authentication
 
 Authentication for the API is all done via OAuth2.
 The following OAuth2 grant types are supported:
@@ -31,7 +17,7 @@ The following OAuth2 grant types are supported:
 
 Grants that do not require specific user credentials are not currently supported as there is no virtual user and scope system implemented at this time.
 
-### Client Setup {#client-setup}
+### Client Setup
 
 Clients must be registered with the GLPI server before they can be used to authenticate.
 Clients are used to identify the application/user that is using the API and may be limited to specific grant types.
@@ -41,7 +27,7 @@ When creating a new client, you will be prompted for just a name.
 When the client is created, there will be an automatically generated client ID and secret.
 There will also be a field to specify the allowed grant types.
 
-### Password Grant {#password-grant}
+### Password Grant
 
 To authenticate with the password grant, you will need to make a POST request to the `/api.php/token` endpoint with the following parameters in the request body:
 
@@ -60,7 +46,7 @@ The endpoint will respond (if successful) with a JSON object containing the foll
 
 For API requests, you should include the access token in the `Authorization` header of the request with the `Bearer` prefix in the format `Authorization: Bearer <access_token>`.
 
-### Authorization Code Grant {#authorization-code-grant}
+### Authorization Code Grant
 
 To authenticate with the authorization code grant, you will need to make a GET request to the `/api.php/authorize` endpoint with the following parameters in the query string:
 
@@ -84,7 +70,7 @@ The endpoint will respond (if successful) with a JSON object containing the foll
 - `access_token`: The access token that can be used to authenticate future requests.
 - `refresh_token`: The refresh token that can be used to get a new access token when the current one expires.
 
-## RSQL Filtering {#rsql-filtering}
+## RSQL Filtering
 
 The GLPI supports "REST Query Language" (RSQL) filtering for certain endpoints that return collections of items.
 RSQL itself is a super-set of the "Feed Item Query Language" (FIQL).
@@ -92,7 +78,7 @@ It allows for an intuitive and easy to use syntax for filtering collections of i
 
 The basic syntax is as follows: `<field><operator><value>`. For some operators, there is no value, so the syntax is just `<field><operator>`.
 
-### Operators {#operators}
+### Operators
 | Operator      | Description              | Example                |
 |---------------|--------------------------|------------------------|
 | `==`          | Equal to                 | `name==John`           |
@@ -113,8 +99,7 @@ The basic syntax is as follows: `<field><operator><value>`. For some operators, 
 The fields available for filtering are dependent on the endpoint. Everything that is returned by the endpoint can be filtered on in the exact same format that they are returned from the server.
 For example, if an endpoint returns a collection of items and each item has an `emails` property with an array of email addresses which each contain an `email` property, you can filter using `emails.email` as the field name in the filter.
 
-## Endpoints {#endpoints}
+## Endpoints
 
 For specific documentation on each endpoint, see the Swagger documentation at `/api.php/doc`.
 You may also make a request to `/api.php/doc` to get the raw Swagger JSON document if you set the `Content-Type` header to `application/json` or add `.json` to the end of the URL.
-</div>

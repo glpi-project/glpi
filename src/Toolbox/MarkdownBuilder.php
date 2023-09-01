@@ -170,7 +170,7 @@ class MarkdownBuilder
      */
     public static function code($code): string
     {
-        return sprintf("```%s```", $code);
+        return sprintf("```%s```", str_replace('|', '\|', $code));
     }
 
     /**
