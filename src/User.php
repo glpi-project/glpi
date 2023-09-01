@@ -2853,10 +2853,12 @@ HTML;
                 echo "<td><label for='dropdown_users_id_supervisor_$userrand'>" .  __('Responsible') . "</label></td><td>";
 
                 User::dropdown(['name'   => 'users_id_supervisor',
-                    'value'  => $this->fields["users_id_supervisor"],
-                    'rand'   => $userrand,
-                    'entity' => $_SESSION["glpiactive_entity"],
-                    'right'  => 'all'
+                    'value'         => $this->fields["users_id_supervisor"],
+                    'rand'          => $userrand,
+                    'entity'        => $_SESSION["glpiactive_entity"],
+                    'entity_sons'   => $_SESSION["glpiactive_entity_recursive"],
+                    'used'          => [$this->getID()],
+                    'right'         => 'all'
                 ]);
                 echo "</td></tr>";
             }
