@@ -34,6 +34,21 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
+{% macro icon_msg(message, icon) %}
+   <td class="icons_block">
+      <i class="{{ icon }}" title="{{ message }}"></i>
+      <span class="sr-only">{{ message }}</span>
+   </td>
+{% endmacro %}
+
+{% macro success_icon_msg(message) %}
+   {{ _self.icon_msg(message, 'fa fa-check-circle text-success') }}
+{% endmacro %}
+
+{% macro warning_icon_msg(message) %}
+   {{ _self.icon_msg(message, 'fa fa-info-circle text-warning') }}
+{% endmacro %}
+
 {% if opcache_enabled %}
    {% set msg = __('The "%s" extension is installed')|format(opcache_ext) %}
    {% set short_msg = __('%s extension is installed')|format(opcache_ext) %}
@@ -48,10 +63,7 @@
          <th class="fw-normal">{{ msg }}</th>
          <td>{{ opcache_version }}</td>
          <td></td>
-         <td class="icons_block">
-            <i class="fa fa-check-circle text-{{ opcache_enabled ? 'success' : 'danger' }}" title="{{ short_msg }}"></i>
-            <span class="sr-only">{{ short_msg }}</span>
-         </td>
+         {{ _self.icon_msg(short_msg, "fa fa-check-circle text-" ~ opcache_enabled ? 'success' : 'danger') }}
       </tr>
       {% if opcache_enabled %}
          {% set free = opcache_info['memory_usage']['free_memory'] %}
@@ -67,17 +79,11 @@
                   forcepadding: false
                }]) }}
             </td>
-            <td class="icons_block">
-               {% if rate > 5 and rate < 75 %}
-                  {% set short_msg = __('%1$s memory usage is correct')|format(opcache_ext) %}
-                  <i class="fa fa-check-circle text-success" title="{{ short_msg }}"></i>
-                  <span class="sr-only">{{ short_msg }}</span>
-               {% else %}
-                  {% set short_msg = __('%1$s memory usage is too low or too high')|format(opcache_ext) %}
-                  <i class="fa fa-info-circle text-warning" title="{{ short_msg }}"></i>
-                  <span class="sr-only">{{ short_msg }}</span>
-               {% endif %}
-            </td>
+            {% if rate > 5 and rate < 75 %}
+               {{ _self.success_icon_msg(__('%1$s memory usage is correct')|format(opcache_ext)) }}
+            {% else %}
+               {{ _self.warning_icon_msg(__('%1$s memory usage is too low or too high')|format(opcache_ext)) }}
+            {% endif %}
          </tr>
          {% set hits = opcache_info['opcache_statistics']['hits'] %}
          {% set misses = opcache_info['opcache_statistics']['misses'] %}
@@ -92,34 +98,22 @@
                   forcepadding: false
                }]) }}
             </td>
-            <td class="icons_block">
-               {% if hit_rate > 90 %}
-                  {% set short_msg = __('%1$s hits rate is correct')|format(opcache_ext) %}
-                  <i class="fa fa-check-circle text-success" title="{{ short_msg }}"></i>
-                  <span class="sr-only">{{ short_msg }}</span>
-               {% else %}
-                  {% set short_msg = __('%1$s hits rate is low')|format(opcache_ext) %}
-                  <i class="fa fa-info-circle text-warning" title="{{ short_msg }}"></i>
-                  <span class="sr-only">{{ short_msg }}</span>
-               {% endif %}
-            </td>
+            {% if hit_rate > 90 %}
+               {{ _self.success_icon_msg(__('%1$s hits rate is correct')|format(opcache_ext)) }}
+            {% else %}
+               {{ _self.warning_icon_msg(__('%1$s hits rate is low')|format(opcache_ext)) }}
+            {% endif %}
          </tr>
          {% set oom_restarts = opcache_info['opcache_statistics']['oom_restarts'] %}
          <tr>
             <th class="fw-normal">{{ __('Out of memory restart') }}</th>
             <td>{{ oom_restarts }}</td>
             <td></td>
-            <td class="icons_block">
-               {% if oom_restarts < 2 %}
-                  {% set short_msg = __('%1$s restart rate is correct')|format(opcache_ext) %}
-                  <i class="fa fa-check-circle text-success" title="{{ short_msg }}"></i>
-                  <span class="sr-only">{{ short_msg }}</span>
-               {% else %}
-                  {% set short_msg = __('%1$s restart rate is too high')|format(opcache_ext) %}
-                  <i class="fa fa-info-circle text-warning" title="{{ short_msg }}"></i>
-                  <span class="sr-only">{{ short_msg }}</span>
-               {% endif %}
-            </td>
+            {% if oom_restarts < 2 %}
+               {{ _self.success_icon_msg(__('%1$s restart rate is correct')|format(opcache_ext)) }}
+            {% else %}
+               {{ _self.warning_icon_msg(__('%1$s restart rate is too high')|format(opcache_ext)) }}
+            {% endif %}
          </tr>
          {% if opcache_enabled and session('glpi_use_mode') == constant('Session::DEBUG_MODE') %}
             <tr>
@@ -153,10 +147,7 @@
          </th>
          <td>{{ user_cache_version }}</td>
          <td></td>
-         <td class="icons_block">
-            <i class="fa fa-check-circle text-success" title="{{ msg }}"></i>
-            <span class="sr-only">{{ msg }}</span>
-         </td>
+         {{ _self.success_icon_msg(msg) }}
       </tr>
       {% if session('glpi_use_mode') == constant('Session::DEBUG_MODE') %}
          <tr>
@@ -179,10 +170,7 @@
          </th>
          <td></td>
          <td></td>
-         <td class="icons_block">
-            <i class="fa fa-check-circle text-success" title="{{ msg }}"></i>
-            <span class="sr-only">{{ msg }}</span>
-         </td>
+         {{ _self.success_icon_msg(msg) }}
       </tr>
       {% if session('glpi_use_mode') == constant('Session::DEBUG_MODE') %}
          <tr>
