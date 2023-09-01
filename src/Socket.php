@@ -137,7 +137,7 @@ class Socket extends CommonDBChild
             $rand_items_id =  $itemtype::dropdown(['name'                  => 'items_id',
                 'value'                 => $items_id,
                 'display_emptychoice'   => true,
-                'display_dc_position'   => true,
+                'display_dc_position'   => in_array($itemtype, $CFG_GLPI['rackable_types']),
                 'rand' => $rand_items_id
             ]);
         }
