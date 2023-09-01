@@ -85,22 +85,26 @@
       'keep_tickets_on_delete',
       config['keep_tickets_on_delete'],
       __('Keep tickets when purging hardware in the inventory'),
-      field_options) }}
+      field_options
+   ) }}
    {{ fields.dropdownYesNo(
       'use_check_pref',
       config['use_check_pref'],
       __('Show personnal information in new ticket form (simplified interface)'),
-      field_options) }}
+      field_options
+   ) }}
    {{ fields.dropdownYesNo(
       'use_anonymous_helpdesk',
       config['use_anonymous_helpdesk'],
       __('Allow anonymous ticket creation (helpdesk.receiver)'),
-      field_options) }}
+      field_options
+   ) }}
    {{ fields.dropdownYesNo(
       'use_anonymous_followups',
       config['use_anonymous_followups'],
       __('Allow anonymous followups (receiver)'),
-      field_options) }}
+      field_options
+   ) }}
 
    {{ fields.dropdownArrayField('planning_work_days', null, {
       1: __('Monday'),
