@@ -36,7 +36,7 @@
         "elvanto/litemoji": "^4.1",
         "glpi-project/inventory_format": "^1.1",
         "guzzlehttp/guzzle": "^7.7",
-        "guzzlehttp/psr7": "^2.5",
+        "guzzlehttp/psr7": "^2.6",
         "html2text/html2text": "^4.3",
         "laminas/laminas-i18n": "^2.23",
         "laminas/laminas-json": "^3.5",
