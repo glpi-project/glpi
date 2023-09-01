@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 abstract class CommonITILSatisfaction extends CommonDBTM
 {
     public $dohistory         = true;
@@ -133,66 +135,32 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      **/
     public function showSatisactionForm($item)
     {
-        $item_id             = $item->fields['id'];
         $options             = [];
         $options['colspan']  = 1;
+        $options['candel'] = false;
 
         // for external inquest => link
         if ((int) $this->fields["type"] === self::TYPE_EXTERNAL) {
             $url = Entity::generateLinkSatisfaction($item);
-            echo "<div class='center spaced'>" .
-                "<a href='$url'>" . __('External survey') . "</a><br>($url)</div>";
+            TemplateRenderer::getInstance()->display('/components/itilobject/itilsatisfaction.html.twig', [
+                'url' => $url
+            ]);
         } else { // for internal inquest => form
             $config_suffix = $item->getType() === 'Ticket' ? '' : ('_' . strtolower($item->getType()));
 
             $this->showFormHeader($options);
-
             // Set default satisfaction to 3 if not set
             if (is_null($this->fields["satisfaction"])) {
                 $default_rate = Entity::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_default_rate' . $config_suffix);
                 $this->fields["satisfaction"] = $default_rate;
             }
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>" . sprintf(__('Satisfaction with the resolution of the %s'), strtolower($item::getTypeName(1))) . "</td>";
-            echo "<td>";
-            echo "<input type='hidden' name='{$item::getForeignKeyField()}' value='$item_id'>";
-
-            echo "<select id='satisfaction_data' name='satisfaction'>";
-
             $max_rate = Entity::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_max_rate' . $config_suffix);
-            for ($i = 0; $i <= $max_rate; $i++) {
-                echo "<option value='$i' " . (($i == $this->fields["satisfaction"]) ? 'selected' : '') .
-                    ">$i</option>";
-            }
-            echo "</select>";
-            echo "<div class='rateit' id='stars'></div>";
-            echo  "<script type='text/javascript'>";
-            echo "$(function() {";
-            echo "$('#stars').rateit({value: " . $this->fields["satisfaction"] . ",
-                                   min : 0,
-                                   max : " . $max_rate . ",
-                                   step: 1,
-                                   backingfld: '#satisfaction_data',
-                                   ispreset: true,
-                                   resetable: false});";
-            echo "});</script>";
-
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_2'>";
-            echo "<td rowspan='1'>" . __('Comments') . "</td>";
-            echo "<td rowspan='1' class='middle'>";
-            echo "<textarea class='form-control' rows='7' name='comment'>" . $this->fields["comment"] . "</textarea>";
-            echo "</td></tr>";
-
-            if ($this->fields["date_answered"] > 0) {
-                echo "<tr class='tab_bg_2'>";
-                echo "<td>" . __('Response date to the satisfaction survey') . "</td><td>";
-                echo Html::convDateTime($this->fields["date_answered"]) . "</td></tr>\n";
-            }
-
-            $options['candel'] = false;
-            $this->showFormButtons($options);
+            TemplateRenderer::getInstance()->display('/components/itilobject/itilsatisfaction.html.twig', [
+                'item'   => $this,
+                'parent_item' => $item,
+                'max_rate' => $max_rate,
+                'params' => $options,
+            ]);
         }
     }
 
