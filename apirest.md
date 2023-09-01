@@ -1,37 +1,5 @@
 # GLPI REST API:  Documentation
 
-## Summary
-
-* [Glossary](#glossary)
-* [Important](#important)
-* [Init session](#init-session)
-* [Kill session](#kill-session)
-* [Lost password](#lost-password)
-* [Get my profiles](#get-my-profiles)
-* [Get active profile](#get-active-profile)
-* [Change active profile](#change-active-profile)
-* [Get my entities](#get-my-entities)
-* [Get active entities](#get-active-entities)
-* [Change active entities](#change-active-entities)
-* [Get full session](#get-full-session)
-* [Get GLPI config](#get-glpi-config)
-* [Get an item](#get-an-item)
-* [Get all items](#get-all-items)
-* [Get sub items](#get-sub-items)
-* [Get multiple items](#get-multiple-items)
-* [List searchOptions](#list-searchoptions)
-* [Search items](#search-items)
-* [Add item(s)](#add-items)
-* [Update item(s)](#update-items)
-* [Delete item(s)](#delete-items)
-* [Get available massive actions for an itemtype](#get-available-massive-actions-for-an-itemtype)
-* [Get available massive actions for an item](#get-available-massive-actions-for-an-item)
-* [Get massive action parameters](#get-massive-action-parameters)
-* [Apply massive action](#apply-massive-action)
-* [Special cases](#special-cases)
-* [Errors](#errors)
-* [Servers configuration](#servers-configuration)
-
 ## Glossary
 
 Endpoint

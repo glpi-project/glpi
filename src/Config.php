@@ -1276,9 +1276,6 @@ HTML;
                 'version' => TCPDF_STATIC::getTCPDFVersion(),
                 'check'   => 'TCPDF'
             ],
-            [ 'name'    => 'michelf/php-markdown',
-                'check'   => 'Michelf\\Markdown'
-            ],
             [ 'name'    => 'sabre/dav',
                 'check'   => 'Sabre\\DAV\\Version'
             ],
@@ -1403,6 +1400,10 @@ HTML;
             [
                 'name'  => 'thenetworg/oauth2-azure',
                 'check' => 'TheNetworg\\OAuth2\\Client\\Provider\\Azure'
+            ],
+            [
+                'name'  => 'league/commonmark',
+                'check' => 'League\\CommonMark\\Extension\\CommonMark\\CommonMarkCoreExtension'
             ],
             [
                 'name' => 'egulias/email-validator',

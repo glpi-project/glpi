@@ -37,11 +37,15 @@ namespace Glpi\Dashboard;
 
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
+use Glpi\Toolbox\MarkdownRenderer;
 use Html;
 use Laminas\Json\Expr as Json_Expr;
 use Laminas\Json\Json;
 use Mexitek\PHPColors\Color;
-use Michelf\MarkdownExtra;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\MarkdownConverter;
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use Plugin;
 use Symfony\Component\DomCrawler\Crawler;
 use Search;
@@ -1591,21 +1595,16 @@ JAVASCRIPT;
         $ph           = __("Type markdown text here");
         $fg_color     = Toolbox::getFgColor($p['color']);
         $border_color = Toolbox::getFgColor($p['color'], 10);
-        $md           = new MarkdownExtra();
-       // Prevent escaping as code is already escaped by GLPI sanityze
-        $md->code_span_content_func  = function ($code) {
-            return $code;
-        };
-        $md->code_block_content_func = function ($code) {
-            return $code;
-        };
+
+        // Parse markdown
+        $md = new MarkdownRenderer();
 
         $html = <<<HTML
       <div
          class="card markdown"
          style="background-color: {$p['color']}; color: {$fg_color}; border-color: {$border_color}">
 
-         <div class="html_content">{$md->transform($p['markdown_content'])}</div>
+         <div class="html_content">{$md->disableHeadings()->render($p['markdown_content'])}</div>
          <textarea
             class="markdown_content"
             placeholder="{$ph}">{$p['markdown_content']}</textarea>

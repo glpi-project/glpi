@@ -46,9 +46,9 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\OAuth\Server;
 use Glpi\System\Status\StatusChecker;
+use Glpi\Toolbox\MarkdownRenderer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Glpi\UI\ThemeManager;
-use Michelf\MarkdownExtra;
 use Session;
 
 final class CoreController extends AbstractController
@@ -235,8 +235,9 @@ HTML;
     {
         $documentation_file = GLPI_ROOT . '/resources/api_doc.MD';
         $documentation = file_get_contents($documentation_file);
-        // Markdown to HTML
-        $html_docs = MarkdownExtra::defaultTransform($documentation);
+
+        $md = new MarkdownRenderer();
+        $html_docs = $md->render($documentation);
 
         // Some very basic replacements to make the HTML look better (Use Tabler/Bootstrap classes)
         // Place tables in a flex column where on lg screens, they take 75% of the width and on xl screens, they take 50% of the width
@@ -255,7 +256,7 @@ HTML;
         $twig_params['theme'] = $theme;
 
         $content = TemplateRenderer::getInstance()->render('layout/parts/head.html.twig', $twig_params);
-        $content .= '<body class="api-documentation"><div class="container py-2 d-flex">';
+        $content .= '<body class="documentation-page"><div id="page"><div class="documentation documentation-large">';
         // If not logged in, inject some basic CSS in case the browser says they prefer a dark color scheme
         if (!Session::getLoginUserID()) {
             $content .= <<<HTML
@@ -272,7 +273,7 @@ HTML;
 HTML;
         }
         $content .= $html_docs;
-        $content .= '</div></body>';
+        $content .= '</div></div></body>';
 
         return new Response(200, [
             'Content-Type' => 'text/html',

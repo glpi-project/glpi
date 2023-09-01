@@ -53,12 +53,12 @@ use Dropdown;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
+use Glpi\Toolbox\MarkdownRenderer;
 use Html;
 use Infocom;
 use Item_Devices;
 use Log;
 use MassiveAction;
-use Michelf\MarkdownExtra;
 use NetworkEquipment;
 use NetworkPort;
 use Notepad;
@@ -2437,13 +2437,10 @@ abstract class API
 
         echo "<div class='documentation'>";
         $documentation = file_get_contents(GLPI_ROOT . '/' . $file);
-        $md = new MarkdownExtra();
-        $md->code_class_prefix = "language-";
-        $md->header_id_func = function ($headerName) {
-            $headerName = str_replace(['(', ')'], '', $headerName);
-            return rawurlencode(strtolower(strtr($headerName, [' ' => '-'])));
-        };
-        echo $md->transform($documentation);
+
+        $md = new MarkdownRenderer();
+        echo $md->render($documentation);
+
         echo "</div>";
 
         Html::nullFooter();
