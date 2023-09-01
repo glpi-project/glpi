@@ -72,7 +72,7 @@
         "symfony/html-sanitizer": "^6.3",
         "symfony/mailer": "^6.3",
         "symfony/mime": "^6.3",
-        "symfony/polyfill-ctype": "^1.27",
+        "symfony/polyfill-ctype": "^1.28",
         "symfony/polyfill-iconv": "^1.27",
         "symfony/polyfill-mbstring": "^1.27",
         "symfony/polyfill-php82": "^1.27",
