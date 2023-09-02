@@ -1,0 +1,58 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/setup/general/base_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block config_fields %}
+   {{ fields.textField('_dbreplicate_dbhost', replica_config['host'], __('SQL server (MariaDB or MySQL)')) }}
+   {{ fields.textField('_dbreplicate_dbdefault', replica_config['default'], _n('Database', 'Databases', 1)) }}
+
+   {{ fields.textField('_dbreplicate_dbuser', replica_config['user'], __('SQL user')) }}
+   {{ fields.passwordField('_dbreplicate_dbpassword', replica_config['password'], __('SQL password'), {
+      clearable: false
+   }) }}
+
+   {% set replica_search_opts = {
+      0: __('Never'),
+      1: __('If synced (all changes)'),
+      2: __('If synced (current user changes)'),
+      3: __('If synced or read-only account'),
+      4: __('Always'),
+   } %}
+   {{ fields.dropdownArrayField('use_slave_for_search', config['use_slave_for_search'], replica_search_opts, __('Use the replica for the search engine')) }}
+   {{ fields.htmlField('', replica_delays, '', {
+      no_label: true,
+      full_width: true
+   }) }}
+{% endblock %}
