@@ -33,7 +33,7 @@
 
 {% macro input(name, value, options = {}) %}
     {% set options = {
-        'id': '%id%',
+        'id': null,
         'type': 'text',
         'input_addclass': '',
         'additional_attributes': {},
@@ -55,7 +55,7 @@
     {% endif %}
 
     {% set input %}
-        <input type="{{ options.type }}" id="{{ options.id }}"
+        <input type="{{ options.type }}" {{ options.id != null ? 'id=' ~ options.id : '' }}
                class="form-control {{ options.input_addclass }}"
                name="{{ name }}" value="{{ value }}"
             {% for attr, value in options.additional_attributes %}
@@ -360,7 +360,7 @@
 
 
 {% macro submit(name, label = '', value = '', options = {}) %}
-    {{ _self.button(name, value, 'submit', label, options) }}
+    {{ _self.button(name, label, 'submit', value, options) }}
 {% endmacro %}
 
 {% macro label(label, id, options = {}, class = 'form-label') %}

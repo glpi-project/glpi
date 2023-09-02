@@ -2642,7 +2642,7 @@ class Rule extends CommonDBTM
             !$display
             && ($rc = getItemForItemtype($this->rulecriteriaclass))
         ) {
-            echo Html::input($name, ['value' => $value, 'size' => '70']);
+            echo Html::input($name, ['value' => $value]);
         }
     }
 
