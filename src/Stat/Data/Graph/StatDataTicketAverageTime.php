@@ -59,10 +59,10 @@ class StatDataTicketAverageTime extends StatDataAlwaysDisplay
                 'data' => $solved,
             ], [
                 'name' => __('Late'),
-                'data' => $closed,
+                'data' => $late,
             ], [
                 'name' => __('Closed'),
-                'data' => $late,
+                'data' => $closed,
             ]
         ];
     }
