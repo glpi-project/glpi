@@ -53,6 +53,45 @@ final class ProjectController extends AbstractController
             'Project' => [
                 'x-itemtype' => Project::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
+                'x-rights-conditions' => [ // Object-level extra permissions
+                    'read' => static function () {
+                        if (!\Session::haveRight(Project::$rightname, Project::READALL)) {
+                            if (!\Session::haveRight(Project::$rightname, Project::READMY)) {
+                                return false; // Deny reading
+                            }
+                            $criteria = [
+                                'LEFT JOIN' => [
+                                    'glpi_projectteams' => [
+                                        'ON' => [
+                                            'glpi_projectteams' => 'projects_id',
+                                            '_' => 'id'
+                                        ]
+                                    ]
+                                ],
+                                'WHERE' => [
+                                    'OR' => [
+                                        '_.users_id' => \Session::getLoginUserID(),
+                                        [
+                                            "glpi_projectteams.itemtype"   => 'User',
+                                            "glpi_projectteams.items_id"   => \Session::getLoginUserID()
+                                        ]
+                                    ]
+                                ]
+                            ];
+                            if (count($_SESSION['glpigroups'])) {
+                                $criteria['WHERE']['OR'][] = [
+                                    '_.groups_id' => $_SESSION['glpigroups'],
+                                ];
+                                $criteria['WHERE']['OR'][] = [
+                                    "glpi_projectteams.itemtype"   => 'Group',
+                                    "glpi_projectteams.items_id"   => $_SESSION['glpigroups']
+                                ];
+                            }
+                            return $criteria;
+                        }
+                        return true; // Allow reading by default. No extra SQL conditions needed.
+                    }
+                ],
                 'properties' => [
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
@@ -95,6 +134,72 @@ final class ProjectController extends AbstractController
             'Task' => [
                 'x-itemtype' => ProjectTask::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
+                'x-rights-conditions' => [ // Object-level extra permissions
+                    'read' => static function () {
+                        if (!\Session::haveRight(Project::$rightname, Project::READALL)) {
+                            if (!\Session::haveRight(Project::$rightname, Project::READMY)) {
+                                return false; // Deny reading
+                            }
+                            $project_criteria = [
+                                'LEFT JOIN' => [
+                                    'glpi_projectteams' => [
+                                        'ON' => [
+                                            'glpi_projectteams' => 'projects_id',
+                                            'project' => 'id'
+                                        ]
+                                    ]
+                                ],
+                                'WHERE' => [
+                                    'OR' => [
+                                        '_.users_id' => \Session::getLoginUserID(),
+                                        [
+                                            "glpi_projectteams.itemtype"   => 'User',
+                                            "glpi_projectteams.items_id"   => \Session::getLoginUserID()
+                                        ]
+                                    ]
+                                ]
+                            ];
+                            if (count($_SESSION['glpigroups'])) {
+                                $project_criteria['WHERE']['OR'][] = [
+                                    'project.groups_id' => $_SESSION['glpigroups'],
+                                ];
+                                $project_criteria['WHERE']['OR'][] = [
+                                    "glpi_projectteams.itemtype"   => 'Group',
+                                    "glpi_projectteams.items_id"   => $_SESSION['glpigroups']
+                                ];
+                            }
+
+                            $criteria = [
+                                'LEFT JOIN' => [
+                                    'glpi_projecttaskteams' => [
+                                        'ON' => [
+                                            'glpi_projecttaskteams' => 'projecttasks_id',
+                                            'project' => 'id'
+                                        ]
+                                    ]
+                                ] + $project_criteria['LEFT JOIN'],
+                                'WHERE' => [
+                                    'OR' => [
+                                        '_.users_id' => \Session::getLoginUserID(),
+                                        $project_criteria['WHERE'],
+                                        [
+                                            'glpi_projecttaskteams.items_id' => \Session::getLoginUserID(),
+                                            'glpi_projecttaskteams.itemtype' => 'User'
+                                        ]
+                                    ]
+                                ]
+                            ];
+                            if (count($_SESSION['glpigroups'])) {
+                                $criteria['WHERE']['OR'][] = [
+                                    'glpi_projecttaskteams.items_id' => $_SESSION['glpigroups'],
+                                    'glpi_projecttaskteams.itemtype' => 'Group'
+                                ];
+                            }
+                            return $criteria;
+                        }
+                        return true; // Allow reading by default. No extra SQL conditions needed.
+                    }
+                ],
                 'properties' => [
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,

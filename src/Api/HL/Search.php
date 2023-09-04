@@ -296,6 +296,29 @@ final class Search
 
         if ($this->union_search_mode) {
             unset($criteria['LEFT JOIN'], $criteria['INNER JOIN'], $criteria['RIGHT JOIN'], $criteria['WHERE']);
+        } else {
+            $read_right_criteria = $this->schema['x-rights-conditions']['read'] ?? [];
+            if (is_callable($read_right_criteria)) {
+                $read_right_criteria = $read_right_criteria();
+            }
+            if (!empty($read_right_criteria)) {
+                $join_types = ['LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'];
+                foreach ($join_types as $join_type) {
+                    if (isset($read_right_criteria[$join_type])) {
+                        foreach ($read_right_criteria[$join_type] as $join_table => $join_clauses) {
+                            if (!isset($criteria[$join_type][$join_table])) {
+                                $criteria[$join_type][$join_table] = $join_clauses;
+                            }
+                        }
+                    }
+                }
+                if (isset($read_right_criteria['WHERE'])) {
+                    if (!isset($criteria['WHERE'])) {
+                        $criteria['WHERE'] = [];
+                    }
+                    $criteria['WHERE'][] = $read_right_criteria['WHERE'];
+                }
+            }
         }
 
         $criteria['SELECT'] = ['_.id'];
@@ -579,8 +602,25 @@ final class Search
     public static function searchBySchema(array $schema, array $request_params): Response
     {
         $itemtype = $schema['x-itemtype'] ?? null;
+        // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
         if (($itemtype !== null) && !$itemtype::canView()) {
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_LIST);
+        }
+        if (isset($schema['x-subtypes'])) {
+            // For this case, we need to filter out the schemas that the user doesn't have read rights on
+            $schemas = $schema['x-subtypes'];
+            $schemas = array_filter($schemas, static function ($v) {
+                $itemtype = $v['itemtype'];
+                if (class_exists($itemtype) && is_subclass_of($itemtype, CommonDBTM::class)) {
+                    return $itemtype::canView();
+                }
+                return false;
+            });
+            $schema['x-subtypes'] = $schemas;
+            if (empty($schema['x-subtypes'])) {
+                // No right on any subtypes. Could be useful to return an access denied error here instead of an empty list
+                return AbstractController::getAccessDeniedErrorResponse();
+            }
         }
         $results = self::getSearchResultsBySchema($schema, $request_params);
         $has_more = $results['start'] + $results['limit'] < $results['total'];
@@ -708,6 +748,9 @@ final class Search
 
         /** @var CommonDBTM $item */
         $item = new $itemtype();
+        if (!$item->can($item->getID(), CREATE, $input)) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
         $items_id = $item->add($input);
         [$controller, $method] = $get_route;
 
@@ -738,6 +781,9 @@ final class Search
         $input['id'] = $items_id;
         /** @var CommonDBTM $item */
         $item = new $itemtype();
+        if (!$item->can($items_id, UPDATE, $input)) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
         $result = $item->update($input);
 
         if ($result === false) {
@@ -755,7 +801,12 @@ final class Search
         /** @var CommonDBTM $item */
         $item = new $itemtype();
         $force = $request_params['force'] ?? false;
-        $result = $item->delete(['id' => (int) $items_id], $force ? 1 : 0);
+        $input = ['id' => (int) $items_id];
+        $purge = !$item->maybeDeleted() || $force;
+        if (!$item->can($items_id, $purge ? PURGE : DELETE, $input)) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        $result = $item->delete($input, $purge ? 1 : 0);
 
         if ($result === false) {
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_DELETE);

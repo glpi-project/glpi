@@ -539,17 +539,19 @@ class ITILController extends \HLAPITestCase
         // Create a document
         $this->integer($document_id = $document->add([
             'name' => __FUNCTION__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]))->isGreaterThan(0);
 
         // Link the document to the ticket
         $this->integer($document_item_id = $document_item->add([
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'documents_id' => $document_id,
             'itemtype' => 'Ticket',
             'items_id' => $tickets_id,
         ]))->isGreaterThan(0);
 
         // Need to login to use the API
-        $this->login();
+        $this->login('glpi', 'glpi');
 
         // Try to change the parent of the followup
         $request = new Request('PATCH', "/Assistance/Ticket/$tickets_id/Timeline/Followup/$fup_id");
