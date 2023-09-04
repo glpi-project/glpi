@@ -898,7 +898,7 @@ class User extends CommonDBTM
                     return;
                 }
                 if (!str_starts_with($fullpath, GLPI_TMP_DIR)) {
-                    throw new Exception('Invalid picture path');
+                    trigger_error('Invalid picture path', E_USER_WARNING);
                 }
                 if (Document::isImage($fullpath)) {
                    // Unlink old picture (clean on changing format)
@@ -5889,7 +5889,7 @@ HTML;
                 return;
             }
             if (!str_starts_with($filepath, realpath(GLPI_PICTURE_DIR))) {
-                throw new \Exception("Invalid file path");
+                trigger_error('Invalid picture path', E_USER_WARNING);
             }
             // unlink main file
             if (file_exists($filepath)) {
@@ -5902,7 +5902,7 @@ HTML;
                     return;
                 }
                 if (!str_starts_with($thumbpath, realpath(GLPI_PICTURE_DIR))) {
-                    throw new \Exception("Invalid file path");
+                    trigger_error('Invalid picture path', E_USER_WARNING);
                 }
                 if (file_exists($thumbpath)) {
                     @unlink($thumbpath);
