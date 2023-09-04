@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@algolia/autocomplete-js": "^1.11.0",
-        "@codemirror/lang-css": "^6.2.0",
+        "@codemirror/lang-css": "^6.2.1",
         "@codemirror/lang-json": "^6.0.1",
         "@codemirror/lang-sql": "^6.5.2",
         "@codemirror/language": "^6.9.0",
