@@ -44,10 +44,9 @@ class CoreController extends \HLAPITestCase
     {
         return [
             [new Request('GET', '/Session'), true],
-            [new Request('PATCH', '/Session'), false],
-            [new Request('PUT', '/Session'), false],
-            [new Request('POST', '/Session'), true],
-            [new Request('DELETE', '/Session'), true],
+            [new Request('POST', '/token'), true],
+            [new Request('GET', '/doc'), true],
+            [new Request('GET', '/Administration/User'), true],
             [new Request('GET', '/A/B/C'), false],
         ];
     }
@@ -68,7 +67,17 @@ class CoreController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) {
-                    $this->array($headers['Allow'])->containsValues(['DELETE', 'GET', 'POST']);
+                    $this->string($headers['Allow'])->isIdenticalTo('GET');
+                })
+                ->status(fn ($status) => $this->integer($status)->isEqualTo(204));
+        });
+
+        $this->api->call(new Request('OPTIONS', '/Administration/User'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) {
+                    $this->array($headers['Allow'])->containsValues(['GET', 'POST']);
                 })
                 ->status(fn ($status) => $this->integer($status)->isEqualTo(204));
         });
@@ -108,73 +117,22 @@ class CoreController extends \HLAPITestCase
         });
     }
 
-    public function testInitAndKillSession()
-    {
-        global $CFG_GLPI;
-
-        $session_token = null;
-        $request = new Request('POST', '/Session');
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode(TU_USER . ':' . TU_PASS));
-        // Allow API login with basic auth
-        $CFG_GLPI['enable_api_login_credentials'] = true;
-
-        $this->api->call($request, function ($call) use (&$session_token) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use (&$session_token) {
-                    $this->string($content['session_token'])->isNotEmpty();
-                    $session_token = $content['session_token'];
-                });
-        });
-
-        // Try getting session information and verify the user_id is present and > 0
-        $request = new Request('GET', '/Session');
-        $request = $request->withHeader('Glpi-Session-Token', $session_token);
-        $this->api->call($request, function ($call) use ($session_token) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->integer($content['user_id'])->isGreaterThan(0);
-                });
-        });
-
-        // Try killing the session
-        $request = new Request('DELETE', '/Session');
-        $request = $request->withHeader('Glpi-Session-Token', $session_token);
-        $this->api->call($request, function ($call) use ($session_token) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->content(fn ($content) => $this->string($content)->isEmpty());
-        }, false);
-
-        // Tyy getting session information again, it should fail
-        $request = new Request('GET', '/Session');
-        $request = $request->withHeader('Glpi-Session-Token', $session_token);
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isUnauthorizedError();
-        }, false);
-    }
-
     public function testTransferEntity()
     {
-        $this->login();
+        $this->loginWeb('glpi', 'glpi');
+        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
         // Create 2 computers (not using API)
         $computer = new \Computer();
         $computers_id_1 = $computer->add([
             'name' => 'Computer 1',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'entities_id' => $root_entity,
         ]);
         $this->integer($computers_id_1)->isGreaterThan(0);
 
         $computers_id_2 = $computer->add([
             'name' => 'Computer 2',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'entities_id' => $root_entity,
         ]);
         $this->integer($computers_id_2)->isGreaterThan(0);
 
@@ -182,7 +140,7 @@ class CoreController extends \HLAPITestCase
         $monitor = new \Monitor();
         $monitors_id = $monitor->add([
             'name' => 'Monitor 1',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'entities_id' => $root_entity,
         ]);
         $this->integer($monitors_id)->isGreaterThan(0);
 
@@ -199,13 +157,13 @@ class CoreController extends \HLAPITestCase
         $entity = new \Entity();
         $entities_id_1 = $entity->add([
             'name' => 'Entity 1',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'entities_id' => $root_entity,
         ]);
         $this->integer($entities_id_1)->isGreaterThan(0);
 
         $entities_id_2 = $entity->add([
             'name' => 'Entity 2',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'entities_id' => $root_entity,
         ]);
         $this->integer($entities_id_2)->isGreaterThan(0);
 
@@ -228,7 +186,13 @@ class CoreController extends \HLAPITestCase
             ],
         ];
 
-        $request = new Request('POST', '/Transfer', ['Content-Type' => 'application/json'], json_encode($transfer_records));
+        $this->login();
+
+        $request = new Request('POST', '/Transfer', [
+            'Content-Type' => 'application/json',
+            'GLPI-Entity' => $root_entity,
+            'GLPI-Entity-Recursive' => 'true'
+        ], json_encode($transfer_records));
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response

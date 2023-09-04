@@ -36,6 +36,7 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
+use Glpi\OAuth\Server;
 use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
@@ -744,6 +745,16 @@ function loadDataset()
                 'users_id_recipient' => TU_USER,
                 'entities_id'    => '_test_root_entity'
             ],
+        ],
+        'OAuthClient' => [
+            [
+                'redirect_uri' => '/api.php/oauth2/redirection',
+                'grants' => ['password', 'client_credentials', 'authorization_code'],
+                'scopes' => [],
+                'is_active' => 1,
+                'is_confidential' => 1,
+                'name' => 'Test OAuth Client',
+            ]
         ]
     ];
 
@@ -851,3 +862,8 @@ function getItemByTypeName($type, $name, $onlyid = false)
 }
 
 loadDataset();
+
+$tu_oauth_client = new OAuthClient();
+$tu_oauth_client->getFromDBByCrit(['name' => 'Test OAuth Client']);
+define('TU_OAUTH_CLIENT_ID', $tu_oauth_client->fields['identifier']);
+define('TU_OAUTH_CLIENT_SECRET', $tu_oauth_client->fields['secret']);

@@ -576,7 +576,7 @@ EOT;
             $requires_auth = $matched_route->getRouteSecurityLevel() !== Route::SECURITY_NONE;
             $unauthenticated_response = new JSONResponse([
                 'title' => _x('api', 'You are not authenticated'),
-                'detail' => _x('api', 'The Glpi-Session-Token header is missing or invalid'),
+                'detail' => _x('api', 'The Authorization header is missing or invalid'),
                 'status' => 'ERROR_UNAUTHENTICATED',
             ], 401);
             $middleware_input = new MiddlewareInput($request, $matched_route, $unauthenticated_response);
@@ -585,16 +585,8 @@ EOT;
             $auth_from_middleware = $middleware_input->response === null;
 
             if ($requires_auth && !$auth_from_middleware) {
-                if (!$request->hasHeader('Glpi-Session-Token')) {
-                    if (!($request->hasHeader('Authorization') && Session::getLoginUserID() !== false)) {
-                        $response = $unauthenticated_response;
-                    }
-                } else {
-                    $current_session_id = session_id();
-                    $session_token = $request->getHeaderLine('Glpi-Session-Token');
-                    if (($current_session_id !== $session_token && !empty($current_session_id)) || !isset($_SESSION['glpiID'])) {
-                        $response = $unauthenticated_response;
-                    }
+                if (!($request->hasHeader('Authorization') && Session::getLoginUserID() !== false)) {
+                    $response = $unauthenticated_response;
                 }
             }
 
@@ -630,7 +622,7 @@ EOT;
     }
 
     /**
-     * Try resuming the session from the Glpi-Session-Token header or start a temporary session if an OAuth token is provided.
+     * Try to start a temporary session if an OAuth token is provided and handle the profile and entity headers.
      * @param Request $request
      * @return void
      * @throws OAuthServerException
@@ -638,39 +630,21 @@ EOT;
     private function handleAuth(Request $request): void
     {
         if ($request->hasHeader('Authorization')) {
-            $auth_header = $request->getHeaderLine('Authorization');
-            // if basic auth
-            if (preg_match('/^Basic\s+(.*)$/i', $auth_header, $matches)) {
-                $this->resumeSession('');
-            } else {
-                $this->startTemporarySession($request);
-                if ($request->hasHeader('GLPI-Profile')) {
-                    $requested_profile = $request->getHeaderLine('GLPI-Profile');
-                    if (is_numeric($requested_profile)) {
-                        Session::changeProfile((int)$requested_profile);
-                    }
-                }
-                if ($request->hasHeader('GLPI-Entity')) {
-                    $requested_entity = $request->getHeaderLine('GLPI-Entity');
-                    if (is_numeric($requested_entity)) {
-                        $is_recursive = $request->hasHeader('GLPI-Entity-Recursive') && strtolower($request->getHeaderLine('GLPI-Entity-Recursive')) === 'true';
-                        Session::changeActiveEntities((int)$requested_entity, $is_recursive);
-                    }
+            $this->startTemporarySession($request);
+            if ($request->hasHeader('GLPI-Profile')) {
+                $requested_profile = $request->getHeaderLine('GLPI-Profile');
+                if (is_numeric($requested_profile)) {
+                    Session::changeProfile((int)$requested_profile);
                 }
             }
-            return;
+            if ($request->hasHeader('GLPI-Entity')) {
+                $requested_entity = $request->getHeaderLine('GLPI-Entity');
+                if (is_numeric($requested_entity)) {
+                    $is_recursive = $request->hasHeader('GLPI-Entity-Recursive') && strtolower($request->getHeaderLine('GLPI-Entity-Recursive')) === 'true';
+                    Session::changeActiveEntities((int)$requested_entity, $is_recursive);
+                }
+            }
         }
-        if (
-            $request->hasHeader('Glpi-Session-Token')
-            && !empty($request->getHeaderLine('Glpi-Session-Token'))
-        ) {
-            $this->resumeSession($request->getHeaderLine('Glpi-Session-Token'));
-        }
-        Session::setPath();
-        Session::start();
-
-        // Clear all messages in the session to avoid unhandled messages being displayed in the errors of unrelated API requests
-        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
     }
 
     /**

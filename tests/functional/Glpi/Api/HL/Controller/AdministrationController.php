@@ -416,7 +416,9 @@ class AdministrationController extends \HLAPITestCase
     public function testGetUserPictureByID()
     {
         $this->login();
-        $this->api->call(new Request('GET', '/Administration/User/' . $_SESSION['glpiID'] . '/Picture'), function ($call) {
+
+        $tu_id = getItemByTypeName('User', TU_USER, true);
+        $this->api->call(new Request('GET', '/Administration/User/' . $tu_id . '/Picture'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
@@ -426,7 +428,7 @@ class AdministrationController extends \HLAPITestCase
         });
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
 
-        $this->api->call(new Request('GET', '/Administration/User/' . $_SESSION['glpiID'] . '/Picture'), function ($call) {
+        $this->api->call(new Request('GET', '/Administration/User/' . $tu_id . '/Picture'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
@@ -439,7 +441,8 @@ class AdministrationController extends \HLAPITestCase
     public function testGetUserPictureByUsername()
     {
         $this->login();
-        $this->api->call(new Request('GET', '/Administration/User/username/' . $_SESSION['glpiname'] . '/Picture'), function ($call) {
+
+        $this->api->call(new Request('GET', '/Administration/User/username/' . TU_USER . '/Picture'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
@@ -449,7 +452,7 @@ class AdministrationController extends \HLAPITestCase
         });
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
 
-        $this->api->call(new Request('GET', '/Administration/User/username/' . $_SESSION['glpiname'] . '/Picture'), function ($call) {
+        $this->api->call(new Request('GET', '/Administration/User/username/' . TU_USER . '/Picture'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()

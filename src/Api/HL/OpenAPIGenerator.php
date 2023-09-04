@@ -303,20 +303,6 @@ EOT;
                     ]
                 ]
             ],
-            'basicAuth' => [
-                'type' => 'http',
-                'scheme' => 'basic',
-            ],
-            'userTokenAuth' => [
-                'type' => 'apiKey',
-                'in' => 'header',
-                'name' => 'Glpi-User-Token',
-            ],
-            'sessionTokenAuth' => [
-                'type' => 'apiKey',
-                'in' => 'header',
-                'name' => 'Glpi-Session-Token',
-            ],
         ];
     }
 
@@ -420,16 +406,7 @@ EOT;
             ]
         ];
         // Handle special Session case
-        if ($route_method === 'POST' && $route_path->getRoutePath() === '/Session') {
-            $schemas = array_merge($schemas, [
-                [
-                    'basicAuth' => []
-                ],
-                [
-                    'userTokenAuth' => []
-                ]
-            ]);
-        } else if ($route_path->getRouteSecurityLevel() !== Route::SECURITY_NONE) {
+        if ($route_path->getRouteSecurityLevel() !== Route::SECURITY_NONE) {
             $schemas = array_merge($schemas, [
                 [
                     'sessionTokenAuth' => []
