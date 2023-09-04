@@ -1757,7 +1757,10 @@ class DBmysql
     {
         $known_types = [
             'TABLE',
-            'VIEW'
+            'VIEW',
+            'INDEX',
+            'FOREIGN KEY',
+            'FIELD'
         ];
         if (!in_array($type, $known_types)) {
             throw new \InvalidArgumentException('Unknown type to drop: ' . $type);
