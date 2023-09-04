@@ -61,6 +61,10 @@
             cursor: grabbing;
         }
     }
+
+    &.ui-draggable-dragging {
+        min-width: 1% !important; /* fix %50 min-width when position is fixed (50% of body width) */
+    }
 }
 
 .grid-stack-item-content a {
