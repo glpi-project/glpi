@@ -468,7 +468,11 @@
                 if (data.content !== undefined) {
                     // set textarea content
                     if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                        tasktinymce.setContent(data.content);
+                        tasktinymce.setContent('');
+                        // use paste command to force images registering
+                        tasktinymce.execCommand('mceInsertClipboardContent', false, {
+                            html: data.content
+                        });
                     }
                 }
 
