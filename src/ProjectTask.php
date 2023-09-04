@@ -287,6 +287,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $this->getFromDB($this->fields['id']);
             NotificationEvent::raiseEvent("update", $this);
         }
+
+        // If task has changed of project, update all sub-tasks
+        if (in_array('projects_id', $this->updates)) {
+            foreach (self::getAllForProjectTask($this->getID()) as $task) {
+                $task['projects_id'] = $this->fields['projects_id'];
+                self::getById($task['id'])->update($task);
+            }
+        }
     }
 
 
@@ -320,11 +328,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public function post_deleteItem()
     {
         // Delete all sub-tasks
-        foreach (
-            (new self())->find([
-                'projecttasks_id' => $this->getID()
-            ]) as $task
-        ) {
+        foreach (self::getAllForProjectTask($this->getID()) as $task) {
             self::getById($task['id'])->delete($task);
         }
     }
@@ -341,11 +345,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         // Restore all sub-tasks
-        foreach (
-            (new self())->find([
-                'projecttasks_id' => $this->getID()
-            ]) as $task
-        ) {
+        foreach (self::getAllForProjectTask($this->getID()) as $task) {
             self::getById($task['id'])->restore($task);
         }
     }
@@ -517,6 +517,16 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         return Project::checkPlanAndRealDates($input);
+    }
+
+    public function post_clone($source, $history)
+    {
+        // Clone all sub-tasks of the source and link them to the cloned task
+        foreach (self::getAllForProjectTask($source->getID()) as $task) {
+            self::getById($task['id'])->clone([
+                'projecttasks_id' => $this->getID()
+            ]);
+        }
     }
 
 
