@@ -398,7 +398,7 @@
         z-index: 1030
     }
     #debug-toolbar {
-        z-index: 9999;
+        z-index: 1030; /* bootstrap $zindex-fixed (if this need to upped, keep it under 1040) */
         outline: none;
     }
     .debug-toolbar-badge button {
