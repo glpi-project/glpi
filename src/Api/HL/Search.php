@@ -660,7 +660,14 @@ final class Search
                 }
             }
 
-            $internal_name = $prop['x-field'] ?? $prop_name;
+            // Field resolution priority: x-field -> x-join.fkey -> property name
+            if (isset($prop['x-field'])) {
+                $internal_name = $prop['x-field'];
+            } else if (isset($prop['x-join']['fkey'])) {
+                $internal_name = $prop['x-join']['fkey'] ?? $prop_name;
+            } else {
+                $internal_name = $prop_name;
+            }
             if (isset($request_params[$prop_name])) {
                 $params[$internal_name] = $request_params[$prop_name];
             }
