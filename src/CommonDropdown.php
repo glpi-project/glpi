@@ -191,6 +191,20 @@ abstract class CommonDropdown extends CommonDBTM
         return $fields;
     }
 
+    /**
+     * Return properties of additional field having given name.
+     */
+    final public function getAdditionalField(string $name): ?array
+    {
+        foreach ($this->getAdditionalFields() as $field) {
+            if ($field['name'] === $name) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
 
     public function defineTabs($options = [])
     {

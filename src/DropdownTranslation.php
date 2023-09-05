@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\RichText\RichText;
+
 /**
  * DropdownTranslation Class
  *
@@ -456,7 +458,14 @@ class DropdownTranslation extends CommonDBChild
                 echo "</td><td $onhover>";
                 $searchOption = $item->getSearchOptionByField('field', $data['field']);
                 echo $searchOption['name'] . "</td>";
-                echo "<td $onhover>" . $data['value'] . "</td>";
+                echo "<td $onhover>";
+                $matching_field = $item->getAdditionalField($data['field']);
+                if (($matching_field['type'] ?? null) === 'tinymce') {
+                    echo '<div class="rich_text_container">' . RichText::getSafeHtml($data['value']) . '</div>';
+                } else {
+                    echo $data['value'];
+                }
+                echo "</td>";
                 echo "</tr>";
             }
             echo "</table>";
@@ -538,12 +547,47 @@ class DropdownTranslation extends CommonDBChild
             echo $searchOption['name'];
         } else {
             echo "<span id='span_fields' name='span_fields'>";
-            self::dropdownFields($item, $_SESSION['glpilanguage']);
+            $rand = self::dropdownFields($item, $_SESSION['glpilanguage']);
             echo "</span>";
+            $params = [
+                'field'    => '__VALUE__',
+                'itemtype' => get_class($item),
+                'items_id' => $item->getID(),
+            ];
+            Ajax::updateItemOnSelectEvent(
+                "dropdown_field$rand",
+                "span_value",
+                $CFG_GLPI["root_doc"] . "/ajax/updateTranslationValue.php",
+                $params
+            );
+            echo Html::scriptBlock(<<<JAVASCRIPT
+                $(
+                    function() {
+                        $("#dropdown_field$rand").trigger("change");
+                    }
+                );
+    JAVASCRIPT
+            );
         }
         echo "</td>";
         echo "<td>" . __('Value') . "</td>";
-        echo "<td><input type='text' name='value' value=\"" . $this->fields['value'] . "\" size='50'>";
+        echo "<td>";
+        echo "<span id='span_value'>";
+        if ($ID > 0) {
+            $matching_field = $item->getAdditionalField($this->fields['field']);
+            if (($matching_field['type'] ?? null) === 'tinymce') {
+                Html::textarea([
+                    'name'              => 'value',
+                    'value'             => RichText::getSafeHtml($this->fields["value"], true),
+                    'enable_richtext'   => true,
+                    'enable_images'     => false,
+                    'enable_fileupload' => false,
+                ]);
+            } else {
+                echo "<input type='text' name='value' value=\"" . $this->fields['value'] . "\" size='50'>";
+            }
+        }
+        echo "</span>";
         echo "</td>";
         echo "</tr>\n";
         $this->showFormButtons($options);
