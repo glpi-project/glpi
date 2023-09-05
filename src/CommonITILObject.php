@@ -236,6 +236,17 @@ abstract class CommonITILObject extends CommonDBTM
                 // TODO 10.1: throw exception instead
                 trigger_error("Readonly field: '$property_name'", E_USER_WARNING);
                 break;
+
+            default:
+                if (version_compare(PHP_VERSION, '8.2.0', '<')) {
+                    // Trigger same deprecation notice as the one triggered by PHP 8.2+
+                    trigger_error(
+                        sprintf('Creation of dynamic property %s::$%s is deprecated', get_called_class(), $property_name),
+                        E_USER_DEPRECATED
+                    );
+                }
+                $this->$property_name = $value;
+                break;
         }
     }
 
