@@ -757,8 +757,8 @@ JAVASCRIPT;
                     $DB->quoteValue('') . " AS " . $DB->quoteName('state')
                 );
             }
-            $group_fkey  = State::getForeignKeyField();
-            $group_table = State::getTable();
+            $group_fkey  = Group::getForeignKeyField();
+            $group_table = Group::getTable();
             if ($DB->fieldExists($itemtable, $group_fkey)) {
                 $query['SELECT'][] = sprintf('%s.name AS groupe', $group_table);
                 $query['LEFT JOIN'][$group_table] = [
