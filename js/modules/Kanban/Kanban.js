@@ -1053,17 +1053,11 @@ class GLPIKanbanRights {
                 // To fix this, we'll convert data into an array which can be
                 // reliably sorted.
                 let sorted_data = Object.values(data); // Cast Object to array
-                sorted_data.sort((a, b) => { // Sort by name
-                    const name_a = a.name.toUpperCase();
-                    const name_b = b.name.toUpperCase();
-                    if (name_a < name_b) {
-                        return -1;
-                    } else if (name_a > name_b) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
+                const collator = new Intl.Collator(undefined, {
+                    numeric: true,
+                    sensitivity: 'base'
                 });
+                sorted_data.sort((a, b)  => collator.compare(a.name, b.name));
 
                 const form_content = $(self.add_column_form + " .kanban-item-content");
                 form_content.empty();
