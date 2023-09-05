@@ -458,7 +458,14 @@ class DropdownTranslation extends CommonDBChild
                 echo "</td><td $onhover>";
                 $searchOption = $item->getSearchOptionByField('field', $data['field']);
                 echo $searchOption['name'] . "</td>";
-                echo "<td $onhover>" . $data['value'] . "</td>";
+                echo "<td $onhover>";
+                $matching_field = $item->getAdditionalField($data['field']);
+                if (($matching_field['type'] ?? null) === 'tinymce') {
+                    echo '<div class="rich_text_container">' . RichText::getSafeHtml($data['value']) . '</div>';
+                } else {
+                    echo $data['value'];
+                }
+                echo "</td>";
                 echo "</tr>";
             }
             echo "</table>";
@@ -567,11 +574,8 @@ class DropdownTranslation extends CommonDBChild
         echo "<td>";
         echo "<span id='span_value'>";
         if ($ID > 0) {
-            $additionalfields = $item->getAdditionalFields();
-            if (
-                array_search($this->fields['field'], array_column($additionalfields, 'name'))
-                && array_search('tinymce', array_column($additionalfields, 'type'))
-            ) {
+            $matching_field = $item->getAdditionalField($this->fields['field']);
+            if (($matching_field['type'] ?? null) === 'tinymce') {
                 Html::textarea([
                     'name'              => 'value',
                     'value'             => RichText::getSafeHtml($this->fields["value"], true),

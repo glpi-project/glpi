@@ -33,32 +33,27 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Debug\Toolbar;
-
 include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkRight("dropdown", UPDATE);
-if (isset($_POST['itemtype'])) {
+
+$matching_field = null;
+
+if (isset($_POST['itemtype'], $_POST['field']) && is_a($_POST['itemtype'], CommonDropdown::class, true)) {
     $itemtype = new $_POST['itemtype']();
-    $additionalfields = $itemtype->getAdditionalFields();
+    $matching_field = $itemtype->getAdditionalField($_POST['field']);
+}
 
-    if (
-        array_search($_POST['field'], array_column($additionalfields, 'name'))
-        && array_search('tinymce', array_column($additionalfields, 'type'))
-    ) {
-        Html::textarea([
-            'name'              => 'value',
-            'enable_richtext'   => true,
-            'enable_images'     => false,
-            'enable_fileupload' => false,
-        ]);
-    } else {
-        echo "<input type='text' name='value' size='50'>";
-    }
-
+if (($matching_field['type'] ?? null) === 'tinymce') {
+    Html::textarea([
+        'name'              => 'value',
+        'enable_richtext'   => true,
+        'enable_images'     => false,
+        'enable_fileupload' => false,
+    ]);
 } else {
     echo "<input type='text' name='value' size='50'>";
 }
