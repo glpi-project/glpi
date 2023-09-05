@@ -567,7 +567,11 @@ class DropdownTranslation extends CommonDBChild
         echo "<td>";
         echo "<span id='span_value'>";
         if ($ID > 0) {
-            if ($this->fields['field'] == 'content') {
+            $additionalfields = $item->getAdditionalFields();
+            if (
+                array_search($this->fields['field'], array_column($additionalfields, 'name'))
+                && array_search('tinymce', array_column($additionalfields, 'type'))
+            ) {
                 Html::textarea([
                     'name'              => 'value',
                     'value'             => RichText::getSafeHtml($this->fields["value"], true),

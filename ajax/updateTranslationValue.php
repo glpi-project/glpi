@@ -33,19 +33,32 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Debug\Toolbar;
+
 include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkRight("dropdown", UPDATE);
-if (isset($_POST['field']) && $_POST['field'] == 'content') {
-    Html::textarea([
-        'name'              => 'value',
-        'enable_richtext'   => true,
-        'enable_images'     => false,
-        'enable_fileupload' => false,
-    ]);
+if (isset($_POST['itemtype'])) {
+    $itemtype = new $_POST['itemtype']();
+    $additionalfields = $itemtype->getAdditionalFields();
+
+    if (
+        array_search($_POST['field'], array_column($additionalfields, 'name'))
+        && array_search('tinymce', array_column($additionalfields, 'type'))
+    ) {
+        Html::textarea([
+            'name'              => 'value',
+            'enable_richtext'   => true,
+            'enable_images'     => false,
+            'enable_fileupload' => false,
+        ]);
+    } else {
+        echo "<input type='text' name='value' size='50'>";
+    }
+
 } else {
     echo "<input type='text' name='value' size='50'>";
 }
