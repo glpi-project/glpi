@@ -897,8 +897,8 @@ class User extends CommonDBTM
                 if (!$fullpath = realpath(GLPI_TMP_DIR . "/" . $input["_picture"])) {
                     return;
                 }
-                if (!str_starts_with($fullpath, GLPI_TMP_DIR)) {
-                    trigger_error('Invalid picture path', E_USER_WARNING);
+                if (!str_starts_with($fullpath, realpath(GLPI_TMP_DIR))) {
+                    trigger_error(sprintf('Invalid picture path `%s`', $input["_picture"]), E_USER_WARNING);
                 }
                 if (Document::isImage($fullpath)) {
                    // Unlink old picture (clean on changing format)
@@ -5889,7 +5889,7 @@ HTML;
                 return;
             }
             if (!str_starts_with($filepath, realpath(GLPI_PICTURE_DIR))) {
-                trigger_error('Invalid picture path', E_USER_WARNING);
+                trigger_error(sprintf('Invalid picture path `%s`', $picture), E_USER_WARNING);
             }
             // unlink main file
             if (file_exists($filepath)) {
@@ -5902,7 +5902,7 @@ HTML;
                     return;
                 }
                 if (!str_starts_with($thumbpath, realpath(GLPI_PICTURE_DIR))) {
-                    trigger_error('Invalid picture path', E_USER_WARNING);
+                    trigger_error(sprintf('Invalid picture path `%s`', $tmp[0] . "_min." . $tmp[1]), E_USER_WARNING);
                 }
                 if (file_exists($thumbpath)) {
                     @unlink($thumbpath);
