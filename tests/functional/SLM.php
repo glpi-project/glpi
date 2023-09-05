@@ -1520,7 +1520,7 @@ class SLM extends DbTestCase
 
             // Check that all escalations levels have been modifieds
             $level_ticket_class = $la->getLevelTicketClass();
-            $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()]);
+            $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()], [$level_class::getForeignKeyField()]);
             $this->array($sa_levels_ticket)->hasSize(2); // One TTO and one TTR
 
             // Check that they match the expected la levels
@@ -1556,7 +1556,7 @@ class SLM extends DbTestCase
 
             // Check that all escalations levels are sets
             $level_ticket_class = $la->getLevelTicketClass();
-            $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $control_ticket->getID()]);
+            $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $control_ticket->getID()], [$level_class::getForeignKeyField()]);
             $this->array($sa_levels_ticket)->hasSize(2); // One TTO and one TTR
 
             // Check that they match the expected la levels
