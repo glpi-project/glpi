@@ -880,7 +880,7 @@ JAVASCRIPT;
                (!empty($gs_item['url'])
                   ? "<a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>"
                   : "<span class='itemrack_name'>" . $gs_item['name'] . "</span>") . "
-               <a href='{$gs_item['rel_url']}'>
+               <a href='{$gs_item['rel_url']}' class='edit_rack_item'>
                   <i class='fa fa-pencil-alt rel-link'
                      style='$fg_color_s'
                      title='" . __("Edit rack relation") . "'></i>
