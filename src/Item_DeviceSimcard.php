@@ -139,8 +139,9 @@ class Item_DeviceSimcard extends Item_Devices
     public function getImportCriteria(): array
     {
         return [
-            'serial' => 'equal',
-            'msin' => 'equal',
+            'itemtype' => 'equal',
+            'items_id' => 'equal',
+            'is_dynamic' => 'equal',
         ];
     }
 }
