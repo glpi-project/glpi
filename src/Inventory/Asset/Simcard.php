@@ -43,8 +43,9 @@ class Simcard extends Device
     public function prepare(): array
     {
         $mapping = [
-            'imsi' => 'serial'
+            'subscriber_id' => 'msin'
         ];
+
         foreach ($this->data as $k => &$val) {
             foreach ($mapping as $origin => $dest) {
                 if (property_exists($val, $origin)) {
