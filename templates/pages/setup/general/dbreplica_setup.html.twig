@@ -33,6 +33,7 @@
 
 {% extends "pages/setup/general/base_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% block config_fields %}
    {{ fields.textField('_dbreplicate_dbhost', replica_config['host'], __('SQL server (MariaDB or MySQL)')) }}
@@ -55,4 +56,6 @@
       no_label: true,
       full_width: true
    }) }}
+
+   {{ inputs.hidden('_dbslave_status', 1) }}
 {% endblock %}
