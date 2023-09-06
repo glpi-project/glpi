@@ -35,6 +35,7 @@
 
 namespace tests\units;
 
+use Glpi\Toolbox\Sanitizer;
 use Profile_User;
 use QuerySubQuery;
 
@@ -1245,30 +1246,51 @@ class User extends \DbTestCase
         $this->variable($user->fields['show_count_on_tabs'])->isNull();
         $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
 
+        $itil_layout_1 = '{"collapsed":"true","expanded":"false","items":{"item-main":"false","actors":"false","items":"false","service-levels":"false","linked_tickets":"false"}}';
         $this->boolean(
-            $user->update([
+            $user->update(Sanitizer::dbEscapeRecursive([
                 'id' => $users_id,
-                'show_count_on_tabs' => '0'
-            ])
+                'show_count_on_tabs' => '0',
+                'itil_layout' => $itil_layout_1,
+            ]))
         )->isTrue();
 
+        // pref should be updated even without logout/login
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_1);
+
+        // logout/login and check prefs
         $this->logOut();
         $this->login('for preferences', 'for preferences');
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_1);
+
+
         $this->boolean($user->getFromDB($users_id))->isTrue();
         $this->variable($user->fields['show_count_on_tabs'])->isEqualTo(0);
-        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+        $this->variable($user->fields['itil_layout'])->isEqualTo($itil_layout_1);
 
+        $itil_layout_2 = '{"collapsed":"false","expanded":"true"}';
         $this->boolean(
-            $user->update([
+            $user->update(Sanitizer::dbEscapeRecursive([
                 'id' => $users_id,
-                'show_count_on_tabs' => '1'
-            ])
+                'show_count_on_tabs' => '1',
+                'itil_layout' => $itil_layout_2,
+            ]))
         )->isTrue();
 
+        // pref should be updated even without logout/login
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_2);
+
+        // logout/login and check prefs
         $this->logOut();
         $this->login('for preferences', 'for preferences');
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_2);
+
         $this->boolean($user->getFromDB($users_id))->isTrue();
         $this->variable($user->fields['show_count_on_tabs'])->isNull();
-        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($user->fields['itil_layout'])->isEqualTo($itil_layout_2);
     }
 }

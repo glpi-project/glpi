@@ -1104,9 +1104,10 @@ class User extends CommonDBTM
 
         foreach ($CFG_GLPI['user_pref_field'] as $f) {
             if (isset($input[$f])) {
+                $pref_value = Sanitizer::dbUnescape($input[$f]);
                 if (Session::getLoginUserID() == $input['id']) {
-                    if ($_SESSION["glpi$f"] != $input[$f]) {
-                        $_SESSION["glpi$f"] = $input[$f];
+                    if ($_SESSION["glpi$f"] != $pref_value) {
+                        $_SESSION["glpi$f"] = $pref_value;
                       // reinit translations
                         if ($f == 'language') {
                              $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
@@ -1114,7 +1115,7 @@ class User extends CommonDBTM
                         }
                     }
                 }
-                if ($input[$f] == $CFG_GLPI[$f]) {
+                if ($pref_value == $CFG_GLPI[$f]) {
                     $input[$f] = "NULL";
                 }
             }
