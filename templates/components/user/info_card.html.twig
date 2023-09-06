@@ -31,96 +31,82 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set enable_anonymization = enable_anonymization ?? false %}
-
-{#
-   5 minute cache on info cards
-
-   Note: to use a cache with no set duration we would need to take into account updates on
-   linked items (location, groups, ...) which is not pratical as it would require
-   storing their last update date in our cache key (and thus force us to loading them from the
-   database, which would defeat the purpose of this cache) or using cache tags to invalidate them
-   on change (which our cache system does not support yet)
-
-   The main goal here is to avoid reloading the same card multiple times for a single ticket
-#}
-{% cache [
-   "user_info_card",
-   user['id'],
-   enable_anonymization ? "1" : "0",
-   user['date_mod']|date('U')
-]|join("_") ttl(300) %}
+{# @var user \User  #}
+{# @var enable_anonymization bool #}
+{# @var can_edit bool #}
+{# @var friendlyname string #}
+{# @var email string #}
 
 <div class="p-0 user-info-card">
    <div class="row">
       <div class="col pt-1">
-         {% if user['id'] %}
+         {% if user.fields.id %}
             {{ include('components/user/picture.html.twig', {
-               'users_id': user['id'],
-               'user_object': user_object,
+               'users_id': user.fields.id,
+               'user_object': user,
                'enable_anonymization': enable_anonymization
             }) }}
          {% endif %}
       </div>
       <div class="col-auto ms-2">
          <h4 class="card-title mb-1">
-            {% if user['id'] %}
-               <a href="{{ 'User'|itemtype_form_path(user['id']) }}">{{ user['user_name'] }}</a>
+            {% if user.fields.id %}
+               <a href="{{ 'User'|itemtype_form_path(user.fields.id) }}">{{ friendlyname }}</a>
             {% else %}
-               {{ user['user_name'] }}
+               {{ friendlyname }}
             {% endif %}
          </h4>
 
          <div class="text-muted">
-            {% if user['email']|length > 0 %}
+            {% if email|length > 0 %}
                <div>
                   <i class="fas fa-fw fa-envelope"></i>
-                  <a href="mailto:{{ user['email'] }}">{{ user['email'] }}</a>
+                  <a href="mailto:{{ email }}">{{ email }}</a>
                </div>
             {% endif %}
-            {% if not user['phone'] is empty or not user['phone2'] is empty %}
+            {% if not user.fields.phone is empty or not user.fields.phone2 is empty %}
                <div>
-                  {% if not user['phone'] is empty %}
+                  {% if not user.fields.phone is empty %}
                      <i class="fas fa-fw fa-phone"></i>
-                     <a href="tel:{{ user['phone'] }}">{{ user['phone'] }}</a>
+                     <a href="tel:{{ user.fields.phone }}">{{ user.fields.phone }}</a>
                   {% endif %}
-                  {% if not user['phone'] is empty and not user['phone2'] is empty %}
+                  {% if not user.fields.phone is empty and not user.fields.phone2 is empty %}
                      <span> - </span>
                   {% endif %}
-                  {% if not user['phone2'] is empty %}
+                  {% if not user.fields.phone2 is empty %}
                      <i class="fas fa-fw fa-phone"></i>
-                     <a href="tel:{{ user['phone2'] }}">{{ user['phone2'] }}</a>
+                     <a href="tel:{{ user.fields.phone2 }}">{{ user.fields.phone2 }}</a>
                   {% endif %}
                </div>
             {% endif %}
-            {% if user['mobile']|length > 0 %}
+            {% if user.fields.mobile|length > 0 %}
                <div>
                   <i class="fas fa-fw fa-mobile"></i>
-                  <a href="tel:{{ user['mobile'] }}">{{ user['mobile'] }}</a>
+                  <a href="tel:{{ user.fields.mobile }}">{{ user.fields.mobile }}</a>
                </div>
             {% endif %}
-            {% if user['locations_id'] > 0 %}
+            {% if user.fields.locations_id > 0 %}
                <div title="{{ 'Location'|itemtype_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="fas fa-fw fa-map-marker-alt"></i>
-                  {{ get_item_name('Location', user['locations_id']) }}
+                  {{ get_item_name('Location', user.fields.locations_id) }}
                </div>
             {% endif %}
-            {% if user['usertitles_id'] > 0 %}
+            {% if user.fields.usertitles_id > 0 %}
                <div title="{{ _x('person', 'Title') }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="fas fa-fw fa-user-tie"></i>
-                  {{ get_item_name('UserTitle', user['usertitles_id']) }}
+                  {{ get_item_name('UserTitle', user.fields.usertitles_id) }}
                </div>
             {% endif %}
-            {% if user['usercategories_id'] > 0 %}
+            {% if user.fields.usercategories_id > 0 %}
                <div title="{{ _n('Category', 'Categories', 1) }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="fas fa-fw fa-user-tag"></i>
-                  {{ get_item_name('UserCategory', user['usercategories_id']) }}
+                  {{ get_item_name('UserCategory', user.fields.usercategories_id) }}
                </div>
             {% endif %}
-            {% if user['groups_id'] > 0 %}
+            {% if user.fields.groups_id > 0 %}
                <div title="{{ __('Default group') }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="fas fa-fw fa-users"></i>
-                  {{ get_item_name('Group', user['groups_id']) }}
+                  {{ get_item_name('Group', user.fields.groups_id) }}
                </div>
             {% endif %}
          </div>
@@ -136,5 +122,3 @@
       {% endif %}
    </div>
 </div>
-
-{% endcache %}

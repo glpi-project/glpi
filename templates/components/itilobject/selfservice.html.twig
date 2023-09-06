@@ -97,13 +97,11 @@
                             <div class="card mb-0" id="user-info{{ rand }}">
                                 <div class="card-body">
                                     {% set user = get_current_user() %}
-                                    {% set user_fields = user.fields %}
-                                    {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
-                                    {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
-                                    {{ include('components/user/info_card.html.twig', {
-                                        'user': user_fields,
-                                        'can_edit': true
-                                    }, with_context = false) }}
+                                    {{ render_component(
+                                        'Glpi\\UI\\Component\\Timeline\\UserInfoCard',
+                                        {'user': user, 'can_edit': true},
+                                        {'static_cache': true},
+                                    )|raw }}
                                 </div>
                             </div>
                         </div>

@@ -33,7 +33,6 @@
 
 {% set rand = random() %}
 {% set user_object = user_object ?? null %}
-{% set user_fields = user_fields ?? null %}
 
 <span id="user_{{ rand }}">
     <i class="ti ti-user ms-1"></i>
@@ -47,29 +46,14 @@
 {% if not enable_anonymization %}
     {% set user = user_object ?? get_item('User', users_id) %}
     {% if user is not null and user.canView() %}
-
-    {% if user_fields is not null %}
-        {% set user_fields = user_fields %}
-    {% else %}
-        {% set user_fields = user.fields %}
-        {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
-        {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
-    {% endif %}
-        {% do call(
-            'Html::showToolTip',
-            [
-                include(
-                    'components/user/info_card.html.twig',
-                    {
-                        'user': user_fields,
-                        'user_object': user_object,
-                    },
-                    with_context = false
-                ),
-                {
-                    'applyto': "user_" ~ rand
-                }
-            ]
-        ) %}
+         {% do call('Html::showToolTip', [
+            render_component(
+                'Glpi\\UI\\Component\\Timeline\\UserInfoCard',
+                {'user': user},
+                {'static_cache': true},
+            ), {
+                'applyto': "user_" ~ rand
+            }
+        ]) %}
     {% endif %}
 {% endif %}

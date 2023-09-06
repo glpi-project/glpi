@@ -133,18 +133,6 @@
                {# log entries have no users_id #}
 
                {% if entry_user is not null %}
-                  {% if user_extra_fields_cache['_' ~ users_id] is not defined %}
-                     {% set user_fields = entry_user.fields|merge({
-                        user_name: entry_user.getFriendlyName()|verbatim_value,
-                        email: entry_user.getDefaultEmail()
-                     }) %}
-
-                     {# Set values in cache #}
-                     {% set user_extra_fields_cache = user_extra_fields_cache|merge({("_" ~ users_id): user_fields}) %}
-                  {% else %}
-                     {# Read from cache #}
-                     {% set user_fields = user_extra_fields_cache['_' ~ users_id] %}
-                  {% endif %}
                   <span id="timeline-avatar{{ avatar_rand }}">
                      {{ include('components/user/picture.html.twig', {
                         'users_id': users_id,
@@ -154,13 +142,14 @@
                   </span>
                   {% if not anonym_user and entry_user.canView() %}
                      {% do call('Html::showToolTip', [
-                        include('components/user/info_card.html.twig', {
-                           'user': user_fields,
-                           'user_object': entry_user,
-                           'enable_anonymization': false,
-                        }, with_context = false), {
+                        render_component(
+                           'Glpi\\UI\\Component\\Timeline\\UserInfoCard',
+                           {'user': entry_user},
+                           {'static_cache': true},
+                        ), {
                            'applyto': 'timeline-avatar' ~ avatar_rand
-                        }]) %}
+                        }
+                     ]) %}
                   {% endif %}
                {% else %}
                   <span id="timeline-avatar{{ avatar_rand }}"><span class="avatar avatar-md rounded"></span></span>
@@ -171,7 +160,6 @@
                   <div class="card-body px-1 px-xxl-3">
                      {{ include('components/itilobject/timeline/timeline_item_header.html.twig', {
                         'user_object': entry_user,
-                        'user_fields': user_fields,
                      }) }}
 
                      {% if itiltype in timeline_itemtypes|column('type') %}

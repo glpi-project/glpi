@@ -72,7 +72,6 @@
         "tecnickcom/tcpdf": "^6.6",
         "thenetworg/oauth2-azure": "^2.1",
         "true/punycode": "^2.1",
-        "twig/cache-extra": "^3.7",
         "twig/string-extra": "^3.3",
         "twig/twig": "^3.3",
         "wapmorgan/unified-archive": "^1.1"

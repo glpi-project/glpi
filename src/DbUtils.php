@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\UI\Component\StaticCachedComponent;
+use Glpi\UI\Component\Timeline\UserInfoCard;
 
 /**
  * Database utilities
@@ -1678,13 +1680,7 @@ final class DbUtils
                 $user = $name;
             }
         } else if ($ID) {
-            $iterator = $DB->request(
-                'glpi_users',
-                [
-                    'WHERE' => ['id' => $ID]
-                ]
-            );
-
+            $user_object = User::getById($ID);
             if ($link == 2) {
                 $user = ["name"    => "",
                     "comment" => "",
@@ -1692,8 +1688,8 @@ final class DbUtils
                 ];
             }
 
-            if (count($iterator) == 1) {
-                $data     = $iterator->current();
+            if ($user_object) {
+                $data     = $user_object->fields;
 
                 $anon_name = !$disable_anon && $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
                 if ($anon_name !== null) {
@@ -1735,8 +1731,13 @@ final class DbUtils
                         if (!empty($data["groups_id"])) {
                             $user_params['groups_id'] = $data["groups_id"];
                         }
-                        $user['comment'] = TemplateRenderer::getInstance()->render('components/user/info_card.html.twig', [
-                            'user'                 => $user_params,
+
+                        // Load UX component and enable static caching
+                        $info_card_component = new StaticCachedComponent(new UserInfoCard());
+
+                        // Render component
+                        $user['comment'] = $info_card_component->render([
+                            'user' => $user_object,
                             'enable_anonymization' => Session::getCurrentInterface() == 'helpdesk',
                         ]);
                     }

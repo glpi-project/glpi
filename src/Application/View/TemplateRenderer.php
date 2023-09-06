@@ -36,6 +36,7 @@
 namespace Glpi\Application\View;
 
 use Glpi\Application\ErrorHandler;
+use Glpi\Application\View\Extension\ComponentExtension;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
@@ -56,8 +57,6 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
-use Twig\Extra\Cache\CacheExtension;
-use Twig\Extra\Cache\CacheRuntime;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\RuntimeLoader\RuntimeLoaderInterface;
@@ -106,7 +105,6 @@ class TemplateRenderer
         // Vendor extensions
         $this->environment->addExtension(new DebugExtension());
         $this->environment->addExtension(new StringExtension());
-        $this->environment->addExtension(new CacheExtension());
 
         // GLPI extensions
         $this->environment->addExtension(new ConfigExtension());
@@ -116,6 +114,7 @@ class TemplateRenderer
         $this->environment->addExtension(new FrontEndAssetsExtension());
         $this->environment->addExtension(new I18nExtension());
         $this->environment->addExtension(new ItemtypeExtension());
+        $this->environment->addExtension(new ComponentExtension());
         $this->environment->addExtension(new PhpExtension());
         $this->environment->addExtension(new PluginExtension());
         $this->environment->addExtension(new RoutingExtension());
@@ -127,17 +126,6 @@ class TemplateRenderer
         $this->environment->addGlobal('_post', $_POST);
         $this->environment->addGlobal('_get', $_GET);
         $this->environment->addGlobal('_request', $_REQUEST);
-
-        // Register cache extension runtime
-        // See https://twig.symfony.com/doc/3.x/tags/cache.html
-        $this->environment->addRuntimeLoader(new class implements RuntimeLoaderInterface {
-            public function load($class)
-            {
-                if (CacheRuntime::class === $class) {
-                    return new CacheRuntime(new TagAwareAdapter(new FilesystemAdapter()));
-                }
-            }
-        });
     }
 
     /**
