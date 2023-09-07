@@ -47,7 +47,7 @@
 
          {% if maintenance_text|length %}
             <div class="alert alert-warning mt-4">
-               {{ maintenance_text }}
+               {{ maintenance_text|verbatim_value }}
             </div>
          {% endif %}
          <div class="empty-action">
