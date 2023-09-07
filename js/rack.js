@@ -81,6 +81,18 @@ var initRack = function() {
                 }
             });
         })
+        .on('click', 'a.edit_rack_item', (e) => {
+            e.preventDefault();
+            const href = $(e.currentTarget).attr('href');
+            glpi_ajax_dialog({
+                url : href,
+                method : 'get',
+                dialogclass: 'modal-xl',
+                params: {
+                    ajax: true
+                }
+            });
+        })
 
         .on("click", "#add_pdu", function(event) {
             event.preventDefault();
