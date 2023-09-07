@@ -62,14 +62,16 @@ final class SafeDocumentRoot extends AbstractRequirement
         $included_files = get_included_files();
         $initial_script = array_shift($included_files);
 
-        // If `auto_prepend_file` configuration is used, ignore the corresponding file
+        // If `auto_prepend_file` configuration is used, ignore first included files
+        // as long as they are not located inside GLPI directory tree.
         $prepended_file = ini_get('auto_prepend_file');
         if ($prepended_file !== '' && $prepended_file !== 'none') {
-            $prepended_file = stream_resolve_include_path($prepended_file);
-            if (
-                $prepended_file !== false
-                && $initial_script !== null
-                && realpath($initial_script) === realpath($prepended_file)
+            while (
+                $initial_script !== null
+                && !str_starts_with(
+                    realpath($initial_script) ?: '',
+                    realpath(GLPI_ROOT)
+                )
             ) {
                 $initial_script = array_shift($included_files);
             }
