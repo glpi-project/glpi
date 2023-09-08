@@ -72,7 +72,16 @@ if (isset($_GET['action'])) {
     if ($action === 'get_itemtypes') {
         $loaded = get_declared_classes();
         $glpi_classes = array_filter($loaded, static function ($class) {
-            return is_subclass_of($class, 'CommonDBTM');
+            if (!is_subclass_of($class, 'CommonDBTM')) {
+                return false;
+            }
+
+            $reflection_class = new ReflectionClass($class);
+            if ($reflection_class->isAbstract()) {
+                return false;
+            }
+
+            return true;
         });
         sort($glpi_classes);
         header('Content-Type: application/json');
