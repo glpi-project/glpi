@@ -89,6 +89,8 @@
     watch(current_itemtype, () => {
         updateSearchOptions();
     });
+
+    const itemtype_input_mode = ref('select');
 </script>
 
 <template>
@@ -97,10 +99,16 @@
             <div class="form-group row">
                 <label class="col-5" :for="`itemtype${rand}`">Itemtype</label>
                 <div class="col-7">
-                    <select class="form-select" :id="`itemtype${rand}`" v-model="current_itemtype">
-                        <option value="">-----</option>
-                        <option v-for="itemtype in all_itemtypes" :value="itemtype" v-text="itemtype"></option>
-                    </select>
+                    <div class="input-group">
+                        <select v-if="itemtype_input_mode === 'select'" class="form-select" :id="`itemtype${rand}`" v-model="current_itemtype">
+                            <option value="">-----</option>
+                            <option v-for="itemtype in all_itemtypes" :value="itemtype" v-text="itemtype"></option>
+                        </select>
+                        <input v-else class="form-control" :id="`itemtype${rand}`" v-model.lazy="current_itemtype">
+                        <button class="btn btn-sm btn-outline-secondary" @click="itemtype_input_mode = itemtype_input_mode === 'select' ? 'input' : 'select'">
+                            <i class="ti ti-switch-horizontal"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

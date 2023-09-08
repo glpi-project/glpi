@@ -91,6 +91,17 @@ if (isset($_GET['action'])) {
         die();
     }
     if ($action === 'get_search_options' && isset($_GET['itemtype'])) {
+        header('Content-Type: application/json');
+        $class = $_GET['itemtype'];
+        if (!class_exists($class) || !is_subclass_of($class, 'CommonDBTM')) {
+            echo '[]';
+            die();
+        }
+        $reflection_class = new ReflectionClass($class);
+        if ($reflection_class->isAbstract()) {
+            echo '[]';
+            die();
+        }
         // In some cases, a class that isn't a proper itemtype may show in the selection box and this would trigger a SQL error that cannot be caught.
         ErrorHandler::getInstance()->disableOutput();
         try {
@@ -103,7 +114,6 @@ if (isset($_GET['action'])) {
         $options = array_filter($options, static function ($k) {
             return is_numeric($k);
         }, ARRAY_FILTER_USE_KEY);
-        header('Content-Type: application/json');
         echo json_encode($options);
         die();
     }
