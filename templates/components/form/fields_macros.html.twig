@@ -178,6 +178,11 @@
       'rows': 3,
    }|merge(options) %}
 
+   {% if options.id is not defined %}
+       {# `id` is mandatory at this point to correctly handle file uploads #}
+       {% set options = {id: name ~ '_' ~ options.rand}|merge(options) %}
+   {% endif %}
+
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
         {{ _inputs.textarea(name, value, options) }}
