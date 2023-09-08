@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
+
 include('../inc/includes.php');
 Html::header_nocache();
 
@@ -89,6 +91,8 @@ if (isset($_GET['action'])) {
         die();
     }
     if ($action === 'get_search_options' && isset($_GET['itemtype'])) {
+        // In some cases, a class that isn't a proper itemtype may show in the selection box and this would trigger a SQL error that cannot be caught.
+        ErrorHandler::getInstance()->disableOutput();
         try {
             /** @var CommonGLPI $item */
             $item = new $_GET['itemtype']();
@@ -99,19 +103,6 @@ if (isset($_GET['action'])) {
         $options = array_filter($options, static function ($k) {
             return is_numeric($k);
         }, ARRAY_FILTER_USE_KEY);
-
-        // In some cases, a class that isn't a proper itemtype may show in the selection box and this would trigger a SQL error that cannot be caught.
-        // Need to clear the output to avoid breaking the JSON response in debug mode.
-        $ob_config = ini_get('output_buffering');
-        $max_buffering_level = $ob_config !== false && (strtolower($ob_config) === 'on' || (is_numeric($ob_config) && (int)$ob_config > 0))
-            ? 1
-            : 0;
-        while (ob_get_level() > $max_buffering_level) {
-            ob_end_clean();
-        }
-        if (ob_get_level() > 0) {
-            ob_clean();
-        }
         header('Content-Type: application/json');
         echo json_encode($options);
         die();
