@@ -36,6 +36,12 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% block config_fields %}
+<div class="hr-text">
+    <i class="ti ti-brand-mysql"></i>
+    <span>{{ __('Replica configuration') }}</span>
+</div>
+
+<div class="row ps-4">
    {{ fields.textField('_dbreplicate_dbhost', replica_config['host'], __('SQL server (MariaDB or MySQL)')) }}
    {{ fields.textField('_dbreplicate_dbdefault', replica_config['default'], _n('Database', 'Databases', 1)) }}
 
@@ -52,10 +58,96 @@
       4: __('Always'),
    } %}
    {{ fields.dropdownArrayField('use_slave_for_search', config['use_slave_for_search'], replica_search_opts, __('Use the replica for the search engine')) }}
-   {{ fields.htmlField('', replica_delays, '', {
-      no_label: true,
-      full_width: true
-   }) }}
 
    {{ inputs.hidden('_dbslave_status', 1) }}
+</div>
+
+<div class="hr-text">
+    <i class="ti ti-check"></i>
+    <span>{{ __('Replication status') }}</span>
+</div>
+
+{% set primary_ok  = replication_status['primary']['file'] %}
+
+<div class="row ps-2 mb-3">
+   <div class="col-5">
+      <div class="card">
+         <div class="card-body">
+            <div class="accordion" id="accordion-primary">
+               <div class="accordion-item">
+                  <h2 class="accordion-header" id="heading-primary">
+                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-primary" aria-expanded="false" aria-controls="collapse-primary">
+                        <div class="col-auto">
+                           <span class="status-indicator status-{{ primary_ok ? 'green' : 'red' }} status-indicator-animated">
+                           <span class="status-indicator-circle"></span>
+                           <span class="status-indicator-circle"></span>
+                           <span class="status-indicator-circle"></span>
+                           </span>
+                        </div>
+                        <div class="col">
+                           <h3><span class="badge bg-{{ primary_ok ? 'green' : 'red' }}-lt">{{ primary_ok ? 'Up' : 'Down' }}</span><span class="mx-2">Primary ({{ primary_dbhost }})</span>{{ replication_status['primary']['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Not-Writable</span>' }}</h3>
+                        </div>
+                     </button>
+                  </h2>
+                  <div id="collapse-primary" class="accordion-collapse collapse" aria-labelledby="heading-primary" data-bs-parent="#accordion-primary">
+                     <div class="accordion-body">
+                        <ul class="p-0 list-unstyled space-y-2">
+                           <li><span class="text-secondary">Server ID:</span> {{ replication_status['primary']['server_id'] }}</li>
+                           <li><span class="text-secondary">Binlog File:</span> {{ replication_status['primary']['file'] }}</li>
+                           <li><span class="text-secondary">Binlog Pos:</span> {{ replication_status['primary']['position'] }}</li>
+                           <li><span class="text-secondary">Binlog GTID:</span> {{ replication_status['primary']['gtid_binlog_pos'] }}</li>
+                           <li><span class="text-secondary">MySQL version:</span> {{ replication_status['primary']['version'] }}</li>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="col-7">
+      <div class="card">
+         <div class="card-body">
+         {% for replica_num, replica_data in replication_status['replica'] %}
+            {% set replica_ok = replica_data['slave_io_running'] == 'Yes' and replica_data['slave_sql_running'] == 'Yes' %}
+            <div class="accordion mb-2" id="accordion-replica{{ replica_num }}">
+               <div class="accordion-item">
+                  <h2 class="accordion-header" id="heading-replica{{ replica_num }}">
+                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-replica{{ replica_num }}" aria-expanded="false" aria-controls="collapse-replica{{ replica_num }}">
+                        <div class="col-auto">
+                           <span class="status-indicator status-{{ replica_ok ? 'green' : 'red' }} status-indicator-animated">
+                           <span class="status-indicator-circle"></span>
+                           <span class="status-indicator-circle"></span>
+                           <span class="status-indicator-circle"></span>
+                           </span>
+                        </div>
+                        <div class="col">
+                           <h3><span class="badge bg-{{ replica_ok ? 'green' : 'red' }}-lt">{{ replica_ok ? 'Up' : 'Down' }}</span><span class="mx-2">Replica ({{ replica_data['host'] }})</span>{{ replica_data['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Not-Writable</span>' }}</h3>
+                        </div>
+                     </button>
+                  </h2>
+                  <div id="collapse-replica{{ replica_num }}" class="accordion-collapse collapse" aria-labelledby="heading-replica{{ replica_num }}" data-bs-parent="#accordion-replica{{ replica_num }}">
+                     <div class="accordion-body">
+                        <p><span class="text-secondary">Server ID:</span> {{ replica_data['server_id'] }}</p>
+                        <p><span class="text-secondary">Primary binglog file:</span> {{ replica_data['master_log_file'] }}</p>
+                        <p><span class="text-secondary">Primary binglog pos:</span> {{ replica_data['read_master_log_pos'] }}</p>
+                        {# seconds_behind_master can be NULL, 0, or > 0 #}
+                        {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
+                           <p><span class="text-secondary">Seconds behind primary:</span> {{ replica_data['seconds_behind_master']|raw }}</p>
+                        {% else %}
+                           <p><span class="text-secondary">Seconds behind primary:</span> <span class="badge bg-red">Undefined</span></p>
+                        {% endif %}
+                        <p><span class="text-secondary">Binglog GTID:</span> {{ replica_data['gtid_slave_pos'] }}</p>
+                        <p><span class="text-secondary">IO Running:</span> <span class="badge bg-{{ replica_data['slave_io_running'] == 'Yes' ? 'green' : 'red' }}-lt">{{ replica_data['slave_io_running'] }}</p>
+                        <p><span class="text-secondary">SQL Running:</span> <span class="badge bg-{{ replica_data['slave_sql_running'] == 'Yes' ? 'green' : 'red' }}-lt">{{ replica_data['slave_sql_running'] }}</p>
+                        <p><span class="text-secondary">MySQL version:</span> {{ replica_data['version'] }}</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         {% endfor %}
+         </div>
+      </div>
+   </div>
+</div>
 {% endblock %}

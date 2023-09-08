@@ -554,6 +554,74 @@ class DBConnection extends CommonDBTM
                     - self::getHistoryMaxDate(new DBSlave($choice)));
     }
 
+    /**
+     * Get replication status information
+     * 
+     * @return array
+     */
+    public static function getReplicationStatus()
+    {
+
+        $WHERE = [
+            'VARIABLE_NAME' => [
+                'SERVER_ID',
+                'READ_ONLY',
+                'GTID_BINLOG_POS',
+                'GTID_SLAVE_POS',
+                'VERSION'
+            ]
+        ];
+
+        // Get master status
+        include_once(GLPI_CONFIG_DIR . "/config_db.php");
+        $DBPrimary = new DB();
+        if ($DBPrimary->connected) {
+            foreach ($DBPrimary->getGlobalVars($WHERE) as $varName => $varValue) {
+                $data['primary'][strtolower($varName)] = $varValue;
+            }
+
+            $result = $DBPrimary->doQuery("SHOW MASTER STATUS");
+            if ($DBPrimary->numrows($result) > 0) {
+                foreach (['File', 'Position'] as $varName) {
+                    $data['primary'][strtolower($varName)] = $DBPrimary->result($result, 0, $varName);
+                }
+            }
+        }
+
+        // Get slave status
+        include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+        $DBConfigSlave = new DBSlave();
+        if (is_array($DBConfigSlave->dbhost)) {
+            $hosts = $DBConfigSlave->dbhost;
+        } else {
+            $hosts = [$DBConfigSlave->dbhost];
+        }
+
+        foreach ($hosts as $num => $host) {
+            $data['replica'][$num]['host'] = $host;
+            $DBReplica = new DBSlave($num);
+            if ($DBReplica->connected) {
+                foreach ($DBReplica->getGlobalVars($WHERE) as $varName => $varValue) {
+                    $data['replica'][$num][strtolower($varName)] = $varValue;
+                }
+
+                $result = $DBReplica->doQuery("SHOW SLAVE STATUS");
+                if ($DBReplica->numrows($result) > 0) {
+                    foreach ([
+                        'Slave_IO_Running',
+                        'Slave_SQL_Running',
+                        'Master_Log_File',
+                        'Read_Master_Log_Pos',
+                        'Seconds_Behind_Master'
+                    ] as $varName) {
+                        $data['replica'][$num][strtolower($varName)] = $DBReplica->result($result, 0, $varName);
+                    }
+                }
+            }
+        }
+
+        return $data;
+    }
 
     /**
      *  Get history max date of a GLPI DB

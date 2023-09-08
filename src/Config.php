@@ -493,19 +493,16 @@ class Config extends CommonDBTM
             'password' => rawurldecode($DBslave->dbpassword),
         ];
 
-        $replica_delays = '';
-        if ($DBslave->connected && !$DB->isSlave()) {
-            $replica_delays = DBConnection::showAllReplicateDelay(true);
-        }
+        $replication_status = DBConnection::getReplicationStatus();
 
         TemplateRenderer::getInstance()->display('pages/setup/general/dbreplica_setup.html.twig', [
-            'config' => $CFG_GLPI,
-            'replica_config' => $replica_config,
-            'canedit' => static::canUpdate(),
-            'replica_delays' => $replica_delays
+            'config'             => $CFG_GLPI,
+            'canedit'            => static::canUpdate(),
+            'primary_dbhost'     => $DB->dbhost,
+            'replica_config'     => $replica_config,
+            'replication_status' => $replication_status
         ]);
     }
-
 
     /**
      * Print the config form for External API

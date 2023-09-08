@@ -262,6 +262,8 @@ class DBmysql
             $host = $this->dbhost;
         }
 
+
+
         $hostport = explode(":", $host);
         if (count($hostport) < 2) {
             // Host
@@ -2303,5 +2305,38 @@ class DBmysql
         }
 
         return $values;
+    }
+
+    /**
+     * Retrieve global_variables from information_schema.
+     * 
+     * @param array  $where Where clause to append
+     * 
+     * @return DBmysqlIterator
+     */
+    public function retrieveGlobalVars(array $where = []): DBmysqlIterator
+    {
+        $iterator = $this->request([
+            'SELECT' => ['VARIABLE_NAME', 'VARIABLE_VALUE'],
+            'FROM'   => 'information_schema.global_variables',
+            'WHERE'  => $where
+        ]);
+        return $iterator;
+    }
+
+    /**
+     * Get global variables values as an associative array.
+     * 
+     * @param array  $where Where clause to append
+     * 
+     * @return array
+     */
+    public function getGlobalVars(array $where = []): array
+    {
+        $vars = [];
+        foreach ($this->retrieveGlobalVars($where) as $var) {
+            $vars[$var['VARIABLE_NAME']] = $var['VARIABLE_VALUE'];
+        }
+        return $vars;
     }
 }
