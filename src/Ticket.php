@@ -2769,7 +2769,7 @@ class Ticket extends CommonITILObject
                         solutiontemplates_id: value
                      }
                   }).done(function(data) {
-                     tinymce.get("{$content_id}").setContent(data.content);
+                     setRichTextEditorContent("{$content_id}", data.content);
 
                      var solutiontypes_id = isNaN(parseInt(data.solutiontypes_id))
                         ? 0
