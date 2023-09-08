@@ -101,7 +101,11 @@ class ProjectTaskTemplate extends CommonDropdown
             ],
             ['name'  => 'description',
                 'label' => __('Description'),
-                'type'  => 'tinymce'
+                'type'  => 'tinymce',
+                // Images should remains in base64 in templates.
+                // When an element will be created from a template, tinymce will catch the base64 image and trigger the
+                // document upload process.
+                'convert_images_to_documents' => false,
             ],
             ['name'  => 'comments',
                 'label' => __('Comments'),

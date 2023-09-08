@@ -467,13 +467,7 @@
             }).done(function (data) {
                 if (data.content !== undefined) {
                     // set textarea content
-                    if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                        tasktinymce.setContent('');
-                        // use paste command to force images registering
-                        tasktinymce.execCommand('mceInsertClipboardContent', false, {
-                            html: data.content
-                        });
-                    }
+                    setRichTextEditorContent("content_{{ rand }}", data.content);
                 }
 
                 if (data.taskcategories_id !== undefined) {

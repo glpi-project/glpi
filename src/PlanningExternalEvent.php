@@ -202,9 +202,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
                   }
                   $("#dropdown_background{$rand}").trigger("setValue", data.background);
                   if (data.text.length > 0) {
-                     if (contenttinymce = tinymce.get("text{$rand}")) {
-                        contenttinymce.setContent(data.text);
-                     }
+                     setRichTextEditorContent("text{$rand}", data.text);
                   }
 
                   // set planification fields
