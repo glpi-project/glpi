@@ -4819,6 +4819,127 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ->integer['size']->isIdenticalTo(55000);
     }
 
+
+    public function testImportPhoneSimCardNoReset()
+    {
+        global $DB;
+
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SIMCARDS>
+        <COUNTRY>fr</COUNTRY>
+        <OPERATOR_CODE>2081</OPERATOR_CODE>
+        <OPERATOR_NAME>Orange F</OPERATOR_NAME>
+        <SERIAL>89330126162002971850</SERIAL>
+        <STATE>SIM_STATE_READY</STATE>
+        <LINE_NUMBER></LINE_NUMBER>
+        <SUBSCRIBER_ID>1</SUBSCRIBER_ID>
+    </SIMCARDS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  <ITEMTYPE>Phone</ITEMTYPE>
+</REQUEST>";
+
+        $this->doInventory($xml, true);
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+
+        //check created computer
+        $phone = new \Phone();
+        $this->boolean($phone->getFromDB($agent['items_id']))->isTrue();
+
+        //check for components
+        $item_devicesimcard = new \Item_DeviceSimcard();
+        $simcards_first = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $this->integer(count($simcards_first))->isIdenticalTo(1);
+
+        //re run inventory to check if item_simcard ID is changed
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'phone_1.json'));
+
+        $this->doInventory($json);
+        $item_devicesimcard = new \Item_DeviceSimcard();
+        $simcards_second = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $this->integer(count($simcards_second))->isIdenticalTo(1);
+
+        $this->array($simcards_first)->isIdenticalTo($simcards_second);
+    }
+
+    public function testImportPhoneMultiSimCardNoReset()
+    {
+        global $DB;
+
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SIMCARDS>
+        <COUNTRY>fr</COUNTRY>
+        <OPERATOR_CODE>2081</OPERATOR_CODE>
+        <OPERATOR_NAME>Orange F</OPERATOR_NAME>
+        <SERIAL>89330126162002971850</SERIAL>
+        <STATE>SIM_STATE_READY</STATE>
+        <LINE_NUMBER></LINE_NUMBER>
+        <SUBSCRIBER_ID>1</SUBSCRIBER_ID>
+    </SIMCARDS>
+    <SIMCARDS>
+        <COUNTRY>fr</COUNTRY>
+        <OPERATOR_CODE>2081</OPERATOR_CODE>
+        <OPERATOR_NAME>Orange F</OPERATOR_NAME>
+        <SERIAL>23168441316812316511</SERIAL>
+        <STATE>SIM_STATE_READY</STATE>
+        <LINE_NUMBER></LINE_NUMBER>
+        <SUBSCRIBER_ID>2</SUBSCRIBER_ID>
+    </SIMCARDS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  <ITEMTYPE>Phone</ITEMTYPE>
+</REQUEST>";
+
+        $this->doInventory($xml, true);
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+
+        //check created computer
+        $phone = new \Phone();
+        $this->boolean($phone->getFromDB($agent['items_id']))->isTrue();
+
+        //check for components
+        $item_devicesimcard = new \Item_DeviceSimcard();
+        $simcards_first = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $this->integer(count($simcards_first))->isIdenticalTo(2);
+
+        //re run inventory to check if item_simcard ID is changed
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'phone_1.json'));
+
+        $this->doInventory($json);
+        $item_devicesimcard = new \Item_DeviceSimcard();
+        $simcards_second = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $this->integer(count($simcards_second))->isIdenticalTo(2);
+
+        $this->array($simcards_first)->isIdenticalTo($simcards_second);
+    }
+
+
     public function testImportPhone()
     {
         global $DB, $CFG_GLPI;
