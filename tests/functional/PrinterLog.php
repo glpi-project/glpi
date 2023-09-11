@@ -102,15 +102,19 @@ class PrinterLog extends DbTestCase
         $this->integer($log->add($input))->isGreaterThan(0);
 
         //per default, get 1Y old, first not included
-        $this->array($log->getMetrics($printer))->hasSize(3);
+        $this->array($log->getMetrics($printer))->hasSize(1);
+        $this->array($log->getMetrics($printer)[$printer->getID()])->hasSize(3);
 
         //same with start_date parameter
-        $this->array($log->getMetrics($printer, start_date: $cdate1))->hasSize(4);
+        $this->array($log->getMetrics($printer, start_date: $cdate1))->hasSize(1);
+        $this->array($log->getMetrics($printer, start_date: $cdate1)[$printer->getID()])->hasSize(4);
         //same with interval parameter
-        $this->array($log->getMetrics($printer, interval: 'P14M'))->hasSize(4);
+        $this->array($log->getMetrics($printer, interval: 'P14M'))->hasSize(1);
+        $this->array($log->getMetrics($printer, interval: 'P14M')[$printer->getID()])->hasSize(4);
 
         //use end_date parameter to exclude last report
-        $this->array($log->getMetrics($printer, start_date: $cdate1, end_date: $now->sub(new \DateInterval('P1D'))))->hasSize(3);
+        $this->array($log->getMetrics($printer, end_date: $now)[$printer->getID()])->hasSize(3);
+        $this->array($log->getMetrics($printer, start_date: $cdate1, end_date: $now->sub(new \DateInterval('P1D')))[$printer->getID()])->hasSize(3);
 
         $datex = new \DateTime();
         for ($i = 0; $i < 21; $i++) {
@@ -128,15 +132,19 @@ class PrinterLog extends DbTestCase
         }
 
         // check working of daily format
-        $this->array($log->getMetrics($printer, interval: 'P2M', format: 'daily'))->hasSize(23);
+        $this->array($log->getMetrics($printer, format: 'daily', interval: 'P2M'))->hasSize(1);
+        $this->array($log->getMetrics($printer, interval: 'P2M', format: 'daily')[$printer->getID()])->hasSize(23);
 
         // check working of weekly format
-        $this->array($log->getMetrics($printer, interval: 'P28D', format: 'weekly'))->hasSize(4);
+        $this->array($log->getMetrics($printer, format: 'weekly', interval: 'P28D'))->hasSize(1);
+        $this->array($log->getMetrics($printer, interval: 'P28D', format: 'weekly')[$printer->getID()])->hasSize(4);
 
         // check working of monthly format
-        $this->array($log->getMetrics($printer, format: 'monthly', interval: 'P2Y'))->hasSize(4);
+        $this->array($log->getMetrics($printer, format: 'monthly', interval: 'P2Y'))->hasSize(1);
+        $this->array($log->getMetrics($printer, format: 'monthly', interval: 'P2Y')[$printer->getID()])->hasSize(4);
 
         // check working of yearly format
-        $this->array($log->getMetrics($printer, format: 'yearly', interval: 'P2Y'))->hasSize(2);
+        $this->array($log->getMetrics($printer, format: 'yearly', interval: 'P2Y'))->hasSize(1);
+        $this->array($log->getMetrics($printer, format: 'yearly', interval: 'P2Y')[$printer->getID()])->hasSize(2);
     }
 }

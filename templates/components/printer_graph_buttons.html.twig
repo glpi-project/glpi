@@ -111,6 +111,31 @@
             {% endfor %}
         </ul>
     </div>
+    <div id="compare_printers_dropdown" class="dropdown">
+        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+        <i class="ti ti-git-compare me-2"></i>
+            {{ __('Compare') }}
+        </button>
+        <ul class="dropdown-menu">
+            <li class="mx-2">
+                {{ fields.dropdownField('Printer', 'compare_printer', compare_printers, __('Select printers to compare'), options|merge({
+                    'full_width': true,
+                    'multiple': true,
+                    'is_horizontal': false,
+                    'mb': '',
+                })) }}
+                {{ fields.dropdownArrayField('compare_printer_stat', compare_printer_stat, {
+                    'total_pages' : __('Total pages'),
+                    'bw_pages' : __('Black and white pages'),
+                    'color_pages' : __('Color pages'),
+                }, __('Select a statistic to compare'), options|merge({
+                    'full_width': true,
+                    'is_horizontal': false,
+                })) }}
+                <button class="btn btn-primary w-full mb-1" type="button" onclick="update_compare_printers_{{ options['rand'] }}()">{{ __('Apply') }}</button>
+            </li>
+        </ul>
+    </div>
     <a href="{{ path(export_url) }}" target="_blank" class="btn btn-sm btn-icon btn-ghost-secondary me-0 me-sm-1 px-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Export data in CSV') }}">
          <i class="ti fa-lg ti-file-download"></i>
       </a>
@@ -124,6 +149,11 @@
         'end_date': {{ end_date|json_encode|raw }},
     }
 
+    var compare_printers_data = {
+        'compare_printers': {{ compare_printers|json_encode|raw }},
+        'compare_printer_stat': {{ compare_printer_stat|json_encode|raw }},
+    }
+
     function reloadTab_{{ options['rand'] }}() {
         params = 'date_format=' + date_range_data['format'];
 
@@ -131,6 +161,13 @@
             params += '&date_start=' + date_range_data['start_date'] + '&date_end=' + date_range_data['end_date'];
         } else {
             params += '&date_interval=' + date_range_data['interval'];
+        }
+
+        if (compare_printers_data['compare_printers']) {
+            params += '&compare_printers=' + compare_printers_data['compare_printers'].join(',');
+        }
+        if (compare_printers_data['compare_printer_stat']) {
+            params += '&compare_printer_stat=' + compare_printers_data['compare_printer_stat'];
         }
 
         reloadTab(params);
@@ -169,6 +206,15 @@
             $('#select_range_dropdown button.dropdown-toggle').html(label);
             reloadTab_{{ options['rand'] }}();
         }
+    }
+    function update_compare_printers_{{ options['rand'] }}() {
+        let compare_printers = $('#dropdown_compare_printer__{{ options['rand'] }}').val();
+        let compare_printer_stat = $('#dropdown_compare_printer_stat{{ options['rand'] }}').val();
+
+        compare_printers_data['compare_printers'] = compare_printers;
+        compare_printers_data['compare_printer_stat'] = compare_printer_stat;
+
+        reloadTab_{{ options['rand'] }}();
     }
 
     $(document).ready(function () {
