@@ -1,0 +1,66 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="center">
+   <div class="my-2">
+      {% if notifications|length %}
+         {{ _n('Notification used:', 'Notifications used:', notifications|length) }}
+         {% if has_profile_right('notification', constant('UPDATE')) %}
+            {% for notification in notifications %}
+               {% if not loop.first %}, {% endif %}
+               <a href="{{ 'Notification'|itemtype_form_path(notification['id']) }}">{{ notification['name'] }}</a>
+            {% endfor %}
+         {% else %}
+            {{ notifications|map(n => n['name'])|join(', ') }}
+         {% endif %}
+      {% else %}
+         <div class="alert alert-warning">
+            {{ __('Notification does not exist') }}
+            {% if params.canedit %}
+               <br>
+               <a href="{{ search|itemtype_form_path(search.fields['id']) }}&amp;create_notif=true">{{ __('Create it now') }}</a>
+               {% set params = params|merge({
+                  'canedit': false
+               }) %}
+            {% endif %}
+         </div>
+      {% endif %}
+   </div>
+   <div class="my-2">
+      {% if params['canedit'] and not (params['withtemplate'] is not empty and params['withtemplate'] == 2) %}
+         <a class="btn btn-primary" href="{{ 'SavedSearch_Alert'|itemtype_form_path }}?savedsearches_id={{ search.fields['id'] }}&amp;withtemplate={{ params['withtemplate'] }}">
+            {{ __('Add an alert') }}
+         </a>
+      {% endif %}
+   </div>
+</div>

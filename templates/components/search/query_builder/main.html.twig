@@ -109,7 +109,11 @@
                </button>
             {% endif %}
             {% if p['showbookmark'] %}
-               {{ call('SavedSearch::showSaveButton', [constant('SavedSearch::SEARCH'), itemtype, _get['savedsearches_id'] is defined]) }}
+               {{ include('pages/tools/savedsearch/save_button.html.twig', {
+                  type: constant('SavedSearch::SEARCH'),
+                  itemtype: itemtype,
+                  active: _get['savedsearches_id'] is defined
+               }) }}
             {% endif %}
             {% if p['showreset'] %}
                <a class="btn btn-ghost-secondary btn-icon btn-sm me-1 search-reset" data-bs-toggle="tooltip" data-bs-placement="bottom"

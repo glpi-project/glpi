@@ -98,6 +98,7 @@ The present file will list all changes made to the project; according to the
 - `QuerySubQuery` class moved to `Glpi\DBAL` namespace.
 - `QueryUnion` class moved to `Glpi\DBAL` namespace.
 - `PrinterLog::getMetrics()` method has been made final.
+- `SavedSearch::showSaveButton()` replaced with `pages/tools/savedsearch/save_button.html.twig` template.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.

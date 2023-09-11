@@ -73,22 +73,24 @@
                         </a></th>
                     {% endfor %}
 
-                    <th>
-                        <span class="float-end log-toolbar mb-0">
-                            {% if nofilter is not defined %}
-                                <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
-                                    <i class="fas fa-filter"></i>
-                                    <span class="d-none d-xl-block">{{ __('Filter') }}</span>
-                                </button>
-                            {% endif %}
-                            {% if csv_url|length %}
-                                <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-outline-secondary">
-                                    <i class="fas fa-file-download"></i>
-                                    <span class="d-none d-xl-block">{{ __('Export') }}</span>
-                                </a>
-                            {% endif %}
-                        </span>
-                    </th>
+                   {% if nofilter is not defined or csv_url|length %}
+                       <th>
+                           <span class="float-end log-toolbar mb-0">
+                               {% if nofilter is not defined %}
+                                   <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
+                                       <i class="fas fa-filter"></i>
+                                       <span class="d-none d-xl-block">{{ __('Filter') }}</span>
+                                   </button>
+                               {% endif %}
+                               {% if csv_url|length %}
+                                   <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-outline-secondary">
+                                       <i class="fas fa-file-download"></i>
+                                       <span class="d-none d-xl-block">{{ __('Export') }}</span>
+                                   </a>
+                               {% endif %}
+                           </span>
+                       </th>
+                     {% endif %}
                 </tr>
                 {% if filters|length > 0  %}
                     <tr class="filter_row">
