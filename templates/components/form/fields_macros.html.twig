@@ -31,7 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro largeTitle(label, icon = '', first = false) %}
+{% macro largeTitle(label, icon = '', first = false, helper = '') %}
    {% set margins = 'mt-3' %}
    {% if first %}
       {% set margins = 'mt-n2' %}
@@ -46,12 +46,16 @@
                </div>
             {% endif %}
             {{ label }}
+            {% if helper is not empty %}
+               <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
+                     data-bs-content="{{ helper|e('html_attr') }}">?</span>
+            {% endif %}
          </h4>
       </div>
    </div>
 {% endmacro %}
 
-{% macro smallTitle(label, icon = '') %}
+{% macro smallTitle(label, icon = '', helper = '') %}
    {% set margins = 'mt-2 mb-2' %}
 
    <div class="card border-0 shadow-none p-0 m-0 {{ margins }}">
@@ -63,6 +67,10 @@
                </div>
             {% endif %}
             {{ label }}
+            {% if helper is not empty %}
+               <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
+                     data-bs-content="{{ helper|e('html_attr') }}">?</span>
+            {% endif %}
          </h4>
       </div>
    </div>
@@ -642,13 +650,16 @@
    {% if value|length == 0 %}
       {% set value = '&nbsp;' %}
    {% endif %}
+   {% set options = {
+      wrapper_class: 'form-control-plaintext'
+   }|merge(options) %}
 
    {% if options.fields_template.isReadonlyField(name) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
    {% set value %}
-      <span class="form-control-plaintext">{{ value|raw }}</span>
+      <span class="{{ wrapper_class }}">{{ value|raw }}</span>
    {% endset %}
    {{ _self.field(name, value, label, options) }}
 {% endmacro %}
