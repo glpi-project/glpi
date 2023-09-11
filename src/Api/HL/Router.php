@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL;
 
+use DropdownTranslation;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AdministrationController;
 use Glpi\Api\HL\Controller\AssetController;
@@ -658,6 +659,10 @@ EOT;
         $auth->user = new \User();
         $auth->user->getFromDB($data['user_id']);
         Session::init($auth);
+        if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
+            $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+        }
     }
 
     /**

@@ -321,4 +321,98 @@ class AssetController extends \HLAPITestCase
                 ->isNotFoundError();
         });
     }
+
+    public function testDropdownTranslations()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $state = new \State();
+        $this->integer($state_id = $state->add([
+            'name' => 'Test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->integer($computer_id = $computer->add([
+            'name' => 'Test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'states_id' => $state_id,
+        ]))->isGreaterThan(0);
+        $dropdown_translation = new \DropdownTranslation();
+        $this->integer($dropdown_translation->add([
+            'items_id'  => $state_id,
+            'itemtype'  => 'State',
+            'language'  => 'fr_FR',
+            'field'     => 'name',
+            'value'     => 'Essai',
+        ]))->isGreaterThan(0);
+
+        $CFG_GLPI['translate_dropdowns'] = true;
+        // Get and verify
+        $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($state_id) {
+                    $this->array($content)->hasKey('status');
+                    $this->array($content['status'])->hasKey('name');
+                    $this->string($content['status']['name'])->isEqualTo('Test');
+                });
+        });
+        // Change language and verify
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($state_id) {
+                    $this->array($content)->hasKey('status');
+                    $this->array($content['status'])->hasKey('name');
+                    $this->string($content['status']['name'])->isEqualTo('Essai');
+                });
+        });
+    }
+
+    public function testMissingDropdownTranslation()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $state = new \State();
+        $this->integer($state_id = $state->add([
+            'name' => 'Test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->integer($computer_id = $computer->add([
+            'name' => 'Test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'states_id' => $state_id,
+        ]))->isGreaterThan(0);
+
+        $CFG_GLPI['translate_dropdowns'] = true;
+        // Get and verify
+        $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($state_id) {
+                    $this->array($content)->hasKey('status');
+                    $this->array($content['status'])->hasKey('name');
+                    $this->string($content['status']['name'])->isEqualTo('Test');
+                });
+        });
+        // Change language and verify the default name is returned instead of null
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($state_id) {
+                    $this->array($content)->hasKey('status');
+                    $this->array($content['status'])->hasKey('name');
+                    $this->string($content['status']['name'])->isEqualTo('Test');
+                });
+        });
+    }
 }
