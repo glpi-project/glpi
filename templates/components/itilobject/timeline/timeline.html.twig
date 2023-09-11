@@ -100,10 +100,7 @@
 
       {# Cache keys are prefixed by "_" to avoid being converted to integer and thus renumbered #}
       {# Try to read user from cache #}
-      {% set entry_user = users_id is defined and users_id is not null ?
-         (user_cache["_" ~ users_id] ?? get_item('User', users_id)) :
-         null
-      %}
+      {% set entry_user = users_id is defined and users_id is not null ? (user_cache["_" ~ users_id] ?? get_item('User', users_id)) : null %}
       {# Update cache #}
       {% set user_cache = user_cache|merge({("_" ~ users_id): entry_user}) %}
 
