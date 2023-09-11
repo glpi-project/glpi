@@ -659,7 +659,9 @@ EOT;
         $auth->user = new \User();
         $auth->user->getFromDB($data['user_id']);
         Session::init($auth);
-        if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        if ($request->getHeaderLine('Accept-Language')) {
+            // Make sure language header is set in SERVER superglobal so that Session::getPreferredLanguage() works
+            $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $request->getHeaderLine('Accept-Language');
             $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
             $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
         }
