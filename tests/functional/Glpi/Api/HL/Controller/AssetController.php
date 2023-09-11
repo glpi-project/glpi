@@ -360,8 +360,10 @@ class AssetController extends \HLAPITestCase
                 });
         });
         // Change language and verify
-        $_SESSION['glpilanguage'] = 'fr_FR';
-        $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
+        $request = new Request('GET', '/Assets/Computer/' . $computer_id, [
+            'Accept-Language' => 'fr_FR',
+        ]);
+        $this->api->call($request, function ($call) use ($state_id) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
