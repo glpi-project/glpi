@@ -1006,7 +1006,10 @@ class GLPIKanbanRights {
                 }).always(() => {
                     $.ajax({
                         method: 'GET',
-                        url: (self.ajax_root + "getSessionMessages.php"),
+                        url: (self.ajax_root + "displayMessageAfterRedirect.php"),
+                        data: {
+                            'get_raw': true
+                        }
                     }).done((messages) => {
                         $.each(messages, (level, level_messages) => {
                             $.each(level_messages, (index, message) => {
@@ -1876,7 +1879,10 @@ class GLPIKanbanRights {
                 }).always(() => {
                     $.ajax({
                         method: 'GET',
-                        url: (self.ajax_root + "getSessionMessages.php"),
+                        url: (self.ajax_root + "displayMessageAfterRedirect.php"),
+                        data: {
+                            'get_raw': true
+                        }
                     }).done((messages) => {
                         $.each(messages, (level, level_messages) => {
                             $.each(level_messages, (index, message) => {
