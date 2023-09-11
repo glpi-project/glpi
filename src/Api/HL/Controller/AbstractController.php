@@ -116,6 +116,7 @@ abstract class AbstractController
         $schema = [
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-field' => $field,
+            'x-itemtype' => $class,
             'x-join' => [
                 'table' => $class::getTable(), // The table to join
                 'fkey' => $field, // The field in the main table to use as a reference
