@@ -85,6 +85,7 @@ class ComponentController extends \HLAPITestCase
         // Create component type
         $request = new Request('POST', '/Components/' . $type);
         $request->setParameter('designation', $type . $func_name);
+        $request->setParameter('entities_id', getItemByTypeName('Entity', '_test_root_entity', true));
         $new_item_location = null;
         $this->api->call($request, function ($call) use ($type, &$new_item_location) {
             /** @var \HLAPICallAsserter $call */
@@ -143,7 +144,7 @@ class ComponentController extends \HLAPITestCase
     {
         global $DB;
 
-        $this->login();
+        $this->login('glpi', 'glpi');
 
         $func_name = __FUNCTION__;
 
@@ -156,6 +157,7 @@ class ComponentController extends \HLAPITestCase
         // Create the component type
         $request = new Request('POST', '/Components/' . $type);
         $request->setParameter('designation', $type . $func_name);
+        $request->setParameter('entities_id', getItemByTypeName('Entity', '_test_root_entity', true));
         $new_item_location = null;
         $this->api->call($request, function ($call) use ($type, &$new_item_location) {
             /** @var \HLAPICallAsserter $call */
