@@ -84,7 +84,7 @@ window.GLPI.Search.GenericView = class GenericView {
         const ajax_container = this.getResultsView().getAJAXContainer();
         const search_container = ajax_container.closest('.search-container');
 
-        $(search_container).on('click', ' button[name="save_bookmark_record"]', () => {
+        $(search_container).on('click', 'button[name="save_bookmark_record"]', () => {
             const modal = $('#savedsearch-modal');
             //move the modal to the body so it can be displayed above the rest of the page
             modal.appendTo('body');
