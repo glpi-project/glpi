@@ -1855,6 +1855,18 @@ class Entity extends CommonTreeDropdown
                 'entities_id' => $entity->fields['entities_id'],
             ],
             'inheritance_labels' => $inheritance_labels,
+            'contract_alert_choices' => [
+                0 => Dropdown::EMPTY_VALUE,
+                4 => __('End'),
+                8 => __('Notice'),
+                12 => __('End + Notice'),
+                64 => __('Period end'),
+                72 => __('Period end + Notice'),
+            ],
+            'infocom_alert_choices' => [
+                0 => Dropdown::EMPTY_VALUE,
+                4 => __('Warranty expiration date'),
+            ]
         ]);
         return true;
     }

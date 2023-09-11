@@ -160,22 +160,12 @@
 
       {{ fields.smallTitle('Contract'|itemtype_name(get_plural_number())) }}
       {{ _self.inherited_alert_yesno(item, inheritance_labels, 'use_contracts_alert', __('Alarms on contracts')) }}
-      {{ _self.inherited_alert_dropdown(item, inheritance_labels, 'default_contract_alert', __('Default value'), {
-         0: constant('Dropdown::EMPTY_VALUE'),
-         4: __('End'),
-         8: __('Notice'),
-         12: __('End + Notice'),
-         64: __('Period end'),
-         72: __('Period end + Notice'),
-      }) }}
+      {{ _self.inherited_alert_dropdown(item, inheritance_labels, 'default_contract_alert', __('Default value'), contract_alert_choices) }}
       {{ _self.inherited_alert_int_never(item, inheritance_labels, 'send_contracts_alert_before_delay', __('Send contract alarms before')) }}
 
       {{ fields.smallTitle('Infocom'|itemtype_name(get_plural_number())) }}
       {{ _self.inherited_alert_yesno(item, inheritance_labels, 'use_infocoms_alert', __('Alarms on financial and administrative information')) }}
-      {{ _self.inherited_alert_dropdown(item, inheritance_labels, 'default_infocom_alert', __('Default value'), {
-         0: constant('Dropdown::EMPTY_VALUE'),
-         4: __('Warranty expiration date'),
-      }) }}
+      {{ _self.inherited_alert_dropdown(item, inheritance_labels, 'default_infocom_alert', __('Default value'), infocom_alert_choices) }}
       {{ _self.inherited_alert_int_never(item, inheritance_labels, 'send_infocoms_alert_before_delay', __('Send financial and administrative information alarms before')) }}
 
       {{ fields.smallTitle('SoftwareLicense'|itemtype_name(get_plural_number())) }}
