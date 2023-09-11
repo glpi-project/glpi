@@ -120,9 +120,9 @@ class ProjectController extends \HLAPITestCase
 
     public function testCreateGetUpdateDeleteTask()
     {
-        $this->login();
+        $this->login('glpi', 'glpi');
 
-        // Create Ptoject
+        // Create Project
         $request = new Request('POST', '/Project');
         $request->setParameter('name', __FUNCTION__);
         $request->setParameter('content', 'test');

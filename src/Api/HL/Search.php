@@ -36,6 +36,8 @@
 namespace Glpi\Api\HL;
 
 use CommonDBTM;
+use Entity;
+use ExtraVisibilityCriteria;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc;
 use Glpi\DBAL\QueryFunction;
@@ -228,6 +230,61 @@ final class Search
         if (isset($this->request_params['filter']) && !empty($this->request_params['filter'])) {
             $rsql = new RSQLInput($this->request_params['filter']);
             $criteria['WHERE'] = $rsql->getSQLCriteria($this->schema);
+        }
+        $entity_restrict = [];
+        if (!$this->union_search_mode) {
+            $itemtype = $this->schema['x-itemtype'];
+            /** @var CommonDBTM $item */
+            $item = new $itemtype();
+            if ($item instanceof ExtraVisibilityCriteria) {
+                $visibility_restrict = $item::getVisibilityCriteria();
+                $entity_restrict = $visibility_restrict['WHERE'] ?? [];
+                $join_types = ['LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'];
+                foreach ($join_types as $join_type) {
+                    if (empty($visibility_restrict[$join_type])) {
+                        continue;
+                    }
+                    if (!isset($criteria[$join_type])) {
+                        $criteria[$join_type] = [];
+                    }
+                    $criteria[$join_type] = array_merge($criteria[$join_type], $visibility_restrict[$join_type]);
+                }
+            } else if ($item->isEntityAssign()) {
+                $entity_restrict = getEntitiesRestrictCriteria('_');
+            }
+            if ($item instanceof Entity) {
+                $entity_restrict = [
+                    'OR' => [
+                        [$entity_restrict],
+                        [getEntitiesRestrictCriteria('_', 'id')]
+                    ]
+                ];
+                // if $entity_restrict has nothing except empty values as leafs, replace with a simple empty array.
+                // Expected in root entity when recursive. Having empty arrays will fail the query (thinks it is empty IN).
+                $fn_is_empty = static function ($where) use (&$fn_is_empty) {
+                    foreach ($where as $where_field => $where_value) {
+                        if (is_array($where_value)) {
+                            if (!$fn_is_empty($where_value)) {
+                                return false;
+                            }
+                        } else if (!empty($where_value)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                };
+                if ($fn_is_empty($entity_restrict)) {
+                    $entity_restrict = [];
+                }
+            }
+        } else {
+            //TODO What if some subtypes are entity assign and some are not?
+            $entity_restrict = [
+                getEntitiesRestrictCriteria('_'),
+            ];
+        }
+        if (!empty($entity_restrict)) {
+            $criteria['WHERE'][] = ['AND' => $entity_restrict];
         }
 
         if (isset($this->request_params['start'])) {

@@ -186,7 +186,7 @@ class AdministrationController extends \HLAPITestCase
                 ->isUnauthorizedError();
         });
 
-        $this->login();
+        $this->login('glpi', 'glpi');
         $this->api->call(new Request('GET', '/Administration/Entity'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -269,7 +269,7 @@ class AdministrationController extends \HLAPITestCase
      */
     public function testGetItem(string $type, int $id)
     {
-        $this->login();
+        $this->login('glpi', 'glpi');
         $this->api->call(new Request('GET', "/Administration/$type/$id"), function ($call) use ($id) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -676,7 +676,7 @@ class AdministrationController extends \HLAPITestCase
 
     public function testCreateUpdateDeleteEntity()
     {
-        $this->login();
+        $this->login('glpi', 'glpi');
 
         $unique_id = __FUNCTION__;
 
