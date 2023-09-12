@@ -262,8 +262,6 @@ class DBmysql
             $host = $this->dbhost;
         }
 
-
-
         $hostport = explode(":", $host);
         if (count($hostport) < 2) {
             // Host
