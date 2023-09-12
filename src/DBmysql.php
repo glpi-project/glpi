@@ -1714,7 +1714,7 @@ class DBmysql
      */
     public function dropTable(string $name, bool $exists = false)
     {
-        $res = $this->query(
+        $res = $this->doQuery(
             $this->buildDrop(
                 $name,
                 'TABLE',
@@ -1734,7 +1734,7 @@ class DBmysql
      */
     public function dropView(string $name, bool $exists = false)
     {
-        $res = $this->query(
+        $res = $this->doQuery(
             $this->buildDrop(
                 $name,
                 'VIEW',
