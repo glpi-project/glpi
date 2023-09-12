@@ -1767,7 +1767,10 @@ class DBmysql
         }
 
         $name = $this::quoteName($name);
-        $query = "DROP $type";
+        $query = 'DROP';
+        if ($type != 'FIELD') {
+            $query .= " $type";
+        }
         if ($exists) {
             $query .= ' IF EXISTS';
         }
