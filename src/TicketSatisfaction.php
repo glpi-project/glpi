@@ -200,9 +200,14 @@ class TicketSatisfaction extends CommonDBTM
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+            // Send notification only if fields related to reply are updated.
+            $answer_updates = array_filter(
+                $this->updates,
+                fn ($field) => in_array($field, ['satisfaction', 'comment'])
+            );
+
             $ticket = new Ticket();
-            // date_answer is always updated even if the comment or rate does not change
-            if (count($this->updates) > 1 && $ticket->getFromDB($this->fields['tickets_id'])) {
+            if (count($answer_updates) > 1 && $ticket->getFromDB($this->fields['tickets_id'])) {
                 NotificationEvent::raiseEvent("replysatisfaction", $ticket);
             }
         }
