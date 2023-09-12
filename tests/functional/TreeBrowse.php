@@ -107,54 +107,6 @@ class Knowbase extends DbTestCase
         // Expected for normal user
         $expected = [
             [
-                'key' => 1,
-                'title' => 'cat 1',
-                'parent' => 0,
-                'a_attr' => ['data-id' => 1],
-                'children' => [
-                    [
-                        'key' => 2,
-                        'title' => 'cat 1.1',
-                        'parent' => 1,
-                        'a_attr' => ['data-id' => 2],
-                        'children' => [
-                            [
-                                'key' => 3,
-                                'title' => 'cat 1.1.1',
-                                'parent' => 2,
-                                'a_attr' => ['data-id' => 3],
-                            ],
-                            [
-                                'key' => 4,
-                                'title' => 'cat 1.1.2',
-                                'parent' => 2,
-                                'a_attr' => ['data-id' => 4],
-                            ]
-                        ]
-                    ],
-                    [
-                        'key' => 5,
-                        'title' => 'cat 1.2',
-                        'parent' => 1,
-                        'a_attr' => ['data-id' => 5],
-                        'children' => [
-                            [
-                                'key' => 6,
-                                'title' => 'cat 1.2.1',
-                                'parent' => 5,
-                                'a_attr' => ['data-id' => 6],
-                            ]
-                        ]
-                    ],
-                    [
-                        'key' => 7,
-                        'title' => 'cat 1.3',
-                        'parent' => 1,
-                        'a_attr' => ['data-id' => 7],
-                    ]
-                ]
-            ],
-            [
                 'key' => -1,
                 'title' => 'Without Category <span class="badge bg-azure-lt" title="This category contains Knowledge base">2</span>',
                 'parent' => 0,
@@ -194,7 +146,36 @@ class Knowbase extends DbTestCase
         $this->integer($kbitem_target_id)->isGreaterThan(0);
 
         $tree = $itemtype::getTreeCategoryList($itemtype, []);
-        $expected[0]['children'][0]['children'][1]['title'] = 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>';
+        $expected = [
+            [
+                'key' => 1,
+                'title' => 'cat 1',
+                'parent' => 0,
+                'a_attr' => ['data-id' => 1],
+                'children' => [
+                    [
+                        'key' => 2,
+                        'title' => 'cat 1.1',
+                        'parent' => 1,
+                        'a_attr' => ['data-id' => 2],
+                        'children' => [
+                            [
+                                'key' => 4,
+                                'title' => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
+                                'parent' => 2,
+                                'a_attr' => ['data-id' => 4],
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'key' => -1,
+                'title' => 'Without Category <span class="badge bg-azure-lt" title="This category contains Knowledge base">2</span>',
+                'parent' => 0,
+                'a_attr' => ['data-id' => -1],
+            ]
+        ];
         $this->array($tree)->isEqualTo($expected);
 
         // Add 2nd category
@@ -217,7 +198,42 @@ class Knowbase extends DbTestCase
         $this->integer($kbitem_target_id)->isGreaterThan(0);
 
         $tree = $itemtype::getTreeCategoryList($itemtype, []);
-        $expected[0]['children'][2]['title'] = 'cat 1.3 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>';
+        $expected = [
+            [
+                'key' => 1,
+                'title' => 'cat 1',
+                'parent' => 0,
+                'a_attr' => ['data-id' => 1],
+                'children' => [
+                    [
+                        'key' => 2,
+                        'title' => 'cat 1.1',
+                        'parent' => 1,
+                        'a_attr' => ['data-id' => 2],
+                        'children' => [
+                            [
+                                'key' => 4,
+                                'title' => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
+                                'parent' => 2,
+                                'a_attr' => ['data-id' => 4],
+                            ]
+                        ]
+                    ],
+                    [
+                        'key' => 7,
+                        'title' => 'cat 1.3 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
+                        'parent' => 1,
+                        'a_attr' => ['data-id' => 7],
+                    ]
+                ]
+            ],
+            [
+                'key' => -1,
+                'title' => 'Without Category <span class="badge bg-azure-lt" title="This category contains Knowledge base">2</span>',
+                'parent' => 0,
+                'a_attr' => ['data-id' => -1],
+            ]
+        ];
         $this->array($tree)->isEqualTo($expected);
 
         // Add a FAQ item
@@ -264,12 +280,46 @@ class Knowbase extends DbTestCase
         $_SESSION = $session_bck;
         $CFG_GLPI['use_public_faq'] = $use_public_faq_bck;
 
-        $expected[0]['children'][0]['children'][1]['title'] = 'cat 1.1.2';
-        $expected[0]['children'][2]['title'] = 'cat 1.3';
-        $expected[1]['title'] = 'Without Category';
+        $expected = [
+            [
+                'key' => -1,
+                'title' => 'Without Category',
+                'parent' => 0,
+                'a_attr' => ['data-id' => -1],
+            ]
+        ];
         $this->array($tree_with_no_public_faq)->isEqualTo($expected);
 
-        $expected[0]['children'][1]['children'][0]['title'] = 'cat 1.2.1 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>';
+        $expected = [
+            [
+                'key' => 1,
+                'title' => 'cat 1',
+                'parent' => 0,
+                'a_attr' => ['data-id' => 1],
+                'children' => [
+                    [
+                        'key' => 5,
+                        'title' => 'cat 1.2',
+                        'parent' => 1,
+                        'a_attr' => ['data-id' => 5],
+                        'children' => [
+                            [
+                                'key' => 6,
+                                'title' => 'cat 1.2.1 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
+                                'parent' => 5,
+                                'a_attr' => ['data-id' => 6],
+                            ]
+                        ]
+                    ],
+                ]
+            ],
+            [
+                'key' => -1,
+                'title' => 'Without Category',
+                'parent' => 0,
+                'a_attr' => ['data-id' => -1],
+            ]
+        ];
         $this->array($tree_with_public_faq)->isEqualTo($expected);
     }
 }
