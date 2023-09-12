@@ -260,7 +260,7 @@ class Planning extends CommonGLPI
     {
         $class = Planning::getStatusClass($status);
         $color = Planning::getStatusColor($status);
-        $label = Planning::getState($status);
+        $label = htmlspecialchars(Planning::getState($status), ENT_QUOTES);
         return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip'></i><span>" . $label . "</span>";
     }
 
