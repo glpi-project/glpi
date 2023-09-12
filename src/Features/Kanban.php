@@ -172,7 +172,7 @@ trait Kanban
         $tab_id = null;
         // search each value for one that contains "Kanban"
         foreach ($tabs as $id => $tab) {
-            if (str_contains($tab, 'Kanban')) {
+            if (str_contains($tab, __('Kanban'))) {
                 $tab_id = $id;
                 break;
             }
