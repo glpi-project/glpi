@@ -2309,9 +2309,9 @@ class DBmysql
 
     /**
      * Retrieve global_variables from information_schema.
-     * 
+     *
      * @param array  $where Where clause to append
-     * 
+     *
      * @return DBmysqlIterator
      */
     public function retrieveGlobalVars(array $where = []): DBmysqlIterator
@@ -2326,9 +2326,9 @@ class DBmysql
 
     /**
      * Get global variables values as an associative array.
-     * 
+     *
      * @param array  $where Where clause to append
-     * 
+     *
      * @return array
      */
     public function getGlobalVars(array $where = []): array
