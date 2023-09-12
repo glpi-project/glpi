@@ -824,4 +824,18 @@ SQL,
             }
         )->hasMessage('Unknown type to drop: UNKNOWN');
     }
+
+    /**
+     * Make sure depreciation throws an error in tests suite
+     * @return void
+     */
+    public function testDeprecatedDirectSql()
+    {
+        $db = new \DB();
+        $this->when($db->query('SELECT 1'))
+            ->error()
+            ->withType(E_USER_DEPRECATED)
+            ->withMessage('Direct query usage is strongly discouraged! Use DB::request() instead.')
+            ->exists();
+    }
 }

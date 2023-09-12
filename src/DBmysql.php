@@ -346,7 +346,7 @@ class DBmysql
      */
     public function query($query)
     {
-        Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.');
+        Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.', false);
         return $this->doQuery($query);
     }
 
@@ -464,7 +464,7 @@ class DBmysql
      */
     public function queryOrDie($query, $message = '')
     {
-        Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.');
+        Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.', false);
         return $this->doQueryOrDie($query, $message);
     }
 
