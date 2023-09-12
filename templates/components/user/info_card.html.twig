@@ -39,6 +39,7 @@
          {% if user['id'] %}
             {{ include('components/user/picture.html.twig', {
                'users_id': user['id'],
+               'user_object': user_object,
                'enable_anonymization': enable_anonymization
             }) }}
          {% endif %}
