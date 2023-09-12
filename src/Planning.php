@@ -322,12 +322,38 @@ class Planning extends CommonGLPI
     public static function dropdownState($name, $value = '', $display = true, $options = [])
     {
 
+
+        $js = <<<JAVASCRIPT
+        templateTaskStatus = function(option) {
+            if (option === false) {
+                // Option is false when element does not match searched terms
+                return null;
+            }
+            var status = option.id;
+            var classes = "";
+            switch (parseInt(status)) {
+                case 0 :
+                    classes = 'planned ti ti-info-square-filled';
+                    break;
+                case 1 :
+                    classes = 'waiting ti ti-alert-square-filled';
+                    break;
+                case 2 :
+                    classes = 'new ti ti-square-check-filled';
+                    break;
+
+            }
+            return $('<span><i class="itilstatus ' + classes + '"></i> ' + option.text + '</span>');
+        }
+JAVASCRIPT;
+
+
         $p = [
             'value'             => $value,
             'showtype'          => 'normal',
             'display'           => $display,
-            'templateResult'    => "templateTaskStatus",
-            'templateSelection' => "templateTaskStatus",
+            'templateResult'    => $js,
+            'templateSelection' => $js,
         ];
 
         $values = [static::INFO => _n('Information', 'Information', 1),
