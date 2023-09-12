@@ -41,7 +41,7 @@
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show as map') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="as_map" value="1" autocomplete="off"
-                onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                onclick="toogle('as_map','','',''); document.forms['searchform{{ normalized_itemtype|lower }}'].submit();"
                 {{ data['search']['as_map'] == 1 ? 'checked' : '' }} />
          <span class="form-check-label mb-1 mb-sm-0">
             <i class="ti fa-lg ti-map-2"></i>
@@ -54,7 +54,7 @@
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Toggle browse') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="browse" value="1" autocomplete="off"
-                onclick="toogle('browse','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                onclick="toogle('browse','','',''); document.forms['searchform{{ normalized_itemtype|lower }}'].submit();"
                 {{ data['search']['browse'] == 1 ? 'checked' : '' }} />
          <span class="form-check-label mb-1 mb-sm-0">
             <i class="ti fa-lg ti-subtask"></i>
@@ -67,7 +67,7 @@
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show the trashbin') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="is_deleted" value="1" autocomplete="off"
-                onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                onclick="toogle('is_deleted','','',''); document.forms['searchform{{ normalized_itemtype|lower }}'].submit();"
                 {{ data['search']['is_deleted'] == 1 ? 'checked' : '' }} />
          <span class="form-check-label mb-1 mb-sm-0">
             <i class="ti fa-lg ti-trash"></i>
@@ -80,7 +80,7 @@
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show unpublished') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="unpublished" value="1" autocomplete="off"
-                onclick="toogle('unpublished','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                onclick="toogle('unpublished','','',''); document.forms['searchform{{ normalized_itemtype|lower }}'].submit();"
                 {{ data['search']['unpublished'] == 1 ? 'checked' : '' }} />
          <span class="form-check-label mb-1 mb-sm-0">
             <i class="fa fa-lg fa-eye-slash"></i>

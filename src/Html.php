@@ -3713,12 +3713,14 @@ JS;
     /**
      * Init the Editor System to a textarea
      *
-     * @param string  $id            id of the html textarea to use
-     * @param string  $rand          rand of the html textarea to use (if empty no image paste system)(default '')
-     * @param boolean $display       display or get js script (true by default)
-     * @param boolean $readonly      editor will be readonly or not
-     * @param boolean $enable_images enable image pasting in rich text
-     * @param int     $editor_height editor default height
+     * @param string  $id               id of the html textarea to use
+     * @param string  $rand             rand of the html textarea to use (if empty no image paste system)(default '')
+     * @param boolean $display          display or get js script (true by default)
+     * @param boolean $readonly         editor will be readonly or not
+     * @param boolean $enable_images    enable image pasting in rich text
+     * @param int     $editor_height    editor default height
+     * @param array   $add_body_classes tinymce iframe's body classes
+     * @param string  $toolbar_location tinymce toolbar location (default: top)
      *
      * @return void|string
      *    integer if param display=true
@@ -3731,6 +3733,8 @@ JS;
         $readonly = false,
         $enable_images = true,
         int $editor_height = 150,
+        array $add_body_classes = [],
+        string $toolbar_location = 'top'
     ) {
         global $CFG_GLPI, $DB;
 
@@ -3793,6 +3797,12 @@ JS;
 
         $mandatory_field_msg = json_encode(__('The %s field is mandatory'));
 
+        // Add custom classes to tinymce body
+        $body_class = "rich_text_container";
+        foreach ($add_body_classes as $class) {
+            $body_class .= " $class";
+        }
+
         // init tinymce
         $js = <<<JS
          $(function() {
@@ -3813,8 +3823,9 @@ JS;
                skin_url: is_dark
                   ? CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark'
                   : CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide',
-               body_class: 'rich_text_container',
+               body_class: '{$body_class}',
                content_css: '{$content_css}',
+               autoresize_bottom_margin: 0, // Avoid excessive bottom padding
 
                min_height: $editor_height,
                resize: true,
@@ -3824,6 +3835,7 @@ JS;
 
                // inline toolbar configuration
                menubar: false,
+               toolbar_location: '{$toolbar_location}',
                toolbar: richtext_layout == 'classic'
                   ? 'styles | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
                   : false,
@@ -3884,6 +3896,14 @@ JS;
                         $(editor.container).removeClass('required');
                      });
                   }
+
+                  // Simulate focus on content-editable tinymce
+                  editor.on('click focus', function (e) {
+                    // Clear focus on other editors
+                    $('.simulate-focus').removeClass('simulate-focus');
+                    // Simulate input focus on our current editor
+                    $('.content-editable-tinymce').addClass('simulate-focus');
+                  });
 
                   editor.on('Change', function (e) {
                      // Nothing fancy here. Since this is only used for tracking unsaved changes,
