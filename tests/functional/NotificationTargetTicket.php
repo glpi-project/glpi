@@ -408,4 +408,77 @@ class NotificationTargetTicket extends DbTestCase
 
         $this->array($ret['timelineitems'])->isIdenticalTo($expected);
     }
+
+
+    /**
+     * Test url tags are correctly replaced in function of entity url_base setup
+     */
+    public function testUrlTag()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['url_base'] = 'root.tld';
+
+        $root    = getItemByTypeName("Entity", "Root entity", true);
+        $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // test entity url (with default url)
+        $ticket = new \Ticket();
+        $root_tickets_id = $ticket->add([
+            'name'        => 'test',
+            'content'     => 'test',
+            'entities_id' => $root,
+        ]);
+
+        $expected_raw_url = "%base_url%/index.php?redirect=ticket_%ticket_id%&noAUTO=1";
+
+        $basic_options = [
+            'additionnaloption' => [
+                'usertype' => NotificationTarget::GLPI_USER,
+                'is_self_service' => false,
+                'show_private'    => true,
+            ]
+        ];
+        $notiftargetticket = new \NotificationTargetTicket($root, 'new', $ticket);
+        $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+
+
+        $root_expected_url = str_replace([
+            '%base_url%',
+            '%ticket_id%'
+        ], [
+            "root.tld",
+            $root_tickets_id
+        ], $expected_raw_url);
+        $this->string($ret['##ticket.url##'])->isEqualTo($root_expected_url);
+
+        // test sub entity with changed url
+        $entity  = new \Entity();
+        $this->boolean($entity->update([
+            'id'       => $parent,
+            'url_base' => "parent.tld",
+            'mailing_signature' => 'test',
+        ]))->isTrue();
+        $entity->getFromDB($parent);
+
+        $parent_tickets_id = $ticket->add([
+            'name'        => 'test',
+            'content'     => 'test',
+            'entities_id' => $parent,
+        ]);
+
+        $notiftargetticket = new \NotificationTargetTicket($parent, 'new', $ticket);
+        $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+
+        $parent_expected_url = str_replace([
+            '%base_url%',
+            '%ticket_id%'
+        ], [
+            "parent.tld",
+            $parent_tickets_id
+        ], $expected_raw_url);
+        $this->string($ret['##ticket.url##'])->isEqualTo($parent_expected_url);
+    }
 }

@@ -676,9 +676,6 @@ class NotificationTarget extends CommonDBChild
      **/
     public function formatURL($usertype, $redirect)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         if (urldecode($redirect) === $redirect) {
             // `redirect` parameter value have to be url-encoded.
             // Prior to GLPI 10.0.3, method caller was responsible of this encoding,
@@ -687,16 +684,18 @@ class NotificationTarget extends CommonDBChild
             $redirect = rawurlencode($redirect);
         }
 
+        $base_url = $this->getUrlBase();
+
         switch ($usertype) {
             case self::EXTERNAL_USER:
-                return $CFG_GLPI["url_base"] . "/index.php?redirect=$redirect";
+                return "$base_url/index.php?redirect=$redirect";
 
             case self::ANONYMOUS_USER:
                // No URL
                 return '';
 
             case self::GLPI_USER:
-                return $CFG_GLPI["url_base"] . "/index.php?redirect=$redirect&noAUTO=1";
+                return "$base_url/index.php?redirect=$redirect&noAUTO=1";
         }
     }
 
@@ -1215,6 +1214,24 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
+     * Get the url base for the entity
+     *
+     * @param $entity
+     **/
+    public function getUrlBase()
+    {
+        global $CFG_GLPI;
+
+        $url_base = trim(Entity::getUsedConfig('url_base', $this->getEntity(), '', ''));
+        if (strlen($url_base) > 0) {
+            return $url_base;
+        }
+
+        return $CFG_GLPI['url_base'];
+    }
+
+
+    /**
      * Add addresses according to type of notification
      *
      * @param array $data    Data
@@ -1395,11 +1412,8 @@ class NotificationTarget extends CommonDBChild
      */
     private function getGlobalTagsData(): array
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         return [
-            '##glpi.url##' => $CFG_GLPI['url_base'],
+            '##glpi.url##' => $this->getUrlBase(),
         ];
     }
 

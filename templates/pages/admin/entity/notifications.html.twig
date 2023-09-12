@@ -127,6 +127,7 @@
       {{ fields.textareaField('mailing_signature', item.fields['mailing_signature'], __('Email signature'), {
          add_field_html: inheritance_labels['mailing_signature']|default(null),
       }) }}
+      {{ _self.inherited_text(item, inheritance_labels, 'url_base', __('URL of the application')) }}
 
       {{ fields.largeTitle(__('Alarms options'), 'ti ti-alarm') }}
 

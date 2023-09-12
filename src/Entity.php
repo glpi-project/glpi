@@ -114,7 +114,7 @@ class Entity extends CommonTreeDropdown
             'default_cartridges_alarm_threshold',
             'default_consumables_alarm_threshold',
             'default_contract_alert', 'default_infocom_alert',
-            'mailing_signature', 'cartridges_alert_repeat',
+            'mailing_signature', 'url_base', 'cartridges_alert_repeat',
             'consumables_alert_repeat', 'notclosed_delay',
             'use_licenses_alert', 'use_certificates_alert',
             'send_licenses_alert_before_delay',
@@ -1081,6 +1081,13 @@ class Entity extends CommonTreeDropdown
             'name'               => __('Email signature'),
             'datatype'           => 'text'
         ];
+        $tab[] = [
+            'id'                 => '76',
+            'table'              => $this->getTable(),
+            'field'              => 'url_base',
+            'name'               => __('URL of the application'),
+            'datatype'           => 'text'
+        ];
 
         $tab[] = [
             'id'                 => '26',
@@ -1812,6 +1819,7 @@ class Entity extends CommonTreeDropdown
             'delay_send_emails' => null,
             'is_notif_enable_default' => null,
             'mailing_signature' => $fn_get_inheritance_label('mailing_signature'),
+            'url_base' => $fn_get_inheritance_label('url_base'),
             'cartridges_alert_repeat' => $fn_get_specific_inheritance_label('cartridges_alert_repeat'),
             'default_cartridges_alarm_threshold' => $fn_get_specific_inheritance_label('default_cartridges_alarm_threshold'),
             'consumables_alert_repeat' => $fn_get_specific_inheritance_label('consumables_alert_repeat'),

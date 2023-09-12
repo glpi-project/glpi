@@ -94,3 +94,8 @@ foreach ($fields as $field) {
         );
     }
 }
+
+/** Add base url for entities to be used in notification */
+if (!$DB->fieldExists("glpi_entities", "url_base", false)) {
+    $migration->addField('glpi_entities', 'url_base', "TEXT", ['after' => 'mailing_signature']);
+}
