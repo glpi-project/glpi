@@ -284,6 +284,7 @@ class Planning extends CommonGLPI
             case Planning::DONE:
                 return "ti ti-square-check-filled";
         }
+        return '';
     }
 
 
@@ -294,7 +295,7 @@ class Planning extends CommonGLPI
      *
      * @return string
      */
-    public static function getStatusColor($status)
+    public static function getStatusColor($status): string
     {
         switch ($status) {
             case Planning::INFO:
@@ -306,6 +307,7 @@ class Planning extends CommonGLPI
             case Planning::DONE:
                 return "new";
         }
+        return '';
     }
 
 
