@@ -556,7 +556,7 @@ class DBConnection extends CommonDBTM
 
     /**
      * Get replication status information
-     * 
+     *
      * @return array
      */
     public static function getReplicationStatus()
@@ -607,13 +607,15 @@ class DBConnection extends CommonDBTM
 
                 $result = $DBReplica->doQuery("SHOW SLAVE STATUS");
                 if ($DBReplica->numrows($result) > 0) {
-                    foreach ([
+                    $REPLICA_VARS = [
                         'Slave_IO_Running',
                         'Slave_SQL_Running',
                         'Master_Log_File',
                         'Read_Master_Log_Pos',
                         'Seconds_Behind_Master'
-                    ] as $varName) {
+                    ];
+
+                    foreach ($REPLICA_VARS as $varName) {
                         $data['replica'][$num][strtolower($varName)] = $DBReplica->result($result, 0, $varName);
                     }
                 }
