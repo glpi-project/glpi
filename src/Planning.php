@@ -256,7 +256,7 @@ class Planning extends CommonGLPI
      *
      * @return string
      */
-    public static function getStatusIcon($status)
+    public static function getStatusIcon($status): string
     {
         $class = Planning::getStatusClass($status);
         $color = Planning::getStatusColor($status);
@@ -272,7 +272,7 @@ class Planning extends CommonGLPI
      *
      * @return string
      */
-    public static function getStatusClass($status)
+    public static function getStatusClass($status): string
     {
         switch ($status) {
             case Planning::INFO:
