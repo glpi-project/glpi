@@ -47,6 +47,14 @@
                 item.comment,
                 __('Notes')
             ) }}
+            {{ fields.hiddenField(
+                'items[' ~ item.id ~ ']',
+                item.id,
+                '',
+                {
+                    add_field_class: 'd-none'
+                }
+            ) }}
         {% endfor %}
     {% else %}
         {{ fields.dropdownItemsFromItemtypes(
@@ -65,7 +73,7 @@
     {{ fields.dropdownField(
         'User',
         'users_id',
-        '',
+        item.fields['users_id'],
         __('By'),
         {
             entity      : item.fields['entities_id'],
@@ -74,9 +82,12 @@
     ) }}
 
     {{ fields.datetimeField(
-        'begin',
+        'resa[begin]',
         item.fields['begin'],
-        __('Start date')
+        __('Start date'),
+        {
+            maybeempty: false,
+        }
     ) }}
 
     {% set rand = random() %}
@@ -143,7 +154,7 @@
         {{ fields.ajaxField('resaperiodcontent' ~ rand, '') }}
 
         {% do call('Ajax::updateItemOnSelectEvent', [
-            'dropdown_periodicity__type_' ~ rand,
+            'dropdown_periodicity_type_' ~ rand,
             'resaperiodcontent' ~ rand,
             config('root_doc') ~ '/ajax/resaperiod.php',
             {
@@ -165,5 +176,13 @@
             rows                : 10
         }
     ) }}
+
+    {% if item.fields['group'] > 0 %}
+        {{ fields.checkboxField(
+            '_delete_group',
+            '',
+            __('Delete all repetition')
+        ) }}
+    {% endif %}
 
 {% endblock %}
