@@ -51,6 +51,9 @@
     "//xhprof",
     "XHPROF_FLAGS_NO_BUILTINS", "XHPROF_FLAGS_CPU", "XHPROF_FLAGS_MEMORY",
 
+    "//dynamically declared constants",
+    "GLPI_STRICT_DEPRECATED",
+
     "//brotli compression",
     "brotli_uncompress",
     "brotli_compress",
