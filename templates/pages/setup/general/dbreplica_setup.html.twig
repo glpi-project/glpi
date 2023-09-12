@@ -91,7 +91,7 @@
                   </h2>
                   <div id="collapse-primary" class="accordion-collapse collapse" aria-labelledby="heading-primary" data-bs-parent="#accordion-primary">
                      <div class="accordion-body">
-                        <ul class="p-0 list-unstyled space-y-2">
+                        <ul class="p-0 list-unstyled space-y-3">
                            <li><span class="text-secondary">Server ID:</span> {{ replication_status['primary']['server_id'] }}</li>
                            <li><span class="text-secondary">Binlog File:</span> {{ replication_status['primary']['file'] }}</li>
                            <li><span class="text-secondary">Binlog Pos:</span> {{ replication_status['primary']['position'] }}</li>
@@ -128,19 +128,21 @@
                   </h2>
                   <div id="collapse-replica{{ replica_num }}" class="accordion-collapse collapse" aria-labelledby="heading-replica{{ replica_num }}" data-bs-parent="#accordion-replica{{ replica_num }}">
                      <div class="accordion-body">
-                        <p><span class="text-secondary">Server ID:</span> {{ replica_data['server_id'] }}</p>
-                        <p><span class="text-secondary">Primary binglog file:</span> {{ replica_data['master_log_file'] }}</p>
-                        <p><span class="text-secondary">Primary binglog pos:</span> {{ replica_data['read_master_log_pos'] }}</p>
-                        {# seconds_behind_master can be NULL, 0, or > 0 #}
-                        {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
-                           <p><span class="text-secondary">Seconds behind primary:</span> {{ replica_data['seconds_behind_master']|raw }}</p>
-                        {% else %}
-                           <p><span class="text-secondary">Seconds behind primary:</span> <span class="badge bg-red">Undefined</span></p>
-                        {% endif %}
-                        <p><span class="text-secondary">Binglog GTID:</span> {{ replica_data['gtid_slave_pos'] }}</p>
-                        <p><span class="text-secondary">IO Running:</span> <span class="badge bg-{{ replica_data['slave_io_running'] == 'Yes' ? 'green' : 'red' }}-lt">{{ replica_data['slave_io_running'] }}</p>
-                        <p><span class="text-secondary">SQL Running:</span> <span class="badge bg-{{ replica_data['slave_sql_running'] == 'Yes' ? 'green' : 'red' }}-lt">{{ replica_data['slave_sql_running'] }}</p>
-                        <p><span class="text-secondary">MySQL version:</span> {{ replica_data['version'] }}</p>
+                        <ul class="p-0 list-unstyled space-y-3">
+                           <li><span class="text-secondary">Server ID:</span> {{ replica_data['server_id'] }}</li>
+                           <li><span class="text-secondary">Primary binglog file:</span> {{ replica_data['master_log_file'] }}</li>
+                           <li><span class="text-secondary">Primary binglog pos:</span> {{ replica_data['read_master_log_pos'] }}</li>
+                           {# seconds_behind_master can be NULL, 0, or > 0 #}
+                           {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
+                              <li><span class="text-secondary">Seconds behind primary:</span> {{ replica_data['seconds_behind_master']|raw }}</li>
+                           {% else %}
+                              <li><span class="text-secondary">Seconds behind primary:</span> <span class="badge bg-red">Undefined</span></li>
+                           {% endif %}
+                           <li><span class="text-secondary">Binglog GTID:</span> {{ replica_data['gtid_slave_pos'] }}</li>
+                           <li><span class="text-secondary">IO Running:</span> <span class="badge bg-{{ replica_data['slave_io_running'] == 'Yes' ? 'green' : 'red' }}-lt">{{ replica_data['slave_io_running'] }}</li>
+                           <li><span class="text-secondary">SQL Running:</span> <span class="badge bg-{{ replica_data['slave_sql_running'] == 'Yes' ? 'green' : 'red' }}-lt">{{ replica_data['slave_sql_running'] }}</li>
+                           <li><span class="text-secondary">MySQL version:</span> {{ replica_data['version'] }}</li>
+                        </ul>
                      </div>
                   </div>
                </div>
