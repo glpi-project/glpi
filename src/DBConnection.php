@@ -559,8 +559,10 @@ class DBConnection extends CommonDBTM
      *
      * @return array
      */
-    public static function getReplicationStatus()
+    public static function getReplicationStatus(): array
     {
+
+        $data = [];
 
         $WHERE = [
             'VARIABLE_NAME' => [
