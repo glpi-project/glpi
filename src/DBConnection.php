@@ -583,10 +583,12 @@ class DBConnection extends CommonDBTM
             }
 
             $result = $DBPrimary->doQuery("SHOW MASTER STATUS");
-            if ($DBPrimary->numrows($result) > 0) {
+            if ($result && $DBPrimary->numrows($result)) {
                 foreach (['File', 'Position'] as $varName) {
                     $data['primary'][strtolower($varName)] = $DBPrimary->result($result, 0, $varName);
                 }
+            } else {
+                $data['primary']['error'] = $DBPrimary->error();
             }
         }
 
@@ -608,7 +610,7 @@ class DBConnection extends CommonDBTM
                 }
 
                 $result = $DBReplica->doQuery("SHOW SLAVE STATUS");
-                if ($DBReplica->numrows($result) > 0) {
+                if ($result && $DBReplica->numrows($result)) {
                     $REPLICA_VARS = [
                         'Slave_IO_Running',
                         'Slave_SQL_Running',
@@ -620,6 +622,8 @@ class DBConnection extends CommonDBTM
                     foreach ($REPLICA_VARS as $varName) {
                         $data['replica'][$num][strtolower($varName)] = $DBReplica->result($result, 0, $varName);
                     }
+                } else {
+                    $data['replica'][$num]['error'] = $DBReplica->error();
                 }
             }
         }
