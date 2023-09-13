@@ -15,6 +15,8 @@
 
     const results = computed(() => {
         return fuzzy.filter(input_text.value, all_menus.value, {
+            pre: '<b>',
+            post: '</b>',
             extract: (el) => {
                 return el.title;
             }
@@ -111,7 +113,7 @@
                     <input type="text" class="form-control" :placeholder="placeholder" v-model="input_text">
                     <ul class="results list-group mt-2">
                         <li v-for="result in results" :key="result.index" class="list-group-item">
-                            <a :href="result.original.url"><b>{{ result.string }}</b></a>
+                            <a :href="result.original.url" v-html="result.string"></a>
                         </li>
                     </ul>
                 </div>
