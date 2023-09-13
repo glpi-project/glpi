@@ -263,7 +263,7 @@ final class Parser
                 $criteria_array = $buffer['operator']($buffer['field'], $value);
                 $sql_string .= $it->analyseCrit($criteria_array);
                 $buffer = [];
-            } else if ($type === Lexer::T_AND || $type === Lexer::T_OR) {
+            } else if ($sql_string !== '' && ($type === Lexer::T_AND || $type === Lexer::T_OR)) {
                 $sql_string .= $type === Lexer::T_AND ? ' AND ' : ' OR ';
             } else if ($type === Lexer::T_GROUP_OPEN) {
                 $sql_string .= '(';

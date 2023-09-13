@@ -233,7 +233,7 @@ final class Search
         }
 
         if (isset($this->request_params['filter']) && !empty($this->request_params['filter'])) {
-            $criteria['WHERE'] = $this->rsql_parser->parse(Lexer::tokenize($this->request_params['filter']));
+            $criteria['WHERE'] = [$this->rsql_parser->parse(Lexer::tokenize($this->request_params['filter']))];
         }
         $entity_restrict = [];
         if (!$this->union_search_mode) {
