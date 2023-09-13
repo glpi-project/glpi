@@ -331,7 +331,6 @@ class PendingReason_Item extends CommonDBRelation
      */
     public static function handleTimelineEdits(CommonDBTM $timeline_item): array
     {
-
         if (self::getForItem($timeline_item)) {
            // Event was already marked as pending
 
@@ -360,14 +359,17 @@ class PendingReason_Item extends CommonDBRelation
                     }
                 }
             } else if (!$timeline_item->input['pending'] ?? 1) {
-               // No longer pending, remove pending data
-                self::deleteForItem($timeline_item->input["_job"]);
-                self::deleteForItem($timeline_item);
-
                // Change status of parent if needed
                 if ($timeline_item->input["_job"]->fields['status'] == CommonITILObject::WAITING) {
-                    $timeline_item->input['_status'] = CommonITILObject::ASSIGNED;
+                    // get previous stored status for parent
+                    if ($parent_pending = self::getForItem($timeline_item->input["_job"])) {
+                        $timeline_item->input['_status'] = $parent_pending->fields['previous_status'] ?? CommonITILObject::ASSIGNED;
+                    }
                 }
+
+                // No longer pending, remove pending data
+                self::deleteForItem($timeline_item->input["_job"]);
+                self::deleteForItem($timeline_item);
             }
         } else {
            // Not pending yet; did it change ?
@@ -380,6 +382,7 @@ class PendingReason_Item extends CommonDBRelation
                     'pendingreasons_id' => $timeline_item->input['pendingreasons_id'],
                     'followup_frequency'         => $timeline_item->input['followup_frequency'] ?? 0,
                     'followups_before_resolution'        => $timeline_item->input['followups_before_resolution'] ?? 0,
+                    'previous_status'              => $timeline_item->input["_job"]->fields['status']
                 ]);
                 self::createForItem($timeline_item, [
                     'pendingreasons_id' => $timeline_item->input['pendingreasons_id'],

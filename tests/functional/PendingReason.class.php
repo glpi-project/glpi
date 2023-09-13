@@ -382,4 +382,72 @@ class PendingReason extends DbTestCase
         $p_item = PendingReason_Item::getForItem($ticket);
         $this->boolean($p_item)->isFalse();
     }
+
+    /**
+     * Remove pending from timeline item should delete any linked
+     * PendingReason_Item objects and restore previous status
+     */
+    public function testRemovePendingAndRevertStatus(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create a pending reason and a ticket for our tests
+        $pending_reason = $this->createItem('PendingReason', [
+            'entities_id'                   => $entity,
+            'name'                          => 'Pending reason 1',
+            'followup_frequency'            => 604800,
+            'followups_before_resolution'   => 3,
+        ]);
+
+        foreach (
+            [
+                Ticket::class => CommonITILObject::ASSIGNED,
+                Change::class => CommonITILObject::EVALUATION,
+                Problem::class => CommonITILObject::OBSERVED
+            ] as $itemtype => $status
+        ) {
+            $item = $this->createItem($itemtype, [
+                'name'                =>  $itemtype,
+                'content'             => "test " .  $itemtype,
+                'status'              => $status,
+                '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
+                '_users_id_assign'    => getItemByTypeName('User', TU_USER, true),
+                'entities_id'         => $entity
+            ]);
+
+            // Set the item as pending with a reason
+            $followup = $this->createItem('ITILFollowup', [
+                'itemtype'                      => $item->getType(),
+                'items_id'                      => $item->getID(),
+                'content'                       => 'Followup with pending reason',
+                'pending'                       => true,
+                'pendingreasons_id'             => $pending_reason->getID(),
+                'followup_frequency'            => 604800,
+                'followups_before_resolution'   => 3,
+            ], ['pending', 'pendingreasons_id', 'followup_frequency', 'followups_before_resolution']);
+
+            // Check that pending reason is applied to parent item
+            $p_item = PendingReason_Item::getForItem($item);
+            $this->integer($p_item->fields['pendingreasons_id'])->isEqualTo($pending_reason->getID());
+            $this->integer($p_item->fields['followup_frequency'])->isEqualTo(604800);
+            $this->integer($p_item->fields['followups_before_resolution'])->isEqualTo(3);
+            $this->integer($p_item->fields['previous_status'])->isEqualTo($status);
+
+            // Update followup and unset pending
+            $this->boolean($followup->update([
+                'id' => $followup->getID(),
+                'content'                    => $followup->fields['content'],
+                'pending'                    => false,
+            ]))->isTrue();
+
+            // Check that pending reason no longer exist
+            $p_item = PendingReason_Item::getForItem($item);
+            $this->boolean($p_item)->isFalse();
+
+            // Reload / Check that original status is set
+            $item->getFromDB($item->getID());
+            $this->integer($item->fields['status'])->isEqualTo($status);
+        }
+    }
 }

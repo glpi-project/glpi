@@ -9098,6 +9098,7 @@ CREATE TABLE `glpi_pendingreasons_items` (
   `followups_before_resolution` int NOT NULL DEFAULT '0',
   `bump_count` int NOT NULL DEFAULT '0',
   `last_bump_date` timestamp NULL DEFAULT NULL,
+  `previous_status` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`items_id`,`itemtype`),
   KEY `pendingreasons_id` (`pendingreasons_id`),
