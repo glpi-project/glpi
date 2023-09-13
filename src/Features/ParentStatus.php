@@ -65,6 +65,7 @@ trait ParentStatus
                     'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
                     'followup_frequency'          => $input['followup_frequency'] ?? 0,
                     'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
+                    'previous_status'             => $parentitem->fields['status'],
                 ]);
                 PendingReason_Item::createForItem($this, [
                     'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
