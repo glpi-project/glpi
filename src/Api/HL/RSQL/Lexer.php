@@ -38,7 +38,8 @@ namespace Glpi\Api\HL\RSQL;
 /**
  * Lexer to parse RSQL query (extension of FIQL) string into tokens.
  */
-final class Lexer {
+final class Lexer
+{
     /** @var int Separator in an RSQL query denoting a logical AND. This is a semicolon in RSQL. */
     public const T_AND = 1;
     /** @var int Separator in an RSQL query denoting a logical OR. This is a colon in RSQL. */
@@ -69,7 +70,8 @@ final class Lexer {
     public const CHAR_ESCAPE = '\\';
     public const CHARS_PROPERTY = '/[a-zA-Z0-9_.]/';
 
-    private function __construct() {
+    private function __construct()
+    {
     }
 
     /**
@@ -87,7 +89,7 @@ final class Lexer {
         $length = mb_strlen($query, 'UTF-8');
         $in_filter = false;
         $in_value = false;
-        $fn_validate_pos = static function() use ($pos, $length) {
+        $fn_validate_pos = static function () use ($pos, $length) {
             if ($pos < 0 || $pos >= $length) {
                 // This case will probably never happen. An issue should be caught before now with a more specific error message.
                 throw new RSQLException(__('Invalid RSQL query'));
