@@ -712,6 +712,15 @@ class MailCollector extends CommonDBTM
                     false,
                     ERROR
                 );
+
+                // Update last collect date even if an error occurs.
+                // This will prevent collectors that are constantly errored to be stuck at the begin of the
+                // crontask process queue.
+                $this->update([
+                    'id' => $this->getID(),
+                    'last_collect_date' => $_SESSION["glpi_currenttime"],
+                ]);
+
                 return;
             }
 

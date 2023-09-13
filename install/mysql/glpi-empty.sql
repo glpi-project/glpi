@@ -4172,7 +4172,8 @@ CREATE TABLE `glpi_mailcollectors` (
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `last_collect_date` (`last_collect_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
