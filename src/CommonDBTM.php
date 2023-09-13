@@ -1932,6 +1932,23 @@ class CommonDBTM extends CommonGLPI
         }
     }
 
+    /**
+     * Standard formatting for session message relative to an item update
+     *
+     * @param string $message Feedback message
+     *
+     * @return string Formatted message
+     */
+    public function formatSessionMessageAfterAction(string $message): string
+    {
+        if (isset($this->input['_no_message_link'])) {
+            $display = $this->getNameID();
+        } else {
+            $display = $this->getLink();
+        }
+
+        return sprintf(__('%1$s: %2$s'), $message, $display);
+    }
 
     /**
      * Add a message on update action
@@ -1967,13 +1984,8 @@ class CommonDBTM extends CommonGLPI
                 );
             }
 
-            if (isset($this->input['_no_message_link'])) {
-                $display = $this->getNameID();
-            } else {
-                $display = $this->getLink();
-            }
-           //TRANS : %s is the description of the updated item
-            Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully updated'), $display));
+            $message = $this->formatSessionMessageAfterAction(__('Item successfully updated'));
+            Session::addMessageAfterRedirect($message);
         }
     }
 
@@ -2204,13 +2216,8 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            if (isset($this->input['_no_message_link'])) {
-                $display = $this->getNameID();
-            } else {
-                $display = $this->getLink();
-            }
-           //TRANS : %s is the description of the updated item
-            Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully deleted'), $display));
+            $message = $this->formatSessionMessageAfterAction(__('Item successfully deleted'));
+            Session::addMessageAfterRedirect($message);
         }
     }
 
@@ -2244,17 +2251,8 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            if (isset($this->input['_no_message_link'])) {
-                $display = $this->getNameID();
-            } else {
-                $display = $this->getLink();
-            }
-           //TRANS : %s is the description of the updated item
-            Session::addMessageAfterRedirect(sprintf(
-                __('%1$s: %2$s'),
-                __('Item successfully purged'),
-                $display
-            ));
+            $message = $this->formatSessionMessageAfterAction(__('Item successfully purged'));
+            Session::addMessageAfterRedirect($message);
         }
     }
 
@@ -2364,13 +2362,8 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            if (isset($this->input['_no_message_link'])) {
-                $display = $this->getNameID();
-            } else {
-                $display = $this->getLink();
-            }
-           //TRANS : %s is the description of the updated item
-            Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully restored'), $display));
+            $message = $this->formatSessionMessageAfterAction(__('Item successfully restored'));
+            Session::addMessageAfterRedirect($message);
         }
     }
 
@@ -3029,6 +3022,24 @@ class CommonDBTM extends CommonGLPI
         return false;
     }
 
+    /**
+     * Check if submitted id match an existing item or indicate a new item
+     *
+     * @param int $id Given id
+     *
+     * @return bool
+     */
+    public function checkIfExistOrNew($id): bool
+    {
+        return
+            $this->isNewID($id)
+            || (
+                isset($this->fields['id'])
+                && $this->fields['id'] == $id
+            )
+            || $this->getFromDB($id)
+        ;
+    }
 
     /**
      * Check right on an item with block
@@ -3041,13 +3052,8 @@ class CommonDBTM extends CommonGLPI
      **/
     public function check($ID, $right, array &$input = null)
     {
-
-       // Check item exists
-        if (
-            !$this->isNewID($ID)
-            && (!isset($this->fields['id']) || $this->fields['id'] != $ID)
-            && !$this->getFromDB($ID)
-        ) {
+        // Check item exists
+        if (!$this->checkIfExistOrNew($ID)) {
            // Gestion timeout session
             Session::redirectIfNotLoggedIn();
             Html::displayNotFoundError();
@@ -3063,7 +3069,6 @@ class CommonDBTM extends CommonGLPI
             }
         }
     }
-
 
     /**
      * Check if have right on this entity

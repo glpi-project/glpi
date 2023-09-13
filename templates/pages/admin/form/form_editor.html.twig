@@ -52,6 +52,10 @@
     "
     method="POST"
     action="{{ item.getFormURL() }}"
+    {% if not item.isNewItem() %}
+        data-ajax-submit {# Form will be submitted using AJAX #}
+        data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
+    {% endif %}
 >
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
@@ -168,7 +172,7 @@
             </button>
         {% endif %}
 
-        {% if item.isNewItem() %}
+        {% if item.isNewItem() and item.canCreate() %}
             {# Add action #}
             <button
                 class="btn btn-primary"
@@ -199,8 +203,10 @@
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
 
-    {# CSRF #}
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+    {% if item.isNewItem() %}
+        {# CSRF #}
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+    {% endif %}
 
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 </form>

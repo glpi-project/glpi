@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,28 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Form\Form;
+use Glpi\Controller\CommonAjaxController;
 
-include('../../inc/includes.php');
+include('../inc/includes.php');
 
-// Only super admins for now - TODO add specific rights
-Session::checkRight("config", UPDATE);
-
-// Read parameters
-$id = $_REQUEST['id'] ?? null;
-
-if (isset($_POST["add"])) {
-    // Create form
-    $form = new Form();
-    $form->check($id, CREATE);
-
-    if ($form->add($_POST)) {
-        if ($_SESSION['glpibackcreated']) {
-            Html::redirect($form->getLinkURL());
-        }
-    }
-    Html::back();
-} else {
-    // Show requested form
-    Form::displayFullPageForItem($id, ['admin', Form::getType()], []);
-}
+/**
+ * AJAX endpoint used to update, delete, restore or purge a CommonDBTM item
+ */
+$controller = new CommonAjaxController();
+$response = $controller->handleRequest($_POST);
+$response->send();
