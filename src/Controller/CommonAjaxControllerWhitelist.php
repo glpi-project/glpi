@@ -33,28 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Controller;
+
 use Glpi\Form\Form;
 
-include('../../inc/includes.php');
-
-// Only super admins for now - TODO add specific rights
-Session::checkRight("config", UPDATE);
-
-// Read parameters
-$id = $_REQUEST['id'] ?? null;
-
-if (isset($_POST["add"])) {
-    // Create form
-    $form = new Form();
-    $form->check($id, CREATE);
-
-    if ($form->add($_POST)) {
-        if ($_SESSION['glpibackcreated']) {
-            Html::redirect($form->getLinkURL());
-        }
+/**
+ * Whitelist for classes allowed to be used with the CommonAjaxController class
+ */
+final class CommonAjaxControllerWhitelist
+{
+    /**
+     * Return allowed classes list
+     *
+     * @return array
+     */
+    public static function getClasses(): array
+    {
+        // TOOD: add a hook so plugins can whitelist their classes
+        return [
+            Form::class,
+        ];
     }
-    Html::back();
-} else {
-    // Show requested form
-    Form::displayFullPageForItem($id, ['admin', Form::getType()], []);
 }

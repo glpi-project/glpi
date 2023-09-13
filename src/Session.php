@@ -1424,7 +1424,6 @@ class Session
         $message_type = INFO,
         $reset = false
     ) {
-
         if (!empty($msg)) {
             if (self::isCron()) {
                 // We are in cron mode

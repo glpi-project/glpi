@@ -97,7 +97,7 @@
          {% if withtemplate == 1 and item.id > 0 %}
             {{ _n('Template', 'Templates', 1) }} - {{ nametype }} - {{ template_name }}
          {% elseif item.id > 0 %}
-            {{ nametype }} - {{ friendlyname }}
+            {{ nametype }} - <span id="header-friendlyname"> {{ friendlyname }} </span>
          {% else %}
             {{ nametype }}
          {% endif %}
@@ -107,9 +107,14 @@
          <i class="{{ call('Agent::getIcon') }}"></i>
       </span>
       {% endif %}
-      {% if in_navheader and item.isField('is_deleted') and item.fields['is_deleted'] %}
+      {% if in_navheader and item.isField('is_deleted') %}
       {% set title = item.isField('date_mod') ? __('Item has been deleted on %s')|format(item.fields['date_mod']) : __('Deleted') %}
-      <span class="mx-1 bg-danger status rounded-1" title="{{ title }}" data-bs-toggle="tooltip">
+      <span
+         id="header-is-deleted"
+         class="mx-1 bg-danger text-white status rounded-1 {{ item.fields['is_deleted'] ? "" : "d-none" }}"
+         title="{{ title }}"
+         data-bs-toggle="tooltip"
+      >
          <i class="ti ti-trash"></i>
          {{ __('Deleted') }}
       </span>
