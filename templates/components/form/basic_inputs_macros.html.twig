@@ -54,6 +54,12 @@
         {% set options = options|merge({'readonly': true}) %}
     {% endif %}
 
+   {% if (options.is_disclosable or options.is_copyable) and id is null %}
+      {% set options = options|merge({
+         id: name|slug ~ '_' ~ random()
+      }) %}
+   {% endif %}
+
     {% set input %}
         <input type="{{ options.type }}" {{ options.id != null ? 'id=' ~ options.id : '' }}
                class="form-control {{ options.input_addclass }}"
