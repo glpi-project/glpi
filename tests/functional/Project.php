@@ -78,7 +78,7 @@ class Project extends DbTestCase
         $this->integer((int) $projecttask_id_1)->isGreaterThan(0);
         $projecttask_id_2 = $projecttask->add([
             'name' => 'Project Task 2',
-            'projects_id' => 0,
+            'projects_id' => $project_id_2,
             'projecttasks_id' => $projecttask_id_1,
             'projecttasktemplates_id' => 0
         ]);
@@ -99,8 +99,8 @@ class Project extends DbTestCase
         $this->boolean($project_1->getFromDB($project_id_1))->isTrue();
         $this->boolean($project_2->getFromDB($project_id_2))->isTrue();
        // Test parent and parent's parent percent done
-        $this->integer($project_2->fields['percent_done'])->isEqualTo(5);
-        $this->integer($project_1->fields['percent_done'])->isEqualTo(5);
+        $this->integer($project_2->fields['percent_done'])->isEqualTo(3);
+        $this->integer($project_1->fields['percent_done'])->isEqualTo(3);
 
         $projecttask_1 = new \ProjectTask();
         $this->boolean($projecttask_1->getFromDB($projecttask_id_1))->isTrue();
@@ -120,8 +120,8 @@ class Project extends DbTestCase
         $this->integer($projecttask_1->fields['percent_done'])->isEqualTo(40);
        // Check that the child project wasn't changed
         $this->integer($project_3->fields['percent_done'])->isEqualTo(10);
-        $this->integer($project_2->fields['percent_done'])->isEqualTo(25);
-        $this->integer($project_1->fields['percent_done'])->isEqualTo(25);
+        $this->integer($project_2->fields['percent_done'])->isEqualTo(30);
+        $this->integer($project_1->fields['percent_done'])->isEqualTo(30);
 
        // Test that percent done updates on delete and restore
         $project_3->delete(['id' => $project_id_3]);
@@ -129,7 +129,7 @@ class Project extends DbTestCase
         $this->integer($project_2->fields['percent_done'])->isEqualTo(40);
         $project_3->restore(['id' => $project_id_3]);
         $this->boolean($project_2->getFromDB($project_id_2))->isTrue();
-        $this->integer($project_2->fields['percent_done'])->isEqualTo(25);
+        $this->integer($project_2->fields['percent_done'])->isEqualTo(30);
     }
 
     public function testAutocalculatePercentDoneOnTaskAddAndDelete()

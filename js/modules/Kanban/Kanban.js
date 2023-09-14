@@ -35,7 +35,7 @@ import SearchInput from "../SearchTokenizer/SearchInput.js";
 
 /* global escapeMarkupText */
 /* global sortable */
-/* global glpi_toast_error */
+/* global glpi_toast_error, glpi_toast_warning, glpi_toast_info */
 
 /**
  * Kanban rights structure
@@ -466,7 +466,7 @@ class GLPIKanbanRights {
             let column_overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown  dropdown-menu' style='display: none'>";
             let add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' class='dropdown-menu' style='display: none'>";
             Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-                if (self.supported_itemtypes[itemtype]['allow_create'] !== false) {
+                if (self.supported_itemtypes[itemtype]['allow_create'] !== false && self.supported_itemtypes[itemtype]['allow_bulk_add'] !== false) {
                     add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
                 }
             });
@@ -1002,6 +1002,29 @@ class GLPIKanbanRights {
                     self.refresh(undefined, undefined, () => {
                         // Re-open form
                         self.showAddItemForm($(`#${column_el_id}`), itemtype);
+                    });
+                }).always(() => {
+                    $.ajax({
+                        method: 'GET',
+                        url: (self.ajax_root + "displayMessageAfterRedirect.php"),
+                        data: {
+                            'get_raw': true
+                        }
+                    }).done((messages) => {
+                        $.each(messages, (level, level_messages) => {
+                            $.each(level_messages, (index, message) => {
+                                switch (parseInt(level)) {
+                                    case 1:
+                                        glpi_toast_error(message);
+                                        break;
+                                    case 2:
+                                        glpi_toast_warning(message);
+                                        break;
+                                    default:
+                                        glpi_toast_info(message);
+                                }
+                            });
+                        });
                     });
                 });
             });
@@ -1868,6 +1891,29 @@ class GLPIKanbanRights {
                 }).done(function() {
                     $('#'+formID).remove();
                     self.refresh();
+                }).always(() => {
+                    $.ajax({
+                        method: 'GET',
+                        url: (self.ajax_root + "displayMessageAfterRedirect.php"),
+                        data: {
+                            'get_raw': true
+                        }
+                    }).done((messages) => {
+                        $.each(messages, (level, level_messages) => {
+                            $.each(level_messages, (index, message) => {
+                                switch (parseInt(level)) {
+                                    case 1:
+                                        glpi_toast_error(message);
+                                        break;
+                                    case 2:
+                                        glpi_toast_warning(message);
+                                        break;
+                                    default:
+                                        glpi_toast_info(message);
+                                }
+                            });
+                        });
+                    });
                 });
             });
         };

@@ -467,7 +467,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public function prepareInputForAdd($input)
     {
 
-        if (!isset($input['projects_id'])) {
+        if (!isset($input['projects_id']) || (int) $input['projects_id'] === 0) {
             Session::addMessageAfterRedirect(
                 __('A linked project is mandatory'),
                 false,
