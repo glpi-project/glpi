@@ -1613,4 +1613,51 @@ class Computer extends AbstractInventoryAsset
         $locks = $lockedfield->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($locks))->isIdenticalTo(0);
     }
+
+    public function testErrorOnFieldUnicityChecks()
+    {
+        $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $computer_name = __FUNCTION__;
+
+        $this->login();
+
+        $this->createItem(
+            \FieldUnicity::class,
+            [
+                'name'          => 'Unique computer name',
+                'entities_id'   => 0,
+                'is_recursive'  => 1,
+                'is_active'     => 1,
+                'itemtype'      => \Computer::class,
+                '_fields'       => ['name'],
+                'action_refuse' => 1,
+            ]
+        );
+
+        $this->createItem(\Computer::class, ['name' => $computer_name, 'entities_id' => $root_entity_id]);
+
+        $this->exception(
+            function () use ($computer_name) {
+                $inventory_request = new \Glpi\Inventory\Request();
+                $inventory_request->handleRequest(
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                    <REQUEST>
+                    <CONTENT>
+                      <HARDWARE>
+                        <NAME>{$computer_name}</NAME>
+                        <UUID>5BCB-25C1BB60B18F-5404A6A534C4</UUID>
+                      </HARDWARE>
+                      <BIOS>
+                        <MSN>640HP72</MSN>
+                      </BIOS>
+                      <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+                    </CONTENT>
+                    <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+                    <QUERY>INVENTORY</QUERY>
+                    </REQUEST>"
+                );
+            }
+        )->hasMessage('Unable to create item.');
+    }
 }

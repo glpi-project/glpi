@@ -552,6 +552,15 @@ class MailCollector extends CommonDBTM
             'datatype'           => 'integer'
         ];
 
+        $tab[] = [
+            'id'                 => '23',
+            'table'              => $this->getTable(),
+            'field'              => 'last_collect_date',
+            'name'               => __('Date of last collection'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
+        ];
+
         return $tab;
     }
 
@@ -703,6 +712,15 @@ class MailCollector extends CommonDBTM
                     false,
                     ERROR
                 );
+
+                // Update last collect date even if an error occurs.
+                // This will prevent collectors that are constantly errored to be stuck at the begin of the
+                // crontask process queue.
+                $this->update([
+                    'id' => $this->getID(),
+                    'last_collect_date' => $_SESSION["glpi_currenttime"],
+                ]);
+
                 return;
             }
 
@@ -959,6 +977,11 @@ class MailCollector extends CommonDBTM
                 foreach ($delete as $uid => $folder) {
                     $this->deleteMails($uid, $folder);
                 }
+
+                $this->update([
+                    'id' => $this->getID(),
+                    'last_collect_date' => $_SESSION["glpi_currenttime"],
+                ]);
 
               //TRANS: %1$d, %2$d, %3$d, %4$d %5$d and %6$d are number of messages
                 $msg = sprintf(
@@ -1873,7 +1896,9 @@ class MailCollector extends CommonDBTM
         NotImportedEmail::deleteLog();
         $iterator = $DB->request([
             'FROM'   => 'glpi_mailcollectors',
-            'WHERE'  => ['is_active' => 1]
+            'WHERE'  => ['is_active' => 1],
+            'ORDER'  => 'last_collect_date ASC',
+            'LIMIT'  => 100,
         ]);
 
         $max = $task->fields['param'];
@@ -1900,11 +1925,11 @@ class MailCollector extends CommonDBTM
 
         if ($max == $task->fields['param']) {
             return 0; // Nothin to do
-        } else if ($max > 0) {
-            return 1; // done
+        } else if ($max === 0 || count($iterator) < countElementsInTable('glpi_mailcollectors', ['is_active' => 1])) {
+            return -1; // still messages to retrieve
         }
 
-        return -1; // still messages to retrieve
+        return 1; // done
     }
 
 

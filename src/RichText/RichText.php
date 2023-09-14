@@ -268,6 +268,8 @@ final class RichText
             $content = autolink($content, false, ' target="_blank"');
         }
 
+        $content = self::fixImagesPath($content);
+
         return $content;
     }
 
@@ -317,6 +319,40 @@ final class RichText
 </div>
 HTML;
             $content .= HTML::scriptBlock('$(function() { read_more(); });');
+        }
+
+        return $content;
+    }
+
+
+    /**
+     * Ensure current GLPI URL prefix (`$CFG_GLPI["root_doc"]`) is used in images URLs.
+     * It permits to fix path to images that are broken when GLPI URL prefix is changed.
+     *
+     * @param string $content
+     *
+     * @return string
+     */
+    private static function fixImagesPath(string $content): string
+    {
+        global $CFG_GLPI;
+
+        $patterns = [
+            // href attribute, surrounding by " or '
+            '/ (href)="[^"]*\/front\/document\.send\.php([^"]+)" /',
+            "/ (href)='[^']*\/front\/document\.send\.php([^']+)' /",
+
+            // src attribute, surrounding by " or '
+            '/ (src)="[^"]*\/front\/document\.send\.php([^"]+)" /',
+            "/ (src)='[^']*\/front\/document\.send\.php([^']+)' /",
+        ];
+
+        foreach ($patterns as $pattern) {
+            $content = preg_replace(
+                $pattern,
+                sprintf(' $1="%s/front/document.send.php$2" ', $CFG_GLPI["root_doc"]),
+                $content
+            );
         }
 
         return $content;

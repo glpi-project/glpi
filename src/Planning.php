@@ -250,6 +250,68 @@ class Planning extends CommonGLPI
 
 
     /**
+     * Get status icon
+     *
+     * @since 10.0.9
+     *
+     * @return string
+     */
+    public static function getStatusIcon($status): string
+    {
+        $class = Planning::getStatusClass($status);
+        $color = Planning::getStatusColor($status);
+        $label = htmlspecialchars(Planning::getState($status), ENT_QUOTES);
+        return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip'></i><span>" . $label . "</span>";
+    }
+
+
+    /**
+     * Get status class
+     *
+     * @since 10.0.9
+     *
+     * @return string
+     */
+    public static function getStatusClass($status): string
+    {
+        switch ($status) {
+            case Planning::INFO:
+                return "ti ti-info-square-filled";
+
+            case Planning::TODO:
+                return "ti ti-alert-square-filled";
+
+            case Planning::DONE:
+                return "ti ti-square-check-filled";
+        }
+        return '';
+    }
+
+
+    /**
+     * Get status color
+     *
+     * @since 10.0.9
+     *
+     * @return string
+     */
+    public static function getStatusColor($status): string
+    {
+        switch ($status) {
+            case Planning::INFO:
+                return "planned";
+
+            case Planning::TODO:
+                return "waiting";
+
+            case Planning::DONE:
+                return "new";
+        }
+        return '';
+    }
+
+
+    /**
      * Dropdown of planning state
      *
      * @param $name   select name
@@ -260,14 +322,46 @@ class Planning extends CommonGLPI
     public static function dropdownState($name, $value = '', $display = true, $options = [])
     {
 
+
+        $js = <<<JAVASCRIPT
+        templateTaskStatus = function(option) {
+            if (option === false) {
+                // Option is false when element does not match searched terms
+                return null;
+            }
+            var status = option.id;
+            var classes = "";
+            switch (parseInt(status)) {
+                case 0 :
+                    classes = 'planned ti ti-info-square-filled';
+                    break;
+                case 1 :
+                    classes = 'waiting ti ti-alert-square-filled';
+                    break;
+                case 2 :
+                    classes = 'new ti ti-square-check-filled';
+                    break;
+
+            }
+            return $('<span><i class="itilstatus ' + classes + '"></i> ' + option.text + '</span>');
+        }
+JAVASCRIPT;
+
+
+        $p = [
+            'value'             => $value,
+            'showtype'          => 'normal',
+            'display'           => $display,
+            'templateResult'    => $js,
+            'templateSelection' => $js,
+        ];
+
         $values = [static::INFO => _n('Information', 'Information', 1),
             static::TODO => __('To do'),
             static::DONE => __('Done')
         ];
 
-        return Dropdown::showFromArray($name, $values, array_merge(['value'   => $value,
-            'display' => $display
-        ], $options));
+        return Dropdown::showFromArray($name, $values, array_merge($p, $options));
     }
 
 

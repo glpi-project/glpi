@@ -237,16 +237,21 @@
                      {% set task_state_lbl %}
                         <i class="fas fa-tasks fa-fw me-1" title="{{ __('Status') }}"></i>
                      {% endset %}
-                     {{ fields.dropdownArrayField('state', subitem.fields['state'], {
-                        0: _n('Information', 'Information', 1),
-                        1: __('To do'),
-                        2: __('Done')
-                     }, task_state_lbl, {
-                        'full_width': true,
-                        'icon_label': true,
-                        'rand': rand,
-                     }) }}
 
+                     {% set task_state %}
+                        {% do call('Planning::dropdownState', ['state', subitem.fields['state'], true, {}]) %}
+                     {% endset %}
+
+                     {{ fields.htmlField(
+                        'state',
+                        task_state,
+                        task_state_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'rand': rand,
+                        }
+                     ) }}
 
                      {% set task_private_lbl %}
                         <i class="ti ti-lock fa-fw me-1" title="{{ __('Private') }}"></i>
@@ -467,9 +472,7 @@
             }).done(function (data) {
                 if (data.content !== undefined) {
                     // set textarea content
-                    if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                        tasktinymce.setContent(data.content);
-                    }
+                    setRichTextEditorContent("content_{{ rand }}", data.content);
                 }
 
                 if (data.taskcategories_id !== undefined) {

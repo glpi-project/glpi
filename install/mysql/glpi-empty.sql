@@ -4167,11 +4167,13 @@ CREATE TABLE `glpi_mailcollectors` (
   `requester_field` int NOT NULL DEFAULT '0',
   `add_cc_to_observer` tinyint NOT NULL DEFAULT '0',
   `collect_only_unread` tinyint NOT NULL DEFAULT '0',
+  `last_collect_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `last_collect_date` (`last_collect_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -6758,7 +6760,7 @@ CREATE TABLE `glpi_solutiontemplates` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `content` text,
+  `content` mediumtext,
   `solutiontypes_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -7016,7 +7018,7 @@ CREATE TABLE `glpi_tasktemplates` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `content` text,
+  `content` mediumtext,
   `taskcategories_id` int unsigned NOT NULL DEFAULT '0',
   `actiontime` int NOT NULL DEFAULT '0',
   `comment` text,
@@ -8369,7 +8371,7 @@ CREATE TABLE `glpi_itilfollowuptemplates` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `content` text,
+  `content` mediumtext,
   `requesttypes_id` int unsigned NOT NULL DEFAULT '0',
   `is_private` tinyint NOT NULL DEFAULT '0',
   `comment` text,
@@ -8518,7 +8520,7 @@ CREATE TABLE `glpi_planningexternaleventtemplates` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `text` text,
+  `text` mediumtext,
   `comment` text,
   `duration` int NOT NULL DEFAULT '0',
   `before_time` int NOT NULL DEFAULT '0',

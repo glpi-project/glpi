@@ -33,38 +33,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+include('../inc/includes.php');
 
-use CommonDBTM;
-use Glpi\Inventory\Conf;
-use Toolbox;
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
-class Simcard extends Device
-{
-    public function prepare(): array
-    {
-        $mapping = [
-            'subscriber_id' => 'msin',
-        ];
+Session::checkRight("dropdown", UPDATE);
 
-        foreach ($this->data as $k => &$val) {
-            foreach ($mapping as $origin => $dest) {
-                if (property_exists($val, $origin)) {
-                    $val->$dest = $val->$origin;
-                }
-            }
-        }
+$matching_field = null;
 
-        return $this->data;
-    }
+if (isset($_POST['itemtype'], $_POST['field']) && is_a($_POST['itemtype'], CommonDropdown::class, true)) {
+    $itemtype = new $_POST['itemtype']();
+    $matching_field = $itemtype->getAdditionalField($_POST['field']);
+}
 
-    public function checkConf(Conf $conf): bool
-    {
-        return $conf->component_simcard == 1;
-    }
-
-    public function getItemtype(): string
-    {
-        return \Item_DeviceSimcard::class;
-    }
+if (($matching_field['type'] ?? null) === 'tinymce') {
+    Html::textarea([
+        'name'              => 'value',
+        'enable_richtext'   => true,
+        'enable_images'     => false,
+        'enable_fileupload' => false,
+    ]);
+} else {
+    echo "<input type='text' name='value' size='50'>";
 }
