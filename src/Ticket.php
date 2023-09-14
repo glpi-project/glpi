@@ -5146,58 +5146,7 @@ JAVASCRIPT;
         ];
 
         if ($foruser) {
-            $criteria['LEFT JOIN'] = [
-                'glpi_tickets_users' => [
-                    'ON' => [
-                        'glpi_tickets_users' => 'tickets_id',
-                        $table               => 'id'
-                    ]
-                ],
-                'glpi_ticketvalidations' => [
-                    'ON' => [
-                        'glpi_ticketvalidations'   => 'tickets_id',
-                        $table                     => 'id'
-                    ]
-                ]
-            ];
-
-            if (
-                Session::haveRight(self::$rightname, self::READGROUP)
-                && isset($_SESSION["glpigroups"])
-                && count($_SESSION["glpigroups"])
-            ) {
-                $criteria['LEFT JOIN']['glpi_groups_tickets'] = [
-                    'ON' => [
-                        'glpi_groups_tickets'   => 'tickets_id',
-                        $table                  => 'id', [
-                            'AND' => ['glpi_groups_tickets.type' => CommonITILActor::REQUESTER]
-                        ]
-                    ]
-                ];
-            }
-
-            $WHERE = [
-                'OR' => [
-                    'AND' => [
-                        'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-                        'OR' => [
-                            ['glpi_tickets_users.type' => CommonITILActor::REQUESTER],
-                            ['glpi_tickets_users.type' => CommonITILActor::OBSERVER]
-                        ],
-                    ],
-                    'glpi_tickets.users_id_recipient'            => Session::getLoginUserID(),
-                    'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID()
-                ]
-            ];
-
-            if (
-                Session::haveRight(self::$rightname, self::READGROUP)
-                && isset($_SESSION["glpigroups"])
-                && count($_SESSION["glpigroups"])
-            ) {
-                $WHERE['OR']['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
-            }
-            $criteria['WHERE'][] = $WHERE;
+            $criteria = array_merge_recursive($criteria, self::getCriteriaFromProfile());
         }
 
         return $criteria;
