@@ -6257,7 +6257,6 @@ HTML;
                 break;
             case 'fuzzy':
                 $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fuzzy.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/fuzzysearch.js';
                 break;
             case 'dashboard':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/dashboard.js';
@@ -6547,104 +6546,53 @@ HTML;
     }
 
     /**
-     * Manage events from js/fuzzysearch.js
-     *
-     * @since 9.2
-     *
-     * @param string $action action to switch (should be actually 'getHtml' or 'getList')
-     *
-     * @return string
+     * Get all options for the menu fuzzy search
+     * @return array
+     * @phpstan-return array{url: string, title: string}
+     * @since 10.1.0
      */
-    public static function fuzzySearch($action = '')
+    public static function getMenuFuzzySearchList(): array
     {
-        switch ($action) {
-            case 'getHtml':
-                $shortcut = "<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd>";
-                if (!defined('TU_USER')) {
-                    $parser = new UserAgentParser();
-                    $ua = $parser->parse();
-                    if ($ua->platform() === Platforms::MACINTOSH) {
-                        $shortcut = "<kbd>⌥ (option)</kbd> + <kbd>⌘ (command)</kbd> + <kbd>G</kbd>";
-                    }
-                }
+        $fuzzy_entries = [];
 
-                $modal_header = __("Go to menu");
-                $placeholder  = __("Start typing to find a menu");
-                $alert        = sprintf(
-                    __("Tip: You can call this modal with %s keys combination"),
-                    "<kbd>$shortcut</kbd>"
-                );
+        // retrieve menu
+        foreach ($_SESSION['glpimenu'] as $firstlvl) {
+            if (isset($firstlvl['content'])) {
+                foreach ($firstlvl['content'] as $menu) {
+                    if (isset($menu['title']) && strlen($menu['title']) > 0) {
+                        $fuzzy_entries[] = [
+                            'url'   => $menu['page'],
+                            'title' => $firstlvl['title'] . " > " . $menu['title']
+                        ];
 
-                $html = <<<HTML
-               <div class="modal" tabindex="-1" id="fuzzysearch">
-                  <div class="modal-dialog">
-                     <div class="modal-content">
-                        <div class="modal-header">
-                           <h5 class="modal-title">
-                              <i class="ti ti-arrow-big-right me-2"></i>
-                              {$modal_header}
-                           </h5>
-                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                           <div class="alert alert-info d-flex" role="alert">
-                              <i class="fas fa-exclamation-circle fa-2x me-2"></i>
-                              <p>{$alert}</p>
-                           </div>
-                           <input type="text" class="form-control" placeholder="{$placeholder}">
-                           <ul class="results list-group mt-2"></ul>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-
-HTML;
-                return $html;
-            break;
-
-            default:
-                $fuzzy_entries = [];
-
-               // retrieve menu
-                foreach ($_SESSION['glpimenu'] as $firstlvl) {
-                    if (isset($firstlvl['content'])) {
-                        foreach ($firstlvl['content'] as $menu) {
-                            if (isset($menu['title']) && strlen($menu['title']) > 0) {
-                                $fuzzy_entries[] = [
-                                    'url'   => $menu['page'],
-                                    'title' => $firstlvl['title'] . " > " . $menu['title']
-                                ];
-
-                                if (isset($menu['options'])) {
-                                    foreach ($menu['options'] as $submenu) {
-                                        if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
-                                            $fuzzy_entries[] = [
-                                                'url'   => $submenu['page'],
-                                                'title' => $firstlvl['title'] . " > " .
-                                               $menu['title'] . " > " .
-                                               $submenu['title']
-                                            ];
-                                        }
-                                    }
+                        if (isset($menu['options'])) {
+                            foreach ($menu['options'] as $submenu) {
+                                if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
+                                    $fuzzy_entries[] = [
+                                        'url'   => $submenu['page'],
+                                        'title' => $firstlvl['title'] . " > " .
+                                            $menu['title'] . " > " .
+                                            $submenu['title']
+                                    ];
                                 }
                             }
                         }
                     }
-
-                    if (isset($firstlvl['default'])) {
-                        if (strlen($firstlvl['title']) > 0) {
-                            $fuzzy_entries[] = [
-                                'url'   => $firstlvl['default'],
-                                'title' => $firstlvl['title']
-                            ];
-                        }
-                    }
                 }
+            }
 
-               // return the entries to ajax call
-                return json_encode($fuzzy_entries);
-            break;
+            if (isset($firstlvl['default'])) {
+                if (strlen($firstlvl['title']) > 0) {
+                    $fuzzy_entries[] = [
+                        'url'   => $firstlvl['default'],
+                        'title' => $firstlvl['title']
+                    ];
+                }
+            }
         }
+
+        // return the entries to ajax call
+        return $fuzzy_entries;
     }
 
     /**
