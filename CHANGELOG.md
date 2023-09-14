@@ -192,6 +192,7 @@ The present file will list all changes made to the project; according to the
 - `RSSFeed::showDiscoveredFeeds()`
 - `Rule::$can_sort` property.
 - `Rule::$orderby` property.
+- `RuleCollection::showTestResults()`
 - `RuleImportComputer` class.
 - `RuleImportComputerCollection` class.
 - `Search::computeTitle()`
