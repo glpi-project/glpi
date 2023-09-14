@@ -90,6 +90,8 @@ The present file will list all changes made to the project; according to the
 - Usage of `DBmysql::query()` method is prohibited to ensure that legacy unsafe DB are no more executed. To execute DB queries,
   either `DBmysql::request()` can be used to craft query using the GLPI query builder,
   either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
+- `js/fuzzysearch.js` replaced with `FuzzySearch/Modal` Vue component.
+- `Html::fuzzySearch()` replaced with `Html::getMenuFuzzySearchList()` function.
 - `Html::generateMenuSession()` `$force` argument has been removed.
 - `NotificationEvent::raiseEvent()` signature cahnged. A new `$trigger` parameter has been added at 4th position, and `$label` is now the 5th parameter.
 - `NotificationEventInterface::raise()` has a new `$trigger` parameter.
@@ -99,8 +101,6 @@ The present file will list all changes made to the project; according to the
 - `QueryUnion` class moved to `Glpi\DBAL` namespace.
 - `PrinterLog::getMetrics()` method has been made final.
 - `SavedSearch::showSaveButton()` replaced with `pages/tools/savedsearch/save_button.html.twig` template.
-- `js/fuzzysearch.js` replaced with `FuzzySearch/Modal` Vue component.
-- `Html::fuzzySearch` replaced with `Html::getMenuFuzzySearchList` function.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
