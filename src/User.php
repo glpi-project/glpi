@@ -1903,7 +1903,7 @@ class User extends CommonDBTM
                             $this->fields[$k] = "";
                     }
                 } else {
-                    $val = Toolbox::addslashes_deep($val);
+                    $val = Sanitizer::sanitize($val);
                     switch ($k) {
                         case "email1":
                         case "email2":
@@ -5281,7 +5281,7 @@ HTML;
         global $DB;
 
         if ($escape) {
-            $value = addslashes($value);
+            $value = Sanitizer::sanitize($value);
         }
 
         $iterator = $DB->request([
