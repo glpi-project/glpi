@@ -7,7 +7,7 @@ tests/LDAP/ldif/glpi-ldap.ldif provides :
 - rootdn : cn=admin,dc=glpi,dc=org
 - rootpw : secret
 
-- user's passwords : for ou=ldap3, all user's password are 'password'
+- user's passwords : for ou=R&D, all user's password are 'password'
 - for other users, password is the same as the login
 
 Create your own directory :
@@ -17,7 +17,7 @@ Create your own directory :
 In glpi_authldaps :
 INSERT INTO `glpi_authldaps` (`name`, `host`, `basedn`, `rootdn`, `rootdn_passwd`, `port`, `condition`, `login_field`, `email1_field`, `realname_field`, `firstname_field`, `comment_field`, `use_dn`, `entity_field`, `entity_condition`, `is_default`) VALUES('GLPI1', 'localhost', 'ou=ldap1,dc=glpi,dc=org', 'cn=admin,dc=glpi,dc=org', 'secret', 389, '(objectclass=person)', 'cn', 'mail', 'cn', 'givenname', 'description', 0, 'ou', '(objectclass=organizationalUnit)', 1);
 INSERT INTO `glpi_authldaps` (`name`, `host`, `basedn`, `rootdn`, `rootdn_passwd`, `port`, `condition`, `login_field`, `group_condition`, `group_search_type`, `group_member_field`, `email1_field`, `realname_field`, `firstname_field`, `phone_field`, `comment_field`, `use_dn`, `title_field`, `category_field`) VALUES('GLPI2', 'localhost', 'ou=ldap2,dc=glpi,dc=org', 'cn=admin,dc=glpi,dc=org', 'secret', 389, '(objectclass=inetOrgPerson)', 'uid', '(objectclass=groupOfNames)', 1, 'member', 'mail', 'cn', 'sn', 'telephonenumber', 'description', 1, 'title', 'businesscategory');
-INSERT INTO `glpi_authldaps` (`name`, `host`, `basedn`, `rootdn`, `rootdn_passwd`, `port`, `condition`, `login_field`, `group_condition`, `group_search_type`, `group_member_field`, `email1_field`, `realname_field`, `firstname_field`, `phone_field`, `comment_field`, `use_dn`, `title_field`, `category_field`, `entity_field`, `entity_condition`) VALUES ('GLPI3', 'localhost', 'ou=ldap3,dc=glpi,dc=org', 'cn=admin,dc=glpi,dc=org', 'secret', 389, '(objectclass=inetOrgPerson)', 'uid', '(objectclass=posixGroup)', 1, 'memberUid', 'mail', 'cn', 'sn', 'telephonenumber', 'description', 0,'title', 'businesscategory', 'o', '(objectclass=inetOrgPerson)');
+INSERT INTO `glpi_authldaps` (`name`, `host`, `basedn`, `rootdn`, `rootdn_passwd`, `port`, `condition`, `login_field`, `group_condition`, `group_search_type`, `group_member_field`, `email1_field`, `realname_field`, `firstname_field`, `phone_field`, `comment_field`, `use_dn`, `title_field`, `category_field`, `entity_field`, `entity_condition`) VALUES ('GLPI3', 'localhost', 'ou=R&#38;D,dc=glpi,dc=org', 'cn=admin,dc=glpi,dc=org', 'secret', 389, '(objectclass=inetOrgPerson)', 'uid', '(objectclass=posixGroup)', 1, 'memberUid', 'mail', 'cn', 'sn', 'telephonenumber', 'description', 0,'title', 'businesscategory', 'o', '(objectclass=inetOrgPerson)');
 
 =================================================
 Entities :
@@ -75,6 +75,6 @@ Branch : ou=ldap2,dc=glpi,dc=org
 -works with objectclass inetOrgPerson & groupOfNames
 
 =================================================
-Branch : ou=ldap3,dc=glpi,dc=org
+Branch : ou=R&D,dc=glpi,dc=org
 -works with objectclass inetOrgPerson & posixGroup
 - more than 500 users (to address ldap's sizelimit)
