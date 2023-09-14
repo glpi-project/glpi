@@ -667,29 +667,18 @@ class Html extends \GLPITestCase
 
     public function testFuzzySearch()
     {
-       //login to get session
+        //login to get session
         $auth = new \Auth();
         $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
 
-       // init menu
+        // init menu
         \Html::generateMenuSession(true);
 
-       // test modal
-        $modal = \Html::FuzzySearch('getHtml');
-        $this->string($modal)
-         ->contains('id="fuzzysearch"')
-         ->matches('/class="results[^"]*"/');
+        // test retrieving entries
+        $entries = \Html::getMenuFuzzySearchList();
+        $this->array($entries)->size->isGreaterThan(5);
 
-       // test retrieving entries
-        $default = json_decode(\Html::FuzzySearch(), true);
-        $entries = json_decode(\Html::FuzzySearch('getList'), true);
-        $this->array($default)
-         ->isNotEmpty()
-         ->isIdenticalTo($entries)
-         ->hasKey(0)
-         ->size->isGreaterThan(5);
-
-        foreach ($default as $entry) {
+        foreach ($entries as $entry) {
             $this->array($entry)
             ->hasKey('title')
             ->hasKey('url');
