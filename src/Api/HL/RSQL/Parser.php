@@ -89,14 +89,14 @@ final class Parser
             $operators = [
                 [
                     'operator' => '==',
-                    'description' => 'equivilent to',
+                    'description' => 'equivalent to',
                     'sql_where_callable' => fn ($a, $b) => [
                         [$this->db::quoteName($a) => $b]
                     ],
                 ],
                 [
                     'operator' => '!=',
-                    'description' => 'not equivilent to',
+                    'description' => 'not equivalent to',
                     'sql_where_callable' => fn ($a, $b) => [
                         [$this->db::quoteName($a) => ['<>', $b]]
                     ],
