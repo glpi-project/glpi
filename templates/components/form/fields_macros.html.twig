@@ -845,8 +845,6 @@
       'align_label_right': true,
       'mb': 'mb-2',
       'field_class': 'col-12 col-sm-6',
-      'label_class': 'col-xxl-5',
-      'input_class': 'col-xxl-7',
       'add_field_class': '',
       'add_field_attribs': {},
       'center': false,
@@ -858,19 +856,24 @@
       }) %}
 
       {% if options.full_width_adapt_column %}
-         {% set options = options|merge({
+         {% set options = {
             label_class: 'col-xxl-4',
             input_class: 'col-xxl-8',
-      }) %}
+      }|merge(options) %}
       {% endif %}
    {% endif %}
 
    {% if options.icon_label %}
-      {% set options = options|merge({
+      {% set options = {
          label_class: 'col-2',
          input_class: 'col-10',
-      }) %}
+      }|merge(options) %}
    {% endif %}
+
+   {% set options = {
+      label_class: 'col-xxl-5',
+      input_class: 'col-xxl-7',
+   }|merge(options) %}
 
    {% if options.align_label_right %}
       {% set options = options|merge({
