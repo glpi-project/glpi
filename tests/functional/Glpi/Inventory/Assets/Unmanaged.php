@@ -539,6 +539,5 @@ class Unmanaged extends AbstractInventoryAsset
         //check is always linked to computer
         $this->string($agent_reload->fields['itemtype'])->isIdenticalTo("Computer");
         $this->integer($agent_reload->fields['items_id'])->isIdenticalTo($computers_id);
-
     }
 }
