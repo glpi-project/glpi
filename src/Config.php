@@ -493,6 +493,15 @@ class Config extends CommonDBTM
             'password' => rawurldecode($DBslave->dbpassword),
         ];
 
+        $replication_delay = [];
+        if (is_array($DBslave->dbhost)) {
+            foreach ($DBslave->dbhost as $host_num => $host) {
+                $replication_delay[$host_num] = DBConnection::getReplicateDelay($host_num);
+            }
+        } else {
+            $replication_delay[$DBslave->dbhost] = DBConnection::getReplicateDelay();
+        }
+
         $replication_status = DBConnection::getReplicationStatus();
 
         TemplateRenderer::getInstance()->display('pages/setup/general/dbreplica_setup.html.twig', [
@@ -500,7 +509,8 @@ class Config extends CommonDBTM
             'canedit'            => static::canUpdate(),
             'primary_dbhost'     => $DB->dbhost,
             'replica_config'     => $replica_config,
-            'replication_status' => $replication_status
+            'replication_status' => $replication_status,
+            'replication_delay'  => $replication_delay
         ]);
     }
 
