@@ -51,7 +51,7 @@ if (isset($_GET['docid'])) {
     }
 
     if (!file_exists(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])) {
-        Html::displayErrorAndDie(__('File not found'), true); // Not found
+        Html::displayErrorAndDie(sprintf(__('File %s not found.'), $doc->fields['filename']), true); // Not found
     } else if ($doc->canViewFile($_GET)) {
         if (
             $doc->fields['sha1sum']
