@@ -183,10 +183,10 @@ class Unmanaged extends MainAsset
         $this->handleLinks();
 
 
+        $need_to_add = false;
         if ($items_id == 0) {
             //before add check if an asset already exist with mac
             //if found, the Unmanaged device has been converted
-            $need_to_add = false;
 
             if (property_exists($val, "mac")) {
                 $result = NetworkPortInstantiation::getUniqueItemByMac(
