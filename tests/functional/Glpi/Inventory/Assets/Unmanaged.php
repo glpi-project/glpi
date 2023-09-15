@@ -532,7 +532,7 @@ class Unmanaged extends AbstractInventoryAsset
         $this->boolean($unmanaged->getFromDbByCrit(['name' => 'glpixps']))->isFalse();
 
         //reload agent
-        $agent_reload = new Agent();
+        $agent_reload = new \Agent();
         $this->boolean($agent_reload->getFromDB($agent['id']))->isTrue();
 
         //check is always linked to computer
