@@ -1423,7 +1423,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     ]
                 ],
                 'WHERE'     => [
-                    $item->getAssociatedDocumentsCriteria(Session::isCron()),
+                    $item->getAssociatedDocumentsCriteria(true),
                     'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
                 ]
             ]);
