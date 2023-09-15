@@ -35,7 +35,6 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
-use Agent;
 use Lockedfield;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
