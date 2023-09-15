@@ -226,15 +226,19 @@ class Unmanaged extends MainAsset
         $this->agent->fields['items_id'] = $items_id;
         $this->agent->fields['entities_id'] = $entities_id;
 
-        //check for any old agent to remove
-        $agent = new \Agent();
-        $agent->deleteByCriteria([
-            'itemtype' => $this->item->getType(),
-            'items_id' => $items_id,
-            'NOT' => [
-                'id' => $this->agent->fields['id']
-            ]
-        ]);
+        //check for any old agent to remove only if it an unmanaged
+        //to prevent agentdeletion from another asset handle by another agent
+        if ($need_to_add) {
+            $agent = new \Agent();
+            $agent->deleteByCriteria([
+                'itemtype' => $this->item->getType(),
+                'items_id' => $items_id,
+                'NOT' => [
+                    'id' => $this->agent->fields['id']
+                ]
+            ]);
+        }
+
 
         $val->id = $this->item->fields['id'];
 
