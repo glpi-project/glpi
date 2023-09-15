@@ -321,7 +321,7 @@ class VirtualMachine extends InventoryAsset
                         $computers_vm_id = $computervm->add($input);
                     } else {
                         //refused by rules
-                        return;
+                        continue;
                     }
                 } else {
                     // Update computer
