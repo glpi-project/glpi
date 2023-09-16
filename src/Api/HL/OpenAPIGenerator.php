@@ -260,6 +260,87 @@ EOT;
         return $schema;
     }
 
+    private function replaceRefPlaceholdersInResponses(array $responses, array $placeholders, string $controller): array
+    {
+        $new_responses = $responses;
+        foreach ($new_responses as $status => &$response) {
+            if (!isset($response['content'])) {
+                continue;
+            }
+            foreach ($response['content'] as $content_type => &$content) {
+                foreach ($placeholders as $placeholder_name => $placeholder_value) {
+                    if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                        $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                        if ($new_schema !== null) {
+                            $content['schema']['$ref'] = $new_schema['$ref'];
+                        }
+                    }
+                    // Handle array types
+                    if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                        $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                        if ($new_schema !== null) {
+                            $content['schema']['items']['$ref'] = $new_schema['$ref'];
+                        }
+                    }
+                }
+            }
+            unset($content);
+        }
+        unset($response);
+        return $new_responses;
+    }
+
+    private function replaceRefPlaceholdersInParameters(array $parameters, array $placeholders, string $controller): array
+    {
+        $new_parameters = $parameters;
+        foreach ($new_parameters as &$parameter) {
+            foreach ($placeholders as $placeholder_name => $placeholder_value) {
+                if (isset($parameter['schema']['$ref']) && $parameter['schema']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                    if ($new_schema !== null) {
+                        $parameter['schema']['$ref'] = $new_schema['$ref'];
+                    }
+                }
+                // Handle array types
+                if (isset($parameter['schema']['items']['$ref']) && $parameter['schema']['items']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                    if ($new_schema !== null) {
+                        $parameter['schema']['items']['$ref'] = $new_schema['$ref'];
+                    }
+                }
+            }
+        }
+        unset($parameter);
+        return $new_parameters;
+    }
+
+    private function replaceRefPlaceholdersInRequestBody(array $request_body, array $placeholders, string $controller): array
+    {
+        $new_request_body = $request_body;
+        if (!isset($new_request_body['content'])) {
+            return $new_request_body;
+        }
+        foreach ($new_request_body['content'] as $content_type => &$content) {
+            foreach ($placeholders as $placeholder_name => $placeholder_value) {
+                if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                    if ($new_schema !== null) {
+                        $content['schema']['$ref'] = $new_schema['$ref'];
+                    }
+                }
+                // Handle array types
+                if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                    if ($new_schema !== null) {
+                        $content['schema']['items']['$ref'] = $new_schema['$ref'];
+                    }
+                }
+            }
+        }
+        unset($content);
+        return $new_request_body;
+    }
+
     /**
      * Replace any generic paths like `/Assets/{itemtype}` with the actual paths for each itemtype as long as the parameter pattern(s) are explicit lists.
      * Example: "Computer|Monitor|NetworkEquipment".
@@ -278,32 +359,28 @@ EOT;
                         $itemtypes = explode('|', $param['schema']['pattern']);
                         foreach ($itemtypes as $itemtype) {
                             $new_url = str_replace('{itemtype}', $itemtype, $path_url);
-                            $new_responses = $route['responses'];
                             // Check there isn't already a route for this URL
                             if (!isset($paths[$new_url][$method])) {
-                                unset($route['parameters'][$param_key]);
-                                foreach ($new_responses as $status => &$response) {
-                                    foreach ($response['content'] as $content_type => &$content) {
-                                        if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{itemtype}') {
-                                            $new_schema = $this->getComponentReference($itemtype, $route['x-controller']);
-                                            if ($new_schema !== null) {
-                                                $content['schema']['$ref'] = $new_schema['$ref'];
-                                            }
-                                        }
-                                        // Handle array types
-                                        if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{itemtype}') {
-                                            $new_schema = $this->getComponentReference($itemtype, $route['x-controller']);
-                                            if ($new_schema !== null) {
-                                                $content['schema']['items']['$ref'] = $new_schema['$ref'];
-                                            }
-                                        }
-                                    }
-                                    unset($content);
-                                }
-                                unset($response);
                                 $expanded[$new_url][$method] = $route;
-                                $expanded[$new_url][$method]['responses'] = $new_responses;
+                                $expanded[$new_url][$method]['responses'] = $this->replaceRefPlaceholdersInResponses(
+                                    $route['responses'],
+                                    ['itemtype' => $itemtype],
+                                    $route['x-controller']
+                                );
+                                $expanded[$new_url][$method]['parameters'] = $this->replaceRefPlaceholdersInParameters(
+                                    $route['parameters'],
+                                    ['itemtype' => $itemtype],
+                                    $route['x-controller']
+                                );
+                                if (isset($route['requestBody'])) {
+                                    $expanded[$new_url][$method]['requestBody'] = $this->replaceRefPlaceholdersInRequestBody(
+                                        $route['requestBody'],
+                                        ['itemtype' => $itemtype],
+                                        $route['x-controller']
+                                    );
+                                }
                                 $is_expanded = true;
+                                unset($route['parameters'][$param_key]);
                             }
                         }
                     }
