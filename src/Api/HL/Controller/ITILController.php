@@ -571,6 +571,9 @@ final class ITILController extends AbstractController
     #[Doc\Route(
         description: 'List or search Tickets, Changes or Problems',
         parameters: [self::PARAMETER_RSQL_FILTER],
+        responses: [
+            ['schema' => '{itemtype}[]']
+        ]
     )]
     public function search(Request $request): Response
     {
@@ -588,6 +591,9 @@ final class ITILController extends AbstractController
                 'location' => Doc\Parameter::LOCATION_PATH,
                 'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
             ]
+        ],
+        responses: [
+            ['schema' => '{itemtype}']
         ]
     )]
     public function getItem(Request $request): Response
@@ -598,7 +604,14 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/{itemtype}/', methods: ['POST'])]
     #[Doc\Route(
-        description: 'Create a new Ticket, Change or Problem'
+        description: 'Create a new Ticket, Change or Problem',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{itemtype}',
+            ]
+        ]
     )]
     public function createItem(Request $request): Response
     {
@@ -615,6 +628,11 @@ final class ITILController extends AbstractController
                 'description' => 'The ID of the Ticket, Change, or Problem',
                 'location' => Doc\Parameter::LOCATION_PATH,
                 'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ],
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{itemtype}',
             ]
         ]
     )]

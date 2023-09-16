@@ -993,6 +993,9 @@ final class AssetController extends AbstractController
     #[Doc\Route(
         description: 'List or search assets of a specific type',
         parameters: [self::PARAMETER_RSQL_FILTER],
+        responses: [
+            ['schema' => '{itemtype}[]']
+        ]
     )]
     public function search(Request $request): Response
     {
@@ -1006,6 +1009,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get an asset of a specific type by ID',
+        responses: [
+            ['schema' => '{itemtype}']
+        ]
     )]
     public function getItem(Request $request): Response
     {
@@ -1018,6 +1024,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create an asset of a specific type',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{itemtype}',
+            ]
+        ]
     )]
     public function createItem(Request $request): Response
     {
@@ -1031,6 +1044,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update an asset of a specific type by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{itemtype}',
+            ]
+        ]
     )]
     public function updateItem(Request $request): Response
     {

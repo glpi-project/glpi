@@ -734,7 +734,7 @@ class ComponentController extends AbstractController
     }
 
     #[Route(path: '/Assets/{itemtype}/{id}/Component/{component_type}', methods: ['GET'], requirements: [
-        'itemtype' => '\w*',
+        'itemtype' => [AssetController::class, 'getAssetTypes'],
         'component_type' => '\w*',
         'id' => '\d+'
     ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
