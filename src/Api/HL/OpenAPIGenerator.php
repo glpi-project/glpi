@@ -37,6 +37,7 @@ namespace Glpi\Api\HL;
 
 use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Doc\Response;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Doc\SchemaReference;
 
 /**
@@ -156,6 +157,10 @@ EOT;
                         $other_calculated_name = str_replace('Controller', '', $other_short_name) . ' - ' . $schema_name;
                         $schemas[$other_calculated_name] = $schemas[$schema_name];
                         unset($schemas[$schema_name]);
+                    }
+                    if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
+                        $itemtype = $known_schema['x-itemtype'];
+                        $known_schema['description'] = method_exists($itemtype, 'getTypeName') ? $itemtype::getTypeName(1) : 'No description available';
                     }
                     $schemas[$calculated_name] = $known_schema;
                     $schemas[$calculated_name]['x-controller'] = $controller::class;
