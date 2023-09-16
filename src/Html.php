@@ -1117,7 +1117,6 @@ HTML;
                 'gridstack',
                 'charts',
                 'clipboard',
-                'sortable'
             ]);
 
             if (in_array('planning', $jslibs)) {
@@ -1173,10 +1172,6 @@ HTML;
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/prismjs.css'];
             }
 
-            if (in_array('sortable', $jslibs)) {
-                Html::requireJs('sortable');
-            }
-
             if (in_array('tinymce', $jslibs)) {
                 Html::requireJs('tinymce');
             }
@@ -1212,6 +1207,9 @@ HTML;
             $tpl_vars['css_files'][] = ['path' => 'public/lib/jquery.rateit.css'];
             Html::requireJs('rateit');
         }
+
+        // Sortable required for drag and drop of display preferences and some other things like dashboards, kanban, etc
+        Html::requireJs('sortable');
 
        //file upload is required... almost everywhere.
         Html::requireJs('fileupload');

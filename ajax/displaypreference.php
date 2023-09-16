@@ -52,18 +52,11 @@ if (isset($_POST["activate"])) {
             'itemtype' => $_POST['itemtype']
         ]);
     }
-} else if (isset($_POST["add"])) {
-    $setupdisplay->add($_POST);
-} else if ((isset($_POST["purge"]) || isset($_POST["purge_x"])) && isset($_POST['num'])) {
-    $setupdisplay->deleteByCriteria([
-        'itemtype' => $_POST['itemtype'],
-        'users_id' => $_POST['users_id'],
-        'num'      => $_POST['num']
-    ], true);
-} else if ((isset($_POST["up"]) || isset($_POST["up_x"])) && isset($_POST['num'])) {
-    $setupdisplay->orderItem($_POST, 'up');
-} else if ((isset($_POST["down"]) || isset($_POST["down_x"])) && isset($_POST['num'])) {
-    $setupdisplay->orderItem($_POST, 'down');
+} else if (isset($_POST['action']) && $_POST['action'] === 'update_order') {
+    if (!isset($_POST['itemtype'], $_POST['users_id'], $_POST['opts'])) {
+        die(400);
+    }
+    $setupdisplay->updateOrder($_POST['itemtype'], $_POST['users_id'], $_POST['opts']);
 } else {
     die(400);
 }

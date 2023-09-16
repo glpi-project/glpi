@@ -570,12 +570,12 @@ $CFG_GLPI['javascript'] = [
         'dashboard' => ['dashboard'],
         'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
         'ticket'    => ['rateit', 'tinymce', 'kanban', 'dashboard'],
-        'problem'   => ['tinymce', 'kanban', 'sortable'],
-        'change'    => ['tinymce', 'kanban', 'sortable', 'rateit'],
+        'problem'   => ['tinymce', 'kanban'],
+        'change'    => ['tinymce', 'kanban', 'rateit'],
         'stat'      => ['charts', 'rateit']
     ],
     'tools'     => [
-        'project'                 => ['kanban', 'tinymce', 'sortable'],
+        'project'                 => ['kanban', 'tinymce'],
         'knowbaseitem'            => ['tinymce'],
         'knowbaseitemtranslation' => ['tinymce'],
         'reminder'                => ['tinymce'],
@@ -604,7 +604,7 @@ $CFG_GLPI['javascript'] = [
         'config' => ['clipboard'],
         'webhook' => ['monaco', 'autocomplete'],
     ],
-    'admin'        => ['clipboard', 'sortable'],
+    'admin'        => ['clipboard'],
     'preference'   => ['clipboard'],
     'self-service' => array_merge(['tinymce'], $reservations_libs),
     'tickets'      => [

@@ -59,31 +59,34 @@
                      {% set add_opt_btn %}
                         <button type="button" name="add_opt" class="btn btn-primary ms-1">{{ _x('button', 'Add') }}</button>
                      {% endset %}
+                     {% set result_template_js %}
+                        {# Select2 js function for templateResult that hides options already added to the table where the value matches the data-opt-id attr on the rows #}
+                        (opt) => {
+                           if ($(`tr[data-opt-id="${opt.id}"]`).length > 0) {
+                              return null;
+                           }
+                           return opt.text;
+                        }
+                     {% endset %}
                      {{ fields.dropdownArrayField('num', null, available_to_add, '', {
                         no_label: true,
                         add_field_html: add_opt_btn,
-                        used: entries|map(v => v['id']),
+                        templateResult: result_template_js,
                      }) }}
                   {% endif %}
                </td>
             </tr>
             {% for opt in entries|filter(v => v['fixed'] == true) %}
-               <tr data-opt-id="{{ opt['id'] }}">
+               <tr data-opt-id="{{ opt['id'] }}" data-fixed="true">
                   <td>{{ opt['name'] }}</td>
                   <td colspan="3"></td>
                </tr>
             {% endfor %}
             {% for opt in entries|filter(v => v['fixed'] != true) %}
                {% set name_prefix = opt['group'] is not empty ? (opt['group']) : '' %}
-               <tr data-opt-id="{{ opt['id'] }}">
+               <tr data-opt-id="{{ opt['id'] }}" class="cursor-grab">
                   <td>{{ name_prefix ~ opt['name'] }}</td>
                   <td>
-                     <button type="button" name="move_up" class="btn btn-icon btn-sm btn-ghost-secondary" title="{{ __('Bring up') }}" {{ loop.first ? 'style="visibility: hidden"' : '' }}>
-                        <i class="ti ti-arrow-up"></i>
-                     </button>
-                     <button type="button" name="move_down" class="btn btn-icon btn-sm btn-ghost-secondary" title="{{ __('Bring down') }}" {{ loop.last ? 'style="visibility: hidden"' : '' }}>
-                        <i class="ti ti-arrow-down"></i>
-                     </button>
                      {% if opt['noremove'] is not defined or opt['noremove'] != true %}
                         <button type="button" name="remove_opt" class="btn btn-icon btn-sm btn-ghost-danger" title="{{ _x('button', 'Delete permanently') }}">
                            <i class="ti ti-x"></i>
@@ -99,6 +102,53 @@
 <script>
    $(() => {
        const config_forms = $(`#tabsbody.display_preference_config`);
+       // Make sure the table rows are sortable only once
+       const sortables = `#tabsbody.display_preference_config tbody`;
+       try {
+           sortable(sortables, 'destroy');
+       } catch (e) {}
+       sortable(sortables, {
+           acceptFrom: '#tabsbody.display_preference_config tbody',
+           items: 'tr:not([data-fixed])',
+       });
+
+       function updateOrder(element) {
+           const el = $(element);
+           const tbody = el.is('tbody') ? el : el.find('tbody');
+
+           const opts = [];
+           tbody.find('tr[data-opt-id]:not([data-fixed])').each((i, el) => {
+               opts.push($(el).data('opt-id'));
+           });
+           // disable sorting temporarily
+           sortable(sortables, 'disable');
+           $.ajax({
+               url: "{{ path('/ajax/displaypreference.php') }}",
+               type: 'POST',
+               data: {
+                   'action': 'update_order',
+                   'itemtype': config_forms.find(`input[name="itemtype"]`).val(),
+                   'users_id': config_forms.find(`input[name="users_id"]`).val(),
+                   'opts': opts,
+               },
+           }).then(() => {
+               sortable(sortables, 'enable');
+           }, () => {
+               // Failure. Move item back to original position
+               const dragged = e.detail.item;
+               const original_index = e.detail.origin.elementIndex;
+               if (original_index === 0) {
+                   $(dragged).insertBefore(dragged.parent().find(`tr:eq(${original_index})`));
+               } else {
+                   $(dragged).insertAfter(dragged.parent().find(`tr:eq(${original_index})`));
+               }
+               sortable(sortables, 'enable');
+           });
+       }
+
+       $(sortables).off('sortupdate').on('sortupdate', (e) => {
+           updateOrder(e.target);
+       });
        const submitForm = (specific_form, data) => {
            data['itemtype'] = specific_form.find(`input[name="itemtype"]`).val();
            data['users_id'] = specific_form.find(`input[name="users_id"]`).val();
@@ -126,31 +176,39 @@
 
        config_forms.find(`button[name="add_opt"]`).on(`click`, (e) => {
            const specific_form = $(e.target).closest('.display_preference_config');
-           submitForm(specific_form, {
-               add: 1,
-               num: specific_form.find(`select[name="num"]`).val(),
-           });
+           const num_select = specific_form.find(`select[name="num"]`);
+           const num = num_select.val();
+           if (num === null) {
+               return;
+           }
+           // Label is the text of the selected option's optgroup + ' - ' + the text of the selected option
+           // unless it is in the first optgroup, then it is just the text of the selected option
+           const opt = num_select.find(`option[value="${num}"]`);
+           const label = opt.closest('optgroup').index() === 0 ? opt.text() : `${opt.closest('optgroup').attr('label')} - ${opt.text()}`;
+
+           const tbody = specific_form.find(`tbody`);
+           tbody.append(`
+               <tr data-opt-id="${num}" class="cursor-grab">
+                  <td>${label}</td>
+                  <td>
+                        <button type="button" name="remove_opt" class="btn btn-icon btn-sm btn-ghost-danger" title="{{ _x('button', 'Delete permanently') }}">
+                           <i class="ti ti-x"></i>
+                        </button>
+                  </td>
+               </tr>
+           `);
+           // Reset selection to first item. templateResult will automatically hide the item, but it doesn't remove it as the active selection.
+           // New selection will be blank. Doesn't seem to be a good way to reset the selection to the first item that isn't hidden by the result template.
+           num_select.val('').trigger('change');
+           updateOrder(specific_form);
        });
 
-       config_forms.find(`button[name="move_up"]`).on(`click`, (e) => {
-          submitForm($(e.target).closest('.display_preference_config'), {
-             up: 1,
-             num: $(e.target).closest('tr').data('opt-id')
-          });
-       });
-
-       config_forms.find(`button[name="move_down"]`).on(`click`, (e) => {
-          submitForm($(e.target).closest('.display_preference_config'), {
-             down: 1,
-             num: $(e.target).closest('tr').data('opt-id')
-          });
-       });
-
-       config_forms.find(`button[name="remove_opt"]`).on(`click`, (e) => {
-          submitForm($(e.target).closest('.display_preference_config'), {
-             purge: 1,
-             num: $(e.target).closest('tr').data('opt-id')
-          });
+       config_forms.on(`click`, 'button[name="remove_opt"]', (e) => {
+           const tbody = $(e.target).closest('tbody');
+           $(e.target).closest('tr').remove();
+           // Trigger an update for the select to re-run the templateResult function
+           tbody.find(`select[name="num"]`).trigger('change');
+           updateOrder(tbody);
        });
    });
 </script>

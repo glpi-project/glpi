@@ -203,6 +203,47 @@ class DisplayPreference extends CommonDBTM
         }
     }
 
+    public function updateOrder(string $itemtype, int $users_id, array $order)
+    {
+        global $DB;
+
+        // Fixed columns are not kept in the DB, so we should remove them from the order
+        $fixed_cols = $this->getFixedColumns($itemtype);
+        $official_order = array_diff($order, $fixed_cols);
+
+        // Remove duplicates (in case of UI bug not preventing them)
+        $official_order = array_unique($official_order);
+
+        // Remove options not in the new order
+        $DB->delete(
+            self::getTable(),
+            [
+                'itemtype' => $itemtype,
+                'users_id' => $users_id,
+                'NOT'      => [
+                    'num' => $official_order
+                ]
+            ]
+        );
+
+        foreach ($official_order as $rank => $num) {
+            $DB->updateOrInsert(
+                self::getTable(),
+                [
+                    'itemtype' => $itemtype,
+                    'users_id' => $users_id,
+                    'num'      => $num,
+                    'rank' => $rank
+                ],
+                [
+                    'itemtype' => $itemtype,
+                    'users_id' => $users_id,
+                    'num'      => $num,
+                ]
+            );
+        }
+    }
+
     /**
      * Order to move an item
      *
@@ -365,14 +406,13 @@ class DisplayPreference extends CommonDBTM
                 $group = $val['name'];
             } elseif (
                 !in_array($key, $fixed_columns)
-                && !in_array($key, $already_added)
                 && (!isset($val['nodisplay']) || !$val['nodisplay'])
             ) {
                 $available_to_add[$group][$key] = $val["name"];
             }
         }
         $entries = [];
-        foreach ($fixed_columns as $key => $val) {
+        foreach ($fixed_columns as $val) {
             if (!isset($searchopt[$val])) {
                 continue;
             }
@@ -383,7 +423,7 @@ class DisplayPreference extends CommonDBTM
                 'fixed' => true
             ];
         }
-        foreach ($already_added as $key => $val) {
+        foreach ($already_added as $val) {
             if (!isset($searchopt[$val])) {
                 continue;
             }
