@@ -330,6 +330,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/User', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search users',
+        parameters: [self::PARAMETER_RSQL_FILTER],
         responses: [
             ['schema' => 'User[]']
         ]
@@ -342,6 +343,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/Group', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search groups',
+        parameters: [self::PARAMETER_RSQL_FILTER],
         responses: [
             ['schema' => 'Group[]']
         ]
@@ -354,6 +356,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/Entity', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search entities',
+        parameters: [self::PARAMETER_RSQL_FILTER],
         responses: [
             ['schema' => 'Entity[]']
         ]
@@ -366,6 +369,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/Profile', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search profiles',
+        parameters: [self::PARAMETER_RSQL_FILTER],
         responses: [
             ['schema' => 'Profile[]']
         ]

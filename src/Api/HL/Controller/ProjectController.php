@@ -219,6 +219,7 @@ final class ProjectController extends AbstractController
     #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search projects',
+        parameters: [self::PARAMETER_RSQL_FILTER],
         responses: [
             ['schema' => 'Project[]']
         ]
@@ -276,6 +277,7 @@ final class ProjectController extends AbstractController
     #[Route(path: '/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search project tasks',
+        parameters: [self::PARAMETER_RSQL_FILTER],
         responses: [
             ['schema' => 'Task[]']
         ]
@@ -333,6 +335,7 @@ final class ProjectController extends AbstractController
     #[Route(path: '/{project_id}/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search project tasks',
+        parameters: [self::PARAMETER_RSQL_FILTER],
         responses: [
             ['schema' => 'Task[]']
         ]

@@ -569,7 +569,8 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/{itemtype}/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search Tickets, Changes or Problems'
+        description: 'List or search Tickets, Changes or Problems',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function search(Request $request): Response
     {
@@ -1134,7 +1135,8 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/RecurringTicket', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search recurring tickets'
+        description: 'List or search recurring tickets',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchRecurringTickets(Request $request): Response
     {
@@ -1185,7 +1187,8 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/RecurringChange', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search recurring changes'
+        description: 'List or search recurring changes',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchRecurringChanges(Request $request): Response
     {
@@ -1236,7 +1239,8 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/ExternalEvent', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search external evenst'
+        description: 'List or search external events',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchExternalEvent(Request $request): Response
     {

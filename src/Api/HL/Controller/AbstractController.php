@@ -72,6 +72,15 @@ abstract class AbstractController
     public const CRUD_ACTION_RESTORE = 'restore';
     public const CRUD_ACTION_LIST = 'list';
 
+    protected const PARAMETER_RSQL_FILTER = [
+        'name' => 'filter',
+        'description' => 'RSQL query string',
+        'location' => 'query',
+        'schema' => [
+            'type' => Doc\Schema::TYPE_STRING,
+        ]
+    ];
+
     /**
      * @return array<string, Doc\Schema>
      */

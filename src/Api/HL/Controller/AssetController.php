@@ -977,6 +977,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Global', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search assets of all types',
+        parameters: [self::PARAMETER_RSQL_FILTER],
         responses: [
             ['schema' => 'CommonAsset[]']
         ]
@@ -990,7 +991,8 @@ final class AssetController extends AbstractController
         'itemtype' => [self::class, 'getAssetTypes']
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search assets of a specific type'
+        description: 'List or search assets of a specific type',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function search(Request $request): Response
     {
@@ -1051,7 +1053,8 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Cartridge', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search cartridges models'
+        description: 'List or search cartridges models',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchCartridgeItems(Request $request): Response
     {
@@ -1144,7 +1147,8 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Consumable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search consumables models'
+        description: 'List or search consumables models',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchConsumableItems(Request $request): Response
     {
@@ -1237,7 +1241,8 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Software', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search software'
+        description: 'List or search software',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchSoftware(Request $request): Response
     {
@@ -1288,7 +1293,8 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Rack', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search racks'
+        description: 'List or search racks',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchRack(Request $request): Response
     {
@@ -1339,7 +1345,8 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Enclosure', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search enclosure'
+        description: 'List or search enclosure',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchEnclosure(Request $request): Response
     {
@@ -1390,7 +1397,8 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/PDU', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search PDUs'
+        description: 'List or search PDUs',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchPDU(Request $request): Response
     {
@@ -1441,7 +1449,8 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/PassiveDCEquipment', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search passive DC equipment'
+        description: 'List or search passive DC equipment',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchPassiveDCEquipment(Request $request): Response
     {
@@ -1492,7 +1501,8 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Cable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search cables'
+        description: 'List or search cables',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchCables(Request $request): Response
     {
@@ -1543,7 +1553,8 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Socket', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search sockets'
+        description: 'List or search sockets',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchSockets(Request $request): Response
     {
@@ -1596,7 +1607,8 @@ final class AssetController extends AbstractController
         'software_id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search software versions'
+        description: 'List or search software versions',
+        parameters: [self::PARAMETER_RSQL_FILTER],
     )]
     public function searchSoftwareVersions(Request $request): Response
     {
