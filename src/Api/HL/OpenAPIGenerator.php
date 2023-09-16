@@ -556,6 +556,30 @@ EOT;
                     $path_schema['parameters'][$param['name']]['schema'] = $combined_schema;
                 }
             }
+            // Inject global headers
+            if ($route_path->getRouteSecurityLevel() !== Route::SECURITY_NONE) {
+                $path_schema['parameters']['GLPI-Entity'] = [
+                    'name' => 'GLPI-Entity',
+                    'in' => 'header',
+                    'description' => 'The ID of the entity to use. If not specified, the default entity for the user is used.',
+                    'schema' => ['type' => Schema::TYPE_INTEGER]
+                ];
+                $path_schema['parameters']['GLPI-Profile'] = [
+                    'name' => 'GLPI-Profile',
+                    'in' => 'header',
+                    'description' => 'The ID of the profile to use. If not specified, the default profile for the user is used.',
+                    'schema' => ['type' => Schema::TYPE_INTEGER]
+                ];
+                $path_schema['parameters']['GLPI-Entity-Recursive'] = [
+                    'name' => 'GLPI-Entity-Recursive',
+                    'in' => 'header',
+                    'description' => '"true" if the entity access should include child entities. This is false by default.',
+                    'schema' => [
+                        'type' => Schema::TYPE_STRING,
+                        'enum' => ['true', 'false']
+                    ],
+                ];
+            }
 
             if (strcasecmp($method, 'delete') && $request_body !== null) {
                 $path_schema['requestBody'] = $request_body;
