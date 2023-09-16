@@ -181,10 +181,16 @@ EOT;
         if ($is_ref_array) {
             $name = substr($name, 0, -2);
         }
-        foreach ($components as $component_name => $component) {
-            if ($component['x-controller'] === $controller && $component['x-schemaname'] === $name) {
-                $match = $component_name;
-                break;
+        if ($name === '{itemtype}') {
+            // Placeholder that will be replaced after route paths are expanded
+            $match = $name;
+        }
+        if ($match === null) {
+            foreach ($components as $component_name => $component) {
+                if ($component['x-controller'] === $controller && $component['x-schemaname'] === $name) {
+                    $match = $component_name;
+                    break;
+                }
             }
         }
         // If no match was found, try matching by name only
@@ -272,10 +278,31 @@ EOT;
                         $itemtypes = explode('|', $param['schema']['pattern']);
                         foreach ($itemtypes as $itemtype) {
                             $new_url = str_replace('{itemtype}', $itemtype, $path_url);
+                            $new_responses = $route['responses'];
                             // Check there isn't already a route for this URL
                             if (!isset($paths[$new_url][$method])) {
                                 unset($route['parameters'][$param_key]);
+                                foreach ($new_responses as $status => &$response) {
+                                    foreach ($response['content'] as $content_type => &$content) {
+                                        if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{itemtype}') {
+                                            $new_schema = $this->getComponentReference($itemtype, $route['x-controller']);
+                                            if ($new_schema !== null) {
+                                                $content['schema']['$ref'] = $new_schema['$ref'];
+                                            }
+                                        }
+                                        // Handle array types
+                                        if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{itemtype}') {
+                                            $new_schema = $this->getComponentReference($itemtype, $route['x-controller']);
+                                            if ($new_schema !== null) {
+                                                $content['schema']['items']['$ref'] = $new_schema['$ref'];
+                                            }
+                                        }
+                                    }
+                                    unset($content);
+                                }
+                                unset($response);
                                 $expanded[$new_url][$method] = $route;
+                                $expanded[$new_url][$method]['responses'] = $new_responses;
                                 $is_expanded = true;
                             }
                         }
@@ -586,6 +613,7 @@ EOT;
             }
             $path_schema['security'] = $this->getPathSecuritySchema($route_path, $route_method);
             $path_schema['parameters'] = array_values($path_schema['parameters'] ?? []);
+            $path_schema['x-controller'] = $route_path->getController();
             $path_schemas[$method] = $path_schema;
         }
         return [
