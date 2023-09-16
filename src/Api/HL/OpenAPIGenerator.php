@@ -681,6 +681,27 @@ EOT;
                     ],
                 ];
             }
+            // Language can always be specified, even if it may not always be respected if no temporary session is started
+            $path_schema['parameters']['Accept-Language'] = [
+                'name' => 'Accept-Language',
+                'in' => 'header',
+                'description' => 'The language to use for the response. If not specified, the default language for the user is used.',
+                'schema' => ['type' => Schema::TYPE_STRING],
+                'examples' => [
+                    'English_GB' => [
+                        'value' => 'en_GB',
+                        'summary' => 'English (United Kingdom)'
+                    ],
+                    'French_FR' => [
+                        'value' => 'fr_FR',
+                        'summary' => 'French (France)'
+                    ],
+                    'Portuguese_BR' => [
+                        'value' => 'pt_BR',
+                        'summary' => 'Portuguese (Brazil)'
+                    ],
+                ]
+            ];
 
             if (strcasecmp($method, 'delete') && $request_body !== null) {
                 $path_schema['requestBody'] = $request_body;
