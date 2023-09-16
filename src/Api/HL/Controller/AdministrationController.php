@@ -550,7 +550,6 @@ final class AdministrationController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'User',
         ]
     ])]
@@ -682,7 +681,6 @@ final class AdministrationController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Group',
         ]
     ])]
@@ -735,7 +733,6 @@ final class AdministrationController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Entity',
         ]
     ])]
@@ -788,7 +785,6 @@ final class AdministrationController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Profile',
         ]
     ])]

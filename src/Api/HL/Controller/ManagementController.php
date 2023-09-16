@@ -279,7 +279,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Budget',
         ]
     ])]
@@ -337,7 +336,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'License',
         ]
     ])]
@@ -395,7 +393,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Supplier',
         ]
     ])]
@@ -461,7 +458,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Contact',
         ]
     ])]
@@ -519,7 +515,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Contract',
         ]
     ])]
@@ -588,7 +583,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Document',
         ]
     ])]
@@ -646,7 +640,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Line',
         ]
     ])]
@@ -704,7 +697,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Certificate',
         ]
     ])]
@@ -762,7 +754,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'DataCenter',
         ]
     ])]
@@ -820,7 +811,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Cluster',
         ]
     ])]
@@ -878,7 +868,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Domain',
         ]
     ])]
@@ -936,7 +925,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Appliance',
         ]
     ])]
@@ -994,7 +982,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Database',
         ]
     ])]

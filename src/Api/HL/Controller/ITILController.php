@@ -1006,7 +1006,13 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/{itemtype}/{id}/TeamMember', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'Get the team members for a specific Ticket, Change or Problem by ID'
+        description: 'Get the team members for a specific Ticket, Change or Problem by ID',
+        responses: [
+            [
+                'description' => 'The team members',
+                'schema' => 'TeamMember[]'
+            ]
+        ]
     )]
     public function getTeamMembers(Request $request): Response
     {
@@ -1137,6 +1143,9 @@ final class ITILController extends AbstractController
     #[Doc\Route(
         description: 'List or search recurring tickets',
         parameters: [self::PARAMETER_RSQL_FILTER],
+        responses: [
+            ['schema' => 'RecurringTicket[]']
+        ]
     )]
     public function searchRecurringTickets(Request $request): Response
     {
@@ -1148,6 +1157,9 @@ final class ITILController extends AbstractController
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a recurring ticket by ID',
+        responses: [
+            ['schema' => 'RecurringTicket']
+        ]
     )]
     public function getRecurringTicket(Request $request): Response
     {
@@ -1157,6 +1169,13 @@ final class ITILController extends AbstractController
     #[Route(path: '/RecurringTicket', methods: ['POST'])]
     #[Doc\Route(
         description: 'Create a recurring ticket',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RecurringTicket',
+            ]
+        ]
     )]
     public function createRecurringTicket(Request $request): Response
     {
@@ -1168,6 +1187,13 @@ final class ITILController extends AbstractController
     ])]
     #[Doc\Route(
         description: 'Update a recurring ticket by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RecurringTicket',
+            ]
+        ]
     )]
     public function updateRecurringTicket(Request $request): Response
     {
@@ -1189,6 +1215,9 @@ final class ITILController extends AbstractController
     #[Doc\Route(
         description: 'List or search recurring changes',
         parameters: [self::PARAMETER_RSQL_FILTER],
+        responses: [
+            ['schema' => 'RecurringChange[]']
+        ]
     )]
     public function searchRecurringChanges(Request $request): Response
     {
@@ -1200,6 +1229,9 @@ final class ITILController extends AbstractController
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a recurring change by ID',
+        responses: [
+            ['schema' => 'RecurringChange']
+        ]
     )]
     public function getRecurringChange(Request $request): Response
     {
@@ -1209,6 +1241,13 @@ final class ITILController extends AbstractController
     #[Route(path: '/RecurringChange', methods: ['POST'])]
     #[Doc\Route(
         description: 'Create a recurring change',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RecurringChange',
+            ]
+        ]
     )]
     public function createRecurringChange(Request $request): Response
     {
@@ -1220,6 +1259,13 @@ final class ITILController extends AbstractController
     ])]
     #[Doc\Route(
         description: 'Update a recurring change by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RecurringChange',
+            ]
+        ]
     )]
     public function updateRecurringChange(Request $request): Response
     {
@@ -1241,6 +1287,9 @@ final class ITILController extends AbstractController
     #[Doc\Route(
         description: 'List or search external events',
         parameters: [self::PARAMETER_RSQL_FILTER],
+        responses: [
+            ['schema' => 'ExternalEvent[]']
+        ]
     )]
     public function searchExternalEvent(Request $request): Response
     {
@@ -1251,7 +1300,10 @@ final class ITILController extends AbstractController
         'id' => '\d+'
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'Get a recurring change by ID',
+        description: 'Get an external event by ID',
+        responses: [
+            ['schema' => 'ExternalEvent']
+        ]
     )]
     public function getExternalEvent(Request $request): Response
     {
@@ -1261,6 +1313,13 @@ final class ITILController extends AbstractController
     #[Route(path: '/ExternalEvent', methods: ['POST'])]
     #[Doc\Route(
         description: 'Create an external event',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'ExternalEvent',
+            ]
+        ]
     )]
     public function createExternalEvent(Request $request): Response
     {
@@ -1272,6 +1331,13 @@ final class ITILController extends AbstractController
     ])]
     #[Doc\Route(
         description: 'Update an external event by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'ExternalEvent',
+            ]
+        ]
     )]
     public function updateExternalEvent(Request $request): Response
     {

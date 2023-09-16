@@ -246,7 +246,6 @@ final class ProjectController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Project',
         ]
     ])]
@@ -304,7 +303,6 @@ final class ProjectController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Task',
         ]
     ])]
@@ -355,7 +353,6 @@ final class ProjectController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Task',
         ]
     ])]

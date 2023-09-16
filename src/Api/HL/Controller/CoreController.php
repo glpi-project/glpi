@@ -160,11 +160,6 @@ final class CoreController extends AbstractController
                 'schema' => ['type' => 'string']
             ]
         ],
-        responses: [
-            [
-
-            ]
-        ]
     )]
     public function showDocumentation(Request $request): Response
     {
@@ -312,10 +307,6 @@ HTML;
             ],
             '404' => [
                 'description' => 'No route found for the requested path',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_OBJECT,
-                    'properties' => []
-                ]
             ]
         ]
     )]
@@ -586,7 +577,6 @@ HTML;
             [
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
-                'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'EntityTransferRecord[]'
             ]
         ]
