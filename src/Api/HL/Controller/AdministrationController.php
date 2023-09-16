@@ -330,7 +330,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/User', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search users',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'User[]']
         ]
@@ -343,7 +343,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/Group', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search groups',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Group[]']
         ]
@@ -356,7 +356,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/Entity', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search entities',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Entity[]']
         ]
@@ -369,7 +369,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/Profile', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search profiles',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Profile[]']
         ]

@@ -570,7 +570,7 @@ final class ITILController extends AbstractController
     #[Route(path: '/{itemtype}/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search Tickets, Changes or Problems',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => '{itemtype}[]']
         ]
@@ -1160,7 +1160,7 @@ final class ITILController extends AbstractController
     #[Route(path: '/RecurringTicket', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search recurring tickets',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'RecurringTicket[]']
         ]
@@ -1232,7 +1232,7 @@ final class ITILController extends AbstractController
     #[Route(path: '/RecurringChange', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search recurring changes',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'RecurringChange[]']
         ]
@@ -1304,7 +1304,7 @@ final class ITILController extends AbstractController
     #[Route(path: '/ExternalEvent', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search external events',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'ExternalEvent[]']
         ]

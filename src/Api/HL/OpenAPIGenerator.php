@@ -599,22 +599,19 @@ EOT;
             }
 
             $requirements = $route_path->getRouteRequirements();
-            if (count($requirements)) {
-                $path_schema['parameters'] = [];
-                if ($route_doc !== null) {
-                    $route_params = $route_doc->getParameters();
-                    if (count($route_params) > 0) {
-                        foreach ($route_params as $route_param) {
-                            if (!array_key_exists($route_param->getName(), $requirements)) {
-                                continue;
-                            }
-                            $location = $route_param->getLocation();
-                            if ($location !== Doc\Parameter::LOCATION_BODY) {
-                                $path_schema['parameters'][$route_param->getName()] = $this->getPathParameterSchema($route_param);
-                            }
+            $path_schema['parameters'] = [];
+            if ($route_doc !== null) {
+                $route_params = $route_doc->getParameters();
+                if (count($route_params) > 0) {
+                    foreach ($route_params as $route_param) {
+                        $location = $route_param->getLocation();
+                        if ($location !== Doc\Parameter::LOCATION_BODY && $location !== Doc\Parameter::LOCATION_PATH) {
+                            $path_schema['parameters'][$route_param->getName()] = $this->getPathParameterSchema($route_param);
                         }
                     }
                 }
+            }
+            if (count($requirements)) {
                 foreach ($requirements as $name => $requirement) {
                     if (!str_contains($route_path->getRoutePath(), '{' . $name . '}')) {
                         continue;

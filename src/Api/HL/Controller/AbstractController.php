@@ -81,6 +81,29 @@ abstract class AbstractController
         ]
     ];
 
+    protected const PARAMETER_START = [
+        'name' => 'start',
+        'description' => 'The first item to return',
+        'location' => 'query',
+        'schema' => [
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+            'minimum' => 0,
+            'default' => 0,
+        ]
+    ];
+
+    protected const PARAMETER_LIMIT = [
+        'name' => 'limit',
+        'description' => 'The maximum number of items to return',
+        'location' => 'query',
+        'schema' => [
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+            'minimum' => 0,
+        ]
+    ];
+
     /**
      * @return array<string, Doc\Schema>
      */

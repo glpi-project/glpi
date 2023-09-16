@@ -977,7 +977,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Global', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search assets of all types',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'CommonAsset[]']
         ]
@@ -992,7 +992,7 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search assets of a specific type',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => '{itemtype}[]']
         ]
@@ -1074,7 +1074,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Cartridge', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search cartridge models',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'CartridgeItem[]']
         ]
@@ -1205,7 +1205,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Consumable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search consumables models',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'ConsumableItem[]']
         ]
@@ -1336,7 +1336,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Software', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search software',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Software[]']
         ]
@@ -1408,7 +1408,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Rack', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search racks',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Rack[]']
         ]
@@ -1480,7 +1480,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Enclosure', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search enclosure',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Enclosure[]']
         ]
@@ -1552,7 +1552,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/PDU', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search PDUs',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'PDU[]']
         ]
@@ -1624,7 +1624,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/PassiveDCEquipment', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search passive DC equipment',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'PassiveDCEquipment[]']
         ]
@@ -1696,7 +1696,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Cable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search cables',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Cable[]']
         ]
@@ -1768,7 +1768,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Socket', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search sockets',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Socket[]']
         ]
@@ -1842,7 +1842,7 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search software versions',
-        parameters: [self::PARAMETER_RSQL_FILTER],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'SoftwareVersion[]']
         ]
