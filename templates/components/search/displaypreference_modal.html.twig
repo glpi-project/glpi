@@ -37,7 +37,11 @@
    <div class="modal-dialog modal-lg">
       <div class="modal-content">
          <div class="modal-header">
-            <h4 class="modal-title">{{ __('Select default items to show') }}</h4>
+            {% set header = __('Select default items to show') %}
+            {% if itemtype != '__VALUE__' %}
+               {% set header = header ~ ' - ' ~ itemtype|itemtype_name %}
+            {% endif %}
+            <h4 class="modal-title">{{ header }}</h4>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
          </div>
          <div class="modal-body">

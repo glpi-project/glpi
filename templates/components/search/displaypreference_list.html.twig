@@ -64,7 +64,7 @@
                         {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype']]) %}
                      {% endif %}
                   </td>
-                  <td><button type="button" class="btn btn-link p-0 btn-itemtype-pref">{{ name }}</button></td>
+                  <td><button type="button" class="btn btn-link p-0 btn-itemtype-pref" data-itemtype="{{ pref['itemtype'] }}">{{ name }}</button></td>
                   <td class="text-end">{{ pref['nb'] }}</td>
                </tr>
             {% endfor %}
@@ -86,13 +86,15 @@
    <script>
        $(() => {
            $('table.display-prefs-list tbody button.btn-itemtype-pref').on('click', (e) => {
-               const itemtype = $(e.currentTarget).text();
+               const itemtype = $(e.currentTarget).attr('data-itemtype');
+               const itemtype_name = $(e.currentTarget).text();
                $('#displayprefence_modal{{ rand }}').remove();
                const modal = $($('#displaypreference_modal_template{{ rand }}').html());
                const default_src = modal.find('iframe').attr('src');
                const forced_tab = "{{ users_id > 0 ? 'DisplayPreference$2' : 'DisplayPreference$1' }}"
                const replacement = `${itemtype}&forcetab=${forced_tab}&no_switch=1`;
                modal.find('iframe').attr('src', default_src.replace('__VALUE__', replacement));
+               modal.find('.modal-header h4').text(modal.find('.modal-header h4').text() + ' - ' + itemtype_name);
                modal.appendTo('body').modal('show');
            });
        });
