@@ -133,6 +133,7 @@ class DisplayPreference extends CommonDBTM
                 } else {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                 }
+                return;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
