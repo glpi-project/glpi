@@ -550,7 +550,6 @@ class DisplayPreference extends CommonDBTM
 
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
         $ong['no_all_tab'] = true;
@@ -567,10 +566,14 @@ class DisplayPreference extends CommonDBTM
                 break;
 
             case __CLASS__:
+                $forced_tab = $_REQUEST['forcetab'] ?? null;
+                $allow_tab_switch = !isset($_REQUEST['no_switch']) || !$_REQUEST['no_switch'];
+                $global_only = $forced_tab === 'DisplayPreference$1' && !$allow_tab_switch;
+                $personal_only = $forced_tab === 'DisplayPreference$2' && !$allow_tab_switch;
                 $ong = [];
-                $ong[1] = __('Global View');
+                $ong[1] = $personal_only ? null : __('Global View');
                 if (Session::haveRight(self::$rightname, self::PERSONAL)) {
-                    $ong[2] = __('Personal View');
+                    $ong[2] = $global_only ? null : __('Personal View');
                 }
                 return $ong;
 

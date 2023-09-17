@@ -43,7 +43,7 @@
       {{ inputs.hidden('users_id', users_id, {
          'data-glpicore-ma-tags': 'common'
       }) }}
-      <table class="table table-striped">
+      <table class="table table-striped display-prefs-list">
          <thead>
             <tr>
                <th style="width: 10px">
@@ -64,7 +64,7 @@
                         {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype']]) %}
                      {% endif %}
                   </td>
-                  <td>{{ name }}</td>
+                  <td><button type="button" class="btn btn-link btn-itemtype-pref">{{ name }}</button></td>
                   <td class="text-end">{{ pref['nb'] }}</td>
                </tr>
             {% endfor %}
@@ -77,6 +77,26 @@
          </form>
       {% endif %}
    </div>
+   <template id="displaypreference_modal_template{{ rand }}">
+      {{ include('components/search/displaypreference_modal.html.twig', {
+         rand: rand,
+         itemtype: '__VALUE__',
+      }) }}
+   </template>
+   <script>
+       $(() => {
+           $('table.display-prefs-list tbody button.btn-itemtype-pref').on('click', (e) => {
+               const itemtype = $(e.currentTarget).text();
+               $('#displayprefence_modal{{ rand }}').remove();
+               const modal = $($('#displaypreference_modal_template{{ rand }}').html());
+               const default_src = modal.find('iframe').attr('src');
+               const forced_tab = "{{ users_id > 0 ? 'DisplayPreference$2' : 'DisplayPreference$1' }}"
+               const replacement = `${itemtype}&forcetab=${forced_tab}&no_switch=1`;
+               modal.find('iframe').attr('src', default_src.replace('__VALUE__', replacement));
+               modal.appendTo('body').modal('show');
+           });
+       });
+   </script>
 {% else %}
    <table class="table">
       <tr>

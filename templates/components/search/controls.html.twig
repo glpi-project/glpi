@@ -108,21 +108,10 @@
             <i class="ti fa-lg ti-tool"></i>
          </button>
          <template id="displaypreference_modal_template{{ rand }}">
-            <div id="displaypreference_modal{{ rand }}" class="modal fade" role="dialog">
-               <div class="modal-dialog modal-lg">
-                  <div class="modal-content">
-                     <div class="modal-header">
-                        <h4 class="modal-title">{{ __('Select default items to show') }}</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
-                     </div>
-                     <div class="modal-body">
-                        <div class="ratio ratio-4x3">
-                           <iframe src="{{ path('/front/displaypreference.form.php?itemtype=' ~ itemtype|escape('url')) }}"></iframe>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
+            {{ include('components/search/displaypreference_modal.html.twig', {
+               rand: rand,
+               itemtype: itemtype,
+            }) }}
          </template>
       {% endif %}
 

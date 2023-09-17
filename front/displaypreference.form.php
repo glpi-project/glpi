@@ -46,7 +46,11 @@ $setupdisplay = new DisplayPreference();
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
 // Datas may come from GET or POST : use REQUEST
 if (isset($_REQUEST["itemtype"])) {
-    $setupdisplay->display(['displaytype' => $_REQUEST['itemtype']]);
+    $setupdisplay->display([
+        'displaytype' => $_REQUEST['itemtype'],
+        'no_switch'   => $_REQUEST['no_switch'] ?? false,
+        'forced_tab'  => $_REQUEST['forcetab'] ?? null
+    ]);
 }
 
 Html::popFooter();
