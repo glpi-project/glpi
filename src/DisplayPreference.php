@@ -402,7 +402,13 @@ class DisplayPreference extends CommonDBTM
     {
         global $DB;
 
-        $searchopt = Search::getCleanedOptions($itemtype);
+        if (class_exists($itemtype)) {
+            $searchopt = Search::getCleanedOptions($itemtype);
+            $available_itemtype = true;
+        } else {
+            $searchopt = [];
+            $available_itemtype = false;
+        }
         if (!is_array($searchopt)) {
             return false;
         }
@@ -470,6 +476,7 @@ class DisplayPreference extends CommonDBTM
             'entries' => $entries,
             'has_personal' => $has_personal,
             'is_global' => $global,
+            'available_itemtype' => $available_itemtype
         ]);
     }
 
