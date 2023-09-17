@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 
 class DisplayPreference extends CommonDBTM
@@ -78,8 +79,9 @@ class DisplayPreference extends CommonDBTM
     {
         switch ($ma->getAction()) {
             case 'reset_to_default':
-                $msg = __('This will reset the columns to the defaults for a new installation. This will only work for types not from plugins.');
-                echo '<div class="alert alert-info">' . $msg . '</div>';
+                $msg = __('This will reset the columns to the defaults for a new installation.');
+                $msg2 = __('This will only work for types from GLPI itself or enabled plugins that support this action.');
+                echo '<div class="alert alert-info">' . $msg . '<br>' . $msg2 . '</div>';
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
                 break;
@@ -655,7 +657,8 @@ class DisplayPreference extends CommonDBTM
 
     /**
      * Change display preferences for an itemtype back to its defaults.
-     * This only works with core itemtypes that have their default preferences specified in the empty_data.php script.
+     * This only works with core itemtypes that have their default preferences specified in the empty_data.php script
+     * or itemtypes from plugins that provide the defaults via the {@link Hooks::DEFAULT_DISPLAY_PREFS} hook.
      * @param string $itemtype The itemtype
      * @return array|null True if defaults existed and were reset OK. False otherwise.
      */
@@ -667,7 +670,16 @@ class DisplayPreference extends CommonDBTM
             return $pref['itemtype'] === $itemtype;
         });
         if (!count($prefs)) {
-            return false;
+            // plugin type or not supported
+            $plugin_opts = Plugin::doHookFunction(Hooks::DEFAULT_DISPLAY_PREFS, [
+                'itemtype' => $itemtype,
+                'prefs'    => []
+            ]);
+            if (count($plugin_opts['prefs'])) {
+                $prefs = $plugin_opts['prefs'];
+            } else {
+                return false;
+            }
         }
 
         $existing_opts = array_column($prefs, 'num');
