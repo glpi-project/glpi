@@ -507,8 +507,6 @@ class DisplayPreference extends CommonDBTM
     {
         global $DB;
 
-        $url = Toolbox::getItemTypeFormURL(__CLASS__);
-
         $iterator = $DB->request([
             'SELECT'  => ['itemtype'],
             'COUNT'   => 'nb',
@@ -519,52 +517,25 @@ class DisplayPreference extends CommonDBTM
             'GROUPBY' => 'itemtype'
         ]);
 
-        if (count($iterator) > 0) {
-            $rand = mt_rand();
-            echo "<div class='spaced'>";
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = ['width'            => 400,
-                'height'           => 200,
-                'container'        => 'mass' . __CLASS__ . $rand,
-                'specific_actions' => [__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_for_user'
-                                                       => _x('button', 'Delete permanently')
-                ],
-                'extraparams'      => ['massive_action_fields' => ['users_id']]
-            ];
-
-            Html::showMassiveActions($massiveactionparams);
-
-            echo Html::hidden('users_id', ['value'                 => $users_id,
-                'data-glpicore-ma-tags' => 'common'
-            ]);
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr>";
-            echo "<th width='10'>";
-            echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            echo "</th>";
-            echo "<th colspan='2'>" . _n('Type', 'Types', 1) . "</th></tr>";
-            foreach ($iterator as $data) {
-                 echo "<tr class='tab_bg_1'><td width='10'>";
-                 Html::showMassiveActionCheckBox(__CLASS__, $data["itemtype"]);
-                 echo "</td>";
-                if ($item = getItemForItemtype($data["itemtype"])) {
-                    $name = $item->getTypeName(1);
-                } else {
-                    $name = $data["itemtype"];
-                }
-                echo "<td>$name</td><td class='numeric'>" . $data['nb'] . "</td>";
-                echo "</tr>";
-            }
-            echo "</table>";
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-            echo "</div>";
-        } else {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><td class='b center'>" . __('No item found') . "</td></tr>";
-            echo "</table>";
+        $specific_actions = [];
+        if ($users_id > 0) {
+            $specific_actions[ __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_for_user'] = _x('button', 'Delete permanently');
         }
+        $rand = mt_rand();
+        $massiveactionparams = [
+            'width'            => 400,
+            'height'           => 200,
+            'container'        => 'mass' . __CLASS__ . $rand,
+            'specific_actions' => $specific_actions,
+            'extraparams'      => ['massive_action_fields' => ['users_id']]
+        ];
+
+        TemplateRenderer::getInstance()->display('components/search/displaypreference_list.html.twig', [
+            'massiveactionparams' => $massiveactionparams,
+            'users_id' => $users_id,
+            'preferences' => $iterator,
+            'rand' => $rand
+        ]);
     }
 
     /**
@@ -602,6 +573,9 @@ class DisplayPreference extends CommonDBTM
                     $ong[2] = __('Personal View');
                 }
                 return $ong;
+
+            case Config::class:
+                return self::createTabEntry(self::getTypeName(1), 0, __CLASS__, 'ti ti-columns-3');
         }
         return '';
     }
@@ -624,6 +598,11 @@ class DisplayPreference extends CommonDBTM
                         $item->showFormPerso($_GET["displaytype"]);
                         return true;
                 }
+                break;
+
+            case Config::class:
+                self::showForUser(0);
+                return true;
         }
         return false;
     }
