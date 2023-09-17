@@ -226,9 +226,7 @@ The present file will list all changes made to the project; according to the
 - Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.
 - `CommonDBTM::$fkfield` property.
 - `getHTML` action for `ajax/fuzzysearch.php` endpoint.
-<<<<<<< HEAD
 - `Config::showLibrariesInformation()`
-=======
 - `DisplayPreference::showFormGlobal` `target` parameter.
 - `DisplayPreference::showFormPerso` `target_id` parameter.
 
