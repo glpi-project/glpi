@@ -74,6 +74,19 @@ class DisplayPreference extends CommonDBTM
         return $input;
     }
 
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        switch ($ma->getAction()) {
+            case 'reset_to_default':
+                $msg = __('This will reset the columns to the defaults for a new installation. This will only work for types not from plugins.');
+                echo '<div class="alert alert-info">' . $msg . '</div>';
+                echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                return true;
+                break;
+        }
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -107,6 +120,19 @@ class DisplayPreference extends CommonDBTM
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                 }
                 return;
+            case 'reset_to_default':
+                $input = $ma->getInput();
+                if (!isset($input['users_id']) || $input['users_id'] <= 0) {
+                    foreach ($ids as $itemtype) {
+                        if (self::resetToDefaultOptions($itemtype)) {
+                            $ma->itemDone($item->getType(), $itemtype, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item->getType(), $itemtype, MassiveAction::ACTION_KO);
+                        }
+                    }
+                } else {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                }
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
@@ -520,6 +546,8 @@ class DisplayPreference extends CommonDBTM
         $specific_actions = [];
         if ($users_id > 0) {
             $specific_actions[ __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_for_user'] = _x('button', 'Delete permanently');
+        } else {
+            $specific_actions[ __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'reset_to_default'] = _x('button', 'Reset to default');
         }
         $rand = mt_rand();
         $massiveactionparams = [
@@ -622,5 +650,55 @@ class DisplayPreference extends CommonDBTM
         ];
 
         return $values;
+    }
+
+    /**
+     * Change display preferences for an itemtype back to its defaults.
+     * This only works with core itemtypes that have their default preferences specified in the empty_data.php script.
+     * @param string $itemtype The itemtype
+     * @return array|null True if defaults existed and were reset OK. False otherwise.
+     */
+    public static function resetToDefaultOptions(string $itemtype): bool
+    {
+        global $DB;
+        $tables = require(GLPI_ROOT . '/install/empty_data.php');
+        $prefs = array_filter($tables[self::getTable()], static function ($pref) use ($itemtype) {
+            return $pref['itemtype'] === $itemtype;
+        });
+        if (!count($prefs)) {
+            return false;
+        }
+
+        $existing_opts = array_column($prefs, 'num');
+        $DB->delete(
+            self::getTable(),
+            [
+                'itemtype' => $itemtype,
+                'users_id' => 0,
+                'NOT'      => [
+                    'num' => $existing_opts
+                ]
+            ]
+        );
+        foreach ($prefs as $pref) {
+            $result = $DB->updateOrInsert(
+                self::getTable(),
+                [
+                    'itemtype' => $itemtype,
+                    'users_id' => 0,
+                    'num'      => $pref['num'],
+                    'rank'     => $pref['rank']
+                ],
+                [
+                    'itemtype' => $itemtype,
+                    'users_id' => 0,
+                    'num'      => $pref['num'],
+                ]
+            );
+            if (!$result) {
+                return false;
+            }
+        }
+        return true;
     }
 }
