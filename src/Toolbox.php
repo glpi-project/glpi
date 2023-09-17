@@ -708,6 +708,9 @@ class Toolbox
 
         $params = [];
         foreach ($array as $k => $v) {
+            if ($v === null) {
+                continue;
+            }
             if (is_array($v)) {
                 $params[] = self::append_params(
                     $v,
