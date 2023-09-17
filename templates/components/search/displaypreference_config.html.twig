@@ -36,6 +36,11 @@
 <div id="tabsbody" class="m-n2 display_preference_config">
    <input type="hidden" name="itemtype" value="{{ itemtype }}">
    <input type="hidden" name="users_id" value="{{ users_id }}">
+   {% if is_global %}
+      <div class="alert alert-info">
+         {{ __('These preferences are used by everyone that does not have a personal view configured.') }}
+      </div>
+   {% endif %}
    {% if not is_global and not has_personal %}
       <div class="alert alert-info">
          {{ __('No personal criteria. Create personal parameters?') }}
