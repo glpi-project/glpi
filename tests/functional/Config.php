@@ -93,6 +93,7 @@ class Config extends DbTestCase
             'Config$3'      => "<span><i class='ti ti-package me-2'></i>Assets</span>",
             'Config$4'      => "<span><i class='ti ti-headset me-2'></i>Assistance</span>",
             'Config$12'     => "<span><i class='ti ti-wallet me-2'></i>Management</span>",
+            'DisplayPreference$1' => "<span><i class='ti ti-columns-3 me-2'></i>Search result display</span>",
             'GLPINetwork$1' => "<span><i class='ti ti-headset me-2'></i>GLPI Network</span>",
             'Log$1'         => "<span><i class='ti ti-history me-2'></i>Historical</span>",
         ];
