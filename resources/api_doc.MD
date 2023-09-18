@@ -103,3 +103,54 @@ For example, if an endpoint returns a collection of items and each item has an `
 
 For specific documentation on each endpoint, see the Swagger documentation at `/api.php/doc`.
 You may also make a request to `/api.php/doc` to get the raw Swagger JSON document if you set the `Content-Type` header to `application/json` or add `.json` to the end of the URL.
+
+## GraphQL
+
+The GLPI API is also available via a GraphQL wrapper at `/api.php/graphql`. Like all compliant GraphQL implementations, it is self documenting and accepts only POST requests.
+Since it is a wrapper around the REST API, that means that any object schema defined and available through the REST API is also available via GraphQL.
+It also means that authentication is the exact same as the rest of the API.
+The only difference is that you can access more properties in some cases via the GraphQL API.
+For example, when you request a list of cartridge models (`CartridgeItem`) via the REST API it returns the `id`, `name`, and `comment` properties for the associated printer models.
+When you request the data for cartridge models via GraphQL, it unlocks access to all the properties of the `PrinterModal` schema.
+This can reduce the number of requests that need to be made to the API in some cases.
+
+The implementation of the GraphQL does not include any mutators. It is read-only.
+
+The GraphQL API supports the same parameters as the REST API for filtering, sorting, and pagination.
+
+Example:
+```graphql
+query {
+    Ticket(limit: 1, filter: "name=ilike=test") {
+        id
+        name
+        status {
+            id
+            name
+        }
+    }
+}
+```
+
+You can explore the schemas using standard GraphQL requests like:
+```graphql
+query {
+    __schema {
+        types {
+            name
+            description
+            fields {
+                description
+                type {
+                    name
+                    description
+                }
+            }
+        }
+    }
+}
+```
+
+As is standard with GraphQL, you MUST specify each property that you want to be returned.
+
+For more information about GraphQL, see the [GraphQL documentation](https://graphql.org/learn/).
