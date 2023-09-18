@@ -357,7 +357,7 @@
 
     <button class="{{ options.class }}" type="{{ type }}" name="{{ name }}" value="{{ value }}"
         {% for attr, value in options.additional_attributes %}
-            {{ attr }}="{{ value }}"
+            {{ attr }}="{{ value|e('html_attr') }}"
         {% endfor %}>
         {% if options.icon is not empty %}
             <i class="{{ options.icon }}" title="{{ options.icon_title }}"></i>
