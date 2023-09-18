@@ -35,7 +35,7 @@
 
 {% macro icon_msg(message, icon) %}
    <td class="icons_block">
-      <i class="{{ icon }}" title="{{ message }}" data-bs-toggle="tooltip"></i>
+      <i class="{{ icon }}" title="{{ message|e('html_attr') }}" data-bs-toggle="tooltip"></i>
       <span class="sr-only">{{ message }}</span>
    </td>
 {% endmacro %}
@@ -134,7 +134,7 @@
          <th colspan="4">{{ __('User data cache') }}</th>
       </tr>
       <tr>
-         <th class="fw-normal">{{ __('You can use "php bin/console cache:configure" command to configure cache system.') }}</th>
+         <th class="fw-normal">{{ __('You can use "%s" command to configure cache system.')|format('php bin/console cache:configure') }}</th>
          <td></td>
          <td></td>
          <td></td>
