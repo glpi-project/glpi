@@ -618,7 +618,9 @@ class DBConnection extends CommonDBTM
                         'Slave_SQL_Running',
                         'Master_Log_File',
                         'Read_Master_Log_Pos',
-                        'Seconds_Behind_Master'
+                        'Seconds_Behind_Master',
+                        'Last_IO_Error',
+                        'Last_SQL_Error'
                     ];
 
                     foreach ($REPLICA_VARS as $varName) {

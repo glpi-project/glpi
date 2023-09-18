@@ -263,7 +263,7 @@ class DBmysql
         }
 
         // Add timeout option to avoid infinite connection
-        $this->dbh->options(MYSQLI_OPT_CONNECT_TIMEOUT, 10);
+        $this->dbh->options(MYSQLI_OPT_CONNECT_TIMEOUT, 5);
 
         $hostport = explode(":", $host);
         if (count($hostport) < 2) {

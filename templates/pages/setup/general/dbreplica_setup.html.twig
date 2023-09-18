@@ -125,8 +125,8 @@
    <div class="col-7">
         {% for replica_num, replica_data in replication_status['replica'] %}
 
-        {# Replica is OK when both IO and SQL are running #}
-        {% set replica_ok = replica_data['slave_io_running'] == 'Yes' and replica_data['slave_sql_running'] == 'Yes' %}
+        {# Replica is OK when both IO and SQL are running and seconds_behind_master is 0 #}
+        {% set replica_ok = replica_data['slave_io_running'] == 'Yes' and replica_data['slave_sql_running'] == 'Yes' and replica_data['seconds_behind_master'] == 0 %}
 
         {# Replica is unknown when there is an error (connection, missing grants, ...) #}
         {% set replica_unkown = replica_data['error'] is defined and replica_data['error'] is not null %}
@@ -170,17 +170,14 @@
                                 <span class="text-secondary">Primary binglog pos:</span>
                                 {{ replica_data['read_master_log_pos'] }}
                             </li>
-                            {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
-                                <li>
+                            <li>
                                 <span class="text-secondary">Seconds behind primary:</span>
-                                {{ replica_data['seconds_behind_master']|raw }}
-                                </li>
-                            {% else %}
-                                <li>
-                                <span class="text-secondary">Seconds behind primary:</span>
+                                {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
+                                <span class="badge bg-{{ replica_data['seconds_behind_master'] > 0 ? 'red' : 'green' }}-lt">{{ replica_data['seconds_behind_master']|raw }}</span>
+                                {% else %}
                                 <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
-                                </li>
-                            {% endif %}
+                                {% endif %}
+                            </li>
                             <li>
                                 <span class="text-secondary" id="glpi_delay_{{ replica_num }}">GLPI history delay:</span>
                                 {% if replication_delay[replica_num] > 0 %}
@@ -191,7 +188,7 @@
                                 <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
                                 {% endif %}
                                 {% do call('Html::showToolTip', [
-                                    __('This indicate the delay between the primary and the replica for the GLPI history (table: glpi_logs, column: date_mod).')
+                                    __('This indicates the delay between the primary and the replica for GLPI history (table: glpi_logs, column: date_mod).')
                                 ]) %}
                             </li>
                             <li>
@@ -213,6 +210,19 @@
                                 {{ replica_data['version'] }}
                             </li>
                         </ul>
+                        {# Display errors if slave_io_running or slave_sql_running are not running #}
+                        {% if replica_data['slave_io_running'] != 'Yes' %}
+                            <div class="alert alert-danger" role="alert">
+                                <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
+                                <p class="mt-2">{{ replica_data['last_io_error'] }}</p>
+                            </div>
+                        {% endif %}
+                        {% if replica_data['slave_sql_running'] != 'Yes' %}
+                            <div class="alert alert-danger" role="alert">
+                                <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
+                                <p class="mt-2">{{ replica_data['last_sql_error'] }}</p>
+                            </div>
+                        {% endif %}
                     {% endif %}
                     </div>
                 </div>
