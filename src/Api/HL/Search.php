@@ -40,6 +40,9 @@ use Entity;
 use ExtraVisibilityCriteria;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc;
+use Glpi\Api\HL\RSQL\Lexer;
+use Glpi\Api\HL\RSQL\Parser;
+use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
@@ -63,6 +66,7 @@ final class Search
     private array $table_schemas;
     private array $tables;
     private bool $union_search_mode;
+    private Parser $rsql_parser;
 
     private function __construct(array $schema, array $request_params)
     {
@@ -73,6 +77,7 @@ final class Search
         $this->table_schemas = $this->getTables();
         $this->tables = array_keys($this->table_schemas);
         $this->union_search_mode = count($this->tables) > 1;
+        $this->rsql_parser = new Parser($this->schema);
     }
 
     private function getSQLFieldForProperty(string $prop_name): string
@@ -209,6 +214,7 @@ final class Search
     /**
      * Build the search SQL criteria
      * @return array|array[]
+     * @throws RSQLException
      */
     private function getSearchCriteria(): array
     {
@@ -227,8 +233,7 @@ final class Search
         }
 
         if (isset($this->request_params['filter']) && !empty($this->request_params['filter'])) {
-            $rsql = new RSQLInput($this->request_params['filter']);
-            $criteria['WHERE'] = $rsql->getSQLCriteria($this->schema);
+            $criteria['WHERE'] = [$this->rsql_parser->parse(Lexer::tokenize($this->request_params['filter']))];
         }
         $entity_restrict = [];
         if (!$this->union_search_mode) {
@@ -331,6 +336,7 @@ final class Search
     /**
      * @return array Matching records in the format Itemtype => IDs
      * @phpstan-return array<string, int[]>
+     * @throws RSQLException
      */
     private function getMatchingRecords($ignore_pagination = false): array
     {
@@ -630,6 +636,9 @@ final class Search
         return $hydrated_records;
     }
 
+    /**
+     * @throws RSQLException
+     */
     private static function getSearchResultsBySchema(array $schema, array $request_params): array
     {
         // Schema must be an object type
@@ -711,7 +720,11 @@ final class Search
                 return AbstractController::getAccessDeniedErrorResponse();
             }
         }
-        $results = self::getSearchResultsBySchema($schema, $request_params);
+        try {
+            $results = self::getSearchResultsBySchema($schema, $request_params);
+        } catch (RSQLException $e) {
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()), 400);
+        }
         $has_more = $results['start'] + $results['limit'] < $results['total'];
         $end = max(0, ($results['start'] + $results['limit'] - 1));
         return new JSONResponse($results['results'], $has_more ? 206 : 200, [
@@ -818,7 +831,11 @@ final class Search
         $request_params['filter'] = $field . '==' . $request_attrs[$field];
         $request_params['limit'] = 1;
         unset($request_params['start']);
-        $results = self::getSearchResultsBySchema($schema, $request_params);
+        try {
+            $results = self::getSearchResultsBySchema($schema, $request_params);
+        } catch (RSQLException $e) {
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()), 400);
+        }
         if (count($results['results']) === 0) {
             return AbstractController::getNotFoundErrorResponse();
         }
