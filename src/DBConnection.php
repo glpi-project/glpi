@@ -590,6 +590,8 @@ class DBConnection extends CommonDBTM
             } else {
                 $data['primary']['error'] = $DBPrimary->error();
             }
+        } else {
+            $data['primary']['error'] = $DBPrimary->error();
         }
 
         // Get slave status
@@ -625,6 +627,8 @@ class DBConnection extends CommonDBTM
                 } else {
                     $data['replica'][$num]['error'] = $DBReplica->error();
                 }
+            } else {
+                $data['replica'][$num]['error'] = $DBReplica->error();
             }
         }
 
