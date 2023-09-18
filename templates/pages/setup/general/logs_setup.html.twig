@@ -54,7 +54,7 @@
 
    {{ fields.dropdownArrayField('init_all', 0, logs_interval_options, __('Change all'), {
       label_class: 'col-xxl-5 fst-italic',
-      on_change: 'form_init_all(this.value)'
+      on_change: '$(this).closest(`form`).find(`.purgelog_interval select`).val(this.value).trigger("change");'
    }) }}
 
    {{ fields.smallTitle(__('General')) }}
