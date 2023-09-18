@@ -40,11 +40,10 @@
         {{ __('Modify the comment') }}
     </h3>
 
-    {{ fields.readOnlyField(
+    {{ fields.htmlField(
         '',
         type_name,
-        _n('Item', 'Items', 1),
-        {'disabled': disabled}
+        _n('Item', 'Items', 1)
     ) }}
 
     {{ fields.textareaField(

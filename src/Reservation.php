@@ -709,30 +709,34 @@ JAVASCRIPT;
         $items = [];
         foreach ($options['item'] as $itemID) {
             // existing item(s)
-            foreach ($options['item'] as $itemID) {
-                if ($r->getFromDB($itemID)) {
-                    $type = $r->fields["itemtype"];
-                    $name = NOT_AVAILABLE;
-                    $item = null;
+            if ($r->getFromDB($itemID)) {
+                $type = $r->fields["itemtype"];
+                $name = NOT_AVAILABLE;
+                $item = null;
 
-                    if ($item = getItemForItemtype($r->fields["itemtype"])) {
-                        $type = $item->getTypeName();
+                if ($item = getItemForItemtype($r->fields["itemtype"])) {
+                    $type = $item->getTypeName();
 
-                        if ($item->getFromDB($r->fields["items_id"])) {
-                            $name = $item->getName();
-                        } else {
-                            $item = null;
-                        }
+                    if ($item->getFromDB($r->fields["items_id"])) {
+                        $name = $item->getName();
+                    } else {
+                        $item = null;
                     }
-
-                    $items[] = [
-                        'id'        => $itemID,
-                        'type_name' => sprintf(__('%1$s - %2$s'), $type, $name),
-                        'comment'   => $r->fields['comment'] ?? '',
-                    ];
                 }
+
+                $items[] = [
+                    'id'        => $itemID,
+                    'type_name' => sprintf(__('%1$s - %2$s'), $type, $name),
+                    'comment'   => $r->fields['comment'] ?? '',
+                ];
             }
         }
+
+        $uid = (empty($ID) ? Session::getLoginUserID() : $resa->fields['users_id']);
+        $resa->fields["users_id_friendlyname"] = User::getFriendlyNameById($uid);
+
+        $entities_id  = (isset($item)) ? $item->getEntityID() : Session::getActiveEntities();
+        $canedit = Session::haveRight("reservation", UPDATE) && Session::haveAccessToEntity($entities_id);
 
         $default_delay = floor((strtotime($resa->fields["end"]) - strtotime($resa->fields["begin"]))
                              / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
@@ -754,6 +758,7 @@ JAVASCRIPT;
             'itemtypes'         => self::getReservableItemtypes(),
             'default_delay'     => $default_delay,
             'params'            => $options,
+            'canedit'           => $canedit,
         ]);
         return true;
     }

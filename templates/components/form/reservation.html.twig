@@ -70,16 +70,24 @@
         ) }}
     {% endif %}
 
-    {{ fields.dropdownField(
-        'User',
-        'users_id',
-        item.fields['users_id'],
-        __('By'),
-        {
-            entity      : item.fields['entities_id'],
-            right       : 'all'
-        }
-    ) }}
+    {% if canedit %}
+        {{ fields.dropdownField(
+            'User',
+            'users_id',
+            item.fields['users_id'],
+            __('By'),
+            {
+                entity      : item.fields['entities_id'],
+                right       : 'all'
+            }
+        ) }}
+    {% else %}
+        {{ fields.htmlField(
+            '',
+            item.fields['users_id_friendlyname'],
+            __('By')
+        ) }}
+    {% endif %}
 
     {{ fields.datetimeField(
         'resa[begin]',
