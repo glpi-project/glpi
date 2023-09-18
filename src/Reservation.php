@@ -735,7 +735,7 @@ JAVASCRIPT;
         $uid = (empty($ID) ? Session::getLoginUserID() : $resa->fields['users_id']);
         $resa->fields["users_id_friendlyname"] = User::getFriendlyNameById($uid);
 
-        $entities_id  = (isset($item)) ? $item->getEntityID() : Session::getActiveEntities();
+        $entities_id  = (isset($item)) ? $item->getEntityID() : Session::getActiveEntity();
         $canedit = Session::haveRight("reservation", UPDATE) && Session::haveAccessToEntity($entities_id);
 
         $default_delay = floor((strtotime($resa->fields["end"]) - strtotime($resa->fields["begin"]))
