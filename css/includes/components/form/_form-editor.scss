@@ -1,6 +1,4 @@
-<?php
-
-/**
+/*!
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,15 +31,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+ .form-editor {
+    // Use all available parent space
+    flex-grow: 1;
 
-use CommonDBChild;
+    // Subtle gradient to avoid white on white cards while still keeping a white/white connection to the active tab (experimental)
+    // TODO: keep / remove / tweak when the UX is more complete (questions, sections, ...)
+    background: linear-gradient(
+        169deg,
+        rgb(255,255,255) 0%,
+        rgb(254,254,254) 14%,
+        rgb(253,253,253) 22%,
+        rgb(252,252,252) 33%,
+        rgb(251,251,252) 41%,
+        rgb(248,250,252) 48%
+    );
 
-/**
- * Question of a given helpdesk form's section
- */
-class Question extends CommonDBChild
-{
-    public static $itemtype = Section::class;
-    public static $items_id = 'forms_sections_id';
+    .designer {
+        .form-details {
+            .card-title {
+                // Emphasis form title with an above average font size
+                font-size: 1.2rem !important;
+            }
+        }
+    }
+}
+
+.editor-footer {
+    border-top: 1px solid $border-color;
+    background: var(--glpi-form-toolbar-bg);
 }
