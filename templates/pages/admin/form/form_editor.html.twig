@@ -53,6 +53,9 @@
     method="POST"
     action="{{ item.getFormURL() }}"
 >
+    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
+
+
     {# Form editor page #}
     {# UX and items placement are a work in progress #}
     {# Need more elements (questions, sections) before finalizing the design #}
@@ -89,7 +92,7 @@
                                         value="1"
                                         {% if item.fields.is_active %} checked {% endif %}
                                     >
-                                    <span class="form-check-label">Active</span>
+                                    <span class="form-check-label">{{ __("Active") }}</span>
                                 </label>
                             </div>
 
@@ -198,6 +201,8 @@
 
     {# CSRF #}
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
+    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 </form>
 
 <script>
