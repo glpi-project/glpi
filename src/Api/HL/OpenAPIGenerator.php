@@ -354,6 +354,7 @@ EOT;
         foreach ($paths as $path_url => $path) {
             foreach ($path as $method => $route) {
                 $is_expanded = false;
+                $new_urls = [];
                 foreach ($route['parameters'] as $param_key => $param) {
                     if (isset($param['schema']['pattern']) && preg_match('/^[\w+|]+$/', $param['schema']['pattern'])) {
                         $itemtypes = explode('|', $param['schema']['pattern']);
@@ -379,11 +380,17 @@ EOT;
                                         $route['x-controller']
                                     );
                                 }
+                                // Remove the itemtype path parameter now that it is a static value
+                                unset($expanded[$new_url][$method]['parameters'][$param_key]);
+                                $new_urls[] = $new_url;
                                 $is_expanded = true;
-                                unset($route['parameters'][$param_key]);
                             }
                         }
                     }
+                }
+                foreach ($new_urls as $new_url) {
+                    // fix parameter array indexing. should not be associative, but unsetting the path parameter causes a gap and breaks openapi.
+                    $expanded[$new_url][$method]['parameters'] = array_values($expanded[$new_url][$method]['parameters']);
                 }
                 if (!$is_expanded) {
                     $expanded[$path_url][$method] = $route;
