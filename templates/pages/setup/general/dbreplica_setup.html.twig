@@ -181,7 +181,7 @@
                             <li>
                                 <span class="text-secondary" id="glpi_delay_{{ replica_num }}">GLPI history delay:</span>
                                 {% if replication_delay[replica_num] > 0 %}
-                                    {{ replication_delay[replica_num]|formatted_duration }}
+                                    <span class="badge bg-red-lt">{{ replication_delay[replica_num]|formatted_duration }}</span>
                                 {% elseif replication_delay[replica_num] == 0 %}
                                     <span class="badge bg-green-lt">{{ __('None') }}</span>
                                 {% else %}

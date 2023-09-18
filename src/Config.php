@@ -499,7 +499,7 @@ class Config extends CommonDBTM
                 $replication_delay[$host_num] = DBConnection::getReplicateDelay($host_num);
             }
         } else {
-            $replication_delay[$DBslave->dbhost] = DBConnection::getReplicateDelay();
+            $replication_delay[] = DBConnection::getReplicateDelay();
         }
 
         $replication_status = DBConnection::getReplicationStatus();
