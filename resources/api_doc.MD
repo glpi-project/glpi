@@ -106,7 +106,7 @@ You may also make a request to `/api.php/doc` to get the raw Swagger JSON docume
 
 ## GraphQL
 
-The GLPI API is also available via a GraphQL wrapper at `/api.php/graphql`. Like all compliant GraphQL implementations, it is self documenting and accepts only POST requests.
+The GLPI API is also available via a GraphQL wrapper at `/api.php/GraphQL`. Like all compliant GraphQL implementations, it is self documenting and accepts only POST requests.
 Since it is a wrapper around the REST API, that means that any object schema defined and available through the REST API is also available via GraphQL.
 It also means that authentication is the exact same as the rest of the API.
 The only difference is that you can access more properties in some cases via the GraphQL API.
@@ -150,6 +150,8 @@ query {
     }
 }
 ```
+
+Alternatively, a REST API interface is available for the raw GraphQL type declarations at `/api.php/GraphQL/Schema` using a GET request.
 
 As is standard with GraphQL, you MUST specify each property that you want to be returned.
 
