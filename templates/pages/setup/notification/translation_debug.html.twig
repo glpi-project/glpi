@@ -42,13 +42,14 @@
          get_saved_option('NotificationTemplateTranslation', template.fields['itemtype']|itemtype_foreign_key, 0),
          template.fields['itemtype']|itemtype_name,
          {
-            field_class: 'col-6'
+            field_class: 'col-6',
+            on_change: 'reloadTab("' ~ template.fields['itemtype']|itemtype_foreign_key ~ '="+this.value)',
          }
       ) }}
 
       {{ fields.htmlField('', call('NotificationEvent::dropdownEvents', [template.fields['itemtype'], {
          value: get_saved_option('NotificationTemplateTranslation', template.fields['itemtype']|itemtype_foreign_key ~ '_event', ''),
-         on_change: 'reloadTab("' ~ template.fields['itemtype']|itemtype_foreign_key ~ '="+this.value)',
+         on_change: 'reloadTab("' ~ template.fields['itemtype']|itemtype_foreign_key ~ '_event="+this.value)',
          display: false
       }]), 'NotificationEvent'|itemtype_name(1), {
          field_class: 'col-6'
