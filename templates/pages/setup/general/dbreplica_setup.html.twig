@@ -78,22 +78,14 @@
                <div class="accordion-item">
                   <h2 class="accordion-header" id="heading-primary">
                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-primary" aria-expanded="false" aria-controls="collapse-primary">
-                        <div class="col-auto">
-                           <span class="status-indicator status-{{ primary_ok ? 'green' : primary_unknow ? 'muted' : 'red' }} status-indicator-animated">
-                           <span class="status-indicator-circle"></span>
-                           <span class="status-indicator-circle"></span>
-                           <span class="status-indicator-circle"></span>
-                           </span>
-                        </div>
-                        <div class="col">
-                           <h3>
-                              <span class="badge bg-{{ primary_ok ? 'green' : primary_unknow ? 'muted' : 'red' }}-lt">
-                                 {{ primary_ok ? 'Up' : primary_unknow ? 'Unkown' : 'Down' }}
-                              </span>
-                              <span class="mx-2">Primary ({{ primary_dbhost }})</span>
-                              {{ primary_unknow ? '' : replication_status['primary']['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
-                           </h3>
-                        </div>
+                        <h3>
+                            <span class="status status-{{ primary_ok ? 'green' : primary_unknow ? 'muted' : 'red' }}">
+                                <span class="status-dot status-dot-animated"></span>
+                                {{ primary_ok ? 'Up' : primary_unknow ? 'Unkown' : 'Down' }}
+                            </span>
+                            <span class="mx-2">Primary ({{ primary_dbhost }})</span>
+                            {{ primary_unknow ? '' : replication_status['primary']['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
+                        </h3>
                      </button>
                   </h2>
                   <div id="collapse-primary" class="accordion-collapse collapse" aria-labelledby="heading-primary" data-bs-parent="#accordion-primary">
@@ -153,23 +145,14 @@
                      <button class="accordion-button collapsed" type="button"
                               data-bs-toggle="collapse" data-bs-target="#collapse-replica{{ replica_num }}"
                               aria-expanded="false" aria-controls="collapse-replica{{ replica_num }}">
-
-                        <div class="col-auto">
-                           <span class="status-indicator status-{{ replica_ok ? 'green' : replica_unkown ? 'muted' : 'red' }} status-indicator-animated">
-                           <span class="status-indicator-circle"></span>
-                           <span class="status-indicator-circle"></span>
-                           <span class="status-indicator-circle"></span>
-                           </span>
-                        </div>
-                        <div class="col">
-                           <h3>
-                              <span class="badge bg-{{ replica_ok ? 'green' : replica_unkown ? 'muted' : 'red' }}-lt">
-                                 {{ replica_ok ? 'Up' : replica_unkown ? 'Unkown' : 'Down' }}
-                              </span>
-                              <span class="mx-2">Replica ({{ replica_data['host'] }})</span>
-                              {{ replica_unkown ? '' : replica_data['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
-                           </h3>
-                        </div>
+                        <h3>
+                            <span class="status status-{{ replica_ok ? 'green' : replica_unkown ? 'muted' : 'red' }}">
+                                <span class="status-dot status-dot-animated"></span>
+                                {{ replica_ok ? 'Up' : replica_unkown ? 'Unkown' : 'Down' }}
+                            </span>
+                            <span class="mx-1">Replica ({{ replica_data['host'] }})</span>
+                            {{ replica_unkown ? '' : replica_data['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
+                        </h3>
                      </button>
                   </h2>
                   <div id="collapse-replica{{ replica_num }}" class="accordion-collapse collapse" aria-labelledby="heading-replica{{ replica_num }}" data-bs-parent="#accordion-replica{{ replica_num }}">
@@ -201,7 +184,7 @@
                               {% else %}
                                  <li>
                                     <span class="text-secondary">Seconds behind primary:</span>
-                                    <span class="badge bg-red">{{ __('Undefined') }}</span>
+                                    <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
                                  </li>
                               {% endif %}
                               <li>
@@ -209,9 +192,9 @@
                                  {% if replication_delay[replica_num] > 0 %}
                                     {% do call('Html::timestampToString', [replication_delay[replica_num], true]) %}
                                  {% elseif replication_delay[replica_num] == 0 %}
-                                    <span class="badge bg-green">{{ __('None') }}</span>
+                                    <span class="badge bg-green-lt">{{ __('None') }}</span>
                                  {% else %}
-                                    <span class="badge bg-red">{{ __('Undefined') }}</span>
+                                    <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
                                  {% endif %}
                                  {% do call('Html::showToolTip', [
                                        __('This indicate the delay between the primary and the replica for the GLPI history (table: glpi_logs, column: date_mod).')
