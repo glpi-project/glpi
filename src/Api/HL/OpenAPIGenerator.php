@@ -269,14 +269,14 @@ EOT;
             }
             foreach ($response['content'] as $content_type => &$content) {
                 foreach ($placeholders as $placeholder_name => $placeholder_value) {
-                    if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                    if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
                         $new_schema = $this->getComponentReference($placeholder_value, $controller);
                         if ($new_schema !== null) {
                             $content['schema']['$ref'] = $new_schema['$ref'];
                         }
                     }
                     // Handle array types
-                    if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                    if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
                         $new_schema = $this->getComponentReference($placeholder_value, $controller);
                         if ($new_schema !== null) {
                             $content['schema']['items']['$ref'] = $new_schema['$ref'];
@@ -295,14 +295,14 @@ EOT;
         $new_parameters = $parameters;
         foreach ($new_parameters as &$parameter) {
             foreach ($placeholders as $placeholder_name => $placeholder_value) {
-                if (isset($parameter['schema']['$ref']) && $parameter['schema']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                if (isset($parameter['schema']['$ref']) && $parameter['schema']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
                     $new_schema = $this->getComponentReference($placeholder_value, $controller);
                     if ($new_schema !== null) {
                         $parameter['schema']['$ref'] = $new_schema['$ref'];
                     }
                 }
                 // Handle array types
-                if (isset($parameter['schema']['items']['$ref']) && $parameter['schema']['items']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                if (isset($parameter['schema']['items']['$ref']) && $parameter['schema']['items']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
                     $new_schema = $this->getComponentReference($placeholder_value, $controller);
                     if ($new_schema !== null) {
                         $parameter['schema']['items']['$ref'] = $new_schema['$ref'];
@@ -322,14 +322,14 @@ EOT;
         }
         foreach ($new_request_body['content'] as $content_type => &$content) {
             foreach ($placeholders as $placeholder_name => $placeholder_value) {
-                if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
                     $new_schema = $this->getComponentReference($placeholder_value, $controller);
                     if ($new_schema !== null) {
                         $content['schema']['$ref'] = $new_schema['$ref'];
                     }
                 }
                 // Handle array types
-                if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{' .$placeholder_name . '}') {
+                if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
                     $new_schema = $this->getComponentReference($placeholder_value, $controller);
                     if ($new_schema !== null) {
                         $content['schema']['items']['$ref'] = $new_schema['$ref'];
