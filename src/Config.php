@@ -788,16 +788,10 @@ class Config extends CommonDBTM
         ]);
     }
 
-    public static function showSystemInfoTable($params = [])
+    public static function showSystemInfoTable()
     {
         global $CFG_GLPI, $DB;
 
-        $p = [
-            'word_wrap_width' => 128
-        ];
-        $p = array_replace($p, $params);
-
-        echo "<table id='system-info-table' class='tab_cadre_fixe'>";
         $oldlang = $_SESSION['glpilanguage'];
         // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
         Session::loadLanguage('en_GB');
@@ -851,16 +845,6 @@ class Config extends CommonDBTM
             glob(GLPI_LOCAL_I18N_DIR . "/**/*.mo")
         );
         sort($files);
-        if (count($files)) {
-            echo "<tr><th class='section-header'>Locales overrides</th></tr>\n";
-            echo "<tr class='tab_bg_1'><td>\n";
-            foreach ($files as $file) {
-                echo "$file<br/>\n";
-            }
-            echo "</td></tr>";
-        }
-
-        echo "</table>";
 
         TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_table.html.twig', [
             'ver' => $ver,
