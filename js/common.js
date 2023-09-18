@@ -1497,6 +1497,19 @@ $(() => {
             blockFormSubmit(form, e);
         }
     });
+
+    // Clear focus on content-editable-tinymce items when clicking outside of their content
+    $(document).on('click focus', 'body', function(e) {
+        if (
+            // Event must be outside of our simulate-focus item
+            $(e.target).closest('.simulate-focus').length == 0
+            // Special case when target is part of tinymce toolbar/aux, must NOT drop focus in this case
+            && $(e.target).closest('.tox-toolbar__overflow').length == 0
+            && $(e.target).closest('.tox-tinymce-aux').length == 0
+        ) {
+            $('.content-editable-tinymce').removeClass('simulate-focus');
+        }
+    });
 });
 
 /**
