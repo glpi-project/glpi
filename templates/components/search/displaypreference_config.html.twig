@@ -113,6 +113,8 @@
 <script>
    $(() => {
        const config_forms = $(`#tabsbody.display_preference_config`);
+       // Select nothing by default because select2 has no problem defaulting the selection to the first item even if it is filtered out
+       config_forms.find(`select[name="num"]`).val('').trigger('change');
        // Make sure the table rows are sortable only once
        const sortables = `#tabsbody.display_preference_config tbody`;
        try {
