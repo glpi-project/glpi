@@ -211,16 +211,13 @@
                             </li>
                         </ul>
                         {# Display errors if slave_io_running or slave_sql_running are not running #}
-                        {% if replica_data['slave_io_running'] != 'Yes' %}
+                        {% if replica_data['slave_io_running'] != 'Yes' or replica_data['slave_sql_running'] != 'Yes' %}
                             <div class="alert alert-danger" role="alert">
                                 <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
-                                <p class="mt-2">{{ replica_data['last_io_error'] }}</p>
-                            </div>
-                        {% endif %}
-                        {% if replica_data['slave_sql_running'] != 'Yes' %}
-                            <div class="alert alert-danger" role="alert">
-                                <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
-                                <p class="mt-2">{{ replica_data['last_sql_error'] }}</p>
+                                <p class="mt-2">
+                                    {{ replica_data['last_io_error'] }}
+                                    {{ replica_data['last_sql_error'] }}
+                                </p>
                             </div>
                         {% endif %}
                     {% endif %}
