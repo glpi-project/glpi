@@ -48,7 +48,7 @@ use Glpi\Http\Response;
 #[Route(path: '/GraphQL', priority: 1, tags: ['GraphQL'])]
 final class GraphQLController extends AbstractController
 {
-    #[Route(path: '/', methods: ['GET'], security_level: Route::SECURITY_AUTHENTICATED)]
+    #[Route(path: '/', methods: ['POST'], security_level: Route::SECURITY_AUTHENTICATED)]
     #[Doc\Route(
         description: 'GraphQL API',
     )]
