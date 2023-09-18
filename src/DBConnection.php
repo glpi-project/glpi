@@ -564,21 +564,11 @@ class DBConnection extends CommonDBTM
 
         $data = [];
 
-        $WHERE = [
-            'VARIABLE_NAME' => [
-                'SERVER_ID',
-                'READ_ONLY',
-                'GTID_BINLOG_POS',
-                'GTID_SLAVE_POS',
-                'VERSION'
-            ]
-        ];
-
         // Get master status
         include_once(GLPI_CONFIG_DIR . "/config_db.php");
         $DBPrimary = new DB();
         if ($DBPrimary->connected) {
-            foreach ($DBPrimary->getGlobalVars($WHERE) as $varName => $varValue) {
+            foreach ($DBPrimary->getGlobalVariables(['server_id', 'read_only', 'gtid_binlog_pos', 'version']) as $varName => $varValue) {
                 $data['primary'][strtolower($varName)] = $varValue;
             }
 
@@ -607,7 +597,7 @@ class DBConnection extends CommonDBTM
             $data['replica'][$num]['host'] = $host;
             $DBReplica = new DBSlave($num);
             if ($DBReplica->connected) {
-                foreach ($DBReplica->getGlobalVars($WHERE) as $varName => $varValue) {
+                foreach ($DBReplica->getGlobalVariables(['server_id', 'read_only', 'gtid_slave_pos', 'version']) as $varName => $varValue) {
                     $data['replica'][$num][strtolower($varName)] = $varValue;
                 }
 

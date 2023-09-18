@@ -2309,35 +2309,22 @@ class DBmysql
     }
 
     /**
-     * Retrieve global_variables from information_schema.
-     *
-     * @param array  $where Where clause to append
-     *
-     * @return DBmysqlIterator
-     */
-    public function retrieveGlobalVars(array $where = []): DBmysqlIterator
-    {
-        $iterator = $this->request([
-            'SELECT' => ['VARIABLE_NAME', 'VARIABLE_VALUE'],
-            'FROM'   => 'information_schema.global_variables',
-            'WHERE'  => $where
-        ]);
-        return $iterator;
-    }
-
-    /**
      * Get global variables values as an associative array.
-     *
-     * @param array  $where Where clause to append
+     * 
+     * @param array $variables List of variables to get
      *
      * @return array
      */
-    public function getGlobalVars(array $where = []): array
+    public function getGlobalVariables(array $variables): array
     {
-        $vars = [];
-        foreach ($this->retrieveGlobalVars($where) as $var) {
-            $vars[$var['VARIABLE_NAME']] = $var['VARIABLE_VALUE'];
+        $query = 'SHOW GLOBAL VARIABLES WHERE Variable_name IN ('
+            . implode(', ', array_map([$this, 'quote'], $variables))
+            . ')';
+        $result = $this->doQuery($query);
+        $values = [];
+        while ($row = $result->fetch_assoc()) {
+            $values[$row['Variable_name']] = $row['Value'];
         }
-        return $vars;
+        return $values;
     }
 }
