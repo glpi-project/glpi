@@ -603,7 +603,7 @@ $CFG_GLPI['javascript'] = [
         ],
         'config' => ['clipboard']
     ],
-    'admin'        => ['clipboard', 'sortable'],
+    'admin'        => ['clipboard', 'sortable', 'tinymce'],
     'preference'   => ['clipboard'],
     'self-service' => array_merge(['tinymce'], $reservations_libs),
     'tickets'      => [

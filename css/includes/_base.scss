@@ -54,7 +54,8 @@ $tabs-active-fg: $dark !default;
 $tabs-active-border: $tabs-border !default;
 $badge-bg: $secondary !default;
 $badge-fg: $light !default;
-$itil-secondary-bg: #f5f5f5 !default; // secondary color for right side and footer (primary color is card background)
+$itil-secondary-bg: #f3f5f9 !default; // secondary color for ITIL footer toolbar (primary color is card background), tabler use cold grays thus we must also use a grey with a similar temperature here
+$footer-toolbar-bg: $itil-secondary-bg; // More generic alias, should be used if possible
 $timeline-itilc-bg: #e2f2e3 !default;
 $timeline-itilc-fg: #155210 !default;
 $timeline-itilc-border: #87aa8a !default;
