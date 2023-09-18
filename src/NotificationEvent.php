@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Class which manages notification events
  **/
@@ -233,29 +235,14 @@ class NotificationEvent extends CommonDBTM
      **/
     public static function debugEvent($item, $options = [])
     {
-
-        echo "<div class='spaced'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='3'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) .
-            "</th><th colspan='2'><font color='blue'> (" . $item->getTypeName(1) . ")</font></th></tr>";
-
         $events = [];
         if ($target = NotificationTarget::getInstanceByType(get_class($item))) {
             $events = $target->getAllEvents();
-
-            if (count($events) > 0) {
-                echo "<tr><th>" . self::getTypeName(Session::getPluralNumber()) . '</th><th>' . _n('Recipient', 'Recipients', Session::getPluralNumber()) . "</th>";
-                echo "<th>" . _n('Notification template', 'Notification templates', Session::getPluralNumber()) . "</th>" .
-                 "<th>" . __('Mode') . "</th>" .
-                 "<th>" . _n('Recipient', 'Recipients', 1) . "</th></tr>";
-
-                foreach ($events as $event => $label) {
-                    self::raiseEvent($event, $item, $options, null, $label);
-                }
-            } else {
-                echo "<tr class='tab_bg_2 center'><td colspan='4'>" . __('No item to display') . "</td></tr>";
-            }
         }
-        echo "</table></div>";
+        TemplateRenderer::getInstance()->display('pages/setup/notification/event_debug.html.twig', [
+            'item' => $item,
+            'events' => $events,
+            'options' => $options
+        ]);
     }
 }

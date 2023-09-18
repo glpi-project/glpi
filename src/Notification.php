@@ -242,32 +242,12 @@ class Notification extends CommonDBTM implements FilterableInterface
 
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
-
-        if (Config::canUpdate() && $this->getEntityID() == 0) {
-            $types = $CFG_GLPI["notificationtemplates_types"];
-        } else {
-            // Prevent attaching notification to system items
-            $types = array_diff(
-                $CFG_GLPI["notificationtemplates_types"],
-                ['CronTask', 'DBConnection', 'User']
-            );
-        }
-
-        $attach_documents_values = [
-            NotificationSetting::ATTACH_INHERIT           => __('Use global config'),
-            NotificationSetting::ATTACH_NO_DOCUMENT       => __('No documents'),
-            NotificationSetting::ATTACH_ALL_DOCUMENTS     => __('All documents'),
-            NotificationSetting::ATTACH_FROM_TRIGGER_ONLY => __('Only documents related to the item that triggers the event'),
-        ];
-
         TemplateRenderer::getInstance()->display('pages/setup/notification/notification.html.twig', [
             'item' => $this,
-            'params' => $options,
-            'types' => $types,
-            'attach_documents_values' => $attach_documents_values,
+            'params' => [
+                'target' => static::getFormURL()
+            ],
         ]);
-
         return true;
     }
 
