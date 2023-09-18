@@ -78,9 +78,6 @@ final class GraphQLGenerator
         if (is_callable($type)) {
             $type = $type();
         }
-        if ($type_name === 'PrinterModel') {
-            $t = '';
-        }
         foreach ($type->getFields() as $field_name => $field) {
             $type_str .= "  $field_name: {$field->getType()}\n";
         }
