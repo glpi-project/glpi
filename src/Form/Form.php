@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -90,6 +90,15 @@ class Form extends CommonDBTM
         return $tabs;
     }
 
+    public function getEmpty()
+    {
+        parent::getEmpty();
+        $this->fields['name'] = __("Untitled form");
+        $this->fields['header'] = __("My form description...");
+
+        return true;
+    }
+
     public function showForm($id, array $options = [])
     {
         if (!empty($id)) {
@@ -99,8 +108,9 @@ class Form extends CommonDBTM
         }
         $this->initForm($id, $options);
 
+        // Render twig template
         $twig = TemplateRenderer::getInstance();
-        $twig->display('pages/admin/form_editor.html.twig', [
+        $twig->display('pages/admin/form/form_editor.html.twig', [
             'item'   => $this,
             'params' => $options,
         ]);
@@ -112,12 +122,12 @@ class Form extends CommonDBTM
         $search_options = parent::rawSearchOptions();
 
         $search_options[] = [
-            'id'                 => '2',
-            'table'              => self::getTable(),
-            'field'              => 'id',
-            'name'               => __('ID'),
-            'massiveaction'      => false,
-            'datatype'           => 'number'
+            'id'            => '2',
+            'table'         => self::getTable(),
+            'field'         => 'id',
+            'name'          => __('ID'),
+            'massiveaction' => false,
+            'datatype'      => 'number'
         ];
         $search_options[] = [
             'id'            => '80',
@@ -128,27 +138,27 @@ class Form extends CommonDBTM
             'massiveaction' => false,
         ];
         $search_options[] = [
-            'id'                 => '3',
-            'table'              => $this->getTable(),
-            'field'              => 'is_active',
-            'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'id'       => '3',
+            'table'    => $this->getTable(),
+            'field'    => 'is_active',
+            'name'     => __('Active'),
+            'datatype' => 'bool'
         ];
         $search_options[] = [
-            'id'                 => '4',
-            'table'              => $this->getTable(),
-            'field'              => 'date_mod',
-            'name'               => __('Last update'),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'id'            => '4',
+            'table'         => $this->getTable(),
+            'field'         => 'date_mod',
+            'name'          => __('Last update'),
+            'datatype'      => 'datetime',
+            'massiveaction' => false
         ];
         $search_options[] = [
-            'id'                 => '5',
-            'table'              => $this->getTable(),
-            'field'              => 'date_creation',
-            'name'               => __('Creation date'),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'id'            => '5',
+            'table'         => $this->getTable(),
+            'field'         => 'date_creation',
+            'name'          => __('Creation date'),
+            'datatype'      => 'datetime',
+            'massiveaction' => false
         ];
 
         return $search_options;

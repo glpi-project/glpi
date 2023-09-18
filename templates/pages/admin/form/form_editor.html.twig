@@ -1,0 +1,228 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set base_field_options = {
+    'is_horizontal': false,
+    'full_width'   : true,
+    'no_label'     : true,
+} %}
+
+<form
+    id="form-form"
+    class="
+        form-editor-container
+        d-flex
+        flex-column
+        {# Negative margins to cancel parent padding, this is needed as we use a
+        different background color than the parent item #}
+        mt-n2
+        mb-n2
+    "
+    method="POST"
+    action="{{ item.getFormURL() }}"
+>
+    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
+
+
+    {# Form editor page #}
+    {# UX and items placement are a work in progress #}
+    {# Need more elements (questions, sections) before finalizing the design #}
+    <div class="form-editor row">
+
+        <div class="designer col-12 px-4 py-3">
+            <div class="row">
+
+                {# We expect to use the right side to display some extra info later so keep some available space for now #}
+                <div class="col-7">
+
+                    {# Card containing the main form data: title, header and status #}
+                    <div class="card form-details">
+                        <div class="card-status-top bg-primary"></div>
+                        <div class="card-body">
+
+                            {# Header #}
+                            <div class="d-flex mt-2">
+                                {# Form's name #}
+                                <input
+                                    type="text"
+                                    class="form-control content-editable-h2"
+                                    name="name"
+                                    value="{{ item.fields.name }}"
+                                >
+
+                                {# Form's status #}
+                                <label class="form-check form-switch ms-3" style="margin-top: 2px">
+                                    <input type="hidden" value="0" name="is_active">
+                                    <input
+                                        class="form-check-input"
+                                        name="is_active"
+                                        type="checkbox"
+                                        value="1"
+                                        {% if item.fields.is_active %} checked {% endif %}
+                                    >
+                                    <span class="form-check-label">{{ __("Active") }}</span>
+                                </label>
+                            </div>
+
+                            {# Form's hader #}
+                            <div class="content-editable-tinymce" tabindex="5">
+                                {{ fields.textareaField(
+                                    'header',
+                                    item.fields.header,
+                                    __('Header'),
+                                    base_field_options|merge({
+                                        'enable_richtext': true,
+                                        'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                                        'editor_height': "50",
+                                        'rows' : 1,
+                                        'toolbar_location': 'bottom',
+                                    })
+                                ) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="
+        editor-footer
+        justify-content-end
+        d-flex
+        py-2
+        px-3
+        {# Negative margins to cancel parent padding, this is needed as we want
+        our footer to use the full width of it's parent #}
+        ms-n2
+        me-n2
+    ">
+        {# Move to trashbin form action #}
+        {% if not item.isNewItem() and item.canDelete() %}
+            <button
+                class="btn btn-ghost-warning me-2 {{ item.fields.is_deleted ? "d-none" : "" }}"
+                type="submit"
+                name="delete"
+                form="form-form"
+                title="{{ __("Put in trashbin") }}"
+            >
+                <i class="ti ti-trash me-1"></i>
+            </button>
+        {% endif %}
+
+        {# Purge action #}
+        {% if item.canPurge() %}
+            <button
+                class="btn btn-ghost-danger me-2 {{ not item.fields.is_deleted ? "d-none" : "" }}"
+                type="submit"
+                name="purge"
+                form="form-form"
+                title="{{ __("Delete permanently") }}"
+            >
+                <i class="ti ti-trash me-1"></i>
+            </button>
+        {% endif %}
+
+        {# Restore action #}
+        {% if item.canDelete() %}
+            <button
+                class="btn btn-ghost-secondary me-2 {{ not item.fields.is_deleted ? "d-none" : "" }}"
+                type="submit"
+                name="restore"
+                form="form-form"
+                title="{{ __("Restore") }}"
+            >
+                <i class="ti ti-trash-off me-1"></i>
+            </button>
+        {% endif %}
+
+        {% if item.isNewItem() %}
+            {# Add action #}
+            <button
+                class="btn btn-primary"
+                type="submit"
+                name="add"
+                form="form-form"
+                title="{{ __("Add") }}"
+            >
+                <i class="ti ti-plus me-1"></i>
+                <span class="d-block add-label">{{ __("Add") }}</span>
+            </button>
+        {% elseif item.canUpdate() %}
+            {# Update action #}
+            <button
+                class="btn btn-primary"
+                type="submit"
+                name="update"
+                form="form-form"
+                title="{{ __("Save") }}"
+            >
+                <i class="ti ti-device-floppy me-1"></i>
+                <span class="d-block save-label">{{ __("Save") }}</span>
+            </button>
+        {% endif %}
+        </button>
+    </div>
+
+    {# Form id #}
+    <input type="hidden" name="id" value="{{ item.fields.id }}">
+
+    {# CSRF #}
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
+    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+</form>
+
+<script>
+    // Isolate variables in a self calling function
+    (function(){
+        // Adjust height using javascript
+        // This is the only reliable way to make our content use the remaining
+        // height of the page as the tabs container doesn't define a height
+        const adjust_container_height = function() {
+            const window_height = document.body.offsetHeight ;
+            const editor_height = $('.form-editor-container').offset().top;
+            const tab_content_border = 1; // Border added at the bottom of the page, must be taken into account
+            $('.form-editor-container').css('height', (window_height - editor_height - tab_content_border) + "px");
+        };
+        adjust_container_height();
+
+        // Trigger on resize
+        const adjust_container_height_throttled = _.throttle(adjust_container_height, 100);
+        $(window).on('resize', function() {
+           adjust_container_height_throttled();
+        });
+    })();
+</script>

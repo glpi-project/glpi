@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,5 +40,45 @@ include('../../inc/includes.php');
 // Only super admins for now - TODO add specific rights
 Session::checkRight("config", UPDATE);
 
-// Show requested form
-Form::displayFullPageForItem($_GET['id'] ?? 0, ['admin', Form::getType()], []);
+// Read parameters
+$id = $_REQUEST['id'] ?? null;
+
+if (isset($_POST["add"])) {
+    // Create form
+    $form = new Form();
+    $form->check($id, CREATE);
+
+    if ($form->add($_POST)) {
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($form->getLinkURL());
+        }
+    }
+    Html::back();
+} elseif (isset($_POST["update"])) {
+    // Update form
+    $form = new Form();
+    $form->check($id, UPDATE);
+    $form->update($_POST);
+    Html::back();
+} elseif (isset($_POST["delete"])) {
+    // Delete form
+    $form = new Form();
+    $form->check($id, DELETE);
+    $form->delete($_POST);
+    $form->redirectToList();
+} elseif (isset($_POST["restore"])) {
+    // Restore form
+    $form = new Form();
+    $form->check($id, DELETE);
+    $form->restore($_POST);
+    $form->redirectToList();
+} elseif (isset($_POST["purge"])) {
+    // Purge form
+    $form = new Form();
+    $form->check($id, PURGE);
+    $form->delete($_POST, true);
+    $form->redirectToList();
+} else {
+    // Show requested form
+    Form::displayFullPageForItem($id, ['admin', Form::getType()], []);
+}
