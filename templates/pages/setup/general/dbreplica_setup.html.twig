@@ -173,19 +173,19 @@
                             <li>
                                 <span class="text-secondary">Seconds behind primary:</span>
                                 {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
-                                <span class="badge bg-{{ replica_data['seconds_behind_master'] > 0 ? 'red' : 'green' }}-lt">{{ replica_data['seconds_behind_master']|raw }}</span>
+                                    <span class="badge bg-{{ replica_data['seconds_behind_master'] > 0 ? 'red' : 'green' }}-lt">{{ replica_data['seconds_behind_master']|raw }}</span>
                                 {% else %}
-                                <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
+                                    <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
                                 {% endif %}
                             </li>
                             <li>
                                 <span class="text-secondary" id="glpi_delay_{{ replica_num }}">GLPI history delay:</span>
                                 {% if replication_delay[replica_num] > 0 %}
-                                {{ call('Html::timestampToString', [replication_delay[replica_num], true]) }}
+                                    {{ call('Html::timestampToString', [replication_delay[replica_num], true]) }}
                                 {% elseif replication_delay[replica_num] == 0 %}
-                                <span class="badge bg-green-lt">{{ __('None') }}</span>
+                                    <span class="badge bg-green-lt">{{ __('None') }}</span>
                                 {% else %}
-                                <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
+                                    <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
                                 {% endif %}
                                 {% do call('Html::showToolTip', [
                                     __('This indicates the delay between the primary and the replica for GLPI history (table: glpi_logs, column: date_mod).')
