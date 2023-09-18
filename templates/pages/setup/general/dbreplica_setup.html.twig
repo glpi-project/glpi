@@ -42,24 +42,24 @@
 </div>
 
 <div class="row ps-4">
-   {{ fields.textField('_dbreplicate_dbhost', replica_config['host'], __('SQL server (MariaDB or MySQL)')) }}
-   {{ fields.textField('_dbreplicate_dbdefault', replica_config['default'], _n('Database', 'Databases', 1)) }}
+    {{ fields.textField('_dbreplicate_dbhost', replica_config['host'], __('SQL server (MariaDB or MySQL)')) }}
+    {{ fields.textField('_dbreplicate_dbdefault', replica_config['default'], _n('Database', 'Databases', 1)) }}
 
-   {{ fields.textField('_dbreplicate_dbuser', replica_config['user'], __('SQL user')) }}
-   {{ fields.passwordField('_dbreplicate_dbpassword', replica_config['password'], __('SQL password'), {
-      clearable: false
-   }) }}
+    {{ fields.textField('_dbreplicate_dbuser', replica_config['user'], __('SQL user')) }}
+    {{ fields.passwordField('_dbreplicate_dbpassword', replica_config['password'], __('SQL password'), {
+        clearable: false
+    }) }}
 
-   {% set replica_search_opts = {
-      0: __('Never'),
-      1: __('If synced (all changes)'),
-      2: __('If synced (current user changes)'),
-      3: __('If synced or read-only account'),
-      4: __('Always'),
-   } %}
-   {{ fields.dropdownArrayField('use_slave_for_search', config['use_slave_for_search'], replica_search_opts, __('Use the replica for the search engine')) }}
+    {% set replica_search_opts = {
+        0: __('Never'),
+        1: __('If synced (all changes)'),
+        2: __('If synced (current user changes)'),
+        3: __('If synced or read-only account'),
+        4: __('Always'),
+    } %}
+    {{ fields.dropdownArrayField('use_slave_for_search', config['use_slave_for_search'], replica_search_opts, __('Use the replica for the search engine')) }}
 
-   {{ inputs.hidden('_dbslave_status', 1) }}
+    {{ inputs.hidden('_dbslave_status', 1) }}
 </div>
 
 <div class="hr-text">
@@ -132,7 +132,7 @@
         {% set replica_unkown = replica_data['error'] is defined and replica_data['error'] is not null %}
 
         <div class="accordion mb-2"
-                id="accordion-replica{{ replica_num }}">
+             id="accordion-replica{{ replica_num }}">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading-replica{{ replica_num }}">
 
