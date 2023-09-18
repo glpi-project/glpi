@@ -167,9 +167,7 @@
             }).done(function (data) {
                 if (data.content !== undefined) {
                     // set textarea content
-                    if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                        tasktinymce.setContent(data.content);
-                    }
+                    setRichTextEditorContent("content_{{ rand }}", data.content);
                 }
 
                 if (data.taskcategories_id !== undefined) {

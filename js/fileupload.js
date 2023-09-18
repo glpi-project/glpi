@@ -187,6 +187,26 @@ var deleteImagePasted = function(elementsIdToRemove, tagToRemove, editor) {
 };
 
 /**
+ * Set given rich text editor content.
+ */
+const setRichTextEditorContent = function(editor_id, content) {
+    if (typeof tinyMCE === 'undefined') {
+        return;
+    }
+    const editor = tinyMCE.get(editor_id);
+    if (editor) {
+        editor.setContent('');
+        // use paste command to force images registering
+        editor.execCommand('mceInsertClipboardContent', false, {
+            html: content
+        });
+        // force trigger of event handlers that will save editor contents
+        // and remove "required" state
+        editor.fire('keyup');
+    }
+};
+
+/**
  * Plugin for tinyMce editor who intercept paste event
  * to check if a file upload can be proceeded
  * @param  {[Object]} editor TinyMCE editor

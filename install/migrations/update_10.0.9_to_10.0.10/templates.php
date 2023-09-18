@@ -33,38 +33,23 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-use CommonDBTM;
-use Glpi\Inventory\Conf;
-use Toolbox;
-
-class Simcard extends Device
-{
-    public function prepare(): array
-    {
-        $mapping = [
-            'subscriber_id' => 'msin',
-        ];
-
-        foreach ($this->data as $k => &$val) {
-            foreach ($mapping as $origin => $dest) {
-                if (property_exists($val, $origin)) {
-                    $val->$dest = $val->$origin;
-                }
-            }
-        }
-
-        return $this->data;
-    }
-
-    public function checkConf(Conf $conf): bool
-    {
-        return $conf->component_simcard == 1;
-    }
-
-    public function getItemtype(): string
-    {
-        return \Item_DeviceSimcard::class;
-    }
+$rich_text_fields = [
+    'glpi_itilfollowuptemplates'          => 'content',
+    'glpi_planningexternaleventtemplates' => 'text',
+    // already a longtext 'glpi_projecttasktemplates'           => 'description',
+    'glpi_solutiontemplates'              => 'content',
+    'glpi_tasktemplates'                  => 'content',
+];
+foreach ($rich_text_fields as $table => $field) {
+    $migration->changeField(
+        $table,
+        $field,
+        $field,
+        'mediumtext',
+    );
 }

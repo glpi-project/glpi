@@ -826,7 +826,7 @@ class AuthLDAP extends DbTestCase
          ->variable['is_active']->isEqualTo(true)
          ->variable['auths_id']->isEqualTo($ldap->getID())
          ->variable['authtype']->isEqualTo(\Auth::LDAP)
-         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org');
 
         $this->integer((int)$user->fields['usertitles_id'])->isGreaterThan(0);
         $this->integer((int)$user->fields['usercategories_id'])->isGreaterThan(0);
@@ -1019,13 +1019,13 @@ class AuthLDAP extends DbTestCase
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('ecuador0')
          ->string['phone']->isIdenticalTo('034596780')
-         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org');
 
        // update the user in ldap (change phone number)
         $this->boolean(
             ldap_modify(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['telephoneNumber' => '+33101010101']
             )
         )->isTrue();
@@ -1036,7 +1036,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_modify(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['telephoneNumber' => '034596780']
             )
         )->isTrue();
@@ -1051,7 +1051,7 @@ class AuthLDAP extends DbTestCase
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('ecuador0')
          ->string['phone']->isIdenticalTo('+33101010101')
-         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org');
 
        // update sync field of user
         $this->boolean(
@@ -1067,7 +1067,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_mod_add(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['employeeNumber' => '42']
             )
         )->isTrue();
@@ -1086,7 +1086,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_rename(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 'uid=testecuador',
                 '',
                 true
@@ -1099,7 +1099,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_rename(
                 $ldap->connect(),
-                'uid=testecuador,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=testecuador,ou=people,ou=R&D,dc=glpi,dc=org',
                 'uid=ecuador0',
                 '',
                 true
@@ -1109,7 +1109,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_mod_del(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['employeeNumber' => 42]
             )
         )->isTrue();
@@ -1128,7 +1128,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_mod_add(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['employeeNumber' => '42']
             )
         )->isTrue();
@@ -1146,7 +1146,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_mod_replace(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['employeeNumber' => '43']
             )
         )->isTrue();
@@ -1179,7 +1179,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_mod_del(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['employeeNumber' => 43]
             )
         )->isTrue();
@@ -1208,7 +1208,7 @@ class AuthLDAP extends DbTestCase
         $user->getFromDBbyName('brazil6');
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('brazil6')
-         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org');
         $this->boolean($auth->user_present)->isFalse();
         $this->boolean($auth->user_dn)->isFalse();
         $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
@@ -1243,7 +1243,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean($user->getFromDB($import['id']))->isTrue();
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('brazil7')
-         ->string['user_dn']->isIdenticalTo('uid=brazil7,ou=people,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=brazil7,ou=people,ou=R&D,dc=glpi,dc=org');
 
         $auth = $this->login('brazil7', 'password', false, true);
 
@@ -1255,7 +1255,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_rename(
                 $ldap->connect(),
-                'uid=brazil7,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=brazil7,ou=people,ou=R&D,dc=glpi,dc=org',
                 'uid=brazil7test',
                 '',
                 true
@@ -1269,7 +1269,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_rename(
                 $ldap->connect(),
-                'uid=brazil7test,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=brazil7test,ou=people,ou=R&D,dc=glpi,dc=org',
                 'uid=brazil7',
                 '',
                 true
@@ -1279,14 +1279,14 @@ class AuthLDAP extends DbTestCase
         $this->boolean($user->getFromDB($user->getID()))->isTrue();
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('brazil7test')
-         ->string['user_dn']->isIdenticalTo('uid=brazil7test,ou=people,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=brazil7test,ou=people,ou=R&D,dc=glpi,dc=org');
 
         $this->boolean($auth->user_present)->isTrue();
         $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
 
        //ensure duplicated DN on different authldaps_id does not prevent login
         $this->boolean(
-            $user->getFromDBByCrit(['user_dn' => 'uid=brazil6,ou=people,ou=ldap3,dc=glpi,dc=org'])
+            $user->getFromDBByCrit(['user_dn' => 'uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org'])
         )->isTrue();
 
         $dup = $user->fields;
@@ -1304,7 +1304,7 @@ class AuthLDAP extends DbTestCase
         $this->array($auth->user->fields)
          ->integer['auths_id']->isIdenticalTo($aid)
          ->string['name']->isIdenticalTo('brazil6')
-         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org');
 
         global $DB;
         $DB->updateOrDie(
@@ -1502,7 +1502,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap->connect(),
-                "uid=$uid,ou=people,ou=ldap3,dc=glpi,dc=org",
+                "uid=$uid,ou=people,ou=R&D,dc=glpi,dc=org",
                 [
                     'uid'          => $uid,
                     'sn'           => 'A SN',
@@ -1588,7 +1588,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_delete(
                 $ldap->connect(),
-                "uid=$uid,ou=people,ou=ldap3,dc=glpi,dc=org"
+                "uid=$uid,ou=people,ou=R&D,dc=glpi,dc=org"
             )
         )->isTrue();
 
@@ -1666,7 +1666,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap->connect(),
-                'uid=testunreachable,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=testunreachable,ou=people,ou=R&D,dc=glpi,dc=org',
                 [
                     'uid'          => 'testunreachable',
                     'sn'           => 'A SN',
@@ -1744,7 +1744,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap->connect(),
-                'uid=torestoretest,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=torestoretest,ou=people,ou=R&D,dc=glpi,dc=org',
                 [
                     'uid'          => 'torestoretest',
                     'sn'           => 'A SN',
@@ -1783,7 +1783,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_delete(
                 $ldap->connect(),
-                'uid=torestoretest,ou=people,ou=ldap3,dc=glpi,dc=org'
+                'uid=torestoretest,ou=people,ou=R&D,dc=glpi,dc=org'
             )
         )->isTrue();
 
@@ -1806,7 +1806,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap->connect(),
-                'uid=torestoretest,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=torestoretest,ou=people,ou=R&D,dc=glpi,dc=org',
                 [
                     'uid'          => 'torestoretest',
                     'sn'           => 'A SN',
@@ -1884,7 +1884,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap_con,
-                'ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
                 [
                     'ou'          => 'andyetanotheronetogetaveryhugednidentifier',
                     'objectClass'  => [
@@ -1897,7 +1897,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap_con,
-                'ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
                 [
                     'ou'          => 'andyetanotherlongstring',
                     'objectClass'  => [
@@ -1910,7 +1910,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap_con,
-                'ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
                 [
                     'ou'          => 'anotherlongstringtocheckforsynchronization',
                     'objectClass'  => [
@@ -1923,7 +1923,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap_con,
-                'ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
                 [
                     'ou'          => 'averylongstring',
                     'objectClass'  => [
@@ -1937,7 +1937,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap_con,
-                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
                 [
                     'uid'          => 'verylongdn',
                     'sn'           => 'A SN',
@@ -1971,12 +1971,12 @@ class AuthLDAP extends DbTestCase
 
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('verylongdn')
-         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org');
 
         $this->boolean(
             ldap_modify(
                 $ldap->connect(),
-                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['telephoneNumber' => '+33102020202']
             )
         )->isTrue();
@@ -1991,13 +1991,13 @@ class AuthLDAP extends DbTestCase
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('verylongdn')
          ->string['phone']->isIdenticalTo('+33102020202')
-         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org');
 
        //drop test user
         $this->boolean(
             ldap_delete(
                 $ldap->connect(),
-                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org'
+                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org'
             )
         )->isTrue();
     }
@@ -2014,7 +2014,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap_con,
-                'OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,DC=glpi,DC=org',
+                'OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org',
                 [
                     'ou'          => 'Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123',
                     'objectClass'  => [
@@ -2027,7 +2027,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap_con,
-                'OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,DC=glpi,DC=org',
+                'OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org',
                 [
                     'ou'          => 'Отдел Тест',
                     'objectClass'  => [
@@ -2041,7 +2041,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $ldap_con,
-                'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,DC=glpi,DC=org',
+                'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org',
                 [
                     'uid'          => 'Тестов Тест Тестович',
                     'sn'           => 'A SN',
@@ -2075,12 +2075,12 @@ class AuthLDAP extends DbTestCase
 
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('Тестов Тест Тестович')
-         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=glpi,dc=org');
 
         $this->boolean(
             ldap_modify(
                 $ldap->connect(),
-                'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,dc=glpi,dc=org',
+                'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=glpi,dc=org',
                 ['telephoneNumber' => '+33103030303']
             )
         )->isTrue();
@@ -2095,13 +2095,13 @@ class AuthLDAP extends DbTestCase
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('Тестов Тест Тестович')
          ->string['phone']->isIdenticalTo('+33103030303')
-         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=glpi,dc=org');
 
        //drop test user
         $this->boolean(
             ldap_delete(
                 $ldap->connect(),
-                'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,DC=glpi,DC=org'
+                'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org'
             )
         )->isTrue();
     }
@@ -2145,7 +2145,7 @@ class AuthLDAP extends DbTestCase
     public function testSyncWithManager($manager_dn, array $manager_entry)
     {
        // Static conf
-        $base_dn = "ou=people,ou=ldap3,dc=glpi,dc=org";
+        $base_dn = "ou=people,ou=R&D,dc=glpi,dc=org";
         $user_full_dn = "uid=userwithmanager,$base_dn";
         $escaped_manager_dn = ldap_escape($manager_dn, "", LDAP_ESCAPE_DN);
         $manager_full_dn = "cn=$escaped_manager_dn,$base_dn";
@@ -2228,7 +2228,7 @@ class AuthLDAP extends DbTestCase
         $this
          ->array($user->fields)
          ->string['name']->isIdenticalTo($user_entry['uid'])
-         ->string['user_dn']->isIdenticalTo("$user_full_dn")
+         ->string['user_dn']->isIdenticalTo($user_full_dn)
          ->integer['users_id_supervisor']->isIdenticalTo($manager->fields['id']);
 
        // Drop both
@@ -2334,7 +2334,7 @@ class AuthLDAP extends DbTestCase
         $user->getFromDBbyName('brazil5');
         $this->array($user->fields)
             ->string['name']->isIdenticalTo('brazil5')
-            ->string['user_dn']->isIdenticalTo('uid=brazil5,ou=people,ou=ldap3,dc=glpi,dc=org');
+            ->string['user_dn']->isIdenticalTo('uid=brazil5,ou=people,ou=R&D,dc=glpi,dc=org');
         $this->boolean($auth->user_present)->isFalse();
         $this->boolean($auth->user_dn)->isFalse();
         $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
@@ -2383,7 +2383,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_add(
                 $connection,
-                'uid=logintest,ou=people,ou=ldap3,dc=glpi,dc=org',
+                'uid=logintest,ou=people,ou=R&D,dc=glpi,dc=org',
                 [
                     'uid'          => 'logintest',
                     'sn'           => 'A SN',
@@ -2404,7 +2404,7 @@ class AuthLDAP extends DbTestCase
         $user->getFromDBbyName('logintest');
         $this->array($user->fields)
             ->string['name']->isIdenticalTo('logintest')
-            ->string['user_dn']->isIdenticalTo('uid=logintest,ou=people,ou=ldap3,dc=glpi,dc=org');
+            ->string['user_dn']->isIdenticalTo('uid=logintest,ou=people,ou=R&D,dc=glpi,dc=org');
         $this->boolean($auth->user_present)->isFalse();
         $this->boolean($auth->user_dn)->isFalse();
         $this->checkLdapConnection($auth->ldap_connection);
@@ -2421,7 +2421,7 @@ class AuthLDAP extends DbTestCase
         $this->boolean(
             ldap_delete(
                 $connection,
-                'uid=logintest,ou=people,ou=ldap3,dc=glpi,dc=org'
+                'uid=logintest,ou=people,ou=R&D,dc=glpi,dc=org'
             )
         )->isTrue();
 

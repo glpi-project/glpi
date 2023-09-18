@@ -194,41 +194,76 @@ class CalendarSegment extends CommonDBChild
      * @param integer $day             day number
      * @param string  $begin_time      begin time
      * @param integer $delay           timestamp delay to add
+     * @param bool    $negative_delay  are we adding or removing time ?
      *
      * @return string|false Ending timestamp (HH:mm:dd) of delay or false if not applicable.
      **/
-    public static function addDelayInDay($calendars_id, $day, $begin_time, $delay)
-    {
+    public static function addDelayInDay(
+        $calendars_id,
+        $day,
+        $begin_time,
+        $delay,
+        bool $negative_delay = false
+    ) {
+        // TODO: unit test this method with complex calendars using multiple
+        // disconnected segments per day
         global $DB;
 
-       // Do not check hour if day before the end day of after the begin day
+        // Common SELECT for both modes
+        $SELECT = [
+            QueryFunction::timediff(
+                expression1: 'end',
+                expression2: QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))]),
+                alias: 'TDIFF'
+            ),
+        ];
+
+        // Common WHERE for both modes
+        $WHERE = [
+            'calendars_id' => $calendars_id,
+            'day'          => $day,
+        ];
+
+
+        // Add specific SELECT and WHERE clauses
+        if (!$negative_delay) {
+            $SELECT[] = QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))], 'BEGIN');
+            $WHERE['end'] = ['>', $begin_time];
+        } else {
+            // When counting back time, "00:00:00" can't be used for some comparison
+            // as it is supposed to represent the end of the day
+            // (e.g. finding calendar segments that start before 00:00:00 would always
+            // return no results but using 23:59:59 get us the correct behavior).
+            $adjusted_time_for_comparaison_in_negative_delay_mode = $begin_time == "00:00:00" ? "23:59:59" : $begin_time;
+
+            $SELECT[] = QueryFunction::least(['end', new QueryExpression($DB::quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode))], 'END');
+            $WHERE['begin'] = ['<', $adjusted_time_for_comparaison_in_negative_delay_mode];
+        }
+
         $iterator = $DB->request([
-            'SELECT' => [
-                QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))], 'BEGIN'),
-                QueryFunction::timediff(
-                    expression1: 'end',
-                    expression2: QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))]),
-                    alias: 'TDIFF'
-                ),
-            ],
-            'FROM'   => 'glpi_calendarsegments',
-            'WHERE'  => [
-                'calendars_id' => $calendars_id,
-                'day'          => $day,
-                'end'          => ['>', $begin_time]
-            ],
-            'ORDER'  => 'begin'
+            'SELECT' => $SELECT,
+            'FROM'   => self::getTable(),
+            'WHERE'  => $WHERE,
+            'ORDER'  => !$negative_delay ? 'begin' : 'end DESC'
         ]);
 
         foreach ($iterator as $data) {
             list($hour, $minute, $second) = explode(':', $data['TDIFF']);
             $tstamp = $hour * HOUR_TIMESTAMP + $minute * MINUTE_TIMESTAMP + $second;
 
-           // Delay is completed
+            // Delay is completed
             if ($delay <= $tstamp) {
-                list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['BEGIN']);
-                $beginstamp = $begin_hour * HOUR_TIMESTAMP + $begin_minute * MINUTE_TIMESTAMP + $begin_second;
-                $endstamp   = $beginstamp + $delay;
+                if (!$negative_delay) {
+                    // Add time
+                    list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['BEGIN']);
+                    $beginstamp = $begin_hour * HOUR_TIMESTAMP + $begin_minute * MINUTE_TIMESTAMP + $begin_second;
+                    $endstamp = $beginstamp + $delay;
+                } else {
+                    // Substract time
+                    list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['END']);
+                    $beginstamp = $begin_hour * HOUR_TIMESTAMP + $begin_minute * MINUTE_TIMESTAMP + $begin_second;
+                    $endstamp = $beginstamp - $delay;
+                }
                 $units      = Toolbox::getTimestampTimeUnits($endstamp);
                 return str_pad($units['hour'], 2, '0', STR_PAD_LEFT) . ':' .
                      str_pad($units['minute'], 2, '0', STR_PAD_LEFT) . ':' .

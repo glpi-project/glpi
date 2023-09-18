@@ -393,6 +393,7 @@ class RuleCriteria extends CommonDBChild
             return true;
         }
 
+        $pattern_raw = $pattern;
         $pattern = trim($pattern);
 
         switch ($condition) {
@@ -407,7 +408,7 @@ class RuleCriteria extends CommonDBChild
                    // Special case (used only by UNIQUE_PROFILE, for now)
                    // $pattern is an ID
                     if (in_array($pattern, $field)) {
-                        $criterias_results[$criteria] = $pattern;
+                        $criterias_results[$criteria] = $pattern_raw;
                         return true;
                     }
                 } else {
@@ -415,7 +416,7 @@ class RuleCriteria extends CommonDBChild
                     $field                        = Toolbox::strtolower($field);
                     $pattern                      = Toolbox::strtolower($pattern);
                     if ($field == $pattern) {
-                        $criterias_results[$criteria] = $pattern;
+                        $criterias_results[$criteria] = $pattern_raw;
                         return true;
                     }
                 }
@@ -426,7 +427,7 @@ class RuleCriteria extends CommonDBChild
                 $field   = Toolbox::strtolower($field);
                 $pattern = Toolbox::strtolower($pattern);
                 if ($field != $pattern) {
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -453,7 +454,7 @@ class RuleCriteria extends CommonDBChild
                 }
 
                 if (str_ends_with(mb_strtolower($field), mb_strtolower($pattern))) {
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -464,7 +465,7 @@ class RuleCriteria extends CommonDBChild
                 }
                 $value = mb_stripos($field, $pattern, 0, 'UTF-8');
                 if (($value !== false) && ($value == 0)) {
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -475,7 +476,7 @@ class RuleCriteria extends CommonDBChild
                 }
                 $value = mb_stripos($field, $pattern, 0, 'UTF-8');
                 if (($value !== false) && ($value >= 0)) {
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -486,7 +487,7 @@ class RuleCriteria extends CommonDBChild
                 }
                 $value = mb_stripos($field ?? '', $pattern, 0, 'UTF-8');
                 if ($value === false) {
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -510,7 +511,7 @@ class RuleCriteria extends CommonDBChild
                         }
                     }
                     $regex_result[]               = $res;
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -523,7 +524,7 @@ class RuleCriteria extends CommonDBChild
                         E_USER_WARNING
                     );
                 } elseif ($match_result === 0) {
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;

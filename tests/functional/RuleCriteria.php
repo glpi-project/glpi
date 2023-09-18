@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/rulecriteria.class.php */
 
@@ -313,7 +314,7 @@ class RuleCriteria extends DbTestCase
                 $regex_result
             )
         )->isTrue();
-        $this->string($results['name'])->isIdenticalTo('mozilla firefox');
+        $this->string($results['name'])->isIdenticalTo('Mozilla Firefox');
 
         $results = [];
         $this->boolean(
@@ -364,7 +365,7 @@ class RuleCriteria extends DbTestCase
                 $regex_result
             )
         )->isTrue();
-        $this->string($results['name'])->isIdenticalTo('mozilla firefox');
+        $this->string($results['name'])->isIdenticalTo('Mozilla Firefox');
     }
 
     public function testMatchConditionExistsOrNot()
@@ -905,5 +906,166 @@ class RuleCriteria extends DbTestCase
             ->withMessage('Invalid regular expression `/Firefox (.*)`.')
             ->exists()
         ;
+    }
+
+    protected function ruleCriteriaMatchProvider(): iterable
+    {
+        // Checks quotes, slashes and HTML special chars handling
+        yield [
+            'condition' => \Rule::PATTERN_BEGIN,
+            'pattern'   => "Besoin d'un",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_BEGIN,
+            'pattern'   => "<R&D>",
+            'value'     => "<R&D> Test",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_BEGIN,
+            'pattern'   => "\o",
+            'value'     => "\o/",
+            'matches'   => true
+        ];
+
+        yield [
+            'condition' => \Rule::PATTERN_END,
+            'pattern'   => "d'un ordinateur",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_END,
+            'pattern'   => "<R&D>",
+            'value'     => "Test <R&D>",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_END,
+            'pattern'   => "/",
+            'value'     => "\o/",
+            'matches'   => true
+        ];
+
+        yield [
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern'   => "d'un",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern'   => "<R&D>",
+            'value'     => "<R&D> Test",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern'   => "\\",
+            'value'     => "\o/",
+            'matches'   => true
+        ];
+
+        yield [
+            'condition' => \Rule::PATTERN_NOT_CONTAIN,
+            'pattern'   => "d'un",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => false
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_NOT_CONTAIN,
+            'pattern'   => "<R&D>",
+            'value'     => "<R&D> Test",
+            'matches'   => false
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_NOT_CONTAIN,
+            'pattern'   => "\\",
+            'value'     => "\o/",
+            'matches'   => false
+        ];
+
+        yield [
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => "Besoin d'un ordinateur",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => "<R&D> Test",
+            'value'     => "<R&D> Test",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_NOT_CONTAIN,
+            'pattern'   => "\o/",
+            'value'     => "\o/",
+            'matches'   => false
+        ];
+
+        yield [
+            'condition' => \Rule::PATTERN_IS_NOT,
+            'pattern'   => "Besoin d'un ordinateur",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => false
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_IS_NOT,
+            'pattern'   => "<R&D> Test",
+            'value'     => "<R&D> Test",
+            'matches'   => false
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_IS_NOT,
+            'pattern'   => "\o/",
+            'value'     => "\o/",
+            'matches'   => false
+        ];
+
+        yield [
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/d'un/",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/<R&D>/",
+            'value'     => "<R&D> Test",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/\\\.+\/$/",
+            'value'     => "\o/",
+            'matches'   => true
+        ];
+    }
+
+    /**
+     * @dataProvider ruleCriteriaMatchProvider
+    */
+    public function testMatch(int $condition, string $pattern, string $value, bool $matches)
+    {
+        $criteria = new \RuleCriteria();
+        $criteria->fields = [
+            'id'        => 1,
+            'rules_id'  => 1,
+            'criteria'  => 'name',
+            'condition' => $condition,
+            'pattern'   => $pattern
+        ];
+
+        $results      = [];
+        $regex_result = [];
+
+        $this->boolean($criteria->match($criteria, $value, $results, $regex_result))->isEqualTo($matches);
+
+        if ($matches) {
+            $this->array($results)->isEqualTo(['name' => $pattern]);
+        }
     }
 }

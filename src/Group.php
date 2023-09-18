@@ -680,10 +680,13 @@ class Group extends CommonTreeDropdown
                     'SELECT' => 'id',
                     'FROM'   => $item->getTable(),
                     'WHERE'  => $restrict[$itemtype],
-                    'ORDER'  => 'name',
                     'LIMIT'  => $max,
                     'START'  => $start
                 ];
+
+                if ($item->isField('name')) {
+                    $request['ORDER'] = 'name';
+                };
 
                 if ($itemtype == 'Consumable') {
                     $request['SELECT'] = 'glpi_consumableitems.id';

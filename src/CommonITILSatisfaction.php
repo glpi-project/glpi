@@ -256,10 +256,16 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+            // Send notification only if fields related to reply are updated.
+            $answer_updates = array_filter(
+                $this->updates,
+                fn ($field) => in_array($field, ['satisfaction', 'comment'])
+            );
+
             /** @var CommonDBTM $itemtype */
             $itemtype = static::getItemtype();
             $item = new $itemtype();
-            if ($item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
+            if (count($answer_updates) > 1 && $item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
                 NotificationEvent::raiseEvent("replysatisfaction", $item, [], $this);
             }
         }

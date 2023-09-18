@@ -147,15 +147,21 @@
                 {% set task_state_lbl %}
                     <i class="fas fa-tasks fa-fw me-1" title="{{ __('Status') }}"></i>
                 {% endset %}
-                {{ fields.dropdownArrayField('state', subitem.fields['state'], {
-                    0: _n('Information', 'Information', 1),
-                    1: __('To do'),
-                    2: __('Done')
-                    }, task_state_lbl, {
-                    'full_width': true,
-                    'icon_label': true,
-                    'rand': rand,
-                }) }}
+
+                {% set task_state %}
+                    {% do call('Planning::dropdownState', ['state', subitem.fields['state'], true, {}]) %}
+                {% endset %}
+
+                {{ fields.htmlField(
+                    'state',
+                    task_state,
+                    task_state_lbl,
+                    {
+                       'full_width': true,
+                       'icon_label': true,
+                       'rand': rand,
+                    }
+                ) }}
 
                 {% set task_private_lbl %}
                     <i class="ti ti-lock fa-fw me-1" title="{{ __('Private') }}"></i>
@@ -272,7 +278,7 @@
                             rand_group: {{ random() }},
                             itemtype: "{{ subitem.type }}",
                             items_id: {{ subitem.fields.id|default(-1) }},
-                            parent_itemtype: "{{ item.type }}",
+                            parent_itemtype: "{{ item.getType() }}",
                             parent_items_id: {{ item.fields.id is empty ? 0 : item.fields.id }},
                             parent_fk_field: "{{ item.getForeignKeyField() }}",
                             begin: "{{ subitem.fields['begin'] }}",

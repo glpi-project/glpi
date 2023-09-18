@@ -52,7 +52,7 @@ if (!isset($_REQUEST['action'])) {
 }
 $action = $_REQUEST['action'];
 
-$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form', 'delete_item', 'load_item_panel',
+$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'delete_item', 'load_item_panel',
     'add_teammember', 'delete_teammember', 'restore_item'
 ];
 if (isset($_REQUEST['itemtype'])) {
@@ -140,7 +140,11 @@ if (($_POST['action'] ?? null) === 'update') {
     $inputs = [];
     parse_str($_POST['inputs'], $inputs);
 
-    $item->add($inputs);
+    $result = $item->add($inputs);
+    if (!$result) {
+        http_response_code(400);
+        return;
+    }
 } else if (($_POST['action'] ?? null) === 'bulk_add_item') {
     $checkParams(['inputs']);
     $item = new $itemtype();
@@ -249,15 +253,6 @@ if (($_POST['action'] ?? null) === 'update') {
     header("Content-Type: application/json; charset=UTF-8", true);
     $column = $itemtype::getKanbanColumns($_REQUEST['items_id'], $_REQUEST['column_field'], [$_REQUEST['column_id']]);
     echo json_encode($column, JSON_FORCE_OBJECT);
-} else if ($_REQUEST['action'] === 'show_card_edit_form') {
-    $checkParams(['card']);
-    $item->getFromDB($_REQUEST['card']);
-    if ($item->canViewItem() && $item->canUpdateItem()) {
-        $item->showForm($_REQUEST['card']);
-    } else {
-        http_response_code(403);
-        return;
-    }
 } else if (($_POST['action'] ?? null) === 'delete_item') {
     $checkParams(['items_id']);
     $item->getFromDB($_POST['items_id']);

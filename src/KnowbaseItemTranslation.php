@@ -129,7 +129,7 @@ class KnowbaseItemTranslation extends CommonDBChild
                     break;
 
                 case 3:
-                    $item->showForm($item->getID());
+                    $item->showForm($item->getID(), ['parent' => $item]);
                     break;
             }
         } else if (self::canBeTranslated($item)) {

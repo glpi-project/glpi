@@ -407,4 +407,16 @@ abstract class LevelAgreementLevel extends RuleTicket
         }
         return true;
     }
+
+    /**
+     * Should calculation on this LA Level target date be done using
+     * the "work_in_day" parameter set to true ?
+     *
+     * @return bool
+     */
+    public function shouldUseWorkInDayMode(): bool
+    {
+        // No definition time here so we must guess the unit from the raw seconds value
+        return abs($this->fields['execution_time']) >= DAY_TIMESTAMP;
+    }
 }

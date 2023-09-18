@@ -45,7 +45,7 @@ jobs:
           rm -rf "${{ env.APPLICATION_ROOT }}/*"
           rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
       - name: "Restore dependencies cache"
         uses: actions/cache@v3
         with:
@@ -132,7 +132,7 @@ jobs:
           rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
         if: env.skip != 'true'
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
       - name: "Restore dependencies cache"
         if: env.skip != 'true'
         uses: actions/cache@v3

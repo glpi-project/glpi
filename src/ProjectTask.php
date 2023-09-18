@@ -217,6 +217,16 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
         global $DB, $CFG_GLPI;
 
+        // Handle rich-text images
+        $this->input = $this->addFiles(
+            $this->input,
+            [
+                'force_update'  => true,
+                'name'          => 'content',
+                'content_field' => 'content',
+            ]
+        );
+
         if (in_array('plan_start_date', $this->updates) || in_array('plan_end_date', $this->updates)) {
            //dates has changed, check for planning conflicts on attached team
             $team = ProjectTaskTeam::getTeamFor($this->fields['id']);
@@ -301,6 +311,16 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public function post_addItem()
     {
         global $CFG_GLPI;
+
+        // Handle rich-text images
+        $this->input = $this->addFiles(
+            $this->input,
+            [
+                'force_update'  => true,
+                'name'          => 'content',
+                'content_field' => 'content',
+            ]
+        );
 
        // ADD Documents
         $document_items = Document_Item::getItemsAssociatedTo($this->getType(), $this->fields['id']);
@@ -485,7 +505,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public function prepareInputForAdd($input)
     {
 
-        if (!isset($input['projects_id'])) {
+        if (!isset($input['projects_id']) || (int) $input['projects_id'] === 0) {
             Session::addMessageAfterRedirect(
                 __('A linked project is mandatory'),
                 false,

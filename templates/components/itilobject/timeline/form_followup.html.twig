@@ -296,9 +296,7 @@
                   : parseInt(data.requesttypes_id);
 
                // set textarea content
-               if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                  tasktinymce.setContent(data.content);
-               }
+               setRichTextEditorContent("content_{{ rand }}", data.content);
                // set category
                //need to create new DOM option, because SELECT is remotely-sourced (AJAX)
                //see : https://select2.org/programmatic-control/add-select-clear-items#preselecting-options-in-an-remotely-sourced-ajax-select2

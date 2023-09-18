@@ -5503,6 +5503,11 @@ class CommonDBTM extends CommonGLPI
                 $is_recursive = $input['is_recursive'];
             } else if (isset($input['_job']->fields['is_recursive'])) {
                 $is_recursive = $input['_job']->fields['is_recursive'];
+            } else if ($this instanceof CommonDBVisible) {
+                // CommonDBVisible visibility restriction is unpredictable as
+                // it may change over time, and can be related to dynamic profiles assignation.
+                // Related documents have to be available on all entities.
+                $is_recursive = 1;
             }
 
            // Check for duplicate and availability (e.g. file deleted in _files)

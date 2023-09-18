@@ -190,6 +190,20 @@ abstract class CommonDropdown extends CommonDBTM
         return $fields;
     }
 
+    /**
+     * Return properties of additional field having given name.
+     */
+    final public function getAdditionalField(string $name): ?array
+    {
+        foreach ($this->getAdditionalFields() as $field) {
+            if ($field['name'] === $name) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
 
     public function defineTabs($options = [])
     {
@@ -314,9 +328,9 @@ abstract class CommonDropdown extends CommonDBTM
         $fields = $this->getAdditionalFields();
         foreach ($fields as $field) {
             $type           = $field['type'] ?? '';
-            $disable_images = $field['disable_images'] ?? false;
-            if ($type === 'tinymce' && !$disable_images) {
-                // Add files from inline images
+            $convert_images = $field['convert_images_to_documents'] ?? true;
+            if ($type === 'tinymce' && $convert_images) {
+                // Convert inline images into documents
                 $this->input = $this->addFiles(
                     $this->input,
                     [

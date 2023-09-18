@@ -235,7 +235,11 @@ class Conf extends CommonGLPI
                 ];
             }
         } catch (\Throwable $e) {
-            throw $e;
+            $result = [
+                'success' => false,
+                'message' => sprintf(__('An error occurs during import: `%s`.'), $e->getMessage()),
+                'items'   => $inventory_request->getInventory()->getItems(),
+            ];
         }
 
         $result['request'] = $inventory_request;

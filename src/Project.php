@@ -2487,7 +2487,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             ],
             'team_itemtypes'  => ProjectTask::getTeamItemtypes(),
             'team_roles'      => $team_roles,
-            'allow_create'    => ProjectTask::canCreate()
+            'allow_create'    => ProjectTask::canCreate(),
+            'allow_bulk_add'  => $ID > 0
         ];
         if ($ID <= 0) {
             $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [

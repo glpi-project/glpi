@@ -1335,24 +1335,13 @@ class Document extends CommonDBTM
        // Local file : try to detect mime type
         $input['mime'] = Toolbox::getMime($fullpath);
 
-        if (
-            is_writable(GLPI_TMP_DIR)
-            && is_writable($fullpath)
-        ) { // Move if allowed
-            if (self::renameForce($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
-                Session::addMessageAfterRedirect(__('Document move succeeded.'));
-            } else {
-                Session::addMessageAfterRedirect(__('File move failed.'), false, ERROR);
-                return false;
-            }
-        } else { // Copy (will overwrite dest file is present)
-            if (copy($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
-                Session::addMessageAfterRedirect(__('Document copy succeeded.'));
-            } else {
-                Session::addMessageAfterRedirect(__('File move failed'), false, ERROR);
-                @unlink($fullpath);
-                return false;
-            }
+        // Copy (will overwrite dest file if present)
+        if (copy($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
+            Session::addMessageAfterRedirect(__('Document copy succeeded.'));
+        } else {
+            Session::addMessageAfterRedirect(__('File move failed'), false, ERROR);
+            @unlink($fullpath);
+            return false;
         }
 
        // For display

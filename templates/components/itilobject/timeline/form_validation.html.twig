@@ -314,9 +314,7 @@
             }).done(function (data) {
                if (data.content !== undefined) {
                   // set textarea content
-                  if (validationtinymce = tinymce.get("comment_submission_{{ rand }}")) {
-                     validationtinymce.setContent(data.content);
-                  }
+                  setRichTextEditorContent("comment_submission_{{ rand }}", data.content);
                }
 
                if (data.validatortype !== undefined) {

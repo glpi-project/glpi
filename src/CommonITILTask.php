@@ -170,7 +170,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         switch ($field) {
             case 'state':
-                return Planning::getState($values[$field]);
+                return Planning::getStatusIcon($values[$field]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

@@ -481,9 +481,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     $item->getFromDB($data["id"]);
                     echo "<td class='center'>" . $item->getKBLinks() . "</td>";
                     echo "<td class='center'>";
-                    echo Dropdown::getDropdownName("glpi_states", $data['states_id']) . "</td>";
+                    echo (isset($data["states_id"]) ? Dropdown::getDropdownName("glpi_states", $data['states_id']) : '') . "</td>";
                     echo "<td class='center'>";
-                    echo Dropdown::getDropdownName("glpi_locations", $data['locations_id']) . "</td>";
+                    echo (isset($data['locations_id']) ? Dropdown::getDropdownName("glpi_locations", $data['locations_id']) : '') . "</td>";
                     echo "</tr>";
                 }
                 $totalnb += $nb;

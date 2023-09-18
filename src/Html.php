@@ -6852,23 +6852,29 @@ CSS;
     /**
      * Get scss compilation path for given file.
      *
+     * @param string $root_dir
+     *
      * @return array
+     *
+     * @TODO GLPI 10.1 Handle SCSS compiled directory in plugins.
      */
-    public static function getScssCompilePath($file)
+    public static function getScssCompilePath($file, string $root_dir = GLPI_ROOT)
     {
         $file = preg_replace('/\.scss$/', '', $file);
 
-        return self::getScssCompileDir() . '/' . str_replace('/', '_', $file) . '.min.css';
+        return self::getScssCompileDir($root_dir) . '/' . str_replace('/', '_', $file) . '.min.css';
     }
 
     /**
      * Get scss compilation directory.
      *
+     * @param string $root_dir
+     *
      * @return string
      */
-    public static function getScssCompileDir()
+    public static function getScssCompileDir(string $root_dir = GLPI_ROOT)
     {
-        return GLPI_ROOT . '/css_compiled';
+        return $root_dir . '/css_compiled';
     }
 
     /**

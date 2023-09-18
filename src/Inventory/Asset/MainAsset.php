@@ -694,6 +694,9 @@ abstract class MainAsset extends InventoryAsset
             unset($input['ap_port']);
             unset($input['firmware']);
             $items_id = $this->item->add($input);
+            if ($items_id === false) {
+                throw new \Exception('Unable to create item.');
+            }
             $this->setNew();
         }
 

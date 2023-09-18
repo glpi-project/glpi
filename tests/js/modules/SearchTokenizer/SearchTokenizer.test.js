@@ -159,7 +159,7 @@ describe('Search Tokenizer', () => {
             }
         });
 
-        expect(tokenizer.getAutocomplete('itemtype')).toBeEmpty();
+        expect(tokenizer.getAutocomplete('itemtype').length).toBe(0);
         tokenizer.setAutocomplete('itemtype', () => {
             return ['Project', 'ProjectTask'];
         });

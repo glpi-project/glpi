@@ -268,9 +268,7 @@
                }
             }).done(function (data) {
                // set textarea content
-               if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                  tasktinymce.setContent(data.content);
-               }
+               setRichTextEditorContent("content_{{ rand }}", data.content);
 
                // set type
                var solutiontypes_id = isNaN(parseInt(data.solutiontypes_id))

@@ -44,7 +44,7 @@ abstract class CommonITILRecurrent extends DbTestCase
     abstract protected function getChildClass();
 
     /**
-     * Data provider for self::testConvertTagToImage().
+     * Data provider for self::testComputeNextCreationDate().
      */
     protected function computeNextCreationDateProvider()
     {

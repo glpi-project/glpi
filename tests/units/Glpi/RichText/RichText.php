@@ -342,6 +342,34 @@ HTML,
             'encode_output_entities' => false,
             'expected_result'        => '<table height="100" width="0" align="left" cellspacing="10" style="width: 100%;"><tr><td>Test</td></tr></table>',
         ];
+
+        // Images path should be corrected when root doc changed
+        // see #15113
+        foreach (['', '/glpi', '/path/to/glpi'] as $expected_prefix) {
+            global $CFG_GLPI;
+            $CFG_GLPI['root_doc'] = $expected_prefix;
+            foreach (['/previous/glpi/path', '', '/glpi'] as $previous_prefix) {
+                yield [
+                    'content'                => <<<HTML
+    <p>
+      Images path should be corrected when root doc changed:
+      <a href="{$previous_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" target="_blank">
+        <img src="{$previous_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" alt="34c09468-b2d8e96f-64f991f5ce1660.58639912" width="248">
+      </a>
+    </p>
+    HTML,
+                    'encode_output_entities' => false,
+                    'expected_result'        => <<<HTML
+    <p>
+      Images path should be corrected when root doc changed:
+      <a href="{$expected_prefix}/front/document.send.php?docid&#61;180&amp;itemtype&#61;Ticket&amp;items_id&#61;515" target="_blank">
+        <img src="{$expected_prefix}/front/document.send.php?docid&#61;180&amp;itemtype&#61;Ticket&amp;items_id&#61;515" alt="34c09468-b2d8e96f-64f991f5ce1660.58639912" width="248" />
+      </a>
+    </p>
+    HTML,
+                ];
+            }
+        }
     }
 
     /**

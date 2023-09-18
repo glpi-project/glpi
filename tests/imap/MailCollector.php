@@ -79,6 +79,7 @@ class MailCollector extends DbTestCase
                    'add_cc_to_observer'   => '',
                    'collect_only_unread'  => '',
                    'create_user_from_email' => '',
+                   'last_collect_date'    => '',
                ]);
     }
 

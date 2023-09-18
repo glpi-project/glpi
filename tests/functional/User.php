@@ -634,12 +634,37 @@ class User extends \DbTestCase
     {
         $this->login();
 
-        $user = getItemByTypeName('User', TU_USER);
+        $user = $this->newTestedInstance;
+
+        // Create user with profile
+        $uid = (int)$user->add([
+            'name'         => 'create_user',
+            '_profiles_id' => (int)getItemByTypeName('Profile', 'Self-Service', true)
+        ]);
+        $this->integer($uid)->isGreaterThan(0);
 
         $this->setEntity('_test_root_entity', true);
 
         $date = date('Y-m-d H:i:s');
         $_SESSION['glpi_currenttime'] = $date;
+
+        // Add authorizations
+        $puser = new \Profile_User();
+        $this->integer($puser->add([
+            'users_id'      => $uid,
+            'profiles_id'   => (int)getItemByTypeName('Profile', 'Technician', true),
+            'entities_id'   => (int)getItemByTypeName('Entity', '_test_child_1', true),
+            'is_recursive'  => 0,
+        ]))->isGreaterThan(0);
+
+        $this->integer($puser->add([
+            'users_id'      => $uid,
+            'profiles_id'   => (int)getItemByTypeName('Profile', 'Admin', true),
+            'entities_id'   => (int)getItemByTypeName('Entity', '_test_child_2', true),
+            'is_recursive'  => 1,
+        ]))->isGreaterThan(0);
+
+        $puser_original = $puser->find(['users_id' => $uid]);
 
        // Test item cloning
         $added = $user->clone();
@@ -654,7 +679,6 @@ class User extends \DbTestCase
         foreach ($fields as $k => $v) {
             switch ($k) {
                 case 'id':
-                case 'name':
                     $this->variable($clonedUser->getField($k))->isNotEqualTo($user->getField($k));
                     break;
                 case 'date_mod':
@@ -664,11 +688,22 @@ class User extends \DbTestCase
                     $this->dateTime($dateClone)->isEqualTo($expectedDate);
                     break;
                 case 'name':
-                    $this->variable($clonedUser->getField($k))->isEqualTo("_test_user-copy");
+                    $this->variable($clonedUser->getField($k))->isEqualTo("create_user-copy");
                     break;
                 default:
                     $this->variable($clonedUser->getField($k))->isEqualTo($user->getField($k));
             }
+        }
+
+        // Check authorizations
+        foreach ($puser_original as $row) {
+            $this->boolean($puser->getFromDBByCrit([
+                'users_id'      => $added,
+                'profiles_id'   => $row['profiles_id'],
+                'entities_id'   => $row['entities_id'],
+                'is_recursive'  => $row['is_recursive'],
+                'is_dynamic'    => $row['is_dynamic'],
+            ]))->isTrue();
         }
     }
 

@@ -1418,6 +1418,6 @@ class Cartridge extends CommonDBRelation
 
     public static function getIcon()
     {
-        return "ti ti-droplet-filled-2";
+        return "ti ti-droplet-half-2-filled";
     }
 }

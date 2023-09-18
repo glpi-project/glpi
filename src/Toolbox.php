@@ -1460,10 +1460,10 @@ class Toolbox
                     }
                 }
 
-                // Redirect to relative url -> redirect with glpi url to prevent exploits
+                // Redirect to relative url
                 if ($decoded_where[0] == '/') {
-                    $redirect_to = $CFG_GLPI["url_base"] . $decoded_where;
-                   //echo $redirect_to; exit();
+                    // prevent exploit (//example.com) and force a redirect from glpi root
+                    $redirect_to = $CFG_GLPI["root_doc"] . "/" . ltrim($decoded_where, '/');
                     Html::redirect($redirect_to);
                 }
 
