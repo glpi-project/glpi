@@ -640,81 +640,9 @@ class Config extends CommonDBTM
      **/
     public static function displayPasswordSecurityChecks($field = 'password')
     {
-        global $CFG_GLPI;
-
-        $needs = [];
-
-        if ($CFG_GLPI["use_password_security"]) {
-            printf(
-                __('%1$s: %2$s'),
-                __('Password minimum length'),
-                "<span id='password_min_length' class='red'>" . $CFG_GLPI['password_min_length'] .
-                "</span>"
-            );
-        }
-
-        echo "<script type='text/javascript' >\n";
-        echo "function passwordCheck() {\n";
-        if ($CFG_GLPI["use_password_security"]) {
-            echo "var pwd = " . Html::jsGetElementbyID($field) . ";";
-            echo "if (pwd.val().length < " . $CFG_GLPI['password_min_length'] . ") {
-               " . Html::jsGetElementByID('password_min_length') . ".addClass('red');
-               " . Html::jsGetElementByID('password_min_length') . ".removeClass('green');
-         } else {
-               " . Html::jsGetElementByID('password_min_length') . ".addClass('green');
-               " . Html::jsGetElementByID('password_min_length') . ".removeClass('red');
-         }";
-            if ($CFG_GLPI["password_need_number"]) {
-                $needs[] = "<span id='password_need_number' class='red'>" . __('Digit') . "</span>";
-                echo "var numberRegex = new RegExp('[0-9]', 'g');
-            if (false == numberRegex.test(pwd.val())) {
-                  " . Html::jsGetElementByID('password_need_number') . ".addClass('red');
-                  " . Html::jsGetElementByID('password_need_number') . ".removeClass('green');
-            } else {
-                  " . Html::jsGetElementByID('password_need_number') . ".addClass('green');
-                  " . Html::jsGetElementByID('password_need_number') . ".removeClass('red');
-            }";
-            }
-            if ($CFG_GLPI["password_need_letter"]) {
-                $needs[] = "<span id='password_need_letter' class='red'>" . __('Lowercase') . "</span>";
-                echo "var letterRegex = new RegExp('[a-z]', 'g');
-            if (false == letterRegex.test(pwd.val())) {
-                  " . Html::jsGetElementByID('password_need_letter') . ".addClass('red');
-                  " . Html::jsGetElementByID('password_need_letter') . ".removeClass('green');
-            } else {
-                  " . Html::jsGetElementByID('password_need_letter') . ".addClass('green');
-                  " . Html::jsGetElementByID('password_need_letter') . ".removeClass('red');
-            }";
-            }
-            if ($CFG_GLPI["password_need_caps"]) {
-                $needs[] = "<span id='password_need_caps' class='red'>" . __('Uppercase') . "</span>";
-                echo "var capsRegex = new RegExp('[A-Z]', 'g');
-            if (false == capsRegex.test(pwd.val())) {
-                  " . Html::jsGetElementByID('password_need_caps') . ".addClass('red');
-                  " . Html::jsGetElementByID('password_need_caps') . ".removeClass('green');
-            } else {
-                  " . Html::jsGetElementByID('password_need_caps') . ".addClass('green');
-                  " . Html::jsGetElementByID('password_need_caps') . ".removeClass('red');
-            }";
-            }
-            if ($CFG_GLPI["password_need_symbol"]) {
-                $needs[] = "<span id='password_need_symbol' class='red'>" . __('Symbol') . "</span>";
-                echo "var capsRegex = new RegExp('[^a-zA-Z0-9_]', 'g');
-            if (false == capsRegex.test(pwd.val())) {
-                  " . Html::jsGetElementByID('password_need_symbol') . ".addClass('red');
-                  " . Html::jsGetElementByID('password_need_symbol') . ".removeClass('green');
-            } else {
-                  " . Html::jsGetElementByID('password_need_symbol') . ".addClass('green');
-                  " . Html::jsGetElementByID('password_need_symbol') . ".removeClass('red');
-            }";
-            }
-        }
-        echo "}";
-        echo '</script>';
-        if (count($needs)) {
-            echo "<br>";
-            printf(__('%1$s: %2$s'), __('Password must contains'), implode(', ', $needs));
-        }
+        TemplateRenderer::getInstance()->display('components/user/password_security_checks.html.twig', [
+            'field' => $field
+        ]);
     }
 
 
@@ -836,134 +764,28 @@ class Config extends CommonDBTM
             return false;
         }
 
-        echo "<div class='center' id='tabsbody'>";
-        echo "<table class='tab_cadre_fixe'>";
+        $opcache_info = false;
+        $opcache_ext = 'Zend OPcache';
+        $opcache_enabled = extension_loaded($opcache_ext) && ($opcache_info = opcache_get_status(false));
+        $opcache_version = $opcache_enabled ? phpversion($opcache_ext) : '';
 
-        echo "<tr><th colspan='4'>" . __('PHP opcode cache') . "</th></tr>";
-        $ext = 'Zend OPcache';
-        if (extension_loaded($ext) && ($info = opcache_get_status(false))) {
-            $msg = sprintf(__s('%s extension is installed'), $ext);
-            echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
-               <td>" . phpversion($ext) . "</td>
-               <td></td>
-               <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'><span class='sr-only'>$msg</span></td></tr>";
-
-           // Memory
-            $used = $info['memory_usage']['used_memory'];
-            $free = $info['memory_usage']['free_memory'];
-            $rate = round(100.0 * $used / ($used + $free));
-            $max  = Toolbox::getSize($used + $free);
-            $used = Toolbox::getSize($used);
-            echo "<tr><td>" . _n('Memory', 'Memories', 1) . "</td>
-               <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
-            Html::displayProgressBar('100', $rate, ['simple'       => true,
-                'forcepadding' => false
-            ]);
-
-            $class   = 'info-circle missing';
-            $msg     = sprintf(__s('%1$s memory usage is too low or too high'), $ext);
-            if ($rate > 5 && $rate < 75) {
-                $class   = 'check-circle ok';
-                $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
-            }
-            echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
-
-           // Hits
-            $hits = $info['opcache_statistics']['hits'];
-            $miss = $info['opcache_statistics']['misses'];
-            $max  = $hits + $miss;
-            $rate = round($info['opcache_statistics']['opcache_hit_rate']);
-            echo "<tr><td>" . __('Hits rate') . "</td>
-               <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
-            Html::displayProgressBar('100', $rate, ['simple'       => true,
-                'forcepadding' => false
-            ]);
-
-            $class   = 'info-circle missing';
-            $msg     = sprintf(__s('%1$s hits rate is low'), $ext);
-            if ($rate > 90) {
-                $class   = 'check-circle ok';
-                $msg     = sprintf(__s('%1$s hits rate is correct'), $ext);
-            }
-            echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
-
-           // Restart (1 seems ok, can happen)
-            $max = $info['opcache_statistics']['oom_restarts'];
-            echo "<tr><td>" . __('Out of memory restart') . "</td>
-               <td>$max</td><td>";
-
-            $class   = 'info-circle missing';
-            $msg     = sprintf(__s('%1$s restart rate is too high'), $ext);
-            if ($max < 2) {
-                $class   = 'check-circle ok';
-                $msg     = sprintf(__s('%1$s restart rate is correct'), $ext);
-            }
-            echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
-
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                echo "<tr><td></td><td colspan='3'>";
-                echo '<form method="POST" action="' . static::getFormURL() . '" class="d-inline">';
-                echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-                echo Html::hidden('reset_opcache', ['value' => 1]);
-                echo '<button type="submit" class="btn btn-primary">';
-                echo __('Reset');
-                echo '</button>';
-                echo '</form>';
-                echo "</td></tr>";
-            }
-        } else {
-            $msg = sprintf(__s('%s extension is not present'), $ext);
-            echo "<tr><td colspan='3'>" . sprintf(__('Installing and enabling the "%s" extension may improve GLPI performance'), $ext) . "</td>
-               <td class='icons_block'><i class='fa fa-info-circle missing' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
-        }
-
-        echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
-        echo '<tr><td class="b">' . __('You can use "php bin/console cache:configure" command to configure cache system.') . '</td></tr>';
         $cache_manager = new CacheManager();
-        $ext = strtolower(get_class($cache_manager->getCacheStorageAdapter(CacheManager::CONTEXT_CORE)));
-        $ext = preg_replace('/^.*\\\([a-z]+?)(?:adapter)?$/', '$1', $ext);
-        if (in_array($ext, ['memcached', 'redis'])) {
-            $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
-        } else {
-            $msg = sprintf(__s('"%s" cache system is used'), $ext);
-        }
-        echo "<tr><td>" . $msg . "</td>
-            <td>" . phpversion($ext) . "</td>
-            <td></td>
-            <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
+        $user_cache_ext = strtolower(get_class($cache_manager->getCacheStorageAdapter(CacheManager::CONTEXT_CORE)));
+        $user_cache_ext = preg_replace('/^.*\\\([a-z]+?)(?:adapter)?$/', '$1', $user_cache_ext);
+        $user_cache_version = phpversion($user_cache_ext);
 
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            echo "<tr><td></td><td colspan='3'>";
-            echo '<form method="POST" action="' . static::getFormURL() . '" class="d-inline">';
-            echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-            echo Html::hidden('reset_core_cache', ['value' => 1]);
-            echo '<button type="submit" class="btn btn-primary">';
-            echo __('Reset');
-            echo '</button>';
-            echo '</form>';
-            echo "</td></tr>";
-        }
+        $trans_cache_adapter = strtolower(get_class($cache_manager->getCacheStorageAdapter(CacheManager::CONTEXT_TRANSLATIONS)));
+        $trans_cache_adapter = preg_replace('/^.*\\\([a-z]+?)(?:adapter)?$/', '$1', $trans_cache_adapter);
 
-        echo "<tr><th colspan='4'>" . __('Translation cache') . "</th></tr>";
-        $adapter_class = strtolower(get_class($cache_manager->getCacheStorageAdapter(CacheManager::CONTEXT_TRANSLATIONS)));
-        $adapter = preg_replace('/^.*\\\([a-z]+?)(?:adapter)?$/', '$1', $adapter_class);
-        $msg = sprintf(__s('"%s" cache system is used'), $adapter);
-        echo "<tr><td colspan='3'>" . $msg . "</td>
-            <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
-
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            echo "<tr><td></td><td colspan='3'>";
-            echo '<form method="POST" action="' . static::getFormURL() . '" style="d-inline">';
-            echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-            echo Html::hidden('reset_translation_cache', ['value' => 1]);
-            echo '<button type="submit" class="btn btn-primary">';
-            echo __('Reset');
-            echo '</button>';
-            echo '</form>';
-            echo "</td></tr>";
-        }
-
-        echo "</table></div>";
+        TemplateRenderer::getInstance()->display('pages/setup/general/performance.html.twig', [
+            'opcache_ext' => $opcache_ext,
+            'opcache_enabled' => $opcache_enabled,
+            'opcache_version' => $opcache_version,
+            'opcache_info' => $opcache_info,
+            'user_cache_ext' => $user_cache_ext,
+            'user_cache_version' => $user_cache_version,
+            'trans_cache_adapter' => $trans_cache_adapter
+        ]);
     }
 
     public static function showSystemInfoTable($params = [])
@@ -2171,33 +1993,13 @@ HTML;
      *
      * @param bool $is_dev
      *
-     * @return void
+     * @return string
      */
     public static function agreeUnstableMessage(bool $is_dev)
     {
-        $msg = $is_dev
-         ? __('You are using a development version, be careful!')
-         : __('You are using a pre-release version, be careful!');
-
-        $out = '<div class="alert alert-warning">
-         <strong>' . $msg . '</strong>
-         <br/>';
-        $out .= "<div class='form-check'>
-         <input type='checkbox' class='form-check-input' required='required' id='agree_unstable' name='agree_unstable'>
-         <label for='agree_unstable' class='form-check-label'>" . __('I know I am using a unstable version.') . "</label>
-      </div>
-      </div>";
-        $out .= "<script type=text/javascript>
-            $(function() {
-               $('[name=from_update]').on('click', function(event){
-                  if(!$('#agree_unstable').is(':checked')) {
-                     event.preventDefault();
-                     alert('" . __('Please check the unstable version checkbox.') . "');
-                  }
-               });
-            });
-            </script>";
-        return $out;
+        return TemplateRenderer::getInstance()->render('install/agree_unstable.html.twig', [
+            'is_dev' => $is_dev,
+        ]);
     }
 
     /**
@@ -2226,168 +2028,13 @@ HTML;
     {
         global $CFG_GLPI;
 
-        if (!Config::canUpdate()) {
+        if (!static::canUpdate()) {
             return false;
         }
-
-        echo "<form name='form' id='purgelogs_form' method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        echo "<div class='center'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_1'><th colspan='4'>" . __("Logs purge configuration") .
-           "</th></tr>";
-        echo "<tr class='tab_bg_1 center'><td colspan='4'><i>" . __("Change all") . "</i>";
-        echo Html::scriptBlock("function form_init_all(value) {
-         $('#purgelogs_form .purgelog_interval select').val(value).trigger('change');;
-      }");
-        self::showLogsInterval(
-            'init_all',
-            0,
-            [
-                'on_change' => "form_init_all(this.value);",
-                'class'     => ''
-            ]
-        );
-        echo "</td></tr>";
-        $config_id = self::getConfigIDForContext('core');
-        echo "<input type='hidden' name='id' value='{$config_id}'>";
-
-        echo "<tr class='tab_bg_1'><th colspan='4'>" . __("General") . "</th></tr>";
-        echo "<tr class='tab_bg_1'><td class='center'>" . __("Add/update relation between items") .
-           "</td><td>";
-        self::showLogsInterval('purge_addrelation', $CFG_GLPI["purge_addrelation"]);
-        echo "</td>";
-        echo "<td>" . __("Delete relation between items") . "</td><td>";
-        self::showLogsInterval('purge_deleterelation', $CFG_GLPI["purge_deleterelation"]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" . __("Add the item") . "</td><td>";
-        self::showLogsInterval('purge_createitem', $CFG_GLPI["purge_createitem"]);
-        echo "</td>";
-        echo "<td>" . __("Delete the item") . "</td><td>";
-        self::showLogsInterval('purge_deleteitem', $CFG_GLPI["purge_deleteitem"]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" . __("Restore the item") . "</td><td>";
-        self::showLogsInterval('purge_restoreitem', $CFG_GLPI["purge_restoreitem"]);
-        echo "</td>";
-
-        echo "<td>" . __('Update the item') . "</td><td>";
-        self::showLogsInterval('purge_updateitem', $CFG_GLPI["purge_updateitem"]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" . __("Comments") . "</td><td>";
-        self::showLogsInterval('purge_comments', $CFG_GLPI["purge_comments"]);
-        echo "</td>";
-        echo "<td>" . __("Last update") . "</td><td>";
-        self::showLogsInterval('purge_datemod', $CFG_GLPI["purge_datemod"]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" .
-           __("Plugins") . "</td><td>";
-        self::showLogsInterval('purge_plugins', $CFG_GLPI["purge_plugins"]);
-        echo "</td>";
-        echo "<td class='center'>" . RefusedEquipment::getTypeName(Session::getPluralNumber()) . "</td><td>";
-        self::showLogsInterval('purge_refusedequipment', $CFG_GLPI["purge_refusedequipment"]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><th colspan='4'>" . _n('Software', 'Software', Session::getPluralNumber()) . "</th></tr>";
-        echo "<tr class='tab_bg_1'><td class='center'>" .
-           __("Installation/uninstallation of software on items") . "</td><td>";
-        self::showLogsInterval(
-            'purge_item_software_install',
-            $CFG_GLPI["purge_item_software_install"]
-        );
-        echo "</td>";
-        echo "<td>" . __("Installation/uninstallation versions on software") . "</td><td>";
-        self::showLogsInterval(
-            'purge_software_version_install',
-            $CFG_GLPI["purge_software_version_install"]
-        );
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" .
-           __("Add/Remove items from software versions") . "</td><td>";
-        self::showLogsInterval(
-            'purge_software_item_install',
-            $CFG_GLPI["purge_software_item_install"]
-        );
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Financial and administrative information') .
-           "</th></tr>";
-        echo "<tr class='tab_bg_1'><td class='center'>" .
-           __("Add financial information to an item") . "</td><td>";
-        self::showLogsInterval('purge_infocom_creation', $CFG_GLPI["purge_infocom_creation"]);
-        echo "</td>";
-        echo "<td colspan='2'></td></tr>";
-
-        echo "<tr class='tab_bg_1'><th colspan='4'>" . User::getTypeName(Session::getPluralNumber()) . "</th></tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" .
-           __("Add/remove profiles to users") . "</td><td>";
-        self::showLogsInterval('purge_profile_user', $CFG_GLPI["purge_profile_user"]);
-        echo "</td>";
-        echo "<td>" . __("Add/remove groups to users") . "</td><td>";
-        self::showLogsInterval('purge_group_user', $CFG_GLPI["purge_group_user"]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" .
-           __("User authentication method changes") . "</td><td>";
-        self::showLogsInterval('purge_user_auth_changes', $CFG_GLPI["purge_user_auth_changes"]);
-        echo "</td>";
-        echo "<td class='center'>" . __("Deleted user in LDAP directory") .
-           "</td><td>";
-        self::showLogsInterval('purge_userdeletedfromldap', $CFG_GLPI["purge_userdeletedfromldap"]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'><th colspan='4'>" . _n('Component', 'Components', Session::getPluralNumber()) . "</th></tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" . __("Add component") . "</td><td>";
-        self::showLogsInterval('purge_adddevice', $CFG_GLPI["purge_adddevice"]);
-        echo "</td>";
-        echo "<td>" . __("Update component") . "</td><td>";
-        self::showLogsInterval('purge_updatedevice', $CFG_GLPI["purge_updatedevice"]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" . __("Disconnect a component") .
-           "</td><td>";
-        self::showLogsInterval('purge_disconnectdevice', $CFG_GLPI["purge_disconnectdevice"]);
-        echo "</td>";
-        echo "<td>" . __("Connect a component") . "</td><td>";
-        self::showLogsInterval('purge_connectdevice', $CFG_GLPI["purge_connectdevice"]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" . __("Delete component") .
-           "</td><td>";
-        self::showLogsInterval('purge_deletedevice', $CFG_GLPI["purge_deletedevice"]);
-        echo "</td>";
-        echo "<td colspan='2'></td></tr>";
-
-        echo "<tr class='tab_bg_1'><th colspan='4'>" . __("All sections") . "</th></tr>";
-
-        echo "<tr class='tab_bg_1'><td class='center'>" . __("Purge all log entries") . "</td><td>";
-        self::showLogsInterval('purge_all', $CFG_GLPI["purge_all"]);
-        echo "</td>";
-        echo "<td colspan='2'></td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td colspan='4' class='center'>";
-        echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary' >";
-        echo"</td>";
-        echo "</tr>";
-
-        echo "</table></div>";
-        Html::closeForm();
+        TemplateRenderer::getInstance()->display('pages/setup/general/logs_setup.html.twig', [
+            'config' => $CFG_GLPI,
+            'canedit' => static::canUpdate()
+        ]);
     }
 
     /**

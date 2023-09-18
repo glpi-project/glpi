@@ -1,0 +1,194 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% macro icon_msg(message, icon) %}
+   <td class="icons_block">
+      <i class="{{ icon }}" title="{{ message|e('html_attr') }}" data-bs-toggle="tooltip"></i>
+      <span class="sr-only">{{ message }}</span>
+   </td>
+{% endmacro %}
+
+{% macro success_icon_msg(message) %}
+   {{ _self.icon_msg(message, 'fa fa-check-circle text-success') }}
+{% endmacro %}
+
+{% macro warning_icon_msg(message) %}
+   {{ _self.icon_msg(message, 'fa fa-info-circle text-warning') }}
+{% endmacro %}
+
+{% if opcache_enabled %}
+   {% set msg = __('The "%s" extension is installed')|format(opcache_ext) %}
+   {% set short_msg = __('%s extension is installed')|format(opcache_ext) %}
+{% else %}
+   {% set msg = __('Installing and enabling the "%s" extension may improve GLPI performance')|format(opcache_ext) %}
+   {% set short_msg = __('%s extension is not present')|format(opcache_ext) %}
+{% endif %}
+<table class="table table-borderless table-sm">
+   <tbody>
+      <tr class="table-active">
+         <th colspan="4">{{ __('PHP opcode cache') }}</th>
+      </tr>
+      <tr>
+         <th class="fw-normal">{{ msg }}</th>
+         <td>{{ opcache_version }}</td>
+         <td></td>
+         {{ _self.icon_msg(short_msg, "fa fa-check-circle text-" ~ opcache_enabled ? 'success' : 'danger') }}
+      </tr>
+      {% if opcache_enabled %}
+         {% set free = opcache_info['memory_usage']['free_memory'] %}
+         {% set used = opcache_info['memory_usage']['used_memory'] %}
+         {% set max = free + used %}
+         {% set rate = (100 * used / max)|round %}
+         <tr>
+            <th class="fw-normal">{{ _n('Memory', 'Memories', 1) }}</th>
+            <td>{{ __('%1$s / %2$s')|format(used|formatted_size, max|formatted_size) }}</td>
+            <td>
+               {{ call('Html::displayProgressBar', [100, rate, {
+                  simple: true,
+                  forcepadding: false
+               }]) }}
+            </td>
+            {% if rate > 5 and rate < 75 %}
+               {{ _self.success_icon_msg(__('%1$s memory usage is correct')|format(opcache_ext)) }}
+            {% else %}
+               {{ _self.warning_icon_msg(__('%1$s memory usage is too low or too high')|format(opcache_ext)) }}
+            {% endif %}
+         </tr>
+         {% set hits = opcache_info['opcache_statistics']['hits'] %}
+         {% set misses = opcache_info['opcache_statistics']['misses'] %}
+         {% set num_requests = hits + misses %}
+         {% set hit_rate = opcache_info['opcache_statistics']['opcache_hit_rate']|round %}
+         <tr>
+            <th class="fw-normal">{{ __('Hits rate') }}</th>
+            <td>{{ __('%1$s / %2$s')|format(hits, num_requests) }}</td>
+            <td>
+               {{ call('Html::displayProgressBar', [100, hit_rate, {
+                  simple: true,
+                  forcepadding: false
+               }]) }}
+            </td>
+            {% if hit_rate > 90 %}
+               {{ _self.success_icon_msg(__('%1$s hits rate is correct')|format(opcache_ext)) }}
+            {% else %}
+               {{ _self.warning_icon_msg(__('%1$s hits rate is low')|format(opcache_ext)) }}
+            {% endif %}
+         </tr>
+         {% set oom_restarts = opcache_info['opcache_statistics']['oom_restarts'] %}
+         <tr>
+            <th class="fw-normal">{{ __('Out of memory restart') }}</th>
+            <td>{{ oom_restarts }}</td>
+            <td></td>
+            {% if oom_restarts < 2 %}
+               {{ _self.success_icon_msg(__('%1$s restart rate is correct')|format(opcache_ext)) }}
+            {% else %}
+               {{ _self.warning_icon_msg(__('%1$s restart rate is too high')|format(opcache_ext)) }}
+            {% endif %}
+         </tr>
+         {% if opcache_enabled and session('glpi_use_mode') == constant('Session::DEBUG_MODE') %}
+            <tr>
+               <td></td>
+               <td>
+                  <form method="post" action="{{ path('/front/config.form.php') }}">
+                     {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                     {{ inputs.submit('reset_opcache', __('Reset'), 1) }}
+                  </form>
+               </td>
+               <td></td>
+               <td></td>
+            </tr>
+         {% endif %}
+      {% endif %}
+      <tr class="table-active">
+         <th colspan="4">{{ __('User data cache') }}</th>
+      </tr>
+      <tr>
+         <th class="fw-normal">{{ __('You can use "%s" command to configure cache system.')|format('php bin/console cache:configure') }}</th>
+         <td></td>
+         <td></td>
+         <td></td>
+      </tr>
+      <tr>
+         {% if user_cache_ext in ['memcached', 'redis'] %}
+            {% set msg = __('The "%s" cache extension is installed')|format(user_cache_ext) %}
+         {% else %}
+            {% set msg = __('"%s" cache system is used')|format(user_cache_ext) %}
+         {% endif %}
+         <th class="fw-normal">
+            {{ msg }}
+         </th>
+         <td>{{ user_cache_version }}</td>
+         <td></td>
+         {{ _self.success_icon_msg(msg) }}
+      </tr>
+      {% if session('glpi_use_mode') == constant('Session::DEBUG_MODE') %}
+         <tr>
+            <td></td>
+            <td>
+               <form method="post" action="{{ path('/front/config.form.php') }}">
+                  {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                  {{ inputs.submit('reset_core_cache', __('Reset'), 1) }}
+               </form>
+            </td>
+            <td></td>
+            <td></td>
+         </tr>
+      {% endif %}
+      <tr class="table-active">
+         <th colspan="4">{{ __('Translation cache') }}</th>
+      </tr>
+      <tr>
+         {% set msg = __('"%s" cache system is used')|format(trans_cache_adapter) %}
+         <th class="fw-normal">
+            {{ msg }}
+         </th>
+         <td></td>
+         <td></td>
+         {{ _self.success_icon_msg(msg) }}
+      </tr>
+      {% if session('glpi_use_mode') == constant('Session::DEBUG_MODE') %}
+         <tr>
+            <td></td>
+            <td>
+               <form method="post" action="{{ path('/front/config.form.php') }}">
+                  {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                  {{ inputs.submit('reset_translation_cache', __('Reset'), 1) }}
+               </form>
+            </td>
+            <td></td>
+            <td></td>
+         </tr>
+      {% endif %}
+   </tbody>
+</table>

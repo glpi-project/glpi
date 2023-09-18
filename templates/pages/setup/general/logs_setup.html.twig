@@ -1,0 +1,95 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/setup/general/base_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block config_fields %}
+   {{ fields.largeTitle(__('Logs purge configuration'), 'ti ti-news') }}
+
+   {% set logs_interval_options = {
+      (constant('Config::DELETE_ALL')): __('Delete all'),
+      (constant('Config::KEEP_ALL')): __('Keep all'),
+   } %}
+   {% for i in 1..120 %}
+      {% set logs_interval_options = logs_interval_options + {
+         (i): _n('Delete if older than %s month', 'Delete if older than %s months', i)|format(i)
+      } %}
+   {% endfor %}
+   {% macro log_interval_dropdown(name, label, config, logs_interval_options) %}
+      {{ fields.dropdownArrayField(name, config[name], logs_interval_options, label, {
+         add_field_class: 'purgelog_interval',
+      }) }}
+   {% endmacro %}
+
+   {{ fields.dropdownArrayField('init_all', 0, logs_interval_options, __('Change all'), {
+      label_class: 'col-xxl-5 fst-italic',
+      on_change: '$(this).closest(`form`).find(`.purgelog_interval select`).val(this.value).trigger("change");'
+   }) }}
+
+   {{ fields.smallTitle(__('General')) }}
+   {{ _self.log_interval_dropdown('purge_addrelation', __('Add/update relation between items'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_deleterelation', __('Delete relation between items'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_createitem', __('Add the item'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_deleteitem', __('Delete the item'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_restoreitem', __('Restore the item'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_updateitem', __('Update the item'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_comments', __('Comments'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_datemod', __('Last update'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_plugins', __('Plugins'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_refusedequipment', 'RefusedEquipment'|itemtype_name(get_plural_number()), config, logs_interval_options) }}
+
+   {{ fields.smallTitle('Software'|itemtype_name(get_plural_number())) }}
+   {{ _self.log_interval_dropdown('purge_item_software_install', __('Installation/uninstallation of software on items'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_software_version_install', __('Installation/uninstallation versions on software'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_software_item_install', __('Add/Remove items from software versions'), config, logs_interval_options) }}
+
+   {{ fields.smallTitle('Infocom'|itemtype_name(get_plural_number())) }}
+   {{ _self.log_interval_dropdown('purge_infocom_creation', __('Add financial information to an item'), config, logs_interval_options) }}
+
+   {{ fields.smallTitle('User'|itemtype_name(get_plural_number())) }}
+   {{ _self.log_interval_dropdown('purge_profile_user', __('Add/remove profiles to users'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_group_user', __('Add/remove groups to users'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_user_auth_changes', __('User authentication method changes'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_userdeletedfromldap', __('Deleted user in LDAP directory'), config, logs_interval_options) }}
+
+   {{ fields.smallTitle('CommonDevice'|itemtype_name(get_plural_number())) }}
+   {{ _self.log_interval_dropdown('purge_adddevice', __('Add component'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_updatedevice', __('Update component'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_disconnectdevice', __('Disconnect a component'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_connectdevice', __('Connect a component'), config, logs_interval_options) }}
+   {{ _self.log_interval_dropdown('purge_deletedevice', __('Delete component'), config, logs_interval_options) }}
+
+   {{ fields.smallTitle(__('All sections')) }}
+   {{ _self.log_interval_dropdown('purge_all', __('Purge all log entries'), config, logs_interval_options) }}
+{% endblock %}
