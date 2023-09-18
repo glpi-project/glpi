@@ -181,7 +181,7 @@
                             <li>
                                 <span class="text-secondary" id="glpi_delay_{{ replica_num }}">GLPI history delay:</span>
                                 {% if replication_delay[replica_num] > 0 %}
-                                {% do call('Html::timestampToString', [replication_delay[replica_num], true]) %}
+                                {{ call('Html::timestampToString', [replication_delay[replica_num], true]) }}
                                 {% elseif replication_delay[replica_num] == 0 %}
                                 <span class="badge bg-green-lt">{{ __('None') }}</span>
                                 {% else %}
