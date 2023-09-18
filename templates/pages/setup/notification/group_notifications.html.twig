@@ -46,16 +46,13 @@
       </thead>
       <tbody>
          {% for notification in notifications %}
-            {% set itemtype = notification.fields['itemtype'] %}
-            {% set item = call('getItemForItemtype', [itemtype]) %}
+            {% set itemtype = notification.fields['itemtype']|default('') %}
             <tr>
-               <td>{{ notification.getLink|raw }}</td>
-               <td>{{ call('Dropdown::getDropdownName', ['glpi_entities', notification.getEntityID]) }}</td>
+               <td>{{ get_item_link(notification) }}</td>
+               <td>{{ get_item_name('Entity', notification.getEntityID()) }}</td>
                <td>{{ notification.fields['is_active'] ? __('Yes') : __('No') }}</td>
                <td>
-                  {% if item != false %}
-                     {{ item.getTypeName(1) }}
-                  {% endif %}
+                  {{ itemtype|itemtype_name }}
                </td>
                <td>
                   {{ call('Notification_NotificationTemplate::getMode', [notification.fields['mode']]) }}
@@ -64,7 +61,7 @@
                   {{ call('NotificationEvent::getEventName', [itemtype, notification.fields['event']]) }}
                </td>
                <td>
-                  {{ call('Dropdown::getDropdownName', ['glpi_notificationtemplates', notification.fields['notificationtemplates_id']])|raw }}
+                  {{ get_item_name('NotificationTemplate', notification.fields['notificationtemplates_id']) }}
                </td>
             </tr>
          {% endfor %}
