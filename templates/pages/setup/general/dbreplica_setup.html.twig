@@ -72,161 +72,153 @@
 
 <div class="row ps-2 mb-3">
    <div class="col-5">
-      <div class="card">
-         <div class="card-body">
-            <div class="accordion" id="accordion-primary">
-               <div class="accordion-item">
-                  <h2 class="accordion-header" id="heading-primary">
-                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-primary" aria-expanded="false" aria-controls="collapse-primary">
-                        <h3>
-                            <span class="status status-{{ primary_ok ? 'green' : primary_unknow ? 'muted' : 'red' }}">
-                                <span class="status-dot status-dot-animated"></span>
-                                {{ primary_ok ? 'Up' : primary_unknow ? 'Unkown' : 'Down' }}
-                            </span>
-                            <span class="mx-2">Primary ({{ primary_dbhost }})</span>
-                            {{ primary_unknow ? '' : replication_status['primary']['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
-                        </h3>
-                     </button>
-                  </h2>
-                  <div id="collapse-primary" class="accordion-collapse collapse" aria-labelledby="heading-primary" data-bs-parent="#accordion-primary">
-                     <div class="accordion-body">
-                        {% if primary_unknow %}
-                           <div class="alert alert-danger" role="alert">
-                              <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
-                              <p class="mt-2">{{ replication_status['primary']['error'] }}</p>
-                           </div>
-                        {% else %}
-                           <ul class="p-0 list-unstyled space-y-3">
-                              <li>
-                                 <span class="text-secondary">Server ID:</span>
-                                 {{ replication_status['primary']['server_id'] }}
-                              </li>
-                              <li>
-                                 <span class="text-secondary">Binlog File:</span>
-                                 {{ replication_status['primary']['file'] }}
-                              </li>
-                              <li>
-                                 <span class="text-secondary">Binlog Pos:</span>
-                                 {{ replication_status['primary']['position'] }}
-                              </li>
-                              <li>
-                                 <span class="text-secondary">Binlog GTID:</span>
-                                 {{ replication_status['primary']['gtid_binlog_pos'] }}
-                              </li>
-                              <li>
-                                 <span class="text-secondary">MySQL version:</span>
-                                 {{ replication_status['primary']['version'] }}
-                              </li>
-                           </ul>
-                        {% endif %}
-                     </div>
-                  </div>
-               </div>
+        <div class="accordion" id="accordion-primary">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-primary">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-primary" aria-expanded="false" aria-controls="collapse-primary">
+                    <h3>
+                        <span class="status status-{{ primary_ok ? 'green' : primary_unknow ? 'muted' : 'red' }}">
+                            <span class="status-dot status-dot-animated"></span>
+                            {{ primary_ok ? 'Up' : primary_unknow ? 'Unkown' : 'Down' }}
+                        </span>
+                        <span class="mx-2">Primary ({{ primary_dbhost }})</span>
+                        {{ primary_unknow ? '' : replication_status['primary']['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
+                    </h3>
+                    </button>
+                </h2>
+                <div id="collapse-primary" class="accordion-collapse collapse" aria-labelledby="heading-primary" data-bs-parent="#accordion-primary">
+                    <div class="accordion-body">
+                    {% if primary_unknow %}
+                        <div class="alert alert-danger" role="alert">
+                            <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
+                            <p class="mt-2">{{ replication_status['primary']['error'] }}</p>
+                        </div>
+                    {% else %}
+                        <ul class="p-0 list-unstyled space-y-3">
+                            <li>
+                                <span class="text-secondary">Server ID:</span>
+                                {{ replication_status['primary']['server_id'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">Binlog File:</span>
+                                {{ replication_status['primary']['file'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">Binlog Pos:</span>
+                                {{ replication_status['primary']['position'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">Binlog GTID:</span>
+                                {{ replication_status['primary']['gtid_binlog_pos'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">MySQL version:</span>
+                                {{ replication_status['primary']['version'] }}
+                            </li>
+                        </ul>
+                    {% endif %}
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
+        </div>
    </div>
    <div class="col-7">
-      <div class="card">
-         <div class="card-body">
-         {% for replica_num, replica_data in replication_status['replica'] %}
+        {% for replica_num, replica_data in replication_status['replica'] %}
 
-            {# Replica is OK when both IO and SQL are running #}
-            {% set replica_ok = replica_data['slave_io_running'] == 'Yes' and replica_data['slave_sql_running'] == 'Yes' %}
+        {# Replica is OK when both IO and SQL are running #}
+        {% set replica_ok = replica_data['slave_io_running'] == 'Yes' and replica_data['slave_sql_running'] == 'Yes' %}
 
-            {# Replica is unknown when there is an error (connection, missing grants, ...) #}
-            {% set replica_unkown = replica_data['error'] is defined and replica_data['error'] is not null %}
+        {# Replica is unknown when there is an error (connection, missing grants, ...) #}
+        {% set replica_unkown = replica_data['error'] is defined and replica_data['error'] is not null %}
 
-            <div class="accordion mb-2"
-                  id="accordion-replica{{ replica_num }}">
-               <div class="accordion-item">
-                  <h2 class="accordion-header" id="heading-replica{{ replica_num }}">
+        <div class="accordion mb-2"
+                id="accordion-replica{{ replica_num }}">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-replica{{ replica_num }}">
 
-                     <button class="accordion-button collapsed" type="button"
-                              data-bs-toggle="collapse" data-bs-target="#collapse-replica{{ replica_num }}"
-                              aria-expanded="false" aria-controls="collapse-replica{{ replica_num }}">
-                        <h3>
-                            <span class="status status-{{ replica_ok ? 'green' : replica_unkown ? 'muted' : 'red' }}">
-                                <span class="status-dot status-dot-animated"></span>
-                                {{ replica_ok ? 'Up' : replica_unkown ? 'Unkown' : 'Down' }}
-                            </span>
-                            <span class="mx-1">Replica ({{ replica_data['host'] }})</span>
-                            {{ replica_unkown ? '' : replica_data['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
-                        </h3>
-                     </button>
-                  </h2>
-                  <div id="collapse-replica{{ replica_num }}" class="accordion-collapse collapse" aria-labelledby="heading-replica{{ replica_num }}" data-bs-parent="#accordion-replica{{ replica_num }}">
-                     <div class="accordion-body">
-                        {% if replica_unkown %}
-                           <div class="alert alert-danger" role="alert">
-                              <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
-                              <p class="mt-2">{{ replica_data['error'] }}</p>
-                           </div>
-                        {% else %}
-                           <ul class="p-0 list-unstyled space-y-3">
-                              <li>
-                                 <span class="text-secondary">Server ID:</span>
-                                 {{ replica_data['server_id'] }}
-                              </li>
-                              <li>
-                                 <span class="text-secondary">Primary binglog file:</span>
-                                 {{ replica_data['master_log_file'] }}
-                              </li>
-                              <li>
-                                 <span class="text-secondary">Primary binglog pos:</span>
-                                 {{ replica_data['read_master_log_pos'] }}
-                              </li>
-                              {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
-                                 <li>
-                                    <span class="text-secondary">Seconds behind primary:</span>
-                                    {{ replica_data['seconds_behind_master']|raw }}
-                                 </li>
-                              {% else %}
-                                 <li>
-                                    <span class="text-secondary">Seconds behind primary:</span>
-                                    <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
-                                 </li>
-                              {% endif %}
-                              <li>
-                                 <span class="text-secondary" id="glpi_delay_{{ replica_num }}">GLPI history delay:</span>
-                                 {% if replication_delay[replica_num] > 0 %}
-                                    {% do call('Html::timestampToString', [replication_delay[replica_num], true]) %}
-                                 {% elseif replication_delay[replica_num] == 0 %}
-                                    <span class="badge bg-green-lt">{{ __('None') }}</span>
-                                 {% else %}
-                                    <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
-                                 {% endif %}
-                                 {% do call('Html::showToolTip', [
-                                       __('This indicate the delay between the primary and the replica for the GLPI history (table: glpi_logs, column: date_mod).')
-                                 ]) %}
-                              </li>
-                              <li>
-                                 <span class="text-secondary">Binglog GTID:</span>
-                                 {{ replica_data['gtid_slave_pos'] }}
-                              </li>
-                              <li>
-                                 <span class="text-secondary">IO Running:</span>
-                                 <span class="badge bg-{{ replica_data['slave_io_running'] == 'Yes' ? 'green' : 'red' }}-lt">
-                                    {{ replica_data['slave_io_running'] }}
-                                 </span>
-                              <li>
-                                 <span class="text-secondary">SQL Running:</span>
-                                 <span class="badge bg-{{ replica_data['slave_sql_running'] == 'Yes' ? 'green' : 'red' }}-lt">
-                                    {{ replica_data['slave_sql_running'] }}
-                                 </span>
-                              <li>
-                                 <span class="text-secondary">MySQL version:</span>
-                                 {{ replica_data['version'] }}
-                              </li>
-                           </ul>
-                        {% endif %}
-                     </div>
-                  </div>
-               </div>
+                    <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#collapse-replica{{ replica_num }}"
+                            aria-expanded="false" aria-controls="collapse-replica{{ replica_num }}">
+                    <h3>
+                        <span class="status status-{{ replica_ok ? 'green' : replica_unkown ? 'muted' : 'red' }}">
+                            <span class="status-dot status-dot-animated"></span>
+                            {{ replica_ok ? 'Up' : replica_unkown ? 'Unkown' : 'Down' }}
+                        </span>
+                        <span class="mx-1">Replica ({{ replica_data['host'] }})</span>
+                        {{ replica_unkown ? '' : replica_data['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
+                    </h3>
+                    </button>
+                </h2>
+                <div id="collapse-replica{{ replica_num }}" class="accordion-collapse collapse" aria-labelledby="heading-replica{{ replica_num }}" data-bs-parent="#accordion-replica{{ replica_num }}">
+                    <div class="accordion-body">
+                    {% if replica_unkown %}
+                        <div class="alert alert-danger" role="alert">
+                            <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
+                            <p class="mt-2">{{ replica_data['error'] }}</p>
+                        </div>
+                    {% else %}
+                        <ul class="p-0 list-unstyled space-y-3">
+                            <li>
+                                <span class="text-secondary">Server ID:</span>
+                                {{ replica_data['server_id'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">Primary binglog file:</span>
+                                {{ replica_data['master_log_file'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">Primary binglog pos:</span>
+                                {{ replica_data['read_master_log_pos'] }}
+                            </li>
+                            {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
+                                <li>
+                                <span class="text-secondary">Seconds behind primary:</span>
+                                {{ replica_data['seconds_behind_master']|raw }}
+                                </li>
+                            {% else %}
+                                <li>
+                                <span class="text-secondary">Seconds behind primary:</span>
+                                <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <span class="text-secondary" id="glpi_delay_{{ replica_num }}">GLPI history delay:</span>
+                                {% if replication_delay[replica_num] > 0 %}
+                                {% do call('Html::timestampToString', [replication_delay[replica_num], true]) %}
+                                {% elseif replication_delay[replica_num] == 0 %}
+                                <span class="badge bg-green-lt">{{ __('None') }}</span>
+                                {% else %}
+                                <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
+                                {% endif %}
+                                {% do call('Html::showToolTip', [
+                                    __('This indicate the delay between the primary and the replica for the GLPI history (table: glpi_logs, column: date_mod).')
+                                ]) %}
+                            </li>
+                            <li>
+                                <span class="text-secondary">Binglog GTID:</span>
+                                {{ replica_data['gtid_slave_pos'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">IO Running:</span>
+                                <span class="badge bg-{{ replica_data['slave_io_running'] == 'Yes' ? 'green' : 'red' }}-lt">
+                                {{ replica_data['slave_io_running'] }}
+                                </span>
+                            <li>
+                                <span class="text-secondary">SQL Running:</span>
+                                <span class="badge bg-{{ replica_data['slave_sql_running'] == 'Yes' ? 'green' : 'red' }}-lt">
+                                {{ replica_data['slave_sql_running'] }}
+                                </span>
+                            <li>
+                                <span class="text-secondary">MySQL version:</span>
+                                {{ replica_data['version'] }}
+                            </li>
+                        </ul>
+                    {% endif %}
+                    </div>
+                </div>
             </div>
-         {% endfor %}
-         </div>
-      </div>
+        </div>
+        {% endfor %}
    </div>
 </div>
 {% endblock %}
