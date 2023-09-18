@@ -212,8 +212,7 @@
                         </ul>
 
                         {# Display errors if slave_io_running or slave_sql_running are not running #}
-                        {% set display_alert = (replica_data['slave_io_running'] != 'Yes' or replica_data['slave_sql_running'] != 'Yes')
-                            and (replica_data['last_io_error']|length or replica_data['last_sql_error']|length) %}
+                        {% set display_alert = (replica_data['slave_io_running'] != 'Yes' or replica_data['slave_sql_running'] != 'Yes') and (replica_data['last_io_error']|length or replica_data['last_sql_error']|length) %}
                         {% if display_alert %}
                             <div class="alert alert-danger" role="alert">
                                 <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
