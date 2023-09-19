@@ -457,4 +457,86 @@ class Unmanaged extends AbstractInventoryAsset
         //check users_id is changed to tech
         $this->variable($computer->fields['users_id'])->isEqualTo(getItemByTypeName('User', 'tech', true));
     }
+
+
+    public function testAgentNotDeleted()
+    {
+        global $DB;
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <HARDWARE>
+              <NAME>glpixps</NAME>
+              <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+            </HARDWARE>
+            <BIOS>
+              <MSN>640HP72</MSN>
+              <SSN>000</SSN>
+            </BIOS>
+            <NETWORKS>
+              <DESCRIPTION>Carte Intel(R) PRO/1000 MT pour station de travail</DESCRIPTION>
+              <IPADDRESS>192.168.1.20</IPADDRESS>
+              <MACADDR>08:00:27:16:9C:60</MACADDR>
+              <VIRTUALDEV>0</VIRTUALDEV>
+            </NETWORKS>
+            <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+          </CONTENT>
+          <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+          </REQUEST>";
+
+
+        $this->doInventory($xml, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //do network discovery with another agent
+        global $DB;
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+            <DEVICE>
+            <DNSHOSTNAME>glpixps</DNSHOSTNAME>
+            <ENTITY>0</ENTITY>
+            <IP>192.168.1.20</IP>
+            <MAC>08:00:27:16:9C:60</MAC>
+            <NETBIOSNAME>DESKTOP-A3J16LF</NETBIOSNAME>
+            <WORKGROUP>WORKGROUP</WORKGROUP>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>189</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>asus-desktop-2022-09-20-16-43-09</DEVICEID>
+        <QUERY>NETDISCOVERY</QUERY>
+        </REQUEST>
+        ";
+
+        //redo inventory
+        $this->doInventory($xml, true);
+
+        //check Unmanaged not exist (since an asset with the same MAC exists)
+        $unmanaged = new \Unmanaged();
+        $this->boolean($unmanaged->getFromDbByCrit(['name' => 'glpixps']))->isFalse();
+
+        //reload agent
+        $agent_reload = new \Agent();
+        $this->boolean($agent_reload->getFromDB($agent['id']))->isTrue();
+
+        //check is always linked to computer
+        $this->string($agent_reload->fields['itemtype'])->isIdenticalTo("Computer");
+        $this->integer($agent_reload->fields['items_id'])->isIdenticalTo($computers_id);
+    }
 }
