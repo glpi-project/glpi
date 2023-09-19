@@ -663,15 +663,22 @@ class Dropdown extends DbTestCase
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
                     'searchText'            => 'subcat',
-                    'toadd'                 => ['key' => 'value']
+                    'toadd'                 => [
+                        'key'  => 'value',
+                        'key2' => "value with unescaped \t and escaped \\t"
+                    ]
                 ],
                 'expected'  => [
                     'results' => [
-                        0 => [
+                        [
                             'id'     => 'key',
                             'text'   => 'value'
                         ],
-                        1 => [
+                        [
+                            'id'     => 'key2',
+                            'text'   => "value with unescaped \t and escaped \\t"
+                        ],
+                        [
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
@@ -1232,19 +1239,26 @@ class Dropdown extends DbTestCase
                     'max'    => 30,
                     'step'   => 10,
                     'used'   => [20],
-                    'toadd'  => [5 => 'five']
+                    'toadd'  => [
+                        5 => 'five',
+                        6 => "value with unescaped \t and escaped \\t",
+                    ]
                 ],
                 'expected'  => [
                     'results'   => [
-                        0 => [
+                        [
                             'id'     => 5,
                             'text'   => 'five'
                         ],
-                        1 => [
+                        [
+                            'id'     => 6,
+                            'text'   => "value with unescaped \t and escaped \\t",
+                        ],
+                        [
                             'id'     => 10,
                             'text'   => '10'
                         ],
-                        2 => [
+                        [
                             'id'     => 30,
                             'text'   => '30'
                         ]
