@@ -151,17 +151,13 @@
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-4.1.0...4.2.0.patch || true",
-            "patch -f -p1 -d vendor/michelf/php-markdown/ < tools/patches/php-markdown-php8-compat.patch || true"
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-4.1.0...4.2.0.patch || true",
-            "patch -f -p1 -d vendor/michelf/php-markdown/ < tools/patches/php-markdown-php8-compat.patch || true"
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true"
         ],
         "build": [
             "bin/console dependencies install && bin/console locales:compile"
