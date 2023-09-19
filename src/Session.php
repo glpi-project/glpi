@@ -998,7 +998,7 @@ class Session
 
         if (!$CFG_GLPI["use_public_faq"]) {
             self::checkValidSessionId();
-            if (!self::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+            if (!Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])) {
                 Html::displayRightError("Missing FAQ right");
             }
         }

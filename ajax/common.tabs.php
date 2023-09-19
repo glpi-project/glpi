@@ -35,6 +35,8 @@
 
 use Glpi\Toolbox\Sanitizer;
 
+$SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to public FAQ tabs
+
 include('../inc/includes.php');
 $AJAX_INCLUDE = 1;
 

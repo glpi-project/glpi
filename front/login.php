@@ -40,6 +40,8 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Sanitizer;
 
+$SECURITY_STRATEGY = 'no_check';
+
 include('../inc/includes.php');
 
 
