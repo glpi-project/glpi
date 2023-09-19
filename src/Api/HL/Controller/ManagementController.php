@@ -252,6 +252,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Budget', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search budgets',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Budget[]']
         ]
@@ -278,7 +279,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Budget',
         ]
     ])]
@@ -309,6 +309,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/License', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search licenses',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'License[]']
         ]
@@ -335,7 +336,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'License',
         ]
     ])]
@@ -366,6 +366,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Supplier', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search suppliers',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Supplier[]']
         ]
@@ -392,7 +393,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Supplier',
         ]
     ])]
@@ -431,6 +431,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Contact', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search contacts',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Contact[]']
         ]
@@ -457,7 +458,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Contact',
         ]
     ])]
@@ -488,6 +488,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Contract', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search contracts',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Contract[]']
         ]
@@ -514,7 +515,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Contract',
         ]
     ])]
@@ -545,6 +545,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Document', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search documents',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Document[]']
         ]
@@ -582,7 +583,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Document',
         ]
     ])]
@@ -613,6 +613,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Line', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search lines',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Line[]']
         ]
@@ -639,7 +640,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Line',
         ]
     ])]
@@ -670,6 +670,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Certificate', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search certificates',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Certificate[]']
         ]
@@ -696,7 +697,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Certificate',
         ]
     ])]
@@ -727,6 +727,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/DataCenter', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search data centers',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'DataCenter[]']
         ]
@@ -753,7 +754,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'DataCenter',
         ]
     ])]
@@ -784,6 +784,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Cluster', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search clusters',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Cluster[]']
         ]
@@ -810,7 +811,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Cluster',
         ]
     ])]
@@ -841,6 +841,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Domain', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search domains',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Domain[]']
         ]
@@ -867,7 +868,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Domain',
         ]
     ])]
@@ -898,6 +898,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Appliance', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search appliances',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Appliance[]']
         ]
@@ -924,7 +925,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Appliance',
         ]
     ])]
@@ -955,6 +955,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Database', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search databases',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'Database[]']
         ]
@@ -981,7 +982,6 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'type' => Doc\Schema::TYPE_OBJECT,
             'schema' => 'Database',
         ]
     ])]

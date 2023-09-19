@@ -37,6 +37,7 @@ namespace Glpi\Api\HL;
 
 use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Doc\Response;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Doc\SchemaReference;
 
 /**
@@ -157,6 +158,10 @@ EOT;
                         $schemas[$other_calculated_name] = $schemas[$schema_name];
                         unset($schemas[$schema_name]);
                     }
+                    if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
+                        $itemtype = $known_schema['x-itemtype'];
+                        $known_schema['description'] = method_exists($itemtype, 'getTypeName') ? $itemtype::getTypeName(1) : 'No description available';
+                    }
                     $schemas[$calculated_name] = $known_schema;
                     $schemas[$calculated_name]['x-controller'] = $controller::class;
                     $schemas[$calculated_name]['x-schemaname'] = $schema_name;
@@ -176,10 +181,16 @@ EOT;
         if ($is_ref_array) {
             $name = substr($name, 0, -2);
         }
-        foreach ($components as $component_name => $component) {
-            if ($component['x-controller'] === $controller && $component['x-schemaname'] === $name) {
-                $match = $component_name;
-                break;
+        if ($name === '{itemtype}') {
+            // Placeholder that will be replaced after route paths are expanded
+            $match = $name;
+        }
+        if ($match === null) {
+            foreach ($components as $component_name => $component) {
+                if ($component['x-controller'] === $controller && $component['x-schemaname'] === $name) {
+                    $match = $component_name;
+                    break;
+                }
             }
         }
         // If no match was found, try matching by name only
@@ -249,6 +260,87 @@ EOT;
         return $schema;
     }
 
+    private function replaceRefPlaceholdersInResponses(array $responses, array $placeholders, string $controller): array
+    {
+        $new_responses = $responses;
+        foreach ($new_responses as $status => &$response) {
+            if (!isset($response['content'])) {
+                continue;
+            }
+            foreach ($response['content'] as $content_type => &$content) {
+                foreach ($placeholders as $placeholder_name => $placeholder_value) {
+                    if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
+                        $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                        if ($new_schema !== null) {
+                            $content['schema']['$ref'] = $new_schema['$ref'];
+                        }
+                    }
+                    // Handle array types
+                    if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
+                        $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                        if ($new_schema !== null) {
+                            $content['schema']['items']['$ref'] = $new_schema['$ref'];
+                        }
+                    }
+                }
+            }
+            unset($content);
+        }
+        unset($response);
+        return $new_responses;
+    }
+
+    private function replaceRefPlaceholdersInParameters(array $parameters, array $placeholders, string $controller): array
+    {
+        $new_parameters = $parameters;
+        foreach ($new_parameters as &$parameter) {
+            foreach ($placeholders as $placeholder_name => $placeholder_value) {
+                if (isset($parameter['schema']['$ref']) && $parameter['schema']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
+                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                    if ($new_schema !== null) {
+                        $parameter['schema']['$ref'] = $new_schema['$ref'];
+                    }
+                }
+                // Handle array types
+                if (isset($parameter['schema']['items']['$ref']) && $parameter['schema']['items']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
+                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                    if ($new_schema !== null) {
+                        $parameter['schema']['items']['$ref'] = $new_schema['$ref'];
+                    }
+                }
+            }
+        }
+        unset($parameter);
+        return $new_parameters;
+    }
+
+    private function replaceRefPlaceholdersInRequestBody(array $request_body, array $placeholders, string $controller): array
+    {
+        $new_request_body = $request_body;
+        if (!isset($new_request_body['content'])) {
+            return $new_request_body;
+        }
+        foreach ($new_request_body['content'] as $content_type => &$content) {
+            foreach ($placeholders as $placeholder_name => $placeholder_value) {
+                if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
+                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                    if ($new_schema !== null) {
+                        $content['schema']['$ref'] = $new_schema['$ref'];
+                    }
+                }
+                // Handle array types
+                if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
+                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
+                    if ($new_schema !== null) {
+                        $content['schema']['items']['$ref'] = $new_schema['$ref'];
+                    }
+                }
+            }
+        }
+        unset($content);
+        return $new_request_body;
+    }
+
     /**
      * Replace any generic paths like `/Assets/{itemtype}` with the actual paths for each itemtype as long as the parameter pattern(s) are explicit lists.
      * Example: "Computer|Monitor|NetworkEquipment".
@@ -262,6 +354,7 @@ EOT;
         foreach ($paths as $path_url => $path) {
             foreach ($path as $method => $route) {
                 $is_expanded = false;
+                $new_urls = [];
                 foreach ($route['parameters'] as $param_key => $param) {
                     if (isset($param['schema']['pattern']) && preg_match('/^[\w+|]+$/', $param['schema']['pattern'])) {
                         $itemtypes = explode('|', $param['schema']['pattern']);
@@ -269,12 +362,35 @@ EOT;
                             $new_url = str_replace('{itemtype}', $itemtype, $path_url);
                             // Check there isn't already a route for this URL
                             if (!isset($paths[$new_url][$method])) {
-                                unset($route['parameters'][$param_key]);
                                 $expanded[$new_url][$method] = $route;
+                                $expanded[$new_url][$method]['responses'] = $this->replaceRefPlaceholdersInResponses(
+                                    $route['responses'],
+                                    ['itemtype' => $itemtype],
+                                    $route['x-controller']
+                                );
+                                $expanded[$new_url][$method]['parameters'] = $this->replaceRefPlaceholdersInParameters(
+                                    $route['parameters'],
+                                    ['itemtype' => $itemtype],
+                                    $route['x-controller']
+                                );
+                                if (isset($route['requestBody'])) {
+                                    $expanded[$new_url][$method]['requestBody'] = $this->replaceRefPlaceholdersInRequestBody(
+                                        $route['requestBody'],
+                                        ['itemtype' => $itemtype],
+                                        $route['x-controller']
+                                    );
+                                }
+                                // Remove the itemtype path parameter now that it is a static value
+                                unset($expanded[$new_url][$method]['parameters'][$param_key]);
+                                $new_urls[] = $new_url;
                                 $is_expanded = true;
                             }
                         }
                     }
+                }
+                foreach ($new_urls as $new_url) {
+                    // fix parameter array indexing. should not be associative, but unsetting the path parameter causes a gap and breaks openapi.
+                    $expanded[$new_url][$method]['parameters'] = array_values($expanded[$new_url][$method]['parameters']);
                 }
                 if (!$is_expanded) {
                     $expanded[$path_url][$method] = $route;
@@ -490,22 +606,19 @@ EOT;
             }
 
             $requirements = $route_path->getRouteRequirements();
-            if (count($requirements)) {
-                $path_schema['parameters'] = [];
-                if ($route_doc !== null) {
-                    $route_params = $route_doc->getParameters();
-                    if (count($route_params) > 0) {
-                        foreach ($route_params as $route_param) {
-                            if (!array_key_exists($route_param->getName(), $requirements)) {
-                                continue;
-                            }
-                            $location = $route_param->getLocation();
-                            if ($location !== Doc\Parameter::LOCATION_BODY) {
-                                $path_schema['parameters'][$route_param->getName()] = $this->getPathParameterSchema($route_param);
-                            }
+            $path_schema['parameters'] = [];
+            if ($route_doc !== null) {
+                $route_params = $route_doc->getParameters();
+                if (count($route_params) > 0) {
+                    foreach ($route_params as $route_param) {
+                        $location = $route_param->getLocation();
+                        if ($location !== Doc\Parameter::LOCATION_BODY && $location !== Doc\Parameter::LOCATION_PATH) {
+                            $path_schema['parameters'][$route_param->getName()] = $this->getPathParameterSchema($route_param);
                         }
                     }
                 }
+            }
+            if (count($requirements)) {
                 foreach ($requirements as $name => $requirement) {
                     if (!str_contains($route_path->getRoutePath(), '{' . $name . '}')) {
                         continue;
@@ -551,12 +664,58 @@ EOT;
                     $path_schema['parameters'][$param['name']]['schema'] = $combined_schema;
                 }
             }
+            // Inject global headers
+            if ($route_path->getRouteSecurityLevel() !== Route::SECURITY_NONE) {
+                $path_schema['parameters']['GLPI-Entity'] = [
+                    'name' => 'GLPI-Entity',
+                    'in' => 'header',
+                    'description' => 'The ID of the entity to use. If not specified, the default entity for the user is used.',
+                    'schema' => ['type' => Schema::TYPE_INTEGER]
+                ];
+                $path_schema['parameters']['GLPI-Profile'] = [
+                    'name' => 'GLPI-Profile',
+                    'in' => 'header',
+                    'description' => 'The ID of the profile to use. If not specified, the default profile for the user is used.',
+                    'schema' => ['type' => Schema::TYPE_INTEGER]
+                ];
+                $path_schema['parameters']['GLPI-Entity-Recursive'] = [
+                    'name' => 'GLPI-Entity-Recursive',
+                    'in' => 'header',
+                    'description' => '"true" if the entity access should include child entities. This is false by default.',
+                    'schema' => [
+                        'type' => Schema::TYPE_STRING,
+                        'enum' => ['true', 'false']
+                    ],
+                ];
+            }
+            // Language can always be specified, even if it may not always be respected if no temporary session is started
+            $path_schema['parameters']['Accept-Language'] = [
+                'name' => 'Accept-Language',
+                'in' => 'header',
+                'description' => 'The language to use for the response. If not specified, the default language for the user is used.',
+                'schema' => ['type' => Schema::TYPE_STRING],
+                'examples' => [
+                    'English_GB' => [
+                        'value' => 'en_GB',
+                        'summary' => 'English (United Kingdom)'
+                    ],
+                    'French_FR' => [
+                        'value' => 'fr_FR',
+                        'summary' => 'French (France)'
+                    ],
+                    'Portuguese_BR' => [
+                        'value' => 'pt_BR',
+                        'summary' => 'Portuguese (Brazil)'
+                    ],
+                ]
+            ];
 
             if (strcasecmp($method, 'delete') && $request_body !== null) {
                 $path_schema['requestBody'] = $request_body;
             }
             $path_schema['security'] = $this->getPathSecuritySchema($route_path, $route_method);
             $path_schema['parameters'] = array_values($path_schema['parameters'] ?? []);
+            $path_schema['x-controller'] = $route_path->getController();
             $path_schemas[$method] = $path_schema;
         }
         return [

@@ -977,6 +977,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Global', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search assets of all types',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
             ['schema' => 'CommonAsset[]']
         ]
@@ -990,7 +991,11 @@ final class AssetController extends AbstractController
         'itemtype' => [self::class, 'getAssetTypes']
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search assets of a specific type'
+        description: 'List or search assets of a specific type',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => '{itemtype}[]']
+        ]
     )]
     public function search(Request $request): Response
     {
@@ -1004,6 +1009,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get an asset of a specific type by ID',
+        responses: [
+            ['schema' => '{itemtype}']
+        ]
     )]
     public function getItem(Request $request): Response
     {
@@ -1016,6 +1024,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create an asset of a specific type',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{itemtype}',
+            ]
+        ]
     )]
     public function createItem(Request $request): Response
     {
@@ -1029,6 +1044,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update an asset of a specific type by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{itemtype}',
+            ]
+        ]
     )]
     public function updateItem(Request $request): Response
     {
@@ -1051,7 +1073,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Cartridge', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search cartridges models'
+        description: 'List or search cartridge models',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => 'CartridgeItem[]']
+        ]
     )]
     public function searchCartridgeItems(Request $request): Response
     {
@@ -1063,6 +1089,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a cartridge model by ID',
+        responses: [
+            ['schema' => 'CartridgeItem']
+        ]
     )]
     public function getCartridgeItem(Request $request): Response
     {
@@ -1072,6 +1101,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/Cartridge', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a cartridge model',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'CartridgeItem',
+            ]
+        ]
     )]
     public function createCartridgeItems(Request $request): Response
     {
@@ -1083,6 +1119,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a cartridge model by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'CartridgeItem',
+            ]
+        ]
     )]
     public function updateCartridgeItems(Request $request): Response
     {
@@ -1105,6 +1148,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a cartridge by ID',
+        responses: [
+            ['schema' => 'Cartridge']
+        ]
     )]
     public function getCartridge(Request $request): Response
     {
@@ -1114,6 +1160,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a cartridge',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Cartridge',
+            ]
+        ]
     )]
     public function createCartridges(Request $request): Response
     {
@@ -1125,6 +1178,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a cartridge by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Cartridge',
+            ]
+        ]
     )]
     public function updateCartridges(Request $request): Response
     {
@@ -1144,7 +1204,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Consumable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search consumables models'
+        description: 'List or search consumables models',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => 'ConsumableItem[]']
+        ]
     )]
     public function searchConsumableItems(Request $request): Response
     {
@@ -1156,6 +1220,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a consumable model by ID',
+        responses: [
+            ['schema' => 'ConsumableItem']
+        ]
     )]
     public function getConsumableItem(Request $request): Response
     {
@@ -1165,6 +1232,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/Consumable', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a consumable model',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'ConsumableItem',
+            ]
+        ]
     )]
     public function createConsumableItems(Request $request): Response
     {
@@ -1176,6 +1250,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a consumable model by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'ConsumableItem',
+            ]
+        ]
     )]
     public function updateConsumableItems(Request $request): Response
     {
@@ -1198,6 +1279,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a consumable by ID',
+        responses: [
+            ['schema' => 'Consumable']
+        ]
     )]
     public function getConsumable(Request $request): Response
     {
@@ -1207,6 +1291,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a consumable',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Consumable',
+            ]
+        ]
     )]
     public function createConsumables(Request $request): Response
     {
@@ -1218,6 +1309,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a consumable by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Consumable',
+            ]
+        ]
     )]
     public function updateConsumable(Request $request): Response
     {
@@ -1237,7 +1335,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Software', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search software'
+        description: 'List or search software',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => 'Software[]']
+        ]
     )]
     public function searchSoftware(Request $request): Response
     {
@@ -1249,6 +1351,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a software by ID',
+        responses: [
+            ['schema' => 'Software']
+        ]
     )]
     public function getSoftware(Request $request): Response
     {
@@ -1258,6 +1363,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/Software', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a software',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Software',
+            ]
+        ]
     )]
     public function createSoftware(Request $request): Response
     {
@@ -1269,6 +1381,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a software by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Software',
+            ]
+        ]
     )]
     public function updateSoftware(Request $request): Response
     {
@@ -1288,7 +1407,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Rack', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search racks'
+        description: 'List or search racks',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => 'Rack[]']
+        ]
     )]
     public function searchRack(Request $request): Response
     {
@@ -1300,6 +1423,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a rack by ID',
+        responses: [
+            ['schema' => 'Rack']
+        ]
     )]
     public function getRack(Request $request): Response
     {
@@ -1309,6 +1435,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/Rack', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a rack',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Rack',
+            ]
+        ]
     )]
     public function createRack(Request $request): Response
     {
@@ -1320,6 +1453,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a rack by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Rack',
+            ]
+        ]
     )]
     public function updateRack(Request $request): Response
     {
@@ -1339,7 +1479,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Enclosure', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search enclosure'
+        description: 'List or search enclosure',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => 'Enclosure[]']
+        ]
     )]
     public function searchEnclosure(Request $request): Response
     {
@@ -1351,6 +1495,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a enclosure by ID',
+        responses: [
+            ['schema' => 'Enclosure']
+        ]
     )]
     public function getEnclosure(Request $request): Response
     {
@@ -1360,6 +1507,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/Enclosure', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a enclosure',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Enclosure',
+            ]
+        ]
     )]
     public function createEnclosure(Request $request): Response
     {
@@ -1371,6 +1525,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a enclosure by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Enclosure',
+            ]
+        ]
     )]
     public function updateEnclosure(Request $request): Response
     {
@@ -1390,7 +1551,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/PDU', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search PDUs'
+        description: 'List or search PDUs',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => 'PDU[]']
+        ]
     )]
     public function searchPDU(Request $request): Response
     {
@@ -1402,6 +1567,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a PDU by ID',
+        responses: [
+            ['schema' => 'PDU']
+        ]
     )]
     public function getPDU(Request $request): Response
     {
@@ -1411,6 +1579,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/PDU', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a PDU',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'PDU',
+            ]
+        ]
     )]
     public function createPDU(Request $request): Response
     {
@@ -1422,6 +1597,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a PDU by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'PDU',
+            ]
+        ]
     )]
     public function updatePDU(Request $request): Response
     {
@@ -1441,7 +1623,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/PassiveDCEquipment', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search passive DC equipment'
+        description: 'List or search passive DC equipment',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => 'PassiveDCEquipment[]']
+        ]
     )]
     public function searchPassiveDCEquipment(Request $request): Response
     {
@@ -1453,6 +1639,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a passive DC equipment by ID',
+        responses: [
+            ['schema' => 'PassiveDCEquipment']
+        ]
     )]
     public function getPassiveDCEquipment(Request $request): Response
     {
@@ -1462,6 +1651,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/PassiveDCEquipment', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a passive DC equipment',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'PassiveDCEquipment',
+            ]
+        ]
     )]
     public function createPassiveDCEquipment(Request $request): Response
     {
@@ -1473,6 +1669,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a passive DC equipment by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'PassiveDCEquipment',
+            ]
+        ]
     )]
     public function updatePassiveDCEquipment(Request $request): Response
     {
@@ -1492,7 +1695,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Cable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search cables'
+        description: 'List or search cables',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => 'Cable[]']
+        ]
     )]
     public function searchCables(Request $request): Response
     {
@@ -1504,6 +1711,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a cable by ID',
+        responses: [
+            ['schema' => 'Cable']
+        ]
     )]
     public function getCable(Request $request): Response
     {
@@ -1513,6 +1723,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/Cable', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a cable',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Cable',
+            ]
+        ]
     )]
     public function createCable(Request $request): Response
     {
@@ -1523,7 +1740,14 @@ final class AssetController extends AbstractController
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[Doc\Route(
-        description: 'Update a software by ID',
+        description: 'Update a cable by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Cable',
+            ]
+        ]
     )]
     public function updateCable(Request $request): Response
     {
@@ -1543,7 +1767,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Socket', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search sockets'
+        description: 'List or search sockets',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => 'Socket[]']
+        ]
     )]
     public function searchSockets(Request $request): Response
     {
@@ -1555,6 +1783,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a socket by ID',
+        responses: [
+            ['schema' => 'Socket']
+        ]
     )]
     public function getSocket(Request $request): Response
     {
@@ -1564,6 +1795,13 @@ final class AssetController extends AbstractController
     #[Route(path: '/Socket', methods: ['POST'], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a socket',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Socket',
+            ]
+        ]
     )]
     public function createSocket(Request $request): Response
     {
@@ -1575,6 +1813,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a socket by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Socket',
+            ]
+        ]
     )]
     public function updateSocket(Request $request): Response
     {
@@ -1596,7 +1841,11 @@ final class AssetController extends AbstractController
         'software_id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search software versions'
+        description: 'List or search software versions',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => 'SoftwareVersion[]']
+        ]
     )]
     public function searchSoftwareVersions(Request $request): Response
     {
@@ -1611,6 +1860,9 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a software version by ID',
+        responses: [
+            ['schema' => 'SoftwareVersion']
+        ]
     )]
     public function getSoftwareVersion(Request $request): Response
     {
@@ -1625,6 +1877,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a software version',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'SoftwareVersion',
+            ]
+        ]
     )]
     public function createSoftwareVersion(Request $request): Response
     {
@@ -1643,6 +1902,13 @@ final class AssetController extends AbstractController
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Update a software version by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'SoftwareVersion',
+            ]
+        ]
     )]
     public function updateSoftwareVersion(Request $request): Response
     {

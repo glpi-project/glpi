@@ -625,6 +625,7 @@ class ComponentController extends AbstractController
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the component definitions of the specified type',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
     )]
     public function getComponentTypes(Request $request): Response
     {
@@ -665,6 +666,7 @@ class ComponentController extends AbstractController
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the components of a specific component definition',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
     )]
     public function getComponentsOfType(Request $request): Response
     {
@@ -732,12 +734,13 @@ class ComponentController extends AbstractController
     }
 
     #[Route(path: '/Assets/{itemtype}/{id}/Component/{component_type}', methods: ['GET'], requirements: [
-        'itemtype' => '\w*',
+        'itemtype' => [AssetController::class, 'getAssetTypes'],
         'component_type' => '\w*',
         'id' => '\d+'
     ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get all components for an asset',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
     )]
     public function getAssetComponentsByType(Request $request): Response
     {
