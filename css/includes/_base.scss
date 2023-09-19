@@ -337,3 +337,7 @@ body input {
 .bs-invisible {
     visibility: hidden !important;
 }
+
+&:-webkit-autofill {
+   -webkit-text-fill-color: var(--tblr-body-color);
+}
