@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 06:29+0000\n"
-"PO-Revision-Date: 2023-09-15 06:29+0000\n"
+"POT-Creation-Date: 2023-09-19 07:06+0000\n"
+"PO-Revision-Date: 2023-09-19 07:06+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en_GB\n"
@@ -9730,8 +9730,8 @@ msgid_plural "External links"
 msgstr[0] "External link"
 msgstr[1] "External links"
 
-#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:259
-#: src/TicketSatisfaction.php:309 src/Entity.php:3144 src/Entity.php:3883
+#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:264
+#: src/TicketSatisfaction.php:314 src/Entity.php:3144 src/Entity.php:3883
 msgid "External survey"
 msgstr "External survey"
 
@@ -11988,7 +11988,7 @@ msgstr "Internal Time to resolve"
 msgid "Internal status"
 msgstr "Internal status"
 
-#: src/TicketSatisfaction.php:256 src/TicketSatisfaction.php:308
+#: src/TicketSatisfaction.php:261 src/TicketSatisfaction.php:313
 #: src/Entity.php:3143 src/Entity.php:3882
 msgid "Internal survey"
 msgstr "Internal survey"
@@ -24375,8 +24375,9 @@ msgid "Validation request answer"
 msgstr "Validation request answer"
 
 #: front/report.infocom.php:63 front/report.infocom.conso.php:62
-#: src/DropdownTranslation.php:426 src/Rule.php:1198 src/Rule.php:2260
-#: src/Blacklist.php:90 src/Blacklist.php:122 src/RuleCollection.php:1418
+#: src/DropdownTranslation.php:426 src/DropdownTranslation.php:573
+#: src/Rule.php:1198 src/Rule.php:2260 src/Blacklist.php:90
+#: src/Blacklist.php:122 src/RuleCollection.php:1418
 #: src/ITILTemplatePredefinedField.php:374 src/RuleAction.php:195
 #: src/Printer_CartridgeInfo.php:73 src/Config.php:3623
 #: src/Fieldblacklist.php:79 src/Fieldblacklist.php:121

@@ -354,7 +354,7 @@ HTML,
         <img src="{$previous_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" alt="34c09468-b2d8e96f-64f991f5ce1660.58639912" width="248">
       </a>
     </p>
-    HTML,
+HTML,
                     'encode_output_entities' => false,
                     'expected_result'        => <<<HTML
     <p>
@@ -363,7 +363,7 @@ HTML,
         <img src="{$expected_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" alt="34c09468-b2d8e96f-64f991f5ce1660.58639912" width="248" />
       </a>
     </p>
-    HTML,
+HTML,
                 ];
             }
         }
