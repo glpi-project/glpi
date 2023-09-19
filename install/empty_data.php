@@ -2866,7 +2866,7 @@ $empty_data_builder = new class
                 'is_active' => 1,
             ], [
                 'id' => 72,
-                'name' => 'New user mentionned',
+                'name' => 'New user mentioned',
                 'itemtype' => 'Ticket',
                 'event' => 'user_mention',
                 'is_recursive' => 1,

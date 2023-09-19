@@ -558,7 +558,7 @@ HTML
         $notification = new Notification();
         $id = $notification->add(
             [
-                'name'        => 'New user mentionned',
+                'name'        => 'New user mentioned',
                 'entities_id' => 0,
                 'itemtype'    => $itemtype,
                 'event'       => 'user_mention',
@@ -570,7 +570,7 @@ HTML
         $template = new NotificationTemplate();
         $template_id = $template->add(
             [
-                'name'     => 'New user mentionned',
+                'name'     => 'New user mentioned',
                 'itemtype' => $itemtype,
             ]
         );
