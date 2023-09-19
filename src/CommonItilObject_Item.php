@@ -1352,12 +1352,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $display = (isset($this->input['_no_message_link']) ? $item->getNameID()
                                                             : $item->getLink());
 
-           // Do not display quotes
            //TRANS : %s is the description of the added item
             Session::addMessageAfterRedirect(sprintf(
                 __('%1$s: %2$s'),
                 __('Item successfully added'),
-                stripslashes($display)
+                $display
             ));
         }
     }

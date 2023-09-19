@@ -2936,7 +2936,7 @@ JAVASCRIPT;
                     foreach ($toadd as $key => $val) {
                         $datas[] = [
                             'id' => $key,
-                            'text' => stripslashes($val)
+                            'text' => $val
                         ];
                     }
                 }
@@ -3366,7 +3366,7 @@ JAVASCRIPT;
                     foreach ($toadd as $key => $val) {
                         $datas[] = [
                             'id' => $key,
-                            'text' => stripslashes($val)
+                            'text' => $val
                         ];
                     }
                 }
@@ -3873,7 +3873,7 @@ JAVASCRIPT;
             if (count($toadd)) {
                 foreach ($toadd as $key => $val) {
                     $data[] = ['id' => $key,
-                        'text' => (string)stripslashes($val)
+                        'text' => (string)$val
                     ];
                 }
             }
@@ -3932,7 +3932,7 @@ JAVASCRIPT;
                 }
                 $data[] = [
                     'id' => $value,
-                    'text' => (string)stripslashes($txt)
+                    'text' => (string)$txt
                 ];
                 $count++;
             }
