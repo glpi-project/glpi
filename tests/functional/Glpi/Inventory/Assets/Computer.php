@@ -1660,4 +1660,34 @@ class Computer extends AbstractInventoryAsset
             }
         )->hasMessage('Unable to create item.');
     }
+
+    public function testHwDescription()
+    {
+        global $DB;
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode($json_str);
+
+        //add workgroup
+        $json->content->hardware->description = "describ'ed from registry";
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check hw description has been stored
+        $this->string($computer->fields['comment'])->isIdenticalTo("describ'ed from registry");
+    }
 }
