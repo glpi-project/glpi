@@ -101,6 +101,7 @@ The present file will list all changes made to the project; according to the
 - `QueryUnion` class moved to `Glpi\DBAL` namespace.
 - `PrinterLog::getMetrics()` method has been made final.
 - `SavedSearch::showSaveButton()` replaced with `pages/tools/savedsearch/save_button.html.twig` template.
+- `showSystemInformations` method for `$CFG_GLPI['systeminformations_types']` types renamed to `getSystemInformation` and should return an array with a label and content.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
@@ -224,7 +225,7 @@ The present file will list all changes made to the project; according to the
 - Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.
 - `CommonDBTM::$fkfield` property.
 - `getHTML` action for `ajax/fuzzysearch.php` endpoint.
-
+- `Config::showLibrariesInformation()`
 
 ## [10.0.10] unreleased
 

@@ -110,7 +110,7 @@
             <label for="_blank_{{ name }}" class="ms-1">
                 {{ __('Clear') }}
             </label>
-        <span>
+        </span>
     {% endif %}
 {% endmacro %}
 
@@ -352,9 +352,13 @@
         'class': 'btn btn-primary',
         'icon': '',
         'icon_title': '',
+        'additional_attributes': {},
     }|merge(options) %}
 
-    <button class="{{ options.class }}" type="{{ type }}" name="{{ name }}" value="{{ value }}">
+    <button class="{{ options.class }}" type="{{ type }}" name="{{ name }}" value="{{ value }}"
+        {% for attr, value in options.additional_attributes %}
+            {{ attr }}="{{ value|e('html_attr') }}"
+        {% endfor %}>
         {% if options.icon is not empty %}
             <i class="{{ options.icon }}" title="{{ options.icon_title }}"></i>
         {% endif %}

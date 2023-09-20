@@ -688,7 +688,7 @@ class DBConnection extends CommonDBTM
 
         foreach ($hosts as $num => $name) {
             $diff = self::getReplicateDelay($num);
-           //TRANS: %s is namez of server Mysql
+            //TRANS: %s is namez of server Mysql
             $output .= sprintf(__('%1$s: %2$s'), __('SQL server'), $name);
             $output .= " - ";
             if ($diff > 1000000000) {
@@ -711,23 +711,26 @@ class DBConnection extends CommonDBTM
 
 
     /**
-     * @param $width
+     * Get system information
+     *
+     * @return array
+     * @phpstan-return array{label: string, content: string}
      **/
-    public function showSystemInformations($width)
+    public function getSystemInformation(): array
     {
-
-       // No need to translate, this part always display in english (for copy/paste to forum)
-
-        echo "<tr class='tab_bg_2'><th class='section-header'>" . self::getTypeName(Session::getPluralNumber()) . "</th></tr>";
-
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
+        // No need to translate, this part always display in english (for copy/paste to forum)
+        $content = '';
         if (self::isDBSlaveActive()) {
-            echo "Active\n";
-            self::showAllReplicateDelay();
+            $content .= "Active\n";
+            $content .= self::showAllReplicateDelay(true);
         } else {
-            echo "Not active\n";
+            $content .= "Not active\n";
         }
-        echo "\n</pre></td></tr>";
+
+        return [
+            'label' => self::getTypeName(Session::getPluralNumber()),
+            'content' => $content
+        ];
     }
 
 

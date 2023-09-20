@@ -1994,57 +1994,55 @@ class MailCollector extends CommonDBTM
         return $cron_status;
     }
 
-
-    public function showSystemInformations($width)
+    /**
+     * Get system information
+     *
+     * @return array
+     * @phpstan-return array{label: string, content: string}
+     */
+    public function getSystemInformation()
     {
         global $CFG_GLPI, $DB;
 
-       // No need to translate, this part always display in english (for copy/paste to forum)
-
-        echo "<tr class='tab_bg_2'><th class='section-header'>Notifications</th></tr>\n";
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
-
-        $msg = 'Way of sending emails: ';
+        // No need to translate, this part always display in english (for copy/paste to forum)
+        $content = 'Way of sending emails: ';
         switch ($CFG_GLPI['smtp_mode']) {
             case MAIL_MAIL:
-                $msg .= 'PHP';
+                $content .= 'PHP';
                 break;
 
             case MAIL_SMTP:
-                $msg .= 'SMTP';
+                $content .= 'SMTP';
                 break;
 
             case MAIL_SMTPS:
             case MAIL_SMTPSSL:
             case MAIL_SMTPTLS:
-                $msg .= 'SMTPS';
+                $content .= 'SMTPS';
                 break;
 
             case MAIL_SMTPOAUTH:
-                $msg .= 'SMTP+OAUTH';
+                $content .= 'SMTP+OAUTH';
                 break;
         }
         if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
             $mailer = new GLPIMailer();
-            $msg .= sprintf('(%s)', $mailer::buildDsn(false));
+            $content .= sprintf('(%s)', $mailer::buildDsn(false));
         }
-        echo wordwrap($msg . "\n", $width, "\n\t\t");
-        echo "\n</pre></td></tr>";
-
-        echo "<tr class='tab_bg_2'><th>Mails receivers</th></tr>\n";
-        echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
         foreach ($DB->request('glpi_mailcollectors') as $mc) {
-            $msg  = "Name: '" . $mc['name'] . "'";
-            $msg .= " Active: " . ($mc['is_active'] ? "Yes" : "No");
-            echo wordwrap($msg . "\n", $width, "\n\t\t");
+            $content .= "\nName: '" . $mc['name'] . "'";
+            $content .= "\n\tActive: " . ($mc['is_active'] ? "Yes" : "No");
 
-            $msg  = "\tServer: '" . $mc['host'] . "'";
-            $msg .= " Login: '" . $mc['login'] . "'";
-            $msg .= " Password: " . (empty($mc['passwd']) ? "No" : "Yes");
-            echo wordwrap($msg . "\n", $width, "\n\t\t");
+            $content .= "\n\tServer: '" . $mc['host'] . "'";
+            $content .= "\n\tLogin: '" . $mc['login'] . "'";
+            $content .= "\n\tPassword: " . (empty($mc['passwd']) ? "No" : "Yes");
         }
-        echo "\n</pre></td></tr>";
+
+        return [
+            'label' => 'Notifications',
+            'content' => $content
+        ];
     }
 
 

@@ -788,26 +788,17 @@ class Config extends CommonDBTM
         ]);
     }
 
-    public static function showSystemInfoTable($params = [])
+    public static function showSystemInfoTable()
     {
         global $CFG_GLPI, $DB;
 
-        $p = [
-            'word_wrap_width' => 128
-        ];
-        $p = array_replace($p, $params);
-
-        echo "<table id='system-info-table' class='tab_cadre_fixe'>";
-        echo "<tr><th class='section-header'>" . __('Information about system installation and configuration') . "</th></tr>";
-        echo "<tr class='tab_bg_1'><td></td></tr>";
-
         $oldlang = $_SESSION['glpilanguage'];
-       // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
+        // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
         Session::loadLanguage('en_GB');
 
-       // No need to translate, this part always display in english (for copy/paste to forum)
+        // No need to translate, this part always display in english (for copy/paste to forum)
 
-       // Try to compute a better version for .git
+        // Try to compute a better version for .git
         $ver = GLPI_VERSION;
         if (is_dir(GLPI_ROOT . "/.git")) {
             $dir = getcwd();
@@ -825,86 +816,26 @@ class Config extends CommonDBTM
             }
         }
 
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>";
-        echo "GLPI $ver (" . $CFG_GLPI['root_doc'] . " => " . GLPI_ROOT . ")\n";
-        echo "Installation mode: " . GLPI_INSTALL_MODE . "\n";
-        echo "Current language:" . $oldlang . "\n";
-        echo "\n</pre></td></tr>";
-
-        echo "<tr><th class='section-header'>Server</th></tr>\n";
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
-        echo wordwrap("Operating system: " . php_uname() . "\n", $p['word_wrap_width'], "\n\t");
-        $exts = get_loaded_extensions();
-        sort($exts);
-        echo wordwrap(
-            "PHP " . phpversion() . ' ' . php_sapi_name() . " (" . implode(', ', $exts) . ")\n",
-            $p['word_wrap_width'],
-            "\n\t"
-        );
-        $msg = "Setup: ";
-
-        foreach (
-            ['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode',
-                'session.save_handler', 'upload_max_filesize'
-            ] as $key
-        ) {
-            $msg .= $key . '="' . ini_get($key) . '" ';
-        }
-        echo wordwrap($msg . "\n", $p['word_wrap_width'], "\n\t");
-
-        $msg = 'Software: ';
-        if (isset($_SERVER["SERVER_SOFTWARE"])) {
-            $msg .= $_SERVER["SERVER_SOFTWARE"];
-        }
-        if (isset($_SERVER["SERVER_SIGNATURE"])) {
-            $msg .= ' (' . Toolbox::stripTags($_SERVER["SERVER_SIGNATURE"]) . ')';
-        }
-        echo wordwrap($msg . "\n", $p['word_wrap_width'], "\n\t");
-
-        if (isset($_SERVER["HTTP_USER_AGENT"])) {
-            echo "\t" . htmlspecialchars($_SERVER["HTTP_USER_AGENT"]) . "\n";
-        }
-
-        foreach ($DB->getInfo() as $key => $val) {
-            echo "$key: $val\n\t";
-        }
-        echo "\n";
-
         $core_requirements = (new RequirementsManager())->getCoreRequirementList($DB);
+        $requirements = [];
        /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
-        foreach ($core_requirements as $requirement) {
+        foreach ($core_requirements as $k => $requirement) {
             if ($requirement->isOutOfContext()) {
                 continue; // skip requirement if not relevant
             }
 
-            $img = $requirement->isValidated()
+            $status = $requirement->isValidated()
             ? 'ok'
             : ($requirement->isOptional() ? 'warning' : 'ko');
-            $messages = Html::entities_deep($requirement->getValidationMessages());
-
-            echo '<img src="' . $CFG_GLPI['root_doc'] . '/pics/' . $img . '_min.png"'
-            . ' alt="' . implode(' ', $messages) . '" title="' . implode(' ', $messages) . '" />';
-            echo implode("\n", $messages);
-
-            echo "\n";
+            $requirements[$k] = [
+                'status' => $status,
+                'messages' => $requirement->getValidationMessages()
+            ];
         }
 
-        echo "\n</pre></td></tr>";
-
-        echo "<tr><th class='section-header'>GLPI constants</th></tr>\n";
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
-        foreach (get_defined_constants() as $constant_name => $constant_value) {
-            if (preg_match('/^GLPI_/', $constant_name)) {
-                echo $constant_name . ': ' . json_encode($constant_value, JSON_UNESCAPED_SLASHES) . "\n";
-            }
-        }
-        echo "\n</pre></td></tr>";
-
-        self::showLibrariesInformation();
-
+        $system_info_objs = [];
         foreach ($CFG_GLPI["systeminformations_types"] as $type) {
-            $tmp = new $type();
-            $tmp->showSystemInformations($p['word_wrap_width']);
+            $system_info_objs[] = new $type();
         }
 
         Session::loadLanguage($oldlang);
@@ -914,18 +845,16 @@ class Config extends CommonDBTM
             glob(GLPI_LOCAL_I18N_DIR . "/**/*.mo")
         );
         sort($files);
-        if (count($files)) {
-            echo "<tr><th class='section-header'>Locales overrides</th></tr>\n";
-            echo "<tr class='tab_bg_1'><td>\n";
-            foreach ($files as $file) {
-                echo "$file<br/>\n";
-            }
-            echo "</td></tr>";
-        }
 
-        echo "<tr class='tab_bg_2'><th>" . __('To copy/paste in your support request') . "</th></tr>\n";
-
-        echo "</table>";
+        TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_table.html.twig', [
+            'ver' => $ver,
+            'language' => $oldlang,
+            '_server' => $_SERVER,
+            'db_info' => $DB->getInfo(),
+            'core_requirements' => $requirements,
+            'system_info_objs' => $system_info_objs,
+            'locales_overrides' => $files
+        ]);
     }
 
     /**
@@ -933,123 +862,17 @@ class Config extends CommonDBTM
      **/
     public function showSystemInformations()
     {
-        global $DB, $CFG_GLPI;
+        global $CFG_GLPI;
 
-        if (!Config::canUpdate()) {
+        if (!static::canUpdate()) {
             return false;
         }
 
-        $rand = mt_rand();
-
-        echo "<div class='center' id='tabsbody'>";
-        echo "<form name='form' action=\"" . Toolbox::getItemTypeFormURL(__CLASS__) . "\" method='post' data-track-changes='true'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_event_loglevel$rand'>" . __('Log Level') . "</label></td><td>";
-
-        $values = [
-            1 => __('1- Critical (login error only)'),
-            2 => __('2- Severe (not used)'),
-            3 => __('3- Important (successful logins)'),
-            4 => __('4- Notices (add, delete, tracking)'),
-            5 => __('5- Complete (all)'),
-        ];
-
-        Dropdown::showFromArray(
-            'event_loglevel',
-            $values,
-            ['value' => $CFG_GLPI["event_loglevel"], 'rand' => $rand]
-        );
-        echo "</td><td><label for='dropdown_cron_limit$rand'>" . __('Maximal number of automatic actions (run by CLI)') . "</label></td><td>";
-        Dropdown::showNumber('cron_limit', ['value' => $CFG_GLPI["cron_limit"],
-            'min'   => 1,
-            'max'   => 30,
-            'rand'  => $rand
+        TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_form.html.twig', [
+            'config' => $CFG_GLPI,
+            'canedit' => static::canUpdate()
         ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_use_log_in_files$rand'>" . __('Logs in files (SQL, email, automatic action...)') . "</label></td><td>";
-        Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"], -1, ['rand' => $rand]);
-        echo "</td><td><label for='dropdown__dbslave_status$rand'>" . _n('SQL replica', 'SQL replicas', 1) . "</label></td><td>";
-        $active = DBConnection::isDBSlaveActive();
-        Dropdown::showYesNo("_dbslave_status", $active, -1, ['rand' => $rand]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td colspan='4' class='center b'>" . __('Maintenance mode');
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_maintenance_mode$rand'>" . __('Maintenance mode') . "</label></td>";
-        echo "<td>";
-        Dropdown::showYesNo("maintenance_mode", $CFG_GLPI["maintenance_mode"], -1, ['rand' => $rand]);
-        echo "</td>";
-       //TRANS: Proxy port
-        echo "<td><label for='maintenance_text'>" . __('Maintenance text') . "</label></td>";
-        echo "<td>";
-        echo "<textarea class='form-control' name='maintenance_text' id='maintenance_text'>" . $CFG_GLPI["maintenance_text"];
-        echo "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td colspan='4' class='center b'>" . __('Proxy configuration for upgrade check');
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='proxy_name'>" . __('Server') . "</label></td>";
-        echo "<td><input type='text' name='proxy_name' id='proxy_name' value='" . $CFG_GLPI["proxy_name"] . "' class='form-control'></td>";
-       //TRANS: Proxy port
-        echo "<td><label for='proxy_port'>" . _n('Port', 'Ports', 1) . "</label></td>";
-        echo "<td><input type='text' name='proxy_port' id='proxy_port' value='" . $CFG_GLPI["proxy_port"] . "' class='form-control'></td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='proxy_user'>" . __('Login') . "</label></td>";
-        echo "<td><input type='text' name='proxy_user' id='proxy_user' value='" . $CFG_GLPI["proxy_user"] . "' class='form-control'></td>";
-        echo "<td><label for='proxy_passwd'>" . __('Password') . "</label></td>";
-        echo "<td><input type='password' name='proxy_passwd' id='proxy_passwd' value='' autocomplete='new-password' class='form-control'>";
-        echo "<br><input type='checkbox' name='_blank_proxy_passwd' id='_blank_proxy_passwd'><label for='_blank_proxy_passwd'>" . __('Clear') . "</label>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td colspan='4' class='center'>";
-        echo "<input type='submit' name='update' class='btn btn-primary' value=\"" . _sx('button', 'Save') . "\">";
-        echo "</td></tr>";
-
-        echo "</table>";
-        Html::closeForm();
-        $cleaner_script = <<<JS
-        // Search all .section-content text content and Replace all instances of a '#' followed by a number so that there is a zero-width space between the # and the number
-        $('.section-content').each(function() {
-          $(this).text($(this).text().replace(/#(\d+)/g, '#\u200B$1'));
-        });
-JS;
-        echo Html::scriptBlock($cleaner_script);
-
-
-        echo "<p>" . Telemetry::getViewLink() . "</p>";
-
-        $copy_msg = __('Copy system information');
-        $copy_onclick = <<<JS
-      copyTextToClipboard(tableToDetails('#system-info-table'));
-      flashIconButton(this, 'btn btn-success', 'fas fa-check', 1500);
-JS;
-        echo <<<HTML
-         <button type="button" name="copy-sysinfo" class="btn btn-secondary" onclick="{$copy_onclick}">
-            <i class="far fa-copy me-2"></i>{$copy_msg}
-         </button>
-HTML;
-        $check_new_version_msg = __('Check if a new version is available');
-        echo <<<HTML
-      <a class='btn btn-secondary' href='?check_version'>
-         <i class="fas fa-sync me-2"></i>{$check_new_version_msg}
-      </a>
-HTML;
         self::showSystemInfoTable();
-        echo "</div>\n";
     }
 
 
@@ -1273,36 +1096,6 @@ HTML;
             ]
         ];
         return $deps;
-    }
-
-
-    /**
-     * show Libraries information in system information
-     *
-     * @since 0.84
-     **/
-    public static function showLibrariesInformation()
-    {
-
-       // No gettext
-
-        echo "<tr class='tab_bg_2'><th class='section-header'>Libraries</th></tr>\n";
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
-
-        foreach (self::getLibraries() as $dep) {
-            $path = self::getLibraryDir($dep['check']);
-            if ($path) {
-                echo "{$dep['name']} ";
-                if (isset($dep['version'])) {
-                    echo "version {$dep['version']} ";
-                }
-                echo "in ($path)\n";
-            } else {
-                echo "{$dep['name']} not found\n";
-            }
-        }
-
-        echo "\n</pre></td></tr>";
     }
 
 
