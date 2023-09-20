@@ -1253,7 +1253,13 @@ HTML;
                 }
             }
         }
-        $tpl_vars['css_files'][] = ['path' => $theme->getPath()];
+
+        $theme_path = $theme->getPath();
+        if ($theme->isCustomTheme()) {
+            // Custom theme files might be modified by external source
+            $theme_path .= "?lastupdate=" . filemtime($theme->getPath(false));
+        }
+        $tpl_vars['css_files'][] = ['path' => $theme_path];
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
