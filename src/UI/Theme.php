@@ -34,6 +34,7 @@
  */
 
 namespace Glpi\UI;
+
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
