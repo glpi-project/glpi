@@ -1440,9 +1440,9 @@ JAVASCRIPT;
     /**
      * Process all the rules collection
      *
-     * @param array $input    The input data used to check criterias (need to be clean slashes)
-     * @param array $output   The initial ouput array used to be manipulate by actions (need to be clean slashes)
-     * @param array $params   Parameters for all internal functions (need to be clean slashes)
+     * @param array $input    The input data used to check criterias
+     * @param array $output   The initial ouput array used to be manipulate by actions
+     * @param array $params   Parameters for all internal functions
      * @param array $options  Options :
      *                            - condition : specific condition to limit rule list
      *                            - only_criteria : only react on specific criteria
