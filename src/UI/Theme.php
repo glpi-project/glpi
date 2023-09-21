@@ -35,6 +35,8 @@
 
 namespace Glpi\UI;
 
+use Symfony\Component\Filesystem\Filesystem;
+
 /**
  * Class that represents a theme/palette.
  */
@@ -81,7 +83,8 @@ final class Theme
     {
         $path = $this->is_custom ? ThemeManager::getInstance()->getCustomThemesDirectory() : ThemeManager::CORE_THEME_ROOT;
         if ($relative) {
-            $path = str_replace(GLPI_ROOT, '', $path);
+            $filesystem = new Filesystem();
+            $path = $filesystem->makePathRelative($path, GLPI_ROOT);
         }
         return $path;
     }

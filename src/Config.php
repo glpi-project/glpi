@@ -954,6 +954,9 @@ class Config extends CommonDBTM
             [ 'name'    => 'symfony/console',
                 'check'   => 'Symfony\\Component\\Console\\Application'
             ],
+            [ 'name'    => 'symfony/filesystem',
+                'check'   => 'Symfony\\Component\\Filesystem\\Filesystem'
+            ],
             [ 'name'    => 'scssphp/scssphp',
                 'check'   => 'ScssPhp\ScssPhp\Compiler'
             ],
