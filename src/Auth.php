@@ -1512,7 +1512,7 @@ class Auth extends CommonGLPI
                             'name' => 'force_ldap_resynch'
                         ]);
 
-                        if (strlen($authldap->fields['sync_field']) > 0) {
+                        if (strlen($authldap->fields['sync_field'] ?? "") > 0) {
                             echo Html::submit("<i class='fas fa-broom'></i><span>" . __s('Clean LDAP fields and force synchronisation') . "</span>", [
                                 'name' => 'clean_ldap_fields'
                             ]);
