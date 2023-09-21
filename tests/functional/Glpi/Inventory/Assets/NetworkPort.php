@@ -595,4 +595,112 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->boolean($lockedfield->isHandled($networkport))->isTrue();
         $this->array($lockedfield->getLockedValues($networkport->getType(), $networkport->fields['id']))->isEmpty();
     }
+
+    public function testVlanChange()
+    {
+        $networkport = new \NetworkPort();
+        $networkport_vlan = new \NetworkPort_Vlan();
+        $vlan = new \Vlan();
+        $networkmetric = new \NetworkPortMetrics();
+        $networkequipment = new \NetworkEquipment();
+
+        $vlanname = 'FIRSTVLAN';
+
+        //First step : import NetworkEquipement with only one NetworkPort (Ethernet) and one VLAN
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <INFO>
+                <IPS>
+                  <IP>192.168.1.27</IP>
+                </IPS>
+                <MAC>00:24:13:ea:a7:00</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>Catalyst 2960-24TC</MODEL>
+                <NAME>CB-27.example.com</NAME>
+                <SERIAL>FOC1247X5DX</SERIAL>
+                <TYPE>NETWORKING</TYPE>
+              </INFO>
+              <PORTS>
+                <PORT>
+                  <IFALIAS>pixin-int1-inside</IFALIAS>
+                  <IFDESCR>FastEthernet0/1</IFDESCR>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
+                  <IFMTU>1500</IFMTU>
+                  <IFNAME>Fa0/1</IFNAME>
+                  <IFNUMBER>10001</IFNUMBER>
+                  <IFPORTDUPLEX>2</IFPORTDUPLEX>
+                  <IFSPEED>100000000</IFSPEED>
+                  <IFSTATUS>1</IFSTATUS>
+                  <IFTYPE>6</IFTYPE>
+                  <MAC>00:24:13:ea:a7:01</MAC>
+                  <VLANS>
+                    <VLAN>
+                      <NAME>$vlanname</NAME>
+                      <NUMBER>160</NUMBER>
+                    </VLAN>
+                  </VLANS>
+                </PORT>
+              </PORTS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>";
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check networkequipement
+        $networkquipement_id = $inventory->getItem()->fields['id'];
+        $this->integer($networkquipement_id)->isGreaterThan(0);
+
+        //get networkport
+        $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
+            ->isTrue();
+        $networkports_id = $networkport->fields['id'];
+
+        //get vlans
+        $this->boolean(
+            $networkport_vlan->getFromDBByCrit(['networkports_id' => $networkports_id])
+        )->isTrue();
+
+        $this->boolean(
+            $vlan->getFromDB($networkport_vlan->fields['vlans_id'])
+        )->isTrue();
+        $vlans_id = $vlan->fields['id'];
+
+        $this->string($vlan->fields['name'])->isIdenticalTo($vlanname);
+
+        //Second step : import NetworkEquipement again but with new vlan
+        $oldname = $vlanname;
+        $vlanname = 'SECONDVLAN';
+
+        $xml_source = str_replace($oldname, $vlanname, $xml_source);
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source, true);
+        $this->integer($networkquipement_id)->isIdenticalTo($inventory->getItem()->fields['id']);
+
+        //get networkport
+        $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
+            ->isTrue();
+        $this->integer($networkports_id)->isIdenticalTo($networkport->fields['id']);
+
+        $this->boolean(
+            $networkport_vlan->getFromDBByCrit(['networkports_id' => $networkports_id])
+        )->isTrue();
+        $this->integer($vlans_id)->isNotIdenticalTo($networkport_vlan->fields['vlans_id']);
+
+        $this->boolean(
+            $vlan->getFromDB($networkport_vlan->fields['vlans_id'])
+        )->isTrue();
+
+        $this->string($vlan->fields['name'])->isIdenticalTo($vlanname);
+
+    }
 }
