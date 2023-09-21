@@ -167,12 +167,12 @@ final class Firewall
         // Check if entrypoint is a plugin ajax/front script.
         foreach ($this->plugins_dirs as $plugins_dir) {
             $relative_path = preg_replace(
-                '/^' . preg_quote($this->path_prefix . $this->normalizePath($this->root_dir), '/') . '/',
+                '/^' . preg_quote($this->normalizePath($this->root_dir), '/') . '/',
                 '',
                 $this->normalizePath($plugins_dir)
             );
 
-            if (preg_match('/^' . preg_quote($relative_path, '/') . '\/[^\/]+\/(ajax|front)\/' . '/', $path) === 1) {
+            if (preg_match('/^' . preg_quote($this->path_prefix . $relative_path, '/') . '\/[^\/]+\/(ajax|front)\/' . '/', $path) === 1) {
                 // Entrypoint is a plugin ajax/front script.
                 return self::STRATEGY_DEFAULT_FOR_PLUGINS;
             }
