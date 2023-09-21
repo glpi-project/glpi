@@ -76,10 +76,12 @@ class UploadHandler
     protected $image_objects = array();
     protected $response = array();
 
-    public function __construct($options = null, $initialize = true, $error_messages = null) {
+    public function __construct($options = null, $initialize = false, $error_messages = null) {
+        global $CFG_GLPI;
+
         $this->options = array(
             'script_url' => $this->get_full_url().'/'.$this->basename($this->get_server_var('SCRIPT_NAME')),
-            'upload_dir' => dirname($this->get_server_var('SCRIPT_FILENAME')).'/files/',
+            'upload_dir' => GLPI_TMP_DIR . '/',
             'upload_url' => $this->get_full_url().'/files/',
             'input_stream' => 'php://input',
             'user_dirs' => false,
@@ -131,7 +133,7 @@ class UploadHandler
             // e.g. PHP scripts, nor executed by the browser when downloaded,
             // e.g. HTML files with embedded JavaScript code.
             // Please also read the SECURITY.md document in this repository.
-            'accept_file_types' => '/\.(gif|jpe?g|png)$/i',
+            'accept_file_types' => DocumentType::getUploadableFilePattern(),
             // Replaces dots in filenames with the given string.
             // Can be disabled by setting it to false or an empty string.
             // Note that this is a security feature for servers that support
@@ -142,10 +144,10 @@ class UploadHandler
             // "example.php.png" with embedded PHP code, nor executed by the
             // browser when downloaded, e.g. "example.html.gif" with embedded
             // JavaScript code.
-            'replace_dots_in_filenames' => '-',
+            'replace_dots_in_filenames' => false,
             // The php.ini settings upload_max_filesize and post_max_size
             // take precedence over the following max_file_size setting:
-            'max_file_size' => null,
+            'max_file_size' => $CFG_GLPI['document_max_size'] * 1024 * 1024,
             'min_file_size' => 1,
             // The maximum number of files for the upload directory:
             'max_number_of_files' => null,
@@ -180,42 +182,7 @@ class UploadHandler
             */
             // Command or path for to the ImageMagick identify binary:
             'identify_bin' => 'identify',
-            'image_versions' => array(
-                // The empty image version key defines options for the original image.
-                // Keep in mind: these image manipulations are inherited by all other image versions from this point onwards.
-                // Also note that the property 'no_cache' is not inherited, since it's not a manipulation.
-                '' => array(
-                    // Automatically rotate images based on EXIF meta data:
-                    'auto_orient' => true
-                ),
-                // You can add arrays to generate different versions.
-                // The name of the key is the name of the version (example: 'medium').
-                // the array contains the options to apply.
-                /*
-                'medium' => array(
-                    'max_width' => 800,
-                    'max_height' => 600
-                ),
-                */
-                'thumbnail' => array(
-                    // Uncomment the following to use a defined directory for the thumbnails
-                    // instead of a subdirectory based on the version identifier.
-                    // Make sure that this directory doesn't allow execution of files if you
-                    // don't pose any restrictions on the type of uploaded files, e.g. by
-                    // copying the .htaccess file from the files directory for Apache:
-                    //'upload_dir' => dirname($this->get_server_var('SCRIPT_FILENAME')).'/thumb/',
-                    //'upload_url' => $this->get_full_url().'/thumb/',
-                    // Uncomment the following to force the max
-                    // dimensions and e.g. create square thumbnails:
-                    // 'auto_orient' => true,
-                    // 'crop' => true,
-                    // 'jpeg_quality' => 70,
-                    // 'no_cache' => true, (there's a caching option, but this remembers thumbnail sizes from a previous action!)
-                    // 'strip' => true, (this strips EXIF tags, such as geolocation)
-                    'max_width' => 80, // either specify width, or set to 0. Then width is automatically adjusted - keeping aspect ratio to a specified max_height.
-                    'max_height' => 80 // either specify height, or set to 0. Then height is automatically adjusted - keeping aspect ratio to a specified max_width.
-                )
-            ),
+            'image_versions' => [],
             'print_response' => true
         );
         if ($options) {
@@ -400,9 +367,83 @@ class UploadHandler
         return count($this->get_file_objects('is_valid_file_object'));
     }
 
-    protected function get_error_message($error) {
-        return isset($this->error_messages[$error]) ?
-            $this->error_messages[$error] : $error;
+    protected function get_error_message($error)
+    {
+        switch ($error) {
+            case UPLOAD_ERR_INI_SIZE:
+                return __('The uploaded file exceeds the upload_max_filesize directive in php.ini');
+            break;
+
+            case UPLOAD_ERR_FORM_SIZE:
+                return __('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form');
+            break;
+
+            case UPLOAD_ERR_PARTIAL:
+                return __('The uploaded file was only partially uploaded');
+            break;
+
+            case UPLOAD_ERR_NO_FILE:
+                return __('No file was uploaded');
+            break;
+
+            case UPLOAD_ERR_NO_TMP_DIR:
+                return __('Missing a temporary folder');
+            break;
+
+            case UPLOAD_ERR_CANT_WRITE:
+                return __('Failed to write file to disk');
+            break;
+
+            case UPLOAD_ERR_EXTENSION:
+                return __('A PHP extension stopped the file upload');
+            break;
+
+            case 'post_max_size':
+                return __('The uploaded file exceeds the post_max_size directive in php.ini');
+            break;
+
+            case 'max_file_size':
+                return __('File is too big');
+            break;
+
+            case 'min_file_size':
+                return __('File is too small');
+            break;
+
+            case 'max_number_of_files':
+                return __('Maximum number of files exceeded');
+            break;
+
+            case 'max_width':
+                return __('Image exceeds maximum width');
+            break;
+
+            case 'min_width':
+                return __('Image requires a minimum width');
+            break;
+
+            case 'max_height':
+                return __('Image exceeds maximum height');
+            break;
+
+            case 'min_height':
+                return __('Image requires a minimum height');
+            break;
+
+            case 'accept_file_types':
+                return __('Filetype not allowed');
+            break;
+
+            case 'abort':
+                return __('File upload aborted');
+            break;
+
+            case 'image_resize':
+                return __('Failed to resize image');
+            break;
+        }
+
+        return false;
     }
 
     public function get_config_bytes($val) {
@@ -1248,20 +1289,24 @@ class UploadHandler
         header($str);
     }
 
-    protected function get_upload_data($id) {
-        return @$_FILES[$id];
+    protected function get_upload_data($id)
+    {
+        return array_key_exists($id, $_FILES) ? $_FILES[$id] : '';
     }
 
-    protected function get_post_param($id) {
-        return @$_POST[$id];
+    protected function get_post_param($id)
+    {
+        return array_key_exists($id, $_POST) ? $_POST[$id] : '';
     }
 
-    protected function get_query_param($id) {
-        return @$_GET[$id];
+    protected function get_query_param($id)
+    {
+        return array_key_exists($id, $_GET) ? $_GET[$id] : '';
     }
 
-    protected function get_server_var($id) {
-        return @$_SERVER[$id];
+    protected function get_server_var($id)
+    {
+        return array_key_exists($id, $_SERVER) ? $_SERVER[$id] : '';
     }
 
     protected function handle_form_data($file, $index) {
@@ -1503,7 +1548,7 @@ class UploadHandler
         return $this->generate_response($response, $print_response);
     }
 
-    protected function basename($filepath, $suffix = null) {
+    protected function basename($filepath, $suffix = '') {
         $splited = preg_split('/\//', rtrim ($filepath, '/ '));
         return substr(basename('X'.$splited[count($splited)-1], $suffix), 1);
     }
