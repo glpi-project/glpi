@@ -2310,7 +2310,7 @@ class DBmysql
 
     /**
      * Get global variables values as an associative array.
-     * 
+     *
      * @param array $variables List of variables to get
      *
      * @return array
