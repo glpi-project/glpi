@@ -72,14 +72,48 @@ class Firewall extends \GLPITestCase
         foreach ($directories as $path_prefix => $expected_strategy) {
             foreach ($protected_paths as $path) {
                 yield [
+                    'root_doc'          => '',
                     'path'              => $path_prefix . $path,
                     'expected_strategy' => $expected_strategy,
+                ];
+                yield [
+                    'root_doc'          => '/glpi',
+                    'path'              => '/glpi' . $path_prefix . $path,
+                    'expected_strategy' => $expected_strategy,
+                ];
+                yield [
+                    'root_doc'          => '/path/to/app',
+                    'path'              => '/path/to/app' . $path_prefix . $path,
+                    'expected_strategy' => $expected_strategy,
+                ];
+
+                // paths not matching root doc
+                yield [
+                    'root_doc'          => '/not/glpi',
+                    'path'              => '/glpi' . $path_prefix . $path,
+                    'expected_strategy' => $strategy_no_check,
+                ];
+                yield [
+                    'root_doc'          => '',
+                    'path'              => '/glpi' . $path_prefix . $path,
+                    'expected_strategy' => $strategy_no_check,
                 ];
             }
 
             foreach ($unprotected_paths as $path) {
                 yield [
+                    'root_doc'          => '',
                     'path'              => $path_prefix . $path,
+                    'expected_strategy' => $strategy_no_check,
+                ];
+                yield [
+                    'root_doc'          => '/glpi',
+                    'path'              => '/glpi' . $path_prefix . $path,
+                    'expected_strategy' => $strategy_no_check,
+                ];
+                yield [
+                    'root_doc'          => '/path/to/app',
+                    'path'              => '/path/to/app' . $path_prefix . $path,
                     'expected_strategy' => $strategy_no_check,
                 ];
             }
@@ -90,10 +124,12 @@ class Firewall extends \GLPITestCase
      * @dataProvider pathProvider
      */
     public function testComputeDefaultStrategy(
+        string $root_doc,
         string $path,
         string $expected_strategy
     ) {
         $this->newTestedInstance(
+            $root_doc,
             vfsStream::url('glpi'),
             [vfsStream::url('glpi/mycustomplugindir'), vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );

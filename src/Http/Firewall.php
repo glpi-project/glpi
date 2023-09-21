@@ -84,6 +84,12 @@ final class Firewall
     private const STRATEGY_DEFAULT_FOR_PLUGINS = self::STRATEGY_NO_CHECK;
 
     /**
+     * GLPI URLs path prefix.
+     * @var string
+     */
+    private string $path_prefix;
+
+    /**
      * GLPI root directory.
      * @var string
      */
@@ -95,15 +101,24 @@ final class Firewall
      */
     private array $plugins_dirs;
 
-    public function __construct(string $root_dir = GLPI_ROOT, array $plugins_dirs = PLUGINS_DIRECTORIES)
+    /**
+     * @param string $path_prefix   GLPI URLs path prefix
+     * @param string $root_dir      GLPI root directory on filesystem
+     * @param array $plugins_dirs   GLPI plugins root directories on filesystem
+     */
+    public function __construct(string $path_prefix, string $root_dir = GLPI_ROOT, array $plugins_dirs = PLUGINS_DIRECTORIES)
     {
+        $this->path_prefix = $path_prefix;
         $this->root_dir = $root_dir;
         $this->plugins_dirs = $plugins_dirs;
     }
 
     /**
      * Apply the firewall strategy for given path.
-     * If no strategy is provided, the corresponding default strategy will be applied.
+     *
+     * @param string $path      URL path
+     * @param string $strategy  Strategy to apply, or null to fallback to default strategy
+     * @return void
      */
     public function applyStrategy(string $path, ?string $strategy = null): void
     {
@@ -133,12 +148,18 @@ final class Firewall
         }
     }
 
+    /**
+     * Compute the default strategy for given path.
+     *
+     * @param string $path  URL path
+     * @return string
+     */
     private function computeDefaultStrategy(string $path): string
     {
         // Check if entrypoint is a GLPI core ajax/front script.
         if (
-            str_starts_with($path, '/ajax/')
-            || str_starts_with($path, '/front/')
+            str_starts_with($path, $this->path_prefix . '/ajax/')
+            || str_starts_with($path, $this->path_prefix . '/front/')
         ) {
             return self::STRATEGY_DEFAULT_FOR_CORE;
         }
@@ -146,7 +167,7 @@ final class Firewall
         // Check if entrypoint is a plugin ajax/front script.
         foreach ($this->plugins_dirs as $plugins_dir) {
             $relative_path = preg_replace(
-                '/^' . preg_quote($this->normalizePath($this->root_dir), '/') . '/',
+                '/^' . preg_quote($this->path_prefix . $this->normalizePath($this->root_dir), '/') . '/',
                 '',
                 $this->normalizePath($plugins_dir)
             );
@@ -161,6 +182,12 @@ final class Firewall
         return self::STRATEGY_NO_CHECK;
     }
 
+    /**
+     * Normalize a path, to make comparisons and relative paths computation easier.
+     *
+     * @param string $path
+     * @return string
+     */
     private function normalizePath(string $path): string
     {
         $realpath = realpath($path);

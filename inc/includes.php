@@ -58,7 +58,7 @@ include_once(GLPI_ROOT . "/inc/config.php");
 $_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
 
 if (!isCommandLine()) {
-    $firewall = new Firewall();
+    $firewall = new Firewall($CFG_GLPI['root_doc']);
     $firewall->applyStrategy($_SERVER['PHP_SELF'], $SECURITY_STRATEGY ?? null);
 }
 
