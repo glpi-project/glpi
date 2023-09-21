@@ -2223,9 +2223,6 @@ HTML;
             [ 'name'    => 'rlanvin/php-rrule',
                 'check'   => 'RRule\\RRule'
             ],
-            [ 'name'    => 'blueimp/jquery-file-upload',
-                'check'   => 'UploadHandler'
-            ],
             [ 'name'    => 'ramsey/uuid',
                 'check'   => 'Ramsey\\Uuid\\Uuid'
             ],
