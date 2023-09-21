@@ -1829,6 +1829,8 @@ class Session
         $auth->user = $user;
         Session::init($auth);
 
+        $_SESSION['glpiname'] = sprintf(__('%s (impersonated by %s)'), $_SESSION['glpiname'], $impersonator);
+
        // Force usage of current user lang and session mode
         $_SESSION['glpilanguage'] = $lang;
         $_SESSION['glpi_use_mode'] = $session_use_mode;
