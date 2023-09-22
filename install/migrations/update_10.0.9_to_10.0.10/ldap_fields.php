@@ -44,7 +44,7 @@ use Glpi\Toolbox\Sanitizer;
 $groups = getAllDataFromTable('glpi_groups');
 foreach ($groups as $group) {
     $updated = [];
-    foreach (['name', 'ldap_group_dn', 'ldap_value'] as $ldap_field) {
+    foreach (['ldap_group_dn', 'ldap_value'] as $ldap_field) {
         if ($group[$ldap_field] !== null && preg_match('/(<|>|(&(?!#?[a-z0-9]+;)))/i', $group[$ldap_field]) === 1) {
             $updated[$ldap_field] = Sanitizer::sanitize($group[$ldap_field]);
         }
@@ -56,6 +56,29 @@ foreach ($groups as $group) {
                 $updated,
                 [
                     'id' => $group['id'],
+                ]
+            )
+        );
+    }
+}
+/** /Fix non encoded LDAP fields in groups */
+
+/** Fix non encoded LDAP fields in users */
+$users = getAllDataFromTable('glpi_users', ['authtype' => 3]);
+foreach ($users as $user) {
+    $updated = [];
+    foreach (['user_dn', 'sync_field'] as $ldap_field) {
+        if ($user[$ldap_field] !== null && preg_match('/(<|>|(&(?!#?[a-z0-9]+;)))/i', $user[$ldap_field]) === 1) {
+            $updated[$ldap_field] = Sanitizer::sanitize($user[$ldap_field]);
+        }
+    }
+    if (count($updated) > 0) {
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_users',
+                $updated,
+                [
+                    'id' => $user['id'],
                 ]
             )
         );
