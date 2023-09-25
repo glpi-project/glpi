@@ -3119,7 +3119,7 @@ $empty_data_builder = new class
                 'id' => 80,
                 'name' => 'New knowledge base item',
                 'itemtype' => 'KnowbaseItem',
-                'event' => 'newknowbaseitem',
+                'event' => 'new',
                 'is_recursive' => 1,
                 'is_active' => 0,
             ], [
