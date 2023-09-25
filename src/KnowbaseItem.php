@@ -878,7 +878,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public function post_purgeItem()
     {
-        NotificationEvent::raiseEvent('deletingknowbaseitem', $this);
+        NotificationEvent::raiseEvent('delete', $this);
     }
 
 
