@@ -873,7 +873,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         // Update categories
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');
-        NotificationEvent::raiseEvent('updateknowbaseitem', $this);
+        NotificationEvent::raiseEvent('update', $this);
     }
 
     public function post_purgeItem()
