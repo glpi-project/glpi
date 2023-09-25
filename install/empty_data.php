@@ -3124,7 +3124,7 @@ $empty_data_builder = new class
                 'is_active' => 0,
             ], [
                 'id' => 81,
-                'name' => 'Deleting KnowbaseItem',
+                'name' => 'Delete knowledge base item',
                 'itemtype' => 'KnowbaseItem',
                 'event' => 'deletingknowbaseitem',
                 'is_recursive' => 1,
