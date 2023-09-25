@@ -196,7 +196,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                     'tag'   => $tag,
                     'label' => $label,
                     'value' => true,
-                    'events'  => ['newknowbaseitem', 'updateknowbaseitem']
+                    'events'  => ['new', 'update']
                 ]);
             } else {
                 $this->addTagToList([
