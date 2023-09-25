@@ -218,7 +218,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                 'label'   => $label,
                 'value'   => false,
                 'foreach' => true,
-                'events'  => ['newknowbaseitem', 'updateknowbaseitem']
+                'events'  => ['new', 'update']
             ]);
         }
 
