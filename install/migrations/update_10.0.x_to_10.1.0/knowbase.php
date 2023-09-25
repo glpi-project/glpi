@@ -105,8 +105,8 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
 
     $notifications_data = [
         [
-            'event' => 'newknowbaseitem',
-            'name'  => 'New KnowbaseItem',
+            'event' => 'new',
+            'name'  => 'New knowledge base item',
         ],
         [
             'event' => 'updateknowbaseitem',
