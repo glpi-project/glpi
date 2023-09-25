@@ -33,43 +33,36 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-Session::checkRight("config", UPDATE);
+$pop_dsn_pattern = '/^\{[^\/]+\/pop(?:\/.+)*\}/';
 
-if (!isset($_GET["id"])) {
-    $_GET["id"] = "";
-}
-
-$config_mail = new AuthMail();
-
-//IMAP Server add/update/delete
-if (isset($_POST["update"])) {
-    $config_mail->update($_POST);
-    Html::back();
-} else if (isset($_POST["add"])) {
-   //If no name has been given to this configuration, then go back to the page without adding
-    if ($_POST["name"] != "") {
-        if (
-            ($config_mail->add($_POST))
-            && $_SESSION['glpibackcreated']
-        ) {
-            Html::redirect($config_mail->getLinkURL());
+foreach (['glpi_authmails' => 'connect_string', 'glpi_mailcollectors' => 'host'] as $table => $field) {
+    $server_iterator = $DB->request([
+        'FROM' => $table,
+        'WHERE' => [
+            'is_active' => 1,
+        ],
+    ]);
+    foreach ($server_iterator as $server) {
+        if (preg_match($pop_dsn_pattern, $server[$field]) === 1) {
+            $migration->displayWarning(
+                sprintf(
+                    __('Support of POP3 has been removed. The connection to the server `%s` (`%s`) has been deactivated.'),
+                    $server['name'] ?: $server['id'],
+                    $server[$field]
+                )
+            );
+            $migration->addPostQuery(
+                $DB->buildUpdate(
+                    $table,
+                    ['is_active' => 0],
+                    ['id' => $server['id']]
+                )
+            );
         }
     }
-    Html::back();
-} else if (isset($_POST["purge"])) {
-    $config_mail->delete($_POST, 1);
-    $_SESSION['glpi_authconfig'] = 2;
-    $config_mail->redirectToList();
-} else if (isset($_POST["test"])) {
-    if (AuthMail::testAuth($_POST["imap_string"], $_POST["imap_login"], $_POST["imap_password"])) {
-        Session::addMessageAfterRedirect(__('Test successful'));
-    } else {
-        Session::addMessageAfterRedirect(__('Test failed'), false, ERROR);
-    }
-    Html::back();
 }
-
-$menus = ["config", "auth", "imap"];
-AuthMail::displayFullPageForItem($_GET['id'], $menus);

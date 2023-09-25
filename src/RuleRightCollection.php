@@ -238,7 +238,7 @@ class RuleRightCollection extends RuleCollection
             '_groups_id' => $groups
         ];
 
-       //IMAP/POP login method
+       //IMAP login method
         if ($params_lower["type"] == Auth::MAIL) {
             $rule_parameters["MAIL_SERVER"] = $params_lower["mail_server"] ?? "";
         }

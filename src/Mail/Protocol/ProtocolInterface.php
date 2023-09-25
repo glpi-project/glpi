@@ -49,7 +49,7 @@ interface ProtocolInterface
     /**
      * Open connection to server.
      *
-     * @param  string      $host  hostname or IP address of POP3 server
+     * @param  string      $host  hostname or IP address of server
      * @param  int|null    $port  server port, null value with fallback to default port
      * @param  string|bool $ssl   use 'SSL', 'TLS' or false
      */

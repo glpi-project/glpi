@@ -56,7 +56,7 @@ class MailCollector extends CommonDBTM
 {
    // Specific one
     /**
-     * IMAP / POP connection
+     * IMAP connection
      * @var Laminas\Mail\Storage\AbstractStorage
      */
     private $storage;
@@ -257,7 +257,7 @@ class MailCollector extends CommonDBTM
         Dropdown::showYesNo("is_active", $this->fields["is_active"]);
         echo "</td></tr>";
 
-        $type = Toolbox::showMailServerConfig($this->fields["host"]);
+        Toolbox::showMailServerConfig($this->fields["host"]);
 
         echo "<tr class='tab_bg_1'><td>" . __('Login') . "</td><td>";
         echo Html::input('login', ['value' => $this->fields['login']]);
@@ -270,25 +270,23 @@ class MailCollector extends CommonDBTM
         }
         echo "</td></tr>";
 
-        if ($type != "pop") {
-            echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
-            echo "<td>";
-            echo "<div class='btn-group btn-group-sm'>";
-            echo "<input size='30' class='form-control' type='text' id='accepted_folder' name='accepted' value=\"" . $this->fields['accepted'] . "\">";
-            echo "<div class='btn btn-outline-secondary get-imap-folder'>";
-            echo "<i class='fa fa-list pointer'></i>";
-            echo "</div>";
-            echo "</div></td></tr>\n";
+        echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
+        echo "<td>";
+        echo "<div class='btn-group btn-group-sm'>";
+        echo "<input size='30' class='form-control' type='text' id='accepted_folder' name='accepted' value=\"" . $this->fields['accepted'] . "\">";
+        echo "<div class='btn btn-outline-secondary get-imap-folder'>";
+        echo "<i class='fa fa-list pointer'></i>";
+        echo "</div>";
+        echo "</div></td></tr>\n";
 
-            echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
-            echo "<td>";
-            echo "<div class='btn-group btn-group-sm'>";
-            echo "<input size='30' class='form-control' type='text' id='refused_folder' name='refused' value=\"" . $this->fields['refused'] . "\">";
-            echo "<div class='btn btn-outline-secondary get-imap-folder'>";
-            echo "<i class='fa fa-list pointer'></i>";
-            echo "</div>";
-            echo "</div></td></tr>\n";
-        }
+        echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
+        echo "<td>";
+        echo "<div class='btn-group btn-group-sm'>";
+        echo "<input size='30' class='form-control' type='text' id='refused_folder' name='refused' value=\"" . $this->fields['refused'] . "\">";
+        echo "<div class='btn btn-outline-secondary get-imap-folder'>";
+        echo "<i class='fa fa-list pointer'></i>";
+        echo "</div>";
+        echo "</div></td></tr>\n";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td width='200px'> " . __('Maximum size of each file imported by the mails receiver') .
@@ -351,49 +349,50 @@ class MailCollector extends CommonDBTM
 
         $this->showFormButtons($options);
 
-        if ($type != 'pop') {
-            echo Html::scriptBlock("$(function() {
+        echo Html::scriptBlock(<<<JAVASCRIPT
+            $(function() {
+                $(document).on('click', '.get-imap-folder', function() {
+                    var input = $(this).prev('input');
 
-            $(document).on('click', '.get-imap-folder', function() {
-               var input = $(this).prev('input');
+                    var data = 'action=getFoldersList';
+                    data += '&input_id=' + input.attr('id');
+                    // Get form values without server_mailbox value to prevent filtering
+                    data += '&' + $(this).closest('form').find(':not([name="server_mailbox"])').serialize();
+                    // Force empty value for server_mailbox
+                    data += '&server_mailbox=';
 
-               var data = 'action=getFoldersList';
-               data += '&input_id=' + input.attr('id');
-               // Get form values without server_mailbox value to prevent filtering
-               data += '&' + $(this).closest('form').find(':not([name=\"server_mailbox\"])').serialize();
-               // Force empty value for server_mailbox
-               data += '&server_mailbox=';
+                    glpi_ajax_dialog({
+                        title: __('Select a folder'),
+                        url: '{$CFG_GLPI['root_doc']}/ajax/mailcollector.php',
+                        params: data,
+                        id: input.attr('id') + '_modal'
+                    });
+                });
 
-               glpi_ajax_dialog({
-                  title: __('Select a folder'),
-                  url: '" . $CFG_GLPI['root_doc'] . "/ajax/mailcollector.php',
-                  params: data,
-                  id: input.attr('id') + '_modal'
-               });
+                $(document).on('click', '.select_folder li', function(event) {
+                    event.stopPropagation();
+
+                    var li       = $(this);
+                    var input_id = li.data('input-id');
+                    var folder   = li.children('.folder-name').html();
+
+                    var _label = '';
+                    var _parents = li.parents('li').children('.folder-name');
+                    for (i = _parents.length -1 ; i >= 0; i--) {
+                        _label += $(_parents[i]).html() + '/';
+                    }
+                    _label += folder;
+
+                    $('#'+input_id).val(_label);
+
+                    var modalEl = $('#'+input_id+'_modal')[0];
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    modal.hide();
+                })
             });
+JAVASCRIPT
+        );
 
-            $(document).on('click', '.select_folder li', function(event) {
-               event.stopPropagation();
-
-               var li       = $(this);
-               var input_id = li.data('input-id');
-               var folder   = li.children('.folder-name').html();
-
-               var _label = '';
-               var _parents = li.parents('li').children('.folder-name');
-               for (i = _parents.length -1 ; i >= 0; i--) {
-                  _label += $(_parents[i]).html() + '/';
-               }
-               _label += folder;
-
-               $('#'+input_id).val(_label);
-
-               var modalEl = $('#'+input_id+'_modal')[0];
-               var modal = bootstrap.Modal.getInstance(modalEl);
-               modal.hide();
-            })
-         });");
-        }
         return true;
     }
 
@@ -1859,12 +1858,6 @@ class MailCollector extends CommonDBTM
      **/
     public function deleteMails($uid, $folder = '')
     {
-
-       // Disable move support, POP protocol only has the INBOX folder
-        if (strstr($this->fields['host'], "/pop")) {
-            $folder = '';
-        }
-
         if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
             $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
             try {

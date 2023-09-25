@@ -1061,18 +1061,6 @@ PLAINTEXT,
                 'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
             ],
             [
-                'cnx_string'        => '{mail.domain.org/pop}',
-                'expected_type'     => 'pop',
-                'expected_protocol' => \Laminas\Mail\Protocol\Pop3::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
-            ],
-            [
-                'cnx_string'        => '{mail.domain.org/pop/ssl/tls}',
-                'expected_type'     => 'pop',
-                'expected_protocol' => \Laminas\Mail\Protocol\Pop3::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
-            ],
-            [
                 'cnx_string'        => '{mail.domain.org/unknown-type/ssl}',
                 'expected_type'     => '',
                 'expected_protocol' => null,
@@ -1151,20 +1139,6 @@ CLASS
                 'expected_warning'   => 'Protocol "imap" is already defined and cannot be overwritten.',
                 'expected_protocol'  => 'Laminas\Mail\Protocol\Imap',
                 'expected_storage'   => 'Laminas\Mail\Storage\Imap',
-            ],
-         // Check that hook cannot alter core protocols specs
-            [
-                'hook_result'        => [
-                    'pop' => [
-                        'label'    => 'Override test',
-                        'protocol' => 'SomeClass',
-                        'storage'  => 'SomeClass',
-                    ],
-                ],
-                'type'               => 'pop',
-                'expected_warning'   => 'Protocol "pop" is already defined and cannot be overwritten.',
-                'expected_protocol'  => 'Laminas\Mail\Protocol\Pop3',
-                'expected_storage'   => 'Laminas\Mail\Storage\Pop3',
             ],
          // Check that class must exists
             [

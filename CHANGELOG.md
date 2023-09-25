@@ -54,6 +54,7 @@ The present file will list all changes made to the project; according to the
 
 ### Removed
 - XML-RPC API.
+- Support of POP3 in mail receivers and server authentication features.
 - `Link tickets` massive action for Tickets (Use `Link ITIL Object` instead).
 - `Link to a problem` massive action for Tickets (Use `Link ITIL Object` instead).
 - Manage tab for Knowledgebase (Unpublished is now a toggle in the browse tab).

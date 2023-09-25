@@ -1661,7 +1661,7 @@ class Toolbox
 
        // type follows first found "/" and ends on next "/" (or end of server string)
        // server string is surrounded by "{}" and can be followed by a folder name
-       // i.e. "{mail.domain.org/imap/ssl}INBOX", or "{mail.domain.org/pop}"
+       // i.e. "{mail.domain.org/imap/ssl}INBOX"
         $type = preg_replace('/^\{[^\/]+\/([^\/]+)(?:\/.+)*\}.*/', '$1', $value);
         $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols())) ? $type : '';
 
@@ -1670,20 +1670,11 @@ class Toolbox
             $tab['ssl'] = true;
         }
 
-        if ($forceport && empty($tab['port'])) {
-            if ($tab['type'] == 'pop') {
-                if ($tab['ssl']) {
-                    $tab['port'] = 110;
-                } else {
-                    $tab['port'] = 995;
-                }
-            }
-            if ($tab['type'] = 'imap') {
-                if ($tab['ssl']) {
-                    $tab['port'] = 993;
-                } else {
-                    $tab['port'] = 143;
-                }
+        if ($forceport && empty($tab['port']) && $tab['type'] = 'imap') {
+            if ($tab['ssl']) {
+                $tab['port'] = 993;
+            } else {
+                $tab['port'] = 143;
             }
         }
         $tab['tls'] = '';
@@ -1722,13 +1713,13 @@ class Toolbox
      *
      * @param string $value  host connect string ex {localhost:993/imap/ssl}INBOX
      *
-     * @return string  type of the server (imap/pop)
+     * @return void
      **/
-    public static function showMailServerConfig($value)
+    public static function showMailServerConfig($value): void
     {
 
         if (!Config::canUpdate()) {
-            return false;
+            return;
         }
 
         $tab = Toolbox::parseMailServerConnectString($value);
@@ -1857,16 +1848,14 @@ class Toolbox
         echo "<input type=hidden name=imap_string value='" . $value . "'>";
         echo "</td></tr>\n";
 
-        if ($tab['type'] != 'pop') {
-            echo "<tr class='tab_bg_1'><td>" . __('Incoming mail folder (optional, often INBOX)') . "</td>";
-            echo "<td>";
-            echo "<div class='btn-group btn-group-sm'>";
-            echo "<input size='30' class='form-control' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
-            echo "<div class='btn btn-outline-secondary get-imap-folder'>";
-            echo "<i class='fa fa-list pointer'></i>";
-            echo "</div>";
-            echo "</div></td></tr>\n";
-        }
+        echo "<tr class='tab_bg_1'><td>" . __('Incoming mail folder (optional, often INBOX)') . "</td>";
+        echo "<td>";
+        echo "<div class='btn-group btn-group-sm'>";
+        echo "<input size='30' class='form-control' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+        echo "<div class='btn btn-outline-secondary get-imap-folder'>";
+        echo "<i class='fa fa-list pointer'></i>";
+        echo "</div>";
+        echo "</div></td></tr>\n";
 
        //TRANS: for mail connection system
         echo "<tr class='tab_bg_1'><td>" . __('Port (optional)') . "</td>";
@@ -1877,8 +1866,6 @@ class Toolbox
        //TRANS: for mail connection system
         echo "<tr class='tab_bg_1'><td>" . __('Connection string') . "</td>";
         echo "<td class='b'>$value</td></tr>\n";
-
-        return $tab['type'];
     }
 
 
@@ -1935,8 +1922,8 @@ class Toolbox
      * For each returned element:
      *  - key is type used in connection string;
      *  - 'label' field is the label to display;
-     *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap | Laminas\Mail\Protocol\Pop3);
-     *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap | Laminas\Mail\Storage\Pop3).
+     *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap);
+     *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap).
      *
      * @return array
      */
@@ -1948,12 +1935,6 @@ class Toolbox
                 'label'    => __('IMAP'),
                 'protocol' => 'Laminas\Mail\Protocol\Imap',
                 'storage'  => 'Laminas\Mail\Storage\Imap',
-            ],
-            'pop'  => [
-            //TRANS: POP3 mail server protocol
-                'label'    => __('POP'),
-                'protocol' => 'Laminas\Mail\Protocol\Pop3',
-                'storage'  => 'Laminas\Mail\Storage\Pop3',
             ]
         ];
 
@@ -1995,11 +1976,11 @@ class Toolbox
      * Returns protocol instance for given mail server type.
      *
      * Class should implements Glpi\Mail\Protocol\ProtocolInterface
-     * or should be \Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3 for native protocols.
+     * or should be \Laminas\Mail\Protocol\Imap for native protocols.
      *
      * @param string $protocol_type
      *
-     * @return null|\Glpi\Mail\Protocol\ProtocolInterface|\Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3
+     * @return null|\Glpi\Mail\Protocol\ProtocolInterface|\Laminas\Mail\Protocol\Imap
      */
     public static function getMailServerProtocolInstance(string $protocol_type)
     {
@@ -2010,9 +1991,10 @@ class Toolbox
                 return call_user_func($protocol);
             } else if (
                 class_exists($protocol)
-                && (is_a($protocol, ProtocolInterface::class, true)
-                 || is_a($protocol, \Laminas\Mail\Protocol\Imap::class, true)
-                 || is_a($protocol, \Laminas\Mail\Protocol\Pop3::class, true))
+                && (
+                    is_a($protocol, ProtocolInterface::class, true)
+                    || is_a($protocol, \Laminas\Mail\Protocol\Imap::class, true)
+                )
             ) {
                 return new $protocol();
             } else {
