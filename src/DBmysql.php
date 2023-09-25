@@ -2315,11 +2315,13 @@ class DBmysql
      *
      * @return array
      */
-    public function getGlobalVariables(array $variables): array
+    final public function getGlobalVariables(array $variables): array
     {
-        $query = 'SHOW GLOBAL VARIABLES WHERE Variable_name IN ('
-            . implode(', ', array_map([$this, 'quote'], $variables))
-            . ')';
+        $query = sprintf(
+            'SHOW GLOBAL VARIABLES WHERE %s IN (%s)',
+            $this->quoteName('Variable_name'),
+            implode(', ', array_map([$this, 'quote'], $variables))
+        );
         $result = $this->doQuery($query);
         $values = [];
         while ($row = $result->fetch_assoc()) {

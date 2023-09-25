@@ -493,13 +493,10 @@ class Config extends CommonDBTM
             'password' => rawurldecode($DBslave->dbpassword),
         ];
 
+        $hosts = is_array($DBslave->dbhost) ? $DBslave->dbhost : [$DBslave->dbhost];
         $replication_delay = [];
-        if (is_array($DBslave->dbhost)) {
-            foreach ($DBslave->dbhost as $host_num => $host) {
-                $replication_delay[$host_num] = DBConnection::getReplicateDelay($host_num);
-            }
-        } else {
-            $replication_delay[] = DBConnection::getReplicateDelay();
+        foreach (array_keys($hosts) as $host_num) {
+            $replication_delay[$host_num] = DBConnection::getReplicateDelay($host_num);
         }
 
         $replication_status = DBConnection::getReplicationStatus();

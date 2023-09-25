@@ -566,44 +566,52 @@ class DBConnection extends CommonDBTM
 
         // Get master status
         include_once(GLPI_CONFIG_DIR . "/config_db.php");
-        $DBPrimary = new DB();
-        if ($DBPrimary->connected) {
-            foreach ($DBPrimary->getGlobalVariables(['server_id', 'read_only', 'gtid_binlog_pos', 'version']) as $varName => $varValue) {
-                $data['primary'][strtolower($varName)] = $varValue;
+        $db_main = new DB();
+        if ($db_main->connected) {
+            $global_vars = $db_main->getGlobalVariables([
+                'server_id',
+                'read_only',
+                'gtid_binlog_pos',
+                'version'
+            ]);
+            foreach ($global_vars as $var_name => $var_value) {
+                $data['primary'][strtolower($var_name)] = $var_value;
             }
 
-            $result = $DBPrimary->doQuery("SHOW MASTER STATUS");
-            if ($result && $DBPrimary->numrows($result)) {
-                foreach (['File', 'Position'] as $varName) {
-                    $data['primary'][strtolower($varName)] = $DBPrimary->result($result, 0, $varName);
+            $result = $db_main->doQuery("SHOW MASTER STATUS");
+            if ($result && $db_main->numrows($result)) {
+                foreach (['File', 'Position'] as $var_name) {
+                    $data['primary'][strtolower($var_name)] = $db_main->result($result, 0, $var_name);
                 }
             } else {
-                $data['primary']['error'] = $DBPrimary->error();
+                $data['primary']['error'] = $db_main->error();
             }
         } else {
-            $data['primary']['error'] = $DBPrimary->error();
+            $data['primary']['error'] = $db_main->error();
         }
 
         // Get slave status
         include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
-        $DBConfigSlave = new DBSlave();
-        if (is_array($DBConfigSlave->dbhost)) {
-            $hosts = $DBConfigSlave->dbhost;
-        } else {
-            $hosts = [$DBConfigSlave->dbhost];
-        }
+        $db_replica_config = new DBSlave();
 
+        $hosts = is_array($db_replica_config->dbhost) ? $db_replica_config->dbhost : [$db_replica_config->dbhost];
         foreach ($hosts as $num => $host) {
             $data['replica'][$num]['host'] = $host;
-            $DBReplica = new DBSlave($num);
-            if ($DBReplica->connected) {
-                foreach ($DBReplica->getGlobalVariables(['server_id', 'read_only', 'gtid_slave_pos', 'version']) as $varName => $varValue) {
-                    $data['replica'][$num][strtolower($varName)] = $varValue;
+            $db_replica = new DBSlave($num);
+            if ($db_replica->connected) {
+                $global_vars = $db_main->getGlobalVariables([
+                    'server_id',
+                    'read_only',
+                    'gtid_slave_pos',
+                    'version'
+                ]);
+                foreach ($global_vars as $var_name => $var_value) {
+                    $data['replica'][$num][strtolower($var_name)] = $var_value;
                 }
 
-                $result = $DBReplica->doQuery("SHOW SLAVE STATUS");
-                if ($result && $DBReplica->numrows($result)) {
-                    $REPLICA_VARS = [
+                $result = $db_replica->doQuery("SHOW SLAVE STATUS");
+                if ($result && $db_replica->numrows($result)) {
+                    $replica_vars = [
                         'Slave_IO_Running',
                         'Slave_SQL_Running',
                         'Master_Log_File',
@@ -613,14 +621,14 @@ class DBConnection extends CommonDBTM
                         'Last_SQL_Error'
                     ];
 
-                    foreach ($REPLICA_VARS as $varName) {
-                        $data['replica'][$num][strtolower($varName)] = $DBReplica->result($result, 0, $varName);
+                    foreach ($replica_vars as $var_name) {
+                        $data['replica'][$num][strtolower($var_name)] = $db_replica->result($result, 0, $var_name);
                     }
                 } else {
-                    $data['replica'][$num]['error'] = $DBReplica->error();
+                    $data['replica'][$num]['error'] = $db_replica->error();
                 }
             } else {
-                $data['replica'][$num]['error'] = $DBReplica->error();
+                $data['replica'][$num]['error'] = $db_replica->error();
             }
         }
 
