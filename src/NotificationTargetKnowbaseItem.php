@@ -82,14 +82,14 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         //Display event
         $eventname = '';
         switch ($event) {
-            case 'newknowbaseitem':
-                $eventname = __('New knowbase');
+            case 'new':
+                $eventname = __('New knowledge base item');
                 break;
-            case 'deletingknowbaseitem':
-                $eventname = __('Deleting a knowbase');
+            case 'delete':
+                $eventname = __('Deleting a knowledge base item');
                 break;
-            case 'updateknowbaseitem':
-                $eventname = __('Update of a knowbase');
+            case 'update':
+                $eventname = __('Update of a knowledge base item');
                 break;
         }
         $this->data['##knowbaseitem.action##'] = $eventname;
