@@ -5366,32 +5366,32 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'subject' => '##knowbaseitem.action## - ##knowbaseitem.subject##',
                 'content_text' => '##lang.knowbaseitem.url## : ##knowbaseitem.url##
 
-                ##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
 
-                ##lang.knowbaseitem.content## : ##knowbaseitem.content##
+##lang.knowbaseitem.content## : ##knowbaseitem.content##
 
-                ##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
-                ##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
-                ##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
-                ##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
+##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
+##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
+##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
+##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
 
-                ##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##
+##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##
 
-                ##FOREACHdocuments##
-                    ##lang.document.downloadurl## : ##document.downloadurl##
-                    ##lang.document.filename## : ##document.filename##
-                    ##lang.document.heading## : ##document.heading##
-                    ##lang.document.id## : ##document.id##
-                    ##lang.document.name## : ##document.name##
-                    ##lang.document.url## : ##document.url##
-                    ##lang.document.weblink## : ##document.weblink##
-                ##ENDFOREACHdocuments##
+##FOREACHdocuments##
+  ##lang.document.downloadurl## : ##document.downloadurl##
+  ##lang.document.filename## : ##document.filename##
+  ##lang.document.heading## : ##document.heading##
+  ##lang.document.id## : ##document.id##
+  ##lang.document.name## : ##document.name##
+  ##lang.document.url## : ##document.url##
+  ##lang.document.weblink## : ##document.weblink##
+##ENDFOREACHdocuments##
 
-                ##FOREACHtargets##
-                    ##lang.target.itemtype## : ##target.type##
-                    ##lang.target.name## : ##target.name##
-                    ##lang.target.url## : ##target.url##
-                ##ENDFOREACHtargets##',
+##FOREACHtargets##
+  ##lang.target.itemtype## : ##target.type##
+  ##lang.target.name## : ##target.name##
+  ##lang.target.url## : ##target.url##
+##ENDFOREACHtargets##',
                 'content_html' => '&lt;p&gt;##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
 &lt;br&gt;##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
 &lt;br&gt;##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
