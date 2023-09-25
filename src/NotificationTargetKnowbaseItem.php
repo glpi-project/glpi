@@ -207,7 +207,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                     'tag'   => $tag,
                     'label' => $label,
                     'value' => true,
-                    'events'  => ['newknowbaseitem', 'updateknowbaseitem', 'deletingknowbaseitem']
+                    'events'  => ['newm', 'update', 'delete']
                 ]);
             }
         }
