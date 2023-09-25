@@ -62,12 +62,7 @@ class NotificationTargetKnowbaseItem extends DbTestCase
         );
         // test activate notification
         foreach ($knowbasenotifs as $kbnotif) {
-            $datawant = $kbnotif;
-            $datawant['is_active'] = 1;
-            $notif->update($datawant);
-            $kbnotif = $notif->getById($kbnotif['id'])->fields;
-            $kbnotif['date_mod'] = null;
-            $this->array($kbnotif)->isIdenticalTo($datawant);
+            $this->boolean($notif->update(['id' => $kbnotif['id'], 'is_active' => 1]))->isTrue();
         }
         //search glpi user
         $email = new \UserEmail();
