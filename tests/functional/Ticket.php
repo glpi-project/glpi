@@ -46,6 +46,7 @@ use Glpi\Toolbox\Sanitizer;
 use Group;
 use Group_Ticket;
 use ITILCategory;
+use Profile_User;
 use Supplier;
 use Supplier_Ticket;
 use Symfony\Component\DomCrawler\Crawler;
@@ -5647,59 +5648,172 @@ HTML
         }
     }
 
-
-    public function testGetEntitiesForRequesters()
+    protected function requestersEntitiesProvider(): iterable
     {
         $this->login();
 
-        // Create entities
-        $entity = new Entity();
-        $entity1_id = $entity->add([
-            'name' => __METHOD__ . '1',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-        $this->integer($entity1_id)->isGreaterThan(0);
+        $entity_1 = $this->createItem(
+            Entity::class,
+            [
+                'name'        => __FUNCTION__ . '1',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
 
-        $entity2_id = $entity->add([
-            'name' => __METHOD__ . '2',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-        $this->integer($entity2_id)->isGreaterThan(0);
-        $this->integer($entity2_id)->isGreaterThan($entity1_id);
+        $entity_2 = $this->createItem(
+            Entity::class,
+            [
+                'name'        => __FUNCTION__ . '2',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
 
         $profile_id = getItemByTypeName('Profile', 'Self-Service', true);
 
-        // Create user with 1 profile and 1 entity as default entity
-        $rand = mt_rand();
-        $user = new User();
-        $user_id = $user->add([
-            'name' => "testGetEntitiesForRequesters$rand",
-            'password' => "testGetEntitiesForRequesters",
-            'password2' => "testGetEntitiesForRequesters",
-            '_profiles_id' => $profile_id,
-            '_entities_id' => $entity2_id,
-            'entities_id' => $entity2_id,
-        ]);
-        $this->integer($user_id)->isGreaterThan(0);
-
-        $ticket = new \Ticket();
-        $entities = $ticket->getEntitiesForRequesters(["_users_id_requester" => $user_id]);
-        $this->array($entities)->isIdenticalTo([$entity2_id]);
-
-        // Add user to another entity
-        $profile_user = new \Profile_User();
-        $profile_user_id = (int)$profile_user->add(
+        // User 1 is attached only to Entity 1
+        $user_1 = $this->createItem(
+            User::class,
             [
-                'entities_id' => $entity1_id,
-                'profiles_id' => $profile_id,
-                'users_id'    => $user_id,
+                'name'         => __FUNCTION__ . '1',
+                '_profiles_id' => $profile_id,
+                '_entities_id' => $entity_1->getID(),
+                'entities_id'  => $entity_1->getID(),
             ]
         );
-        $this->integer($profile_user_id)->isGreaterThan(0);
 
-        // Chek that default entity is first in the list
-        $entities = $ticket->getEntitiesForRequesters(["_users_id_requester" => $user_id]);
-        $this->array($entities)->isIdenticalTo([$entity2_id, $entity1_id]);
+        // User 2 is attached to Entity 1 and Entity 2
+        $user_2 = $this->createItem(
+            User::class,
+            [
+                'name'         => __FUNCTION__ . '2',
+                '_profiles_id' => $profile_id,
+                '_entities_id' => $entity_1->getID(),
+                'entities_id'  => $entity_1->getID(),
+            ]
+        );
+        $this->createItem(
+            Profile_User::class,
+            [
+                'entities_id' => $entity_2->getID(),
+                'profiles_id' => $profile_id,
+                'users_id'    => $user_2->getID(),
+            ]
+        );
+
+        // Check for User 1
+        yield [
+            'params'   => [
+                '_users_id_requester' => $user_1->getID(),
+            ],
+            'expected' => [
+                $entity_1->getID(),
+            ],
+        ];
+        yield [
+            'params'   => [
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $user_1->getID(),
+                            'use_notification'  => 1,
+                            'alternative_email' => '',
+                        ],
+                    ],
+                ]
+            ],
+            'expected' => [
+                $entity_1->getID(),
+            ],
+        ];
+
+        // Check for User 2
+        yield [
+            'params'   => [
+                '_users_id_requester' => $user_2->getID(),
+            ],
+            'expected' => [
+                $entity_1->getID(),
+                $entity_2->getID(),
+            ],
+        ];
+        yield [
+            'params'   => [
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $user_2->getID(),
+                            'use_notification'  => 1,
+                            'alternative_email' => '',
+                        ],
+                    ],
+                ]
+            ],
+            'expected' => [
+                $entity_1->getID(),
+                $entity_2->getID(),
+            ],
+        ];
+
+        // Check for User 1 + User 2
+        yield [
+            'params'   => [
+                '_users_id_requester' => [$user_1->getID(), $user_2->getID()],
+            ],
+            'expected' => [
+                $entity_1->getID(),
+            ],
+        ];
+        yield [
+            'params'   => [
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $user_1->getID(),
+                            'use_notification'  => 1,
+                            'alternative_email' => '',
+                        ],
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $user_2->getID(),
+                            'use_notification'  => 1,
+                            'alternative_email' => '',
+                        ],
+                    ],
+                ]
+            ],
+            'expected' => [
+                $entity_1->getID(),
+            ],
+        ];
+
+        // Check for "email" actor
+        yield [
+            'params'   => [
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => 0,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'notaglpiuser@domain.tld',
+                        ],
+                    ],
+                ]
+            ],
+            'expected' => array_values($_SESSION['glpiactiveentities']),
+        ];
+    }
+
+    /**
+     * @dataProvider requestersEntitiesProvider
+     */
+    public function testGetEntitiesForRequesters(array $params, array $expected)
+    {
+        $this->newTestedInstance();
+        $this->array($this->testedInstance->getEntitiesForRequesters($params))->isIdenticalTo($expected);
     }
 
     public function testShowCentralCountCriteria()
