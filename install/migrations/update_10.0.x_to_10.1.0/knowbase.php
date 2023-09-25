@@ -38,7 +38,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
     $DB->insertOrDie(
         'glpi_notificationtemplates',
         [
-            'name'            => 'KnowbaseItems',
+            'name'            => 'Knowledge base item',
             'itemtype'        => 'KnowbaseItem',
         ],
         'Add new knowbase notification template'
