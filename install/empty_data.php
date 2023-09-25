@@ -4454,7 +4454,7 @@ $empty_data_builder = new class
                 'itemtype' => 'Ticket',
             ], [
                 'id'        => '32',
-                'name'      => 'KnowbaseItems',
+                'name'      => 'Knowledge base item',
                 'itemtype'  => 'KnowbaseItem',
             ],
         ];
