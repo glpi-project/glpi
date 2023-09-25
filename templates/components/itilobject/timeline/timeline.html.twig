@@ -42,6 +42,10 @@
     {% endif %}
 
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
+
+   {# Keep track of loaded user to avoid reloading them from database if they appear multiple time in a ticket #}
+   {% set user_cache = {} %}
+
    {% for entry in timeline %}
       {% set entry_i = entry['item'] %}
       {% set entry_object = entry['object'] ?? get_item(entry['type'], entry_i['id']) %}
@@ -94,6 +98,12 @@
          {% endif %}
       {% endif %}
 
+      {# Cache keys are prefixed by "_" to avoid being converted to integer and thus renumbered #}
+      {# Try to read user from cache #}
+      {% set entry_user = users_id is defined and users_id is not null ? (user_cache["_" ~ users_id] ?? get_item('User', users_id)) : null %}
+      {# Update cache #}
+      {% set user_cache = user_cache|merge({("_" ~ users_id): entry_user}) %}
+
       <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
             {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
@@ -120,7 +130,6 @@
             <div class="col-auto d-flex flex-column user-part {{ 'right' in item_position ? 'ms-auto ms-0 order-sm-last' : 'order-first' }}">
                {% set avatar_rand = random() %}
                {# log entries have no users_id #}
-               {% set entry_user = users_id is defined and users_id is not null ? get_item('User', users_id) : null %}
                {% if entry_user is not null %}
                   {% set user_fields = entry_user.fields|merge({
                       user_name: entry_user.getFriendlyName()|verbatim_value,
@@ -129,6 +138,7 @@
                   <span id="timeline-avatar{{ avatar_rand }}">
                      {{ include('components/user/picture.html.twig', {
                         'users_id': users_id,
+                        'user_object': entry_user,
                         'enable_anonymization': anonym_user
                      }, with_context = false) }}
                   </span>
@@ -136,6 +146,7 @@
                      {% do call('Html::showToolTip', [
                         include('components/user/info_card.html.twig', {
                            'user': user_fields,
+                           'user_object': entry_user,
                            'enable_anonymization': false,
                         }, with_context = false), {
                            'applyto': 'timeline-avatar' ~ avatar_rand
@@ -148,7 +159,9 @@
             <div class="col-12 col-sm d-flex flex-column content-part">
                <div class="mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
                   <div class="card-body px-1 px-xxl-3">
-                     {{ include('components/itilobject/timeline/timeline_item_header.html.twig') }}
+                     {{ include('components/itilobject/timeline/timeline_item_header.html.twig', {
+                           'user_object': entry_user,
+                     }) }}
 
                      {% if itiltype in timeline_itemtypes|column('type') %}
                         {% set matching_types = timeline_itemtypes|filter((v) => v.type == itiltype) %}

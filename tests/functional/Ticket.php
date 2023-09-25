@@ -6328,4 +6328,21 @@ HTML
         $this->array($simplied_actors[Group::class])->isEqualTo($expected_groups);
         $this->array($simplied_actors[Supplier::class])->isEqualTo($expected_suppliers);
     }
+
+    public function testDynamicProperties(): void
+    {
+        $ticket = new \Ticket();
+
+        $this->when(
+            function () use ($ticket) {
+                $ticket->plugin_xxx_data = 'test';
+            }
+        )
+         ->error
+         ->withMessage('Creation of dynamic property Ticket::$plugin_xxx_data is deprecated')
+         ->exists();
+
+        $this->boolean(property_exists($ticket, 'plugin_xxx_data'))->isTrue();
+        $this->string($ticket->plugin_xxx_data)->isEqualTo('test');
+    }
 }

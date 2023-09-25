@@ -506,7 +506,7 @@ class User extends CommonDBTM
      */
     public function getFromDBbyName($name)
     {
-        return $this->getFromDBByCrit(['name' => $name]);
+        return $this->getFromDBByCrit(['name' => (string)$name]);
     }
 
     /**
@@ -703,6 +703,17 @@ class User extends CommonDBTM
         return $this->getFromDBByCrit([$this->getTable() . ".$field" => $token]);
     }
 
+    public static function unsetUndisclosedFields(&$fields)
+    {
+        parent::unsetUndisclosedFields($fields);
+
+        if (
+            !array_key_exists('id', $fields)
+            || !(new self())->currentUserHaveMoreRightThan($fields['id'])
+        ) {
+            unset($fields['password_forget_token'], $fields['password_forget_token_date']);
+        }
+    }
 
     public function prepareInputForAdd($input)
     {
@@ -894,7 +905,12 @@ class User extends CommonDBTM
                 $newPicture = true;
             }
             if ($newPicture) {
-                $fullpath = GLPI_TMP_DIR . "/" . $input["_picture"];
+                if (!$fullpath = realpath(GLPI_TMP_DIR . "/" . $input["_picture"])) {
+                    return;
+                }
+                if (!str_starts_with($fullpath, realpath(GLPI_TMP_DIR))) {
+                    trigger_error(sprintf('Invalid picture path `%s`', $input["_picture"]), E_USER_WARNING);
+                }
                 if (Document::isImage($fullpath)) {
                    // Unlink old picture (clean on changing format)
                     self::dropPictureFiles($this->fields['picture']);
@@ -984,6 +1000,32 @@ class User extends CommonDBTM
             unset($input["password"]);
         }
 
+        // prevent changing tokens and emails from users with lower rights
+        $protected_input_keys = array_intersect(
+            [
+                'api_token',
+                '_reset_api_token',
+                'cookie_token',
+                'password_forget_token',
+                'personal_token',
+                '_reset_personal_token',
+
+                '_emails',
+                '_useremails',
+            ],
+            array_keys($input)
+        );
+        if (
+            $protected_input_keys > 0
+            && !Session::isCron() // cron context is considered safe
+            && $input['id'] !== Session::getLoginUserID()
+            && !$this->currentUserHaveMoreRightThan($input['id'])
+        ) {
+            foreach ($protected_input_keys as $input_key) {
+                unset($input[$input_key]);
+            }
+        }
+
        // blank password when authtype changes
         if (
             isset($input["authtype"])
@@ -1062,9 +1104,10 @@ class User extends CommonDBTM
 
         foreach ($CFG_GLPI['user_pref_field'] as $f) {
             if (isset($input[$f])) {
+                $pref_value = Sanitizer::dbUnescape($input[$f]);
                 if (Session::getLoginUserID() == $input['id']) {
-                    if ($_SESSION["glpi$f"] != $input[$f]) {
-                        $_SESSION["glpi$f"] = $input[$f];
+                    if ($_SESSION["glpi$f"] != $pref_value) {
+                        $_SESSION["glpi$f"] = $pref_value;
                       // reinit translations
                         if ($f == 'language') {
                              $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
@@ -1072,7 +1115,7 @@ class User extends CommonDBTM
                         }
                     }
                 }
-                if ($input[$f] == $CFG_GLPI[$f]) {
+                if ($pref_value == $CFG_GLPI[$f]) {
                     $input[$f] = "NULL";
                 }
             }
@@ -1898,7 +1941,7 @@ class User extends CommonDBTM
                             $this->fields[$k] = "";
                     }
                 } else {
-                    $val = Toolbox::addslashes_deep($val);
+                    $val = Sanitizer::sanitize($val);
                     switch ($k) {
                         case "email1":
                         case "email2":
@@ -2853,10 +2896,12 @@ HTML;
                 echo "<td><label for='dropdown_users_id_supervisor_$userrand'>" .  __('Responsible') . "</label></td><td>";
 
                 User::dropdown(['name'   => 'users_id_supervisor',
-                    'value'  => $this->fields["users_id_supervisor"],
-                    'rand'   => $userrand,
-                    'entity' => $_SESSION["glpiactive_entity"],
-                    'right'  => 'all'
+                    'value'         => $this->fields["users_id_supervisor"],
+                    'rand'          => $userrand,
+                    'entity'        => $_SESSION["glpiactive_entity"],
+                    'entity_sons'   => $_SESSION["glpiactive_entity_recursive"],
+                    'used'          => [$this->getID()],
+                    'right'         => 'all'
                 ]);
                 echo "</td></tr>";
             }
@@ -5274,7 +5319,7 @@ HTML;
         global $DB;
 
         if ($escape) {
-            $value = addslashes($value);
+            $value = Sanitizer::sanitize($value);
         }
 
         $iterator = $DB->request([
@@ -5419,12 +5464,12 @@ HTML;
      */
     public function updateForgottenPassword(array $input)
     {
-        // Get user by token
-        $token = $input['password_forget_token'] ?? "";
-        $user = self::getUserByForgottenPasswordToken($token);
-
         // Invalid token
-        if (!$user) {
+        if (
+            !array_key_exists('password_forget_token', $input)
+            || (string)$input['password_forget_token'] === ''
+            || ($user = self::getUserByForgottenPasswordToken($input['password_forget_token'])) === null
+        ) {
             throw new ForgetPasswordException(
                 __('Your password reset request has expired or is invalid. Please renew it.')
             );
@@ -5465,12 +5510,19 @@ HTML;
             return false;
         }
 
-        // Clear password reset token data
-        $user->update([
-            'id'                         => $user->fields['id'],
-            'password_forget_token'      => '',
-            'password_forget_token_date' => 'NULL',
-        ]);
+        // Clear password reset token data.
+        // Use a direct DB query to bypass rights checks.
+        global $DB;
+        $DB->update(
+            'glpi_users',
+            [
+                'password_forget_token'      => '',
+                'password_forget_token_date' => 'NULL',
+            ],
+            [
+                'id' => $user->fields['id'],
+            ]
+        );
 
         $this->getFromDB($user->fields['id']);
 
@@ -5586,13 +5638,21 @@ HTML;
             throw new ForgetPasswordException(__('Invalid email address'));
         }
 
-        // Store password reset token and date
-        $input = [
-            'password_forget_token'      => sha1(Toolbox::getRandomString(30)),
-            'password_forget_token_date' => $_SESSION["glpi_currenttime"],
-            'id'                         => $this->fields['id'],
-        ];
-        $this->update($input);
+        // Store password reset token and date.
+        // Use a direct DB query to bypass rights checks.
+        global $DB;
+        $DB->update(
+            'glpi_users',
+            [
+                'password_forget_token'      => sha1(Toolbox::getRandomString(30)),
+                'password_forget_token_date' => $_SESSION["glpi_currenttime"],
+            ],
+            [
+                'id' => $this->fields['id'],
+            ]
+        );
+
+        $this->getFromDB($this->fields['id']); // reload user to get up-to-date fields
 
         // Notication on root entity (glpi_users.entities_id is only a pref)
         NotificationEvent::raiseEvent('passwordforget', $this, ['entities_id' => 0]);
@@ -5879,17 +5939,28 @@ HTML;
      */
     public static function dropPictureFiles($picture)
     {
-
         if (!empty($picture)) {
-           // unlink main file
-            if (file_exists(GLPI_PICTURE_DIR . "/$picture")) {
-                @unlink(GLPI_PICTURE_DIR . "/$picture");
+            if (!$filepath = realpath(GLPI_PICTURE_DIR . "/$picture")) {
+                return;
             }
-           // unlink Thunmnail
+            if (!str_starts_with($filepath, realpath(GLPI_PICTURE_DIR))) {
+                trigger_error(sprintf('Invalid picture path `%s`', $picture), E_USER_WARNING);
+            }
+            // unlink main file
+            if (file_exists($filepath)) {
+                @unlink($filepath);
+            }
+            // unlink Thumbnail
             $tmp = explode(".", $picture);
             if (count($tmp) == 2) {
-                if (file_exists(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1])) {
-                    @unlink(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1]);
+                if (!$thumbpath = realpath(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1])) {
+                    return;
+                }
+                if (!str_starts_with($thumbpath, realpath(GLPI_PICTURE_DIR))) {
+                    trigger_error(sprintf('Invalid picture path `%s`', $tmp[0] . "_min." . $tmp[1]), E_USER_WARNING);
+                }
+                if (file_exists($thumbpath)) {
+                    @unlink($thumbpath);
                 }
             }
         }

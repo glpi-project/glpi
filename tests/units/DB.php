@@ -482,7 +482,7 @@ OTHER EXPRESSION;"
                     `nameid` varchar(100) NOT NULL,
                     UNIQUE KEY (`nameid`)
                 )
-            SQL,
+SQL,
             'db_properties' => [],
             'warning' => null
         ];
@@ -505,7 +505,7 @@ OTHER EXPRESSION;"
                         `nameid` varchar(100) NOT NULL,
                         UNIQUE KEY (`nameid`)
                     ){$table_options}
-                SQL,
+SQL,
                 'db_properties' => [
                     'allow_myisam' => true
                 ],
@@ -518,7 +518,7 @@ OTHER EXPRESSION;"
                         `nameid` varchar(100) NOT NULL,
                         UNIQUE KEY (`nameid`)
                     ){$table_options}
-                SQL,
+SQL,
                 'db_properties' => [
                     'allow_myisam' => false
                 ],
@@ -534,7 +534,7 @@ OTHER EXPRESSION;"
                     `date` datetime NOT NULL,
                     UNIQUE KEY (`nameid`)
                 )
-            SQL,
+SQL,
             'db_properties' => [
                 'allow_datetime' => true
             ],
@@ -547,7 +547,7 @@ OTHER EXPRESSION;"
                     `date` datetime NOT NULL,
                     UNIQUE KEY (`nameid`)
                 )
-            SQL,
+SQL,
             'db_properties' => [
                 'allow_datetime' => false
             ],
@@ -561,7 +561,7 @@ OTHER EXPRESSION;"
                     `nameid` varchar(100) NOT NULL,
                     UNIQUE KEY (`nameid`)
                 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci
-            SQL,
+SQL,
             'db_properties' => [
                 'use_utf8mb4' => false
             ],
@@ -573,7 +573,7 @@ OTHER EXPRESSION;"
                     `nameid` varchar(100) NOT NULL,
                     UNIQUE KEY (`nameid`)
                 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
-            SQL,
+SQL,
             'db_properties' => [
                 'use_utf8mb4' => false
             ],
@@ -587,7 +587,7 @@ OTHER EXPRESSION;"
                     `nameid` varchar(100) NOT NULL,
                     UNIQUE KEY (`nameid`)
                 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci
-            SQL,
+SQL,
             'db_properties' => [
                 'use_utf8mb4' => true
             ],
@@ -599,7 +599,7 @@ OTHER EXPRESSION;"
                     `nameid` varchar(100) NOT NULL,
                     UNIQUE KEY (`nameid`)
                 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
-            SQL,
+SQL,
             'db_properties' => [
                 'use_utf8mb4' => true
             ],
@@ -627,7 +627,7 @@ OTHER EXPRESSION;"
                         {$int_declaration}
                         UNIQUE KEY (`nameid`)
                     )
-                SQL,
+SQL,
                 'db_properties' => [
                     'allow_signed_keys' => true
                 ],
@@ -640,7 +640,7 @@ OTHER EXPRESSION;"
                         {$int_declaration}
                         UNIQUE KEY (`nameid`)
                     )
-                SQL,
+SQL,
                 'db_properties' => [
                     'allow_signed_keys' => false
                 ],
@@ -665,7 +665,7 @@ OTHER EXPRESSION;"
                         `id` int NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
                     )
-                SQL,
+SQL,
                 'db_properties' => [
                     'allow_signed_keys' => false
                 ],

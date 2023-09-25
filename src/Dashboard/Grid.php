@@ -408,7 +408,7 @@ HTML;
         }
 
         $ajax_cards = GLPI_AJAX_DASHBOARD;
-        $cache_key  = sha1($_SESSION['glpiactiveentities_string '] ?? "");
+        $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
         $js_params = json_encode([
             'current'       => $this->current,

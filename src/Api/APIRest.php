@@ -61,7 +61,30 @@ class APIRest extends API
         foreach (array_keys($_FILES) as $filename) {
            // Randomize files names
             $rand_name = uniqid('', true);
-            foreach ($_FILES[$filename]['name'] as &$name) {
+            if (is_array($_FILES[$filename]['name'])) {
+                // Input name was suffixed by `[]`. This results in each `$_FILES[$filename]` property being an array.
+                // e.g.
+                // [
+                //     'name' => [
+                //         0 => 'image.jpg',
+                //         1 => 'document.pdf',
+                //     ],
+                //     'type' => [
+                //         0 => 'image/jpeg',
+                //         1 => 'application/pdf',
+                //     ]
+                // ]
+                foreach ($_FILES[$filename]['name'] as &$name) {
+                    $name = $rand_name . $name;
+                }
+            } else {
+                // Input name was NOT suffixed by `[]`. This results in each `$_FILES[$filename]` property being a single entry.
+                // e.g.
+                // [
+                //     'name' => 'image.jpg',
+                //     'type' => 'image/jpeg',
+                // ]
+                $name = &$_FILES[$filename]['name'];
                 $name = $rand_name . $name;
             }
 

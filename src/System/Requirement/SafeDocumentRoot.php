@@ -59,8 +59,25 @@ final class SafeDocumentRoot extends AbstractRequirement
             return;
         }
 
-        $initial_script = get_included_files()[0] ?? '';
-        if (realpath($initial_script) === realpath(sprintf('%s/public/index.php', GLPI_ROOT))) {
+        $included_files = get_included_files();
+        $initial_script = array_shift($included_files);
+
+        // If `auto_prepend_file` configuration is used, ignore first included files
+        // as long as they are not located inside GLPI directory tree.
+        $prepended_file = ini_get('auto_prepend_file');
+        if ($prepended_file !== '' && $prepended_file !== 'none') {
+            while (
+                $initial_script !== null
+                && !str_starts_with(
+                    realpath($initial_script) ?: '',
+                    realpath(GLPI_ROOT)
+                )
+            ) {
+                $initial_script = array_shift($included_files);
+            }
+        }
+
+        if ($initial_script !== null && realpath($initial_script) === realpath(sprintf('%s/public/index.php', GLPI_ROOT))) {
             // Configuration is safe if install/update script is accessed through `public/index.php` router script.
             $this->validated = true;
             $this->validation_messages[] = __('Web server root directory configuration seems safe.');

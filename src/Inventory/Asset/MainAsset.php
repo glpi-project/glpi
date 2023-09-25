@@ -179,6 +179,7 @@ abstract class MainAsset extends InventoryAsset
             'winprodkey'     => 'license_number',
             'workgroup'      => 'domains_id',
             'lastloggeduser' => 'users_id',
+            'description'    => 'comment'
         ];
 
         foreach ($hw_mapping as $origin => $dest) {
@@ -695,6 +696,9 @@ abstract class MainAsset extends InventoryAsset
             unset($input['ap_port']);
             unset($input['firmware']);
             $items_id = $this->item->add(Sanitizer::sanitize($input));
+            if ($items_id === false) {
+                throw new \Exception('Unable to create item.');
+            }
             $this->setNew();
         }
 

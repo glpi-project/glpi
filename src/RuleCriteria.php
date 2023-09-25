@@ -381,6 +381,11 @@ class RuleCriteria extends CommonDBChild
         $pattern   = $criterion->fields['pattern'];
         $criteria  = $criterion->fields['criteria'];
 
+        // Permit use of `<`, `&` and `>` and prevent issues with quotes.
+        $raw_pattern = $pattern;
+        $pattern     = Sanitizer::unsanitize($pattern);
+        $field       = Sanitizer::unsanitize($field);
+
        //If pattern is wildcard, don't check the rule and return true
        //or if the condition is "already present in GLPI" : will be processed later
         if (
@@ -404,15 +409,15 @@ class RuleCriteria extends CommonDBChild
                    // Special case (used only by UNIQUE_PROFILE, for now)
                    // $pattern is an ID
                     if (in_array($pattern, $field)) {
-                        $criterias_results[$criteria] = $pattern;
+                        $criterias_results[$criteria] = $raw_pattern;
                         return true;
                     }
                 } else {
                    //Perform comparison with fields in lower case
                     $field                        = Toolbox::strtolower($field);
                     $pattern                      = Toolbox::strtolower($pattern);
-                    if (Sanitizer::unsanitize($field) == $pattern) {
-                        $criterias_results[$criteria] = $pattern;
+                    if ($field == $pattern) {
+                        $criterias_results[$criteria] = $raw_pattern;
                         return true;
                     }
                 }
@@ -422,15 +427,15 @@ class RuleCriteria extends CommonDBChild
                //Perform comparison with fields in lower case
                 $field   = Toolbox::strtolower($field);
                 $pattern = Toolbox::strtolower($pattern);
-                if (Sanitizer::unsanitize($field) != $pattern) {
-                    $criterias_results[$criteria] = $pattern;
+                if ($field != $pattern) {
+                    $criterias_results[$criteria] = $raw_pattern;
                     return true;
                 }
                 return false;
 
             case Rule::PATTERN_UNDER:
                 $table  = getTableNameForForeignKeyField($criteria);
-                $values = getSonsOf($table, $pattern);
+                $values = Sanitizer::unsanitize(getSonsOf($table, $pattern));
                 if (isset($values[$field])) {
                     return true;
                 }
@@ -438,7 +443,7 @@ class RuleCriteria extends CommonDBChild
 
             case Rule::PATTERN_NOT_UNDER:
                 $table  = getTableNameForForeignKeyField($criteria);
-                $values = getSonsOf($table, $pattern);
+                $values = Sanitizer::unsanitize(getSonsOf($table, $pattern));
                 if (isset($values[$field])) {
                     return false;
                 }
@@ -449,8 +454,8 @@ class RuleCriteria extends CommonDBChild
                     return false;
                 }
 
-                if (str_ends_with(mb_strtolower(Sanitizer::unsanitize($field)), mb_strtolower($pattern))) {
-                    $criterias_results[$criteria] = $pattern;
+                if (str_ends_with(mb_strtolower($field), mb_strtolower($pattern))) {
+                    $criterias_results[$criteria] = $raw_pattern;
                     return true;
                 }
                 return false;
@@ -459,9 +464,9 @@ class RuleCriteria extends CommonDBChild
                 if (empty($pattern) || empty($field)) {
                     return false;
                 }
-                $value = mb_stripos(Sanitizer::unsanitize($field), $pattern, 0, 'UTF-8');
+                $value = mb_stripos($field, $pattern, 0, 'UTF-8');
                 if (($value !== false) && ($value == 0)) {
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $raw_pattern;
                     return true;
                 }
                 return false;
@@ -470,9 +475,9 @@ class RuleCriteria extends CommonDBChild
                 if (empty($pattern) || empty($field)) {
                     return false;
                 }
-                $value = mb_stripos(Sanitizer::unsanitize($field), $pattern, 0, 'UTF-8');
+                $value = mb_stripos($field, $pattern, 0, 'UTF-8');
                 if (($value !== false) && ($value >= 0)) {
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $raw_pattern;
                     return true;
                 }
                 return false;
@@ -481,17 +486,15 @@ class RuleCriteria extends CommonDBChild
                 if (empty($pattern)) {
                     return false;
                 }
-                $value = mb_stripos(Sanitizer::unsanitize($field) ?? '', $pattern, 0, 'UTF-8');
+                $value = mb_stripos($field ?? '', $pattern, 0, 'UTF-8');
                 if ($value === false) {
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $raw_pattern;
                     return true;
                 }
                 return false;
 
             case Rule::REGEX_MATCH:
                 $results = [];
-                // Permit use < and >
-                $pattern = Sanitizer::unsanitize($pattern);
                 $match_result = @preg_match_all($pattern . "i", $field, $results);
                 if ($match_result === false) {
                     trigger_error(
@@ -509,14 +512,12 @@ class RuleCriteria extends CommonDBChild
                         }
                     }
                     $regex_result[]               = $res;
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $raw_pattern;
                     return true;
                 }
                 return false;
 
             case Rule::REGEX_NOT_MATCH:
-               // Permit use < and >
-                $pattern = Sanitizer::unsanitize($pattern);
                 $match_result = @preg_match($pattern . "i", $field);
                 if ($match_result === false) {
                     trigger_error(
@@ -524,7 +525,7 @@ class RuleCriteria extends CommonDBChild
                         E_USER_WARNING
                     );
                 } elseif ($match_result === 0) {
-                    $criterias_results[$criteria] = $pattern;
+                    $criterias_results[$criteria] = $raw_pattern;
                     return true;
                 }
                 return false;

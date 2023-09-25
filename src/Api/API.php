@@ -1208,8 +1208,12 @@ abstract class API
                 }
             }
 
-           // make text search
-            foreach ($params['searchText'] as $filter_field => $filter_value) {
+            // ensure search feature is not used to enumerate sensitive fields value
+            $search_values = $params['searchText'];
+            $item::unsetUndisclosedFields($search_values);
+
+            // make text search
+            foreach ($search_values as $filter_field => $filter_value) {
                 if (!empty($filter_value)) {
                     $search_value = Search::makeTextSearch($DB->escape($filter_value));
                     $where .= " AND (" . $DB->quoteName("$table.$filter_field") . " $search_value)";

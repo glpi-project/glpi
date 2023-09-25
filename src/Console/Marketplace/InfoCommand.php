@@ -69,7 +69,7 @@ class InfoCommand extends AbstractMarketplaceCommand
         });
 
         if (count($result) === 0) {
-            $output->writeln('<error>' . __('Plugin not found') . '</error>');
+            $output->writeln('<error>' . sprintf(__('Plugin %1$s not found!'), $plugin) . '</error>');
             return 1;
         }
 

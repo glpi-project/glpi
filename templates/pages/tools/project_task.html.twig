@@ -73,10 +73,8 @@
                 form.find('input[name=real_start_date]').parent()[0]._flatpickr.setDate(data.real_start_date);
                 form.find('input[name=real_end_date]').parent()[0]._flatpickr.setDate(data.real_end_date);
 
-                // Set tinymce
-                if (tasktinymce = tinymce.get("{{ content_field_id }}")) {
-                    tasktinymce.setContent(data.description);
-                }
+                // Set content
+                setRichTextEditorContent("{{ content_field_id }}", data.description);
 
                 // Set dropdowns and dates
                 form.find('select[name=projecttasks_id]').trigger("setValue", data.projecttasks_id);

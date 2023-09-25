@@ -39,7 +39,7 @@
 </span>
 
 {% if not enable_anonymization %}
-    {% set user = get_item('User', users_id) %}
+    {% set user = user_object ?? get_item('User', users_id) %}
     {% if user is not null and user.canView() %}
         {% set user_fields = user.fields %}
         {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
@@ -49,7 +49,10 @@
             [
                 include(
                     'components/user/info_card.html.twig',
-                    {'user': user_fields},
+                    {
+                        'user': user_fields,
+                        'user_object': user,
+                    },
                     with_context = false
                 ),
                 {

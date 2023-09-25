@@ -92,6 +92,19 @@ class RuleBuilder
     /**
      * Set condition
      *
+     * @param string $operator RuleTicket::ONADD and/or RuleTicket::ONUPDATE
+     *
+     * @return self
+     */
+    public function setCondtion(int $condition): self
+    {
+        $this->condition = $condition;
+        return $this;
+    }
+
+    /**
+     * Set operator
+     *
      * @param string $operator 'AND' or 'OR'
      *
      * @return self

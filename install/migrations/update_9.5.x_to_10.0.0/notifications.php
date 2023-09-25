@@ -47,7 +47,7 @@ if (!$notification_exists) {
         'glpi_notifications',
         [
             'id'              => null,
-            'name'            => 'New user mentionned',
+            'name'            => 'New user mentioned',
             'entities_id'     => 0,
             'itemtype'        => 'Ticket',
             'event'           => 'user_mention',

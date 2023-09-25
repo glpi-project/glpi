@@ -123,6 +123,10 @@ See :
     * Bug reporting / Man pages
     * [Contribute to this documentation!](https://github.com/glpi-project/doc-agent)
 
+* [GLPI Plugins](https://glpi-plugins.readthedocs.io)
+    * Usage and features for some GLPI plugins
+    * [Contribute to this documentation!](https://github.com/pluginsglpi/doc)
+
 ## Additional resources
 
 * [Official website](http://glpi-project.org)

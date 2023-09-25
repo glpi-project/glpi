@@ -285,14 +285,19 @@ class APIRest extends APIBaseClass
      **/
     public function testInitSessionUserToken()
     {
-       // retrieve personnal token of TU_USER user
-        $user = new \User();
         $uid = getItemByTypeName('User', TU_USER, true);
-        $this->boolean((bool)$user->getFromDB($uid))->isTrue();
-        $token = isset($user->fields['api_token']) ? $user->fields['api_token'] : "";
-        if (empty($token)) {
-            $token = $user->getAuthToken('api_token');
-        }
+
+        // generate a new api token TU_USER user
+        global $DB;
+        $token = \User::getUniqueToken('api_token');
+        $updated = $DB->update(
+            'glpi_users',
+            [
+                'api_token' => $token,
+            ],
+            ['id' => $uid]
+        );
+        $this->boolean($updated)->isTrue();
 
         $res = $this->doHttpRequest(
             'GET',

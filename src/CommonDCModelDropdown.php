@@ -230,20 +230,16 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     public function getItemsRackForModel(): array
     {
         $itemtype = $this->getItemtypeForModel();
-        return array_filter(
-            (new Item_Rack())->find([
-                'itemtype' => $itemtype,
-                'items_id' => new QuerySubQuery([
-                    'SELECT' => 'id',
-                    'FROM'   => $itemtype::getTable(),
-                    'WHERE'  => [
-                        $this->getForeignKeyField() => $this->fields['id'],
-                    ]
-                ])
-            ]),
-            // Filter out items that are not using the model
-            fn ($item_rack) => $itemtype::getById($item_rack['items_id'])->fields[strtolower(get_called_class()) . 's_id'] == $this->fields['id']
-        );
+        return (new Item_Rack())->find([
+            'itemtype' => $itemtype,
+            'items_id' => new QuerySubQuery([
+                'SELECT' => 'id',
+                'FROM'   => $itemtype::getTable(),
+                'WHERE'  => [
+                    $this->getForeignKeyField() => $this->fields['id'],
+                ]
+            ])
+        ]);
     }
 
     /**

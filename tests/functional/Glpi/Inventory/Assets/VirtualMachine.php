@@ -526,4 +526,194 @@ class VirtualMachine extends AbstractInventoryAsset
             'is_deleted' => false
         ]))->isTrue();
     }
+
+    /**
+     * check import of computers even if some are refused by rules
+     */
+    public function testImportComputerFromVirtualMachine()
+    {
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <BIOS>
+              <ASSETTAG></ASSETTAG>
+              <BDATE>2018-02-08T00:00:00Z</BDATE>
+              <BVERSION>1.3.7</BVERSION>
+              <MSN>2YR88P2</MSN>
+              <SMANUFACTURER>Dell Inc.</SMANUFACTURER>
+              <SMODEL>PowerEdge R640</SMODEL>
+              <SSN>2YR88P2</SSN>
+            </BIOS>
+            <HARDWARE>
+              <DNS>10.100.230.2/10.100.230.4</DNS>
+              <MEMORY>130625</MEMORY>
+              <NAME>ESX-03-DMZ</NAME>
+              <UUID>8c8c8944-0074-5632-7452-b2c04f564712</UUID>
+              <VMSYSTEM>Physical</VMSYSTEM>
+              <WORKGROUP>teclib.fr</WORKGROUP>
+            </HARDWARE>
+            <VERSIONCLIENT>GLPI-Agent_v1.4-1</VERSIONCLIENT>
+            <VIRTUALMACHINES>
+              <COMMENT>Computer VM</COMMENT>
+              <MAC>00:50:56:90:43:42</MAC>
+              <MEMORY>1024</MEMORY>
+              <NAME>SRV-DMZ-EZ</NAME>
+              <STATUS>running</STATUS>
+              <UUID>fe040942-926a-e895-13f9-a37fc3607c14</UUID>
+              <VCPU>1</VCPU>
+              <VMTYPE>VMware</VMTYPE>
+            </VIRTUALMACHINES>
+            <VIRTUALMACHINES>
+              <COMMENT>Computer VM</COMMENT>
+              <MAC>00:50:56:90:43:42</MAC>
+              <MEMORY>1024</MEMORY>
+              <NAME>SRV-REFUSED</NAME>
+              <STATUS>running</STATUS>
+              <UUID>c37f7ce8-af95-4676-b454-0959f2c5e162</UUID>
+              <VCPU>1</VCPU>
+              <VMTYPE>VMware</VMTYPE>
+            </VIRTUALMACHINES>
+            <VIRTUALMACHINES>
+              <COMMENT>Computer VM</COMMENT>
+              <MAC>00:70:64:87:14:53</MAC>
+              <MEMORY>1024</MEMORY>
+              <NAME>ANOTHER-SRV</NAME>
+              <STATUS>running</STATUS>
+              <UUID>25c1bb60-5bcb-11d9-b18f-5404a6a534c4</UUID>
+              <VCPU>1</VCPU>
+              <VMTYPE>VMware</VMTYPE>
+            </VIRTUALMACHINES>
+          </CONTENT>
+          <DEVICEID>ESX-03-DMZ.insep.fr-2023-02-02-11-34-53</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>
+        ";
+
+
+        //create rule to refuse SRV-REFUSED computer
+        $rule = new \Rule();
+        $criteria = new \RuleCriteria();
+        $action = new \RuleAction();
+
+        $rules_id = $rule->add(['name' => 'Exclude SRV-REFUSED',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'sub_type' => 'RuleImportAsset',
+            'match' => \Rule::AND_MATCHING,
+            'condition' => 0,
+            'description' => ''
+        ]);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        $this->integer(
+            $criteria->add([
+                'rules_id' => $rules_id,
+                'criteria' => 'name',
+                'condition' => \Rule::PATTERN_CONTAIN,
+                'pattern' => 'REFUSED'
+            ])
+        )->isGreaterThan(0);
+
+        $this->integer(
+            $action->add([
+                'rules_id' => $rules_id,
+                'action_type' => 'assign',
+                'field' => '_inventory',
+                'value' => '2' //import denied
+            ])
+        )->isGreaterThan(0);
+
+        //change config to import vms as computers
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf(['vm_as_computer' => 1]))->isTrue();
+        $this->logout();
+
+        //computer inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $esx_id_first = $inventory->getItem()->fields['id'];
+        $this->integer($esx_id_first)->isGreaterThan(0);
+
+        //get three VM
+        $vm = new \ComputerVirtualMachine();
+        $this->array($vm->find())->hasSize(3);
+
+
+        //get related computer with fe040942-926a-e895-13f9-a37fc3607c14 -> exist
+        $first_computer_linked = new \Computer();
+        $this->boolean($first_computer_linked->getFromDBByCrit([
+            'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
+        ]))->isTrue();
+
+        //get computer with c37f7ce8-af95-4676-b454-0959f2c5e162  -> not exist
+        $second_computer_linked = new \Computer();
+        $this->boolean($second_computer_linked->getFromDBByCrit([
+            'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
+        ]))->isFalse();
+
+        //get computer with 25c1bb60-5bcb-11d9-b18f-5404a6a534c4  -> exist
+        $third_computer_linked = new \Computer();
+        $this->boolean($third_computer_linked->getFromDBByCrit([
+            'uuid' => '25c1bb60-5bcb-11d9-b18f-5404a6a534c4',
+        ]))->isTrue();
+    }
+
+    public function testNoMoreVirtualMachine()
+    {
+        //inventory
+        $source = json_decode('{"content":{"hardware":{"dns":"10.100.230.2\\/10.100.230.4","memory":130625,"name":"ESX-03-DMZ","uuid":"8c8c8944-0074-5632-7452-b2c04f564712","vmsystem":"Physical","workgroup":"teclib.fr"},"versionclient":"GLPI-Agent_v1.4-1","virtualmachines":[{"comment":"Computer VM","mac":"00:50:56:90:43:42","memory":1024,"name":"SRV-DMZ-EZ","status":"running","uuid":"420904FE-6a92-95e8-13f9-a37fc3607c14","vcpu":1,"vmtype":"vmware"}]},"deviceid":"ESX-03-DMZ.insep.fr-2023-02-02-11-34-53","action":"inventory","itemtype":"Computer"}');
+        $inventory = $this->doInventory($source);
+
+        $id_first = $inventory->getItem()->fields['id'];
+        $this->integer($id_first)->isGreaterThan(0);
+
+        //one VM
+        $vm = new \ComputerVirtualMachine();
+        $this->array($vm->find())->hasSize(1);
+
+        //get ComputervirtualMachine
+        $vm = new \ComputerVirtualMachine();
+        $this->boolean($vm->getFromDBByCrit([
+            'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
+            'computers_id' => $id_first
+        ]))->isTrue();
+
+        //make sure partial with no VM does not remove existing VMs
+        //remove VM, but set partial
+        $no_vm_source = json_decode('{"content":{"hardware":{"dns":"10.100.230.2\\/10.100.230.4","memory":130625,"name":"ESX-03-DMZ","uuid":"8c8c8944-0074-5632-7452-b2c04f564712","vmsystem":"Physical","workgroup":"teclib.fr"},"versionclient":"GLPI-Agent_v1.4-1","virtualmachines":[{"comment":"Computer VM","mac":"00:50:56:90:43:42","memory":1024,"name":"SRV-DMZ-EZ","status":"running","uuid":"420904FE-6a92-95e8-13f9-a37fc3607c14","vcpu":1,"vmtype":"vmware"}]},"deviceid":"ESX-03-DMZ.insep.fr-2023-02-02-11-34-53","action":"inventory","itemtype":"Computer"}');
+        unset($no_vm_source->content->virtualmachines);
+        $no_vm_source->partial = true;
+
+        $inventory = $this->doInventory($no_vm_source);
+        $id_second = $inventory->getItem()->fields['id'];
+        $this->integer($id_second)->isGreaterThan(0);
+
+        $this->integer($id_first)->isEqualTo($id_second);
+
+        //VM still present
+        $vm = new \ComputerVirtualMachine();
+        $this->array($vm->find())->hasSize(1);
+
+        //get ComputervirtualMachine
+        $vm = new \ComputerVirtualMachine();
+        $this->boolean($vm->getFromDBByCrit([
+            'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
+            'computers_id' => $id_first
+        ]))->isTrue();
+
+        //remove VM, but set partial
+        $no_vm_source = json_decode('{"content":{"hardware":{"dns":"10.100.230.2\\/10.100.230.4","memory":130625,"name":"ESX-03-DMZ","uuid":"8c8c8944-0074-5632-7452-b2c04f564712","vmsystem":"Physical","workgroup":"teclib.fr"},"versionclient":"GLPI-Agent_v1.4-1","virtualmachines":[{"comment":"Computer VM","mac":"00:50:56:90:43:42","memory":1024,"name":"SRV-DMZ-EZ","status":"running","uuid":"420904FE-6a92-95e8-13f9-a37fc3607c14","vcpu":1,"vmtype":"vmware"}]},"deviceid":"ESX-03-DMZ.insep.fr-2023-02-02-11-34-53","action":"inventory","itemtype":"Computer"}');
+        unset($no_vm_source->content->virtualmachines);
+        $inventory = $this->doInventory($no_vm_source);
+
+        $id_second = $inventory->getItem()->fields['id'];
+        $this->integer($id_second)->isGreaterThan(0);
+
+        $this->integer($id_first)->isEqualTo($id_second);
+
+        //no VM left
+        $vm = new \ComputerVirtualMachine();
+        $this->array($vm->find())->hasSize(0);
+    }
 }

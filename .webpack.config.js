@@ -46,7 +46,7 @@ let config = {
                     path.resolve(__dirname, 'node_modules/jquery-migrate'),
                     path.resolve(__dirname, 'node_modules/photoswipe'),
                     path.resolve(__dirname, 'node_modules/rrule'),
-                    path.resolve(__dirname, 'vendor/blueimp/jquery-file-upload'),
+                    path.resolve(__dirname, 'lib/blueimp/jquery-file-upload'),
                 ],
                 use: ['script-loader', 'strip-sourcemap-loader'],
             },
