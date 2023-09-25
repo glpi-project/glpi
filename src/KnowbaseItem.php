@@ -394,7 +394,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         // Handle categories
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, "_categories");
 
-        NotificationEvent::raiseEvent('newknowbaseitem', $this);
+        NotificationEvent::raiseEvent('new', $this);
     }
 
 
