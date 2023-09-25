@@ -14,7 +14,6 @@
 # Legastelois François <flegastelois@teclib.com>, 2022
 # Alexis Mothe, 2022
 # operon, 2022
-# Johan Cwiklinski, 2022
 # Adrien Clairembault, 2022
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2022
 # Romain B., 2023
@@ -25,15 +24,16 @@
 # alexis swyngedauw, 2023
 # moi le vrai, 2023
 # Cédric Anne, 2023
+# Johan Cwiklinski, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 06:29+0000\n"
+"POT-Creation-Date: 2023-09-25 07:31+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Cédric Anne, 2023\n"
+"Last-Translator: Johan Cwiklinski, 2023\n"
 "Language-Team: French (France) (https://app.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -204,8 +204,8 @@ msgstr "%1$s (%2$s%%) "
 #: src/ComputerVirtualMachine.php:295 src/Html.php:5529
 #: src/Document_Item.php:474 src/ProjectCost.php:392 src/Rule.php:2422
 #: src/IPNetwork_Vlan.php:184 src/Document.php:475 src/Document.php:511
-#: src/Document.php:1085 src/User.php:3745 src/User.php:3803 src/User.php:4938
-#: src/User.php:5021 src/User.php:6648 src/Search.php:6887 src/Search.php:7289
+#: src/Document.php:1085 src/User.php:3783 src/User.php:3841 src/User.php:4976
+#: src/User.php:5059 src/User.php:6701 src/Search.php:6887 src/Search.php:7289
 #: src/Search.php:7482 src/ContractCost.php:385 src/NetworkAlias.php:340
 #: src/RuleCollection.php:1355 src/Group_User.php:541 src/Group_User.php:645
 #: src/CommonITILCost.php:622 src/Computer_Item.php:422
@@ -370,7 +370,7 @@ msgstr "%1$s <> %2$s"
 #: src/Item_Devices.php:700 src/Item_Enclosure.php:99
 #: src/Document_Item.php:859 src/Socket.php:808 src/Socket.php:1041
 #: src/ProjectCost.php:380 src/Item_Cluster.php:109 src/Rule.php:3168
-#: src/Budget.php:652 src/User.php:5028 src/Search.php:2123
+#: src/Budget.php:652 src/User.php:5066 src/Search.php:2123
 #: src/Search.php:2125 src/Search.php:2152 src/Search.php:2183
 #: src/Search.php:2238 src/Search.php:2244 src/Search.php:2290
 #: src/Search.php:2330 src/ContractCost.php:372 src/Rack.php:367
@@ -456,7 +456,7 @@ msgstr "%1$s a ajouté plusieurs connecteurs"
 #: front/datacenter.form.php:60 front/knowbaseitem.form.php:65
 #: front/notepad.form.php:55 front/monitor.form.php:60
 #: front/peripheral.form.php:60 front/software.form.php:59
-#: front/user.form.php:71 front/user.form.php:230 front/unmanaged.form.php:59
+#: front/user.form.php:85 front/user.form.php:240 front/unmanaged.form.php:59
 #: front/transfer.form.php:57 front/cable.form.php:60
 #: front/project.form.php:64 front/notificationtemplatetranslation.form.php:56
 #: front/document.form.php:64 front/document.form.php:77
@@ -858,7 +858,7 @@ msgstr "%1$s. Message : %2$s, Erreur : %3$s"
 #: src/AuthLDAP.php:754 src/Budget.php:588 src/Budget.php:625
 #: src/CommonITILTask.php:1400 src/CommonITILTask.php:1673
 #: src/CommonITILTask.php:1738 src/Link.php:676 src/Link.php:701
-#: src/Document.php:253 src/User.php:2705 src/User.php:2964 src/User.php:4774
+#: src/Document.php:253 src/User.php:2743 src/User.php:3002 src/User.php:4812
 #: src/NotificationTargetContract.php:199 src/DBConnection.php:694
 #: src/DBConnection.php:700 src/DBConnection.php:705
 #: src/SoftwareLicense.php:807 src/SoftwareLicense.php:811
@@ -1264,7 +1264,7 @@ msgid "%s adds a team member"
 msgstr "%s ajoute un membre à l'équipe projet"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:146 front/group_user.form.php:57
+#: front/user.form.php:160 front/group_user.form.php:57
 #, php-format
 msgid "%s adds a user to a group"
 msgstr "%s ajoute un membre à un groupe"
@@ -1435,7 +1435,7 @@ msgstr "%s supprime un acteur"
 #: front/datacenter.form.php:77 front/networkport.form.php:130
 #: front/queuednotification.form.php:62 front/monitor.form.php:77
 #: front/peripheral.form.php:77 front/software.form.php:76
-#: front/user.form.php:87 front/unmanaged.form.php:76 front/cable.form.php:77
+#: front/user.form.php:101 front/unmanaged.form.php:76 front/cable.form.php:77
 #: front/project.form.php:81 front/document.form.php:96
 #: front/appliance.form.php:77 front/ticket.form.php:135
 #: front/supplier.form.php:74 front/item_disk.form.php:80
@@ -1455,7 +1455,7 @@ msgid "%s deletes several network ports"
 msgstr "%s supprime plusieurs ports réseau"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:164
+#: front/user.form.php:178
 #, php-format
 msgid "%s deletes users from a group"
 msgstr "%s supprime des membres d'un groupe"
@@ -1490,7 +1490,7 @@ msgstr[2] "%s erreurs"
 msgid "%s extension"
 msgstr "%s extension"
 
-#: src/Config.php:1731 src/Config.php:2812
+#: src/Config.php:1731 src/Config.php:2811
 #, php-format
 msgid "%s extension is installed"
 msgstr "l'extension %s est installée"
@@ -1506,7 +1506,7 @@ msgstr "l'extension %s est installée mais n'utilise pas le pilote mysqlnd"
 msgid "%s extension is installed."
 msgstr "l'extension %s est installée."
 
-#: src/AuthLDAP.php:576 src/Config.php:2819
+#: src/AuthLDAP.php:576 src/Config.php:2818
 #, php-format
 msgid "%s extension is missing"
 msgstr "L'extension %s est absente"
@@ -1517,7 +1517,7 @@ msgstr "L'extension %s est absente"
 msgid "%s extension is missing."
 msgstr "l'extension %s est absente."
 
-#: src/Config.php:1801 src/Config.php:2825
+#: src/Config.php:1801 src/Config.php:2824
 #, php-format
 msgid "%s extension is not present"
 msgstr "l'extension %s est manquante"
@@ -1756,7 +1756,7 @@ msgstr "%s purge une approbation"
 #: front/queuednotification.form.php:88 front/notepad.form.php:67
 #: front/lockedfield.form.php:74 front/monitor.form.php:103
 #: front/peripheral.form.php:103 front/software.form.php:103
-#: front/user.form.php:110 front/unmanaged.form.php:103
+#: front/user.form.php:124 front/unmanaged.form.php:103
 #: front/transfer.form.php:70 front/cable.form.php:105
 #: front/project.form.php:107
 #: front/notificationtemplatetranslation.form.php:69
@@ -1816,7 +1816,7 @@ msgstr "%s a restauré une machine virtuelle"
 #: front/datacenter.form.php:90 front/networkport.form.php:167
 #: front/queuednotification.form.php:75 front/monitor.form.php:90
 #: front/peripheral.form.php:90 front/software.form.php:90
-#: front/user.form.php:99 front/unmanaged.form.php:90 front/cable.form.php:91
+#: front/user.form.php:113 front/unmanaged.form.php:90 front/cable.form.php:91
 #: front/project.form.php:94 front/document.form.php:110
 #: front/appliance.form.php:90 front/ticket.form.php:161
 #: front/supplier.form.php:86 front/reservationitem.form.php:101
@@ -1834,7 +1834,7 @@ msgid "%s rows / page"
 msgstr "%s lignes / page"
 
 #. TRANS: %s is a number of seconds
-#: src/Dropdown.php:1838 src/Inventory/Inventory.php:779 src/CronTask.php:1250
+#: src/Dropdown.php:1838 src/Inventory/Inventory.php:792 src/CronTask.php:1250
 #: src/CronTask.php:1257 src/CronTask.php:1264 src/CronTask.php:1271
 #: src/CronTask.php:1383 src/CronTask.php:1478
 #, php-format
@@ -1985,7 +1985,7 @@ msgstr "%s met à jour une validation"
 #: front/knowbaseitem.form.php:83 front/notepad.form.php:80
 #: front/lockedfield.form.php:89 front/monitor.form.php:116
 #: front/peripheral.form.php:116 front/software.form.php:116
-#: front/user.form.php:134 front/unmanaged.form.php:116
+#: front/user.form.php:148 front/unmanaged.form.php:116
 #: front/transfer.form.php:83 front/cable.form.php:119
 #: front/project.form.php:120
 #: front/notificationtemplatetranslation.form.php:82
@@ -2222,7 +2222,7 @@ msgstr ""
 "La valeur \"%s\" de --ldap-server-id n'est pas pas un identifiant valide de "
 "serveur LDAP."
 
-#: src/User.php:2362
+#: src/User.php:2400
 msgid "... From an external source"
 msgstr "... Depuis une source externe"
 
@@ -2267,7 +2267,7 @@ msgstr "4 - Signalement (ajout, suppression, ticket)"
 msgid "5- Complete (all)"
 msgstr "5 - Complet (tout)"
 
-#: src/GLPIUploadHandler.php:70
+#: src/UploadHandler.php:390
 msgid "A PHP extension stopped the file upload"
 msgstr "Une extension PHP a arrêté le téléchargement"
 
@@ -2365,7 +2365,7 @@ msgstr ""
 "Un enregistrement, au moins un gratuit, est requis pour utiliser le "
 "marketplace !"
 
-#: src/Api/API.php:2158
+#: src/Api/API.php:2162
 msgid "A session is active"
 msgstr "Une session est active"
 
@@ -2408,11 +2408,11 @@ msgstr "ET PAS"
 msgid "ANV"
 msgstr "VNC"
 
-#: src/Auth.php:1266 src/Config.php:735 src/Config.php:2547
+#: src/Auth.php:1266 src/Config.php:735 src/Config.php:2546
 msgid "API"
 msgstr "API"
 
-#: src/Api/API.php:2438
+#: src/Api/API.php:2442
 msgid "API Documentation"
 msgstr "Documentation de l'API"
 
@@ -2431,7 +2431,7 @@ msgstr "API désactivée"
 msgid "API inline Documentation"
 msgstr "Documentation en ligne de l'API"
 
-#: src/User.php:2896 src/User.php:3283
+#: src/User.php:2934 src/User.php:3321
 msgid "API token"
 msgstr "Jeton d'API"
 
@@ -2551,7 +2551,7 @@ msgid "Action when a user is restored in the LDAP directory"
 msgstr ""
 "Action à réaliser quand un utilisateur est restauré dans l'annuaire LDAP"
 
-#: templates/components/form/single-action.html.twig src/User.php:2355
+#: templates/components/form/single-action.html.twig src/User.php:2393
 #: src/Plugin.php:2549
 msgid "Actions"
 msgstr "Actions"
@@ -2563,7 +2563,7 @@ msgstr "Actions refusées"
 #: templates/generic_show_form.html.twig src/MailCollector.php:257
 #: src/MailCollector.php:484 src/TaskCategory.php:53 src/TaskCategory.php:75
 #: src/Rule.php:781 src/Rule.php:942 src/Rule.php:3159 src/AuthLDAP.php:467
-#: src/AuthLDAP.php:1316 src/User.php:2647 src/User.php:3610
+#: src/AuthLDAP.php:1316 src/User.php:2685 src/User.php:3648
 #: src/RuleCollection.php:591 src/Group_User.php:591 src/Group_User.php:632
 #: src/AuthMail.php:138 src/AuthMail.php:190 src/LevelAgreement.php:517
 #: src/SlaLevel.php:114 src/SlaLevel.php:150 src/SlaLevel.php:244
@@ -2759,7 +2759,7 @@ msgstr "Ajouter un délégataire"
 msgid "Add a document"
 msgstr "Ajouter un document"
 
-#: src/Document.php:1719 src/CommonITILObject.php:6826
+#: src/Document.php:1731 src/CommonITILObject.php:6826
 msgctxt "button"
 msgid "Add a document"
 msgstr "Ajouter un document"
@@ -2988,7 +2988,7 @@ msgstr "Ajouter un évènement"
 msgid "Add an item"
 msgstr "Ajout d'un élément"
 
-#: src/Appliance.php:449 src/Document.php:1725 src/SoftwareLicense.php:914
+#: src/Appliance.php:449 src/Document.php:1737 src/SoftwareLicense.php:914
 #: src/Contract.php:423 src/Ticket.php:2608
 msgctxt "button"
 msgid "Add an item"
@@ -3014,7 +3014,7 @@ msgstr "Ajouter des cartouches"
 msgid "Add column"
 msgstr "Ajouter une colonne"
 
-#: src/Config.php:3269
+#: src/Config.php:3268
 msgid "Add component"
 msgstr "Ajouter un composant"
 
@@ -3048,7 +3048,7 @@ msgid "Add documents into ticket notifications"
 msgstr "Ajouter des documents dans les notifications de ticket "
 
 #. TRANS: short for : Add users from an external source
-#: src/User.php:5921
+#: src/User.php:5974
 msgid "Add external"
 msgstr "Ajout externe"
 
@@ -3056,7 +3056,7 @@ msgstr "Ajout externe"
 msgid "Add filter"
 msgstr "Ajouter un filtre"
 
-#: src/Config.php:3241
+#: src/Config.php:3240
 msgid "Add financial information to an item"
 msgstr "Ajout des informations financières à un objet"
 
@@ -3072,7 +3072,7 @@ msgstr "Ajouter suivi (demandeur)"
 msgid "Add followup (watcher)"
 msgstr "Ajouter suivi (observateur)"
 
-#: src/Inventory/Inventory.php:510
+#: src/Inventory/Inventory.php:523
 msgid "Add global lock"
 msgstr "Ajouter un verrou global"
 
@@ -3126,7 +3126,7 @@ msgid "Add several ports"
 msgstr "Ajout de plusieurs ports"
 
 #: src/Log.php:1066 src/NotificationTargetFieldUnicity.php:49
-#: src/Config.php:3180
+#: src/Config.php:3179
 msgid "Add the item"
 msgstr "Ajouter l'élément"
 
@@ -3160,27 +3160,27 @@ msgctxt "button"
 msgid "Add to transfer list"
 msgstr "Ajouter à la liste de transfert"
 
-#: src/User.php:2354
+#: src/User.php:2392
 msgid "Add user..."
 msgstr "Ajouter utilisateur..."
 
-#: src/User.php:5922
+#: src/User.php:5975
 msgid "Add users from an external source"
 msgstr "Ajout d'utilisateurs depuis une source externe"
 
-#: src/Config.php:3230
+#: src/Config.php:3229
 msgid "Add/Remove items from software versions"
 msgstr "Ajout / Suppression des versions logiciels sur les éléments"
 
-#: src/Config.php:3252
+#: src/Config.php:3251
 msgid "Add/remove groups to users"
 msgstr "Ajout / Suppression de groupes aux utilisateurs"
 
-#: src/Config.php:3249
+#: src/Config.php:3248
 msgid "Add/remove profiles to users"
 msgstr "Ajout / Suppression de profils aux utilisateurs"
 
-#: src/Config.php:3171
+#: src/Config.php:3170
 msgid "Add/update relation between items"
 msgstr "Ajout de relation entre objets"
 
@@ -3249,7 +3249,7 @@ msgid "Administrative number"
 msgstr "Matricule"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:942
-#: src/User.php:2754 src/User.php:3226 src/User.php:3775 src/Auth.php:1731
+#: src/User.php:2792 src/User.php:3264 src/User.php:3813 src/Auth.php:1731
 msgctxt "user"
 msgid "Administrative number"
 msgstr "Matricule"
@@ -3421,7 +3421,7 @@ msgstr "Alias de port"
 #: templates/pages/setup/general/general_setup.html.twig
 #: front/report.year.php:56 front/report.year.php:70
 #: front/report.contract.php:55 front/report.contract.php:69
-#: src/Dropdown.php:2274 src/Dropdown.php:3994 src/User.php:4543
+#: src/Dropdown.php:2274 src/Dropdown.php:3994 src/User.php:4581
 #: src/Search.php:2078 src/Search.php:2908 src/Planning.php:558
 #: src/CommonGLPI.php:917 src/NotificationTemplateTranslation.php:434
 #: src/RuleImportAssetCollection.php:119 src/Marketplace/View.php:307
@@ -3498,7 +3498,7 @@ msgstr "Tous les articles publiés"
 msgid "All reservable devices"
 msgstr "Tous les matériels réservables"
 
-#: src/Config.php:3292
+#: src/Config.php:3291
 msgid "All sections"
 msgstr "Toutes les sections"
 
@@ -3586,11 +3586,11 @@ msgstr "Alpha DESC"
 msgid "Also delete date?"
 msgstr "Supprimer aussi la date ?"
 
-#: templates/generic_show_form.html.twig front/find_num.php:92
-#: src/Phone.php:275 src/Monitor.php:262 src/NotificationTargetProblem.php:209
-#: src/Appliance.php:172 src/Printer.php:400 src/Search.php:8149
-#: src/Peripheral.php:246 src/NotificationTargetChange.php:287
-#: src/Computer.php:474 src/CommonDBTM.php:3507 src/NetworkEquipment.php:319
+#: templates/generic_show_form.html.twig src/Phone.php:275 src/Monitor.php:262
+#: src/NotificationTargetProblem.php:209 src/Appliance.php:172
+#: src/Printer.php:400 src/Search.php:8149 src/Peripheral.php:246
+#: src/NotificationTargetChange.php:287 src/Computer.php:474
+#: src/CommonDBTM.php:3507 src/NetworkEquipment.php:319
 #: src/NotificationTargetTicket.php:708 src/Certificate.php:209
 #: src/Config.php:525 src/RuleAsset.php:114
 #: src/NotificationTargetProject.php:701
@@ -4028,7 +4028,7 @@ msgstr "Demander une validation"
 #: src/Transfer.php:3915
 #: src/ContentTemplates/Parameters/AssetParameters.php:58 src/AllAssets.php:45
 #: src/Entity.php:486 src/Entity.php:1299 src/Dashboard/Grid.php:1190
-#: src/Config.php:425 src/Config.php:2538 src/Profile.php:158
+#: src/Config.php:425 src/Config.php:2537 src/Profile.php:158
 #: src/Profile.php:1329 src/Profile.php:2066
 msgid "Asset"
 msgid_plural "Assets"
@@ -4142,7 +4142,7 @@ msgstr[2] "Acteurs attribués"
 #: src/Dashboard/Grid.php:1282 src/Dashboard/Grid.php:1292
 #: src/Dashboard/Grid.php:1301 src/Dashboard/Grid.php:1318
 #: src/Dashboard/Grid.php:1338 src/Config.php:820 src/Config.php:1307
-#: src/Config.php:2539 src/Profile.php:153 src/Profile.php:159
+#: src/Config.php:2538 src/Profile.php:153 src/Profile.php:159
 #: src/Profile.php:1152 src/Profile.php:3121
 msgid "Assistance"
 msgstr "Assistance"
@@ -4190,11 +4190,11 @@ msgstr "Associer un certificat"
 msgid "Associate myself"
 msgstr "M'associer"
 
-#: src/User.php:3422 src/Group_User.php:197
+#: src/User.php:3460 src/Group_User.php:197
 msgid "Associate to a group"
 msgstr "Associer à un groupe"
 
-#: src/User.php:3427
+#: src/User.php:3465
 msgid "Associate to a profile"
 msgstr "Associer à un profil"
 
@@ -4217,7 +4217,7 @@ msgstr[0] "Contrat associé"
 msgstr[1] "Contrats associés"
 msgstr[2] "Contrats associés"
 
-#: templates/components/itilobject/selfservice.html.twig front/find_num.php:94
+#: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/KnowbaseItem.php:1927
 #: src/Item_Devices.php:172 src/Stat.php:1623 src/Lockedfield.php:120
 #: src/KnowbaseItem_Item.php:71 src/Item_SoftwareVersion.php:79
@@ -4378,8 +4378,8 @@ msgid "August"
 msgstr "Août"
 
 #: index.php:141 front/helpdesk.faq.php:51
-#: front/knowbaseitemtranslation.form.php:87 src/User.php:2694
-#: src/User.php:3669 src/Auth.php:108 src/Config.php:605 src/Config.php:754
+#: front/knowbaseitemtranslation.form.php:87 src/User.php:2732
+#: src/User.php:3707 src/Auth.php:108 src/Config.php:605 src/Config.php:754
 msgid "Authentication"
 msgstr "Authentification"
 
@@ -4403,7 +4403,7 @@ msgstr "Type d'authentification"
 msgid "Author"
 msgstr "Auteur"
 
-#: src/User.php:2787 src/Profile_User.php:1078
+#: src/User.php:2825 src/Profile_User.php:1078
 msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] "Habilitation"
@@ -4594,7 +4594,7 @@ msgstr "Clôture automatique des tickets"
 msgid "Automatic user assignment"
 msgstr "Affectation automatique des utilisateurs"
 
-#: src/User.php:4711
+#: src/User.php:4749
 msgid "Automatically add a user of an external source"
 msgstr "Ajouter directement un utilisateur d'une source externe"
 
@@ -4627,7 +4627,7 @@ msgstr ""
 msgid "Automatically update of the elements related to the computers"
 msgstr "Mise à jour automatique des éléments connectés aux ordinateurs"
 
-#: front/planning.php:70 src/Planning.php:540 ajax/planningcheck.php:70
+#: front/planning.php:74 src/Planning.php:540 ajax/planningcheck.php:70
 #: ajax/planningcheck.php:72 ajax/planningcheck.php:77
 msgid "Availability"
 msgstr "Disponibilité"
@@ -4740,7 +4740,7 @@ msgstr "Image d'arrière plan (plan)"
 msgid "Backup plan"
 msgstr "Plan de repli"
 
-#: src/Api/API.php:1598
+#: src/Api/API.php:1602
 msgid "Bad field ID in search criteria"
 msgstr "Identifiant de champ incorrect dans le critère de recherche"
 
@@ -4793,7 +4793,7 @@ msgid "Begin"
 msgstr "Début"
 
 #: src/Csv/PlanningCsv.php:75 src/ProjectCost.php:159 src/ProjectCost.php:283
-#: src/ProjectCost.php:369 src/CommonITILTask.php:983 src/User.php:3857
+#: src/ProjectCost.php:369 src/CommonITILTask.php:983 src/User.php:3895
 #: src/ContractCost.php:150 src/ContractCost.php:274 src/ContractCost.php:361
 #: src/CommonITILCost.php:135 src/CommonITILCost.php:433
 #: src/CommonITILCost.php:595 src/Console/Ldap/SynchronizeUsersCommand.php:251
@@ -5305,7 +5305,7 @@ msgstr ""
 "Les droits de mise à jour ne peuvent être supprimés de ce profil car il "
 "s'agit du seul profil ayant ce droit."
 
-#: src/User.php:1102
+#: src/User.php:1140
 msgid ""
 "Can't set user as inactive as it is the only remaining super administrator."
 msgstr ""
@@ -5437,7 +5437,7 @@ msgstr[2] "Types de boitiers"
 #: src/DatabaseInstanceCategory.php:45 src/AuthLDAP.php:978
 #: src/AuthLDAP.php:1191 src/AuthLDAP.php:3981
 #: src/RuleDictionnarySoftware.php:132 src/CommonITILTask.php:841
-#: src/CommonITILTask.php:1440 src/User.php:2733 src/User.php:3832
+#: src/CommonITILTask.php:1440 src/User.php:2771 src/User.php:3870
 #: src/Software.php:404 src/RuleSoftwareCategory.php:98 src/Auth.php:1786
 #: src/Item_SoftwareVersion.php:1078 src/DatabaseInstance.php:389
 #: src/CommonITILObject.php:4106 src/CommonITILObject.php:6660
@@ -5559,7 +5559,7 @@ msgstr "Changement de %1$s à %2$s"
 msgid "Change a component"
 msgstr "Modifier un composant"
 
-#: src/Config.php:3154
+#: src/Config.php:3153
 msgid "Change all"
 msgstr "Changer tous"
 
@@ -5644,7 +5644,7 @@ msgstr[0] "Gabarit de changement"
 msgstr[1] "Gabarits de changement"
 msgstr[2] "Gabarits de changement"
 
-#: src/User.php:3438
+#: src/User.php:3476
 msgctxt "button"
 msgid "Change the authentication method"
 msgstr "Changer la méthode d'authentification"
@@ -5692,7 +5692,7 @@ msgstr "Changements à traiter"
 #: src/CommonDropdown.php:423 src/ProjectCost.php:125 src/Budget.php:199
 #: src/PassiveDCEquipment.php:79 src/CommonITILTask.php:711 src/Link.php:204
 #: src/QueuedNotification.php:208 src/Document.php:983
-#: src/NetworkPortEthernet.php:212 src/User.php:3534 src/Search.php:8090
+#: src/NetworkPortEthernet.php:212 src/User.php:3572 src/Search.php:8090
 #: src/Search.php:8111 src/ContractCost.php:116 src/Group_User.php:718
 #: src/CommonITILCost.php:101 src/SoftwareLicense.php:343
 #: src/CommonDBRelation.php:315 src/LevelAgreement.php:635
@@ -5706,7 +5706,7 @@ msgstr "Changements à traiter"
 #: src/NetworkPortFiberchannel.php:208 src/NetworkPortWifi.php:144
 #: src/CommonITILObject.php:3966 src/Contract.php:479 src/CommonDevice.php:258
 #: src/LevelAgreementLevel.php:103 src/Profile_User.php:943
-#: src/Config.php:3616 src/Profile.php:1987 src/Reminder.php:384
+#: src/Config.php:3615 src/Profile.php:1987 src/Reminder.php:384
 #: src/Notification.php:365 src/NetworkPort.php:619 src/NetworkPort.php:1552
 #: src/RSSFeed.php:423 src/CronTask.php:1603 src/Infocom.php:1475
 #: src/SLM.php:217 src/Item_SoftwareLicense.php:73 src/Item_Disk.php:332
@@ -5972,7 +5972,7 @@ msgstr[1] ""
 msgstr[2] ""
 "Nettoyer %1$d fichiers temporaires créés depuis plus de %2$s secondes"
 
-#: src/User.php:3442 src/Auth.php:1516
+#: src/User.php:3480 src/Auth.php:1516
 msgid "Clean LDAP fields and force synchronisation"
 msgstr "Nettoyer les champs LDAP et forcer la synchronisation"
 
@@ -5988,7 +5988,7 @@ msgstr "Nettoyage des sessions expirées"
 msgid "Clean generated graphics"
 msgstr "Nettoyage des graphiques générés"
 
-#: src/Inventory/Inventory.php:830
+#: src/Inventory/Inventory.php:843
 msgid "Clean inventories orphaned files"
 msgstr "Nettoyages des fichiers orphelins venant des inventaires"
 
@@ -6000,7 +6000,7 @@ msgstr "Vider la file d'attente des notifications"
 msgid "Clean old logs"
 msgstr "Nettoyage des anciens journaux"
 
-#: src/Document.php:1856
+#: src/Document.php:1868
 msgid "Clean orphaned documents"
 msgstr "Nettoyage des documents orphelins"
 
@@ -6008,7 +6008,7 @@ msgstr "Nettoyage des documents orphelins"
 msgid "Clean temporary files"
 msgstr "Nettoyage des fichiers temporaires"
 
-#: src/Inventory/Inventory.php:827
+#: src/Inventory/Inventory.php:840
 msgid "Clean temporary files created from inventories"
 msgstr "Nettoyages des fichier temporaires venant des inventaires"
 
@@ -6022,7 +6022,7 @@ msgstr "Kit de nettoyage"
 
 #: templates/components/form/fields_macros.html.twig src/MailCollector.php:270
 #: src/Html.php:2773 src/Html.php:2968 src/Html.php:3100 src/AuthLDAP.php:527
-#: src/User.php:2529 src/User.php:2997 src/User.php:2998 src/User.php:6435
+#: src/User.php:2567 src/User.php:3035 src/User.php:3036 src/User.php:6488
 #: src/NotificationMailingSetting.php:372 src/DCRoom.php:173
 #: src/DCRoom.php:176 src/Config.php:559 src/Config.php:2078
 msgid "Clear"
@@ -6304,8 +6304,8 @@ msgstr "Commenter les entrées de la base de connaissances"
 #: src/Rule.php:958 src/AuthLDAP.php:530 src/AuthLDAP.php:939
 #: src/AuthLDAP.php:1200 src/Budget.php:150 src/Budget.php:274
 #: src/Enclosure.php:156 src/Printer.php:468 src/RuleLocation.php:111
-#: src/Document.php:488 src/Document.php:1094 src/User.php:2748
-#: src/User.php:3708 src/Search.php:8140 src/Line.php:133
+#: src/Document.php:488 src/Document.php:1094 src/User.php:2786
+#: src/User.php:3746 src/Search.php:8140 src/Line.php:133
 #: src/ContractCost.php:142 src/ContractCost.php:279 src/Rack.php:222
 #: src/NetworkAlias.php:143 src/NetworkAlias.php:426
 #: src/NotificationTargetContract.php:176 src/CommonITILCost.php:127
@@ -6331,7 +6331,7 @@ msgstr "Commenter les entrées de la base de connaissances"
 #: src/Contract.php:688 src/Contract.php:1722 src/Reservation.php:845
 #: src/Reservation.php:1134 src/Reservation.php:1216 src/CartridgeItem.php:334
 #: src/CommonDevice.php:291 src/ConsumableItem.php:270
-#: src/RuleDictionnaryPrinter.php:85 src/Cluster.php:103 src/Config.php:3197
+#: src/RuleDictionnaryPrinter.php:85 src/Cluster.php:103 src/Config.php:3196
 #: src/ManualLink.php:113 src/Profile.php:753 src/Profile.php:2057
 #: src/Notification.php:218 src/Notification.php:450
 #: src/RuleImportEntity.php:132 src/NetworkPortMigration.php:303
@@ -6394,7 +6394,7 @@ msgstr "Nom complet"
 #: front/devices.php:44 src/Dropdown.php:1064 src/Item_Devices.php:273
 #: src/Item_Devices.php:565 src/Item_Devices.php:623 src/Event.php:158
 #: src/Transfer.php:3950 src/Lock.php:748 src/Lock.php:1125
-#: src/CommonDevice.php:55 src/CommonDevice.php:329 src/Config.php:3267
+#: src/CommonDevice.php:55 src/CommonDevice.php:329 src/Config.php:3266
 #: src/Profile.php:1061 src/Profile.php:2538
 msgid "Component"
 msgid_plural "Components"
@@ -6494,7 +6494,7 @@ msgctxt "button"
 msgid "Connect"
 msgstr "Connecter"
 
-#: src/Config.php:3281
+#: src/Config.php:3280
 msgid "Connect a component"
 msgstr "Connecter un composant"
 
@@ -6542,7 +6542,7 @@ msgstr "Connexion par ligne commutée - Dialup"
 msgid "Connection errors"
 msgstr "Erreurs de connexion"
 
-#: src/User.php:5651
+#: src/User.php:5704
 msgid "Connection failed"
 msgstr "Échec de connexion"
 
@@ -6995,7 +6995,7 @@ msgstr "Créer un statut"
 msgid "Create survey after"
 msgstr "Déclencher l'enquête après"
 
-#: src/Document.php:1505
+#: src/Document.php:1517
 #, php-format
 msgid "Create the directory %s"
 msgstr "Création du répertoire %s"
@@ -7069,7 +7069,7 @@ msgstr "Création de la base de données ..."
 #: src/Budget.php:233 src/PassiveDCEquipment.php:195 src/Enclosure.php:173
 #: src/Link.php:246 src/QueuedNotification.php:233
 #: src/QueuedNotification.php:735 src/Printer.php:459 src/Document.php:1076
-#: src/User.php:3735 src/Line.php:186 src/Rack.php:239 src/Software.php:421
+#: src/User.php:3773 src/Line.php:186 src/Rack.php:239 src/Software.php:421
 #: src/Peripheral.php:289 src/Lockedfield.php:94 src/Certificate_Item.php:468
 #: src/Transfer.php:139 src/Computer.php:517 src/Contact.php:402
 #: src/Supplier.php:267 src/KnowbaseItem_Item.php:205 src/PDU.php:198
@@ -7174,7 +7174,7 @@ msgstr "Page courante en PDF paysage"
 msgid "Current page in portrait PDF"
 msgstr "Page courante en PDF portrait"
 
-#: src/User.php:5335
+#: src/User.php:5373
 msgid "Current password"
 msgstr "Mot de passe actuel"
 
@@ -7502,7 +7502,7 @@ msgstr ""
 msgid "Database user:"
 msgstr "Utilisateur de la base de données :"
 
-#: src/Config.php:2657
+#: src/Config.php:2656
 #, php-format
 msgid "Database version seems correct (%s) - Perfect!"
 msgstr "La version de la base de données semble correcte (%s) - Parfait !"
@@ -7573,7 +7573,7 @@ msgstr[2] "Jours"
 msgid "Days to keep sent emails"
 msgstr "Jours de conservation des courriels expédiés"
 
-#: src/User.php:3255 src/CommonGLPI.php:353
+#: src/User.php:3293 src/CommonGLPI.php:353
 msgid "Debug"
 msgstr "Debug"
 
@@ -7656,7 +7656,7 @@ msgstr "Affichage par défaut"
 msgid "Default email"
 msgstr "Courriel par défaut"
 
-#: src/User.php:2830 src/User.php:3215 src/User.php:3849
+#: src/User.php:2868 src/User.php:3253 src/User.php:3887
 #: src/Inventory/Conf.php:541 src/RuleRight.php:364
 msgid "Default entity"
 msgstr "Entité par défaut"
@@ -7697,7 +7697,7 @@ msgstr "Par défaut pour les tickets"
 msgid "Default for tickets (mini dashboard)"
 msgstr "Défaut pour les tickets (mini tableau de bord)"
 
-#: templates/components/user/info_card.html.twig src/User.php:2840
+#: templates/components/user/info_card.html.twig src/User.php:2878
 #: src/RuleRight.php:374
 msgid "Default group"
 msgstr "Groupe par défaut"
@@ -7726,7 +7726,7 @@ msgstr "Son de notification par défaut"
 msgid "Default problem template"
 msgstr "Gabarit de problème par défaut"
 
-#: src/User.php:2812 src/User.php:3170 src/User.php:3840 src/RuleRight.php:381
+#: src/User.php:2850 src/User.php:3208 src/User.php:3878 src/RuleRight.php:381
 #: src/RuleTicket.php:687 src/Profile.php:758 src/Profile.php:2040
 msgid "Default profile"
 msgstr "Profil par défaut"
@@ -7792,11 +7792,11 @@ msgstr ""
 "Valeur par défaut des alertes sur les informations financières et "
 "administratives"
 
-#: src/AuthLDAP.php:449 src/Config.php:2537
+#: src/AuthLDAP.php:449 src/Config.php:2536
 msgid "Default values"
 msgstr "Valeurs par défaut"
 
-#: src/Config.php:3522
+#: src/Config.php:3521
 msgid "Delay before account deactivation (in days)"
 msgstr "Délai avant la désactivation du compte (en jours)"
 
@@ -7841,7 +7841,7 @@ msgstr "Supprimer un lien avec un élément"
 msgid "Delete a rule"
 msgstr "Supprimer une règle"
 
-#: src/Config.php:3324
+#: src/Config.php:3323
 msgid "Delete all"
 msgstr "Supprimer tout"
 
@@ -7857,7 +7857,7 @@ msgstr "Supprimer toutes les règles et les recréer par défaut"
 msgid "Delete an item"
 msgstr "Supprimer un élément"
 
-#: src/Config.php:3286
+#: src/Config.php:3285
 msgid "Delete component"
 msgstr "Supprimer un composant"
 
@@ -7869,7 +7869,7 @@ msgstr "Supprimer l'élément"
 msgid "Delete emails"
 msgstr "Supprimer les courriels"
 
-#: src/Config.php:3330
+#: src/Config.php:3329
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
@@ -7933,7 +7933,7 @@ msgctxt "button"
 msgid "Delete permanently the relation with selected elements"
 msgstr "Supprimer définitivement la relation avec les éléments sélectionnés"
 
-#: src/Config.php:3175
+#: src/Config.php:3174
 msgid "Delete relation between items"
 msgstr "Suppression de relations entre objets"
 
@@ -7941,7 +7941,7 @@ msgstr "Suppression de relations entre objets"
 msgid "Delete serie"
 msgstr "Supprimer la série"
 
-#: src/Log.php:1070 src/Config.php:3183
+#: src/Log.php:1070 src/Config.php:3182
 msgid "Delete the item"
 msgstr "Supprimer l'élément"
 
@@ -7969,7 +7969,7 @@ msgstr "Supprimé"
 msgid "Deleted from LDAP"
 msgstr "Supprimé du serveur LDAP"
 
-#: src/User.php:3792 src/Config.php:3261
+#: src/User.php:3830 src/Config.php:3260
 msgid "Deleted user in LDAP directory"
 msgstr "Utilisateur supprimé de l'annuaire LDAP"
 
@@ -8468,7 +8468,7 @@ msgctxt "button"
 msgid "Disconnect"
 msgstr "Déconnecter"
 
-#: src/Config.php:3277
+#: src/Config.php:3276
 msgid "Disconnect a component"
 msgstr "Déconnecter un composant"
 
@@ -8569,11 +8569,11 @@ msgctxt "button"
 msgid "Dissociate certificate"
 msgstr "Dissocier un certificat"
 
-#: src/User.php:3424
+#: src/User.php:3462
 msgid "Dissociate from a group"
 msgstr "Dissocier d'un groupe"
 
-#: src/User.php:3429
+#: src/User.php:3467
 msgid "Dissociate from a profile"
 msgstr "Dissocier d'un profil"
 
@@ -8607,7 +8607,7 @@ msgstr ""
 msgid "Do not copy"
 msgstr "Ne pas copier"
 
-#: src/Config.php:3533
+#: src/Config.php:3532
 msgid "Do not deactivate"
 msgstr "Ne pas désactiver"
 
@@ -8685,11 +8685,11 @@ msgstr "Document"
 msgid "Document Ticket %d"
 msgstr "Document ticket %d"
 
-#: src/Document.php:1240 src/Document.php:1342
+#: src/Document.php:1246 src/Document.php:1354
 msgid "Document copy succeeded."
 msgstr "Document copié avec succès."
 
-#: src/Config.php:3579
+#: src/Config.php:3578
 msgid "Document files maximum size (Mio)"
 msgstr "Taille maximale des documents (Mio)"
 
@@ -8707,7 +8707,7 @@ msgstr[0] "Élément associé au document"
 msgstr[1] "Éléments associés au document"
 msgstr[2] "Éléments associés au document"
 
-#: src/Document.php:1233
+#: src/Document.php:1239
 msgid "Document move succeeded."
 msgstr "Document déplacé avec succès."
 
@@ -8722,11 +8722,11 @@ msgstr[2] "Types de documents"
 msgid "Documents"
 msgstr "Documents"
 
-#: src/Document.php:1491
+#: src/Document.php:1503
 msgid "Documents directory doesn't exist."
 msgstr "Le répertoire des documents n'existe pas."
 
-#: src/Config.php:3574
+#: src/Config.php:3573
 msgid "Documents setup"
 msgstr "Configuration des documents"
 
@@ -8867,7 +8867,7 @@ msgstr ""
 msgid "Download plugin from the GLPI marketplace"
 msgstr "Télécharger le plugin depuis le marketplace de GLPI"
 
-#: src/User.php:2402
+#: src/User.php:2440
 msgid "Download user VCard"
 msgstr "Télécharger la VCard de l'utilisateur"
 
@@ -8976,7 +8976,7 @@ msgid "ERROR"
 msgstr "ERREUR"
 
 #. TRANS: %s is a directory
-#: front/cron.php:44
+#: front/cron.php:45
 #, php-format
 msgid "ERROR: %s is not writable"
 msgstr "ERREUR : %s n'est pas inscriptible"
@@ -9109,8 +9109,8 @@ msgstr "L'élément semble ne pas être géolocalisé ou ne peut être trouvé"
 #: src/AuthLDAP.php:960 src/AuthLDAP.php:1208 src/AuthLDAP.php:1217
 #: src/AuthLDAP.php:1226 src/AuthLDAP.php:1235 src/AuthLDAP.php:3959
 #: src/AuthLDAP.php:3962 src/AuthLDAP.php:3967 src/AuthLDAP.php:3972
-#: src/QueuedNotification.php:749 src/User.php:2653 src/User.php:3142
-#: src/User.php:3576 src/Blacklist.php:247 src/Contact_Supplier.php:310
+#: src/QueuedNotification.php:749 src/User.php:2691 src/User.php:3180
+#: src/User.php:3614 src/Blacklist.php:247 src/Contact_Supplier.php:310
 #: src/Auth.php:1738 src/Auth.php:1744 src/Auth.php:1750 src/Auth.php:1756
 #: src/Contact.php:288 src/Supplier.php:242
 #: src/ContentTemplates/Parameters/SupplierParameters.php:77
@@ -9196,7 +9196,7 @@ msgstr[0] "Notification courriel"
 msgstr[1] "Notifications courriel"
 msgstr[2] "Notifications courriel"
 
-#: src/Api/API.php:2150
+#: src/Api/API.php:2154
 msgid "Email notifications are disabled"
 msgstr "Les notifications par courriel sont désactivées."
 
@@ -9218,7 +9218,7 @@ msgstr "Nom de l'expéditeur du message"
 msgid "Email server"
 msgstr "Serveur de messagerie"
 
-#: src/User.php:3696
+#: src/User.php:3734
 msgid "Email server for authentication"
 msgstr "Serveur de courriel d'authentification"
 
@@ -9463,7 +9463,7 @@ msgstr "Fin à %s"
 #: front/report.infocom.conso.php:74 front/stat.graph.php:380
 #: src/Csv/PlanningCsv.php:76 src/Dropdown.php:690 src/ProjectCost.php:167
 #: src/ProjectCost.php:294 src/ProjectCost.php:370 src/Budget.php:162
-#: src/Budget.php:258 src/CommonITILTask.php:998 src/User.php:3865
+#: src/Budget.php:258 src/CommonITILTask.php:998 src/User.php:3903
 #: src/ContractCost.php:158 src/ContractCost.php:285 src/ContractCost.php:362
 #: src/CommonITILCost.php:143 src/CommonITILCost.php:449
 #: src/CommonITILCost.php:596 src/Stat.php:2120
@@ -9553,7 +9553,7 @@ msgstr ""
 "Permet de s'assurer que la sécurité relative aux cookies de session est "
 "renforcée."
 
-#: front/find_num.php:79 ajax/dropdownTrackingDeviceType.php:72
+#: ajax/dropdownTrackingDeviceType.php:72
 msgid "Enter the first letters (user, item name, serial or asset number)"
 msgstr ""
 "Saisissez les premières lettres (usager, nom du matériel, n° de série ou n° "
@@ -9745,7 +9745,7 @@ msgstr "Erreur lors du contact du serveur LDAP \"%s\"."
 msgid "Error: %s is not a directory"
 msgstr "Erreur : %s n'est pas un répertoire"
 
-#: src/User.php:773 src/User.php:981
+#: src/User.php:784 src/User.php:992
 msgid "Error: the two passwords do not match"
 msgstr "Erreur : les deux mots de passe ne sont pas identiques"
 
@@ -10051,8 +10051,8 @@ msgstr[0] "Lien externe"
 msgstr[1] "Liens externes"
 msgstr[2] "Liens externes"
 
-#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:259
-#: src/TicketSatisfaction.php:309 src/Entity.php:3144 src/Entity.php:3883
+#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:264
+#: src/TicketSatisfaction.php:314 src/Entity.php:3144 src/Entity.php:3883
 msgid "External survey"
 msgstr "Enquête externe"
 
@@ -10124,7 +10124,7 @@ msgstr "Echec de connexion au serveur proxy (%s)"
 msgid "Failed to create recurrent item %s"
 msgstr "Création de l'élément récurrent %s échouée"
 
-#: src/Document.php:1520
+#: src/Document.php:1532
 #, php-format
 msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
@@ -10133,7 +10133,7 @@ msgstr ""
 "Echec de création du répertoire %s. Vérifiez que vous avez la permission "
 "adéquate"
 
-#: src/Document.php:1216 src/Document.php:1328 src/Document.php:1425
+#: src/Document.php:1222 src/Document.php:1340 src/Document.php:1437
 #, php-format
 msgid "Failed to delete the file %1$s"
 msgstr "Échec de la suppression du fichier %1$s"
@@ -10162,7 +10162,7 @@ msgstr "Échec du chargement du ticket %d"
 msgid "Failed to remove team member"
 msgstr "Échec de la suppression du membre de l'équipe"
 
-#: src/GLPIUploadHandler.php:114
+#: src/UploadHandler.php:434
 msgid "Failed to resize image"
 msgstr "Échec de redimensionnement de l'image"
 
@@ -10170,7 +10170,7 @@ msgstr "Échec de redimensionnement de l'image"
 msgid "Failed to send test email to administrator"
 msgstr "Échec de l'envoi du courriel de test à l'administrateur"
 
-#: src/GLPIUploadHandler.php:66
+#: src/UploadHandler.php:386
 msgid "Failed to write file to disk"
 msgstr "Erreur d'écriture du fichier sur le disque"
 
@@ -10282,17 +10282,17 @@ msgstr "Unicité des champs"
 msgid "File"
 msgstr "Fichier"
 
-#: src/Inventory/Inventory.php:936
+#: src/Inventory/Inventory.php:949
 #, php-format
 msgid "File %1$s %2$s has been removed"
 msgstr "Le fichier %1$s %2$s a été supprimé"
 
-#: src/Inventory/Inventory.php:930
+#: src/Inventory/Inventory.php:943
 #, php-format
 msgid "File %1$s %2$s has not been removed"
 msgstr "Le fichier %1$s %2$s n'a pas été supprimé"
 
-#: src/Inventory/Inventory.php:854
+#: src/Inventory/Inventory.php:867
 #, php-format
 msgid "File %1$s has been removed"
 msgstr "Fichier %1$s a été supprimé"
@@ -10304,7 +10304,7 @@ msgstr ""
 "Le fichier %s contient les requêtes SQL pouvant être utilisées pour revenir "
 "en arrière."
 
-#: src/Document.php:1173 src/Document.php:1284
+#: src/Document.php:1179 src/Document.php:1296
 #, php-format
 msgid "File %s not found."
 msgstr "Fichier %s introuvable."
@@ -10326,27 +10326,27 @@ msgstr "Le fichier a été importé avec succès."
 msgid "File has not been imported: `%s`."
 msgstr "Le fichier n'a pas été importé : `%s`."
 
-#: front/document.send.php:60
+#: front/document.send.php:62
 msgid "File is altered (bad checksum)"
 msgstr "Fichier altéré (mauvaise somme de contrôle)"
 
-#: src/GLPIUploadHandler.php:78
+#: src/UploadHandler.php:398
 msgid "File is too big"
 msgstr "Le fichier est trop gros"
 
-#: src/GLPIUploadHandler.php:82
+#: src/UploadHandler.php:402
 msgid "File is too small"
 msgstr "Le fichier est trop petit"
 
-#: src/Document.php:1242 src/Document.php:1344
+#: src/Document.php:1248 src/Document.php:1356
 msgid "File move failed"
 msgstr "Problème lors du déplacement du fichier"
 
-#: src/Document.php:1235
+#: src/Document.php:1241
 msgid "File move failed."
 msgstr "Problème lors du déplacement du fichier."
 
-#: front/document.send.php:54
+#: front/document.send.php:56
 msgid "File not found"
 msgstr "Fichier introuvable"
 
@@ -10357,11 +10357,11 @@ msgstr[0] "Système de fichier"
 msgstr[1] "Systèmes de fichiers"
 msgstr[2] "Systèmes de fichiers"
 
-#: src/Document.php:1378
+#: src/Document.php:1390
 msgid "File too large to be added."
 msgstr "Fichier trop volumineux pour être ajouté."
 
-#: src/GLPIUploadHandler.php:110
+#: src/UploadHandler.php:430
 msgid "File upload aborted"
 msgstr "Envoi du fichier annulé"
 
@@ -10373,7 +10373,7 @@ msgstr "Fichier(s)"
 msgid "Filename"
 msgstr "Nom de fichier"
 
-#: src/GLPIUploadHandler.php:106
+#: src/UploadHandler.php:426
 msgid "Filetype not allowed"
 msgstr "Type de fichier non autorisé"
 
@@ -10431,7 +10431,7 @@ msgstr "Filtres"
 
 #. TRANS: Always plural
 #: templates/components/infocom.html.twig src/Transfer.php:3971
-#: src/Entity.php:2286 src/Consumable.php:637 src/Config.php:3238
+#: src/Entity.php:2286 src/Consumable.php:637 src/Config.php:3237
 #: src/Infocom.php:114 src/Infocom.php:1204 src/Cartridge.php:826
 msgid "Financial and administrative information"
 msgstr "Informations financières et administratives"
@@ -10484,8 +10484,8 @@ msgstr "Premier contrat valide trouvé dans l'entité du ticket"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:935
 #: src/AuthLDAP.php:1146 src/AuthLDAP.php:3976
-#: src/NotificationTargetUser.php:152 src/User.php:2580 src/User.php:3005
-#: src/User.php:3568 src/User.php:6440 src/Auth.php:1718 src/Contact.php:239
+#: src/NotificationTargetUser.php:152 src/User.php:2618 src/User.php:3043
+#: src/User.php:3606 src/User.php:6493 src/Auth.php:1718 src/Contact.php:239
 #: src/ContentTemplates/Parameters/UserParameters.php:81
 msgid "First name"
 msgstr "Prénom"
@@ -10586,7 +10586,7 @@ msgstr "Les extensions suivantes sont manquantes : %s."
 msgid "Following extensions are not present: %s."
 msgstr "Les extensions suivantes ne sont pas présentes : %s."
 
-#: src/Inventory/Inventory.php:297
+#: src/Inventory/Inventory.php:310
 #, php-format
 msgid "Following keys has been ignored during process: %1$s"
 msgstr "Les clés suivantes ont été ignorées durant le processus : %1$s"
@@ -10641,7 +10641,7 @@ msgstr ""
 msgid "For tickets closed after"
 msgstr "Pour les tickets clos après le"
 
-#: src/Api/API.php:1606
+#: src/Api/API.php:1610
 msgid "Forbidden field ID in search criteria"
 msgstr "Identifiant de champ interdit dans le critère de recherche"
 
@@ -10691,7 +10691,7 @@ msgstr ""
 "Forcer la stratégie utilisée pour les utilisateurs restaurés (action "
 "configurée actuellement : \"%s\")"
 
-#: src/User.php:3440 src/Auth.php:1511
+#: src/User.php:3478 src/Auth.php:1511
 msgid "Force synchronization"
 msgstr "Forcer la synchronisation"
 
@@ -10709,8 +10709,8 @@ msgid "Forget it,"
 msgstr "Annuler ma demande, "
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
-#: src/NotificationTargetUser.php:43 src/User.php:5398 src/User.php:5413
-#: src/User.php:5511 src/User.php:5535
+#: src/NotificationTargetUser.php:43 src/User.php:5436 src/User.php:5451
+#: src/User.php:5556 src/User.php:5580
 msgid "Forgotten password?"
 msgstr "Mot de passe oublié ?"
 
@@ -10927,7 +10927,7 @@ msgstr "Gbps"
 #: src/Rule.php:2443 src/CommonItilObject_Item.php:147
 #: src/RuleImportAsset.php:188 src/RuleImportAsset.php:192
 #: src/RuleImportAsset.php:197 src/CommonGLPI.php:108
-#: src/CommonITILObject.php:6508 src/Config.php:3170 src/Ticket.php:5074
+#: src/CommonITILObject.php:6508 src/Config.php:3169 src/Ticket.php:5074
 #: src/Ticket.php:5684
 msgid "General"
 msgstr "Général"
@@ -10938,7 +10938,7 @@ msgid "General"
 msgstr "Générale"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Config.php:2011
-#: src/Config.php:2536 src/Profile.php:2595
+#: src/Config.php:2535 src/Profile.php:2595
 msgid "General setup"
 msgstr "Configuration générale"
 
@@ -11203,7 +11203,7 @@ msgstr "Demi donut"
 msgid "Half pie"
 msgstr "Demi camembert"
 
-#: src/User.php:6041
+#: src/User.php:6094
 msgid "Handle users passwords expiration policy"
 msgstr "Gérer les polices d'expiration des mots de passe des utilisateurs"
 
@@ -11225,10 +11225,6 @@ msgstr "Type de disque dur"
 #: src/Report.php:85
 msgid "Hardware financial and administrative information"
 msgstr "Informations financières et administratives du matériel"
-
-#: front/find_num.php:93
-msgid "Hardware type"
-msgstr "Type de matériel"
 
 #: front/report.contract.php:49
 msgid "Hardware under contract"
@@ -11288,7 +11284,7 @@ msgstr "Groupe de support technique"
 msgid "Helpdesk reporting form"
 msgstr "Formulaire de signalement au support technique"
 
-#: src/User.php:6353 src/User.php:6380
+#: src/User.php:6406 src/User.php:6433
 msgid "Helpdesk user"
 msgstr "Utilisateur du service d'assistance"
 
@@ -11395,13 +11391,13 @@ msgid "I don't understand why this migration error is not deleted."
 msgstr ""
 "Je ne comprend pas pourquoi cette erreur de migration n'est pas supprimée."
 
-#: src/Config.php:3100
+#: src/Config.php:3099
 msgid "I know I am using a unstable version."
 msgstr "Je sais que j'utilise une version instable."
 
 #: templates/pages/admin/events_list.html.twig
-#: templates/components/logs.html.twig front/find_num.php:95
-#: src/Csv/LogCsvExport.php:73 src/Phone.php:215 src/Ticket_Ticket.php:71
+#: templates/components/logs.html.twig src/Csv/LogCsvExport.php:73
+#: src/Phone.php:215 src/Ticket_Ticket.php:71
 #: src/NotificationTargetProjectTask.php:589
 #: src/NotificationTargetProjectTask.php:618 src/KnowbaseItem.php:2248
 #: src/Monitor.php:210 src/Unmanaged.php:98 src/Datacenter.php:100
@@ -11413,8 +11409,8 @@ msgstr "Je sais que j'utilise une version instable."
 #: src/Budget.php:215 src/PassiveDCEquipment.php:95 src/Enclosure.php:112
 #: src/CommonITILTask.php:1648 src/CommonITILTask.php:1673
 #: src/CommonITILTask.php:1738 src/Link.php:220 src/QueuedNotification.php:224
-#: src/Printer.php:348 src/Document.php:999 src/User.php:3551
-#: src/User.php:5676 src/Search.php:8100 src/Search.php:8121 src/Line.php:116
+#: src/Printer.php:348 src/Document.php:999 src/User.php:3589
+#: src/User.php:5729 src/Search.php:8100 src/Search.php:8121 src/Line.php:116
 #: src/ContractCost.php:133 src/Rack.php:154 src/Group_User.php:725
 #: src/CommonITILCost.php:118 src/SoftwareLicense.php:360
 #: src/SoftwareLicense.php:1207 src/Software.php:385 src/AuthMail.php:112
@@ -11464,7 +11460,7 @@ msgstr "ID"
 msgid "ID TAG"
 msgstr "TAG ID"
 
-#: src/Api/API.php:1637
+#: src/Api/API.php:1641
 msgid "ID is forbidden along with 'forcedisplay' parameter."
 msgstr "Le champ ID est interdit avec le paramètre « forcedisplay »."
 
@@ -11667,7 +11663,7 @@ msgstr "Si synchronisé ou profil en lecture seule"
 msgid "If the cartridge types are no longer used"
 msgstr "Si les types de cartouches ne sont plus utilisés"
 
-#: src/User.php:5532 src/Api/API.php:2170
+#: src/User.php:5577 src/Api/API.php:2174
 msgid ""
 "If the given email address match an exisiting GLPI user, you will receive an"
 " email containing the informations required to reset your password. Please "
@@ -11734,11 +11730,11 @@ msgstr[0] "Valeur ignorée pour l'unicité"
 msgstr[1] "Valeurs ignorées pour l'unicité"
 msgstr[2] "Valeurs ignorées pour l'unicité"
 
-#: src/GLPIUploadHandler.php:98
+#: src/UploadHandler.php:418
 msgid "Image exceeds maximum height"
 msgstr "L'image est supérieure à la hauteur maximale"
 
-#: src/GLPIUploadHandler.php:90
+#: src/UploadHandler.php:410
 msgid "Image exceeds maximum width"
 msgstr "L'image est supérieure à la largeur maximale"
 
@@ -11749,11 +11745,11 @@ msgstr[0] "Format d'image"
 msgstr[1] "Formats d'image"
 msgstr[2] "Formats d'image"
 
-#: src/GLPIUploadHandler.php:102
+#: src/UploadHandler.php:422
 msgid "Image requires a minimum height"
 msgstr "L'image n'a pas la hauteur minimale"
 
-#: src/GLPIUploadHandler.php:94
+#: src/UploadHandler.php:414
 msgid "Image requires a minimum width"
 msgstr "L'image n'a pas la largeur minimale"
 
@@ -11797,7 +11793,7 @@ msgstr "Impacté par"
 msgid "Impacts"
 msgstr "Impacts"
 
-#: src/User.php:2417
+#: src/User.php:2455
 msgid "Impersonate"
 msgstr "Personnifier"
 
@@ -11819,7 +11815,7 @@ msgctxt "button"
 msgid "Import"
 msgstr "Importer"
 
-#: src/User.php:4668 src/User.php:4672 src/User.php:4675
+#: src/User.php:4706 src/User.php:4710 src/User.php:4713
 msgid "Import a user"
 msgstr "Importer un utilisateur"
 
@@ -11839,7 +11835,7 @@ msgstr "Import refusé (pas de journaux)"
 msgid "Import entities from LDAP directory"
 msgstr "Importation des entités depuis un annuaire LDAP"
 
-#: src/User.php:4718
+#: src/User.php:4756
 msgid "Import from directories"
 msgstr "Import depuis les annuaires"
 
@@ -11847,7 +11843,7 @@ msgstr "Import depuis les annuaires"
 msgid "Import from file"
 msgstr "Importer depuis un fichier"
 
-#: src/User.php:4724
+#: src/User.php:4762
 msgid "Import from other sources"
 msgstr "Import depuis les autres sources"
 
@@ -12285,11 +12281,11 @@ msgstr "Installation terminée."
 msgid "Installation or update of GLPI"
 msgstr "Installation ou mise à jour de GLPI"
 
-#: src/Config.php:3215
+#: src/Config.php:3214
 msgid "Installation/uninstallation of software on items"
 msgstr "Installation / désinstallation des logiciels sur les éléments"
 
-#: src/Config.php:3221
+#: src/Config.php:3220
 msgid "Installation/uninstallation versions on software"
 msgstr "Versions d'installation/désinstallation sur les logiciels"
 
@@ -12376,7 +12372,7 @@ msgstr "Temps interne de résolution"
 msgid "Internal status"
 msgstr "Statut interne"
 
-#: src/TicketSatisfaction.php:256 src/TicketSatisfaction.php:308
+#: src/TicketSatisfaction.php:261 src/TicketSatisfaction.php:313
 #: src/Entity.php:3143 src/Entity.php:3882
 msgid "Internal survey"
 msgstr "Enquête interne"
@@ -12506,7 +12502,7 @@ msgstr "données de cookie non valide"
 msgid "Invalid dates. Update cancelled."
 msgstr "Dates invalides. Modification annulée."
 
-#: src/User.php:5593 src/NotificationMailingSetting.php:87
+#: src/User.php:5638 src/NotificationMailingSetting.php:87
 #: src/NotificationMailingSetting.php:101
 #: src/NotificationMailingSetting.php:120
 #: src/NotificationMailingSetting.php:138 src/Entity.php:2021
@@ -12521,7 +12517,7 @@ msgstr "Adresse de courriel invalide"
 msgid "Invalid email address %s"
 msgstr "Adresse courriel %s invalide"
 
-#: front/document.send.php:114
+#: front/document.send.php:116
 msgid "Invalid filename"
 msgstr "Nom de fichier incorrect"
 
@@ -12605,8 +12601,8 @@ msgstr "Utilisation invalide de l'identifiant de session"
 msgid "Invalid widget"
 msgstr "Widget invalide"
 
-#: front/inventory.conf.php:42 src/Inventory/Inventory.php:486
-#: src/Inventory/Inventory.php:957
+#: front/inventory.conf.php:42 src/Inventory/Inventory.php:499
+#: src/Inventory/Inventory.php:970
 #: src/Agent/Communication/AbstractRequest.php:174 src/Profile.php:948
 #: src/Profile.php:1859 src/Profile.php:3039
 msgid "Inventory"
@@ -12639,15 +12635,14 @@ msgid "Inventory link"
 msgstr "Lien vers l'inventaire"
 
 #: templates/generic_show_form.html.twig
-#: templates/components/form/item_device.html.twig front/find_num.php:97
-#: src/Phone.php:259 src/Change_Item.php:161 src/Monitor.php:254
-#: src/Unmanaged.php:121 src/Item_Rack.php:858
-#: src/NotificationTargetProblem.php:206 src/Item_Devices.php:364
-#: src/Item_Devices.php:365 src/CableStrand.php:151 src/Document_Item.php:416
-#: src/Appliance.php:248 src/Budget.php:359 src/PassiveDCEquipment.php:120
-#: src/Enclosure.php:148 src/Printer.php:392 src/User.php:4905
-#: src/User.php:4987 src/Search.php:8136 src/Rack.php:198 src/Rack.php:917
-#: src/SoftwareLicense.php:548 src/SoftwareLicense.php:637
+#: templates/components/form/item_device.html.twig src/Phone.php:259
+#: src/Change_Item.php:161 src/Monitor.php:254 src/Unmanaged.php:121
+#: src/Item_Rack.php:858 src/NotificationTargetProblem.php:206
+#: src/Item_Devices.php:364 src/Item_Devices.php:365 src/CableStrand.php:151
+#: src/Document_Item.php:416 src/Appliance.php:248 src/Budget.php:359
+#: src/PassiveDCEquipment.php:120 src/Enclosure.php:148 src/Printer.php:392
+#: src/User.php:4943 src/User.php:5025 src/Search.php:8136 src/Rack.php:198
+#: src/Rack.php:917 src/SoftwareLicense.php:548 src/SoftwareLicense.php:637
 #: src/DeviceFirmware.php:231 src/PDU_Rack.php:601 src/Computer_Item.php:414
 #: src/Computer_Item.php:583 src/Peripheral.php:238
 #: src/NotificationTargetChange.php:284 src/Certificate_Item.php:275
@@ -12861,8 +12856,8 @@ msgstr "Verrous d'objet"
 msgid "Item need to be deleted first"
 msgstr "Élément à supprimer en premier"
 
-#: src/Html.php:607 src/CommonDBTM.php:6360 src/Api/API.php:1958
-#: src/Api/API.php:2072 src/Api/API.php:2646
+#: src/Html.php:607 src/CommonDBTM.php:6360 src/Api/API.php:1962
+#: src/Api/API.php:2076 src/Api/API.php:2650
 msgid "Item not found"
 msgstr "Élément introuvable"
 
@@ -12999,7 +12994,7 @@ msgstr "Kbps"
 msgid "Keep"
 msgstr "Garder"
 
-#: src/Config.php:3325
+#: src/Config.php:3324
 msgid "Keep all"
 msgstr "Conserver tout"
 
@@ -13126,7 +13121,7 @@ msgstr[2] "Annuaires LDAP"
 msgid "LDAP directory choice"
 msgstr "Choix de l'annuaire LDAP"
 
-#: src/User.php:3683
+#: src/User.php:3721
 msgid "LDAP directory for authentication"
 msgstr "Annuaire LDAP d'authentification"
 
@@ -13135,7 +13130,7 @@ msgid "LDAP directory information attribute representing the entity"
 msgstr "Information de l'annuaire LDAP représentant l'entité"
 
 #: front/ldap.group.php:44 front/ldap.import.php:58 front/ldap.php:42
-#: front/ldap.group.import.php:42 src/User.php:2370 src/Group.php:151
+#: front/ldap.group.import.php:42 src/User.php:2408 src/Group.php:151
 #: src/Group.php:333
 msgid "LDAP directory link"
 msgstr "Liaison annuaire LDAP"
@@ -13183,13 +13178,13 @@ msgstr "Serveurs LDAP"
 msgid "Label"
 msgstr "Libellé"
 
-#: front/user.form.php:185
+#: front/user.form.php:44 front/user.form.php:195
 msgid "Lang has been changed!"
 msgstr "La langue a été changée !"
 
 #: templates/pages/login.html.twig src/DropdownTranslation.php:424
 #: src/DropdownTranslation.php:515 src/AuthLDAP.php:981 src/AuthLDAP.php:1271
-#: src/User.php:3043 src/User.php:3716 src/KnowbaseItemTranslation.php:234
+#: src/User.php:3081 src/User.php:3754 src/KnowbaseItemTranslation.php:234
 #: src/KnowbaseItemTranslation.php:295
 #: src/NotificationTemplateTranslation.php:135
 #: src/NotificationTemplateTranslation.php:228
@@ -13296,11 +13291,11 @@ msgstr "Dernière mise à jour de l'inventaire"
 msgid "Last inventory value was:"
 msgstr "La dernière valeur inventoriée était :"
 
-#: src/User.php:3660
+#: src/User.php:3698
 msgid "Last login"
 msgstr "Dernière connexion"
 
-#: src/User.php:2921
+#: src/User.php:2959
 #, php-format
 msgid "Last login on %s"
 msgstr "Dernière connexion le %s"
@@ -13309,7 +13304,7 @@ msgstr "Dernière connexion le %s"
 msgid "Last month"
 msgstr "Le mois dernier"
 
-#: src/User.php:3560 src/Contact.php:230
+#: src/User.php:3598 src/Contact.php:230
 msgid "Last name"
 msgstr "Nom de famille"
 
@@ -13329,11 +13324,11 @@ msgstr "Liste des dernières exécutions"
 msgid "Last solution status"
 msgstr "Dernier statut de solution"
 
-#: src/User.php:3784
+#: src/User.php:3822
 msgid "Last synchronization"
 msgstr "Dernière synchronisation"
 
-#: src/User.php:2699
+#: src/User.php:2737
 #, php-format
 msgid "Last synchronization on %s"
 msgstr "Dernière synchronisation le %s"
@@ -13351,7 +13346,7 @@ msgstr "Derniers tickets"
 #: src/CommonDropdown.php:487 src/Appliance.php:216 src/Rule.php:815
 #: src/AuthLDAP.php:455 src/AuthLDAP.php:1253 src/Budget.php:224
 #: src/PassiveDCEquipment.php:130 src/Enclosure.php:164 src/Link.php:237
-#: src/Printer.php:450 src/Document.php:1067 src/User.php:3726
+#: src/Printer.php:450 src/Document.php:1067 src/User.php:3764
 #: src/Search.php:8163 src/Line.php:141 src/Rack.php:230 src/Software.php:412
 #: src/AuthMail.php:146 src/Peripheral.php:280 src/LevelAgreement.php:191
 #: src/Transfer.php:130 src/Transfer.php:3889 src/Computer.php:508
@@ -13363,7 +13358,7 @@ msgstr "Derniers tickets"
 #: src/CommonITILObject.php:4097 src/CommonITILObject.php:6646
 #: src/NotificationTargetPlanningRecall.php:245 src/RuleTicket.php:562
 #: src/Contract.php:548 src/CommonDevice.php:299 src/Cluster.php:111
-#: src/Config.php:3200 src/Profile.php:2012 src/Reminder.php:472
+#: src/Config.php:3199 src/Profile.php:2012 src/Reminder.php:472
 #: src/RSSFeed.php:518 src/CronTask.php:1728
 #: src/Features/PlanningEvent.php:998 src/NotificationTargetProject.php:636
 #: src/NotificationTargetProject.php:657 src/DomainRecord.php:155
@@ -13972,8 +13967,8 @@ msgstr "Opérateur logique"
 
 #: templates/pages/login.html.twig src/MailCollector.php:263
 #: src/MailCollector.php:501 src/AuthLDAP.php:3957
-#: src/NotificationTargetUser.php:150 src/User.php:2510 src/User.php:2964
-#: src/User.php:3541 src/User.php:4713 src/User.php:5326 src/AuthMail.php:232
+#: src/NotificationTargetUser.php:150 src/User.php:2548 src/User.php:3002
+#: src/User.php:3579 src/User.php:4751 src/User.php:5364 src/AuthMail.php:232
 #: src/ContentTemplates/Parameters/UserParameters.php:75 src/RuleRight.php:271
 #: src/Config.php:2074
 msgid "Login"
@@ -14003,11 +13998,11 @@ msgstr "Déconnexion"
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr "Traceurs dans fichiers (SQL, courriel, action automatique...)"
 
-#: src/Config.php:2543 src/PurgeLogs.php:42
+#: src/Config.php:2542 src/PurgeLogs.php:42
 msgid "Logs purge"
 msgstr "Purge de l'historique"
 
-#: src/Config.php:3152
+#: src/Config.php:3151
 msgid "Logs purge configuration"
 msgstr "Configuration de la purge de l'historique"
 
@@ -14186,7 +14181,7 @@ msgstr ""
 msgid "Make unavailable"
 msgstr "Rendre indisponible"
 
-#: src/Api/API.php:1591
+#: src/Api/API.php:1595
 msgid "Malformed search criteria"
 msgstr "Critère de recherche mal formé"
 
@@ -14199,7 +14194,7 @@ msgstr "Gérer"
 msgid "Manage all saved searches"
 msgstr "Gérer toutes les recherches sauvegardées"
 
-#: src/Document.php:1475
+#: src/Document.php:1487
 msgid "Manage document types"
 msgstr "Gérer les types de document"
 
@@ -14228,7 +14223,7 @@ msgid "Managed items"
 msgstr "Éléments gérés"
 
 #: src/Dropdown.php:1173 src/Html.php:1350 src/Event.php:170
-#: src/Transfer.php:4036 src/Config.php:2540 src/Profile.php:161
+#: src/Transfer.php:4036 src/Config.php:2539 src/Profile.php:161
 #: src/Profile.php:1378 src/Profile.php:2225 src/Infocom.php:160
 msgid "Management"
 msgstr "Gestion"
@@ -14425,11 +14420,11 @@ msgstr "Durée maximale"
 msgid "Maximum emails to send at once"
 msgstr "Maximum de courriels à envoyer à chaque fois"
 
-#: src/User.php:6042
+#: src/User.php:6095
 msgid "Maximum expiration notifications to send at once"
 msgstr "Nombre maximum de notifications d'expiration à envoyer"
 
-#: src/GLPIUploadHandler.php:86
+#: src/UploadHandler.php:406
 msgid "Maximum number of files exceeded"
 msgstr "Nombre maximum de fichiers dépassé"
 
@@ -14603,7 +14598,7 @@ msgstr "Messages"
 msgid "Method"
 msgstr "Méthode"
 
-#: src/Api/API.php:2686
+#: src/Api/API.php:2690
 msgid "Method Not Allowed"
 msgstr "Méthode non autorisée"
 
@@ -14761,7 +14756,7 @@ msgstr[2] "Minutes"
 msgid "Mio"
 msgstr "Mio"
 
-#: src/GLPIUploadHandler.php:62
+#: src/UploadHandler.php:382
 msgid "Missing a temporary folder"
 msgstr "Répertoire temporaire manquant"
 
@@ -14806,7 +14801,7 @@ msgstr ""
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:594
 #: src/AuthLDAP.php:971 src/AuthLDAP.php:1173 src/AuthLDAP.php:3979
-#: src/User.php:2723 src/User.php:3150 src/User.php:3634
+#: src/User.php:2761 src/User.php:3188 src/User.php:3672
 #: src/Contact_Supplier.php:308 src/Auth.php:1774 src/Contact.php:272
 #: src/NotificationTargetCommonITILObject.php:1748
 #: src/NotificationTargetCommonITILObject.php:1779
@@ -14969,7 +14964,7 @@ msgctxt "button"
 msgid "Move"
 msgstr "Déplacer"
 
-#: src/User.php:3432
+#: src/User.php:3470
 msgid "Move to group"
 msgstr "Déplacer vers le groupe"
 
@@ -14978,7 +14973,7 @@ msgctxt "button"
 msgid "Move under"
 msgstr "Déplacer sous"
 
-#: src/User.php:930
+#: src/User.php:941
 msgid "Moving temporary file failed."
 msgstr "Échec du déplacement du fichier temporaire."
 
@@ -15032,7 +15027,7 @@ msgstr "Mes tâches"
 msgid "My unpublished articles"
 msgstr "Mes articles non publiés"
 
-#: src/DbUtils.php:1674 src/User.php:4538 src/Search.php:3408
+#: src/DbUtils.php:1674 src/User.php:4576 src/Search.php:3408
 #: src/Dashboard/Filters/UserTechFilter.php:145 ajax/searchoptionvalue.php:87
 msgid "Myself"
 msgstr "Moi-même"
@@ -15091,8 +15086,8 @@ msgstr "PAS"
 #: src/Budget.php:135 src/Budget.php:206 src/Budget.php:357
 #: src/PassiveDCEquipment.php:86 src/Link.php:173 src/Link.php:211
 #: src/NotificationTargetUser.php:151 src/RuleLocation.php:105
-#: src/Document.php:454 src/Document.php:990 src/User.php:4903
-#: src/User.php:4985 src/Search.php:8094 src/Search.php:8115
+#: src/Document.php:454 src/Document.php:990 src/User.php:4941
+#: src/User.php:5023 src/Search.php:8094 src/Search.php:8115
 #: src/ContractCost.php:263 src/ContractCost.php:360 src/Blacklist.php:250
 #: src/Rack.php:96 src/Rack.php:402 src/NetworkAlias.php:128
 #: src/NetworkAlias.php:322 src/NotificationTargetContract.php:174
@@ -15379,7 +15374,7 @@ msgstr[2] "Types de matériels réseau"
 #: src/Entity.php:3101 src/Entity.php:3614 src/Entity.php:3625
 #: src/Entity.php:3652 src/Entity.php:3675 src/Contract.php:1529
 #: src/Contract.php:1551 src/Config.php:683 src/Config.php:1108
-#: src/Config.php:1343 src/Config.php:3494 src/CronTask.php:661
+#: src/Config.php:1343 src/Config.php:3493 src/CronTask.php:661
 #: src/Infocom.php:1762 src/Alert.php:113 src/Alert.php:182
 #: src/Features/PlanningEvent.php:745
 msgid "Never"
@@ -15469,11 +15464,11 @@ msgstr "Nouvel élément"
 msgid "New note"
 msgstr "Nouvelle note"
 
-#: src/User.php:5344
+#: src/User.php:5382
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: src/User.php:5353
+#: src/User.php:5391
 msgid "New password confirmation"
 msgstr "Confirmation du nouveau mot de passe"
 
@@ -15596,7 +15591,7 @@ msgstr "Prochaine exécution"
 msgid "Next task to run: %s"
 msgstr "Prochaine action à exécuter : %s"
 
-#: src/User.php:2879 src/User.php:3271
+#: src/User.php:2917 src/User.php:3309
 msgid "Nickname"
 msgstr "Pseudonyme"
 
@@ -15610,7 +15605,7 @@ msgstr "Pseudonyme"
 #: src/Entity.php:2353 src/Entity.php:2388 src/Entity.php:2561
 #: src/Entity.php:3486 src/Entity.php:3514 src/Entity.php:3534
 #: src/Entity.php:3640 src/Entity.php:3822 src/RuleImportComputer.php:173
-#: src/Config.php:1103 src/Config.php:2367 src/CommonDBChild.php:1027
+#: src/Config.php:1103 src/Config.php:2364 src/CommonDBChild.php:1027
 #: src/SavedSearch_User.php:57 src/SavedSearch_User.php:79 src/Alert.php:151
 #: src/Item_DeviceCamera_ImageResolution.php:169
 msgid "No"
@@ -15764,11 +15759,11 @@ msgstr "Aucun élément trouvé."
 msgid "No entity found"
 msgstr "Aucune entité trouvée"
 
-#: src/Document.php:1556
+#: src/Document.php:1568
 msgid "No file available"
 msgstr "Aucun fichier disponible"
 
-#: src/RuleCollection.php:1178 src/GLPIUploadHandler.php:58
+#: src/RuleCollection.php:1178 src/UploadHandler.php:378
 msgid "No file was uploaded"
 msgstr "Aucun fichier n'a été téléchargé"
 
@@ -15842,7 +15837,7 @@ msgstr "Pas d'élément en cours."
 msgid "No item reaching the end of warranty."
 msgstr "Aucun élément atteignant sa fin de garantie."
 
-#: src/User.php:5648 src/LevelAgreement.php:459 src/FieldUnicity.php:616
+#: src/User.php:5701 src/LevelAgreement.php:459 src/FieldUnicity.php:616
 #: src/FieldUnicity.php:640 src/NotificationEvent.php:246
 msgid "No item to display"
 msgstr "Aucun élément à afficher"
@@ -16121,7 +16116,7 @@ msgstr ""
 "Aucune chemin ou chemin invalide dans la clef HTTP_REFERER. Recharger la "
 "page précédente avant de faire à nouveau une action."
 
-#: src/User.php:3254
+#: src/User.php:3292
 msgid "Normal"
 msgstr "Normal"
 
@@ -16232,7 +16227,7 @@ msgstr[0] "Notification"
 msgstr[1] "Notifications"
 msgstr[2] "Notifications"
 
-#: src/Config.php:3512
+#: src/Config.php:3511
 msgid "Notification disabled"
 msgstr "Notification désactivée"
 
@@ -16359,7 +16354,7 @@ msgstr "Nombre de tickets liés"
 msgid "Number of answered satisfaction survey"
 msgstr "Nombre de réponses aux enquête de satisfaction"
 
-#: src/User.php:3908
+#: src/User.php:3946
 msgid "Number of assigned tickets"
 msgstr "Nombre de tickets assignés"
 
@@ -16578,7 +16573,7 @@ msgstr "Nombre de tickets"
 msgid "Number of tickets already assigned"
 msgstr "Nombre de tickets déjà attribués"
 
-#: templates/components/itilobject/actors/field.html.twig src/User.php:3873
+#: templates/components/itilobject/actors/field.html.twig src/User.php:3911
 msgid "Number of tickets as requester"
 msgstr "Nombre de tickets en tant que demandeur"
 
@@ -16623,11 +16618,11 @@ msgstr "Nombre de consommables utilisés"
 msgid "Number of worn cartridges"
 msgstr "Nombre de cartouches usagées"
 
-#: src/User.php:3893
+#: src/User.php:3931
 msgid "Number of written tickets"
 msgstr "Nombre de tickets créés"
 
-#: templates/install/choose_language.html.twig front/tracking.injector.php:91
+#: templates/install/choose_language.html.twig front/tracking.injector.php:93
 #: src/ITILCategory.php:488 src/ITILCategory.php:496 src/ITILCategory.php:504
 #: src/ITILCategory.php:512 src/Console/System/CheckRequirementsCommand.php:78
 #: src/Printer_CartridgeInfo.php:96 js/glpi_dialog.js:79 js/glpi_dialog.js:260
@@ -17340,7 +17335,7 @@ msgstr[2] "Types d'équipement passif"
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
 #: templates/components/form/snmpcredential.html.twig
-#: src/MailCollector.php:267 src/User.php:2597 src/User.php:3068
+#: src/MailCollector.php:267 src/User.php:2635 src/User.php:3106
 #: src/AuthMail.php:235 src/Config.php:2076
 msgid "Password"
 msgstr "Mot de passe"
@@ -17349,7 +17344,7 @@ msgstr "Mot de passe"
 msgid "Password (for non-anonymous binds)"
 msgstr "Mot de passe du compte (pour les connexions non anonymes)"
 
-#: templates/password_form.html.twig src/User.php:2602 src/User.php:3074
+#: templates/password_form.html.twig src/User.php:2640 src/User.php:3112
 msgid "Password confirmation"
 msgstr "Confirmation mot de passe"
 
@@ -17357,15 +17352,15 @@ msgstr "Confirmation mot de passe"
 msgid "Password expiration date"
 msgstr "Date d'expiration du mot de passe"
 
-#: src/Config.php:3483
+#: src/Config.php:3482
 msgid "Password expiration delay (in days)"
 msgstr "Délai d'expiration des mots de passe (en jours)"
 
-#: src/Config.php:3501
+#: src/Config.php:3500
 msgid "Password expiration notice time (in days)"
 msgstr "Délai de préavis d'expiration du mot de passe (en jours)"
 
-#: src/Config.php:3477
+#: src/Config.php:3476
 msgid "Password expiration policy"
 msgstr "Politique d'expiration du mot de passe"
 
@@ -17377,7 +17372,7 @@ msgstr "Expiration du mot de passe"
 msgid "Password has expired"
 msgstr "Le mot de passe a expiré"
 
-#: src/Config.php:1545 src/Config.php:3394
+#: src/Config.php:1545 src/Config.php:3393
 msgid "Password minimum length"
 msgstr "Longueur minimale des mots de passe"
 
@@ -17401,28 +17396,28 @@ msgstr "Le mot de passe doit contenir au moins un symbole !"
 msgid "Password must include at least a uppercase letter!"
 msgstr "Le mot de passe doit contenir au moins une majuscule !"
 
-#: src/Config.php:3413
+#: src/Config.php:3412
 msgid "Password need digit"
 msgstr "Le mot de passe requiert au moins un chiffre"
 
-#: src/Config.php:3428
+#: src/Config.php:3427
 msgid "Password need lowercase character"
 msgstr "Le mot de passe requiert au moins une minuscule"
 
-#: src/Config.php:3461
+#: src/Config.php:3460
 msgid "Password need symbol"
 msgstr "Le mot de passe requiert au moins un symbole"
 
-#: src/Config.php:3446
+#: src/Config.php:3445
 msgid "Password need uppercase character"
 msgstr "Le mot de passe requiert au moins une majuscule"
 
-#: templates/password_form.html.twig src/User.php:2609 src/User.php:3081
-#: src/User.php:5362 src/Config.php:3373
+#: templates/password_form.html.twig src/User.php:2647 src/User.php:3119
+#: src/User.php:5400 src/Config.php:3372
 msgid "Password security policy"
 msgstr "Politique de sécurité des mots de passe"
 
-#: src/Config.php:3379
+#: src/Config.php:3378
 msgid "Password security policy validation"
 msgstr "Validation de la politique de sécurité des mots de passe"
 
@@ -17430,7 +17425,7 @@ msgstr "Validation de la politique de sécurité des mots de passe"
 msgid "Password too short!"
 msgstr "Le mot de passe est trop court !"
 
-#: front/updatepassword.php:95 src/User.php:5314
+#: front/updatepassword.php:95 src/User.php:5352
 msgid "Password update"
 msgstr "Mise à jour du mot de passe"
 
@@ -17482,7 +17477,7 @@ msgstr "En attente : %s"
 msgid "Percent done"
 msgstr "Pourcentage effectué"
 
-#: src/Config.php:2546
+#: src/Config.php:2545
 msgid "Performance"
 msgstr "Performance"
 
@@ -17615,7 +17610,7 @@ msgstr[0] "Note personnelle"
 msgstr[1] "Notes personnelles"
 msgstr[2] "Notes personnelles"
 
-#: src/Config.php:1028 src/Config.php:2523 src/Profile.php:1050
+#: src/Config.php:1028 src/Config.php:2522 src/Profile.php:1050
 #: src/Profile.php:1110 src/Profile.php:2610
 #: src/Features/PlanningEvent.php:767
 msgid "Personalization"
@@ -17638,7 +17633,7 @@ msgstr "Téléphone"
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:587
 #: src/AuthLDAP.php:967 src/AuthLDAP.php:1164 src/AuthLDAP.php:3978
-#: src/User.php:2739 src/User.php:3191 src/User.php:3626
+#: src/User.php:2777 src/User.php:3229 src/User.php:3664
 #: src/Contact_Supplier.php:307 src/Auth.php:1768 src/Contact.php:264
 #: src/ContentTemplates/Parameters/UserParameters.php:79
 #: src/NotificationTargetCommonITILObject.php:1750
@@ -17679,8 +17674,8 @@ msgstr "Photoconducteur"
 #: templates/generic_show_form.html.twig templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:165
 #: src/CommonDropdown.php:188 src/AuthLDAP.php:985 src/AuthLDAP.php:3982
-#: src/User.php:2524 src/User.php:2990 src/User.php:3589 src/User.php:3960
-#: src/User.php:6430
+#: src/User.php:2562 src/User.php:3028 src/User.php:3627 src/User.php:3998
+#: src/User.php:6483
 msgid "Picture"
 msgid_plural "Pictures"
 msgstr[0] "Image"
@@ -17743,7 +17738,7 @@ msgstr "Date de début planifiée"
 msgid "Planned tickets"
 msgstr "Tickets planifiés"
 
-#: templates/pages/tools/project_task.html.twig front/planning.php:157
+#: templates/pages/tools/project_task.html.twig front/planning.php:161
 #: src/Project.php:1685 src/Event.php:159 src/Event.php:168
 #: src/Planning.php:86 src/ReservationItem.php:204 src/Profile.php:1576
 #: src/Profile.php:3170 src/Reminder.php:447 src/Reminder.php:1027
@@ -17781,7 +17776,7 @@ msgstr "Calendriers"
 msgid "Plans"
 msgstr "Plans"
 
-#: src/Config.php:3108
+#: src/Config.php:3107
 msgid "Please check the unstable version checkbox."
 msgstr "Veuillez cocher la case version instable."
 
@@ -18061,7 +18056,7 @@ msgstr "Le plugin %1$s n'est pas conforme CSRF !"
 #: src/Plugin.php:1153
 #, php-format
 msgid "Plugin %1$s not found!"
-msgstr "Le plugin %1$s n'a pas été trouvé !"
+msgstr "Plugin %1$s non trouvé !"
 
 #: src/Plugin.php:1017
 #, php-format
@@ -18146,7 +18141,7 @@ msgstr ""
 "Plugin à vérifier. Si l’option n’est pas utilisée, des vérifications seront "
 "effectuées sur les tables de base de données GLPI."
 
-#: src/Html.php:1586 src/Config.php:3206
+#: src/Html.php:1586 src/Config.php:3205
 msgid "Plugins"
 msgstr "Plugins"
 
@@ -18227,7 +18222,7 @@ msgstr "Les valeurs possibles sont :"
 #: templates/pages/admin/ldap.choose_directory.html.twig
 #: src/Ticket_Ticket.php:75 src/RuleDictionnarySoftwareCollection.php:99
 #: src/KnowbaseItem.php:1402 src/KnowbaseItem.php:1456 src/Appliance.php:480
-#: src/User.php:3463 src/MassiveAction.php:923 src/MassiveAction.php:1233
+#: src/User.php:3501 src/MassiveAction.php:923 src/MassiveAction.php:1233
 #: src/MassiveAction.php:1262 src/RuleCollection.php:1443 src/Lock.php:1141
 #: src/Lock.php:1159 src/Item_SoftwareVersion.php:170
 #: src/Item_SoftwareVersion.php:182 src/Domain.php:424 src/Domain.php:433
@@ -18254,7 +18249,7 @@ msgstr "Envoyer"
 msgid "Postal code"
 msgstr "Code postal"
 
-#: src/Document.php:1451
+#: src/Document.php:1463
 msgid ""
 "Potential upload attack or file too large. Moving temporary file failed."
 msgstr ""
@@ -18757,7 +18752,7 @@ msgstr "Version d'achat"
 msgid "Purge"
 msgstr "Purger"
 
-#: src/Config.php:3294
+#: src/Config.php:3293
 msgid "Purge all log entries"
 msgstr "Purger toutes les entrées de l'historique"
 
@@ -18900,7 +18895,7 @@ msgid "Read"
 msgstr "Lecture"
 
 #. TRANS: short for : Read method for user authentication and synchronization
-#: src/User.php:5925
+#: src/User.php:5978
 msgid "Read auth"
 msgstr "Lecture auth"
 
@@ -18924,7 +18919,7 @@ msgstr "Lire la FAQ"
 msgid "Read the item's notes"
 msgstr "Lire les notes des éléments"
 
-#: src/User.php:5926
+#: src/User.php:5979
 msgid "Read user authentication and synchronization method"
 msgstr ""
 "Lecture de la méthode d'authentification et de synchronisation des "
@@ -19093,7 +19088,7 @@ msgstr "Événement récurent glissé"
 msgid "Recurring event resized"
 msgstr "Événement récurent redimensionné"
 
-#: src/User.php:2789 src/RuleRightCollection.php:164 src/RuleRight.php:78
+#: src/User.php:2827 src/RuleRightCollection.php:164 src/RuleRight.php:78
 #: src/RuleRight.php:350 src/Profile_User.php:157 src/Profile_User.php:305
 #: src/Profile_User.php:1138
 msgid "Recursive"
@@ -19177,8 +19172,8 @@ msgstr[2] "Courriels rejetés"
 msgid "Refused mail archive folder (optional)"
 msgstr "Dossier d'archivage des courriels refusés (optionnel)"
 
-#: templates/pages/setup/apiclient.html.twig src/User.php:2912
-#: src/User.php:2914 src/User.php:3299 src/User.php:3301
+#: templates/pages/setup/apiclient.html.twig src/User.php:2950
+#: src/User.php:2952 src/User.php:3337 src/User.php:3339
 msgid "Regenerate"
 msgstr "Regénérer"
 
@@ -19298,7 +19293,7 @@ msgstr "Fréquence de rappel des alarmes sur les consommables"
 msgid "Remote ID"
 msgstr "Remote ID"
 
-#: src/User.php:2893 src/User.php:3280
+#: src/User.php:2931 src/User.php:3318
 msgid "Remote access keys"
 msgstr "Clefs d'accès distant"
 
@@ -19319,7 +19314,7 @@ msgctxt "button"
 msgid "Remove a contract"
 msgstr "Supprimer un contrat"
 
-#: src/Document.php:1720
+#: src/Document.php:1732
 msgctxt "button"
 msgid "Remove a document"
 msgstr "Supprimer un document"
@@ -19338,7 +19333,7 @@ msgctxt "button"
 msgid "Remove all notification templates"
 msgstr "Supprimer tous les gabarits de notification"
 
-#: src/Appliance.php:450 src/Document.php:1726 src/Contract.php:424
+#: src/Appliance.php:450 src/Document.php:1738 src/Contract.php:424
 #: src/Ticket.php:2634
 msgctxt "button"
 msgid "Remove an item"
@@ -19778,7 +19773,7 @@ msgstr "Réinitialiser les options d'affichage"
 msgid "Reset last run"
 msgstr "Réinitialiser la dernière exécution"
 
-#: src/User.php:5499 src/Api/API.php:2187
+#: src/User.php:5544 src/Api/API.php:2191
 msgid "Reset password successful."
 msgstr "Mot de passe modifié avec succès."
 
@@ -19835,8 +19830,8 @@ msgstr "Date de la réponse"
 msgid "Response date to the satisfaction survey"
 msgstr "Date de réponse à l'enquête de satisfaction"
 
-#: src/AuthLDAP.php:992 src/AuthLDAP.php:1333 src/User.php:2858
-#: src/User.php:3929 src/ContentTemplates/Parameters/UserParameters.php:83
+#: src/AuthLDAP.php:992 src/AuthLDAP.php:1333 src/User.php:2896
+#: src/User.php:3967 src/ContentTemplates/Parameters/UserParameters.php:83
 msgid "Responsible"
 msgstr "Responsable"
 
@@ -19862,7 +19857,7 @@ msgstr "Restaurer"
 msgid "Restore (move out of trashbin)"
 msgstr "Restaurer (sortir de la corbeille)"
 
-#: src/Log.php:1082 src/Config.php:3188
+#: src/Log.php:1082 src/Config.php:3187
 msgid "Restore the item"
 msgstr "Restaurer l'élément"
 
@@ -20145,7 +20140,7 @@ msgstr "Plage horaires d'exécution"
 msgid "Run the \"%1$s\" command for more details."
 msgstr "Exécutez la commande \"%1$s\" pour plus de détails."
 
-#: src/User.php:2639 src/User.php:3112 src/Config.php:1285
+#: src/User.php:2677 src/User.php:3150 src/Config.php:1285
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
 msgstr "Exécutez la commande \"%1$s\" pour l'activer."
@@ -20270,7 +20265,7 @@ msgid "SQL password"
 msgstr "Mot de passe SQL"
 
 #: src/DBConnection.php:82 src/Config.php:657 src/Config.php:2040
-#: src/Config.php:2555
+#: src/Config.php:2554
 msgid "SQL replica"
 msgid_plural "SQL replicas"
 msgstr[0] "Réplicat SQL"
@@ -20367,7 +20362,7 @@ msgstr "Samedi"
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/components/itilobject/actors/main.html.twig src/AuthLDAP.php:685
 #: src/AuthLDAP.php:873 src/AuthLDAP.php:1001 src/AuthLDAP.php:1037
-#: src/User.php:5371 src/Auth.php:1797 src/Impact.php:404 src/Impact.php:1108
+#: src/User.php:5409 src/Auth.php:1797 src/Impact.php:404 src/Impact.php:1108
 #: src/Impact.php:1821 src/Dashboard/Grid.php:862
 msgid "Save"
 msgstr "Enregistrer"
@@ -20381,7 +20376,7 @@ msgstr "Enregistrer"
 #: templates/components/itilobject/footer.html.twig
 #: templates/components/infocom.html.twig
 #: templates/components/form/buttons.html.twig src/Item_Devices.php:754
-#: src/User.php:3305 src/Inventory/Conf.php:993 src/CommonGLPI.php:1404
+#: src/User.php:3343 src/Inventory/Conf.php:993 src/CommonGLPI.php:1404
 #: src/DomainRecordType.php:412 src/ReservationItem.php:415
 #: src/Entity.php:1644 src/Entity.php:1732 src/Entity.php:1973
 #: src/Entity.php:2506 src/Entity.php:2606 src/Entity.php:3220
@@ -20389,8 +20384,8 @@ msgstr "Enregistrer"
 #: src/Reservation.php:878 src/CommonITILValidation.php:899
 #: src/CommonITILActor.php:229 src/CommonITILActor.php:293 src/Config.php:580
 #: src/Config.php:630 src/Config.php:704 src/Config.php:774 src/Config.php:980
-#: src/Config.php:1509 src/Config.php:2083 src/Config.php:3301
-#: src/Config.php:3543 src/Config.php:3596 src/Profile.php:1249
+#: src/Config.php:1509 src/Config.php:2083 src/Config.php:3300
+#: src/Config.php:3542 src/Config.php:3595 src/Profile.php:1249
 #: src/Profile.php:1290 src/Profile.php:1338 src/Profile.php:1406
 #: src/Profile.php:1457 src/Profile.php:1591 src/Profile.php:1703
 #: src/Profile.php:1820 src/Profile.php:1874 src/Profile.php:1918
@@ -20464,9 +20459,9 @@ msgstr "Programmée"
 msgid "Search"
 msgstr "Rechercher"
 
-#: front/find_num.php:84 src/KnowbaseItem.php:1348 src/AuthLDAP.php:1515
-#: src/AuthLDAP.php:4027 src/Search.php:2557 src/Planning.php:570
-#: src/ReservationItem.php:476 src/Knowbase.php:66
+#: src/KnowbaseItem.php:1348 src/AuthLDAP.php:1515 src/AuthLDAP.php:4027
+#: src/Search.php:2557 src/Planning.php:570 src/ReservationItem.php:476
+#: src/Knowbase.php:66
 msgctxt "button"
 msgid "Search"
 msgstr "Rechercher"
@@ -20540,10 +20535,6 @@ msgstr "Affichage des résultats de recherche pour l'utilisateur"
 msgid "Search results for localized items only"
 msgstr "Résultats de recherche pour les éléments géo-localisés uniquement"
 
-#: front/find_num.php:75
-msgid "Search the ID of your hardware"
-msgstr "Rechercher votre numéro de matériel"
-
 #: src/AuthLDAP.php:852 src/AuthLDAP.php:1308
 msgid "Search type"
 msgstr "Type de recherche"
@@ -20561,7 +20552,7 @@ msgstr "Second élément "
 msgid "Secondary"
 msgstr "Secondaire (secondary)"
 
-#: src/Event.php:173 src/Config.php:2545
+#: src/Event.php:173 src/Config.php:2544
 msgid "Security"
 msgstr "Sécurité"
 
@@ -20573,7 +20564,7 @@ msgstr "Configuration de sécurité pour les sessions"
 msgid "Security key cannot be generated!"
 msgstr "La clef de sécurité ne peux être générée"
 
-#: src/Config.php:3370
+#: src/Config.php:3369
 msgid "Security setup"
 msgstr "Configuration de la sécurité"
 
@@ -20903,15 +20894,15 @@ msgstr "Numéro de série"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/assets/operatingsystem.html.twig
-#: templates/components/form/item_device.html.twig front/find_num.php:96
-#: src/Phone.php:251 src/Change_Item.php:160 src/Monitor.php:246
+#: templates/components/form/item_device.html.twig src/Phone.php:251
+#: src/Change_Item.php:160 src/Monitor.php:246
 #: src/NotificationTargetCertificate.php:125
 #: src/ComputerVirtualMachine.php:210 src/ComputerVirtualMachine.php:338
 #: src/NotificationTargetProblem.php:205 src/Item_Devices.php:350
 #: src/Item_Devices.php:351 src/Document_Item.php:415 src/Appliance.php:241
 #: src/Budget.php:358 src/PassiveDCEquipment.php:112 src/Enclosure.php:140
-#: src/Printer.php:384 src/RuleLocation.php:108 src/User.php:4904
-#: src/User.php:4986 src/Search.php:8132 src/Blacklist.php:245
+#: src/Printer.php:384 src/RuleLocation.php:108 src/User.php:4942
+#: src/User.php:5024 src/Search.php:8132 src/Blacklist.php:245
 #: src/Rack.php:190 src/SoftwareLicense.php:372 src/SoftwareLicense.php:626
 #: src/SoftwareLicense.php:941 src/SoftwareLicense.php:1208
 #: src/Computer_Item.php:413 src/Computer_Item.php:582 src/Peripheral.php:230
@@ -21034,7 +21025,7 @@ msgid "Set the status to pending"
 msgstr "Mettre en attente"
 
 #: src/Preference.php:42 src/Impact.php:373 src/Impact.php:1060
-#: src/Impact.php:1119 src/Config.php:2530
+#: src/Impact.php:1119 src/Config.php:2529
 msgid "Settings"
 msgstr "Préférences"
 
@@ -21070,7 +21061,7 @@ msgctxt "button"
 msgid "Show"
 msgstr "Montrer"
 
-#: src/Dropdown.php:308 src/User.php:4625
+#: src/Dropdown.php:308 src/User.php:4663
 #, php-format
 msgid "Show %1$s"
 msgstr "Montrer %1$s"
@@ -21185,8 +21176,8 @@ msgstr[2] "Types de cartes SIM"
 msgid "Simple mode"
 msgstr "Mode simplifié"
 
-#: front/reservationitem.php:41 front/tracking.injector.php:56
-#: front/tracking.injector.php:58 front/reservation.php:45
+#: front/reservationitem.php:41 front/tracking.injector.php:58
+#: front/tracking.injector.php:60 front/reservation.php:45
 #: front/reservation.form.php:51 front/reservation.form.php:53
 #: src/ITILTemplateMandatoryField.php:174 src/ITILTemplate.php:418
 #: src/Profile.php:3730
@@ -21270,14 +21261,13 @@ msgstr[2] "Modèles de prise"
 msgid "Sodium ChaCha20-Poly1305 size constant"
 msgstr "Libsodium ChaCha20-Poly1305 constante de taille"
 
-#: templates/pages/management/softwarelicense.html.twig front/find_num.php:157
-#: src/Dropdown.php:1226 src/Log.php:477 src/Log.php:483 src/Log.php:920
-#: src/SoftwareVersion.php:119 src/Rule.php:294
-#: src/RuleDictionnarySoftware.php:82 src/RuleDictionnarySoftware.php:109
-#: src/SoftwareLicense.php:1210 src/Software.php:67
-#: src/RuleSoftwareCategory.php:75 src/Item_SoftwareVersion.php:1039
-#: src/Entity.php:1896 src/Config.php:3213 src/Profile.php:2101
-#: src/NotificationTargetSoftwareLicense.php:90
+#: templates/pages/management/softwarelicense.html.twig src/Dropdown.php:1226
+#: src/Log.php:477 src/Log.php:483 src/Log.php:920 src/SoftwareVersion.php:119
+#: src/Rule.php:294 src/RuleDictionnarySoftware.php:82
+#: src/RuleDictionnarySoftware.php:109 src/SoftwareLicense.php:1210
+#: src/Software.php:67 src/RuleSoftwareCategory.php:75
+#: src/Item_SoftwareVersion.php:1039 src/Entity.php:1896 src/Config.php:3212
+#: src/Profile.php:2101 src/NotificationTargetSoftwareLicense.php:90
 msgid "Software"
 msgid_plural "Software"
 msgstr[0] "Logiciel"
@@ -21630,8 +21620,8 @@ msgstr "Statistiques"
 #: src/PlanningExternalEventTemplate.php:64 src/Appliance.php:296
 #: src/PassiveDCEquipment.php:147 src/Enclosure.php:131
 #: src/CommonITILTask.php:772 src/CommonITILTask.php:967
-#: src/CommonITILTask.php:1468 src/Printer.php:375 src/User.php:4906
-#: src/User.php:4988 src/Search.php:8105 src/Search.php:8126 src/Line.php:150
+#: src/CommonITILTask.php:1468 src/Printer.php:375 src/User.php:4944
+#: src/User.php:5026 src/Search.php:8105 src/Search.php:8126 src/Line.php:150
 #: src/Rack.php:181 src/NotificationTargetContract.php:182
 #: src/SoftwareLicense.php:484 src/SoftwareLicense.php:948
 #: src/Software.php:598 src/Peripheral.php:221 src/Certificate_Item.php:470
@@ -21772,8 +21762,8 @@ msgstr "Sous-tâche"
 msgid "Success"
 msgstr "Succès"
 
-#: src/Document.php:185 src/Document.php:1201 src/Document.php:1313
-#: src/Document.php:1410
+#: src/Document.php:185 src/Document.php:1207 src/Document.php:1325
+#: src/Document.php:1422
 #, php-format
 msgid "Successful deletion of the file %s"
 msgstr "Fichier %s supprimé avec succès"
@@ -21861,8 +21851,8 @@ msgid "Supported tasks"
 msgstr "Tâches supportées"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:932
-#: src/AuthLDAP.php:1137 src/AuthLDAP.php:3975 src/User.php:2569
-#: src/User.php:2970 src/User.php:6419 src/Auth.php:1712
+#: src/AuthLDAP.php:1137 src/AuthLDAP.php:3975 src/User.php:2607
+#: src/User.php:3008 src/User.php:6472 src/Auth.php:1712
 #: src/ContentTemplates/Parameters/UserParameters.php:82
 msgid "Surname"
 msgstr "Nom de famille"
@@ -21893,8 +21883,8 @@ msgid "Synchronization"
 msgstr "Synchronisation"
 
 #: src/AuthLDAP.php:542 src/AuthLDAP.php:1324 src/AuthLDAP.php:1765
-#: src/AuthLDAP.php:1824 src/AuthLDAP.php:3958 src/User.php:2544
-#: src/User.php:3028 src/User.php:3599
+#: src/AuthLDAP.php:1824 src/AuthLDAP.php:3958 src/User.php:2582
+#: src/User.php:3066 src/User.php:3637
 msgid "Synchronization field"
 msgstr "Champ de synchronisation"
 
@@ -21932,7 +21922,7 @@ msgstr "Synchronisation des utilisateurs déjà importés"
 msgid "Sysdescr"
 msgstr "Sysdescr"
 
-#: src/Event.php:157 src/Config.php:2544
+#: src/Event.php:157 src/Config.php:2543
 msgid "System"
 msgstr "Système"
 
@@ -22282,7 +22272,7 @@ msgstr "Configuration des gabarits"
 msgid "Temporarily down for maintenance"
 msgstr "Temporairement inaccessible pour cause de maintenance"
 
-#: src/Document.php:1274
+#: src/Document.php:1286
 msgid "Temporary directory doesn't exist"
 msgstr "Le répertoire temporaire n'existe pas"
 
@@ -22362,7 +22352,7 @@ msgstr "Texte sur la page de connexion"
 msgid "Text to display during maintenance"
 msgstr "Texte à afficher pendant la durée de la maintenance"
 
-#: front/tracking.injector.php:92
+#: front/tracking.injector.php:94
 msgid "Thank you for using our automatic helpdesk system."
 msgstr "Merci d'avoir utilisé notre système d'assistance."
 
@@ -22442,7 +22432,7 @@ msgid ""
 "The assignment of an OLA to a ticket causes the recalculation of the date."
 msgstr "L'assignation d'un OLA à un ticket cause le re-calcul de la date."
 
-#: src/User.php:5461
+#: src/User.php:5499
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
@@ -22544,11 +22534,11 @@ msgstr "Le moteur traite toutes les règles."
 msgid "The file could not be created in %s."
 msgstr "Le fichier ne peut pas être créé dans %s."
 
-#: src/User.php:938
+#: src/User.php:949
 msgid "The file is not an image file."
 msgstr "Le fichier n'est pas un fichier d'image"
 
-#: src/Document.php:1441 src/User.php:921
+#: src/Document.php:1453 src/User.php:932
 msgid "The file is valid. Upload is successful."
 msgstr "Le fichier est valide et a été téléchargé avec succès."
 
@@ -22607,11 +22597,11 @@ msgstr "Le fichier de log n'a pas pu être créé dans %s."
 msgid "The log file has been created successfully."
 msgstr "Le fichier de log a été créé avec succès."
 
-#: src/User.php:717
+#: src/User.php:728
 msgid "The login is not valid. Unable to add the user."
 msgstr "L'identifiant n'est pas valide. Impossible d'ajouter l'utilisateur."
 
-#: src/User.php:3359
+#: src/User.php:3397
 msgid "The login is not valid. Unable to update login."
 msgstr ""
 "L'identifiant n'est pas valide. Impossible de mettre à jour l'utilisateur."
@@ -22720,7 +22710,7 @@ msgctxt "filters"
 msgid "The type of the item"
 msgstr "Type de l'élément"
 
-#: src/GLPIUploadHandler.php:50
+#: src/UploadHandler.php:370
 msgid ""
 "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in "
 "the HTML form"
@@ -22728,16 +22718,16 @@ msgstr ""
 "Le fichier téléchargé excède la directive MAX_FILE_SIZE spécifiée dans le "
 "formulaire HTML"
 
-#: src/GLPIUploadHandler.php:74
+#: src/UploadHandler.php:394
 msgid "The uploaded file exceeds the post_max_size directive in php.ini"
 msgstr "Le fichier téléchargé excède la directive post_max_size dans php.ini"
 
-#: src/GLPIUploadHandler.php:46
+#: src/UploadHandler.php:366
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
 msgstr ""
 "Le fichier téléchargé excède la directive upload_max_filesize dans php.ini"
 
-#: src/GLPIUploadHandler.php:54
+#: src/UploadHandler.php:374
 msgid "The uploaded file was only partially uploaded"
 msgstr "Le fichier n'a été que partiellement téléchargé"
 
@@ -22822,7 +22812,7 @@ msgstr ""
 "cartes serait trop élevé. Vous pouvez tout de même glisser des cartes vers "
 "cette colonne."
 
-#: src/User.php:6452
+#: src/User.php:6505
 msgid "This is a special user used for automated actions. "
 msgstr "C'est un utilisateur spécial pour les actions automatiques."
 
@@ -23054,7 +23044,7 @@ msgstr "Tickets par statut SLA et par technicien"
 
 #: src/Dashboard/Provider.php:745
 msgid "Tickets by SLA status and by technician group"
-msgstr "Tickets par statut SLA et pas groupe de techniciens"
+msgstr "Tickets par statut SLA et par groupe de techniciens"
 
 #: src/Entity.php:2848
 msgid "Tickets configuration"
@@ -23180,7 +23170,7 @@ msgstr "TTR + Progression"
 msgid "Time to resolve exceeded"
 msgstr "Temps de résolution dépassé"
 
-#: src/User.php:2623 src/User.php:3096
+#: src/User.php:2661 src/User.php:3134
 msgid "Time zone"
 msgstr "Fuseau horaire"
 
@@ -23217,7 +23207,7 @@ msgstr "Fuseau horaire"
 msgid "Timezone usage has been enabled."
 msgstr "L'usage des fuseaux horaires a été activé."
 
-#: src/User.php:2637 src/User.php:3110 src/Config.php:1283
+#: src/User.php:2675 src/User.php:3148 src/Config.php:1283
 msgid "Timezone usage has not been activated."
 msgstr "L'utilisation des fuseaux horaires n'a pas été activé."
 
@@ -23262,7 +23252,7 @@ msgstr ""
 #: templates/components/itilobject/selfservice.html.twig
 #: src/Csv/PlanningCsv.php:72 src/NotificationTargetProjectTask.php:595
 #: src/NotificationTargetProblem.php:255 src/NotificationTargetProblem.php:260
-#: src/ProjectCost.php:132 src/CommonITILTask.php:1652 src/User.php:3824
+#: src/ProjectCost.php:132 src/CommonITILTask.php:1652 src/User.php:3862
 #: src/ContractCost.php:123 src/CommonITILCost.php:108
 #: src/NotificationTargetChange.php:392 src/NotificationTargetChange.php:397
 #: src/Contact.php:343
@@ -23280,7 +23270,7 @@ msgstr "Titre"
 
 #: templates/components/user/info_card.html.twig front/stat.tracking.php:91
 #: front/stat.graph.php:241 src/AuthLDAP.php:974 src/AuthLDAP.php:1182
-#: src/AuthLDAP.php:3980 src/User.php:2765 src/Auth.php:1780
+#: src/AuthLDAP.php:3980 src/User.php:2803 src/Auth.php:1780
 #: src/NotificationTargetCommonITILObject.php:1752
 #: src/NotificationTargetCommonITILObject.php:1776
 #: src/NotificationTargetCommonITILObject.php:1812
@@ -23666,8 +23656,8 @@ msgstr "Paire torsadée (RJ-45)"
 #: src/Budget.php:242 src/Budget.php:355 src/PassiveDCEquipment.php:104
 #: src/CommonDBVisible.php:279 src/RuleDictionnaryPhoneType.php:51
 #: src/RuleDictionnaryPhoneType.php:65 src/QueuedNotification.php:360
-#: src/QueuedNotification.php:700 src/Printer.php:359 src/User.php:4901
-#: src/User.php:4983 src/Blacklist.php:95 src/Blacklist.php:130
+#: src/QueuedNotification.php:700 src/Printer.php:359 src/User.php:4939
+#: src/User.php:5021 src/Blacklist.php:95 src/Blacklist.php:130
 #: src/DisplayPreference.php:700 src/Rack.php:165 src/DeviceSimcard.php:54
 #: src/DeviceSimcard.php:89 src/NotificationTargetContract.php:180
 #: src/RuleCollection.php:1326 src/RuleCollection.php:2354
@@ -23828,7 +23818,7 @@ msgstr "UUID"
 msgid "Unable to add. The user already exist."
 msgstr "Impossible à ajouter. L'utilisateur existe déjà."
 
-#: src/User.php:750
+#: src/User.php:761
 msgid "Unable to add. The user already exists."
 msgstr "Ajout impossible. L'utilisateur existe déjà."
 
@@ -23996,7 +23986,7 @@ msgstr "Impossible de récupérer le code d’autorisation."
 msgid "Unable to get item"
 msgstr "Impossible de récupérer l'élément"
 
-#: front/user.form.php:189
+#: front/user.form.php:199
 msgid "Unable to impersonate user"
 msgstr "Impossible de prendre l'identité de l'utilisateur"
 
@@ -24075,7 +24065,7 @@ msgstr "Impossible de lire le fichier de configuration \"%s\"."
 msgid "Unable to reaffect given elements!"
 msgstr "Impossible d'affecter de nouveau les éléments donnés"
 
-#: src/Inventory/Inventory.php:928
+#: src/Inventory/Inventory.php:941
 #, php-format
 msgid "Unable to remove file %1$s"
 msgstr "Échec de la suppression du fichier %1$s"
@@ -24085,7 +24075,7 @@ msgstr "Échec de la suppression du fichier %1$s"
 msgid "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
 msgstr "Impossible de renommer la table %1$s (%2$s) en %3$s (%4$s) !"
 
-#: src/User.php:5444 src/User.php:5454
+#: src/User.php:5482 src/User.php:5492
 msgid "Unable to reset password, please contact your administrator"
 msgstr ""
 "Impossible de ré-initialiser le mot de passe, veuillez contacter votre "
@@ -24101,7 +24091,7 @@ msgstr "Impossible de sauvegarder le fichier image."
 msgid "Unable to send notification using %1$s"
 msgstr "Impossible d'envoyer la notification en utilisant  %1$s"
 
-#: front/user.form.php:198
+#: front/user.form.php:208
 msgid "Unable to stop impersonating user"
 msgstr "Impossible d'arrêter de prendre l'identité de l'utilisateur"
 
@@ -24140,7 +24130,7 @@ msgstr ""
 "Impossible de mettre à jour le fichier de configuration de la base de "
 "données."
 
-#: src/User.php:3348
+#: src/User.php:3386
 msgid "Unable to update login. A user already exists."
 msgstr "Modification de l'identifiant impossible. Un utilisateur existe déjà."
 
@@ -24182,11 +24172,11 @@ msgstr "Impossible de vérifier le code d’autorisation."
 msgid "Unable to write cache configuration file."
 msgstr "Impossible d'écrire dans le fichier de configuration du cache."
 
-#: front/document.send.php:66 front/document.send.php:111
+#: front/document.send.php:68 front/document.send.php:113
 msgid "Unauthorized access to this file"
 msgstr "Vous n'avez pas le droit d'accéder à ce fichier"
 
-#: src/Document.php:1470 src/RuleCollection.php:1185
+#: src/Document.php:1482 src/RuleCollection.php:1185
 msgid "Unauthorized file type"
 msgstr "Type de fichier non autorisé"
 
@@ -24263,7 +24253,7 @@ msgstr "Inconnu"
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
-#: front/document.send.php:50
+#: front/document.send.php:52
 msgid "Unknown file"
 msgstr "Fichier inconnu"
 
@@ -24288,7 +24278,7 @@ msgstr "Table \"%s\" inconnue trouvée dans la base de données."
 msgid "Unknown ticket"
 msgstr "Ticket inconnu"
 
-#: src/User.php:6651 src/KnowbaseItem_Revision.php:177
+#: src/User.php:6704 src/KnowbaseItem_Revision.php:177
 msgid "Unknown user"
 msgstr "Utilisateur inconnu"
 
@@ -24479,15 +24469,15 @@ msgstr "Mise à jour d'un élément"
 
 #. TRANS: short for : Update method for user authentication and
 #. synchronization
-#: src/User.php:5929
+#: src/User.php:5982
 msgid "Update auth and sync"
 msgstr "Mise à jour auth et sync"
 
-#: src/User.php:4775
+#: src/User.php:4813
 msgid "Update authentification method to"
 msgstr "Mettre à jour la méthode d'authentification pour"
 
-#: src/Config.php:3272
+#: src/Config.php:3271
 msgid "Update component"
 msgstr "Mettre à jour un composant"
 
@@ -24513,7 +24503,7 @@ msgstr "Éditer les suivis (auteur)"
 msgid "Update helpdesk parameters"
 msgstr "Mise à jour des paramètres d'assistance"
 
-#: src/User.php:5930
+#: src/User.php:5983
 msgid "Update method for user authentication and synchronization"
 msgstr ""
 "Mise à jour de la méthode d'authentification et de synchronisation des "
@@ -24599,7 +24589,7 @@ msgstr "Mise à jour du compteur de l'imprimante"
 msgid "Update the approval request to %s"
 msgstr "Mise à jour de la demande de validation à %s"
 
-#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3192
+#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3191
 msgid "Update the item"
 msgstr "Mettre à jour l'élément"
 
@@ -24704,7 +24694,7 @@ msgctxt "button"
 msgid "Upload"
 msgstr "Importer"
 
-#: src/Document.php:1163 src/Document.php:1559
+#: src/Document.php:1169 src/Document.php:1571
 msgid "Upload directory doesn't exist"
 msgstr "Le répertoire de téléchargement n'existe pas"
 
@@ -24757,7 +24747,7 @@ msgstr "Utiliser le DN pour la recherche"
 msgid "Use GLPI"
 msgstr "Utiliser GLPI"
 
-#: src/User.php:3252
+#: src/User.php:3290
 msgid "Use GLPI in mode"
 msgstr "Utiliser GLPI en mode"
 
@@ -24814,7 +24804,7 @@ msgstr "Utiliser les résultats paginés"
 msgid "Use rule for"
 msgstr "Règle utilisée pour"
 
-#: src/User.php:2632 src/User.php:3105 src/Config.php:1279
+#: src/User.php:2670 src/User.php:3143 src/Config.php:1279
 msgid "Use server configuration"
 msgstr "Utiliser la configuration serveur"
 
@@ -24881,7 +24871,7 @@ msgstr[0] "Utilisateur"
 msgstr[1] "Utilisateurs"
 msgstr[2] "Utilisateurs"
 
-#: src/User.php:2705 src/User.php:3766 src/User.php:5627
+#: src/User.php:2743 src/User.php:3804 src/User.php:5680
 msgid "User DN"
 msgstr "DN de l'utilisateur"
 
@@ -24893,7 +24883,7 @@ msgstr "Utilisateur affecté à la tâche"
 msgid "User attribute containing its groups"
 msgstr "Attribut utilisateur indiquant ses groupes"
 
-#: src/Config.php:3258
+#: src/Config.php:3257
 msgid "User authentication method changes"
 msgstr "Changement de type d'authentification sur les utilisateurs"
 
@@ -24929,7 +24919,7 @@ msgstr "Utilisateur possédant le profil"
 msgid "User in group"
 msgstr "Utilisateur dans le groupe"
 
-#: src/User.php:5631
+#: src/User.php:5684
 msgid "User information"
 msgstr "Informations utilisateur"
 
@@ -24942,7 +24932,7 @@ msgstr "Lieu de l'utilisateur"
 msgid "User mentioned"
 msgstr "Utilisateur mentionné"
 
-#: src/User.php:2708
+#: src/User.php:2746
 msgid "User missing in LDAP directory"
 msgstr "Utilisateur manquant dans l'annuaire LDAP"
 
@@ -25045,7 +25035,7 @@ msgstr "Licence valide"
 msgid "Valid licenses"
 msgstr "Licences valides"
 
-#: src/User.php:2663
+#: src/User.php:2701
 msgid "Valid since"
 msgstr "Valide depuis"
 
@@ -25058,7 +25048,7 @@ msgstr "Balises valides"
 msgid "Valid to %s"
 msgstr "Expirant le %s"
 
-#: src/User.php:2671
+#: src/User.php:2709
 msgid "Valid until"
 msgstr "Valide jusqu'à"
 
@@ -25110,10 +25100,11 @@ msgid "Validation request answer"
 msgstr "Réponse à une demande de validation"
 
 #: front/report.infocom.php:63 front/report.infocom.conso.php:62
-#: src/DropdownTranslation.php:426 src/Rule.php:1198 src/Rule.php:2260
-#: src/Blacklist.php:90 src/Blacklist.php:122 src/RuleCollection.php:1418
+#: src/DropdownTranslation.php:426 src/DropdownTranslation.php:573
+#: src/Rule.php:1198 src/Rule.php:2260 src/Blacklist.php:90
+#: src/Blacklist.php:122 src/RuleCollection.php:1418
 #: src/ITILTemplatePredefinedField.php:374 src/RuleAction.php:195
-#: src/Printer_CartridgeInfo.php:73 src/Config.php:3623
+#: src/Printer_CartridgeInfo.php:73 src/Config.php:3622
 #: src/Fieldblacklist.php:79 src/Fieldblacklist.php:121
 #: src/SavedSearch_Alert.php:167 src/SavedSearch_Alert.php:275
 msgid "Value"
@@ -25891,11 +25882,11 @@ msgstr "Jaune"
 msgid "Yes"
 msgstr "Oui"
 
-#: src/Config.php:2366
+#: src/Config.php:2363
 msgid "Yes - Restrict to global management"
 msgstr "Oui - Limiter à la gestion globale"
 
-#: src/Config.php:2365
+#: src/Config.php:2362
 msgid "Yes - Restrict to unit management"
 msgstr "Oui - Restreint à la gestion unitaire"
 
@@ -25974,11 +25965,11 @@ msgstr ""
 "version de la base de données. Veuillez installer les fichiers GLPI dans la "
 "version correspondante à votre base de données."
 
-#: src/Config.php:3092
+#: src/Config.php:3091
 msgid "You are using a development version, be careful!"
 msgstr "Vous utilisez une version de développement, faites attention !"
 
-#: src/Config.php:3093
+#: src/Config.php:3092
 msgid "You are using a pre-release version, be careful!"
 msgstr "Vous utilisez une version préliminaire, soyez prudent !"
 
@@ -26018,7 +26009,7 @@ msgstr ""
 "Vous pouvez ignorer cette suggestion si le dossier racine de votre serveur "
 "web est \"%s\"."
 
-#: src/User.php:6454
+#: src/User.php:6507
 msgid "You can set its name to your organisation's name. "
 msgstr "Vous pouvez définir son nom au nom de votre organisation. "
 
@@ -26131,8 +26122,8 @@ msgstr ""
 "Vous n'avez pas accès à cette application car votre compte a été désactivé "
 "ou supprimé"
 
-#: src/Html.php:644 src/Api/API.php:1052 src/Api/API.php:1830
-#: src/Api/API.php:1967 src/Api/API.php:2101 src/Api/API.php:2706
+#: src/Html.php:644 src/Api/API.php:1052 src/Api/API.php:1834
+#: src/Api/API.php:1971 src/Api/API.php:2105 src/Api/API.php:2710
 msgid "You don't have permission to perform this action."
 msgstr "Vous n'avez pas les droits requis pour réaliser cette action."
 
@@ -26314,7 +26305,7 @@ msgstr "Votre commentaire a été ajouté"
 msgid "Your comment has been edited"
 msgstr "Votre commentaire a été modifié"
 
-#: src/Config.php:2658
+#: src/Config.php:2657
 #, php-format
 msgid "Your database engine version seems too old: %s."
 msgstr ""
@@ -26336,13 +26327,13 @@ msgstr "Vos tickets observés"
 msgid "Your password has been successfully updated."
 msgstr "Votre mot de passe a été mis à jour avec succès."
 
-#: src/User.php:5319
+#: src/User.php:5357
 msgid "Your password has expired. You must change it to be able to login."
 msgstr ""
 "Votre mot de passe a expiré. Vous devez le changer pour pouvoir vous "
 "connecter."
 
-#: templates/password_form.html.twig src/User.php:5436
+#: templates/password_form.html.twig src/User.php:5474
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
 msgstr ""
@@ -26370,7 +26361,7 @@ msgstr "Vos problèmes en cours"
 msgid "Your session has expired."
 msgstr "Votre session a expiré."
 
-#: front/tracking.injector.php:86
+#: front/tracking.injector.php:88
 msgid "Your ticket has been registered, its treatment is in progress."
 msgstr "Votre ticket a bien été enregistré, son traitement est en cours."
 
@@ -26491,7 +26482,7 @@ msgstr "ne contient pas"
 msgid "does not exist"
 msgstr "n'existe pas"
 
-#: src/Api/API.php:2154
+#: src/Api/API.php:2158
 msgid "email parameter missing"
 msgstr "le paramètre email est manquant"
 
@@ -26540,7 +26531,7 @@ msgstr "de"
 msgid "full structure"
 msgstr "structure complète"
 
-#: src/User.php:2906 src/User.php:3293
+#: src/User.php:2944 src/User.php:3331
 #, php-format
 msgid "generated on %s"
 msgstr "généré le %s"
@@ -26573,7 +26564,7 @@ msgstr "caché"
 msgid "images"
 msgstr "images"
 
-#: src/Api/API.php:2666
+#: src/Api/API.php:2670
 msgid "input parameter must be an array of objects"
 msgstr "Le paramètre input doit être un tableau d'objets"
 
@@ -26718,7 +26709,7 @@ msgstr "id manquant"
 msgid "missing itemtype"
 msgstr "itemtype manquant"
 
-#: src/Api/API.php:2243
+#: src/Api/API.php:2247
 msgid "missing parameter app_token"
 msgstr "le paramètre app_token est manquant"
 
@@ -26794,11 +26785,11 @@ msgstr "orientation"
 msgid "others"
 msgstr "autres"
 
-#: src/Api/API.php:2237
+#: src/Api/API.php:2241
 msgid "parameter app_token seems wrong"
 msgstr "le paramètre app_token semble incorrect"
 
-#: src/Api/API.php:2745
+#: src/Api/API.php:2749
 msgid "parameter session_token is missing or empty"
 msgstr "le paramètre session_token est manquant ou vide"
 
@@ -26868,7 +26859,7 @@ msgstr "restaurer"
 msgid "rule"
 msgstr "règle"
 
-#: front/cron.php:45
+#: front/cron.php:46
 msgid "run script as apache user"
 msgstr "lancez le script avec l'utilisateur apache"
 
@@ -26896,7 +26887,7 @@ msgstr "numéro de série"
 msgid "session extension is not installed."
 msgstr "L'extension qui gère les sessions n'est pas installée."
 
-#: src/Api/API.php:2725
+#: src/Api/API.php:2729
 msgid "session_token seems invalid"
 msgstr "session_token semble incorrect"
 
@@ -26972,7 +26963,7 @@ msgstr ""
 msgid "version"
 msgstr "version"
 
-#: src/Api/API.php:2788
+#: src/Api/API.php:2792
 #, php-format
 msgid "view documentation in your browser at %s"
 msgstr "Afficher la documentation dans votre navigateur à %s"

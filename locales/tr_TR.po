@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 06:29+0000\n"
+"POT-Creation-Date: 2023-09-25 07:31+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
 "Last-Translator: Kaya Zeren <kayazeren@gmail.com>, 2023\n"
 "Language-Team: Turkish (Turkey) (https://app.transifex.com/glpi/teams/1637/tr_TR/)\n"
@@ -168,7 +168,7 @@ msgstr "%1$s (%2$d%%) "
 #: src/Item_Devices.php:1051
 #, php-format
 msgid "%1$s (%2$s%%) "
-msgstr ""
+msgstr "%1$s (%%%2$s) "
 
 #. TRANS: %1$s is the name, %2$s the ID
 #. TRANS: %1$s is a name, %2$s is ID
@@ -188,8 +188,8 @@ msgstr ""
 #: src/ComputerVirtualMachine.php:295 src/Html.php:5529
 #: src/Document_Item.php:474 src/ProjectCost.php:392 src/Rule.php:2422
 #: src/IPNetwork_Vlan.php:184 src/Document.php:475 src/Document.php:511
-#: src/Document.php:1085 src/User.php:3745 src/User.php:3803 src/User.php:4938
-#: src/User.php:5021 src/User.php:6648 src/Search.php:6887 src/Search.php:7289
+#: src/Document.php:1085 src/User.php:3783 src/User.php:3841 src/User.php:4976
+#: src/User.php:5059 src/User.php:6701 src/Search.php:6887 src/Search.php:7289
 #: src/Search.php:7482 src/ContractCost.php:385 src/NetworkAlias.php:340
 #: src/RuleCollection.php:1355 src/Group_User.php:541 src/Group_User.php:645
 #: src/CommonITILCost.php:622 src/Computer_Item.php:422
@@ -353,7 +353,7 @@ msgstr "%1$s <> %2$s"
 #: src/Item_Devices.php:700 src/Item_Enclosure.php:99
 #: src/Document_Item.php:859 src/Socket.php:808 src/Socket.php:1041
 #: src/ProjectCost.php:380 src/Item_Cluster.php:109 src/Rule.php:3168
-#: src/Budget.php:652 src/User.php:5028 src/Search.php:2123
+#: src/Budget.php:652 src/User.php:5066 src/Search.php:2123
 #: src/Search.php:2125 src/Search.php:2152 src/Search.php:2183
 #: src/Search.php:2238 src/Search.php:2244 src/Search.php:2290
 #: src/Search.php:2330 src/ContractCost.php:372 src/Rack.php:367
@@ -439,7 +439,7 @@ msgstr "%1$s birkaç soket ekledi"
 #: front/datacenter.form.php:60 front/knowbaseitem.form.php:65
 #: front/notepad.form.php:55 front/monitor.form.php:60
 #: front/peripheral.form.php:60 front/software.form.php:59
-#: front/user.form.php:71 front/user.form.php:230 front/unmanaged.form.php:59
+#: front/user.form.php:85 front/user.form.php:240 front/unmanaged.form.php:59
 #: front/transfer.form.php:57 front/cable.form.php:60
 #: front/project.form.php:64 front/notificationtemplatetranslation.form.php:56
 #: front/document.form.php:64 front/document.form.php:77
@@ -836,7 +836,7 @@ msgstr "%1$s. İleti: %2$s, Hata: %3$s"
 #: src/AuthLDAP.php:754 src/Budget.php:588 src/Budget.php:625
 #: src/CommonITILTask.php:1400 src/CommonITILTask.php:1673
 #: src/CommonITILTask.php:1738 src/Link.php:676 src/Link.php:701
-#: src/Document.php:253 src/User.php:2705 src/User.php:2964 src/User.php:4774
+#: src/Document.php:253 src/User.php:2743 src/User.php:3002 src/User.php:4812
 #: src/NotificationTargetContract.php:199 src/DBConnection.php:694
 #: src/DBConnection.php:700 src/DBConnection.php:705
 #: src/SoftwareLicense.php:807 src/SoftwareLicense.php:811
@@ -1232,7 +1232,7 @@ msgid "%s adds a team member"
 msgstr "%s bir ekip üyesi ekledi"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:146 front/group_user.form.php:57
+#: front/user.form.php:160 front/group_user.form.php:57
 #, php-format
 msgid "%s adds a user to a group"
 msgstr "%s bir gruba bir kullanıcı ekledi"
@@ -1402,7 +1402,7 @@ msgstr "%s bir aktörü sildi"
 #: front/datacenter.form.php:77 front/networkport.form.php:130
 #: front/queuednotification.form.php:62 front/monitor.form.php:77
 #: front/peripheral.form.php:77 front/software.form.php:76
-#: front/user.form.php:87 front/unmanaged.form.php:76 front/cable.form.php:77
+#: front/user.form.php:101 front/unmanaged.form.php:76 front/cable.form.php:77
 #: front/project.form.php:81 front/document.form.php:96
 #: front/appliance.form.php:77 front/ticket.form.php:135
 #: front/supplier.form.php:74 front/item_disk.form.php:80
@@ -1422,7 +1422,7 @@ msgid "%s deletes several network ports"
 msgstr "%s birkaç ağ bağlantı noktasını sildi"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:164
+#: front/user.form.php:178
 #, php-format
 msgid "%s deletes users from a group"
 msgstr "%s bir gruptan kullanıcılar sildi"
@@ -1456,7 +1456,7 @@ msgstr[1] "%s hata"
 msgid "%s extension"
 msgstr "%s eklentisi"
 
-#: src/Config.php:1731 src/Config.php:2812
+#: src/Config.php:1731 src/Config.php:2811
 #, php-format
 msgid "%s extension is installed"
 msgstr "%s eklentisi kuruldu"
@@ -1472,7 +1472,7 @@ msgstr "%s eklentisi kuruldu ancak mysqlnd sürücüsünü kullanmıyor."
 msgid "%s extension is installed."
 msgstr "%s eklentisi kuruldu."
 
-#: src/AuthLDAP.php:576 src/Config.php:2819
+#: src/AuthLDAP.php:576 src/Config.php:2818
 #, php-format
 msgid "%s extension is missing"
 msgstr "%s eklentisi eksik"
@@ -1483,7 +1483,7 @@ msgstr "%s eklentisi eksik"
 msgid "%s extension is missing."
 msgstr "%s eklentisi eksik."
 
-#: src/Config.php:1801 src/Config.php:2825
+#: src/Config.php:1801 src/Config.php:2824
 #, php-format
 msgid "%s extension is not present"
 msgstr "%s eklentisi bulunamadı"
@@ -1716,7 +1716,7 @@ msgstr "%s bir onayı sildi"
 #: front/queuednotification.form.php:88 front/notepad.form.php:67
 #: front/lockedfield.form.php:74 front/monitor.form.php:103
 #: front/peripheral.form.php:103 front/software.form.php:103
-#: front/user.form.php:110 front/unmanaged.form.php:103
+#: front/user.form.php:124 front/unmanaged.form.php:103
 #: front/transfer.form.php:70 front/cable.form.php:105
 #: front/project.form.php:107
 #: front/notificationtemplatetranslation.form.php:69
@@ -1776,7 +1776,7 @@ msgstr "%s bir sanal makineyi geri yükledi"
 #: front/datacenter.form.php:90 front/networkport.form.php:167
 #: front/queuednotification.form.php:75 front/monitor.form.php:90
 #: front/peripheral.form.php:90 front/software.form.php:90
-#: front/user.form.php:99 front/unmanaged.form.php:90 front/cable.form.php:91
+#: front/user.form.php:113 front/unmanaged.form.php:90 front/cable.form.php:91
 #: front/project.form.php:94 front/document.form.php:110
 #: front/appliance.form.php:90 front/ticket.form.php:161
 #: front/supplier.form.php:86 front/reservationitem.form.php:101
@@ -1794,7 +1794,7 @@ msgid "%s rows / page"
 msgstr "%s satır / sayfa"
 
 #. TRANS: %s is a number of seconds
-#: src/Dropdown.php:1838 src/Inventory/Inventory.php:779 src/CronTask.php:1250
+#: src/Dropdown.php:1838 src/Inventory/Inventory.php:792 src/CronTask.php:1250
 #: src/CronTask.php:1257 src/CronTask.php:1264 src/CronTask.php:1271
 #: src/CronTask.php:1383 src/CronTask.php:1478
 #, php-format
@@ -1943,7 +1943,7 @@ msgstr "%s bir onayı güncelledi"
 #: front/knowbaseitem.form.php:83 front/notepad.form.php:80
 #: front/lockedfield.form.php:89 front/monitor.form.php:116
 #: front/peripheral.form.php:116 front/software.form.php:116
-#: front/user.form.php:134 front/unmanaged.form.php:116
+#: front/user.form.php:148 front/unmanaged.form.php:116
 #: front/transfer.form.php:83 front/cable.form.php:119
 #: front/project.form.php:120
 #: front/notificationtemplatetranslation.form.php:82
@@ -2163,7 +2163,7 @@ msgstr "--dsn ve --use-default seçenekleri aynı anda kullanılamaz."
 msgid "--ldap-server-id value \"%s\" is not a valid LDAP server id."
 msgstr "--ldap-server-id \"%s\" değeri geçerli bir LDAP sunucu kimliği değil."
 
-#: src/User.php:2362
+#: src/User.php:2400
 msgid "... From an external source"
 msgstr "... bir dış kaynaktan"
 
@@ -2208,7 +2208,7 @@ msgstr "4- Bildirimler (ekleme, silme, izleme)"
 msgid "5- Complete (all)"
 msgstr "5- Hepsi (tümü)"
 
-#: src/GLPIUploadHandler.php:70
+#: src/UploadHandler.php:390
 msgid "A PHP extension stopped the file upload"
 msgstr "Bir PHP eklentisi yüklemeyi durdurdu"
 
@@ -2304,7 +2304,7 @@ msgid "A registration, at least a free one, is required to use marketplace!"
 msgstr ""
 "Mağazayı kullanabilmek için ücretsiz de olsa kayıt olunması gereklidir!"
 
-#: src/Api/API.php:2158
+#: src/Api/API.php:2162
 msgid "A session is active"
 msgstr "Etkin bir oturum var"
 
@@ -2347,11 +2347,11 @@ msgstr "VE ŞU OLMAYAN"
 msgid "ANV"
 msgstr "NHD"
 
-#: src/Auth.php:1266 src/Config.php:735 src/Config.php:2547
+#: src/Auth.php:1266 src/Config.php:735 src/Config.php:2546
 msgid "API"
 msgstr "API"
 
-#: src/Api/API.php:2438
+#: src/Api/API.php:2442
 msgid "API Documentation"
 msgstr "API belgeleri"
 
@@ -2369,7 +2369,7 @@ msgstr "API devre dışı"
 msgid "API inline Documentation"
 msgstr "API satır arası belgeleri"
 
-#: src/User.php:2896 src/User.php:3283
+#: src/User.php:2934 src/User.php:3321
 msgid "API token"
 msgstr "API kodu"
 
@@ -2486,7 +2486,7 @@ msgstr "LDAP dizininden kullanıcı silindiğinde yapılacak işlem"
 msgid "Action when a user is restored in the LDAP directory"
 msgstr "LDAP dizininden kullanıcı geri yüklendiğinde yapılacak işlem"
 
-#: templates/components/form/single-action.html.twig src/User.php:2355
+#: templates/components/form/single-action.html.twig src/User.php:2393
 #: src/Plugin.php:2549
 msgid "Actions"
 msgstr "İşlemler"
@@ -2498,7 +2498,7 @@ msgstr "Reddedilen işlemler"
 #: templates/generic_show_form.html.twig src/MailCollector.php:257
 #: src/MailCollector.php:484 src/TaskCategory.php:53 src/TaskCategory.php:75
 #: src/Rule.php:781 src/Rule.php:942 src/Rule.php:3159 src/AuthLDAP.php:467
-#: src/AuthLDAP.php:1316 src/User.php:2647 src/User.php:3610
+#: src/AuthLDAP.php:1316 src/User.php:2685 src/User.php:3648
 #: src/RuleCollection.php:591 src/Group_User.php:591 src/Group_User.php:632
 #: src/AuthMail.php:138 src/AuthMail.php:190 src/LevelAgreement.php:517
 #: src/SlaLevel.php:114 src/SlaLevel.php:150 src/SlaLevel.php:244
@@ -2694,7 +2694,7 @@ msgstr "Yetkili ekle"
 msgid "Add a document"
 msgstr "Belge ekle"
 
-#: src/Document.php:1719 src/CommonITILObject.php:6826
+#: src/Document.php:1731 src/CommonITILObject.php:6826
 msgctxt "button"
 msgid "Add a document"
 msgstr "Belge ekle"
@@ -2923,7 +2923,7 @@ msgstr "Bir etkinlik ekle"
 msgid "Add an item"
 msgstr "Öge ekle"
 
-#: src/Appliance.php:449 src/Document.php:1725 src/SoftwareLicense.php:914
+#: src/Appliance.php:449 src/Document.php:1737 src/SoftwareLicense.php:914
 #: src/Contract.php:423 src/Ticket.php:2608
 msgctxt "button"
 msgid "Add an item"
@@ -2949,7 +2949,7 @@ msgstr "Kartuş ekle"
 msgid "Add column"
 msgstr "Sütun ekle"
 
-#: src/Config.php:3269
+#: src/Config.php:3268
 msgid "Add component"
 msgstr "Bileşen ekle"
 
@@ -2983,7 +2983,7 @@ msgid "Add documents into ticket notifications"
 msgstr "Destek kaydı bildirimlerine belge eklensin"
 
 #. TRANS: short for : Add users from an external source
-#: src/User.php:5921
+#: src/User.php:5974
 msgid "Add external"
 msgstr "Dışarıdan ekle"
 
@@ -2991,7 +2991,7 @@ msgstr "Dışarıdan ekle"
 msgid "Add filter"
 msgstr "Süzgeç ekle"
 
-#: src/Config.php:3241
+#: src/Config.php:3240
 msgid "Add financial information to an item"
 msgstr "Bir ögeye mali bilgi ekle"
 
@@ -3007,7 +3007,7 @@ msgstr "İzleme ekle (istekte bulunan)"
 msgid "Add followup (watcher)"
 msgstr "İzlemeye ekle (izleyen)"
 
-#: src/Inventory/Inventory.php:510
+#: src/Inventory/Inventory.php:523
 msgid "Add global lock"
 msgstr "Genel kilit ekle"
 
@@ -3061,7 +3061,7 @@ msgid "Add several ports"
 msgstr "Birkaç bağlantı noktası ekle"
 
 #: src/Log.php:1066 src/NotificationTargetFieldUnicity.php:49
-#: src/Config.php:3180
+#: src/Config.php:3179
 msgid "Add the item"
 msgstr "Öge eklendi"
 
@@ -3095,27 +3095,27 @@ msgctxt "button"
 msgid "Add to transfer list"
 msgstr "Aktarım listesine ekle"
 
-#: src/User.php:2354
+#: src/User.php:2392
 msgid "Add user..."
 msgstr "Kullanıcı ekle..."
 
-#: src/User.php:5922
+#: src/User.php:5975
 msgid "Add users from an external source"
 msgstr "Dış kaynaktan kullanıcılar ekle"
 
-#: src/Config.php:3230
+#: src/Config.php:3229
 msgid "Add/Remove items from software versions"
 msgstr "Uygulama sürümlerine öge ekleme ve çıkarma"
 
-#: src/Config.php:3252
+#: src/Config.php:3251
 msgid "Add/remove groups to users"
 msgstr "Kullanıcılara grup ekle / kaldır"
 
-#: src/Config.php:3249
+#: src/Config.php:3248
 msgid "Add/remove profiles to users"
 msgstr "Kullanıcılara profil ekle ve kaldır"
 
-#: src/Config.php:3171
+#: src/Config.php:3170
 msgid "Add/update relation between items"
 msgstr "Ögeler arası ilişki ekle / güncelle"
 
@@ -3184,7 +3184,7 @@ msgid "Administrative number"
 msgstr "İdari numara"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:942
-#: src/User.php:2754 src/User.php:3226 src/User.php:3775 src/Auth.php:1731
+#: src/User.php:2792 src/User.php:3264 src/User.php:3813 src/Auth.php:1731
 msgctxt "user"
 msgid "Administrative number"
 msgstr "İdari numara"
@@ -3354,7 +3354,7 @@ msgstr "Diğer bağlantı noktası"
 #: templates/pages/setup/general/general_setup.html.twig
 #: front/report.year.php:56 front/report.year.php:70
 #: front/report.contract.php:55 front/report.contract.php:69
-#: src/Dropdown.php:2274 src/Dropdown.php:3994 src/User.php:4543
+#: src/Dropdown.php:2274 src/Dropdown.php:3994 src/User.php:4581
 #: src/Search.php:2078 src/Search.php:2908 src/Planning.php:558
 #: src/CommonGLPI.php:917 src/NotificationTemplateTranslation.php:434
 #: src/RuleImportAssetCollection.php:119 src/Marketplace/View.php:307
@@ -3431,7 +3431,7 @@ msgstr "Tüm yayınlanmış makaleler"
 msgid "All reservable devices"
 msgstr "Tüm ayırtılabilen aygıtlar"
 
-#: src/Config.php:3292
+#: src/Config.php:3291
 msgid "All sections"
 msgstr "Tüm bölümler"
 
@@ -3517,11 +3517,11 @@ msgstr "Alfabetik azalan"
 msgid "Also delete date?"
 msgstr "Tarih de silinsin mi?"
 
-#: templates/generic_show_form.html.twig front/find_num.php:92
-#: src/Phone.php:275 src/Monitor.php:262 src/NotificationTargetProblem.php:209
-#: src/Appliance.php:172 src/Printer.php:400 src/Search.php:8149
-#: src/Peripheral.php:246 src/NotificationTargetChange.php:287
-#: src/Computer.php:474 src/CommonDBTM.php:3507 src/NetworkEquipment.php:319
+#: templates/generic_show_form.html.twig src/Phone.php:275 src/Monitor.php:262
+#: src/NotificationTargetProblem.php:209 src/Appliance.php:172
+#: src/Printer.php:400 src/Search.php:8149 src/Peripheral.php:246
+#: src/NotificationTargetChange.php:287 src/Computer.php:474
+#: src/CommonDBTM.php:3507 src/NetworkEquipment.php:319
 #: src/NotificationTargetTicket.php:708 src/Certificate.php:209
 #: src/Config.php:525 src/RuleAsset.php:114
 #: src/NotificationTargetProject.php:701
@@ -3653,7 +3653,7 @@ msgstr "Toplayıcı bağlantısı kurulmaya çalışılırken bir sorun çıktı
 #: src/Inventory/Conf.php:264
 #, php-format
 msgid "An error occurs during import: `%s`."
-msgstr ""
+msgstr "İçe aktarma sırasında bir sorun çıktı: `%s`."
 
 #: src/Console/Task/UnlockCommand.php:148
 #, php-format
@@ -3950,7 +3950,7 @@ msgstr "Doğrulama iste"
 #: src/Transfer.php:3915
 #: src/ContentTemplates/Parameters/AssetParameters.php:58 src/AllAssets.php:45
 #: src/Entity.php:486 src/Entity.php:1299 src/Dashboard/Grid.php:1190
-#: src/Config.php:425 src/Config.php:2538 src/Profile.php:158
+#: src/Config.php:425 src/Config.php:2537 src/Profile.php:158
 #: src/Profile.php:1329 src/Profile.php:2066
 msgid "Asset"
 msgid_plural "Assets"
@@ -4060,7 +4060,7 @@ msgstr[1] "Atananlar"
 #: src/Dashboard/Grid.php:1282 src/Dashboard/Grid.php:1292
 #: src/Dashboard/Grid.php:1301 src/Dashboard/Grid.php:1318
 #: src/Dashboard/Grid.php:1338 src/Config.php:820 src/Config.php:1307
-#: src/Config.php:2539 src/Profile.php:153 src/Profile.php:159
+#: src/Config.php:2538 src/Profile.php:153 src/Profile.php:159
 #: src/Profile.php:1152 src/Profile.php:3121
 msgid "Assistance"
 msgstr "Destek"
@@ -4108,11 +4108,11 @@ msgstr "Sertifika ilişkilendir"
 msgid "Associate myself"
 msgstr "Kendinizi atayın"
 
-#: src/User.php:3422 src/Group_User.php:197
+#: src/User.php:3460 src/Group_User.php:197
 msgid "Associate to a group"
 msgstr "Grupla ilişkilendir"
 
-#: src/User.php:3427
+#: src/User.php:3465
 msgid "Associate to a profile"
 msgstr "Profil ile ilişkilendir"
 
@@ -4133,7 +4133,7 @@ msgid_plural "Associated contracts"
 msgstr[0] "İlgili sözleşme"
 msgstr[1] "İlgili sözleşmeler"
 
-#: templates/components/itilobject/selfservice.html.twig front/find_num.php:94
+#: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/KnowbaseItem.php:1927
 #: src/Item_Devices.php:172 src/Stat.php:1623 src/Lockedfield.php:120
 #: src/KnowbaseItem_Item.php:71 src/Item_SoftwareVersion.php:79
@@ -4290,8 +4290,8 @@ msgid "August"
 msgstr "Ağustos"
 
 #: index.php:141 front/helpdesk.faq.php:51
-#: front/knowbaseitemtranslation.form.php:87 src/User.php:2694
-#: src/User.php:3669 src/Auth.php:108 src/Config.php:605 src/Config.php:754
+#: front/knowbaseitemtranslation.form.php:87 src/User.php:2732
+#: src/User.php:3707 src/Auth.php:108 src/Config.php:605 src/Config.php:754
 msgid "Authentication"
 msgstr "Kimlik doğrulama"
 
@@ -4315,7 +4315,7 @@ msgstr "Kimlik doğrulama türü"
 msgid "Author"
 msgstr "Geliştiren"
 
-#: src/User.php:2787 src/Profile_User.php:1078
+#: src/User.php:2825 src/Profile_User.php:1078
 msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] "Yetkilendirme"
@@ -4503,7 +4503,7 @@ msgstr "Destek kayıtlarını otomatik kapatma"
 msgid "Automatic user assignment"
 msgstr "Otomatik kullanıcı atama"
 
-#: src/User.php:4711
+#: src/User.php:4749
 msgid "Automatically add a user of an external source"
 msgstr "Bir dış kaynaktan otomatik olarak kullanıcı ekleme"
 
@@ -4535,7 +4535,7 @@ msgstr ""
 msgid "Automatically update of the elements related to the computers"
 msgstr "Bilgisayarlar ile ilgili ögeler otomatik olarak güncellensin"
 
-#: front/planning.php:70 src/Planning.php:540 ajax/planningcheck.php:70
+#: front/planning.php:74 src/Planning.php:540 ajax/planningcheck.php:70
 #: ajax/planningcheck.php:72 ajax/planningcheck.php:77
 msgid "Availability"
 msgstr "Kullanabilirlik"
@@ -4648,7 +4648,7 @@ msgstr "Arka plan fotoğrafı (plan çizimi)"
 msgid "Backup plan"
 msgstr "Yedekleme planı"
 
-#: src/Api/API.php:1598
+#: src/Api/API.php:1602
 msgid "Bad field ID in search criteria"
 msgstr "Arama ölçütünde hatalı bir alan kimliği var"
 
@@ -4699,7 +4699,7 @@ msgid "Begin"
 msgstr "Başlangıç"
 
 #: src/Csv/PlanningCsv.php:75 src/ProjectCost.php:159 src/ProjectCost.php:283
-#: src/ProjectCost.php:369 src/CommonITILTask.php:983 src/User.php:3857
+#: src/ProjectCost.php:369 src/CommonITILTask.php:983 src/User.php:3895
 #: src/ContractCost.php:150 src/ContractCost.php:274 src/ContractCost.php:361
 #: src/CommonITILCost.php:135 src/CommonITILCost.php:433
 #: src/CommonITILCost.php:595 src/Console/Ldap/SynchronizeUsersCommand.php:251
@@ -5171,6 +5171,8 @@ msgid ""
 "Can't change the interface on this profile as it is the only remaining "
 "profile with rights to modify profiles with this interface."
 msgstr ""
+"Bu profildeki arayüz, bu arayüzden profil değiştirme izni olan kalan tek "
+"profil olduğundan değiştirilemiyor."
 
 #: templates/install/step3.html.twig
 msgid "Can't connect to the database"
@@ -5198,7 +5200,7 @@ msgstr ""
 "Bu izne sahip kalan tek profil olduğundan bu profildeki güncelleme "
 "kaldırılamıyor."
 
-#: src/User.php:1102
+#: src/User.php:1140
 msgid ""
 "Can't set user as inactive as it is the only remaining super administrator."
 msgstr ""
@@ -5318,7 +5320,7 @@ msgstr[1] "Kasa türleri"
 #: src/DatabaseInstanceCategory.php:45 src/AuthLDAP.php:978
 #: src/AuthLDAP.php:1191 src/AuthLDAP.php:3981
 #: src/RuleDictionnarySoftware.php:132 src/CommonITILTask.php:841
-#: src/CommonITILTask.php:1440 src/User.php:2733 src/User.php:3832
+#: src/CommonITILTask.php:1440 src/User.php:2771 src/User.php:3870
 #: src/Software.php:404 src/RuleSoftwareCategory.php:98 src/Auth.php:1786
 #: src/Item_SoftwareVersion.php:1078 src/DatabaseInstance.php:389
 #: src/CommonITILObject.php:4106 src/CommonITILObject.php:6660
@@ -5436,7 +5438,7 @@ msgstr "%1$s ögesi %2$s olarak değiştirildi"
 msgid "Change a component"
 msgstr "Bir bileşen değiştirildi"
 
-#: src/Config.php:3154
+#: src/Config.php:3153
 msgid "Change all"
 msgstr "Tümünü değiştir"
 
@@ -5517,7 +5519,7 @@ msgid_plural "Change templates"
 msgstr[0] "Kalıbı değiştir"
 msgstr[1] "Kalıpları değiştir"
 
-#: src/User.php:3438
+#: src/User.php:3476
 msgctxt "button"
 msgid "Change the authentication method"
 msgstr "Kimlik doğrulama yöntemini değiştir"
@@ -5565,7 +5567,7 @@ msgstr "Yapılacak değişiklikler"
 #: src/CommonDropdown.php:423 src/ProjectCost.php:125 src/Budget.php:199
 #: src/PassiveDCEquipment.php:79 src/CommonITILTask.php:711 src/Link.php:204
 #: src/QueuedNotification.php:208 src/Document.php:983
-#: src/NetworkPortEthernet.php:212 src/User.php:3534 src/Search.php:8090
+#: src/NetworkPortEthernet.php:212 src/User.php:3572 src/Search.php:8090
 #: src/Search.php:8111 src/ContractCost.php:116 src/Group_User.php:718
 #: src/CommonITILCost.php:101 src/SoftwareLicense.php:343
 #: src/CommonDBRelation.php:315 src/LevelAgreement.php:635
@@ -5579,7 +5581,7 @@ msgstr "Yapılacak değişiklikler"
 #: src/NetworkPortFiberchannel.php:208 src/NetworkPortWifi.php:144
 #: src/CommonITILObject.php:3966 src/Contract.php:479 src/CommonDevice.php:258
 #: src/LevelAgreementLevel.php:103 src/Profile_User.php:943
-#: src/Config.php:3616 src/Profile.php:1987 src/Reminder.php:384
+#: src/Config.php:3615 src/Profile.php:1987 src/Reminder.php:384
 #: src/Notification.php:365 src/NetworkPort.php:619 src/NetworkPort.php:1552
 #: src/RSSFeed.php:423 src/CronTask.php:1603 src/Infocom.php:1475
 #: src/SLM.php:217 src/Item_SoftwareLicense.php:73 src/Item_Disk.php:332
@@ -5840,7 +5842,7 @@ msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
 msgstr[0] "%2$s saniyeden önce oluşturulmuş %1$d geçici dosyayı temizle"
 msgstr[1] "%2$s saniyeden önce oluşturulmuş %1$d geçici dosyayı temizle"
 
-#: src/User.php:3442 src/Auth.php:1516
+#: src/User.php:3480 src/Auth.php:1516
 msgid "Clean LDAP fields and force synchronisation"
 msgstr "LDAP alanlarını temizle ve zorla eşitle"
 
@@ -5856,7 +5858,7 @@ msgstr "Geçerliliği sona ermiş oturumları temizle"
 msgid "Clean generated graphics"
 msgstr "Üretilmiş çizelgeleri temizle"
 
-#: src/Inventory/Inventory.php:830
+#: src/Inventory/Inventory.php:843
 msgid "Clean inventories orphaned files"
 msgstr "Envanterlerden arta kalan dosyaları temizle"
 
@@ -5868,7 +5870,7 @@ msgstr "Bildirim kuyruğunu temizle"
 msgid "Clean old logs"
 msgstr "Eski günlükleri temizle"
 
-#: src/Document.php:1856
+#: src/Document.php:1868
 msgid "Clean orphaned documents"
 msgstr "Sahipsiz belgeleri temizle"
 
@@ -5876,7 +5878,7 @@ msgstr "Sahipsiz belgeleri temizle"
 msgid "Clean temporary files"
 msgstr "Geçici dosyaları temizle"
 
-#: src/Inventory/Inventory.php:827
+#: src/Inventory/Inventory.php:840
 msgid "Clean temporary files created from inventories"
 msgstr "Envanterlerden oluşturulmuş geçici dosyaları temizle"
 
@@ -5890,7 +5892,7 @@ msgstr "Temizleme kiti"
 
 #: templates/components/form/fields_macros.html.twig src/MailCollector.php:270
 #: src/Html.php:2773 src/Html.php:2968 src/Html.php:3100 src/AuthLDAP.php:527
-#: src/User.php:2529 src/User.php:2997 src/User.php:2998 src/User.php:6435
+#: src/User.php:2567 src/User.php:3035 src/User.php:3036 src/User.php:6488
 #: src/NotificationMailingSetting.php:372 src/DCRoom.php:173
 #: src/DCRoom.php:176 src/Config.php:559 src/Config.php:2078
 msgid "Clear"
@@ -6164,8 +6166,8 @@ msgstr "BB kayıtlarına not ekle"
 #: src/Rule.php:958 src/AuthLDAP.php:530 src/AuthLDAP.php:939
 #: src/AuthLDAP.php:1200 src/Budget.php:150 src/Budget.php:274
 #: src/Enclosure.php:156 src/Printer.php:468 src/RuleLocation.php:111
-#: src/Document.php:488 src/Document.php:1094 src/User.php:2748
-#: src/User.php:3708 src/Search.php:8140 src/Line.php:133
+#: src/Document.php:488 src/Document.php:1094 src/User.php:2786
+#: src/User.php:3746 src/Search.php:8140 src/Line.php:133
 #: src/ContractCost.php:142 src/ContractCost.php:279 src/Rack.php:222
 #: src/NetworkAlias.php:143 src/NetworkAlias.php:426
 #: src/NotificationTargetContract.php:176 src/CommonITILCost.php:127
@@ -6191,7 +6193,7 @@ msgstr "BB kayıtlarına not ekle"
 #: src/Contract.php:688 src/Contract.php:1722 src/Reservation.php:845
 #: src/Reservation.php:1134 src/Reservation.php:1216 src/CartridgeItem.php:334
 #: src/CommonDevice.php:291 src/ConsumableItem.php:270
-#: src/RuleDictionnaryPrinter.php:85 src/Cluster.php:103 src/Config.php:3197
+#: src/RuleDictionnaryPrinter.php:85 src/Cluster.php:103 src/Config.php:3196
 #: src/ManualLink.php:113 src/Profile.php:753 src/Profile.php:2057
 #: src/Notification.php:218 src/Notification.php:450
 #: src/RuleImportEntity.php:132 src/NetworkPortMigration.php:303
@@ -6252,7 +6254,7 @@ msgstr "Tam ad"
 #: front/devices.php:44 src/Dropdown.php:1064 src/Item_Devices.php:273
 #: src/Item_Devices.php:565 src/Item_Devices.php:623 src/Event.php:158
 #: src/Transfer.php:3950 src/Lock.php:748 src/Lock.php:1125
-#: src/CommonDevice.php:55 src/CommonDevice.php:329 src/Config.php:3267
+#: src/CommonDevice.php:55 src/CommonDevice.php:329 src/Config.php:3266
 #: src/Profile.php:1061 src/Profile.php:2538
 msgid "Component"
 msgid_plural "Components"
@@ -6348,7 +6350,7 @@ msgctxt "button"
 msgid "Connect"
 msgstr "Bağlantı kur"
 
-#: src/Config.php:3281
+#: src/Config.php:3280
 msgid "Connect a component"
 msgstr "Bir bileşeni bağla"
 
@@ -6395,7 +6397,7 @@ msgstr "Çevirmeli bağlantı - Çevirme bağlantı noktası"
 msgid "Connection errors"
 msgstr "Bağlantı hataları"
 
-#: src/User.php:5651
+#: src/User.php:5704
 msgid "Connection failed"
 msgstr "Bağlantı kurulamadı"
 
@@ -6837,7 +6839,7 @@ msgstr "Durum ekle"
 msgid "Create survey after"
 msgstr "Şundan sonra anket oluştur"
 
-#: src/Document.php:1505
+#: src/Document.php:1517
 #, php-format
 msgid "Create the directory %s"
 msgstr "%s klasörünü oluştur"
@@ -6911,7 +6913,7 @@ msgstr "Veri tabanı oluşturuluyor..."
 #: src/Budget.php:233 src/PassiveDCEquipment.php:195 src/Enclosure.php:173
 #: src/Link.php:246 src/QueuedNotification.php:233
 #: src/QueuedNotification.php:735 src/Printer.php:459 src/Document.php:1076
-#: src/User.php:3735 src/Line.php:186 src/Rack.php:239 src/Software.php:421
+#: src/User.php:3773 src/Line.php:186 src/Rack.php:239 src/Software.php:421
 #: src/Peripheral.php:289 src/Lockedfield.php:94 src/Certificate_Item.php:468
 #: src/Transfer.php:139 src/Computer.php:517 src/Contact.php:402
 #: src/Supplier.php:267 src/KnowbaseItem_Item.php:205 src/PDU.php:198
@@ -7015,7 +7017,7 @@ msgstr "Geçerli sayfa yatay PDF olarak"
 msgid "Current page in portrait PDF"
 msgstr "Geçerli sayfa dikey PDF olarak"
 
-#: src/User.php:5335
+#: src/User.php:5373
 msgid "Current password"
 msgstr "Geçerli parola"
 
@@ -7334,7 +7336,7 @@ msgstr ""
 msgid "Database user:"
 msgstr "Veri tabanı kullanıcısı:"
 
-#: src/Config.php:2657
+#: src/Config.php:2656
 #, php-format
 msgid "Database version seems correct (%s) - Perfect!"
 msgstr "Veri tabanı sürümü doğru görünüyor (%s) - Harika!"
@@ -7373,7 +7375,7 @@ msgstr "Tarih biçimi"
 
 #: src/MailCollector.php:559
 msgid "Date of last collection"
-msgstr ""
+msgstr "Son toplama tarihi"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1301
 #: src/Infocom.php:1534
@@ -7403,7 +7405,7 @@ msgstr[1] "Gün"
 msgid "Days to keep sent emails"
 msgstr "Gönderilmiş e-postaların saklanacağı gün sayısı"
 
-#: src/User.php:3255 src/CommonGLPI.php:353
+#: src/User.php:3293 src/CommonGLPI.php:353
 msgid "Debug"
 msgstr "Hata ayıklama"
 
@@ -7486,7 +7488,7 @@ msgstr "Varsayılan görünüm"
 msgid "Default email"
 msgstr "Varsayılan e-posta"
 
-#: src/User.php:2830 src/User.php:3215 src/User.php:3849
+#: src/User.php:2868 src/User.php:3253 src/User.php:3887
 #: src/Inventory/Conf.php:541 src/RuleRight.php:364
 msgid "Default entity"
 msgstr "Varsayılan birim"
@@ -7528,7 +7530,7 @@ msgstr "Destek kaydı varsayılanı"
 msgid "Default for tickets (mini dashboard)"
 msgstr "Destek kaydı varsayılanı (mini pano)"
 
-#: templates/components/user/info_card.html.twig src/User.php:2840
+#: templates/components/user/info_card.html.twig src/User.php:2878
 #: src/RuleRight.php:374
 msgid "Default group"
 msgstr "Varsayılan grup"
@@ -7557,7 +7559,7 @@ msgstr "Varsayılan bildirim sesi"
 msgid "Default problem template"
 msgstr "Varsayılan sorun kalıbı"
 
-#: src/User.php:2812 src/User.php:3170 src/User.php:3840 src/RuleRight.php:381
+#: src/User.php:2850 src/User.php:3208 src/User.php:3878 src/RuleRight.php:381
 #: src/RuleTicket.php:687 src/Profile.php:758 src/Profile.php:2040
 msgid "Default profile"
 msgstr "Varsayılan profil"
@@ -7621,11 +7623,11 @@ msgstr "Sözleşme uyarılarının varsayılan değeri"
 msgid "Default value for alarms on financial and administrative information"
 msgstr "İdari ve mali bilgiler uyarılarının varsayılan değeri"
 
-#: src/AuthLDAP.php:449 src/Config.php:2537
+#: src/AuthLDAP.php:449 src/Config.php:2536
 msgid "Default values"
 msgstr "Varsayılan değerler"
 
-#: src/Config.php:3522
+#: src/Config.php:3521
 msgid "Delay before account deactivation (in days)"
 msgstr "Hesabın devre dışı bırakılmasından önce geçecek süre (gün)"
 
@@ -7670,7 +7672,7 @@ msgstr "Bir öge bağlantısı silindi"
 msgid "Delete a rule"
 msgstr "Bir kuralı sil"
 
-#: src/Config.php:3324
+#: src/Config.php:3323
 msgid "Delete all"
 msgstr "Tümünü sil"
 
@@ -7686,7 +7688,7 @@ msgstr "Tüm kuralları sil ve varsayılanları yeniden oluştur"
 msgid "Delete an item"
 msgstr "Bir öge silindi"
 
-#: src/Config.php:3286
+#: src/Config.php:3285
 msgid "Delete component"
 msgstr "Bileşeni sil"
 
@@ -7698,7 +7700,7 @@ msgstr "Bileşeni sil"
 msgid "Delete emails"
 msgstr "E-postaları sil"
 
-#: src/Config.php:3330
+#: src/Config.php:3329
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
@@ -7761,7 +7763,7 @@ msgctxt "button"
 msgid "Delete permanently the relation with selected elements"
 msgstr "Seçilmiş bileşenlerle olan bağlantıyı kalıcı olarak sil"
 
-#: src/Config.php:3175
+#: src/Config.php:3174
 msgid "Delete relation between items"
 msgstr "Ögeler arası ilişkiyi sil"
 
@@ -7769,7 +7771,7 @@ msgstr "Ögeler arası ilişkiyi sil"
 msgid "Delete serie"
 msgstr "Tüm diziyi sil"
 
-#: src/Log.php:1070 src/Config.php:3183
+#: src/Log.php:1070 src/Config.php:3182
 msgid "Delete the item"
 msgstr "Öge silindi"
 
@@ -7797,7 +7799,7 @@ msgstr "Silinmiş"
 msgid "Deleted from LDAP"
 msgstr "LDAP üzerinden silinmiş"
 
-#: src/User.php:3792 src/Config.php:3261
+#: src/User.php:3830 src/Config.php:3260
 msgid "Deleted user in LDAP directory"
 msgstr "LDAP dizininden silinmiş kullanıcı"
 
@@ -8275,7 +8277,7 @@ msgctxt "button"
 msgid "Disconnect"
 msgstr "Bağlantıyı kes"
 
-#: src/Config.php:3277
+#: src/Config.php:3276
 msgid "Disconnect a component"
 msgstr "Bir bileşenin bağlantısını kes"
 
@@ -8376,11 +8378,11 @@ msgctxt "button"
 msgid "Dissociate certificate"
 msgstr "Sertifika ilişkisini kaldır"
 
-#: src/User.php:3424
+#: src/User.php:3462
 msgid "Dissociate from a group"
 msgstr "Grup ile ilişkisini kes"
 
-#: src/User.php:3429
+#: src/User.php:3467
 msgid "Dissociate from a profile"
 msgstr "Profil ile ilişkisini kes"
 
@@ -8412,7 +8414,7 @@ msgstr "Güncelleme işleminden önce veri tabanı şeması bütünlüğü denet
 msgid "Do not copy"
 msgstr "Kopyalanmasın"
 
-#: src/Config.php:3533
+#: src/Config.php:3532
 msgid "Do not deactivate"
 msgstr "Devre dışı bırakılmasın"
 
@@ -8487,11 +8489,11 @@ msgstr "Belge"
 msgid "Document Ticket %d"
 msgstr "Belge destek kaydı %d"
 
-#: src/Document.php:1240 src/Document.php:1342
+#: src/Document.php:1246 src/Document.php:1354
 msgid "Document copy succeeded."
 msgstr "Belge kopyalandı."
 
-#: src/Config.php:3579
+#: src/Config.php:3578
 msgid "Document files maximum size (Mio)"
 msgstr "En büyük belge dosyası boyutu (Mio)"
 
@@ -8507,7 +8509,7 @@ msgid_plural "Document items"
 msgstr[0] "Belge ögesi"
 msgstr[1] "Belge ögeleri"
 
-#: src/Document.php:1233
+#: src/Document.php:1239
 msgid "Document move succeeded."
 msgstr "Belge taşındı."
 
@@ -8521,11 +8523,11 @@ msgstr[1] "Belge türleri"
 msgid "Documents"
 msgstr "Belge"
 
-#: src/Document.php:1491
+#: src/Document.php:1503
 msgid "Documents directory doesn't exist."
 msgstr "Documents klasörü bulunamadı."
 
-#: src/Config.php:3574
+#: src/Config.php:3573
 msgid "Documents setup"
 msgstr "Belgeler kurulumu"
 
@@ -8659,7 +8661,7 @@ msgstr ""
 msgid "Download plugin from the GLPI marketplace"
 msgstr "GLPI mağazası uygulama ekini indir"
 
-#: src/User.php:2402
+#: src/User.php:2440
 msgid "Download user VCard"
 msgstr "Kullanıcının sanal kartını indir"
 
@@ -8765,7 +8767,7 @@ msgid "ERROR"
 msgstr "HATA"
 
 #. TRANS: %s is a directory
-#: front/cron.php:44
+#: front/cron.php:45
 #, php-format
 msgid "ERROR: %s is not writable"
 msgstr "HATA: %s yazılabilir değil"
@@ -8898,8 +8900,8 @@ msgstr "Ögenin coğrafi kodlaması yapılmamış ya da bulunamadı"
 #: src/AuthLDAP.php:960 src/AuthLDAP.php:1208 src/AuthLDAP.php:1217
 #: src/AuthLDAP.php:1226 src/AuthLDAP.php:1235 src/AuthLDAP.php:3959
 #: src/AuthLDAP.php:3962 src/AuthLDAP.php:3967 src/AuthLDAP.php:3972
-#: src/QueuedNotification.php:749 src/User.php:2653 src/User.php:3142
-#: src/User.php:3576 src/Blacklist.php:247 src/Contact_Supplier.php:310
+#: src/QueuedNotification.php:749 src/User.php:2691 src/User.php:3180
+#: src/User.php:3614 src/Blacklist.php:247 src/Contact_Supplier.php:310
 #: src/Auth.php:1738 src/Auth.php:1744 src/Auth.php:1750 src/Auth.php:1756
 #: src/Contact.php:288 src/Supplier.php:242
 #: src/ContentTemplates/Parameters/SupplierParameters.php:77
@@ -8984,7 +8986,7 @@ msgid_plural "Email notifications"
 msgstr[0] "E-posta bildirimi"
 msgstr[1] "E-posta bildirimleri"
 
-#: src/Api/API.php:2150
+#: src/Api/API.php:2154
 msgid "Email notifications are disabled"
 msgstr "E-posta bildirimleri devre dışı bırakıldı"
 
@@ -9006,7 +9008,7 @@ msgstr "E-posta göndericinin adı"
 msgid "Email server"
 msgstr "E-posta sunucusu"
 
-#: src/User.php:3696
+#: src/User.php:3734
 msgid "Email server for authentication"
 msgstr "E-posta sunucusu ile kimlik doğrulaması"
 
@@ -9248,7 +9250,7 @@ msgstr "Bitiş %s"
 #: front/report.infocom.conso.php:74 front/stat.graph.php:380
 #: src/Csv/PlanningCsv.php:76 src/Dropdown.php:690 src/ProjectCost.php:167
 #: src/ProjectCost.php:294 src/ProjectCost.php:370 src/Budget.php:162
-#: src/Budget.php:258 src/CommonITILTask.php:998 src/User.php:3865
+#: src/Budget.php:258 src/CommonITILTask.php:998 src/User.php:3903
 #: src/ContractCost.php:158 src/ContractCost.php:285 src/ContractCost.php:362
 #: src/CommonITILCost.php:143 src/CommonITILCost.php:449
 #: src/CommonITILCost.php:596 src/Stat.php:2120
@@ -9335,7 +9337,7 @@ msgstr "Görsel doğrulaması için geliştirilmiş güvenlik."
 msgid "Ensure security is enforced on session cookies."
 msgstr "Oturum çerezlerinde güvenliğin dayatıldığından emin olun."
 
-#: front/find_num.php:79 ajax/dropdownTrackingDeviceType.php:72
+#: ajax/dropdownTrackingDeviceType.php:72
 msgid "Enter the first letters (user, item name, serial or asset number)"
 msgstr ""
 "Ögenin ilk harflerini yazın (kullanıcı adı, öge adı, seri numarası ya da "
@@ -9524,7 +9526,7 @@ msgstr "\"%s\" LDAP sunucusu ile bağlantı kurulurken sorun çıktı."
 msgid "Error: %s is not a directory"
 msgstr "Hata: %s bir klasör değil"
 
-#: src/User.php:773 src/User.php:981
+#: src/User.php:784 src/User.php:992
 msgid "Error: the two passwords do not match"
 msgstr "Hata : parola ve onayı aynı değil"
 
@@ -9821,8 +9823,8 @@ msgid_plural "External links"
 msgstr[0] "Dış bağlantı"
 msgstr[1] "Dış bağlantılar"
 
-#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:259
-#: src/TicketSatisfaction.php:309 src/Entity.php:3144 src/Entity.php:3883
+#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:264
+#: src/TicketSatisfaction.php:314 src/Entity.php:3144 src/Entity.php:3883
 msgid "External survey"
 msgstr "Dış tarama"
 
@@ -9894,7 +9896,7 @@ msgstr "Vekil sunucu ile bağlantı kurulamadı (%s)"
 msgid "Failed to create recurrent item %s"
 msgstr "%s yinelenen öge oluşturulamadı"
 
-#: src/Document.php:1520
+#: src/Document.php:1532
 #, php-format
 msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
@@ -9902,7 +9904,7 @@ msgid ""
 msgstr ""
 "%s klasörü oluşturulamadı. Yeterli izinlere sahip olduğunuzdan emin olun"
 
-#: src/Document.php:1216 src/Document.php:1328 src/Document.php:1425
+#: src/Document.php:1222 src/Document.php:1340 src/Document.php:1437
 #, php-format
 msgid "Failed to delete the file %1$s"
 msgstr "%1$s dosyası silinemedi"
@@ -9931,7 +9933,7 @@ msgstr "%d destek kaydı yüklenemedi"
 msgid "Failed to remove team member"
 msgstr "Ekip üyesi silinemedi"
 
-#: src/GLPIUploadHandler.php:114
+#: src/UploadHandler.php:434
 msgid "Failed to resize image"
 msgstr "Görsel yeniden boyutlandırılamadı"
 
@@ -9939,7 +9941,7 @@ msgstr "Görsel yeniden boyutlandırılamadı"
 msgid "Failed to send test email to administrator"
 msgstr "Sınama e-postası yöneticiye gönderilemedi"
 
-#: src/GLPIUploadHandler.php:66
+#: src/UploadHandler.php:386
 msgid "Failed to write file to disk"
 msgstr "Dosya diske yazılamadı"
 
@@ -10046,17 +10048,17 @@ msgstr "Alanların eşsizliği"
 msgid "File"
 msgstr "Dosya"
 
-#: src/Inventory/Inventory.php:936
+#: src/Inventory/Inventory.php:949
 #, php-format
 msgid "File %1$s %2$s has been removed"
 msgstr "%1$s %2$s dosyası silindi"
 
-#: src/Inventory/Inventory.php:930
+#: src/Inventory/Inventory.php:943
 #, php-format
 msgid "File %1$s %2$s has not been removed"
 msgstr "%1$s %2$s dosyası silinmedi"
 
-#: src/Inventory/Inventory.php:854
+#: src/Inventory/Inventory.php:867
 #, php-format
 msgid "File %1$s has been removed"
 msgstr "%1$s dosyası silindi"
@@ -10068,7 +10070,7 @@ msgstr ""
 "%s dosyasında geri alma (rollback) komutu ile kullanılabilecek SQL sorguları"
 " bulunuyor."
 
-#: src/Document.php:1173 src/Document.php:1284
+#: src/Document.php:1179 src/Document.php:1296
 #, php-format
 msgid "File %s not found."
 msgstr "%s dosyası bulunamadı."
@@ -10090,27 +10092,27 @@ msgstr "Dosya içe aktarıldı."
 msgid "File has not been imported: `%s`."
 msgstr "Dosya içe aktarılmadı: `%s`."
 
-#: front/document.send.php:60
+#: front/document.send.php:62
 msgid "File is altered (bad checksum)"
 msgstr "Dosya değiştirilmiş (sağlama tutarsız)"
 
-#: src/GLPIUploadHandler.php:78
+#: src/UploadHandler.php:398
 msgid "File is too big"
 msgstr "Dosya boyutu çok büyük"
 
-#: src/GLPIUploadHandler.php:82
+#: src/UploadHandler.php:402
 msgid "File is too small"
 msgstr "Dosya boyutu çok küçük"
 
-#: src/Document.php:1242 src/Document.php:1344
+#: src/Document.php:1248 src/Document.php:1356
 msgid "File move failed"
 msgstr "Dosya taşınamadı"
 
-#: src/Document.php:1235
+#: src/Document.php:1241
 msgid "File move failed."
 msgstr "Dosya taşınamadı."
 
-#: front/document.send.php:54
+#: front/document.send.php:56
 msgid "File not found"
 msgstr "Dosya bulunamadı"
 
@@ -10120,11 +10122,11 @@ msgid_plural "File systems"
 msgstr[0] "Dosya sistemi"
 msgstr[1] "Dosya sistemleri"
 
-#: src/Document.php:1378
+#: src/Document.php:1390
 msgid "File too large to be added."
 msgstr "Dosya eklenmek için çok büyük."
 
-#: src/GLPIUploadHandler.php:110
+#: src/UploadHandler.php:430
 msgid "File upload aborted"
 msgstr "Dosya yüklemesi iptal edildi"
 
@@ -10136,7 +10138,7 @@ msgstr "Dosya(lar)"
 msgid "Filename"
 msgstr "Dosya adı"
 
-#: src/GLPIUploadHandler.php:106
+#: src/UploadHandler.php:426
 msgid "Filetype not allowed"
 msgstr "Bu dosya türüne izin verilmiyor"
 
@@ -10194,7 +10196,7 @@ msgstr "Süzgeçler"
 
 #. TRANS: Always plural
 #: templates/components/infocom.html.twig src/Transfer.php:3971
-#: src/Entity.php:2286 src/Consumable.php:637 src/Config.php:3238
+#: src/Entity.php:2286 src/Consumable.php:637 src/Config.php:3237
 #: src/Infocom.php:114 src/Infocom.php:1204 src/Cartridge.php:826
 msgid "Financial and administrative information"
 msgstr "İdari ve mali bilgiler"
@@ -10245,8 +10247,8 @@ msgstr "Destek kaydında bulunan ilk geçerli sözleşme"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:935
 #: src/AuthLDAP.php:1146 src/AuthLDAP.php:3976
-#: src/NotificationTargetUser.php:152 src/User.php:2580 src/User.php:3005
-#: src/User.php:3568 src/User.php:6440 src/Auth.php:1718 src/Contact.php:239
+#: src/NotificationTargetUser.php:152 src/User.php:2618 src/User.php:3043
+#: src/User.php:3606 src/User.php:6493 src/Auth.php:1718 src/Contact.php:239
 #: src/ContentTemplates/Parameters/UserParameters.php:81
 msgid "First name"
 msgstr "Ad"
@@ -10347,7 +10349,7 @@ msgstr "Şu eklentiler eksik: %s."
 msgid "Following extensions are not present: %s."
 msgstr "Şu eklentiler bulunamadı: %s."
 
-#: src/Inventory/Inventory.php:297
+#: src/Inventory/Inventory.php:310
 #, php-format
 msgid "Following keys has been ignored during process: %1$s"
 msgstr "İşlem sırasında şu anahtarlar yok sayılacak: %1$s"
@@ -10398,7 +10400,7 @@ msgstr ""
 msgid "For tickets closed after"
 msgstr "Şu zamandan sonra kapanmış destek kayıtları için"
 
-#: src/Api/API.php:1606
+#: src/Api/API.php:1610
 msgid "Forbidden field ID in search criteria"
 msgstr "Arama ölçütünde izin verilmeyen bir alan kimliği var"
 
@@ -10443,7 +10445,7 @@ msgstr ""
 "Geri yüklenen kullanıcılar için kullanılan yöntem dayatılsın (geçerli işlem:"
 " \"%s\")"
 
-#: src/User.php:3440 src/Auth.php:1511
+#: src/User.php:3478 src/Auth.php:1511
 msgid "Force synchronization"
 msgstr "Eşitlenmeye zorlansın"
 
@@ -10461,8 +10463,8 @@ msgid "Forget it,"
 msgstr "Unut,"
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
-#: src/NotificationTargetUser.php:43 src/User.php:5398 src/User.php:5413
-#: src/User.php:5511 src/User.php:5535
+#: src/NotificationTargetUser.php:43 src/User.php:5436 src/User.php:5451
+#: src/User.php:5556 src/User.php:5580
 msgid "Forgotten password?"
 msgstr "Parolamı unuttum"
 
@@ -10669,7 +10671,7 @@ msgstr "Gbps"
 #: src/Rule.php:2443 src/CommonItilObject_Item.php:147
 #: src/RuleImportAsset.php:188 src/RuleImportAsset.php:192
 #: src/RuleImportAsset.php:197 src/CommonGLPI.php:108
-#: src/CommonITILObject.php:6508 src/Config.php:3170 src/Ticket.php:5074
+#: src/CommonITILObject.php:6508 src/Config.php:3169 src/Ticket.php:5074
 #: src/Ticket.php:5684
 msgid "General"
 msgstr "Genel"
@@ -10680,7 +10682,7 @@ msgid "General"
 msgstr "Genel"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Config.php:2011
-#: src/Config.php:2536 src/Profile.php:2595
+#: src/Config.php:2535 src/Profile.php:2595
 msgid "General setup"
 msgstr "Genel yapılandırma"
 
@@ -10940,7 +10942,7 @@ msgstr "Yarım halka"
 msgid "Half pie"
 msgstr "Yarım daire"
 
-#: src/User.php:6041
+#: src/User.php:6094
 msgid "Handle users passwords expiration policy"
 msgstr "Kullanıcıların parola geçerlilik sonu ilkesini işle"
 
@@ -10961,10 +10963,6 @@ msgstr "Sabit disk türü"
 #: src/Report.php:85
 msgid "Hardware financial and administrative information"
 msgstr "Donanımın idari ve mali bilgileri"
-
-#: front/find_num.php:93
-msgid "Hardware type"
-msgstr "Donanım türü"
 
 #: front/report.contract.php:49
 msgid "Hardware under contract"
@@ -11024,7 +11022,7 @@ msgstr "Destek merkezi grubu"
 msgid "Helpdesk reporting form"
 msgstr "Destek merkezi bildirim formu"
 
-#: src/User.php:6353 src/User.php:6380
+#: src/User.php:6406 src/User.php:6433
 msgid "Helpdesk user"
 msgstr "Destek merkezi kullanıcısı"
 
@@ -11128,13 +11126,13 @@ msgstr "Dağıtıcı"
 msgid "I don't understand why this migration error is not deleted."
 msgstr "Bu aktarım hatalarının neden silinmediğini anlamadım."
 
-#: src/Config.php:3100
+#: src/Config.php:3099
 msgid "I know I am using a unstable version."
 msgstr "Kararsız bir sürümü kullandığımı biliyorum."
 
 #: templates/pages/admin/events_list.html.twig
-#: templates/components/logs.html.twig front/find_num.php:95
-#: src/Csv/LogCsvExport.php:73 src/Phone.php:215 src/Ticket_Ticket.php:71
+#: templates/components/logs.html.twig src/Csv/LogCsvExport.php:73
+#: src/Phone.php:215 src/Ticket_Ticket.php:71
 #: src/NotificationTargetProjectTask.php:589
 #: src/NotificationTargetProjectTask.php:618 src/KnowbaseItem.php:2248
 #: src/Monitor.php:210 src/Unmanaged.php:98 src/Datacenter.php:100
@@ -11146,8 +11144,8 @@ msgstr "Kararsız bir sürümü kullandığımı biliyorum."
 #: src/Budget.php:215 src/PassiveDCEquipment.php:95 src/Enclosure.php:112
 #: src/CommonITILTask.php:1648 src/CommonITILTask.php:1673
 #: src/CommonITILTask.php:1738 src/Link.php:220 src/QueuedNotification.php:224
-#: src/Printer.php:348 src/Document.php:999 src/User.php:3551
-#: src/User.php:5676 src/Search.php:8100 src/Search.php:8121 src/Line.php:116
+#: src/Printer.php:348 src/Document.php:999 src/User.php:3589
+#: src/User.php:5729 src/Search.php:8100 src/Search.php:8121 src/Line.php:116
 #: src/ContractCost.php:133 src/Rack.php:154 src/Group_User.php:725
 #: src/CommonITILCost.php:118 src/SoftwareLicense.php:360
 #: src/SoftwareLicense.php:1207 src/Software.php:385 src/AuthMail.php:112
@@ -11197,7 +11195,7 @@ msgstr "Kimlik"
 msgid "ID TAG"
 msgstr "Kimlik etiketi (ID)"
 
-#: src/Api/API.php:1637
+#: src/Api/API.php:1641
 msgid "ID is forbidden along with 'forcedisplay' parameter."
 msgstr "Kimlik 'forcedisplay' parametresi ile birlikte kullanılamaz."
 
@@ -11393,7 +11391,7 @@ msgstr "Eşitlenmişse ya da salt okunur hesapsa"
 msgid "If the cartridge types are no longer used"
 msgstr "Kartuş türleri artık kullanılmıyorsa"
 
-#: src/User.php:5532 src/Api/API.php:2170
+#: src/User.php:5577 src/Api/API.php:2174
 msgid ""
 "If the given email address match an exisiting GLPI user, you will receive an"
 " email containing the informations required to reset your password. Please "
@@ -11458,11 +11456,11 @@ msgid_plural "Ignored values for the unicity"
 msgstr[0] "Eşsizlik nedeniyle yok sayılan değer"
 msgstr[1] "Eşsizlik nedeniyle yok sayılan değerler"
 
-#: src/GLPIUploadHandler.php:98
+#: src/UploadHandler.php:418
 msgid "Image exceeds maximum height"
 msgstr "İzin verilen en fazla görsel yüksekliği aşıldı"
 
-#: src/GLPIUploadHandler.php:90
+#: src/UploadHandler.php:410
 msgid "Image exceeds maximum width"
 msgstr "İzin verilen en fazla görsel genişliği aşıldı"
 
@@ -11472,11 +11470,11 @@ msgid_plural "Image formats"
 msgstr[0] "Görsel biçimi"
 msgstr[1] "Görsel biçimleri"
 
-#: src/GLPIUploadHandler.php:102
+#: src/UploadHandler.php:422
 msgid "Image requires a minimum height"
 msgstr "İzin verilen en az görsel yüksekliğine ulaşılamadı"
 
-#: src/GLPIUploadHandler.php:94
+#: src/UploadHandler.php:414
 msgid "Image requires a minimum width"
 msgstr "İzin verilen en az görsel genişliğine ulaşılamadı"
 
@@ -11520,7 +11518,7 @@ msgstr "Etkileyen"
 msgid "Impacts"
 msgstr "Etkiler"
 
-#: src/User.php:2417
+#: src/User.php:2455
 msgid "Impersonate"
 msgstr "Rolüne geç"
 
@@ -11542,7 +11540,7 @@ msgctxt "button"
 msgid "Import"
 msgstr "İçe aktar"
 
-#: src/User.php:4668 src/User.php:4672 src/User.php:4675
+#: src/User.php:4706 src/User.php:4710 src/User.php:4713
 msgid "Import a user"
 msgstr "Bir kullanıcı içe aktar"
 
@@ -11562,7 +11560,7 @@ msgstr "İçe aktarım reddedildi (günlük yok)"
 msgid "Import entities from LDAP directory"
 msgstr "LDAP dizininden içe aktarılan birimler"
 
-#: src/User.php:4718
+#: src/User.php:4756
 msgid "Import from directories"
 msgstr "Dizinlerden içe aktarılsın"
 
@@ -11570,7 +11568,7 @@ msgstr "Dizinlerden içe aktarılsın"
 msgid "Import from file"
 msgstr "Dosyadan içe aktar"
 
-#: src/User.php:4724
+#: src/User.php:4762
 msgid "Import from other sources"
 msgstr "Diğer kaynaklardan içe aktarılsın"
 
@@ -11868,6 +11866,9 @@ msgid ""
 "to LDAP server. Disabling this behaviour can be required when LDAPS bind is "
 "used."
 msgstr ""
+"LDAP sunucusu ile bağlantı sırasında basit bir bağlama işleminin "
+"kullanılması gerekip gerekmediğini belirtir. LDAPS bağlaması kullanıldığında"
+" bu davranışın devre dışı bırakılması gerekebilir."
 
 #: src/CronTask.php:656
 msgid "Infinite"
@@ -12001,11 +12002,11 @@ msgstr "Kurulum tamamlandı."
 msgid "Installation or update of GLPI"
 msgstr "GLPI kurulumu ya da güncellemesi"
 
-#: src/Config.php:3215
+#: src/Config.php:3214
 msgid "Installation/uninstallation of software on items"
 msgstr "Ögeler üzerine yazılım kurma ve kaldırma"
 
-#: src/Config.php:3221
+#: src/Config.php:3220
 msgid "Installation/uninstallation versions on software"
 msgstr "Yazılım sürümleri kurma / kaldırma"
 
@@ -12089,7 +12090,7 @@ msgstr "İç çözümlenme zamanı"
 msgid "Internal status"
 msgstr "İç durum"
 
-#: src/TicketSatisfaction.php:256 src/TicketSatisfaction.php:308
+#: src/TicketSatisfaction.php:261 src/TicketSatisfaction.php:313
 #: src/Entity.php:3143 src/Entity.php:3882
 msgid "Internal survey"
 msgstr "İç tarama"
@@ -12218,7 +12219,7 @@ msgstr "Çerez verileri geçersiz"
 msgid "Invalid dates. Update cancelled."
 msgstr "Tarihler geçersiz. Güncelleme iptal edildi."
 
-#: src/User.php:5593 src/NotificationMailingSetting.php:87
+#: src/User.php:5638 src/NotificationMailingSetting.php:87
 #: src/NotificationMailingSetting.php:101
 #: src/NotificationMailingSetting.php:120
 #: src/NotificationMailingSetting.php:138 src/Entity.php:2021
@@ -12233,7 +12234,7 @@ msgstr "E-posta adresi geçersiz"
 msgid "Invalid email address %s"
 msgstr "%s e-posta adresi geçersiz"
 
-#: front/document.send.php:114
+#: front/document.send.php:116
 msgid "Invalid filename"
 msgstr "Dosya adı geçersiz"
 
@@ -12316,8 +12317,8 @@ msgstr "Oturum kimliğinin kullanımı geçersiz"
 msgid "Invalid widget"
 msgstr "Pano bileşeni geçersiz"
 
-#: front/inventory.conf.php:42 src/Inventory/Inventory.php:486
-#: src/Inventory/Inventory.php:957
+#: front/inventory.conf.php:42 src/Inventory/Inventory.php:499
+#: src/Inventory/Inventory.php:970
 #: src/Agent/Communication/AbstractRequest.php:174 src/Profile.php:948
 #: src/Profile.php:1859 src/Profile.php:3039
 msgid "Inventory"
@@ -12350,15 +12351,14 @@ msgid "Inventory link"
 msgstr "Envanter bağlantısı"
 
 #: templates/generic_show_form.html.twig
-#: templates/components/form/item_device.html.twig front/find_num.php:97
-#: src/Phone.php:259 src/Change_Item.php:161 src/Monitor.php:254
-#: src/Unmanaged.php:121 src/Item_Rack.php:858
-#: src/NotificationTargetProblem.php:206 src/Item_Devices.php:364
-#: src/Item_Devices.php:365 src/CableStrand.php:151 src/Document_Item.php:416
-#: src/Appliance.php:248 src/Budget.php:359 src/PassiveDCEquipment.php:120
-#: src/Enclosure.php:148 src/Printer.php:392 src/User.php:4905
-#: src/User.php:4987 src/Search.php:8136 src/Rack.php:198 src/Rack.php:917
-#: src/SoftwareLicense.php:548 src/SoftwareLicense.php:637
+#: templates/components/form/item_device.html.twig src/Phone.php:259
+#: src/Change_Item.php:161 src/Monitor.php:254 src/Unmanaged.php:121
+#: src/Item_Rack.php:858 src/NotificationTargetProblem.php:206
+#: src/Item_Devices.php:364 src/Item_Devices.php:365 src/CableStrand.php:151
+#: src/Document_Item.php:416 src/Appliance.php:248 src/Budget.php:359
+#: src/PassiveDCEquipment.php:120 src/Enclosure.php:148 src/Printer.php:392
+#: src/User.php:4943 src/User.php:5025 src/Search.php:8136 src/Rack.php:198
+#: src/Rack.php:917 src/SoftwareLicense.php:548 src/SoftwareLicense.php:637
 #: src/DeviceFirmware.php:231 src/PDU_Rack.php:601 src/Computer_Item.php:414
 #: src/Computer_Item.php:583 src/Peripheral.php:238
 #: src/NotificationTargetChange.php:284 src/Certificate_Item.php:275
@@ -12566,8 +12566,8 @@ msgstr "Öge kilidi"
 msgid "Item need to be deleted first"
 msgstr "Önce öge silinmelidir"
 
-#: src/Html.php:607 src/CommonDBTM.php:6360 src/Api/API.php:1958
-#: src/Api/API.php:2072 src/Api/API.php:2646
+#: src/Html.php:607 src/CommonDBTM.php:6360 src/Api/API.php:1962
+#: src/Api/API.php:2076 src/Api/API.php:2650
 msgid "Item not found"
 msgstr "Öge bulunamadı"
 
@@ -12701,7 +12701,7 @@ msgstr "Kbps"
 msgid "Keep"
 msgstr "Koru"
 
-#: src/Config.php:3325
+#: src/Config.php:3324
 msgid "Keep all"
 msgstr "Tümünü koru"
 
@@ -12817,7 +12817,7 @@ msgstr[1] "LDAP dizinleri"
 msgid "LDAP directory choice"
 msgstr "LDAP dizini seçimi"
 
-#: src/User.php:3683
+#: src/User.php:3721
 msgid "LDAP directory for authentication"
 msgstr "LDAP dizini ile kimlik doğrulaması"
 
@@ -12826,7 +12826,7 @@ msgid "LDAP directory information attribute representing the entity"
 msgstr "Birimi belirten LDAP dizin bilgileri özniteliği"
 
 #: front/ldap.group.php:44 front/ldap.import.php:58 front/ldap.php:42
-#: front/ldap.group.import.php:42 src/User.php:2370 src/Group.php:151
+#: front/ldap.group.import.php:42 src/User.php:2408 src/Group.php:151
 #: src/Group.php:333
 msgid "LDAP directory link"
 msgstr "LDAP dizini bağlantısı"
@@ -12872,13 +12872,13 @@ msgstr "LDAP sunucular"
 msgid "Label"
 msgstr "Etiket"
 
-#: front/user.form.php:185
+#: front/user.form.php:44 front/user.form.php:195
 msgid "Lang has been changed!"
 msgstr "Dil değiştirildi!"
 
 #: templates/pages/login.html.twig src/DropdownTranslation.php:424
 #: src/DropdownTranslation.php:515 src/AuthLDAP.php:981 src/AuthLDAP.php:1271
-#: src/User.php:3043 src/User.php:3716 src/KnowbaseItemTranslation.php:234
+#: src/User.php:3081 src/User.php:3754 src/KnowbaseItemTranslation.php:234
 #: src/KnowbaseItemTranslation.php:295
 #: src/NotificationTemplateTranslation.php:135
 #: src/NotificationTemplateTranslation.php:228
@@ -12982,11 +12982,11 @@ msgstr "Son envanter güncellemesi"
 msgid "Last inventory value was:"
 msgstr "Son envanter değeri:"
 
-#: src/User.php:3660
+#: src/User.php:3698
 msgid "Last login"
 msgstr "Son oturum açma"
 
-#: src/User.php:2921
+#: src/User.php:2959
 #, php-format
 msgid "Last login on %s"
 msgstr "Son oturum açma: %s"
@@ -12995,7 +12995,7 @@ msgstr "Son oturum açma: %s"
 msgid "Last month"
 msgstr "Önceki ay"
 
-#: src/User.php:3560 src/Contact.php:230
+#: src/User.php:3598 src/Contact.php:230
 msgid "Last name"
 msgstr "Soyad"
 
@@ -13015,11 +13015,11 @@ msgstr "Son çalışma listesi"
 msgid "Last solution status"
 msgstr "Son çözüm durumu"
 
-#: src/User.php:3784
+#: src/User.php:3822
 msgid "Last synchronization"
 msgstr "Son eşitleme"
 
-#: src/User.php:2699
+#: src/User.php:2737
 #, php-format
 msgid "Last synchronization on %s"
 msgstr "Son eşitleme zamanı: %s"
@@ -13037,7 +13037,7 @@ msgstr "Son destek kayıtları"
 #: src/CommonDropdown.php:487 src/Appliance.php:216 src/Rule.php:815
 #: src/AuthLDAP.php:455 src/AuthLDAP.php:1253 src/Budget.php:224
 #: src/PassiveDCEquipment.php:130 src/Enclosure.php:164 src/Link.php:237
-#: src/Printer.php:450 src/Document.php:1067 src/User.php:3726
+#: src/Printer.php:450 src/Document.php:1067 src/User.php:3764
 #: src/Search.php:8163 src/Line.php:141 src/Rack.php:230 src/Software.php:412
 #: src/AuthMail.php:146 src/Peripheral.php:280 src/LevelAgreement.php:191
 #: src/Transfer.php:130 src/Transfer.php:3889 src/Computer.php:508
@@ -13049,7 +13049,7 @@ msgstr "Son destek kayıtları"
 #: src/CommonITILObject.php:4097 src/CommonITILObject.php:6646
 #: src/NotificationTargetPlanningRecall.php:245 src/RuleTicket.php:562
 #: src/Contract.php:548 src/CommonDevice.php:299 src/Cluster.php:111
-#: src/Config.php:3200 src/Profile.php:2012 src/Reminder.php:472
+#: src/Config.php:3199 src/Profile.php:2012 src/Reminder.php:472
 #: src/RSSFeed.php:518 src/CronTask.php:1728
 #: src/Features/PlanningEvent.php:998 src/NotificationTargetProject.php:636
 #: src/NotificationTargetProject.php:657 src/DomainRecord.php:155
@@ -13639,8 +13639,8 @@ msgstr "Mantık işlemi"
 
 #: templates/pages/login.html.twig src/MailCollector.php:263
 #: src/MailCollector.php:501 src/AuthLDAP.php:3957
-#: src/NotificationTargetUser.php:150 src/User.php:2510 src/User.php:2964
-#: src/User.php:3541 src/User.php:4713 src/User.php:5326 src/AuthMail.php:232
+#: src/NotificationTargetUser.php:150 src/User.php:2548 src/User.php:3002
+#: src/User.php:3579 src/User.php:4751 src/User.php:5364 src/AuthMail.php:232
 #: src/ContentTemplates/Parameters/UserParameters.php:75 src/RuleRight.php:271
 #: src/Config.php:2074
 msgid "Login"
@@ -13670,11 +13670,11 @@ msgstr "Oturumu kapat"
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr "Dosyalardaki günlükler (SQL, e-posta, otomatik işlemler...)"
 
-#: src/Config.php:2543 src/PurgeLogs.php:42
+#: src/Config.php:2542 src/PurgeLogs.php:42
 msgid "Logs purge"
 msgstr "Günlük silme"
 
-#: src/Config.php:3152
+#: src/Config.php:3151
 msgid "Logs purge configuration"
 msgstr "Günlük temizleme yapılandırması"
 
@@ -13852,7 +13852,7 @@ msgstr ""
 msgid "Make unavailable"
 msgstr "Kullanılamaz yap"
 
-#: src/Api/API.php:1591
+#: src/Api/API.php:1595
 msgid "Malformed search criteria"
 msgstr "Arama ölçütünün biçimi düzgün değil"
 
@@ -13865,7 +13865,7 @@ msgstr "Yönet"
 msgid "Manage all saved searches"
 msgstr "Kaydedilmiş aramaları yönet"
 
-#: src/Document.php:1475
+#: src/Document.php:1487
 msgid "Manage document types"
 msgstr "Belge türleri yönetimi"
 
@@ -13894,7 +13894,7 @@ msgid "Managed items"
 msgstr "Yönetilen ögeler"
 
 #: src/Dropdown.php:1173 src/Html.php:1350 src/Event.php:170
-#: src/Transfer.php:4036 src/Config.php:2540 src/Profile.php:161
+#: src/Transfer.php:4036 src/Config.php:2539 src/Profile.php:161
 #: src/Profile.php:1378 src/Profile.php:2225 src/Infocom.php:160
 msgid "Management"
 msgstr "İdari"
@@ -14084,11 +14084,11 @@ msgstr "En uzun süre"
 msgid "Maximum emails to send at once"
 msgstr "Bir kerede gönderilecek en fazla e-posta sayısı"
 
-#: src/User.php:6042
+#: src/User.php:6095
 msgid "Maximum expiration notifications to send at once"
 msgstr "Bir kerede gönderilecek en fazla geçerlilik sonu bildirimi sayısı"
 
-#: src/GLPIUploadHandler.php:86
+#: src/UploadHandler.php:406
 msgid "Maximum number of files exceeded"
 msgstr "İzin verilen en fazla dosya sayısı aşıldı"
 
@@ -14184,7 +14184,7 @@ msgstr "Bellek kullanımı: %s."
 
 #: src/NotificationTargetCommonITILObject.php:813
 msgid "Mentioned user"
-msgstr ""
+msgstr "Anılan kullanıcı"
 
 #: src/Software.php:975
 msgid "Merge"
@@ -14260,7 +14260,7 @@ msgstr "İletiler"
 msgid "Method"
 msgstr "Yöntem"
 
-#: src/Api/API.php:2686
+#: src/Api/API.php:2690
 msgid "Method Not Allowed"
 msgstr "Yönteme izin verilmiyor"
 
@@ -14410,7 +14410,7 @@ msgstr[1] "Dakika"
 msgid "Mio"
 msgstr "MB"
 
-#: src/GLPIUploadHandler.php:62
+#: src/UploadHandler.php:382
 msgid "Missing a temporary folder"
 msgstr "Geçici klasör bulunamadı"
 
@@ -14452,7 +14452,7 @@ msgstr "Cep telefonu ülke kodu ve ağ kodu birleşimi eşsiz olmalıdır!"
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:594
 #: src/AuthLDAP.php:971 src/AuthLDAP.php:1173 src/AuthLDAP.php:3979
-#: src/User.php:2723 src/User.php:3150 src/User.php:3634
+#: src/User.php:2761 src/User.php:3188 src/User.php:3672
 #: src/Contact_Supplier.php:308 src/Auth.php:1774 src/Contact.php:272
 #: src/NotificationTargetCommonITILObject.php:1748
 #: src/NotificationTargetCommonITILObject.php:1779
@@ -14610,7 +14610,7 @@ msgctxt "button"
 msgid "Move"
 msgstr "Taşı"
 
-#: src/User.php:3432
+#: src/User.php:3470
 msgid "Move to group"
 msgstr "Gruba taşı"
 
@@ -14619,7 +14619,7 @@ msgctxt "button"
 msgid "Move under"
 msgstr "Şunun altına taşı"
 
-#: src/User.php:930
+#: src/User.php:941
 msgid "Moving temporary file failed."
 msgstr "Geçici dosya silinemedi."
 
@@ -14673,7 +14673,7 @@ msgstr "Görevlerim"
 msgid "My unpublished articles"
 msgstr "Yayınlanmamış makalelerim"
 
-#: src/DbUtils.php:1674 src/User.php:4538 src/Search.php:3408
+#: src/DbUtils.php:1674 src/User.php:4576 src/Search.php:3408
 #: src/Dashboard/Filters/UserTechFilter.php:145 ajax/searchoptionvalue.php:87
 msgid "Myself"
 msgstr "Kendim"
@@ -14732,8 +14732,8 @@ msgstr "ŞU OLMAYAN"
 #: src/Budget.php:135 src/Budget.php:206 src/Budget.php:357
 #: src/PassiveDCEquipment.php:86 src/Link.php:173 src/Link.php:211
 #: src/NotificationTargetUser.php:151 src/RuleLocation.php:105
-#: src/Document.php:454 src/Document.php:990 src/User.php:4903
-#: src/User.php:4985 src/Search.php:8094 src/Search.php:8115
+#: src/Document.php:454 src/Document.php:990 src/User.php:4941
+#: src/User.php:5023 src/Search.php:8094 src/Search.php:8115
 #: src/ContractCost.php:263 src/ContractCost.php:360 src/Blacklist.php:250
 #: src/Rack.php:96 src/Rack.php:402 src/NetworkAlias.php:128
 #: src/NetworkAlias.php:322 src/NotificationTargetContract.php:174
@@ -15008,7 +15008,7 @@ msgstr[1] "Ağ aygıtı türleri"
 #: src/Entity.php:3101 src/Entity.php:3614 src/Entity.php:3625
 #: src/Entity.php:3652 src/Entity.php:3675 src/Contract.php:1529
 #: src/Contract.php:1551 src/Config.php:683 src/Config.php:1108
-#: src/Config.php:1343 src/Config.php:3494 src/CronTask.php:661
+#: src/Config.php:1343 src/Config.php:3493 src/CronTask.php:661
 #: src/Infocom.php:1762 src/Alert.php:113 src/Alert.php:182
 #: src/Features/PlanningEvent.php:745
 msgid "Never"
@@ -15096,11 +15096,11 @@ msgstr "Yeni öge"
 msgid "New note"
 msgstr "Not ekle"
 
-#: src/User.php:5344
+#: src/User.php:5382
 msgid "New password"
 msgstr "Yeni parola"
 
-#: src/User.php:5353
+#: src/User.php:5391
 msgid "New password confirmation"
 msgstr "Yeni parola onayı"
 
@@ -15223,7 +15223,7 @@ msgstr "Sonraki yürütülme"
 msgid "Next task to run: %s"
 msgstr "Yürütülecek sonraki görev: %s"
 
-#: src/User.php:2879 src/User.php:3271
+#: src/User.php:2917 src/User.php:3309
 msgid "Nickname"
 msgstr "Takma ad"
 
@@ -15237,7 +15237,7 @@ msgstr "Takma ad"
 #: src/Entity.php:2353 src/Entity.php:2388 src/Entity.php:2561
 #: src/Entity.php:3486 src/Entity.php:3514 src/Entity.php:3534
 #: src/Entity.php:3640 src/Entity.php:3822 src/RuleImportComputer.php:173
-#: src/Config.php:1103 src/Config.php:2367 src/CommonDBChild.php:1027
+#: src/Config.php:1103 src/Config.php:2364 src/CommonDBChild.php:1027
 #: src/SavedSearch_User.php:57 src/SavedSearch_User.php:79 src/Alert.php:151
 #: src/Item_DeviceCamera_ImageResolution.php:169
 msgid "No"
@@ -15391,11 +15391,11 @@ msgstr "Herhangi bir bileşen bulunamadı."
 msgid "No entity found"
 msgstr "Herhangi bir birim bulunamadı"
 
-#: src/Document.php:1556
+#: src/Document.php:1568
 msgid "No file available"
 msgstr "Kullanılabilecek bir dosya yok"
 
-#: src/RuleCollection.php:1178 src/GLPIUploadHandler.php:58
+#: src/RuleCollection.php:1178 src/UploadHandler.php:378
 msgid "No file was uploaded"
 msgstr "Herhangi bir dosya yüklenmedi"
 
@@ -15469,7 +15469,7 @@ msgstr "İşlenen bir öge yok."
 msgid "No item reaching the end of warranty."
 msgstr "Garantisinin sonuna yaklaşan bir öge yok."
 
-#: src/User.php:5648 src/LevelAgreement.php:459 src/FieldUnicity.php:616
+#: src/User.php:5701 src/LevelAgreement.php:459 src/FieldUnicity.php:616
 #: src/FieldUnicity.php:640 src/NotificationEvent.php:246
 msgid "No item to display"
 msgstr "Görüntülenecek bir öge yok"
@@ -15745,7 +15745,7 @@ msgstr ""
 "HTTP_REFERER parametresindeki yol eksik ya da geçersiz. İşlemi yeniden "
 "yapmadan önce önceki sayfayı yeniden yükleyin."
 
-#: src/User.php:3254
+#: src/User.php:3292
 msgid "Normal"
 msgstr "Normal"
 
@@ -15854,7 +15854,7 @@ msgid_plural "Notifications"
 msgstr[0] "Bildirim"
 msgstr[1] "Bildirimler"
 
-#: src/Config.php:3512
+#: src/Config.php:3511
 msgid "Notification disabled"
 msgstr "Bildirim devre dışı"
 
@@ -15979,7 +15979,7 @@ msgstr "Tüm bağlantılı destek kayıtları sayısı"
 msgid "Number of answered satisfaction survey"
 msgstr "Yanıtlanmış memnuniyet anketi sayısı"
 
-#: src/User.php:3908
+#: src/User.php:3946
 msgid "Number of assigned tickets"
 msgstr "Atanmış destek kaydı sayısı"
 
@@ -16198,7 +16198,7 @@ msgstr "Destek kaydı sayısı"
 msgid "Number of tickets already assigned"
 msgstr "Atanmış destek kaydı sayısı"
 
-#: templates/components/itilobject/actors/field.html.twig src/User.php:3873
+#: templates/components/itilobject/actors/field.html.twig src/User.php:3911
 msgid "Number of tickets as requester"
 msgstr "İstekte bulunanın destek kaydı sayısı"
 
@@ -16244,11 +16244,11 @@ msgstr "Kullanılmış sarf malzemesi sayısı"
 msgid "Number of worn cartridges"
 msgstr "Yıpranmış kartuş sayısı"
 
-#: src/User.php:3893
+#: src/User.php:3931
 msgid "Number of written tickets"
 msgstr "Yazılmış destek kaydı sayısı"
 
-#: templates/install/choose_language.html.twig front/tracking.injector.php:91
+#: templates/install/choose_language.html.twig front/tracking.injector.php:93
 #: src/ITILCategory.php:488 src/ITILCategory.php:496 src/ITILCategory.php:504
 #: src/ITILCategory.php:512 src/Console/System/CheckRequirementsCommand.php:78
 #: src/Printer_CartridgeInfo.php:96 js/glpi_dialog.js:79 js/glpi_dialog.js:260
@@ -16638,7 +16638,7 @@ msgstr[1] "Diğer bileşen modelleri"
 
 #: src/Budget.php:870
 msgid "Other entities"
-msgstr ""
+msgstr "Diğer birimler"
 
 #: src/NetworkPort.php:844
 msgid "Other equipments"
@@ -16937,7 +16937,7 @@ msgstr[1] "Pasif aygıt türleri"
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
 #: templates/components/form/snmpcredential.html.twig
-#: src/MailCollector.php:267 src/User.php:2597 src/User.php:3068
+#: src/MailCollector.php:267 src/User.php:2635 src/User.php:3106
 #: src/AuthMail.php:235 src/Config.php:2076
 msgid "Password"
 msgstr "Parola"
@@ -16946,7 +16946,7 @@ msgstr "Parola"
 msgid "Password (for non-anonymous binds)"
 msgstr "Parola (anonim olmayan bağlantılar için)"
 
-#: templates/password_form.html.twig src/User.php:2602 src/User.php:3074
+#: templates/password_form.html.twig src/User.php:2640 src/User.php:3112
 msgid "Password confirmation"
 msgstr "Parola onayı"
 
@@ -16954,15 +16954,15 @@ msgstr "Parola onayı"
 msgid "Password expiration date"
 msgstr "Parola geçerliliği sonu"
 
-#: src/Config.php:3483
+#: src/Config.php:3482
 msgid "Password expiration delay (in days)"
 msgstr "Parola geçerlilik sonu gecikmesi (gün)"
 
-#: src/Config.php:3501
+#: src/Config.php:3500
 msgid "Password expiration notice time (in days)"
 msgstr "Parola geçerlilik sonu bildirim zamanı (gün)"
 
-#: src/Config.php:3477
+#: src/Config.php:3476
 msgid "Password expiration policy"
 msgstr "Parola geçerlilik sonu ilkesi"
 
@@ -16974,7 +16974,7 @@ msgstr "Parola geçerliliği sonu"
 msgid "Password has expired"
 msgstr "Parola geçerliliği sona ermiş"
 
-#: src/Config.php:1545 src/Config.php:3394
+#: src/Config.php:1545 src/Config.php:3393
 msgid "Password minimum length"
 msgstr "En kısa parola uzunluğu"
 
@@ -16998,28 +16998,28 @@ msgstr "Parolada en az bir simge bulunmalıdır!"
 msgid "Password must include at least a uppercase letter!"
 msgstr "Parolada en az bir büyük harf bulunmalıdır!"
 
-#: src/Config.php:3413
+#: src/Config.php:3412
 msgid "Password need digit"
 msgstr "Parolada rakam bulunmalıdır"
 
-#: src/Config.php:3428
+#: src/Config.php:3427
 msgid "Password need lowercase character"
 msgstr "Parolada küçük harf bulunmalıdır"
 
-#: src/Config.php:3461
+#: src/Config.php:3460
 msgid "Password need symbol"
 msgstr "Parolada simge bulunmalıdır"
 
-#: src/Config.php:3446
+#: src/Config.php:3445
 msgid "Password need uppercase character"
 msgstr "Parolada büyük harf bulunmalıdır"
 
-#: templates/password_form.html.twig src/User.php:2609 src/User.php:3081
-#: src/User.php:5362 src/Config.php:3373
+#: templates/password_form.html.twig src/User.php:2647 src/User.php:3119
+#: src/User.php:5400 src/Config.php:3372
 msgid "Password security policy"
 msgstr "Parola güvenlik ilkesi"
 
-#: src/Config.php:3379
+#: src/Config.php:3378
 msgid "Password security policy validation"
 msgstr "Parola güvenlik ilkesi doğrulaması"
 
@@ -17027,7 +17027,7 @@ msgstr "Parola güvenlik ilkesi doğrulaması"
 msgid "Password too short!"
 msgstr "Parola çok kısa!"
 
-#: front/updatepassword.php:95 src/User.php:5314
+#: front/updatepassword.php:95 src/User.php:5352
 msgid "Password update"
 msgstr "Parolayı güncelle"
 
@@ -17078,7 +17078,7 @@ msgstr "Bekleyen: %s"
 msgid "Percent done"
 msgstr "Tamamlanan yüzde"
 
-#: src/Config.php:2546
+#: src/Config.php:2545
 msgid "Performance"
 msgstr "Başarım"
 
@@ -17207,7 +17207,7 @@ msgid_plural "Personal reminders"
 msgstr[0] "Kişisel anımsatıcı"
 msgstr[1] "Kişisel anımsatıcılar"
 
-#: src/Config.php:1028 src/Config.php:2523 src/Profile.php:1050
+#: src/Config.php:1028 src/Config.php:2522 src/Profile.php:1050
 #: src/Profile.php:1110 src/Profile.php:2610
 #: src/Features/PlanningEvent.php:767
 msgid "Personalization"
@@ -17229,7 +17229,7 @@ msgstr "Telefon"
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:587
 #: src/AuthLDAP.php:967 src/AuthLDAP.php:1164 src/AuthLDAP.php:3978
-#: src/User.php:2739 src/User.php:3191 src/User.php:3626
+#: src/User.php:2777 src/User.php:3229 src/User.php:3664
 #: src/Contact_Supplier.php:307 src/Auth.php:1768 src/Contact.php:264
 #: src/ContentTemplates/Parameters/UserParameters.php:79
 #: src/NotificationTargetCommonITILObject.php:1750
@@ -17267,8 +17267,8 @@ msgstr "Foto iletken"
 #: templates/generic_show_form.html.twig templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:165
 #: src/CommonDropdown.php:188 src/AuthLDAP.php:985 src/AuthLDAP.php:3982
-#: src/User.php:2524 src/User.php:2990 src/User.php:3589 src/User.php:3960
-#: src/User.php:6430
+#: src/User.php:2562 src/User.php:3028 src/User.php:3627 src/User.php:3998
+#: src/User.php:6483
 msgid "Picture"
 msgid_plural "Pictures"
 msgstr[0] "Fotoğraf"
@@ -17330,7 +17330,7 @@ msgstr "Planlanan başlangıç tarihi"
 msgid "Planned tickets"
 msgstr "Planlanmış destek kayıtları"
 
-#: templates/pages/tools/project_task.html.twig front/planning.php:157
+#: templates/pages/tools/project_task.html.twig front/planning.php:161
 #: src/Project.php:1685 src/Event.php:159 src/Event.php:168
 #: src/Planning.php:86 src/ReservationItem.php:204 src/Profile.php:1576
 #: src/Profile.php:3170 src/Reminder.php:447 src/Reminder.php:1027
@@ -17367,7 +17367,7 @@ msgstr "Planlamalar"
 msgid "Plans"
 msgstr "Planlar"
 
-#: src/Config.php:3108
+#: src/Config.php:3107
 msgid "Please check the unstable version checkbox."
 msgstr "Lütfen kararsız sürüm kutusunu işaretleyin."
 
@@ -17726,7 +17726,7 @@ msgstr ""
 "Denetlenecek uygulama eki. Seçenek kullanılmazsa, yalnızca GLPI çekirdek "
 "veri tabanı tabloları denetlenir."
 
-#: src/Html.php:1586 src/Config.php:3206
+#: src/Html.php:1586 src/Config.php:3205
 msgid "Plugins"
 msgstr "Uygulama ekleri"
 
@@ -17805,7 +17805,7 @@ msgstr "Olabilecek değerler:"
 #: templates/pages/admin/ldap.choose_directory.html.twig
 #: src/Ticket_Ticket.php:75 src/RuleDictionnarySoftwareCollection.php:99
 #: src/KnowbaseItem.php:1402 src/KnowbaseItem.php:1456 src/Appliance.php:480
-#: src/User.php:3463 src/MassiveAction.php:923 src/MassiveAction.php:1233
+#: src/User.php:3501 src/MassiveAction.php:923 src/MassiveAction.php:1233
 #: src/MassiveAction.php:1262 src/RuleCollection.php:1443 src/Lock.php:1141
 #: src/Lock.php:1159 src/Item_SoftwareVersion.php:170
 #: src/Item_SoftwareVersion.php:182 src/Domain.php:424 src/Domain.php:433
@@ -17832,7 +17832,7 @@ msgstr "Gönder"
 msgid "Postal code"
 msgstr "Posta kodu"
 
-#: src/Document.php:1451
+#: src/Document.php:1463
 msgid ""
 "Potential upload attack or file too large. Moving temporary file failed."
 msgstr ""
@@ -18311,7 +18311,7 @@ msgstr "Satın alınan sürüm"
 msgid "Purge"
 msgstr "Temizle"
 
-#: src/Config.php:3294
+#: src/Config.php:3293
 msgid "Purge all log entries"
 msgstr "Tüm günük kayıtlarını sil"
 
@@ -18450,7 +18450,7 @@ msgid "Read"
 msgstr "Okuma"
 
 #. TRANS: short for : Read method for user authentication and synchronization
-#: src/User.php:5925
+#: src/User.php:5978
 msgid "Read auth"
 msgstr "Okuma izni"
 
@@ -18474,7 +18474,7 @@ msgstr "SSS okuyun"
 msgid "Read the item's notes"
 msgstr "Öge notlarını okuyun"
 
-#: src/User.php:5926
+#: src/User.php:5979
 msgid "Read user authentication and synchronization method"
 msgstr "Kullanıcı kimlik doğrulamasını ve eşitleme yöntemini okuyabilir"
 
@@ -18637,7 +18637,7 @@ msgstr "Yinelenen etkinlik taşındı"
 msgid "Recurring event resized"
 msgstr "Yinelenen etkinliğin süresi değiştirildi"
 
-#: src/User.php:2789 src/RuleRightCollection.php:164 src/RuleRight.php:78
+#: src/User.php:2827 src/RuleRightCollection.php:164 src/RuleRight.php:78
 #: src/RuleRight.php:350 src/Profile_User.php:157 src/Profile_User.php:305
 #: src/Profile_User.php:1138
 msgid "Recursive"
@@ -18720,8 +18720,8 @@ msgstr[1] "Reddedilen e-postalar"
 msgid "Refused mail archive folder (optional)"
 msgstr "Reddedilen e-posta arşivi klasörü (isteğe bağlı)"
 
-#: templates/pages/setup/apiclient.html.twig src/User.php:2912
-#: src/User.php:2914 src/User.php:3299 src/User.php:3301
+#: templates/pages/setup/apiclient.html.twig src/User.php:2950
+#: src/User.php:2952 src/User.php:3337 src/User.php:3339
 msgid "Regenerate"
 msgstr "Yeniden üretilsin"
 
@@ -18838,7 +18838,7 @@ msgstr "Sarf malzemesi uyarılarının anımsatılma sıklığı"
 msgid "Remote ID"
 msgstr "Uzak kimliği"
 
-#: src/User.php:2893 src/User.php:3280
+#: src/User.php:2931 src/User.php:3318
 msgid "Remote access keys"
 msgstr "Uzak erişim anahtarları"
 
@@ -18859,7 +18859,7 @@ msgctxt "button"
 msgid "Remove a contract"
 msgstr "Sözleşme sil"
 
-#: src/Document.php:1720
+#: src/Document.php:1732
 msgctxt "button"
 msgid "Remove a document"
 msgstr "Belgeyi sil"
@@ -18878,7 +18878,7 @@ msgctxt "button"
 msgid "Remove all notification templates"
 msgstr "Tüm bildirim kalıplarını sil"
 
-#: src/Appliance.php:450 src/Document.php:1726 src/Contract.php:424
+#: src/Appliance.php:450 src/Document.php:1738 src/Contract.php:424
 #: src/Ticket.php:2634
 msgctxt "button"
 msgid "Remove an item"
@@ -19308,7 +19308,7 @@ msgstr "Görünüm ayarlarını sıfırla"
 msgid "Reset last run"
 msgstr "Son çalışmayı sıfırla"
 
-#: src/User.php:5499 src/Api/API.php:2187
+#: src/User.php:5544 src/Api/API.php:2191
 msgid "Reset password successful."
 msgstr "Parola sıfırlandı."
 
@@ -19363,8 +19363,8 @@ msgstr "Yanıtlanma tarihi"
 msgid "Response date to the satisfaction survey"
 msgstr "Memnuniyet anketini yanıtlama tarihi"
 
-#: src/AuthLDAP.php:992 src/AuthLDAP.php:1333 src/User.php:2858
-#: src/User.php:3929 src/ContentTemplates/Parameters/UserParameters.php:83
+#: src/AuthLDAP.php:992 src/AuthLDAP.php:1333 src/User.php:2896
+#: src/User.php:3967 src/ContentTemplates/Parameters/UserParameters.php:83
 msgid "Responsible"
 msgstr "Sorumlu"
 
@@ -19390,7 +19390,7 @@ msgstr "Geri yükle"
 msgid "Restore (move out of trashbin)"
 msgstr "Geri yükle (çöpten çıkar)"
 
-#: src/Log.php:1082 src/Config.php:3188
+#: src/Log.php:1082 src/Config.php:3187
 msgid "Restore the item"
 msgstr "Öge geri yüklendi"
 
@@ -19462,7 +19462,7 @@ msgstr "E-posta alınsın (e-posta alıcıları)"
 
 #: templates/display_and_die.html.twig
 msgid "Return to previous page"
-msgstr ""
+msgstr "Önceki sayfaya dön"
 
 #: src/Config.php:1298
 msgid "Reverse order (old items on bottom, recent on top)"
@@ -19669,7 +19669,7 @@ msgstr "Çalışma aralığı"
 msgid "Run the \"%1$s\" command for more details."
 msgstr "Ayrıntılı bilgi almak için \"%1$s\" komutunu yürütün."
 
-#: src/User.php:2639 src/User.php:3112 src/Config.php:1285
+#: src/User.php:2677 src/User.php:3150 src/Config.php:1285
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
 msgstr "Etkinleştirmek için \"%1$s\" komutunu yürütün."
@@ -19793,7 +19793,7 @@ msgid "SQL password"
 msgstr "SQL parolası"
 
 #: src/DBConnection.php:82 src/Config.php:657 src/Config.php:2040
-#: src/Config.php:2555
+#: src/Config.php:2554
 msgid "SQL replica"
 msgid_plural "SQL replicas"
 msgstr[0] "SQL kopyası"
@@ -19888,7 +19888,7 @@ msgstr "Cumartesi"
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/components/itilobject/actors/main.html.twig src/AuthLDAP.php:685
 #: src/AuthLDAP.php:873 src/AuthLDAP.php:1001 src/AuthLDAP.php:1037
-#: src/User.php:5371 src/Auth.php:1797 src/Impact.php:404 src/Impact.php:1108
+#: src/User.php:5409 src/Auth.php:1797 src/Impact.php:404 src/Impact.php:1108
 #: src/Impact.php:1821 src/Dashboard/Grid.php:862
 msgid "Save"
 msgstr "Kaydet"
@@ -19902,7 +19902,7 @@ msgstr "Kaydet"
 #: templates/components/itilobject/footer.html.twig
 #: templates/components/infocom.html.twig
 #: templates/components/form/buttons.html.twig src/Item_Devices.php:754
-#: src/User.php:3305 src/Inventory/Conf.php:993 src/CommonGLPI.php:1404
+#: src/User.php:3343 src/Inventory/Conf.php:993 src/CommonGLPI.php:1404
 #: src/DomainRecordType.php:412 src/ReservationItem.php:415
 #: src/Entity.php:1644 src/Entity.php:1732 src/Entity.php:1973
 #: src/Entity.php:2506 src/Entity.php:2606 src/Entity.php:3220
@@ -19910,8 +19910,8 @@ msgstr "Kaydet"
 #: src/Reservation.php:878 src/CommonITILValidation.php:899
 #: src/CommonITILActor.php:229 src/CommonITILActor.php:293 src/Config.php:580
 #: src/Config.php:630 src/Config.php:704 src/Config.php:774 src/Config.php:980
-#: src/Config.php:1509 src/Config.php:2083 src/Config.php:3301
-#: src/Config.php:3543 src/Config.php:3596 src/Profile.php:1249
+#: src/Config.php:1509 src/Config.php:2083 src/Config.php:3300
+#: src/Config.php:3542 src/Config.php:3595 src/Profile.php:1249
 #: src/Profile.php:1290 src/Profile.php:1338 src/Profile.php:1406
 #: src/Profile.php:1457 src/Profile.php:1591 src/Profile.php:1703
 #: src/Profile.php:1820 src/Profile.php:1874 src/Profile.php:1918
@@ -19982,9 +19982,9 @@ msgstr "Zamanlanmış"
 msgid "Search"
 msgstr "Arama"
 
-#: front/find_num.php:84 src/KnowbaseItem.php:1348 src/AuthLDAP.php:1515
-#: src/AuthLDAP.php:4027 src/Search.php:2557 src/Planning.php:570
-#: src/ReservationItem.php:476 src/Knowbase.php:66
+#: src/KnowbaseItem.php:1348 src/AuthLDAP.php:1515 src/AuthLDAP.php:4027
+#: src/Search.php:2557 src/Planning.php:570 src/ReservationItem.php:476
+#: src/Knowbase.php:66
 msgctxt "button"
 msgid "Search"
 msgstr "Arama"
@@ -20058,10 +20058,6 @@ msgstr "Kullanıcı arama sonuçları görünümü"
 msgid "Search results for localized items only"
 msgstr "Yalnızca yerel ögeler için arama sonuçları"
 
-#: front/find_num.php:75
-msgid "Search the ID of your hardware"
-msgstr "Donanım kimliğiyle arayın"
-
 #: src/AuthLDAP.php:852 src/AuthLDAP.php:1308
 msgid "Search type"
 msgstr "Arama türü"
@@ -20079,7 +20075,7 @@ msgstr "İkinci öge"
 msgid "Secondary"
 msgstr "İkinci"
 
-#: src/Event.php:173 src/Config.php:2545
+#: src/Event.php:173 src/Config.php:2544
 msgid "Security"
 msgstr "Güvenlik"
 
@@ -20091,7 +20087,7 @@ msgstr "Oturumlar için güvenlik yapılandırması"
 msgid "Security key cannot be generated!"
 msgstr "Güvenlik anahtarı üretilemedi!"
 
-#: src/Config.php:3370
+#: src/Config.php:3369
 msgid "Security setup"
 msgstr "Güvenlik ayarları"
 
@@ -20417,15 +20413,15 @@ msgstr "Seri numarası"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/assets/operatingsystem.html.twig
-#: templates/components/form/item_device.html.twig front/find_num.php:96
-#: src/Phone.php:251 src/Change_Item.php:160 src/Monitor.php:246
+#: templates/components/form/item_device.html.twig src/Phone.php:251
+#: src/Change_Item.php:160 src/Monitor.php:246
 #: src/NotificationTargetCertificate.php:125
 #: src/ComputerVirtualMachine.php:210 src/ComputerVirtualMachine.php:338
 #: src/NotificationTargetProblem.php:205 src/Item_Devices.php:350
 #: src/Item_Devices.php:351 src/Document_Item.php:415 src/Appliance.php:241
 #: src/Budget.php:358 src/PassiveDCEquipment.php:112 src/Enclosure.php:140
-#: src/Printer.php:384 src/RuleLocation.php:108 src/User.php:4904
-#: src/User.php:4986 src/Search.php:8132 src/Blacklist.php:245
+#: src/Printer.php:384 src/RuleLocation.php:108 src/User.php:4942
+#: src/User.php:5024 src/Search.php:8132 src/Blacklist.php:245
 #: src/Rack.php:190 src/SoftwareLicense.php:372 src/SoftwareLicense.php:626
 #: src/SoftwareLicense.php:941 src/SoftwareLicense.php:1208
 #: src/Computer_Item.php:413 src/Computer_Item.php:582 src/Peripheral.php:230
@@ -20545,7 +20541,7 @@ msgid "Set the status to pending"
 msgstr "Durumu bekliyor olarak ayarla"
 
 #: src/Preference.php:42 src/Impact.php:373 src/Impact.php:1060
-#: src/Impact.php:1119 src/Config.php:2530
+#: src/Impact.php:1119 src/Config.php:2529
 msgid "Settings"
 msgstr "Ayarlar"
 
@@ -20580,7 +20576,7 @@ msgctxt "button"
 msgid "Show"
 msgstr "Görüntüle"
 
-#: src/Dropdown.php:308 src/User.php:4625
+#: src/Dropdown.php:308 src/User.php:4663
 #, php-format
 msgid "Show %1$s"
 msgstr "%1$s görüntüle"
@@ -20692,8 +20688,8 @@ msgstr[1] "SIM kart türleri"
 msgid "Simple mode"
 msgstr "Basit kip"
 
-#: front/reservationitem.php:41 front/tracking.injector.php:56
-#: front/tracking.injector.php:58 front/reservation.php:45
+#: front/reservationitem.php:41 front/tracking.injector.php:58
+#: front/tracking.injector.php:60 front/reservation.php:45
 #: front/reservation.form.php:51 front/reservation.form.php:53
 #: src/ITILTemplateMandatoryField.php:174 src/ITILTemplate.php:418
 #: src/Profile.php:3730
@@ -20775,14 +20771,13 @@ msgstr[1] "Soket modelleri"
 msgid "Sodium ChaCha20-Poly1305 size constant"
 msgstr "Sodium ChaCha20-Poly1305 boyut sabiti"
 
-#: templates/pages/management/softwarelicense.html.twig front/find_num.php:157
-#: src/Dropdown.php:1226 src/Log.php:477 src/Log.php:483 src/Log.php:920
-#: src/SoftwareVersion.php:119 src/Rule.php:294
-#: src/RuleDictionnarySoftware.php:82 src/RuleDictionnarySoftware.php:109
-#: src/SoftwareLicense.php:1210 src/Software.php:67
-#: src/RuleSoftwareCategory.php:75 src/Item_SoftwareVersion.php:1039
-#: src/Entity.php:1896 src/Config.php:3213 src/Profile.php:2101
-#: src/NotificationTargetSoftwareLicense.php:90
+#: templates/pages/management/softwarelicense.html.twig src/Dropdown.php:1226
+#: src/Log.php:477 src/Log.php:483 src/Log.php:920 src/SoftwareVersion.php:119
+#: src/Rule.php:294 src/RuleDictionnarySoftware.php:82
+#: src/RuleDictionnarySoftware.php:109 src/SoftwareLicense.php:1210
+#: src/Software.php:67 src/RuleSoftwareCategory.php:75
+#: src/Item_SoftwareVersion.php:1039 src/Entity.php:1896 src/Config.php:3212
+#: src/Profile.php:2101 src/NotificationTargetSoftwareLicense.php:90
 msgid "Software"
 msgid_plural "Software"
 msgstr[0] "Yazılım"
@@ -21124,8 +21119,8 @@ msgstr "İstatistikler"
 #: src/PlanningExternalEventTemplate.php:64 src/Appliance.php:296
 #: src/PassiveDCEquipment.php:147 src/Enclosure.php:131
 #: src/CommonITILTask.php:772 src/CommonITILTask.php:967
-#: src/CommonITILTask.php:1468 src/Printer.php:375 src/User.php:4906
-#: src/User.php:4988 src/Search.php:8105 src/Search.php:8126 src/Line.php:150
+#: src/CommonITILTask.php:1468 src/Printer.php:375 src/User.php:4944
+#: src/User.php:5026 src/Search.php:8105 src/Search.php:8126 src/Line.php:150
 #: src/Rack.php:181 src/NotificationTargetContract.php:182
 #: src/SoftwareLicense.php:484 src/SoftwareLicense.php:948
 #: src/Software.php:598 src/Peripheral.php:221 src/Certificate_Item.php:470
@@ -21263,8 +21258,8 @@ msgstr "Alt görev"
 msgid "Success"
 msgstr "Başarılı"
 
-#: src/Document.php:185 src/Document.php:1201 src/Document.php:1313
-#: src/Document.php:1410
+#: src/Document.php:185 src/Document.php:1207 src/Document.php:1325
+#: src/Document.php:1422
 #, php-format
 msgid "Successful deletion of the file %s"
 msgstr "%s dosyası silindi"
@@ -21351,8 +21346,8 @@ msgid "Supported tasks"
 msgstr "Desteklenen görevler"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:932
-#: src/AuthLDAP.php:1137 src/AuthLDAP.php:3975 src/User.php:2569
-#: src/User.php:2970 src/User.php:6419 src/Auth.php:1712
+#: src/AuthLDAP.php:1137 src/AuthLDAP.php:3975 src/User.php:2607
+#: src/User.php:3008 src/User.php:6472 src/Auth.php:1712
 #: src/ContentTemplates/Parameters/UserParameters.php:82
 msgid "Surname"
 msgstr "Soyad"
@@ -21383,8 +21378,8 @@ msgid "Synchronization"
 msgstr "Eşitleme"
 
 #: src/AuthLDAP.php:542 src/AuthLDAP.php:1324 src/AuthLDAP.php:1765
-#: src/AuthLDAP.php:1824 src/AuthLDAP.php:3958 src/User.php:2544
-#: src/User.php:3028 src/User.php:3599
+#: src/AuthLDAP.php:1824 src/AuthLDAP.php:3958 src/User.php:2582
+#: src/User.php:3066 src/User.php:3637
 msgid "Synchronization field"
 msgstr "Eşitleme alanı"
 
@@ -21422,7 +21417,7 @@ msgstr "Önceden içe aktarılmış kullanıcılar eşitleniyor"
 msgid "Sysdescr"
 msgstr "Sistem açıklaması"
 
-#: src/Event.php:157 src/Config.php:2544
+#: src/Event.php:157 src/Config.php:2543
 msgid "System"
 msgstr "Sistem"
 
@@ -21760,7 +21755,7 @@ msgstr "Kalıp yapılandırması"
 msgid "Temporarily down for maintenance"
 msgstr "Bakım için geçici olarak hizmet dışı"
 
-#: src/Document.php:1274
+#: src/Document.php:1286
 msgid "Temporary directory doesn't exist"
 msgstr "Geçici klasör bulunamadı"
 
@@ -21840,7 +21835,7 @@ msgstr "Oturum açma kutusundaki metin"
 msgid "Text to display during maintenance"
 msgstr "Bakım kipi etkin olduğunda görüntülenecek metin"
 
-#: front/tracking.injector.php:92
+#: front/tracking.injector.php:94
 msgid "Thank you for using our automatic helpdesk system."
 msgstr ""
 "Otomatik kullanıcı destek merkezi sistemimizi kullandığınız için teşekkür "
@@ -21924,7 +21919,7 @@ msgstr ""
 "Bir destek kaydına bir işletme sözleşmesi atanması, tarihin yeniden "
 "hesaplanmasına yol açar."
 
-#: src/User.php:5461
+#: src/User.php:5499
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
@@ -22019,11 +22014,11 @@ msgstr "İşleyici tüm kuralları işler."
 msgid "The file could not be created in %s."
 msgstr "Dosya %s içinde oluşturulamadı."
 
-#: src/User.php:938
+#: src/User.php:949
 msgid "The file is not an image file."
 msgstr "Bu bir görsel dosyası değil."
 
-#: src/Document.php:1441 src/User.php:921
+#: src/Document.php:1453 src/User.php:932
 msgid "The file is valid. Upload is successful."
 msgstr "Dosya geçerli. Yüklendi."
 
@@ -22080,11 +22075,11 @@ msgstr "Günlük dosyası %s içinde oluşturulamadı."
 msgid "The log file has been created successfully."
 msgstr "Günlük dosyası oluşturuldu."
 
-#: src/User.php:717
+#: src/User.php:728
 msgid "The login is not valid. Unable to add the user."
 msgstr "Kullanıcı adı geçersiz olduğundan kullanıcı eklenemedi."
 
-#: src/User.php:3359
+#: src/User.php:3397
 msgid "The login is not valid. Unable to update login."
 msgstr "Oturum açma bilgileri geçersiz olduğundan bilgiler güncellenemiyor."
 
@@ -22189,26 +22184,26 @@ msgctxt "filters"
 msgid "The type of the item"
 msgstr "Ögenin türü"
 
-#: src/GLPIUploadHandler.php:50
+#: src/UploadHandler.php:370
 msgid ""
 "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in "
 "the HTML form"
 msgstr ""
 "Yüklenen dosyanın boyutu, HTML formundaki MAX_FILE_SIZE değerinden büyük"
 
-#: src/GLPIUploadHandler.php:74
+#: src/UploadHandler.php:394
 msgid "The uploaded file exceeds the post_max_size directive in php.ini"
 msgstr ""
 "Yüklenen dosyanın boyutu, php.ini dosyasındaki post_max_size değerinden "
 "büyük"
 
-#: src/GLPIUploadHandler.php:46
+#: src/UploadHandler.php:366
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
 msgstr ""
 "Yüklenen dosyanın boyutu, php.ini dosyasındaki upload_max_filesize "
 "değerinden büyük"
 
-#: src/GLPIUploadHandler.php:54
+#: src/UploadHandler.php:374
 msgid "The uploaded file was only partially uploaded"
 msgstr "Dosyanın yalnızca bir bölümü yüklendi"
 
@@ -22291,7 +22286,7 @@ msgstr ""
 "Bu sütun, birkaç kartı gösteremeyeceğinden kartları göstermeyi "
 "destekleyemez. Yine de kartları sürükleyip bu sütuna bırakabilirsiniz."
 
-#: src/User.php:6452
+#: src/User.php:6505
 msgid "This is a special user used for automated actions. "
 msgstr "Bu özel kullanıcı, otomatik işlemler için kullanılır."
 
@@ -22635,7 +22630,7 @@ msgstr "Çözümlenme Süresi + İlerleme"
 msgid "Time to resolve exceeded"
 msgstr "Çözümlenme süresi aşıldı"
 
-#: src/User.php:2623 src/User.php:3096
+#: src/User.php:2661 src/User.php:3134
 msgid "Time zone"
 msgstr "Saat dilimi"
 
@@ -22672,7 +22667,7 @@ msgstr "Saat dilimi"
 msgid "Timezone usage has been enabled."
 msgstr "Saat dilimleri kullanılmaya başlandı."
 
-#: src/User.php:2637 src/User.php:3110 src/Config.php:1283
+#: src/User.php:2675 src/User.php:3148 src/Config.php:1283
 msgid "Timezone usage has not been activated."
 msgstr "Saat dilimlerinin kullanılması etkinleştirilmemiş."
 
@@ -22715,7 +22710,7 @@ msgstr "İpucu: Bu pencereyi %s tuşları ile açabilirsiniz"
 #: templates/components/itilobject/selfservice.html.twig
 #: src/Csv/PlanningCsv.php:72 src/NotificationTargetProjectTask.php:595
 #: src/NotificationTargetProblem.php:255 src/NotificationTargetProblem.php:260
-#: src/ProjectCost.php:132 src/CommonITILTask.php:1652 src/User.php:3824
+#: src/ProjectCost.php:132 src/CommonITILTask.php:1652 src/User.php:3862
 #: src/ContractCost.php:123 src/CommonITILCost.php:108
 #: src/NotificationTargetChange.php:392 src/NotificationTargetChange.php:397
 #: src/Contact.php:343
@@ -22733,7 +22728,7 @@ msgstr "Başlık"
 
 #: templates/components/user/info_card.html.twig front/stat.tracking.php:91
 #: front/stat.graph.php:241 src/AuthLDAP.php:974 src/AuthLDAP.php:1182
-#: src/AuthLDAP.php:3980 src/User.php:2765 src/Auth.php:1780
+#: src/AuthLDAP.php:3980 src/User.php:2803 src/Auth.php:1780
 #: src/NotificationTargetCommonITILObject.php:1752
 #: src/NotificationTargetCommonITILObject.php:1776
 #: src/NotificationTargetCommonITILObject.php:1812
@@ -23118,8 +23113,8 @@ msgstr "Bükümlü çift (RJ-45)"
 #: src/Budget.php:242 src/Budget.php:355 src/PassiveDCEquipment.php:104
 #: src/CommonDBVisible.php:279 src/RuleDictionnaryPhoneType.php:51
 #: src/RuleDictionnaryPhoneType.php:65 src/QueuedNotification.php:360
-#: src/QueuedNotification.php:700 src/Printer.php:359 src/User.php:4901
-#: src/User.php:4983 src/Blacklist.php:95 src/Blacklist.php:130
+#: src/QueuedNotification.php:700 src/Printer.php:359 src/User.php:4939
+#: src/User.php:5021 src/Blacklist.php:95 src/Blacklist.php:130
 #: src/DisplayPreference.php:700 src/Rack.php:165 src/DeviceSimcard.php:54
 #: src/DeviceSimcard.php:89 src/NotificationTargetContract.php:180
 #: src/RuleCollection.php:1326 src/RuleCollection.php:2354
@@ -23278,7 +23273,7 @@ msgstr "UUID"
 msgid "Unable to add. The user already exist."
 msgstr "Eklenemiyor. Kullanıcı zaten var."
 
-#: src/User.php:750
+#: src/User.php:761
 msgid "Unable to add. The user already exists."
 msgstr "Eklenemedi. Kullanıcı zaten var."
 
@@ -23443,7 +23438,7 @@ msgstr "Yetkilendirme kodu alınamadı"
 msgid "Unable to get item"
 msgstr "Öge alınamadı"
 
-#: front/user.form.php:189
+#: front/user.form.php:199
 msgid "Unable to impersonate user"
 msgstr "Kullanıcı rolüne geçilemedi"
 
@@ -23522,7 +23517,7 @@ msgstr "\"%s\" kurulum dosyası okunamadı."
 msgid "Unable to reaffect given elements!"
 msgstr "Belirtilen ögeler yeniden işlenemedi!"
 
-#: src/Inventory/Inventory.php:928
+#: src/Inventory/Inventory.php:941
 #, php-format
 msgid "Unable to remove file %1$s"
 msgstr "%1$s dosyası silinemedi"
@@ -23532,7 +23527,7 @@ msgstr "%1$s dosyası silinemedi"
 msgid "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
 msgstr "%1$s (%2$s) tablosunun adı %3$s (%4$s) olarak değiştirilemedi!"
 
-#: src/User.php:5444 src/User.php:5454
+#: src/User.php:5482 src/User.php:5492
 msgid "Unable to reset password, please contact your administrator"
 msgstr "Parola sıfırlanamadı. Lütfen yöneticiniz ile görüşün"
 
@@ -23546,7 +23541,7 @@ msgstr "Fotoğraf dosyası kaydedilemedi."
 msgid "Unable to send notification using %1$s"
 msgstr "%1$s kullanılarak bildirim gönderilemedi"
 
-#: front/user.form.php:198
+#: front/user.form.php:208
 msgid "Unable to stop impersonating user"
 msgstr "Kullanıcının rolünden çıkılamadı"
 
@@ -23583,7 +23578,7 @@ msgstr "%s öge güncellenemedi"
 msgid "Unable to update DB configuration file."
 msgstr "Veri tabanı yapılandırma dosyası güncellenemedi."
 
-#: src/User.php:3348
+#: src/User.php:3386
 msgid "Unable to update login. A user already exists."
 msgstr "Oturum açma bilgileri güncellenemedi. Bu kullanıcı zaten var."
 
@@ -23598,6 +23593,8 @@ msgid ""
 "Unable to update model because it is used by an asset in the \"%s\" rack and"
 " the new required units do not fit into the rack"
 msgstr ""
+"Model \"%s\" kabinindeki bir varlık tarafından kullanıldığından ve istenilen"
+" yeni birimler kabine sığmadığından güncellenemiyor"
 
 #: src/System/Requirement/DbConfiguration.php:74
 msgid "Unable to validate database configuration variables."
@@ -23619,11 +23616,11 @@ msgstr "Yetkilendirme kodu doğrulanamadı"
 msgid "Unable to write cache configuration file."
 msgstr "Ön bellek yapılandırma dosyasına yazılamadı."
 
-#: front/document.send.php:66 front/document.send.php:111
+#: front/document.send.php:68 front/document.send.php:113
 msgid "Unauthorized access to this file"
 msgstr "Bu dosyaya erişim izniniz yok"
 
-#: src/Document.php:1470 src/RuleCollection.php:1185
+#: src/Document.php:1482 src/RuleCollection.php:1185
 msgid "Unauthorized file type"
 msgstr "İzin verilmeyen dosya türü"
 
@@ -23700,7 +23697,7 @@ msgstr "Bilinmiyor"
 msgid "Unknown error"
 msgstr "Bilinmeyen hata"
 
-#: front/document.send.php:50
+#: front/document.send.php:52
 msgid "Unknown file"
 msgstr "Dosya bilinmiyor"
 
@@ -23725,7 +23722,7 @@ msgstr "Veri tabanında bilinmeyen \"%s\" tablosu bulundu."
 msgid "Unknown ticket"
 msgstr "Destek kaydı bilinmiyor"
 
-#: src/User.php:6651 src/KnowbaseItem_Revision.php:177
+#: src/User.php:6704 src/KnowbaseItem_Revision.php:177
 msgid "Unknown user"
 msgstr "Kullanıcı bilinmiyor"
 
@@ -23913,15 +23910,15 @@ msgstr "Bir öge güncellendi"
 
 #. TRANS: short for : Update method for user authentication and
 #. synchronization
-#: src/User.php:5929
+#: src/User.php:5982
 msgid "Update auth and sync"
 msgstr "Yetkileri güncelleyip eşitle"
 
-#: src/User.php:4775
+#: src/User.php:4813
 msgid "Update authentification method to"
 msgstr "Kimlik doğrulama yöntemi şuna yükseltilsin"
 
-#: src/Config.php:3272
+#: src/Config.php:3271
 msgid "Update component"
 msgstr "Bileşen güncelle"
 
@@ -23946,7 +23943,7 @@ msgstr "İzlemeleri güncelle (yazan)"
 msgid "Update helpdesk parameters"
 msgstr "Destek merkezi ayarlarını güncelle"
 
-#: src/User.php:5930
+#: src/User.php:5983
 msgid "Update method for user authentication and synchronization"
 msgstr "Kimlik doğrulama ve eşitleme için kullanılacak güncelleme yöntemi"
 
@@ -24030,7 +24027,7 @@ msgstr "Yazıcı sayacını güncelle"
 msgid "Update the approval request to %s"
 msgstr "%s kullanıcısının onay isteğini güncelle"
 
-#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3192
+#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3191
 msgid "Update the item"
 msgstr "Ögeyi güncelle"
 
@@ -24133,7 +24130,7 @@ msgctxt "button"
 msgid "Upload"
 msgstr "Yükle"
 
-#: src/Document.php:1163 src/Document.php:1559
+#: src/Document.php:1169 src/Document.php:1571
 msgid "Upload directory doesn't exist"
 msgstr "Yükleme klasörü bulunamadı"
 
@@ -24184,7 +24181,7 @@ msgstr "Aramada etki alanı kullanılsın"
 msgid "Use GLPI"
 msgstr "GLPI kullanmaya geç"
 
-#: src/User.php:3252
+#: src/User.php:3290
 msgid "Use GLPI in mode"
 msgstr "GLPI çalışma kipi"
 
@@ -24214,7 +24211,7 @@ msgstr "Çözüm olarak kullanılsın"
 
 #: src/AuthLDAP.php:490
 msgid "Use bind"
-msgstr ""
+msgstr "Bind kullanılsın"
 
 #: src/Consumable.php:634 src/Cartridge.php:818 src/Cartridge.php:1104
 #: src/Cartridge.php:1266
@@ -24241,7 +24238,7 @@ msgstr "Sayfalanmış sonuçlar kullanılsın"
 msgid "Use rule for"
 msgstr "Kural şunun için kullanılsın"
 
-#: src/User.php:2632 src/User.php:3105 src/Config.php:1279
+#: src/User.php:2670 src/User.php:3143 src/Config.php:1279
 msgid "Use server configuration"
 msgstr "Kullanıcı yapılandırması kullanılsın"
 
@@ -24305,7 +24302,7 @@ msgid_plural "Users"
 msgstr[0] "Kullanıcı"
 msgstr[1] "Kullanıcılar"
 
-#: src/User.php:2705 src/User.php:3766 src/User.php:5627
+#: src/User.php:2743 src/User.php:3804 src/User.php:5680
 msgid "User DN"
 msgstr "Kullanıcı etki alanı adı"
 
@@ -24317,7 +24314,7 @@ msgstr "Göreve atanmış kullanıcı"
 msgid "User attribute containing its groups"
 msgstr "Grupları içeren kullanıcı özniteliği"
 
-#: src/Config.php:3258
+#: src/Config.php:3257
 msgid "User authentication method changes"
 msgstr "Kullanıcı kimlik doğrulama yöntemi değişiklikleri"
 
@@ -24352,7 +24349,7 @@ msgstr "Profili öne çıkaran kullanıcı"
 msgid "User in group"
 msgstr "Kullanıcı grubu"
 
-#: src/User.php:5631
+#: src/User.php:5684
 msgid "User information"
 msgstr "Kullanıcı bilgileri"
 
@@ -24363,9 +24360,9 @@ msgstr "Kullanıcı konumu"
 
 #: src/NotificationTargetCommonITILObject.php:138
 msgid "User mentioned"
-msgstr ""
+msgstr "Kullanıcı anıldı"
 
-#: src/User.php:2708
+#: src/User.php:2746
 msgid "User missing in LDAP directory"
 msgstr "Kullanıcı LDAP dizininde bulunamadı"
 
@@ -24464,7 +24461,7 @@ msgstr "Geçerli lisans"
 msgid "Valid licenses"
 msgstr "Geçerli lisanslar"
 
-#: src/User.php:2663
+#: src/User.php:2701
 msgid "Valid since"
 msgstr "Geçerlilik başlangıcı"
 
@@ -24477,7 +24474,7 @@ msgstr "Geçerli etiketler"
 msgid "Valid to %s"
 msgstr "%s zamanına kadar geçerli"
 
-#: src/User.php:2671
+#: src/User.php:2709
 msgid "Valid until"
 msgstr "Geçerlilik bitişi"
 
@@ -24528,10 +24525,11 @@ msgid "Validation request answer"
 msgstr "Onay isteğinin yanıtı"
 
 #: front/report.infocom.php:63 front/report.infocom.conso.php:62
-#: src/DropdownTranslation.php:426 src/Rule.php:1198 src/Rule.php:2260
-#: src/Blacklist.php:90 src/Blacklist.php:122 src/RuleCollection.php:1418
+#: src/DropdownTranslation.php:426 src/DropdownTranslation.php:573
+#: src/Rule.php:1198 src/Rule.php:2260 src/Blacklist.php:90
+#: src/Blacklist.php:122 src/RuleCollection.php:1418
 #: src/ITILTemplatePredefinedField.php:374 src/RuleAction.php:195
-#: src/Printer_CartridgeInfo.php:73 src/Config.php:3623
+#: src/Printer_CartridgeInfo.php:73 src/Config.php:3622
 #: src/Fieldblacklist.php:79 src/Fieldblacklist.php:121
 #: src/SavedSearch_Alert.php:167 src/SavedSearch_Alert.php:275
 msgid "Value"
@@ -25299,11 +25297,11 @@ msgstr "Sarı"
 msgid "Yes"
 msgstr "Evet"
 
-#: src/Config.php:2366
+#: src/Config.php:2363
 msgid "Yes - Restrict to global management"
 msgstr "Evet - Genel yönetim ile kısıtlansın"
 
-#: src/Config.php:2365
+#: src/Config.php:2362
 msgid "Yes - Restrict to unit management"
 msgstr "Evet - Birim yönetimi ile kısıtlansın"
 
@@ -25380,11 +25378,11 @@ msgstr ""
 "dosyaları kullanmaya çalışıyorsunuz. Lütfen veri tabanı sürümüne uygun GLPI "
 "dosyalarını kurun."
 
-#: src/Config.php:3092
+#: src/Config.php:3091
 msgid "You are using a development version, be careful!"
 msgstr "Geliştirme sürümünü kullanıyorsunuz, dikkatli olun!"
 
-#: src/Config.php:3093
+#: src/Config.php:3092
 msgid "You are using a pre-release version, be careful!"
 msgstr "Yayın öncesi sürümü kullanıyorsunuz, dikkatli olun!"
 
@@ -25419,7 +25417,7 @@ msgid ""
 "You can ignore this suggestion if your web server root directory is \"%s\"."
 msgstr "Site sunucusunun kök klasörü \"%s\" ise bu öneriyi yok sayabilirsiniz."
 
-#: src/User.php:6454
+#: src/User.php:6507
 msgid "You can set its name to your organisation's name. "
 msgstr "Adını, kuruluşunuzun adı olarak ayarlayabilirsiniz."
 
@@ -25524,8 +25522,8 @@ msgstr ""
 "Hesabınız devre dışı bırakıldığından ya da silindiğinden, bu uygulamaya "
 "erişemezsiniz"
 
-#: src/Html.php:644 src/Api/API.php:1052 src/Api/API.php:1830
-#: src/Api/API.php:1967 src/Api/API.php:2101 src/Api/API.php:2706
+#: src/Html.php:644 src/Api/API.php:1052 src/Api/API.php:1834
+#: src/Api/API.php:1971 src/Api/API.php:2105 src/Api/API.php:2710
 msgid "You don't have permission to perform this action."
 msgstr "Bu işlemi yapma izniniz yok."
 
@@ -25633,7 +25631,7 @@ msgstr "Bir SNMP sürümü seçmelisiniz"
 
 #: src/ITILTemplatePredefinedField.php:80
 msgid "You must select an associated item"
-msgstr ""
+msgstr "İlgili bir öge seçmelisiniz"
 
 #: src/Marketplace/View.php:775
 #, php-format
@@ -25702,7 +25700,7 @@ msgstr "Notunuz eklendi"
 msgid "Your comment has been edited"
 msgstr "Notunuz düzenlendi"
 
-#: src/Config.php:2658
+#: src/Config.php:2657
 #, php-format
 msgid "Your database engine version seems too old: %s."
 msgstr "Veri tabanı işleyici sürümünüz çok eski görünüyor: %s."
@@ -25723,13 +25721,13 @@ msgstr "Gözlediğiniz destek kayıtları"
 msgid "Your password has been successfully updated."
 msgstr "Parolanız güncellendi."
 
-#: src/User.php:5319
+#: src/User.php:5357
 msgid "Your password has expired. You must change it to be able to login."
 msgstr ""
 "Parolanızın geçerliliği sona ermiş. Oturum açmak için parolanızı "
 "değiştirmelisiniz."
 
-#: templates/password_form.html.twig src/User.php:5436
+#: templates/password_form.html.twig src/User.php:5474
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
 msgstr ""
@@ -25757,9 +25755,9 @@ msgstr "Sorunlarınız üzerinde çalışılıyor"
 
 #: src/Session.php:1600
 msgid "Your session has expired."
-msgstr ""
+msgstr "Oturumunuzun süresi dolmuş."
 
-#: front/tracking.injector.php:86
+#: front/tracking.injector.php:88
 msgid "Your ticket has been registered, its treatment is in progress."
 msgstr "Destek kaydınız alındı. Üzerinde çalışılıyor."
 
@@ -25880,7 +25878,7 @@ msgstr "şunu içermeyen"
 msgid "does not exist"
 msgstr "şu var olmayan"
 
-#: src/Api/API.php:2154
+#: src/Api/API.php:2158
 msgid "email parameter missing"
 msgstr "e-posta parametresi eksik"
 
@@ -25929,7 +25927,7 @@ msgstr "başlangıç"
 msgid "full structure"
 msgstr "tam yapı"
 
-#: src/User.php:2906 src/User.php:3293
+#: src/User.php:2944 src/User.php:3331
 #, php-format
 msgid "generated on %s"
 msgstr "%s zamanında üretilmiş"
@@ -25962,7 +25960,7 @@ msgstr "gizli"
 msgid "images"
 msgstr "görseller"
 
-#: src/Api/API.php:2666
+#: src/Api/API.php:2670
 msgid "input parameter must be an array of objects"
 msgstr "giriş parametresi bir nesne dizisi olmalıdır"
 
@@ -26107,7 +26105,7 @@ msgstr "kimlik eksik"
 msgid "missing itemtype"
 msgstr "öge türü eksik"
 
-#: src/Api/API.php:2243
+#: src/Api/API.php:2247
 msgid "missing parameter app_token"
 msgstr "app_token parametresi eksik"
 
@@ -26182,11 +26180,11 @@ msgstr "doğrultu"
 msgid "others"
 msgstr "diğerleri"
 
-#: src/Api/API.php:2237
+#: src/Api/API.php:2241
 msgid "parameter app_token seems wrong"
 msgstr "app_token parametresi hatalı görünüyor"
 
-#: src/Api/API.php:2745
+#: src/Api/API.php:2749
 msgid "parameter session_token is missing or empty"
 msgstr "session_token parametresi eksik ya da boş"
 
@@ -26254,7 +26252,7 @@ msgstr "geri yükle"
 msgid "rule"
 msgstr "kural"
 
-#: front/cron.php:45
+#: front/cron.php:46
 msgid "run script as apache user"
 msgstr "betik, apache kullanıcısı olarak çalıştırılsın"
 
@@ -26282,7 +26280,7 @@ msgstr "seri no"
 msgid "session extension is not installed."
 msgstr "Sessions eklentisi kurulmamış."
 
-#: src/Api/API.php:2725
+#: src/Api/API.php:2729
 msgid "session_token seems invalid"
 msgstr "session_token parametresi geçersiz görünüyor"
 
@@ -26357,7 +26355,7 @@ msgstr ""
 msgid "version"
 msgstr "sürüm"
 
-#: src/Api/API.php:2788
+#: src/Api/API.php:2792
 #, php-format
 msgid "view documentation in your browser at %s"
 msgstr "%s adresindeki belgeleri tarayıcınızda görüntüleyin"

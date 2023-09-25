@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 06:29+0000\n"
+"POT-Creation-Date: 2023-09-25 07:31+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
 "Last-Translator: INOUE Daisuke, 2023\n"
 "Language-Team: Japanese (Japan) (https://app.transifex.com/glpi/teams/1637/ja_JP/)\n"
@@ -168,7 +168,7 @@ msgstr "%1$s (%2$d%%) "
 #: src/Item_Devices.php:1051
 #, php-format
 msgid "%1$s (%2$s%%) "
-msgstr ""
+msgstr "%1$s (%2$s%%) "
 
 #. TRANS: %1$s is the name, %2$s the ID
 #. TRANS: %1$s is a name, %2$s is ID
@@ -188,8 +188,8 @@ msgstr ""
 #: src/ComputerVirtualMachine.php:295 src/Html.php:5529
 #: src/Document_Item.php:474 src/ProjectCost.php:392 src/Rule.php:2422
 #: src/IPNetwork_Vlan.php:184 src/Document.php:475 src/Document.php:511
-#: src/Document.php:1085 src/User.php:3745 src/User.php:3803 src/User.php:4938
-#: src/User.php:5021 src/User.php:6648 src/Search.php:6887 src/Search.php:7289
+#: src/Document.php:1085 src/User.php:3783 src/User.php:3841 src/User.php:4976
+#: src/User.php:5059 src/User.php:6701 src/Search.php:6887 src/Search.php:7289
 #: src/Search.php:7482 src/ContractCost.php:385 src/NetworkAlias.php:340
 #: src/RuleCollection.php:1355 src/Group_User.php:541 src/Group_User.php:645
 #: src/CommonITILCost.php:622 src/Computer_Item.php:422
@@ -352,7 +352,7 @@ msgstr "%1$s <> %2$s"
 #: src/Item_Devices.php:700 src/Item_Enclosure.php:99
 #: src/Document_Item.php:859 src/Socket.php:808 src/Socket.php:1041
 #: src/ProjectCost.php:380 src/Item_Cluster.php:109 src/Rule.php:3168
-#: src/Budget.php:652 src/User.php:5028 src/Search.php:2123
+#: src/Budget.php:652 src/User.php:5066 src/Search.php:2123
 #: src/Search.php:2125 src/Search.php:2152 src/Search.php:2183
 #: src/Search.php:2238 src/Search.php:2244 src/Search.php:2290
 #: src/Search.php:2330 src/ContractCost.php:372 src/Rack.php:367
@@ -438,7 +438,7 @@ msgstr "%1$s が複数の端子を追加"
 #: front/datacenter.form.php:60 front/knowbaseitem.form.php:65
 #: front/notepad.form.php:55 front/monitor.form.php:60
 #: front/peripheral.form.php:60 front/software.form.php:59
-#: front/user.form.php:71 front/user.form.php:230 front/unmanaged.form.php:59
+#: front/user.form.php:85 front/user.form.php:240 front/unmanaged.form.php:59
 #: front/transfer.form.php:57 front/cable.form.php:60
 #: front/project.form.php:64 front/notificationtemplatetranslation.form.php:56
 #: front/document.form.php:64 front/document.form.php:77
@@ -830,7 +830,7 @@ msgstr "%1$s .  メッセージ: %2$s , エラー: %3$s"
 #: src/AuthLDAP.php:754 src/Budget.php:588 src/Budget.php:625
 #: src/CommonITILTask.php:1400 src/CommonITILTask.php:1673
 #: src/CommonITILTask.php:1738 src/Link.php:676 src/Link.php:701
-#: src/Document.php:253 src/User.php:2705 src/User.php:2964 src/User.php:4774
+#: src/Document.php:253 src/User.php:2743 src/User.php:3002 src/User.php:4812
 #: src/NotificationTargetContract.php:199 src/DBConnection.php:694
 #: src/DBConnection.php:700 src/DBConnection.php:705
 #: src/SoftwareLicense.php:807 src/SoftwareLicense.php:811
@@ -1216,7 +1216,7 @@ msgid "%s adds a team member"
 msgstr "%s がチームメンバーを追加"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:146 front/group_user.form.php:57
+#: front/user.form.php:160 front/group_user.form.php:57
 #, php-format
 msgid "%s adds a user to a group"
 msgstr "%s がユーザーをグループに追加"
@@ -1385,7 +1385,7 @@ msgstr "%s が関係者を削除"
 #: front/datacenter.form.php:77 front/networkport.form.php:130
 #: front/queuednotification.form.php:62 front/monitor.form.php:77
 #: front/peripheral.form.php:77 front/software.form.php:76
-#: front/user.form.php:87 front/unmanaged.form.php:76 front/cable.form.php:77
+#: front/user.form.php:101 front/unmanaged.form.php:76 front/cable.form.php:77
 #: front/project.form.php:81 front/document.form.php:96
 #: front/appliance.form.php:77 front/ticket.form.php:135
 #: front/supplier.form.php:74 front/item_disk.form.php:80
@@ -1405,7 +1405,7 @@ msgid "%s deletes several network ports"
 msgstr "%s が複数のネットワーク ポートを削除"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:164
+#: front/user.form.php:178
 #, php-format
 msgid "%s deletes users from a group"
 msgstr "%s がユーザをグループから削除"
@@ -1438,7 +1438,7 @@ msgstr[0] "%s 個のエラー"
 msgid "%s extension"
 msgstr "%s拡張モジュール"
 
-#: src/Config.php:1731 src/Config.php:2812
+#: src/Config.php:1731 src/Config.php:2811
 #, php-format
 msgid "%s extension is installed"
 msgstr "%s 拡張モジュールはインストール済み"
@@ -1454,7 +1454,7 @@ msgstr "%s 拡張モジュールはインストール済みですが、mysqlnd �
 msgid "%s extension is installed."
 msgstr "%s 拡張モジュールはインストール済み"
 
-#: src/AuthLDAP.php:576 src/Config.php:2819
+#: src/AuthLDAP.php:576 src/Config.php:2818
 #, php-format
 msgid "%s extension is missing"
 msgstr "%s 拡張モジュールがありません"
@@ -1465,7 +1465,7 @@ msgstr "%s 拡張モジュールがありません"
 msgid "%s extension is missing."
 msgstr "%s 拡張モジュールがありません。"
 
-#: src/Config.php:1801 src/Config.php:2825
+#: src/Config.php:1801 src/Config.php:2824
 #, php-format
 msgid "%s extension is not present"
 msgstr "%s 拡張モジュールがありません"
@@ -1690,7 +1690,7 @@ msgstr "%s が承認を抹消"
 #: front/queuednotification.form.php:88 front/notepad.form.php:67
 #: front/lockedfield.form.php:74 front/monitor.form.php:103
 #: front/peripheral.form.php:103 front/software.form.php:103
-#: front/user.form.php:110 front/unmanaged.form.php:103
+#: front/user.form.php:124 front/unmanaged.form.php:103
 #: front/transfer.form.php:70 front/cable.form.php:105
 #: front/project.form.php:107
 #: front/notificationtemplatetranslation.form.php:69
@@ -1750,7 +1750,7 @@ msgstr "%s が仮想マシンを復元"
 #: front/datacenter.form.php:90 front/networkport.form.php:167
 #: front/queuednotification.form.php:75 front/monitor.form.php:90
 #: front/peripheral.form.php:90 front/software.form.php:90
-#: front/user.form.php:99 front/unmanaged.form.php:90 front/cable.form.php:91
+#: front/user.form.php:113 front/unmanaged.form.php:90 front/cable.form.php:91
 #: front/project.form.php:94 front/document.form.php:110
 #: front/appliance.form.php:90 front/ticket.form.php:161
 #: front/supplier.form.php:86 front/reservationitem.form.php:101
@@ -1768,7 +1768,7 @@ msgid "%s rows / page"
 msgstr "ページあたり %s 行"
 
 #. TRANS: %s is a number of seconds
-#: src/Dropdown.php:1838 src/Inventory/Inventory.php:779 src/CronTask.php:1250
+#: src/Dropdown.php:1838 src/Inventory/Inventory.php:792 src/CronTask.php:1250
 #: src/CronTask.php:1257 src/CronTask.php:1264 src/CronTask.php:1271
 #: src/CronTask.php:1383 src/CronTask.php:1478
 #, php-format
@@ -1911,7 +1911,7 @@ msgstr "%s が承認を更新"
 #: front/knowbaseitem.form.php:83 front/notepad.form.php:80
 #: front/lockedfield.form.php:89 front/monitor.form.php:116
 #: front/peripheral.form.php:116 front/software.form.php:116
-#: front/user.form.php:134 front/unmanaged.form.php:116
+#: front/user.form.php:148 front/unmanaged.form.php:116
 #: front/transfer.form.php:83 front/cable.form.php:119
 #: front/project.form.php:120
 #: front/notificationtemplatetranslation.form.php:82
@@ -2117,7 +2117,7 @@ msgstr "--dsn と --use-default の両オプションを同時に使用するこ
 msgid "--ldap-server-id value \"%s\" is not a valid LDAP server id."
 msgstr "--ldap-server-id \"%s\" は有効な LDAP サーバー ID ではありません。"
 
-#: src/User.php:2362
+#: src/User.php:2400
 msgid "... From an external source"
 msgstr "外部ソースから…"
 
@@ -2162,7 +2162,7 @@ msgstr "4 - 通知 (追加・削除・進捗)"
 msgid "5- Complete (all)"
 msgstr "5 - 完全 (すべて)"
 
-#: src/GLPIUploadHandler.php:70
+#: src/UploadHandler.php:390
 msgid "A PHP extension stopped the file upload"
 msgstr "PHP 拡張モジュールはファイルのアップロードを停止しました"
 
@@ -2252,7 +2252,7 @@ msgstr "GLPIの高度な機能（マーケットプレースなど）を使用�
 msgid "A registration, at least a free one, is required to use marketplace!"
 msgstr "マーケットプレースを利用するには、無料の登録が必要です!"
 
-#: src/Api/API.php:2158
+#: src/Api/API.php:2162
 msgid "A session is active"
 msgstr "Session が有効"
 
@@ -2295,11 +2295,11 @@ msgstr "AND NOT"
 msgid "ANV"
 msgstr "ANV"
 
-#: src/Auth.php:1266 src/Config.php:735 src/Config.php:2547
+#: src/Auth.php:1266 src/Config.php:735 src/Config.php:2546
 msgid "API"
 msgstr "API"
 
-#: src/Api/API.php:2438
+#: src/Api/API.php:2442
 msgid "API Documentation"
 msgstr "API ドキュメント"
 
@@ -2316,7 +2316,7 @@ msgstr "API 無効化"
 msgid "API inline Documentation"
 msgstr "API インライン ドキュメント"
 
-#: src/User.php:2896 src/User.php:3283
+#: src/User.php:2934 src/User.php:3321
 msgid "API token"
 msgstr "APIトークン"
 
@@ -2427,7 +2427,7 @@ msgstr "LDAPディレクトリからユーザーを削除したときのアク�
 msgid "Action when a user is restored in the LDAP directory"
 msgstr "LDAP ディレクトリーでユーザーが復元された際のアクション"
 
-#: templates/components/form/single-action.html.twig src/User.php:2355
+#: templates/components/form/single-action.html.twig src/User.php:2393
 #: src/Plugin.php:2549
 msgid "Actions"
 msgstr "アクション"
@@ -2439,7 +2439,7 @@ msgstr "拒否済みのアクション"
 #: templates/generic_show_form.html.twig src/MailCollector.php:257
 #: src/MailCollector.php:484 src/TaskCategory.php:53 src/TaskCategory.php:75
 #: src/Rule.php:781 src/Rule.php:942 src/Rule.php:3159 src/AuthLDAP.php:467
-#: src/AuthLDAP.php:1316 src/User.php:2647 src/User.php:3610
+#: src/AuthLDAP.php:1316 src/User.php:2685 src/User.php:3648
 #: src/RuleCollection.php:591 src/Group_User.php:591 src/Group_User.php:632
 #: src/AuthMail.php:138 src/AuthMail.php:190 src/LevelAgreement.php:517
 #: src/SlaLevel.php:114 src/SlaLevel.php:150 src/SlaLevel.php:244
@@ -2635,7 +2635,7 @@ msgstr "代表者の追加"
 msgid "Add a document"
 msgstr "ドキュメントを追加"
 
-#: src/Document.php:1719 src/CommonITILObject.php:6826
+#: src/Document.php:1731 src/CommonITILObject.php:6826
 msgctxt "button"
 msgid "Add a document"
 msgstr "ドキュメントを追加"
@@ -2864,7 +2864,7 @@ msgstr "イベントを追加する"
 msgid "Add an item"
 msgstr "アイテムを追加"
 
-#: src/Appliance.php:449 src/Document.php:1725 src/SoftwareLicense.php:914
+#: src/Appliance.php:449 src/Document.php:1737 src/SoftwareLicense.php:914
 #: src/Contract.php:423 src/Ticket.php:2608
 msgctxt "button"
 msgid "Add an item"
@@ -2890,7 +2890,7 @@ msgstr "カートリッジの追加"
 msgid "Add column"
 msgstr "列の追加"
 
-#: src/Config.php:3269
+#: src/Config.php:3268
 msgid "Add component"
 msgstr "構成部品を追加"
 
@@ -2924,7 +2924,7 @@ msgid "Add documents into ticket notifications"
 msgstr "チケット通知へのドキュメントの追加"
 
 #. TRANS: short for : Add users from an external source
-#: src/User.php:5921
+#: src/User.php:5974
 msgid "Add external"
 msgstr "外部から追加"
 
@@ -2932,7 +2932,7 @@ msgstr "外部から追加"
 msgid "Add filter"
 msgstr "フィルターを追加"
 
-#: src/Config.php:3241
+#: src/Config.php:3240
 msgid "Add financial information to an item"
 msgstr "アイテムに財務情報を追加"
 
@@ -2948,7 +2948,7 @@ msgstr "フォローを追加 ( 要求者 )"
 msgid "Add followup (watcher)"
 msgstr "フォローを追加 ( 助言者 )"
 
-#: src/Inventory/Inventory.php:510
+#: src/Inventory/Inventory.php:523
 msgid "Add global lock"
 msgstr "全体ロックを追加"
 
@@ -3002,7 +3002,7 @@ msgid "Add several ports"
 msgstr "複数のポートを追加"
 
 #: src/Log.php:1066 src/NotificationTargetFieldUnicity.php:49
-#: src/Config.php:3180
+#: src/Config.php:3179
 msgid "Add the item"
 msgstr "アイテムの追加"
 
@@ -3036,27 +3036,27 @@ msgctxt "button"
 msgid "Add to transfer list"
 msgstr "転送リストへ追加"
 
-#: src/User.php:2354
+#: src/User.php:2392
 msgid "Add user..."
 msgstr "GLPI ユーザーを追加"
 
-#: src/User.php:5922
+#: src/User.php:5975
 msgid "Add users from an external source"
 msgstr "外部ソースからユーザーを追加"
 
-#: src/Config.php:3230
+#: src/Config.php:3229
 msgid "Add/Remove items from software versions"
 msgstr "ソフトウェアのバージョンからアイテムを追加・削除"
 
-#: src/Config.php:3252
+#: src/Config.php:3251
 msgid "Add/remove groups to users"
 msgstr "ユーザーに対応するグループを追加・削除する"
 
-#: src/Config.php:3249
+#: src/Config.php:3248
 msgid "Add/remove profiles to users"
-msgstr "ユーザーに対応するプロフィールを追加・削除する"
+msgstr "ユーザーに対応するプロファイルを追加・削除する"
 
-#: src/Config.php:3171
+#: src/Config.php:3170
 msgid "Add/update relation between items"
 msgstr "アイテム間の関係を追加・更新する"
 
@@ -3124,7 +3124,7 @@ msgid "Administrative number"
 msgstr "社員番号"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:942
-#: src/User.php:2754 src/User.php:3226 src/User.php:3775 src/Auth.php:1731
+#: src/User.php:2792 src/User.php:3264 src/User.php:3813 src/Auth.php:1731
 msgctxt "user"
 msgid "Administrative number"
 msgstr "社員番号"
@@ -3292,7 +3292,7 @@ msgstr "エイリアスポート"
 #: templates/pages/setup/general/general_setup.html.twig
 #: front/report.year.php:56 front/report.year.php:70
 #: front/report.contract.php:55 front/report.contract.php:69
-#: src/Dropdown.php:2274 src/Dropdown.php:3994 src/User.php:4543
+#: src/Dropdown.php:2274 src/Dropdown.php:3994 src/User.php:4581
 #: src/Search.php:2078 src/Search.php:2908 src/Planning.php:558
 #: src/CommonGLPI.php:917 src/NotificationTemplateTranslation.php:434
 #: src/RuleImportAssetCollection.php:119 src/Marketplace/View.php:307
@@ -3369,7 +3369,7 @@ msgstr "すべての公開済みの記事"
 msgid "All reservable devices"
 msgstr "すべての予約可能なデバイス"
 
-#: src/Config.php:3292
+#: src/Config.php:3291
 msgid "All sections"
 msgstr "全セクション"
 
@@ -3451,11 +3451,11 @@ msgstr "アルファベット降順"
 msgid "Also delete date?"
 msgstr "日付も削除しますか？"
 
-#: templates/generic_show_form.html.twig front/find_num.php:92
-#: src/Phone.php:275 src/Monitor.php:262 src/NotificationTargetProblem.php:209
-#: src/Appliance.php:172 src/Printer.php:400 src/Search.php:8149
-#: src/Peripheral.php:246 src/NotificationTargetChange.php:287
-#: src/Computer.php:474 src/CommonDBTM.php:3507 src/NetworkEquipment.php:319
+#: templates/generic_show_form.html.twig src/Phone.php:275 src/Monitor.php:262
+#: src/NotificationTargetProblem.php:209 src/Appliance.php:172
+#: src/Printer.php:400 src/Search.php:8149 src/Peripheral.php:246
+#: src/NotificationTargetChange.php:287 src/Computer.php:474
+#: src/CommonDBTM.php:3507 src/NetworkEquipment.php:319
 #: src/NotificationTargetTicket.php:708 src/Certificate.php:209
 #: src/Config.php:525 src/RuleAsset.php:114
 #: src/NotificationTargetProject.php:701
@@ -3583,7 +3583,7 @@ msgstr "コレクターへの接続でエラーが発生しました。"
 #: src/Inventory/Conf.php:264
 #, php-format
 msgid "An error occurs during import: `%s`."
-msgstr ""
+msgstr "インポートでエラー : `%s`"
 
 #: src/Console/Task/UnlockCommand.php:148
 #, php-format
@@ -3868,7 +3868,7 @@ msgstr "検証を依頼する"
 #: src/Transfer.php:3915
 #: src/ContentTemplates/Parameters/AssetParameters.php:58 src/AllAssets.php:45
 #: src/Entity.php:486 src/Entity.php:1299 src/Dashboard/Grid.php:1190
-#: src/Config.php:425 src/Config.php:2538 src/Profile.php:158
+#: src/Config.php:425 src/Config.php:2537 src/Profile.php:158
 #: src/Profile.php:1329 src/Profile.php:2066
 msgid "Asset"
 msgid_plural "Assets"
@@ -3974,7 +3974,7 @@ msgstr[0] "割り当てられた担当者"
 #: src/Dashboard/Grid.php:1282 src/Dashboard/Grid.php:1292
 #: src/Dashboard/Grid.php:1301 src/Dashboard/Grid.php:1318
 #: src/Dashboard/Grid.php:1338 src/Config.php:820 src/Config.php:1307
-#: src/Config.php:2539 src/Profile.php:153 src/Profile.php:159
+#: src/Config.php:2538 src/Profile.php:153 src/Profile.php:159
 #: src/Profile.php:1152 src/Profile.php:3121
 msgid "Assistance"
 msgstr "ユーザーサポート"
@@ -4022,11 +4022,11 @@ msgstr "証明書に関連付ける"
 msgid "Associate myself"
 msgstr "自分自身に関連付ける"
 
-#: src/User.php:3422 src/Group_User.php:197
+#: src/User.php:3460 src/Group_User.php:197
 msgid "Associate to a group"
 msgstr "グループの関連付け"
 
-#: src/User.php:3427
+#: src/User.php:3465
 msgid "Associate to a profile"
 msgstr "プロファイルに関連付ける"
 
@@ -4045,7 +4045,7 @@ msgid "Associated contract"
 msgid_plural "Associated contracts"
 msgstr[0] "関連する契約"
 
-#: templates/components/itilobject/selfservice.html.twig front/find_num.php:94
+#: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/KnowbaseItem.php:1927
 #: src/Item_Devices.php:172 src/Stat.php:1623 src/Lockedfield.php:120
 #: src/KnowbaseItem_Item.php:71 src/Item_SoftwareVersion.php:79
@@ -4198,8 +4198,8 @@ msgid "August"
 msgstr "8月"
 
 #: index.php:141 front/helpdesk.faq.php:51
-#: front/knowbaseitemtranslation.form.php:87 src/User.php:2694
-#: src/User.php:3669 src/Auth.php:108 src/Config.php:605 src/Config.php:754
+#: front/knowbaseitemtranslation.form.php:87 src/User.php:2732
+#: src/User.php:3707 src/Auth.php:108 src/Config.php:605 src/Config.php:754
 msgid "Authentication"
 msgstr "認証"
 
@@ -4223,7 +4223,7 @@ msgstr "認証の型"
 msgid "Author"
 msgstr "作成者"
 
-#: src/User.php:2787 src/Profile_User.php:1078
+#: src/User.php:2825 src/Profile_User.php:1078
 msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] "認証"
@@ -4408,7 +4408,7 @@ msgstr "チケット自動終了"
 msgid "Automatic user assignment"
 msgstr "自動ユーザー割り当て"
 
-#: src/User.php:4711
+#: src/User.php:4749
 msgid "Automatically add a user of an external source"
 msgstr "外部ソースのユーザーを自動追加"
 
@@ -4437,7 +4437,7 @@ msgstr "データ（チケットリスト、プロジェクトかんばん）を
 msgid "Automatically update of the elements related to the computers"
 msgstr "コンピューターに関連する要素の自動更新"
 
-#: front/planning.php:70 src/Planning.php:540 ajax/planningcheck.php:70
+#: front/planning.php:74 src/Planning.php:540 ajax/planningcheck.php:70
 #: ajax/planningcheck.php:72 ajax/planningcheck.php:77
 msgid "Availability"
 msgstr "使用可能"
@@ -4550,7 +4550,7 @@ msgstr "背景画像 (設計図)"
 msgid "Backup plan"
 msgstr "バックアップ計画"
 
-#: src/Api/API.php:1598
+#: src/Api/API.php:1602
 msgid "Bad field ID in search criteria"
 msgstr "検索条件での項目 ID が正しくありません"
 
@@ -4599,7 +4599,7 @@ msgid "Begin"
 msgstr "開始"
 
 #: src/Csv/PlanningCsv.php:75 src/ProjectCost.php:159 src/ProjectCost.php:283
-#: src/ProjectCost.php:369 src/CommonITILTask.php:983 src/User.php:3857
+#: src/ProjectCost.php:369 src/CommonITILTask.php:983 src/User.php:3895
 #: src/ContractCost.php:150 src/ContractCost.php:274 src/ContractCost.php:361
 #: src/CommonITILCost.php:135 src/CommonITILCost.php:433
 #: src/CommonITILCost.php:595 src/Console/Ldap/SynchronizeUsersCommand.php:251
@@ -5050,6 +5050,7 @@ msgid ""
 "Can't change the interface on this profile as it is the only remaining "
 "profile with rights to modify profiles with this interface."
 msgstr ""
+"このプロファイルのインターフェイスを変更することはできません。このプロファイルが、このインターフェイスをもつプロファイルに対して変更権限をもっている最後のプロファイルであるためです。"
 
 #: templates/install/step3.html.twig
 msgid "Can't connect to the database"
@@ -5074,7 +5075,7 @@ msgid ""
 "profile with this right."
 msgstr "更新権限をもっている最後のプロファイルなので、権限を削除することはできません。"
 
-#: src/User.php:1102
+#: src/User.php:1140
 msgid ""
 "Can't set user as inactive as it is the only remaining super administrator."
 msgstr "最後のスーパー管理者なので、ユーザーを無効に設定することはできません。"
@@ -5188,7 +5189,7 @@ msgstr[0] "ケースの型"
 #: src/DatabaseInstanceCategory.php:45 src/AuthLDAP.php:978
 #: src/AuthLDAP.php:1191 src/AuthLDAP.php:3981
 #: src/RuleDictionnarySoftware.php:132 src/CommonITILTask.php:841
-#: src/CommonITILTask.php:1440 src/User.php:2733 src/User.php:3832
+#: src/CommonITILTask.php:1440 src/User.php:2771 src/User.php:3870
 #: src/Software.php:404 src/RuleSoftwareCategory.php:98 src/Auth.php:1786
 #: src/Item_SoftwareVersion.php:1078 src/DatabaseInstance.php:389
 #: src/CommonITILObject.php:4106 src/CommonITILObject.php:6660
@@ -5297,7 +5298,7 @@ msgstr "%1$s を %2$s に変更"
 msgid "Change a component"
 msgstr "構成部品を変更"
 
-#: src/Config.php:3154
+#: src/Config.php:3153
 msgid "Change all"
 msgstr "すべて変更"
 
@@ -5374,7 +5375,7 @@ msgid "Change template"
 msgid_plural "Change templates"
 msgstr[0] "変更要求テンプレート"
 
-#: src/User.php:3438
+#: src/User.php:3476
 msgctxt "button"
 msgid "Change the authentication method"
 msgstr "認証方式の変更"
@@ -5422,7 +5423,7 @@ msgstr "処理予定の変更"
 #: src/CommonDropdown.php:423 src/ProjectCost.php:125 src/Budget.php:199
 #: src/PassiveDCEquipment.php:79 src/CommonITILTask.php:711 src/Link.php:204
 #: src/QueuedNotification.php:208 src/Document.php:983
-#: src/NetworkPortEthernet.php:212 src/User.php:3534 src/Search.php:8090
+#: src/NetworkPortEthernet.php:212 src/User.php:3572 src/Search.php:8090
 #: src/Search.php:8111 src/ContractCost.php:116 src/Group_User.php:718
 #: src/CommonITILCost.php:101 src/SoftwareLicense.php:343
 #: src/CommonDBRelation.php:315 src/LevelAgreement.php:635
@@ -5436,7 +5437,7 @@ msgstr "処理予定の変更"
 #: src/NetworkPortFiberchannel.php:208 src/NetworkPortWifi.php:144
 #: src/CommonITILObject.php:3966 src/Contract.php:479 src/CommonDevice.php:258
 #: src/LevelAgreementLevel.php:103 src/Profile_User.php:943
-#: src/Config.php:3616 src/Profile.php:1987 src/Reminder.php:384
+#: src/Config.php:3615 src/Profile.php:1987 src/Reminder.php:384
 #: src/Notification.php:365 src/NetworkPort.php:619 src/NetworkPort.php:1552
 #: src/RSSFeed.php:423 src/CronTask.php:1603 src/Infocom.php:1475
 #: src/SLM.php:217 src/Item_SoftwareLicense.php:73 src/Item_Disk.php:332
@@ -5676,7 +5677,7 @@ msgid "Clean %1$d temporary file created since more than %2$s seconds"
 msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
 msgstr[0] "作成から %2$s 秒経過した %1$d 個のテンポラリファイルを消去します"
 
-#: src/User.php:3442 src/Auth.php:1516
+#: src/User.php:3480 src/Auth.php:1516
 msgid "Clean LDAP fields and force synchronisation"
 msgstr "LDAP フィールドを初期化して、強制的に同期する"
 
@@ -5692,7 +5693,7 @@ msgstr "期限切れセッションの消去"
 msgid "Clean generated graphics"
 msgstr "生成した画像の消去"
 
-#: src/Inventory/Inventory.php:830
+#: src/Inventory/Inventory.php:843
 msgid "Clean inventories orphaned files"
 msgstr "資産管理処理で、孤立化したファイルを消去する"
 
@@ -5704,7 +5705,7 @@ msgstr "通知キューを消去する"
 msgid "Clean old logs"
 msgstr "古いログの消去"
 
-#: src/Document.php:1856
+#: src/Document.php:1868
 msgid "Clean orphaned documents"
 msgstr "孤立したドキュメントを削除する"
 
@@ -5712,7 +5713,7 @@ msgstr "孤立したドキュメントを削除する"
 msgid "Clean temporary files"
 msgstr "テンポラリファイルのクリーニング"
 
-#: src/Inventory/Inventory.php:827
+#: src/Inventory/Inventory.php:840
 msgid "Clean temporary files created from inventories"
 msgstr "インベントリーツールの一時ファイルを消去する"
 
@@ -5726,7 +5727,7 @@ msgstr "クリーニングキット"
 
 #: templates/components/form/fields_macros.html.twig src/MailCollector.php:270
 #: src/Html.php:2773 src/Html.php:2968 src/Html.php:3100 src/AuthLDAP.php:527
-#: src/User.php:2529 src/User.php:2997 src/User.php:2998 src/User.php:6435
+#: src/User.php:2567 src/User.php:3035 src/User.php:3036 src/User.php:6488
 #: src/NotificationMailingSetting.php:372 src/DCRoom.php:173
 #: src/DCRoom.php:176 src/Config.php:559 src/Config.php:2078
 msgid "Clear"
@@ -5990,8 +5991,8 @@ msgstr "ナレッジベース項目にコメントする"
 #: src/Rule.php:958 src/AuthLDAP.php:530 src/AuthLDAP.php:939
 #: src/AuthLDAP.php:1200 src/Budget.php:150 src/Budget.php:274
 #: src/Enclosure.php:156 src/Printer.php:468 src/RuleLocation.php:111
-#: src/Document.php:488 src/Document.php:1094 src/User.php:2748
-#: src/User.php:3708 src/Search.php:8140 src/Line.php:133
+#: src/Document.php:488 src/Document.php:1094 src/User.php:2786
+#: src/User.php:3746 src/Search.php:8140 src/Line.php:133
 #: src/ContractCost.php:142 src/ContractCost.php:279 src/Rack.php:222
 #: src/NetworkAlias.php:143 src/NetworkAlias.php:426
 #: src/NotificationTargetContract.php:176 src/CommonITILCost.php:127
@@ -6017,7 +6018,7 @@ msgstr "ナレッジベース項目にコメントする"
 #: src/Contract.php:688 src/Contract.php:1722 src/Reservation.php:845
 #: src/Reservation.php:1134 src/Reservation.php:1216 src/CartridgeItem.php:334
 #: src/CommonDevice.php:291 src/ConsumableItem.php:270
-#: src/RuleDictionnaryPrinter.php:85 src/Cluster.php:103 src/Config.php:3197
+#: src/RuleDictionnaryPrinter.php:85 src/Cluster.php:103 src/Config.php:3196
 #: src/ManualLink.php:113 src/Profile.php:753 src/Profile.php:2057
 #: src/Notification.php:218 src/Notification.php:450
 #: src/RuleImportEntity.php:132 src/NetworkPortMigration.php:303
@@ -6078,7 +6079,7 @@ msgstr "完全名"
 #: front/devices.php:44 src/Dropdown.php:1064 src/Item_Devices.php:273
 #: src/Item_Devices.php:565 src/Item_Devices.php:623 src/Event.php:158
 #: src/Transfer.php:3950 src/Lock.php:748 src/Lock.php:1125
-#: src/CommonDevice.php:55 src/CommonDevice.php:329 src/Config.php:3267
+#: src/CommonDevice.php:55 src/CommonDevice.php:329 src/Config.php:3266
 #: src/Profile.php:1061 src/Profile.php:2538
 msgid "Component"
 msgid_plural "Components"
@@ -6170,7 +6171,7 @@ msgctxt "button"
 msgid "Connect"
 msgstr "接続"
 
-#: src/Config.php:3281
+#: src/Config.php:3280
 msgid "Connect a component"
 msgstr "構成部品を接続"
 
@@ -6216,7 +6217,7 @@ msgstr "電話回線による接続 - ダイアルアップ ポート"
 msgid "Connection errors"
 msgstr "接続エラー"
 
-#: src/User.php:5651
+#: src/User.php:5704
 msgid "Connection failed"
 msgstr "接続失敗"
 
@@ -6640,7 +6641,7 @@ msgstr "状態を作成"
 msgid "Create survey after"
 msgstr "指定日後に調査を作成"
 
-#: src/Document.php:1505
+#: src/Document.php:1517
 #, php-format
 msgid "Create the directory %s"
 msgstr "ディレクトリ %s を作成"
@@ -6714,7 +6715,7 @@ msgstr "データベースを作成しています..."
 #: src/Budget.php:233 src/PassiveDCEquipment.php:195 src/Enclosure.php:173
 #: src/Link.php:246 src/QueuedNotification.php:233
 #: src/QueuedNotification.php:735 src/Printer.php:459 src/Document.php:1076
-#: src/User.php:3735 src/Line.php:186 src/Rack.php:239 src/Software.php:421
+#: src/User.php:3773 src/Line.php:186 src/Rack.php:239 src/Software.php:421
 #: src/Peripheral.php:289 src/Lockedfield.php:94 src/Certificate_Item.php:468
 #: src/Transfer.php:139 src/Computer.php:517 src/Contact.php:402
 #: src/Supplier.php:267 src/KnowbaseItem_Item.php:205 src/PDU.php:198
@@ -6815,7 +6816,7 @@ msgstr "現在のページを横向きで PDF に出力"
 msgid "Current page in portrait PDF"
 msgstr "現在のページを縦向きで PDF に出力"
 
-#: src/User.php:5335
+#: src/User.php:5373
 msgid "Current password"
 msgstr "現在のパスワード"
 
@@ -7120,7 +7121,7 @@ msgstr "--db-user オプションで定義するデータベース ユーザー�
 msgid "Database user:"
 msgstr "データベース ユーザー:"
 
-#: src/Config.php:2657
+#: src/Config.php:2656
 #, php-format
 msgid "Database version seems correct (%s) - Perfect!"
 msgstr "データベースのバージョン（%s）は適切 - 完璧！"
@@ -7158,7 +7159,7 @@ msgstr "日付フォーマット"
 
 #: src/MailCollector.php:559
 msgid "Date of last collection"
-msgstr ""
+msgstr "最終収集日"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1301
 #: src/Infocom.php:1534
@@ -7187,7 +7188,7 @@ msgstr[0] "日"
 msgid "Days to keep sent emails"
 msgstr "送信済みメールの保存期間"
 
-#: src/User.php:3255 src/CommonGLPI.php:353
+#: src/User.php:3293 src/CommonGLPI.php:353
 msgid "Debug"
 msgstr "デバッグ"
 
@@ -7270,7 +7271,7 @@ msgstr "デフォルト表示"
 msgid "Default email"
 msgstr "デフォルトのメール"
 
-#: src/User.php:2830 src/User.php:3215 src/User.php:3849
+#: src/User.php:2868 src/User.php:3253 src/User.php:3887
 #: src/Inventory/Conf.php:541 src/RuleRight.php:364
 msgid "Default entity"
 msgstr "デフォルトのエンティティ"
@@ -7311,7 +7312,7 @@ msgstr "チケットのデフォルト"
 msgid "Default for tickets (mini dashboard)"
 msgstr "チケットのデフォルト（ミニダッシュボード）"
 
-#: templates/components/user/info_card.html.twig src/User.php:2840
+#: templates/components/user/info_card.html.twig src/User.php:2878
 #: src/RuleRight.php:374
 msgid "Default group"
 msgstr "デフォルトのグループ"
@@ -7340,7 +7341,7 @@ msgstr "デフォルトの通知サウンド"
 msgid "Default problem template"
 msgstr "問題のデフォルトテンプレート"
 
-#: src/User.php:2812 src/User.php:3170 src/User.php:3840 src/RuleRight.php:381
+#: src/User.php:2850 src/User.php:3208 src/User.php:3878 src/RuleRight.php:381
 #: src/RuleTicket.php:687 src/Profile.php:758 src/Profile.php:2040
 msgid "Default profile"
 msgstr "デフォルトのプロファイル"
@@ -7404,11 +7405,11 @@ msgstr "契約のアラームのデフォルト値"
 msgid "Default value for alarms on financial and administrative information"
 msgstr "財務管理情報アラームのデフォルト値"
 
-#: src/AuthLDAP.php:449 src/Config.php:2537
+#: src/AuthLDAP.php:449 src/Config.php:2536
 msgid "Default values"
 msgstr "デフォルト値"
 
-#: src/Config.php:3522
+#: src/Config.php:3521
 msgid "Delay before account deactivation (in days)"
 msgstr "アカウントを無効化するまでの遅延日数"
 
@@ -7453,7 +7454,7 @@ msgstr "アイテムのリンクを削除"
 msgid "Delete a rule"
 msgstr "ルールを削除する"
 
-#: src/Config.php:3324
+#: src/Config.php:3323
 msgid "Delete all"
 msgstr "全削除"
 
@@ -7469,7 +7470,7 @@ msgstr "デフォルトでルールをすべて削除し再生成する"
 msgid "Delete an item"
 msgstr "アイテムの削除"
 
-#: src/Config.php:3286
+#: src/Config.php:3285
 msgid "Delete component"
 msgstr "構成部品を削除"
 
@@ -7481,7 +7482,7 @@ msgstr "要素を削除"
 msgid "Delete emails"
 msgstr "削除メール"
 
-#: src/Config.php:3330
+#: src/Config.php:3329
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
@@ -7543,7 +7544,7 @@ msgctxt "button"
 msgid "Delete permanently the relation with selected elements"
 msgstr "選択した要素との関係を削除"
 
-#: src/Config.php:3175
+#: src/Config.php:3174
 msgid "Delete relation between items"
 msgstr "アイテム間の関係を削除する"
 
@@ -7551,7 +7552,7 @@ msgstr "アイテム間の関係を削除する"
 msgid "Delete serie"
 msgstr "すべて削除"
 
-#: src/Log.php:1070 src/Config.php:3183
+#: src/Log.php:1070 src/Config.php:3182
 msgid "Delete the item"
 msgstr "アイテムの削除"
 
@@ -7579,7 +7580,7 @@ msgstr "削除済み"
 msgid "Deleted from LDAP"
 msgstr "LDAPから削除"
 
-#: src/User.php:3792 src/Config.php:3261
+#: src/User.php:3830 src/Config.php:3260
 msgid "Deleted user in LDAP directory"
 msgstr "LDAPディレクトリから削除したユーザー"
 
@@ -8034,7 +8035,7 @@ msgctxt "button"
 msgid "Disconnect"
 msgstr "切断"
 
-#: src/Config.php:3277
+#: src/Config.php:3276
 msgid "Disconnect a component"
 msgstr "構成部品を取り外し"
 
@@ -8135,11 +8136,11 @@ msgctxt "button"
 msgid "Dissociate certificate"
 msgstr "証明書の関連を解除"
 
-#: src/User.php:3424
+#: src/User.php:3462
 msgid "Dissociate from a group"
 msgstr "グループから関連の解除"
 
-#: src/User.php:3429
+#: src/User.php:3467
 msgid "Dissociate from a profile"
 msgstr "プロファイルから関連の解除"
 
@@ -8171,7 +8172,7 @@ msgstr "更新の実行前に、データベーススキーマの整合性チェ
 msgid "Do not copy"
 msgstr "コピーしない"
 
-#: src/Config.php:3533
+#: src/Config.php:3532
 msgid "Do not deactivate"
 msgstr "無効にしない"
 
@@ -8243,11 +8244,11 @@ msgstr "ドキュメント"
 msgid "Document Ticket %d"
 msgstr "ドキュメントチケット %d"
 
-#: src/Document.php:1240 src/Document.php:1342
+#: src/Document.php:1246 src/Document.php:1354
 msgid "Document copy succeeded."
 msgstr "ドキュメントをコピーしました."
 
-#: src/Config.php:3579
+#: src/Config.php:3578
 msgid "Document files maximum size (Mio)"
 msgstr "ドキュメント ファイルの最大サイズ ( MB )"
 
@@ -8261,7 +8262,7 @@ msgid "Document item"
 msgid_plural "Document items"
 msgstr[0] "ドキュメント アイテム"
 
-#: src/Document.php:1233
+#: src/Document.php:1239
 msgid "Document move succeeded."
 msgstr "ドキュメントを移動しました"
 
@@ -8274,11 +8275,11 @@ msgstr[0] "ドキュメントの形式"
 msgid "Documents"
 msgstr "ドキュメント"
 
-#: src/Document.php:1491
+#: src/Document.php:1503
 msgid "Documents directory doesn't exist."
 msgstr "ドキュメント ディレクトリーが存在しません。"
 
-#: src/Config.php:3574
+#: src/Config.php:3573
 msgid "Documents setup"
 msgstr "ドキュメントの設定"
 
@@ -8404,7 +8405,7 @@ msgstr "圧縮ファイルを手動でダウンロードし、プラグイン �
 msgid "Download plugin from the GLPI marketplace"
 msgstr "GLPI マーケットプレースからプラグインをダウンロード"
 
-#: src/User.php:2402
+#: src/User.php:2440
 msgid "Download user VCard"
 msgstr "ユーザーの VCard をダウンロード"
 
@@ -8508,7 +8509,7 @@ msgid "ERROR"
 msgstr "エラー"
 
 #. TRANS: %s is a directory
-#: front/cron.php:44
+#: front/cron.php:45
 #, php-format
 msgid "ERROR: %s is not writable"
 msgstr "エラー: %s は書き込み禁止です"
@@ -8639,8 +8640,8 @@ msgstr "要素は、位置情報が存在しないか見つかりません。"
 #: src/AuthLDAP.php:960 src/AuthLDAP.php:1208 src/AuthLDAP.php:1217
 #: src/AuthLDAP.php:1226 src/AuthLDAP.php:1235 src/AuthLDAP.php:3959
 #: src/AuthLDAP.php:3962 src/AuthLDAP.php:3967 src/AuthLDAP.php:3972
-#: src/QueuedNotification.php:749 src/User.php:2653 src/User.php:3142
-#: src/User.php:3576 src/Blacklist.php:247 src/Contact_Supplier.php:310
+#: src/QueuedNotification.php:749 src/User.php:2691 src/User.php:3180
+#: src/User.php:3614 src/Blacklist.php:247 src/Contact_Supplier.php:310
 #: src/Auth.php:1738 src/Auth.php:1744 src/Auth.php:1750 src/Auth.php:1756
 #: src/Contact.php:288 src/Supplier.php:242
 #: src/ContentTemplates/Parameters/SupplierParameters.php:77
@@ -8721,7 +8722,7 @@ msgid "Email notification"
 msgid_plural "Email notifications"
 msgstr[0] "メール通知"
 
-#: src/Api/API.php:2150
+#: src/Api/API.php:2154
 msgid "Email notifications are disabled"
 msgstr "メール通知が無効です"
 
@@ -8743,7 +8744,7 @@ msgstr "送信者名"
 msgid "Email server"
 msgstr "メールサーバー"
 
-#: src/User.php:3696
+#: src/User.php:3734
 msgid "Email server for authentication"
 msgstr "認証用のメールサーバー"
 
@@ -8976,7 +8977,7 @@ msgstr "%s に終了"
 #: front/report.infocom.conso.php:74 front/stat.graph.php:380
 #: src/Csv/PlanningCsv.php:76 src/Dropdown.php:690 src/ProjectCost.php:167
 #: src/ProjectCost.php:294 src/ProjectCost.php:370 src/Budget.php:162
-#: src/Budget.php:258 src/CommonITILTask.php:998 src/User.php:3865
+#: src/Budget.php:258 src/CommonITILTask.php:998 src/User.php:3903
 #: src/ContractCost.php:158 src/ContractCost.php:285 src/ContractCost.php:362
 #: src/CommonITILCost.php:143 src/CommonITILCost.php:449
 #: src/CommonITILCost.php:596 src/Stat.php:2120
@@ -9061,7 +9062,7 @@ msgstr "画像検証のセキュリティーを強化します。"
 msgid "Ensure security is enforced on session cookies."
 msgstr "セッション Cookie でセキュリティが施されていることを確認してください。"
 
-#: front/find_num.php:79 ajax/dropdownTrackingDeviceType.php:72
+#: ajax/dropdownTrackingDeviceType.php:72
 msgid "Enter the first letters (user, item name, serial or asset number)"
 msgstr "最初の文字を入力してください （ユーザー名、アイテム名、シリアル番号もしくは情報資産番号）"
 
@@ -9240,7 +9241,7 @@ msgstr "LDAPサーバー\"%s\"への問合せでエラーが発生しました�
 msgid "Error: %s is not a directory"
 msgstr "エラー: %s はディレクトリではありません"
 
-#: src/User.php:773 src/User.php:981
+#: src/User.php:784 src/User.php:992
 msgid "Error: the two passwords do not match"
 msgstr "エラー：パスワードが一致しません"
 
@@ -9524,8 +9525,8 @@ msgid "External link"
 msgid_plural "External links"
 msgstr[0] "外部リンク"
 
-#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:259
-#: src/TicketSatisfaction.php:309 src/Entity.php:3144 src/Entity.php:3883
+#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:264
+#: src/TicketSatisfaction.php:314 src/Entity.php:3144 src/Entity.php:3883
 msgid "External survey"
 msgstr "外部調査"
 
@@ -9597,14 +9598,14 @@ msgstr "プロキシサーバー (%s) への接続に失敗しました"
 msgid "Failed to create recurrent item %s"
 msgstr "くり返しアイテム %s を作成できませんでした"
 
-#: src/Document.php:1520
+#: src/Document.php:1532
 #, php-format
 msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
 "permission"
 msgstr "ディレクトリ %s の作成に失敗しました。ディレクトリを作成するためのパーミッションがあるか確認してください"
 
-#: src/Document.php:1216 src/Document.php:1328 src/Document.php:1425
+#: src/Document.php:1222 src/Document.php:1340 src/Document.php:1437
 #, php-format
 msgid "Failed to delete the file %1$s"
 msgstr "%1$s ファイルの削除に失敗"
@@ -9633,7 +9634,7 @@ msgstr "チケット %d を読み込めませんでした"
 msgid "Failed to remove team member"
 msgstr "チームメンバーからの削除に失敗"
 
-#: src/GLPIUploadHandler.php:114
+#: src/UploadHandler.php:434
 msgid "Failed to resize image"
 msgstr "画像のリサイズに失敗しました"
 
@@ -9641,7 +9642,7 @@ msgstr "画像のリサイズに失敗しました"
 msgid "Failed to send test email to administrator"
 msgstr "管理者あてのメール送信に失敗"
 
-#: src/GLPIUploadHandler.php:66
+#: src/UploadHandler.php:386
 msgid "Failed to write file to disk"
 msgstr "ディスクへのファイルの書き出しに失敗しました"
 
@@ -9745,17 +9746,17 @@ msgstr "重複チェック"
 msgid "File"
 msgstr "ファイル"
 
-#: src/Inventory/Inventory.php:936
+#: src/Inventory/Inventory.php:949
 #, php-format
 msgid "File %1$s %2$s has been removed"
 msgstr "%2$s （%1$s ファイル） を削除しました"
 
-#: src/Inventory/Inventory.php:930
+#: src/Inventory/Inventory.php:943
 #, php-format
 msgid "File %1$s %2$s has not been removed"
 msgstr "%2$s （%1$s ファイル） は削除していません"
 
-#: src/Inventory/Inventory.php:854
+#: src/Inventory/Inventory.php:867
 #, php-format
 msgid "File %1$s has been removed"
 msgstr "%1$s ファイルを削除しました"
@@ -9765,7 +9766,7 @@ msgstr "%1$s ファイルを削除しました"
 msgid "File %s contains SQL queries that can be used to rollback command."
 msgstr "%s ファイルにロールバックコマンドで利用できる SQL クエリーを記録しています。"
 
-#: src/Document.php:1173 src/Document.php:1284
+#: src/Document.php:1179 src/Document.php:1296
 #, php-format
 msgid "File %s not found."
 msgstr "%s ファイルは見つかりませんでした。"
@@ -9787,27 +9788,27 @@ msgstr "ファイルをインポートしました。"
 msgid "File has not been imported: `%s`."
 msgstr "ファイルはインポートしていません : %s"
 
-#: front/document.send.php:60
+#: front/document.send.php:62
 msgid "File is altered (bad checksum)"
 msgstr "ファイルは変更されています。（チェックサム不一致)"
 
-#: src/GLPIUploadHandler.php:78
+#: src/UploadHandler.php:398
 msgid "File is too big"
 msgstr "ファイルは大きすぎます"
 
-#: src/GLPIUploadHandler.php:82
+#: src/UploadHandler.php:402
 msgid "File is too small"
 msgstr "ファイルは小さすぎます"
 
-#: src/Document.php:1242 src/Document.php:1344
+#: src/Document.php:1248 src/Document.php:1356
 msgid "File move failed"
 msgstr "ファイルの移動に失敗しました"
 
-#: src/Document.php:1235
+#: src/Document.php:1241
 msgid "File move failed."
 msgstr "ファイルの移動に失敗しました"
 
-#: front/document.send.php:54
+#: front/document.send.php:56
 msgid "File not found"
 msgstr "ファイルが見つかりませんでした"
 
@@ -9816,11 +9817,11 @@ msgid "File system"
 msgid_plural "File systems"
 msgstr[0] "ファイルシステム"
 
-#: src/Document.php:1378
+#: src/Document.php:1390
 msgid "File too large to be added."
 msgstr "追加するにはファイルサイズが大きすぎます"
 
-#: src/GLPIUploadHandler.php:110
+#: src/UploadHandler.php:430
 msgid "File upload aborted"
 msgstr "ファイルアップロードを中断しました"
 
@@ -9832,7 +9833,7 @@ msgstr "ファイル"
 msgid "Filename"
 msgstr "ファイル名"
 
-#: src/GLPIUploadHandler.php:106
+#: src/UploadHandler.php:426
 msgid "Filetype not allowed"
 msgstr "未許可のファイル形式"
 
@@ -9890,7 +9891,7 @@ msgstr "フィルター"
 
 #. TRANS: Always plural
 #: templates/components/infocom.html.twig src/Transfer.php:3971
-#: src/Entity.php:2286 src/Consumable.php:637 src/Config.php:3238
+#: src/Entity.php:2286 src/Consumable.php:637 src/Config.php:3237
 #: src/Infocom.php:114 src/Infocom.php:1204 src/Cartridge.php:826
 msgid "Financial and administrative information"
 msgstr "財務管理情報"
@@ -9939,8 +9940,8 @@ msgstr "チケットエンティティーの中で最初に見つかった有効
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:935
 #: src/AuthLDAP.php:1146 src/AuthLDAP.php:3976
-#: src/NotificationTargetUser.php:152 src/User.php:2580 src/User.php:3005
-#: src/User.php:3568 src/User.php:6440 src/Auth.php:1718 src/Contact.php:239
+#: src/NotificationTargetUser.php:152 src/User.php:2618 src/User.php:3043
+#: src/User.php:3606 src/User.php:6493 src/Auth.php:1718 src/Contact.php:239
 #: src/ContentTemplates/Parameters/UserParameters.php:81
 msgid "First name"
 msgstr "名前（名）"
@@ -10038,7 +10039,7 @@ msgstr "以下の拡張モジュールが見つかりません : %s。"
 msgid "Following extensions are not present: %s."
 msgstr "以下の拡張モジュールが存在しません : %s。"
 
-#: src/Inventory/Inventory.php:297
+#: src/Inventory/Inventory.php:310
 #, php-format
 msgid "Following keys has been ignored during process: %1$s"
 msgstr "以下のキーは処理中に無視しました : %1$s"
@@ -10085,7 +10086,7 @@ msgstr "このアイテムの型の場合、財務管理情報は、追加しな
 msgid "For tickets closed after"
 msgstr "以降に終了したチケット"
 
-#: src/Api/API.php:1606
+#: src/Api/API.php:1610
 msgid "Forbidden field ID in search criteria"
 msgstr "検索条件に項目 ID が入っていません"
 
@@ -10126,7 +10127,7 @@ msgstr "削除済みユーザーに強制適用する（現在設定している
 msgid "Force strategy used for restored users (current configured action: \"%s\")"
 msgstr "復元するユーザーに強制するストラテジー（現在設定しているアクション : 「%s」）"
 
-#: src/User.php:3440 src/Auth.php:1511
+#: src/User.php:3478 src/Auth.php:1511
 msgid "Force synchronization"
 msgstr "強制同期"
 
@@ -10144,8 +10145,8 @@ msgid "Forget it,"
 msgstr "忘れたので、"
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
-#: src/NotificationTargetUser.php:43 src/User.php:5398 src/User.php:5413
-#: src/User.php:5511 src/User.php:5535
+#: src/NotificationTargetUser.php:43 src/User.php:5436 src/User.php:5451
+#: src/User.php:5556 src/User.php:5580
 msgid "Forgotten password?"
 msgstr "パスワードの再発行"
 
@@ -10347,7 +10348,7 @@ msgstr "Gbps"
 #: src/Rule.php:2443 src/CommonItilObject_Item.php:147
 #: src/RuleImportAsset.php:188 src/RuleImportAsset.php:192
 #: src/RuleImportAsset.php:197 src/CommonGLPI.php:108
-#: src/CommonITILObject.php:6508 src/Config.php:3170 src/Ticket.php:5074
+#: src/CommonITILObject.php:6508 src/Config.php:3169 src/Ticket.php:5074
 #: src/Ticket.php:5684
 msgid "General"
 msgstr "一般"
@@ -10358,7 +10359,7 @@ msgid "General"
 msgstr "一般"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Config.php:2011
-#: src/Config.php:2536 src/Profile.php:2595
+#: src/Config.php:2535 src/Profile.php:2595
 msgid "General setup"
 msgstr "一般設定"
 
@@ -10613,7 +10614,7 @@ msgstr "半ドーナツ"
 msgid "Half pie"
 msgstr "半円"
 
-#: src/User.php:6041
+#: src/User.php:6094
 msgid "Handle users passwords expiration policy"
 msgstr "ユーザーパスワードの有効期限ポリシーを処理する"
 
@@ -10633,10 +10634,6 @@ msgstr "ストレージの型"
 #: src/Report.php:85
 msgid "Hardware financial and administrative information"
 msgstr "ハードウェアの財務管理情報"
-
-#: front/find_num.php:93
-msgid "Hardware type"
-msgstr "ハードウェアの型"
 
 #: front/report.contract.php:49
 msgid "Hardware under contract"
@@ -10696,7 +10693,7 @@ msgstr "ヘルプデスク グループ"
 msgid "Helpdesk reporting form"
 msgstr "ヘルプデスク レポート フォーム"
 
-#: src/User.php:6353 src/User.php:6380
+#: src/User.php:6406 src/User.php:6433
 msgid "Helpdesk user"
 msgstr "ヘルプデスク ユーザー"
 
@@ -10798,13 +10795,13 @@ msgstr "ハブ"
 msgid "I don't understand why this migration error is not deleted."
 msgstr "この移行エラーが削除できない理由は不明です"
 
-#: src/Config.php:3100
+#: src/Config.php:3099
 msgid "I know I am using a unstable version."
 msgstr "不安定バージョンを使用していることを了承しています。"
 
 #: templates/pages/admin/events_list.html.twig
-#: templates/components/logs.html.twig front/find_num.php:95
-#: src/Csv/LogCsvExport.php:73 src/Phone.php:215 src/Ticket_Ticket.php:71
+#: templates/components/logs.html.twig src/Csv/LogCsvExport.php:73
+#: src/Phone.php:215 src/Ticket_Ticket.php:71
 #: src/NotificationTargetProjectTask.php:589
 #: src/NotificationTargetProjectTask.php:618 src/KnowbaseItem.php:2248
 #: src/Monitor.php:210 src/Unmanaged.php:98 src/Datacenter.php:100
@@ -10816,8 +10813,8 @@ msgstr "不安定バージョンを使用していることを了承していま
 #: src/Budget.php:215 src/PassiveDCEquipment.php:95 src/Enclosure.php:112
 #: src/CommonITILTask.php:1648 src/CommonITILTask.php:1673
 #: src/CommonITILTask.php:1738 src/Link.php:220 src/QueuedNotification.php:224
-#: src/Printer.php:348 src/Document.php:999 src/User.php:3551
-#: src/User.php:5676 src/Search.php:8100 src/Search.php:8121 src/Line.php:116
+#: src/Printer.php:348 src/Document.php:999 src/User.php:3589
+#: src/User.php:5729 src/Search.php:8100 src/Search.php:8121 src/Line.php:116
 #: src/ContractCost.php:133 src/Rack.php:154 src/Group_User.php:725
 #: src/CommonITILCost.php:118 src/SoftwareLicense.php:360
 #: src/SoftwareLicense.php:1207 src/Software.php:385 src/AuthMail.php:112
@@ -10867,7 +10864,7 @@ msgstr "ID"
 msgid "ID TAG"
 msgstr "ID タグ"
 
-#: src/Api/API.php:1637
+#: src/Api/API.php:1641
 msgid "ID is forbidden along with 'forcedisplay' parameter."
 msgstr "'forcedisplay'（無条件表示）パラメーターをつける場合は、ID が必要です。"
 
@@ -11047,7 +11044,7 @@ msgstr "同期済みまたは参照アカウントの場合"
 msgid "If the cartridge types are no longer used"
 msgstr "カートリッジの型が使われなくなった場合"
 
-#: src/User.php:5532 src/Api/API.php:2170
+#: src/User.php:5577 src/Api/API.php:2174
 msgid ""
 "If the given email address match an exisiting GLPI user, you will receive an"
 " email containing the informations required to reset your password. Please "
@@ -11106,11 +11103,11 @@ msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
 msgstr[0] "重複チェックで無視する値"
 
-#: src/GLPIUploadHandler.php:98
+#: src/UploadHandler.php:418
 msgid "Image exceeds maximum height"
 msgstr "イメージは最大高を超えています"
 
-#: src/GLPIUploadHandler.php:90
+#: src/UploadHandler.php:410
 msgid "Image exceeds maximum width"
 msgstr "イメージは最大幅を超えました"
 
@@ -11119,11 +11116,11 @@ msgid "Image format"
 msgid_plural "Image formats"
 msgstr[0] "画像フォーマット"
 
-#: src/GLPIUploadHandler.php:102
+#: src/UploadHandler.php:422
 msgid "Image requires a minimum height"
 msgstr "イメージは最小高が必要です"
 
-#: src/GLPIUploadHandler.php:94
+#: src/UploadHandler.php:414
 msgid "Image requires a minimum width"
 msgstr "イメージは最小幅が必要です"
 
@@ -11167,7 +11164,7 @@ msgstr "影響元 : "
 msgid "Impacts"
 msgstr "影響"
 
-#: src/User.php:2417
+#: src/User.php:2455
 msgid "Impersonate"
 msgstr "ユーザー偽装"
 
@@ -11189,7 +11186,7 @@ msgctxt "button"
 msgid "Import"
 msgstr "インポート"
 
-#: src/User.php:4668 src/User.php:4672 src/User.php:4675
+#: src/User.php:4706 src/User.php:4710 src/User.php:4713
 msgid "Import a user"
 msgstr "ユーザーのインポート"
 
@@ -11209,7 +11206,7 @@ msgstr "インポートを拒否 ( ログなし )"
 msgid "Import entities from LDAP directory"
 msgstr "LDAPディレクトリからエンティティをインポート"
 
-#: src/User.php:4718
+#: src/User.php:4756
 msgid "Import from directories"
 msgstr "ディレクトリからのインポート"
 
@@ -11217,7 +11214,7 @@ msgstr "ディレクトリからのインポート"
 msgid "Import from file"
 msgstr "ファイルからインポート"
 
-#: src/User.php:4724
+#: src/User.php:4762
 msgid "Import from other sources"
 msgstr "他のソースからのインポート"
 
@@ -11513,6 +11510,8 @@ msgid ""
 "to LDAP server. Disabling this behaviour can be required when LDAPS bind is "
 "used."
 msgstr ""
+"LDAP サーバーへの接続時にシンプルバインド操作を使用するかどうかを示します。LDAPS "
+"バインドを使用する場合は、この動作を無効にする必要があります。"
 
 #: src/CronTask.php:656
 msgid "Infinite"
@@ -11644,11 +11643,11 @@ msgstr "インストールが完了しました。"
 msgid "Installation or update of GLPI"
 msgstr "GLPI のインストールまたは更新"
 
-#: src/Config.php:3215
+#: src/Config.php:3214
 msgid "Installation/uninstallation of software on items"
 msgstr "アイテムへのソフトウェアのインストール・アンインストール"
 
-#: src/Config.php:3221
+#: src/Config.php:3220
 msgid "Installation/uninstallation versions on software"
 msgstr "ソフトウェアの特定のバージョンをインストール・アンインストール"
 
@@ -11729,7 +11728,7 @@ msgstr "解決までの内部時間（TTR - Time To Resolve）"
 msgid "Internal status"
 msgstr "内部状態"
 
-#: src/TicketSatisfaction.php:256 src/TicketSatisfaction.php:308
+#: src/TicketSatisfaction.php:261 src/TicketSatisfaction.php:313
 #: src/Entity.php:3143 src/Entity.php:3882
 msgid "Internal survey"
 msgstr "内部調査"
@@ -11857,7 +11856,7 @@ msgstr "無効な cookie データ"
 msgid "Invalid dates. Update cancelled."
 msgstr "日付が無効なため更新を取消しました。"
 
-#: src/User.php:5593 src/NotificationMailingSetting.php:87
+#: src/User.php:5638 src/NotificationMailingSetting.php:87
 #: src/NotificationMailingSetting.php:101
 #: src/NotificationMailingSetting.php:120
 #: src/NotificationMailingSetting.php:138 src/Entity.php:2021
@@ -11872,7 +11871,7 @@ msgstr "無効なメールアドレス"
 msgid "Invalid email address %s"
 msgstr "無効なメールアドレス %s"
 
-#: front/document.send.php:114
+#: front/document.send.php:116
 msgid "Invalid filename"
 msgstr "無効なファイル名"
 
@@ -11955,8 +11954,8 @@ msgstr "セッション ID の使用が不正です"
 msgid "Invalid widget"
 msgstr "無効なウィジェット"
 
-#: front/inventory.conf.php:42 src/Inventory/Inventory.php:486
-#: src/Inventory/Inventory.php:957
+#: front/inventory.conf.php:42 src/Inventory/Inventory.php:499
+#: src/Inventory/Inventory.php:970
 #: src/Agent/Communication/AbstractRequest.php:174 src/Profile.php:948
 #: src/Profile.php:1859 src/Profile.php:3039
 msgid "Inventory"
@@ -11989,15 +11988,14 @@ msgid "Inventory link"
 msgstr "インベントリー リンク"
 
 #: templates/generic_show_form.html.twig
-#: templates/components/form/item_device.html.twig front/find_num.php:97
-#: src/Phone.php:259 src/Change_Item.php:161 src/Monitor.php:254
-#: src/Unmanaged.php:121 src/Item_Rack.php:858
-#: src/NotificationTargetProblem.php:206 src/Item_Devices.php:364
-#: src/Item_Devices.php:365 src/CableStrand.php:151 src/Document_Item.php:416
-#: src/Appliance.php:248 src/Budget.php:359 src/PassiveDCEquipment.php:120
-#: src/Enclosure.php:148 src/Printer.php:392 src/User.php:4905
-#: src/User.php:4987 src/Search.php:8136 src/Rack.php:198 src/Rack.php:917
-#: src/SoftwareLicense.php:548 src/SoftwareLicense.php:637
+#: templates/components/form/item_device.html.twig src/Phone.php:259
+#: src/Change_Item.php:161 src/Monitor.php:254 src/Unmanaged.php:121
+#: src/Item_Rack.php:858 src/NotificationTargetProblem.php:206
+#: src/Item_Devices.php:364 src/Item_Devices.php:365 src/CableStrand.php:151
+#: src/Document_Item.php:416 src/Appliance.php:248 src/Budget.php:359
+#: src/PassiveDCEquipment.php:120 src/Enclosure.php:148 src/Printer.php:392
+#: src/User.php:4943 src/User.php:5025 src/Search.php:8136 src/Rack.php:198
+#: src/Rack.php:917 src/SoftwareLicense.php:548 src/SoftwareLicense.php:637
 #: src/DeviceFirmware.php:231 src/PDU_Rack.php:601 src/Computer_Item.php:414
 #: src/Computer_Item.php:583 src/Peripheral.php:238
 #: src/NotificationTargetChange.php:284 src/Certificate_Item.php:275
@@ -12202,8 +12200,8 @@ msgstr "アイテムのロック"
 msgid "Item need to be deleted first"
 msgstr "先に削除する必要のあるアイテム"
 
-#: src/Html.php:607 src/CommonDBTM.php:6360 src/Api/API.php:1958
-#: src/Api/API.php:2072 src/Api/API.php:2646
+#: src/Html.php:607 src/CommonDBTM.php:6360 src/Api/API.php:1962
+#: src/Api/API.php:2076 src/Api/API.php:2650
 msgid "Item not found"
 msgstr "アイテムが見つかりません"
 
@@ -12335,7 +12333,7 @@ msgstr "Kbps"
 msgid "Keep"
 msgstr "保持"
 
-#: src/Config.php:3325
+#: src/Config.php:3324
 msgid "Keep all"
 msgstr "すべて保持"
 
@@ -12445,7 +12443,7 @@ msgstr[0] "LDAPディレクトリ"
 msgid "LDAP directory choice"
 msgstr "LDAPディレクトリ選択"
 
-#: src/User.php:3683
+#: src/User.php:3721
 msgid "LDAP directory for authentication"
 msgstr "認証用のLDAPディレクトリ"
 
@@ -12454,7 +12452,7 @@ msgid "LDAP directory information attribute representing the entity"
 msgstr "エンティティを表示するLDAPディレクトリ情報属性"
 
 #: front/ldap.group.php:44 front/ldap.import.php:58 front/ldap.php:42
-#: front/ldap.group.import.php:42 src/User.php:2370 src/Group.php:151
+#: front/ldap.group.import.php:42 src/User.php:2408 src/Group.php:151
 #: src/Group.php:333
 msgid "LDAP directory link"
 msgstr "LDAPディレクトリリンク"
@@ -12500,13 +12498,13 @@ msgstr "LDAPサーバー"
 msgid "Label"
 msgstr "ラベル"
 
-#: front/user.form.php:185
+#: front/user.form.php:44 front/user.form.php:195
 msgid "Lang has been changed!"
 msgstr "言語を変更しました！"
 
 #: templates/pages/login.html.twig src/DropdownTranslation.php:424
 #: src/DropdownTranslation.php:515 src/AuthLDAP.php:981 src/AuthLDAP.php:1271
-#: src/User.php:3043 src/User.php:3716 src/KnowbaseItemTranslation.php:234
+#: src/User.php:3081 src/User.php:3754 src/KnowbaseItemTranslation.php:234
 #: src/KnowbaseItemTranslation.php:295
 #: src/NotificationTemplateTranslation.php:135
 #: src/NotificationTemplateTranslation.php:228
@@ -12607,11 +12605,11 @@ msgstr "最終インベントリー更新"
 msgid "Last inventory value was:"
 msgstr "最終インベントリーの値 : "
 
-#: src/User.php:3660
+#: src/User.php:3698
 msgid "Last login"
 msgstr "前回ログイン"
 
-#: src/User.php:2921
+#: src/User.php:2959
 #, php-format
 msgid "Last login on %s"
 msgstr "最終ログイン %s"
@@ -12620,7 +12618,7 @@ msgstr "最終ログイン %s"
 msgid "Last month"
 msgstr "先月"
 
-#: src/User.php:3560 src/Contact.php:230
+#: src/User.php:3598 src/Contact.php:230
 msgid "Last name"
 msgstr "姓"
 
@@ -12640,11 +12638,11 @@ msgstr "前回動作リスト"
 msgid "Last solution status"
 msgstr "最終作業状況"
 
-#: src/User.php:3784
+#: src/User.php:3822
 msgid "Last synchronization"
 msgstr "前回同期"
 
-#: src/User.php:2699
+#: src/User.php:2737
 #, php-format
 msgid "Last synchronization on %s"
 msgstr "最終同期 %s"
@@ -12662,7 +12660,7 @@ msgstr "最新チケット"
 #: src/CommonDropdown.php:487 src/Appliance.php:216 src/Rule.php:815
 #: src/AuthLDAP.php:455 src/AuthLDAP.php:1253 src/Budget.php:224
 #: src/PassiveDCEquipment.php:130 src/Enclosure.php:164 src/Link.php:237
-#: src/Printer.php:450 src/Document.php:1067 src/User.php:3726
+#: src/Printer.php:450 src/Document.php:1067 src/User.php:3764
 #: src/Search.php:8163 src/Line.php:141 src/Rack.php:230 src/Software.php:412
 #: src/AuthMail.php:146 src/Peripheral.php:280 src/LevelAgreement.php:191
 #: src/Transfer.php:130 src/Transfer.php:3889 src/Computer.php:508
@@ -12674,7 +12672,7 @@ msgstr "最新チケット"
 #: src/CommonITILObject.php:4097 src/CommonITILObject.php:6646
 #: src/NotificationTargetPlanningRecall.php:245 src/RuleTicket.php:562
 #: src/Contract.php:548 src/CommonDevice.php:299 src/Cluster.php:111
-#: src/Config.php:3200 src/Profile.php:2012 src/Reminder.php:472
+#: src/Config.php:3199 src/Profile.php:2012 src/Reminder.php:472
 #: src/RSSFeed.php:518 src/CronTask.php:1728
 #: src/Features/PlanningEvent.php:998 src/NotificationTargetProject.php:636
 #: src/NotificationTargetProject.php:657 src/DomainRecord.php:155
@@ -13240,8 +13238,8 @@ msgstr "論理演算子"
 
 #: templates/pages/login.html.twig src/MailCollector.php:263
 #: src/MailCollector.php:501 src/AuthLDAP.php:3957
-#: src/NotificationTargetUser.php:150 src/User.php:2510 src/User.php:2964
-#: src/User.php:3541 src/User.php:4713 src/User.php:5326 src/AuthMail.php:232
+#: src/NotificationTargetUser.php:150 src/User.php:2548 src/User.php:3002
+#: src/User.php:3579 src/User.php:4751 src/User.php:5364 src/AuthMail.php:232
 #: src/ContentTemplates/Parameters/UserParameters.php:75 src/RuleRight.php:271
 #: src/Config.php:2074
 msgid "Login"
@@ -13271,11 +13269,11 @@ msgstr "ログアウト"
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr "ファイルのログ (SQL、メール、自動操作...)"
 
-#: src/Config.php:2543 src/PurgeLogs.php:42
+#: src/Config.php:2542 src/PurgeLogs.php:42
 msgid "Logs purge"
 msgstr "ログの抹消"
 
-#: src/Config.php:3152
+#: src/Config.php:3151
 msgid "Logs purge configuration"
 msgstr "ログ 抹消設定"
 
@@ -13452,7 +13450,7 @@ msgstr ""
 msgid "Make unavailable"
 msgstr "無効にする"
 
-#: src/Api/API.php:1591
+#: src/Api/API.php:1595
 msgid "Malformed search criteria"
 msgstr "不正な形式の検索条件"
 
@@ -13465,7 +13463,7 @@ msgstr "管理"
 msgid "Manage all saved searches"
 msgstr "全保存済み検索を管理"
 
-#: src/Document.php:1475
+#: src/Document.php:1487
 msgid "Manage document types"
 msgstr "ドキュメント 形式の管理"
 
@@ -13494,7 +13492,7 @@ msgid "Managed items"
 msgstr "管理アイテム"
 
 #: src/Dropdown.php:1173 src/Html.php:1350 src/Event.php:170
-#: src/Transfer.php:4036 src/Config.php:2540 src/Profile.php:161
+#: src/Transfer.php:4036 src/Config.php:2539 src/Profile.php:161
 #: src/Profile.php:1378 src/Profile.php:2225 src/Infocom.php:160
 msgid "Management"
 msgstr "運用管理"
@@ -13677,11 +13675,11 @@ msgstr "最大時間"
 msgid "Maximum emails to send at once"
 msgstr "一度に送信するメールの最大数"
 
-#: src/User.php:6042
+#: src/User.php:6095
 msgid "Maximum expiration notifications to send at once"
 msgstr "一度に送信する期限切れ通知の最大数 "
 
-#: src/GLPIUploadHandler.php:86
+#: src/UploadHandler.php:406
 msgid "Maximum number of files exceeded"
 msgstr "ファイルの最大数を超えました"
 
@@ -13773,7 +13771,7 @@ msgstr "メモリー使用量: %s."
 
 #: src/NotificationTargetCommonITILObject.php:813
 msgid "Mentioned user"
-msgstr ""
+msgstr "メンションされたユーザー"
 
 #: src/Software.php:975
 msgid "Merge"
@@ -13849,7 +13847,7 @@ msgstr "メッセージ"
 msgid "Method"
 msgstr "方法"
 
-#: src/Api/API.php:2686
+#: src/Api/API.php:2690
 msgid "Method Not Allowed"
 msgstr "許可していないメソッド"
 
@@ -13995,7 +13993,7 @@ msgstr[0] "分"
 msgid "Mio"
 msgstr "MB"
 
-#: src/GLPIUploadHandler.php:62
+#: src/UploadHandler.php:382
 msgid "Missing a temporary folder"
 msgstr "テンポラリフォルダの消失"
 
@@ -14037,7 +14035,7 @@ msgstr "Mobile country code と network code の組み合わせは一意であ�
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:594
 #: src/AuthLDAP.php:971 src/AuthLDAP.php:1173 src/AuthLDAP.php:3979
-#: src/User.php:2723 src/User.php:3150 src/User.php:3634
+#: src/User.php:2761 src/User.php:3188 src/User.php:3672
 #: src/Contact_Supplier.php:308 src/Auth.php:1774 src/Contact.php:272
 #: src/NotificationTargetCommonITILObject.php:1748
 #: src/NotificationTargetCommonITILObject.php:1779
@@ -14190,7 +14188,7 @@ msgctxt "button"
 msgid "Move"
 msgstr "移動"
 
-#: src/User.php:3432
+#: src/User.php:3470
 msgid "Move to group"
 msgstr "グループに移動"
 
@@ -14199,7 +14197,7 @@ msgctxt "button"
 msgid "Move under"
 msgstr "下に移動"
 
-#: src/User.php:930
+#: src/User.php:941
 msgid "Moving temporary file failed."
 msgstr "一時ファイルの移動に失敗しました。"
 
@@ -14253,7 +14251,7 @@ msgstr "自分のタスク"
 msgid "My unpublished articles"
 msgstr "自分の未発行の記事"
 
-#: src/DbUtils.php:1674 src/User.php:4538 src/Search.php:3408
+#: src/DbUtils.php:1674 src/User.php:4576 src/Search.php:3408
 #: src/Dashboard/Filters/UserTechFilter.php:145 ajax/searchoptionvalue.php:87
 msgid "Myself"
 msgstr "自分"
@@ -14312,8 +14310,8 @@ msgstr "NOT"
 #: src/Budget.php:135 src/Budget.php:206 src/Budget.php:357
 #: src/PassiveDCEquipment.php:86 src/Link.php:173 src/Link.php:211
 #: src/NotificationTargetUser.php:151 src/RuleLocation.php:105
-#: src/Document.php:454 src/Document.php:990 src/User.php:4903
-#: src/User.php:4985 src/Search.php:8094 src/Search.php:8115
+#: src/Document.php:454 src/Document.php:990 src/User.php:4941
+#: src/User.php:5023 src/Search.php:8094 src/Search.php:8115
 #: src/ContractCost.php:263 src/ContractCost.php:360 src/Blacklist.php:250
 #: src/Rack.php:96 src/Rack.php:402 src/NetworkAlias.php:128
 #: src/NetworkAlias.php:322 src/NotificationTargetContract.php:174
@@ -14574,7 +14572,7 @@ msgstr[0] "ネットワーク機器の型"
 #: src/Entity.php:3101 src/Entity.php:3614 src/Entity.php:3625
 #: src/Entity.php:3652 src/Entity.php:3675 src/Contract.php:1529
 #: src/Contract.php:1551 src/Config.php:683 src/Config.php:1108
-#: src/Config.php:1343 src/Config.php:3494 src/CronTask.php:661
+#: src/Config.php:1343 src/Config.php:3493 src/CronTask.php:661
 #: src/Infocom.php:1762 src/Alert.php:113 src/Alert.php:182
 #: src/Features/PlanningEvent.php:745
 msgid "Never"
@@ -14660,11 +14658,11 @@ msgstr "新規アイテム"
 msgid "New note"
 msgstr "新しいメモ"
 
-#: src/User.php:5344
+#: src/User.php:5382
 msgid "New password"
 msgstr "新しいパスワード"
 
-#: src/User.php:5353
+#: src/User.php:5391
 msgid "New password confirmation"
 msgstr "新しいパスワード（確認）"
 
@@ -14787,7 +14785,7 @@ msgstr "実行予定"
 msgid "Next task to run: %s"
 msgstr "実行予定のタスク: %s"
 
-#: src/User.php:2879 src/User.php:3271
+#: src/User.php:2917 src/User.php:3309
 msgid "Nickname"
 msgstr "略名"
 
@@ -14801,7 +14799,7 @@ msgstr "略名"
 #: src/Entity.php:2353 src/Entity.php:2388 src/Entity.php:2561
 #: src/Entity.php:3486 src/Entity.php:3514 src/Entity.php:3534
 #: src/Entity.php:3640 src/Entity.php:3822 src/RuleImportComputer.php:173
-#: src/Config.php:1103 src/Config.php:2367 src/CommonDBChild.php:1027
+#: src/Config.php:1103 src/Config.php:2364 src/CommonDBChild.php:1027
 #: src/SavedSearch_User.php:57 src/SavedSearch_User.php:79 src/Alert.php:151
 #: src/Item_DeviceCamera_ImageResolution.php:169
 msgid "No"
@@ -14953,11 +14951,11 @@ msgstr "要素が見つかりません。"
 msgid "No entity found"
 msgstr "エンティティは見つかりません"
 
-#: src/Document.php:1556
+#: src/Document.php:1568
 msgid "No file available"
 msgstr "ファイルはありません"
 
-#: src/RuleCollection.php:1178 src/GLPIUploadHandler.php:58
+#: src/RuleCollection.php:1178 src/UploadHandler.php:378
 msgid "No file was uploaded"
 msgstr "アップロードしたファイルはありません"
 
@@ -15031,7 +15029,7 @@ msgstr "処理中のアイテムはありません。"
 msgid "No item reaching the end of warranty."
 msgstr "保証切れになるアイテムはありません。"
 
-#: src/User.php:5648 src/LevelAgreement.php:459 src/FieldUnicity.php:616
+#: src/User.php:5701 src/LevelAgreement.php:459 src/FieldUnicity.php:616
 #: src/FieldUnicity.php:640 src/NotificationEvent.php:246
 msgid "No item to display"
 msgstr "表示するアイテムなし"
@@ -15303,7 +15301,7 @@ msgid ""
 "action again."
 msgstr "HTTP_REFERERER のパスが存在しないか無効です。前ページをリロードしてから、もう一度操作を実行してください。"
 
-#: src/User.php:3254
+#: src/User.php:3292
 msgid "Normal"
 msgstr "標準"
 
@@ -15410,7 +15408,7 @@ msgid "Notification"
 msgid_plural "Notifications"
 msgstr[0] "通知"
 
-#: src/Config.php:3512
+#: src/Config.php:3511
 msgid "Notification disabled"
 msgstr "通知が無効になっています"
 
@@ -15533,7 +15531,7 @@ msgstr "全リンクチケット数"
 msgid "Number of answered satisfaction survey"
 msgstr "満足度調査の回答数"
 
-#: src/User.php:3908
+#: src/User.php:3946
 msgid "Number of assigned tickets"
 msgstr "割当済みチケット数"
 
@@ -15751,7 +15749,7 @@ msgstr "チケット数"
 msgid "Number of tickets already assigned"
 msgstr "割当済みチケット数"
 
-#: templates/components/itilobject/actors/field.html.twig src/User.php:3873
+#: templates/components/itilobject/actors/field.html.twig src/User.php:3911
 msgid "Number of tickets as requester"
 msgstr "要求者としてのチケット数"
 
@@ -15796,11 +15794,11 @@ msgstr "使用中の消耗品の数"
 msgid "Number of worn cartridges"
 msgstr "使用済みカートリッジ数"
 
-#: src/User.php:3893
+#: src/User.php:3931
 msgid "Number of written tickets"
 msgstr "文書チケット数"
 
-#: templates/install/choose_language.html.twig front/tracking.injector.php:91
+#: templates/install/choose_language.html.twig front/tracking.injector.php:93
 #: src/ITILCategory.php:488 src/ITILCategory.php:496 src/ITILCategory.php:504
 #: src/ITILCategory.php:512 src/Console/System/CheckRequirementsCommand.php:78
 #: src/Printer_CartridgeInfo.php:96 js/glpi_dialog.js:79 js/glpi_dialog.js:260
@@ -16171,7 +16169,7 @@ msgstr[0] "その他構成部品モデル"
 
 #: src/Budget.php:870
 msgid "Other entities"
-msgstr ""
+msgstr "他のエンティティ"
 
 #: src/NetworkPort.php:844
 msgid "Other equipments"
@@ -16455,7 +16453,7 @@ msgstr[0] "パッシブデバイスの型"
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
 #: templates/components/form/snmpcredential.html.twig
-#: src/MailCollector.php:267 src/User.php:2597 src/User.php:3068
+#: src/MailCollector.php:267 src/User.php:2635 src/User.php:3106
 #: src/AuthMail.php:235 src/Config.php:2076
 msgid "Password"
 msgstr "パスワード"
@@ -16464,7 +16462,7 @@ msgstr "パスワード"
 msgid "Password (for non-anonymous binds)"
 msgstr "パスワード (非匿名認証用)"
 
-#: templates/password_form.html.twig src/User.php:2602 src/User.php:3074
+#: templates/password_form.html.twig src/User.php:2640 src/User.php:3112
 msgid "Password confirmation"
 msgstr "パスワードの確認"
 
@@ -16472,15 +16470,15 @@ msgstr "パスワードの確認"
 msgid "Password expiration date"
 msgstr "パスワードの有効期限"
 
-#: src/Config.php:3483
+#: src/Config.php:3482
 msgid "Password expiration delay (in days)"
 msgstr "パスワードの有効期限（単位 : 日）"
 
-#: src/Config.php:3501
+#: src/Config.php:3500
 msgid "Password expiration notice time (in days)"
 msgstr "パスワード有効期限の通知（単位 : 日）"
 
-#: src/Config.php:3477
+#: src/Config.php:3476
 msgid "Password expiration policy"
 msgstr "パスワードの有効期限ポリシー"
 
@@ -16492,7 +16490,7 @@ msgstr "パスワードの有効期限"
 msgid "Password has expired"
 msgstr "パスワードの有効期限切れ"
 
-#: src/Config.php:1545 src/Config.php:3394
+#: src/Config.php:1545 src/Config.php:3393
 msgid "Password minimum length"
 msgstr "パスワードの最小文字列長"
 
@@ -16516,28 +16514,28 @@ msgstr "パスワードに記号を含めてください"
 msgid "Password must include at least a uppercase letter!"
 msgstr "パスワードに大文字を含めてください"
 
-#: src/Config.php:3413
+#: src/Config.php:3412
 msgid "Password need digit"
 msgstr "パスワードは数字が必要です"
 
-#: src/Config.php:3428
+#: src/Config.php:3427
 msgid "Password need lowercase character"
 msgstr "パスワードは小文字が必要です"
 
-#: src/Config.php:3461
+#: src/Config.php:3460
 msgid "Password need symbol"
 msgstr "パスワードは記号が必要です"
 
-#: src/Config.php:3446
+#: src/Config.php:3445
 msgid "Password need uppercase character"
 msgstr "パスワードは大文字が必要です"
 
-#: templates/password_form.html.twig src/User.php:2609 src/User.php:3081
-#: src/User.php:5362 src/Config.php:3373
+#: templates/password_form.html.twig src/User.php:2647 src/User.php:3119
+#: src/User.php:5400 src/Config.php:3372
 msgid "Password security policy"
 msgstr "パスワードポリシー"
 
-#: src/Config.php:3379
+#: src/Config.php:3378
 msgid "Password security policy validation"
 msgstr "パスワードセキュリティポリシーの検証"
 
@@ -16545,7 +16543,7 @@ msgstr "パスワードセキュリティポリシーの検証"
 msgid "Password too short!"
 msgstr "パスワードは短かすぎます"
 
-#: front/updatepassword.php:95 src/User.php:5314
+#: front/updatepassword.php:95 src/User.php:5352
 msgid "Password update"
 msgstr "パスワード更新"
 
@@ -16593,7 +16591,7 @@ msgstr "保留 : %s"
 msgid "Percent done"
 msgstr "進捗率"
 
-#: src/Config.php:2546
+#: src/Config.php:2545
 msgid "Performance"
 msgstr "パフォーマンス"
 
@@ -16718,7 +16716,7 @@ msgid "Personal reminder"
 msgid_plural "Personal reminders"
 msgstr[0] "個人のリマインダー"
 
-#: src/Config.php:1028 src/Config.php:2523 src/Profile.php:1050
+#: src/Config.php:1028 src/Config.php:2522 src/Profile.php:1050
 #: src/Profile.php:1110 src/Profile.php:2610
 #: src/Features/PlanningEvent.php:767
 msgid "Personalization"
@@ -16739,7 +16737,7 @@ msgstr "電話"
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:587
 #: src/AuthLDAP.php:967 src/AuthLDAP.php:1164 src/AuthLDAP.php:3978
-#: src/User.php:2739 src/User.php:3191 src/User.php:3626
+#: src/User.php:2777 src/User.php:3229 src/User.php:3664
 #: src/Contact_Supplier.php:307 src/Auth.php:1768 src/Contact.php:264
 #: src/ContentTemplates/Parameters/UserParameters.php:79
 #: src/NotificationTargetCommonITILObject.php:1750
@@ -16774,8 +16772,8 @@ msgstr "フォトコンダクター"
 #: templates/generic_show_form.html.twig templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:165
 #: src/CommonDropdown.php:188 src/AuthLDAP.php:985 src/AuthLDAP.php:3982
-#: src/User.php:2524 src/User.php:2990 src/User.php:3589 src/User.php:3960
-#: src/User.php:6430
+#: src/User.php:2562 src/User.php:3028 src/User.php:3627 src/User.php:3998
+#: src/User.php:6483
 msgid "Picture"
 msgid_plural "Pictures"
 msgstr[0] "画像"
@@ -16836,7 +16834,7 @@ msgstr "開始予定日"
 msgid "Planned tickets"
 msgstr "計画済みチケット"
 
-#: templates/pages/tools/project_task.html.twig front/planning.php:157
+#: templates/pages/tools/project_task.html.twig front/planning.php:161
 #: src/Project.php:1685 src/Event.php:159 src/Event.php:168
 #: src/Planning.php:86 src/ReservationItem.php:204 src/Profile.php:1576
 #: src/Profile.php:3170 src/Reminder.php:447 src/Reminder.php:1027
@@ -16872,7 +16870,7 @@ msgstr "計画"
 msgid "Plans"
 msgstr "計画"
 
-#: src/Config.php:3108
+#: src/Config.php:3107
 msgid "Please check the unstable version checkbox."
 msgstr "不安定バージョンのチェック ボックスを確認してください。"
 
@@ -17209,7 +17207,7 @@ msgid ""
 "database tables."
 msgstr "チェックするプラグイン。オプションを使用しないなら、GLPI コア データベーステーブル上でチェックします。"
 
-#: src/Html.php:1586 src/Config.php:3206
+#: src/Html.php:1586 src/Config.php:3205
 msgid "Plugins"
 msgstr "プラグイン"
 
@@ -17286,7 +17284,7 @@ msgstr "可能な値: "
 #: templates/pages/admin/ldap.choose_directory.html.twig
 #: src/Ticket_Ticket.php:75 src/RuleDictionnarySoftwareCollection.php:99
 #: src/KnowbaseItem.php:1402 src/KnowbaseItem.php:1456 src/Appliance.php:480
-#: src/User.php:3463 src/MassiveAction.php:923 src/MassiveAction.php:1233
+#: src/User.php:3501 src/MassiveAction.php:923 src/MassiveAction.php:1233
 #: src/MassiveAction.php:1262 src/RuleCollection.php:1443 src/Lock.php:1141
 #: src/Lock.php:1159 src/Item_SoftwareVersion.php:170
 #: src/Item_SoftwareVersion.php:182 src/Domain.php:424 src/Domain.php:433
@@ -17313,7 +17311,7 @@ msgstr "実行"
 msgid "Postal code"
 msgstr "郵便番号"
 
-#: src/Document.php:1451
+#: src/Document.php:1463
 msgid ""
 "Potential upload attack or file too large. Moving temporary file failed."
 msgstr "アップロード攻撃またはファイルが巨大である可能性があります。一時ファイルの移動に失敗しました"
@@ -17764,7 +17762,7 @@ msgstr "購入版"
 msgid "Purge"
 msgstr "抹消"
 
-#: src/Config.php:3294
+#: src/Config.php:3293
 msgid "Purge all log entries"
 msgstr "すべてのログを抹消する"
 
@@ -17895,7 +17893,7 @@ msgid "Read"
 msgstr "参照"
 
 #. TRANS: short for : Read method for user authentication and synchronization
-#: src/User.php:5925
+#: src/User.php:5978
 msgid "Read auth"
 msgstr "認証の参照"
 
@@ -17919,7 +17917,7 @@ msgstr "FAQの参照"
 msgid "Read the item's notes"
 msgstr "アイテムのメモを参照"
 
-#: src/User.php:5926
+#: src/User.php:5979
 msgid "Read user authentication and synchronization method"
 msgstr "ユーザー認証と同期方法の参照"
 
@@ -18076,7 +18074,7 @@ msgstr "くり返しイベントをドラッグ"
 msgid "Recurring event resized"
 msgstr "くり返しイベントをリサイズ"
 
-#: src/User.php:2789 src/RuleRightCollection.php:164 src/RuleRight.php:78
+#: src/User.php:2827 src/RuleRightCollection.php:164 src/RuleRight.php:78
 #: src/RuleRight.php:350 src/Profile_User.php:157 src/Profile_User.php:305
 #: src/Profile_User.php:1138
 msgid "Recursive"
@@ -18158,8 +18156,8 @@ msgstr[0] "拒否したメール"
 msgid "Refused mail archive folder (optional)"
 msgstr "拒否済みメールの保存フォルダ (任意)"
 
-#: templates/pages/setup/apiclient.html.twig src/User.php:2912
-#: src/User.php:2914 src/User.php:3299 src/User.php:3301
+#: templates/pages/setup/apiclient.html.twig src/User.php:2950
+#: src/User.php:2952 src/User.php:3337 src/User.php:3339
 msgid "Regenerate"
 msgstr "再生成"
 
@@ -18273,7 +18271,7 @@ msgstr "消耗品のアラームを通知する頻度"
 msgid "Remote ID"
 msgstr "リモート ID"
 
-#: src/User.php:2893 src/User.php:3280
+#: src/User.php:2931 src/User.php:3318
 msgid "Remote access keys"
 msgstr "リモートアクセスキー"
 
@@ -18294,7 +18292,7 @@ msgctxt "button"
 msgid "Remove a contract"
 msgstr "契約の削除"
 
-#: src/Document.php:1720
+#: src/Document.php:1732
 msgctxt "button"
 msgid "Remove a document"
 msgstr "ドキュメントの削除"
@@ -18313,7 +18311,7 @@ msgctxt "button"
 msgid "Remove all notification templates"
 msgstr "すべての通知テンプレートを削除する"
 
-#: src/Appliance.php:450 src/Document.php:1726 src/Contract.php:424
+#: src/Appliance.php:450 src/Document.php:1738 src/Contract.php:424
 #: src/Ticket.php:2634
 msgctxt "button"
 msgid "Remove an item"
@@ -18732,7 +18730,7 @@ msgstr "表示オプションのリセット"
 msgid "Reset last run"
 msgstr "前回動作をリセット"
 
-#: src/User.php:5499 src/Api/API.php:2187
+#: src/User.php:5544 src/Api/API.php:2191
 msgid "Reset password successful."
 msgstr "パスワードをリセットしました"
 
@@ -18785,8 +18783,8 @@ msgstr "回答日"
 msgid "Response date to the satisfaction survey"
 msgstr "満足度調査の回答日"
 
-#: src/AuthLDAP.php:992 src/AuthLDAP.php:1333 src/User.php:2858
-#: src/User.php:3929 src/ContentTemplates/Parameters/UserParameters.php:83
+#: src/AuthLDAP.php:992 src/AuthLDAP.php:1333 src/User.php:2896
+#: src/User.php:3967 src/ContentTemplates/Parameters/UserParameters.php:83
 msgid "Responsible"
 msgstr "責任者"
 
@@ -18812,7 +18810,7 @@ msgstr "リストア"
 msgid "Restore (move out of trashbin)"
 msgstr "復元 （ゴミ箱から取り出す）"
 
-#: src/Log.php:1082 src/Config.php:3188
+#: src/Log.php:1082 src/Config.php:3187
 msgid "Restore the item"
 msgstr "アイテムの復元"
 
@@ -18884,7 +18882,7 @@ msgstr "メールの取得 ( メール受信者 )"
 
 #: templates/display_and_die.html.twig
 msgid "Return to previous page"
-msgstr ""
+msgstr "前のページに戻る"
 
 #: src/Config.php:1298
 msgid "Reverse order (old items on bottom, recent on top)"
@@ -19084,7 +19082,7 @@ msgstr "動作サイクル"
 msgid "Run the \"%1$s\" command for more details."
 msgstr "「%1$s」コマンドを実行すると詳細を確認できます。"
 
-#: src/User.php:2639 src/User.php:3112 src/Config.php:1285
+#: src/User.php:2677 src/User.php:3150 src/Config.php:1285
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
 msgstr "「%1$s」コマンドを実行して有効にします。"
@@ -19205,7 +19203,7 @@ msgid "SQL password"
 msgstr "SQLパスワード"
 
 #: src/DBConnection.php:82 src/Config.php:657 src/Config.php:2040
-#: src/Config.php:2555
+#: src/Config.php:2554
 msgid "SQL replica"
 msgid_plural "SQL replicas"
 msgstr[0] "SQL レプリカ"
@@ -19299,7 +19297,7 @@ msgstr "土曜日"
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/components/itilobject/actors/main.html.twig src/AuthLDAP.php:685
 #: src/AuthLDAP.php:873 src/AuthLDAP.php:1001 src/AuthLDAP.php:1037
-#: src/User.php:5371 src/Auth.php:1797 src/Impact.php:404 src/Impact.php:1108
+#: src/User.php:5409 src/Auth.php:1797 src/Impact.php:404 src/Impact.php:1108
 #: src/Impact.php:1821 src/Dashboard/Grid.php:862
 msgid "Save"
 msgstr "保存"
@@ -19313,7 +19311,7 @@ msgstr "保存"
 #: templates/components/itilobject/footer.html.twig
 #: templates/components/infocom.html.twig
 #: templates/components/form/buttons.html.twig src/Item_Devices.php:754
-#: src/User.php:3305 src/Inventory/Conf.php:993 src/CommonGLPI.php:1404
+#: src/User.php:3343 src/Inventory/Conf.php:993 src/CommonGLPI.php:1404
 #: src/DomainRecordType.php:412 src/ReservationItem.php:415
 #: src/Entity.php:1644 src/Entity.php:1732 src/Entity.php:1973
 #: src/Entity.php:2506 src/Entity.php:2606 src/Entity.php:3220
@@ -19321,8 +19319,8 @@ msgstr "保存"
 #: src/Reservation.php:878 src/CommonITILValidation.php:899
 #: src/CommonITILActor.php:229 src/CommonITILActor.php:293 src/Config.php:580
 #: src/Config.php:630 src/Config.php:704 src/Config.php:774 src/Config.php:980
-#: src/Config.php:1509 src/Config.php:2083 src/Config.php:3301
-#: src/Config.php:3543 src/Config.php:3596 src/Profile.php:1249
+#: src/Config.php:1509 src/Config.php:2083 src/Config.php:3300
+#: src/Config.php:3542 src/Config.php:3595 src/Profile.php:1249
 #: src/Profile.php:1290 src/Profile.php:1338 src/Profile.php:1406
 #: src/Profile.php:1457 src/Profile.php:1591 src/Profile.php:1703
 #: src/Profile.php:1820 src/Profile.php:1874 src/Profile.php:1918
@@ -19391,9 +19389,9 @@ msgstr "スケジュール済"
 msgid "Search"
 msgstr "検索"
 
-#: front/find_num.php:84 src/KnowbaseItem.php:1348 src/AuthLDAP.php:1515
-#: src/AuthLDAP.php:4027 src/Search.php:2557 src/Planning.php:570
-#: src/ReservationItem.php:476 src/Knowbase.php:66
+#: src/KnowbaseItem.php:1348 src/AuthLDAP.php:1515 src/AuthLDAP.php:4027
+#: src/Search.php:2557 src/Planning.php:570 src/ReservationItem.php:476
+#: src/Knowbase.php:66
 msgctxt "button"
 msgid "Search"
 msgstr "検索"
@@ -19467,10 +19465,6 @@ msgstr "検索結果のユーザー表示"
 msgid "Search results for localized items only"
 msgstr "ローカライズしたアイテムのみ検索"
 
-#: front/find_num.php:75
-msgid "Search the ID of your hardware"
-msgstr "ハードウェアの ID を検索"
-
 #: src/AuthLDAP.php:852 src/AuthLDAP.php:1308
 msgid "Search type"
 msgstr "型を検索"
@@ -19488,7 +19482,7 @@ msgstr "２番目のアイテム"
 msgid "Secondary"
 msgstr "セカンダリ"
 
-#: src/Event.php:173 src/Config.php:2545
+#: src/Event.php:173 src/Config.php:2544
 msgid "Security"
 msgstr "セキュリティ"
 
@@ -19500,7 +19494,7 @@ msgstr "セッションのセキュリティー設定"
 msgid "Security key cannot be generated!"
 msgstr "セキュリティキーを生成できません！"
 
-#: src/Config.php:3370
+#: src/Config.php:3369
 msgid "Security setup"
 msgstr "セキュリティ設定"
 
@@ -19821,15 +19815,15 @@ msgstr "シリアル番号"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/assets/operatingsystem.html.twig
-#: templates/components/form/item_device.html.twig front/find_num.php:96
-#: src/Phone.php:251 src/Change_Item.php:160 src/Monitor.php:246
+#: templates/components/form/item_device.html.twig src/Phone.php:251
+#: src/Change_Item.php:160 src/Monitor.php:246
 #: src/NotificationTargetCertificate.php:125
 #: src/ComputerVirtualMachine.php:210 src/ComputerVirtualMachine.php:338
 #: src/NotificationTargetProblem.php:205 src/Item_Devices.php:350
 #: src/Item_Devices.php:351 src/Document_Item.php:415 src/Appliance.php:241
 #: src/Budget.php:358 src/PassiveDCEquipment.php:112 src/Enclosure.php:140
-#: src/Printer.php:384 src/RuleLocation.php:108 src/User.php:4904
-#: src/User.php:4986 src/Search.php:8132 src/Blacklist.php:245
+#: src/Printer.php:384 src/RuleLocation.php:108 src/User.php:4942
+#: src/User.php:5024 src/Search.php:8132 src/Blacklist.php:245
 #: src/Rack.php:190 src/SoftwareLicense.php:372 src/SoftwareLicense.php:626
 #: src/SoftwareLicense.php:941 src/SoftwareLicense.php:1208
 #: src/Computer_Item.php:413 src/Computer_Item.php:582 src/Peripheral.php:230
@@ -19944,7 +19938,7 @@ msgid "Set the status to pending"
 msgstr "状態を保留にする"
 
 #: src/Preference.php:42 src/Impact.php:373 src/Impact.php:1060
-#: src/Impact.php:1119 src/Config.php:2530
+#: src/Impact.php:1119 src/Config.php:2529
 msgid "Settings"
 msgstr "個人設定"
 
@@ -19978,7 +19972,7 @@ msgctxt "button"
 msgid "Show"
 msgstr "表示"
 
-#: src/Dropdown.php:308 src/User.php:4625
+#: src/Dropdown.php:308 src/User.php:4663
 #, php-format
 msgid "Show %1$s"
 msgstr "%1$s"
@@ -20087,8 +20081,8 @@ msgstr[0] "SIM カードの型"
 msgid "Simple mode"
 msgstr "シンプルモード"
 
-#: front/reservationitem.php:41 front/tracking.injector.php:56
-#: front/tracking.injector.php:58 front/reservation.php:45
+#: front/reservationitem.php:41 front/tracking.injector.php:58
+#: front/tracking.injector.php:60 front/reservation.php:45
 #: front/reservation.form.php:51 front/reservation.form.php:53
 #: src/ITILTemplateMandatoryField.php:174 src/ITILTemplate.php:418
 #: src/Profile.php:3730
@@ -20167,14 +20161,13 @@ msgstr[0] "端子のモデル"
 msgid "Sodium ChaCha20-Poly1305 size constant"
 msgstr "ChaCha20-Poly1305 暗号化のサイズ定数"
 
-#: templates/pages/management/softwarelicense.html.twig front/find_num.php:157
-#: src/Dropdown.php:1226 src/Log.php:477 src/Log.php:483 src/Log.php:920
-#: src/SoftwareVersion.php:119 src/Rule.php:294
-#: src/RuleDictionnarySoftware.php:82 src/RuleDictionnarySoftware.php:109
-#: src/SoftwareLicense.php:1210 src/Software.php:67
-#: src/RuleSoftwareCategory.php:75 src/Item_SoftwareVersion.php:1039
-#: src/Entity.php:1896 src/Config.php:3213 src/Profile.php:2101
-#: src/NotificationTargetSoftwareLicense.php:90
+#: templates/pages/management/softwarelicense.html.twig src/Dropdown.php:1226
+#: src/Log.php:477 src/Log.php:483 src/Log.php:920 src/SoftwareVersion.php:119
+#: src/Rule.php:294 src/RuleDictionnarySoftware.php:82
+#: src/RuleDictionnarySoftware.php:109 src/SoftwareLicense.php:1210
+#: src/Software.php:67 src/RuleSoftwareCategory.php:75
+#: src/Item_SoftwareVersion.php:1039 src/Entity.php:1896 src/Config.php:3212
+#: src/Profile.php:2101 src/NotificationTargetSoftwareLicense.php:90
 msgid "Software"
 msgid_plural "Software"
 msgstr[0] "ソフトウェア"
@@ -20508,8 +20501,8 @@ msgstr "統計情報"
 #: src/PlanningExternalEventTemplate.php:64 src/Appliance.php:296
 #: src/PassiveDCEquipment.php:147 src/Enclosure.php:131
 #: src/CommonITILTask.php:772 src/CommonITILTask.php:967
-#: src/CommonITILTask.php:1468 src/Printer.php:375 src/User.php:4906
-#: src/User.php:4988 src/Search.php:8105 src/Search.php:8126 src/Line.php:150
+#: src/CommonITILTask.php:1468 src/Printer.php:375 src/User.php:4944
+#: src/User.php:5026 src/Search.php:8105 src/Search.php:8126 src/Line.php:150
 #: src/Rack.php:181 src/NotificationTargetContract.php:182
 #: src/SoftwareLicense.php:484 src/SoftwareLicense.php:948
 #: src/Software.php:598 src/Peripheral.php:221 src/Certificate_Item.php:470
@@ -20645,8 +20638,8 @@ msgstr "サブタスク"
 msgid "Success"
 msgstr "成功"
 
-#: src/Document.php:185 src/Document.php:1201 src/Document.php:1313
-#: src/Document.php:1410
+#: src/Document.php:185 src/Document.php:1207 src/Document.php:1325
+#: src/Document.php:1422
 #, php-format
 msgid "Successful deletion of the file %s"
 msgstr "%s ファイルを削除しました　"
@@ -20730,8 +20723,8 @@ msgid "Supported tasks"
 msgstr "対応タスク"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:932
-#: src/AuthLDAP.php:1137 src/AuthLDAP.php:3975 src/User.php:2569
-#: src/User.php:2970 src/User.php:6419 src/Auth.php:1712
+#: src/AuthLDAP.php:1137 src/AuthLDAP.php:3975 src/User.php:2607
+#: src/User.php:3008 src/User.php:6472 src/Auth.php:1712
 #: src/ContentTemplates/Parameters/UserParameters.php:82
 msgid "Surname"
 msgstr "名字（姓）"
@@ -20762,8 +20755,8 @@ msgid "Synchronization"
 msgstr "同期"
 
 #: src/AuthLDAP.php:542 src/AuthLDAP.php:1324 src/AuthLDAP.php:1765
-#: src/AuthLDAP.php:1824 src/AuthLDAP.php:3958 src/User.php:2544
-#: src/User.php:3028 src/User.php:3599
+#: src/AuthLDAP.php:1824 src/AuthLDAP.php:3958 src/User.php:2582
+#: src/User.php:3066 src/User.php:3637
 msgid "Synchronization field"
 msgstr "同期項目"
 
@@ -20801,7 +20794,7 @@ msgstr "インポート済みユーザーの同期"
 msgid "Sysdescr"
 msgstr "Sysdescr"
 
-#: src/Event.php:157 src/Config.php:2544
+#: src/Event.php:157 src/Config.php:2543
 msgid "System"
 msgstr "システム"
 
@@ -21129,7 +21122,7 @@ msgstr "テンプレート構成"
 msgid "Temporarily down for maintenance"
 msgstr "メンテナンスのため、一時的に停止しています"
 
-#: src/Document.php:1274
+#: src/Document.php:1286
 msgid "Temporary directory doesn't exist"
 msgstr "テンポラリディレクトリは存在しません"
 
@@ -21209,7 +21202,7 @@ msgstr "ログインボックスのテキスト"
 msgid "Text to display during maintenance"
 msgstr "メンテナンス中に表示するテキスト"
 
-#: front/tracking.injector.php:92
+#: front/tracking.injector.php:94
 msgid "Thank you for using our automatic helpdesk system."
 msgstr "自動ヘルプシステムのご利用、ありがとうございました。"
 
@@ -21282,7 +21275,7 @@ msgid ""
 "The assignment of an OLA to a ticket causes the recalculation of the date."
 msgstr "チケットにOLAを割り当てると、日付を再計算します。"
 
-#: src/User.php:5461
+#: src/User.php:5499
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
@@ -21372,11 +21365,11 @@ msgstr "エンジンはすべてのルールを処理します"
 msgid "The file could not be created in %s."
 msgstr "%s にファイルを作成できませんでした。"
 
-#: src/User.php:938
+#: src/User.php:949
 msgid "The file is not an image file."
 msgstr "画像ファイルではありません"
 
-#: src/Document.php:1441 src/User.php:921
+#: src/Document.php:1453 src/User.php:932
 msgid "The file is valid. Upload is successful."
 msgstr "ファイルをアップロードしました"
 
@@ -21430,11 +21423,11 @@ msgstr "%s にログファイルを作成できませんでした。"
 msgid "The log file has been created successfully."
 msgstr "ログファイルを正常に作成しました。"
 
-#: src/User.php:717
+#: src/User.php:728
 msgid "The login is not valid. Unable to add the user."
 msgstr "ユーザー名が無効です。ユーザーの追加はできません"
 
-#: src/User.php:3359
+#: src/User.php:3397
 msgid "The login is not valid. Unable to update login."
 msgstr "ユーザー名が無効です。ユーザー名を更新できません"
 
@@ -21530,21 +21523,21 @@ msgctxt "filters"
 msgid "The type of the item"
 msgstr "アイテムの型"
 
-#: src/GLPIUploadHandler.php:50
+#: src/UploadHandler.php:370
 msgid ""
 "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in "
 "the HTML form"
 msgstr "アップロードしたファイルはHTMLフォームで定義したMAX_FILE_SIZEを超えています"
 
-#: src/GLPIUploadHandler.php:74
+#: src/UploadHandler.php:394
 msgid "The uploaded file exceeds the post_max_size directive in php.ini"
 msgstr "アップロードしたファイルはphp.iniで指定されたpost_max_sizeを超えています"
 
-#: src/GLPIUploadHandler.php:46
+#: src/UploadHandler.php:366
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
 msgstr "アップロードしたファイルはphp.iniで指定されたupload_max_filesizeを超えています"
 
-#: src/GLPIUploadHandler.php:54
+#: src/UploadHandler.php:374
 msgid "The uploaded file was only partially uploaded"
 msgstr "アップロードしたファイルは一部分です"
 
@@ -21621,7 +21614,7 @@ msgid ""
 msgstr ""
 "どれだけの数のカードを表示しなければならないか不明なため、この列でのカードの表示はサポートできません。それでもよければ、カードをこの列にドラッグすることができます。"
 
-#: src/User.php:6452
+#: src/User.php:6505
 msgid "This is a special user used for automated actions. "
 msgstr "これは自動操作用の特殊なユーザーです。"
 
@@ -21951,7 +21944,7 @@ msgstr "解決までの時間 + 進捗状況"
 msgid "Time to resolve exceeded"
 msgstr "解決時間を超過"
 
-#: src/User.php:2623 src/User.php:3096
+#: src/User.php:2661 src/User.php:3134
 msgid "Time zone"
 msgstr "タイムゾーン"
 
@@ -21988,7 +21981,7 @@ msgstr "タイムゾーン"
 msgid "Timezone usage has been enabled."
 msgstr "タイムゾーンの使用を有効にしました。"
 
-#: src/User.php:2637 src/User.php:3110 src/Config.php:1283
+#: src/User.php:2675 src/User.php:3148 src/Config.php:1283
 msgid "Timezone usage has not been activated."
 msgstr "タイムゾーンの利用は有効化されていません。"
 
@@ -22027,7 +22020,7 @@ msgstr "ヒント : このモーダル画面は、%s キーの組み合わせで
 #: templates/components/itilobject/selfservice.html.twig
 #: src/Csv/PlanningCsv.php:72 src/NotificationTargetProjectTask.php:595
 #: src/NotificationTargetProblem.php:255 src/NotificationTargetProblem.php:260
-#: src/ProjectCost.php:132 src/CommonITILTask.php:1652 src/User.php:3824
+#: src/ProjectCost.php:132 src/CommonITILTask.php:1652 src/User.php:3862
 #: src/ContractCost.php:123 src/CommonITILCost.php:108
 #: src/NotificationTargetChange.php:392 src/NotificationTargetChange.php:397
 #: src/Contact.php:343
@@ -22045,7 +22038,7 @@ msgstr "タイトル"
 
 #: templates/components/user/info_card.html.twig front/stat.tracking.php:91
 #: front/stat.graph.php:241 src/AuthLDAP.php:974 src/AuthLDAP.php:1182
-#: src/AuthLDAP.php:3980 src/User.php:2765 src/Auth.php:1780
+#: src/AuthLDAP.php:3980 src/User.php:2803 src/Auth.php:1780
 #: src/NotificationTargetCommonITILObject.php:1752
 #: src/NotificationTargetCommonITILObject.php:1776
 #: src/NotificationTargetCommonITILObject.php:1812
@@ -22426,8 +22419,8 @@ msgstr "ツイストペア (RJ-45)"
 #: src/Budget.php:242 src/Budget.php:355 src/PassiveDCEquipment.php:104
 #: src/CommonDBVisible.php:279 src/RuleDictionnaryPhoneType.php:51
 #: src/RuleDictionnaryPhoneType.php:65 src/QueuedNotification.php:360
-#: src/QueuedNotification.php:700 src/Printer.php:359 src/User.php:4901
-#: src/User.php:4983 src/Blacklist.php:95 src/Blacklist.php:130
+#: src/QueuedNotification.php:700 src/Printer.php:359 src/User.php:4939
+#: src/User.php:5021 src/Blacklist.php:95 src/Blacklist.php:130
 #: src/DisplayPreference.php:700 src/Rack.php:165 src/DeviceSimcard.php:54
 #: src/DeviceSimcard.php:89 src/NotificationTargetContract.php:180
 #: src/RuleCollection.php:1326 src/RuleCollection.php:2354
@@ -22582,7 +22575,7 @@ msgstr "UUID"
 msgid "Unable to add. The user already exist."
 msgstr "このユーザーは既に存在するため追加できません"
 
-#: src/User.php:750
+#: src/User.php:761
 msgid "Unable to add. The user already exists."
 msgstr "追加できません。そのユーザーはすでに存在します"
 
@@ -22739,7 +22732,7 @@ msgstr "認証コードが取得できません"
 msgid "Unable to get item"
 msgstr "アイテムを取得できません"
 
-#: front/user.form.php:189
+#: front/user.form.php:199
 msgid "Unable to impersonate user"
 msgstr "ユーザー偽装ができない"
 
@@ -22818,7 +22811,7 @@ msgstr "インストールファイル \"%s\" が読み込めません。"
 msgid "Unable to reaffect given elements!"
 msgstr "指定の要素に対する再設定はできません！"
 
-#: src/Inventory/Inventory.php:928
+#: src/Inventory/Inventory.php:941
 #, php-format
 msgid "Unable to remove file %1$s"
 msgstr "%1$s ファイルを削除できません"
@@ -22828,7 +22821,7 @@ msgstr "%1$s ファイルを削除できません"
 msgid "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
 msgstr "テーブル名を変更できません！ %1$s (%2$s) から %3$s (%4$s)"
 
-#: src/User.php:5444 src/User.php:5454
+#: src/User.php:5482 src/User.php:5492
 msgid "Unable to reset password, please contact your administrator"
 msgstr "パスワードのリセットができません。管理者に連絡してください。"
 
@@ -22842,7 +22835,7 @@ msgstr "画像ファイルを保存できません。"
 msgid "Unable to send notification using %1$s"
 msgstr "%1$s を使用して通知を送信できません"
 
-#: front/user.form.php:198
+#: front/user.form.php:208
 msgid "Unable to stop impersonating user"
 msgstr "ユーザー偽装を解除できない"
 
@@ -22879,7 +22872,7 @@ msgstr "%s 個のアイテムを更新できません　"
 msgid "Unable to update DB configuration file."
 msgstr "データベース設定ファイルを更新できません。"
 
-#: src/User.php:3348
+#: src/User.php:3386
 msgid "Unable to update login. A user already exists."
 msgstr "ログインを更新できません。ユーザーは既に存在します"
 
@@ -22893,7 +22886,7 @@ msgstr "モデル %s (%s) を更新できません。"
 msgid ""
 "Unable to update model because it is used by an asset in the \"%s\" rack and"
 " the new required units do not fit into the rack"
-msgstr ""
+msgstr "モデルを更新できません。「%s」ラック内のアセットで使用されており、新しい必要なユニットがラックに収まらないためです。"
 
 #: src/System/Requirement/DbConfiguration.php:74
 msgid "Unable to validate database configuration variables."
@@ -22915,11 +22908,11 @@ msgstr "認証コードの検証ができません"
 msgid "Unable to write cache configuration file."
 msgstr "キャッシュ設定ファイルに書き込めません。"
 
-#: front/document.send.php:66 front/document.send.php:111
+#: front/document.send.php:68 front/document.send.php:113
 msgid "Unauthorized access to this file"
 msgstr "このファイルへのアクセスは許可されていません"
 
-#: src/Document.php:1470 src/RuleCollection.php:1185
+#: src/Document.php:1482 src/RuleCollection.php:1185
 msgid "Unauthorized file type"
 msgstr "未許可のファイル形式"
 
@@ -22996,7 +22989,7 @@ msgstr "不明"
 msgid "Unknown error"
 msgstr "不明なエラー"
 
-#: front/document.send.php:50
+#: front/document.send.php:52
 msgid "Unknown file"
 msgstr "不明なファイル"
 
@@ -23021,7 +23014,7 @@ msgstr "データベースに、不明なテーブル「%s」が見つかりま�
 msgid "Unknown ticket"
 msgstr "不明チケット"
 
-#: src/User.php:6651 src/KnowbaseItem_Revision.php:177
+#: src/User.php:6704 src/KnowbaseItem_Revision.php:177
 msgid "Unknown user"
 msgstr "不明なユーザー"
 
@@ -23205,15 +23198,15 @@ msgstr "アイテムの更新"
 
 #. TRANS: short for : Update method for user authentication and
 #. synchronization
-#: src/User.php:5929
+#: src/User.php:5982
 msgid "Update auth and sync"
 msgstr "認証と同期を更新"
 
-#: src/User.php:4775
+#: src/User.php:4813
 msgid "Update authentification method to"
 msgstr "認証方式の更新"
 
-#: src/Config.php:3272
+#: src/Config.php:3271
 msgid "Update component"
 msgstr "構成部品を更新"
 
@@ -23238,7 +23231,7 @@ msgstr "フォローの更新 ( 作成者 )"
 msgid "Update helpdesk parameters"
 msgstr "ヘルプデスクパラメータの更新"
 
-#: src/User.php:5930
+#: src/User.php:5983
 msgid "Update method for user authentication and synchronization"
 msgstr "ユーザー認証方法と同期の更新"
 
@@ -23322,7 +23315,7 @@ msgstr "プリンターカウンターの更新"
 msgid "Update the approval request to %s"
 msgstr "%s への承認要求を更新"
 
-#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3192
+#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3191
 msgid "Update the item"
 msgstr "アイテムの更新"
 
@@ -23425,7 +23418,7 @@ msgctxt "button"
 msgid "Upload"
 msgstr "アップロード"
 
-#: src/Document.php:1163 src/Document.php:1559
+#: src/Document.php:1169 src/Document.php:1571
 msgid "Upload directory doesn't exist"
 msgstr "アップロード用のディレクトリは存在しません"
 
@@ -23474,7 +23467,7 @@ msgstr "検索にDNを使う"
 msgid "Use GLPI"
 msgstr "GLPI を使用"
 
-#: src/User.php:3252
+#: src/User.php:3290
 msgid "Use GLPI in mode"
 msgstr "GLPIモード"
 
@@ -23504,7 +23497,7 @@ msgstr "解決として使用"
 
 #: src/AuthLDAP.php:490
 msgid "Use bind"
-msgstr ""
+msgstr "バインドを利用"
 
 #: src/Consumable.php:634 src/Cartridge.php:818 src/Cartridge.php:1104
 #: src/Cartridge.php:1266
@@ -23531,7 +23524,7 @@ msgstr "ページングした結果を使用する"
 msgid "Use rule for"
 msgstr "ルールの使用目的"
 
-#: src/User.php:2632 src/User.php:3105 src/Config.php:1279
+#: src/User.php:2670 src/User.php:3143 src/Config.php:1279
 msgid "Use server configuration"
 msgstr "サーバー構成を使用する"
 
@@ -23590,7 +23583,7 @@ msgid "User"
 msgid_plural "Users"
 msgstr[0] "ユーザー"
 
-#: src/User.php:2705 src/User.php:3766 src/User.php:5627
+#: src/User.php:2743 src/User.php:3804 src/User.php:5680
 msgid "User DN"
 msgstr "ユーザーDN"
 
@@ -23602,7 +23595,7 @@ msgstr "タスクに割り当てられたユーザー"
 msgid "User attribute containing its groups"
 msgstr "そのグループを含むユーザー属性"
 
-#: src/Config.php:3258
+#: src/Config.php:3257
 msgid "User authentication method changes"
 msgstr "ユーザー認証方法の変更"
 
@@ -23636,7 +23629,7 @@ msgstr "プロファイルで規定したユーザー"
 msgid "User in group"
 msgstr "グループ内のユーザー"
 
-#: src/User.php:5631
+#: src/User.php:5684
 msgid "User information"
 msgstr "ユーザー情報"
 
@@ -23647,9 +23640,9 @@ msgstr "ユーザーの場所"
 
 #: src/NotificationTargetCommonITILObject.php:138
 msgid "User mentioned"
-msgstr ""
+msgstr "メンションしたユーザー"
 
-#: src/User.php:2708
+#: src/User.php:2746
 msgid "User missing in LDAP directory"
 msgstr "ユーザーはLDAPディレクトリには見つかりません"
 
@@ -23743,7 +23736,7 @@ msgstr "有効なライセンス"
 msgid "Valid licenses"
 msgstr "有効なライセンス"
 
-#: src/User.php:2663
+#: src/User.php:2701
 msgid "Valid since"
 msgstr "有効期間の開始日"
 
@@ -23756,7 +23749,7 @@ msgstr "有効なタグ"
 msgid "Valid to %s"
 msgstr "%s まで有効"
 
-#: src/User.php:2671
+#: src/User.php:2709
 msgid "Valid until"
 msgstr "有効期間の終了日"
 
@@ -23806,10 +23799,11 @@ msgid "Validation request answer"
 msgstr "検証要求の回答"
 
 #: front/report.infocom.php:63 front/report.infocom.conso.php:62
-#: src/DropdownTranslation.php:426 src/Rule.php:1198 src/Rule.php:2260
-#: src/Blacklist.php:90 src/Blacklist.php:122 src/RuleCollection.php:1418
+#: src/DropdownTranslation.php:426 src/DropdownTranslation.php:573
+#: src/Rule.php:1198 src/Rule.php:2260 src/Blacklist.php:90
+#: src/Blacklist.php:122 src/RuleCollection.php:1418
 #: src/ITILTemplatePredefinedField.php:374 src/RuleAction.php:195
-#: src/Printer_CartridgeInfo.php:73 src/Config.php:3623
+#: src/Printer_CartridgeInfo.php:73 src/Config.php:3622
 #: src/Fieldblacklist.php:79 src/Fieldblacklist.php:121
 #: src/SavedSearch_Alert.php:167 src/SavedSearch_Alert.php:275
 msgid "Value"
@@ -24525,11 +24519,11 @@ msgstr "イエロー"
 msgid "Yes"
 msgstr "はい"
 
-#: src/Config.php:2366
+#: src/Config.php:2363
 msgid "Yes - Restrict to global management"
 msgstr "はい - 全体の管理に制限"
 
-#: src/Config.php:2365
+#: src/Config.php:2362
 msgid "Yes - Restrict to unit management"
 msgstr "はい - 単品の管理に制限"
 
@@ -24597,11 +24591,11 @@ msgid ""
 "version of your database."
 msgstr "古いGLPIを使用しようとしています。お使いのデータベースに適合したGLPIをインストールしてください"
 
-#: src/Config.php:3092
+#: src/Config.php:3091
 msgid "You are using a development version, be careful!"
 msgstr "開発者向けバージョンを使用中。要注意！"
 
-#: src/Config.php:3093
+#: src/Config.php:3092
 msgid "You are using a pre-release version, be careful!"
 msgstr "現在、プレリリースのバージョンを使っています。ご注意を！"
 
@@ -24633,7 +24627,7 @@ msgid ""
 "You can ignore this suggestion if your web server root directory is \"%s\"."
 msgstr "Web サーバー ルートディレクトリー設定が「%s」であれば、この提案を無視してかまいません。"
 
-#: src/User.php:6454
+#: src/User.php:6507
 msgid "You can set its name to your organisation's name. "
 msgstr "利用者の組織名に合わせて、名前を設定することができます。"
 
@@ -24730,8 +24724,8 @@ msgid ""
 "deactivated or removed"
 msgstr "あなたのアカウントは無効にしたか削除したため、このアプリケーションにアクセスできません"
 
-#: src/Html.php:644 src/Api/API.php:1052 src/Api/API.php:1830
-#: src/Api/API.php:1967 src/Api/API.php:2101 src/Api/API.php:2706
+#: src/Html.php:644 src/Api/API.php:1052 src/Api/API.php:1834
+#: src/Api/API.php:1971 src/Api/API.php:2105 src/Api/API.php:2710
 msgid "You don't have permission to perform this action."
 msgstr "この操作を実行する権限がありません。"
 
@@ -24833,7 +24827,7 @@ msgstr "SNMP バージョンの選択は必須"
 
 #: src/ITILTemplatePredefinedField.php:80
 msgid "You must select an associated item"
-msgstr ""
+msgstr "関連アイテムの選択は必須"
 
 #: src/Marketplace/View.php:775
 #, php-format
@@ -24898,7 +24892,7 @@ msgstr "コメントを追加しました"
 msgid "Your comment has been edited"
 msgstr "コメントを編集しました"
 
-#: src/Config.php:2658
+#: src/Config.php:2657
 #, php-format
 msgid "Your database engine version seems too old: %s."
 msgstr "データベースエンジンのバージョンは古すぎるようです : %s"
@@ -24919,11 +24913,11 @@ msgstr "監視中チケット"
 msgid "Your password has been successfully updated."
 msgstr "パスワードを更新しました。"
 
-#: src/User.php:5319
+#: src/User.php:5357
 msgid "Your password has expired. You must change it to be able to login."
 msgstr "パスワードの有効期限が切れています。変更するとログインできるようになり。"
 
-#: templates/password_form.html.twig src/User.php:5436
+#: templates/password_form.html.twig src/User.php:5474
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
 msgstr "あなたのパスワードのリセット要求は期限切れか無効です。最初からやり直してください。"
@@ -24947,9 +24941,9 @@ msgstr "対応中の問題"
 
 #: src/Session.php:1600
 msgid "Your session has expired."
-msgstr ""
+msgstr "セッションの期限切れです"
 
-#: front/tracking.injector.php:86
+#: front/tracking.injector.php:88
 msgid "Your ticket has been registered, its treatment is in progress."
 msgstr "チケットを対応中として登録しました"
 
@@ -25070,7 +25064,7 @@ msgstr "含まない"
 msgid "does not exist"
 msgstr "存在しない"
 
-#: src/Api/API.php:2154
+#: src/Api/API.php:2158
 msgid "email parameter missing"
 msgstr "メール パラメーターがありません"
 
@@ -25119,7 +25113,7 @@ msgstr "次から"
 msgid "full structure"
 msgstr "全構造"
 
-#: src/User.php:2906 src/User.php:3293
+#: src/User.php:2944 src/User.php:3331
 #, php-format
 msgid "generated on %s"
 msgstr "生成 %s"
@@ -25152,7 +25146,7 @@ msgstr "非表示"
 msgid "images"
 msgstr "画像"
 
-#: src/Api/API.php:2666
+#: src/Api/API.php:2670
 msgid "input parameter must be an array of objects"
 msgstr "入力パラメーターは、オブジェクトの配列でなくてはなりません"
 
@@ -25297,7 +25291,7 @@ msgstr "id が見つかりません"
 msgid "missing itemtype"
 msgstr "アイテムの型、なし"
 
-#: src/Api/API.php:2243
+#: src/Api/API.php:2247
 msgid "missing parameter app_token"
 msgstr "app_token パラメーターがありません"
 
@@ -25371,11 +25365,11 @@ msgstr "向き"
 msgid "others"
 msgstr "その他"
 
-#: src/Api/API.php:2237
+#: src/Api/API.php:2241
 msgid "parameter app_token seems wrong"
 msgstr "app_token パラメーターが無効なようです"
 
-#: src/Api/API.php:2745
+#: src/Api/API.php:2749
 msgid "parameter session_token is missing or empty"
 msgstr "session_token パラメーターが見つからないか、空文字です"
 
@@ -25443,7 +25437,7 @@ msgstr "元に戻す"
 msgid "rule"
 msgstr "ルール"
 
-#: front/cron.php:45
+#: front/cron.php:46
 msgid "run script as apache user"
 msgstr "apacheユーザーでスクリプトを実行"
 
@@ -25471,7 +25465,7 @@ msgstr "シリアル"
 msgid "session extension is not installed."
 msgstr "session 拡張モジュールが未インストールです。"
 
-#: src/Api/API.php:2725
+#: src/Api/API.php:2729
 msgid "session_token seems invalid"
 msgstr "session_token が無効なようです"
 
@@ -25545,7 +25539,7 @@ msgstr "認証を利用した initSession リソースの利用は、無効で�
 msgid "version"
 msgstr "バージョン"
 
-#: src/Api/API.php:2788
+#: src/Api/API.php:2792
 #, php-format
 msgid "view documentation in your browser at %s"
 msgstr "%s でドキュメントをブラウザ表示する"

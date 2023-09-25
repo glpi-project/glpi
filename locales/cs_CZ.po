@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 06:29+0000\n"
+"POT-Creation-Date: 2023-09-25 07:31+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
 "Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2023\n"
 "Language-Team: Czech (Czech Republic) (https://app.transifex.com/glpi/teams/1637/cs_CZ/)\n"
@@ -193,8 +193,8 @@ msgstr ""
 #: src/ComputerVirtualMachine.php:295 src/Html.php:5529
 #: src/Document_Item.php:474 src/ProjectCost.php:392 src/Rule.php:2422
 #: src/IPNetwork_Vlan.php:184 src/Document.php:475 src/Document.php:511
-#: src/Document.php:1085 src/User.php:3745 src/User.php:3803 src/User.php:4938
-#: src/User.php:5021 src/User.php:6648 src/Search.php:6887 src/Search.php:7289
+#: src/Document.php:1085 src/User.php:3783 src/User.php:3841 src/User.php:4976
+#: src/User.php:5059 src/User.php:6701 src/Search.php:6887 src/Search.php:7289
 #: src/Search.php:7482 src/ContractCost.php:385 src/NetworkAlias.php:340
 #: src/RuleCollection.php:1355 src/Group_User.php:541 src/Group_User.php:645
 #: src/CommonITILCost.php:622 src/Computer_Item.php:422
@@ -358,7 +358,7 @@ msgstr "%1$s <> %2$s"
 #: src/Item_Devices.php:700 src/Item_Enclosure.php:99
 #: src/Document_Item.php:859 src/Socket.php:808 src/Socket.php:1041
 #: src/ProjectCost.php:380 src/Item_Cluster.php:109 src/Rule.php:3168
-#: src/Budget.php:652 src/User.php:5028 src/Search.php:2123
+#: src/Budget.php:652 src/User.php:5066 src/Search.php:2123
 #: src/Search.php:2125 src/Search.php:2152 src/Search.php:2183
 #: src/Search.php:2238 src/Search.php:2244 src/Search.php:2290
 #: src/Search.php:2330 src/ContractCost.php:372 src/Rack.php:367
@@ -444,7 +444,7 @@ msgstr "%1$s přidá více zásuvek"
 #: front/datacenter.form.php:60 front/knowbaseitem.form.php:65
 #: front/notepad.form.php:55 front/monitor.form.php:60
 #: front/peripheral.form.php:60 front/software.form.php:59
-#: front/user.form.php:71 front/user.form.php:230 front/unmanaged.form.php:59
+#: front/user.form.php:85 front/user.form.php:240 front/unmanaged.form.php:59
 #: front/transfer.form.php:57 front/cable.form.php:60
 #: front/project.form.php:64 front/notificationtemplatetranslation.form.php:56
 #: front/document.form.php:64 front/document.form.php:77
@@ -850,7 +850,7 @@ msgstr "%1$s. Zpráva: %2$s, Chyba: %3$s"
 #: src/AuthLDAP.php:754 src/Budget.php:588 src/Budget.php:625
 #: src/CommonITILTask.php:1400 src/CommonITILTask.php:1673
 #: src/CommonITILTask.php:1738 src/Link.php:676 src/Link.php:701
-#: src/Document.php:253 src/User.php:2705 src/User.php:2964 src/User.php:4774
+#: src/Document.php:253 src/User.php:2743 src/User.php:3002 src/User.php:4812
 #: src/NotificationTargetContract.php:199 src/DBConnection.php:694
 #: src/DBConnection.php:700 src/DBConnection.php:705
 #: src/SoftwareLicense.php:807 src/SoftwareLicense.php:811
@@ -1267,7 +1267,7 @@ msgid "%s adds a team member"
 msgstr "%s přidal člena týmu"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:146 front/group_user.form.php:57
+#: front/user.form.php:160 front/group_user.form.php:57
 #, php-format
 msgid "%s adds a user to a group"
 msgstr "%s přidal uživatele do skupiny"
@@ -1436,7 +1436,7 @@ msgstr "%s smazal účastníka"
 #: front/datacenter.form.php:77 front/networkport.form.php:130
 #: front/queuednotification.form.php:62 front/monitor.form.php:77
 #: front/peripheral.form.php:77 front/software.form.php:76
-#: front/user.form.php:87 front/unmanaged.form.php:76 front/cable.form.php:77
+#: front/user.form.php:101 front/unmanaged.form.php:76 front/cable.form.php:77
 #: front/project.form.php:81 front/document.form.php:96
 #: front/appliance.form.php:77 front/ticket.form.php:135
 #: front/supplier.form.php:74 front/item_disk.form.php:80
@@ -1456,7 +1456,7 @@ msgid "%s deletes several network ports"
 msgstr "%s smazal několik síťových portů"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:164
+#: front/user.form.php:178
 #, php-format
 msgid "%s deletes users from a group"
 msgstr "%s vymazal uživatele ze skupiny"
@@ -1492,7 +1492,7 @@ msgstr[3] "%s chyb"
 msgid "%s extension"
 msgstr "%s rozšíření"
 
-#: src/Config.php:1731 src/Config.php:2812
+#: src/Config.php:1731 src/Config.php:2811
 #, php-format
 msgid "%s extension is installed"
 msgstr "Rozšíření „%s“ je nainstalováno"
@@ -1508,7 +1508,7 @@ msgstr "%s rozšíření je nainstalováno, ale nepoužívá ovladač mysqlnd."
 msgid "%s extension is installed."
 msgstr "%s rozšíření je nainstalováno."
 
-#: src/AuthLDAP.php:576 src/Config.php:2819
+#: src/AuthLDAP.php:576 src/Config.php:2818
 #, php-format
 msgid "%s extension is missing"
 msgstr "Chybí rozšíření %s"
@@ -1519,7 +1519,7 @@ msgstr "Chybí rozšíření %s"
 msgid "%s extension is missing."
 msgstr "%s rozšíření chybí."
 
-#: src/Config.php:1801 src/Config.php:2825
+#: src/Config.php:1801 src/Config.php:2824
 #, php-format
 msgid "%s extension is not present"
 msgstr "Rozšíření „%s“ není nainstalované"
@@ -1755,7 +1755,7 @@ msgstr "%s odstranil schválení"
 #: front/queuednotification.form.php:88 front/notepad.form.php:67
 #: front/lockedfield.form.php:74 front/monitor.form.php:103
 #: front/peripheral.form.php:103 front/software.form.php:103
-#: front/user.form.php:110 front/unmanaged.form.php:103
+#: front/user.form.php:124 front/unmanaged.form.php:103
 #: front/transfer.form.php:70 front/cable.form.php:105
 #: front/project.form.php:107
 #: front/notificationtemplatetranslation.form.php:69
@@ -1815,7 +1815,7 @@ msgstr ""
 #: front/datacenter.form.php:90 front/networkport.form.php:167
 #: front/queuednotification.form.php:75 front/monitor.form.php:90
 #: front/peripheral.form.php:90 front/software.form.php:90
-#: front/user.form.php:99 front/unmanaged.form.php:90 front/cable.form.php:91
+#: front/user.form.php:113 front/unmanaged.form.php:90 front/cable.form.php:91
 #: front/project.form.php:94 front/document.form.php:110
 #: front/appliance.form.php:90 front/ticket.form.php:161
 #: front/supplier.form.php:86 front/reservationitem.form.php:101
@@ -1833,7 +1833,7 @@ msgid "%s rows / page"
 msgstr "%s řádků / strana"
 
 #. TRANS: %s is a number of seconds
-#: src/Dropdown.php:1838 src/Inventory/Inventory.php:779 src/CronTask.php:1250
+#: src/Dropdown.php:1838 src/Inventory/Inventory.php:792 src/CronTask.php:1250
 #: src/CronTask.php:1257 src/CronTask.php:1264 src/CronTask.php:1271
 #: src/CronTask.php:1383 src/CronTask.php:1478
 #, php-format
@@ -1992,7 +1992,7 @@ msgstr "%s změnil schválení"
 #: front/knowbaseitem.form.php:83 front/notepad.form.php:80
 #: front/lockedfield.form.php:89 front/monitor.form.php:116
 #: front/peripheral.form.php:116 front/software.form.php:116
-#: front/user.form.php:134 front/unmanaged.form.php:116
+#: front/user.form.php:148 front/unmanaged.form.php:116
 #: front/transfer.form.php:83 front/cable.form.php:119
 #: front/project.form.php:120
 #: front/notificationtemplatetranslation.form.php:82
@@ -2235,7 +2235,7 @@ msgstr "Volby --dsn a --use-default nelze použít současně. "
 msgid "--ldap-server-id value \"%s\" is not a valid LDAP server id."
 msgstr "Hodnota --ldap-server-id \"%s\" není platný identifikátor LDPAP serveru."
 
-#: src/User.php:2362
+#: src/User.php:2400
 msgid "... From an external source"
 msgstr "…Z vnějšího zdroje"
 
@@ -2280,7 +2280,7 @@ msgstr "4- Výstrahy (přidat, smazat, sledování)"
 msgid "5- Complete (all)"
 msgstr "5- Kompletní (vše)"
 
-#: src/GLPIUploadHandler.php:70
+#: src/UploadHandler.php:390
 msgid "A PHP extension stopped the file upload"
 msgstr "PHP rozšíření zastavilo nahrávání souboru"
 
@@ -2374,7 +2374,7 @@ msgstr ""
 msgid "A registration, at least a free one, is required to use marketplace!"
 msgstr "Pro používání obchodu je nutná registrace, alespoň bezplatná!"
 
-#: src/Api/API.php:2158
+#: src/Api/API.php:2162
 msgid "A session is active"
 msgstr "Sezení je aktivní"
 
@@ -2417,11 +2417,11 @@ msgstr "A NE"
 msgid "ANV"
 msgstr "Odpis pohledávky"
 
-#: src/Auth.php:1266 src/Config.php:735 src/Config.php:2547
+#: src/Auth.php:1266 src/Config.php:735 src/Config.php:2546
 msgid "API"
 msgstr "API"
 
-#: src/Api/API.php:2438
+#: src/Api/API.php:2442
 msgid "API Documentation"
 msgstr "Dokumentace k API"
 
@@ -2441,7 +2441,7 @@ msgstr "Aplikační progr. rozhraní vypnuto"
 msgid "API inline Documentation"
 msgstr "API inline dokumentace"
 
-#: src/User.php:2896 src/User.php:3283
+#: src/User.php:2934 src/User.php:3321
 msgid "API token"
 msgstr "API token"
 
@@ -2556,7 +2556,7 @@ msgstr "Akce, když bude uživatel smazán z LDAP adresáře"
 msgid "Action when a user is restored in the LDAP directory"
 msgstr "Akce při obnovení uživatele v adresáři LDAP"
 
-#: templates/components/form/single-action.html.twig src/User.php:2355
+#: templates/components/form/single-action.html.twig src/User.php:2393
 #: src/Plugin.php:2549
 msgid "Actions"
 msgstr "Akce"
@@ -2568,7 +2568,7 @@ msgstr "Akce odmítnuty"
 #: templates/generic_show_form.html.twig src/MailCollector.php:257
 #: src/MailCollector.php:484 src/TaskCategory.php:53 src/TaskCategory.php:75
 #: src/Rule.php:781 src/Rule.php:942 src/Rule.php:3159 src/AuthLDAP.php:467
-#: src/AuthLDAP.php:1316 src/User.php:2647 src/User.php:3610
+#: src/AuthLDAP.php:1316 src/User.php:2685 src/User.php:3648
 #: src/RuleCollection.php:591 src/Group_User.php:591 src/Group_User.php:632
 #: src/AuthMail.php:138 src/AuthMail.php:190 src/LevelAgreement.php:517
 #: src/SlaLevel.php:114 src/SlaLevel.php:150 src/SlaLevel.php:244
@@ -2764,7 +2764,7 @@ msgstr "Přidat zástupce"
 msgid "Add a document"
 msgstr "Přidat dokument"
 
-#: src/Document.php:1719 src/CommonITILObject.php:6826
+#: src/Document.php:1731 src/CommonITILObject.php:6826
 msgctxt "button"
 msgid "Add a document"
 msgstr "Přidat dokument"
@@ -2993,7 +2993,7 @@ msgstr "Přidat událost"
 msgid "Add an item"
 msgstr "Přidat položku"
 
-#: src/Appliance.php:449 src/Document.php:1725 src/SoftwareLicense.php:914
+#: src/Appliance.php:449 src/Document.php:1737 src/SoftwareLicense.php:914
 #: src/Contract.php:423 src/Ticket.php:2608
 msgctxt "button"
 msgid "Add an item"
@@ -3019,7 +3019,7 @@ msgstr "Přidat náplně"
 msgid "Add column"
 msgstr "Přidat sloupec"
 
-#: src/Config.php:3269
+#: src/Config.php:3268
 msgid "Add component"
 msgstr "Přidat komponentu"
 
@@ -3053,7 +3053,7 @@ msgid "Add documents into ticket notifications"
 msgstr "Přidat dokumenty do oznámení ohledně požadavku"
 
 #. TRANS: short for : Add users from an external source
-#: src/User.php:5921
+#: src/User.php:5974
 msgid "Add external"
 msgstr "Přidat vnější"
 
@@ -3061,7 +3061,7 @@ msgstr "Přidat vnější"
 msgid "Add filter"
 msgstr "Přidat filtr"
 
-#: src/Config.php:3241
+#: src/Config.php:3240
 msgid "Add financial information to an item"
 msgstr "Přidat k položce finanční informace"
 
@@ -3077,7 +3077,7 @@ msgstr "Přidat doplňující zprávu (žadatel)"
 msgid "Add followup (watcher)"
 msgstr "Přidat doplňující zprávu (pozorovatel)"
 
-#: src/Inventory/Inventory.php:510
+#: src/Inventory/Inventory.php:523
 msgid "Add global lock"
 msgstr "Přidat globální zámek"
 
@@ -3131,7 +3131,7 @@ msgid "Add several ports"
 msgstr "Přidat několik portů"
 
 #: src/Log.php:1066 src/NotificationTargetFieldUnicity.php:49
-#: src/Config.php:3180
+#: src/Config.php:3179
 msgid "Add the item"
 msgstr "Přidat položku"
 
@@ -3165,27 +3165,27 @@ msgctxt "button"
 msgid "Add to transfer list"
 msgstr "Přidat do seznamu k přenosu"
 
-#: src/User.php:2354
+#: src/User.php:2392
 msgid "Add user..."
 msgstr "Přidat uživatele…"
 
-#: src/User.php:5922
+#: src/User.php:5975
 msgid "Add users from an external source"
 msgstr "Přidat uživatele z vnějších zdrojů"
 
-#: src/Config.php:3230
+#: src/Config.php:3229
 msgid "Add/Remove items from software versions"
 msgstr "Přidat/odebrat položky z verzí software"
 
-#: src/Config.php:3252
+#: src/Config.php:3251
 msgid "Add/remove groups to users"
 msgstr "Přidat/odebrat uživatelům skupiny"
 
-#: src/Config.php:3249
+#: src/Config.php:3248
 msgid "Add/remove profiles to users"
 msgstr "Přidat/odebrat uživatelům profily"
 
-#: src/Config.php:3171
+#: src/Config.php:3170
 msgid "Add/update relation between items"
 msgstr "Přidat/aktualizovat vztah mezi položkami"
 
@@ -3253,7 +3253,7 @@ msgid "Administrative number"
 msgstr "Administrativní číslo"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:942
-#: src/User.php:2754 src/User.php:3226 src/User.php:3775 src/Auth.php:1731
+#: src/User.php:2792 src/User.php:3264 src/User.php:3813 src/Auth.php:1731
 msgctxt "user"
 msgid "Administrative number"
 msgstr "Administrativní číslo"
@@ -3427,7 +3427,7 @@ msgstr "Alternativní port"
 #: templates/pages/setup/general/general_setup.html.twig
 #: front/report.year.php:56 front/report.year.php:70
 #: front/report.contract.php:55 front/report.contract.php:69
-#: src/Dropdown.php:2274 src/Dropdown.php:3994 src/User.php:4543
+#: src/Dropdown.php:2274 src/Dropdown.php:3994 src/User.php:4581
 #: src/Search.php:2078 src/Search.php:2908 src/Planning.php:558
 #: src/CommonGLPI.php:917 src/NotificationTemplateTranslation.php:434
 #: src/RuleImportAssetCollection.php:119 src/Marketplace/View.php:307
@@ -3504,7 +3504,7 @@ msgstr "Všechny zveřejněné články"
 msgid "All reservable devices"
 msgstr "Všechna zařízení, která si lze zamluvit"
 
-#: src/Config.php:3292
+#: src/Config.php:3291
 msgid "All sections"
 msgstr "Všechny kategorie"
 
@@ -3589,11 +3589,11 @@ msgstr "Sestupně"
 msgid "Also delete date?"
 msgstr "Vymazat také datum?"
 
-#: templates/generic_show_form.html.twig front/find_num.php:92
-#: src/Phone.php:275 src/Monitor.php:262 src/NotificationTargetProblem.php:209
-#: src/Appliance.php:172 src/Printer.php:400 src/Search.php:8149
-#: src/Peripheral.php:246 src/NotificationTargetChange.php:287
-#: src/Computer.php:474 src/CommonDBTM.php:3507 src/NetworkEquipment.php:319
+#: templates/generic_show_form.html.twig src/Phone.php:275 src/Monitor.php:262
+#: src/NotificationTargetProblem.php:209 src/Appliance.php:172
+#: src/Printer.php:400 src/Search.php:8149 src/Peripheral.php:246
+#: src/NotificationTargetChange.php:287 src/Computer.php:474
+#: src/CommonDBTM.php:3507 src/NetworkEquipment.php:319
 #: src/NotificationTargetTicket.php:708 src/Certificate.php:209
 #: src/Config.php:525 src/RuleAsset.php:114
 #: src/NotificationTargetProject.php:701
@@ -4034,7 +4034,7 @@ msgstr "Požádat o ověření"
 #: src/Transfer.php:3915
 #: src/ContentTemplates/Parameters/AssetParameters.php:58 src/AllAssets.php:45
 #: src/Entity.php:486 src/Entity.php:1299 src/Dashboard/Grid.php:1190
-#: src/Config.php:425 src/Config.php:2538 src/Profile.php:158
+#: src/Config.php:425 src/Config.php:2537 src/Profile.php:158
 #: src/Profile.php:1329 src/Profile.php:2066
 msgid "Asset"
 msgid_plural "Assets"
@@ -4152,7 +4152,7 @@ msgstr[3] "Pověřenci"
 #: src/Dashboard/Grid.php:1282 src/Dashboard/Grid.php:1292
 #: src/Dashboard/Grid.php:1301 src/Dashboard/Grid.php:1318
 #: src/Dashboard/Grid.php:1338 src/Config.php:820 src/Config.php:1307
-#: src/Config.php:2539 src/Profile.php:153 src/Profile.php:159
+#: src/Config.php:2538 src/Profile.php:153 src/Profile.php:159
 #: src/Profile.php:1152 src/Profile.php:3121
 msgid "Assistance"
 msgstr "Podpora"
@@ -4200,11 +4200,11 @@ msgstr "Přiřadit certifikát"
 msgid "Associate myself"
 msgstr "Přiřadit sobě"
 
-#: src/User.php:3422 src/Group_User.php:197
+#: src/User.php:3460 src/Group_User.php:197
 msgid "Associate to a group"
 msgstr "Přiřadit ke skupině"
 
-#: src/User.php:3427
+#: src/User.php:3465
 msgid "Associate to a profile"
 msgstr "Přiřadit k profilu"
 
@@ -4229,7 +4229,7 @@ msgstr[1] "Přiřazené smlouvy"
 msgstr[2] "Přiřazených smluv"
 msgstr[3] "Přiřazené smlouvy"
 
-#: templates/components/itilobject/selfservice.html.twig front/find_num.php:94
+#: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/KnowbaseItem.php:1927
 #: src/Item_Devices.php:172 src/Stat.php:1623 src/Lockedfield.php:120
 #: src/KnowbaseItem_Item.php:71 src/Item_SoftwareVersion.php:79
@@ -4394,8 +4394,8 @@ msgid "August"
 msgstr "srpen"
 
 #: index.php:141 front/helpdesk.faq.php:51
-#: front/knowbaseitemtranslation.form.php:87 src/User.php:2694
-#: src/User.php:3669 src/Auth.php:108 src/Config.php:605 src/Config.php:754
+#: front/knowbaseitemtranslation.form.php:87 src/User.php:2732
+#: src/User.php:3707 src/Auth.php:108 src/Config.php:605 src/Config.php:754
 msgid "Authentication"
 msgstr "Ověření totožnosti"
 
@@ -4419,7 +4419,7 @@ msgstr "Typ ověřování se"
 msgid "Author"
 msgstr "Autor"
 
-#: src/User.php:2787 src/Profile_User.php:1078
+#: src/User.php:2825 src/Profile_User.php:1078
 msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] "Pověření"
@@ -4611,7 +4611,7 @@ msgstr "Automatické uzavírání požadavků"
 msgid "Automatic user assignment"
 msgstr "Automatické přiřazení uživatele"
 
-#: src/User.php:4711
+#: src/User.php:4749
 msgid "Automatically add a user of an external source"
 msgstr "Automaticky přidat uživatele z externího zdroje"
 
@@ -4642,7 +4642,7 @@ msgstr ""
 msgid "Automatically update of the elements related to the computers"
 msgstr "Automatická aktualizace součástí vztahujících se k počítačům"
 
-#: front/planning.php:70 src/Planning.php:540 ajax/planningcheck.php:70
+#: front/planning.php:74 src/Planning.php:540 ajax/planningcheck.php:70
 #: ajax/planningcheck.php:72 ajax/planningcheck.php:77
 msgid "Availability"
 msgstr "Dostupnost"
@@ -4755,7 +4755,7 @@ msgstr "Obrázek na pozadí (plánek)"
 msgid "Backup plan"
 msgstr "Plán záloh"
 
-#: src/Api/API.php:1598
+#: src/Api/API.php:1602
 msgid "Bad field ID in search criteria"
 msgstr "Chybný identifikátor kolonky v kritériích vyhledávání"
 
@@ -4810,7 +4810,7 @@ msgid "Begin"
 msgstr "Začátek"
 
 #: src/Csv/PlanningCsv.php:75 src/ProjectCost.php:159 src/ProjectCost.php:283
-#: src/ProjectCost.php:369 src/CommonITILTask.php:983 src/User.php:3857
+#: src/ProjectCost.php:369 src/CommonITILTask.php:983 src/User.php:3895
 #: src/ContractCost.php:150 src/ContractCost.php:274 src/ContractCost.php:361
 #: src/CommonITILCost.php:135 src/CommonITILCost.php:433
 #: src/CommonITILCost.php:595 src/Console/Ldap/SynchronizeUsersCommand.php:251
@@ -5325,7 +5325,7 @@ msgid ""
 "profile with this right."
 msgstr ""
 
-#: src/User.php:1102
+#: src/User.php:1140
 msgid ""
 "Can't set user as inactive as it is the only remaining super administrator."
 msgstr ""
@@ -5454,7 +5454,7 @@ msgstr[3] "Typy skříní"
 #: src/DatabaseInstanceCategory.php:45 src/AuthLDAP.php:978
 #: src/AuthLDAP.php:1191 src/AuthLDAP.php:3981
 #: src/RuleDictionnarySoftware.php:132 src/CommonITILTask.php:841
-#: src/CommonITILTask.php:1440 src/User.php:2733 src/User.php:3832
+#: src/CommonITILTask.php:1440 src/User.php:2771 src/User.php:3870
 #: src/Software.php:404 src/RuleSoftwareCategory.php:98 src/Auth.php:1786
 #: src/Item_SoftwareVersion.php:1078 src/DatabaseInstance.php:389
 #: src/CommonITILObject.php:4106 src/CommonITILObject.php:6660
@@ -5579,7 +5579,7 @@ msgstr "Změna %1$s na %2$s"
 msgid "Change a component"
 msgstr "Změnit komponentu"
 
-#: src/Config.php:3154
+#: src/Config.php:3153
 msgid "Change all"
 msgstr "Změnit vše"
 
@@ -5665,7 +5665,7 @@ msgstr[1] "Změn šablony"
 msgstr[2] "Změn šablony"
 msgstr[3] "Změna šablon"
 
-#: src/User.php:3438
+#: src/User.php:3476
 msgctxt "button"
 msgid "Change the authentication method"
 msgstr "Změnit metodu ověřování"
@@ -5713,7 +5713,7 @@ msgstr "Změny ke zpracování"
 #: src/CommonDropdown.php:423 src/ProjectCost.php:125 src/Budget.php:199
 #: src/PassiveDCEquipment.php:79 src/CommonITILTask.php:711 src/Link.php:204
 #: src/QueuedNotification.php:208 src/Document.php:983
-#: src/NetworkPortEthernet.php:212 src/User.php:3534 src/Search.php:8090
+#: src/NetworkPortEthernet.php:212 src/User.php:3572 src/Search.php:8090
 #: src/Search.php:8111 src/ContractCost.php:116 src/Group_User.php:718
 #: src/CommonITILCost.php:101 src/SoftwareLicense.php:343
 #: src/CommonDBRelation.php:315 src/LevelAgreement.php:635
@@ -5727,7 +5727,7 @@ msgstr "Změny ke zpracování"
 #: src/NetworkPortFiberchannel.php:208 src/NetworkPortWifi.php:144
 #: src/CommonITILObject.php:3966 src/Contract.php:479 src/CommonDevice.php:258
 #: src/LevelAgreementLevel.php:103 src/Profile_User.php:943
-#: src/Config.php:3616 src/Profile.php:1987 src/Reminder.php:384
+#: src/Config.php:3615 src/Profile.php:1987 src/Reminder.php:384
 #: src/Notification.php:365 src/NetworkPort.php:619 src/NetworkPort.php:1552
 #: src/RSSFeed.php:423 src/CronTask.php:1603 src/Infocom.php:1475
 #: src/SLM.php:217 src/Item_SoftwareLicense.php:73 src/Item_Disk.php:332
@@ -5991,7 +5991,7 @@ msgstr[2] ""
 msgstr[3] ""
 "Vyčistit %1$d dočasné soubory vytvořené před více než %2$s sekundami"
 
-#: src/User.php:3442 src/Auth.php:1516
+#: src/User.php:3480 src/Auth.php:1516
 msgid "Clean LDAP fields and force synchronisation"
 msgstr "Vyčistit pole LDAP a vynutit synchronizaci"
 
@@ -6007,7 +6007,7 @@ msgstr "Vyčistit relace se skončenou platností"
 msgid "Clean generated graphics"
 msgstr "Vyčistit vytvořenou grafiku"
 
-#: src/Inventory/Inventory.php:830
+#: src/Inventory/Inventory.php:843
 msgid "Clean inventories orphaned files"
 msgstr "Vyčistit osiřelé soubory inventáře"
 
@@ -6019,7 +6019,7 @@ msgstr "Vyčistit frontu oznámení"
 msgid "Clean old logs"
 msgstr "Vyčistit staré záznamy"
 
-#: src/Document.php:1856
+#: src/Document.php:1868
 msgid "Clean orphaned documents"
 msgstr "Vyčistit dokumenty, které k ničemu nenáleží"
 
@@ -6027,7 +6027,7 @@ msgstr "Vyčistit dokumenty, které k ničemu nenáleží"
 msgid "Clean temporary files"
 msgstr "Vyčistit dočasné soubory"
 
-#: src/Inventory/Inventory.php:827
+#: src/Inventory/Inventory.php:840
 msgid "Clean temporary files created from inventories"
 msgstr "Vyčistit dočasné soubory vytvořené z inventáře"
 
@@ -6041,7 +6041,7 @@ msgstr "Čistící kit"
 
 #: templates/components/form/fields_macros.html.twig src/MailCollector.php:270
 #: src/Html.php:2773 src/Html.php:2968 src/Html.php:3100 src/AuthLDAP.php:527
-#: src/User.php:2529 src/User.php:2997 src/User.php:2998 src/User.php:6435
+#: src/User.php:2567 src/User.php:3035 src/User.php:3036 src/User.php:6488
 #: src/NotificationMailingSetting.php:372 src/DCRoom.php:173
 #: src/DCRoom.php:176 src/Config.php:559 src/Config.php:2078
 msgid "Clear"
@@ -6324,8 +6324,8 @@ msgstr "Komentovat položky databáze znalostí"
 #: src/Rule.php:958 src/AuthLDAP.php:530 src/AuthLDAP.php:939
 #: src/AuthLDAP.php:1200 src/Budget.php:150 src/Budget.php:274
 #: src/Enclosure.php:156 src/Printer.php:468 src/RuleLocation.php:111
-#: src/Document.php:488 src/Document.php:1094 src/User.php:2748
-#: src/User.php:3708 src/Search.php:8140 src/Line.php:133
+#: src/Document.php:488 src/Document.php:1094 src/User.php:2786
+#: src/User.php:3746 src/Search.php:8140 src/Line.php:133
 #: src/ContractCost.php:142 src/ContractCost.php:279 src/Rack.php:222
 #: src/NetworkAlias.php:143 src/NetworkAlias.php:426
 #: src/NotificationTargetContract.php:176 src/CommonITILCost.php:127
@@ -6351,7 +6351,7 @@ msgstr "Komentovat položky databáze znalostí"
 #: src/Contract.php:688 src/Contract.php:1722 src/Reservation.php:845
 #: src/Reservation.php:1134 src/Reservation.php:1216 src/CartridgeItem.php:334
 #: src/CommonDevice.php:291 src/ConsumableItem.php:270
-#: src/RuleDictionnaryPrinter.php:85 src/Cluster.php:103 src/Config.php:3197
+#: src/RuleDictionnaryPrinter.php:85 src/Cluster.php:103 src/Config.php:3196
 #: src/ManualLink.php:113 src/Profile.php:753 src/Profile.php:2057
 #: src/Notification.php:218 src/Notification.php:450
 #: src/RuleImportEntity.php:132 src/NetworkPortMigration.php:303
@@ -6414,7 +6414,7 @@ msgstr "Celý název"
 #: front/devices.php:44 src/Dropdown.php:1064 src/Item_Devices.php:273
 #: src/Item_Devices.php:565 src/Item_Devices.php:623 src/Event.php:158
 #: src/Transfer.php:3950 src/Lock.php:748 src/Lock.php:1125
-#: src/CommonDevice.php:55 src/CommonDevice.php:329 src/Config.php:3267
+#: src/CommonDevice.php:55 src/CommonDevice.php:329 src/Config.php:3266
 #: src/Profile.php:1061 src/Profile.php:2538
 msgid "Component"
 msgid_plural "Components"
@@ -6518,7 +6518,7 @@ msgctxt "button"
 msgid "Connect"
 msgstr "Připojit"
 
-#: src/Config.php:3281
+#: src/Config.php:3280
 msgid "Connect a component"
 msgstr "Připojit komponentu"
 
@@ -6567,7 +6567,7 @@ msgstr "Připojení přes vytáčenou linku – port pro Dialup"
 msgid "Connection errors"
 msgstr "Chyby připojení"
 
-#: src/User.php:5651
+#: src/User.php:5704
 msgid "Connection failed"
 msgstr "Připojení se nezdařilo"
 
@@ -7028,7 +7028,7 @@ msgstr "Vytvořit stav"
 msgid "Create survey after"
 msgstr "Vytvořit průzkum po"
 
-#: src/Document.php:1505
+#: src/Document.php:1517
 #, php-format
 msgid "Create the directory %s"
 msgstr "Vytvořit složku %s"
@@ -7102,7 +7102,7 @@ msgstr "Vytvoření databáze..."
 #: src/Budget.php:233 src/PassiveDCEquipment.php:195 src/Enclosure.php:173
 #: src/Link.php:246 src/QueuedNotification.php:233
 #: src/QueuedNotification.php:735 src/Printer.php:459 src/Document.php:1076
-#: src/User.php:3735 src/Line.php:186 src/Rack.php:239 src/Software.php:421
+#: src/User.php:3773 src/Line.php:186 src/Rack.php:239 src/Software.php:421
 #: src/Peripheral.php:289 src/Lockedfield.php:94 src/Certificate_Item.php:468
 #: src/Transfer.php:139 src/Computer.php:517 src/Contact.php:402
 #: src/Supplier.php:267 src/KnowbaseItem_Item.php:205 src/PDU.php:198
@@ -7208,7 +7208,7 @@ msgstr "Tato strana do PDF na šířku"
 msgid "Current page in portrait PDF"
 msgstr "Tato strana do PDF na výšku"
 
-#: src/User.php:5335
+#: src/User.php:5373
 msgid "Current password"
 msgstr "Stávající heslo"
 
@@ -7536,7 +7536,7 @@ msgstr "Uživatel databáze definovaný volbou --db-user nesmí být prázdný."
 msgid "Database user:"
 msgstr "Uživatel databáze:"
 
-#: src/Config.php:2657
+#: src/Config.php:2656
 #, php-format
 msgid "Database version seems correct (%s) - Perfect!"
 msgstr "Verze databáze se zdá být správná (%s) – výborně!"
@@ -7609,7 +7609,7 @@ msgstr[3] "Dny"
 msgid "Days to keep sent emails"
 msgstr "Kolik dnů uchovávat odeslané e-maily"
 
-#: src/User.php:3255 src/CommonGLPI.php:353
+#: src/User.php:3293 src/CommonGLPI.php:353
 msgid "Debug"
 msgstr "Ladit"
 
@@ -7692,7 +7692,7 @@ msgstr "Výchozí zobrazení"
 msgid "Default email"
 msgstr "Výchozí e-mail"
 
-#: src/User.php:2830 src/User.php:3215 src/User.php:3849
+#: src/User.php:2868 src/User.php:3253 src/User.php:3887
 #: src/Inventory/Conf.php:541 src/RuleRight.php:364
 msgid "Default entity"
 msgstr "Výchozí entita"
@@ -7734,7 +7734,7 @@ msgstr "Výchozí pro požadavky"
 msgid "Default for tickets (mini dashboard)"
 msgstr "Výchozí pro požadavky (mini přehled)"
 
-#: templates/components/user/info_card.html.twig src/User.php:2840
+#: templates/components/user/info_card.html.twig src/User.php:2878
 #: src/RuleRight.php:374
 msgid "Default group"
 msgstr "Výchozí skupina"
@@ -7763,7 +7763,7 @@ msgstr "Výchozí zvuk oznámení"
 msgid "Default problem template"
 msgstr "Výchozí šablona problému"
 
-#: src/User.php:2812 src/User.php:3170 src/User.php:3840 src/RuleRight.php:381
+#: src/User.php:2850 src/User.php:3208 src/User.php:3878 src/RuleRight.php:381
 #: src/RuleTicket.php:687 src/Profile.php:758 src/Profile.php:2040
 msgid "Default profile"
 msgstr "Výchozí profil"
@@ -7828,11 +7828,11 @@ msgid "Default value for alarms on financial and administrative information"
 msgstr ""
 "Výchozí hodnota výstrah ohledně finančních a administrativních informací"
 
-#: src/AuthLDAP.php:449 src/Config.php:2537
+#: src/AuthLDAP.php:449 src/Config.php:2536
 msgid "Default values"
 msgstr "Výchozí hodnoty"
 
-#: src/Config.php:3522
+#: src/Config.php:3521
 msgid "Delay before account deactivation (in days)"
 msgstr "Prodleva před deaktivací účtu (ve dnech)"
 
@@ -7877,7 +7877,7 @@ msgstr "Smazat propojení s položkou"
 msgid "Delete a rule"
 msgstr "Smazat pravidlo"
 
-#: src/Config.php:3324
+#: src/Config.php:3323
 msgid "Delete all"
 msgstr "Smazat vše"
 
@@ -7893,7 +7893,7 @@ msgstr ""
 msgid "Delete an item"
 msgstr "Smazat položku"
 
-#: src/Config.php:3286
+#: src/Config.php:3285
 msgid "Delete component"
 msgstr "Smazat komponentu"
 
@@ -7905,7 +7905,7 @@ msgstr "Smazat prvek"
 msgid "Delete emails"
 msgstr "Smazat e-maily"
 
-#: src/Config.php:3330
+#: src/Config.php:3329
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
@@ -7970,7 +7970,7 @@ msgctxt "button"
 msgid "Delete permanently the relation with selected elements"
 msgstr "Nevratně smazat souvislost s vybranými prvky"
 
-#: src/Config.php:3175
+#: src/Config.php:3174
 msgid "Delete relation between items"
 msgstr "Odstranit vztah mezi položkami"
 
@@ -7978,7 +7978,7 @@ msgstr "Odstranit vztah mezi položkami"
 msgid "Delete serie"
 msgstr "Smazat sérii"
 
-#: src/Log.php:1070 src/Config.php:3183
+#: src/Log.php:1070 src/Config.php:3182
 msgid "Delete the item"
 msgstr "Smazat položku"
 
@@ -8006,7 +8006,7 @@ msgstr "Smazáno"
 msgid "Deleted from LDAP"
 msgstr "Smazáno z LDAP"
 
-#: src/User.php:3792 src/Config.php:3261
+#: src/User.php:3830 src/Config.php:3260
 msgid "Deleted user in LDAP directory"
 msgstr "Smazaný uživatel v adresáři LDAP"
 
@@ -8522,7 +8522,7 @@ msgctxt "button"
 msgid "Disconnect"
 msgstr "Odpojit"
 
-#: src/Config.php:3277
+#: src/Config.php:3276
 msgid "Disconnect a component"
 msgstr "Odpojit komponentu"
 
@@ -8623,11 +8623,11 @@ msgctxt "button"
 msgid "Dissociate certificate"
 msgstr "Zrušit přiřazení certifikátu"
 
-#: src/User.php:3424
+#: src/User.php:3462
 msgid "Dissociate from a group"
 msgstr "Odloučit od skupiny"
 
-#: src/User.php:3429
+#: src/User.php:3467
 msgid "Dissociate from a profile"
 msgstr "Odloučit od profilu"
 
@@ -8659,7 +8659,7 @@ msgstr "Před provedením aktualizace nekontrolovat integritu schématu databáz
 msgid "Do not copy"
 msgstr "Nekopírovat"
 
-#: src/Config.php:3533
+#: src/Config.php:3532
 msgid "Do not deactivate"
 msgstr "Nevypínat"
 
@@ -8737,11 +8737,11 @@ msgstr "Dokument"
 msgid "Document Ticket %d"
 msgstr "Dokument požadavku %d"
 
-#: src/Document.php:1240 src/Document.php:1342
+#: src/Document.php:1246 src/Document.php:1354
 msgid "Document copy succeeded."
 msgstr "Dokument úspěšně zkopírován."
 
-#: src/Config.php:3579
+#: src/Config.php:3578
 msgid "Document files maximum size (Mio)"
 msgstr "Maximální velikost souborů dokumentů (Mio)"
 
@@ -8761,7 +8761,7 @@ msgstr[1] "Položek dokumentu"
 msgstr[2] "Položek dokumentu"
 msgstr[3] "Položky dokumentu"
 
-#: src/Document.php:1233
+#: src/Document.php:1239
 msgid "Document move succeeded."
 msgstr "Dokument úspěšně přesunut."
 
@@ -8777,11 +8777,11 @@ msgstr[3] "Typy dokumentů"
 msgid "Documents"
 msgstr "Dokumenty"
 
-#: src/Document.php:1491
+#: src/Document.php:1503
 msgid "Documents directory doesn't exist."
 msgstr ""
 
-#: src/Config.php:3574
+#: src/Config.php:3573
 msgid "Documents setup"
 msgstr "Nastavení dokumentů"
 
@@ -8925,7 +8925,7 @@ msgstr "Stáhnout archiv ručně, musíte jej rozbalit v adresáři plugins (%s)
 msgid "Download plugin from the GLPI marketplace"
 msgstr "Stáhnout zásuvný modul z GLPI tržiště"
 
-#: src/User.php:2402
+#: src/User.php:2440
 msgid "Download user VCard"
 msgstr "Stáhnou vizitku (VCard) uživatele"
 
@@ -9037,7 +9037,7 @@ msgid "ERROR"
 msgstr "CHYBA"
 
 #. TRANS: %s is a directory
-#: front/cron.php:44
+#: front/cron.php:45
 #, php-format
 msgid "ERROR: %s is not writable"
 msgstr "CHYBA: %s není přístupné pro zápis"
@@ -9171,8 +9171,8 @@ msgstr "U prvku zdá se není zadána zeměpisná poloha nebo ho není možné n
 #: src/AuthLDAP.php:960 src/AuthLDAP.php:1208 src/AuthLDAP.php:1217
 #: src/AuthLDAP.php:1226 src/AuthLDAP.php:1235 src/AuthLDAP.php:3959
 #: src/AuthLDAP.php:3962 src/AuthLDAP.php:3967 src/AuthLDAP.php:3972
-#: src/QueuedNotification.php:749 src/User.php:2653 src/User.php:3142
-#: src/User.php:3576 src/Blacklist.php:247 src/Contact_Supplier.php:310
+#: src/QueuedNotification.php:749 src/User.php:2691 src/User.php:3180
+#: src/User.php:3614 src/Blacklist.php:247 src/Contact_Supplier.php:310
 #: src/Auth.php:1738 src/Auth.php:1744 src/Auth.php:1750 src/Auth.php:1756
 #: src/Contact.php:288 src/Supplier.php:242
 #: src/ContentTemplates/Parameters/SupplierParameters.php:77
@@ -9261,7 +9261,7 @@ msgstr[1] "Oznámení e-mailem"
 msgstr[2] "Oznámení e-mailem"
 msgstr[3] "Oznámení e-mailem"
 
-#: src/Api/API.php:2150
+#: src/Api/API.php:2154
 msgid "Email notifications are disabled"
 msgstr "Oznámení e-mailem jsou vypnutá"
 
@@ -9283,7 +9283,7 @@ msgstr "Jméno odesílatele e-mailu"
 msgid "Email server"
 msgstr "E-mailový server"
 
-#: src/User.php:3696
+#: src/User.php:3734
 msgid "Email server for authentication"
 msgstr "E-mailový server pro ověřování"
 
@@ -9526,7 +9526,7 @@ msgstr "Konec v %s"
 #: front/report.infocom.conso.php:74 front/stat.graph.php:380
 #: src/Csv/PlanningCsv.php:76 src/Dropdown.php:690 src/ProjectCost.php:167
 #: src/ProjectCost.php:294 src/ProjectCost.php:370 src/Budget.php:162
-#: src/Budget.php:258 src/CommonITILTask.php:998 src/User.php:3865
+#: src/Budget.php:258 src/CommonITILTask.php:998 src/User.php:3903
 #: src/ContractCost.php:158 src/ContractCost.php:285 src/ContractCost.php:362
 #: src/CommonITILCost.php:143 src/CommonITILCost.php:449
 #: src/CommonITILCost.php:596 src/Stat.php:2120
@@ -9613,7 +9613,7 @@ msgstr "Vylepšení zabezpečení ověřování obrázků."
 msgid "Ensure security is enforced on session cookies."
 msgstr "Zajistit vynucování zabezpečení u souborů cookie relace."
 
-#: front/find_num.php:79 ajax/dropdownTrackingDeviceType.php:72
+#: ajax/dropdownTrackingDeviceType.php:72
 msgid "Enter the first letters (user, item name, serial or asset number)"
 msgstr ""
 "Zadejte první znaky (uživatelského jména, názvu položky, sériového nebo "
@@ -9803,7 +9803,7 @@ msgstr "Chyba při kontaktování LDAP serveru \"%s\"."
 msgid "Error: %s is not a directory"
 msgstr "Chyba: %s není platná složka"
 
-#: src/User.php:773 src/User.php:981
+#: src/User.php:784 src/User.php:992
 msgid "Error: the two passwords do not match"
 msgstr "Chyba: heslo je třeba zadat do obou kolonek stejně"
 
@@ -10112,8 +10112,8 @@ msgstr[1] "Odkazy na vnější zdroje"
 msgstr[2] "Odkazů na vnější zdroje"
 msgstr[3] "Odkazy na vnější zdroje"
 
-#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:259
-#: src/TicketSatisfaction.php:309 src/Entity.php:3144 src/Entity.php:3883
+#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:264
+#: src/TicketSatisfaction.php:314 src/Entity.php:3144 src/Entity.php:3883
 msgid "External survey"
 msgstr "Vnější průzkum"
 
@@ -10185,7 +10185,7 @@ msgstr "Nepodařilo se připojit k proxy serveru (%s)"
 msgid "Failed to create recurrent item %s"
 msgstr "Vytvoření opakující se položky %s se nezdařilo"
 
-#: src/Document.php:1520
+#: src/Document.php:1532
 #, php-format
 msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
@@ -10194,7 +10194,7 @@ msgstr ""
 "Nepodařilo se vytvořit složku %s. Zkontrolujte zda jsou správně nastavená "
 "přístupová oprávnění."
 
-#: src/Document.php:1216 src/Document.php:1328 src/Document.php:1425
+#: src/Document.php:1222 src/Document.php:1340 src/Document.php:1437
 #, php-format
 msgid "Failed to delete the file %1$s"
 msgstr ""
@@ -10223,7 +10223,7 @@ msgstr "Nepodařilo se načíst požadavek %d"
 msgid "Failed to remove team member"
 msgstr "Odebrání člena týmu se nezdařilo"
 
-#: src/GLPIUploadHandler.php:114
+#: src/UploadHandler.php:434
 msgid "Failed to resize image"
 msgstr "Nepodařilo se změnit rozlišení obrázku"
 
@@ -10231,7 +10231,7 @@ msgstr "Nepodařilo se změnit rozlišení obrázku"
 msgid "Failed to send test email to administrator"
 msgstr "Chyba při odesílání zkušebního e-mailu správci"
 
-#: src/GLPIUploadHandler.php:66
+#: src/UploadHandler.php:386
 msgid "Failed to write file to disk"
 msgstr "Neúspěšný zápis souboru na úložiště"
 
@@ -10344,17 +10344,17 @@ msgstr "Jednotnost kolonek"
 msgid "File"
 msgstr "Soubor"
 
-#: src/Inventory/Inventory.php:936
+#: src/Inventory/Inventory.php:949
 #, php-format
 msgid "File %1$s %2$s has been removed"
 msgstr ""
 
-#: src/Inventory/Inventory.php:930
+#: src/Inventory/Inventory.php:943
 #, php-format
 msgid "File %1$s %2$s has not been removed"
 msgstr ""
 
-#: src/Inventory/Inventory.php:854
+#: src/Inventory/Inventory.php:867
 #, php-format
 msgid "File %1$s has been removed"
 msgstr "Soubor %1$s byl odstraněn"
@@ -10364,7 +10364,7 @@ msgstr "Soubor %1$s byl odstraněn"
 msgid "File %s contains SQL queries that can be used to rollback command."
 msgstr ""
 
-#: src/Document.php:1173 src/Document.php:1284
+#: src/Document.php:1179 src/Document.php:1296
 #, php-format
 msgid "File %s not found."
 msgstr "Soubor %s nenalezen."
@@ -10386,27 +10386,27 @@ msgstr ""
 msgid "File has not been imported: `%s`."
 msgstr ""
 
-#: front/document.send.php:60
+#: front/document.send.php:62
 msgid "File is altered (bad checksum)"
 msgstr "Soubor byl pozměněn (neodpovídá kontrolní součet)"
 
-#: src/GLPIUploadHandler.php:78
+#: src/UploadHandler.php:398
 msgid "File is too big"
 msgstr "Soubor je příliš velký"
 
-#: src/GLPIUploadHandler.php:82
+#: src/UploadHandler.php:402
 msgid "File is too small"
 msgstr "Soubor je příliš malý"
 
-#: src/Document.php:1242 src/Document.php:1344
+#: src/Document.php:1248 src/Document.php:1356
 msgid "File move failed"
 msgstr "Přesun souboru se nezdařil"
 
-#: src/Document.php:1235
+#: src/Document.php:1241
 msgid "File move failed."
 msgstr "Přesun souboru se nezdařil."
 
-#: front/document.send.php:54
+#: front/document.send.php:56
 msgid "File not found"
 msgstr "Soubor nenalezen"
 
@@ -10418,11 +10418,11 @@ msgstr[1] "Souborové systémy"
 msgstr[2] "Souborových systémů"
 msgstr[3] "Souborové systémy"
 
-#: src/Document.php:1378
+#: src/Document.php:1390
 msgid "File too large to be added."
 msgstr "Soubor je příliš velký na to, aby ho bylo možné přidat."
 
-#: src/GLPIUploadHandler.php:110
+#: src/UploadHandler.php:430
 msgid "File upload aborted"
 msgstr "Nahrání souboru zrušeno"
 
@@ -10434,7 +10434,7 @@ msgstr "Soubory"
 msgid "Filename"
 msgstr ""
 
-#: src/GLPIUploadHandler.php:106
+#: src/UploadHandler.php:426
 msgid "Filetype not allowed"
 msgstr "Nepovolený typ souboru"
 
@@ -10492,7 +10492,7 @@ msgstr "Filtry"
 
 #. TRANS: Always plural
 #: templates/components/infocom.html.twig src/Transfer.php:3971
-#: src/Entity.php:2286 src/Consumable.php:637 src/Config.php:3238
+#: src/Entity.php:2286 src/Consumable.php:637 src/Config.php:3237
 #: src/Infocom.php:114 src/Infocom.php:1204 src/Cartridge.php:826
 msgid "Financial and administrative information"
 msgstr "Finanční a administrativní informace"
@@ -10547,8 +10547,8 @@ msgstr "Nejprve nalezena platná smlouva v entity ticket"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:935
 #: src/AuthLDAP.php:1146 src/AuthLDAP.php:3976
-#: src/NotificationTargetUser.php:152 src/User.php:2580 src/User.php:3005
-#: src/User.php:3568 src/User.php:6440 src/Auth.php:1718 src/Contact.php:239
+#: src/NotificationTargetUser.php:152 src/User.php:2618 src/User.php:3043
+#: src/User.php:3606 src/User.php:6493 src/Auth.php:1718 src/Contact.php:239
 #: src/ContentTemplates/Parameters/UserParameters.php:81
 msgid "First name"
 msgstr "Jméno"
@@ -10647,7 +10647,7 @@ msgstr "Chybí následující rozšíření: %s."
 msgid "Following extensions are not present: %s."
 msgstr "Nejsou k dispozici následující rozšíření: %s."
 
-#: src/Inventory/Inventory.php:297
+#: src/Inventory/Inventory.php:310
 #, php-format
 msgid "Following keys has been ignored during process: %1$s"
 msgstr "Následující klíče byly během procesu ignorovány: %1$s"
@@ -10702,7 +10702,7 @@ msgstr ""
 msgid "For tickets closed after"
 msgstr "Pro požadavky uzavřené po"
 
-#: src/Api/API.php:1606
+#: src/Api/API.php:1610
 msgid "Forbidden field ID in search criteria"
 msgstr "Zakázaný identifikátor kolonky v kritériích vyhledávání"
 
@@ -10749,7 +10749,7 @@ msgstr ""
 "Vynutit strategii použitou pro obnovené uživatele (aktuálně nakonfigurovaná "
 "akce: \"%s\")"
 
-#: src/User.php:3440 src/Auth.php:1511
+#: src/User.php:3478 src/Auth.php:1511
 msgid "Force synchronization"
 msgstr "Vynutit synchronizaci"
 
@@ -10767,8 +10767,8 @@ msgid "Forget it,"
 msgstr "Zapomeň na to,"
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
-#: src/NotificationTargetUser.php:43 src/User.php:5398 src/User.php:5413
-#: src/User.php:5511 src/User.php:5535
+#: src/NotificationTargetUser.php:43 src/User.php:5436 src/User.php:5451
+#: src/User.php:5556 src/User.php:5580
 msgid "Forgotten password?"
 msgstr "Zapomněli jste heslo?"
 
@@ -10977,7 +10977,7 @@ msgstr "Gbps"
 #: src/Rule.php:2443 src/CommonItilObject_Item.php:147
 #: src/RuleImportAsset.php:188 src/RuleImportAsset.php:192
 #: src/RuleImportAsset.php:197 src/CommonGLPI.php:108
-#: src/CommonITILObject.php:6508 src/Config.php:3170 src/Ticket.php:5074
+#: src/CommonITILObject.php:6508 src/Config.php:3169 src/Ticket.php:5074
 #: src/Ticket.php:5684
 msgid "General"
 msgstr "Obecné"
@@ -10988,7 +10988,7 @@ msgid "General"
 msgstr "Obecné"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Config.php:2011
-#: src/Config.php:2536 src/Profile.php:2595
+#: src/Config.php:2535 src/Profile.php:2595
 msgid "General setup"
 msgstr "Obecná nastavení"
 
@@ -11258,7 +11258,7 @@ msgstr "Půl kobliha"
 msgid "Half pie"
 msgstr "Půl koláč"
 
-#: src/User.php:6041
+#: src/User.php:6094
 msgid "Handle users passwords expiration policy"
 msgstr "Obsluhovat zásadu pro ukončování platnosti hesel uživatelů"
 
@@ -11281,10 +11281,6 @@ msgstr "Typ datového úložiště"
 #: src/Report.php:85
 msgid "Hardware financial and administrative information"
 msgstr "Finanční a administrativní informace o hardware"
-
-#: front/find_num.php:93
-msgid "Hardware type"
-msgstr "Typ hardwaru"
 
 #: front/report.contract.php:49
 msgid "Hardware under contract"
@@ -11344,7 +11340,7 @@ msgstr "Skupina ve službě podpory"
 msgid "Helpdesk reporting form"
 msgstr "Formulář pro nahlášení na službu podpory"
 
-#: src/User.php:6353 src/User.php:6380
+#: src/User.php:6406 src/User.php:6433
 msgid "Helpdesk user"
 msgstr "Uživatel helpdesku"
 
@@ -11452,13 +11448,13 @@ msgstr "Hub "
 msgid "I don't understand why this migration error is not deleted."
 msgstr "Není zřejmé proč tato chyba přesunu není odstraněna."
 
-#: src/Config.php:3100
+#: src/Config.php:3099
 msgid "I know I am using a unstable version."
 msgstr "Vím že používám nevyladěnou verzi."
 
 #: templates/pages/admin/events_list.html.twig
-#: templates/components/logs.html.twig front/find_num.php:95
-#: src/Csv/LogCsvExport.php:73 src/Phone.php:215 src/Ticket_Ticket.php:71
+#: templates/components/logs.html.twig src/Csv/LogCsvExport.php:73
+#: src/Phone.php:215 src/Ticket_Ticket.php:71
 #: src/NotificationTargetProjectTask.php:589
 #: src/NotificationTargetProjectTask.php:618 src/KnowbaseItem.php:2248
 #: src/Monitor.php:210 src/Unmanaged.php:98 src/Datacenter.php:100
@@ -11470,8 +11466,8 @@ msgstr "Vím že používám nevyladěnou verzi."
 #: src/Budget.php:215 src/PassiveDCEquipment.php:95 src/Enclosure.php:112
 #: src/CommonITILTask.php:1648 src/CommonITILTask.php:1673
 #: src/CommonITILTask.php:1738 src/Link.php:220 src/QueuedNotification.php:224
-#: src/Printer.php:348 src/Document.php:999 src/User.php:3551
-#: src/User.php:5676 src/Search.php:8100 src/Search.php:8121 src/Line.php:116
+#: src/Printer.php:348 src/Document.php:999 src/User.php:3589
+#: src/User.php:5729 src/Search.php:8100 src/Search.php:8121 src/Line.php:116
 #: src/ContractCost.php:133 src/Rack.php:154 src/Group_User.php:725
 #: src/CommonITILCost.php:118 src/SoftwareLicense.php:360
 #: src/SoftwareLicense.php:1207 src/Software.php:385 src/AuthMail.php:112
@@ -11521,7 +11517,7 @@ msgstr "ID"
 msgid "ID TAG"
 msgstr "ID TAG"
 
-#: src/Api/API.php:1637
+#: src/Api/API.php:1641
 msgid "ID is forbidden along with 'forcedisplay' parameter."
 msgstr ""
 "Identifikátor nelze použít současně s parametrem „forcedisplay“ (vynutit "
@@ -11729,7 +11725,7 @@ msgstr "Pokud synchronizováno nebo účet jen pro čtení"
 msgid "If the cartridge types are no longer used"
 msgstr "Pokud se tyto typy náplní už nepoužívají"
 
-#: src/User.php:5532 src/Api/API.php:2170
+#: src/User.php:5577 src/Api/API.php:2174
 msgid ""
 "If the given email address match an exisiting GLPI user, you will receive an"
 " email containing the informations required to reset your password. Please "
@@ -11796,11 +11792,11 @@ msgstr[1] "Ignorované hodnoty pro jednotnost"
 msgstr[2] "Ignorovaných hodnot pro jednotnost"
 msgstr[3] "Ignorované hodnoty pro jednotnost"
 
-#: src/GLPIUploadHandler.php:98
+#: src/UploadHandler.php:418
 msgid "Image exceeds maximum height"
 msgstr "Obrázek překročil maximální výšku"
 
-#: src/GLPIUploadHandler.php:90
+#: src/UploadHandler.php:410
 msgid "Image exceeds maximum width"
 msgstr "Obrázek překročil maximální šířku"
 
@@ -11812,11 +11808,11 @@ msgstr[1] "Formáty obrázků"
 msgstr[2] "Formátů obrázků"
 msgstr[3] "Formáty obrázků"
 
-#: src/GLPIUploadHandler.php:102
+#: src/UploadHandler.php:422
 msgid "Image requires a minimum height"
 msgstr "Obrázek vyžaduje nějakou minimální výšku"
 
-#: src/GLPIUploadHandler.php:94
+#: src/UploadHandler.php:414
 msgid "Image requires a minimum width"
 msgstr "Obrázek vyžaduje nějakou minimální šířku"
 
@@ -11860,7 +11856,7 @@ msgstr "Ovlivněno"
 msgid "Impacts"
 msgstr "Dopady"
 
-#: src/User.php:2417
+#: src/User.php:2455
 msgid "Impersonate"
 msgstr "Přepnout se do jiného uživatele"
 
@@ -11882,7 +11878,7 @@ msgctxt "button"
 msgid "Import"
 msgstr "Import"
 
-#: src/User.php:4668 src/User.php:4672 src/User.php:4675
+#: src/User.php:4706 src/User.php:4710 src/User.php:4713
 msgid "Import a user"
 msgstr "Importovat uživatele"
 
@@ -11902,7 +11898,7 @@ msgstr "Import byl odepřen (bez logu)"
 msgid "Import entities from LDAP directory"
 msgstr "Importovat entity z LDAP adresáře"
 
-#: src/User.php:4718
+#: src/User.php:4756
 msgid "Import from directories"
 msgstr "Importovat z adresářů"
 
@@ -11910,7 +11906,7 @@ msgstr "Importovat z adresářů"
 msgid "Import from file"
 msgstr "Importovat ze souboru"
 
-#: src/User.php:4724
+#: src/User.php:4762
 msgid "Import from other sources"
 msgstr "Importovat z jiných zdrojů"
 
@@ -12345,11 +12341,11 @@ msgstr "Instalace byla dokončena."
 msgid "Installation or update of GLPI"
 msgstr "Instalace nebo aktualizace GLPI"
 
-#: src/Config.php:3215
+#: src/Config.php:3214
 msgid "Installation/uninstallation of software on items"
 msgstr "Instalace/odinstalace software na položkách"
 
-#: src/Config.php:3221
+#: src/Config.php:3220
 msgid "Installation/uninstallation versions on software"
 msgstr "Verze pro instalaci/odinstalaci softwaru"
 
@@ -12436,7 +12432,7 @@ msgstr "Vnitřní čas pro vyřešení"
 msgid "Internal status"
 msgstr "Interní status"
 
-#: src/TicketSatisfaction.php:256 src/TicketSatisfaction.php:308
+#: src/TicketSatisfaction.php:261 src/TicketSatisfaction.php:313
 #: src/Entity.php:3143 src/Entity.php:3882
 msgid "Internal survey"
 msgstr "Vnitřní průzkum"
@@ -12567,7 +12563,7 @@ msgstr "Neplatná data v cookie"
 msgid "Invalid dates. Update cancelled."
 msgstr "Neplatné datumy. Aktualizace zrušena."
 
-#: src/User.php:5593 src/NotificationMailingSetting.php:87
+#: src/User.php:5638 src/NotificationMailingSetting.php:87
 #: src/NotificationMailingSetting.php:101
 #: src/NotificationMailingSetting.php:120
 #: src/NotificationMailingSetting.php:138 src/Entity.php:2021
@@ -12582,7 +12578,7 @@ msgstr "Neplatná e-mailová adresa"
 msgid "Invalid email address %s"
 msgstr "Neplatná e-mailová adresa %s"
 
-#: front/document.send.php:114
+#: front/document.send.php:116
 msgid "Invalid filename"
 msgstr "Neplatný název souboru"
 
@@ -12665,8 +12661,8 @@ msgstr "Neplatné použití identifikátoru sezení"
 msgid "Invalid widget"
 msgstr "Neplatný widget"
 
-#: front/inventory.conf.php:42 src/Inventory/Inventory.php:486
-#: src/Inventory/Inventory.php:957
+#: front/inventory.conf.php:42 src/Inventory/Inventory.php:499
+#: src/Inventory/Inventory.php:970
 #: src/Agent/Communication/AbstractRequest.php:174 src/Profile.php:948
 #: src/Profile.php:1859 src/Profile.php:3039
 msgid "Inventory"
@@ -12699,15 +12695,14 @@ msgid "Inventory link"
 msgstr "Odkaz na inventář"
 
 #: templates/generic_show_form.html.twig
-#: templates/components/form/item_device.html.twig front/find_num.php:97
-#: src/Phone.php:259 src/Change_Item.php:161 src/Monitor.php:254
-#: src/Unmanaged.php:121 src/Item_Rack.php:858
-#: src/NotificationTargetProblem.php:206 src/Item_Devices.php:364
-#: src/Item_Devices.php:365 src/CableStrand.php:151 src/Document_Item.php:416
-#: src/Appliance.php:248 src/Budget.php:359 src/PassiveDCEquipment.php:120
-#: src/Enclosure.php:148 src/Printer.php:392 src/User.php:4905
-#: src/User.php:4987 src/Search.php:8136 src/Rack.php:198 src/Rack.php:917
-#: src/SoftwareLicense.php:548 src/SoftwareLicense.php:637
+#: templates/components/form/item_device.html.twig src/Phone.php:259
+#: src/Change_Item.php:161 src/Monitor.php:254 src/Unmanaged.php:121
+#: src/Item_Rack.php:858 src/NotificationTargetProblem.php:206
+#: src/Item_Devices.php:364 src/Item_Devices.php:365 src/CableStrand.php:151
+#: src/Document_Item.php:416 src/Appliance.php:248 src/Budget.php:359
+#: src/PassiveDCEquipment.php:120 src/Enclosure.php:148 src/Printer.php:392
+#: src/User.php:4943 src/User.php:5025 src/Search.php:8136 src/Rack.php:198
+#: src/Rack.php:917 src/SoftwareLicense.php:548 src/SoftwareLicense.php:637
 #: src/DeviceFirmware.php:231 src/PDU_Rack.php:601 src/Computer_Item.php:414
 #: src/Computer_Item.php:583 src/Peripheral.php:238
 #: src/NotificationTargetChange.php:284 src/Certificate_Item.php:275
@@ -12917,8 +12912,8 @@ msgstr "Položka uzamčena"
 msgid "Item need to be deleted first"
 msgstr ""
 
-#: src/Html.php:607 src/CommonDBTM.php:6360 src/Api/API.php:1958
-#: src/Api/API.php:2072 src/Api/API.php:2646
+#: src/Html.php:607 src/CommonDBTM.php:6360 src/Api/API.php:1962
+#: src/Api/API.php:2076 src/Api/API.php:2650
 msgid "Item not found"
 msgstr "Položka nenalezena"
 
@@ -13057,7 +13052,7 @@ msgstr "Kbps"
 msgid "Keep"
 msgstr "Ponechat"
 
-#: src/Config.php:3325
+#: src/Config.php:3324
 msgid "Keep all"
 msgstr "Ponechat vše"
 
@@ -13185,7 +13180,7 @@ msgstr[3] "LDAP adresáře"
 msgid "LDAP directory choice"
 msgstr "Volba LDAP adresáře"
 
-#: src/User.php:3683
+#: src/User.php:3721
 msgid "LDAP directory for authentication"
 msgstr "LDAP adresář pro ověřování"
 
@@ -13194,7 +13189,7 @@ msgid "LDAP directory information attribute representing the entity"
 msgstr "Atribut v LDAP adresáři představující entitu"
 
 #: front/ldap.group.php:44 front/ldap.import.php:58 front/ldap.php:42
-#: front/ldap.group.import.php:42 src/User.php:2370 src/Group.php:151
+#: front/ldap.group.import.php:42 src/User.php:2408 src/Group.php:151
 #: src/Group.php:333
 msgid "LDAP directory link"
 msgstr "Odkaz na LDAP adresář"
@@ -13240,13 +13235,13 @@ msgstr "LDAP servery"
 msgid "Label"
 msgstr "Označení"
 
-#: front/user.form.php:185
+#: front/user.form.php:44 front/user.form.php:195
 msgid "Lang has been changed!"
 msgstr "Jazyk byl změněn!"
 
 #: templates/pages/login.html.twig src/DropdownTranslation.php:424
 #: src/DropdownTranslation.php:515 src/AuthLDAP.php:981 src/AuthLDAP.php:1271
-#: src/User.php:3043 src/User.php:3716 src/KnowbaseItemTranslation.php:234
+#: src/User.php:3081 src/User.php:3754 src/KnowbaseItemTranslation.php:234
 #: src/KnowbaseItemTranslation.php:295
 #: src/NotificationTemplateTranslation.php:135
 #: src/NotificationTemplateTranslation.php:228
@@ -13356,11 +13351,11 @@ msgstr "Poslední aktualizace inventáře"
 msgid "Last inventory value was:"
 msgstr "Poslední hodnota inventáře byla:"
 
-#: src/User.php:3660
+#: src/User.php:3698
 msgid "Last login"
 msgstr "Minulé přihlášení"
 
-#: src/User.php:2921
+#: src/User.php:2959
 #, php-format
 msgid "Last login on %s"
 msgstr "Minulé přihlášení v %s"
@@ -13369,7 +13364,7 @@ msgstr "Minulé přihlášení v %s"
 msgid "Last month"
 msgstr "Minulý měsíc"
 
-#: src/User.php:3560 src/Contact.php:230
+#: src/User.php:3598 src/Contact.php:230
 msgid "Last name"
 msgstr "Příjmení"
 
@@ -13389,11 +13384,11 @@ msgstr "Přehled posledního běhu"
 msgid "Last solution status"
 msgstr "Poslední stav řešení"
 
-#: src/User.php:3784
+#: src/User.php:3822
 msgid "Last synchronization"
 msgstr "Minulá synchronizace"
 
-#: src/User.php:2699
+#: src/User.php:2737
 #, php-format
 msgid "Last synchronization on %s"
 msgstr "Poslední synchronizace v %s"
@@ -13411,7 +13406,7 @@ msgstr "Nedávné požadavky"
 #: src/CommonDropdown.php:487 src/Appliance.php:216 src/Rule.php:815
 #: src/AuthLDAP.php:455 src/AuthLDAP.php:1253 src/Budget.php:224
 #: src/PassiveDCEquipment.php:130 src/Enclosure.php:164 src/Link.php:237
-#: src/Printer.php:450 src/Document.php:1067 src/User.php:3726
+#: src/Printer.php:450 src/Document.php:1067 src/User.php:3764
 #: src/Search.php:8163 src/Line.php:141 src/Rack.php:230 src/Software.php:412
 #: src/AuthMail.php:146 src/Peripheral.php:280 src/LevelAgreement.php:191
 #: src/Transfer.php:130 src/Transfer.php:3889 src/Computer.php:508
@@ -13423,7 +13418,7 @@ msgstr "Nedávné požadavky"
 #: src/CommonITILObject.php:4097 src/CommonITILObject.php:6646
 #: src/NotificationTargetPlanningRecall.php:245 src/RuleTicket.php:562
 #: src/Contract.php:548 src/CommonDevice.php:299 src/Cluster.php:111
-#: src/Config.php:3200 src/Profile.php:2012 src/Reminder.php:472
+#: src/Config.php:3199 src/Profile.php:2012 src/Reminder.php:472
 #: src/RSSFeed.php:518 src/CronTask.php:1728
 #: src/Features/PlanningEvent.php:998 src/NotificationTargetProject.php:636
 #: src/NotificationTargetProject.php:657 src/DomainRecord.php:155
@@ -14050,8 +14045,8 @@ msgstr "Logický operátor"
 
 #: templates/pages/login.html.twig src/MailCollector.php:263
 #: src/MailCollector.php:501 src/AuthLDAP.php:3957
-#: src/NotificationTargetUser.php:150 src/User.php:2510 src/User.php:2964
-#: src/User.php:3541 src/User.php:4713 src/User.php:5326 src/AuthMail.php:232
+#: src/NotificationTargetUser.php:150 src/User.php:2548 src/User.php:3002
+#: src/User.php:3579 src/User.php:4751 src/User.php:5364 src/AuthMail.php:232
 #: src/ContentTemplates/Parameters/UserParameters.php:75 src/RuleRight.php:271
 #: src/Config.php:2074
 msgid "Login"
@@ -14081,11 +14076,11 @@ msgstr "Odhlásit"
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr "Záznamy v souborech (SQL, e-mail, automatizované akce…)"
 
-#: src/Config.php:2543 src/PurgeLogs.php:42
+#: src/Config.php:2542 src/PurgeLogs.php:42
 msgid "Logs purge"
 msgstr "Odstraňování záznamů událostí"
 
-#: src/Config.php:3152
+#: src/Config.php:3151
 msgid "Logs purge configuration"
 msgstr "Nastavení čištění záznamů událostí"
 
@@ -14265,7 +14260,7 @@ msgstr ""
 msgid "Make unavailable"
 msgstr "Znepřístupnit"
 
-#: src/Api/API.php:1591
+#: src/Api/API.php:1595
 msgid "Malformed search criteria"
 msgstr "Chybně zadaná kritéria vyhledávání"
 
@@ -14278,7 +14273,7 @@ msgstr "Spravovat"
 msgid "Manage all saved searches"
 msgstr "Správa všech uložených hledání"
 
-#: src/Document.php:1475
+#: src/Document.php:1487
 msgid "Manage document types"
 msgstr "Spravovat typy dokumentů"
 
@@ -14307,7 +14302,7 @@ msgid "Managed items"
 msgstr "Spravované položky"
 
 #: src/Dropdown.php:1173 src/Html.php:1350 src/Event.php:170
-#: src/Transfer.php:4036 src/Config.php:2540 src/Profile.php:161
+#: src/Transfer.php:4036 src/Config.php:2539 src/Profile.php:161
 #: src/Profile.php:1378 src/Profile.php:2225 src/Infocom.php:160
 msgid "Management"
 msgstr "Management"
@@ -14507,11 +14502,11 @@ msgstr "Maximální čas"
 msgid "Maximum emails to send at once"
 msgstr "Nejvyšší počet e-mailů, které lze poslat najednou"
 
-#: src/User.php:6042
+#: src/User.php:6095
 msgid "Maximum expiration notifications to send at once"
 msgstr "Maximální počet upozornění ohledně konce platnosti, odesílaný naráz"
 
-#: src/GLPIUploadHandler.php:86
+#: src/UploadHandler.php:406
 msgid "Maximum number of files exceeded"
 msgstr "Překročen maximální počet souborů"
 
@@ -14690,7 +14685,7 @@ msgstr "Zprávy"
 msgid "Method"
 msgstr "Metoda"
 
-#: src/Api/API.php:2686
+#: src/Api/API.php:2690
 msgid "Method Not Allowed"
 msgstr "Metoda není povolena"
 
@@ -14844,7 +14839,7 @@ msgstr[3] "Minuty"
 msgid "Mio"
 msgstr "MiB"
 
-#: src/GLPIUploadHandler.php:62
+#: src/UploadHandler.php:382
 msgid "Missing a temporary folder"
 msgstr "Chybějící dočasná složka"
 
@@ -14887,7 +14882,7 @@ msgstr ""
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:594
 #: src/AuthLDAP.php:971 src/AuthLDAP.php:1173 src/AuthLDAP.php:3979
-#: src/User.php:2723 src/User.php:3150 src/User.php:3634
+#: src/User.php:2761 src/User.php:3188 src/User.php:3672
 #: src/Contact_Supplier.php:308 src/Auth.php:1774 src/Contact.php:272
 #: src/NotificationTargetCommonITILObject.php:1748
 #: src/NotificationTargetCommonITILObject.php:1779
@@ -15055,7 +15050,7 @@ msgctxt "button"
 msgid "Move"
 msgstr "Přesunout"
 
-#: src/User.php:3432
+#: src/User.php:3470
 msgid "Move to group"
 msgstr "Přesunout do skupiny"
 
@@ -15064,7 +15059,7 @@ msgctxt "button"
 msgid "Move under"
 msgstr "Přesunout pod"
 
-#: src/User.php:930
+#: src/User.php:941
 msgid "Moving temporary file failed."
 msgstr "Přesunutí dočasného souboru se nezdařilo."
 
@@ -15118,7 +15113,7 @@ msgstr "Mé úkoly"
 msgid "My unpublished articles"
 msgstr "Mé nezveřejněné články"
 
-#: src/DbUtils.php:1674 src/User.php:4538 src/Search.php:3408
+#: src/DbUtils.php:1674 src/User.php:4576 src/Search.php:3408
 #: src/Dashboard/Filters/UserTechFilter.php:145 ajax/searchoptionvalue.php:87
 msgid "Myself"
 msgstr "Sám"
@@ -15177,8 +15172,8 @@ msgstr "NE"
 #: src/Budget.php:135 src/Budget.php:206 src/Budget.php:357
 #: src/PassiveDCEquipment.php:86 src/Link.php:173 src/Link.php:211
 #: src/NotificationTargetUser.php:151 src/RuleLocation.php:105
-#: src/Document.php:454 src/Document.php:990 src/User.php:4903
-#: src/User.php:4985 src/Search.php:8094 src/Search.php:8115
+#: src/Document.php:454 src/Document.php:990 src/User.php:4941
+#: src/User.php:5023 src/Search.php:8094 src/Search.php:8115
 #: src/ContractCost.php:263 src/ContractCost.php:360 src/Blacklist.php:250
 #: src/Rack.php:96 src/Rack.php:402 src/NetworkAlias.php:128
 #: src/NetworkAlias.php:322 src/NotificationTargetContract.php:174
@@ -15477,7 +15472,7 @@ msgstr[3] "Typy síťových zařízení"
 #: src/Entity.php:3101 src/Entity.php:3614 src/Entity.php:3625
 #: src/Entity.php:3652 src/Entity.php:3675 src/Contract.php:1529
 #: src/Contract.php:1551 src/Config.php:683 src/Config.php:1108
-#: src/Config.php:1343 src/Config.php:3494 src/CronTask.php:661
+#: src/Config.php:1343 src/Config.php:3493 src/CronTask.php:661
 #: src/Infocom.php:1762 src/Alert.php:113 src/Alert.php:182
 #: src/Features/PlanningEvent.php:745
 msgid "Never"
@@ -15569,11 +15564,11 @@ msgstr "Nová položka"
 msgid "New note"
 msgstr "Nová poznámka"
 
-#: src/User.php:5344
+#: src/User.php:5382
 msgid "New password"
 msgstr "Nové hesl"
 
-#: src/User.php:5353
+#: src/User.php:5391
 msgid "New password confirmation"
 msgstr "Potvrzení zadání nového hesla"
 
@@ -15696,7 +15691,7 @@ msgstr "Příští spuštění"
 msgid "Next task to run: %s"
 msgstr "Další úloha ke spuštění: %s"
 
-#: src/User.php:2879 src/User.php:3271
+#: src/User.php:2917 src/User.php:3309
 msgid "Nickname"
 msgstr "Přezdívka"
 
@@ -15710,7 +15705,7 @@ msgstr "Přezdívka"
 #: src/Entity.php:2353 src/Entity.php:2388 src/Entity.php:2561
 #: src/Entity.php:3486 src/Entity.php:3514 src/Entity.php:3534
 #: src/Entity.php:3640 src/Entity.php:3822 src/RuleImportComputer.php:173
-#: src/Config.php:1103 src/Config.php:2367 src/CommonDBChild.php:1027
+#: src/Config.php:1103 src/Config.php:2364 src/CommonDBChild.php:1027
 #: src/SavedSearch_User.php:57 src/SavedSearch_User.php:79 src/Alert.php:151
 #: src/Item_DeviceCamera_ImageResolution.php:169
 msgid "No"
@@ -15864,11 +15859,11 @@ msgstr "Nebyly nalezeny žádné prvky."
 msgid "No entity found"
 msgstr "Nebyla nalezena žádná entita"
 
-#: src/Document.php:1556
+#: src/Document.php:1568
 msgid "No file available"
 msgstr "Není k dispozici žádný soubor"
 
-#: src/RuleCollection.php:1178 src/GLPIUploadHandler.php:58
+#: src/RuleCollection.php:1178 src/UploadHandler.php:378
 msgid "No file was uploaded"
 msgstr "Nebyl nahrán žádný soubor"
 
@@ -15942,7 +15937,7 @@ msgstr "Nezpracovává se žádná položka."
 msgid "No item reaching the end of warranty."
 msgstr "Žádná z položek se neblíží ke konci záruky."
 
-#: src/User.php:5648 src/LevelAgreement.php:459 src/FieldUnicity.php:616
+#: src/User.php:5701 src/LevelAgreement.php:459 src/FieldUnicity.php:616
 #: src/FieldUnicity.php:640 src/NotificationEvent.php:246
 msgid "No item to display"
 msgstr "Žádná položka k zobrazení"
@@ -16218,7 +16213,7 @@ msgstr ""
 "Žádný nebo neplatný popis umístění v HTTP_REFERER. Před opětovným provedením"
 " akce znovu načtěte předchozí stránku."
 
-#: src/User.php:3254
+#: src/User.php:3292
 msgid "Normal"
 msgstr "Normální"
 
@@ -16331,7 +16326,7 @@ msgstr[1] "Oznámení"
 msgstr[2] "Oznámení"
 msgstr[3] "Oznámení"
 
-#: src/Config.php:3512
+#: src/Config.php:3511
 msgid "Notification disabled"
 msgstr "Upozorňování vypnuta"
 
@@ -16460,7 +16455,7 @@ msgstr "Počet všech souvisejících požadavků"
 msgid "Number of answered satisfaction survey"
 msgstr "Počet zodpovězených průzkumů spokojenosti"
 
-#: src/User.php:3908
+#: src/User.php:3946
 msgid "Number of assigned tickets"
 msgstr "Počet přiřazených požadavků"
 
@@ -16679,7 +16674,7 @@ msgstr "Počet požadavků"
 msgid "Number of tickets already assigned"
 msgstr "Počet již přiřazených požadavků"
 
-#: templates/components/itilobject/actors/field.html.twig src/User.php:3873
+#: templates/components/itilobject/actors/field.html.twig src/User.php:3911
 msgid "Number of tickets as requester"
 msgstr "Počet požadavků jako žadatele"
 
@@ -16724,11 +16719,11 @@ msgstr "Množství použitého spotřebního materiálu"
 msgid "Number of worn cartridges"
 msgstr "Počet vypotřebovaných náplní"
 
-#: src/User.php:3893
+#: src/User.php:3931
 msgid "Number of written tickets"
 msgstr "Počet zapsaných požadavků"
 
-#: templates/install/choose_language.html.twig front/tracking.injector.php:91
+#: templates/install/choose_language.html.twig front/tracking.injector.php:93
 #: src/ITILCategory.php:488 src/ITILCategory.php:496 src/ITILCategory.php:504
 #: src/ITILCategory.php:512 src/Console/System/CheckRequirementsCommand.php:78
 #: src/Printer_CartridgeInfo.php:96 js/glpi_dialog.js:79 js/glpi_dialog.js:260
@@ -17435,7 +17430,7 @@ msgstr[3] "Typy pasivních zařízení"
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
 #: templates/components/form/snmpcredential.html.twig
-#: src/MailCollector.php:267 src/User.php:2597 src/User.php:3068
+#: src/MailCollector.php:267 src/User.php:2635 src/User.php:3106
 #: src/AuthMail.php:235 src/Config.php:2076
 msgid "Password"
 msgstr "Heslo"
@@ -17444,7 +17439,7 @@ msgstr "Heslo"
 msgid "Password (for non-anonymous binds)"
 msgstr "Heslo (pro neanonymní spojení)"
 
-#: templates/password_form.html.twig src/User.php:2602 src/User.php:3074
+#: templates/password_form.html.twig src/User.php:2640 src/User.php:3112
 msgid "Password confirmation"
 msgstr "Potvrzení hesla"
 
@@ -17452,15 +17447,15 @@ msgstr "Potvrzení hesla"
 msgid "Password expiration date"
 msgstr "Datum skončení platnosti hesla"
 
-#: src/Config.php:3483
+#: src/Config.php:3482
 msgid "Password expiration delay (in days)"
 msgstr "Prodleva skončení platnosti hesla (ve dnech)"
 
-#: src/Config.php:3501
+#: src/Config.php:3500
 msgid "Password expiration notice time (in days)"
 msgstr "Doba upozornění na končící platnost hesla (ve dnech)"
 
-#: src/Config.php:3477
+#: src/Config.php:3476
 msgid "Password expiration policy"
 msgstr "Zásada doby platnosti hesel"
 
@@ -17472,7 +17467,7 @@ msgstr "Platnost hesla končí"
 msgid "Password has expired"
 msgstr "Platnost hesla skončila"
 
-#: src/Config.php:1545 src/Config.php:3394
+#: src/Config.php:1545 src/Config.php:3393
 msgid "Password minimum length"
 msgstr "Minimální délka hesla"
 
@@ -17496,28 +17491,28 @@ msgstr "Je třeba, aby heslo obsahovalo alespoň jeden speciální znak!"
 msgid "Password must include at least a uppercase letter!"
 msgstr "Je třeba, aby heslo obsahovalo alespoň jedno velké písmeno!"
 
-#: src/Config.php:3413
+#: src/Config.php:3412
 msgid "Password need digit"
 msgstr "Heslo vyžaduje číslici"
 
-#: src/Config.php:3428
+#: src/Config.php:3427
 msgid "Password need lowercase character"
 msgstr "Heslo vyžaduje malé písmeno"
 
-#: src/Config.php:3461
+#: src/Config.php:3460
 msgid "Password need symbol"
 msgstr "Heslo vyžaduje znak"
 
-#: src/Config.php:3446
+#: src/Config.php:3445
 msgid "Password need uppercase character"
 msgstr "Heslo vyžaduje velké písmeno"
 
-#: templates/password_form.html.twig src/User.php:2609 src/User.php:3081
-#: src/User.php:5362 src/Config.php:3373
+#: templates/password_form.html.twig src/User.php:2647 src/User.php:3119
+#: src/User.php:5400 src/Config.php:3372
 msgid "Password security policy"
 msgstr "Zásada zabezpečení hesla"
 
-#: src/Config.php:3379
+#: src/Config.php:3378
 msgid "Password security policy validation"
 msgstr "Ověření hesla vůči zásadě jeho zabezpečení"
 
@@ -17525,7 +17520,7 @@ msgstr "Ověření hesla vůči zásadě jeho zabezpečení"
 msgid "Password too short!"
 msgstr "Heslo je příliš krátké!"
 
-#: front/updatepassword.php:95 src/User.php:5314
+#: front/updatepassword.php:95 src/User.php:5352
 msgid "Password update"
 msgstr "Změna hesla"
 
@@ -17576,7 +17571,7 @@ msgstr "Čeká na zpracování: %s"
 msgid "Percent done"
 msgstr "Dokončeno procent"
 
-#: src/Config.php:2546
+#: src/Config.php:2545
 msgid "Performance"
 msgstr "Výkon"
 
@@ -17713,7 +17708,7 @@ msgstr[1] "Osobní připomínky"
 msgstr[2] "Osobních připomínek"
 msgstr[3] "Osobní připomínky"
 
-#: src/Config.php:1028 src/Config.php:2523 src/Profile.php:1050
+#: src/Config.php:1028 src/Config.php:2522 src/Profile.php:1050
 #: src/Profile.php:1110 src/Profile.php:2610
 #: src/Features/PlanningEvent.php:767
 msgid "Personalization"
@@ -17737,7 +17732,7 @@ msgstr "Telefon"
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:587
 #: src/AuthLDAP.php:967 src/AuthLDAP.php:1164 src/AuthLDAP.php:3978
-#: src/User.php:2739 src/User.php:3191 src/User.php:3626
+#: src/User.php:2777 src/User.php:3229 src/User.php:3664
 #: src/Contact_Supplier.php:307 src/Auth.php:1768 src/Contact.php:264
 #: src/ContentTemplates/Parameters/UserParameters.php:79
 #: src/NotificationTargetCommonITILObject.php:1750
@@ -17781,8 +17776,8 @@ msgstr "Fotovodič"
 #: templates/generic_show_form.html.twig templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:165
 #: src/CommonDropdown.php:188 src/AuthLDAP.php:985 src/AuthLDAP.php:3982
-#: src/User.php:2524 src/User.php:2990 src/User.php:3589 src/User.php:3960
-#: src/User.php:6430
+#: src/User.php:2562 src/User.php:3028 src/User.php:3627 src/User.php:3998
+#: src/User.php:6483
 msgid "Picture"
 msgid_plural "Pictures"
 msgstr[0] "Obrázek"
@@ -17846,7 +17841,7 @@ msgstr "Plánované datum začátku"
 msgid "Planned tickets"
 msgstr "Naplánované požadavky"
 
-#: templates/pages/tools/project_task.html.twig front/planning.php:157
+#: templates/pages/tools/project_task.html.twig front/planning.php:161
 #: src/Project.php:1685 src/Event.php:159 src/Event.php:168
 #: src/Planning.php:86 src/ReservationItem.php:204 src/Profile.php:1576
 #: src/Profile.php:3170 src/Reminder.php:447 src/Reminder.php:1027
@@ -17885,7 +17880,7 @@ msgstr "Plánování"
 msgid "Plans"
 msgstr "Plány"
 
-#: src/Config.php:3108
+#: src/Config.php:3107
 msgid "Please check the unstable version checkbox."
 msgstr "Zaškrtněte kolonku nestabilní verze."
 
@@ -18238,7 +18233,7 @@ msgstr ""
 "Zásuvný modul ke kontrole. Není-li tato možnost použita, budou kontroly "
 "provedeny na tabulkách základní databáze GLPI."
 
-#: src/Html.php:1586 src/Config.php:3206
+#: src/Html.php:1586 src/Config.php:3205
 msgid "Plugins"
 msgstr "Zásuvné moduly"
 
@@ -18321,7 +18316,7 @@ msgstr "Možné hodnoty jsou:"
 #: templates/pages/admin/ldap.choose_directory.html.twig
 #: src/Ticket_Ticket.php:75 src/RuleDictionnarySoftwareCollection.php:99
 #: src/KnowbaseItem.php:1402 src/KnowbaseItem.php:1456 src/Appliance.php:480
-#: src/User.php:3463 src/MassiveAction.php:923 src/MassiveAction.php:1233
+#: src/User.php:3501 src/MassiveAction.php:923 src/MassiveAction.php:1233
 #: src/MassiveAction.php:1262 src/RuleCollection.php:1443 src/Lock.php:1141
 #: src/Lock.php:1159 src/Item_SoftwareVersion.php:170
 #: src/Item_SoftwareVersion.php:182 src/Domain.php:424 src/Domain.php:433
@@ -18348,7 +18343,7 @@ msgstr "Odeslat"
 msgid "Postal code"
 msgstr "PSČ"
 
-#: src/Document.php:1451
+#: src/Document.php:1463
 msgid ""
 "Potential upload attack or file too large. Moving temporary file failed."
 msgstr ""
@@ -18873,7 +18868,7 @@ msgstr "Zakoupená verze"
 msgid "Purge"
 msgstr "Odstranit"
 
-#: src/Config.php:3294
+#: src/Config.php:3293
 msgid "Purge all log entries"
 msgstr "Vyčistit všechny položky záznamu událostí"
 
@@ -19020,7 +19015,7 @@ msgid "Read"
 msgstr "Číst"
 
 #. TRANS: short for : Read method for user authentication and synchronization
-#: src/User.php:5925
+#: src/User.php:5978
 msgid "Read auth"
 msgstr "Načíst ověřování"
 
@@ -19044,7 +19039,7 @@ msgstr "Přečtěte si nejčastější dotazy (FAQ)"
 msgid "Read the item's notes"
 msgstr "Číst poznámky položky"
 
-#: src/User.php:5926
+#: src/User.php:5979
 msgid "Read user authentication and synchronization method"
 msgstr "Načíst metodu ověřování a synchronizace uživatelů"
 
@@ -19214,7 +19209,7 @@ msgstr "Opakující se událost přetažena"
 msgid "Recurring event resized"
 msgstr "Rozpětí opakující se události změněno"
 
-#: src/User.php:2789 src/RuleRightCollection.php:164 src/RuleRight.php:78
+#: src/User.php:2827 src/RuleRightCollection.php:164 src/RuleRight.php:78
 #: src/RuleRight.php:350 src/Profile_User.php:157 src/Profile_User.php:305
 #: src/Profile_User.php:1138
 msgid "Recursive"
@@ -19299,8 +19294,8 @@ msgstr[3] "Odmítnuté e-maily"
 msgid "Refused mail archive folder (optional)"
 msgstr "Složka archivu odmítnutých e-mailů (volitelné)"
 
-#: templates/pages/setup/apiclient.html.twig src/User.php:2912
-#: src/User.php:2914 src/User.php:3299 src/User.php:3301
+#: templates/pages/setup/apiclient.html.twig src/User.php:2950
+#: src/User.php:2952 src/User.php:3337 src/User.php:3339
 msgid "Regenerate"
 msgstr "Znovu vytvořit"
 
@@ -19423,7 +19418,7 @@ msgstr "Četnost zasílání připomínání výstrah ohledně spotřebního mat
 msgid "Remote ID"
 msgstr "Vzdálené ID"
 
-#: src/User.php:2893 src/User.php:3280
+#: src/User.php:2931 src/User.php:3318
 msgid "Remote access keys"
 msgstr "Klíče vzdáleného přístupu"
 
@@ -19444,7 +19439,7 @@ msgctxt "button"
 msgid "Remove a contract"
 msgstr "Odstranit smlouvu"
 
-#: src/Document.php:1720
+#: src/Document.php:1732
 msgctxt "button"
 msgid "Remove a document"
 msgstr "Odebrat dokument"
@@ -19463,7 +19458,7 @@ msgctxt "button"
 msgid "Remove all notification templates"
 msgstr "Odebrat všechny šablony oznámení"
 
-#: src/Appliance.php:450 src/Document.php:1726 src/Contract.php:424
+#: src/Appliance.php:450 src/Document.php:1738 src/Contract.php:424
 #: src/Ticket.php:2634
 msgctxt "button"
 msgid "Remove an item"
@@ -19905,7 +19900,7 @@ msgstr "Vrátit nastavení zobrazení na výchozí hodnoty"
 msgid "Reset last run"
 msgstr "Obnovit poslední běh"
 
-#: src/User.php:5499 src/Api/API.php:2187
+#: src/User.php:5544 src/Api/API.php:2191
 msgid "Reset password successful."
 msgstr "Obnovení hesla bylo úspěšné."
 
@@ -19961,8 +19956,8 @@ msgstr "Datum odpovědi"
 msgid "Response date to the satisfaction survey"
 msgstr "Datum odezvy na průzkum spokojenosti"
 
-#: src/AuthLDAP.php:992 src/AuthLDAP.php:1333 src/User.php:2858
-#: src/User.php:3929 src/ContentTemplates/Parameters/UserParameters.php:83
+#: src/AuthLDAP.php:992 src/AuthLDAP.php:1333 src/User.php:2896
+#: src/User.php:3967 src/ContentTemplates/Parameters/UserParameters.php:83
 msgid "Responsible"
 msgstr "Zodpovědný"
 
@@ -19988,7 +19983,7 @@ msgstr "Obnovit"
 msgid "Restore (move out of trashbin)"
 msgstr "Obnovit (přesunout z koše)"
 
-#: src/Log.php:1082 src/Config.php:3188
+#: src/Log.php:1082 src/Config.php:3187
 msgid "Restore the item"
 msgstr "Obnovit položku"
 
@@ -20269,7 +20264,7 @@ msgstr "Období spouštění"
 msgid "Run the \"%1$s\" command for more details."
 msgstr ""
 
-#: src/User.php:2639 src/User.php:3112 src/Config.php:1285
+#: src/User.php:2677 src/User.php:3150 src/Config.php:1285
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
 msgstr ""
@@ -20394,7 +20389,7 @@ msgid "SQL password"
 msgstr "SQL heslo"
 
 #: src/DBConnection.php:82 src/Config.php:657 src/Config.php:2040
-#: src/Config.php:2555
+#: src/Config.php:2554
 msgid "SQL replica"
 msgid_plural "SQL replicas"
 msgstr[0] "SQL replikace"
@@ -20491,7 +20486,7 @@ msgstr "Sobota"
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/components/itilobject/actors/main.html.twig src/AuthLDAP.php:685
 #: src/AuthLDAP.php:873 src/AuthLDAP.php:1001 src/AuthLDAP.php:1037
-#: src/User.php:5371 src/Auth.php:1797 src/Impact.php:404 src/Impact.php:1108
+#: src/User.php:5409 src/Auth.php:1797 src/Impact.php:404 src/Impact.php:1108
 #: src/Impact.php:1821 src/Dashboard/Grid.php:862
 msgid "Save"
 msgstr "Uložit"
@@ -20505,7 +20500,7 @@ msgstr "Uložit"
 #: templates/components/itilobject/footer.html.twig
 #: templates/components/infocom.html.twig
 #: templates/components/form/buttons.html.twig src/Item_Devices.php:754
-#: src/User.php:3305 src/Inventory/Conf.php:993 src/CommonGLPI.php:1404
+#: src/User.php:3343 src/Inventory/Conf.php:993 src/CommonGLPI.php:1404
 #: src/DomainRecordType.php:412 src/ReservationItem.php:415
 #: src/Entity.php:1644 src/Entity.php:1732 src/Entity.php:1973
 #: src/Entity.php:2506 src/Entity.php:2606 src/Entity.php:3220
@@ -20513,8 +20508,8 @@ msgstr "Uložit"
 #: src/Reservation.php:878 src/CommonITILValidation.php:899
 #: src/CommonITILActor.php:229 src/CommonITILActor.php:293 src/Config.php:580
 #: src/Config.php:630 src/Config.php:704 src/Config.php:774 src/Config.php:980
-#: src/Config.php:1509 src/Config.php:2083 src/Config.php:3301
-#: src/Config.php:3543 src/Config.php:3596 src/Profile.php:1249
+#: src/Config.php:1509 src/Config.php:2083 src/Config.php:3300
+#: src/Config.php:3542 src/Config.php:3595 src/Profile.php:1249
 #: src/Profile.php:1290 src/Profile.php:1338 src/Profile.php:1406
 #: src/Profile.php:1457 src/Profile.php:1591 src/Profile.php:1703
 #: src/Profile.php:1820 src/Profile.php:1874 src/Profile.php:1918
@@ -20589,9 +20584,9 @@ msgstr "Naplánováno"
 msgid "Search"
 msgstr "Hledat"
 
-#: front/find_num.php:84 src/KnowbaseItem.php:1348 src/AuthLDAP.php:1515
-#: src/AuthLDAP.php:4027 src/Search.php:2557 src/Planning.php:570
-#: src/ReservationItem.php:476 src/Knowbase.php:66
+#: src/KnowbaseItem.php:1348 src/AuthLDAP.php:1515 src/AuthLDAP.php:4027
+#: src/Search.php:2557 src/Planning.php:570 src/ReservationItem.php:476
+#: src/Knowbase.php:66
 msgctxt "button"
 msgid "Search"
 msgstr "Hledat"
@@ -20665,10 +20660,6 @@ msgstr "Uživatelské zobrazení výsledků hledání"
 msgid "Search results for localized items only"
 msgstr "Výsledky hledání pouze pro lokalizované položky"
 
-#: front/find_num.php:75
-msgid "Search the ID of your hardware"
-msgstr "Hledat identifikátor hardware"
-
 #: src/AuthLDAP.php:852 src/AuthLDAP.php:1308
 msgid "Search type"
 msgstr "Typ hledání"
@@ -20686,7 +20677,7 @@ msgstr "Druhá položka"
 msgid "Secondary"
 msgstr "Sekundární"
 
-#: src/Event.php:173 src/Config.php:2545
+#: src/Event.php:173 src/Config.php:2544
 msgid "Security"
 msgstr "Zabezpečení"
 
@@ -20698,7 +20689,7 @@ msgstr ""
 msgid "Security key cannot be generated!"
 msgstr "Klíč zabezpečení se nedaří vytvořit!"
 
-#: src/Config.php:3370
+#: src/Config.php:3369
 msgid "Security setup"
 msgstr "Nastavení zabezpečení"
 
@@ -21029,15 +21020,15 @@ msgstr "Sériové číslo"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/assets/operatingsystem.html.twig
-#: templates/components/form/item_device.html.twig front/find_num.php:96
-#: src/Phone.php:251 src/Change_Item.php:160 src/Monitor.php:246
+#: templates/components/form/item_device.html.twig src/Phone.php:251
+#: src/Change_Item.php:160 src/Monitor.php:246
 #: src/NotificationTargetCertificate.php:125
 #: src/ComputerVirtualMachine.php:210 src/ComputerVirtualMachine.php:338
 #: src/NotificationTargetProblem.php:205 src/Item_Devices.php:350
 #: src/Item_Devices.php:351 src/Document_Item.php:415 src/Appliance.php:241
 #: src/Budget.php:358 src/PassiveDCEquipment.php:112 src/Enclosure.php:140
-#: src/Printer.php:384 src/RuleLocation.php:108 src/User.php:4904
-#: src/User.php:4986 src/Search.php:8132 src/Blacklist.php:245
+#: src/Printer.php:384 src/RuleLocation.php:108 src/User.php:4942
+#: src/User.php:5024 src/Search.php:8132 src/Blacklist.php:245
 #: src/Rack.php:190 src/SoftwareLicense.php:372 src/SoftwareLicense.php:626
 #: src/SoftwareLicense.php:941 src/SoftwareLicense.php:1208
 #: src/Computer_Item.php:413 src/Computer_Item.php:582 src/Peripheral.php:230
@@ -21161,7 +21152,7 @@ msgid "Set the status to pending"
 msgstr "Natavit stav na Čeká na zpracování"
 
 #: src/Preference.php:42 src/Impact.php:373 src/Impact.php:1060
-#: src/Impact.php:1119 src/Config.php:2530
+#: src/Impact.php:1119 src/Config.php:2529
 msgid "Settings"
 msgstr "Nastavení"
 
@@ -21197,7 +21188,7 @@ msgctxt "button"
 msgid "Show"
 msgstr "Zobrazit"
 
-#: src/Dropdown.php:308 src/User.php:4625
+#: src/Dropdown.php:308 src/User.php:4663
 #, php-format
 msgid "Show %1$s"
 msgstr "Zobrazit %1$s"
@@ -21314,8 +21305,8 @@ msgstr[3] "Typy sim karet"
 msgid "Simple mode"
 msgstr "Základní režim"
 
-#: front/reservationitem.php:41 front/tracking.injector.php:56
-#: front/tracking.injector.php:58 front/reservation.php:45
+#: front/reservationitem.php:41 front/tracking.injector.php:58
+#: front/tracking.injector.php:60 front/reservation.php:45
 #: front/reservation.form.php:51 front/reservation.form.php:53
 #: src/ITILTemplateMandatoryField.php:174 src/ITILTemplate.php:418
 #: src/Profile.php:3730
@@ -21401,14 +21392,13 @@ msgstr[3] "Modely zásuvek "
 msgid "Sodium ChaCha20-Poly1305 size constant"
 msgstr ""
 
-#: templates/pages/management/softwarelicense.html.twig front/find_num.php:157
-#: src/Dropdown.php:1226 src/Log.php:477 src/Log.php:483 src/Log.php:920
-#: src/SoftwareVersion.php:119 src/Rule.php:294
-#: src/RuleDictionnarySoftware.php:82 src/RuleDictionnarySoftware.php:109
-#: src/SoftwareLicense.php:1210 src/Software.php:67
-#: src/RuleSoftwareCategory.php:75 src/Item_SoftwareVersion.php:1039
-#: src/Entity.php:1896 src/Config.php:3213 src/Profile.php:2101
-#: src/NotificationTargetSoftwareLicense.php:90
+#: templates/pages/management/softwarelicense.html.twig src/Dropdown.php:1226
+#: src/Log.php:477 src/Log.php:483 src/Log.php:920 src/SoftwareVersion.php:119
+#: src/Rule.php:294 src/RuleDictionnarySoftware.php:82
+#: src/RuleDictionnarySoftware.php:109 src/SoftwareLicense.php:1210
+#: src/Software.php:67 src/RuleSoftwareCategory.php:75
+#: src/Item_SoftwareVersion.php:1039 src/Entity.php:1896 src/Config.php:3212
+#: src/Profile.php:2101 src/NotificationTargetSoftwareLicense.php:90
 msgid "Software"
 msgid_plural "Software"
 msgstr[0] "Software"
@@ -21770,8 +21760,8 @@ msgstr "Statistiky"
 #: src/PlanningExternalEventTemplate.php:64 src/Appliance.php:296
 #: src/PassiveDCEquipment.php:147 src/Enclosure.php:131
 #: src/CommonITILTask.php:772 src/CommonITILTask.php:967
-#: src/CommonITILTask.php:1468 src/Printer.php:375 src/User.php:4906
-#: src/User.php:4988 src/Search.php:8105 src/Search.php:8126 src/Line.php:150
+#: src/CommonITILTask.php:1468 src/Printer.php:375 src/User.php:4944
+#: src/User.php:5026 src/Search.php:8105 src/Search.php:8126 src/Line.php:150
 #: src/Rack.php:181 src/NotificationTargetContract.php:182
 #: src/SoftwareLicense.php:484 src/SoftwareLicense.php:948
 #: src/Software.php:598 src/Peripheral.php:221 src/Certificate_Item.php:470
@@ -21914,8 +21904,8 @@ msgstr "Dílčí úkol"
 msgid "Success"
 msgstr "Úspěch"
 
-#: src/Document.php:185 src/Document.php:1201 src/Document.php:1313
-#: src/Document.php:1410
+#: src/Document.php:185 src/Document.php:1207 src/Document.php:1325
+#: src/Document.php:1422
 #, php-format
 msgid "Successful deletion of the file %s"
 msgstr ""
@@ -22002,8 +21992,8 @@ msgid "Supported tasks"
 msgstr ""
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:932
-#: src/AuthLDAP.php:1137 src/AuthLDAP.php:3975 src/User.php:2569
-#: src/User.php:2970 src/User.php:6419 src/Auth.php:1712
+#: src/AuthLDAP.php:1137 src/AuthLDAP.php:3975 src/User.php:2607
+#: src/User.php:3008 src/User.php:6472 src/Auth.php:1712
 #: src/ContentTemplates/Parameters/UserParameters.php:82
 msgid "Surname"
 msgstr "Příjmení"
@@ -22034,8 +22024,8 @@ msgid "Synchronization"
 msgstr "Synchronizace"
 
 #: src/AuthLDAP.php:542 src/AuthLDAP.php:1324 src/AuthLDAP.php:1765
-#: src/AuthLDAP.php:1824 src/AuthLDAP.php:3958 src/User.php:2544
-#: src/User.php:3028 src/User.php:3599
+#: src/AuthLDAP.php:1824 src/AuthLDAP.php:3958 src/User.php:2582
+#: src/User.php:3066 src/User.php:3637
 msgid "Synchronization field"
 msgstr "Synchronizační pole"
 
@@ -22073,7 +22063,7 @@ msgstr "Synchronizují se už naimportovaní uživatelé"
 msgid "Sysdescr"
 msgstr ""
 
-#: src/Event.php:157 src/Config.php:2544
+#: src/Event.php:157 src/Config.php:2543
 msgid "System"
 msgstr "Systém"
 
@@ -22432,7 +22422,7 @@ msgstr "Nastavení šablon"
 msgid "Temporarily down for maintenance"
 msgstr ""
 
-#: src/Document.php:1274
+#: src/Document.php:1286
 msgid "Temporary directory doesn't exist"
 msgstr "Dočasná složka neexistuje"
 
@@ -22512,7 +22502,7 @@ msgstr "Text v přihlašovacím okně"
 msgid "Text to display during maintenance"
 msgstr "Zobrazovaný text při režimu údržby"
 
-#: front/tracking.injector.php:92
+#: front/tracking.injector.php:94
 msgid "Thank you for using our automatic helpdesk system."
 msgstr "Děkujeme za použití našeho automatizovaného systému podpory."
 
@@ -22590,7 +22580,7 @@ msgid ""
 "The assignment of an OLA to a ticket causes the recalculation of the date."
 msgstr "Přiřazení OLA k požadavku způsobí přepočet data."
 
-#: src/User.php:5461
+#: src/User.php:5499
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
@@ -22681,11 +22671,11 @@ msgstr "Vyhodnotí se všechna pravidla."
 msgid "The file could not be created in %s."
 msgstr "Soubor nemůže být vytvořen v %s."
 
-#: src/User.php:938
+#: src/User.php:949
 msgid "The file is not an image file."
 msgstr "Tento soubor není obrázek."
 
-#: src/Document.php:1441 src/User.php:921
+#: src/Document.php:1453 src/User.php:932
 msgid "The file is valid. Upload is successful."
 msgstr "Soubor je platný. Nahrání bylo úspěšné."
 
@@ -22740,11 +22730,11 @@ msgstr "Soubor logu není možné vytvořit v %s."
 msgid "The log file has been created successfully."
 msgstr "Soubor logu byl úspěšně vytvořen."
 
-#: src/User.php:717
+#: src/User.php:728
 msgid "The login is not valid. Unable to add the user."
 msgstr "Uživatelské jméno není platné. Není proto možné přidat uživatele."
 
-#: src/User.php:3359
+#: src/User.php:3397
 msgid "The login is not valid. Unable to update login."
 msgstr "Uživatelské jméno není platné. Není ho proto možné změnit."
 
@@ -22846,7 +22836,7 @@ msgctxt "filters"
 msgid "The type of the item"
 msgstr ""
 
-#: src/GLPIUploadHandler.php:50
+#: src/UploadHandler.php:370
 msgid ""
 "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in "
 "the HTML form"
@@ -22854,19 +22844,19 @@ msgstr ""
 "Velikost nahrávaného souboru překročila hodnotu MAX_FILE_SIZE určenou v HTML"
 " formuláři"
 
-#: src/GLPIUploadHandler.php:74
+#: src/UploadHandler.php:394
 msgid "The uploaded file exceeds the post_max_size directive in php.ini"
 msgstr ""
 "Velikost nahrávaného souboru překročila hodnotu post_max_size určenou v "
 "php.ini"
 
-#: src/GLPIUploadHandler.php:46
+#: src/UploadHandler.php:366
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
 msgstr ""
 "Velikost nahrávaného soubor překročila hodnotu upload_max_filesize určenou v"
 " php.ini"
 
-#: src/GLPIUploadHandler.php:54
+#: src/UploadHandler.php:374
 msgid "The uploaded file was only partially uploaded"
 msgstr "Nahrávaný soubor byl nahrán jen částečně"
 
@@ -22948,7 +22938,7 @@ msgid ""
 "shown. You can still drag cards into this column."
 msgstr ""
 
-#: src/User.php:6452
+#: src/User.php:6505
 msgid "This is a special user used for automated actions. "
 msgstr ""
 
@@ -23311,7 +23301,7 @@ msgstr "Čas na vyřešení + stav"
 msgid "Time to resolve exceeded"
 msgstr "Čas na vyřešení byl překročen"
 
-#: src/User.php:2623 src/User.php:3096
+#: src/User.php:2661 src/User.php:3134
 msgid "Time zone"
 msgstr "Časová zóna"
 
@@ -23348,7 +23338,7 @@ msgstr "Časová zóna"
 msgid "Timezone usage has been enabled."
 msgstr "Bylo povoleno používání časových pásem."
 
-#: src/User.php:2637 src/User.php:3110 src/Config.php:1283
+#: src/User.php:2675 src/User.php:3148 src/Config.php:1283
 msgid "Timezone usage has not been activated."
 msgstr "Používání časových pásem nebylo aktivováno."
 
@@ -23387,7 +23377,7 @@ msgstr ""
 #: templates/components/itilobject/selfservice.html.twig
 #: src/Csv/PlanningCsv.php:72 src/NotificationTargetProjectTask.php:595
 #: src/NotificationTargetProblem.php:255 src/NotificationTargetProblem.php:260
-#: src/ProjectCost.php:132 src/CommonITILTask.php:1652 src/User.php:3824
+#: src/ProjectCost.php:132 src/CommonITILTask.php:1652 src/User.php:3862
 #: src/ContractCost.php:123 src/CommonITILCost.php:108
 #: src/NotificationTargetChange.php:392 src/NotificationTargetChange.php:397
 #: src/Contact.php:343
@@ -23405,7 +23395,7 @@ msgstr "Nadpis"
 
 #: templates/components/user/info_card.html.twig front/stat.tracking.php:91
 #: front/stat.graph.php:241 src/AuthLDAP.php:974 src/AuthLDAP.php:1182
-#: src/AuthLDAP.php:3980 src/User.php:2765 src/Auth.php:1780
+#: src/AuthLDAP.php:3980 src/User.php:2803 src/Auth.php:1780
 #: src/NotificationTargetCommonITILObject.php:1752
 #: src/NotificationTargetCommonITILObject.php:1776
 #: src/NotificationTargetCommonITILObject.php:1812
@@ -23790,8 +23780,8 @@ msgstr "Kroucené páry (RJ-45)"
 #: src/Budget.php:242 src/Budget.php:355 src/PassiveDCEquipment.php:104
 #: src/CommonDBVisible.php:279 src/RuleDictionnaryPhoneType.php:51
 #: src/RuleDictionnaryPhoneType.php:65 src/QueuedNotification.php:360
-#: src/QueuedNotification.php:700 src/Printer.php:359 src/User.php:4901
-#: src/User.php:4983 src/Blacklist.php:95 src/Blacklist.php:130
+#: src/QueuedNotification.php:700 src/Printer.php:359 src/User.php:4939
+#: src/User.php:5021 src/Blacklist.php:95 src/Blacklist.php:130
 #: src/DisplayPreference.php:700 src/Rack.php:165 src/DeviceSimcard.php:54
 #: src/DeviceSimcard.php:89 src/NotificationTargetContract.php:180
 #: src/RuleCollection.php:1326 src/RuleCollection.php:2354
@@ -23952,7 +23942,7 @@ msgstr "nikde se neopak. identifikátor"
 msgid "Unable to add. The user already exist."
 msgstr "Nelze přidat. Uživatel už existuje."
 
-#: src/User.php:750
+#: src/User.php:761
 msgid "Unable to add. The user already exists."
 msgstr "Není možno přidat. Uživatel už existuje."
 
@@ -24115,7 +24105,7 @@ msgstr ""
 msgid "Unable to get item"
 msgstr "Nedaří se získat položku"
 
-#: front/user.form.php:189
+#: front/user.form.php:199
 msgid "Unable to impersonate user"
 msgstr "Nedaří se přepnout do jiného uživatele"
 
@@ -24194,7 +24184,7 @@ msgstr "Instalační soubor \"%s\" nelze přečíst."
 msgid "Unable to reaffect given elements!"
 msgstr ""
 
-#: src/Inventory/Inventory.php:928
+#: src/Inventory/Inventory.php:941
 #, php-format
 msgid "Unable to remove file %1$s"
 msgstr ""
@@ -24204,7 +24194,7 @@ msgstr ""
 msgid "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
 msgstr "Nedaří se přejmenovat tabulku %1$s (%2$s) na %3$s (%4$s)!"
 
-#: src/User.php:5444 src/User.php:5454
+#: src/User.php:5482 src/User.php:5492
 msgid "Unable to reset password, please contact your administrator"
 msgstr "Heslo nelze resetovat, obraťte se na správce"
 
@@ -24218,7 +24208,7 @@ msgstr "Nedaří se uložit soubor s obrázkem."
 msgid "Unable to send notification using %1$s"
 msgstr "Nedaří se poslat oznámení prostřednictvím %1$s"
 
-#: front/user.form.php:198
+#: front/user.form.php:208
 msgid "Unable to stop impersonating user"
 msgstr "Nedaří se opustit přepnutí se do jiného uživatele"
 
@@ -24255,7 +24245,7 @@ msgstr ""
 msgid "Unable to update DB configuration file."
 msgstr "Nelze aktualizovat DB konfigurační soubor."
 
-#: src/User.php:3348
+#: src/User.php:3386
 msgid "Unable to update login. A user already exists."
 msgstr ""
 "Uživatelské jméno není možné změnit na toto – už je používáno někým jiným."
@@ -24292,11 +24282,11 @@ msgstr ""
 msgid "Unable to write cache configuration file."
 msgstr "Nelze zapsat konfigurační soubor mezipaměti. "
 
-#: front/document.send.php:66 front/document.send.php:111
+#: front/document.send.php:68 front/document.send.php:113
 msgid "Unauthorized access to this file"
 msgstr "Neoprávněný přístup k tomuto souboru"
 
-#: src/Document.php:1470 src/RuleCollection.php:1185
+#: src/Document.php:1482 src/RuleCollection.php:1185
 msgid "Unauthorized file type"
 msgstr "Neplatný typ souboru"
 
@@ -24373,7 +24363,7 @@ msgstr "Neznámé"
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: front/document.send.php:50
+#: front/document.send.php:52
 msgid "Unknown file"
 msgstr "Neznámý soubor"
 
@@ -24398,7 +24388,7 @@ msgstr ""
 msgid "Unknown ticket"
 msgstr "Neznámý požadavek"
 
-#: src/User.php:6651 src/KnowbaseItem_Revision.php:177
+#: src/User.php:6704 src/KnowbaseItem_Revision.php:177
 msgid "Unknown user"
 msgstr "Neznámý uživatel"
 
@@ -24590,15 +24580,15 @@ msgstr "Změnit položku"
 
 #. TRANS: short for : Update method for user authentication and
 #. synchronization
-#: src/User.php:5929
+#: src/User.php:5982
 msgid "Update auth and sync"
 msgstr "Změna ověřování a synchronizace"
 
-#: src/User.php:4775
+#: src/User.php:4813
 msgid "Update authentification method to"
 msgstr "Změnit metodu ověřování totožnosti na"
 
-#: src/Config.php:3272
+#: src/Config.php:3271
 msgid "Update component"
 msgstr "Aktualizovat komponentu"
 
@@ -24623,7 +24613,7 @@ msgstr "Změnit doplňující zprávy (autor)"
 msgid "Update helpdesk parameters"
 msgstr "Změnit parametry služby podpory"
 
-#: src/User.php:5930
+#: src/User.php:5983
 msgid "Update method for user authentication and synchronization"
 msgstr "Změnit metodu pro ověřování totožnosti a synchronizaci uživatelů"
 
@@ -24707,7 +24697,7 @@ msgstr "Aktualizovat počítadlo tiskárny"
 msgid "Update the approval request to %s"
 msgstr "Změnit žádost o schválení pro %s"
 
-#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3192
+#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3191
 msgid "Update the item"
 msgstr "Změnit položku"
 
@@ -24810,7 +24800,7 @@ msgctxt "button"
 msgid "Upload"
 msgstr ""
 
-#: src/Document.php:1163 src/Document.php:1559
+#: src/Document.php:1169 src/Document.php:1571
 msgid "Upload directory doesn't exist"
 msgstr "Složka pro nahrání neexistuje"
 
@@ -24861,7 +24851,7 @@ msgstr "Použít rozlišený název ve vyhledávání"
 msgid "Use GLPI"
 msgstr "Používat GLPI"
 
-#: src/User.php:3252
+#: src/User.php:3290
 msgid "Use GLPI in mode"
 msgstr "Použít GLPI v režimu"
 
@@ -24918,7 +24908,7 @@ msgstr "Stránkovat výsledky"
 msgid "Use rule for"
 msgstr "Použít pravidlo pro"
 
-#: src/User.php:2632 src/User.php:3105 src/Config.php:1279
+#: src/User.php:2670 src/User.php:3143 src/Config.php:1279
 msgid "Use server configuration"
 msgstr "Použít nastavení serveru"
 
@@ -24988,7 +24978,7 @@ msgstr[1] "Uživatelé"
 msgstr[2] "Uživatelů"
 msgstr[3] "Uživatelé"
 
-#: src/User.php:2705 src/User.php:3766 src/User.php:5627
+#: src/User.php:2743 src/User.php:3804 src/User.php:5680
 msgid "User DN"
 msgstr "Rozlišený název (dn) uživatele"
 
@@ -25000,7 +24990,7 @@ msgstr "Uživatel přiřazený k úkolu"
 msgid "User attribute containing its groups"
 msgstr "Atribut uživatele obsahující skupiny, kterých je členem"
 
-#: src/Config.php:3258
+#: src/Config.php:3257
 msgid "User authentication method changes"
 msgstr "Změnit metodu ověřování"
 
@@ -25037,7 +25027,7 @@ msgstr "Uživatel s tímto profilem"
 msgid "User in group"
 msgstr "Uživatel ve skupině"
 
-#: src/User.php:5631
+#: src/User.php:5684
 msgid "User information"
 msgstr "Informace o uživateli"
 
@@ -25050,7 +25040,7 @@ msgstr "Umístění uživatele"
 msgid "User mentioned"
 msgstr ""
 
-#: src/User.php:2708
+#: src/User.php:2746
 msgid "User missing in LDAP directory"
 msgstr "Uživatel se v LDAP adresáři nenachází"
 
@@ -25156,7 +25146,7 @@ msgstr "Platná licence"
 msgid "Valid licenses"
 msgstr "Platné licence"
 
-#: src/User.php:2663
+#: src/User.php:2701
 msgid "Valid since"
 msgstr "Platné od kdy"
 
@@ -25169,7 +25159,7 @@ msgstr "Platné štítky"
 msgid "Valid to %s"
 msgstr "Platná do %s"
 
-#: src/User.php:2671
+#: src/User.php:2709
 msgid "Valid until"
 msgstr "Platné do kdy"
 
@@ -25222,10 +25212,11 @@ msgid "Validation request answer"
 msgstr "Odpověď na žádost o schválení"
 
 #: front/report.infocom.php:63 front/report.infocom.conso.php:62
-#: src/DropdownTranslation.php:426 src/Rule.php:1198 src/Rule.php:2260
-#: src/Blacklist.php:90 src/Blacklist.php:122 src/RuleCollection.php:1418
+#: src/DropdownTranslation.php:426 src/DropdownTranslation.php:573
+#: src/Rule.php:1198 src/Rule.php:2260 src/Blacklist.php:90
+#: src/Blacklist.php:122 src/RuleCollection.php:1418
 #: src/ITILTemplatePredefinedField.php:374 src/RuleAction.php:195
-#: src/Printer_CartridgeInfo.php:73 src/Config.php:3623
+#: src/Printer_CartridgeInfo.php:73 src/Config.php:3622
 #: src/Fieldblacklist.php:79 src/Fieldblacklist.php:121
 #: src/SavedSearch_Alert.php:167 src/SavedSearch_Alert.php:275
 msgid "Value"
@@ -25998,11 +25989,11 @@ msgstr "Žlutá"
 msgid "Yes"
 msgstr "Ano"
 
-#: src/Config.php:2366
+#: src/Config.php:2363
 msgid "Yes - Restrict to global management"
 msgstr ""
 
-#: src/Config.php:2365
+#: src/Config.php:2362
 msgid "Yes - Restrict to unit management"
 msgstr ""
 
@@ -26077,11 +26068,11 @@ msgstr ""
 "databáze. Nainstalujte správné GLPI soubory odpovídající verzi vaší "
 "databáze."
 
-#: src/Config.php:3092
+#: src/Config.php:3091
 msgid "You are using a development version, be careful!"
 msgstr "Používáte vývojovou verzi, buďte opatrní!"
 
-#: src/Config.php:3093
+#: src/Config.php:3092
 msgid "You are using a pre-release version, be careful!"
 msgstr "Používáte předběžnou verzi, buďte opatrní!"
 
@@ -26115,7 +26106,7 @@ msgid ""
 "You can ignore this suggestion if your web server root directory is \"%s\"."
 msgstr ""
 
-#: src/User.php:6454
+#: src/User.php:6507
 msgid "You can set its name to your organisation's name. "
 msgstr ""
 
@@ -26217,8 +26208,8 @@ msgstr ""
 "Nemáte přístup k této aplikaci, protože Váš účet byl deaktivován nebo "
 "odebrán"
 
-#: src/Html.php:644 src/Api/API.php:1052 src/Api/API.php:1830
-#: src/Api/API.php:1967 src/Api/API.php:2101 src/Api/API.php:2706
+#: src/Html.php:644 src/Api/API.php:1052 src/Api/API.php:1834
+#: src/Api/API.php:1971 src/Api/API.php:2105 src/Api/API.php:2710
 msgid "You don't have permission to perform this action."
 msgstr "Nemáte oprávnění k provedení této akce."
 
@@ -26389,7 +26380,7 @@ msgstr "Váš komentář byl přidán"
 msgid "Your comment has been edited"
 msgstr "Váš komentář byl upraven"
 
-#: src/Config.php:2658
+#: src/Config.php:2657
 #, php-format
 msgid "Your database engine version seems too old: %s."
 msgstr "Verze vámi používaného databázového stroje se zdá příliš stará: %s."
@@ -26410,13 +26401,13 @@ msgstr "Vaše požadavky, které byly vzaty na vědomí"
 msgid "Your password has been successfully updated."
 msgstr "Vaše heslo bylo úspěšně změněno."
 
-#: src/User.php:5319
+#: src/User.php:5357
 msgid "Your password has expired. You must change it to be able to login."
 msgstr ""
 "Platnost vašeho hesla skončila. Abyste se mohli přihlásit, je třeba si ho "
 "změnit."
 
-#: templates/password_form.html.twig src/User.php:5436
+#: templates/password_form.html.twig src/User.php:5474
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
 msgstr ""
@@ -26444,7 +26435,7 @@ msgstr "Vaše zpracovávané problémy"
 msgid "Your session has expired."
 msgstr ""
 
-#: front/tracking.injector.php:86
+#: front/tracking.injector.php:88
 msgid "Your ticket has been registered, its treatment is in progress."
 msgstr "Váš požadavek byl zaregistrován, probíhá jeho zpracování."
 
@@ -26565,7 +26556,7 @@ msgstr "neobsahuje"
 msgid "does not exist"
 msgstr "neexistuje"
 
-#: src/Api/API.php:2154
+#: src/Api/API.php:2158
 msgid "email parameter missing"
 msgstr "chybí parametr e-mail"
 
@@ -26614,7 +26605,7 @@ msgstr "od"
 msgid "full structure"
 msgstr ""
 
-#: src/User.php:2906 src/User.php:3293
+#: src/User.php:2944 src/User.php:3331
 #, php-format
 msgid "generated on %s"
 msgstr "vytvořeno %s"
@@ -26647,7 +26638,7 @@ msgstr "skryté"
 msgid "images"
 msgstr "obrázky"
 
-#: src/Api/API.php:2666
+#: src/Api/API.php:2670
 msgid "input parameter must be an array of objects"
 msgstr "je třeba, aby vstupní parametr byl pole objektů"
 
@@ -26792,7 +26783,7 @@ msgstr "chybí identifikátor"
 msgid "missing itemtype"
 msgstr "chybí typ položky"
 
-#: src/Api/API.php:2243
+#: src/Api/API.php:2247
 msgid "missing parameter app_token"
 msgstr "chybějící parametr app_token"
 
@@ -26869,11 +26860,11 @@ msgstr "orientace"
 msgid "others"
 msgstr "ostatní"
 
-#: src/Api/API.php:2237
+#: src/Api/API.php:2241
 msgid "parameter app_token seems wrong"
 msgstr "parametr user_token se nezdá být správný"
 
-#: src/Api/API.php:2745
+#: src/Api/API.php:2749
 msgid "parameter session_token is missing or empty"
 msgstr "parametr session_token chybí nebo je prázdný"
 
@@ -26941,7 +26932,7 @@ msgstr "obnovit"
 msgid "rule"
 msgstr "pravidlo"
 
-#: front/cron.php:45
+#: front/cron.php:46
 msgid "run script as apache user"
 msgstr "spustit skript pod účtem, pod kterým je provozován webový server"
 
@@ -26969,7 +26960,7 @@ msgstr "sériové číslo"
 msgid "session extension is not installed."
 msgstr ""
 
-#: src/Api/API.php:2725
+#: src/Api/API.php:2729
 msgid "session_token seems invalid"
 msgstr "session_token se nezdá být platný"
 
@@ -27045,7 +27036,7 @@ msgstr ""
 msgid "version"
 msgstr "verze"
 
-#: src/Api/API.php:2788
+#: src/Api/API.php:2792
 #, php-format
 msgid "view documentation in your browser at %s"
 msgstr "zobrazit dokumentaci v prohlížeči na %s"

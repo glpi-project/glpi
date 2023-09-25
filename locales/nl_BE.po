@@ -8,15 +8,16 @@
 # Frederik Van Helleputte <transifex.com@goorix.be>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2023
 # Steven <Nevets82@gmail.com>, 2023
+# Ben V <murdochservice@gmail.com>, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 06:29+0000\n"
+"POT-Creation-Date: 2023-09-25 07:31+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Steven <Nevets82@gmail.com>, 2023\n"
+"Last-Translator: Ben V <murdochservice@gmail.com>, 2023\n"
 "Language-Team: Dutch (Belgium) (https://app.transifex.com/glpi/teams/1637/nl_BE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -184,8 +185,8 @@ msgstr ""
 #: src/ComputerVirtualMachine.php:295 src/Html.php:5529
 #: src/Document_Item.php:474 src/ProjectCost.php:392 src/Rule.php:2422
 #: src/IPNetwork_Vlan.php:184 src/Document.php:475 src/Document.php:511
-#: src/Document.php:1085 src/User.php:3745 src/User.php:3803 src/User.php:4938
-#: src/User.php:5021 src/User.php:6648 src/Search.php:6887 src/Search.php:7289
+#: src/Document.php:1085 src/User.php:3783 src/User.php:3841 src/User.php:4976
+#: src/User.php:5059 src/User.php:6701 src/Search.php:6887 src/Search.php:7289
 #: src/Search.php:7482 src/ContractCost.php:385 src/NetworkAlias.php:340
 #: src/RuleCollection.php:1355 src/Group_User.php:541 src/Group_User.php:645
 #: src/CommonITILCost.php:622 src/Computer_Item.php:422
@@ -349,7 +350,7 @@ msgstr "%1$s <> %2$s"
 #: src/Item_Devices.php:700 src/Item_Enclosure.php:99
 #: src/Document_Item.php:859 src/Socket.php:808 src/Socket.php:1041
 #: src/ProjectCost.php:380 src/Item_Cluster.php:109 src/Rule.php:3168
-#: src/Budget.php:652 src/User.php:5028 src/Search.php:2123
+#: src/Budget.php:652 src/User.php:5066 src/Search.php:2123
 #: src/Search.php:2125 src/Search.php:2152 src/Search.php:2183
 #: src/Search.php:2238 src/Search.php:2244 src/Search.php:2290
 #: src/Search.php:2330 src/ContractCost.php:372 src/Rack.php:367
@@ -435,7 +436,7 @@ msgstr ""
 #: front/datacenter.form.php:60 front/knowbaseitem.form.php:65
 #: front/notepad.form.php:55 front/monitor.form.php:60
 #: front/peripheral.form.php:60 front/software.form.php:59
-#: front/user.form.php:71 front/user.form.php:230 front/unmanaged.form.php:59
+#: front/user.form.php:85 front/user.form.php:240 front/unmanaged.form.php:59
 #: front/transfer.form.php:57 front/cable.form.php:60
 #: front/project.form.php:64 front/notificationtemplatetranslation.form.php:56
 #: front/document.form.php:64 front/document.form.php:77
@@ -828,7 +829,7 @@ msgstr "%1$s. Bericht: %2$s, Fout: %3$s"
 #: src/AuthLDAP.php:754 src/Budget.php:588 src/Budget.php:625
 #: src/CommonITILTask.php:1400 src/CommonITILTask.php:1673
 #: src/CommonITILTask.php:1738 src/Link.php:676 src/Link.php:701
-#: src/Document.php:253 src/User.php:2705 src/User.php:2964 src/User.php:4774
+#: src/Document.php:253 src/User.php:2743 src/User.php:3002 src/User.php:4812
 #: src/NotificationTargetContract.php:199 src/DBConnection.php:694
 #: src/DBConnection.php:700 src/DBConnection.php:705
 #: src/SoftwareLicense.php:807 src/SoftwareLicense.php:811
@@ -1216,7 +1217,7 @@ msgid "%s adds a team member"
 msgstr "%s voegt een teamlid toe"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:146 front/group_user.form.php:57
+#: front/user.form.php:160 front/group_user.form.php:57
 #, php-format
 msgid "%s adds a user to a group"
 msgstr "%s voegt een gebruiker toe aan een groep"
@@ -1386,7 +1387,7 @@ msgstr "%s verwijdert een bewerker"
 #: front/datacenter.form.php:77 front/networkport.form.php:130
 #: front/queuednotification.form.php:62 front/monitor.form.php:77
 #: front/peripheral.form.php:77 front/software.form.php:76
-#: front/user.form.php:87 front/unmanaged.form.php:76 front/cable.form.php:77
+#: front/user.form.php:101 front/unmanaged.form.php:76 front/cable.form.php:77
 #: front/project.form.php:81 front/document.form.php:96
 #: front/appliance.form.php:77 front/ticket.form.php:135
 #: front/supplier.form.php:74 front/item_disk.form.php:80
@@ -1406,7 +1407,7 @@ msgid "%s deletes several network ports"
 msgstr "%s verwijdert verschillende netwerkpoorten"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:164
+#: front/user.form.php:178
 #, php-format
 msgid "%s deletes users from a group"
 msgstr "%s verwijdert gebruikers uit een groep"
@@ -1440,7 +1441,7 @@ msgstr[1] ""
 msgid "%s extension"
 msgstr ""
 
-#: src/Config.php:1731 src/Config.php:2812
+#: src/Config.php:1731 src/Config.php:2811
 #, php-format
 msgid "%s extension is installed"
 msgstr "%s uitbreiding is geïnstalleerd"
@@ -1456,7 +1457,7 @@ msgstr ""
 msgid "%s extension is installed."
 msgstr ""
 
-#: src/AuthLDAP.php:576 src/Config.php:2819
+#: src/AuthLDAP.php:576 src/Config.php:2818
 #, php-format
 msgid "%s extension is missing"
 msgstr "%s uitbreiding ontbreekt"
@@ -1467,7 +1468,7 @@ msgstr "%s uitbreiding ontbreekt"
 msgid "%s extension is missing."
 msgstr ""
 
-#: src/Config.php:1801 src/Config.php:2825
+#: src/Config.php:1801 src/Config.php:2824
 #, php-format
 msgid "%s extension is not present"
 msgstr "%s uitbreiding is niet aanwezig"
@@ -1696,7 +1697,7 @@ msgstr "%s verwijdert een goedkeuring"
 #: front/queuednotification.form.php:88 front/notepad.form.php:67
 #: front/lockedfield.form.php:74 front/monitor.form.php:103
 #: front/peripheral.form.php:103 front/software.form.php:103
-#: front/user.form.php:110 front/unmanaged.form.php:103
+#: front/user.form.php:124 front/unmanaged.form.php:103
 #: front/transfer.form.php:70 front/cable.form.php:105
 #: front/project.form.php:107
 #: front/notificationtemplatetranslation.form.php:69
@@ -1756,7 +1757,7 @@ msgstr ""
 #: front/datacenter.form.php:90 front/networkport.form.php:167
 #: front/queuednotification.form.php:75 front/monitor.form.php:90
 #: front/peripheral.form.php:90 front/software.form.php:90
-#: front/user.form.php:99 front/unmanaged.form.php:90 front/cable.form.php:91
+#: front/user.form.php:113 front/unmanaged.form.php:90 front/cable.form.php:91
 #: front/project.form.php:94 front/document.form.php:110
 #: front/appliance.form.php:90 front/ticket.form.php:161
 #: front/supplier.form.php:86 front/reservationitem.form.php:101
@@ -1774,7 +1775,7 @@ msgid "%s rows / page"
 msgstr ""
 
 #. TRANS: %s is a number of seconds
-#: src/Dropdown.php:1838 src/Inventory/Inventory.php:779 src/CronTask.php:1250
+#: src/Dropdown.php:1838 src/Inventory/Inventory.php:792 src/CronTask.php:1250
 #: src/CronTask.php:1257 src/CronTask.php:1264 src/CronTask.php:1271
 #: src/CronTask.php:1383 src/CronTask.php:1478
 #, php-format
@@ -1918,7 +1919,7 @@ msgstr "%s werkt een goedkeuring bij"
 #: front/knowbaseitem.form.php:83 front/notepad.form.php:80
 #: front/lockedfield.form.php:89 front/monitor.form.php:116
 #: front/peripheral.form.php:116 front/software.form.php:116
-#: front/user.form.php:134 front/unmanaged.form.php:116
+#: front/user.form.php:148 front/unmanaged.form.php:116
 #: front/transfer.form.php:83 front/cable.form.php:119
 #: front/project.form.php:120
 #: front/notificationtemplatetranslation.form.php:82
@@ -2126,7 +2127,7 @@ msgstr ""
 msgid "--ldap-server-id value \"%s\" is not a valid LDAP server id."
 msgstr ""
 
-#: src/User.php:2362
+#: src/User.php:2400
 msgid "... From an external source"
 msgstr "... van een externe bron"
 
@@ -2171,7 +2172,7 @@ msgstr "4- Meldingen (toevoegen, verwijderen, opvolgen)"
 msgid "5- Complete (all)"
 msgstr "5 - Volledig (alles)"
 
-#: src/GLPIUploadHandler.php:70
+#: src/UploadHandler.php:390
 msgid "A PHP extension stopped the file upload"
 msgstr ""
 "Een PHP extensie zorgde ervoor dat het bestand niet geupload kon worden"
@@ -2201,7 +2202,7 @@ msgstr ""
 
 #: src/ProjectTask.php:472
 msgid "A linked project is mandatory"
-msgstr ""
+msgstr "Een gekoppeld project is vereist"
 
 #: src/Lock.php:79
 msgid "A locked field is a manually modified field."
@@ -2262,7 +2263,7 @@ msgstr ""
 msgid "A registration, at least a free one, is required to use marketplace!"
 msgstr ""
 
-#: src/Api/API.php:2158
+#: src/Api/API.php:2162
 msgid "A session is active"
 msgstr "Een sessie is actief"
 
@@ -2305,11 +2306,11 @@ msgstr "EN NIET"
 msgid "ANV"
 msgstr "Netto Boekwaarde"
 
-#: src/Auth.php:1266 src/Config.php:735 src/Config.php:2547
+#: src/Auth.php:1266 src/Config.php:735 src/Config.php:2546
 msgid "API"
 msgstr "API"
 
-#: src/Api/API.php:2438
+#: src/Api/API.php:2442
 msgid "API Documentation"
 msgstr "API Documentatie"
 
@@ -2326,7 +2327,7 @@ msgstr "API uitgeschakeld"
 msgid "API inline Documentation"
 msgstr "API inline documentatie"
 
-#: src/User.php:2896 src/User.php:3283
+#: src/User.php:2934 src/User.php:3321
 msgid "API token"
 msgstr "API token"
 
@@ -2340,7 +2341,7 @@ msgstr ""
 
 #: templates/layout/parts/user_header.html.twig
 msgid "About"
-msgstr ""
+msgstr "Over"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 #: src/ITILSolution.php:419
@@ -2364,11 +2365,12 @@ msgstr "Toegang geweigerd"
 
 #: src/System/Requirement/DbTimezones.php:63
 msgid "Access to timezone database (mysql) is not allowed."
-msgstr ""
+msgstr "Toegang tot tijdszone database (mysql) is niet toegestaan."
 
 #: src/System/Requirement/DbTimezones.php:75
 msgid "Access to timezone table (mysql.time_zone_name) is not allowed."
 msgstr ""
+"Toegang tot tijdszone tabel (mysql.time_zone_name) is niet toegestaan."
 
 #: front/smtp_oauth2_callback.php:103
 msgctxt "oauth"
@@ -2438,7 +2440,7 @@ msgstr "Actie wanneer een gebruiker werd verwijderd uit het LDAP directory"
 msgid "Action when a user is restored in the LDAP directory"
 msgstr ""
 
-#: templates/components/form/single-action.html.twig src/User.php:2355
+#: templates/components/form/single-action.html.twig src/User.php:2393
 #: src/Plugin.php:2549
 msgid "Actions"
 msgstr "Acties"
@@ -2450,7 +2452,7 @@ msgstr "Acties geweigerd"
 #: templates/generic_show_form.html.twig src/MailCollector.php:257
 #: src/MailCollector.php:484 src/TaskCategory.php:53 src/TaskCategory.php:75
 #: src/Rule.php:781 src/Rule.php:942 src/Rule.php:3159 src/AuthLDAP.php:467
-#: src/AuthLDAP.php:1316 src/User.php:2647 src/User.php:3610
+#: src/AuthLDAP.php:1316 src/User.php:2685 src/User.php:3648
 #: src/RuleCollection.php:591 src/Group_User.php:591 src/Group_User.php:632
 #: src/AuthMail.php:138 src/AuthMail.php:190 src/LevelAgreement.php:517
 #: src/SlaLevel.php:114 src/SlaLevel.php:150 src/SlaLevel.php:244
@@ -2646,7 +2648,7 @@ msgstr "Voeg gedelegeerde toe"
 msgid "Add a document"
 msgstr "Document toevoegen"
 
-#: src/Document.php:1719 src/CommonITILObject.php:6826
+#: src/Document.php:1731 src/CommonITILObject.php:6826
 msgctxt "button"
 msgid "Add a document"
 msgstr "Document toevoegen"
@@ -2875,7 +2877,7 @@ msgstr ""
 msgid "Add an item"
 msgstr "Item toevoegen"
 
-#: src/Appliance.php:449 src/Document.php:1725 src/SoftwareLicense.php:914
+#: src/Appliance.php:449 src/Document.php:1737 src/SoftwareLicense.php:914
 #: src/Contract.php:423 src/Ticket.php:2608
 msgctxt "button"
 msgid "Add an item"
@@ -2901,7 +2903,7 @@ msgstr "Cartridges toevoegen"
 msgid "Add column"
 msgstr "Kolom toevoegen"
 
-#: src/Config.php:3269
+#: src/Config.php:3268
 msgid "Add component"
 msgstr "Component toevoegen"
 
@@ -2935,7 +2937,7 @@ msgid "Add documents into ticket notifications"
 msgstr "Voeg documenten in ticketmelding"
 
 #. TRANS: short for : Add users from an external source
-#: src/User.php:5921
+#: src/User.php:5974
 msgid "Add external"
 msgstr "Externe toevoegen"
 
@@ -2943,7 +2945,7 @@ msgstr "Externe toevoegen"
 msgid "Add filter"
 msgstr ""
 
-#: src/Config.php:3241
+#: src/Config.php:3240
 msgid "Add financial information to an item"
 msgstr "Voeg financiële informatie toe aan een item"
 
@@ -2959,7 +2961,7 @@ msgstr "Toevoegen vervolgactie (aanvrager)"
 msgid "Add followup (watcher)"
 msgstr ""
 
-#: src/Inventory/Inventory.php:510
+#: src/Inventory/Inventory.php:523
 msgid "Add global lock"
 msgstr ""
 
@@ -3013,7 +3015,7 @@ msgid "Add several ports"
 msgstr "Voeg verschillende poorten toe"
 
 #: src/Log.php:1066 src/NotificationTargetFieldUnicity.php:49
-#: src/Config.php:3180
+#: src/Config.php:3179
 msgid "Add the item"
 msgstr "item toegevoegen"
 
@@ -3047,27 +3049,27 @@ msgctxt "button"
 msgid "Add to transfer list"
 msgstr "Toevoegen aan verzendlijst"
 
-#: src/User.php:2354
+#: src/User.php:2392
 msgid "Add user..."
 msgstr "Gebruiker toevoegen"
 
-#: src/User.php:5922
+#: src/User.php:5975
 msgid "Add users from an external source"
 msgstr "Gebruiker toegevoegen vanaf een externe bron"
 
-#: src/Config.php:3230
+#: src/Config.php:3229
 msgid "Add/Remove items from software versions"
 msgstr ""
 
-#: src/Config.php:3252
+#: src/Config.php:3251
 msgid "Add/remove groups to users"
 msgstr "Toevoegen/verwijderen groepen van gebruikers"
 
-#: src/Config.php:3249
+#: src/Config.php:3248
 msgid "Add/remove profiles to users"
 msgstr "Toevoegen/verwijderen profielen van gebruikers"
 
-#: src/Config.php:3171
+#: src/Config.php:3170
 msgid "Add/update relation between items"
 msgstr "Relatie tussen items toevoegen/bijwerken"
 
@@ -3135,7 +3137,7 @@ msgid "Administrative number"
 msgstr "Administratief nummer"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:942
-#: src/User.php:2754 src/User.php:3226 src/User.php:3775 src/Auth.php:1731
+#: src/User.php:2792 src/User.php:3264 src/User.php:3813 src/Auth.php:1731
 msgctxt "user"
 msgid "Administrative number"
 msgstr "Administratief nummer"
@@ -3305,7 +3307,7 @@ msgstr "alternatieve poort"
 #: templates/pages/setup/general/general_setup.html.twig
 #: front/report.year.php:56 front/report.year.php:70
 #: front/report.contract.php:55 front/report.contract.php:69
-#: src/Dropdown.php:2274 src/Dropdown.php:3994 src/User.php:4543
+#: src/Dropdown.php:2274 src/Dropdown.php:3994 src/User.php:4581
 #: src/Search.php:2078 src/Search.php:2908 src/Planning.php:558
 #: src/CommonGLPI.php:917 src/NotificationTemplateTranslation.php:434
 #: src/RuleImportAssetCollection.php:119 src/Marketplace/View.php:307
@@ -3382,7 +3384,7 @@ msgstr "Alle gepubliceerde artikels"
 msgid "All reservable devices"
 msgstr "Alle te reserveren apparaten"
 
-#: src/Config.php:3292
+#: src/Config.php:3291
 msgid "All sections"
 msgstr "Alle secties"
 
@@ -3469,11 +3471,11 @@ msgstr ""
 msgid "Also delete date?"
 msgstr "Wis ook de datum?"
 
-#: templates/generic_show_form.html.twig front/find_num.php:92
-#: src/Phone.php:275 src/Monitor.php:262 src/NotificationTargetProblem.php:209
-#: src/Appliance.php:172 src/Printer.php:400 src/Search.php:8149
-#: src/Peripheral.php:246 src/NotificationTargetChange.php:287
-#: src/Computer.php:474 src/CommonDBTM.php:3507 src/NetworkEquipment.php:319
+#: templates/generic_show_form.html.twig src/Phone.php:275 src/Monitor.php:262
+#: src/NotificationTargetProblem.php:209 src/Appliance.php:172
+#: src/Printer.php:400 src/Search.php:8149 src/Peripheral.php:246
+#: src/NotificationTargetChange.php:287 src/Computer.php:474
+#: src/CommonDBTM.php:3507 src/NetworkEquipment.php:319
 #: src/NotificationTargetTicket.php:708 src/Certificate.php:209
 #: src/Config.php:525 src/RuleAsset.php:114
 #: src/NotificationTargetProject.php:701
@@ -3893,7 +3895,7 @@ msgstr ""
 #: src/Transfer.php:3915
 #: src/ContentTemplates/Parameters/AssetParameters.php:58 src/AllAssets.php:45
 #: src/Entity.php:486 src/Entity.php:1299 src/Dashboard/Grid.php:1190
-#: src/Config.php:425 src/Config.php:2538 src/Profile.php:158
+#: src/Config.php:425 src/Config.php:2537 src/Profile.php:158
 #: src/Profile.php:1329 src/Profile.php:2066
 msgid "Asset"
 msgid_plural "Assets"
@@ -3953,8 +3955,8 @@ msgstr "Toegewezen"
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:81
 msgid "Assigned group"
 msgid_plural "Assigned groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Toegekende groep"
+msgstr[1] "Toegekende groepen"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:82
 msgid "Assigned supplier"
@@ -4003,7 +4005,7 @@ msgstr[1] ""
 #: src/Dashboard/Grid.php:1282 src/Dashboard/Grid.php:1292
 #: src/Dashboard/Grid.php:1301 src/Dashboard/Grid.php:1318
 #: src/Dashboard/Grid.php:1338 src/Config.php:820 src/Config.php:1307
-#: src/Config.php:2539 src/Profile.php:153 src/Profile.php:159
+#: src/Config.php:2538 src/Profile.php:153 src/Profile.php:159
 #: src/Profile.php:1152 src/Profile.php:3121
 msgid "Assistance"
 msgstr "Assistentie"
@@ -4051,11 +4053,11 @@ msgstr "Associeer certificaat"
 msgid "Associate myself"
 msgstr "Verbind mij"
 
-#: src/User.php:3422 src/Group_User.php:197
+#: src/User.php:3460 src/Group_User.php:197
 msgid "Associate to a group"
 msgstr "Associeer aan een groep"
 
-#: src/User.php:3427
+#: src/User.php:3465
 msgid "Associate to a profile"
 msgstr "Associeer met een profiel"
 
@@ -4074,7 +4076,7 @@ msgid "Associated contract"
 msgid_plural "Associated contracts"
 msgstr[0] "Geassocieerde contracten"
 
-#: templates/components/itilobject/selfservice.html.twig front/find_num.php:94
+#: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/KnowbaseItem.php:1927
 #: src/Item_Devices.php:172 src/Stat.php:1623 src/Lockedfield.php:120
 #: src/KnowbaseItem_Item.php:71 src/Item_SoftwareVersion.php:79
@@ -4228,8 +4230,8 @@ msgid "August"
 msgstr "augustus"
 
 #: index.php:141 front/helpdesk.faq.php:51
-#: front/knowbaseitemtranslation.form.php:87 src/User.php:2694
-#: src/User.php:3669 src/Auth.php:108 src/Config.php:605 src/Config.php:754
+#: front/knowbaseitemtranslation.form.php:87 src/User.php:2732
+#: src/User.php:3707 src/Auth.php:108 src/Config.php:605 src/Config.php:754
 msgid "Authentication"
 msgstr "Authenticatie"
 
@@ -4253,7 +4255,7 @@ msgstr "Authenticatietype"
 msgid "Author"
 msgstr "Auteur"
 
-#: src/User.php:2787 src/Profile_User.php:1078
+#: src/User.php:2825 src/Profile_User.php:1078
 msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] "Machtigingen"
@@ -4351,7 +4353,7 @@ msgstr "Automatisch incident-tickets toewijzen"
 
 #: src/Entity.php:2893
 msgid "Automatic assignment of tickets, changes and problems"
-msgstr ""
+msgstr "Automatisch toekennen van tickets, wijzigingen en problemen"
 
 #: src/Ticket.php:5790
 msgid "Automatic closed tickets purge"
@@ -4439,7 +4441,7 @@ msgstr "Automatisch aflsuiten van de incident-tickets"
 msgid "Automatic user assignment"
 msgstr "Automatische toekenning gebruiker(s)"
 
-#: src/User.php:4711
+#: src/User.php:4749
 msgid "Automatically add a user of an external source"
 msgstr "Voeg automatisch een gebruiker van een externe bron toe"
 
@@ -4463,12 +4465,13 @@ msgstr "Automatisch door GLPI gegenereerd %s"
 #: src/Config.php:1338
 msgid "Automatically refresh data (tickets list, project kanban) in minutes."
 msgstr ""
+"Automatisch vernieuwen van data (ticket lijst, project kanban) in minuten"
 
 #: src/Config.php:521
 msgid "Automatically update of the elements related to the computers"
 msgstr "Automatische bijwerking van de elememten die bij de computers horen"
 
-#: front/planning.php:70 src/Planning.php:540 ajax/planningcheck.php:70
+#: front/planning.php:74 src/Planning.php:540 ajax/planningcheck.php:70
 #: ajax/planningcheck.php:72 ajax/planningcheck.php:77
 msgid "Availability"
 msgstr "Beschikbaarheid"
@@ -4581,7 +4584,7 @@ msgstr "Achtergrondafbeelding (plan)"
 msgid "Backup plan"
 msgstr "Back-up plan"
 
-#: src/Api/API.php:1598
+#: src/Api/API.php:1602
 msgid "Bad field ID in search criteria"
 msgstr "Ongeldige ID-veld in zoekcriterium"
 
@@ -4630,7 +4633,7 @@ msgid "Begin"
 msgstr "Start"
 
 #: src/Csv/PlanningCsv.php:75 src/ProjectCost.php:159 src/ProjectCost.php:283
-#: src/ProjectCost.php:369 src/CommonITILTask.php:983 src/User.php:3857
+#: src/ProjectCost.php:369 src/CommonITILTask.php:983 src/User.php:3895
 #: src/ContractCost.php:150 src/ContractCost.php:274 src/ContractCost.php:361
 #: src/CommonITILCost.php:135 src/CommonITILCost.php:433
 #: src/CommonITILCost.php:595 src/Console/Ldap/SynchronizeUsersCommand.php:251
@@ -4936,8 +4939,8 @@ msgstr "CSV delimiter"
 #: src/Cable.php:49
 msgid "Cable"
 msgid_plural "Cables"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kabel"
+msgstr[1] "Kabels"
 
 #: src/Dropdown.php:1213
 msgid "Cable management"
@@ -5111,7 +5114,7 @@ msgid ""
 "profile with this right."
 msgstr ""
 
-#: src/User.php:1102
+#: src/User.php:1140
 msgid ""
 "Can't set user as inactive as it is the only remaining super administrator."
 msgstr ""
@@ -5225,7 +5228,7 @@ msgstr[0] "Behuizingstypes"
 #: src/DatabaseInstanceCategory.php:45 src/AuthLDAP.php:978
 #: src/AuthLDAP.php:1191 src/AuthLDAP.php:3981
 #: src/RuleDictionnarySoftware.php:132 src/CommonITILTask.php:841
-#: src/CommonITILTask.php:1440 src/User.php:2733 src/User.php:3832
+#: src/CommonITILTask.php:1440 src/User.php:2771 src/User.php:3870
 #: src/Software.php:404 src/RuleSoftwareCategory.php:98 src/Auth.php:1786
 #: src/Item_SoftwareVersion.php:1078 src/DatabaseInstance.php:389
 #: src/CommonITILObject.php:4106 src/CommonITILObject.php:6660
@@ -5339,7 +5342,7 @@ msgstr "Wijzig %1$s in %2$s"
 msgid "Change a component"
 msgstr "Bewerk een component"
 
-#: src/Config.php:3154
+#: src/Config.php:3153
 msgid "Change all"
 msgstr "Wijzig alles"
 
@@ -5418,7 +5421,7 @@ msgid_plural "Change templates"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/User.php:3438
+#: src/User.php:3476
 msgctxt "button"
 msgid "Change the authentication method"
 msgstr "Wijzig de authenticatie methode"
@@ -5457,7 +5460,7 @@ msgstr ""
 
 #: src/Change.php:1170 src/Change.php:1219
 msgid "Changes to be processed"
-msgstr ""
+msgstr "Wijzigingen die verwerkt worden"
 
 #: front/stat.tracking.php:112 src/MailCollector.php:468
 #: src/KnowbaseItem.php:2241 src/SoftwareVersion.php:168
@@ -5466,7 +5469,7 @@ msgstr ""
 #: src/CommonDropdown.php:423 src/ProjectCost.php:125 src/Budget.php:199
 #: src/PassiveDCEquipment.php:79 src/CommonITILTask.php:711 src/Link.php:204
 #: src/QueuedNotification.php:208 src/Document.php:983
-#: src/NetworkPortEthernet.php:212 src/User.php:3534 src/Search.php:8090
+#: src/NetworkPortEthernet.php:212 src/User.php:3572 src/Search.php:8090
 #: src/Search.php:8111 src/ContractCost.php:116 src/Group_User.php:718
 #: src/CommonITILCost.php:101 src/SoftwareLicense.php:343
 #: src/CommonDBRelation.php:315 src/LevelAgreement.php:635
@@ -5480,7 +5483,7 @@ msgstr ""
 #: src/NetworkPortFiberchannel.php:208 src/NetworkPortWifi.php:144
 #: src/CommonITILObject.php:3966 src/Contract.php:479 src/CommonDevice.php:258
 #: src/LevelAgreementLevel.php:103 src/Profile_User.php:943
-#: src/Config.php:3616 src/Profile.php:1987 src/Reminder.php:384
+#: src/Config.php:3615 src/Profile.php:1987 src/Reminder.php:384
 #: src/Notification.php:365 src/NetworkPort.php:619 src/NetworkPort.php:1552
 #: src/RSSFeed.php:423 src/CronTask.php:1603 src/Infocom.php:1475
 #: src/SLM.php:217 src/Item_SoftwareLicense.php:73 src/Item_Disk.php:332
@@ -5691,7 +5694,7 @@ msgstr "Woonplaats"
 
 #: src/Config.php:1256
 msgid "Classic (toolbar on top)"
-msgstr ""
+msgstr "Klassiek (toolbar vanboven)"
 
 #: src/Plugin.php:2902 src/Marketplace/View.php:695
 msgid "Clean"
@@ -5726,7 +5729,7 @@ msgstr[0] ""
 "Opschonen van %1$d tijdelijke bestanden aangemaakt meer dan %2$s seconden "
 "geleden"
 
-#: src/User.php:3442 src/Auth.php:1516
+#: src/User.php:3480 src/Auth.php:1516
 msgid "Clean LDAP fields and force synchronisation"
 msgstr ""
 
@@ -5742,7 +5745,7 @@ msgstr "Vervallen sessies verwijderen"
 msgid "Clean generated graphics"
 msgstr "Gegenereerde grafieken verwijderen"
 
-#: src/Inventory/Inventory.php:830
+#: src/Inventory/Inventory.php:843
 msgid "Clean inventories orphaned files"
 msgstr ""
 
@@ -5754,7 +5757,7 @@ msgstr "Wis meldingen wachtrij"
 msgid "Clean old logs"
 msgstr "Oude logfiles verwijderen"
 
-#: src/Document.php:1856
+#: src/Document.php:1868
 msgid "Clean orphaned documents"
 msgstr ""
 
@@ -5762,7 +5765,7 @@ msgstr ""
 msgid "Clean temporary files"
 msgstr "Verwijder tijdelijke bestanden"
 
-#: src/Inventory/Inventory.php:827
+#: src/Inventory/Inventory.php:840
 msgid "Clean temporary files created from inventories"
 msgstr ""
 
@@ -5776,7 +5779,7 @@ msgstr ""
 
 #: templates/components/form/fields_macros.html.twig src/MailCollector.php:270
 #: src/Html.php:2773 src/Html.php:2968 src/Html.php:3100 src/AuthLDAP.php:527
-#: src/User.php:2529 src/User.php:2997 src/User.php:2998 src/User.php:6435
+#: src/User.php:2567 src/User.php:3035 src/User.php:3036 src/User.php:6488
 #: src/NotificationMailingSetting.php:372 src/DCRoom.php:173
 #: src/DCRoom.php:176 src/Config.php:559 src/Config.php:2078
 msgid "Clear"
@@ -5784,7 +5787,7 @@ msgstr "Wis"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Clear search"
-msgstr ""
+msgstr "Zoekopdracht verwijderen"
 
 #: src/Config.php:572
 msgid "Clear status"
@@ -5792,7 +5795,7 @@ msgstr "Wis de status"
 
 #: js/impact.js:2307
 msgid "Click on an element to remove it from the network"
-msgstr ""
+msgstr "Klik op een element om het te verwijderen van het netwerk"
 
 #: templates/layout/parts/profile_selector.html.twig
 #, php-format
@@ -5800,6 +5803,8 @@ msgid ""
 "Click on the %s icon to load the elements of the selected entity, as well as"
 " its sub-entities."
 msgstr ""
+"Klik op het %s icoon om elementen te laden van de geselecteerde entiteit, "
+"alsook de subentiteiten."
 
 #: src/NotificationMailingSetting.php:275
 msgctxt "oauth"
@@ -5822,7 +5827,7 @@ msgstr "Kloon"
 
 #: src/Dashboard/Grid.php:289
 msgid "Clone this dashboard"
-msgstr ""
+msgstr "Dupliceer dit dashboard"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: templates/components/modal.html.twig
@@ -5951,7 +5956,7 @@ msgstr ""
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
-msgstr ""
+msgstr "Menu inklappen"
 
 #: templates/install/step6.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:221
@@ -6044,8 +6049,8 @@ msgstr "Opmerking KB vermeldingen"
 #: src/Rule.php:958 src/AuthLDAP.php:530 src/AuthLDAP.php:939
 #: src/AuthLDAP.php:1200 src/Budget.php:150 src/Budget.php:274
 #: src/Enclosure.php:156 src/Printer.php:468 src/RuleLocation.php:111
-#: src/Document.php:488 src/Document.php:1094 src/User.php:2748
-#: src/User.php:3708 src/Search.php:8140 src/Line.php:133
+#: src/Document.php:488 src/Document.php:1094 src/User.php:2786
+#: src/User.php:3746 src/Search.php:8140 src/Line.php:133
 #: src/ContractCost.php:142 src/ContractCost.php:279 src/Rack.php:222
 #: src/NetworkAlias.php:143 src/NetworkAlias.php:426
 #: src/NotificationTargetContract.php:176 src/CommonITILCost.php:127
@@ -6071,7 +6076,7 @@ msgstr "Opmerking KB vermeldingen"
 #: src/Contract.php:688 src/Contract.php:1722 src/Reservation.php:845
 #: src/Reservation.php:1134 src/Reservation.php:1216 src/CartridgeItem.php:334
 #: src/CommonDevice.php:291 src/ConsumableItem.php:270
-#: src/RuleDictionnaryPrinter.php:85 src/Cluster.php:103 src/Config.php:3197
+#: src/RuleDictionnaryPrinter.php:85 src/Cluster.php:103 src/Config.php:3196
 #: src/ManualLink.php:113 src/Profile.php:753 src/Profile.php:2057
 #: src/Notification.php:218 src/Notification.php:450
 #: src/RuleImportEntity.php:132 src/NetworkPortMigration.php:303
@@ -6134,7 +6139,7 @@ msgstr "Gehele Naam"
 #: front/devices.php:44 src/Dropdown.php:1064 src/Item_Devices.php:273
 #: src/Item_Devices.php:565 src/Item_Devices.php:623 src/Event.php:158
 #: src/Transfer.php:3950 src/Lock.php:748 src/Lock.php:1125
-#: src/CommonDevice.php:55 src/CommonDevice.php:329 src/Config.php:3267
+#: src/CommonDevice.php:55 src/CommonDevice.php:329 src/Config.php:3266
 #: src/Profile.php:1061 src/Profile.php:2538
 msgid "Component"
 msgid_plural "Components"
@@ -6227,7 +6232,7 @@ msgctxt "button"
 msgid "Connect"
 msgstr "Verbinden"
 
-#: src/Config.php:3281
+#: src/Config.php:3280
 msgid "Connect a component"
 msgstr "Koppel een component"
 
@@ -6273,7 +6278,7 @@ msgstr "Connectie via telefoonlijn - Lijnpoort"
 msgid "Connection errors"
 msgstr "Verbindingsfouten"
 
-#: src/User.php:5651
+#: src/User.php:5704
 msgid "Connection failed"
 msgstr "verbinding mislukt"
 
@@ -6480,7 +6485,7 @@ msgstr ""
 
 #: src/Console/Migration/TimestampsCommand.php:65
 msgid "Convert \"datetime\" fields to \"timestamp\" to use timezones."
-msgstr ""
+msgstr "Zet \"datetime\" velden om in \"timestamp\" om tijdszones te gebruiken."
 
 #: src/Console/Migration/Utf8mb4Command.php:86
 msgid "Convert database character set from \"utf8\" to \"utf8mb4\"."
@@ -6510,7 +6515,7 @@ msgstr "Kopieer computer status"
 
 #: src/RuleAction.php:446
 msgid "Copy default from user"
-msgstr ""
+msgstr "Kopieer standaard van gebruiker"
 
 #: src/RuleAction.php:447
 msgid "Copy first group from user"
@@ -6697,7 +6702,7 @@ msgstr "Sjabloon voor de aanvraag"
 
 #: src/CommonITILRecurrentCron.php:51
 msgid "Create recurrent tickets and changes"
-msgstr ""
+msgstr "Maak terugkerende tickets en wijzigingen"
 
 #: js/modules/Kanban/Kanban.js:1940 js/modules/Kanban/Kanban.js:1959
 #: js/modules/Kanban/Kanban.js:1979
@@ -6708,7 +6713,7 @@ msgstr "Maak status"
 msgid "Create survey after"
 msgstr "Maak enquete na"
 
-#: src/Document.php:1505
+#: src/Document.php:1517
 #, php-format
 msgid "Create the directory %s"
 msgstr "Map aanmaken %s"
@@ -6782,7 +6787,7 @@ msgstr ""
 #: src/Budget.php:233 src/PassiveDCEquipment.php:195 src/Enclosure.php:173
 #: src/Link.php:246 src/QueuedNotification.php:233
 #: src/QueuedNotification.php:735 src/Printer.php:459 src/Document.php:1076
-#: src/User.php:3735 src/Line.php:186 src/Rack.php:239 src/Software.php:421
+#: src/User.php:3773 src/Line.php:186 src/Rack.php:239 src/Software.php:421
 #: src/Peripheral.php:289 src/Lockedfield.php:94 src/Certificate_Item.php:468
 #: src/Transfer.php:139 src/Computer.php:517 src/Contact.php:402
 #: src/Supplier.php:267 src/KnowbaseItem_Item.php:205 src/PDU.php:198
@@ -6883,7 +6888,7 @@ msgstr "Huidige pagina in liggend PDF"
 msgid "Current page in portrait PDF"
 msgstr "Huidige pagina in liggend PDF"
 
-#: src/User.php:5335
+#: src/User.php:5373
 msgid "Current password"
 msgstr ""
 
@@ -6921,7 +6926,7 @@ msgstr ""
 
 #: src/System/Requirement/DbTimezones.php:52
 msgid "DB timezone data"
-msgstr ""
+msgstr "DB tijdszone data"
 
 #: src/Toolbox.php:3015
 msgid "DD-MM-YYYY"
@@ -7192,7 +7197,7 @@ msgstr ""
 msgid "Database user:"
 msgstr ""
 
-#: src/Config.php:2657
+#: src/Config.php:2656
 #, php-format
 msgid "Database version seems correct (%s) - Perfect!"
 msgstr "Database-versie lijkt correct (%s) - Perfect!"
@@ -7260,7 +7265,7 @@ msgstr[0] "Dagen"
 msgid "Days to keep sent emails"
 msgstr "Aantal dagen om verzonden e-mail te bewaren"
 
-#: src/User.php:3255 src/CommonGLPI.php:353
+#: src/User.php:3293 src/CommonGLPI.php:353
 msgid "Debug"
 msgstr "Debuggen"
 
@@ -7328,7 +7333,7 @@ msgstr "Standaard character limiet (Opsomming tekst schermen)"
 
 #: src/Entity.php:1287 src/Entity.php:2988
 msgid "Default contract"
-msgstr ""
+msgstr "Standaardcontract"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default decimals limit"
@@ -7343,7 +7348,7 @@ msgstr "Standaard overzicht"
 msgid "Default email"
 msgstr "Standaard e-mail"
 
-#: src/User.php:2830 src/User.php:3215 src/User.php:3849
+#: src/User.php:2868 src/User.php:3253 src/User.php:3887
 #: src/Inventory/Conf.php:541 src/RuleRight.php:364
 msgid "Default entity"
 msgstr "Standaard entiteit"
@@ -7386,7 +7391,7 @@ msgstr "Standaardwaarden voor de incident-tickets"
 msgid "Default for tickets (mini dashboard)"
 msgstr ""
 
-#: templates/components/user/info_card.html.twig src/User.php:2840
+#: templates/components/user/info_card.html.twig src/User.php:2878
 #: src/RuleRight.php:374
 msgid "Default group"
 msgstr "Standaard groep"
@@ -7416,7 +7421,7 @@ msgstr "Standaard meldingsgeluid"
 msgid "Default problem template"
 msgstr ""
 
-#: src/User.php:2812 src/User.php:3170 src/User.php:3840 src/RuleRight.php:381
+#: src/User.php:2850 src/User.php:3208 src/User.php:3878 src/RuleRight.php:381
 #: src/RuleTicket.php:687 src/Profile.php:758 src/Profile.php:2040
 msgid "Default profile"
 msgstr "Standaardprofiel"
@@ -7482,11 +7487,11 @@ msgstr ""
 "Standaard waarde voor waarschuwingen op financiële en administratieve "
 "informatie"
 
-#: src/AuthLDAP.php:449 src/Config.php:2537
+#: src/AuthLDAP.php:449 src/Config.php:2536
 msgid "Default values"
 msgstr "Standaard waarden"
 
-#: src/Config.php:3522
+#: src/Config.php:3521
 msgid "Delay before account deactivation (in days)"
 msgstr ""
 
@@ -7531,7 +7536,7 @@ msgstr "Verwijder een koppeling met een item"
 msgid "Delete a rule"
 msgstr "Verwijder een regel"
 
-#: src/Config.php:3324
+#: src/Config.php:3323
 msgid "Delete all"
 msgstr "Verwijder alles"
 
@@ -7547,7 +7552,7 @@ msgstr ""
 msgid "Delete an item"
 msgstr "Verwijder een item"
 
-#: src/Config.php:3286
+#: src/Config.php:3285
 msgid "Delete component"
 msgstr "Verwijder component"
 
@@ -7559,7 +7564,7 @@ msgstr ""
 msgid "Delete emails"
 msgstr "E-mails verwijderen"
 
-#: src/Config.php:3330
+#: src/Config.php:3329
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
@@ -7621,7 +7626,7 @@ msgctxt "button"
 msgid "Delete permanently the relation with selected elements"
 msgstr "Verwijder permanent de relatie met de geselecteerde elementen"
 
-#: src/Config.php:3175
+#: src/Config.php:3174
 msgid "Delete relation between items"
 msgstr "Relatie tussen items verwijderen"
 
@@ -7629,7 +7634,7 @@ msgstr "Relatie tussen items verwijderen"
 msgid "Delete serie"
 msgstr ""
 
-#: src/Log.php:1070 src/Config.php:3183
+#: src/Log.php:1070 src/Config.php:3182
 msgid "Delete the item"
 msgstr "Verwijder het item"
 
@@ -7657,7 +7662,7 @@ msgstr "Verwijderd"
 msgid "Deleted from LDAP"
 msgstr ""
 
-#: src/User.php:3792 src/Config.php:3261
+#: src/User.php:3830 src/Config.php:3260
 msgid "Deleted user in LDAP directory"
 msgstr "Gebruiker verwijderd uit de LDAP directory"
 
@@ -7929,7 +7934,7 @@ msgstr ""
 
 #: src/Config.php:491
 msgid "Devices displayed in menu"
-msgstr ""
+msgstr "Apparaten getoond in menu"
 
 #: src/Item_Ticket.php:749
 msgid "Devices own by my groups"
@@ -8118,7 +8123,7 @@ msgctxt "button"
 msgid "Disconnect"
 msgstr "Verbinding verbreken"
 
-#: src/Config.php:3277
+#: src/Config.php:3276
 msgid "Disconnect a component"
 msgstr "Ontkoppel een component"
 
@@ -8144,7 +8149,7 @@ msgstr "Toon tellers"
 
 #: src/Entity.php:2963
 msgid "Display initials for users without pictures"
-msgstr ""
+msgstr "Toon initialen voor gebruikers zonder foto"
 
 #: src/Dropdown.php:363
 msgid "Display on datacenter"
@@ -8178,11 +8183,11 @@ msgstr "Toon bron dropdown op inlogpagina"
 
 #: src/Config.php:1090
 msgid "Display the complete name of tree dropdown in search results"
-msgstr ""
+msgstr "Toon de volledige naam van boom dropdown in zoekresultaten"
 
 #: src/Config.php:1086
 msgid "Display the tree dropdown complete name in dropdown inputs"
-msgstr ""
+msgstr "Toon de volledige naam van boom dropdown in dropdown invulvelden"
 
 #: src/Console/Application.php:157
 msgid "Display this application version"
@@ -8190,7 +8195,7 @@ msgstr ""
 
 #: src/Console/Application.php:139
 msgid "Display this help message"
-msgstr ""
+msgstr "Toon dit hulp bericht"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Display value labels on points/bars"
@@ -8219,11 +8224,11 @@ msgctxt "button"
 msgid "Dissociate certificate"
 msgstr "Deassocieer certificaat"
 
-#: src/User.php:3424
+#: src/User.php:3462
 msgid "Dissociate from a group"
 msgstr "Losmaken van groep"
 
-#: src/User.php:3429
+#: src/User.php:3467
 msgid "Dissociate from a profile"
 msgstr "Losmaken van profiel"
 
@@ -8255,7 +8260,7 @@ msgstr ""
 msgid "Do not copy"
 msgstr "Niet copiëren"
 
-#: src/Config.php:3533
+#: src/Config.php:3532
 msgid "Do not deactivate"
 msgstr ""
 
@@ -8328,11 +8333,11 @@ msgstr "Document"
 msgid "Document Ticket %d"
 msgstr "Document Ticket %d"
 
-#: src/Document.php:1240 src/Document.php:1342
+#: src/Document.php:1246 src/Document.php:1354
 msgid "Document copy succeeded."
 msgstr "Document kopiëren gelukt."
 
-#: src/Config.php:3579
+#: src/Config.php:3578
 msgid "Document files maximum size (Mio)"
 msgstr ""
 
@@ -8347,7 +8352,7 @@ msgid_plural "Document items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Document.php:1233
+#: src/Document.php:1239
 msgid "Document move succeeded."
 msgstr "Document verplaatsen gelukt."
 
@@ -8360,11 +8365,11 @@ msgstr[0] "Documenttypes"
 msgid "Documents"
 msgstr "Documenten"
 
-#: src/Document.php:1491
+#: src/Document.php:1503
 msgid "Documents directory doesn't exist."
-msgstr ""
+msgstr "Map 'documenten' bestaat niet."
 
-#: src/Config.php:3574
+#: src/Config.php:3573
 msgid "Documents setup"
 msgstr ""
 
@@ -8433,7 +8438,7 @@ msgstr ""
 
 #: src/Entity.php:2483
 msgid "Domains expired"
-msgstr ""
+msgstr "Verlopen domeinen"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid ""
@@ -8495,7 +8500,7 @@ msgstr ""
 msgid "Download plugin from the GLPI marketplace"
 msgstr ""
 
-#: src/User.php:2402
+#: src/User.php:2440
 msgid "Download user VCard"
 msgstr "Download gebruiker als VCard"
 
@@ -8525,7 +8530,7 @@ msgstr[1] "Keuzemenus"
 
 #: templates/pages/setup/dropdowns_list.html.twig
 msgid "Dropdown with entity management"
-msgstr ""
+msgstr "Dropdown met entiteitsbeheer"
 
 #: src/Profile.php:1029 src/Profile.php:1865 src/Profile.php:2912
 msgid "Dropdowns dictionary"
@@ -8600,7 +8605,7 @@ msgid "ERROR"
 msgstr ""
 
 #. TRANS: %s is a directory
-#: front/cron.php:44
+#: front/cron.php:45
 #, php-format
 msgid "ERROR: %s is not writable"
 msgstr "FOUT: %s is niet beschrijfbaar"
@@ -8731,8 +8736,8 @@ msgstr "Onderdeel lijkt niet geogelokaliseerd of kan niet gevonden worden"
 #: src/AuthLDAP.php:960 src/AuthLDAP.php:1208 src/AuthLDAP.php:1217
 #: src/AuthLDAP.php:1226 src/AuthLDAP.php:1235 src/AuthLDAP.php:3959
 #: src/AuthLDAP.php:3962 src/AuthLDAP.php:3967 src/AuthLDAP.php:3972
-#: src/QueuedNotification.php:749 src/User.php:2653 src/User.php:3142
-#: src/User.php:3576 src/Blacklist.php:247 src/Contact_Supplier.php:310
+#: src/QueuedNotification.php:749 src/User.php:2691 src/User.php:3180
+#: src/User.php:3614 src/Blacklist.php:247 src/Contact_Supplier.php:310
 #: src/Auth.php:1738 src/Auth.php:1744 src/Auth.php:1750 src/Auth.php:1756
 #: src/Contact.php:288 src/Supplier.php:242
 #: src/ContentTemplates/Parameters/SupplierParameters.php:77
@@ -8814,7 +8819,7 @@ msgid "Email notification"
 msgid_plural "Email notifications"
 msgstr[0] "Email meldingen"
 
-#: src/Api/API.php:2150
+#: src/Api/API.php:2154
 msgid "Email notifications are disabled"
 msgstr "Email meldingen zijn uitgeschakeld"
 
@@ -8836,7 +8841,7 @@ msgstr ""
 msgid "Email server"
 msgstr "Mailserver"
 
-#: src/User.php:3696
+#: src/User.php:3734
 msgid "Email server for authentication"
 msgstr "E-mail authenticatie server "
 
@@ -8960,7 +8965,7 @@ msgstr "Activeer financiële en administratieve informatie als standaard"
 
 #: src/Console/Database/EnableTimezonesCommand.php:73
 msgid "Enable timezones usage."
-msgstr ""
+msgstr "Schakel gebruik tijdszone in"
 
 #: src/System/RequirementsManager.php:122
 msgid ""
@@ -8974,7 +8979,7 @@ msgstr ""
 
 #: src/System/Requirement/DbTimezones.php:53
 msgid "Enable usage of timezones."
-msgstr ""
+msgstr "Schakel gebruik van tijdzones in."
 
 #: src/Auth.php:1617 src/Auth.php:1662 src/Auth.php:1685
 msgctxt "authentication"
@@ -9069,7 +9074,7 @@ msgstr "Eindigt op %s"
 #: front/report.infocom.conso.php:74 front/stat.graph.php:380
 #: src/Csv/PlanningCsv.php:76 src/Dropdown.php:690 src/ProjectCost.php:167
 #: src/ProjectCost.php:294 src/ProjectCost.php:370 src/Budget.php:162
-#: src/Budget.php:258 src/CommonITILTask.php:998 src/User.php:3865
+#: src/Budget.php:258 src/CommonITILTask.php:998 src/User.php:3903
 #: src/ContractCost.php:158 src/ContractCost.php:285 src/ContractCost.php:362
 #: src/CommonITILCost.php:143 src/CommonITILCost.php:449
 #: src/CommonITILCost.php:596 src/Stat.php:2120
@@ -9154,7 +9159,7 @@ msgstr ""
 msgid "Ensure security is enforced on session cookies."
 msgstr ""
 
-#: front/find_num.php:79 ajax/dropdownTrackingDeviceType.php:72
+#: ajax/dropdownTrackingDeviceType.php:72
 msgid "Enter the first letters (user, item name, serial or asset number)"
 msgstr "Geef de eerste letters (gebruikersnaam, item, serie of inventarisnr.)"
 
@@ -9337,7 +9342,7 @@ msgstr ""
 msgid "Error: %s is not a directory"
 msgstr "Error: %s is geen map"
 
-#: src/User.php:773 src/User.php:981
+#: src/User.php:784 src/User.php:992
 msgid "Error: the two passwords do not match"
 msgstr "Fout ! de 2 wachtwoorden zijn niet identiek"
 
@@ -9554,7 +9559,7 @@ msgstr "Vervaldatum + Opzeggingstermijn"
 
 #: src/NotificationTargetDomain.php:41 src/NotificationTargetDomain.php:78
 msgid "Expired domains"
-msgstr ""
+msgstr "Verlopen domeinen"
 
 #: src/Domain.php:534
 msgid "Expired or expiring domains"
@@ -9566,7 +9571,7 @@ msgstr ""
 
 #: src/NotificationTargetDomain.php:42 src/NotificationTargetDomain.php:78
 msgid "Expiring domains"
-msgstr ""
+msgstr "Verlopende domeinen"
 
 #: templates/components/logs.html.twig
 msgid "Export"
@@ -9626,8 +9631,8 @@ msgid "External link"
 msgid_plural "External links"
 msgstr[0] "Externe links"
 
-#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:259
-#: src/TicketSatisfaction.php:309 src/Entity.php:3144 src/Entity.php:3883
+#: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:264
+#: src/TicketSatisfaction.php:314 src/Entity.php:3144 src/Entity.php:3883
 msgid "External survey"
 msgstr "Externe enquete"
 
@@ -9699,7 +9704,7 @@ msgstr "Verbinden met de proxy server is mislukt (%s)"
 msgid "Failed to create recurrent item %s"
 msgstr ""
 
-#: src/Document.php:1520
+#: src/Document.php:1532
 #, php-format
 msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
@@ -9707,7 +9712,7 @@ msgid ""
 msgstr ""
 "Aanmaken van de map %s is mislukt. Controleer of u de juiste rechten heeft"
 
-#: src/Document.php:1216 src/Document.php:1328 src/Document.php:1425
+#: src/Document.php:1222 src/Document.php:1340 src/Document.php:1437
 #, php-format
 msgid "Failed to delete the file %1$s"
 msgstr ""
@@ -9725,7 +9730,7 @@ msgstr ""
 #: src/Ticket.php:6726
 #, php-format
 msgid "Failed to link tickets %d and %d"
-msgstr ""
+msgstr "Koppelen van tickets %d en %dmislukt"
 
 #: src/Ticket.php:6617
 #, php-format
@@ -9736,7 +9741,7 @@ msgstr ""
 msgid "Failed to remove team member"
 msgstr ""
 
-#: src/GLPIUploadHandler.php:114
+#: src/UploadHandler.php:434
 msgid "Failed to resize image"
 msgstr "Formaat van afbeelding kan niet worden gewijzigd"
 
@@ -9744,7 +9749,7 @@ msgstr "Formaat van afbeelding kan niet worden gewijzigd"
 msgid "Failed to send test email to administrator"
 msgstr "Poging om een e-mail naar de administrator te sturen is mislukt"
 
-#: src/GLPIUploadHandler.php:66
+#: src/UploadHandler.php:386
 msgid "Failed to write file to disk"
 msgstr "Bestand kon niet opgeslagen worden"
 
@@ -9850,17 +9855,17 @@ msgstr "Uniciteit van de velden"
 msgid "File"
 msgstr "Bestand"
 
-#: src/Inventory/Inventory.php:936
+#: src/Inventory/Inventory.php:949
 #, php-format
 msgid "File %1$s %2$s has been removed"
 msgstr ""
 
-#: src/Inventory/Inventory.php:930
+#: src/Inventory/Inventory.php:943
 #, php-format
 msgid "File %1$s %2$s has not been removed"
 msgstr ""
 
-#: src/Inventory/Inventory.php:854
+#: src/Inventory/Inventory.php:867
 #, php-format
 msgid "File %1$s has been removed"
 msgstr ""
@@ -9870,7 +9875,7 @@ msgstr ""
 msgid "File %s contains SQL queries that can be used to rollback command."
 msgstr ""
 
-#: src/Document.php:1173 src/Document.php:1284
+#: src/Document.php:1179 src/Document.php:1296
 #, php-format
 msgid "File %s not found."
 msgstr "Bestand %s niet gevonden."
@@ -9892,27 +9897,27 @@ msgstr ""
 msgid "File has not been imported: `%s`."
 msgstr ""
 
-#: front/document.send.php:60
+#: front/document.send.php:62
 msgid "File is altered (bad checksum)"
 msgstr "Bestand gewijzigd (verkeerde checksum)"
 
-#: src/GLPIUploadHandler.php:78
+#: src/UploadHandler.php:398
 msgid "File is too big"
 msgstr "Het bestand is te groot"
 
-#: src/GLPIUploadHandler.php:82
+#: src/UploadHandler.php:402
 msgid "File is too small"
 msgstr "Het bestand is te klein"
 
-#: src/Document.php:1242 src/Document.php:1344
+#: src/Document.php:1248 src/Document.php:1356
 msgid "File move failed"
 msgstr "Document verplaatsen mislukt"
 
-#: src/Document.php:1235
+#: src/Document.php:1241
 msgid "File move failed."
 msgstr "Document verplaatsen mislukt."
 
-#: front/document.send.php:54
+#: front/document.send.php:56
 msgid "File not found"
 msgstr "Bestand niet gevonden"
 
@@ -9921,11 +9926,11 @@ msgid "File system"
 msgid_plural "File systems"
 msgstr[0] "Bestandssystemen"
 
-#: src/Document.php:1378
+#: src/Document.php:1390
 msgid "File too large to be added."
 msgstr "Bestand is te groot om toe te voegen."
 
-#: src/GLPIUploadHandler.php:110
+#: src/UploadHandler.php:430
 msgid "File upload aborted"
 msgstr "Bestand upload afgebroken"
 
@@ -9937,7 +9942,7 @@ msgstr "Bestand(en)"
 msgid "Filename"
 msgstr ""
 
-#: src/GLPIUploadHandler.php:106
+#: src/UploadHandler.php:426
 msgid "Filetype not allowed"
 msgstr "DIt bestandstype is niet toegestaan"
 
@@ -9967,7 +9972,7 @@ msgstr ""
 
 #: templates/pages/setup/dropdowns_list.html.twig
 msgid "Filter dropdowns"
-msgstr ""
+msgstr "Filter dropdowns"
 
 #: src/Impact.php:1001
 msgid "Filter itemtypes..."
@@ -9995,7 +10000,7 @@ msgstr ""
 
 #. TRANS: Always plural
 #: templates/components/infocom.html.twig src/Transfer.php:3971
-#: src/Entity.php:2286 src/Consumable.php:637 src/Config.php:3238
+#: src/Entity.php:2286 src/Consumable.php:637 src/Config.php:3237
 #: src/Infocom.php:114 src/Infocom.php:1204 src/Cartridge.php:826
 msgid "Financial and administrative information"
 msgstr "financiële & administratieve informatie"
@@ -10014,7 +10019,7 @@ msgstr "Computers zoeken in GLPI met deze status"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Find menu"
-msgstr ""
+msgstr "Zoek menu"
 
 #: src/ProjectState.php:64 src/ProjectState.php:88
 msgid "Finished state"
@@ -10044,8 +10049,8 @@ msgstr ""
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:935
 #: src/AuthLDAP.php:1146 src/AuthLDAP.php:3976
-#: src/NotificationTargetUser.php:152 src/User.php:2580 src/User.php:3005
-#: src/User.php:3568 src/User.php:6440 src/Auth.php:1718 src/Contact.php:239
+#: src/NotificationTargetUser.php:152 src/User.php:2618 src/User.php:3043
+#: src/User.php:3606 src/User.php:6493 src/Auth.php:1718 src/Contact.php:239
 #: src/ContentTemplates/Parameters/UserParameters.php:81
 msgid "First name"
 msgstr "Voornaam"
@@ -10078,6 +10083,7 @@ msgstr ""
 #, php-format
 msgid "Fix them and run the \"%1$s\" command to enable timezones."
 msgstr ""
+"Herstel ze, en voer het \"%1$s\" commando uit om tijdszones in te schakelen."
 
 #: src/CommonITILCost.php:167 src/CommonITILCost.php:271
 #: src/CommonITILCost.php:468 src/CommonITILCost.php:600
@@ -10146,7 +10152,7 @@ msgstr ""
 msgid "Following extensions are not present: %s."
 msgstr ""
 
-#: src/Inventory/Inventory.php:297
+#: src/Inventory/Inventory.php:310
 #, php-format
 msgid "Following keys has been ignored during process: %1$s"
 msgstr ""
@@ -10198,7 +10204,7 @@ msgstr ""
 msgid "For tickets closed after"
 msgstr "Voor tickets afgesloten na"
 
-#: src/Api/API.php:1606
+#: src/Api/API.php:1610
 msgid "Forbidden field ID in search criteria"
 msgstr "Verboden ID-veld in zoekcriterium"
 
@@ -10239,7 +10245,7 @@ msgstr ""
 msgid "Force strategy used for restored users (current configured action: \"%s\")"
 msgstr ""
 
-#: src/User.php:3440 src/Auth.php:1511
+#: src/User.php:3478 src/Auth.php:1511
 msgid "Force synchronization"
 msgstr "Forceer synchronisatie"
 
@@ -10257,8 +10263,8 @@ msgid "Forget it,"
 msgstr ""
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
-#: src/NotificationTargetUser.php:43 src/User.php:5398 src/User.php:5413
-#: src/User.php:5511 src/User.php:5535
+#: src/NotificationTargetUser.php:43 src/User.php:5436 src/User.php:5451
+#: src/User.php:5556 src/User.php:5580
 msgid "Forgotten password?"
 msgstr "Wachtwoord vergeten?"
 
@@ -10266,8 +10272,8 @@ msgstr "Wachtwoord vergeten?"
 msgctxt "camera"
 msgid "Format"
 msgid_plural "Formats"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Formaat"
+msgstr[1] "Formaten"
 
 #: src/NotificationTargetCommonITILObject.php:820
 msgid "Former technician in charge of the ticket"
@@ -10372,11 +10378,11 @@ msgstr "Foto voorkant"
 
 #: src/NetworkPort.php:1098
 msgid "Full"
-msgstr ""
+msgstr "Volledig"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:76
 msgid "Full name"
-msgstr ""
+msgstr "Volledige naam"
 
 #: src/Impact.php:1118
 msgid "Fullscreen"
@@ -10435,7 +10441,7 @@ msgstr "GLPI server tijdszone"
 
 #: src/Console/Database/UpdateCommand.php:165
 msgid "GLPI version"
-msgstr ""
+msgstr "GLPI versie"
 
 #: src/Dropdown.php:941 src/Dropdown.php:948 src/Dropdown.php:949
 msgid "GMT"
@@ -10457,12 +10463,12 @@ msgstr "Gateway: %s"
 
 #: src/NetworkPort.php:1020
 msgid "Gbps"
-msgstr ""
+msgstr "Gbps"
 
 #: src/Rule.php:2443 src/CommonItilObject_Item.php:147
 #: src/RuleImportAsset.php:188 src/RuleImportAsset.php:192
 #: src/RuleImportAsset.php:197 src/CommonGLPI.php:108
-#: src/CommonITILObject.php:6508 src/Config.php:3170 src/Ticket.php:5074
+#: src/CommonITILObject.php:6508 src/Config.php:3169 src/Ticket.php:5074
 #: src/Ticket.php:5684
 msgid "General"
 msgstr "Algemeen"
@@ -10473,7 +10479,7 @@ msgid "General"
 msgstr "Algemeen"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Config.php:2011
-#: src/Config.php:2536 src/Profile.php:2595
+#: src/Config.php:2535 src/Profile.php:2595
 msgid "General setup"
 msgstr "Generieke instellingen"
 
@@ -10498,11 +10504,11 @@ msgstr "Haal de e-mail tickets nu op"
 
 #: src/Marketplace/View.php:521
 msgid "Get help"
-msgstr ""
+msgstr "Krijg hulp"
 
 #: src/Console/Marketplace/InfoCommand.php:51
 msgid "Get information about a plugin"
-msgstr ""
+msgstr "Verkrijg info over een plugin"
 
 #: src/Toolbox.php:951
 msgid "Gio"
@@ -10592,7 +10598,7 @@ msgstr "Ga naar het nieuwe item, wanneer het is aangemaakt"
 
 #: src/Html.php:6576
 msgid "Go to menu"
-msgstr ""
+msgstr "Ga naar menu"
 
 #: src/CommonITILValidation.php:535
 msgid "Granted"
@@ -10648,11 +10654,11 @@ msgstr "Verantwoordelijke groep"
 
 #: src/NotificationTargetCertificate.php:60
 msgid "Group in charge of the certificate"
-msgstr ""
+msgstr "Groep die verantwoordelijk is voor het certificaat"
 
 #: src/NotificationTargetDomain.php:54
 msgid "Group in charge of the domain"
-msgstr ""
+msgstr "Groep die verantwoordelijk is voor het domein"
 
 #: templates/generic_show_form.html.twig src/Phone.php:398 src/Monitor.php:421
 #: src/PassiveDCEquipment.php:175 src/Enclosure.php:201 src/Printer.php:612
@@ -10706,7 +10712,7 @@ msgstr "Groepen boom"
 #: src/NotificationTargetPlanningRecall.php:57
 #: src/PlanningExternalEvent.php:263 src/Features/PlanningEvent.php:1041
 msgid "Guests"
-msgstr ""
+msgstr "Gasten"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:386
 msgid "HDMI"
@@ -10728,7 +10734,7 @@ msgstr ""
 msgid "Half pie"
 msgstr ""
 
-#: src/User.php:6041
+#: src/User.php:6094
 msgid "Handle users passwords expiration policy"
 msgstr ""
 
@@ -10748,10 +10754,6 @@ msgstr "Harde schijftype"
 #: src/Report.php:85
 msgid "Hardware financial and administrative information"
 msgstr "Financiële & administratieve informatie over de hardware"
-
-#: front/find_num.php:93
-msgid "Hardware type"
-msgstr "Hardwaretype"
 
 #: front/report.contract.php:49
 msgid "Hardware under contract"
@@ -10805,15 +10807,15 @@ msgstr "Helpdesk Dashboard"
 
 #: src/Group.php:1067
 msgid "Helpdesk group"
-msgstr ""
+msgstr "Helpdesk groep"
 
 #: templates/anonymous_helpdesk.html.twig
 msgid "Helpdesk reporting form"
 msgstr "Helpdesk meldingsformulier"
 
-#: src/User.php:6353 src/User.php:6380
+#: src/User.php:6406 src/User.php:6433
 msgid "Helpdesk user"
-msgstr ""
+msgstr "Helpdesk gebruiker"
 
 #: src/ITILTemplateHiddenField.php:47
 msgid "Hidden field"
@@ -10871,11 +10873,11 @@ msgstr "Home"
 
 #: src/Marketplace/View.php:514
 msgid "Homepage"
-msgstr ""
+msgstr "Home pagina"
 
 #: src/Config.php:1219
 msgid "Horizontal (menu in header)"
-msgstr ""
+msgstr "Horizontaal (menu boven)"
 
 #: src/Dashboard/Widget.php:194
 msgid "Horizontal bars"
@@ -10913,13 +10915,13 @@ msgstr ""
 msgid "I don't understand why this migration error is not deleted."
 msgstr "Ik begrijp niet waarom deze migratie fout niet is verwijderd"
 
-#: src/Config.php:3100
+#: src/Config.php:3099
 msgid "I know I am using a unstable version."
 msgstr "Ik weet dat ik een onstabiele versie gebruik."
 
 #: templates/pages/admin/events_list.html.twig
-#: templates/components/logs.html.twig front/find_num.php:95
-#: src/Csv/LogCsvExport.php:73 src/Phone.php:215 src/Ticket_Ticket.php:71
+#: templates/components/logs.html.twig src/Csv/LogCsvExport.php:73
+#: src/Phone.php:215 src/Ticket_Ticket.php:71
 #: src/NotificationTargetProjectTask.php:589
 #: src/NotificationTargetProjectTask.php:618 src/KnowbaseItem.php:2248
 #: src/Monitor.php:210 src/Unmanaged.php:98 src/Datacenter.php:100
@@ -10931,8 +10933,8 @@ msgstr "Ik weet dat ik een onstabiele versie gebruik."
 #: src/Budget.php:215 src/PassiveDCEquipment.php:95 src/Enclosure.php:112
 #: src/CommonITILTask.php:1648 src/CommonITILTask.php:1673
 #: src/CommonITILTask.php:1738 src/Link.php:220 src/QueuedNotification.php:224
-#: src/Printer.php:348 src/Document.php:999 src/User.php:3551
-#: src/User.php:5676 src/Search.php:8100 src/Search.php:8121 src/Line.php:116
+#: src/Printer.php:348 src/Document.php:999 src/User.php:3589
+#: src/User.php:5729 src/Search.php:8100 src/Search.php:8121 src/Line.php:116
 #: src/ContractCost.php:133 src/Rack.php:154 src/Group_User.php:725
 #: src/CommonITILCost.php:118 src/SoftwareLicense.php:360
 #: src/SoftwareLicense.php:1207 src/Software.php:385 src/AuthMail.php:112
@@ -10982,7 +10984,7 @@ msgstr "ID"
 msgid "ID TAG"
 msgstr "ID tag"
 
-#: src/Api/API.php:1637
+#: src/Api/API.php:1641
 msgid "ID is forbidden along with 'forcedisplay' parameter."
 msgstr "ID is verboden samen met 'forcedisplay' parameter."
 
@@ -11079,7 +11081,7 @@ msgstr "Bij weigering van een validatie moet u een reden opgeven."
 
 #: src/Transfer.php:4083
 msgid "If certificates are no longer used"
-msgstr ""
+msgstr "Als certificaten niet langer gebruikt worden"
 
 #: src/Transfer.php:4053
 msgid "If contacts are no longer used"
@@ -11106,6 +11108,8 @@ msgid ""
 "If name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"Als naam een geldig e-mail adres is, wordt deze automatisch toegevoegd aan "
+"de zwarte lijst met afzenders."
 
 #: src/NotificationMailingSetting.php:378
 msgid "If not set, main administrator email will be used."
@@ -11169,7 +11173,7 @@ msgstr "Na synchronisatie of alleen-lezen account"
 msgid "If the cartridge types are no longer used"
 msgstr "Als de inktpatronen niet langer worden gebruikt"
 
-#: src/User.php:5532 src/Api/API.php:2170
+#: src/User.php:5577 src/Api/API.php:2174
 msgid ""
 "If the given email address match an exisiting GLPI user, you will receive an"
 " email containing the informations required to reset your password. Please "
@@ -11228,11 +11232,11 @@ msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
 msgstr[0] "Waarden voor de uniciteit genegeerde "
 
-#: src/GLPIUploadHandler.php:98
+#: src/UploadHandler.php:418
 msgid "Image exceeds maximum height"
 msgstr "De afbeelding overschrijdt de maximum hoogte"
 
-#: src/GLPIUploadHandler.php:90
+#: src/UploadHandler.php:410
 msgid "Image exceeds maximum width"
 msgstr "De afbeelding overschrijdt de maximum breedte"
 
@@ -11242,11 +11246,11 @@ msgid_plural "Image formats"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/GLPIUploadHandler.php:102
+#: src/UploadHandler.php:422
 msgid "Image requires a minimum height"
 msgstr "De afbeelding vereist een minimum hoogte"
 
-#: src/GLPIUploadHandler.php:94
+#: src/UploadHandler.php:414
 msgid "Image requires a minimum width"
 msgstr "De afbeelding vereist een minimum breedte"
 
@@ -11290,7 +11294,7 @@ msgstr "Beïnvloed door"
 msgid "Impacts"
 msgstr "Heeft invloed op"
 
-#: src/User.php:2417
+#: src/User.php:2455
 msgid "Impersonate"
 msgstr ""
 
@@ -11312,7 +11316,7 @@ msgctxt "button"
 msgid "Import"
 msgstr "Importeren"
 
-#: src/User.php:4668 src/User.php:4672 src/User.php:4675
+#: src/User.php:4706 src/User.php:4710 src/User.php:4713
 msgid "Import a user"
 msgstr "importeer een gebruiker"
 
@@ -11332,7 +11336,7 @@ msgstr ""
 msgid "Import entities from LDAP directory"
 msgstr "Importeer entiteiten uit een LDAP-directory"
 
-#: src/User.php:4718
+#: src/User.php:4756
 msgid "Import from directories"
 msgstr "Import uit directories"
 
@@ -11340,7 +11344,7 @@ msgstr "Import uit directories"
 msgid "Import from file"
 msgstr ""
 
-#: src/User.php:4724
+#: src/User.php:4762
 msgid "Import from other sources"
 msgstr "Import uit andere bronnen"
 
@@ -11702,7 +11706,7 @@ msgstr "Initialisatie van de database"
 
 #: src/Update.php:264
 msgid "Initializing rules..."
-msgstr ""
+msgstr "Regels initialiseren..."
 
 #: src/Config.php:1255
 msgid "Inline (no toolbars)"
@@ -11768,11 +11772,11 @@ msgstr ""
 msgid "Installation or update of GLPI"
 msgstr "Installeer of update GLPI"
 
-#: src/Config.php:3215
+#: src/Config.php:3214
 msgid "Installation/uninstallation of software on items"
 msgstr ""
 
-#: src/Config.php:3221
+#: src/Config.php:3220
 msgid "Installation/uninstallation versions on software"
 msgstr ""
 
@@ -11856,7 +11860,7 @@ msgstr ""
 msgid "Internal status"
 msgstr ""
 
-#: src/TicketSatisfaction.php:256 src/TicketSatisfaction.php:308
+#: src/TicketSatisfaction.php:261 src/TicketSatisfaction.php:313
 #: src/Entity.php:3143 src/Entity.php:3882
 msgid "Internal survey"
 msgstr "Interne enquete"
@@ -11984,7 +11988,7 @@ msgstr "Verkeerde cookie data"
 msgid "Invalid dates. Update cancelled."
 msgstr "Verkeerde datum. Update afgebroken"
 
-#: src/User.php:5593 src/NotificationMailingSetting.php:87
+#: src/User.php:5638 src/NotificationMailingSetting.php:87
 #: src/NotificationMailingSetting.php:101
 #: src/NotificationMailingSetting.php:120
 #: src/NotificationMailingSetting.php:138 src/Entity.php:2021
@@ -11999,7 +12003,7 @@ msgstr "Verkeerd e-mailadres"
 msgid "Invalid email address %s"
 msgstr "Ongeldig e-mailadres %s"
 
-#: front/document.send.php:114
+#: front/document.send.php:116
 msgid "Invalid filename"
 msgstr "Verkeerde bestandsnaam"
 
@@ -12022,7 +12026,7 @@ msgstr "ongeldige internet naam: %s"
 
 #: src/Document.php:316 src/Document.php:406
 msgid "Invalid link"
-msgstr ""
+msgstr "Ongeldige link"
 
 #: src/NetworkPortMigration.php:114
 msgid "Invalid network (already defined or with invalid addresses)"
@@ -12082,8 +12086,8 @@ msgstr "Onjuist gebruik van sessie-ID"
 msgid "Invalid widget"
 msgstr ""
 
-#: front/inventory.conf.php:42 src/Inventory/Inventory.php:486
-#: src/Inventory/Inventory.php:957
+#: front/inventory.conf.php:42 src/Inventory/Inventory.php:499
+#: src/Inventory/Inventory.php:970
 #: src/Agent/Communication/AbstractRequest.php:174 src/Profile.php:948
 #: src/Profile.php:1859 src/Profile.php:3039
 msgid "Inventory"
@@ -12113,18 +12117,17 @@ msgstr ""
 
 #: src/RuleImportAsset.php:216
 msgid "Inventory link"
-msgstr ""
+msgstr "Inventaris link"
 
 #: templates/generic_show_form.html.twig
-#: templates/components/form/item_device.html.twig front/find_num.php:97
-#: src/Phone.php:259 src/Change_Item.php:161 src/Monitor.php:254
-#: src/Unmanaged.php:121 src/Item_Rack.php:858
-#: src/NotificationTargetProblem.php:206 src/Item_Devices.php:364
-#: src/Item_Devices.php:365 src/CableStrand.php:151 src/Document_Item.php:416
-#: src/Appliance.php:248 src/Budget.php:359 src/PassiveDCEquipment.php:120
-#: src/Enclosure.php:148 src/Printer.php:392 src/User.php:4905
-#: src/User.php:4987 src/Search.php:8136 src/Rack.php:198 src/Rack.php:917
-#: src/SoftwareLicense.php:548 src/SoftwareLicense.php:637
+#: templates/components/form/item_device.html.twig src/Phone.php:259
+#: src/Change_Item.php:161 src/Monitor.php:254 src/Unmanaged.php:121
+#: src/Item_Rack.php:858 src/NotificationTargetProblem.php:206
+#: src/Item_Devices.php:364 src/Item_Devices.php:365 src/CableStrand.php:151
+#: src/Document_Item.php:416 src/Appliance.php:248 src/Budget.php:359
+#: src/PassiveDCEquipment.php:120 src/Enclosure.php:148 src/Printer.php:392
+#: src/User.php:4943 src/User.php:5025 src/Search.php:8136 src/Rack.php:198
+#: src/Rack.php:917 src/SoftwareLicense.php:548 src/SoftwareLicense.php:637
 #: src/DeviceFirmware.php:231 src/PDU_Rack.php:601 src/Computer_Item.php:414
 #: src/Computer_Item.php:583 src/Peripheral.php:238
 #: src/NotificationTargetChange.php:284 src/Certificate_Item.php:275
@@ -12318,7 +12321,7 @@ msgstr "item buiten rack grenzen"
 #: templates/pages/admin/inventory/agent.html.twig
 #: templates/components/form/item_disk.html.twig
 msgid "Item link"
-msgstr ""
+msgstr "Item link"
 
 #: src/ReservationItem.php:563 src/RuleTicket.php:608
 msgid "Item location"
@@ -12332,8 +12335,8 @@ msgstr "Item vergrendeling"
 msgid "Item need to be deleted first"
 msgstr ""
 
-#: src/Html.php:607 src/CommonDBTM.php:6360 src/Api/API.php:1958
-#: src/Api/API.php:2072 src/Api/API.php:2646
+#: src/Html.php:607 src/CommonDBTM.php:6360 src/Api/API.php:1962
+#: src/Api/API.php:2076 src/Api/API.php:2650
 msgid "Item not found"
 msgstr "Item niet gevonden"
 
@@ -12465,7 +12468,7 @@ msgstr ""
 msgid "Keep"
 msgstr "Bewaren"
 
-#: src/Config.php:3325
+#: src/Config.php:3324
 msgid "Keep all"
 msgstr "Behoud alles"
 
@@ -12479,7 +12482,7 @@ msgstr "Behoud status"
 
 #: templates/components/form/buttons.html.twig
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "Behoud de apparaten tijdens het verwijderen van dit item"
 
 #: src/Config.php:869
 msgid "Keep tickets when purging hardware in the inventory"
@@ -12577,7 +12580,7 @@ msgstr[0] "LDAP mappen"
 msgid "LDAP directory choice"
 msgstr "LDAP directorie keuze"
 
-#: src/User.php:3683
+#: src/User.php:3721
 msgid "LDAP directory for authentication"
 msgstr "LDAP authenticatie directory"
 
@@ -12586,7 +12589,7 @@ msgid "LDAP directory information attribute representing the entity"
 msgstr "Entiteit (LDAP informatie over de Entiteit)"
 
 #: front/ldap.group.php:44 front/ldap.import.php:58 front/ldap.php:42
-#: front/ldap.group.import.php:42 src/User.php:2370 src/Group.php:151
+#: front/ldap.group.import.php:42 src/User.php:2408 src/Group.php:151
 #: src/Group.php:333
 msgid "LDAP directory link"
 msgstr "LDAP directory link"
@@ -12632,13 +12635,13 @@ msgstr ""
 msgid "Label"
 msgstr "Label"
 
-#: front/user.form.php:185
+#: front/user.form.php:44 front/user.form.php:195
 msgid "Lang has been changed!"
 msgstr "Taal is veranderd! "
 
 #: templates/pages/login.html.twig src/DropdownTranslation.php:424
 #: src/DropdownTranslation.php:515 src/AuthLDAP.php:981 src/AuthLDAP.php:1271
-#: src/User.php:3043 src/User.php:3716 src/KnowbaseItemTranslation.php:234
+#: src/User.php:3081 src/User.php:3754 src/KnowbaseItemTranslation.php:234
 #: src/KnowbaseItemTranslation.php:295
 #: src/NotificationTemplateTranslation.php:135
 #: src/NotificationTemplateTranslation.php:228
@@ -12680,16 +12683,16 @@ msgstr[0] "Laatste %d tickets"
 #: src/DatabaseInstance.php:279 src/Database.php:128 src/Database.php:235
 #: src/Database.php:350
 msgid "Last backup date"
-msgstr ""
+msgstr "Laatste back-up datum"
 
 #: templates/generic_show_form.html.twig src/Computer.php:458
 #: src/DatabaseInstance.php:431
 msgid "Last boot date"
-msgstr ""
+msgstr "Laatste opstartdatum"
 
 #: src/NetworkPort.php:1671
 msgid "Last change"
-msgstr ""
+msgstr "Laatste wijziging"
 
 #: src/Change.php:746
 msgid "Last changes"
@@ -12697,13 +12700,13 @@ msgstr "Wijzigingen"
 
 #: src/NetworkPort.php:1736
 msgid "Last connection"
-msgstr ""
+msgstr "Laatste verbinding"
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: templates/components/form/inventory_info.html.twig src/Agent.php:106
 #: src/Agent.php:298
 msgid "Last contact"
-msgstr ""
+msgstr "Laatste contact"
 
 #: src/SavedSearch.php:232
 msgid "Last duration (ms)"
@@ -12719,40 +12722,40 @@ msgstr "Laatste uitvoeringsdatum"
 
 #: src/Lockedfield.php:102 src/Lock.php:194
 msgid "Last inventoried value"
-msgstr ""
+msgstr "Laatst geïnventariseerde waarde"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:198
 msgid "Last inventory"
-msgstr ""
+msgstr "Laatste inventaris"
 
 #: src/Phone.php:267 src/Printer.php:650 src/Computer.php:450
 #: src/NetworkEquipment.php:487
 msgid "Last inventory date"
-msgstr ""
+msgstr "Laatste inventaris datum"
 
 #: templates/components/form/inventory_info.html.twig
 msgid "Last inventory update"
-msgstr ""
+msgstr "Laatste inventaris update"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "Last inventory value was:"
-msgstr ""
+msgstr "Laatste inventaris waarde was:"
 
-#: src/User.php:3660
+#: src/User.php:3698
 msgid "Last login"
 msgstr "Laatste ingelogd"
 
-#: src/User.php:2921
+#: src/User.php:2959
 #, php-format
 msgid "Last login on %s"
 msgstr "Laatste inlog op %s"
 
 #: src/Html.php:6983
 msgid "Last month"
-msgstr ""
+msgstr "Laatste maand"
 
-#: src/User.php:3560 src/Contact.php:230
+#: src/User.php:3598 src/Contact.php:230
 msgid "Last name"
 msgstr "Familienaam"
 
@@ -12772,11 +12775,11 @@ msgstr "Lijst van de laatste uitvoeringen"
 msgid "Last solution status"
 msgstr "Laatste oplossingsstatus"
 
-#: src/User.php:3784
+#: src/User.php:3822
 msgid "Last synchronization"
 msgstr "Laatste synchronisatie"
 
-#: src/User.php:2699
+#: src/User.php:2737
 #, php-format
 msgid "Last synchronization on %s"
 msgstr "Laatste synchronisatie op %s"
@@ -12794,7 +12797,7 @@ msgstr "Laatste incident-ticket(s)"
 #: src/CommonDropdown.php:487 src/Appliance.php:216 src/Rule.php:815
 #: src/AuthLDAP.php:455 src/AuthLDAP.php:1253 src/Budget.php:224
 #: src/PassiveDCEquipment.php:130 src/Enclosure.php:164 src/Link.php:237
-#: src/Printer.php:450 src/Document.php:1067 src/User.php:3726
+#: src/Printer.php:450 src/Document.php:1067 src/User.php:3764
 #: src/Search.php:8163 src/Line.php:141 src/Rack.php:230 src/Software.php:412
 #: src/AuthMail.php:146 src/Peripheral.php:280 src/LevelAgreement.php:191
 #: src/Transfer.php:130 src/Transfer.php:3889 src/Computer.php:508
@@ -12806,7 +12809,7 @@ msgstr "Laatste incident-ticket(s)"
 #: src/CommonITILObject.php:4097 src/CommonITILObject.php:6646
 #: src/NotificationTargetPlanningRecall.php:245 src/RuleTicket.php:562
 #: src/Contract.php:548 src/CommonDevice.php:299 src/Cluster.php:111
-#: src/Config.php:3200 src/Profile.php:2012 src/Reminder.php:472
+#: src/Config.php:3199 src/Profile.php:2012 src/Reminder.php:472
 #: src/RSSFeed.php:518 src/CronTask.php:1728
 #: src/Features/PlanningEvent.php:998 src/NotificationTargetProject.php:636
 #: src/NotificationTargetProject.php:657 src/DomainRecord.php:155
@@ -12838,11 +12841,11 @@ msgstr "Laatste update op %s"
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Last update: %1$s by %2$s"
-msgstr ""
+msgstr "Laatst bijgewerkt: %1$s door %2$s"
 
 #: src/Marketplace/View.php:397
 msgid "Last updated"
-msgstr ""
+msgstr "Laatst geüpdatet"
 
 #: src/KnowbaseItem.php:2133
 msgid "Last updated entries"
@@ -13073,7 +13076,7 @@ msgstr "Link"
 #: src/Ticket.php:2649
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Koppel projecttaak"
 
 #: src/Ticket.php:2645
 msgctxt "button"
@@ -13101,8 +13104,8 @@ msgstr "Link met de items voor het aanmaken van incident-tickets"
 #: src/RuleImportAsset.php:182
 msgid "Linked asset"
 msgid_plural "Linked assets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gekoppelde asset"
+msgstr[1] "Gekoppelde assets"
 
 #: src/KnowbaseItem_Item.php:176
 msgid "Linked item"
@@ -13178,7 +13181,7 @@ msgstr "Lijst van niet geïmporteerde e-mails"
 
 #: src/Dashboard/Grid.php:1350
 msgid "List of reminders"
-msgstr ""
+msgstr "Lijst met herinneringen"
 
 #: front/report.contract.list.php:48
 msgid "List of the hardware under contract"
@@ -13203,7 +13206,7 @@ msgstr ""
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Lists"
-msgstr ""
+msgstr "Lijsten"
 
 #: src/NotificationTargetSavedSearch_Alert.php:107
 msgid "Load saved search"
@@ -13255,7 +13258,7 @@ msgstr "Locatie op kaart"
 
 #: src/RuleLocation.php:44 src/RuleLocationCollection.php:45
 msgid "Location rules"
-msgstr ""
+msgstr "Locatie regels"
 
 #: ajax/getMapPoint.php:78
 msgid "Location seems not geolocalized!"
@@ -13378,8 +13381,8 @@ msgstr "logical operator"
 
 #: templates/pages/login.html.twig src/MailCollector.php:263
 #: src/MailCollector.php:501 src/AuthLDAP.php:3957
-#: src/NotificationTargetUser.php:150 src/User.php:2510 src/User.php:2964
-#: src/User.php:3541 src/User.php:4713 src/User.php:5326 src/AuthMail.php:232
+#: src/NotificationTargetUser.php:150 src/User.php:2548 src/User.php:3002
+#: src/User.php:3579 src/User.php:4751 src/User.php:5364 src/AuthMail.php:232
 #: src/ContentTemplates/Parameters/UserParameters.php:75 src/RuleRight.php:271
 #: src/Config.php:2074
 msgid "Login"
@@ -13395,7 +13398,7 @@ msgstr ""
 
 #: templates/pages/login.html.twig
 msgid "Login to your account"
-msgstr ""
+msgstr "Inloggen op uw account"
 
 #: src/Auth.php:659
 msgid "Login with external token disabled"
@@ -13409,11 +13412,11 @@ msgstr "Uitloggen"
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr "Logfiles in verschilende bestanden (SQL, mail, cron...)"
 
-#: src/Config.php:2543 src/PurgeLogs.php:42
+#: src/Config.php:2542 src/PurgeLogs.php:42
 msgid "Logs purge"
 msgstr "Logs opschonen"
 
-#: src/Config.php:3152
+#: src/Config.php:3151
 msgid "Logs purge configuration"
 msgstr "Logs opschonen configuratie"
 
@@ -13588,7 +13591,7 @@ msgstr ""
 msgid "Make unavailable"
 msgstr "Onbeschikbaar maken"
 
-#: src/Api/API.php:1591
+#: src/Api/API.php:1595
 msgid "Malformed search criteria"
 msgstr "Misvormd zoekcriterium"
 
@@ -13599,9 +13602,9 @@ msgstr "Beheer"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Manage all saved searches"
-msgstr ""
+msgstr "Beheer alle opgeslagen zoekopdrachten"
 
-#: src/Document.php:1475
+#: src/Document.php:1487
 msgid "Manage document types"
 msgstr "Beheer documenttypes"
 
@@ -13630,7 +13633,7 @@ msgid "Managed items"
 msgstr "Beheerde items"
 
 #: src/Dropdown.php:1173 src/Html.php:1350 src/Event.php:170
-#: src/Transfer.php:4036 src/Config.php:2540 src/Profile.php:161
+#: src/Transfer.php:4036 src/Config.php:2539 src/Profile.php:161
 #: src/Profile.php:1378 src/Profile.php:2225 src/Infocom.php:160
 msgid "Management"
 msgstr "Beheer"
@@ -13708,8 +13711,8 @@ msgstr "Verplichte velden zijn niet gevuld. Aub aanpassen: %s"
 #: src/ManualLink.php:52
 msgid "Manual link"
 msgid_plural "Manual links"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Manuele koppeling"
+msgstr[1] "Manuele koppelingen"
 
 #: src/Manufacturer.php:45 src/Rule.php:282 src/Blacklist.php:251
 msgid "Manufacturer"
@@ -13751,7 +13754,7 @@ msgstr "Master"
 
 #: src/RuleMatchedLog.php:61
 msgid "Matched rules"
-msgstr ""
+msgstr "Overeenkomende regels"
 
 #: src/CommonITILCost.php:175 src/CommonITILCost.php:290
 #: src/CommonITILCost.php:475 src/CommonITILCost.php:601
@@ -13816,11 +13819,11 @@ msgstr "Maximum duur"
 msgid "Maximum emails to send at once"
 msgstr "Maximum aantal tegelijk te versturen e-mails"
 
-#: src/User.php:6042
+#: src/User.php:6095
 msgid "Maximum expiration notifications to send at once"
 msgstr ""
 
-#: src/GLPIUploadHandler.php:86
+#: src/UploadHandler.php:406
 msgid "Maximum number of files exceeded"
 msgstr "Het maximum aantal bestanden wordt overschreden"
 
@@ -13950,7 +13953,7 @@ msgstr "Taken samenvoegen"
 
 #: src/Config.php:1365
 msgid "Merged"
-msgstr ""
+msgstr "Samengevoegd"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/form_task.html.twig
@@ -13989,7 +13992,7 @@ msgstr ""
 msgid "Method"
 msgstr ""
 
-#: src/Api/API.php:2686
+#: src/Api/API.php:2690
 msgid "Method Not Allowed"
 msgstr "Methode niet toegestaan"
 
@@ -14135,7 +14138,7 @@ msgstr[0] "Minuten"
 msgid "Mio"
 msgstr "Mb"
 
-#: src/GLPIUploadHandler.php:62
+#: src/UploadHandler.php:382
 msgid "Missing a temporary folder"
 msgstr "De temp folder ontbreekt"
 
@@ -14177,7 +14180,7 @@ msgstr "De combinatie mobiel land code en netwerk code moet uniek zijn!"
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:594
 #: src/AuthLDAP.php:971 src/AuthLDAP.php:1173 src/AuthLDAP.php:3979
-#: src/User.php:2723 src/User.php:3150 src/User.php:3634
+#: src/User.php:2761 src/User.php:3188 src/User.php:3672
 #: src/Contact_Supplier.php:308 src/Auth.php:1774 src/Contact.php:272
 #: src/NotificationTargetCommonITILObject.php:1748
 #: src/NotificationTargetCommonITILObject.php:1779
@@ -14295,7 +14298,7 @@ msgstr "Meer"
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:531
 #, php-format
 msgid "More than one Computer linked to %s #%s."
-msgstr ""
+msgstr "Meer dan één Computer is gekoppeld aan %s #%s."
 
 #: src/Impact.php:1042
 msgid "More..."
@@ -14333,7 +14336,7 @@ msgctxt "button"
 msgid "Move"
 msgstr "Verplaatsen"
 
-#: src/User.php:3432
+#: src/User.php:3470
 msgid "Move to group"
 msgstr "Verplaats naar groep"
 
@@ -14342,7 +14345,7 @@ msgctxt "button"
 msgid "Move under"
 msgstr ""
 
-#: src/User.php:930
+#: src/User.php:941
 msgid "Moving temporary file failed."
 msgstr ""
 
@@ -14352,23 +14355,23 @@ msgstr "Multimode fiber"
 
 #: src/Dashboard/Widget.php:144
 msgid "Multiple areas"
-msgstr ""
+msgstr "Meerdere gebieden"
 
 #: src/Dashboard/Widget.php:154
 msgid "Multiple bars"
-msgstr ""
+msgstr "Meerdere lijnen"
 
 #: src/Dashboard/Widget.php:164
 msgid "Multiple horizontal bars"
-msgstr ""
+msgstr "Meerdere horizontale lijnen"
 
 #: src/Dashboard/Widget.php:125
 msgid "Multiple lines"
-msgstr ""
+msgstr "Meerdere lijnen"
 
 #: src/Dashboard/Widget.php:209
 msgid "Multiple numbers"
-msgstr ""
+msgstr "Meerdere getallen"
 
 #: src/Item_Ticket.php:665 src/Item_Ticket.php:889 src/Profile.php:3758
 #: src/Profile.php:3764
@@ -14396,7 +14399,7 @@ msgstr "Mijn taken"
 msgid "My unpublished articles"
 msgstr "Mijn niet-gepubliceerde artikelen"
 
-#: src/DbUtils.php:1674 src/User.php:4538 src/Search.php:3408
+#: src/DbUtils.php:1674 src/User.php:4576 src/Search.php:3408
 #: src/Dashboard/Filters/UserTechFilter.php:145 ajax/searchoptionvalue.php:87
 msgid "Myself"
 msgstr ""
@@ -14455,8 +14458,8 @@ msgstr "NIET"
 #: src/Budget.php:135 src/Budget.php:206 src/Budget.php:357
 #: src/PassiveDCEquipment.php:86 src/Link.php:173 src/Link.php:211
 #: src/NotificationTargetUser.php:151 src/RuleLocation.php:105
-#: src/Document.php:454 src/Document.php:990 src/User.php:4903
-#: src/User.php:4985 src/Search.php:8094 src/Search.php:8115
+#: src/Document.php:454 src/Document.php:990 src/User.php:4941
+#: src/User.php:5023 src/Search.php:8094 src/Search.php:8115
 #: src/ContractCost.php:263 src/ContractCost.php:360 src/Blacklist.php:250
 #: src/Rack.php:96 src/Rack.php:402 src/NetworkAlias.php:128
 #: src/NetworkAlias.php:322 src/NotificationTargetContract.php:174
@@ -14542,7 +14545,7 @@ msgstr "Naam om te gebruiken in het van veld bij het versturen van emails."
 
 #: src/Config.php:1297
 msgid "Natural order (old items on top, recent on bottom)"
-msgstr ""
+msgstr "Normale volgorde (oude items boven, recente items beneden)"
 
 #: templates/generic_show_form.html.twig src/Printer.php:585
 #: src/Network.php:41 src/Computer.php:526 src/NetworkEquipment.php:431
@@ -14721,7 +14724,7 @@ msgstr[0] "Netwerkapparatuurtypes"
 #: src/Entity.php:3101 src/Entity.php:3614 src/Entity.php:3625
 #: src/Entity.php:3652 src/Entity.php:3675 src/Contract.php:1529
 #: src/Contract.php:1551 src/Config.php:683 src/Config.php:1108
-#: src/Config.php:1343 src/Config.php:3494 src/CronTask.php:661
+#: src/Config.php:1343 src/Config.php:3493 src/CronTask.php:661
 #: src/Infocom.php:1762 src/Alert.php:113 src/Alert.php:182
 #: src/Features/PlanningEvent.php:745
 msgid "Never"
@@ -14807,11 +14810,11 @@ msgstr "Nieuw Item"
 msgid "New note"
 msgstr "Nieuwe notitie"
 
-#: src/User.php:5344
+#: src/User.php:5382
 msgid "New password"
 msgstr ""
 
-#: src/User.php:5353
+#: src/User.php:5391
 msgid "New password confirmation"
 msgstr ""
 
@@ -14934,7 +14937,7 @@ msgstr "Volgende uitvoering"
 msgid "Next task to run: %s"
 msgstr "Volgende taak om te starten: %s"
 
-#: src/User.php:2879 src/User.php:3271
+#: src/User.php:2917 src/User.php:3309
 msgid "Nickname"
 msgstr ""
 
@@ -14948,7 +14951,7 @@ msgstr ""
 #: src/Entity.php:2353 src/Entity.php:2388 src/Entity.php:2561
 #: src/Entity.php:3486 src/Entity.php:3514 src/Entity.php:3534
 #: src/Entity.php:3640 src/Entity.php:3822 src/RuleImportComputer.php:173
-#: src/Config.php:1103 src/Config.php:2367 src/CommonDBChild.php:1027
+#: src/Config.php:1103 src/Config.php:2364 src/CommonDBChild.php:1027
 #: src/SavedSearch_User.php:57 src/SavedSearch_User.php:79 src/Alert.php:151
 #: src/Item_DeviceCamera_ImageResolution.php:169
 msgid "No"
@@ -15103,11 +15106,11 @@ msgstr ""
 msgid "No entity found"
 msgstr ""
 
-#: src/Document.php:1556
+#: src/Document.php:1568
 msgid "No file available"
 msgstr "Geen bestand beschikbaar"
 
-#: src/RuleCollection.php:1178 src/GLPIUploadHandler.php:58
+#: src/RuleCollection.php:1178 src/UploadHandler.php:378
 msgid "No file was uploaded"
 msgstr "Er werd geen bestand geupload"
 
@@ -15181,7 +15184,7 @@ msgstr "Geen items aanwezig"
 msgid "No item reaching the end of warranty."
 msgstr "Geen item aan het eind van garantie"
 
-#: src/User.php:5648 src/LevelAgreement.php:459 src/FieldUnicity.php:616
+#: src/User.php:5701 src/LevelAgreement.php:459 src/FieldUnicity.php:616
 #: src/FieldUnicity.php:640 src/NotificationEvent.php:246
 msgid "No item to display"
 msgstr "Er kan geen element worden getoond"
@@ -15457,7 +15460,7 @@ msgstr ""
 "Geen of onjuist pad in HTTP_REFERER. Herlaadt de vorige pagina voor u de "
 "handeling opnieuw uitvoert."
 
-#: src/User.php:3254
+#: src/User.php:3292
 msgid "Normal"
 msgstr "Normaal"
 
@@ -15565,7 +15568,7 @@ msgid_plural "Notifications"
 msgstr[0] "Melding"
 msgstr[1] "Meldingen"
 
-#: src/Config.php:3512
+#: src/Config.php:3511
 msgid "Notification disabled"
 msgstr ""
 
@@ -15689,7 +15692,7 @@ msgstr "Aantal gelinkte tickets"
 msgid "Number of answered satisfaction survey"
 msgstr "Aantal beantwoorde op tevredenheidsenquêtes"
 
-#: src/User.php:3908
+#: src/User.php:3946
 msgid "Number of assigned tickets"
 msgstr "Aantal toegekende tickets"
 
@@ -15834,7 +15837,7 @@ msgstr ""
 #: src/Phone.php:482
 msgctxt "quantity"
 msgid "Number of phones"
-msgstr ""
+msgstr "Aantal telefoons"
 
 #: src/Printer.php:685
 msgctxt "quantity"
@@ -15908,7 +15911,7 @@ msgstr "Aantal Incident-tickets"
 msgid "Number of tickets already assigned"
 msgstr ""
 
-#: templates/components/itilobject/actors/field.html.twig src/User.php:3873
+#: templates/components/itilobject/actors/field.html.twig src/User.php:3911
 msgid "Number of tickets as requester"
 msgstr "Aantal tickets als indiener"
 
@@ -15953,11 +15956,11 @@ msgstr "Aantal gebruikte verbruiksartikelen"
 msgid "Number of worn cartridges"
 msgstr "Aatal afgeschreven cartridges"
 
-#: src/User.php:3893
+#: src/User.php:3931
 msgid "Number of written tickets"
 msgstr "Aantal geschreven tickets"
 
-#: templates/install/choose_language.html.twig front/tracking.injector.php:91
+#: templates/install/choose_language.html.twig front/tracking.injector.php:93
 #: src/ITILCategory.php:488 src/ITILCategory.php:496 src/ITILCategory.php:504
 #: src/ITILCategory.php:512 src/Console/System/CheckRequirementsCommand.php:78
 #: src/Printer_CartridgeInfo.php:96 js/glpi_dialog.js:79 js/glpi_dialog.js:260
@@ -16112,7 +16115,7 @@ msgstr ""
 
 #: src/DomainRecord.php:408 src/DomainRecord.php:410
 msgid "Open helper form"
-msgstr ""
+msgstr "Open hulpformulier"
 
 #: src/Link.php:183 src/ManualLink.php:138
 msgid "Open in a new window"
@@ -16364,11 +16367,11 @@ msgstr ""
 
 #: templates/dropdown_form.html.twig
 msgid "Other pictures"
-msgstr ""
+msgstr "Andere afbeeldingen"
 
 #: front/search.php:80
 msgid "Other searches with no item found"
-msgstr ""
+msgstr "Andere zoekopdrachten zonder item"
 
 #: src/Dropdown.php:2247
 msgid "Other..."
@@ -16417,8 +16420,8 @@ msgstr "PCI"
 #: src/DevicePci.php:45
 msgid "PCI device"
 msgid_plural "PCI devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "PCI apparaat"
+msgstr[1] "PCI apparaten"
 
 #: src/PCIVendor.php:46
 msgid "PCI vendor"
@@ -16552,7 +16555,7 @@ msgstr ""
 
 #: src/Config.php:1215
 msgid "Page layout"
-msgstr ""
+msgstr "Pagina opmaak"
 
 #: src/AuthLDAP.php:620
 msgid "Page size"
@@ -16600,8 +16603,8 @@ msgstr "Partitie"
 #: src/PassiveDCEquipment.php:53
 msgid "Passive device"
 msgid_plural "Passive devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Passief apparaat"
+msgstr[1] "Passieve apparaten"
 
 #: src/PassiveDCEquipmentModel.php:41
 msgid "Passive device model"
@@ -16617,7 +16620,7 @@ msgstr[1] ""
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
 #: templates/components/form/snmpcredential.html.twig
-#: src/MailCollector.php:267 src/User.php:2597 src/User.php:3068
+#: src/MailCollector.php:267 src/User.php:2635 src/User.php:3106
 #: src/AuthMail.php:235 src/Config.php:2076
 msgid "Password"
 msgstr "Wachtwoord"
@@ -16626,7 +16629,7 @@ msgstr "Wachtwoord"
 msgid "Password (for non-anonymous binds)"
 msgstr "Wachtwoord (voor niet-anonieme middelen)"
 
-#: templates/password_form.html.twig src/User.php:2602 src/User.php:3074
+#: templates/password_form.html.twig src/User.php:2640 src/User.php:3112
 msgid "Password confirmation"
 msgstr "Wachtwoord bevestiging"
 
@@ -16634,15 +16637,15 @@ msgstr "Wachtwoord bevestiging"
 msgid "Password expiration date"
 msgstr ""
 
-#: src/Config.php:3483
+#: src/Config.php:3482
 msgid "Password expiration delay (in days)"
 msgstr ""
 
-#: src/Config.php:3501
+#: src/Config.php:3500
 msgid "Password expiration notice time (in days)"
 msgstr ""
 
-#: src/Config.php:3477
+#: src/Config.php:3476
 msgid "Password expiration policy"
 msgstr ""
 
@@ -16654,7 +16657,7 @@ msgstr ""
 msgid "Password has expired"
 msgstr ""
 
-#: src/Config.php:1545 src/Config.php:3394
+#: src/Config.php:1545 src/Config.php:3393
 msgid "Password minimum length"
 msgstr "Minimum lengte van het wachtwoord"
 
@@ -16678,28 +16681,28 @@ msgstr "Het wachtwoord moet in elk geval een symbool bevatten"
 msgid "Password must include at least a uppercase letter!"
 msgstr "Het wachtwoord moet in elk geval een hoofdletter bevatten"
 
-#: src/Config.php:3413
+#: src/Config.php:3412
 msgid "Password need digit"
 msgstr "Het wachtwoord moet een cijfer bevatten"
 
-#: src/Config.php:3428
+#: src/Config.php:3427
 msgid "Password need lowercase character"
 msgstr "Het wachtwoord moet een kleine letter bevatten"
 
-#: src/Config.php:3461
+#: src/Config.php:3460
 msgid "Password need symbol"
 msgstr "Het wachtwoord moet een symbool bevatten"
 
-#: src/Config.php:3446
+#: src/Config.php:3445
 msgid "Password need uppercase character"
 msgstr "Het wachtwoord moet een hoofdletter bevatten"
 
-#: templates/password_form.html.twig src/User.php:2609 src/User.php:3081
-#: src/User.php:5362 src/Config.php:3373
+#: templates/password_form.html.twig src/User.php:2647 src/User.php:3119
+#: src/User.php:5400 src/Config.php:3372
 msgid "Password security policy"
 msgstr "Wachtwoord beveiligingsbeleid"
 
-#: src/Config.php:3379
+#: src/Config.php:3378
 msgid "Password security policy validation"
 msgstr "Wachtwoord beveiligingsbeleid validatie"
 
@@ -16707,7 +16710,7 @@ msgstr "Wachtwoord beveiligingsbeleid validatie"
 msgid "Password too short!"
 msgstr "Wachtwoord te kort"
 
-#: front/updatepassword.php:95 src/User.php:5314
+#: front/updatepassword.php:95 src/User.php:5352
 msgid "Password update"
 msgstr "Wachtwoord aanpassen"
 
@@ -16756,7 +16759,7 @@ msgstr ""
 msgid "Percent done"
 msgstr "Percentage klaar"
 
-#: src/Config.php:2546
+#: src/Config.php:2545
 msgid "Performance"
 msgstr "Prestaties"
 
@@ -16881,7 +16884,7 @@ msgid "Personal reminder"
 msgid_plural "Personal reminders"
 msgstr[0] "Persoonlijke herinneringen"
 
-#: src/Config.php:1028 src/Config.php:2523 src/Profile.php:1050
+#: src/Config.php:1028 src/Config.php:2522 src/Profile.php:1050
 #: src/Profile.php:1110 src/Profile.php:2610
 #: src/Features/PlanningEvent.php:767
 msgid "Personalization"
@@ -16902,7 +16905,7 @@ msgstr "Telefoon"
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:587
 #: src/AuthLDAP.php:967 src/AuthLDAP.php:1164 src/AuthLDAP.php:3978
-#: src/User.php:2739 src/User.php:3191 src/User.php:3626
+#: src/User.php:2777 src/User.php:3229 src/User.php:3664
 #: src/Contact_Supplier.php:307 src/Auth.php:1768 src/Contact.php:264
 #: src/ContentTemplates/Parameters/UserParameters.php:79
 #: src/NotificationTargetCommonITILObject.php:1750
@@ -16938,12 +16941,12 @@ msgstr ""
 #: templates/generic_show_form.html.twig templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:165
 #: src/CommonDropdown.php:188 src/AuthLDAP.php:985 src/AuthLDAP.php:3982
-#: src/User.php:2524 src/User.php:2990 src/User.php:3589 src/User.php:3960
-#: src/User.php:6430
+#: src/User.php:2562 src/User.php:3028 src/User.php:3627 src/User.php:3998
+#: src/User.php:6483
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Afbeelding"
+msgstr[1] "Afbeeldingen"
 
 #: src/Dashboard/Widget.php:70
 msgid "Pie"
@@ -17001,7 +17004,7 @@ msgstr "Geplande startdatum"
 msgid "Planned tickets"
 msgstr ""
 
-#: templates/pages/tools/project_task.html.twig front/planning.php:157
+#: templates/pages/tools/project_task.html.twig front/planning.php:161
 #: src/Project.php:1685 src/Event.php:159 src/Event.php:168
 #: src/Planning.php:86 src/ReservationItem.php:204 src/Profile.php:1576
 #: src/Profile.php:3170 src/Reminder.php:447 src/Reminder.php:1027
@@ -17037,7 +17040,7 @@ msgstr "Planning"
 msgid "Plans"
 msgstr "Plannen"
 
-#: src/Config.php:3108
+#: src/Config.php:3107
 msgid "Please check the unstable version checkbox."
 msgstr "Vink het selectievakje onstabiele versie aan."
 
@@ -17379,7 +17382,7 @@ msgid ""
 "database tables."
 msgstr ""
 
-#: src/Html.php:1586 src/Config.php:3206
+#: src/Html.php:1586 src/Config.php:3205
 msgid "Plugins"
 msgstr "Invoegtoepassingen"
 
@@ -17458,7 +17461,7 @@ msgstr ""
 #: templates/pages/admin/ldap.choose_directory.html.twig
 #: src/Ticket_Ticket.php:75 src/RuleDictionnarySoftwareCollection.php:99
 #: src/KnowbaseItem.php:1402 src/KnowbaseItem.php:1456 src/Appliance.php:480
-#: src/User.php:3463 src/MassiveAction.php:923 src/MassiveAction.php:1233
+#: src/User.php:3501 src/MassiveAction.php:923 src/MassiveAction.php:1233
 #: src/MassiveAction.php:1262 src/RuleCollection.php:1443 src/Lock.php:1141
 #: src/Lock.php:1159 src/Item_SoftwareVersion.php:170
 #: src/Item_SoftwareVersion.php:182 src/Domain.php:424 src/Domain.php:433
@@ -17485,7 +17488,7 @@ msgstr "Verzenden"
 msgid "Postal code"
 msgstr "Postcode"
 
-#: src/Document.php:1451
+#: src/Document.php:1463
 msgid ""
 "Potential upload attack or file too large. Moving temporary file failed."
 msgstr ""
@@ -17532,7 +17535,7 @@ msgstr ""
 
 #: src/Config.php:1378
 msgid "Precise"
-msgstr ""
+msgstr "Precies"
 
 #: src/AuthLDAP.php:443
 msgid "Preconfiguration"
@@ -17948,7 +17951,7 @@ msgstr "Gekochte versie"
 msgid "Purge"
 msgstr "Verwijderen"
 
-#: src/Config.php:3294
+#: src/Config.php:3293
 msgid "Purge all log entries"
 msgstr "Verwijder alle logboekmeldingen"
 
@@ -18026,7 +18029,7 @@ msgstr[0] "Rackmodellen"
 
 #: templates/dropdown_form.html.twig
 msgid "Rack pictures"
-msgstr ""
+msgstr "Rack afbeeldingen"
 
 #: src/Item_Rack.php:507
 msgid "Rack stats"
@@ -18080,7 +18083,7 @@ msgid "Read"
 msgstr "Lezen"
 
 #. TRANS: short for : Read method for user authentication and synchronization
-#: src/User.php:5925
+#: src/User.php:5978
 msgid "Read auth"
 msgstr "Lees authenticatie"
 
@@ -18104,7 +18107,7 @@ msgstr "Lees de FAQ"
 msgid "Read the item's notes"
 msgstr "Lees het commentaar bij de items"
 
-#: src/User.php:5926
+#: src/User.php:5979
 msgid "Read user authentication and synchronization method"
 msgstr "Lees gebruikers authenticatie en synchronisatie methode"
 
@@ -18248,7 +18251,7 @@ msgstr "Herhalend"
 
 #: src/RecurrentChange.php:50
 msgid "Recurrent changes"
-msgstr ""
+msgstr "Terugkerende wijzigingen"
 
 #: src/TicketRecurrent.php:55
 msgid "Recurrent tickets"
@@ -18262,7 +18265,7 @@ msgstr ""
 msgid "Recurring event resized"
 msgstr ""
 
-#: src/User.php:2789 src/RuleRightCollection.php:164 src/RuleRight.php:78
+#: src/User.php:2827 src/RuleRightCollection.php:164 src/RuleRight.php:78
 #: src/RuleRight.php:350 src/Profile_User.php:157 src/Profile_User.php:305
 #: src/Profile_User.php:1138
 msgid "Recursive"
@@ -18344,8 +18347,8 @@ msgstr[0] "Geweigerde e-mails"
 msgid "Refused mail archive folder (optional)"
 msgstr "Geweigerde mail archief map (optioneel)"
 
-#: templates/pages/setup/apiclient.html.twig src/User.php:2912
-#: src/User.php:2914 src/User.php:3299 src/User.php:3301
+#: templates/pages/setup/apiclient.html.twig src/User.php:2950
+#: src/User.php:2952 src/User.php:3337 src/User.php:3339
 msgid "Regenerate"
 msgstr "Regenereer"
 
@@ -18409,7 +18412,7 @@ msgstr[1] ""
 
 #: src/Config.php:1377
 msgid "Relative"
-msgstr ""
+msgstr "Relatief"
 
 #: src/DeviceFirmware.php:59 src/DeviceFirmware.php:85
 #: src/DeviceFirmware.php:260
@@ -18460,7 +18463,7 @@ msgstr "herinneringsfrequentie voor waarschuwingen over verbruiksartikelen"
 msgid "Remote ID"
 msgstr ""
 
-#: src/User.php:2893 src/User.php:3280
+#: src/User.php:2931 src/User.php:3318
 msgid "Remote access keys"
 msgstr "Sleutels voor toegang op afstand"
 
@@ -18481,7 +18484,7 @@ msgctxt "button"
 msgid "Remove a contract"
 msgstr "Verwijder een contract"
 
-#: src/Document.php:1720
+#: src/Document.php:1732
 msgctxt "button"
 msgid "Remove a document"
 msgstr "Verwijder document"
@@ -18500,7 +18503,7 @@ msgctxt "button"
 msgid "Remove all notification templates"
 msgstr "Verwijder alle meldingssjablonen"
 
-#: src/Appliance.php:450 src/Document.php:1726 src/Contract.php:424
+#: src/Appliance.php:450 src/Document.php:1738 src/Contract.php:424
 #: src/Ticket.php:2634
 msgctxt "button"
 msgid "Remove an item"
@@ -18919,13 +18922,13 @@ msgstr "Herstel weergave opties"
 msgid "Reset last run"
 msgstr "Reset laatste uitvoering"
 
-#: src/User.php:5499 src/Api/API.php:2187
+#: src/User.php:5544 src/Api/API.php:2191
 msgid "Reset password successful."
 msgstr "Wachtwoord reset gelukt"
 
 #: src/RuleCollection.php:679
 msgid "Reset rules"
-msgstr ""
+msgstr "Reset regels"
 
 #: src/Stat.php:586 src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:74
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:70
@@ -18974,8 +18977,8 @@ msgstr "Reactie datum"
 msgid "Response date to the satisfaction survey"
 msgstr "Datum antwoord op de tevredenheidsenquete"
 
-#: src/AuthLDAP.php:992 src/AuthLDAP.php:1333 src/User.php:2858
-#: src/User.php:3929 src/ContentTemplates/Parameters/UserParameters.php:83
+#: src/AuthLDAP.php:992 src/AuthLDAP.php:1333 src/User.php:2896
+#: src/User.php:3967 src/ContentTemplates/Parameters/UserParameters.php:83
 msgid "Responsible"
 msgstr "Verantwoordelijke"
 
@@ -19001,7 +19004,7 @@ msgstr "Herstellen"
 msgid "Restore (move out of trashbin)"
 msgstr ""
 
-#: src/Log.php:1082 src/Config.php:3188
+#: src/Log.php:1082 src/Config.php:3187
 msgid "Restore the item"
 msgstr "Herstel het item"
 
@@ -19077,7 +19080,7 @@ msgstr ""
 
 #: src/Config.php:1298
 msgid "Reverse order (old items on bottom, recent on top)"
-msgstr ""
+msgstr "Omgekeerde volgorde (oude items beneden, recente boven)"
 
 #: src/Change.php:587
 msgid "Review"
@@ -19090,7 +19093,7 @@ msgstr[0] "Revisies"
 
 #: src/Config.php:1250
 msgid "Rich text field layout"
-msgstr ""
+msgstr "Lay-out van tekst met opmaak"
 
 #: src/Item_Rack.php:704 src/PDU_Rack.php:674
 msgid "Right"
@@ -19196,7 +19199,7 @@ msgstr "Regels van toekenning van een categorie aan software"
 
 #: src/Profile.php:1005
 msgid "Rules for assigning a computer to a location"
-msgstr ""
+msgstr "Regels voor toekennen van een computer aan een locatie"
 
 #: src/Profile.php:1001 src/Profile.php:2828
 msgid "Rules for assigning a computer to an entity"
@@ -19218,7 +19221,7 @@ msgstr "Regels voor importeren en verbind computers"
 
 #: src/RuleImportAssetCollection.php:77
 msgid "Rules for import and link equipments"
-msgstr ""
+msgstr "Regels voor het importeren en koppelen van apparatuur"
 
 #: src/RuleCollection.php:369
 msgid "Rules list"
@@ -19275,7 +19278,7 @@ msgstr "Urenoverzicht uitvoering"
 msgid "Run the \"%1$s\" command for more details."
 msgstr ""
 
-#: src/User.php:2639 src/User.php:3112 src/Config.php:1285
+#: src/User.php:2677 src/User.php:3150 src/Config.php:1285
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
 msgstr ""
@@ -19397,7 +19400,7 @@ msgid "SQL password"
 msgstr "SQL wachtwoord"
 
 #: src/DBConnection.php:82 src/Config.php:657 src/Config.php:2040
-#: src/Config.php:2555
+#: src/Config.php:2554
 msgid "SQL replica"
 msgid_plural "SQL replicas"
 msgstr[0] "SQL-replica's"
@@ -19491,7 +19494,7 @@ msgstr "zaterdag"
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/components/itilobject/actors/main.html.twig src/AuthLDAP.php:685
 #: src/AuthLDAP.php:873 src/AuthLDAP.php:1001 src/AuthLDAP.php:1037
-#: src/User.php:5371 src/Auth.php:1797 src/Impact.php:404 src/Impact.php:1108
+#: src/User.php:5409 src/Auth.php:1797 src/Impact.php:404 src/Impact.php:1108
 #: src/Impact.php:1821 src/Dashboard/Grid.php:862
 msgid "Save"
 msgstr "Bewaren"
@@ -19505,7 +19508,7 @@ msgstr "Bewaren"
 #: templates/components/itilobject/footer.html.twig
 #: templates/components/infocom.html.twig
 #: templates/components/form/buttons.html.twig src/Item_Devices.php:754
-#: src/User.php:3305 src/Inventory/Conf.php:993 src/CommonGLPI.php:1404
+#: src/User.php:3343 src/Inventory/Conf.php:993 src/CommonGLPI.php:1404
 #: src/DomainRecordType.php:412 src/ReservationItem.php:415
 #: src/Entity.php:1644 src/Entity.php:1732 src/Entity.php:1973
 #: src/Entity.php:2506 src/Entity.php:2606 src/Entity.php:3220
@@ -19513,8 +19516,8 @@ msgstr "Bewaren"
 #: src/Reservation.php:878 src/CommonITILValidation.php:899
 #: src/CommonITILActor.php:229 src/CommonITILActor.php:293 src/Config.php:580
 #: src/Config.php:630 src/Config.php:704 src/Config.php:774 src/Config.php:980
-#: src/Config.php:1509 src/Config.php:2083 src/Config.php:3301
-#: src/Config.php:3543 src/Config.php:3596 src/Profile.php:1249
+#: src/Config.php:1509 src/Config.php:2083 src/Config.php:3300
+#: src/Config.php:3542 src/Config.php:3595 src/Profile.php:1249
 #: src/Profile.php:1290 src/Profile.php:1338 src/Profile.php:1406
 #: src/Profile.php:1457 src/Profile.php:1591 src/Profile.php:1703
 #: src/Profile.php:1820 src/Profile.php:1874 src/Profile.php:1918
@@ -19533,7 +19536,7 @@ msgstr "Bewaar en voeg toe aan de knowledge base"
 
 #: src/SavedSearch.php:498
 msgid "Save as a new search"
-msgstr ""
+msgstr "Bewaar als nieuwe zoekopdracht"
 
 #: src/SavedSearch.php:970 js/modules/Search/GenericView.js:95
 msgid "Save current search"
@@ -19584,9 +19587,9 @@ msgstr "Geprogrammeerd"
 msgid "Search"
 msgstr "Zoeken"
 
-#: front/find_num.php:84 src/KnowbaseItem.php:1348 src/AuthLDAP.php:1515
-#: src/AuthLDAP.php:4027 src/Search.php:2557 src/Planning.php:570
-#: src/ReservationItem.php:476 src/Knowbase.php:66
+#: src/KnowbaseItem.php:1348 src/AuthLDAP.php:1515 src/AuthLDAP.php:4027
+#: src/Search.php:2557 src/Planning.php:570 src/ReservationItem.php:476
+#: src/Knowbase.php:66
 msgctxt "button"
 msgid "Search"
 msgstr "Zoeken"
@@ -19598,7 +19601,7 @@ msgstr "Zoek waarschuwing voor \"%1$s\" (%2$s)"
 
 #: src/Console/Marketplace/SearchCommand.php:54
 msgid "Search GLPI marketplace"
-msgstr ""
+msgstr "Zoek op de GLPI marketplace"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 msgid "Search a solution"
@@ -19614,7 +19617,7 @@ msgstr "Zoekmachine"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Search entity"
-msgstr ""
+msgstr "Zoek entiteit"
 
 #: src/Entity.php:908
 msgid "Search filter (if needed)"
@@ -19642,7 +19645,7 @@ msgstr "Zoek of filter resultaten"
 
 #: src/Dashboard/Widget.php:225
 msgid "Search result"
-msgstr ""
+msgstr "Zoekresultaat"
 
 #: src/DisplayPreference.php:802
 msgid "Search result default display"
@@ -19660,10 +19663,6 @@ msgstr "Zoek resultaat gebruiker weergave"
 msgid "Search results for localized items only"
 msgstr "Zoekresultaten alleen voor taalafhankelijke items"
 
-#: front/find_num.php:75
-msgid "Search the ID of your hardware"
-msgstr "Zoek het Identificatienummer van uw computer"
-
 #: src/AuthLDAP.php:852 src/AuthLDAP.php:1308
 msgid "Search type"
 msgstr "Doorzoek type"
@@ -19671,7 +19670,7 @@ msgstr "Doorzoek type"
 #: templates/layout/parts/global_search_form.html.twig
 #: src/Features/TreeBrowse.php:151
 msgid "Search…"
-msgstr ""
+msgstr "Zoek..."
 
 #: src/CommonDBConnexity.php:634
 msgid "Second Item"
@@ -19681,7 +19680,7 @@ msgstr "Tweede item"
 msgid "Secondary"
 msgstr "Secundair"
 
-#: src/Event.php:173 src/Config.php:2545
+#: src/Event.php:173 src/Config.php:2544
 msgid "Security"
 msgstr "Beveiliging"
 
@@ -19693,7 +19692,7 @@ msgstr ""
 msgid "Security key cannot be generated!"
 msgstr ""
 
-#: src/Config.php:3370
+#: src/Config.php:3369
 msgid "Security setup"
 msgstr ""
 
@@ -20016,15 +20015,15 @@ msgstr ""
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/assets/operatingsystem.html.twig
-#: templates/components/form/item_device.html.twig front/find_num.php:96
-#: src/Phone.php:251 src/Change_Item.php:160 src/Monitor.php:246
+#: templates/components/form/item_device.html.twig src/Phone.php:251
+#: src/Change_Item.php:160 src/Monitor.php:246
 #: src/NotificationTargetCertificate.php:125
 #: src/ComputerVirtualMachine.php:210 src/ComputerVirtualMachine.php:338
 #: src/NotificationTargetProblem.php:205 src/Item_Devices.php:350
 #: src/Item_Devices.php:351 src/Document_Item.php:415 src/Appliance.php:241
 #: src/Budget.php:358 src/PassiveDCEquipment.php:112 src/Enclosure.php:140
-#: src/Printer.php:384 src/RuleLocation.php:108 src/User.php:4904
-#: src/User.php:4986 src/Search.php:8132 src/Blacklist.php:245
+#: src/Printer.php:384 src/RuleLocation.php:108 src/User.php:4942
+#: src/User.php:5024 src/Search.php:8132 src/Blacklist.php:245
 #: src/Rack.php:190 src/SoftwareLicense.php:372 src/SoftwareLicense.php:626
 #: src/SoftwareLicense.php:941 src/SoftwareLicense.php:1208
 #: src/Computer_Item.php:413 src/Computer_Item.php:582 src/Peripheral.php:230
@@ -20140,7 +20139,7 @@ msgid "Set the status to pending"
 msgstr ""
 
 #: src/Preference.php:42 src/Impact.php:373 src/Impact.php:1060
-#: src/Impact.php:1119 src/Config.php:2530
+#: src/Impact.php:1119 src/Config.php:2529
 msgid "Settings"
 msgstr "Instellingen"
 
@@ -20176,7 +20175,7 @@ msgctxt "button"
 msgid "Show"
 msgstr "Tonen"
 
-#: src/Dropdown.php:308 src/User.php:4625
+#: src/Dropdown.php:308 src/User.php:4663
 #, php-format
 msgid "Show %1$s"
 msgstr "Toon %1$s"
@@ -20287,8 +20286,8 @@ msgstr[0] "SIM-kaart types"
 msgid "Simple mode"
 msgstr "Eenvoudige mode"
 
-#: front/reservationitem.php:41 front/tracking.injector.php:56
-#: front/tracking.injector.php:58 front/reservation.php:45
+#: front/reservationitem.php:41 front/tracking.injector.php:58
+#: front/tracking.injector.php:60 front/reservation.php:45
 #: front/reservation.form.php:51 front/reservation.form.php:53
 #: src/ITILTemplateMandatoryField.php:174 src/ITILTemplate.php:418
 #: src/Profile.php:3730
@@ -20344,7 +20343,7 @@ msgstr ""
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1308
 #, php-format
 msgid "Skipping item %s (%s) which is already linked to a rack."
-msgstr ""
+msgstr "Item %s (%s) overslaan omdat deze al gekoppeld is aan een rack."
 
 #: src/System/RequirementsManager.php:187
 msgid "Slightly enhance performances."
@@ -20370,14 +20369,13 @@ msgstr[1] ""
 msgid "Sodium ChaCha20-Poly1305 size constant"
 msgstr ""
 
-#: templates/pages/management/softwarelicense.html.twig front/find_num.php:157
-#: src/Dropdown.php:1226 src/Log.php:477 src/Log.php:483 src/Log.php:920
-#: src/SoftwareVersion.php:119 src/Rule.php:294
-#: src/RuleDictionnarySoftware.php:82 src/RuleDictionnarySoftware.php:109
-#: src/SoftwareLicense.php:1210 src/Software.php:67
-#: src/RuleSoftwareCategory.php:75 src/Item_SoftwareVersion.php:1039
-#: src/Entity.php:1896 src/Config.php:3213 src/Profile.php:2101
-#: src/NotificationTargetSoftwareLicense.php:90
+#: templates/pages/management/softwarelicense.html.twig src/Dropdown.php:1226
+#: src/Log.php:477 src/Log.php:483 src/Log.php:920 src/SoftwareVersion.php:119
+#: src/Rule.php:294 src/RuleDictionnarySoftware.php:82
+#: src/RuleDictionnarySoftware.php:109 src/SoftwareLicense.php:1210
+#: src/Software.php:67 src/RuleSoftwareCategory.php:75
+#: src/Item_SoftwareVersion.php:1039 src/Entity.php:1896 src/Config.php:3212
+#: src/Profile.php:2101 src/NotificationTargetSoftwareLicense.php:90
 msgid "Software"
 msgid_plural "Software"
 msgstr[0] "Software"
@@ -20712,8 +20710,8 @@ msgstr "Statistieken"
 #: src/PlanningExternalEventTemplate.php:64 src/Appliance.php:296
 #: src/PassiveDCEquipment.php:147 src/Enclosure.php:131
 #: src/CommonITILTask.php:772 src/CommonITILTask.php:967
-#: src/CommonITILTask.php:1468 src/Printer.php:375 src/User.php:4906
-#: src/User.php:4988 src/Search.php:8105 src/Search.php:8126 src/Line.php:150
+#: src/CommonITILTask.php:1468 src/Printer.php:375 src/User.php:4944
+#: src/User.php:5026 src/Search.php:8105 src/Search.php:8126 src/Line.php:150
 #: src/Rack.php:181 src/NotificationTargetContract.php:182
 #: src/SoftwareLicense.php:484 src/SoftwareLicense.php:948
 #: src/Software.php:598 src/Peripheral.php:221 src/Certificate_Item.php:470
@@ -20782,13 +20780,13 @@ msgstr "Stap voor de tijden (minuten)"
 #: src/NotificationTargetConsumableItem.php:99
 #: src/NotificationTargetCartridgeItem.php:99
 msgid "Stock target"
-msgstr ""
+msgstr "Voorraad doel"
 
 #: templates/pages/assets/cartridgeitem.html.twig
 #: templates/pages/assets/consumableitem.html.twig
 msgctxt "quantity"
 msgid "Stock target"
-msgstr ""
+msgstr "Voorraad doel"
 
 #: templates/layout/parts/impersonate_banner.html.twig
 msgid "Stop impersonating"
@@ -20849,8 +20847,8 @@ msgstr "Deeltaak"
 msgid "Success"
 msgstr ""
 
-#: src/Document.php:185 src/Document.php:1201 src/Document.php:1313
-#: src/Document.php:1410
+#: src/Document.php:185 src/Document.php:1207 src/Document.php:1325
+#: src/Document.php:1422
 #, php-format
 msgid "Successful deletion of the file %s"
 msgstr ""
@@ -20934,8 +20932,8 @@ msgid "Supported tasks"
 msgstr ""
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:932
-#: src/AuthLDAP.php:1137 src/AuthLDAP.php:3975 src/User.php:2569
-#: src/User.php:2970 src/User.php:6419 src/Auth.php:1712
+#: src/AuthLDAP.php:1137 src/AuthLDAP.php:3975 src/User.php:2607
+#: src/User.php:3008 src/User.php:6472 src/Auth.php:1712
 #: src/ContentTemplates/Parameters/UserParameters.php:82
 msgid "Surname"
 msgstr "Achternaam"
@@ -20966,8 +20964,8 @@ msgid "Synchronization"
 msgstr "Synchronisatie"
 
 #: src/AuthLDAP.php:542 src/AuthLDAP.php:1324 src/AuthLDAP.php:1765
-#: src/AuthLDAP.php:1824 src/AuthLDAP.php:3958 src/User.php:2544
-#: src/User.php:3028 src/User.php:3599
+#: src/AuthLDAP.php:1824 src/AuthLDAP.php:3958 src/User.php:2582
+#: src/User.php:3066 src/User.php:3637
 msgid "Synchronization field"
 msgstr "Synchronisatieveld"
 
@@ -21007,7 +21005,7 @@ msgstr "Synchronisatie van de reeds geïmporteerde gebruikers"
 msgid "Sysdescr"
 msgstr ""
 
-#: src/Event.php:157 src/Config.php:2544
+#: src/Event.php:157 src/Config.php:2543
 msgid "System"
 msgstr "systeem"
 
@@ -21113,7 +21111,7 @@ msgstr "Houd rekening met tijd"
 
 #: templates/maintenance.html.twig
 msgid "Take me home"
-msgstr ""
+msgstr "Naar home pagina"
 
 #: src/KnowbaseItem.php:262 src/KnowbaseItem.php:1077
 #: src/Console/Database/UpdateCommand.php:161 src/Reminder.php:553
@@ -21337,14 +21335,14 @@ msgstr "Sjablooninstellingen"
 msgid "Temporarily down for maintenance"
 msgstr ""
 
-#: src/Document.php:1274
+#: src/Document.php:1286
 msgid "Temporary directory doesn't exist"
 msgstr "Tijdelijke map bestaat niet"
 
 #: src/Mail/SMTP/OauthProvider/Azure.php:68
 msgctxt "oauth"
 msgid "Tenant ID"
-msgstr ""
+msgstr "Tenant ID"
 
 #: src/NetworkPort.php:1045
 msgid "Test"
@@ -21411,13 +21409,13 @@ msgstr "Testen"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Text in the login box"
-msgstr ""
+msgstr "Tekst in het login venster"
 
 #: src/Console/Maintenance/EnableMaintenanceModeCommand.php:60
 msgid "Text to display during maintenance"
 msgstr ""
 
-#: front/tracking.injector.php:92
+#: front/tracking.injector.php:94
 msgid "Thank you for using our automatic helpdesk system."
 msgstr "Dank U voor het gebruik van ons automatisch Incident meldingssysteem"
 
@@ -21498,7 +21496,7 @@ msgstr ""
 "De toewijzing van een SLA aan een ticket veroorzaakt de herberekening van de"
 " datum."
 
-#: src/User.php:5461
+#: src/User.php:5499
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
@@ -21591,11 +21589,11 @@ msgstr "De engine behandeld alle regels."
 msgid "The file could not be created in %s."
 msgstr ""
 
-#: src/User.php:938
+#: src/User.php:949
 msgid "The file is not an image file."
 msgstr "Dit bestand is geen afbeelding."
 
-#: src/Document.php:1441 src/User.php:921
+#: src/Document.php:1453 src/User.php:932
 msgid "The file is valid. Upload is successful."
 msgstr "Het uploaden is gelukt"
 
@@ -21649,11 +21647,11 @@ msgstr ""
 msgid "The log file has been created successfully."
 msgstr ""
 
-#: src/User.php:717
+#: src/User.php:728
 msgid "The login is not valid. Unable to add the user."
 msgstr "Loginnaam is ongeldig. Niet mogelijk om gebruiker toe te voegen."
 
-#: src/User.php:3359
+#: src/User.php:3397
 msgid "The login is not valid. Unable to update login."
 msgstr "Loginnaam is ongeldig. Kan gebruiker niet updaten."
 
@@ -21721,7 +21719,7 @@ msgstr ""
 
 #: src/Console/Marketplace/SearchCommand.php:56
 msgid "The search term"
-msgstr ""
+msgstr "De zoekterm"
 
 #: src/CommonITILValidation.php:356
 #, php-format
@@ -21752,7 +21750,7 @@ msgctxt "filters"
 msgid "The type of the item"
 msgstr ""
 
-#: src/GLPIUploadHandler.php:50
+#: src/UploadHandler.php:370
 msgid ""
 "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in "
 "the HTML form"
@@ -21760,17 +21758,17 @@ msgstr ""
 "Het aangeboden bestand overschrijdt de MAX_FILE_SIZE richtlijn, die in het "
 "HTML formulier werd opgegeven"
 
-#: src/GLPIUploadHandler.php:74
+#: src/UploadHandler.php:394
 msgid "The uploaded file exceeds the post_max_size directive in php.ini"
 msgstr ""
 "Het aangeboden bestand overschrijdt de MAX_FILE_SIZE richtlijn in php.ini"
 
-#: src/GLPIUploadHandler.php:46
+#: src/UploadHandler.php:366
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
 msgstr ""
 "Het aangeboden bestand overschrijdt de MAX_FILE_SIZE richtlijn in php.ini"
 
-#: src/GLPIUploadHandler.php:54
+#: src/UploadHandler.php:374
 msgid "The uploaded file was only partially uploaded"
 msgstr "Het aangeboden bestand werd gedeeltelijk ontvangen"
 
@@ -21852,7 +21850,7 @@ msgid ""
 "shown. You can still drag cards into this column."
 msgstr ""
 
-#: src/User.php:6452
+#: src/User.php:6505
 msgid "This is a special user used for automated actions. "
 msgstr ""
 
@@ -22191,17 +22189,17 @@ msgstr "Tijd om op te lossen en voortgang"
 msgid "Time to resolve exceeded"
 msgstr ""
 
-#: src/User.php:2623 src/User.php:3096
+#: src/User.php:2661 src/User.php:3134
 msgid "Time zone"
 msgstr ""
 
 #: js/reservations.js:126
 msgid "Timeline Week"
-msgstr ""
+msgstr "Geschiedenis week"
 
 #: src/Config.php:1374
 msgid "Timeline date display"
-msgstr ""
+msgstr "Geschiedenis datumweergave"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 msgid "Timeline filter"
@@ -22209,7 +22207,7 @@ msgstr "Geschiedenis filter"
 
 #: src/Config.php:1294
 msgid "Timeline order"
-msgstr ""
+msgstr "Geschiedenis volgorde"
 
 #: src/AuthLDAP.php:673 src/AuthLDAP.php:744 src/AuthLDAP.php:1351
 #: src/AuthLdapReplicate.php:95
@@ -22226,30 +22224,36 @@ msgstr "Tijdzone"
 
 #: src/Console/Database/EnableTimezonesCommand.php:108
 msgid "Timezone usage has been enabled."
-msgstr ""
+msgstr "Gebruik van tijdzones is ingeschakeld."
 
-#: src/User.php:2637 src/User.php:3110 src/Config.php:1283
+#: src/User.php:2675 src/User.php:3148 src/Config.php:1283
 msgid "Timezone usage has not been activated."
-msgstr ""
+msgstr "Gebruik van tijdzones is niet geactiveerd."
 
 #: src/System/Requirement/DbTimezones.php:93
 msgid "Timezones seems loaded in database."
-msgstr ""
+msgstr "Tijdszones lijkt geladen in database."
 
 #: src/System/Requirement/DbTimezones.php:88
 msgid ""
 "Timezones seems not loaded, see https://glpi-"
 "install.readthedocs.io/en/latest/timezones.html."
 msgstr ""
+"Tijdszones is niet geladen, zie https://glpi-"
+"install.readthedocs.io/en/latest/timezones.html."
 
 #: src/Console/Database/EnableTimezonesCommand.php:81
 #: src/Console/Database/AbstractConfigureCommand.php:459
 msgid "Timezones usage cannot be activated due to following errors:"
 msgstr ""
+"Gebruik van tijdzones kan niet worden geactiveerd vanwege de volgende "
+"fouten:"
 
 #: src/Console/Migration/TimestampsCommand.php:213
 msgid "Timezones usage cannot be activated due to missing requirements."
 msgstr ""
+"Gebruik van tijdszones kan niet worden geactiveerd vanwege ontbrekende "
+"vereisten."
 
 #: src/Toolbox.php:951
 msgid "Tio"
@@ -22258,14 +22262,14 @@ msgstr "Tb"
 #: templates/layout/parts/profile_selector.html.twig src/Html.php:6579
 #, php-format
 msgid "Tip: You can call this modal with %s keys combination"
-msgstr ""
+msgstr "Tip: Je kan dit venster openen met %s"
 
 #: templates/anonymous_helpdesk.html.twig
 #: templates/components/itilobject/timeline/simple_form.html.twig
 #: templates/components/itilobject/selfservice.html.twig
 #: src/Csv/PlanningCsv.php:72 src/NotificationTargetProjectTask.php:595
 #: src/NotificationTargetProblem.php:255 src/NotificationTargetProblem.php:260
-#: src/ProjectCost.php:132 src/CommonITILTask.php:1652 src/User.php:3824
+#: src/ProjectCost.php:132 src/CommonITILTask.php:1652 src/User.php:3862
 #: src/ContractCost.php:123 src/CommonITILCost.php:108
 #: src/NotificationTargetChange.php:392 src/NotificationTargetChange.php:397
 #: src/Contact.php:343
@@ -22283,7 +22287,7 @@ msgstr "Titel"
 
 #: templates/components/user/info_card.html.twig front/stat.tracking.php:91
 #: front/stat.graph.php:241 src/AuthLDAP.php:974 src/AuthLDAP.php:1182
-#: src/AuthLDAP.php:3980 src/User.php:2765 src/Auth.php:1780
+#: src/AuthLDAP.php:3980 src/User.php:2803 src/Auth.php:1780
 #: src/NotificationTargetCommonITILObject.php:1752
 #: src/NotificationTargetCommonITILObject.php:1776
 #: src/NotificationTargetCommonITILObject.php:1812
@@ -22357,7 +22361,7 @@ msgstr "Up te daten"
 
 #: src/NotificationTargetUser.php:197
 msgid "To update your password, please follow this link:"
-msgstr ""
+msgstr "Om uw wachtwoord aan te passen, volg deze link:"
 
 #: src/Dashboard/Provider.php:1614
 msgid "To validate"
@@ -22406,7 +22410,7 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig
 msgid "Toggle search filters"
-msgstr ""
+msgstr "Schakel zoekfilters"
 
 #: src/NotificationTargetUser.php:202
 msgid "Token"
@@ -22457,7 +22461,7 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:1312
 msgid "Top ticket's locations"
-msgstr ""
+msgstr "Top ticket locaties"
 
 #: src/Dashboard/Grid.php:1330
 msgid "Top ticket's observer groups"
@@ -22613,7 +22617,7 @@ msgstr "Vertaling van dropdowns"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Translation of reminders"
-msgstr ""
+msgstr "Vertaling van herinneringen"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Translations"
@@ -22665,8 +22669,8 @@ msgstr "Twisted pair (RJ-45)"
 #: src/Budget.php:242 src/Budget.php:355 src/PassiveDCEquipment.php:104
 #: src/CommonDBVisible.php:279 src/RuleDictionnaryPhoneType.php:51
 #: src/RuleDictionnaryPhoneType.php:65 src/QueuedNotification.php:360
-#: src/QueuedNotification.php:700 src/Printer.php:359 src/User.php:4901
-#: src/User.php:4983 src/Blacklist.php:95 src/Blacklist.php:130
+#: src/QueuedNotification.php:700 src/Printer.php:359 src/User.php:4939
+#: src/User.php:5021 src/Blacklist.php:95 src/Blacklist.php:130
 #: src/DisplayPreference.php:700 src/Rack.php:165 src/DeviceSimcard.php:54
 #: src/DeviceSimcard.php:89 src/NotificationTargetContract.php:180
 #: src/RuleCollection.php:1326 src/RuleCollection.php:2354
@@ -22823,7 +22827,7 @@ msgstr "UUID"
 msgid "Unable to add. The user already exist."
 msgstr "Niet mogelijk om toe te voegen, de gebruiker bestaat al."
 
-#: src/User.php:750
+#: src/User.php:761
 msgid "Unable to add. The user already exists."
 msgstr "Kan niet toevoegen. Deze gebruiker bestaat al."
 
@@ -22984,7 +22988,7 @@ msgstr ""
 msgid "Unable to get item"
 msgstr "Niet mogelijk om het item te laden"
 
-#: front/user.form.php:189
+#: front/user.form.php:199
 msgid "Unable to impersonate user"
 msgstr "Kan de identiteit van de gebruiker niet nabootsen"
 
@@ -23063,7 +23067,7 @@ msgstr ""
 msgid "Unable to reaffect given elements!"
 msgstr ""
 
-#: src/Inventory/Inventory.php:928
+#: src/Inventory/Inventory.php:941
 #, php-format
 msgid "Unable to remove file %1$s"
 msgstr ""
@@ -23073,7 +23077,7 @@ msgstr ""
 msgid "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
 msgstr "Niet mogelijk om tabel te hernoemen van %1$s (%2$s) naar %3$s (%4$s)!"
 
-#: src/User.php:5444 src/User.php:5454
+#: src/User.php:5482 src/User.php:5492
 msgid "Unable to reset password, please contact your administrator"
 msgstr ""
 
@@ -23087,7 +23091,7 @@ msgstr "Kan fotobestand niet opslaan."
 msgid "Unable to send notification using %1$s"
 msgstr "Niet mogelijk om melding te versturen gebruikmakend van %1$s"
 
-#: front/user.form.php:198
+#: front/user.form.php:208
 msgid "Unable to stop impersonating user"
 msgstr "Kan het nabootsen van de identiteit van de gebruiker niet stoppen"
 
@@ -23124,7 +23128,7 @@ msgstr ""
 msgid "Unable to update DB configuration file."
 msgstr ""
 
-#: src/User.php:3348
+#: src/User.php:3386
 msgid "Unable to update login. A user already exists."
 msgstr "Fout bij het bijwerken van 'login'. Deze gebruiker bestaat reeds."
 
@@ -23160,11 +23164,11 @@ msgstr ""
 msgid "Unable to write cache configuration file."
 msgstr ""
 
-#: front/document.send.php:66 front/document.send.php:111
+#: front/document.send.php:68 front/document.send.php:113
 msgid "Unauthorized access to this file"
 msgstr "U bent niet geautoriseerd voor toegang van deze file"
 
-#: src/Document.php:1470 src/RuleCollection.php:1185
+#: src/Document.php:1482 src/RuleCollection.php:1185
 msgid "Unauthorized file type"
 msgstr "Niet toegestaan bestandstype"
 
@@ -23241,7 +23245,7 @@ msgstr ""
 msgid "Unknown error"
 msgstr "Onbekende fout"
 
-#: front/document.send.php:50
+#: front/document.send.php:52
 msgid "Unknown file"
 msgstr "Onbekend bestand"
 
@@ -23266,7 +23270,7 @@ msgstr ""
 msgid "Unknown ticket"
 msgstr "Onbekend ticket"
 
-#: src/User.php:6651 src/KnowbaseItem_Revision.php:177
+#: src/User.php:6704 src/KnowbaseItem_Revision.php:177
 msgid "Unknown user"
 msgstr "Onbekende gebruiker"
 
@@ -23334,8 +23338,8 @@ msgstr "Ontgrendel het item"
 #: src/Unmanaged.php:52
 msgid "Unmanaged device"
 msgid_plural "Unmanaged devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Onbeheerd apparaat"
+msgstr[1] "Onbeheerde apparaten"
 
 #: templates/install/accept_license.html.twig
 msgid "Unofficial translations are also available"
@@ -23451,15 +23455,15 @@ msgstr "Actualiseer een item"
 
 #. TRANS: short for : Update method for user authentication and
 #. synchronization
-#: src/User.php:5929
+#: src/User.php:5982
 msgid "Update auth and sync"
 msgstr "Update auth. en sync"
 
-#: src/User.php:4775
+#: src/User.php:4813
 msgid "Update authentification method to"
 msgstr "Wijzig authenticatie methode in"
 
-#: src/Config.php:3272
+#: src/Config.php:3271
 msgid "Update component"
 msgstr "Component bijwerken"
 
@@ -23484,7 +23488,7 @@ msgstr "Bijwerken vervolgacties (auteur)"
 msgid "Update helpdesk parameters"
 msgstr "Update helpdesk parameters"
 
-#: src/User.php:5930
+#: src/User.php:5983
 msgid "Update method for user authentication and synchronization"
 msgstr "Update gebruikers authenticatie en synchronisatie methode"
 
@@ -23568,7 +23572,7 @@ msgstr "Actualiseer de printerteller"
 msgid "Update the approval request to %s"
 msgstr "Bijwerken van de goedkeuringsaanvraag %s"
 
-#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3192
+#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3191
 msgid "Update the item"
 msgstr "item bijwerken"
 
@@ -23671,7 +23675,7 @@ msgctxt "button"
 msgid "Upload"
 msgstr ""
 
-#: src/Document.php:1163 src/Document.php:1559
+#: src/Document.php:1169 src/Document.php:1571
 msgid "Upload directory doesn't exist"
 msgstr "Upload map bestaat niet"
 
@@ -23712,7 +23716,7 @@ msgstr "Gebruik"
 #: src/Mail/SMTP/OauthProvider/Azure.php:70
 msgctxt "oauth"
 msgid "Use \"common\" if your application is shared by multiple tenants."
-msgstr ""
+msgstr "Gebruik \"common\" als je applicatie gedeeld is met meerdere tenants."
 
 #: src/AuthLDAP.php:867 src/AuthLDAP.php:1244
 msgid "Use DN in the search"
@@ -23722,7 +23726,7 @@ msgstr "Gebruik DN bij zoeken"
 msgid "Use GLPI"
 msgstr "Gebruik GLPI"
 
-#: src/User.php:3252
+#: src/User.php:3290
 msgid "Use GLPI in mode"
 msgstr "GLPI gebruiken in modus"
 
@@ -23779,7 +23783,7 @@ msgstr "Gebruik 'paged' resultaten"
 msgid "Use rule for"
 msgstr "Gebruik regel voor"
 
-#: src/User.php:2632 src/User.php:3105 src/Config.php:1279
+#: src/User.php:2670 src/User.php:3143 src/Config.php:1279
 msgid "Use server configuration"
 msgstr ""
 
@@ -23839,7 +23843,7 @@ msgid_plural "Users"
 msgstr[0] "Gebruiker"
 msgstr[1] "Gebruikers"
 
-#: src/User.php:2705 src/User.php:3766 src/User.php:5627
+#: src/User.php:2743 src/User.php:3804 src/User.php:5680
 msgid "User DN"
 msgstr "User DN"
 
@@ -23851,7 +23855,7 @@ msgstr "Taak toegekend aan gebruiker"
 msgid "User attribute containing its groups"
 msgstr "Gebruikers attribuut met daarin zijn/haar groep(en)"
 
-#: src/Config.php:3258
+#: src/Config.php:3257
 msgid "User authentication method changes"
 msgstr "Gebruikersauthenticatiemethode wijzigt"
 
@@ -23885,20 +23889,20 @@ msgstr "User met profiel"
 msgid "User in group"
 msgstr ""
 
-#: src/User.php:5631
+#: src/User.php:5684
 msgid "User information"
 msgstr "Gebruikersinformatie"
 
 #: src/NotificationTargetCommonITILObject.php:1775
 #: src/NotificationTargetCommonITILObject.php:1811 src/RuleAsset.php:143
 msgid "User location"
-msgstr ""
+msgstr "Gebruikerslocatie"
 
 #: src/NotificationTargetCommonITILObject.php:138
 msgid "User mentioned"
 msgstr ""
 
-#: src/User.php:2708
+#: src/User.php:2746
 msgid "User missing in LDAP directory"
 msgstr "Gebruiker  ontbreekt in LDAP-directory"
 
@@ -23992,7 +23996,7 @@ msgstr "Geldige licentie"
 msgid "Valid licenses"
 msgstr "Geldige licenties"
 
-#: src/User.php:2663
+#: src/User.php:2701
 msgid "Valid since"
 msgstr "geldig sinds"
 
@@ -24005,7 +24009,7 @@ msgstr "Geldige tags"
 msgid "Valid to %s"
 msgstr "Geldig voor %s"
 
-#: src/User.php:2671
+#: src/User.php:2709
 msgid "Valid until"
 msgstr "Geldig tot"
 
@@ -24023,7 +24027,7 @@ msgstr "Keur incident goed"
 
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:56
 msgid "Validate files integrity for GLPI's documents."
-msgstr ""
+msgstr "Valideer integriteit van bestanden voor documenten van GLPI."
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 #: templates/components/itilobject/timeline/timeline.html.twig
@@ -24056,10 +24060,11 @@ msgid "Validation request answer"
 msgstr "Validatie verzoek antwoord"
 
 #: front/report.infocom.php:63 front/report.infocom.conso.php:62
-#: src/DropdownTranslation.php:426 src/Rule.php:1198 src/Rule.php:2260
-#: src/Blacklist.php:90 src/Blacklist.php:122 src/RuleCollection.php:1418
+#: src/DropdownTranslation.php:426 src/DropdownTranslation.php:573
+#: src/Rule.php:1198 src/Rule.php:2260 src/Blacklist.php:90
+#: src/Blacklist.php:122 src/RuleCollection.php:1418
 #: src/ITILTemplatePredefinedField.php:374 src/RuleAction.php:195
-#: src/Printer_CartridgeInfo.php:73 src/Config.php:3623
+#: src/Printer_CartridgeInfo.php:73 src/Config.php:3622
 #: src/Fieldblacklist.php:79 src/Fieldblacklist.php:121
 #: src/SavedSearch_Alert.php:167 src/SavedSearch_Alert.php:275
 msgid "Value"
@@ -24143,7 +24148,7 @@ msgstr[0] "Versies van de besturingssystemen"
 
 #: src/Config.php:1220
 msgid "Vertical (menu in sidebar)"
-msgstr ""
+msgstr "Verticaal (menu in zijbalk)"
 
 #: src/CommonITILObject.php:3342
 msgctxt "impact"
@@ -24350,6 +24355,8 @@ msgid ""
 "Warning! This operation can put merged software in the trashbin. Ensure to "
 "notify your users."
 msgstr ""
+"Waarschuwing! Deze bewerking kan samengevoegde software in de prullenbak "
+"plaatsen. Zorg dat uw gebruikers op de hoogte zijn."
 
 #: src/AuthLDAP.php:1688
 msgid ""
@@ -24790,11 +24797,11 @@ msgstr ""
 msgid "Yes"
 msgstr "Ja"
 
-#: src/Config.php:2366
+#: src/Config.php:2363
 msgid "Yes - Restrict to global management"
 msgstr ""
 
-#: src/Config.php:2365
+#: src/Config.php:2362
 msgid "Yes - Restrict to unit management"
 msgstr ""
 
@@ -24812,7 +24819,7 @@ msgstr ""
 
 #: src/ManualLink.php:284
 msgid "You are about to delete this item. Do you confirm?"
-msgstr ""
+msgstr "Je staat op het punt om dit item te verwijderen. Ben je zeker?"
 
 #: src/Console/Migration/AbstractPluginToCoreCommand.php:105
 #, php-format
@@ -24867,11 +24874,11 @@ msgstr ""
 "database versie. Installeer de juiste GLPI bestanden voor uw versie van de "
 "database"
 
-#: src/Config.php:3092
+#: src/Config.php:3091
 msgid "You are using a development version, be careful!"
 msgstr "U gebruikt een ontwikkelingsversie, wees voorzichtig!"
 
-#: src/Config.php:3093
+#: src/Config.php:3092
 msgid "You are using a pre-release version, be careful!"
 msgstr ""
 
@@ -24907,7 +24914,7 @@ msgid ""
 "You can ignore this suggestion if your web server root directory is \"%s\"."
 msgstr ""
 
-#: src/User.php:6454
+#: src/User.php:6507
 msgid "You can set its name to your organisation's name. "
 msgstr ""
 
@@ -25009,8 +25016,8 @@ msgstr ""
 "U heeft geen toegang tot deze toepassing, omdat uw account verwijderd is of "
 "buiten werking is gesteld"
 
-#: src/Html.php:644 src/Api/API.php:1052 src/Api/API.php:1830
-#: src/Api/API.php:1967 src/Api/API.php:2101 src/Api/API.php:2706
+#: src/Html.php:644 src/Api/API.php:1052 src/Api/API.php:1834
+#: src/Api/API.php:1971 src/Api/API.php:2105 src/Api/API.php:2710
 msgid "You don't have permission to perform this action."
 msgstr "U heeft niet de bevoegdheid voor het uitvoeren van deze actie."
 
@@ -25055,7 +25062,7 @@ msgstr ""
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
-msgstr ""
+msgstr "Je hebt nog geen opgeslagen zoekopdrachten opgenomen"
 
 #: src/Toolbox.php:1159
 msgid "You have the latest available version"
@@ -25168,7 +25175,7 @@ msgstr ""
 
 #: src/Change.php:1186 src/Change.php:1235
 msgid "Your changes in progress"
-msgstr ""
+msgstr "Uw wijzigingen in behandeling"
 
 #: front/knowbaseitem_comment.form.php:70
 msgid "Your comment has been added"
@@ -25178,7 +25185,7 @@ msgstr "Uw opmerking is toegevoegd"
 msgid "Your comment has been edited"
 msgstr "Jouw opmerking is bewerkt"
 
-#: src/Config.php:2658
+#: src/Config.php:2657
 #, php-format
 msgid "Your database engine version seems too old: %s."
 msgstr "De versie van uw database-engine lijkt te oud: %s."
@@ -25199,11 +25206,11 @@ msgstr "Gevolgde tickets"
 msgid "Your password has been successfully updated."
 msgstr "Uw wachtwoord is succesvol bijgewerkt."
 
-#: src/User.php:5319
+#: src/User.php:5357
 msgid "Your password has expired. You must change it to be able to login."
 msgstr ""
 
-#: templates/password_form.html.twig src/User.php:5436
+#: templates/password_form.html.twig src/User.php:5474
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
 msgstr ""
@@ -25231,7 +25238,7 @@ msgstr "Je problemen in verwerking"
 msgid "Your session has expired."
 msgstr ""
 
-#: front/tracking.injector.php:86
+#: front/tracking.injector.php:88
 msgid "Your ticket has been registered, its treatment is in progress."
 msgstr ""
 "Uw incident-ticket werd succesvol geregistreerd, en wordt verder verwerkt."
@@ -25353,7 +25360,7 @@ msgstr "bevat geen"
 msgid "does not exist"
 msgstr "bestaat niet"
 
-#: src/Api/API.php:2154
+#: src/Api/API.php:2158
 msgid "email parameter missing"
 msgstr "email parameter ontbreekt"
 
@@ -25402,7 +25409,7 @@ msgstr "Verzender"
 msgid "full structure"
 msgstr ""
 
-#: src/User.php:2906 src/User.php:3293
+#: src/User.php:2944 src/User.php:3331
 #, php-format
 msgid "generated on %s"
 msgstr "gegenereerd op %s"
@@ -25435,7 +25442,7 @@ msgstr "verborgen"
 msgid "images"
 msgstr "Afbeeldingen"
 
-#: src/Api/API.php:2666
+#: src/Api/API.php:2670
 msgid "input parameter must be an array of objects"
 msgstr "input parameter moet een objecten lijst zijn"
 
@@ -25580,7 +25587,7 @@ msgstr "ID  ontbreekt"
 msgid "missing itemtype"
 msgstr "Itemtype  ontbreekt"
 
-#: src/Api/API.php:2243
+#: src/Api/API.php:2247
 msgid "missing parameter app_token"
 msgstr "parameter app_token  ontbreekt"
 
@@ -25654,11 +25661,11 @@ msgstr ""
 msgid "others"
 msgstr ""
 
-#: src/Api/API.php:2237
+#: src/Api/API.php:2241
 msgid "parameter app_token seems wrong"
 msgstr "parameter app_token lijkt verkeerd"
 
-#: src/Api/API.php:2745
+#: src/Api/API.php:2749
 msgid "parameter session_token is missing or empty"
 msgstr "parameter sessie_token  ontbreekt of leeg"
 
@@ -25726,7 +25733,7 @@ msgstr "terugplaatsen"
 msgid "rule"
 msgstr "regel"
 
-#: front/cron.php:45
+#: front/cron.php:46
 msgid "run script as apache user"
 msgstr "voer script uit als 'apache' gebruiker"
 
@@ -25754,7 +25761,7 @@ msgstr "serial"
 msgid "session extension is not installed."
 msgstr ""
 
-#: src/Api/API.php:2725
+#: src/Api/API.php:2729
 msgid "session_token seems invalid"
 msgstr "sessie_token lijkt onjuist"
 
@@ -25828,7 +25835,7 @@ msgstr "Het gebruik van  initSession met credentials is uitgeschakeld"
 msgid "version"
 msgstr "Versie"
 
-#: src/Api/API.php:2788
+#: src/Api/API.php:2792
 #, php-format
 msgid "view documentation in your browser at %s"
 msgstr "Bekijk de documentatie in de browser op %s"
