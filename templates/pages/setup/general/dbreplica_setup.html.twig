@@ -67,8 +67,8 @@
     <span>{{ __('Replication status') }}</span>
 </div>
 
-{% set primary_ok  = replication_status['primary']['file'] %}
-{% set primary_unknow = replication_status['primary']['error'] is defined and replication_status['primary']['error'] is not null %}
+{% set primary_ok      = replication_status['primary']['file'] %}
+{% set primary_unknown = replication_status['primary']['error'] is defined and replication_status['primary']['error'] is not null %}
 
 <div class="row ps-2 mb-3">
    <div class="col-5">
@@ -77,18 +77,18 @@
                 <h2 class="accordion-header" id="heading-primary">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-primary" aria-expanded="false" aria-controls="collapse-primary">
                     <h3>
-                        <span class="status status-{{ primary_ok ? 'green' : primary_unknow ? 'muted' : 'red' }}">
+                        <span class="status status-{{ primary_ok ? 'green' : primary_unknown ? 'muted' : 'red' }}">
                             <span class="status-dot status-dot-animated"></span>
-                            {{ primary_ok ? 'Up' : primary_unknow ? 'Unkown' : 'Down' }}
+                            {{ primary_ok ? 'Up' : primary_unknown ? 'Unkown' : 'Down' }}
                         </span>
                         <span class="mx-2">Primary ({{ primary_dbhost }})</span>
-                        {{ primary_unknow ? '' : replication_status['primary']['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
+                        {{ primary_unknown ? '' : replication_status['primary']['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
                     </h3>
                     </button>
                 </h2>
                 <div id="collapse-primary" class="accordion-collapse collapse" aria-labelledby="heading-primary" data-bs-parent="#accordion-primary">
                     <div class="accordion-body">
-                    {% if primary_unknow %}
+                    {% if primary_unknown %}
                         <div class="alert alert-danger" role="alert">
                             <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
                             <p class="mt-2">{{ replication_status['primary']['error'] }}</p>
