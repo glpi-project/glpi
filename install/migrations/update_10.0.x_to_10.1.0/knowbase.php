@@ -88,16 +88,16 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
             &lt;br&gt;##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
             &lt;br&gt;##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
             &lt;br&gt;##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##&lt;/p&gt;
-            &lt;ul&gt;##FOREACHdocuments## &lt;li&gt;##lang.document.downloadurl## : ##document.downloadurl##&lt;/li&gt;
-            &lt;li&gt;##lang.document.filename## : ##document.filename##&lt;/li&gt;
-            &lt;li&gt;##lang.document.heading## : ##document.heading##&lt;/li&gt;
-            &lt;li&gt;##lang.document.id## : ##document.id##&lt;/li&gt;
-            &lt;li&gt;##lang.document.name## : ##document.name##&lt;/li&gt;
-            &lt;li&gt;##lang.document.url## : ##document.url##&lt;/li&gt;
-            &lt;li&gt;##lang.document.weblink## : ##document.weblink##&lt;/li&gt; ##ENDFOREACHdocuments##&lt;/ul&amp;gt
-            &lt;ul&gt;##FOREACHtargets## &lt;li&gt;##lang.target.itemtype## : ##target.type##&lt;/li&gt;
-            &lt;li&gt;##lang.target.name## : ##target.name##&lt;/li&gt;
-            &lt;li&gt;##lang.target.url## : ##target.url##&lt;/li&gt; ##ENDFOREACHtargets##&lt;/ul&gt;
+            ##FOREACHdocuments## &lt;p&gt;##lang.document.downloadurl## : ##document.downloadurl##
+            &lt;br&gt;##lang.document.filename## : ##document.filename##
+            &lt;br&gt;##lang.document.heading## : ##document.heading##
+            &lt;br&gt;##lang.document.id## : ##document.id##
+            &lt;br&gt;##lang.document.name## : ##document.name##
+            &lt;br&gt;##lang.document.url## : ##document.url##
+            &lt;br&gt;##lang.document.weblink## : ##document.weblink##&lt;/p&gt; ##ENDFOREACHdocuments## &lt;br&gt;
+            ##FOREACHtargets## &lt;p&gt;##lang.target.itemtype## : ##target.type##
+            &lt;br&gt;##lang.target.name## : ##target.name##
+            &lt;br&gt;##lang.target.url## : ##target.url## &lt;/p&gt;##ENDFOREACHtargets##
             HTML
         ],
         'Add new knowbase notification template translation'

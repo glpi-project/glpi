@@ -65,50 +65,47 @@ class NotificationTargetKnowbaseItem extends DbTestCase
             $this->boolean($notif->update(['id' => $kbnotif['id'], 'is_active' => 1]))->isTrue();
         }
         //search glpi user
-        $email = new \UserEmail();
-        $this->integer($email->add(
+        $this->createItem(
+            \UserEmail::class,
             [
                 'users_id' => getItemByTypeName('User', 'glpi', true),
                 'email' => 'test@test.com',
                 'is_default' => 1,
             ]
-        ))->isGreaterThan(0);
+        );
 
         // test create group
-        $groups = new Group();
-        $groupid = $groups->add(
+        $group = $this->createItem(
+            Group::class,
             [
                 'name' => 'testknowbasegroup',
             ]
         );
-        $this->integer($groupid)->isGreaterThan(0);
-        $group = $groups->getById($groupid)->fields;
-        $this->string($group['name'])->isEqualTo('testknowbasegroup');
+        $this->string($group->fields['name'])->isEqualTo('testknowbasegroup');
 
         //add user to group
-        $groupsusers = new \Group_User();
-        $groupsusers->add(
+        $this->createItem(
+            \Group_User::class,
             [
-                'groups_id' => $group['id'],
+                'groups_id' => $group->fields['id'],
                 'users_id' => getItemByTypeName('User', 'glpi', true),
             ]
         );
 
         //test add group for notification
-        $notiftarget = new NotificationTarget();
         foreach ($knowbasenotifs as $kbnotif) {
-            $ntargetid = $notiftarget->add(
+            $ntarget = $this->createItem(
+                NotificationTarget::class,
                 [
                     'notifications_id' => $kbnotif['id'],
                     'type' => Notification::GROUP_TYPE,
-                    'items_id' => $group['id'],
+                    'items_id' => $group->fields['id'],
                 ]
             );
-            $ntargetdata = $notiftarget->getById($ntargetid)->fields;
-            $this->array($ntargetdata)->isIdenticalTo(
+            $this->array($ntarget->fields)->isIdenticalTo(
                 [
-                    'id' => $ntargetid,
-                    'items_id' => $group['id'],
+                    'id' => $ntarget->fields['id'],
+                    'items_id' => $group->fields['id'],
                     'type' => Notification::GROUP_TYPE,
                     'notifications_id' => $kbnotif['id']
                 ]
@@ -116,25 +113,39 @@ class NotificationTargetKnowbaseItem extends DbTestCase
         }
 
         //create/update/delete knowbase item
-        $knowbaseitem = new \KnowbaseItem();
-        $id = $knowbaseitem->add(
+        $knowbaseitem = $this->createItem(
+            \KnowbaseItem::class,
             [
                 'name' => 'testknowbaseitem',
                 'answer' => 'testknowbaseitem',
                 'users_id' => getItemByTypeName('User', 'glpi', true),
             ]
         );
-        $knowbaseitem->update(
+        //test check if add notification is in notification queue
+        $notifqueue = new QueuedNotification();
+        $count = count($notifqueue->find(['itemtype' => 'KnowbaseItem']));
+        $this->integer($count)->isEqualTo(1);
+
+        $this->updateItem(
+            \KnowbaseItem::class,
+            $knowbaseitem->fields['id'],
             [
-                'id' => $id,
                 'name' => 'testknowbaseitemupdate',
                 'answer' => 'testknowbaseitemupdate',
                 'users_id' => getItemByTypeName('User', 'glpi', true),
             ]
         );
-        $knowbaseitem->delete(['id' => $id]);
+        //test check if update notification is in notification queue
+        $notifqueue = new QueuedNotification();
+        $count = count($notifqueue->find(['itemtype' => 'KnowbaseItem']));
+        $this->integer($count)->isEqualTo(2);
 
-        //test check if is in notification queue
+        $this->deleteItem(
+            \KnowbaseItem::class,
+            $knowbaseitem->fields['id']
+        );
+
+        //test check if delete notification is in notification queue
         $notifqueue = new QueuedNotification();
         $count = count($notifqueue->find(['itemtype' => 'KnowbaseItem']));
         $this->integer($count)->isEqualTo(3);
