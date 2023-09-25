@@ -38,9 +38,9 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
     public function getEvents()
     {
         return [
-            'newknowbaseitem'     => __('New knowbase'),
-            'deletingknowbaseitem' => __('Deleting a knowbase'),
-            'updateknowbaseitem' => __('Update of a knowbase')
+            'new'     => __('New knowledge base item'),
+            'delete' => __('Deleting a knowledge base item'),
+            'update' => __('Update of a knowledge base item')
         ];
     }
 
