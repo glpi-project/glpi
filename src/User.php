@@ -5182,12 +5182,19 @@ HTML;
             return;
         }
 
+        $myuser = new self();
+        if (
+            !$myuser->getFromDB($users_id) // invalid user
+            || $myuser->fields['is_deleted_ldap'] == 1 // user already considered as deleted from LDAP
+        ) {
+            return;
+        }
+
        //User is present in DB but not in the directory : it's been deleted in LDAP
         $tmp = [
             'id'              => $users_id,
             'is_deleted_ldap' => 1,
         ];
-        $myuser = new self();
 
         switch ($CFG_GLPI['user_deleted_ldap']) {
            //DO nothing
@@ -5256,18 +5263,19 @@ HTML;
             return;
         }
 
+        $myuser = new self();
+        if (
+            !$myuser->getFromDB($users_id) // invalid user
+            || $myuser->fields['is_deleted_ldap'] == 0 // user already considered as restored from LDAP
+        ) {
+            return;
+        }
+
        //User is present in DB and in the directory but 'is_ldap_deleted' was true : it's been restored in LDAP
         $tmp = [
             'id'              => $users_id,
             'is_deleted_ldap' => 0,
         ];
-        $myuser = new self();
-        $myuser->getFromDB($users_id);
-
-       // User is already considered as restored from ldap
-        if ($myuser->fields['is_deleted_ldap'] == 0) {
-            return;
-        }
 
        // Calling the update function for the user will reapply dynamic rights {@see User::post_updateItem()}
         switch ($CFG_GLPI['user_restored_ldap']) {
