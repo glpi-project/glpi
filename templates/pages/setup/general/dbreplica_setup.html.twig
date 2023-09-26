@@ -79,10 +79,10 @@
                     <h3>
                         <span class="status status-{{ primary_ok ? 'green' : primary_unknown ? 'muted' : 'red' }}">
                             <span class="status-dot status-dot-animated"></span>
-                            {{ primary_ok ? 'Up' : primary_unknown ? 'Unkown' : 'Down' }}
+                            {{ primary_ok ? _x('status', 'Up') : primary_unknown ? _x('status', 'Unkown') : _x('status', 'Down') }}
                         </span>
-                        <span class="mx-2">Primary ({{ primary_dbhost }})</span>
-                        {{ primary_unknown ? '' : replication_status['primary']['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
+                        <span class="mx-2">{{ __('Primary') }} ({{ primary_dbhost }})</span>
+                        {{ primary_unknown ? '' : replication_status['primary']['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">' ~ __('Writable') ~ '</span>' : '<span class="badge badge-outline text-blue">' ~ __('Read-Only') ~ '</span>' }}
                     </h3>
                     </button>
                 </h2>
@@ -90,29 +90,29 @@
                     <div class="accordion-body">
                     {% if primary_unknown %}
                         <div class="alert alert-danger" role="alert">
-                            <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
+                            <span class="text-secondary">{{ __('MySQL server returned an error:') }}</span>
                             <p class="mt-2">{{ replication_status['primary']['error'] }}</p>
                         </div>
                     {% else %}
                         <ul class="p-0 list-unstyled space-y-3">
                             <li>
-                                <span class="text-secondary">Server ID:</span>
+                                <span class="text-secondary">{{ __('Server ID:') }}</span>
                                 {{ replication_status['primary']['server_id'] }}
                             </li>
                             <li>
-                                <span class="text-secondary">Binlog File:</span>
+                                <span class="text-secondary">{{ __('Binary log file:') }}</span>
                                 {{ replication_status['primary']['file'] }}
                             </li>
                             <li>
-                                <span class="text-secondary">Binlog Pos:</span>
+                                <span class="text-secondary">{{ __('Binary log position:') }}</span>
                                 {{ replication_status['primary']['position'] }}
                             </li>
                             <li>
-                                <span class="text-secondary">Binlog GTID:</span>
+                                <span class="text-secondary">{{ __('Binary log GTID:') }}</span>
                                 {{ replication_status['primary']['gtid_binlog_pos'] }}
                             </li>
                             <li>
-                                <span class="text-secondary">MySQL version:</span>
+                                <span class="text-secondary">{{ __('Server version:') }}</span>
                                 {{ replication_status['primary']['version'] }}
                             </li>
                         </ul>
@@ -142,10 +142,10 @@
                     <h3>
                         <span class="status status-{{ replica_ok ? 'green' : replica_unkown ? 'muted' : 'red' }}">
                             <span class="status-dot status-dot-animated"></span>
-                            {{ replica_ok ? 'Up' : replica_unkown ? 'Unkown' : 'Down' }}
+                            {{ replica_ok ? _x('status', 'Up') : replica_unkown ? _x('status', 'Unkown') : _x('status', 'Down') }}
                         </span>
-                        <span class="mx-1">Replica ({{ replica_data['host'] }})</span>
-                        {{ replica_unkown ? '' : replica_data['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">Writable</span>' : '<span class="badge badge-outline text-blue">Read-Only</span>' }}
+                        <span class="mx-1">{{ __('Replica') }} ({{ replica_data['host'] }})</span>
+                        {{ replica_unkown ? '' : replica_data['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">' ~ __('Writable') ~ '</span>' : '<span class="badge badge-outline text-blue">' ~ __('Read-Only') ~ '</span>' }}
                     </h3>
                     </button>
                 </h2>
@@ -153,25 +153,25 @@
                     <div class="accordion-body">
                     {% if replica_unkown %}
                         <div class="alert alert-danger" role="alert">
-                            <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
+                            <span class="text-secondary">{{ __('MySQL server returned an error:') }}</span>
                             <p class="mt-2">{{ replica_data['error'] }}</p>
                         </div>
                     {% else %}
                         <ul class="p-0 list-unstyled space-y-3">
                             <li>
-                                <span class="text-secondary">Server ID:</span>
+                                <span class="text-secondary">{{ __('Server ID:') }}</span>
                                 {{ replica_data['server_id'] }}
                             </li>
                             <li>
-                                <span class="text-secondary">Primary binglog file:</span>
+                                <span class="text-secondary">{{ __('Primary binary log file:') }}</span>
                                 {{ replica_data['master_log_file'] }}
                             </li>
                             <li>
-                                <span class="text-secondary">Primary binglog pos:</span>
+                                <span class="text-secondary">{{ __('Primary binary log position:') }}</span>
                                 {{ replica_data['read_master_log_pos'] }}
                             </li>
                             <li>
-                                <span class="text-secondary">Seconds behind primary:</span>
+                                <span class="text-secondary">{{ __('Seconds behind primary:') }}</span>
                                 {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
                                     <span class="badge bg-{{ replica_data['seconds_behind_master'] > 0 ? 'red' : 'green' }}-lt">{{ replica_data['seconds_behind_master']|raw }}</span>
                                 {% else %}
@@ -179,7 +179,7 @@
                                 {% endif %}
                             </li>
                             <li>
-                                <span class="text-secondary" id="glpi_delay_{{ replica_num }}">GLPI history delay:</span>
+                                <span class="text-secondary" id="glpi_delay_{{ replica_num }}">{{ __('GLPI history delay:') }}</span>
                                 {% if replication_delay[replica_num] > 0 %}
                                     <span class="badge bg-red-lt">{{ replication_delay[replica_num]|formatted_duration }}</span>
                                 {% elseif replication_delay[replica_num] == 0 %}
@@ -192,21 +192,21 @@
                                 ]) %}
                             </li>
                             <li>
-                                <span class="text-secondary">Binglog GTID:</span>
+                                <span class="text-secondary">{{ __('Binary log GTID:') }}</span>
                                 {{ replica_data['gtid_slave_pos'] }}
                             </li>
                             <li>
-                                <span class="text-secondary">IO Running:</span>
+                                <span class="text-secondary">{{ __('IO running:') }}</span>
                                 <span class="badge bg-{{ replica_data['slave_io_running'] == 'Yes' ? 'green' : 'red' }}-lt">
                                 {{ replica_data['slave_io_running'] }}
                                 </span>
                             <li>
-                                <span class="text-secondary">SQL Running:</span>
+                                <span class="text-secondary">{{ __('SQL running:') }}</span>
                                 <span class="badge bg-{{ replica_data['slave_sql_running'] == 'Yes' ? 'green' : 'red' }}-lt">
                                 {{ replica_data['slave_sql_running'] }}
                                 </span>
                             <li>
-                                <span class="text-secondary">MySQL version:</span>
+                                <span class="text-secondary">{{ __('Server version:') }}</span>
                                 {{ replica_data['version'] }}
                             </li>
                         </ul>
@@ -215,7 +215,7 @@
                         {% set display_alert = (replica_data['slave_io_running'] != 'Yes' or replica_data['slave_sql_running'] != 'Yes') and (replica_data['last_io_error']|length or replica_data['last_sql_error']|length) %}
                         {% if display_alert %}
                             <div class="alert alert-danger" role="alert">
-                                <span class="text-secondary">{{ __('MySQL server returned an error') }}:</span>
+                                <span class="text-secondary">{{ __('MySQL server returned an error:') }}</span>
                                 <p class="mt-2">
                                     {{ replica_data['last_io_error'] }}
                                     {{ replica_data['last_sql_error'] }}
