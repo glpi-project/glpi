@@ -173,7 +173,7 @@
                             <li>
                                 <span class="text-secondary">{{ __('Seconds behind primary:') }}</span>
                                 {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
-                                    <span class="badge bg-{{ replica_data['seconds_behind_master'] > 0 ? 'red' : 'green' }}-lt">{{ replica_data['seconds_behind_master']|raw }}</span>
+                                    <span class="badge bg-{{ replica_data['seconds_behind_master'] > 0 ? 'red' : 'green' }}-lt">{{ replica_data['seconds_behind_master'] }}</span>
                                 {% else %}
                                     <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
                                 {% endif %}
