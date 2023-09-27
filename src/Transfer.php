@@ -214,7 +214,8 @@ class Transfer extends CommonDBTM
             'keep_certificate'    => 0,
             'clean_certificate'   => 0,
 
-            'lock_updated_fields' => 0
+            'lock_updated_fields' => 0,
+            'keep_location'       => 1
         ];
 
         if ($to >= 0) {
@@ -3914,7 +3915,7 @@ class Transfer extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Location') . "</td><td>";
+        echo "<td>" . _n('Location', 'Locations', 1) . "</td><td>";
         $location_option  = [
             0 => __("Empty the location"),
             1 => __('Preserve')
