@@ -1307,8 +1307,10 @@ class Transfer extends CommonDBTM
                 ];
 
                // Manage Location dropdown
-                if (isset($item->fields['locations_id'])) {
+                if (isset($item->fields['locations_id']) && $this->options['keep_location']) {
                     $input['locations_id'] = $this->transferDropdownLocation($item->fields['locations_id']);
+                } else {
+                    $input['locations_id'] = 0;
                 }
 
                 if (in_array($itemtype, ['Ticket', 'Problem', 'Change'])) {
@@ -3905,6 +3907,20 @@ class Transfer extends CommonDBTM
         echo "<td>" . __('Historical') . "</td><td>";
         $params['value'] = $this->fields['keep_history'];
         Dropdown::showFromArray('keep_history', $keep, $params);
+        echo "</td>";
+        if (!$edit_form) {
+            echo "<td colspan='2'>&nbsp;</td>";
+        }
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Location') . "</td><td>";
+        $location_option  = [
+            0 => __("Empty the location"),
+            1 => __('Preserve')
+        ];
+        $params['value'] = $this->fields['keep_location'];
+        Dropdown::showFromArray('keep_location', $location_option, $params);
         echo "</td>";
         if (!$edit_form) {
             echo "<td colspan='2'>&nbsp;</td>";
