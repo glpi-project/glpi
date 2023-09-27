@@ -55,8 +55,6 @@ body.mce-content-body {
 
 .rich_text_container {
     white-space: initial;
-    overflow-x: scroll;
-    padding-bottom: 10px;
 
     thead,
     tbody,
@@ -72,7 +70,8 @@ body.mce-content-body {
     }
 
     table {
-        word-break: normal;
+        overflow: auto;
+        max-width: 750px;
     }
 
     a[target="_blank"]::before {
