@@ -55,6 +55,8 @@ body.mce-content-body {
 
 .rich_text_container {
     white-space: initial;
+    overflow-x: scroll;
+    padding-bottom: 10px;
 
     thead,
     tbody,
