@@ -274,7 +274,7 @@ class UserEmail extends CommonDBChild
      */
     private function checkInputEmailValidity(array $input): bool
     {
-        return isset($input['email']) && !empty($input['email']) && GLPIMailer::validateAddress($input['email']);
+        return isset($input['email']) && !empty($input['email']) && GLPIMailer::validateAddress(Sanitizer::unsanitize($input['email']));
     }
 
 
