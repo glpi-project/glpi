@@ -262,6 +262,9 @@ class DBmysql
             $host = $this->dbhost;
         }
 
+        // Add timeout option to avoid infinite connection
+        $this->dbh->options(MYSQLI_OPT_CONNECT_TIMEOUT, 5);
+
         $hostport = explode(":", $host);
         if (count($hostport) < 2) {
             // Host
@@ -2302,6 +2305,28 @@ class DBmysql
             }
         }
 
+        return $values;
+    }
+
+    /**
+     * Get global variables values as an associative array.
+     *
+     * @param array $variables List of variables to get
+     *
+     * @return array
+     */
+    final public function getGlobalVariables(array $variables): array
+    {
+        $query = sprintf(
+            'SHOW GLOBAL VARIABLES WHERE %s IN (%s)',
+            $this->quoteName('Variable_name'),
+            implode(', ', array_map([$this, 'quote'], $variables))
+        );
+        $result = $this->doQuery($query);
+        $values = [];
+        while ($row = $result->fetch_assoc()) {
+            $values[$row['Variable_name']] = $row['Value'];
+        }
         return $values;
     }
 }
