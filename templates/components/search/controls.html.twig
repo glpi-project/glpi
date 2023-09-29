@@ -250,6 +250,11 @@ $(document).ready(function() {
    var page_link_next  = $(".page-link-next");
    var page_link_last  = $(".page-link-last");
    document.onkeydown = function(e) {
+      // Ignore if focus is on an input
+      if ($("input, textarea").is(":focus") === true) {
+         return;
+      }
+
       // Ctrl + ArrowLeft for first page
       if (page_link_start.length > 0
             && (e.ctrlKey || e.metaKey)
