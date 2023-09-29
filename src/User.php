@@ -5884,8 +5884,16 @@ JAVASCRIPT;
 
         $this->getFromDB($this->fields['id']); // reload user to get up-to-date fields
 
-        // Notication on root entity (glpi_users.entities_id is only a pref)
-        NotificationEvent::raiseEvent($event, $this, ['entities_id' => 0]);
+        // get the user entity
+        $entities_id = 0;
+        if (count(($entities = $this->getEntities())) > 0) {
+            $entities_id = array_shift($entities);
+        }
+
+        // Notication on user entity
+        NotificationEvent::raiseEvent($event, $this, [
+            'entities_id' => $entities_id
+        ]);
         QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
 
         return true;
