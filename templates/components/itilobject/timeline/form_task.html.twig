@@ -86,6 +86,13 @@
                </span>
             {% endif %}
 
+            {% if entry_i['date'] %}
+               <span class="planification badge bg-orange-lt">
+                  <i class="fa-regular fa-calendar me-1"></i>
+                  {{ entry_i['date']|formatted_datetime }}
+               </span>
+            {% endif %}
+
             {% if entry_i['begin'] %}
                <span class="planification badge bg-orange-lt">
                   <i class="fas fa-calendar me-1"></i>
