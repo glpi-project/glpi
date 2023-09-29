@@ -1362,7 +1362,7 @@ HTML;
                 'types' => [
                     'CommonDropdown', 'CommonDevice', 'Notification', 'Webhook',
                     'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
-                    'MailCollector', 'Link', 'Plugin', 'OAuthClient'
+                    'OAuthClient', 'MailCollector', 'Link', 'Plugin',
                 ],
                 'icon'  => 'ti ti-settings'
             ],

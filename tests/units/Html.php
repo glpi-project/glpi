@@ -361,10 +361,10 @@ class Html extends \GLPITestCase
             'FieldUnicity',
             'CronTask',
             'Auth',
+            'OAuthClient',
             'MailCollector',
             'Link',
-            'Plugin',
-            'OAuthClient'
+            'Plugin'
         ];
         $this->string($menu['config']['title'])->isIdenticalTo('Setup');
         $this->array($menu['config']['types'])->isIdenticalTo($expected);
