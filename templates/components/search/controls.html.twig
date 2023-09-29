@@ -255,9 +255,10 @@ $(document).ready(function() {
          return;
       }
 
-      // Home for first page
+      // Ctrl+Left for first page
       if (page_link_start.length > 0
-            && (e.keyCode == 36 || e.key == 'Home')
+            && (e.ctrlKey || e.metaKey)
+            && (e.keyCode == 37 || e.key == 'ArrowLeft')
             && !page_link_start.parent().hasClass('disabled')
          ){
          page_link_start.click();
@@ -279,9 +280,10 @@ $(document).ready(function() {
          page_link_next.click();
       }
 
-      // End for last page
+      // Ctrl+Right for last page
       if (page_link_last.length > 0
-            && (e.keyCode == 35 || e.key == 'End')
+            && (e.ctrlKey || e.metaKey)
+            && (e.keyCode == 39 || e.key == 'ArrowRight')
             && !page_link_last.parent().hasClass('disabled')
          ){
          page_link_last.click();
