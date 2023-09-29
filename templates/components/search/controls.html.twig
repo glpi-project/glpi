@@ -243,5 +243,46 @@ $(document).ready(function() {
          navigator.clipboard.writeText(data).then(copy_success, copy_error);
       }).fail(copy_error);
    });
+
+   // Keyboard navigation shortcuts (left/right arrows)
+   var page_link_start = $(".page-link-start");
+   var page_link_prev  = $(".page-link-prev");
+   var page_link_next  = $(".page-link-next");
+   var page_link_last  = $(".page-link-last");
+   document.onkeydown = function(e) {
+      // Ctrl + ArrowLeft for first page
+      if (page_link_start.length > 0
+            && (e.ctrlKey || e.metaKey)
+            && (e.keyCode == 37 || e.key == 'ArrowLeft')
+            && !page_link_start.parent().hasClass('disabled')
+         ){
+         page_link_start.click();
+      }
+
+      // ArrowLeft for previous page
+      if (page_link_prev.length > 0
+            && (e.keyCode == 37 || e.key == 'ArrowLeft')
+            && !page_link_prev.parent().hasClass('disabled')
+         ){
+         page_link_prev.click();
+      }
+
+      // ArrowRight for next page
+      if (page_link_next.length > 0
+            && (e.keyCode == 39 || e.key == 'ArrowRight')
+            && !page_link_next.parent().hasClass('disabled')
+         ){
+         page_link_next.click();
+      }
+
+      // Ctrl + ArrowRight for last page
+      if (page_link_last.length > 0
+            && (e.ctrlKey || e.metaKey)
+            && (e.keyCode == 39 || e.key == 'ArrowRight')
+            && !page_link_last.parent().hasClass('disabled')
+         ){
+         page_link_last.click();
+      }
+   }
 });
 </script>

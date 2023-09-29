@@ -2091,6 +2091,8 @@ class AuthLDAP extends CommonDBTM
                 $filter = $values['ldap_filter'];
             }
 
+            d("LDAP filter: $filter");
+
             if ($values['script'] && !empty($values['begin_date'])) {
                 $filter_timestamp = self::addTimestampRestrictions(
                     $values['begin_date'],
