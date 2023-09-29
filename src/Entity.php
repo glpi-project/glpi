@@ -2702,10 +2702,39 @@ class Entity extends CommonTreeDropdown
      * @since 0.84 (before in entitydata.class)
      *
      * @param $value
+     * Berthe01-Permit mail_domain as list formatted as 'dom1.com;dom2.com;dom3.org'
      **/
     public static function getEntityIDByDomain($value)
     {
-        return self::getEntityIDByField("mail_domain", $value);
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => ['id' , 'mail_domain'],
+            'FROM'   => self::getTable(),
+            'WHERE'     => [
+                'mail_domain' => ['LIKE', '%' . $value . '%'],
+            ]
+        ]);
+
+        if (count($iterator) > 0) {
+            foreach ($iterator as $result) {
+                if (str_contains($result['mail_domain'], ';')) {
+                    if (in_array($value, explode(';', $result['mail_domain']))) {
+                        return $result['id'];
+                    }
+                } else {
+                    if ($result['mail_domain'] == $value) {
+                        return $result['id'];
+                    }
+                }
+            }
+        }
+
+        if (isset($result['id'])) {
+            error_log('ID :' . $result['id']);
+        }
+
+        return -1;
     }
 
 
