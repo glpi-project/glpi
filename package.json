@@ -87,7 +87,7 @@
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
         "stylelint": "^15.10.3",
-        "stylelint-config-standard-scss": "^10.0.0",
+        "stylelint-config-standard-scss": "^11.0.0",
         "terser": "^5.19.3",
         "webpack": "^5.88.2",
         "webpack-cli": "^5.1.4"
