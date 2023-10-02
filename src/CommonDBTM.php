@@ -680,6 +680,9 @@ class CommonDBTM extends CommonGLPI
                 unset($oldvalues[$field]);
             }
         }
+        if (count($tobeupdated) === 0) {
+            return true;
+        }
         $result = $DB->update(
             $this->getTable(),
             $tobeupdated,
