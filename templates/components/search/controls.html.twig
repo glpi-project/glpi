@@ -264,17 +264,17 @@ $(document).ready(function() {
          page_link_start.click();
       }
 
-      // ArrowLeft for previous page
+      // ArrowLeft or j for previous page
       if (page_link_prev.length > 0
-            && (e.keyCode == 37 || e.key == 'ArrowLeft')
+            && (e.keyCode == 37 || e.key == 'ArrowLeft' || e.keyCode == 74 || e.key == 'j')
             && !page_link_prev.parent().hasClass('disabled')
          ){
          page_link_prev.click();
       }
 
-      // ArrowRight for next page
+      // ArrowRight or k for next page
       if (page_link_next.length > 0
-            && (e.keyCode == 39 || e.key == 'ArrowRight')
+            && (e.keyCode == 39 || e.key == 'ArrowRight' || e.keyCode == 75 || e.key == 'k')
             && !page_link_next.parent().hasClass('disabled')
          ){
          page_link_next.click();
