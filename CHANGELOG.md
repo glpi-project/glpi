@@ -450,6 +450,7 @@ The present file will list all changes made to the project; according to the
 - `Search::addOrderBy()` signature changed.
 - `TicketSatisfaction::showForm()` renamed to `TicketSatisfaction::showSatisfactionForm()`.
 - `Transfer::transferDropdownNetpoint()` has been renamed to `Transfer::transferDropdownSocket()`.
+- `Dashboard` global javascript object has been moved to `GLPI.Dashboard`.
 
 #### Deprecated
 - Usage of `MyISAM` engine in database, in favor of `InnoDB` engine.
