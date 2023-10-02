@@ -195,7 +195,7 @@ class Rule extends DbTestCase
     public function testGetSearchOptionsNew()
     {
         $rule = new \Rule();
-        $this->array($rule->rawSearchOptions())->hasSize(11);
+        $this->array($rule->rawSearchOptions())->hasSize(12);
     }
 
     public function testGetRuleWithCriteriasAndActions()
