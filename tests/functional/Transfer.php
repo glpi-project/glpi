@@ -573,11 +573,11 @@ class Transfer extends DbTestCase
 
         //transer to another entity
         $transfer = new \Transfer();
-        $transfer->getFromDB(1);
+        $this->boolean($transfer->getFromDB(1))->isTrue();
 
         //update transfer model to keep location
         $transfer->fields["keep_location"] = 1;
-        $transfer->update($transfer->fields);
+        $this->boolean($transfer->update($transfer->fields))->isTrue();
 
         $item_to_transfer = ["ticket" => [$ticket_id => $ticket_id]];
         $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
@@ -619,11 +619,11 @@ class Transfer extends DbTestCase
 
         //transer to another entity
         $transfer = new \Transfer();
-        $transfer->getFromDB(1);
+        $this->boolean($transfer->getFromDB(1))->isTrue();
 
         //update transfer model to empty location
         $transfer->fields["keep_location"] = 0;
-        $transfer->update($transfer->fields);
+        $this->boolean($transfer->update($transfer->fields))->isTrue();
 
         $item_to_transfer = ["ticket" => [$ticket_id => $ticket_id]];
         $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
