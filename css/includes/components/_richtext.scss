@@ -55,7 +55,7 @@ body.mce-content-body {
 
 .rich_text_container {
     white-space: initial;
-
+    width: 100%;
     thead,
     tbody,
     tfoot,
@@ -71,7 +71,7 @@ body.mce-content-body {
 
     table {
         overflow: auto;
-        max-width: 780px;
+        max-width: 100%;
     }
 
     a[target="_blank"]::before {
