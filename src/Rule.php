@@ -2135,10 +2135,12 @@ class Rule extends CommonDBTM
     {
         global $DB;
 
+        // Try to fix unregulated addition via legacy API at /Rule endpoint instead of /Rule{Type}
+        $sub_type = $this->getType() !== self::class ? $this->getType() : $this->fields['sub_type'];
         $iterator = $DB->request([
             'SELECT' => ['MAX' => 'ranking AS rank'],
             'FROM'   => self::getTable(),
-            'WHERE'  => ['sub_type' => $this->getType()]
+            'WHERE'  => ['sub_type' => $sub_type]
         ]);
 
         if (count($iterator)) {
