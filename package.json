@@ -73,7 +73,7 @@
         "spin.js": "^4.1.0",
         "swagger-ui-dist": "^5.4.2",
         "tinymce": "^6.7.0",
-        "tinymce-i18n": "^23.8.28"
+        "tinymce-i18n": "^23.9.11"
     },
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
