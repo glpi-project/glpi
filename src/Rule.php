@@ -2136,7 +2136,8 @@ class Rule extends CommonDBTM
         global $DB;
 
         // Try to fix unregulated addition via legacy API at /Rule endpoint instead of /Rule{Type}
-        $sub_type = $this->getType() !== self::class ? $this->getType() : $this->fields['sub_type'];
+        // Use the sub_type field if it exists and is not the same as the current class. Otherwise, use the current class at runtime.
+        $sub_type = (isset($this->fields['sub_type']) && $this->fields['sub_type'] !== self::class) ? $this->fields['sub_type'] : static::class;
         $iterator = $DB->request([
             'SELECT' => ['MAX' => 'ranking AS rank'],
             'FROM'   => self::getTable(),
