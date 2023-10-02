@@ -847,7 +847,7 @@ JAVASCRIPT;
      *
      * @param integer $ID        ID of the rule to move
      * @param integer $ref_ID    ID of the rule position  (0 means all, so before all or after all)
-     * @param string  $type      Movement type, one of self::MOVE_AFTER or self::MOVE_BEFORE
+     * @param string|integer  $type  Movement type, one of self::MOVE_AFTER or self::MOVE_BEFORE or the new rank
      *
      * @return boolean
      **/
@@ -862,21 +862,28 @@ JAVASCRIPT;
         $ruleDescription->getFromDB($ID);
         $old_rank = $ruleDescription->fields["ranking"];
 
-       // Compute new ranking
-        if ($ref_ID) { // Move after/before an existing rule
-            $ruleDescription->getFromDB($ref_ID);
-            $rank = $ruleDescription->fields["ranking"];
-        } else if ($type == self::MOVE_AFTER) {
-           // Move after all
-            $result = $DB->request([
-                'SELECT' => ['MAX' => 'ranking AS maxi'],
-                'FROM'   => 'glpi_rules',
-                'WHERE'  => ['sub_type' => $this->getRuleClassName()]
-            ])->current();
-            $rank   = $result['maxi'];
+        $max_ranking_criteria = [
+            'SELECT' => ['MAX' => 'ranking AS maxi'],
+            'FROM' => 'glpi_rules',
+            'WHERE' => ['sub_type' => $this->getRuleClassName()]
+        ];
+
+        if (is_numeric($type)) {
+            $max_rank = $DB->request($max_ranking_criteria)->current()['maxi'];
+            $rank = max(1, min($max_rank, $type));
         } else {
-           // Move before all
-            $rank = 1;
+            // Compute new ranking
+            if ($ref_ID) { // Move after/before an existing rule
+                $ruleDescription->getFromDB($ref_ID);
+                $rank = $ruleDescription->fields["ranking"];
+            } else if ($type == self::MOVE_AFTER) {
+                // Move after all
+                $result = $DB->request($max_ranking_criteria)->current();
+                $rank = $result['maxi'];
+            } else {
+                // Move before all
+                $rank = 1;
+            }
         }
 
         $rule   = $this->getRuleClass();

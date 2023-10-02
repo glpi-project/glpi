@@ -47,6 +47,7 @@ use Glpi\Api\HL\Controller\GraphQLController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Controller\ProjectController;
+use Glpi\Api\HL\Controller\RuleController;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
 use Glpi\Api\HL\Middleware\AuthMiddlewareInterface;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
@@ -169,6 +170,7 @@ EOT;
             $instance->registerController(new ProjectController());
             $instance->registerController(new DropdownController());
             $instance->registerController(new GraphQLController());
+            $instance->registerController(new RuleController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {

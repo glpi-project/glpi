@@ -1,0 +1,792 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\Api\HL\Controller;
+
+use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Router;
+use Glpi\Api\HL\Search;
+use Glpi\Http\JSONResponse;
+use Glpi\Http\Request;
+use Glpi\Http\Response;
+
+#[Route(path: '/Rule', tags: ['Rule'])]
+final class RuleController extends AbstractController
+{
+    protected static function getRawKnownSchemas(): array
+    {
+        $schemas = [
+            'RuleCriteria' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => 'RuleCriteria',
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'x-readonly' => true
+                    ],
+                    'rule' => self::getDropdownTypeSchema(class: \Rule::class, full_schema: 'Rule') + ['x-writeonly' => true],
+                    'criteria' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The criteria to use. See /Rule/Collection/{collection}/CriteriaCriteria for a complete list of criteria.',
+                    ],
+                    'condition' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'The condition to use. See /Rule/Collection/{collection}/CriteriaCondition for a complete list of conditions.',
+                    ],
+                    'pattern' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The value/pattern to match against. If the condition relates to regular expressions, this value needs to be a valid regular expression including the delimiters.'
+                    ],
+                ]
+            ],
+            'RuleCriteriaCondition' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                // No x-itemtype because it isn't in the DB. It cannot be searched.
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    ],
+                    'description' => ['type' => Doc\Schema::TYPE_STRING],
+                    'fields' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'description' => 'Fields/criteria that can be used with this condition. See /Rule/Collection/{collection}/CriteriaCriteria for a complete list of fields/criteria.',
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING
+                        ]
+                    ]
+                ]
+            ],
+            'RuleCriteriaCriteria' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                // No x-itemtype because it isn't in the DB. It cannot be searched.
+                'properties' => [
+                    'id' => ['type' => Doc\Schema::TYPE_STRING],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ]
+            ],
+            'RuleActionType' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                // No x-itemtype because it isn't in the DB. It cannot be searched.
+                'properties' => [
+                    'id' => ['type' => Doc\Schema::TYPE_STRING],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ]
+            ],
+            'RuleActionField' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                // No x-itemtype because it isn't in the DB. It cannot be searched.
+                'properties' => [
+                    'id' => ['type' => Doc\Schema::TYPE_STRING],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ]
+            ],
+            'RuleAction' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => 'RuleAction',
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'x-readonly' => true
+                    ],
+                    'rule' => self::getDropdownTypeSchema(class: \Rule::class, full_schema: 'Rule') + ['x-writeonly' => true],
+                    'action_type' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The action to perform. See /Rule/Collection/{collection}/ActionType for a complete list of actions.',
+                    ],
+                    'field' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The field to modify. See /Rule/Collection/{collection}/ActionField for a complete list of fields.',
+                    ],
+                    'value' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The value to set. If the field relates to regular expressions, this can include a # followed by 0 through 9 to indicate a captured value from the criteria regular expression.'
+                    ],
+                ]
+            ],
+        ];
+        $schemas['Rule'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => 'Rule',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true
+                ],
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-readonly' => true
+                ],
+                'sub_type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-writeonly' => true,
+                ],
+                'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'description' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'match' => [
+                    'description' => 'Logical operator to use when matching rule criteria',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => [
+                        'AND',
+                        'OR'
+                    ]
+                ],
+                'condition' => [
+                    'description' => 'The condition that triggers evaluation of this rule. Typically, 1 is for "On Add" and 2 is for "On Update".',
+                    'type' => Doc\Schema::TYPE_INTEGER
+                ],
+                'ranking' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'x-readonly' => true, //TODO Implement handling rank changes
+                ],
+                'criteria' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'x-readonly' => true,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'RuleCriteria',
+                        'x-join' => [
+                            'table' => 'glpi_rulecriterias',
+                            'fkey' => 'id',
+                            'field' => 'rules_id'
+                        ],
+                        'properties' => array_filter($schemas['RuleCriteria']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY)
+                    ]
+                ],
+                'actions' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'x-readonly' => true,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'RuleAction',
+                        'x-join' => [
+                            'table' => 'glpi_ruleactions',
+                            'fkey' => 'id',
+                            'field' => 'rules_id'
+                        ],
+                        'properties' => array_filter($schemas['RuleAction']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY)
+                    ]
+                ],
+                'date_creation' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-readonly' => true,
+                ],
+                'date_mod' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-readonly' => true,
+                ],
+            ],
+            'RuleTestResult' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'input' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'description' => 'The input provided matching the given schema. This may be a subset of the input schema.',
+                    ],
+                    'mapped_input' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'description' => 'The input provided after it was mapped to internal field names.',
+                    ],
+                    'final_result' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'The final result of the rule test. This is the result of the logical operation of all criteria results.',
+                    ],
+                    'output' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'description' => 'The output of the rule test. This is the result of all actions that were performed.',
+                    ],
+                    'results' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'properties' => [
+                                'criteria_id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'description' => 'The ID of the rule criteria that was tested',
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64
+                                ],
+                                'rule' => self::getDropdownTypeSchema(class: \Rule::class, full_schema: 'Rule') + [
+                                    'description' => 'The rule that was tested',
+                                ],
+                                'criteria' => [
+                                    'type' => Doc\Schema::TYPE_STRING,
+                                    'description' => 'The criteria that was tested'
+                                ],
+                                'pattern' => [
+                                    'type' => Doc\Schema::TYPE_STRING,
+                                    'description' => 'The pattern that was tested for the criteria'
+                                ],
+                                'result' => [
+                                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                                    'description' => 'The result of the test'
+                                ],
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+        ];
+        return $schemas;
+    }
+
+    private function checkCollectionAccess(Request $request, int $right): Response|null
+    {
+        $rule_subtype = 'Rule' . $request->getAttribute('collection');
+        if (!class_exists($rule_subtype)) {
+            return self::getNotFoundErrorResponse();
+        }
+        if (!\Session::haveRight($rule_subtype::$rightname, $right)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        return null;
+    }
+
+    #[Route(path: '/Collection', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'List all rule collections',
+        responses: [
+            '200' => [
+                'description' => 'List of rule collections',
+                'schema' => [
+                    'type' => 'array',
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'properties' => [
+                            'name' => [
+                                'type' => Doc\Schema::TYPE_STRING,
+                                'description' => 'Name of the rule collection'
+                            ],
+                            'rule_type' => [
+                                'type' => Doc\Schema::TYPE_STRING,
+                                'description' => 'Type of the rules in the collection'
+                            ],
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    )]
+    public function getCollections(Request $request): Response
+    {
+        global $CFG_GLPI;
+
+        /** @var class-string<\RuleCollection>[] $collections */
+        $collections = $CFG_GLPI['rulecollections_types'];
+        $visible_collections = [];
+        foreach ($collections as $collection) {
+            /** @var \RuleCollection $instance */
+            $instance = new $collection();
+            if ($instance->canList()) {
+                $rule_class = $instance->getRuleClassName();
+                if (str_starts_with($rule_class, 'Rule')) {
+                    // Only handle rules from the core in the global namespace here
+                    $visible_collections[] = [
+                        'name' => $instance->getTitle(),
+                        'rule_type' => substr($rule_class, 4)
+                    ];
+                }
+            }
+        }
+        return new JSONResponse($visible_collections);
+    }
+
+    #[Route(path: '/Collection/{collection}/CriteriaCondition', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'List accepted "condition" values for criteria for rules in a collection',
+        responses: [
+            '200' => [
+                'description' => 'List of rule criteria conditions',
+                'schema' => 'RuleCriteriaCondition[]'
+            ]
+        ]
+    )]
+    public function getRuleCriteriaConditions(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+        /** @var class-string<\Rule> $rule_subtype */
+        $rule_subtype = 'Rule' . $request->getAttribute('collection');
+        $rule = new $rule_subtype();
+        $possible_criteria = $rule->getCriterias();
+        $conditions = [];
+        foreach ($possible_criteria as $k => $v) {
+            $to_add = \RuleCriteria::getConditions($rule_subtype, $k);
+            foreach ($to_add as $i => &$j) {
+                $j = [
+                    'id' => $i,
+                    'description' => $j,
+                    'fields' => [...$conditions[$i]['fields'] ?? [], $k]
+                ];
+            }
+            unset($j);
+            $conditions = array_replace($conditions, $to_add);
+        }
+        ksort($conditions);
+        return new JSONResponse(array_values($conditions));
+    }
+
+    #[Route(path: '/Collection/{collection}/CriteriaCriteria', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'List accepted "criteria" values for criteria for rules in a collection',
+        responses: [
+            '200' => [
+                'description' => 'List of rule criteria criteria/fields',
+                'schema' => 'RuleCriteriaCriteria[]'
+            ]
+        ]
+    )]
+    public function getRuleCriteriaCriteria(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+        /** @var class-string<\Rule> $rule_subtype */
+        $rule_subtype = 'Rule' . $request->getAttribute('collection');
+        $rule = new $rule_subtype();
+        $possible_criteria = $rule->getCriterias();
+        $result = [];
+        foreach ($possible_criteria as $k => $v) {
+            $result[] = [
+                'id' => $k,
+                'name' => $v['name']
+            ];
+        }
+        return new JSONResponse($result);
+    }
+
+    #[Route(path: '/Collection/{collection}/ActionType', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'List accepted "action_type" values for actions for rules in a collection',
+        responses: [
+            '200' => [
+                'description' => 'List of rule action types',
+                'schema' => 'RuleActionType[]'
+            ]
+        ]
+    )]
+    public function getRuleActionType(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+        $types = \RuleAction::getActions();
+        $result = [];
+        foreach ($types as $k => $v) {
+            $result[] = [
+                'id' => $k,
+                'name' => $v
+            ];
+        }
+        return new JSONResponse($result);
+    }
+
+    #[Route(path: '/Collection/{collection}/ActionField', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'List accepted "field" values for actions for rules in a collection',
+        responses: [
+            '200' => [
+                'description' => 'List of rule action fields',
+                'schema' => 'RuleActionField[]'
+            ]
+        ]
+    )]
+    public function getRuleActionField(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+        /** @var class-string<\Rule> $rule_subtype */
+        $rule_subtype = 'Rule' . $request->getAttribute('collection');
+        $rule = new $rule_subtype();
+        $possible_actions = $rule->getActions();
+        $result = [];
+        foreach ($possible_actions as $k => $v) {
+            $result[] = [
+                'id' => $k,
+                'name' => $v['name']
+            ];
+        }
+        return new JSONResponse($result);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'List or search rules in a collection',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            '200' => [
+                'description' => 'List of rules',
+                'schema' => 'Rule[]'
+            ]
+        ]
+    )]
+    public function getRules(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+        $params = $request->getParameters();
+        $filter = $params['filter'] ?? '';
+        $filter .= ';sub_type==Rule' . $request->getAttribute('collection');
+        $params['filter'] = $filter;
+
+        return Search::searchBySchema($this->getKnownSchema('Rule'), $params);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get a rule from a collection',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            '200' => [
+                'description' => 'The rule',
+                'schema' => 'Rule'
+            ]
+        ]
+    )]
+    public function getRule(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+        $params = $request->getParameters();
+        $filter = $params['filter'] ?? '';
+        $filter .= ';sub_type==Rule' . $request->getAttribute('collection');
+        $params['filter'] = $filter;
+
+        return Search::getOneBySchema($this->getKnownSchema('Rule'), $request->getAttributes(), $params);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{id}/Criteria', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get criteria for a rule from a collection',
+        responses: [
+            '200' => [
+                'description' => 'The rule criteria',
+                'schema' => 'RuleCriteria[]'
+            ]
+        ]
+    )]
+    public function getRuleCriteria(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+
+        $params = $request->getParameters();
+        $filter = $params['filter'] ?? '';
+        $filter .= ';rule==' . $request->getAttribute('id');
+        $params['filter'] = $filter;
+
+        return Search::searchBySchema($this->getKnownSchema('RuleCriteria'), $params);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get a specific criterion for a rule from a collection',
+        responses: [
+            '200' => [
+                'description' => 'The rule criterion',
+                'schema' => 'RuleCriteria'
+            ]
+        ]
+    )]
+    public function getRuleCriterion(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+
+        $params = $request->getParameters();
+        $filter = $params['filter'] ?? '';
+        $filter .= ';rule==' . $request->getAttribute('rule_id');
+        $params['filter'] = $filter;
+
+        return Search::getOneBySchema($this->getKnownSchema('RuleCriteria'), $request->getAttributes(), $params);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{id}/Action', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get actions for a rule from a collection',
+        responses: [
+            '200' => [
+                'description' => 'The rule actions',
+                'schema' => 'RuleAction[]'
+            ]
+        ]
+    )]
+    public function getRuleActions(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+
+        $params = $request->getParameters();
+        $filter = $params['filter'] ?? '';
+        $filter .= ';rule==' . $request->getAttribute('rule_id');
+        $params['filter'] = $filter;
+
+        return Search::searchBySchema($this->getKnownSchema('RuleAction'), $params);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get a specific action for a rule from a collection',
+        responses: [
+            '200' => [
+                'description' => 'The rule action',
+                'schema' => 'RuleAction'
+            ]
+        ]
+    )]
+    public function getRuleAction(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+
+        $params = $request->getParameters();
+        $filter = $params['filter'] ?? '';
+        $filter .= ';rule==' . $request->getAttribute('rule_id');
+        $params['filter'] = $filter;
+
+        return Search::getOneBySchema($this->getKnownSchema('RuleAction'), $request->getAttributes(), $params);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Create a rule in a collection',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Rule',
+            ]
+        ]
+    )]
+    public function createRule(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, CREATE)) {
+            return $response;
+        }
+
+        $params = $request->getParameters();
+        $params['sub_type'] = 'Rule' . $request->getAttribute('collection');
+
+        return Search::createBySchema($this->getKnownSchema('Rule'), $params, [self::class, 'getRule']);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Create a criterion for a rule in a collection',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RuleCriteria',
+            ]
+        ]
+    )]
+    public function createRuleCriteria(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, CREATE)) {
+            return $response;
+        }
+
+        $params = $request->getParameters();
+        $params['rule'] = $request->getAttribute('rule_id');
+
+        return Search::createBySchema($this->getKnownSchema('RuleCriteria'), $params, [self::class, 'getRuleCriterion']);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Create am action for a rule in a collection',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RuleAction',
+            ]
+        ]
+    )]
+    public function createRuleAction(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, CREATE)) {
+            return $response;
+        }
+
+        $params = $request->getParameters();
+        $params['rule'] = $request->getAttribute('rule_id');
+
+        return Search::createBySchema($this->getKnownSchema('RuleAction'), $params, [self::class, 'getRuleAction']);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Test/{schema}', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Test a single rule against a given input',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                ]
+            ]
+        ],
+        responses: [
+            '200' => [
+                'description' => 'The rule test results',
+                'schema' => 'RuleTestResult'
+            ]
+        ]
+    )]
+    public function testRule(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, READ)) {
+            return $response;
+        }
+
+        $input_schema_name = $request->getAttribute('schema');
+        $input_schema = null;
+        $controllers = Router::getInstance()->getControllers();
+        foreach ($controllers as $controller) {
+            $input_schema = $controller->getKnownSchema($input_schema_name);
+            if ($input_schema) {
+                break;
+            }
+        }
+        if ($input_schema === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        $input = $request->getParameters();
+        $mapped_input = Search::getInputParamsBySchema($input_schema, $input);
+
+        $sub_type = 'Rule' . $request->getAttribute('collection');
+        /** @var \Rule $rule */
+        $rule = new $sub_type();
+        if (!$rule->getRuleWithCriteriasAndActions($request->getAttribute('rule_id'), 1, 1)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $results = [];
+        $rule->testCriterias($mapped_input, $results);
+
+        foreach ($results as &$result) {
+            $result = [
+                'criteria_id' => $result['id'],
+                'rule' => $rule->getID(),
+                'criteria' => $result['name'],
+                'pattern' => $result['value'],
+                'result' => (bool) $result['result'],
+            ];
+        }
+        unset($result);
+
+        if ($rule->fields['match'] === 'OR') {
+            $final_result = false;
+            foreach ($results as $result) {
+                if ($result['result']) {
+                    $final_result = true;
+                    break;
+                }
+            }
+        } else {
+            $final_result = true;
+            foreach ($results as $result) {
+                if (!$result['result']) {
+                    $final_result = false;
+                    break;
+                }
+            }
+        }
+
+        $output = [];
+        $output = $rule->executeActions(
+            $output,
+            [
+                'rule_itemtype' => $sub_type,
+                'entities_id' => $mapped_input['entities_id'] ?? $_SESSION['glpiactive_entity'],
+                'recursive' => $mapped_input['is_recursive'] ?? false,
+            ],
+            $mapped_input
+        );
+
+        $response = [
+            'input' => $input,
+            'mapped_input' => $mapped_input,
+            'output' => array_replace($mapped_input, $output),
+            'final_result' => $final_result,
+            'results' => array_values($results)
+        ];
+        return new JSONResponse($response);
+    }
+
+    #[Route(path: '/Collection/{collection}/Test/{schema}', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Test all active rules in a collection against a given input',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                ]
+            ]
+        ],
+        responses: [
+            '200' => [
+                'description' => 'The rule collection test results',
+                'schema' => 'RuleTestResult'
+            ]
+        ]
+    )]
+    public function testRuleCollection(Request $request): Response
+    {
+
+    }
+}
