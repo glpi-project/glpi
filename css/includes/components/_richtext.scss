@@ -72,6 +72,7 @@ body.mce-content-body {
     table {
         overflow: auto;
         max-width: 100%;
+        word-break: normal;
     }
 
     a[target="_blank"]::before {
