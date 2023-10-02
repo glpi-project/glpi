@@ -6612,6 +6612,15 @@ HTML;
 
                // retrieve menu
                 foreach ($_SESSION['glpimenu'] as $firstlvl) {
+                    if (isset($firstlvl['default'])) {
+                        if (strlen($firstlvl['title']) > 0) {
+                            $fuzzy_entries[] = [
+                                'url'   => $firstlvl['default'],
+                                'title' => $firstlvl['title']
+                            ];
+                        }
+                    }
+
                     if (isset($firstlvl['content'])) {
                         foreach ($firstlvl['content'] as $menu) {
                             if (isset($menu['title']) && strlen($menu['title']) > 0) {
@@ -6633,15 +6642,6 @@ HTML;
                                     }
                                 }
                             }
-                        }
-                    }
-
-                    if (isset($firstlvl['default'])) {
-                        if (strlen($firstlvl['title']) > 0) {
-                            $fuzzy_entries[] = [
-                                'url'   => $firstlvl['default'],
-                                'title' => $firstlvl['title']
-                            ];
                         }
                     }
                 }
