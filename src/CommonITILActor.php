@@ -314,6 +314,7 @@ abstract class CommonITILActor extends CommonDBRelation
                 && ($item->countGroups(CommonITILActor::ASSIGN) == 0)
                 && ($item->fields['status'] != CommonITILObject::CLOSED)
                 && ($item->fields['status'] != CommonITILObject::SOLVED)
+                && !isset($this->input['_do_not_compute_status'])
             ) {
                 $status = CommonITILObject::INCOMING;
                 if (in_array($item->fields['status'], Change::getNewStatusArray())) {
