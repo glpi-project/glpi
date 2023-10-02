@@ -6621,6 +6621,15 @@ HTML;
                         }
                     }
 
+                    if (isset($firstlvl['default_dashboard'])) {
+                        if (strlen($firstlvl['title']) > 0) {
+                            $fuzzy_entries[] = [
+                                'url'   => $firstlvl['default_dashboard'],
+                                'title' => $firstlvl['title'] . " > " . _n('Dashboard', 'Dashboards', 1)
+                            ];
+                        }
+                    }
+
                     if (isset($firstlvl['content'])) {
                         foreach ($firstlvl['content'] as $menu) {
                             if (isset($menu['title']) && strlen($menu['title']) > 0) {
