@@ -172,7 +172,7 @@ class Lockedfield extends CommonDBTM
      *
      * return array
      */
-    public function getFullLockedFields($itemtype, $items_id)
+    final public function getFullLockedFields($itemtype, $items_id): array
     {
         global $DB;
 
