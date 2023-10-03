@@ -2736,9 +2736,88 @@ class TicketTest extends DbTestCase
         //check ticket creation
         $this->assertTrue($ticket_user->getFromDB($ticket_user->getId()));
 
+       // check status (should still be ASSIGNED)
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::ASSIGNED);
+
+        // remove associated user
+        $this->boolean($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => []
+            ]
+        ]))->isTrue();
+        // check status (should be INCOMING)
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::INCOMING);
+
+        // add associated user
+        $this->boolean($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => 2,
+                        'use_notification' => 0,
+                        'default_email' => '',
+                        'alternative_email' => ''
+                    ]
+                ]
+            ]
+        ]))->isTrue();
+        // check status (should be ASSIGNED)
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::ASSIGNED);
+
+        // replace associated user
+        $this->boolean($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => 3,
+                        'use_notification' => 0,
+                        'default_email' => '',
+                        'alternative_email' => ''
+                    ]
+                ]
+            ]
+        ]))->isTrue();
         // check status (should still be ASSIGNED)
-        $this->assertTrue($ticket->getFromDB($tickets_id));
-        $this->assertEquals(\CommonITILObject::ASSIGNED, (int)$ticket->fields['status']);
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::ASSIGNED);
+
+        // change status to WAITING
+        $this->boolean($ticket->update([
+            'id'     => $tickets_id,
+            'status' => \CommonITILObject::WAITING
+        ]))->isTrue();
+
+        // replace associated user
+        $this->boolean($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => 2,
+                        'use_notification' => 0,
+                        'default_email' => '',
+                        'alternative_email' => ''
+                    ]
+                ]
+            ]
+        ]))->isTrue();
+        // check status (should still be WAITING)
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::WAITING);
     }
 
     public function testClosedTicketTransfer()
