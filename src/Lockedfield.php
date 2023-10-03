@@ -163,6 +163,39 @@ class Lockedfield extends CommonDBTM
         return $this->getLocks($itemtype, $items_id, false);
     }
 
+
+    /**
+     * Get locked fields
+     *
+     * @param string  $itemtype Item type
+     * @param integer $items_id Item ID
+     *
+     * return array
+     */
+    public function getFullLockedFields($itemtype, $items_id)
+    {
+        global $DB;
+
+        $iterator = $DB->request([
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+                'itemtype'  => $itemtype,
+                [
+                    'OR' => [
+                        'items_id'  => $items_id,
+                        'is_global' => 1
+                    ]
+                ]
+            ]
+        ]);
+
+        $locks = [];
+        foreach ($iterator as $row) {
+            $locks[$row['id']] = $row;
+        }
+        return $locks;
+    }
+
     /**
      * Get locked fields
      *
