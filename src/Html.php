@@ -6625,7 +6625,7 @@ HTML;
                         if (strlen($firstlvl['title']) > 0) {
                             $fuzzy_entries[] = [
                                 'url'   => $firstlvl['default_dashboard'],
-                                'title' => $firstlvl['title'] . " > " . _n('Dashboard', 'Dashboards', 1)
+                                'title' => $firstlvl['title'] . " > " . __('Dashboard')
                             ];
                         }
                     }
