@@ -2088,7 +2088,7 @@ class Config extends CommonDBTM
         $cleaner_script = <<<JS
         // Search all .section-content text content and Replace all instances of a '#' followed by a number so that there is a zero-width space between the # and the number
         $('.section-content').each(function() {
-          $(this).text($(this).text().replace(/#(\d+)/g, '#\u200B$1'));
+          $(this).html($(this).html().replace(/#(\d+)/g, '#\u200B$1'));
         });
 JS;
         echo Html::scriptBlock($cleaner_script);
