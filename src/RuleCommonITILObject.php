@@ -219,6 +219,19 @@ abstract class RuleCommonITILObject extends Rule
                         ) {
                             // must reset alternative_email field to prevent mix of user/email
                             unset($output[$action->fields["field"] . '_notif']);
+
+                            if ($action->fields["value"] === 'requester_manager') {
+                                foreach ($input['_users_id_requester'] as $user_id) {
+                                    $user = new User();
+                                    $user->getFromDB($user_id);
+                                    if (!empty($output[$action->fields["field"]]) && !is_array($output[$action->fields["field"]])) {
+                                        $output[$action->fields["field"]] = [$output[$action->fields["field"]]];
+                                    }
+                                    if ($user->fields['users_id_supervisor'] > 0) {
+                                        $output[$action->fields["field"]][] = $user->fields['users_id_supervisor'];
+                                    }
+                                }
+                            }
                         }
 
                         // special case of itil solution template
@@ -278,6 +291,22 @@ abstract class RuleCommonITILObject extends Rule
                             }
                             foreach (Group_User::getUserGroups($action->fields["value"]) as $g) {
                                 $output['_groups_id_of_requester'][$g['id']] = $g['id'];
+                            }
+                        }
+
+                        if (
+                            in_array(
+                                $action->fields["field"],
+                                ['_users_id_requester', '_users_id_observer', '_users_id_assign']
+                            )
+                            && $action->fields["value"] === 'requester_manager'
+                        ) {
+                            foreach ($input['_users_id_requester'] as $user_id) {
+                                $user = new User();
+                                $user->getFromDB($user_id);
+                                if ($user->fields['users_id_supervisor'] > 0) {
+                                    $output[$action->fields["field"]][] = $user->fields['users_id_supervisor'];
+                                }
                             }
                         }
                         break;
