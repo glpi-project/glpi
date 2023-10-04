@@ -648,6 +648,83 @@ class RuleTicket extends RuleCommonITILObject
         $this->integer($ticket->fields['locations_id'])->isEqualTo($locations_id);
     }
 
+    public function testAssignManager()
+    {
+        $this->login();
+
+        // create users
+        $user = new \User();
+        $manager_id = $user->add([
+            'name' => 'test manager',
+        ]);
+        $this->integer($manager_id)->isGreaterThan(0);
+        $user_id = $user->add([
+            'name' => 'test user',
+            'users_id_supervisor' => $manager_id,
+        ]);
+        $this->integer($user_id)->isGreaterThan(0);
+
+        // check manager
+        $user->getFromDB($user_id);
+        $this->integer($user->fields['users_id_supervisor'])->isEqualTo($manager_id);
+
+        // create rule
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add($ruletinput = [
+            'name'         => 'testManager',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD | \RuleTicket::ONUPDATE,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+        //create criteria to check
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'itilcategories_id',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 0,
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+        //create action to manager
+        $action_id = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => '_users_id_observer',
+            'value'       => 'requester_manager',
+        ]);
+        $this->checkInput($ruleaction, $action_id, $action_input);
+
+        // create ticket
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'    => 'test manager',
+            'content' => 'test manager',
+            '_users_id_requester' => [$user_id],
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        // check manager
+        $ticket_user = new \Ticket_User();
+        // $rows = $ticket_user->find([
+        //     'tickets_id' => $tickets_id,
+        // ]);
+        // print_r($rows);
+        $this->boolean(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        )->isTrue();
+    }
+
     public function testAssignProject()
     {
         $this->login();
