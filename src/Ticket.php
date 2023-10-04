@@ -6189,16 +6189,18 @@ JAVASCRIPT;
      **/
     public static function convertContentForTicket($html, $files, $tags)
     {
-
-        preg_match_all("/src\s*=\s*['|\"](.+?)['|\"]/", $html, $matches, PREG_PATTERN_ORDER);
-        if (isset($matches[1]) && count($matches[1])) {
-           // Get all image src
-
-            foreach ($matches[1] as $src) {
+        $src_patterns = [
+            'src\s*=\s*"[^"]+"',    // src="image.png"
+            "src\s*=\s*'[^']+'",    // src='image.png'
+            'src\s*=[^\s>]+',       // src=image.png
+        ];
+        $matches = [];
+        if (preg_match_all('/(' . implode('|', $src_patterns) . ')/', $html, $matches, PREG_PATTERN_ORDER) > 0) {
+            foreach ($matches[0] as $src_attr) {
                 // Set tag if image matches
                 foreach ($files as $data => $filename) {
-                    if (preg_match("/" . $data . "/i", $src)) {
-                        $html = preg_replace("/<img[^>]*src=['|\"]" . preg_quote($src, '/') . "['|\"][^>]*\>/s", "<p>" . Document::getImageTag($tags[$filename]) . "</p>", $html);
+                    if (preg_match("/" . $data . "/i", $src_attr)) {
+                        $html = preg_replace("/<img[^>]*" . preg_quote($src_attr, '/') . "[^>]*>/s", "<p>" . Document::getImageTag($tags[$filename]) . "</p>", $html);
                     }
                 }
             }

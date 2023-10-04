@@ -4230,51 +4230,74 @@ HTML
             'expected' => '',
         ];
 
-       // Content with embedded image.
-        yield [
-            'content'  => <<<HTML
+        foreach (['"', "'", ''] as $quote_style) {
+            // `img` of embedded image that has only a `src` attribute.
+            yield [
+                'content'  => <<<HTML
 Here is the screenshot:
-<img src="screenshot.png" />
+<img src={$quote_style}screenshot.png{$quote_style}>
 blabla
 HTML
-         ,
-            'files'    => [
-                'screenshot.png' => 'screenshot.png',
-            ],
-            'tags'     => [
-                'screenshot.png' => '9faff0a6-f37490bd-60e2af9721f420.96500246',
-            ],
-            'expected' => <<<HTML
+                ,
+                'files'    => [
+                    'screenshot.png' => 'screenshot.png',
+                ],
+                'tags'     => [
+                    'screenshot.png' => '9faff0a6-f37490bd-60e2af9721f420.96500246',
+                ],
+                'expected' => <<<HTML
 Here is the screenshot:
 <p>#9faff0a6-f37490bd-60e2af9721f420.96500246#</p>
 blabla
 HTML
-         ,
-        ];
-
-       // Content with leading external image that will not be replaced by a tag.
-        yield [
-            'content'  => <<<HTML
-<img src="http://test.glpi-project.org/logo.png" />
+                ,
+            ];
+            // `img` of embedded image that has multiple attributes.
+            yield [
+                'content'  => <<<HTML
 Here is the screenshot:
-<img src="img.jpg" />
+<img id="img-id" src={$quote_style}screenshot.png{$quote_style} height="150" width="100" />
 blabla
 HTML
-         ,
-            'files'    => [
-                'img.jpg' => 'img.jpg',
-            ],
-            'tags'     => [
-                'img.jpg' => '3eaff0a6-f37490bd-60e2a59721f420.96500246',
-            ],
-            'expected' => <<<HTML
-<img src="http://test.glpi-project.org/logo.png" />
+                ,
+                'files'    => [
+                    'screenshot.png' => 'screenshot.png',
+                ],
+                'tags'     => [
+                    'screenshot.png' => '9faff0a6-f37490bd-60e2af9721f420.96500246',
+                ],
+                'expected' => <<<HTML
+Here is the screenshot:
+<p>#9faff0a6-f37490bd-60e2af9721f420.96500246#</p>
+blabla
+HTML
+                ,
+            ];
+
+            // Content with leading external image that will not be replaced by a tag.
+            yield [
+                'content'  => <<<HTML
+<img src={$quote_style}http://test.glpi-project.org/logo.png{$quote_style} />
+Here is the screenshot:
+<img src={$quote_style}img.jpg{$quote_style} />
+blabla
+HTML
+                ,
+                'files'    => [
+                    'img.jpg' => 'img.jpg',
+                ],
+                'tags'     => [
+                    'img.jpg' => '3eaff0a6-f37490bd-60e2a59721f420.96500246',
+                ],
+                'expected' => <<<HTML
+<img src={$quote_style}http://test.glpi-project.org/logo.png{$quote_style} />
 Here is the screenshot:
 <p>#3eaff0a6-f37490bd-60e2a59721f420.96500246#</p>
 blabla
 HTML
-         ,
-        ];
+                ,
+            ];
+        }
     }
 
     /**
