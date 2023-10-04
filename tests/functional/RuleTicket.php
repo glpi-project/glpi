@@ -712,10 +712,6 @@ class RuleTicket extends RuleCommonITILObject
 
         // check manager
         $ticket_user = new \Ticket_User();
-        // $rows = $ticket_user->find([
-        //     'tickets_id' => $tickets_id,
-        // ]);
-        // print_r($rows);
         $this->boolean(
             $ticket_user->getFromDBByCrit([
                 'tickets_id'    => $tickets_id,
