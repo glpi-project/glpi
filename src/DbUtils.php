@@ -1646,6 +1646,13 @@ final class DbUtils
             } else {
                 $user = $name;
             }
+        } else if ($ID === 'requester_manager') {
+            $name = __("Requester's manager");
+            if (isset($user['name'])) {
+                $user['name'] = $name;
+            } else {
+                $user = $name;
+            }
         } else if ($ID) {
             $iterator = $DB->request(
                 'glpi_users',

@@ -587,6 +587,12 @@ class RuleAction extends CommonDBChild
                         case "dropdown_users":
                             $param['name']  = 'value';
                             $param['right'] = 'all';
+                            $param['toadd'] = [
+                                [
+                                    'id'    => 'requester_manager',
+                                    'text'  => __("Requester's manager"),
+                                ]
+                            ];
                             User::dropdown($param);
                             $display = true;
                             break;

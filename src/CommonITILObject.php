@@ -8781,7 +8781,7 @@ abstract class CommonITILObject extends CommonDBTM
                 if (array_key_exists($actors_id_input_key, $this->input)) {
                     if (is_array($this->input[$actors_id_input_key])) {
                         foreach ($this->input[$actors_id_input_key] as $actor_key => $actor_id) {
-                            if (!is_numeric($actor_id)) {
+                            if (!is_numeric($actor_id) && $actor_id !== 'requester_manager') {
                                 trigger_error(
                                     sprintf(
                                         'Invalid value "%s" found for actor in "%s".',
