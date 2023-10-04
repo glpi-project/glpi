@@ -8250,7 +8250,9 @@ HTML;
                 if (count($duplicate_keys) > 0) {
                     trigger_error(
                         sprintf(
-                            'Duplicate keys found in search options for item type %s: %s', $itemtype, implode(', ', $duplicate_keys)
+                            'Duplicate keys found in search options for item type %s: %s',
+                            $itemtype,
+                            implode(', ', $duplicate_keys)
                         ),
                         E_USER_WARNING
                     );
