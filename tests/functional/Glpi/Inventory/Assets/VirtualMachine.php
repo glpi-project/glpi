@@ -605,6 +605,11 @@ class VirtualMachine extends AbstractInventoryAsset
         ]);
         $this->integer($rules_id)->isGreaterThan(0);
 
+
+        // Move rule to top ranking so other rules cannot interfere
+        $collection = new \RuleImportAssetCollection();
+        $this->boolean($collection->moveRule($rules_id, 0, \RuleCollection::MOVE_BEFORE))->isTrue();
+
         $this->integer(
             $criteria->add([
                 'rules_id' => $rules_id,
