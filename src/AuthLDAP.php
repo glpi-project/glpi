@@ -677,7 +677,7 @@ class AuthLDAP extends CommonDBTM
             'min'    => 1,
             'max'    => 30,
             'step'   => 1,
-            'toadd'  => [0 => __('No timeout')]
+            'toadd'  => [-1 => __('No timeout')]
         ]);
         echo "</td></tr>";
 
@@ -1353,7 +1353,7 @@ class AuthLDAP extends CommonDBTM
             'datatype'           => 'number',
             'unit'               => 'second',
             'toadd'              => [
-                '0'                  => __('No timeout')
+                -1                  => __('No timeout')
             ],
         ];
 
@@ -3066,7 +3066,7 @@ class AuthLDAP extends CommonDBTM
         $tls_certfile = "",
         $tls_keyfile = "",
         $use_bind = true,
-        $timeout = 0,
+        $timeout = -1,
         bool $silent_bind_errors = false
     ) {
 
