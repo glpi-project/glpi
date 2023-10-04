@@ -322,7 +322,7 @@ class GLPITestCase extends atoum
      *
      * @return Entity|int
      */
-    public function getTestRootEntity(int $only_id = false)
+    protected function getTestRootEntity(int $only_id = false)
     {
         return getItemByTypeName('Entity', '_test_root_entity', $only_id);
     }
