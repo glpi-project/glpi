@@ -102,7 +102,7 @@ class AuthLdapReplicate extends CommonDBTM
             'min'    => 1,
             'max'    => 30,
             'step'   => 1,
-            'toadd'  => [-1 => __('No timeout')]
+            'toadd'  => [0 => __('No timeout')]
         ]);
         echo "</td>";
         echo "<td class='center'><input type='hidden' name='next' value='extauth_ldap'>";
