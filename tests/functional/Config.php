@@ -829,4 +829,18 @@ class Config extends DbTestCase
             $this->boolean($infocom_exists)->isFalse();
         }
     }
+
+    public function testEmptyUpdate()
+    {
+        \Config::setConfigurationValues('core', ['maintenance_text' => 'test']);
+        // If not handled, this second call would trigger an exception if handled at the DBAL level as the params array would be empty.
+        // If not handled by GLPI at all, it will trigger a SQL syntax error.
+        // Need to specify a field to get the execution to the point the error could occur.
+        // The null value will cause the entry to be removed and an empty array to be passed to the DBAL.
+        \Config::setConfigurationValues('core', ['maintenance_text' => null]);
+
+        // Make sure atoum doesn't feel left out by the lack of assertions in this test
+        // Doing ->exception(...)->isNull() around the previous code would cause a complaint that null is not an exception
+        $this->boolean(true)->isTrue();
+    }
 }
