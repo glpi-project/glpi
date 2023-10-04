@@ -2099,9 +2099,6 @@ class Rule extends CommonDBTM
      **/
     public function prepareInputForAdd($input)
     {
-
-       // Before adding, add the ranking of the new rule
-        $input["ranking"] = $input['ranking'] ?? $this->getNextRanking();
        //If no uuid given, generate a new one
         if (!isset($input['uuid'])) {
             $input["uuid"] = self::getUuid();
@@ -2124,24 +2121,25 @@ class Rule extends CommonDBTM
             );
         }
 
+        // Before adding, add the ranking of the new rule
+        $input["ranking"] = $input['ranking'] ?? $this->getNextRanking($input['sub_type']);
+
         return $input;
     }
 
 
     /**
      * Get the next ranking for a specified rule
+     * @param string|null $sub_type Specific class for the rule. Defaults to the current class at runtime.
      **/
-    public function getNextRanking()
+    public function getNextRanking(?string $sub_type = null)
     {
         global $DB;
 
-        // Try to fix unregulated addition via legacy API at /Rule endpoint instead of /Rule{Type}
-        // Use the sub_type field if it exists and is not the same as the current class. Otherwise, use the current class at runtime.
-        $sub_type = (isset($this->fields['sub_type']) && $this->fields['sub_type'] !== self::class) ? $this->fields['sub_type'] : static::class;
         $iterator = $DB->request([
             'SELECT' => ['MAX' => 'ranking AS rank'],
             'FROM'   => self::getTable(),
-            'WHERE'  => ['sub_type' => $sub_type]
+            'WHERE'  => ['sub_type' => $sub_type ?? static::class]
         ]);
 
         if (count($iterator)) {
