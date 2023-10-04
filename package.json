@@ -21,7 +21,7 @@
         "@tabler/core": "^1.0.0-beta9",
         "@tabler/icons-webfont": "^2.34.0",
         "animate.css": "^4.1.1",
-        "bootstrap": "^5.1.1",
+        "bootstrap": "^5.3.1",
         "chartist": "^0.11.4",
         "chartist-plugin-legend": "^0.6.2",
         "chartist-plugin-pointlabels": "^0.0.6",
