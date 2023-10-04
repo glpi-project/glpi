@@ -4565,6 +4565,9 @@ HTML;
         // Make a select box with all glpi users
         $view_users = self::canView();
 
+        $default = '';
+        $valuesnames = [];
+
         if (!$p['multiple']) {
             $user = getUserName($p['value'], 2, true);
 
@@ -4585,11 +4588,12 @@ HTML;
             }
         } else {
             // get multiple values name
-            $valuesnames = [];
             foreach ($p['values'] as $value) {
                 if (!empty($value) && ($value > 0)) {
                     $user = getUserName($value, 2);
                     $valuesnames[] = $user["name"];
+                } else {
+                    unset($p['values'][$value]);
                 }
             }
 
