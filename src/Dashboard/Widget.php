@@ -748,8 +748,8 @@ HTML;
 
         $js = <<<JAVASCRIPT
         $(function () {
-            if (Dashboard.getActiveDashboard()) {
-                var target = Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
+            if (GLPI.Dashboard.getActiveDashboard()) {
+                var target = GLPI.Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
             } else {
                 var target = $('#$chart_id .chart');
             }
@@ -1227,8 +1227,8 @@ JAVASCRIPT
 
         $js = <<<JAVASCRIPT
         $(function () {
-            if (Dashboard.getActiveDashboard()) {
-                var target = Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
+            if (GLPI.Dashboard.getActiveDashboard()) {
+                var target = GLPI.Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
             } else {
                 var target = $('#$chart_id .chart');
             }
@@ -1545,8 +1545,8 @@ HTML;
 
         $js = <<<JAVASCRIPT
         $(function () {
-            if (Dashboard.getActiveDashboard()) {
-                var target = Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
+            if (GLPI.Dashboard.getActiveDashboard()) {
+                var target = GLPI.Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
             } else {
                 var target = $('#$chart_id .chart');
             }

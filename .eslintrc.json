@@ -27,6 +27,9 @@
         "_x": true,
         "_nx": true
     },
+    "parserOptions": {
+        "ecmaVersion": 13
+    },
     "rules": {
         "eol-last": [
             "error",
@@ -88,7 +91,6 @@
                 "es2021": true
             },
             "parserOptions": {
-                "ecmaVersion": 12,
                 "sourceType": "module"
             }
         }

@@ -199,7 +199,7 @@ HTML;
                 var dom_elem    = $('#dropdown_{$fieldname}{$rand}');
                 var selected    = dom_elem.find(':selected').val();
 
-                Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
+                GLPI.Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
 
                 $(dom_elem).closest("fieldset").toggleClass("filled", selected !== null)
             };
