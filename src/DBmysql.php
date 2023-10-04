@@ -1421,6 +1421,9 @@ class DBmysql
         if (!count($clauses['WHERE'])) {
             throw new \RuntimeException('Cannot run an UPDATE query without WHERE clause!');
         }
+        if (!count($params)) {
+            throw new \RuntimeException('Cannot run an UPDATE query without parameters!');
+        }
 
         $query  = "UPDATE " . self::quoteName($table);
 
