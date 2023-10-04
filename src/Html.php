@@ -4813,8 +4813,7 @@ JAVASCRIPT
 
        // manage multiple select (with multiple values)
         if ($params['multiple']) {
-            $min = min(count($params['values']), count($params['valuesnames']));
-            $values = array_combine(array_slice($params['values'], 0, $min), array_slice($params['valuesnames'], 0, $min));
+            $values = array_combine($params['values'], $params['valuesnames']);
             $options['multiple'] = 'multiple';
             $options['selected'] = $params['values'];
         } else {

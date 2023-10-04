@@ -4590,6 +4590,8 @@ HTML;
                 if (!empty($value) && ($value > 0)) {
                     $user = getUserName($value, 2);
                     $valuesnames[] = $user["name"];
+                } else {
+                    unset($p['values'][$value]);
                 }
             }
 
