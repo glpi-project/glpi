@@ -650,7 +650,15 @@ class MailCollector extends CommonDBTM
                             $tkt['_users_id_requester'] = $rejected[$head['message_id']]['users_id'];
                             $tkt['entities_id']         = $entity;
 
-                            if (!isset($tkt['tickets_id'])) {
+                            if (isset($tkt['changes_id'])) {
+                                $fup = new ITILFollowup();
+        
+                                $fup_input = $tkt;
+                                $fup_input['itemtype'] = Change::class;
+                                $fup_input['items_id'] = $fup_input['changes_id'];
+        
+                                $fup->add($fup_input);
+                            } else if (!isset($tkt['tickets_id'])) {
                                  // New ticket case
                                  $ticket = new Ticket();
                                  $ticket->add($tkt);
@@ -888,6 +896,66 @@ class MailCollector extends CommonDBTM
                     } else if (isset($tkt['_refuse_email_no_response'])) {
                         $delete[$uid] =  self::REFUSED_FOLDER;
                         $refused++;
+                    } else if (
+                        isset($tkt['changes_id'])
+                          && ($CFG_GLPI["use_anonymous_helpdesk"]
+                              || !$is_user_anonymous
+                              || !$is_supplier_anonymous)
+                    ) {
+                       // Followup case
+                        $change = new Change();
+                        $changeExist = $change->getFromDB($tkt['changes_id']);
+                        $fup = new ITILFollowup();
+
+                        $fup_input = $tkt;
+                        $fup_input['itemtype'] = Change::class;
+                        $fup_input['items_id'] = $fup_input['changes_id'];
+                        unset($fup_input['changes_id']);
+                        if (
+                            $changeExist && Entity::getUsedConfig(
+                                'suppliers_as_private',
+                                $change->fields['entities_id']
+                            )
+                        ) {
+                             // Get suppliers matching the from email
+                             $suppliers = Supplier::getSuppliersByEmail(
+                                 $rejinput['from']
+                             );
+
+                            foreach ($suppliers as $supplier) {
+                               // If the supplier is assigned to this change then
+                               // the followup must be private
+                                if (
+                                    $change->isSupplier(
+                                        CommonITILActor::ASSIGN,
+                                        $supplier['id']
+                                    )
+                                ) {
+                                    $fup_input['is_private'] = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!$changeExist) {
+                            $error++;
+                            $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+                            $rejected->add($rejinput);
+                        } else if (
+                            !$CFG_GLPI['use_anonymous_followups']
+                             && !$change->canUserAddFollowups($tkt['_users_id_requester'])
+                        ) {
+                            $delete[$uid] =  self::REFUSED_FOLDER;
+                            $refused++;
+                            $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
+                            $rejected->add($rejinput);
+                        } else if ($fup->add($fup_input)) {
+                            $delete[$uid] =  self::ACCEPTED_FOLDER;
+                        } else {
+                            $error++;
+                            $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+                            $rejected->add($rejinput);
+                        }
                     } else if (
                         isset($tkt['entities_id'])
                           && !isset($tkt['tickets_id'])
@@ -1179,6 +1247,8 @@ class MailCollector extends CommonDBTM
         $found_item = $this->getItemFromHeaders($message);
         if ($found_item instanceof Ticket) {
             $tkt['tickets_id'] = $found_item->fields['id'];
+        } elseif ($found_item instanceof Change) {
+            $tkt['changes_id'] = $found_item->fields['id'];
         }
 
        // See in title
