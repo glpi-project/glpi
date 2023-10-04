@@ -46,7 +46,7 @@
         "jquery-ui": "^1.13.2",
         "jquery.fancytree": "^2.38.0",
         "jquery.rateit": "^1.1.3",
-        "leaflet": "^1.6.0",
+        "leaflet": "^1.9.4",
         "leaflet-control-geocoder": "^2.4.0",
         "leaflet-fullscreen": "^1.0.2",
         "leaflet-spin": "^1.1.0",
