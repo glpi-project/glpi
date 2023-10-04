@@ -32,7 +32,7 @@
  */
 
  textarea:not(.form-control), input:not(.submit):not(.form-control):not([type=submit]):not([type=color]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):not(.tox-textfield) {
-   color: $body-color;
+   color: $input-color;
    background-color: $input-bg;
    background-clip: padding-box;
    border: $input-border-width solid $input-border-color;

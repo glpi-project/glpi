@@ -55,6 +55,10 @@
             }
         }
 
+        .select2-selection__rendered input[type="search"] {
+            color: $input-color;
+        }
+
         &.select2-selection--single {
             @include font-size($input-font-size);
 
