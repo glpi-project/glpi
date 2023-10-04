@@ -456,7 +456,7 @@ class PendingReason extends DbTestCase
      *
      * @return iterable
      */
-    public function testUpdatesFromNewTimelineItemProvider(): iterable
+    protected function testUpdatesFromNewTimelineItemProvider(): iterable
     {
         $this->login();
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
