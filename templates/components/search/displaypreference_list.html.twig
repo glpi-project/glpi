@@ -34,7 +34,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% if preferences|length > 0 %}
-   <div class="mb-3">
+   <div class="my-3">
       {% if massiveactionparams['specific_actions']|length > 0 %}
          <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
             data-search-itemtype="DisplayPreference" data-submit-once>
@@ -43,7 +43,7 @@
       {{ inputs.hidden('users_id', users_id, {
          'data-glpicore-ma-tags': 'common'
       }) }}
-      <table class="table table-striped display-prefs-list">
+      <table class="table table-striped display-prefs-list my-2">
          <thead>
             <tr>
                <th style="width: 10px">

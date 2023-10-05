@@ -452,20 +452,6 @@
         vertical-align: middle;
     }
 
-    .sortable-placeholder {
-        border: 2px dashed #dad55e;
-        background: #fff99038;
-        color: #777620;
-        height: 40px;
-        margin-top: 5px;
-
-        &.invalid-position {
-            border: 2px dashed #d3413c;
-            background: #ff7370;
-            color: #792220;
-        }
-    }
-
     .item-details-panel {
         width: 360px;
         position: absolute;
