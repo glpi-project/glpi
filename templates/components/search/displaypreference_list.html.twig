@@ -52,7 +52,6 @@
                   {% endif %}
                </th>
                <th>{{ _n('Type', 'Types', 1) }}</th>
-               <th class="text-end">{{ __('Number of modifiable columns') }}</th>
             </tr>
          </thead>
          <tbody>
@@ -65,7 +64,6 @@
                      {% endif %}
                   </td>
                   <td><button type="button" class="btn btn-link p-0 btn-itemtype-pref" data-itemtype="{{ pref['itemtype'] }}">{{ name }}</button></td>
-                  <td class="text-end">{{ pref['nb'] }}</td>
                </tr>
             {% endfor %}
          </tbody>
