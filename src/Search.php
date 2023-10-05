@@ -8244,53 +8244,69 @@ HTML;
                 ];
             }
 
+            $fn_append_options = static function ($new_options) use ($itemtype) {
+                // Check duplicate keys between new options and existing options
+                $duplicate_keys = array_intersect(array_keys(self::$search[$itemtype]), array_keys($new_options));
+                if (count($duplicate_keys) > 0) {
+                    trigger_error(
+                        sprintf(
+                            'Duplicate keys found in search options for item type %s: %s',
+                            $itemtype,
+                            implode(', ', $duplicate_keys)
+                        ),
+                        E_USER_WARNING
+                    );
+                }
+                self::$search[$itemtype] += $new_options;
+            };
+
             if (
                 in_array($itemtype, $CFG_GLPI["networkport_types"])
                 || ($itemtype == AllAssets::getType())
             ) {
-                self::$search[$itemtype] += NetworkPort::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(NetworkPort::getSearchOptionsToAdd($itemtype));
             }
 
             if (
                 in_array($itemtype, $CFG_GLPI["contract_types"])
                 || ($itemtype == AllAssets::getType())
             ) {
-                self::$search[$itemtype] += Contract::getSearchOptionsToAdd();
+                $fn_append_options(Contract::getSearchOptionsToAdd());
             }
 
             if (
                 Document::canApplyOn($itemtype)
                 || ($itemtype == AllAssets::getType())
             ) {
-                self::$search[$itemtype] += Document::getSearchOptionsToAdd();
+                $fn_append_options(Document::getSearchOptionsToAdd());
             }
 
             if (
                 Infocom::canApplyOn($itemtype)
                 || ($itemtype == AllAssets::getType())
             ) {
-                self::$search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(Infocom::getSearchOptionsToAdd($itemtype));
             }
 
             if (
                 in_array($itemtype, $CFG_GLPI["domain_types"])
                 || ($itemtype == AllAssets::getType())
             ) {
-                self::$search[$itemtype] += Domain::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(Domain::getSearchOptionsToAdd($itemtype));
             }
 
             if (
                 in_array($itemtype, $CFG_GLPI["appliance_types"])
                 || ($itemtype == AllAssets::getType())
             ) {
-                self::$search[$itemtype] += Appliance::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(Appliance::getSearchOptionsToAdd($itemtype));
             }
 
             if (in_array($itemtype, $CFG_GLPI["link_types"])) {
                 self::$search[$itemtype]['link'] = ['name' => Link::getTypeName(Session::getPluralNumber())];
-                self::$search[$itemtype] += Link::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(Link::getSearchOptionsToAdd($itemtype));
                 self::$search[$itemtype]['manuallink'] = ['name' => ManualLink::getTypeName(Session::getPluralNumber())];
-                self::$search[$itemtype] += ManualLink::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(ManualLink::getSearchOptionsToAdd($itemtype));
             }
 
             if ($withplugins) {
@@ -8299,7 +8315,7 @@ HTML;
                 $plugsearch = $plugsearch + Plugin::getAddSearchOptionsNew($itemtype);
                 if (count($plugsearch)) {
                     self::$search[$itemtype] += ['plugins' => ['name' => _n('Plugin', 'Plugins', Session::getPluralNumber())]];
-                    self::$search[$itemtype] += $plugsearch;
+                    $fn_append_options($plugsearch);
                 }
             }
 

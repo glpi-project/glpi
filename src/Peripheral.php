@@ -389,7 +389,7 @@ class Peripheral extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                 => '130',
+            'id'                 => '1430',
             'table'              => 'glpi_computers_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of peripherals'),

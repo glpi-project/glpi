@@ -1026,7 +1026,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         ];
 
         $tab[] = [
-            'id'                 => '119',
+            'id'                 => '1400',
             'table'              => ProjectTask::getTable(),
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),

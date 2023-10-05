@@ -201,7 +201,7 @@ class Domain extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                 => '30',
+            'id'                 => '1400',
             'table'              => $this->getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
