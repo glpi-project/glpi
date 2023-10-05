@@ -520,7 +520,7 @@ class NotificationEventMailing extends NotificationEventAbstract
             if (Document::isImage($path)) {
                 $path = Document::getImage(
                     $path,
-                    'mail'
+                    'mailattachment'
                 );
             }
 

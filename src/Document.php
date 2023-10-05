@@ -1829,6 +1829,10 @@ class Document extends CommonDBTM
                     $mwidth  = $mwidth ?? 100;
                     $mheight = $mheight ?? 100;
                     break;
+                case 'mailattachment':
+                    $mwidth  = null;
+                    $mheight = null;
+                    break;
                 default:
                     throw new \RuntimeException("Unknown context $context!");
             }
@@ -1836,7 +1840,10 @@ class Document extends CommonDBTM
 
        //let's see if original image needs resize
         $img_infos  = getimagesize($path);
-        if (!($img_infos[0] > $mwidth) && !($img_infos[1] > $mheight)) {
+        if (
+            (is_null($mheight) && is_null($mwidth)) //no resize needed for mail attachment
+            || !($img_infos[0] > $mwidth) && !($img_infos[1] > $mheight)
+        ) {
            //no resize needed
             return $path;
         }
