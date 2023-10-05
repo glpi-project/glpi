@@ -8924,6 +8924,19 @@ abstract class CommonITILObject extends CommonDBTM
                                 }
                             }
                         }
+                        // when input key used is _$actor_fkey_$actor_type
+                        // _groups_id_assign or _users_id_assign or _suppliers_id_assign
+                        // this indicates a complete replacement of actors of the same type
+                        $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
+                        foreach ($this->{"lazy_loaded_" . str_replace("_id", "", $actor_fkey)} as $current_itilobject_actor) {
+                            foreach ($current_itilobject_actor as $actor_value) {
+                                $this->input[$actors_deleted_input_key][] =
+                                [
+                                    "itemtype" => $actor_itemtype,
+                                    "id" => $actor_value["id"],
+                                ];
+                            }
+                        }
                         $actors[$get_unique_key($actor)] = $actor;
                     } elseif ($this->input[$actors_id_input_key] !== '') {
                         trigger_error(
