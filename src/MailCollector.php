@@ -358,7 +358,7 @@ class MailCollector extends CommonDBTM
 
                var li       = $(this);
                var input_id = li.data('input-id');
-               var folder   = li.children('.folder-name').html();
+               var folder   = li.find('.folder-name').data('globalname');
 
                $('#'+input_id).val(folder);
 
@@ -420,10 +420,11 @@ class MailCollector extends CommonDBTM
      */
     private function displayFolder($folder, $input_id)
     {
-        $fname = mb_convert_encoding($folder->getGlobalName(), "UTF-8", "UTF7-IMAP");
+        $fglobalname = mb_convert_encoding($folder->getGlobalName(), "UTF-8", "UTF7-IMAP");
+        $flocalname  = mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP");
         echo "<li class='pointer' data-input-id='$input_id'>
                <i class='fa fa-folder'></i>&nbsp;
-               <span class='folder-name'>" . $fname . "</span>";
+               <span class='folder-name' data-globalname='" . $fglobalname . "'>" . $flocalname . "</span>";
         echo "<ul>";
 
         foreach ($folder as $sfolder) {
