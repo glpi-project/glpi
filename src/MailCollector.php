@@ -420,8 +420,8 @@ class MailCollector extends CommonDBTM
      */
     private function displayFolder($folder, $input_id)
     {
-        $fglobalname = mb_convert_encoding($folder->getGlobalName(), "UTF-8", "UTF7-IMAP");
-        $flocalname  = mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP");
+        $fglobalname = htmlspecialchars(mb_convert_encoding($folder->getGlobalName(), "UTF-8", "UTF7-IMAP"), ENT_QUOTES);
+        $flocalname  = htmlspecialchars(mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP"), ENT_QUOTES);
         echo "<li class='pointer' data-input-id='$input_id'>
                <i class='fa fa-folder'></i>&nbsp;
                <span class='folder-name' data-globalname='" . $fglobalname . "'>" . $flocalname . "</span>";
