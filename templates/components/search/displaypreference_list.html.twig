@@ -34,73 +34,59 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% if preferences|length > 0 %}
-   <div class="my-3">
-      {% if massiveactionparams['specific_actions']|length > 0 %}
-         <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
-            data-search-itemtype="DisplayPreference" data-submit-once>
-         {% do call('Html::showMassiveActions', [massiveactionparams]) %}
-      {% endif %}
-      {{ inputs.hidden('users_id', users_id, {
-         'data-glpicore-ma-tags': 'common'
-      }) }}
-      <table class="table table-striped display-prefs-list my-2">
-         <thead>
-            <tr>
-               <th style="width: 10px">
-                  {% if massiveactionparams['specific_actions']|length > 0 %}
-                     {{ call('Html::getCheckAllAsCheckbox', ['massDisplayPreference' ~ rand])|raw }}
-                  {% endif %}
-               </th>
-               <th>{{ _n('Type', 'Types', 1) }}</th>
-            </tr>
-         </thead>
-         <tbody>
-            {% for pref in preferences %}
-               {% set name = pref['itemtype']|itemtype_name(1)|default(pref['itemtype']) %}
-               <tr>
-                  <td style="width: 10px">
-                     {% if massiveactionparams['specific_actions']|length > 0 %}
+    <div class="my-3">
+        {% if massiveactionparams['specific_actions']|length > 0 %}
+        <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
+              data-search-itemtype="DisplayPreference" data-submit-once>
+            {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+            {% endif %}
+            {{ inputs.hidden('users_id', users_id, {
+                'data-glpicore-ma-tags': 'common'
+            }) }}
+            <ul class="list-group display-prefs-list my-2">
+                {% for pref in preferences %}
+                    {% set name = pref['itemtype']|itemtype_name(1)|default(pref['itemtype']) %}
+                    <li class="list-group-item">
+                        {% if massiveactionparams['specific_actions']|length > 0 %}
+                            <span class="me-2">
                         {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype']]) %}
-                     {% endif %}
-                  </td>
-                  <td><button type="button" class="btn btn-link p-0 btn-itemtype-pref" data-itemtype="{{ pref['itemtype'] }}">{{ name }}</button></td>
-               </tr>
-            {% endfor %}
-         </tbody>
-      </table>
-      {% if massiveactionparams['specific_actions']|length > 0 %}
-         {% do call('Html::showMassiveActions', [massiveactionparams|merge({
-            'ontop': false
-         })]) %}
-         </form>
-      {% endif %}
-   </div>
-   <template id="displaypreference_modal_template{{ rand }}">
-      {{ include('components/search/displaypreference_modal.html.twig', {
-         rand: rand,
-         itemtype: '__VALUE__',
-      }) }}
-   </template>
-   <script>
-       $(() => {
-           $('table.display-prefs-list tbody button.btn-itemtype-pref').on('click', (e) => {
-               const itemtype = $(e.currentTarget).attr('data-itemtype');
-               const itemtype_name = $(e.currentTarget).text();
-               $('#displayprefence_modal{{ rand }}').remove();
-               const modal = $($('#displaypreference_modal_template{{ rand }}').html());
-               const default_src = modal.find('iframe').attr('src');
-               const forced_tab = "{{ users_id > 0 ? 'DisplayPreference$2' : 'DisplayPreference$1' }}"
-               const replacement = `${itemtype}&forcetab=${forced_tab}&no_switch=1`;
-               modal.find('iframe').attr('src', default_src.replace('__VALUE__', replacement));
-               modal.find('.modal-header h4').text(modal.find('.modal-header h4').text() + ' - ' + itemtype_name);
-               modal.appendTo('body').modal('show');
-           });
-       });
-   </script>
+                     </span>
+                        {% endif %}
+                        <button type="button" class="btn btn-link p-0 btn-itemtype-pref" data-itemtype="{{ pref['itemtype'] }}">{{ name }}</button>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% if massiveactionparams['specific_actions']|length > 0 %}
+            {% do call('Html::showMassiveActions', [massiveactionparams|merge({
+                'ontop': false
+            })]) %}
+        </form>
+        {% endif %}
+    </div>
+    <template id="displaypreference_modal_template{{ rand }}">
+        {{ include('components/search/displaypreference_modal.html.twig', {
+            rand: rand,
+            itemtype: '__VALUE__',
+        }) }}
+    </template>
+    <script>
+        $(() => {
+            $('ul.display-prefs-list button.btn-itemtype-pref').on('click', (e) => {
+                const itemtype = $(e.currentTarget).attr('data-itemtype');
+                const itemtype_name = $(e.currentTarget).text();
+                $('#displayprefence_modal{{ rand }}').remove();
+                const modal = $($('#displaypreference_modal_template{{ rand }}').html());
+                const default_src = modal.find('iframe').attr('src');
+                const forced_tab = "{{ users_id > 0 ? 'DisplayPreference$2' : 'DisplayPreference$1' }}"
+                const replacement = `${itemtype}&forcetab=${forced_tab}&no_switch=1`;
+                modal.find('iframe').attr('src', default_src.replace('__VALUE__', replacement));
+                modal.find('.modal-header h4').text(modal.find('.modal-header h4').text() + ' - ' + itemtype_name);
+                modal.appendTo('body').modal('show');
+            });
+        });
+    </script>
 {% else %}
-   <table class="table">
-      <tr>
-         <td class="text-center">{{ __('No item found') }}</td>
-      </tr>
-   </table>
+    <div class="alert alert-info">
+        {{ __('No item found') }}
+    </div>
 {% endif %}
