@@ -634,6 +634,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
         }
 
+        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
+
        // Add log entry in the ITIL object
         $changes = [
             0,
