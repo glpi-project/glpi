@@ -8924,9 +8924,10 @@ abstract class CommonITILObject extends CommonDBTM
                                 }
                             }
                         }
-                        // when input key used is _$actor_fkey_$actor_type
-                        // _groups_id_assign or _users_id_assign or _suppliers_id_assign
-                        // and is numeric and it's provide by rule engine
+                        // when input key used is _$actor_fkey_$actor_type and is numeric (provided by rule engine)
+                        // Ex: _groups_id_assign or _users_id_assign or _suppliers_id_assign
+                        // Ex: _groups_id_observer or _users_id_observer or _suppliers_id_observer
+                        // Ex: _groups_id_requester or _users_id_requester or _suppliers_id_requester
                         // this indicates a complete replacement of actors of the same type
                         $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
                         foreach ($this->{"lazy_loaded_" . str_replace("_id", "", $actor_fkey)} as $current_itilobject_actor) {
