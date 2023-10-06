@@ -58,7 +58,10 @@
                 {% endif %}
                 {% if available_to_add|length > 0 %}
                     {% set add_opt_btn %}
-                        <button type="button" name="add_opt" class="btn btn-primary ms-1 d-inline-block">{{ _x('button', 'Add') }}</button>
+                        <button type="button" name="add_opt" class="btn btn-primary ms-1 d-inline-block">
+                            <i class="fas fa-plus"></i>
+                            {{ _x('button', 'Add') }}
+                        </button>
                     {% endset %}
                     {% set result_template_js %}
                         {# Select2 js function for templateResult that hides options already added to the table where the value matches the data-opt-id attr on the rows #}
