@@ -207,6 +207,10 @@
       $("#right-actions").hide();
    });
 
+   $(document).on("keydown", ":input:not(textarea):not(:submit)", function(event) {
+      return event.key != "Enter";
+   });
+
    $(function() {
       // when close button of new answer block is clicked, show again the new answer button (and the itil object actions)
       $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
