@@ -72,6 +72,7 @@
                {{ options.disabled ? 'disabled' : '' }}
                {{ options.multiple ? 'multiple' : '' }} {# Only for emailField #}
                {{ options.required ? 'required' : '' }}
+               {{ options.pattern ? ('pattern="' ~ options.pattern|e('html_attr') ~ '"')|raw : '' }}
                {% if options.min is defined %}min="{{ options.min }}"{% endif %}
                {% if options.max is defined %}max="{{ options.max }}"{% endif %}
                {% if options.step is defined %}step="{{ options.step }}"{% endif %} />

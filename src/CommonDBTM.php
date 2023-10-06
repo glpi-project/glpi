@@ -263,7 +263,7 @@ class CommonDBTM extends CommonGLPI
             throw new \InvalidArgumentException('Argument $field cannot be empty.');
         }
 
-        $tablename = self::getTable($classname);
+        $tablename = static::getTable($classname);
         if (empty($tablename)) {
             throw new \LogicException('Invalid table name.');
         }
@@ -2542,8 +2542,9 @@ class CommonDBTM extends CommonGLPI
     {
         /**
          * @var array $CFG_GLPI
+         * @var \DBmysql $DB
          */
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         $ID  = $this->fields['id'];
         if (
@@ -2573,15 +2574,12 @@ class CommonDBTM extends CommonGLPI
         if (isset($RELATION[$this->getTable()])) {
             foreach ($RELATION[$this->getTable()] as $tablename => $fields) {
                 if ($tablename[0] != '_') {
-                    $itemtype = getItemTypeForTable($tablename);
-                    $item     = new $itemtype();
-
                     $or_criteria = [];
                     foreach ($fields as $field) {
                         // 1->N Relation
                         if (is_array($field)) {
                             // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
-                            if ($item instanceof IPAddress && in_array('mainitemtype', $field) && in_array('mainitems_id', $field)) {
+                            if ($tablename === IPAddress::getTable() && in_array('mainitemtype', $field) && in_array('mainitems_id', $field)) {
                                 // glpi_ipaddresses relationship that does not respect naming conventions
                                 $itemtype_field = 'mainitemtype';
                                 $items_id_field = 'mainitems_id';
@@ -2608,7 +2606,7 @@ class CommonDBTM extends CommonGLPI
 
                     $item_criteria = ['OR' => $or_criteria];
 
-                    if ($item->isEntityAssign()) {
+                    if ($DB->fieldExists($tablename, 'entities_id')) {
                         // 1->N Relation
                         if (
                             countElementsInTable(
@@ -2625,14 +2623,11 @@ class CommonDBTM extends CommonGLPI
                                 ($othertable != $this->getTable())
                                 && isset($rel[$tablename])
                             ) {
-                                $otheritemtype = getItemTypeForTable($othertable);
-                                $otheritem     = new $otheritemtype();
-
-                                if ($otheritem->isEntityAssign()) {
+                                if ($DB->fieldExists($othertable, 'entities_id')) {
                                     foreach ($rel[$tablename] as $otherfield) {
                                         if (is_array($otherfield)) {
                                             // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
-                                            if ($item instanceof IPAddress && in_array('mainitemtype', $otherfield) && in_array('mainitems_id', $otherfield)) {
+                                            if ($tablename === IPAddress::getTable() && in_array('mainitemtype', $otherfield) && in_array('mainitems_id', $otherfield)) {
                                                 // glpi_ipaddresses relationship that does not respect naming conventions
                                                 $otheritemtype_field = 'mainitemtype';
                                                 $otheritems_id_field = 'mainitems_id';
@@ -4947,9 +4942,9 @@ class CommonDBTM extends CommonGLPI
             }
            // Get specific display if available
             $itemtype = getItemTypeForTable($searchoptions['table']);
-            if ($item = getItemForItemtype($itemtype)) {
+            if (is_a($itemtype, CommonDBTM::class, true)) {
                 $options['searchopt'] = $searchoptions;
-                $specific = $item->getSpecificValueToDisplay($field, $values, $options);
+                $specific = $itemtype::getSpecificValueToDisplay($field, $values, $options);
                 if (!empty($specific)) {
                     return $specific;
                 }
@@ -6710,5 +6705,20 @@ class CommonDBTM extends CommonGLPI
                 break;
         }
         return $reference_event;
+    }
+
+    /**
+     * Return system SQL criteria to apply when fetching table values of current itemtype.
+     * These criteria will be applied when fetching a list of items identified by their itemtype/table,
+     * for instance, when fetching available dropdown values, or a list of linked items.
+     * These criteria will be added in the `WHERE` conditions.
+     *
+     * @param string|null $tablename    Table name to use for field in SQL query, can be used to prevent ambiguous field naming.
+     *
+     * @return array
+     */
+    public static function getSystemSQLCriteria(?string $tablename = null): array
+    {
+        return [];
     }
 }

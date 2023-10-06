@@ -43,7 +43,6 @@ use Psr\Log\LogLevel;
 class GLPITestCase extends atoum
 {
     private $int;
-    private $str;
     protected $has_failed = false;
 
     /**
@@ -335,10 +334,13 @@ class GLPITestCase extends atoum
      */
     protected function getUniqueString()
     {
-        if (is_null($this->str)) {
-            return $this->str = uniqid('str');
-        }
-        return $this->str .= 'x';
+        return substr(
+            str_shuffle(
+                str_repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 5)
+            ),
+            0,
+            16
+        );
     }
 
     /**

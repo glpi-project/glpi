@@ -95,7 +95,8 @@ class Provider
 
         $i_table = $item::getTable();
 
-        $where = [];
+        $where = $item->getSystemSQLCriteria();
+
         if (isset($item->fields['is_deleted'])) {
             $where['is_deleted'] = 0;
         }
@@ -817,7 +818,8 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
-        $where = [];
+        $where = $item->getSystemSQLCriteria();
+
         if ($item->maybeDeleted()) {
             $where["$c_table.is_deleted"] = 0;
         }

@@ -144,7 +144,9 @@ function display_infocoms_report($itemtype, $begin, $end)
                 ]
             ]
         ],
-        'WHERE'        => ["$itemtable.is_template" => 0] + getEntitiesRestrictCriteria($itemtable),
+        'WHERE'        => [
+            "$itemtable.is_template" => 0
+        ] + getEntitiesRestrictCriteria($itemtable) + $itemtype::getSystemSQLCriteria(),
         'ORDERBY'      => ['entname ASC', 'buy_date', 'use_date']
     ];
 

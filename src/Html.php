@@ -37,6 +37,8 @@ use donatj\UserAgent\UserAgentParser;
 use donatj\UserAgent\Platforms;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Console\Application;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
@@ -1308,12 +1310,16 @@ HTML;
         $menu = [
             'assets' => [
                 'title' => _n('Asset', 'Assets', Session::getPluralNumber()),
-                'types' => array_merge([
-                    'Computer', 'Monitor', 'Software',
-                    'NetworkEquipment', 'Peripheral', 'Printer',
-                    'CartridgeItem', 'ConsumableItem', 'Phone',
-                    'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged', 'Cable'
-                ], $CFG_GLPI['devices_in_menu']),
+                'types' => array_merge(
+                    [
+                        'Computer', 'Monitor', 'Software',
+                        'NetworkEquipment', 'Peripheral', 'Printer',
+                        'CartridgeItem', 'ConsumableItem', 'Phone',
+                        'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged', 'Cable',
+                    ],
+                    AssetDefinitionManager::getInstance()->getConcreteClassesNames(),
+                    $CFG_GLPI['devices_in_menu']
+                ),
                 'icon'    => 'ti ti-package'
             ],
         ];
@@ -1372,6 +1378,7 @@ HTML;
             'config' => [
                 'title' => __('Setup'),
                 'types' => [
+                    AssetDefinition::class,
                     'CommonDropdown', 'CommonDevice', 'Notification', 'Webhook',
                     'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
                     'OAuthClient', 'MailCollector', 'Link', 'Plugin',

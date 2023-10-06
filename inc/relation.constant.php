@@ -101,6 +101,10 @@ $RELATION = [
         'glpi_appliances' => 'appliancetypes_id'
     ],
 
+    'glpi_assets_assetdefinitions' => [
+        'glpi_assets_assets' => 'assets_assetdefinitions_id',
+    ],
+
     'glpi_databaseinstancetypes' => [
         'glpi_databaseinstances' => 'databaseinstancetypes_id'
     ],
@@ -506,6 +510,7 @@ $RELATION = [
         'glpi_apiclients'                  => 'entities_id',
         'glpi_appliances'                  => 'entities_id',
         'glpi_appliancetypes'              => 'entities_id',
+        'glpi_assets_assets'               => 'entities_id',
         'glpi_budgets'                     => 'entities_id',
         'glpi_businesscriticities'         => 'entities_id',
         'glpi_cables'                      => 'entities_id',
@@ -685,6 +690,10 @@ $RELATION = [
             'groups_id_tech',
             'groups_id',
         ],
+        'glpi_assets_assets'         => [
+            'groups_id_tech',
+            'groups_id',
+        ],
         'glpi_cartridgeitems'        => 'groups_id_tech',
         'glpi_certificates'          => [
             'groups_id_tech',
@@ -861,6 +870,7 @@ $RELATION = [
 
     'glpi_locations' => [
         'glpi_appliances'                => 'locations_id',
+        'glpi_assets_assets'             => 'locations_id',
         'glpi_budgets'                   => 'locations_id',
         'glpi_cartridgeitems'            => 'locations_id',
         'glpi_certificates'              => 'locations_id',
@@ -916,6 +926,7 @@ $RELATION = [
 
     'glpi_manufacturers' => [
         'glpi_appliances'          => 'manufacturers_id',
+        'glpi_assets_assets'       => 'manufacturers_id',
         'glpi_cartridgeitems'      => 'manufacturers_id',
         'glpi_certificates'        => 'manufacturers_id',
         'glpi_computerantiviruses' => 'manufacturers_id',
@@ -1352,6 +1363,7 @@ $RELATION = [
 
     'glpi_states' => [
         'glpi_appliances'                => 'states_id',
+        'glpi_assets_assets'             => 'states_id',
         'glpi_cables'                    => 'states_id',
         'glpi_certificates'              => 'states_id',
         'glpi_clusters'                  => 'states_id',
@@ -1474,6 +1486,10 @@ $RELATION = [
 
     'glpi_users' => [
         'glpi_appliances'             => [
+            'users_id_tech',
+            'users_id',
+        ],
+        'glpi_assets_assets'            => [
             'users_id_tech',
             'users_id',
         ],

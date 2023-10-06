@@ -37,7 +37,7 @@
       <script>
           $(function() {
               const map = initMap($('#map_container'), 'map', 'full');
-              _loadMap(map, '{{ itemtype }}');
+              _loadMap(map, {{ itemtype|json_encode|raw }});
           });
           const _loadMap = function(map_elt, itemtype) {
               L.AwesomeMarkers.Icon.prototype.options.prefix = 'far';

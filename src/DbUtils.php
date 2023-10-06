@@ -341,10 +341,9 @@ final class DbUtils
                 }
             }
 
-            if ($itemtype !== null && $item = $this->getItemForItemtype($itemtype)) {
-                $itemtype                                   = get_class($item);
-                $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
-                $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
+            if ($itemtype !== null && ($classname = $this->getClassForItemtype($itemtype)) !== null) {
+                $CFG_GLPI['glpiitemtypetables'][$inittable] = $classname;
+                $CFG_GLPI['glpitablesitemtype'][$classname] = $inittable;
                 return $itemtype;
             }
 
@@ -463,6 +462,35 @@ final class DbUtils
 
 
     /**
+     * Get class for an itemtype
+     *
+     * @param string $itemtype itemtype
+     *
+     * @return string|null
+     */
+    public function getClassForItemtype(string $itemtype): ?string
+    {
+        if (empty($itemtype)) {
+            return null;
+        }
+
+        if ($itemtype === 'Event') {
+           //to avoid issues when pecl-event is installed...
+            $itemtype = 'Glpi\\Event';
+        }
+
+        $classname = $this->fixItemtypeCase($itemtype);
+
+        if (!is_subclass_of($classname, CommonGLPI::class, true)) {
+           // Only CommonGLPI sublasses are valid itemtypes
+            return null;
+        }
+
+        return $classname;
+    }
+
+
+    /**
      * Get new item objet for an itemtype
      *
      * @param string $itemtype itemtype
@@ -471,32 +499,21 @@ final class DbUtils
      */
     public function getItemForItemtype($itemtype)
     {
-        if (empty($itemtype)) {
+        $classname = $this->getClassForItemtype($itemtype);
+        if ($classname === null) {
             return false;
         }
 
-        $itemtype = $this->fixItemtypeCase($itemtype);
-
-        if ($itemtype === 'Event') {
-           //to avoid issues when pecl-event is installed...
-            $itemtype = 'Glpi\\Event';
-        }
-
-        if (!is_subclass_of($itemtype, CommonGLPI::class, true)) {
-           // Only CommonGLPI sublasses are valid itemtypes
-            return false;
-        }
-
-        $item_class = new ReflectionClass($itemtype);
+        $item_class = new ReflectionClass($classname);
         if ($item_class->isAbstract()) {
             trigger_error(
-                sprintf('Cannot instanciate "%s" as it is an abstract class.', $itemtype),
+                sprintf('Cannot instanciate "%s" as it is an abstract class.', $classname),
                 E_USER_WARNING
             );
             return false;
         }
 
-        return new $itemtype();
+        return new $classname();
     }
 
     /**
