@@ -75,8 +75,9 @@ $users = $DB->request([
         'authtype' => 3,
         [
             'OR' => [
-                'user_dn' => ['REGEXP', '(<|>|(&(?!#?[a-z0-9]+;)))'],
-                'sync_field' => ['REGEXP', '(<|>|(&(?!#?[a-z0-9]+;)))'],
+                // only a pre-filter, MySQL 5.7 does not support the complex regex used in PHP
+                'user_dn' => ['REGEXP', '(<|>|&)'],
+                'sync_field' => ['REGEXP', '(<|>|&)'],
             ]
         ]
     ],
