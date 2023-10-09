@@ -1388,7 +1388,7 @@ class Problem extends CommonITILObject
             echo "<div class='firstbloc'>";
             Html::showSimpleForm(
                 Problem::getFormURL(),
-                '_add_fromitem',
+                '',
                 __('New problem for this item...'),
                 [
                     '_from_itemtype' => $item->getType(),

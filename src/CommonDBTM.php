@@ -1170,7 +1170,6 @@ class CommonDBTM extends CommonGLPI
 
         if (isset($_SESSION['saveInput'][$this->getType()])) {
             $saved = Html::cleanPostForTextArea($_SESSION['saveInput'][$this->getType()]);
-
            // clear saved data when restored (only need once)
             $this->clearSavedInput();
 
@@ -2742,6 +2741,8 @@ class CommonDBTM extends CommonGLPI
 
            // Restore saved input or template data
             $input = $this->restoreInput($this->fields);
+            var_dump($input);
+            exit;
 
            // If entity assign force current entity to manage recursive templates
             if ($this->isEntityAssign()) {
@@ -2752,7 +2753,9 @@ class CommonDBTM extends CommonGLPI
             $this->check(-1, CREATE, $input);
         } else if ($this->isNewID($ID)) {
            // Restore saved input if available
-            $input = $this->restoreInput($options);
+            $input = $this->restoreInput($options + ['_add_fromitem' => "_add_fromitem"]);
+            /*var_dump($input);
+            exit;*/
            // Create item
             $this->check(-1, CREATE, $input);
         } else {

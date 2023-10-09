@@ -565,6 +565,11 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Set default options
         if ($force_set_defaults || static::isNewID($ID)) {
+            if (isset($options['_from_itemtype']) && isset($options['_from_items_id'])) {
+                if (!isset($default_values['_add_fromitem'])) {
+                    $default_values['_add_fromitem'] = '_add_fromitem';
+                }
+            }
             foreach ($default_values as $key => $val) {
                 if (!isset($options[$key])) {
                     if (isset($options['_saved'][$key])) {
@@ -586,7 +591,6 @@ abstract class CommonITILObject extends CommonDBTM
         if (!static::canView()) {
             return false;
         }
-
         $this->restoreInputAndDefaults($ID, $options);
 
         $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
