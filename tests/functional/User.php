@@ -1419,7 +1419,8 @@ class User extends \DbTestCase
                 [
                     'id' => getItemByTypeName('User', TU_USER, true),
                 ]
-        ))->isTrue();
+            )
+        )->isTrue();
 
         // Set password_init_token_delay config option to 1 day
         $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP;
