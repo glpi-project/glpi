@@ -1433,6 +1433,9 @@ abstract class API
                     $option
                 );
             } else {
+                if (is_string($option)) {
+                    $option = ['name' => $option];
+                }
                 $cleaned_soptions[$sID] = $option;
             }
         }

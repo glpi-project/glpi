@@ -1045,6 +1045,18 @@ class RuleCriteria extends DbTestCase
                     'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
                     'matches'   => true
                 ];
+                yield [
+                    'condition' => \Rule::REGEX_MATCH,
+                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/line1.*line2/") : "/line1.*line2/",
+                    'value'     => $value_sanitized ? Sanitizer::sanitize("line1\nline2") : "line1\nline2",
+                    'matches'   => true
+                ];
+                yield [
+                    'condition' => \Rule::REGEX_MATCH,
+                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/line1.*line3/") : "/line1.*line3/",
+                    'value'     => $value_sanitized ? Sanitizer::sanitize("line1\n<p>line2<p>\nline3") : "line1\n<p>line2</p>\nline3",
+                    'matches'   => true
+                ];
             }
         }
     }

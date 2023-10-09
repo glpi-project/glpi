@@ -8197,7 +8197,7 @@ HTML;
                 Session::getLoginUserID()
                 && in_array($itemtype, $CFG_GLPI["ticket_types"])
             ) {
-                self::$search[$itemtype]['tracking']          = __('Assistance');
+                self::$search[$itemtype]['tracking']          = ['name' => __('Assistance')];
 
                 self::$search[$itemtype][60]['table']         = 'glpi_tickets';
                 self::$search[$itemtype][60]['field']         = 'id';
@@ -8287,9 +8287,9 @@ HTML;
             }
 
             if (in_array($itemtype, $CFG_GLPI["link_types"])) {
-                self::$search[$itemtype]['link'] = Link::getTypeName(Session::getPluralNumber());
+                self::$search[$itemtype]['link'] = ['name' => Link::getTypeName(Session::getPluralNumber())];
                 self::$search[$itemtype] += Link::getSearchOptionsToAdd($itemtype);
-                self::$search[$itemtype]['manuallink'] = ManualLink::getTypeName(Session::getPluralNumber());
+                self::$search[$itemtype]['manuallink'] = ['name' => ManualLink::getTypeName(Session::getPluralNumber())];
                 self::$search[$itemtype] += ManualLink::getSearchOptionsToAdd($itemtype);
             }
 

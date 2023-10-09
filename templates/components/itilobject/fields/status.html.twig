@@ -47,6 +47,10 @@
       {% if validation_class is not null %}
          {{ validation_class.alertValidation(item, 'status') }}
       {% endif %}
+
+      {{ include('components/itilobject/timeline/pending_reasons_messages.html.twig', {
+         'display_for_parent': true,
+      }) }}
    {% endset %}
 {% else %}
    {% set field_options = field_options|merge({'center': true}) %}
