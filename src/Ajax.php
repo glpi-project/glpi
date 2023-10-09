@@ -322,6 +322,10 @@ JAVASCRIPT;
                 $nav_width      = "";
             }
 
+            if (($options['in_modal'] ?? false)) {
+                $border = "border-0";
+            }
+
             echo "<div class='d-flex card-tabs $flex_container $orientation'>";
             echo "<ul class='nav nav-tabs $flex_tab' id='$tabdiv_id' $nav_width role='tablist'>";
             $html_tabs = "";
@@ -365,7 +369,7 @@ HTML;
             }
             echo $html_tabs;
             echo "</ul>";
-            echo "<select class='form-select border-2 border-secondary rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
+            echo "<select class='form-select border-2 rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
 
             echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
             foreach ($tabs as $val) {

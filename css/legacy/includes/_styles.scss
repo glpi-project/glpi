@@ -1330,7 +1330,7 @@
       }
    }
 
-   .disabled {
+   .disabled:not(.list-group-item) {
       color: red !important;
    }
 

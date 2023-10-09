@@ -49,7 +49,8 @@ if (isset($_REQUEST["itemtype"])) {
     $setupdisplay->display([
         'displaytype' => $_REQUEST['itemtype'],
         'no_switch'   => $_REQUEST['no_switch'] ?? false,
-        'forced_tab'  => $_REQUEST['forcetab'] ?? null
+        'forced_tab'  => $_REQUEST['forcetab'] ?? null,
+        'in_modal'    => true,
     ]);
 }
 

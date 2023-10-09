@@ -42,25 +42,28 @@
         </div>
     {% else %}
         {% if is_global %}
-            <div class="alert alert-info">
-                {{ __('These preferences are used by everyone that does not have a personal view configured.') }}
+            <div class="my-1 me-1">
+                <div class="alert alert-secondary">
+                    <i class="ti ti-info-circle"></i>
+                    <i>{{ __('These preferences are used by everyone that does not have a personal view configured.') }}</i>
+                </div>
             </div>
         {% endif %}
         {% if not is_global and not has_personal %}
-            <div class="alert alert-info">
+            <div class="alert alert-warning mt-3">
                 {{ __('No personal criteria. Create personal parameters?') }}
+                <button type="button" class="btn btn-primary ms-3" name="activate" value="1">
+                    <i class="fas fa-plus"></i>
+                    <span>{{ __('Create') }}</span>
+                </button>
             </div>
-            <button type="button" class="btn btn-primary" name="activate" value="1">{{ __('Create') }}</button>
         {% else %}
-            <div class="p-3">
-                {% if not is_global %}
-                    <button type="button" class="btn btn-danger" name="disable" value="1">{{ __('Delete personal view') }}</button>
-                {% endif %}
+            <div class="pt-3">
                 {% if available_to_add|length > 0 %}
                     {% set add_opt_btn %}
                         <button type="button" name="add_opt" class="btn btn-primary ms-1 d-inline-block">
                             <i class="fas fa-plus"></i>
-                            {{ _x('button', 'Add') }}
+                            <span>{{ _x('button', 'Add') }}</span>
                         </button>
                     {% endset %}
                     {% set result_template_js %}
@@ -72,31 +75,40 @@
                         return opt.text;
                         }
                     {% endset %}
-                    {{ fields.dropdownArrayField('num', null, available_to_add, '', {
-                        field_class: 'col-12 col-sm-6 d-flex',
-                        no_label: true,
-                        add_field_html: add_opt_btn,
-                        templateResult: result_template_js,
-                    }) }}
+
+                    <div class="d-flex justify-content-between mb-2">
+                        {{ fields.dropdownArrayField('num', null, available_to_add, '', {
+                            field_class: 'col-12 col-sm-6 d-flex',
+                            no_label: true,
+                            add_field_html: add_opt_btn,
+                            templateResult: result_template_js,
+                            mb: '',
+                        }) }}
+
+                        {% if not is_global %}
+                            <button type="button" class="btn btn-ghost-danger me-1" name="disable" value="1">{{ __('Delete personal view') }}</button>
+                        {% endif %}
+                    </div>
                 {% endif %}
             </div>
             <ul class="list-group">
                 {% for opt in entries|filter(v => v['fixed'] == true) %}
-                    <li data-opt-id="{{ opt['id'] }}" data-fixed="true" class="list-group-item">
+                    <li data-opt-id="{{ opt['id'] }}" data-fixed="true" class="list-group-item disabled px-2">
+                        <i class="fa-fw d-inline-flex"></i>
                         <span>{{ opt['name'] }}</span>
                     </li>
                 {% endfor %}
                 {% for opt in entries|filter(v => v['fixed'] != true) %}
                     {% set name_prefix = opt['group'] is not empty ? (opt['group']) : '' %}
-                    <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item d-flex justify-content-between">
-                        <span>{{ name_prefix ~ opt['name'] }}</span>
+                    <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item d-flex px-2">
+                        <i class="ti ti-grip-vertical fa-fw"></i>
+                        <span class="flex-fill ms-1">{{ name_prefix ~ opt['name'] }}</span>
                         <span>
                             {% if opt['noremove'] is not defined or opt['noremove'] != true %}
                                 <button type="button" name="remove_opt" class="btn btn-icon btn-sm btn-ghost-danger" title="{{ _x('button', 'Delete permanently') }}">
                                     <i class="ti ti-x"></i>
                                 </button>
                             {% endif %}
-                            <i class="ti ti-grip-vertical"></i>
                         </span>
                     </li>
                 {% endfor %}
