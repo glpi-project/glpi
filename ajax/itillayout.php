@@ -40,8 +40,10 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-$itillayout = json_encode($_POST['itil_layout']);
-if ($itillayout === false) {
+$raw_itillayout  = $_POST['itil_layout'];
+
+$json_itillayout = json_encode($raw_itillayout);
+if ($json_itillayout === false) {
     exit;
 }
 
@@ -49,7 +51,7 @@ $user = new User();
 $success = $user->update(
     [
         'id' => Session::getLoginUserID(),
-        'itil_layout' => $itillayout,
+        'itil_layout' => $json_itillayout,
     ]
 );
 echo json_encode(['success' => $success]);

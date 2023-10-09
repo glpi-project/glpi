@@ -829,4 +829,32 @@ class Config extends DbTestCase
             $this->boolean($infocom_exists)->isFalse();
         }
     }
+
+    public function testDetectRooDoc(): void
+    {
+        global $CFG_GLPI;
+
+        $uri_to_scriptname = [
+            '/'                        => '/index.php',
+            '/front/index.php?a=b'     => '/front/index.php',
+            '/api.php/endpoint/method' => '/api.php',
+            '//whatever/path/is'       => '/index.php', // considered as `path=/` + `pathinfo=/whatever/path/is` by GLPI router
+        ];
+
+        foreach (['', '/glpi', '/whatever/alias/is'] as $prefix) {
+            foreach ($uri_to_scriptname as $uri => $script_name) {
+                unset($CFG_GLPI['root_doc']);
+
+                chdir(GLPI_ROOT . dirname($script_name)); // cwd is expected to be the executed script dir
+
+                $server_bck = $_SERVER;
+                $_SERVER['REQUEST_URI'] = $prefix . $uri;
+                $_SERVER['SCRIPT_NAME'] = $prefix . $script_name;
+                \Config::detectRootDoc();
+                $_SERVER = $server_bck;
+
+                $this->string($CFG_GLPI['root_doc'])->isEqualTo($prefix);
+            }
+        }
+    }
 }

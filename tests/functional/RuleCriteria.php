@@ -36,7 +36,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/rulecriteria.class.php */
 
@@ -1041,6 +1040,18 @@ class RuleCriteria extends DbTestCase
             'condition' => \Rule::REGEX_MATCH,
             'pattern'   => "/\\\.+\/$/",
             'value'     => "\o/",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/line1.*line2/",
+            'value'     => "line1\nline2",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/line1.*line3/",
+            'value'     => "line1\n<p>line2</p>\nline3",
             'matches'   => true
         ];
     }

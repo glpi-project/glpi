@@ -528,7 +528,8 @@ class Change extends CommonITILObject
             'field'              => 'impactcontent',
             'name'               => __('Analysis impact'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -537,7 +538,8 @@ class Change extends CommonITILObject
             'field'              => 'controlistcontent',
             'name'               => __('Control list'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -546,7 +548,8 @@ class Change extends CommonITILObject
             'field'              => 'rolloutplancontent',
             'name'               => __('Deployment plan'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -555,7 +558,8 @@ class Change extends CommonITILObject
             'field'              => 'backoutplancontent',
             'name'               => __('Backup plan'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -564,7 +568,8 @@ class Change extends CommonITILObject
             'field'              => 'checklistcontent',
             'name'               => __('Checklist'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());

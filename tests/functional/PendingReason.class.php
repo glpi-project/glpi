@@ -554,4 +554,348 @@ class PendingReason extends DbTestCase
         $p_item = PendingReason_Item::getForItem($ticket);
         $this->boolean($p_item)->isFalse();
     }
+
+    /**
+     * Remove pending from timeline item should delete any linked
+     * PendingReason_Item objects and restore previous status
+     */
+    public function testRemovePendingAndRevertStatus(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create a pending reason and a ticket for our tests
+        $pending_reason = $this->createItem('PendingReason', [
+            'entities_id'                   => $entity,
+            'name'                          => 'Pending reason 1',
+            'followup_frequency'            => 604800,
+            'followups_before_resolution'   => 3,
+        ]);
+
+        foreach (
+            [
+                Ticket::class => CommonITILObject::ASSIGNED,
+                Change::class => CommonITILObject::EVALUATION,
+                Problem::class => CommonITILObject::OBSERVED
+            ] as $itemtype => $status
+        ) {
+            $item = $this->createItem($itemtype, [
+                'name'                =>  $itemtype,
+                'content'             => "test " .  $itemtype,
+                'status'              => $status,
+                '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
+                '_users_id_assign'    => getItemByTypeName('User', TU_USER, true),
+                'entities_id'         => $entity
+            ]);
+
+            // Set the item as pending with a reason
+            $followup = $this->createItem('ITILFollowup', [
+                'itemtype'                      => $item->getType(),
+                'items_id'                      => $item->getID(),
+                'content'                       => 'Followup with pending reason',
+                'pending'                       => true,
+                'pendingreasons_id'             => $pending_reason->getID(),
+                'followup_frequency'            => 604800,
+                'followups_before_resolution'   => 3,
+            ], ['pending', 'pendingreasons_id', 'followup_frequency', 'followups_before_resolution']);
+
+            // Check that pending reason is applied to parent item
+            $p_item = PendingReason_Item::getForItem($item);
+            $this->integer($p_item->fields['pendingreasons_id'])->isEqualTo($pending_reason->getID());
+            $this->integer($p_item->fields['followup_frequency'])->isEqualTo(604800);
+            $this->integer($p_item->fields['followups_before_resolution'])->isEqualTo(3);
+            $this->integer($p_item->fields['previous_status'])->isEqualTo($status);
+
+            // Update followup and unset pending
+            $this->boolean($followup->update([
+                'id' => $followup->getID(),
+                'content'                    => $followup->fields['content'],
+                'pending'                    => false,
+            ]))->isTrue();
+
+            // Check that pending reason no longer exist
+            $p_item = PendingReason_Item::getForItem($item);
+            $this->boolean($p_item)->isFalse();
+
+            // Reload / Check that original status is set
+            $item->getFromDB($item->getID());
+            $this->integer($item->fields['status'])->isEqualTo($status);
+        }
+    }
+
+    /**
+     * Data provider for testHandlePendingReasonUpdateFromNewTimelineItem
+     *
+     * @return iterable
+     */
+    protected function testUpdatesFromNewTimelineItemProvider(): iterable
+    {
+        $this->login();
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create a set of pending reasons that will be reused in our test cases
+        list(
+            $pending_reason1,
+            $pending_reason2
+        ) = $this->createItems(\PendingReason::class, [
+            ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 1'],
+            ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 2'],
+        ]);
+
+        // Case 1: ticket without any pending data
+        yield [
+            'timeline' => [
+                ['type' => ITILFollowup::class, 'pending' => 0],
+                ['type' => TicketTask::class, 'pending' => 0],
+            ],
+            'expected' => [
+                'status' => CommonITILObject::INCOMING,
+            ],
+        ];
+
+        // Case 2: ticket with a single pending data
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                'followups_before_resolution' => 2,
+                // Pending reason is attached to the first followup
+                'pending_timeline_index'      => 0,
+            ]
+        ];
+
+        // Case 3: ticket with two tasks (of which the first is pending)
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => TicketTask::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                ],
+                ['type' => TicketTask::class],
+
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                'followups_before_resolution' => 2,
+                // Pending reason is attached to the first task
+                'pending_timeline_index'      => 0,
+            ]
+        ];
+
+        // Case 4: ticket with two followups
+        // The first set the pending data and the second change it
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                ],
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason2->getID(),
+                    'followup_frequency'          => 2 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 1,
+                ],
+
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason2->getID(),
+                'followup_frequency'          => 2 * DAY_TIMESTAMP,
+                'followups_before_resolution' => 1,
+                // Pending reason is still attached to the first followup, the second one only edited its value
+                'pending_timeline_index'      => 0,
+            ]
+        ];
+
+        // Case 5: ticket with two followups
+        // The first set the pending data and the second remove it
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                ],
+                [
+                    'type'    => ITILFollowup::class,
+                    'pending' => 0,
+                ],
+
+            ],
+            'expected' => [
+                'status' => CommonITILObject::INCOMING,
+            ]
+        ];
+
+        // Case 6: ticket with 3 timeline items
+        // The first set the pending data, the second remove it and the third add a new pending reason
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                ],
+                [
+                    'type'    => TicketTask::class,
+                    'pending' => 0,
+                ],
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason2->getID(),
+                    'followup_frequency'          => 0,
+                    'followups_before_resolution' => 0,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason2->getID(),
+                'followup_frequency'          => 0 * DAY_TIMESTAMP,
+                'followups_before_resolution' => 0,
+                // Pending reason is attached to the third timeline item
+                'pending_timeline_index'      => 2,
+            ]
+        ];
+
+        // Case 7: ticket with 2 timeline items
+        // The first set the pending data and the second send the same data
+        // This simulate what will be sent if the user does not edit the displayed values
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                ],
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                'followups_before_resolution' => 2,
+                // Pending reason is attached to the first timeline item
+                'pending_timeline_index'      => 0,
+            ]
+        ];
+    }
+
+    /**
+     * Test that updates on pending reason data done through new timeline items
+     * are handled as expected
+     *
+     * This validate the "testHandlePendingReasonUpdateFromNewTimelineItem" method
+     * and its references in ITILFollowup's and CommonITILTask's post_addItem() method
+     *
+     * @dataProvider testUpdatesFromNewTimelineItemProvider
+     *
+     * @param array $timeline A simple description of the timeline items to create
+     *                        and their impact on pending reason data
+     * @param array $expected The expected state after all timeline items have been
+     *                        created
+     * @return void
+     */
+    public function testHandlePendingReasonUpdateFromNewTimelineItem(
+        array $timeline,
+        array $expected
+    ): void {
+        // Create test ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name'        => 'test',
+            'content'     => 'test',
+        ]);
+
+        // Insert timeline
+        $items = [];
+        foreach ($timeline as $timeline_item) {
+            // Insert fake content
+            $timeline_item['content'] = 'test';
+
+            // Read and prepare itemtype (task or followup)
+            $itemtype = $timeline_item['type'];
+            unset($timeline_item['type']);
+
+            if ($itemtype == ITILFollowup::class) {
+                $timeline_item['itemtype'] = Ticket::class;
+                $timeline_item['items_id'] = $ticket->getID();
+            } else {
+                $timeline_item['tickets_id'] = $ticket->getID();
+            }
+            $items[] = $this->createItem($itemtype, $timeline_item, [
+                'pending',
+                'pendingreasons_id',
+                'followup_frequency',
+                'followups_before_resolution'
+            ]);
+        }
+
+        // Reload ticket
+        $ticket->getFromDB($ticket->getID());
+
+        // Compare final ticket state with expected state
+        $this->integer($ticket->fields['status'])->isEqualTo($expected['status']);
+        if ($ticket->fields['status'] == CommonITILObject::WAITING) {
+            // Compute ticket pending data
+            $last_timeline_item_pending_data = PendingReason_Item::getLastPendingTimelineItemDataForItem($ticket);
+            $ticket_pending_data = PendingReason_Item::getForItem($ticket);
+
+            // Validate pending data
+            $keys = ['pendingreasons_id', 'followup_frequency', 'followups_before_resolution'];
+            foreach ($keys as $key) {
+                $this
+                    ->integer($last_timeline_item_pending_data->fields[$key])
+                    ->isEqualTo($expected[$key])
+                ;
+                $this
+                    ->integer($ticket_pending_data->fields[$key])
+                    ->isEqualTo($expected[$key])
+                ;
+            }
+
+            // Check that pending data is attached to the correct followup
+            $correct_timeline_item = $items[$expected['pending_timeline_index']];
+            $this
+                ->string($last_timeline_item_pending_data->fields['itemtype'])
+                ->isEqualTo($correct_timeline_item::getType())
+            ;
+            $this
+                ->integer($last_timeline_item_pending_data->fields['items_id'])
+                ->isEqualTo($correct_timeline_item->getID())
+            ;
+        }
+    }
 }

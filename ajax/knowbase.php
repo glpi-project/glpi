@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+$SECURITY_STRATEGY = 'faq_access';
+
 include('../inc/includes.php');
 Html::header_nocache();
 

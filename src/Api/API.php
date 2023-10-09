@@ -1221,8 +1221,12 @@ abstract class API
                 }
             }
 
-           // make text search
-            foreach ($params['searchText'] as $filter_field => $filter_value) {
+            // ensure search feature is not used to enumerate sensitive fields value
+            $search_values = $params['searchText'];
+            $item::unsetUndisclosedFields($search_values);
+
+            // make text search
+            foreach ($search_values as $filter_field => $filter_value) {
                 if (!empty($filter_value)) {
                     $criteria['WHERE']["$table.$filter_field"] = ['LIKE', SQLProvider::makeTextSearchValue($filter_value)];
                 }
@@ -1435,6 +1439,9 @@ abstract class API
                     $option
                 );
             } else {
+                if (is_string($option)) {
+                    $option = ['name' => $option];
+                }
                 $cleaned_soptions[$sID] = $option;
             }
         }

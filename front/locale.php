@@ -35,6 +35,8 @@
 
 use Glpi\Application\ErrorHandler;
 
+$SECURITY_STRATEGY = 'no_check'; // locales must be accessible also on public pages
+
 $_GET['donotcheckversion']   = true;
 $dont_check_maintenance_mode = true;
 

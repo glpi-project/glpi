@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+$SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to embed dashboards
+
 include('../inc/includes.php');
 
 use Glpi\Dashboard\Grid;

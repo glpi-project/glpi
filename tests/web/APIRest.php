@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Api;
 
 use APIClient;
+use Auth;
 use atoum\atoum;
 use Computer;
 use Config;
@@ -1736,7 +1737,8 @@ class APIRest extends atoum
 
         // get the password recovery token
         $user = getItemByTypeName('User', TU_USER);
-        $token = $user->getField('password_forget_token');
+        $token = $user->fields['password_forget_token'];
+        $this->string($token)->isNotEmpty();
 
         // Test reset password with a bad token
         $this->query(
@@ -1772,15 +1774,21 @@ class APIRest extends atoum
         $newHash = $user->getField('password');
 
         // Restore the initial password in the DB
-        $updateSuccess = $user->update([
-            'id'        => $user->getID(),
-            'password'  => TU_PASS,
-            'password2' => TU_PASS
-        ]);
+        global $DB;
+        $updateSuccess = $DB->update(
+            'glpi_users',
+            ['password' => Auth::getPasswordHash(TU_PASS)],
+            ['id'       => $user->getID()]
+        );
         $this->variable($updateSuccess)->isNotFalse('password update failed');
 
         // Test the new password was saved
         $this->variable(\Auth::checkPassword('NewPassword', $newHash))->isNotFalse();
+
+        // Validates that password reset token has been removed
+        $user = getItemByTypeName('User', TU_USER);
+        $token = $user->fields['password_forget_token'];
+        $this->string($token)->isEmpty();
 
         //diable notifications
         Config::setConfigurationValues('core', [
@@ -2027,14 +2035,19 @@ class APIRest extends atoum
      **/
     public function testInitSessionUserToken()
     {
-        // retrieve personnal token of TU_USER user
-        $user = new \User();
         $uid = getItemByTypeName('User', TU_USER, true);
-        $this->boolean((bool)$user->getFromDB($uid))->isTrue();
-        $token = isset($user->fields['api_token']) ? $user->fields['api_token'] : "";
-        if (empty($token)) {
-            $token = $user->getAuthToken('api_token');
-        }
+
+        // generate a new api token TU_USER user
+        global $DB;
+        $token = \User::getUniqueToken('api_token');
+        $updated = $DB->update(
+            'glpi_users',
+            [
+                'api_token' => $token,
+            ],
+            ['id' => $uid]
+        );
+        $this->boolean($updated)->isTrue();
 
         $res = $this->doHttpRequest(
             'GET',

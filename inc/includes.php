@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Http\Firewall;
+
 if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__DIR__));
 }
@@ -53,6 +55,11 @@ include_once(GLPI_ROOT . "/inc/config.php");
 
 // Security of PHP_SELF
 $_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
+
+if (!isCommandLine()) {
+    $firewall = new Firewall($CFG_GLPI['root_doc']);
+    $firewall->applyStrategy($_SERVER['PHP_SELF'], $SECURITY_STRATEGY ?? null);
+}
 
 // Load Language file
 Session::loadLanguage();

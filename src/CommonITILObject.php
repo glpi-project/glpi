@@ -842,7 +842,10 @@ abstract class CommonITILObject extends CommonDBTM
         }
         if (isset($params['_actors']['requester'])) {
             foreach ($params['_actors']['requester'] as $actor) {
-                if ($actor['itemtype'] == "User") {
+                if (
+                    $actor['itemtype'] == "User"
+                    && (int)$actor['items_id'] > 0 // ignore actor that is added by only its email
+                ) {
                     $requesters[] = $actor['items_id'];
                 }
             }

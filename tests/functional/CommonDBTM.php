@@ -924,6 +924,20 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['name'])->isIdenticalTo('Computer01 \'');
         $this->boolean($computer->getFromDB($computerID))->isTrue();
         $this->string($computer->fields['name'])->isIdenticalTo('Computer01 \'');
+
+        $this->boolean(
+            $computer->update(['id' => $computerID, 'name' => null])
+        )->isTrue();
+        $this->variable($computer->fields['name'])->isIdenticalTo(null);
+        $this->boolean($computer->getFromDB($computerID))->isTrue();
+        $this->variable($computer->fields['name'])->isIdenticalTo(null);
+
+        $this->boolean(
+            $computer->update(['id' => $computerID, 'name' => 'renamed'])
+        )->isTrue();
+        $this->string($computer->fields['name'])->isIdenticalTo('renamed');
+        $this->boolean($computer->getFromDB($computerID))->isTrue();
+        $this->string($computer->fields['name'])->isIdenticalTo('renamed');
     }
 
 

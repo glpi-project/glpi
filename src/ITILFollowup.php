@@ -284,6 +284,8 @@ class ITILFollowup extends CommonDBChild
             NotificationEvent::raiseEvent("add_followup", $parentitem, $options, $this);
         }
 
+        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
+
        // Add log entry in the ITILObject
         $changes = [
             0,

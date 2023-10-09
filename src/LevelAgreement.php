@@ -205,7 +205,8 @@ abstract class LevelAgreement extends CommonDBChild
         echo "<tr class='tab_bg_1'><td>" . __('Maximum time') . "</td>";
         echo "<td>";
         Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
-            'min'   => 0
+            'min'   => 0,
+            'max'   => 1000
         ]);
         $possible_values = self::getDefinitionTimeValues();
         $rand = Dropdown::showFromArray(

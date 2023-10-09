@@ -197,8 +197,8 @@ class DatabaseSchemaIntegrityChecker
     {
         $effective_create_table_sql = $this->getEffectiveCreateTableSql($table_name);
 
-        $proper_create_table_sql    = $this->getNomalizedSql($proper_create_table_sql);
-        $effective_create_table_sql = $this->getNomalizedSql($effective_create_table_sql);
+        $proper_create_table_sql    = $this->getNormalizedSql($proper_create_table_sql);
+        $effective_create_table_sql = $this->getNormalizedSql($effective_create_table_sql);
 
         if ($proper_create_table_sql === $effective_create_table_sql) {
             return '';
@@ -266,7 +266,7 @@ class DatabaseSchemaIntegrityChecker
         $result = [];
 
         foreach ($schema as $table_name => $create_table_sql) {
-            $create_table_sql = $this->getNomalizedSql($create_table_sql);
+            $create_table_sql = $this->getNormalizedSql($create_table_sql);
 
             if (!$this->db->tableExists($table_name)) {
                 $result[$table_name] = [
@@ -276,7 +276,7 @@ class DatabaseSchemaIntegrityChecker
                 continue;
             }
 
-            $effective_create_table_sql = $this->getNomalizedSql($this->getEffectiveCreateTableSql($table_name));
+            $effective_create_table_sql = $this->getNormalizedSql($this->getEffectiveCreateTableSql($table_name));
             if ($create_table_sql !== $effective_create_table_sql) {
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_ALTERED_TABLE,
@@ -311,7 +311,7 @@ class DatabaseSchemaIntegrityChecker
             $unknown_table_iterator = $is_context_valid ? $this->db->listTables('glpi\_%', $unknown_tables_criteria) : [];
             foreach ($unknown_table_iterator as $unknown_table_data) {
                 $table_name = $unknown_table_data['TABLE_NAME'];
-                $effective_create_table_sql = $this->getNomalizedSql($this->getEffectiveCreateTableSql($table_name));
+                $effective_create_table_sql = $this->getNormalizedSql($this->getEffectiveCreateTableSql($table_name));
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_UNKNOWN_TABLE,
                     'diff' => $this->diff('', $effective_create_table_sql)
@@ -375,7 +375,7 @@ class DatabaseSchemaIntegrityChecker
      *
      * @return string
      */
-    protected function getNomalizedSql(string $create_table_sql): string
+    protected function getNormalizedSql(string $create_table_sql): string
     {
         $cache_key = md5($create_table_sql);
         if (array_key_exists($cache_key, $this->normalized)) {

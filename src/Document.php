@@ -1149,6 +1149,12 @@ class Document extends CommonDBTM
      **/
     public function moveUploadedDocument(array &$input, $filename)
     {
+        if (str_contains($filename, '/') || str_contains($filename, '\\')) {
+            // Filename is not supposed to contains directory separators.
+            trigger_error(sprintf('Moving file `%s` is forbidden for security reasons.', $filename), E_USER_WARNING);
+            return false;
+        }
+
         $prefix = '';
         if (isset($input['_prefix_filename'])) {
             $prefix = array_shift($input['_prefix_filename']);
@@ -1261,6 +1267,12 @@ class Document extends CommonDBTM
      **/
     public static function moveDocument(array &$input, $filename)
     {
+        if (str_contains($filename, '/') || str_contains($filename, '\\')) {
+            // Filename is not supposed to contains directory separators.
+            trigger_error(sprintf('Moving file `%s` is forbidden for security reasons.', $filename), E_USER_WARNING);
+            return false;
+        }
+
         $prefix = '';
         if (isset($input['_prefix_filename'])) {
             $prefix = array_shift($input['_prefix_filename']);

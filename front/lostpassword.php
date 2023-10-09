@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+$SECURITY_STRATEGY = 'no_check';
+
 include('../inc/includes.php');
 
 if (

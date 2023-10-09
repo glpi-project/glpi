@@ -68,7 +68,7 @@ class EnableMaintenanceModeCommand extends AbstractCommand
         $values = [
             'maintenance_mode' => '1'
         ];
-        if ($input->hasOption('text')) {
+        if ($input->hasOption('text') && $input->getOption('text') !== null) {
             $values['maintenance_text'] = $input->getOption('text');
         }
         $config = new Config();

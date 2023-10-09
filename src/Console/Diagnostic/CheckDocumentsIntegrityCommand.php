@@ -160,14 +160,14 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
     {
         switch ($type) {
             case self::ERROR_MISSING_FILE:
-                $message = __("file not found");
+                $message = __("File not found");
                 break;
             case self::ERROR_UNEXPECTED_CONTENT:
-                $message = __("invalid checksum");
+                $message = __("Invalid checksum");
                 break;
             default:
                 // Should not happen
-                $message = __("unknown error");
+                $message = __("Unknown error");
                 break;
         }
 

@@ -157,7 +157,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         $this->showFormHeader($options);
 
         $is_ajax  = isset($options['from_planning_edit_ajax']) && $options['from_planning_edit_ajax'];
-        $is_rrule = strlen($this->fields['rrule']) > 0;
+        $is_rrule = strlen($this->fields['rrule'] ?? '') > 0;
 
        // set event for another user
         if (

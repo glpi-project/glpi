@@ -127,6 +127,22 @@ final class SearchOption implements \ArrayAccess
         static $search = [];
 
         if (!isset($search[$itemtype])) {
+            $fn_append_options = static function ($new_options) use (&$search, $itemtype) {
+                // Check duplicate keys between new options and existing options
+                $duplicate_keys = array_intersect(array_keys($search[$itemtype]), array_keys($new_options));
+                if (count($duplicate_keys) > 0) {
+                    trigger_error(
+                        sprintf(
+                            'Duplicate keys found in search options for item type %s: %s',
+                            $itemtype,
+                            implode(', ', $duplicate_keys)
+                        ),
+                        E_USER_WARNING
+                    );
+                }
+                $search[$itemtype] += $new_options;
+            };
+
             // standard type first
             switch ($itemtype) {
                 case 'Internet':
@@ -147,7 +163,7 @@ final class SearchOption implements \ArrayAccess
                     $search[$itemtype][31]['field']         = 'completename';
                     $search[$itemtype][31]['name']          = __('Status');
 
-                    $search[$itemtype] += \NetworkPort::getSearchOptionsToAdd('networkport_types');
+                    $fn_append_options(\NetworkPort::getSearchOptionsToAdd('networkport_types'));
                     break;
 
                 case \AllAssets::getType():
@@ -168,7 +184,7 @@ final class SearchOption implements \ArrayAccess
                     $search[$itemtype][31]['field']         = 'completename';
                     $search[$itemtype][31]['name']          = __('Status');
 
-                    $search[$itemtype] += \Location::getSearchOptionsToAdd();
+                    $fn_append_options(\Location::getSearchOptionsToAdd());
 
                     $search[$itemtype][5]['table']          = 'asset_types';
                     $search[$itemtype][5]['field']          = 'serial';
@@ -281,49 +297,49 @@ final class SearchOption implements \ArrayAccess
                 in_array($itemtype, $CFG_GLPI["networkport_types"])
                 || ($itemtype == \AllAssets::getType())
             ) {
-                $search[$itemtype] += \NetworkPort::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(\NetworkPort::getSearchOptionsToAdd($itemtype));
             }
 
             if (
                 in_array($itemtype, $CFG_GLPI["contract_types"])
                 || ($itemtype == \AllAssets::getType())
             ) {
-                $search[$itemtype] += \Contract::getSearchOptionsToAdd();
+                $fn_append_options(\Contract::getSearchOptionsToAdd());
             }
 
             if (
                 \Document::canApplyOn($itemtype)
                 || ($itemtype == \AllAssets::getType())
             ) {
-                $search[$itemtype] += \Document::getSearchOptionsToAdd();
+                $fn_append_options(\Document::getSearchOptionsToAdd());
             }
 
             if (
                 \Infocom::canApplyOn($itemtype)
                 || ($itemtype == \AllAssets::getType())
             ) {
-                $search[$itemtype] += \Infocom::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(\Infocom::getSearchOptionsToAdd($itemtype));
             }
 
             if (
                 in_array($itemtype, $CFG_GLPI["domain_types"])
                 || ($itemtype == \AllAssets::getType())
             ) {
-                $search[$itemtype] += \Domain::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(\Domain::getSearchOptionsToAdd($itemtype));
             }
 
             if (
                 in_array($itemtype, $CFG_GLPI["appliance_types"])
                 || ($itemtype == \AllAssets::getType())
             ) {
-                $search[$itemtype] += \Appliance::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(\Appliance::getSearchOptionsToAdd($itemtype));
             }
 
             if (in_array($itemtype, $CFG_GLPI["link_types"])) {
                 $search[$itemtype]['link'] = \Link::getTypeName(\Session::getPluralNumber());
-                $search[$itemtype] += \Link::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(\Link::getSearchOptionsToAdd($itemtype));
                 $search[$itemtype]['manuallink'] = \ManualLink::getTypeName(\Session::getPluralNumber());
-                $search[$itemtype] += \ManualLink::getSearchOptionsToAdd($itemtype);
+                $fn_append_options(\ManualLink::getSearchOptionsToAdd($itemtype));
             }
 
             if ($withplugins) {
@@ -332,7 +348,7 @@ final class SearchOption implements \ArrayAccess
                 $plugsearch = $plugsearch + \Plugin::getAddSearchOptionsNew($itemtype);
                 if (count($plugsearch)) {
                     $search[$itemtype] += ['plugins' => ['name' => _n('Plugin', 'Plugins', \Session::getPluralNumber())]];
-                    $search[$itemtype] += $plugsearch;
+                    $fn_append_options($plugsearch);
                 }
             }
 

@@ -55,6 +55,7 @@ body.mce-content-body {
 
 .rich_text_container {
     white-space: initial;
+    width: 100%;
 
     thead,
     tbody,
@@ -70,6 +71,8 @@ body.mce-content-body {
     }
 
     table {
+        overflow: auto;
+        max-width: 100%;
         word-break: normal;
     }
 

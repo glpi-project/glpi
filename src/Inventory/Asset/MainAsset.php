@@ -178,6 +178,7 @@ abstract class MainAsset extends InventoryAsset
             'winprodkey'     => 'license_number',
             'workgroup'      => 'domains_id',
             'lastloggeduser' => 'users_id',
+            'description'    => 'comment'
         ];
 
         foreach ($hw_mapping as $origin => $dest) {

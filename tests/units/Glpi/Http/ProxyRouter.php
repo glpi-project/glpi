@@ -161,7 +161,7 @@ class ProxyRouter extends \GLPITestCase
             'target_path'     => '/marketplace/mimehack/css/style.css',
             'target_pathinfo' => null,
             'target_file'     => vfsStream::url('glpi/marketplace/mimehack/css/style.css'),
-            'is_php_script'   => true,
+            'is_php_script'   => false,
         ];
     }
 

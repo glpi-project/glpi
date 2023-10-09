@@ -1285,7 +1285,7 @@ DIFF,
     /**
      * @dataProvider schemaProvider
      */
-    public function testGetNomalizedSql(
+    public function testGetNormalizedSql(
         string $schema, // ignored
         array $raw_tables,
         array $normalized_tables,
@@ -1306,7 +1306,7 @@ DIFF,
         );
 
         foreach ($raw_tables as $table_name => $raw_sql) {
-            $this->string($this->callPrivateMethod($this->testedInstance, 'getNomalizedSql', $raw_sql))->isEqualTo($normalized_tables[$table_name]);
+            $this->string($this->callPrivateMethod($this->testedInstance, 'getNormalizedSql', $raw_sql))->isEqualTo($normalized_tables[$table_name]);
         }
     }
 

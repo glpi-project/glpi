@@ -6562,6 +6562,24 @@ HTML;
 
         // retrieve menu
         foreach ($_SESSION['glpimenu'] as $firstlvl) {
+            if (isset($firstlvl['default'])) {
+                if (strlen($firstlvl['title']) > 0) {
+                    $fuzzy_entries[] = [
+                        'url'   => $firstlvl['default'],
+                        'title' => $firstlvl['title']
+                    ];
+                }
+            }
+
+            if (isset($firstlvl['default_dashboard'])) {
+                if (strlen($firstlvl['title']) > 0) {
+                    $fuzzy_entries[] = [
+                        'url'   => $firstlvl['default_dashboard'],
+                        'title' => $firstlvl['title'] . " > " . __('Dashboard')
+                    ];
+                }
+            }
+
             if (isset($firstlvl['content'])) {
                 foreach ($firstlvl['content'] as $menu) {
                     if (isset($menu['title']) && strlen($menu['title']) > 0) {
@@ -6583,15 +6601,6 @@ HTML;
                             }
                         }
                     }
-                }
-            }
-
-            if (isset($firstlvl['default'])) {
-                if (strlen($firstlvl['title']) > 0) {
-                    $fuzzy_entries[] = [
-                        'url'   => $firstlvl['default'],
-                        'title' => $firstlvl['title']
-                    ];
                 }
             }
         }

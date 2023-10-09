@@ -218,7 +218,8 @@ class Transfer extends CommonDBTM
             'keep_certificate'    => 0,
             'clean_certificate'   => 0,
 
-            'lock_updated_fields' => 0
+            'lock_updated_fields' => 0,
+            'keep_location'       => 1
         ];
 
         if ($to >= 0) {
@@ -1311,8 +1312,10 @@ class Transfer extends CommonDBTM
                 ];
 
                // Manage Location dropdown
-                if (isset($item->fields['locations_id'])) {
+                if (isset($item->fields['locations_id']) && $this->options['keep_location']) {
                     $input['locations_id'] = $this->transferDropdownLocation($item->fields['locations_id']);
+                } else {
+                    $input['locations_id'] = 0;
                 }
 
                 if (in_array($itemtype, ['Ticket', 'Problem', 'Change'])) {

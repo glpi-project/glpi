@@ -491,7 +491,7 @@ class Phone extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                 => '132',
+            'id'                 => '1432',
             'table'              => 'glpi_computers_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of phones'),

@@ -494,7 +494,7 @@ class RuleCriteria extends CommonDBChild
 
             case Rule::REGEX_MATCH:
                 $results = [];
-                $match_result = @preg_match_all($pattern . "i", $field, $results);
+                $match_result = @preg_match_all($pattern . "si", $field, $results);
                 if ($match_result === false) {
                     trigger_error(
                         sprintf('Invalid regular expression `%s`.', $pattern),
@@ -517,7 +517,7 @@ class RuleCriteria extends CommonDBChild
                 return false;
 
             case Rule::REGEX_NOT_MATCH:
-                $match_result = @preg_match($pattern . "i", $field);
+                $match_result = @preg_match($pattern . "si", $field);
                 if ($match_result === false) {
                     trigger_error(
                         sprintf('Invalid regular expression `%s`.', $pattern),

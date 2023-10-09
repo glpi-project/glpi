@@ -46,6 +46,8 @@ class User extends \DbTestCase
 {
     public function testGenerateUserToken()
     {
+        $this->login(TU_USER, TU_PASS); // must be authenticated to be able to regenerate self personal token
+
         $user = getItemByTypeName('User', TU_USER);
         $this->variable($user->fields['personal_token_date'])->isNull();
         $this->variable($user->fields['personal_token'])->isNull();
@@ -63,8 +65,6 @@ class User extends \DbTestCase
      */
     public function testLostPassword()
     {
-        // would not be logical to login here
-        $_SESSION['glpicronuserrunning'] = "cron_phpunit";
         $user = getItemByTypeName('User', TU_USER);
 
         // Test request for a password with invalid email
@@ -82,7 +82,9 @@ class User extends \DbTestCase
         $this->boolean($result)->isTrue();
 
         // Test reset password with a bad token
-        $token = $user->getField('password_forget_token');
+        $token = $user->fields['password_forget_token'];
+        $this->string($token)->isNotEmpty();
+
         $input = [
             'password_forget_token' => $token . 'bad',
             'password'  => TU_PASS,
@@ -90,7 +92,7 @@ class User extends \DbTestCase
         ];
         $this->exception(
             function () use ($user, $input) {
-                $result = $user->updateForgottenPassword($input);
+                $user->updateForgottenPassword($input);
             }
         )
         ->isInstanceOf(\Glpi\Exception\ForgetPasswordException::class);
@@ -109,23 +111,21 @@ class User extends \DbTestCase
         // 3 - check the update succeeds
         $result = $user->updateForgottenPassword($input);
         $this->boolean($result)->isTrue();
-        $newHash = $user->getField('password');
-
-        // 4 - Restore the initial password in the DB before checking the updated password
-        // This ensure the original password is restored even if the next test fails
-        $updateSuccess = $user->update([
-            'id'        => $user->getID(),
-            'password'  => TU_PASS,
-            'password2' => TU_PASS
-        ]);
-        $this->variable($updateSuccess)->isNotFalse('password update failed');
+        $newHash = $user->fields['password'];
 
         // Test the new password was saved
         $this->variable(\Auth::checkPassword('NewPassword', $newHash))->isNotFalse();
+
+        // Validates that password reset token has been removed
+        $user = getItemByTypeName('User', TU_USER);
+        $token = $user->fields['password_forget_token'];
+        $this->string($token)->isEmpty();
     }
 
     public function testGetDefaultEmail()
     {
+        $this->login(); // must be authenticated to update emails
+
         $user = new \User();
 
         $this->string($user->getDefaultEmail())->isIdenticalTo('');
@@ -162,6 +162,8 @@ class User extends \DbTestCase
 
     public function testUpdateEmail()
     {
+        $this->login(); // must be authenticated to update emails
+
         // Create a user with some emails
         $user1 = new \User();
         $uid1 = (int)$user1->add([
@@ -279,10 +281,14 @@ class User extends \DbTestCase
     {
         $user = $this->newTestedInstance;
         $uid = (int)$user->add([
-            'name'   => 'test_token'
+            'name'      => 'test_token',
+            'password'  => 'test_password',
+            'password2' => 'test_password',
         ]);
         $this->integer($uid)->isGreaterThan(0);
         $this->boolean($user->getFromDB($uid))->isTrue();
+
+        $this->login('test_token', 'test_password'); // must be authenticated to be able to regenerate self personal token
 
         $token = $user->getToken($uid);
         $this->boolean($user->getFromDB($uid))->isTrue();
@@ -1398,16 +1404,22 @@ class User extends \DbTestCase
 
     public function testGetUserByForgottenPasswordToken()
     {
-        global $CFG_GLPI;
+        global $DB, $CFG_GLPI;
 
         $user = new \User();
         // Set the password_forget_token of TU_USER to some random hex string and set the password_forget_token_date to now - 5 days
         $token = bin2hex(random_bytes(16));
-        $this->boolean($user->update([
-            'id' => getItemByTypeName('User', TU_USER, true),
-            'password_forget_token' => $token,
-            'password_forget_token_date' => date('Y-m-d H:i:s', strtotime('-5 days')),
-        ]))->isTrue();
+        $this->boolean(
+            $DB->update(
+                'glpi_users',
+                [
+                    'password_forget_token' => $token,
+                    'password_forget_token_date' => date('Y-m-d H:i:s', strtotime('-5 days')),
+                ],
+                [
+                    'id' => getItemByTypeName('User', TU_USER, true),
+                ]
+        ))->isTrue();
 
         // Set password_init_token_delay config option to 1 day
         $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP;
@@ -1622,30 +1634,51 @@ class User extends \DbTestCase
         $this->variable($user->fields['show_count_on_tabs'])->isNull();
         $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
 
+        $itil_layout_1 = '{"collapsed":"true","expanded":"false","items":{"item-main":"false","actors":"false","items":"false","service-levels":"false","linked_tickets":"false"}}';
         $this->boolean(
             $user->update([
                 'id' => $users_id,
-                'show_count_on_tabs' => '0'
+                'show_count_on_tabs' => '0',
+                'itil_layout' => $itil_layout_1,
             ])
         )->isTrue();
 
+        // pref should be updated even without logout/login
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_1);
+
+        // logout/login and check prefs
         $this->logOut();
         $this->login('for preferences', 'for preferences');
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_1);
+
+
         $this->boolean($user->getFromDB($users_id))->isTrue();
         $this->variable($user->fields['show_count_on_tabs'])->isEqualTo(0);
-        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+        $this->variable($user->fields['itil_layout'])->isEqualTo($itil_layout_1);
 
+        $itil_layout_2 = '{"collapsed":"false","expanded":"true"}';
         $this->boolean(
             $user->update([
                 'id' => $users_id,
-                'show_count_on_tabs' => '1'
+                'show_count_on_tabs' => '1',
+                'itil_layout' => $itil_layout_2,
             ])
         )->isTrue();
 
+        // pref should be updated even without logout/login
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_2);
+
+        // logout/login and check prefs
         $this->logOut();
         $this->login('for preferences', 'for preferences');
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_2);
+
         $this->boolean($user->getFromDB($users_id))->isTrue();
         $this->variable($user->fields['show_count_on_tabs'])->isNull();
-        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($user->fields['itil_layout'])->isEqualTo($itil_layout_2);
     }
 }

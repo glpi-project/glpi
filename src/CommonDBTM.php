@@ -659,8 +659,8 @@ class CommonDBTM extends CommonGLPI
 
         $tobeupdated = [];
         foreach ($updates as $field) {
-            if (isset($this->fields[$field])) {
-                if (isset($oldvalues[$field]) && $this->fields[$field] == $oldvalues[$field]) {
+            if (array_key_exists($field, $this->fields)) {
+                if (array_key_exists($field, $oldvalues) && $this->fields[$field] == $oldvalues[$field]) {
                     unset($oldvalues[$field]);
                 }
                 $tobeupdated[$field] = $this->fields[$field];
@@ -1751,7 +1751,6 @@ class CommonDBTM extends CommonGLPI
                 }
 
                 if (array_key_exists($lock, $this->input)) {
-                    $lockedfield->setLastValue($this->getType(), 0, $lock, $this->input[$lock]);
                     unset($this->input[$lock]);
                 }
             }
@@ -1780,15 +1779,19 @@ class CommonDBTM extends CommonGLPI
             && $this->input['is_dynamic'] == true)
         ) {
             $lockedfield = new Lockedfield();
-            $locks = $lockedfield->getLockedNames($this->getType(), $this->fields['id']);
+            $locks = $lockedfield->getFullLockedFields($this->getType(), $this->fields['id']);
             foreach ($locks as $lock) {
-                $idx = array_search($lock, $this->updates);
+                $lock_field = $lock['field'];
+                $idx = array_search($lock_field, $this->updates);
                 if ($idx !== false) {
-                    $lockedfield->setLastValue($this->getType(), $this->fields['id'], $lock, $this->input[$lock]);
+                    //do not update global lock value
+                    if (!$lock['is_global']) {
+                        $lockedfield->setLastValue($this->getType(), $this->fields['id'], $lock_field, $this->input[$lock_field]);
+                    }
                     unset($this->updates[$idx]);
-                    unset($this->input[$lock]);
-                    $this->fields[$lock] = $this->oldvalues[$lock];
-                    unset($this->oldvalues[$lock]);
+                    unset($this->input[$lock_field]);
+                    $this->fields[$lock_field] = $this->oldvalues[$lock_field];
+                    unset($this->oldvalues[$lock_field]);
                 }
             }
             $this->updates = array_values($this->updates);

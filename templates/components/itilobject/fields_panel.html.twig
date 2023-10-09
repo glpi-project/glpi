@@ -322,7 +322,7 @@
          </h2>
          <div id="items" class="accordion-collapse collapse {{ items_show ? "show" : "" }}" aria-labelledby="items-heading">
             <div class="accordion-body accordion-items row m-0 mt-n2">
-               {{ item_ticket.itemAddForm(item, params|default({})) }}
+               {{ item_ticket.itemAddForm(item, params|default({})|merge({entities_id: entities_id})) }}
             </div>
          </div>
       </div>

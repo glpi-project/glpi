@@ -776,6 +776,7 @@ class MailCollector extends DbTestCase
                     '40.1 - Empty content (multipart)',
                     '40.2 - Empty content (html)',
                     '40.3 - Empty content (plain text)',
+                    '41 - Image src without quotes',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -927,6 +928,7 @@ PLAINTEXT,
             '1234567890_2' => 'text/plain',
             '1234567890_3' => 'text/plain',
             '37-red-dot.png' => 'image/png',
+            '41-blue-dot.png' => 'image/png',
         ];
 
         $iterator = $DB->request(

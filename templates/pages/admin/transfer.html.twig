@@ -82,6 +82,13 @@
       {{ fields.dropdownArrayField('keep_history', item.fields['keep_history'], keep_options, __('Historical'), {
          readonly: not can_change_options,
       }) }}
+      {% set location_options = {
+         0: __('Empty the location'),
+         1: __('Preserve')
+      } %}
+      {{ fields.dropdownArrayField('keep_location', item.fields['keep_location'], location_options, 'Location'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
 
       {{ fields.smallTitle(_n('Asset', 'Assets', get_plural_number())) }}
       {{ fields.dropdownArrayField('keep_networklink', item.fields['keep_networklink'], connection_options, 'NetworkPort'|itemtype_name(get_plural_number()), {

@@ -161,7 +161,7 @@ class Log extends CommonDBTM
                         && ($val2['rightname'] == $item->fields['name'])
                     ) {
                         $id_search_option = $key2;
-                        $changes          =  [$id_search_option, $oldval ?? '', $values[$key]];
+                        $changes          =  [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     }
                 } else if (
                     ($val2['linkfield'] == $key && $real_type === $item->getType())
@@ -172,7 +172,7 @@ class Log extends CommonDBTM
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                     if ($val2['table'] == $item->getTable()) {
-                        $changes = [$id_search_option, $oldval ?? '', $values[$key]];
+                        $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     } else {
                        // other cases; link field -> get data from dropdown
                         $changes = [$id_search_option,

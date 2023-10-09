@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+$SECURITY_STRATEGY = 'no_check'; // Anonymous access may be allowed by configuration.
+
 include('../inc/includes.php');
 
 if (
