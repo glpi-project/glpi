@@ -665,9 +665,16 @@ class CommonDBTM extends CommonGLPI
                 }
                 $tobeupdated[$field] = $this->fields[$field];
             } else {
+                trigger_error(
+                    sprintf('The `%s` field cannot be updated as its value is not defined.', $field),
+                    E_USER_WARNING
+                );
                 // Clean oldvalues
                 unset($oldvalues[$field]);
             }
+        }
+        if (count($tobeupdated) === 0) {
+            return false;
         }
         $result = $DB->update(
             $this->getTable(),

@@ -940,6 +940,21 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['name'])->isIdenticalTo('renamed');
     }
 
+    public function testEmptyUpdateInDB()
+    {
+        // Simulate a call to `updateInDB()` that pass an invalid list of fields.
+        // This is only possible if `pre_updateInDB()` modifies the entries of either `$this->updates` and `$this->fields`
+        // and results in having an entry in `$this->updates` that does not corresponds to a valid key of `$this->fields`.
+        $computer = getItemByTypeName(\Computer::class, '_test_pc01');
+        $this->when(
+            function () use ($computer) {
+                $this->boolean($computer->updateInDB(['_not_a_real_field']))->isFalse();
+            }
+        )->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage('The `_not_a_real_field` field cannot be updated as its value is not defined.')
+            ->exists();
+    }
 
     public function testTimezones()
     {
