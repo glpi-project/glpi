@@ -93,14 +93,14 @@
             </div>
             <ul class="list-group">
                 {% for opt in entries|filter(v => v['fixed'] == true) %}
-                    <li data-opt-id="{{ opt['id'] }}" data-fixed="true" class="list-group-item disabled px-2">
+                    <li data-opt-id="{{ opt['id'] }}" data-fixed="true" class="list-group-item py-2 disabled px-2">
                         <i class="fa-fw d-inline-flex"></i>
                         <span>{{ opt['name'] }}</span>
                     </li>
                 {% endfor %}
                 {% for opt in entries|filter(v => v['fixed'] != true) %}
                     {% set name_prefix = opt['group'] is not empty ? (opt['group']) : '' %}
-                    <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item d-flex px-2">
+                    <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item py-2 d-flex px-2">
                         <i class="ti ti-grip-vertical fa-fw"></i>
                         <span class="flex-fill ms-1">{{ name_prefix ~ opt['name'] }}</span>
                         <span>
