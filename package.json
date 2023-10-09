@@ -28,7 +28,7 @@
         "@fullcalendar/timeline": "^4.4.3",
         "@lezer/highlight": "^1.1.6",
         "@tabler/core": "^1.0.0-beta13",
-        "@tabler/icons-webfont": "^2.34.0",
+        "@tabler/icons-webfont": "^2.38.0",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.2.3",
         "codemirror": "^6.0.1",
