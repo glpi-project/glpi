@@ -75,8 +75,8 @@ $users = $DB->request([
         'authtype' => 3,
         [
             'OR' => [
-                'user_dn' => ['REGEXP' => '(<|>|(&(?!#?[a-z0-9]+;)))'],
-                'sync_field' => ['REGEXP' => '(<|>|(&(?!#?[a-z0-9]+;)))'],
+                'user_dn' => ['REGEXP', '(<|>|(&(?!#?[a-z0-9]+;)))'],
+                'sync_field' => ['REGEXP', '(<|>|(&(?!#?[a-z0-9]+;)))'],
             ]
         ]
     ],
