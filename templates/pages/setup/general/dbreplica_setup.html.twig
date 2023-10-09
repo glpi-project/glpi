@@ -82,7 +82,13 @@
                             {{ primary_ok ? _x('status', 'Up') : primary_unknown ? _x('status', 'Unkown') : _x('status', 'Down') }}
                         </span>
                         <span class="mx-2">{{ __('Primary') }} ({{ primary_dbhost }})</span>
-                        {{ primary_unknown ? '' : replication_status['primary']['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">' ~ __('Writable') ~ '</span>' : '<span class="badge badge-outline text-blue">' ~ __('Read-Only') ~ '</span>' }}
+                        {% if not primary_unknown %}
+                            {% if replication_status['primary']['read_only'] == 'OFF' %}
+                                <span class="badge badge-outline text-green">{{ __('Writable') }}</span>
+                            {% else %}
+                                <span class="badge badge-outline text-blue">{{ __('Read-Only') }}</span>
+                            {% endif %}
+                        {% endif %}
                     </h3>
                     </button>
                 </h2>
@@ -145,7 +151,13 @@
                             {{ replica_ok ? _x('status', 'Up') : replica_unkown ? _x('status', 'Unkown') : _x('status', 'Down') }}
                         </span>
                         <span class="mx-1">{{ __('Replica') }} ({{ replica_data['host'] }})</span>
-                        {{ replica_unkown ? '' : replica_data['read_only'] == 'OFF' ? '<span class="badge badge-outline text-green">' ~ __('Writable') ~ '</span>' : '<span class="badge badge-outline text-blue">' ~ __('Read-Only') ~ '</span>' }}
+                        {% if not replica_unkown %}
+                            {% if replica_data['read_only'] == 'OFF' %}
+                                <span class="badge badge-outline text-green">{{ __('Writable') }}</span>
+                            {% else %}
+                                <span class="badge badge-outline text-blue">{{ __('Read-Only') }}</span>
+                            {% endif %}
+                        {% endif %}
                     </h3>
                     </button>
                 </h2>
