@@ -954,7 +954,6 @@ class CommonDBTM extends DbTestCase
             ->withType(E_USER_WARNING)
             ->withMessage('The `_not_a_real_field` field cannot be updated as its value is not defined.')
             ->exists();
-
     }
 
     public function testTimezones()
