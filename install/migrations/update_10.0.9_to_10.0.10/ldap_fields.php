@@ -73,6 +73,12 @@ $users = $DB->request([
     'FROM'   => 'glpi_users',
     'WHERE'  => [
         'authtype' => 3,
+        [
+            'OR' => [
+                'user_dn' => ['REGEXP' => '(<|>|(&(?!#?[a-z0-9]+;)))'],
+                'sync_field' => ['REGEXP' => '(<|>|(&(?!#?[a-z0-9]+;)))'],
+            ]
+        ]
     ],
 ]);
 foreach ($users as $user) {
