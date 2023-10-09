@@ -64,7 +64,17 @@ foreach ($groups as $group) {
 /** /Fix non encoded LDAP fields in groups */
 
 /** Fix non encoded LDAP fields in users */
-$users = getAllDataFromTable('glpi_users', ['authtype' => 3]);
+$users = $DB->request([
+    'SELECT' => [
+        'glpi_users.id',
+        'glpi_users.user_dn',
+        'glpi_users.sync_field',
+    ],
+    'FROM'   => 'glpi_users',
+    'WHERE'  => [
+        'authtype' => 3,
+    ],
+]);
 foreach ($users as $user) {
     $updated = [];
     foreach (['user_dn', 'sync_field'] as $ldap_field) {
