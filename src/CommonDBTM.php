@@ -670,8 +670,8 @@ class CommonDBTM extends CommonGLPI
 
         $tobeupdated = [];
         foreach ($updates as $field) {
-            if (isset($this->fields[$field])) {
-                if (isset($oldvalues[$field]) && $this->fields[$field] == $oldvalues[$field]) {
+            if (array_key_exists($field, $this->fields)) {
+                if (array_key_exists($field, $oldvalues) && $this->fields[$field] == $oldvalues[$field]) {
                     unset($oldvalues[$field]);
                 }
                 $tobeupdated[$field] = $this->fields[$field];

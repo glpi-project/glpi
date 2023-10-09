@@ -652,6 +652,29 @@ class Rule extends DbTestCase
         $this->integer($second_rule->fields['ranking'])->isGreaterThan($first_rule->fields['ranking']);
     }
 
+    public function testRankingFromBaseRuleClass()
+    {
+        $rule = new \Rule();
+        // create a software rule
+        $add = $rule->add([
+            'sub_type'  => 'RuleSoftwareCategory',
+            'name'      => 'my test rule'
+        ]);
+        $this->integer($add)->isGreaterThan(0);
+        $first_rule = new \RuleSoftwareCategory();
+        $this->boolean($first_rule->getFromDB($add))->isTrue();
+        $this->integer($first_rule->fields['ranking'])->isGreaterThan(0);
+
+        $add = $rule->add([
+            'sub_type'  => 'RuleSoftwareCategory',
+            'name'      => 'my other test rule'
+        ]);
+        $this->integer($add)->isGreaterThan(0);
+        $second_rule = new \RuleSoftwareCategory();
+        $this->boolean($second_rule->getFromDB($add))->isTrue();
+        $this->integer($second_rule->fields['ranking'])->isGreaterThan($first_rule->fields['ranking']);
+    }
+
     public function testAllCriteria()
     {
         $classes = $this->getClasses('getCriterias');

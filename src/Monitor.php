@@ -476,7 +476,7 @@ class Monitor extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                 => '129',
+            'id'                 => '1429',
             'table'              => 'glpi_computers_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of monitors'),

@@ -3088,8 +3088,13 @@ class AuthLDAP extends CommonDBTM
             LDAP_OPT_PROTOCOL_VERSION => 3,
             LDAP_OPT_REFERRALS        => 0,
             LDAP_OPT_DEREF            => $deref_options,
-            LDAP_OPT_NETWORK_TIMEOUT  => $timeout
         ];
+
+        if ($timeout > 0) {
+            // Apply the timeout unless it is "unlimited" ("unlimited" is the default value defined in `libldap`).
+            // see https://linux.die.net/man/3/ldap_set_option
+            $ldap_options[LDAP_OPT_NETWORK_TIMEOUT] = $timeout;
+        }
 
         foreach ($ldap_options as $option => $value) {
             if (!@ldap_set_option($ds, $option, $value)) {
