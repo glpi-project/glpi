@@ -343,6 +343,8 @@ class DBmysql
      * @var integer $SQL_TOTAL_REQUEST
      *
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 10.0.11
      */
     public function query($query)
     {
@@ -461,6 +463,8 @@ class DBmysql
      * @param string $message Explanation of query (default '')
      *
      * @return mysqli_result Query result handler
+     *
+     * @deprecated 10.0.11
      */
     public function queryOrDie($query, $message = '')
     {

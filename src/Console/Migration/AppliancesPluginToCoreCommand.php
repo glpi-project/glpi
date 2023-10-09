@@ -289,7 +289,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         );
 
         $table  = Profile::getTable();
-        $result = $this->db->query(
+        $result = $this->db->doQuery(
             sprintf(
                 "UPDATE %s SET helpdesk_item_type = REPLACE(helpdesk_item_type, '%s', '%s')",
                 $this->db->quoteName($table),

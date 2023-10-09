@@ -569,7 +569,10 @@ class Toolbox
      */
     public static function deprecated($message = "Called method is deprecated", $strict = true)
     {
-        if ($strict === true || defined('GLPI_STRICT_DEPRECATED') && GLPI_STRICT_DEPRECATED === true) {
+        if (
+            $strict === true ||
+            (defined('GLPI_STRICT_DEPRECATED') && GLPI_STRICT_DEPRECATED === true)
+        ) {
             trigger_error($message, E_USER_DEPRECATED);
         }
     }
