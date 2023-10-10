@@ -5498,7 +5498,8 @@ JAVASCRIPT;
                 Ticket::getFormURL(),
                 '_add_fromitem',
                 __('New ticket for this item...'),
-                ['itemtype' => $item->getType(),
+                [
+                    'itemtype' => $item->getType(),
                     'items_id' => $item->getID()
                 ]
             );
