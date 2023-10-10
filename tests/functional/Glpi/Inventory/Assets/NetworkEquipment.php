@@ -2888,8 +2888,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         }
     }
 
-    public function testRuleMatchedLog() {
-        $xml_source ='<?xml version="1.0" encoding="UTF-8"?>
+    public function testRuleMatchedLog() 
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
