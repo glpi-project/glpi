@@ -172,7 +172,7 @@ abstract class Device extends InventoryAsset
                         'itemtype' => $this->item->getType(),
                         'items_id' => $this->item->fields['id'],
                         'is_dynamic' => 1
-                    ] + $this->handleInput($val, $itemdevice);
+                    ] + $this->handleInput($val);
                     $itemdevice->add(Sanitizer::sanitize($itemdevice_data), [], false);
                     $this->itemdeviceAdded($itemdevice, $val);
                 }
