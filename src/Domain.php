@@ -445,10 +445,10 @@ class Domain extends CommonDBTM
                         $domain_item->find([
                             'itemtype' => 'Computer',
                             'items_id' => $compselected
-                        ]) as $domain_used
+                        ]) as $key2
                     ) {
-                        if (in_array($domain_used['domains_id'], $used)) {
-                            unset($used[array_search($domain_used['domains_id'], $used)]);
+                        if (in_array($key2['domains_id'], $used)) {
+                            unset($used[array_search($key2['domains_id'], $used)]);
                         }
                     }
                 }
@@ -526,7 +526,7 @@ class Domain extends CommonDBTM
                             'itemtype'   => $item->getType()
                         ]) as $data
                     ) {
-                        if ($domain_item->delete($data, !$data['is_dynamic'])) {
+                        if ($domain_item->delete($data, true)) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
