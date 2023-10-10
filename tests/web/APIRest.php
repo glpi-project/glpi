@@ -2592,6 +2592,8 @@ class APIRest extends atoum
                     ["key" => "Computer_Item:add",               "label" => "Connect"],
                     ["key" => "Item_SoftwareVersion:add",        "label" => "Install"],
                     ["key" => "Item_SoftwareLicense:add",        "label" => "Add a license"],
+                    ["key" => "Domain:add_item",                 "label" => "Add a domain"],
+                    ["key" => "Domain:remove_domain",            "label" => "Remove a domain"],
                     ["key" => "KnowbaseItem_Item:add",           "label" => "Link knowledgebase article"],
                     ["key" => "Document_Item:add",               "label" => "Add a document"],
                     ["key" => "Document_Item:remove",            "label" => "Remove a document"],
