@@ -1306,7 +1306,7 @@ JAVASCRIPT;
     {
         echo Group::getTypeName(1) . " : <br>";
 
-        $condition = ['is_task' => 1];
+        $condition = [];
        // filter groups
         if (!Session::haveRight('planning', self::READALL)) {
             $condition['id'] = $_SESSION['glpigroups'];
