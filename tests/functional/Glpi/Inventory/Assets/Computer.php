@@ -1540,8 +1540,7 @@ class Computer extends AbstractInventoryAsset
         //check relation has been created - and there is only one remaining
         $domain_item = new \Domain_Item();
         $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $domain->fields['id']]))->isTrue();
-        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $first_id]))->isTrue();
-        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $first_id, 'is_deleted' => 1]))->isTrue();
+        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $first_id]))->isFalse();
 
         //check if one has been added non dynamic
         $ndyn_domain = new \Domain();
