@@ -753,7 +753,7 @@ abstract class MainAsset extends InventoryAsset
                     'is_dynamic' => 1,
                     ['NOT' => ['domains_id' => $domain->getID()]]
                 ],
-                0,
+                1,
                 0
             );
         }
