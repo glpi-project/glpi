@@ -1252,7 +1252,7 @@ class Ticket extends DbTestCase
 
        //Save button
         $matches = iterator_to_array($crawler->filter("#itil-footer button[type=submit][name=update]:not([disabled])"));
-        $this->array($matches)->hasSize(($save === true ? 1 : 0), ($save === true ? 'Save button missing' : 'Save button present') . ' ' . $caller);
+        $this->array($matches)->hasSize(($save === true ? 2 : 0), ($save === true ? 'Save button missing' : 'Save button present') . ' ' . $caller);
 
        //Assign to
        /*preg_match(

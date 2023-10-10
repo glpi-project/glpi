@@ -131,7 +131,7 @@
             {% set is_locked = params['locked'] is defined and params['locked'] %}
             {% set display_save_btn = not is_locked and (canupdate or can_requester or canpriority or canassign or canassigntome) %}
             {% if display_save_btn %}
-               <button class="btn btn-primary d-none" type="submit" name="update" form="itil-form"></button>
+               <button class="d-none" type="submit" name="update" form="itil-form"></button>
             {% endif %}
 
             <div class="btn-group" role="group" id="right-actions">
