@@ -654,12 +654,6 @@ class NetworkPort extends InventoryAsset
         $port = $this->current_connection ?? $this->current_port;
         $item = new $itemtype();
 
-        $rulesmatched = new \RuleMatchedLog();
-        $agents_id = $this->agent->fields['id'];
-        if (empty($agents_id)) {
-            $agents_id = 0;
-        }
-
         if ($items_id == "0") {
            //not yet existing, create
             $input = (array)$port;
@@ -669,6 +663,12 @@ class NetworkPort extends InventoryAsset
                 }
             }
             $items_id = $item->add(Sanitizer::sanitize($input));
+        }
+
+        $rulesmatched = new \RuleMatchedLog();
+        $agents_id = $this->agent->fields['id'];
+        if (empty($agents_id)) {
+            $agents_id = 0;
         }
 
         $inputrulelog = [
