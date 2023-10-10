@@ -2752,7 +2752,7 @@ class CommonDBTM extends CommonGLPI
             $this->check(-1, CREATE, $input);
         } else if ($this->isNewID($ID)) {
            // Restore saved input if available
-           $input = $this->restoreInput($options + ['_add_fromitem' => "_add_fromitem"]);
+            $input = $this->restoreInput($options + ['_add_fromitem' => "_add_fromitem"]);
            // Create item
             $this->check(-1, CREATE, $input);
         } else {
