@@ -4319,7 +4319,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(
             $rulecriteria->add([
                 'rules_id'  => $rules_id,
-                'criteria'  => "name",
+                'criteria'  => "deviceid",
                 'pattern'   => "/^glpixps.*/",
                 'condition' => \RuleImportEntity::REGEX_MATCH
             ])
