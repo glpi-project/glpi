@@ -4036,7 +4036,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(count($unmanageds))->isIdenticalTo(36);
     }
 
-    public function testImportRefusedFromAssetRules()
+    public function testImportRefusedFromAssetRulesWithNoLog()
     {
         $rule = new \Rule();
 
@@ -4050,6 +4050,96 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $rule->getFromDBByCrit(['name' => 'Computer import denied'])
         )->isTrue();
         $rules_id_refuse = $rule->fields['id'];
+
+        $this->boolean(
+            $rule->getFromDBByCrit(['name' => 'Computer import (by name)'])
+        )->isTrue();
+        $rules_id_toaccept = $rule->fields['id'];
+
+        //move rule to refuse computer inventory
+        $rulecollection = new \RuleImportAssetCollection();
+        $this->boolean(
+            $rulecollection->moveRule(
+                $rules_id_refuse,
+                $rules_id_torefuse,
+                \RuleCollection::MOVE_BEFORE
+            )
+        )->isTrue();
+
+        //do inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $inventory = $this->doInventory($json);
+
+        //move rule back to accept computer inventory
+        $this->boolean(
+            $rulecollection->moveRule(
+                $rules_id_refuse,
+                $rules_id_toaccept,
+                \RuleCollection::MOVE_AFTER
+            )
+        )->isTrue();
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(7)
+         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005')
+         ->variable['port']->isIdenticalTo(null)
+         ->string['action']->isIdenticalTo('inventory');
+        $this->array($metadata['provider'])->hasSize(10);
+
+        global $DB;
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005')
+         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isIdenticalTo(0);
+
+        $iterator = $DB->request([
+            'FROM'   => \RefusedEquipment::getTable(),
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo(0);
+    }
+
+    public function testImportRefusedFromAssetRulesWithLog()
+    {
+        $rule = new \Rule();
+
+        //prepares needed rules id
+        $this->boolean(
+            $rule->getFromDBByCrit(['name' => 'Computer constraint (name)'])
+        )->isTrue();
+        $rules_id_torefuse = $rule->fields['id'];
+
+
+        $this->boolean(
+            $rule->getFromDBByCrit(['name' => 'Computer import denied'])
+        )->isTrue();
+        $rules_id_refuse = $rule->fields['id'];
+
+        //update ruleAction to refused import with log
+        $ruleaction = new \RuleAction();
+        $this->boolean($ruleaction->getFromDBByCrit(['rules_id' => $rules_id_refuse]))->isTrue();
+        $this->boolean(
+            $ruleaction->update([
+                'id'    => $ruleaction->fields['id'],
+                'field' => '_ignore_import',
+                'action_type' => 'assign',
+                'value' => 1
+            ])
+        )->isTrue();
 
         $this->boolean(
             $rule->getFromDBByCrit(['name' => 'Computer import (by name)'])
