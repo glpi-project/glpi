@@ -62,6 +62,53 @@ description: Group 1, LDAP 2
 cn: glpi2-group1
 member: uid=remi,ou=people,ou=usa,ou=ldap2,dc=glpi,dc=org
 
+dn: ou=\#1-test,ou=ldap2, dc=glpi,dc=org
+ou: usa
+objectClass: top
+objectClass: organizationalUnit
+
+dn: ou=people,ou=\#1-test,ou=ldap2, dc=glpi,dc=org
+ou: people
+objectClass: top
+objectClass: organizationalUnit
+
+dn: uid=specialchar1,ou=people,ou=\#1-test,ou=ldap2, dc=glpi,dc=org
+telephoneNumber: 0234596799
+mail: specialchar1@mail.com
+uid: specialchar1
+employeeNumber: 1
+userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
+businessCategory: employee
+objectClass: top
+objectClass: inetOrgPerson
+sn: specialchar1
+cn: specialchar1
+
+dn: uid=specialchar2,ou=people,ou=\#1-test,ou=ldap2, dc=glpi,dc=org
+telephoneNumber: 0234596800
+mail: specialchar2@mail.com
+uid: specialchar2
+employeeNumber: 2
+userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
+businessCategory: employee
+objectClass: top
+objectClass: inetOrgPerson
+sn: specialchar2
+cn: specialchar2
+
+dn: ou=groups,ou=\#1-test,ou=ldap2, dc=glpi,dc=org
+ou: groups
+objectClass: top
+objectClass: organizationalUnit
+
+dn: cn=glpi2-group2,ou=groups,ou=\#1-test,ou=ldap2, dc=glpi,dc=org
+objectClass: top
+objectClass: groupOfNames
+description: Group 2, LDAP 2
+cn: glpi2-group2
+member: uid=specialchar1,ou=people,ou=\#1-test,ou=ldap2, dc=glpi,dc=org
+member: uid=specialchar2,ou=people,ou=\#1-test,ou=ldap2, dc=glpi,dc=org
+
 dn: ou=ldap1, dc=glpi,dc=org
 ou: ldap1
 objectClass: top
