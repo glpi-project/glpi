@@ -255,46 +255,32 @@ class Provider extends DbTestCase
         ]);
 
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
-        $this->array($output)
-         ->hasKeys([
-             'label',
-             'data',
-             'icon'
-         ]);
-        $this->array($output['data'])
-         ->hasKeys([
-             'series',
-             'labels',
-         ]);
-
-       // 1 label: the user glpi
-        $this->integer(count($output['data']['labels']))->isEqualTo(2);
-        $this->array($output['data']['labels'])->contains('group sla test');
-        $this->array($output['data']['labels'])->contains('second group sla test');
-
-        $this->array($output['data']['series']);
-        $this->integer(count($output['data']['series']))->isEqualTo(4);
-
-       // labels of series
-        $this->string($output['data']['series'][0]['name'])->isEqualTo('Late own and resolve');
-        $this->string($output['data']['series'][1]['name'])->isEqualTo('Late resolve');
-        $this->string($output['data']['series'][2]['name'])->isEqualTo('Late own');
-        $this->string($output['data']['series'][3]['name'])->isEqualTo('On time');
-
-        $this->integer(count($output['data']['series'][0]['data']))->isEqualTo(2);
-        $this->integer(count($output['data']['series'][1]['data']))->isEqualTo(2);
-        $this->integer(count($output['data']['series'][2]['data']))->isEqualTo(2);
-        $this->integer(count($output['data']['series'][3]['data']))->isEqualTo(2);
-
-        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
-        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
-        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
-        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(2);
-
-        $this->integer($output['data']['series'][0]['data'][1])->isEqualTo(0);
-        $this->integer($output['data']['series'][1]['data'][1])->isEqualTo(0);
-        $this->integer($output['data']['series'][2]['data'][1])->isEqualTo(0);
-        $this->integer($output['data']['series'][3]['data'][1])->isEqualTo(1);
+        $expected = [
+            'label' => "Tickets by SLA status and by technician group",
+            'data' => [
+                'labels' => ['second group sla test', 'group sla test'],
+                'series' => [
+                    [
+                        'name' => 'Late own and resolve',
+                        'data' => [0, 0]
+                    ],
+                    [
+                        'name' => 'Late resolve',
+                        'data' => [0, 0]
+                    ],
+                    [
+                        'name' => 'Late own',
+                        'data' => [0, 0]
+                    ],
+                    [
+                        'name' => 'On time',
+                        'data' => [2, 1]
+                    ]
+                ]
+            ],
+            'icon' => 'fas fa-stopwatch'
+        ];
+        $this->array($output)->isEqualTo($expected);
 
         $DB->update(
             $ticket::getTable(),
@@ -307,13 +293,47 @@ class Provider extends DbTestCase
                 'id' => $ticket->getID()
             ]
         );
+        $DB->update(
+            $ticket2::getTable(),
+            [
+                'date'                       => '2021-01-01 00:00',
+                'time_to_own'                => '2021-01-01 01:00',
+                'takeintoaccount_delay_stat' => 50000,
+            ],
+            [
+                'id' => $ticket2->getID()
+            ]
+        );
         $ticket->getFromDB($ticket->getID());
+        $ticket2->getFromDB($ticket2->getID());
 
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
-        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
-        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
-        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(1);
-        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
+        $expected = [
+            'label' => "Tickets by SLA status and by technician group",
+            'data' => [
+                'labels' => ['group sla test', 'second group sla test'],
+                'series' => [
+                    [
+                        'name' => 'Late own and resolve',
+                        'data' => [0, 0]
+                    ],
+                    [
+                        'name' => 'Late resolve',
+                        'data' => [0, 0]
+                    ],
+                    [
+                        'name' => 'Late own',
+                        'data' => [1, 1]
+                    ],
+                    [
+                        'name' => 'On time',
+                        'data' => [0, 1]
+                    ]
+                ]
+            ],
+            'icon' => 'fas fa-stopwatch'
+        ];
+        $this->array($output)->isEqualTo($expected);
 
         $DB->update(
             $ticket::getTable(),
@@ -328,12 +348,48 @@ class Provider extends DbTestCase
                 'id' => $ticket->getID()
             ]
         );
+        $DB->update(
+            $ticket2::getTable(),
+            [
+                'date'                       => '2021-01-01 00:00',
+                'time_to_own'                => '2021-01-01 01:00',
+                'takeintoaccount_delay_stat' => 60,
+                'solvedate'                  => '2021-02-01 00:00',
+                'time_to_resolve'            => '2021-01-02 00:00'
+            ],
+            [
+                'id' => $ticket2->getID()
+            ]
+        );
         $ticket->getFromDB($ticket->getID());
+        $ticket2->getFromDB($ticket2->getID());
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
-        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
-        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(1);
-        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
-        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
+        $expected = [
+            'label' => "Tickets by SLA status and by technician group",
+            'data' => [
+                'labels' => ['group sla test', 'second group sla test'],
+                'series' => [
+                    [
+                        'name' => 'Late own and resolve',
+                        'data' => [0, 0]
+                    ],
+                    [
+                        'name' => 'Late resolve',
+                        'data' => [1, 1]
+                    ],
+                    [
+                        'name' => 'Late own',
+                        'data' => [0, 0]
+                    ],
+                    [
+                        'name' => 'On time',
+                        'data' => [0, 1]
+                    ]
+                ]
+            ],
+            'icon' => 'fas fa-stopwatch'
+        ];
+        $this->array($output)->isEqualTo($expected);
 
         $DB->update(
             $ticket::getTable(),
@@ -348,11 +404,61 @@ class Provider extends DbTestCase
                 'id' => $ticket->getID()
             ]
         );
+        $DB->update(
+            $ticket2::getTable(),
+            [
+                'date'                       => '2021-01-01 00:00',
+                'time_to_own'                => '2021-01-01 01:00',
+                'takeintoaccount_delay_stat' => 50000,
+                'solvedate'                  => '2021-02-01 00:00',
+                'time_to_resolve'            => '2021-01-02 00:00'
+            ],
+            [
+                'id' => $ticket2->getID()
+            ]
+        );
+        $DB->update(
+            $ticket3::getTable(),
+            [
+                'date'                       => '2021-01-01 00:00',
+                'time_to_own'                => '2021-01-01 01:00',
+                'takeintoaccount_delay_stat' => 50000,
+                'solvedate'                  => '2021-02-01 00:00',
+                'time_to_resolve'            => '2021-01-02 00:00'
+            ],
+            [
+                'id' => $ticket3->getID()
+            ]
+        );
         $ticket->getFromDB($ticket->getID());
+        $ticket2->getFromDB($ticket2->getID());
+        $ticket3->getFromDB($ticket3->getID());
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
-        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(1);
-        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
-        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
-        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
+        $expected = [
+            'label' => "Tickets by SLA status and by technician group",
+            'data' => [
+                'labels' => ['second group sla test', 'group sla test'],
+                'series' => [
+                    [
+                        'name' => 'Late own and resolve',
+                        'data' => [2, 1]
+                    ],
+                    [
+                        'name' => 'Late resolve',
+                        'data' => [0, 0]
+                    ],
+                    [
+                        'name' => 'Late own',
+                        'data' => [0, 0]
+                    ],
+                    [
+                        'name' => 'On time',
+                        'data' => [0, 0]
+                    ]
+                ]
+            ],
+            'icon' => 'fas fa-stopwatch'
+        ];
+        $this->array($output)->isEqualTo($expected);
     }
 }
