@@ -127,8 +127,8 @@ class CronTask extends CommonDBTM
     {
 
         return $this->getFromDBByCrit([
-            $this->getTable() . '.name'      => $name,
-            $this->getTable() . '.itemtype'  => $itemtype
+            $this->getTable() . '.name'      => (string)$name,
+            $this->getTable() . '.itemtype'  => (string)$itemtype
         ]);
     }
 

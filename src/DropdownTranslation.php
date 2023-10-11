@@ -566,7 +566,7 @@ class DropdownTranslation extends CommonDBChild
                         $("#dropdown_field$rand").trigger("change");
                     }
                 );
-    JAVASCRIPT
+JAVASCRIPT
             );
         }
         echo "</td>";

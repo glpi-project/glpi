@@ -2887,4 +2887,120 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             $this->integer(count($found_np))->isIdenticalTo(53, 'Must have 53 ports');
         }
     }
+
+    public function testRuleMatchedLog()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <NAME>C9300-24P</NAME>
+        <TYPE>device</TYPE>
+        <VERSION></VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>Cisco IOS Software [Bengaluru], Catalyst L3 Switch Software (CAT9K_IOSXE), Version 17.6.5, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2023 by Cisco Systems, Inc.
+Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
+        <FIRMWARE>Bengaluru 17.06.05</FIRMWARE>
+        <ID>1290</ID>
+        <IPS>
+          <IP>10.205.13.103</IP>
+        </IPS>
+        <LOCATION></LOCATION>
+        <MAC>10:h3:dg:a8:18:10</MAC>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <MODEL>C9300-24P</MODEL>
+        <NAME>switch_import_test</NAME>
+        <RAM>1286</RAM>
+        <SERIAL>DFGKJ6545684SDF</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>6 days, 01:18:18.70</UPTIME>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>00:0b:84:09:c1:5e</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>unmanaged</IFALIAS>
+          <IFDESCR>GigabitEthernet1/0/1</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>19636462</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>16 minutes, 37.49</IFLASTCHANGE>
+          <IFMTU>1500</IFMTU>
+          <IFNAME>Gi1/0/1</IFNAME>
+          <IFNUMBER>9</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>285784231</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>08:f3:fb:a1:04:01</MAC>
+          <TRUNK>0</TRUNK>
+          <VLANS>
+            <VLAN>
+              <NAME>INFRA</NAME>
+              <NUMBER>10</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>5.1</MODULEVERSION>
+    <PROCESSNUMBER>51554</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>switch_import_test</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $network_device_id = $inventory->getItem()->fields['id'];
+        $this->integer($network_device_id)->isGreaterThan(0);
+
+        $networkEquipment = new \NetworkEquipment();
+        $this->boolean($networkEquipment->getFromDB($network_device_id))->isTrue();
+
+        $this->string($networkEquipment->fields['serial'])->isIdenticalTo('DFGKJ6545684SDF');
+
+        $unmanaged = new \Unmanaged();
+        $found_unmanaged = $unmanaged->find();
+        $this->integer(count($found_unmanaged))->isIdenticalTo(1);
+
+        $rulematchedLog = new \RuleMatchedLog();
+        $found_rulematchedLog = $rulematchedLog->find(
+            [
+                'itemtype' => "Unmanaged",
+                'items_id' => current($found_unmanaged)['id'],
+            ]
+        );
+        $this->integer(count($found_rulematchedLog))->isIdenticalTo(1);
+
+        //redo inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $unmanaged = new \Unmanaged();
+        $found_unmanaged = $unmanaged->find();
+        //get only one RuleMatchedLog
+        $this->integer(count($found_unmanaged))->isIdenticalTo(1);
+
+        $rulematchedLog = new \RuleMatchedLog();
+        $found_rulematchedLog = $rulematchedLog->find(
+            [
+                'itemtype' => "Unmanaged",
+                'items_id' => current($found_unmanaged)['id'],
+            ]
+        );
+        //get two RuleMatchedLog
+        $this->integer(count($found_rulematchedLog))->isIdenticalTo(2);
+    }
 }

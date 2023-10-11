@@ -1,0 +1,41 @@
+Date: Thu, 1 Dec 2022 11:23:48 +0200 (CEST)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Subject: 41 - Image src without quotes
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+    boundary="----=_Part_1757883_1359581901.1528365951028"
+
+------=_Part_1757883_1359581901.1528365951028
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Image:
+
+------=_Part_1757883_1359581901.1528365951028
+Content-Type: multipart/related; 
+    boundary="----=_Part_1757884_1267006027.1528365951028"
+
+------=_Part_1757884_1267006027.1528365951028
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<html>
+<body>
+Image: <img src=cid:image001.png@01D90577.61DCAEC0>
+</body>
+</html>
+------=_Part_1757884_1267006027.1528365951028
+Content-Type: image/png; name=41-blue-dot.png
+Content-Disposition: attachment; filename=41-blue-dot.png
+Content-Transfer-Encoding: base64
+Content-ID: <image001.png@01D90577.61DCAEC0>
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAL
+EwAACxMBAJqcGAAAAANQTFRFAAD/injSVwAAAApJREFUeJxjYAAAAAIAAUivpHEAAAAASUVORK5C
+YII=
+------=_Part_1757884_1267006027.1528365951028--
+
+------=_Part_1757883_1359581901.1528365951028--
+
+

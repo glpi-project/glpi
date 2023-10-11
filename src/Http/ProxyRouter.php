@@ -230,16 +230,7 @@ final class ProxyRouter
             return true;
         }
 
-        // Check mime type of target file
-        $target_file = $this->getTargetFile();
-
-        if ($target_file === null) {
-            return false;
-        }
-
-        $mime = mime_content_type($target_file);
-
-        return preg_match('/^(application|text)\/(x-)?php$/', $mime) === 1;
+        return false;
     }
 
     /**

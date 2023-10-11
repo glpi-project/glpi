@@ -179,6 +179,7 @@ abstract class MainAsset extends InventoryAsset
             'winprodkey'     => 'license_number',
             'workgroup'      => 'domains_id',
             'lastloggeduser' => 'users_id',
+            'description'    => 'comment'
         ];
 
         foreach ($hw_mapping as $origin => $dest) {
@@ -752,7 +753,7 @@ abstract class MainAsset extends InventoryAsset
                     'is_dynamic' => 1,
                     ['NOT' => ['domains_id' => $domain->getID()]]
                 ],
-                0,
+                1,
                 0
             );
         }

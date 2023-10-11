@@ -634,6 +634,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
         }
 
+        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
+
        // Add log entry in the ITIL object
         $changes = [
             0,
@@ -1281,7 +1283,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
                       /// Specific for tickets
                         $interv[$key]["device"] = [];
-                        if (isset($parentitem->hardwaredatas) && !empty($parentitem->hardwaredatas)) {
+                        if (
+                            $parentitem instanceof Ticket
+                            && isset($parentitem->hardwaredatas)
+                            && !empty($parentitem->hardwaredatas)
+                        ) {
                             foreach ($parentitem->hardwaredatas as $hardwaredata) {
                                 $interv[$key]["device"][$hardwaredata->fields['id']] = ($hardwaredata
                                                    ? $hardwaredata->getName() : '');

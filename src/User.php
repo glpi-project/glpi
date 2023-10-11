@@ -506,7 +506,7 @@ class User extends CommonDBTM
      */
     public function getFromDBbyName($name)
     {
-        return $this->getFromDBByCrit(['name' => $name]);
+        return $this->getFromDBByCrit(['name' => (string)$name]);
     }
 
     /**
@@ -703,6 +703,17 @@ class User extends CommonDBTM
         return $this->getFromDBByCrit([$this->getTable() . ".$field" => $token]);
     }
 
+    public static function unsetUndisclosedFields(&$fields)
+    {
+        parent::unsetUndisclosedFields($fields);
+
+        if (
+            !array_key_exists('id', $fields)
+            || !(new self())->currentUserHaveMoreRightThan($fields['id'])
+        ) {
+            unset($fields['password_forget_token'], $fields['password_forget_token_date']);
+        }
+    }
 
     public function prepareInputForAdd($input)
     {
@@ -989,6 +1000,32 @@ class User extends CommonDBTM
             unset($input["password"]);
         }
 
+        // prevent changing tokens and emails from users with lower rights
+        $protected_input_keys = array_intersect(
+            [
+                'api_token',
+                '_reset_api_token',
+                'cookie_token',
+                'password_forget_token',
+                'personal_token',
+                '_reset_personal_token',
+
+                '_emails',
+                '_useremails',
+            ],
+            array_keys($input)
+        );
+        if (
+            $protected_input_keys > 0
+            && !Session::isCron() // cron context is considered safe
+            && $input['id'] !== Session::getLoginUserID()
+            && !$this->currentUserHaveMoreRightThan($input['id'])
+        ) {
+            foreach ($protected_input_keys as $input_key) {
+                unset($input[$input_key]);
+            }
+        }
+
        // blank password when authtype changes
         if (
             isset($input["authtype"])
@@ -1067,9 +1104,10 @@ class User extends CommonDBTM
 
         foreach ($CFG_GLPI['user_pref_field'] as $f) {
             if (isset($input[$f])) {
+                $pref_value = Sanitizer::dbUnescape($input[$f]);
                 if (Session::getLoginUserID() == $input['id']) {
-                    if ($_SESSION["glpi$f"] != $input[$f]) {
-                        $_SESSION["glpi$f"] = $input[$f];
+                    if ($_SESSION["glpi$f"] != $pref_value) {
+                        $_SESSION["glpi$f"] = $pref_value;
                       // reinit translations
                         if ($f == 'language') {
                              $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
@@ -1077,7 +1115,7 @@ class User extends CommonDBTM
                         }
                     }
                 }
-                if ($input[$f] == $CFG_GLPI[$f]) {
+                if ($pref_value == $CFG_GLPI[$f]) {
                     $input[$f] = "NULL";
                 }
             }
@@ -1903,7 +1941,7 @@ class User extends CommonDBTM
                             $this->fields[$k] = "";
                     }
                 } else {
-                    $val = Toolbox::addslashes_deep($val);
+                    $val = Sanitizer::sanitize($val);
                     switch ($k) {
                         case "email1":
                         case "email2":
@@ -4527,6 +4565,9 @@ HTML;
         // Make a select box with all glpi users
         $view_users = self::canView();
 
+        $default = '';
+        $valuesnames = [];
+
         if (!$p['multiple']) {
             $user = getUserName($p['value'], 2, true);
 
@@ -4547,11 +4588,12 @@ HTML;
             }
         } else {
             // get multiple values name
-            $valuesnames = [];
             foreach ($p['values'] as $value) {
                 if (!empty($value) && ($value > 0)) {
                     $user = getUserName($value, 2);
                     $valuesnames[] = $user["name"];
+                } else {
+                    unset($p['values'][$value]);
                 }
             }
 
@@ -5144,12 +5186,19 @@ HTML;
             return;
         }
 
+        $myuser = new self();
+        if (
+            !$myuser->getFromDB($users_id) // invalid user
+            || $myuser->fields['is_deleted_ldap'] == 1 // user already considered as deleted from LDAP
+        ) {
+            return;
+        }
+
        //User is present in DB but not in the directory : it's been deleted in LDAP
         $tmp = [
             'id'              => $users_id,
             'is_deleted_ldap' => 1,
         ];
-        $myuser = new self();
 
         switch ($CFG_GLPI['user_deleted_ldap']) {
            //DO nothing
@@ -5218,18 +5267,19 @@ HTML;
             return;
         }
 
+        $myuser = new self();
+        if (
+            !$myuser->getFromDB($users_id) // invalid user
+            || $myuser->fields['is_deleted_ldap'] == 0 // user already considered as restored from LDAP
+        ) {
+            return;
+        }
+
        //User is present in DB and in the directory but 'is_ldap_deleted' was true : it's been restored in LDAP
         $tmp = [
             'id'              => $users_id,
             'is_deleted_ldap' => 0,
         ];
-        $myuser = new self();
-        $myuser->getFromDB($users_id);
-
-       // User is already considered as restored from ldap
-        if ($myuser->fields['is_deleted_ldap'] == 0) {
-            return;
-        }
 
        // Calling the update function for the user will reapply dynamic rights {@see User::post_updateItem()}
         switch ($CFG_GLPI['user_restored_ldap']) {
@@ -5281,7 +5331,7 @@ HTML;
         global $DB;
 
         if ($escape) {
-            $value = addslashes($value);
+            $value = Sanitizer::sanitize($value);
         }
 
         $iterator = $DB->request([
@@ -5426,12 +5476,12 @@ HTML;
      */
     public function updateForgottenPassword(array $input)
     {
-        // Get user by token
-        $token = $input['password_forget_token'] ?? "";
-        $user = self::getUserByForgottenPasswordToken($token);
-
         // Invalid token
-        if (!$user) {
+        if (
+            !array_key_exists('password_forget_token', $input)
+            || (string)$input['password_forget_token'] === ''
+            || ($user = self::getUserByForgottenPasswordToken($input['password_forget_token'])) === null
+        ) {
             throw new ForgetPasswordException(
                 __('Your password reset request has expired or is invalid. Please renew it.')
             );
@@ -5472,12 +5522,19 @@ HTML;
             return false;
         }
 
-        // Clear password reset token data
-        $user->update([
-            'id'                         => $user->fields['id'],
-            'password_forget_token'      => '',
-            'password_forget_token_date' => 'NULL',
-        ]);
+        // Clear password reset token data.
+        // Use a direct DB query to bypass rights checks.
+        global $DB;
+        $DB->update(
+            'glpi_users',
+            [
+                'password_forget_token'      => '',
+                'password_forget_token_date' => 'NULL',
+            ],
+            [
+                'id' => $user->fields['id'],
+            ]
+        );
 
         $this->getFromDB($user->fields['id']);
 
@@ -5593,13 +5650,21 @@ HTML;
             throw new ForgetPasswordException(__('Invalid email address'));
         }
 
-        // Store password reset token and date
-        $input = [
-            'password_forget_token'      => sha1(Toolbox::getRandomString(30)),
-            'password_forget_token_date' => $_SESSION["glpi_currenttime"],
-            'id'                         => $this->fields['id'],
-        ];
-        $this->update($input);
+        // Store password reset token and date.
+        // Use a direct DB query to bypass rights checks.
+        global $DB;
+        $DB->update(
+            'glpi_users',
+            [
+                'password_forget_token'      => sha1(Toolbox::getRandomString(30)),
+                'password_forget_token_date' => $_SESSION["glpi_currenttime"],
+            ],
+            [
+                'id' => $this->fields['id'],
+            ]
+        );
+
+        $this->getFromDB($this->fields['id']); // reload user to get up-to-date fields
 
         // Notication on root entity (glpi_users.entities_id is only a pref)
         NotificationEvent::raiseEvent('passwordforget', $this, ['entities_id' => 0]);

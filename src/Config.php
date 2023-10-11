@@ -2088,7 +2088,7 @@ class Config extends CommonDBTM
         $cleaner_script = <<<JS
         // Search all .section-content text content and Replace all instances of a '#' followed by a number so that there is a zero-width space between the # and the number
         $('.section-content').each(function() {
-          $(this).text($(this).text().replace(/#(\d+)/g, '#\u200B$1'));
+          $(this).html($(this).html().replace(/#(\d+)/g, '#\u200B$1'));
         });
 JS;
         echo Html::scriptBlock($cleaner_script);
@@ -2222,9 +2222,6 @@ HTML;
             ],
             [ 'name'    => 'rlanvin/php-rrule',
                 'check'   => 'RRule\\RRule'
-            ],
-            [ 'name'    => 'blueimp/jquery-file-upload',
-                'check'   => 'UploadHandler'
             ],
             [ 'name'    => 'ramsey/uuid',
                 'check'   => 'Ramsey\\Uuid\\Uuid'
@@ -2427,9 +2424,15 @@ HTML;
 
         if (isset($_SERVER['REQUEST_URI'])) {
             // $_SERVER['REQUEST_URI'] is set, meaning that GLPI is accessed from web server.
-            // In this case, `$CFG_GLPI['root_doc']` corresponds to the piece of URI
-            // that is common between `GLPI_ROOT` and $_SERVER['REQUEST_URI']
-            // e.g. GLPI_ROOT=/var/www/glpi and $_SERVER['REQUEST_URI']=/glpi/front/index.php -> $CFG_GLPI['root_doc']=/glpi
+
+            // In this case, `$CFG_GLPI['root_doc']` corresponds to the piece of path
+            // that is common between `GLPI_ROOT` and $_SERVER['SCRIPT_NAME']
+            // e.g. GLPI_ROOT=/var/www/glpi and $_SERVER['SCRIPT_NAME']=/glpi/front/index.php -> $CFG_GLPI['root_doc']=/glpi
+
+            // We cannot rely on $_SERVER['REQUEST_URI'] value as it is a value defined by HTTP client.
+            // $_SERVER['SCRIPT_NAME'] is consider safe as it is either set by GLPI router (see `/public/index.php`),
+            // either it contains the path of PHP script executed by the web server.
+            $script_path = $_SERVER['SCRIPT_NAME'];
 
             // Extract relative path of entry script directory
             // e.g. /var/www/mydomain.org/glpi/front/index.php -> /front
@@ -2439,26 +2442,22 @@ HTML;
                 str_replace(DIRECTORY_SEPARATOR, '/', realpath(getcwd()))
             );
 
-            // Extract relative path of request URI directory
+            // Extract relative path of script directory
             // e.g. /glpi/front/index.php -> /glpi/front
-            $request_dir_relative = preg_replace(
+            $script_dir_relative = preg_replace(
                 '/\/[0-9a-zA-Z\.\-\_]+\.php/',
                 '',
-                Html::cleanParametersURL($_SERVER['REQUEST_URI'])
+                $script_path
             );
             // API exception (handles `RewriteRule api/(.*)$ apirest.php/$1`)
-            if (strpos($request_dir_relative, 'api/') !== false) {
-                $request_dir_relative = preg_replace("/(.*\/)api\/.*/", "$1", $request_dir_relative);
+            if (strpos($script_dir_relative, 'api/') !== false) {
+                $script_dir_relative = preg_replace("/(.*\/)api\/.*/", "$1", $script_dir_relative);
             }
 
             // Remove relative path of entry script directory
             // e.g. /glpi/front -> /glpi
-            $root_doc = str_replace($current_dir_relative, '', $request_dir_relative);
+            $root_doc = str_replace($current_dir_relative, '', $script_dir_relative);
             $root_doc = rtrim($root_doc, '/');
-
-            // urldecode for space redirect to encoded URL : change entity
-            // note: not sure this line is actually used
-            $root_doc = urldecode($root_doc);
 
             $CFG_GLPI['root_doc'] = $root_doc;
         } else {

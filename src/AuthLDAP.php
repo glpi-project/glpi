@@ -2179,11 +2179,11 @@ class AuthLDAP extends CommonDBTM
                    // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
                     if ($user['auths_id'] == $options['authldaps_id']) {
-                        if (!$user['is_deleted']) {
+                        if (!$userfound && $user['is_deleted_ldap'] == 0) {
                              //If user is marked as coming from LDAP, but is not present in it anymore
                              User::manageDeletedUserInLdap($user['id']);
                              $results[self::USER_DELETED_LDAP]++;
-                        } else {
+                        } elseif ($userfound && $user['is_deleted_ldap'] == 1) {
                            // User is marked as coming from LDAP, but was previously deleted
                             User::manageRestoredUserInLdap($user['id']);
                             $results[self::USER_RESTORED_LDAP]++;
@@ -2837,7 +2837,7 @@ class AuthLDAP extends CommonDBTM
     ) {
         global $DB;
 
-        $params      = Toolbox::stripslashes_deep($params);
+        $params      = Sanitizer::unsanitize($params);
         $config_ldap = new self();
         $res         = $config_ldap->getFromDB($ldap_server);
         $input = [];
@@ -2894,16 +2894,16 @@ class AuthLDAP extends CommonDBTM
                             $ds,
                             $config_ldap->fields,
                             $user_dn,
-                            addslashes($login),
+                            Sanitizer::sanitize($login),
                             ($action == self::ACTION_IMPORT)
                         )
                     ) {
                         //Get the ID by sync field (Used to check if restoration is needed)
                         $searched_user = new User();
                         $user_found = false;
-                        if ($login === null || !($user_found = $searched_user->getFromDBbySyncField($DB->escape($login)))) {
+                        if ($login === null || !($user_found = $searched_user->getFromDBbySyncField(Sanitizer::sanitize($login)))) {
                          //In case user id has changed : get id by dn (Used to check if restoration is needed)
-                            $user_found = $searched_user->getFromDBbyDn($DB->escape($user_dn));
+                            $user_found = $searched_user->getFromDBbyDn(Sanitizer::sanitize($user_dn));
                         }
                         if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
                             User::manageRestoredUserInLdap($searched_user->fields['id']);
@@ -3088,8 +3088,13 @@ class AuthLDAP extends CommonDBTM
             LDAP_OPT_PROTOCOL_VERSION => 3,
             LDAP_OPT_REFERRALS        => 0,
             LDAP_OPT_DEREF            => $deref_options,
-            LDAP_OPT_NETWORK_TIMEOUT  => $timeout
         ];
+
+        if ($timeout > 0) {
+            // Apply the timeout unless it is "unlimited" ("unlimited" is the default value defined in `libldap`).
+            // see https://linux.die.net/man/3/ldap_set_option
+            $ldap_options[LDAP_OPT_NETWORK_TIMEOUT] = $timeout;
+        }
 
         foreach ($ldap_options as $option => $value) {
             if (!@ldap_set_option($ds, $option, $value)) {
@@ -3609,7 +3614,7 @@ class AuthLDAP extends CommonDBTM
             Toolbox::deprecated('Use of $clean = false is deprecated');
         }
 
-        $result = @ldap_read($ds, $dn, $condition, $attrs);
+        $result = @ldap_read($ds, Sanitizer::unsanitize($dn), $condition, $attrs);
         if ($result === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {

@@ -358,16 +358,9 @@ class MailCollector extends CommonDBTM
 
                var li       = $(this);
                var input_id = li.data('input-id');
-               var folder   = li.children('.folder-name').html();
+               var folder   = li.find('.folder-name').data('globalname');
 
-               var _label = '';
-               var _parents = li.parents('li').children('.folder-name');
-               for (i = _parents.length -1 ; i >= 0; i--) {
-                  _label += $(_parents[i]).html() + '/';
-               }
-               _label += folder;
-
-               $('#'+input_id).val(_label);
+               $('#'+input_id).val(folder);
 
                var modalEl = $('#'+input_id+'_modal')[0];
                var modal = bootstrap.Modal.getInstance(modalEl);
@@ -427,10 +420,11 @@ class MailCollector extends CommonDBTM
      */
     private function displayFolder($folder, $input_id)
     {
-        $fname = mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP");
+        $fglobalname = htmlspecialchars(mb_convert_encoding($folder->getGlobalName(), "UTF-8", "UTF7-IMAP"), ENT_QUOTES);
+        $flocalname  = htmlspecialchars(mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP"), ENT_QUOTES);
         echo "<li class='pointer' data-input-id='$input_id'>
                <i class='fa fa-folder'></i>&nbsp;
-               <span class='folder-name'>" . $fname . "</span>";
+               <span class='folder-name' data-globalname='" . $fglobalname . "'>" . $flocalname . "</span>";
         echo "<ul>";
 
         foreach ($folder as $sfolder) {

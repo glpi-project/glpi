@@ -37,6 +37,16 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
+
+if (isset($_POST['language']) && !Session::getLoginUserID()) {
+    // Offline lang change, keep it before session validity check
+    $_SESSION["glpilanguage"] = $_POST['language'];
+    Session::addMessageAfterRedirect(__('Lang has been changed!'));
+    Html::back();
+}
+
+Session::checkLoginUser();
+
 if (empty($_GET["id"])) {
     $_GET["id"] = "";
 }
@@ -45,8 +55,12 @@ $user      = new User();
 $groupuser = new Group_User();
 
 if (empty($_GET["id"]) && isset($_GET["name"])) {
-    $user->getFromDBbyName($_GET["name"]);
-    Html::redirect($user->getFormURLWithID($user->fields['id']));
+    Session::checkRight(User::$rightname, READ);
+    if ($user->getFromDBbyName($_GET["name"])) {
+        $user->check($user->fields['id'], READ);
+        Html::redirect($user->getFormURLWithID($user->fields['id']));
+    }
+    Html::displayNotFoundError();
 }
 
 if (empty($_GET["name"])) {
@@ -172,16 +186,12 @@ if (isset($_GET['getvcard'])) {
     }
     Html::back();
 } else if (isset($_POST['language']) && !GLPI_DEMO_MODE) {
-    if (Session::getLoginUserID()) {
-        $user->update(
-            [
-                'id'        => Session::getLoginUserID(),
-                'language'  => $_POST['language']
-            ]
-        );
-    } else {
-        $_SESSION["glpilanguage"] = $_POST['language'];
-    }
+    $user->update(
+        [
+            'id'        => Session::getLoginUserID(),
+            'language'  => $_POST['language']
+        ]
+    );
     Session::addMessageAfterRedirect(__('Lang has been changed!'));
     Html::back();
 } else if (isset($_POST['impersonate']) && $_POST['impersonate']) {

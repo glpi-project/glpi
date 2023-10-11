@@ -216,7 +216,7 @@
             {# Fixed min-height ensure no height increase when toggling the pending reason button, as select 2 dropdown are a bit higher than the default footer height #}
             <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px; min-height: 79px">
                {% set pending_reasons %}
-                  {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason and not add_reopen %}
+                  {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not add_reopen %}
                   {% if get_current_interface() == 'central' and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) %}
                      <span
                         class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
@@ -235,15 +235,13 @@
                            </label>
                         </span>
 
-                        {% if not has_pending_reason %}
-                           <div
-                              class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
-                              aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
-                              id="pending-reasons-setup-{{ rand }}"
-                           >
-                              {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
-                           </div>
-                        {% endif %}
+                        <div
+                           class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
+                           aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
+                           id="pending-reasons-setup-{{ rand }}"
+                        >
+                           {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
+                        </div>
                      </span>
                   {% endif %}
                {% endset %}

@@ -33,14 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+$SECURITY_STRATEGY = 'faq_access';
+
 include('../inc/includes.php');
 
 // Redirect management
 if (isset($_GET["redirect"])) {
     Toolbox::manageRedirect($_GET["redirect"]);
 }
-
-Session::checkFaqAccess();
 
 if (Session::getLoginUserID()) {
     Html::helpHeader(__('FAQ'), 'faq');

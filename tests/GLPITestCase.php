@@ -316,4 +316,16 @@ class GLPITestCase extends atoum
         }
         return $this->int++;
     }
+
+    /**
+     * Get the "_test_root_entity" entity created by the tests's bootstrap file
+     *
+     * @param bool $only_id
+     *
+     * @return Entity|int
+     */
+    protected function getTestRootEntity(bool $only_id = false)
+    {
+        return getItemByTypeName('Entity', '_test_root_entity', $only_id);
+    }
 }

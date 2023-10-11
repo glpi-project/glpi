@@ -679,7 +679,7 @@ class Printer extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                 => '131',
+            'id'                 => '1431',
             'table'              => 'glpi_computers_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of printers'),

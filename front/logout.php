@@ -37,6 +37,8 @@
  * @since 0.85
  */
 
+$SECURITY_STRATEGY = 'no_check';
+
 include('../inc/includes.php');
 
 

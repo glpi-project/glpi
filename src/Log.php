@@ -154,7 +154,7 @@ class Log extends CommonDBTM
                         && ($val2['rightname'] == $item->fields['name'])
                     ) {
                         $id_search_option = $key2;
-                        $changes          =  [$id_search_option, addslashes($oldval ?? ''), $values[$key]];
+                        $changes          =  [$id_search_option, addslashes($oldval ?? ''), $values[$key] ?? ''];
                     }
                 } else if (
                     ($val2['linkfield'] == $key && $real_type === $item->getType())
@@ -169,7 +169,7 @@ class Log extends CommonDBTM
                             $oldval = CommonTreeDropdown::sanitizeSeparatorInCompletename($oldval);
                             $values[$key] = CommonTreeDropdown::sanitizeSeparatorInCompletename($values[$key]);
                         }
-                        $changes = [$id_search_option, addslashes($oldval ?? ''), $values[$key]];
+                        $changes = [$id_search_option, addslashes($oldval ?? ''), $values[$key] ?? ''];
                     } else {
                        // other cases; link field -> get data from dropdown
                         if ($val2["table"] != 'glpi_auth_tables') {
