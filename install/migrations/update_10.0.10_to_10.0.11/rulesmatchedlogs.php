@@ -39,5 +39,5 @@
  */
 
 if (!$DB->fieldExists('glpi_rulematchedlogs', 'criteria')) {
-    $migration->addField('glpi_rulematchedlogs', 'criteria', "varchar(999) DEFAULT NULL");
+    $migration->addField('glpi_rulematchedlogs', 'criteria', "text");
 }
