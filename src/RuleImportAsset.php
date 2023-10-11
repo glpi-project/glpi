@@ -933,7 +933,7 @@ class RuleImportAsset extends Rule
                                 $itemtype = $criterion->fields['pattern'];
                                 if ($class && method_exists($class, 'rulepassed')) {
                                     if (!isset($params['return'])) {
-                                          $class->rulepassed("0", $itemtype, $rules_id, $input);
+                                          $class->rulepassed("0", $itemtype, $rules_id);
                                     }
                                     $output['found_inventories'] = [0, $itemtype, $rules_id];
                                 } else {
@@ -949,7 +949,7 @@ class RuleImportAsset extends Rule
                         $back_class = $class->getItemtype();
                     }
                     if ($class && !isset($params['return'])) {
-                        $class->rulepassed("0", $back_class, $rules_id, $input);
+                        $class->rulepassed("0", $back_class, $rules_id);
                     }
                     $output['found_inventories'] = [0, $back_class, $rules_id];
                     return $output;
@@ -965,7 +965,7 @@ class RuleImportAsset extends Rule
                              $output['found_inventories'] = [$items_id, $itemtype, $rules_id];
                             if (!isset($params['return'])) {
                                 if ($class) {
-                                    $class->rulepassed($items_id, $itemtype, $rules_id, $input, $this->criterias_results['found_port']);
+                                    $class->rulepassed($items_id, $itemtype, $rules_id, $this->criterias_results['found_port']);
                                 } else {
                                     $inputrulelog = $inputrulelog + [
                                         'items_id'  => $items_id,
@@ -984,7 +984,7 @@ class RuleImportAsset extends Rule
                                 if ($criterion->fields['criteria'] == 'itemtype' && !is_numeric($criterion->fields['pattern'])) {
                                     $itemtype = $criterion->fields['pattern'];
                                     if ($class && !isset($params['return'])) {
-                                         $class->rulepassed("0", $itemtype, $rules_id, $input);
+                                         $class->rulepassed("0", $itemtype, $rules_id);
                                     }
                                     $output['found_inventories'] = [0, $itemtype, $rules_id];
                                     return $output;
@@ -997,7 +997,7 @@ class RuleImportAsset extends Rule
                             $back_class = $class->getItemtype();
                         }
                         if ($class && !isset($params['return'])) {
-                            $class->rulepassed("0", $back_class, $rules_id, $input);
+                            $class->rulepassed("0", $back_class, $rules_id);
                         }
                         $output['found_inventories'] = [0, $back_class, $rules_id];
                         return $output;
