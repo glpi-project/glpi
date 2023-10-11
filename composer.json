@@ -79,7 +79,7 @@
         "ext-xml": "*",
         "atoum/atoum": "^4.1",
         "friendsoftwig/twigcs": "^6.1",
-        "glpi-project/tools": "^0.6",
+        "glpi-project/tools": "^0.7",
         "maglnet/composer-require-checker": "^3.5",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.3",
