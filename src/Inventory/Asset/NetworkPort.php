@@ -642,7 +642,7 @@ class NetworkPort extends InventoryAsset
      * @param integer $rules_id Matched rule id, if any
      * @param array   $ports_id Matched port ids, if any
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed($items_id, $itemtype, $rules_id, $input = [], $ports_id = [])
     {
         if (!is_array($ports_id)) {
             $ports_id = [$ports_id]; // Handle compatibility with previous signature.
@@ -663,6 +663,7 @@ class NetworkPort extends InventoryAsset
                 }
             }
             $items_id = $item->add($input);
+        }
 
         $rulesmatched = new \RuleMatchedLog();
         $agents_id = $this->agent->fields['id'];
