@@ -1499,7 +1499,7 @@ class Config extends CommonDBTM
                 'value' => $data['default_dashboard_mini_ticket'],
                 'display_emptychoice' => true,
                 'context'   => 'mini_core',
-            ]);
+            ], true);
             echo "</td></tr>";
         }
 
