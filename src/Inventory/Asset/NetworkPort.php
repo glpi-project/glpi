@@ -43,6 +43,8 @@ use NetworkPort as GlobalNetworkPort;
 use NetworkPortAggregate;
 use NetworkPortType;
 use QueryParam;
+use Rule;
+use RuleCriteria;
 use RuleImportAssetCollection;
 use Unmanaged;
 
@@ -642,7 +644,7 @@ class NetworkPort extends InventoryAsset
      * @param integer $rules_id Matched rule id, if any
      * @param array   $ports_id Matched port ids, if any
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed($items_id, $itemtype, $rules_id, $input = [], $ports_id = [])
     {
         if (!is_array($ports_id)) {
             $ports_id = [$ports_id]; // Handle compatibility with previous signature.
@@ -665,6 +667,29 @@ class NetworkPort extends InventoryAsset
             $items_id = $item->add(Sanitizer::sanitize($input));
         }
 
+        // insert criteria in DB
+        $criteria = [];
+        $rulescrit = new RuleCriteria();
+        foreach ($rulescrit->find(['rules_id' => $rules_id]) as $rule) {
+            if ($rule['criteria'] == 'link_criteria_port') {
+                $value = $port->logical_number;
+            } else {
+                if (isset($input[$rule['criteria']])) {
+                    $value = $input[$rule['criteria']];
+                }
+            }
+            if (strpos(implode(', ', $criteria), $rule['criteria']) === false) {
+                if (isset($value)) {
+                    $criteria[] = sprintf(
+                        '%s : %s',
+                        $rule['criteria'],
+                        $value,
+                    );
+                }
+            }
+            unset($value);
+        }
+
         $rulesmatched = new \RuleMatchedLog();
         $agents_id = $this->agent->fields['id'];
         if (empty($agents_id)) {
@@ -677,7 +702,8 @@ class NetworkPort extends InventoryAsset
             'items_id'  => $items_id,
             'itemtype'  => $itemtype,
             'agents_id' => $agents_id,
-            'method'    => 'inventory'
+            'method'    => 'inventory',
+            'criteria'  => implode(', ', $criteria)
         ];
         $rulesmatched->add($inputrulelog, [], false);
         $rulesmatched->cleanOlddata($items_id, $itemtype);
