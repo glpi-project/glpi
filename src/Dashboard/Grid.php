@@ -1458,6 +1458,11 @@ HTML;
         $config_key = 'default_dashboard_' . $menu;
         $default    = $_SESSION["glpi$config_key"] ?? "";
         if (strlen($default)) {
+            // If default is "disabled", return empty string and skip default value from config
+            if ($default == 'disabled') {
+                return "";
+            }
+
             $dasboard = new Dashboard($default);
 
             if ($dasboard->load() && $dasboard->canViewCurrent()) {
@@ -1488,7 +1493,7 @@ HTML;
     }
 
 
-    public static function dropdownDashboard(string $name = "", array $params = []): string
+    public static function dropdownDashboard(string $name = "", array $params = [], bool $disabled_option = false): string
     {
         $to_show = Dashboard::getAll(false, true, $params['context'] ?? 'core');
         $can_view_all = $params['can_view_all'] ?? false;
@@ -1498,6 +1503,10 @@ HTML;
             if (self::canViewSpecificicDashboard($key, $can_view_all)) {
                 $options_dashboards[$key] = $dashboard['name'] ?? $key;
             }
+        }
+
+        if ($disabled_option) {
+            $options_dashboards = ['disabled' => __('Disabled')] + $options_dashboards;
         }
 
         return Dropdown::showFromArray($name, $options_dashboards, $params);
