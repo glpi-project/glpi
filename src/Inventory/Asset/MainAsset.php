@@ -857,13 +857,10 @@ abstract class MainAsset extends InventoryAsset
         $criteria = [];
         foreach ($this->rulematchedlog_data as $attribute => $value) {
             foreach ($value as $key => $val) {
-                if ($key != 'last_inventory_update' && $key != 'autoupdatesystems_id') {
-                    $criteria[$key] = $val;
-                }
+                $criteria[$key] = $val;
             }
         }
         $criteria = json_encode($criteria);
-        $criteria = str_replace(['"', '{', '}'], '', $criteria);
 
         $rulesmatched = new RuleMatchedLog();
         $inputrulelog = [

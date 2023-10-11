@@ -284,9 +284,14 @@ class RuleMatchedLog extends CommonDBTM
             echo Request::getModuleName($data['method']);
             echo "</td>";
             echo "<td>";
-            $criteria = explode(',', $data['criteria']);
-            foreach ($criteria as $criterion) {
-                echo "<li>" . $criterion . "</li>";
+            if (isset($data['criteria'])) {
+                $criteria = json_decode($data['criteria'], true);
+                foreach ($criteria as $criterion => $value) {
+                    if (is_array($value)) {
+                        $value = implode(', ', $value);
+                    }
+                    echo "<li>" . $criterion . " : " . $value . "</li>";
+                }
             }
             echo "</td>";
             echo "</tr>";
