@@ -815,7 +815,6 @@ class NetworkPort extends InventoryAsset
                     //so we need to increment index to match related stack_id
                     if ((int) $matches[1] == 0 || $need_increment_index) {
                         $matches[1]++;
-
                         //current NetworkEquipement must have the index incremented
                         $need_increment_index = true;
                     }
