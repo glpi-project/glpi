@@ -1557,7 +1557,8 @@ class Problem extends CommonITILObject
             '_validation_targets'        => [],
             '_tasktemplates_id'          => [],
             'items_id'                   => 0,
-            '_actors'                     => [],
+            '_actors'                    => [],
+            '_add_fromitem'              => [],
         ];
     }
 
