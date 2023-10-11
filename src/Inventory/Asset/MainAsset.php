@@ -857,9 +857,7 @@ abstract class MainAsset extends InventoryAsset
         // append data from RulematchedLogs
         $criteria = [];
         foreach ($this->rulematchedlog_data as $attribute => $value) {
-            foreach ($value as $key => $val) {
-                $criteria[$key] = $val;
-            }
+            $criteria = $value;
         }
         $criteria = json_encode($criteria);
 
