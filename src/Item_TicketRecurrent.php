@@ -63,7 +63,7 @@ class Item_TicketRecurrent extends CommonItilObject_Item
      *
      * @return void
      */
-    public static function itemAddForm(TicketRecurrent $ticketrecurrent, $options = [])
+    public static function itemAddForm(CommonDBTM $ticketrecurrent, $options = [])
     {
         parent::displayItemAddForm($ticketrecurrent, $options);
     }

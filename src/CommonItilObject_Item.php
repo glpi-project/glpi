@@ -345,7 +345,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *
      * @return bool|void
      **/
-    public static function showForObject($obj, $options = [])
+    protected static function showForObject($obj)
     {
         if (!static::validateObjectType($obj)) {
             return false;
@@ -372,16 +372,27 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             );
 
         if ($canedit && !$is_closed) {
+            $requester_id   = 0;
+            if ($obj instanceof CommonITILObject) {
+                $userlink_class = new ($obj->userlinkclass)();
+                $obj_actors     = $userlink_class->getActors($obj->fields['id']);
+                if (
+                    isset($obj_actors[CommonITILActor::REQUESTER])
+                    && (count($obj_actors[CommonITILActor::REQUESTER]) == 1)
+                ) {
+                    $requester_id = reset($obj_actors[CommonITILActor::REQUESTER])['users_id'];
+                }
+            }
+
             echo "<div class='firstbloc'>";
             echo "<form name='commonitilobject_item_form$rand' method='post'
                     action='" . Toolbox::getItemTypeFormURL(static::class) . "'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add an item') . "</th></tr>";
             echo "<tr class='tab_bg_1'><td>";
-            $devices_user_id = $obj instanceof CommonITILObject ? ($options['_users_id_requester'] ?? 0) : 0;
-            if ($devices_user_id > 0) {
+            if ($requester_id > 0) {
                 static::dropdownMyDevices(
-                    $devices_user_id,
+                    $requester_id,
                     $obj->fields["entities_id"],
                     null,
                     0,
@@ -389,7 +400,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 );
             }
             $used = static::getUsedItems($instID);
-            static::dropdownAllDevices("itemtype", null, 0, 1, $devices_user_id, $obj->fields["entities_id"], [static::$items_id_1 => $instID, 'used' => $used, 'rand' => $rand]);
+            static::dropdownAllDevices("itemtype", null, 0, 1, $requester_id, $obj->fields["entities_id"], [static::$items_id_1 => $instID, 'used' => $used, 'rand' => $rand]);
             echo "<span id='item_selection_information$rand'></span>";
             echo "</td><td class='center' width='30%'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -748,7 +759,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         if (
             $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]
-            & pow(2, Ticket::HELPDESK_MY_HARDWARE)
+            & pow(2, CommonITILObject::HELPDESK_MY_HARDWARE)
         ) {
             $my_devices = ['' => Dropdown::EMPTY_VALUE];
             $devices    = [];
@@ -1039,15 +1050,16 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             echo "<span id='item_selection_information$rand' class='ms-1'></span>";
             echo "</div>";
 
-            // Auto update summary of active or just solved ITIL object
-            $params = ['my_items' => '__VALUE__'];
-            $class_l = strtolower(static::class);
-            Ajax::updateItemOnSelectEvent(
-                "dropdown_my_items$rand",
-                "item_selection_information$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/{$class_l}iteminformation.php",
-                $params
-            );
+            // Auto update summary of active or just solved Tickets
+            if (static::$itemtype_1 === Ticket::class) {
+                $params = ['my_items' => '__VALUE__'];
+                Ajax::updateItemOnSelectEvent(
+                    "dropdown_my_items$rand",
+                    "item_selection_information$rand",
+                    $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
+                    $params
+                );
+            }
         }
     }
 
@@ -1531,7 +1543,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 );
                 $found_type = isset($types[$itemtype]);
 
-                $p = ['itemtype'        => '__VALUE__',
+                $p = [
+                    'source_itemtype' => static::$itemtype_1,
+                    'itemtype'        => '__VALUE__',
                     'entity_restrict' => $entity_restrict,
                     'admin'           => $admin,
                     'used'            => $params['used'],
@@ -1543,8 +1557,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 Ajax::updateItemOnSelectEvent(
                     "dropdown_$myname$rand",
                     "results_$myname$rand",
-                    $CFG_GLPI["root_doc"] .
-                                             "/ajax/dropdownTrackingDeviceType.php",
+                    $CFG_GLPI["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
                     $p
                 );
                 echo "<span id='results_$myname$rand'>\n";
@@ -1566,6 +1579,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                             );
                         }
                     } else {
+                        $p['source_itemtype'] = static::$itemtype_1;
                         $p['itemtype'] = $itemtype;
                         echo "<script type='text/javascript' >\n";
                         echo "$(function() {";
@@ -1615,5 +1629,38 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 'items_id' => $asset->getId(),
             ]
         ) > 0;
+    }
+
+    /**
+     * Print the HTML ajax associated item add
+     *
+     * @param CommonDBTM $object
+     * @param $options   array of possible options:
+     *    - id                  : ID of the ticket
+     *    - _users_id_requester : ID of the requester user
+     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
+     *
+     * @return void
+     **/
+    public static function itemAddForm(CommonDBTM $object, $options = [])
+    {
+        if (!($object instanceof CommonITILObject) || !static::validateObjectType($object)) {
+            return;
+        }
+
+        if ($options['id'] ?? 0 > 0) {
+            // Get requester
+            $class  = new $object->userlinkclass();
+            $actors = $class->getActors($options['id']);
+            if (
+                isset($actors[CommonITILActor::REQUESTER])
+                && (count($actors[CommonITILActor::REQUESTER]) == 1)
+            ) {
+                foreach ($actors[CommonITILActor::REQUESTER] as $user_id_single) {
+                    $options['_users_id_requester'] = $user_id_single['users_id'];
+                }
+            }
+        }
+        self::displayItemAddForm($object, $options);
     }
 }

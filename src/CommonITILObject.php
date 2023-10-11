@@ -70,6 +70,10 @@ abstract class CommonITILObject extends CommonDBTM
     protected $lazy_loaded_suppliers = null;
     public $supplierlinkclass = '';
 
+    // HELPDESK LINK HARDWARE DEFINITION : CHECKSUM SYSTEM : BOTH=1*2^0+1*2^1=3
+    const HELPDESK_MY_HARDWARE  = 0;
+    const HELPDESK_ALL_HARDWARE = 1;
+
    /// Use user entity to select entity of the object
     protected $userentity_oncreate = false;
 
@@ -626,6 +630,14 @@ abstract class CommonITILObject extends CommonDBTM
         $predefined_fields = $this->setPredefinedFields($tt, $options, static::getDefaultValues());
         $this->initForm($this->fields['id'], $options);
 
+        $options['_canupdate'] = Session::haveRight('ticket', CREATE);
+        $item_commonitilobject = null;
+        if ($options['_canupdate']) {
+            //compute related item object (Ticket havee his own showForm)
+            $item_link = static::getItemLinkClass();
+            $item_commonitilobject = new $item_link();
+        }
+
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'                    => $this,
             'timeline_itemtypes'      => $this->getTimelineItemtypes(),
@@ -635,6 +647,7 @@ abstract class CommonITILObject extends CommonDBTM
             'timeline'                => $this->getTimelineItems(),
             'itiltemplate_key'        => static::getTemplateFormFieldName(),
             'itiltemplate'            => $tt,
+            'item_commonitilobject'   => $item_commonitilobject,
             'predefined_fields'       => Toolbox::prepareArrayForInput($predefined_fields),
             'canupdate'               => $canupdate,
             'canpriority'             => $canupdate,

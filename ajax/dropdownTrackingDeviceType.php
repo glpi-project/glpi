@@ -105,15 +105,17 @@ if ($isValidItemtype) {
         $p
     );
 
-   // Auto update summary of active or just solved tickets
-    echo "<span id='item_ticket_selection_information{$_POST["myname"]}_$rand' class='ms-1'></span>";
-    Ajax::updateItemOnSelectEvent(
-        $field_id,
-        "item_ticket_selection_information{$_POST["myname"]}_$rand",
-        $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
-        [
-            'items_id' => '__VALUE__',
-            'itemtype' => $_POST['itemtype']
-        ]
-    );
+    // Auto update summary of active or just solved tickets
+    if (($_POST['source_itemtype'] ?? null) === Ticket::class) {
+        echo "<span id='item_ticket_selection_information{$_POST["myname"]}_$rand' class='ms-1'></span>";
+        Ajax::updateItemOnSelectEvent(
+            $field_id,
+            "item_ticket_selection_information{$_POST["myname"]}_$rand",
+            $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
+            [
+                'items_id' => '__VALUE__',
+                'itemtype' => $_POST['itemtype']
+            ]
+        );
+    }
 }

@@ -187,7 +187,6 @@ The present file will list all changes made to the project; according to the
 - `Html::cleanInputText()`
 - `Html::cleanPostForTextArea()`
 - `Html::displayAjaxMessageAfterRedirect()`
-- `Item_Ticket::showForTicket()`
 - `HookManager::enableCSRF()`
 - `Knowbase::getTreeCategoryList()`
 - `Knowbase::showBrowseView()`
@@ -221,6 +220,7 @@ The present file will list all changes made to the project; according to the
 - `X-GLPI-Sanitized-Content` REST API header support.
 - Handling of encoded/escaped value in `autoName()`.
 - `regenerateTreeCompleteName()`
+- `Change_Item::showForChange()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
 - `CommonDropdown::displayHeader()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
@@ -251,6 +251,8 @@ The present file will list all changes made to the project; according to the
 - `Group::title()`
 - `Html::clean()`
 - `Impact::buildNetwork()`
+- `Item_Problem::showForProblem()`
+- `Item_Ticket::showForTicket()`
 - `KnowbaseItem::addToFaq()`
 - `KnowbaseItem::addVisibilityJoins()`
 - `KnowbaseItem::addVisibilityRestrict()`

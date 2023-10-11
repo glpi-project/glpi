@@ -1428,9 +1428,9 @@ class Problem extends CommonITILObject
                 '_add_fromitem',
                 __('New problem for this item...'),
                 [
-                    '_from_itemtype' => $item->getType(),
-                    '_from_items_id' => $item->getID(),
-                    'entities_id'    => $item->fields['entities_id']
+                    'itemtype'    => $item::class,
+                    'items_id'    => $item->getID(),
+                    'entities_id' => $item->fields['entities_id']
                 ]
             );
             echo "</div>";
