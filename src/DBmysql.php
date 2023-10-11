@@ -343,8 +343,27 @@ class DBmysql
      * @var integer $SQL_TOTAL_REQUEST
      *
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 10.0.11
      */
     public function query($query)
+    {
+        Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.', false);
+        return $this->doQuery($query);
+    }
+
+    /**
+     * Execute a MySQL query
+     *
+     * @param string $query Query to execute
+     *
+     * @var array   $CFG_GLPI
+     * @var array   $DEBUG_SQL
+     * @var integer $SQL_TOTAL_REQUEST
+     *
+     * @return mysqli_result|boolean Query result handler
+     */
+    public function doQuery($query)
     {
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
@@ -444,10 +463,29 @@ class DBmysql
      * @param string $message Explanation of query (default '')
      *
      * @return mysqli_result Query result handler
+     *
+     * @deprecated 10.0.11
      */
     public function queryOrDie($query, $message = '')
     {
-        $res = $this->query($query);
+        Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.', false);
+        return $this->doQueryOrDie($query, $message);
+    }
+
+    /**
+     * Execute a MySQL query and die
+     * (optionnaly with a message) if it fails
+     *
+     * @since 0.84
+     *
+     * @param string $query   Query to execute
+     * @param string $message Explanation of query (default '')
+     *
+     * @return mysqli_result Query result handler
+     */
+    public function doQueryOrDie($query, $message = '')
+    {
+        $res = $this->doQuery($query);
         if (!$res) {
            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
@@ -908,7 +946,7 @@ class DBmysql
         if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
             return $this->field_cache[$table];
         }
-        $result = $this->query("SHOW COLUMNS FROM `$table`");
+        $result = $this->doQuery("SHOW COLUMNS FROM `$table`");
         if ($result) {
             if ($this->numrows($result) > 0) {
                 $this->field_cache[$table] = [];
@@ -1029,7 +1067,7 @@ class DBmysql
             $query = trim($query);
             if ($query != '') {
                 $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
-                if (!$this->query($query)) {
+                if (!$this->doQuery($query)) {
                     return false;
                 }
                 if (!isCommandLine()) {
@@ -1127,7 +1165,7 @@ class DBmysql
     {
         $name          = addslashes($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK('$name', 0)";
-        $result        = $this->query($query);
+        $result        = $this->doQuery($query);
         list($lock_ok) = $this->fetchRow($result);
 
         return (bool)$lock_ok;
@@ -1146,7 +1184,7 @@ class DBmysql
     {
         $name          = addslashes($this->dbdefault . '.' . $name);
         $query         = "SELECT RELEASE_LOCK('$name')";
-        $result        = $this->query($query);
+        $result        = $this->doQuery($query);
         list($lock_ok) = $this->fetchRow($result);
 
         return $lock_ok;
@@ -1345,7 +1383,7 @@ class DBmysql
      */
     public function insert($table, $params)
     {
-        $result = $this->query(
+        $result = $this->doQuery(
             $this->buildInsert($table, $params)
         );
         return $result;
@@ -1366,7 +1404,7 @@ class DBmysql
     public function insertOrDie($table, $params, $message = '')
     {
         $insert = $this->buildInsert($table, $params);
-        $res = $this->query($insert);
+        $res = $this->doQuery($insert);
         if (!$res) {
            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
@@ -1400,7 +1438,7 @@ class DBmysql
      */
     public function buildUpdate($table, $params, $clauses, array $joins = [])
     {
-       //when no explicit "WHERE", we only have a WHEre clause.
+       //when no explicit "WHERE", we only have a WHERE clause.
         if (!isset($clauses['WHERE'])) {
             $clauses  = ['WHERE' => $clauses];
         } else {
@@ -1468,7 +1506,7 @@ class DBmysql
     public function update($table, $params, $where, array $joins = [])
     {
         $query = $this->buildUpdate($table, $params, $where, $joins);
-        $result = $this->query($query);
+        $result = $this->doQuery($query);
         return $result;
     }
 
@@ -1490,7 +1528,7 @@ class DBmysql
     public function updateOrDie($table, $params, $where, $message = '', array $joins = [])
     {
         $update = $this->buildUpdate($table, $params, $where, $joins);
-        $res = $this->query($update);
+        $res = $this->doQuery($update);
         if (!$res) {
            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
@@ -1579,7 +1617,7 @@ class DBmysql
     public function delete($table, $where, array $joins = [])
     {
         $query = $this->buildDelete($table, $where, $joins);
-        $result = $this->query($query);
+        $result = $this->doQuery($query);
         return $result;
     }
 
@@ -1600,7 +1638,7 @@ class DBmysql
     public function deleteOrDie($table, $where, $message = '', array $joins = [])
     {
         $update = $this->buildDelete($table, $where, $joins);
-        $res = $this->query($update);
+        $res = $this->doQuery($update);
         if (!$res) {
            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
@@ -1650,7 +1688,7 @@ class DBmysql
     public function truncateOrDie($table, $message = '')
     {
         $table_name = $this::quoteName($table);
-        $res = $this->query("TRUNCATE $table_name");
+        $res = $this->doQuery("TRUNCATE $table_name");
         if (!$res) {
            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
@@ -1678,7 +1716,7 @@ class DBmysql
      */
     public function dropTable(string $name, bool $exists = false)
     {
-        $res = $this->query(
+        $res = $this->doQuery(
             $this->buildDrop(
                 $name,
                 'TABLE',
@@ -1698,7 +1736,7 @@ class DBmysql
      */
     public function dropView(string $name, bool $exists = false)
     {
-        $res = $this->query(
+        $res = $this->doQuery(
             $this->buildDrop(
                 $name,
                 'VIEW',
@@ -1721,14 +1759,20 @@ class DBmysql
     {
         $known_types = [
             'TABLE',
-            'VIEW'
+            'VIEW',
+            'INDEX',
+            'FOREIGN KEY',
+            'FIELD'
         ];
         if (!in_array($type, $known_types)) {
             throw new \InvalidArgumentException('Unknown type to drop: ' . $type);
         }
 
         $name = $this::quoteName($name);
-        $query = "DROP $type";
+        $query = 'DROP';
+        if ($type != 'FIELD') {
+            $query .= " $type";
+        }
         if ($exists) {
             $query .= ' IF EXISTS';
         }
@@ -1811,7 +1855,7 @@ class DBmysql
     protected function rollbackTo($name)
     {
         // No proper rollback to savepoint support in mysqli extension?
-        $result = $this->query('ROLLBACK TO ' . self::quoteName($name));
+        $result = $this->doQuery('ROLLBACK TO ' . self::quoteName($name));
         return $result !== false;
     }
 

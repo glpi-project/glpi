@@ -448,7 +448,7 @@ class Migration
                     $query = "UPDATE `$table`
                         SET `$field` = " . $params['update'] . " " .
                         $params['condition'] . "";
-                    $DB->queryOrDie($query, $this->version . " set $field in $table");
+                    $DB->doQueryOrDie($query, $this->version . " set $field in $table");
                 }
                 return true;
             }
@@ -514,7 +514,7 @@ class Migration
                 ($oldfield != $newfield)
                 && $DB->fieldExists($table, $newfield)
             ) {
-                $this->change[$table][] = "DROP `$newfield` ";
+                $this->change[$table][] = $DB->buildDrop($newfield, 'FIELD');
             }
 
             if ($format) {
@@ -541,7 +541,7 @@ class Migration
         global $DB;
 
         if ($DB->fieldExists($table, $field, false)) {
-            $this->change[$table][] = "DROP `$field`";
+            $this->change[$table][] = $DB->buildDrop($field, 'FIELD');
         }
     }
 
@@ -620,9 +620,9 @@ class Migration
      **/
     public function dropKey($table, $indexname)
     {
-
+        global $DB;
         if (isIndex($table, $indexname)) {
-            $this->change[$table][] = "DROP INDEX `$indexname`";
+            $this->change[$table][] = $DB->buildDrop($indexname, 'INDEX');
         }
     }
 
@@ -637,9 +637,9 @@ class Migration
      **/
     public function dropForeignKeyContraint($table, $keyname)
     {
-
+        global $DB;
         if (isForeignKeyContraint($table, $keyname)) {
-            $this->change[$table][] = "DROP FOREIGN KEY `$keyname`";
+            $this->change[$table][] = $DB->buildDrop($keyname, 'FOREIGN KEY');
         }
     }
 
@@ -658,7 +658,7 @@ class Migration
 
         if (!$DB->tableExists("$newtable") && $DB->tableExists("$oldtable")) {
             $query = "RENAME TABLE `$oldtable` TO `$newtable`";
-            $DB->queryOrDie($query, $this->version . " rename $oldtable");
+            $DB->doQueryOrDie($query, $this->version . " rename $oldtable");
 
            // Clear possibly forced value of table name.
            // Actually the only forced value in core is for config table.
@@ -728,12 +728,12 @@ class Migration
            // $DB->query($query);
 
             $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
-            $DB->queryOrDie($query, $this->version . " create $newtable");
+            $DB->doQueryOrDie($query, $this->version . " create $newtable");
 
             if ($insert) {
                //needs DB::insert to support subqueries to get migrated
                 $query = "INSERT INTO `$newtable` (SELECT * FROM `$oldtable`)";
-                $DB->queryOrDie($query, $this->version . " copy from $oldtable to $newtable");
+                $DB->doQueryOrDie($query, $this->version . " copy from $oldtable to $newtable");
             }
         }
     }
@@ -787,7 +787,7 @@ class Migration
         if (isset($this->change[$table])) {
             $query = "ALTER TABLE `$table` " . implode(" ,\n", $this->change[$table]) . " ";
             $this->displayMessage(sprintf(__('Change of the database layout - %s'), $table));
-            $DB->queryOrDie($query, $this->version . " multiple alter in $table");
+            $DB->doQueryOrDie($query, $this->version . " multiple alter in $table");
             unset($this->change[$table]);
         }
 
@@ -795,7 +795,7 @@ class Migration
             $this->displayMessage(sprintf(__('Adding fulltext indices - %s'), $table));
             foreach ($this->fulltexts[$table] as $idx) {
                 $query = "ALTER TABLE `$table` " . $idx;
-                $DB->queryOrDie($query, $this->version . " $idx");
+                $DB->doQueryOrDie($query, $this->version . " $idx");
             }
             unset($this->fulltexts[$table]);
         }
@@ -804,7 +804,7 @@ class Migration
             $this->displayMessage(sprintf(__('Adding unicity indices - %s'), $table));
             foreach ($this->uniques[$table] as $idx) {
                 $query = "ALTER TABLE `$table` " . $idx;
-                $DB->queryOrDie($query, $this->version . " $idx");
+                $DB->doQueryOrDie($query, $this->version . " $idx");
             }
             unset($this->uniques[$table]);
         }
@@ -821,7 +821,7 @@ class Migration
         global $DB;
 
         foreach ($this->queries[self::PRE_QUERY] as $query) {
-            $DB->queryOrDie($query['query'], $query['message']);
+            $DB->doQueryOrDie($query['query'], $query['message']);
         }
         $this->queries[self::PRE_QUERY] = [];
 
@@ -835,7 +835,7 @@ class Migration
         }
 
         foreach ($this->queries[self::POST_QUERY] as $query) {
-            $DB->queryOrDie($query['query'], $query['message']);
+            $DB->doQueryOrDie($query['query'], $query['message']);
         }
         $this->queries[self::POST_QUERY] = [];
 
@@ -1783,7 +1783,7 @@ class Migration
         $default_collation = DBConnection::getDefaultCollation();
         $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-        $DB->queryOrDie("
+        $DB->doQueryOrDie("
             CREATE TABLE `$table` (
                 `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
                 `$fk_1` int {$default_key_sign} NOT NULL DEFAULT '0',

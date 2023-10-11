@@ -358,9 +358,9 @@ class DatabaseSchemaIntegrityChecker
      */
     protected function getEffectiveCreateTableSql(string $table_name): string
     {
-        if (($create_table_res = $this->db->query('SHOW CREATE TABLE ' . $this->db->quoteName($table_name))) === false) {
+        if (($create_table_res = $this->db->doQuery('SHOW CREATE TABLE ' . $this->db->quoteName($table_name))) === false) {
             if ($this->db->errno() == 1146) {
-                return ''; // Table does not exists, effective create table is empty (will output full proper query as diff).
+                return ''; // Table does not exist, effective create table is empty (will output full proper query as diff).
             }
             throw new \Exception(sprintf('Unable to get table "%s" structure', $table_name));
         }

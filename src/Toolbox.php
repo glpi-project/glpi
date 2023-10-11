@@ -567,11 +567,15 @@ class Toolbox
      * @param  string $message the message to send
      * @return void
      */
-    public static function deprecated($message = "Called method is deprecated")
+    public static function deprecated($message = "Called method is deprecated", $strict = true)
     {
-        trigger_error($message, E_USER_DEPRECATED);
+        if (
+            $strict === true ||
+            (defined('GLPI_STRICT_DEPRECATED') && GLPI_STRICT_DEPRECATED === true)
+        ) {
+            trigger_error($message, E_USER_DEPRECATED);
+        }
     }
-
 
     /**
      * Log a message in log file

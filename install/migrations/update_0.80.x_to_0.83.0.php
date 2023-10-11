@@ -84,7 +84,7 @@ function update080xto0830()
              FROM `glpi_ticketvalidations`
              WHERE `glpi_ticketvalidations`.`tickets_id` NOT IN (SELECT `glpi_tickets`.`id`
                                                                  FROM `glpi_tickets`)";
-    $DB->queryOrDie($query, "0.83 clean glpi_ticketvalidations");
+    $DB->doQueryOrDie($query, "0.83 clean glpi_ticketvalidations");
 
    // Problems management
     if (!$DB->tableExists('glpi_problems')) {
@@ -139,7 +139,7 @@ function update080xto0830()
                   KEY `due_date` (`due_date`),
                   KEY `users_id_lastupdater` (`users_id_lastupdater`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "0.83 create glpi_problems");
+        $DB->doQueryOrDie($query, "0.83 create glpi_problems");
         $ADDTODISPLAYPREF['Problem'] = [21,12,19,15,3,7,18];
     }
 
@@ -164,7 +164,7 @@ function update080xto0830()
                   UNIQUE KEY `unicity` (`problems_id`,`type`,`users_id`,`alternative_email`),
                   KEY `user` (`users_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "0.83 add table glpi_problems_users");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_problems_users");
     }
 
     if (!$DB->tableExists('glpi_groups_problems')) {
@@ -177,7 +177,7 @@ function update080xto0830()
                   UNIQUE KEY `unicity` (`problems_id`,`type`,`groups_id`),
                   KEY `group` (`groups_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "0.83 add table glpi_groups_problems");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_groups_problems");
     }
 
     if (!$DB->tableExists('glpi_items_problems')) {
@@ -190,7 +190,7 @@ function update080xto0830()
                   UNIQUE KEY `unicity` (`problems_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "0.83 add table glpi_items_problems");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_items_problems");
     }
 
     if (!$DB->tableExists('glpi_problems_tickets')) {
@@ -202,7 +202,7 @@ function update080xto0830()
                   UNIQUE KEY `unicity` (`problems_id`,`tickets_id`),
                   KEY `tickets_id` (`tickets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "0.83 add table glpi_problems_tickets");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_problems_tickets");
     }
 
     if (!$DB->tableExists('glpi_problemtasks')) {
@@ -228,7 +228,7 @@ function update080xto0830()
                   KEY `state` (`state`),
                   KEY `taskcategories_id` (taskcategories_id)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "0.83 add table glpi_problemtasks");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_problemtasks");
     }
 
     $migration->addField(
@@ -297,7 +297,7 @@ function update080xto0830()
                           `users_id_tech` = '" . $data['users_id'] . "',
                           `state` = '" . $data['state'] . "'
                       WHERE `id` = '" . $data['tickettasks_id'] . "'";
-                $DB->queryOrDie($query, "0.83 migrate planning to glpi_tickettasks");
+                $DB->doQueryOrDie($query, "0.83 migrate planning to glpi_tickettasks");
             }
         }
 
@@ -318,7 +318,7 @@ function update080xto0830()
                            = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
                 WHERE `glpi_notificationtemplates`.`itemtype` = 'Ticket'";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result)) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "UPDATE `glpi_notificationtemplatetranslations`
@@ -334,7 +334,7 @@ function update080xto0830()
                              $data['content_html']
                          )) . "'
                          WHERE `id` = " . $data['id'] . "";
-                     $DB->queryOrDie($query, "0.83 fix tags usage for multi users");
+                     $DB->doQueryOrDie($query, "0.83 fix tags usage for multi users");
                 }
             }
         }
@@ -344,12 +344,12 @@ function update080xto0830()
              FROM `glpi_notificationtemplates`
              WHERE `name` = 'Problems'";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) == 0) {
             $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Problems', 'Problem', NOW())";
-            $DB->queryOrDie($query, "0.83 add problem notification");
+            $DB->doQueryOrDie($query, "0.83 add problem notification");
             $notid = $DB->insertId();
 
             $query = "INSERT INTO `glpi_notificationtemplatetranslations`
@@ -417,7 +417,7 @@ function update080xto0830()
 &lt;div class=\"description b\"&gt;&lt;strong&gt;[##task.date##] &lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.author##&lt;/span&gt; ##task.author##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.description##&lt;/span&gt; ##task.description##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.time##&lt;/span&gt; ##task.time##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.category##&lt;/span&gt; ##task.category##&lt;/div&gt;
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
 &lt;/div&gt;')";
-            $DB->queryOrDie($query, "0.83 add problem notification translation");
+            $DB->doQueryOrDie($query, "0.83 add problem notification translation");
 
             $notifications = ['new'         => [],
                 'update'      => [Notification::ASSIGN_TECH,
@@ -454,14 +454,14 @@ function update080xto0830()
                               `date_mod`)
                       VALUES ('" . $notif_names[$type] . "', 0, 'Problem', '$type', 'mail',
                               $notid, '', 1, 1, NOW())";
-                $DB->queryOrDie($query, "0.83 add problem $type notification");
+                $DB->doQueryOrDie($query, "0.83 add problem $type notification");
                 $notifid = $DB->insertId();
 
                 foreach ($targets as $target) {
                     $query = "INSERT INTO `glpi_notificationtargets`
                                 (`id`, `notifications_id`, `type`, `items_id`)
                          VALUES (NULL, $notifid, " . Notification::USER_TYPE . ", $target);";
-                    $DB->queryOrDie($query, "0.83 add problem $type notification target");
+                    $DB->doQueryOrDie($query, "0.83 add problem $type notification target");
                 }
             }
         }
@@ -474,7 +474,7 @@ function update080xto0830()
              FROM `glpi_networkports_vlans`
              WHERE `networkports_id` NOT IN (SELECT `id`
                                              FROM `glpi_networkports`)";
-    $DB->queryOrDie($query, "0.83 clean networkports_vlans datas");
+    $DB->doQueryOrDie($query, "0.83 clean networkports_vlans datas");
 
     $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Rename Solution objects'));
 
@@ -543,7 +543,7 @@ function update080xto0830()
             $query = "UPDATE `$table`
                    SET `itemtype` = '$val'
                    WHERE `itemtype` = '$key'";
-            $DB->queryOrDie($query, "0.83 update itemtype of table $table for $val");
+            $DB->doQueryOrDie($query, "0.83 update itemtype of table $table for $val");
         }
     }
 
@@ -645,12 +645,12 @@ function update080xto0830()
         $query = "SELECT *
                 FROM `glpi_documenttypes`
                 WHERE `ext` = '$ext'";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) == 0) {
                 $query = "INSERT INTO `glpi_documenttypes`
                              (`name`, `ext`, `icon`, `is_uploadable`, `date_mod`)
                       VALUES ('" . $data['name'] . "', '$ext', '" . $data['icon'] . "', '1', NOW())";
-                $DB->queryOrDie($query, "0.83 add document type $ext");
+                $DB->doQueryOrDie($query, "0.83 add document type $ext");
             }
         }
     }
@@ -667,12 +667,12 @@ function update080xto0830()
         $query = "SELECT `id`
                 FROM `glpi_documenttypes`
                 WHERE `ext` = '$ext'";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) == 1) {
                 $query = "UPDATE `glpi_documenttypes`
                       SET `icon` = '$icon', `date_mod` = NOW()
                       WHERE `id` = '" . $DB->result($result, 0, 0) . "'";
-                $DB->queryOrDie($query, "0.83 update icon for doc type $ext");
+                $DB->doQueryOrDie($query, "0.83 update icon for doc type $ext");
             }
         }
     }
@@ -739,7 +739,7 @@ function update080xto0830()
                   KEY `is_default` (`is_default`),
                   KEY `is_dynamic` (`is_dynamic`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "0.83 add table glpi_useremails");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_useremails");
     }
    // Manage migration : populate is_default=1
    // and is_dynamic depending of authldap config / authtype / auths_id
@@ -748,7 +748,7 @@ function update080xto0830()
                 FROM `glpi_users`
                 WHERE `email` <> '' AND `email` IS NOT NULL";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $is_dynamic = 0;
@@ -774,7 +774,7 @@ function update080xto0830()
                     $query2 = "INSERT INTO `glpi_useremails`
                                  (`users_id`, `is_default`, `is_dynamic`, `email`)
                           VALUES ('" . $data['id'] . "','1','$is_dynamic','" . addslashes($data['email']) . "')";
-                    $DB->queryOrDie($query2, "0.83 move emails to  glpi_useremails");
+                    $DB->doQueryOrDie($query2, "0.83 move emails to  glpi_useremails");
                 }
             }
         }
@@ -792,7 +792,7 @@ function update080xto0830()
         $query = "UPDATE `glpi_fieldunicities`
                 SET `is_active` = '0'
                 WHERE `id` = '" . $data['id'] . "'";
-        $DB->query($query);
+        $DB->doQuery($query);
         echo "<div class='red'><p>A unicity check use email for users. ";
         echo "Due to new feature permit several email per users, this rule have been disabled.</p></div>";
     }
@@ -815,7 +815,7 @@ function update080xto0830()
                 FROM `glpi_groups`
                 WHERE `users_id` > 0";
         $user = new User();
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     if ($user->getFromDB($data['users_id'])) {
@@ -823,20 +823,20 @@ function update080xto0830()
                             FROM `glpi_groups_users`
                             WHERE `groups_id` = '" . $data['id'] . "'
                                  AND `users_id` = '" . $data['users_id'] . "'";
-                        if ($result2 = $DB->query($query)) {
+                        if ($result2 = $DB->doQuery($query)) {
                           // add manager to groups_users setting if not present
                             if ($DB->numrows($result2) == 0) {
                                  $query2 = "INSERT INTO`glpi_groups_users`
                                           (`users_id`, `groups_id`, `is_manager`)
                                    VALUES ('" . $data['users_id'] . "' ,'" . $data['id'] . "', '1')";
-                                 $DB->queryOrDie($query2, "0.83 insert manager of groups");
+                                 $DB->doQueryOrDie($query2, "0.83 insert manager of groups");
                             } else {
                               // Update user as manager if presnet in groups_users
                                 $query2 = "UPDATE `glpi_groups_users`
                                    SET `is_manager` = '1'
                                    WHERE `groups_id` = '" . $data['id'] . "'
                                          AND `users_id` = '" . $data['users_id'] . "'";
-                                $DB->queryOrDie($query2, "0.83 set manager of groups");
+                                $DB->doQueryOrDie($query2, "0.83 set manager of groups");
                             }
                         }
                     }
@@ -859,7 +859,7 @@ function update080xto0830()
                         ON  `doc`.`id` = `doc_i`.`documents_id`
                       SET `doc_i`.`entities_id` = `doc`.`entities_id`,
                          `doc_i`.`is_recursive` = `doc`.`is_recursive`";
-        $DB->queryOrDie(
+        $DB->doQueryOrDie(
             $query_doc_i,
             "0.83 update entities_id and is_recursive in glpi_documents_items"
         );
@@ -878,14 +878,14 @@ function update080xto0830()
 
     $changes['RuleTicket'] = ['ticketcategories_id' => 'itilcategories_id'];
 
-    $DB->query("SET SESSION group_concat_max_len = 4194304;");
+    $DB->doQuery("SET SESSION group_concat_max_len = 4194304;");
     foreach ($changes as $ruletype => $tab) {
        // Get rules
         $query = "SELECT GROUP_CONCAT(`id`)
                 FROM `glpi_rules`
                 WHERE `sub_type` = '" . $ruletype . "'
                 GROUP BY `sub_type`";
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 // Get rule string
                 $rules = $DB->result($result, 0, 0);
@@ -896,7 +896,7 @@ function update080xto0830()
                          WHERE `field` = '$old'
                                AND `rules_id` IN ($rules)";
 
-                    $DB->queryOrDie($query, "0.83 update datas for rules actions");
+                    $DB->doQueryOrDie($query, "0.83 update datas for rules actions");
                 }
                 // Update criteria
                 foreach ($tab as $old => $new) {
@@ -904,7 +904,7 @@ function update080xto0830()
                          SET `criteria` = '$new'
                          WHERE `criteria` = '$old'
                                AND `rules_id` IN ($rules)";
-                    $DB->queryOrDie($query, "0.83 update datas for rules criteria");
+                    $DB->doQueryOrDie($query, "0.83 update datas for rules criteria");
                 }
             }
         }
@@ -927,12 +927,12 @@ function update080xto0830()
                   KEY `is_recursive` (`is_recursive`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_tickettemplates");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_tickettemplates");
 
         $query = "INSERT INTO `glpi_tickettemplates`
                        (`name`, `is_recursive`)
                 VALUES ('Default', 1)";
-        $DB->queryOrDie($query, "0.83 add default ticket template");
+        $DB->doQueryOrDie($query, "0.83 add default ticket template");
         $default_ticket_template = $DB->insertId();
     }
 
@@ -964,7 +964,7 @@ function update080xto0830()
                   KEY `unicity` (`tickettemplates_id`,`num`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_tickettemplatehiddenfields");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_tickettemplatehiddenfields");
     }
 
     if (!$DB->tableExists('glpi_tickettemplatepredefinedfields')) {
@@ -981,7 +981,7 @@ function update080xto0830()
                   KEY `unicity` (`tickettemplates_id`,`num`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_tickettemplatepredefinedfields");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_tickettemplatepredefinedfields");
     }
 
     if (!$DB->tableExists('glpi_tickettemplatemandatoryfields')) {
@@ -997,7 +997,7 @@ function update080xto0830()
                   KEY `unicity` (`tickettemplates_id`,`num`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_tickettemplatemandatoryfields");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_tickettemplatemandatoryfields");
 
        /// Add mandatory fields to default template
         if ($default_ticket_template > 0) {
@@ -1006,19 +1006,19 @@ function update080xto0830()
                     $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
                                 (`tickettemplates_id`, `num`)
                          VALUES ('$default_ticket_template', 1)";
-                    $DB->queryOrDie($query, "0.83 add mandatory field for default ticket template");
+                    $DB->doQueryOrDie($query, "0.83 add mandatory field for default ticket template");
                 }
                 if (isset($data['is_ticket_content_mandatory']) && $data['is_ticket_content_mandatory']) {
                     $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
                                 (`tickettemplates_id`, `num`)
                          VALUES ('$default_ticket_template', 21)";
-                    $DB->queryOrDie($query, "0.83 add mandatory field for default ticket template");
+                    $DB->doQueryOrDie($query, "0.83 add mandatory field for default ticket template");
                 }
                 if (isset($data['is_ticket_category_mandatory']) && $data['is_ticket_category_mandatory']) {
                     $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
                                 (`tickettemplates_id`, `num`)
                          VALUES ('$default_ticket_template', 7)";
-                    $DB->queryOrDie($query, "0.83 add mandatory field for default ticket template");
+                    $DB->doQueryOrDie($query, "0.83 add mandatory field for default ticket template");
                 }
             }
 
@@ -1027,7 +1027,7 @@ function update080xto0830()
             $query = "UPDATE `glpi_itilcategories`
                    SET `tickettemplates_id_incident` = '$default_ticket_template',
                        `tickettemplates_id_demand` = '$default_ticket_template'";
-            $DB->queryOrDie($query, "0.83 update default templates used by itil categories");
+            $DB->doQueryOrDie($query, "0.83 update default templates used by itil categories");
         }
     }
    // Drop global mandatory config
@@ -1134,7 +1134,7 @@ function update080xto0830()
              FROM `glpi_ticketsatisfactions`
              WHERE `glpi_ticketsatisfactions`.`tickets_id` NOT IN (SELECT `glpi_tickets`.`id`
                                                                    FROM `glpi_tickets`)";
-    $DB->queryOrDie($query, "0.83 clean glpi_ticketsatisfactions");
+    $DB->doQueryOrDie($query, "0.83 clean glpi_ticketsatisfactions");
 
    // Clean unused slalevels
     $query = "DELETE
@@ -1142,7 +1142,7 @@ function update080xto0830()
              WHERE (`glpi_slalevels_tickets`.`tickets_id`, `glpi_slalevels_tickets`.`slalevels_id`)
                   NOT IN (SELECT `glpi_tickets`.`id`, `glpi_tickets`.`slalevels_id`
                           FROM `glpi_tickets`)";
-    $DB->queryOrDie($query, "0.83 clean glpi_slalevels_tickets");
+    $DB->doQueryOrDie($query, "0.83 clean glpi_slalevels_tickets");
 
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'recurrent tickets'));
 
@@ -1167,7 +1167,7 @@ function update080xto0830()
                   KEY `next_creation_date` (`next_creation_date`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_ticketrecurrents");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_ticketrecurrents");
 
         $ADDTODISPLAYPREF['TicketRecurrent'] = [11, 12, 13, 15, 14];
     }
@@ -1178,7 +1178,7 @@ function update080xto0830()
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
                 VALUES ('TicketRecurrent', 'ticketrecurrent', 3600, NULL, 1, 1, 3,
                         0, 24, 30, NULL, NULL, NULL)";
-        $DB->queryOrDie($query, "0.83 populate glpi_crontasks for ticketrecurrent");
+        $DB->doQueryOrDie($query, "0.83 populate glpi_crontasks for ticketrecurrent");
     }
 
     $migration->addField('glpi_profiles', 'ticketrecurrent', "char", ['update' => '`sla`']);
@@ -1384,7 +1384,7 @@ function update080xto0830()
         $query  = "INSERT INTO `glpi_profiles`
                          (`" . implode("`, `", array_keys($data)) . "`)
                   VALUES ('" . implode("', '", $data) . "')";
-        $DB->queryOrDie($query, "0.83 create new profile $profile");
+        $DB->doQueryOrDie($query, "0.83 create new profile $profile");
     }
 
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'Reminder visibility'));
@@ -1399,7 +1399,7 @@ function update080xto0830()
                   KEY `users_id` (`users_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_reminders_users");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_reminders_users");
     }
 
     if (!$DB->tableExists('glpi_groups_reminders')) {
@@ -1417,7 +1417,7 @@ function update080xto0830()
 
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_groups_reminders");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_groups_reminders");
     }
 
     if (!$DB->tableExists('glpi_profiles_reminders')) {
@@ -1434,7 +1434,7 @@ function update080xto0830()
                   KEY `is_recursive` (`is_recursive`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_profiles_reminders");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_profiles_reminders");
     }
 
     if (!$DB->tableExists('glpi_entities_reminders')) {
@@ -1449,7 +1449,7 @@ function update080xto0830()
                   KEY `is_recursive` (`is_recursive`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_entities_reminders");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_entities_reminders");
     }
 
    /// Migrate datas for is_helpdesk_visible : add all helpdesk profiles / drop field is_helpdesk_visible
@@ -1458,7 +1458,7 @@ function update080xto0830()
                 FROM `glpi_reminders`
                 WHERE `is_helpdesk_visible` = 1";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 // Grab helpdesk profiles
                 $helpdesk_profiles = [];
@@ -1476,7 +1476,7 @@ function update080xto0830()
                               $query = "INSERT INTO `glpi_profiles_reminders`
                                       (`reminders_id`, `profiles_id`)
                                VALUES ('" . $data['id'] . "', '$pid');";
-                              $DB->queryOrDie($query, "0.83 migrate data for is_helpdesk_visible drop on glpi_reminders");
+                              $DB->doQueryOrDie($query, "0.83 migrate data for is_helpdesk_visible drop on glpi_reminders");
                         }
                     }
                 }
@@ -1492,14 +1492,14 @@ function update080xto0830()
                 FROM `glpi_reminders`
                 WHERE `is_private` = 0";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "INSERT INTO `glpi_entities_reminders`
                                 (`reminders_id`, `entities_id`, `is_recursive`)
                          VALUES ('" . $data['id'] . "', '" . $data['entities_id'] . "',
                                  '" . $data['is_recursive'] . "');";
-                    $DB->queryOrDie($query, "0.83 migrate data for public reminders");
+                    $DB->doQueryOrDie($query, "0.83 migrate data for public reminders");
                 }
             }
         }
@@ -1523,7 +1523,7 @@ function update080xto0830()
                   KEY `users_id` (`users_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_knowbaseitems_users");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_knowbaseitems_users");
     }
 
     if (!$DB->tableExists('glpi_groups_knowbaseitems')) {
@@ -1541,7 +1541,7 @@ function update080xto0830()
 
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_groups_knowbaseitems");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_groups_knowbaseitems");
     }
 
     if (!$DB->tableExists('glpi_knowbaseitems_profiles')) {
@@ -1558,7 +1558,7 @@ function update080xto0830()
                   KEY `is_recursive` (`is_recursive`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_knowbaseitems_profiles");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_knowbaseitems_profiles");
     }
 
     if (!$DB->tableExists('glpi_entities_knowbaseitems')) {
@@ -1573,7 +1573,7 @@ function update080xto0830()
                   KEY `is_recursive` (`is_recursive`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $DB->queryOrDie($query, "0.83 add table glpi_entities_knowbaseitems");
+        $DB->doQueryOrDie($query, "0.83 add table glpi_entities_knowbaseitems");
     }
 
    /// Migrate datas for entities_id / is_recursive
@@ -1581,14 +1581,14 @@ function update080xto0830()
         $query = "SELECT *
                 FROM `glpi_knowbaseitems`";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "INSERT INTO `glpi_entities_knowbaseitems`
                                 (`knowbaseitems_id`, `entities_id`, `is_recursive`)
                          VALUES ('" . $data['id'] . "', '" . $data['entities_id'] . "',
                                  '" . $data['is_recursive'] . "');";
-                    $DB->queryOrDie($query, "0.83 migrate data for entities on glpi_entities_knowbaseitems");
+                    $DB->doQueryOrDie($query, "0.83 migrate data for entities on glpi_entities_knowbaseitems");
                 }
             }
         }
@@ -1623,45 +1623,45 @@ function update080xto0830()
                         -1, -1,
                         -1, -1, -1,
                         -1, -1)"; // -1 to keep config value - see 1647
-        $DB->queryOrDie($query, "0.83 add entities_id 0 in glpi_entitydatas");
+        $DB->doQueryOrDie($query, "0.83 add entities_id 0 in glpi_entitydatas");
         $restore_root_entity_value = true;
     } else {
         $query = "UPDATE `glpi_entitydatas`
                 SET `tickettemplates_id` = '$default_ticket_template'
                 WHERE `entities_id` = 0
                       AND `tickettemplates_id` = -2";
-        $DB->queryOrDie($query, "0.83 update tickettemplates_id for root entity in glpi_entitydatas");
+        $DB->doQueryOrDie($query, "0.83 update tickettemplates_id for root entity in glpi_entitydatas");
 
         $query = "UPDATE `glpi_entitydatas`
                 SET `entities_id_software` = -10
                 WHERE `entities_id` = 0
                       AND `entities_id_software` = -2";
-        $DB->queryOrDie($query, "0.83 update entities_id_software for root entity in glpi_entitydatas");
+        $DB->doQueryOrDie($query, "0.83 update entities_id_software for root entity in glpi_entitydatas");
 
             // For root entity already exists in entitydatas in 0.78
         $query = "UPDATE `glpi_entitydatas`
                 SET `tickettype` = 1
                 WHERE `entities_id` = 0
                       AND `tickettype` = 0";
-        $DB->queryOrDie($query, "0.83 update tickettype for root entity in glpi_entitydatas");
+        $DB->doQueryOrDie($query, "0.83 update tickettype for root entity in glpi_entitydatas");
 
         $query = "UPDATE `glpi_entitydatas`
                 SET `inquest_config` = 1
                 WHERE `entities_id` = 0
                       AND `inquest_config` = 0";
-        $DB->queryOrDie($query, "0.83 update inquest_config for root entity in glpi_entitydatas ");
+        $DB->doQueryOrDie($query, "0.83 update inquest_config for root entity in glpi_entitydatas ");
 
         $query = "UPDATE `glpi_entitydatas`
                 SET `inquest_rate` = 0
                 WHERE `entities_id` = 0
                       AND `inquest_rate` = '-1'";
-        $DB->queryOrDie($query, "0.83 update inquest_rate for root entity in glpi_entitydatas ");
+        $DB->doQueryOrDie($query, "0.83 update inquest_rate for root entity in glpi_entitydatas ");
 
         $query = "UPDATE `glpi_entitydatas`
                 SET `inquest_delay` = 0
                 WHERE `entities_id` = 0
                       AND `inquest_delay` = '-1'";
-        $DB->queryOrDie($query, "0.83 update inquest_delay for root entity in glpi_entitydatas ");
+        $DB->doQueryOrDie($query, "0.83 update inquest_delay for root entity in glpi_entitydatas ");
     }
 
    // migration to new values for inherit parent (0 => -2)
@@ -1673,7 +1673,7 @@ function update080xto0830()
                    SET `$field_0` = '-2'
                    WHERE `$field_0` = '0'
                          AND `entities_id` > 0";
-            $DB->queryOrDie($query, "0.83 new value for inherit parent 0 in glpi_entitydatas");
+            $DB->doQueryOrDie($query, "0.83 new value for inherit parent 0 in glpi_entitydatas");
         }
     }
 
@@ -1719,7 +1719,7 @@ function update080xto0830()
             $query = "UPDATE `glpi_entitydatas`
                    SET `$field_parent` = '-2'
                    WHERE `$field_parent` = '-1'";
-            $DB->queryOrDie($query, "0.83 new value for inherit parent -1 in glpi_entitydatas");
+            $DB->doQueryOrDie($query, "0.83 new value for inherit parent -1 in glpi_entitydatas");
         }
     }
    // new default value
@@ -1768,7 +1768,7 @@ function update080xto0830()
     $query = "SELECT *
              FROM `glpi_configs`";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
             if ($data = $DB->fetchAssoc($result)) {
                 foreach ($fieldconfig as $field_config) {
@@ -1780,7 +1780,7 @@ function update080xto0830()
                         $query = "UPDATE `glpi_entitydatas`
                             SET `$field_config` = '" . $data[$field_config] . "'
                             WHERE `$field_config` = -1";
-                        $DB->queryOrDie($query, "0.83 migrate data from config to glpi_entitydatas");
+                        $DB->doQueryOrDie($query, "0.83 migrate data from config to glpi_entitydatas");
 
                         $migration->changeField(
                             "glpi_entitydatas",
@@ -1797,7 +1797,7 @@ function update080xto0830()
                     $query = "UPDATE `glpi_entitydatas`
                          SET `auto_assign_mode` = -10
                          WHERE `auto_assign_mode` = 0";
-                    $DB->queryOrDie($query, "0.83 change value Never in glpi_entitydatas for auto_assign_mode");
+                    $DB->doQueryOrDie($query, "0.83 change value Never in glpi_entitydatas for auto_assign_mode");
                 }
             }
         }
@@ -1809,7 +1809,7 @@ function update080xto0830()
     $query = "SELECT *
              FROM `glpi_configs`";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
             if ($data = $DB->fetchAssoc($result)) {
                 foreach ($fieldconfig as $field_config) {
@@ -1839,7 +1839,7 @@ function update080xto0830()
         $query = "UPDATE `glpi_entitydatas`
                 SET `calendars_id` = 0
                 WHERE `entities_id` = 0;";
-        $DB->queryOrDie($query, "0.83 restore root entity default value");
+        $DB->doQueryOrDie($query, "0.83 restore root entity default value");
     }
 
     $migration->addKey('glpi_computervirtualmachines', 'computers_id');
@@ -1869,7 +1869,7 @@ function update080xto0830()
             $query = "UPDATE `$table`
                       SET `$field` = '" . $val . "'
                       WHERE `$field` = '" . $key . "'";
-            $DB->queryOrDie($query, "0.83 update itemtype of table $table for $val");
+            $DB->doQueryOrDie($query, "0.83 update itemtype of table $table for $val");
         }
     }
 
@@ -1881,21 +1881,21 @@ function update080xto0830()
               SET `num` = '86'
               WHERE `itemtype` = 'Group'
                     AND `num` = '6'");
-    $DB->query($query);
+    $DB->doQuery($query);
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
         $query = "SELECT DISTINCT `users_id`
                 FROM `glpi_displaypreferences`
                 WHERE `itemtype` = '$type'";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "SELECT MAX(`rank`)
                          FROM `glpi_displaypreferences`
                          WHERE `users_id` = '" . $data['users_id'] . "'
                                AND `itemtype` = '$type'";
-                    $result = $DB->query($query);
+                    $result = $DB->doQuery($query);
                     $rank   = $DB->result($result, 0, 0);
                     $rank++;
 
@@ -1905,13 +1905,13 @@ function update080xto0830()
                             WHERE `users_id` = '" . $data['users_id'] . "'
                                   AND `num` = '$newval'
                                   AND `itemtype` = '$type'";
-                        if ($result2 = $DB->query($query)) {
+                        if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
                                  $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                 $DB->query($query);
+                                 $DB->doQuery($query);
                             }
                         }
                     }
@@ -1922,7 +1922,7 @@ function update080xto0830()
                     $query = "INSERT INTO `glpi_displaypreferences`
                                 (`itemtype` ,`num` ,`rank` ,`users_id`)
                          VALUES ('$type', '$newval', '" . $rank++ . "', '0')";
-                    $DB->query($query);
+                    $DB->doQuery($query);
                 }
             }
         }

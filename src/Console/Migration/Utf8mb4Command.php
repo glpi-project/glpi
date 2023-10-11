@@ -169,7 +169,7 @@ class Utf8mb4Command extends AbstractCommand
             };
 
             foreach ($this->iterate($tables, $progress_message) as $table) {
-                $result = $this->db->query(
+                $result = $this->db->doQuery(
                     sprintf('ALTER TABLE %s CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci', $this->db->quoteName($table))
                 );
 

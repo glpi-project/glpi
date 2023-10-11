@@ -1446,10 +1446,10 @@ class Search
 
         // Use a ReadOnly connection if available and configured to be used
         $DBread = DBConnection::getReadConnection();
-        $DBread->query("SET SESSION group_concat_max_len = 8194304;");
+        $DBread->doQuery("SET SESSION group_concat_max_len = 8194304;");
 
         $DBread->execution_time = true;
-        $result = $DBread->query($data['sql']['search']);
+        $result = $DBread->doQuery($data['sql']['search']);
 
         if ($result) {
             $data['data']['execution_time'] = $DBread->execution_time;
@@ -1475,7 +1475,7 @@ class Search
                     $data['data']['totalcount'] = $DBread->numrows($result);
                 } else {
                     foreach ($data['sql']['count'] as $sqlcount) {
-                        $result_num = $DBread->query($sqlcount);
+                        $result_num = $DBread->doQuery($sqlcount);
                         $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
                     }
                 }
