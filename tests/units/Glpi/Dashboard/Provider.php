@@ -213,6 +213,15 @@ class Provider extends DbTestCase
         ]);
         $this->boolean($group->isNewItem())->isFalse();
 
+        $group2 = new Group();
+        $group2->add([
+            'entities_id' => 0,
+            'name'        => 'second group sla test',
+            'level'       => 1,
+            'groups_id'   => 0,
+        ]);
+        $this->boolean($group2->isNewItem())->isFalse();
+
         $ticket = new Ticket();
         $ticket->add([
             'name' => "test dashboard card SLA / tech",
@@ -223,6 +232,27 @@ class Provider extends DbTestCase
             'status'           => Ticket::ASSIGNED,
         ]);
         $this->boolean($ticket->isNewItem())->isFalse();
+
+        $ticket2 = new Ticket();
+        $ticket2->add([
+            'name' => "test dashboard card SLA / tech for second group",
+            'content' => 'foo',
+            '_groups_id_assign' => $group2->getID(),
+            'sla_id_tto'       => $slaTto->getID(),
+            'sla_id_ttr'       => $slaTtr->getID(),
+            'status'           => Ticket::ASSIGNED,
+        ]);
+        $this->boolean($ticket2->isNewItem())->isFalse();
+
+        $ticket3 = new Ticket();
+        $ticket3->add([
+            'name' => "test dashboard card SLA / tech for second group",
+            'content' => 'foo',
+            '_groups_id_assign' => $group2->getID(),
+            'sla_id_tto'       => $slaTto->getID(),
+            'sla_id_ttr'       => $slaTtr->getID(),
+            'status'           => Ticket::ASSIGNED,
+        ]);
 
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $this->array($output)
@@ -238,8 +268,9 @@ class Provider extends DbTestCase
          ]);
 
        // 1 label: the user glpi
-        $this->integer(count($output['data']['labels']))->isEqualTo(1);
-        $this->string($output['data']['labels'][0])->isEqualTo('group sla test');
+        $this->integer(count($output['data']['labels']))->isEqualTo(2);
+        $this->array($output['data']['labels'])->contains('group sla test');
+        $this->array($output['data']['labels'])->contains('second group sla test');
 
         $this->array($output['data']['series']);
         $this->integer(count($output['data']['series']))->isEqualTo(4);
@@ -250,10 +281,20 @@ class Provider extends DbTestCase
         $this->string($output['data']['series'][2]['name'])->isEqualTo('Late own');
         $this->string($output['data']['series'][3]['name'])->isEqualTo('On time');
 
+        $this->integer(count($output['data']['series'][0]['data']))->isEqualTo(2);
+        $this->integer(count($output['data']['series'][1]['data']))->isEqualTo(2);
+        $this->integer(count($output['data']['series'][2]['data']))->isEqualTo(2);
+        $this->integer(count($output['data']['series'][3]['data']))->isEqualTo(2);
+
         $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
         $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
         $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
-        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(1);
+        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(2);
+
+        $this->integer($output['data']['series'][0]['data'][1])->isEqualTo(0);
+        $this->integer($output['data']['series'][1]['data'][1])->isEqualTo(0);
+        $this->integer($output['data']['series'][2]['data'][1])->isEqualTo(0);
+        $this->integer($output['data']['series'][3]['data'][1])->isEqualTo(1);
 
         $DB->update(
             $ticket::getTable(),
