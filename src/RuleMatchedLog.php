@@ -245,6 +245,10 @@ class RuleMatchedLog extends CommonDBTM
         echo __('Module');
 
         echo "</th>";
+        echo "<th>";
+        echo __('Criteria');
+
+        echo "</th>";
         echo "</tr>";
 
         $params = [
@@ -274,6 +278,12 @@ class RuleMatchedLog extends CommonDBTM
             echo "</td>";
             echo "<td>";
             echo Request::getModuleName($data['method']);
+            echo "</td>";
+            echo "<td>";
+            $criteria = explode(',', $data['criteria']);
+            foreach ($criteria as $criterion) {
+                echo "<li>" . $criterion . "</li>";
+            }
             echo "</td>";
             echo "</tr>";
         }
