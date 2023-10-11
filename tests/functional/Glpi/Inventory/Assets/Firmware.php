@@ -162,8 +162,7 @@ class Firmware extends AbstractInventoryAsset
         <QUERY>INVENTORY</QUERY>
       </REQUEST>";
 
-        //add lockedfield for
-
+        //add lockedfield to check for DB warning on manage DeviceFirmware lockedField
         $this->integer(
             (int)$DB->insert("glpi_lockedfields", ["field" => mt_rand(), "itemtype" => "Item_DeviceFirmware", "is_global" => 0])
         )->isGreaterThan(0);
