@@ -3271,4 +3271,74 @@ HTML;
     {
         return strtolower(str_replace('\\', '', $itemtype));
     }
+
+
+    /**
+     * Check an element exists within the array at the given path.
+     * @param array $array The array to check
+     * @param string $path The path to the element
+     * @param string $path_delimiter The delimiter used in the path
+     * @return bool
+     */
+    public static function hasElementByArrayPath(array $array, string $path, string $path_delimiter = '.'): bool
+    {
+        if (empty($path)) {
+            return false;
+        }
+        $path_array = explode($path_delimiter, $path);
+        $current = $array;
+        foreach ($path_array as $key) {
+            if (!isset($current[$key])) {
+                return false;
+            }
+            $current = $current[$key];
+        }
+        return true;
+    }
+
+    /**
+     * Get an element within the array at the given path.
+     * @param array $array The array to check
+     * @param string $path The path to the element
+     * @param string $path_delimiter The delimiter used in the path
+     * @return mixed
+     */
+    public static function getElementByArrayPath(array $array, string $path, string $path_delimiter = '.'): mixed
+    {
+        if (empty($path)) {
+            return null;
+        }
+        $path_array = explode($path_delimiter, $path);
+        $current = $array;
+        foreach ($path_array as $key) {
+            if (!isset($current[$key])) {
+                return null;
+            }
+            $current = $current[$key];
+        }
+        return $current;
+    }
+
+    /**
+     * Set an element within the array at the given path.
+     * @param array $array The array to check
+     * @param string $path The path to the element
+     * @param string $path_delimiter The delimiter used in the path
+     * @return void
+     */
+    public static function setElementByArrayPath(array &$array, string $path, mixed $value, string $path_delimiter = '.'): void
+    {
+        if (empty($path)) {
+            return;
+        }
+        $path_array = explode($path_delimiter, $path);
+        $current = &$array;
+        foreach ($path_array as $key) {
+            if (!isset($current[$key])) {
+                $current[$key] = [];
+            }
+            $current = &$current[$key];
+        }
+        $current = $value;
+    }
 }

@@ -211,11 +211,26 @@ class Schema implements \ArrayAccess
     {
         //Walk through properties recursively to find ones of type object with a "x-join" property. Return array of "x-join" properties
         $joins = [];
+        $fn_add_parent_hint = static function ($join, $prefix) {
+            $prefix = str_replace('.', chr(0x1F), rtrim($prefix, '.'));
+            if ($prefix === '') {
+                return $join;
+            }
+            if (isset($join['ref_join']['fkey'])) {
+                $join['ref_join']['join_parent'] = $prefix;
+            } else if (isset($join['fkey'])) {
+                $join['join_parent'] = $prefix;
+            }
+            return $join;
+        };
         foreach ($props as $name => $prop) {
             if ($prop['type'] === self::TYPE_OBJECT && isset($prop['x-join'])) {
-                $joins[$name] = $prop['x-join'] + ['parent_type' => self::TYPE_OBJECT];
+                $new_join = $prop['x-join'] + ['parent_type' => self::TYPE_OBJECT];
+                $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
             } else if ($prop['type'] === self::TYPE_ARRAY && isset($prop['items']['x-join'])) {
-                $joins[$name] = $prop['items']['x-join'] + ['parent_type' => self::TYPE_ARRAY];
+                $new_join = $prop['items']['x-join'] + ['parent_type' => self::TYPE_ARRAY];
+                $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
+                $joins += self::getJoins($prop['items']['properties'], $prefix . $name . '.');
             } else if ($prop['type'] === self::TYPE_OBJECT && isset($prop['properties'])) {
                 $joins += self::getJoins($prop['properties'], $prefix . $name . '.');
             }
@@ -223,17 +238,25 @@ class Schema implements \ArrayAccess
         return $joins;
     }
 
-    public static function flattenProperties(array $props, string $prefix = '', bool $collapse_array_types = true): array
+    public static function flattenProperties(array $props, string $prefix = '', bool $collapse_array_types = true, ?array $parent_obj = null): array
     {
         $flattened = [];
         foreach ($props as $name => $prop) {
+            if ($name === 'printers') {
+                $t = '';
+            }
             if ($collapse_array_types && $prop['type'] === self::TYPE_ARRAY) {
                 $prop = $prop['items'];
             }
             if (array_key_exists('type', $prop) && $prop['type'] === self::TYPE_OBJECT) {
-                $flattened += self::flattenProperties($prop['properties'], $prefix . $name . '.', $collapse_array_types);
+                $flattened += self::flattenProperties($prop['properties'], $prefix . $name . '.', $collapse_array_types, $prop);
             } else {
-                $flattened[$prefix . $name] = $prop;
+                $flattened[$prefix . $name] = [
+                    ...$prop,
+                    ...[
+                        'x-full-schema' => $parent_obj['x-full-schema'] ?? null,
+                    ]
+                ];
             }
         }
         return $flattened;
@@ -292,19 +315,7 @@ class Schema implements \ArrayAccess
 
         foreach ($flattened_schema as $sk => $sv) {
             // Get value from original content by the array path $sk
-            $path_arr = explode('.', $sk);
-            $current = $content;
-            foreach ($path_arr as $path) {
-                if (!is_array($current)) {
-                    continue;
-                }
-                if (array_key_exists($path, $current)) {
-                    $current = $current[$path];
-                } else {
-                    return false;
-                }
-            }
-            $cv = $current;
+            $cv = \Toolbox::getElementByArrayPath($content, $sk);
 
             // Verify that the type is correct
             if (!self::validateTypeAndFormat($sv['type'], $sv['format'] ?? '', $cv)) {

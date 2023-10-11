@@ -63,6 +63,14 @@ use RuntimeException;
  * <ul>
  *     <li>0x0: Null. Used as a placeholder in grouped data when there is no result.</li>
  *     <li>0x1D: Group separator. Used to separate grouped data from the DB.</li>
+ *     <li>
+ *         0x1E: Record separator. Used to separate distinct data within a group.
+ *         For example, a parent ID and ID during the fetch for the dehydrated result.
+ *         Depending on the nesting level for the property, it there may be multiple parent IDs.
+ *         Example: Parent ID 1, Parent ID 2, ID.
+ *         In the case of a dehydrated result, the ID is the last item in the group and the rest is used like a path to the relevant object when assembling the result.
+ *         This allows for the mapping of multiple children inside an array type (arrays ob objects within arrays of objects).
+ *     </li>
  *     <li>0x1F: Unit separator. Used as a replacement for '.' in property names (which would be used as a table/column alias).</li>
  * </ul>
  */
@@ -96,15 +104,18 @@ final class Search
     private function getSQLFieldForProperty(string $prop_name): string
     {
         $prop = $this->flattened_properties[$prop_name];
-        $is_join = str_contains($prop_name, '.') && array_key_exists(explode('.', $prop_name)[0], $this->joins);
+        $potential_join_name = strstr($prop_name, '.', true);
+        $is_join = str_contains($prop_name, '.') && array_key_exists($potential_join_name, $this->joins);
         $sql_field = $prop['x-field'] ?? $prop_name;
         if (!$is_join) {
             // Only add the _. prefix if it isn't a join. '_' is the table alias for the main item.
             $sql_field = "_.$sql_field";
-        } else if ($prop_name !== $sql_field) {
+        } else {
             // If the property name is different from the SQL field name, we will need to add/change the table alias
-            // $prop_name is a join where the part before the dot is the join alias (also the property on the main item), and the part after the dot is the property on the joined item
-            $join_alias = explode('.', $prop_name)[0];
+            // $prop_name is a join where the part before the last dot is the join alias (also the property on the main item), and the part after the last dot is the property on the joined item
+            $join_alias = substr($prop_name, 0, strrpos($prop_name, '.'));
+            $sql_field = trim(preg_replace('/^' . preg_quote($join_alias, '/') . '/', '', $sql_field), '.');
+            $join_alias = str_replace('.', chr(0x1F), trim($join_alias, '.'));
             $sql_field = "{$join_alias}.{$sql_field}";
         }
         return $sql_field;
@@ -137,11 +148,44 @@ final class Search
                 $sql_field = $this->getSQLFieldForProperty($prop_name);
                 $expression = $DB::quoteName($sql_field);
                 if (str_contains($sql_field, '.')) {
-                    $join_name = explode('.', $sql_field, 2)[0];
+                    $join_name = substr($sql_field, 0, strrpos($sql_field, '.'));
+                    $join_name = str_replace(chr(0x1F), '.', $join_name);
                     // Check if the join property is in an array. If so, we need to concat each result.
-                    if (array_key_exists($join_name, $this->joins) && $this->joins[$join_name]['parent_type'] === Doc\Schema::TYPE_ARRAY) {
-                        $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
-                        $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), $distinct_groups);
+                    if (array_key_exists($join_name, $this->joins)) {
+                        $join_def = $this->joins[$join_name];
+                        if (isset($join_def['join_parent'])) {
+                            $parent_join = str_replace(chr(0x1F), '.', $join_def['join_parent']);
+                            if (array_key_exists($parent_join, $this->joins)) {
+                                // Need to concat all parent IDs/primary keys + the property desired
+                                $parent_keys = [];
+                                $current_join_def = $this->joins[$parent_join];
+                                $current_join_parent = $parent_join;
+                                while ($current_join_def !== null) {
+                                    $parent_keys[] = new QueryExpression('0x1E');
+                                    $primary_key = $this->getPrimaryKeyPropertyForJoin($current_join_parent);
+                                    // Replace all except last '.' with chr(0x1F) to avoid conflicts with table aliases
+                                    $primary_key = implode(chr(0x1F), explode('.', $primary_key, substr_count($primary_key, '.')));
+
+
+                                    $parent_keys[] = QueryFunction::ifnull(
+                                        expression: $primary_key,
+                                        value: new QueryExpression('0x0')
+                                    );
+                                    $current_join_parent = $current_join_def['join_parent'] ?? null;
+                                    $current_join_def = $current_join_parent !== null ? ($this->joins[$current_join_parent] ?? null) : null;
+                                }
+                                $parent_keys = array_reverse($parent_keys);
+                                $expression = QueryFunction::groupConcat(
+                                    expression: QueryFunction::concat([...$parent_keys, QueryFunction::ifnull($sql_field, new QueryExpression('0x0'))]),
+                                    separator: new QueryExpression(chr(0x1D)),
+                                );
+                            } else {
+                                throw new RuntimeException("Parent join {$join_def['join_parent']} not found");
+                            }
+                        } else {
+                            $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
+                            $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), $distinct_groups);
+                        }
                     }
                 }
                 $alias = str_replace('.', chr(0x1F), $prop_name);
@@ -175,17 +219,22 @@ final class Search
      * @param array $join_definition The join definition
      * @return array JOIN clauses in array format used bt {@link \DBmysqlIterator}
      */
-    private static function getJoins(string $join_alias, array $join_definition): array
+    private function getJoins(string $join_alias, array $join_definition): array
     {
         $joins = [];
 
         $fn_append_join = static function ($join_alias, $join, $parent_type = null) use (&$joins, &$fn_append_join) {
+            $join_alias = str_replace('.', chr(0x1F), $join_alias);
             $join_type = ($join['type'] ?? 'LEFT') . ' JOIN';
             if (!isset($joins[$join_type])) {
                 $joins[$join_type] = [];
             }
             $join_table = $join['table'] . ' AS ' . $join_alias;
-            $join_parent = (isset($join['ref_join']) && $join['ref_join']) ? "{$join_alias}_ref" : '_';
+            if (isset($join['ref_join'])) {
+                $join_parent = $join['ref_join']['join_parent'] ?? "{$join_alias}_ref";
+            } else {
+                $join_parent = $join['join_parent'] ?? '_';
+            }
             if (isset($join['ref_join'])) {
                 $fn_append_join("{$join_alias}_ref", $join['ref_join'], $join['parent_type'] ?? $parent_type);
             }
@@ -252,7 +301,7 @@ final class Search
 
         // Handle joins
         foreach ($this->joins as $join_alias => $join_definition) {
-            $join_clauses = self::getJoins($join_alias, $join_definition);
+            $join_clauses = $this->getJoins($join_alias, $join_definition);
             foreach ($join_clauses as $join_type => $join_tables) {
                 if (!isset($criteria[$join_type])) {
                     $criteria[$join_type] = [];
@@ -422,6 +471,24 @@ final class Search
         return false;
     }
 
+    private function getPrimaryKeyPropertyForJoin(string $join): string
+    {
+        $primary_key = isset($this->joins[$join]['ref_join']) ? $this->joins[$join]['ref_join']['fkey'] : $this->joins[$join]['fkey'];
+        $prop_matches = array_filter(
+            $this->flattened_properties,
+            static function ($prop_name) use ($primary_key, $join) {
+                // Filter matches for the primary key
+                return preg_match('/^' . preg_quote($join, '/') . '\.' . preg_quote($primary_key, '/') . '$/', $prop_name);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+
+        if (count($prop_matches)) {
+            return array_key_first($prop_matches);
+        }
+        throw new RuntimeException("Cannot find primary key property for join $join");
+    }
+
     /**
      * @return array Matching records in the format Itemtype => IDs
      * @phpstan-return array<string, int[]>
@@ -545,19 +612,62 @@ final class Search
             } else {
                 // This is a foreign key on a joined item
                 foreach ($this->joins as $join_alias => $join) {
-                    if ($fkey === $join_alias . chr(0x1F) . 'id') {
+                    if ($fkey === str_replace('.', chr(0x1F), $join_alias) . chr(0x1F) . 'id') {
                         // Found the related join definition. Use the table from that.
                         $this->fkey_tables[$fkey] = $join['table'];
                         break;
                     }
                 }
             }
-            if ($this->fkey_tables[$fkey] === null) {
+            if (empty($this->fkey_tables[$fkey])) {
                 // We still don't have a table. Throw an exception.
                 throw new RuntimeException('Cannot find table for property ' . $fkey);
             }
         }
         return $this->fkey_tables[$fkey];
+    }
+
+    private function getItemRecordPath(string $join_name, mixed $id, array $hydrated_record): array
+    {
+        //if the id contains record separators, all but the last one are the parent IDs and need interlaced with the join name to get the actual path.
+        if (str_contains($id, chr(0x1E))) {
+            $ids_path = explode(chr(0x1E), $id);
+            $id = array_pop($ids_path);
+            if (empty($id) || $id === "\0") {
+                return [$join_name, $id];
+            }
+            $join_path_parts = explode('.', $join_name);
+
+            $new_path = [];
+            // Add placeholder for actual ID. Ensures the ids in the path stop before the last path part.
+            $ids_path[] = '';
+            // Pad start of ids path array with empty values to match the number of join path parts
+            $ids_path = array_pad($ids_path, -count($join_path_parts), '');
+            while (count($ids_path) > 0) {
+                $new_path[] = array_shift($join_path_parts);
+                $current_path = implode('.', $new_path);
+                $next_id = array_shift($ids_path);
+                if (!empty($next_id) && preg_match('/\.\d+/', $current_path)) {
+                    $items = \Toolbox::getElementByArrayPath($hydrated_record, $current_path);
+                    // Remove numeric id parts from the path to get the join name
+                    $current_join = implode('.', array_filter(explode('.', $current_path), static fn ($p) => !is_numeric($p)));
+                    $primary_prop = $this->getPrimaryKeyPropertyForJoin($current_join);
+                    // We just need the last part of the property name (not the full path)
+                    $primary_prop = substr($primary_prop, strrpos($primary_prop, '.') + 1);
+                    if ($items !== null) {
+                        foreach ($items as $item_index => $item) {
+                            if (isset($item[$primary_prop])) {
+                                $next_id = $item_index;
+                            }
+                        }
+                    }
+                }
+                $new_path[] = $next_id;
+            }
+            $new_path = array_filter($new_path, static fn ($p) => !empty($p));
+            $join_prop_path = implode('.', $new_path);
+        }
+        return [$join_prop_path ?? $join_name, $id];
     }
 
     /**
@@ -585,15 +695,22 @@ final class Search
                 $hydrated_record = $fetched_records[$table][$needed_ids[0]];
             } else {
                 // Add the joined item fields
-                $join_name = explode(chr(0x1F), $dehydrated_ref)[0];
-                $hydrated_record[$join_name] = [];
+                $join_name = substr($dehydrated_ref, 0, strrpos($dehydrated_ref, chr(0x1F)));
+                $join_name = str_replace(chr(0x1F), '.', $join_name);
                 foreach ($needed_ids as $id) {
+                    [$join_prop_path, $id] = $this->getItemRecordPath($join_name, $id, $hydrated_record);
+                    if ($id === '' || $id === "\0") {
+                        continue;
+                    }
                     $matched_record = $fetched_records[$table][(int) $id] ?? null;
+
                     if (isset($this->joins[$join_name]['parent_type']) && $this->joins[$join_name]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
-                        $hydrated_record[$join_name] = $matched_record;
+                        \Toolbox::setElementByArrayPath($hydrated_record, $join_prop_path, $matched_record);
                     } else {
                         if ($matched_record !== null) {
-                            $hydrated_record[$join_name][] = $matched_record;
+                            $current = \Toolbox::getElementByArrayPath($hydrated_record, $join_prop_path);
+                            $current[$id] = $matched_record;
+                            \Toolbox::setElementByArrayPath($hydrated_record, $join_prop_path, $current);
                         }
                     }
                 }
@@ -625,7 +742,15 @@ final class Search
                         continue;
                     }
                     // Find which IDs we need to fetch. We will avoid fetching records multiple times.
-                    $ids_to_fetch = array_map(static fn($id) => (int) $id, explode(chr(0x1D), $record_ids));
+                    $ids_to_fetch = array_map(static function (string|int $id) {
+                        // If an ID contains a record separator, it includes a path of IDs to identify the parent record.
+                        // The item ID itself is the last one.
+                        if (str_contains($id, chr(0x1E))) {
+                            $id = explode(chr(0x1E), (string) $id);
+                            $id = end($id);
+                        }
+                        return (int) $id;
+                    }, explode(chr(0x1D), $record_ids));
                     $ids_to_fetch = array_diff($ids_to_fetch, array_keys($fetched_records[$table] ?? []));
 
                     if (empty($ids_to_fetch)) {
@@ -644,7 +769,8 @@ final class Search
                             $prop_field = $prop_params['x-field'] ?? $prop_name;
                             $mapped_from_other = isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field;
                             // We aren't handling joins or mapped fields here
-                            $is_join = str_contains($prop_name, '.') && array_key_exists(explode('.', $prop_name)[0], $this->joins);
+                            $potential_join_name = strstr($prop_name, '.', true);
+                            $is_join = str_contains($prop_name, '.') && array_key_exists($potential_join_name, $this->joins);
                             return !$is_join && !$mapped_from_other;
                         }, ARRAY_FILTER_USE_BOTH);
                         $criteria['FROM'] = "$table AS " . $DB::quoteName('_');
@@ -652,13 +778,17 @@ final class Search
                             $criteria['SELECT'][] = new QueryExpression($DB::quoteValue($schema_name), '_itemtype');
                         }
                     } else {
-                        $join_name = explode(chr(0x1F), $fkey)[0];
+                        $join_name = substr($fkey, 0, strrpos($fkey, chr(0x1F)));
+                        $join_name = str_replace(chr(0x1F), '.', $join_name);
                         $props_to_use = array_filter($this->flattened_properties, static function ($prop_name) use ($join_name) {
-                            return str_starts_with($prop_name, $join_name . '.');
+                            $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
+                            return $prop_parent === $join_name;
                         }, ARRAY_FILTER_USE_KEY);
+                        //$props_to_use_keys = array_map(static fn ($p) => preg_replace('/^' . preg_quote($join_name, '/') . '\./', '', $p), array_keys($props_to_use));
+                        //$props_to_use = array_combine($props_to_use_keys, $props_to_use);
 
-                        $criteria['FROM'] = "$table AS " . $DB::quoteName($join_name);
-                        $id_field = $join_name . '.id';
+                        $criteria['FROM'] = "$table AS " . $DB::quoteName(str_replace('.', chr(0x1F), $join_name));
+                        $id_field = str_replace('.', chr(0x1F), $join_name) . '.id';
                     }
                     $criteria['WHERE'] = [$id_field => $ids_to_fetch];
                     foreach ($props_to_use as $prop_name => $prop) {
@@ -690,15 +820,21 @@ final class Search
                                 ]
                             ];
                         }
+                        // alias should be prop name relative to current join
+                        $alias = $prop_name;
+                        if ($join_name !== '_') {
+                            $alias = preg_replace('/^' . preg_quote($join_name, '/') . '\./', '', $alias);
+                        }
+                        $alias = str_replace('.', chr(0x1F), $alias);
                         if ($translatable) {
                             // Try to use the translated value, but fall back to the default value if there is no translation
                             $criteria['SELECT'][] = QueryFunction::ifnull(
                                 expression: "{$trans_alias}.value",
                                 value: $sql_field,
-                                alias: str_replace('.', chr(0x1F), $prop_name)
+                                alias: $alias
                             );
                         } else {
-                            $criteria['SELECT'][] = $sql_field . ' AS ' . str_replace('.', chr(0x1F), $prop_name);
+                            $criteria['SELECT'][] = $sql_field . ' AS ' . $alias;
                         }
                     }
 
@@ -707,19 +843,10 @@ final class Search
                     foreach ($it as $data) {
                         $cleaned_data = [];
                         foreach ($data as $k => $v) {
-                            $is_join = str_contains($k, chr(0x1F)) && array_key_exists(explode(chr(0x1F), $k)[0], $this->joins);
-                            if (!$is_join) {
-                                if (str_contains($k, chr(0x1F))) {
-                                    $kp = explode(chr(0x1F), $k);
-                                    $cleaned_data[$kp[0]][$kp[1]] = $v;
-                                } else {
-                                    $cleaned_data[$k] = $v;
-                                }
-                                continue;
-                            }
-                            $cleaned_data[explode(chr(0x1F), $k)[1]] = $v;
+                            \Toolbox::setElementByArrayPath($cleaned_data, $k, $v);
                         }
-                        $fetched_records[$table][$data[$fkey]] = $cleaned_data;
+                        $fkey_local_name = trim(strrchr($fkey, chr(0x1F)) ?: $fkey, chr(0x1F));
+                        $fetched_records[$table][$data[$fkey_local_name]] = $cleaned_data;
                     }
                 }
 
@@ -782,6 +909,7 @@ final class Search
 
         // Count the total number of results with the same criteria, but without the offset and limit
         $criteria = $search->getSearchCriteria();
+        // We only need the total count, so we don't need to hydrate the records
         $all_records = $search->getMatchingRecords(true);
         $total_count = 0;
         foreach ($all_records as $schema_name => $records) {
@@ -859,7 +987,7 @@ final class Search
         foreach ($top_level_properties as $prop_name => $prop) {
             if (str_contains($prop_name, '.')) {
                 // This is a dropdown identifier, we need to get the id from the request
-                $prop_name = explode('.', $prop_name)[0];
+                $prop_name = strstr($prop_name, '.', true);
                 $prop = $schema['properties'][$prop_name];
             } else {
                 if ($prop['x-readonly'] ?? false) {
