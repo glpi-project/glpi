@@ -443,10 +443,10 @@ class Domain extends CommonDBTM
                         $domain_item->find([
                             'itemtype' => 'Computer',
                             'items_id' => $compselected
-                        ]) as $key2
+                        ]) as $domain_used
                     ) {
-                        if (in_array($key2['domains_id'], $used)) {
-                            unset($used[array_search($key2['domains_id'], $used)]);
+                        if (in_array($domain_used['domains_id'], $used)) {
+                            unset($used[array_search($domain_used['domains_id'], $used)]);
                         }
                     }
                 }
