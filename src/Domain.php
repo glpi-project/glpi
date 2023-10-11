@@ -526,6 +526,7 @@ class Domain extends CommonDBTM
                     ) {
                         if ($data['is_dynamic'] == 1) {
                             $domain_item->delete($data);
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } elseif ($domain_item->delete($data, true)) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
