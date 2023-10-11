@@ -66,10 +66,6 @@ class Ticket extends CommonITILObject
     const IMPACT_MASK_FIELD             = 'impact_mask';
     const STATUS_MATRIX_FIELD           = 'ticket_status';
 
-   // HELPDESK LINK HARDWARE DEFINITION : CHECKSUM SYSTEM : BOTH=1*2^0+1*2^1=3
-    const HELPDESK_MY_HARDWARE  = 0;
-    const HELPDESK_ALL_HARDWARE = 1;
-
    // Specific ones
    /// Hardware datas used by getFromDBwithData
     public $hardwaredatas = [];
@@ -3968,28 +3964,28 @@ JAVASCRIPT;
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
-            'item'               => $this,
-            'timeline_itemtypes' => $this->getTimelineItemtypes(),
-            'legacy_timeline_actions'  => $this->getLegacyTimelineActionsHTML(),
-            'params'             => $options,
-            'entities_id'        => $ID ? $this->fields['entities_id'] : $options['entities_id'],
-            'timeline'           => $this->getTimelineItems(),
-            'itiltemplate_key'   => self::getTemplateFormFieldName(),
-            'itiltemplate'       => $tt,
-            'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
-            'item_ticket'        => $item_ticket,
-            'sla'                => $sla,
-            'ola'                => $ola,
-            'canupdate'          => $canupdate,
-            'can_requester'      => $can_requester,
-            'canpriority'        => $canpriority,
-            'canassign'          => $canassign,
-            'canassigntome'      => $canassigntome,
-            'load_kb_sol'        => $options['load_kb_sol'] ?? 0,
-            'userentities'       => $userentities,
-            'cancreateuser'      => $cancreateuser,
-            'canreadnote'        => Session::haveRight('entity', READNOTE),
-            'has_pending_reason' => PendingReason_Item::getForItem($this) !== false,
+            'item'                      => $this,
+            'timeline_itemtypes'        => $this->getTimelineItemtypes(),
+            'legacy_timeline_actions'   => $this->getLegacyTimelineActionsHTML(),
+            'params'                    => $options,
+            'entities_id'               => $ID ? $this->fields['entities_id'] : $options['entities_id'],
+            'timeline'                  => $this->getTimelineItems(),
+            'itiltemplate_key'          => self::getTemplateFormFieldName(),
+            'itiltemplate'              => $tt,
+            'predefined_fields'         => Toolbox::prepareArrayForInput($predefined_fields),
+            'item_commonitilobject'     => $item_ticket,
+            'sla'                       => $sla,
+            'ola'                       => $ola,
+            'canupdate'                 => $canupdate,
+            'can_requester'             => $can_requester,
+            'canpriority'               => $canpriority,
+            'canassign'                 => $canassign,
+            'canassigntome'             => $canassigntome,
+            'load_kb_sol'               => $options['load_kb_sol'] ?? 0,
+            'userentities'              => $userentities,
+            'cancreateuser'             => $cancreateuser,
+            'canreadnote'               => Session::haveRight('entity', READNOTE),
+            'has_pending_reason'        => PendingReason_Item::getForItem($this) !== false,
         ]);
 
         return true;

@@ -199,6 +199,13 @@ if (isset($_POST["add"])) {
     );
     Html::redirect(Problem::getFormURLWithID($id));
 } else {
+    // Add a problem from item : format data
+    if (
+        isset($_REQUEST['_add_fromitem'], $_REQUEST['itemtype'], $_REQUEST['items_id'])
+    ) {
+        $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
+    }
+
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
         Html::header(sprintf(__('%s Kanban'), Problem::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "problem");
         $problem::showKanban(0);
