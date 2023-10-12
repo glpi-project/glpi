@@ -34,6 +34,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\Request;
 
 /**
@@ -220,41 +221,7 @@ class RuleMatchedLog extends CommonDBTM
         $iterator = $DB->request($params);
         $number   = $iterator->current()['cpt'];
 
-       // Display the pager
         Html::printAjaxPager(self::getTypeName(2), $start, $number);
-
-        echo "<table class='tab_cadre_fixe' cellpadding='1'>";
-
-        echo "<tr>";
-        echo "<th colspan='5'>";
-        echo __('Rule import logs');
-
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<th>";
-        echo _n('Date', 'Dates', 1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Rule name');
-
-        echo "</th>";
-        echo "<th>";
-        echo Agent::getTypeName(1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Module');
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Criteria');
-
-        echo "</th>";
-        echo "</tr>";
-
         $params = [
             'FROM'   => self::getTable(),
             'WHERE'  => [
@@ -265,33 +232,23 @@ class RuleMatchedLog extends CommonDBTM
             'START'  => (int)$start,
             'LIMIT'  => (int)$_SESSION['glpilist_limit']
         ];
+        $rows = [];
         foreach ($DB->request($params) as $data) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo Html::convDateTime($data['date']);
-            echo "</td>";
-            echo "<td>";
+            $row = [];
+            $row['date'] = Html::convDateTime($data['date']);
             if ($rule->getFromDB($data['rules_id'])) {
-                echo $rule->getLink(1);
+                $row['rulelink'] = $rule->getLink(1);
+            } else {
+                $row[] = '';
             }
-            echo "</td>";
-            echo "<td>";
             if ($agent->getFromDB($data['agents_id'])) {
-                echo $agent->getLink(1);
+                $row['agentlink'] = $agent->getLink(1);
+            } else {
+                $row[] = '';
             }
-            echo "</td>";
-            echo "<td>";
-            echo Request::getModuleName($data['method']);
-            echo "</td>";
-            echo "<td>";
+            $row['module_name'] = Request::getModuleName($data['method']);
             if (isset($data['criteria'])) {
                 $criteria = json_decode($data['criteria'], true);
-                echo '<span class="toggle">
-                    <button class="btn">
-                        <i class="ti ti-eye"></i>
-                    </button>
-                </span>
-                <ul class="nested list-group list-group-flush card" style="display: none;">';
                 $content = '';
                 foreach ($criteria as $criterion => $value) {
                     if (is_array($value)) {
@@ -300,16 +257,18 @@ class RuleMatchedLog extends CommonDBTM
                         $content .= '<b>' . $criterion . '</b> : ' . $value . '<br>';
                     }
                 }
-                echo '<div class="list-group-item ">' . $content . '</div></ul>';
-            };
-            echo "</td>";
-            echo "</tr>";
+                $row['criteria'] = $content;
+            } else {
+                $row['criteria'] = '';
+            }
+            $rows[] = $row;
         }
-        echo "</table>";
 
-       // Display the pager
+        TemplateRenderer::getInstance()->display('components/form/rulematchedlogsitem.html.twig', [
+            'agenttypename' => Agent::getTypeName(1),
+            'datas' => $rows
+        ]);
         Html::printAjaxPager(self::getTypeName(2), $start, $number);
-
         return true;
     }
 
@@ -404,25 +363,3 @@ class RuleMatchedLog extends CommonDBTM
         echo "</table>";
     }
 }
-?>
-
-<script>
-  // Get all toggle buttons
-  var toggleButtons = document.querySelectorAll(".toggle");
-
-  // Add click event listeners to toggle buttons
-  toggleButtons.forEach(function(button) {
-    button.addEventListener("click", function() {
-      // Get the nested list
-      var nestedList = button.nextElementSibling;
-      // Toggle the display of the nested list
-      if (nestedList.style.display === "none") {
-        nestedList.style.display = "block";
-        button.innerHTML = '<button class="btn"><i class="ti ti-eye-off"></i></div>';
-      } else {
-        nestedList.style.display = "none";
-        button.innerHTML = '<button class="btn"><i class="ti ti-eye"></i></button>';
-      }
-    });
-  });
-</script>
