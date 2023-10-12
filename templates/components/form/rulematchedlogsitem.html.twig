@@ -1,6 +1,5 @@
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
 {% block more_fields %}
+    {{ printerAjaxPager|raw }}
     <table class="tab_cadre_fixe" cellpadding="1">
         <tr>
             <th colspan="5"> {{ __('Rule import logs') }} </th>
@@ -33,6 +32,7 @@
             </tr>
         {% endfor %}
     </table>
+    {{ printerAjaxPager|raw }}
 {% endblock %}
 
 <script>

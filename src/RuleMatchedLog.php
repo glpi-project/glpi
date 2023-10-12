@@ -220,8 +220,6 @@ class RuleMatchedLog extends CommonDBTM
         ];
         $iterator = $DB->request($params);
         $number   = $iterator->current()['cpt'];
-
-        Html::printAjaxPager(self::getTypeName(2), $start, $number);
         $params = [
             'FROM'   => self::getTable(),
             'WHERE'  => [
@@ -266,9 +264,11 @@ class RuleMatchedLog extends CommonDBTM
 
         TemplateRenderer::getInstance()->display('components/form/rulematchedlogsitem.html.twig', [
             'agenttypename' => Agent::getTypeName(1),
-            'datas' => $rows
+            'datas' => $rows,
+            'start' => $start,
+            'number' => $number,
+            'printerAjaxPager' => Html::printAjaxPager(self::getTypeName(2), $start, $number, '', false)
         ]);
-        Html::printAjaxPager(self::getTypeName(2), $start, $number);
         return true;
     }
 
