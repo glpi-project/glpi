@@ -129,6 +129,22 @@
          {% else %}
 
             <div class="btn-group" role="group" id="right-actions">
+               {% set is_locked = params['locked'] is defined and params['locked'] %}
+               {% set display_save_btn = not is_locked and (canupdate or can_requester or canpriority or canassign or canassigntome) %}
+               {% if display_save_btn %}
+                  <button class="btn btn-primary" type="submit" name="update" form="itil-form"
+                        title="{{ _x('button', 'Save') }}">
+                     <i class="far fa-save"></i>
+                     <span class="d-none d-xl-block">{{ _x('button', 'Save') }}</span>
+                  </button>
+               {% endif %}
+
+               {% if canupdate %}
+                  {{ include('components/form/single-action.html.twig', {
+                     'onlyicon': true
+                  }) }}
+               {% endif %}
+
                {% if item.canDeleteItem() %}
                   {% if item.isDeleted() %}
                      <button class="btn btn-outline-secondary" type="submit" name="restore" form="itil-form"
@@ -150,22 +166,6 @@
                         <i class="ti ti-trash"></i>
                      </button>
                   {% endif %}
-               {% endif %}
-
-               {% if canupdate %}
-                  {{ include('components/form/single-action.html.twig', {
-                     'onlyicon': true
-                  }) }}
-               {% endif %}
-
-               {% set is_locked = params['locked'] is defined and params['locked'] %}
-               {% set display_save_btn = not is_locked and (canupdate or can_requester or canpriority or canassign or canassigntome) %}
-               {% if display_save_btn %}
-                  <button class="btn btn-primary" type="submit" name="update" form="itil-form"
-                        title="{{ _x('button', 'Save') }}">
-                     <i class="far fa-save"></i>
-                     <span class="d-none d-xl-block">{{ _x('button', 'Save') }}</span>
-                  </button>
                {% endif %}
             </div>
 
