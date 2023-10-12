@@ -83,13 +83,11 @@ class Certificate_Item extends CommonDBRelation
                 $item->getType() == 'Certificate'
                 && count(Certificate::getTypes(false))
             ) {
+                $nb = 0;
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    return self::createTabEntry(
-                        _n('Associated item', 'Associated items', Session::getPluralNumber()),
-                        self::countForMainItem($item)
-                    );
+                    $nb = self::countForMainItem($item);
                 }
-                return _n('Associated item', 'Associated items', Session::getPluralNumber());
+                return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
             } else if (
                 in_array($item->getType(), Certificate::getTypes(true))
                 && Certificate::canView()

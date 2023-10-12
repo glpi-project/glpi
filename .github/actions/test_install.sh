@@ -19,7 +19,6 @@ fi
 bin/console database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction --strict
 bin/console tools:check_database_keys --config-dir=./tests/config --ansi --no-interaction --detect-useless-keys
 bin/console tools:check_database_schema_consistency --config-dir=./tests/config --ansi --no-interaction
-tests/bin/test-data-sanitization --ansi --no-interaction
 
 # Execute update
 ## Should do nothing.

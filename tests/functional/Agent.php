@@ -44,9 +44,9 @@ class Agent extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Agent$main'        => 'Agent',
-            'RuleMatchedLog$0'  => 'Import information',
-            'Log$1'             => 'Historical'
+            'Agent$main'       => "<span><i class='ti ti-robot me-2'></i>Agent</span>",
+            'RuleMatchedLog$0' => "<span><i class='ti ti-book me-2'></i>Import information</span>",
+            'Log$1'            => "<span><i class='ti ti-history me-2'></i>Historical</span>",
         ];
         $this
          ->given($this->newTestedInstance)
@@ -326,9 +326,13 @@ class Agent extends DbTestCase
         $json->content->versionclient = 'GLPI-Agent_v1';
         $json->deviceid = 'glpixps-2022-01-17-11-36-53';
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($json);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {

@@ -50,18 +50,20 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\Search\Provider\SQLProvider;
+use Glpi\Search\SearchOption;
+use Glpi\Toolbox\MarkdownRenderer;
 use Html;
 use Infocom;
 use Item_Devices;
 use Log;
 use MassiveAction;
-use Michelf\MarkdownExtra;
 use NetworkEquipment;
 use NetworkPort;
 use Notepad;
 use Problem;
-use QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use SavedSearch;
 use Search;
 use Session;
@@ -282,7 +284,7 @@ abstract class API
 
         $noAuto = true;
         if (isset($params['user_token']) && !empty($params['user_token'])) {
-            $_REQUEST['user_token'] = Sanitizer::dbEscape($params['user_token']);
+            $_REQUEST['user_token'] = $params['user_token'];
             $noAuto = false;
         } else if (!$CFG_GLPI['enable_api_login_credentials']) {
             $this->returnError(
@@ -1027,14 +1029,6 @@ abstract class API
             );
         }
 
-        // Decode HTML
-        if (!$this->returnSanitizedContent()) {
-            $fields = array_map(
-                fn ($f) => is_string($f) ? Sanitizer::decodeHtmlSpecialChars($f) : $f,
-                $fields
-            );
-        }
-
         return $fields;
     }
 
@@ -1060,7 +1054,7 @@ abstract class API
     /**
      * Return a collection of rows of the desired itemtype
      *
-     * @param string  $itemtype   itemtype (class) of object
+     * @param class-string<CommonDBTM>  $itemtype   itemtype (class) of object
      * @param array   $params     with theses options :
      * - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optionnal
      * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
@@ -1130,14 +1124,19 @@ abstract class API
 
        //specific case for restriction
         $already_linked_table = [];
-        $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
-        $where = Search::addDefaultWhere($itemtype);
+        $criteria = SQLProvider::getDefaultJoinCriteria($itemtype, $table, $already_linked_table);
+        $criteria['WHERE'] = SQLProvider::getDefaultWhereCriteria($itemtype);
+        if (!isset($criteria['LEFT JOIN'])) {
+            $criteria['LEFT JOIN'] = [];
+        }
 
-        if ($where == '') {
-            $where = "1=1 ";
+        if (empty($criteria['WHERE'])) {
+            $criteria['WHERE'] = [
+                new QueryExpression('true')
+            ];
         }
         if ($item->maybeDeleted()) {
-            $where .= "AND " . $DB->quoteName("$table.is_deleted") . " = " . (int)$params['is_deleted'];
+            $criteria['WHERE']["$table.is_deleted"] = (int) $params['is_deleted'];
         }
 
        // add filter for a parent itemtype
@@ -1171,24 +1170,38 @@ abstract class API
 
            // filter with parents fields
             if (isset($item->fields[$fk_parent])) {
-                $where .= " AND " . $DB->quoteName("$table.$fk_parent") . " = " . (int)$this->parameters['parent_id'];
+                $criteria['WHERE']["$table.$fk_parent"] = (int) $this->parameters['parent_id'];
             } else if (
-                isset($item->fields['itemtype'])
-                 && isset($item->fields['items_id'])
+                isset($item->fields['itemtype'], $item->fields['items_id'])
             ) {
-                $where .= " AND " . $DB->quoteName("$table.itemtype") . " = " . $DB->quoteValue($this->parameters['parent_itemtype']) . "
-                       AND " . $DB->quoteName("$table.items_id") . " = " . (int)$this->parameters['parent_id'];
+                $criteria['WHERE']["$table.itemtype"] = $this->parameters['parent_itemtype'];
+                $criteria['WHERE']["$table.items_id"] = (int) $this->parameters['parent_id'];
             } else if (isset($parent_item->fields[$fk_child])) {
                 $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
-                $join .= " LEFT JOIN " . $DB->quoteName($parentTable) . " ON " . $DB->quoteName("$parentTable.$fk_child") . " = " . $DB->quoteName("$table.id");
-                $where .= " AND " . $DB->quoteName("$parentTable.id") . " = " . (int)$this->parameters['parent_id'];
+                $criteria['LEFT JOIN'][$parentTable] = [
+                    'ON' => [
+                        $parentTable => $fk_child,
+                        $table       => 'id'
+                    ]
+                ];
+                $criteria['WHERE']["$parentTable.id"] = (int) $this->parameters['parent_id'];
             } else if (
                 isset($parent_item->fields['itemtype'])
                  && isset($parent_item->fields['items_id'])
             ) {
                 $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
-                $join .= " LEFT JOIN " . $DB->quoteName($parentTable) . " ON " . $DB->quoteName("itemtype") . "=" . $DB->quoteValue($itemtype) . " AND " . $DB->quoteName("$parentTable.items_id") . " = " . $DB->quoteName("$table.id");
-                $where .= " AND " . $DB->quoteName("$parentTable.id") . " = " . (int)$this->parameters['parent_id'];
+                $criteria['LEFT JOIN'][$parentTable] = [
+                    'ON' => [
+                        $parentTable    => 'items_id',
+                        $table          => 'id',
+                        [
+                            'AND' => [
+                                "$parentTable.itemtype" => $itemtype,
+                            ]
+                        ]
+                    ]
+                ];
+                $criteria['WHERE']["$parentTable.id"] = (int) $this->parameters['parent_id'];
             }
         }
 
@@ -1215,68 +1228,69 @@ abstract class API
             // make text search
             foreach ($search_values as $filter_field => $filter_value) {
                 if (!empty($filter_value)) {
-                    $search_value = Search::makeTextSearch($DB->escape($filter_value));
-                    $where .= " AND (" . $DB->quoteName("$table.$filter_field") . " $search_value)";
+                    $criteria['WHERE']["$table.$filter_field"] = ['LIKE', SQLProvider::makeTextSearchValue($filter_value)];
                 }
             }
         }
 
        // filter with entity
         if ($item->getType() == 'Entity') {
-            $where .= " AND (" . getEntitiesRestrictRequest("", $itemtype::getTable()) . ")";
+            $criteria['WHERE'][] = getEntitiesRestrictCriteria($itemtype::getTable());
         } else if (
             $item->isEntityAssign()
             // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like ITILTemplateMandatoryField)
             && array_key_exists('entities_id', $item->fields)
         ) {
-            $where .= " AND (" . getEntitiesRestrictRequest(
-                "",
-                $itemtype::getTable(),
-                '',
-                $_SESSION['glpiactiveentities'],
-                $item->maybeRecursive(),
-                true
-            );
+            $entity_restrict = getEntitiesRestrictCriteria($itemtype::getTable(), '', $_SESSION['glpiactiveentities'], $item->maybeRecursive(), true);
 
             if ($item instanceof SavedSearch) {
-                $where .= " OR " . $itemtype::getTable() . ".is_private = 1";
+                $criteria['WHERE'][] = [
+                    'OR' => [
+                        $entity_restrict,
+                        "$table.is_private" => 1,
+                    ]
+                ];
+            } else {
+                $criteria['WHERE'][] = $entity_restrict;
             }
-
-            $where .= ")";
         }
 
        // Check if we need to add raw names later on
         $add_keys_names = count($params['add_keys_names']) > 0;
 
        // build query
-        $query = "SELECT DISTINCT " . $DB->quoteName("$table.id") . ",  " . $DB->quoteName("$table.*") . "
-                FROM " . $DB->quoteName($table) . "
-                $join
-                WHERE $where
-                ORDER BY " . $DB->quoteName($params['sort']) . " " . $params['order'] . "
-                LIMIT " . (int)$params['start'] . ", " . (int)$params['list_limit'];
-        if ($result = $DB->query($query)) {
-            while ($data = $DB->fetchAssoc($result)) {
-                if ($add_keys_names) {
-                    // Insert raw names into the data row
-                    $data["_keys_names"] = $this->getFriendlyNames(
-                        $data,
-                        $params,
-                        $itemtype
-                    );
-                }
-
-                if (isset($params['with_networkports']) && $params['with_networkports']) {
-                    $data['_networkports'] = $this->getNetworkPorts($data['id'], $itemtype);
-                }
-
-                $found[] = $data;
+        $criteria['SELECT'] = ["$table.id", "$table.*"];
+        $criteria['DISTINCT'] = true;
+        $criteria['FROM'] = $table;
+        $criteria['ORDER'] = $params['sort'] . ' ' . $params['order'];
+        $criteria['START'] = (int) $params['start'];
+        $criteria['LIMIT'] = (int) $params['list_limit'];
+        $result = $DB->request($criteria);
+        foreach ($result as $data) {
+            if ($add_keys_names) {
+                // Insert raw names into the data row
+                $data["_keys_names"] = $this->getFriendlyNames(
+                    $data,
+                    $params,
+                    $itemtype
+                );
             }
+
+            if (isset($params['with_networkports']) && $params['with_networkports']) {
+                $data['_networkports'] = $this->getNetworkPorts($data['id'], $itemtype);
+            }
+
+            $found[] = $data;
         }
 
-       // get result full row counts
-        $count_query = "SELECT COUNT(*) FROM {$DB->quoteName($table)} $join WHERE $where";
-        $totalcount = $DB->query($count_query)->fetch_row()[0];
+        // get result full row counts
+        $count_result = $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => $table,
+            'LEFT JOIN' => $criteria['LEFT JOIN'],
+            'WHERE' => $criteria['WHERE'],
+        ]);
+        $totalcount = $count_result->current()['cpt'];
 
         if ($params['range'][0] > $totalcount) {
             $this->returnError(
@@ -1306,14 +1320,6 @@ abstract class API
                         'href' => self::$api_url . "/$itemtype/" . $fields['id'] . "/$hclass/"
                     ];
                 }
-            }
-
-            // Decode HTML
-            if (!$this->returnSanitizedContent()) {
-                $fields = array_map(
-                    fn ($f) => is_string($f) ? Sanitizer::decodeHtmlSpecialChars($f) : $f,
-                    $fields
-                );
             }
         }
        // Break reference
@@ -1401,7 +1407,7 @@ abstract class API
             $itemtype = $this->handleDepreciation($itemtype);
         }
 
-        $soptions = Search::getOptions($itemtype);
+        $soptions = SearchOption::getOptionsForItemtype($itemtype);
 
         if (isset($params['raw'])) {
             return $soptions;
@@ -1612,9 +1618,6 @@ abstract class API
                     ) {
                         return __("Forbidden field ID in search criteria");
                     }
-
-                  // Escape value to prevent SQL injection
-                    $criterion['value'] = Toolbox::addslashes_deep($criterion['value']);
                 }
 
                 return true;
@@ -1847,18 +1850,12 @@ abstract class API
                     $object["_add"] = true;
 
                    //add current item
-                    $object = Sanitizer::sanitize($object);
                     $new_id = $item->add($object);
                     if ($new_id === false) {
                         $failed++;
                     }
 
                     $message = $this->getGlpiLastMessage();
-                    if (!$this->returnSanitizedContent()) {
-                        // Message may contains the created item name, which may
-                        // contains some encoded html
-                        $message = Sanitizer::decodeHtmlSpecialChars($message);
-                    }
                     $current_res = ['id'      => $new_id,
                         'message' => $message
                     ];
@@ -1988,7 +1985,7 @@ abstract class API
                         }
 
                      //update item
-                        $object = Sanitizer::sanitize($this->inputObjectToArray($object));
+                        $object = $this->inputObjectToArray($object);
                         $update_return = $item->update($object);
                         if ($update_return === false) {
                              $failed++;
@@ -2167,9 +2164,8 @@ abstract class API
 
         $user = new User();
         if (!isset($params['password_forget_token'])) {
-            $email = Toolbox::addslashes_deep($params['email']);
             try {
-                $user->forgetPassword($email);
+                $user->forgetPassword($params['email']);
             } catch (\Glpi\Exception\ForgetPasswordException $e) {
                 $this->returnError($e->getMessage());
             }
@@ -2179,9 +2175,9 @@ abstract class API
         } else {
             $password = isset($params['password']) ? $params['password'] : '';
             $input = [
-                'password_forget_token'    => Toolbox::addslashes_deep($params['password_forget_token']),
-                'password'                 => Toolbox::addslashes_deep($password),
-                'password2'                => Toolbox::addslashes_deep($password),
+                'password_forget_token'    => $params['password_forget_token'],
+                'password'                 => $password,
+                'password2'                => $password,
             ];
             try {
                 $user->updateForgottenPassword($input);
@@ -2448,13 +2444,10 @@ abstract class API
 
         echo "<div class='documentation'>";
         $documentation = file_get_contents(GLPI_ROOT . '/' . $file);
-        $md = new MarkdownExtra();
-        $md->code_class_prefix = "language-";
-        $md->header_id_func = function ($headerName) {
-            $headerName = str_replace(['(', ')'], '', $headerName);
-            return rawurlencode(strtolower(strtr($headerName, [' ' => '-'])));
-        };
-        echo $md->transform($documentation);
+
+        $md = new MarkdownRenderer();
+        echo $md->render($documentation);
+
         echo "</div>";
 
         Html::nullFooter();
@@ -2592,6 +2585,7 @@ abstract class API
                 $hclasses[] = "TicketCost";
                 $hclasses[] = "Problem_Ticket";
                 $hclasses[] = "Change_Ticket";
+                $hclasses[] = 'Ticket_Ticket';
                 $hclasses[] = "Item_Ticket";
                 $hclasses[] = "ITILSolution";
                 $hclasses[] = "ITILFollowup";
@@ -2605,6 +2599,7 @@ abstract class API
                 $hclasses[] = "ProblemCost";
                 $hclasses[] = "Change_Problem";
                 $hclasses[] = "Problem_Ticket";
+                $hclasses[] = 'Problem_Problem';
                 $hclasses[] = "Item_Problem";
                 $hclasses[] = "ITILSolution";
                 $hclasses[] = "ITILFollowup";
@@ -2619,6 +2614,7 @@ abstract class API
                 $hclasses[] = "Itil_Project";
                 $hclasses[] = "Change_Problem";
                 $hclasses[] = "Change_Ticket";
+                $hclasses[] = 'Change_Change';
                 $hclasses[] = "Change_Item";
                 $hclasses[] = "ITILSolution";
                 $hclasses[] = "ITILFollowup";
@@ -2916,10 +2912,15 @@ abstract class API
 
                 foreach ($netp_iterator as $data) {
                     if (isset($data['netport_id'])) {
-                       // append network name
-                        $concat_expr = new QueryExpression(
-                            "GROUP_CONCAT(CONCAT(" . $DB->quoteName('ipadr.id') . ", " . $DB->quoteValue(Search::SHORTSEP) . " , " . $DB->quoteName('ipadr.name') . ")
-                     SEPARATOR " . $DB->quoteValue(Search::LONGSEP) . ") AS " . $DB->quoteName('ipadresses')
+                        // append network name
+                        $concat_expr = QueryFunction::groupConcat(
+                            expression: QueryFunction::concat([
+                                'ipadr.id',
+                                new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
+                                'ipadr.name',
+                            ]),
+                            separator: Search::LONGSEP,
+                            alias: 'ipadresses'
                         );
                         $netn_iterator = $DB->request([
                             'SELECT'    => [
@@ -3386,15 +3387,5 @@ abstract class API
             "changeActiveEntities",
             "changeActiveProfile",
         ];
-    }
-
-    /**
-     * Will the API content be sanitized ?
-     *
-     * @return bool
-     */
-    public function returnSanitizedContent(): bool
-    {
-        return true;
     }
 }

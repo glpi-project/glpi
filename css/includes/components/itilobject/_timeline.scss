@@ -102,6 +102,7 @@
         max-width: 820px;
         min-width: 100%;
         word-break: break-word;
+        border: 1px solid transparent;
 
         @include media-breakpoint-up(sm) {
             &::before {
@@ -170,6 +171,7 @@
     }
 
     &.ITILFollowup,
+    &.NotepadItem,
     &.KnowbaseItemComment {
         .timeline-content {
             background-color: $timeline-fup-bg;
@@ -285,7 +287,8 @@
         }
     }
 
-    &.Log {
+    &.Log,
+    &.ITILReminder {
         width: 100%;
 
         .user-part {
@@ -313,6 +316,7 @@
                     .timeline-header {
                         margin-left: 1rem;
                         margin-top: 0;
+                        margin-bottom: 0;
                     }
                 }
             }
@@ -405,6 +409,7 @@
             &.ITILTask.info,
             &.Document_Item,
             &.Log,
+            &.NotepadItem,
             &.KnowbaseItemComment {
                 display: none;
             }

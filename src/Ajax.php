@@ -169,6 +169,10 @@ class Ajax
         }
         $url .= (strstr($url, '?') ? '&' :  '?') . '_in_modal=1';
 
+        if (isset($options['extradata'])) {
+            $url .= (strstr($url, '?') ? '&' :  '?') . Toolbox::append_params($options['extradata'], '&');
+        }
+
         $rand = mt_rand();
 
         $html = <<<HTML
@@ -333,16 +337,30 @@ JAVASCRIPT;
                 $display_class = "d-none";
             }
 
-            foreach ($tabs as $val) {
+            foreach ($tabs as $tab_key => $val) {
                 $target = str_replace('\\', '_', $val['id']);
-                $html_tabs .= "<li class='nav-item $navitemml'>
-               <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab' title='" . strip_tags($val['title']) . "' ";
-                $html_tabs .= " href='" . $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '') . "' data-bs-target='#{$target}'>";
-                $html_tabs .= $val['title'] . "</a></li>";
-
-                $html_sele .= "<option value='$i' " . ($active_id == $target ? "selected" : "") . ">
-               {$val['title']}
-            </option>";
+                $href = $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '');
+                $selected = $active_id == $target ? 'selected' : '';
+                $title = $val['title'];
+                $title_clean = strip_tags($title);
+                if ($tab_key !== -1) {
+                    $html_tabs .= <<<HTML
+                        <li class='nav-item $navitemml'>
+                            <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab'
+                                title='{$title_clean}' href='{$href}' data-bs-target='#{$target}'>{$title}</a>
+                        </li>
+HTML;
+                    $html_sele .= "<option value='$i' {$selected}>{$val['title']}</option>";
+                } else {
+                    // All tabs
+                    $html_tabs .= <<<HTML
+                        <li class='nav-item $navitemml'>
+                            <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab'
+                                title='{$title_clean}' href='#' data-show-all-tabs="true">{$title}</a>
+                        </li>
+HTML;
+                    $html_sele .= "<option value='$i' {$selected}>{$val['title']}</option>";
+                }
                 $i++;
             }
             echo $html_tabs;
@@ -356,24 +374,27 @@ JAVASCRIPT;
             }
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
-            $js = "
-         var loadTabContents = function (tablink, force_reload = false) {
-            const href_url_params = new URLSearchParams($(tablink).prop('href'));
+
+            $json_type = json_encode($type);
+            $withtemplate = (int)($_GET['withtemplate'] ?? 0);
+            $js = <<<JS
+         var loadTabContents = function (tablink, force_reload = false, update_current_tab = true) {
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
+            const href_url_params = new URLSearchParams(url);
 
             const updateCurrentTab = () => {
                 $.get(
                   '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
                   {
-                     itemtype: '" . addslashes($type) . "',
+                     itemtype: $json_type,
                      id: '$ID',
                      tab_key: href_url_params.get('_glpi_tab'),
-                     withtemplate: " . (int)($_GET['withtemplate'] ?? 0) . "
+                     withtemplate: $withtemplate
                   }
                );
             }
-            if ($(target).html() && !force_reload) {
+            if (update_current_tab && $(target).html() && !force_reload) {
                 updateCurrentTab();
                 return;
             }
@@ -399,11 +420,27 @@ JAVASCRIPT;
             // Restore href
             active_link.attr('href', currenthref);
          };
+         
+         const loadAllTabs = () => {
+             const tabs = $('#$tabdiv_id a[data-bs-toggle=\"tab\"]');
+             tabs.each((index, tab) => {
+                loadTabContents($(tab));
+             });
+         }
 
          $(function() {
             $('a[data-bs-toggle=\"tab\"]').on('shown.bs.tab', function(e) {
                e.preventDefault();
-               loadTabContents($(this));
+               if ($(this).attr('data-show-all-tabs') === 'true') {
+                  loadAllTabs();
+                  // show all tabs by adding active and show classes to all tabs
+                  $('#$tabdiv_id').parent().find('.tab-pane').addClass('active show').removeClass('fade');
+               } else {
+                  // Remove active and show classes from all tabs except the one that is clicked
+                  let clicked_tab = $(this).attr('data-bs-target');
+                  $('#$tabdiv_id').parent().find('.tab-pane:not(' + clicked_tab + ')').removeClass('active show');
+                  loadTabContents($(this));
+               }
             });
 
             // load initial tab
@@ -414,7 +451,7 @@ JAVASCRIPT;
                $('#$tabdiv_id li a').eq($(this).val()).tab('show');
             });
          });
-         ";
+JS;
 
             echo Html::scriptBlock($js);
         }
@@ -746,9 +783,9 @@ JAVASCRIPT;
 
                 $out .= $key . ":";
                 $regs = [];
-                if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
+                if (is_string($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
                     $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])) . ".val()";
-                } else if (!is_array($val) && $val === "__VALUE__") {
+                } else if (is_string($val) && $val === "__VALUE__") {
                     $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve)) . ".val()";
                 } else {
                     $out .=  json_encode($val);

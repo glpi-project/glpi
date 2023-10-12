@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Toolbox\URL;
 
 /// Class Domain
@@ -57,6 +58,7 @@ class Domain extends CommonDBTM
             Domain_Item::class,
             Infocom::class,
             Item_Ticket::class,
+            Item_TicketRecurrent::class,
             Item_Problem::class,
             Change_Item::class,
             Contract_Item::class,
@@ -511,8 +513,8 @@ class Domain extends CommonDBTM
                     foreach (array_keys($ids) as $key) {
                         $item->getFromDB($key);
                         unset($item->fields["id"]);
-                        $item->fields["name"]    = addslashes($item->fields["name"]);
-                        $item->fields["comment"] = addslashes($item->fields["comment"]);
+                        $item->fields["name"]    = $item->fields["name"];
+                        $item->fields["comment"] = $item->fields["comment"];
                         $item->fields["entities_id"] = $input['entities_id'];
                         if ($item->add($item->fields)) {
                             $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);

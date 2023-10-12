@@ -33,7 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /** QueuedNotification class
  *
@@ -130,8 +131,6 @@ class QueuedNotification extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        global $DB;
-
         if (!isset($input['create_time']) || empty($input['create_time'])) {
             $input['create_time'] = $_SESSION["glpi_currenttime"];
         }
@@ -166,33 +165,6 @@ class QueuedNotification extends CommonDBTM
        // Force items_id to integer
         if (!isset($input['items_id']) || empty($input['items_id'])) {
             $input['items_id'] = 0;
-        }
-
-       // Drop existing mails in queue for the same event and item  and recipient
-        $item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : false;
-        if (
-            $item instanceof CommonDBTM && $item->deduplicate_queued_notifications
-            && isset($input['entities_id']) && ($input['entities_id'] >= 0)
-            && isset($input['items_id']) && ($input['items_id'] >= 0)
-            && isset($input['notificationtemplates_id']) && !empty($input['notificationtemplates_id'])
-            && isset($input['recipient'])
-        ) {
-            $criteria = [
-                'FROM'   => $this->getTable(),
-                'WHERE'  => [
-                    'is_deleted'   => 0,
-                    'itemtype'     => $input['itemtype'],
-                    'items_id'     => $input['items_id'],
-                    'entities_id'  => $input['entities_id'],
-                    'notificationtemplates_id' => $input['notificationtemplates_id'],
-                    'recipient'                => $input['recipient']
-
-                ]
-            ];
-            $iterator = $DB->request($criteria);
-            foreach ($iterator as $data) {
-                $this->delete(['id' => $data['id']], 1);
-            }
         }
 
         return $input;
@@ -464,8 +436,6 @@ class QueuedNotification extends CommonDBTM
     public function sendById($ID)
     {
         if ($this->getFromDB($ID)) {
-            $this->fields = Sanitizer::unsanitize($this->fields);
-
             $mode = $this->getField('mode');
             $eventclass = 'NotificationEvent' . ucfirst($mode);
             $conf = Notification_NotificationTemplate::getMode($mode);
@@ -500,6 +470,9 @@ class QueuedNotification extends CommonDBTM
                 return ['description' => __('Clean notification queue'),
                     'parameter'   => __('Days to keep sent emails')
                 ];
+
+            case 'queuednotificationcleanstaleajax':
+                return ['description' => __('Clean stale queued browser notifications')];
         }
         return [];
     }
@@ -591,8 +564,6 @@ class QueuedNotification extends CommonDBTM
         );
 
         foreach ($pendings as $mode => $data) {
-            $data = Sanitizer::unsanitize($data);
-
             $eventclass = 'NotificationEvent' . ucfirst($mode);
             $conf = Notification_NotificationTemplate::getMode($mode);
             if ($conf['from'] != 'core') {
@@ -633,7 +604,45 @@ class QueuedNotification extends CommonDBTM
                 self::getTable(),
                 [
                     'is_deleted'   => 1,
-                    new \QueryExpression('(UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') < ' . $DB->quoteValue($send_time) . ')')
+                    new QueryExpression('(UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') < ' . $DB->quoteValue($send_time) . ')')
+                ]
+            );
+            $vol = $DB->affectedRows();
+        }
+
+        $task->setVolume($vol);
+        return ($vol > 0 ? 1 : 0);
+    }
+
+
+    /**
+     * Cron action on queued notification: clean stale ajax notification queue
+     *
+     * @param CommonDBTM $task for log (default NULL)
+     *
+     * @return integer either 0 or 1
+     **/
+    public static function cronQueuedNotificationCleanStaleAjax($task = null)
+    {
+        global $DB, $CFG_GLPI;
+
+        $vol = 0;
+
+        // Stale ajax notifications in queue
+        if ($CFG_GLPI["notifications_ajax_expiration_delay"] > 0) {
+            $secs = $CFG_GLPI["notifications_ajax_expiration_delay"] * DAY_TIMESTAMP;
+            $DB->update(
+                self::getTable(),
+                [
+                    'is_deleted'   => 1,
+                ],
+                [
+                    'is_deleted'   => 0,
+                    'mode'         => Notification_NotificationTemplate::MODE_AJAX,
+                    new QueryExpression(
+                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs .
+                            ' < ' . QueryFunction::unixTimestamp()
+                    )
                 ]
             );
             $vol = $DB->affectedRows();
@@ -669,8 +678,6 @@ class QueuedNotification extends CommonDBTM
             );
 
             foreach ($pendings as $mode => $data) {
-                $data = Sanitizer::unsanitize($data);
-
                 $eventclass = Notification_NotificationTemplate::getModeClass($mode, 'event');
                 $eventclass::send($data);
             }
@@ -786,7 +793,7 @@ class QueuedNotification extends CommonDBTM
 
         echo "<tr class='tab_bg_1 top' >";
         echo "<td colspan='2' class='queuemail_preview'>";
-        echo self::cleanHtml(Sanitizer::unsanitize($this->fields['body_html'] ?? ''));
+        echo self::cleanHtml($this->fields['body_html'] ?? '');
         echo "</td>";
         echo "<td colspan='2'>" . nl2br($this->fields['body_text'], false) . "</td>";
         echo "</tr>";

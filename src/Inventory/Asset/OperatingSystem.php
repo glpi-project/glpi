@@ -37,7 +37,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use Item_OperatingSystem;
 use RuleDictionnaryOperatingSystemArchitectureCollection;
 use RuleDictionnaryOperatingSystemCollection;
@@ -164,10 +163,10 @@ class OperatingSystem extends InventoryAsset
                 }
             }
             if ($same === false) {
-                $ios->update(Sanitizer::sanitize(['id' => $ios->getID()] + $input_os));
+                $ios->update(['id' => $ios->getID()] + $input_os);
             }
         } else {
-            $ios->add(Sanitizer::sanitize($input_os));
+            $ios->add($input_os);
         }
 
         $ioskey = 'operatingsystems_id' . $val->operatingsystems_id;

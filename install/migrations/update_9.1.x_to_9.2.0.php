@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * Update from 9.1 to 9.2
  *
@@ -97,7 +99,7 @@ function update91xto920()
         $DB->updateOrDie(
             "glpi_softwarelicensetypes",
             [
-                'completename' =>  new \QueryExpression(DBmysql::quoteName("name")),
+                'completename' =>  new QueryExpression(DBmysql::quoteName("name")),
                 'is_recursive' => "1"
             ],
             [true],
@@ -109,10 +111,10 @@ function update91xto920()
     $DB->updateOrDie(
         "glpi_profilerights",
         [
-            'rights' => new \QueryExpression($DB->quoteName("rights") . " | " . READ)
+            'rights' => new QueryExpression($DB->quoteName("rights") . " | " . READ)
         ],
         [
-            new \QueryExpression(DBmysql::quoteName("rights") . " & " . DBmysql::quoteValue(UPDATE)),
+            new QueryExpression(DBmysql::quoteName("rights") . " & " . DBmysql::quoteValue(UPDATE)),
             'name' => "device"
         ],
         "grant READ right on components to profiles having UPDATE right"
@@ -202,7 +204,7 @@ function update91xto920()
     $DB->updateOrDie(
         "glpi_profilerights",
         [
-            'rights' => new \QueryExpression(
+            'rights' => new QueryExpression(
                 DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue(KnowbaseItem::COMMENTS)
             )
         ],
@@ -215,17 +217,33 @@ function update91xto920()
     $migration->migrationOneTable("glpi_taskcategories");
     $migration->addKey("glpi_taskcategories", "knowbaseitemcategories_id");
 
-   // #1476 - Add users_id on glpi_documents_items
+    // #1476 - Add users_id on glpi_documents_items
     $migration->addField("glpi_documents_items", "users_id", "integer", ['null' => true]);
     $migration->migrationOneTable("glpi_documents_items");
     $migration->addKey("glpi_documents_items", "users_id");
-   // TODO : can be improved when DBmysql->buildUpdate() support joins
     $migration->addPostQuery(
-        "UPDATE `glpi_documents_items`,
-                                    `glpi_documents`
-                             SET `glpi_documents_items`.`users_id` = `glpi_documents`.`users_id`
-                             WHERE `glpi_documents_items`.`documents_id` = `glpi_documents`.`id`",
-        "9.2 update set users_id on glpi_documents_items"
+        $DB->buildUpdate(
+            'glpi_documents_items',
+            [
+                'glpi_documents_items.users_id' => new QueryExpression(DBmysql::quoteName('glpi_documents.users_id'))
+            ],
+            [
+                'glpi_documents_items.documents_id' => new QueryExpression(DBmysql::quoteName('glpi_documents.id'))
+            ],
+            [
+                'LEFT JOIN' => [
+                    'glpi_documents' => [
+                        'ON' => [
+                            'glpi_documents_items' => 'documents_id',
+                            'glpi_documents' => 'id'
+                        ]
+                    ]
+                ]
+            ]
+        ),
+        "9.2 update set users_id on glpi_documents_items",
+        [],
+        true
     );
 
    //add product number
@@ -638,7 +656,7 @@ function update91xto920()
         $DB->updateOrDie(
             "glpi_softwarelicenses",
             [
-                'completename' => new \QueryExpression(DBmysql::quoteName("name"))
+                'completename' => new QueryExpression(DBmysql::quoteName("name"))
             ],
             [true],
             "9.2 copy name to completename for software licenses"
@@ -1005,16 +1023,18 @@ function update91xto920()
         $DB->buildUpdate(
             "glpi_savedsearches",
             ['do_count' => SavedSearch::COUNT_AUTO],
-            [true]
-        )
+            [new QueryExpression('true')]
+        ),
+        'Set count auto on saved searches'
     );
 
     $migration->addPostQuery(
         $DB->buildUpdate(
             "glpi_savedsearches",
-            ['entities_id' => "0"],
-            ['entities_id' => "-1"]
-        )
+            ['entities_id' => 0],
+            ['entities_id' => -1]
+        ),
+        'Update entities_id in saved searches'
     );
 
     if (
@@ -1286,8 +1306,8 @@ function update91xto920()
                 'comment'         => "",
                 'is_recursive'    => "1",
                 'is_active'       => "1",
-                'date_creation'   => new \QueryExpression("NOW()"),
-                'date_mod'        => new \QueryExpression("NOW()")
+                'date_creation'   => new QueryExpression("NOW()"),
+                'date_mod'        => new QueryExpression("NOW()")
             ],
             "9.2 Add saved search alerts notification"
         );
@@ -1298,7 +1318,7 @@ function update91xto920()
             [
                 'name'            => "Saved searches alerts",
                 'itemtype'        => "SavedSearch_Alert",
-                'date_mod'        => new \QueryExpression("NOW()")
+                'date_mod'        => new QueryExpression("NOW()")
             ],
             "9.2 Add saved search alerts notification template"
         );
@@ -1471,7 +1491,7 @@ Regards,',
             if (!isset($mapping[$key])) {
                 $mapping[$key] = [];
             }
-            $kver->add(['version' => $DB->escape($data['os_kernel_version'])]);
+            $kver->add(['version' => $data['os_kernel_version']]);
             $mapping[$key][$data['id']] = $kver->getID();
         }
 
@@ -1680,8 +1700,8 @@ Regards,',
                 'comment'         => "",
                 'is_recursive'    => "1",
                 'is_active'       => "1",
-                'date_creation'   => new \QueryExpression("NOW()"),
-                'date_mod'        => new \QueryExpression("NOW()")
+                'date_creation'   => new QueryExpression("NOW()"),
+                'date_mod'        => new QueryExpression("NOW()")
             ],
             "9.2 Add certificate alerts notification"
         );
@@ -1692,7 +1712,7 @@ Regards,',
             [
                 'name'      => "Certificates",
                 'itemtype'  => "Certificate",
-                'date_mod'  => new \QueryExpression("NOW()")
+                'date_mod'  => new QueryExpression("NOW()")
             ],
             "9.2 Add certifcate alerts notification template"
         );
@@ -2013,11 +2033,11 @@ Regards,',
         foreach ($iterator as $row) {
             if (!isset($firmwares[$row['firmware']])) {
                 $fw = new DeviceFirmware();
-                if ($fw->getFromDBByCrit(['designation' => $DB->escape($row['firmware'])])) {
+                if ($fw->getFromDBByCrit(['designation' => $row['firmware']])) {
                     $firmwares[$row['firmware']] = $fw->getID();
                 } else {
                     $id = $fw->add([
-                        'designation'              => $DB->escape($row['firmware']),
+                        'designation'              => $row['firmware'],
                         'devicefirmwaretypes_id'   => '3' //type "firmware"
                     ]);
                     $firmwares[$row['firmware']] = $id;
@@ -2043,8 +2063,8 @@ Regards,',
         foreach ($iterator as $row) {
             $fw = new DeviceFirmware();
             $id = $fw->add([
-                'designation'              => $DB->escape($row['name']),
-                'comment'                  => $DB->escape($row['comment']),
+                'designation'              => $row['name'],
+                'comment'                  => $row['comment'],
                 'devicefirmwaretypes_id'   => 3, //type "Firmware"
                 'date_creation'            => $row['date_creation'],
                 'date_mod'                 => $row['date_mod']
@@ -2266,7 +2286,7 @@ Regards,',
     ];
     foreach ($tables as $table => $fields) {
         $add = true;
-        $result = $DB->query("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
+        $result = $DB->doQuery("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
         if ($result && $DB->numrows($result)) {
             $row = $DB->fetchAssoc($result);
             if ($row['Non_unique'] == 1) {
@@ -2330,33 +2350,33 @@ Regards,',
         if (!$DB->fieldExists($tl_table, 'timeline_position')) {
             $migration->addField($tl_table, "timeline_position", "tinyint NOT NULL DEFAULT '0'");
             $where = [
-                "$tl_table.tickets_id"  => new \QueryExpression(
+                "$tl_table.tickets_id"  => new QueryExpression(
                     DBmysql::quoteName("glpi_tickets_users.tickets_id")
                 ),
-                "$tl_table.users_id"    => new \QueryExpression(
+                "$tl_table.users_id"    => new QueryExpression(
                     DBmysql::quoteName("glpi_tickets_users.users_id")
                 ),
             ];
             if (!$DB->fieldExists($tl_table, 'tickets_id')) {
                 $where = [
                     "$tl_table.itemtype"    => "Ticket",
-                    "$tl_table.items_id"    => new \QueryExpression(
+                    "$tl_table.items_id"    => new QueryExpression(
                         DBmysql::quoteName("glpi_tickets_users.tickets_id")
                     ),
-                    "$tl_table.users_id"    => new \QueryExpression(
+                    "$tl_table.users_id"    => new QueryExpression(
                         DBmysql::quoteName("glpi_tickets_users.users_id")
                     ),
                 ];
             }
 
-            $update = new \QueryExpression(
+            $update = new QueryExpression(
                 DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_tickets_users")
             );
             $migration->addPostQuery(
                 $DB->buildUpdate(
                     $update,
                     [
-                        "$tl_table.timeline_position" => new \QueryExpression("IF(" .
+                        "$tl_table.timeline_position" => new QueryExpression("IF(" .
                      DBmysql::quoteName("glpi_tickets_users.type") . " NOT IN (1,3) AND " .
                      DBmysql::quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)")
                     ],
@@ -2365,32 +2385,32 @@ Regards,',
             );
 
             $where = [
-                "$tl_table.tickets_id"           => new \QueryExpression(
+                "$tl_table.tickets_id"           => new QueryExpression(
                     DBmysql::quoteName("glpi_groups_tickets.tickets_id")
                 ),
-                "glpi_groups_users.groups_id"    => new \QueryExpression(
+                "glpi_groups_users.groups_id"    => new QueryExpression(
                     DBmysql::quoteName("glpi_groups_tickets.groups_id")
                 ),
-                "$tl_table.users_id"             => new \QueryExpression(
+                "$tl_table.users_id"             => new QueryExpression(
                     DBmysql::quoteName("glpi_groups_users.users_id")
                 ),
             ];
             if (!$DB->fieldExists($tl_table, 'tickets_id')) {
                 $where = [
                     "$tl_table.itemtype"             => "Ticket",
-                    "$tl_table.items_id"             => new \QueryExpression(
+                    "$tl_table.items_id"             => new QueryExpression(
                         DBmysql::quoteName("glpi_groups_tickets.tickets_id")
                     ),
-                    "glpi_groups_users.groups_id"    => new \QueryExpression(
+                    "glpi_groups_users.groups_id"    => new QueryExpression(
                         DBmysql::quoteName("glpi_groups_tickets.groups_id")
                     ),
-                    "$tl_table.users_id"             => new \QueryExpression(
+                    "$tl_table.users_id"             => new QueryExpression(
                         DBmysql::quoteName("glpi_groups_users.users_id")
                     ),
                 ];
             }
 
-            $update = new \QueryExpression(
+            $update = new QueryExpression(
                 DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_groups_tickets") .
                 ", " . DBmysql::quoteName("glpi_groups_users")
             );
@@ -2398,7 +2418,7 @@ Regards,',
                 $DB->buildUpdate(
                     $update,
                     [
-                        "$tl_table.timeline_position" => new \QueryExpression("IF(" .
+                        "$tl_table.timeline_position" => new QueryExpression("IF(" .
                      DBmysql::quoteName("glpi_groups_tickets.type") . " NOT IN (1,3) AND " .
                      DBmysql::quoteName("glpi_groups_tickets.type") . " IN (2), 4, 1)")
                     ],
@@ -2409,8 +2429,8 @@ Regards,',
             $migration->addPostQuery(
                 $DB->buildUpdate(
                     $tl_table,
-                    ["$tl_table.timeline_position" => "1"],
-                    ["$tl_table.timeline_position" => "0"]
+                    ["$tl_table.timeline_position" => 1],
+                    ["$tl_table.timeline_position" => 0]
                 )
             );
         }

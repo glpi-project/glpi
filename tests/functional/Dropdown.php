@@ -38,7 +38,6 @@ namespace tests\units;
 use DbTestCase;
 use Generator;
 use Glpi\Socket;
-use Glpi\Toolbox\Sanitizer;
 use Session;
 use State;
 
@@ -136,7 +135,8 @@ class Dropdown extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $encoded_sep = Sanitizer::sanitize(' > ');
+        $separator         = ' > ';
+        $encoded_separator = ' &gt; ';
 
         $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
         $this->string($ret)->isIdenticalTo('&nbsp;');
@@ -146,13 +146,13 @@ class Dropdown extends DbTestCase
         $subCat = getItemByTypeName('TaskCategory', '_subcat_1');
 
        // basic test returns string only
-        $expected = $cat->fields['name'] . $encoded_sep . $subCat->fields['name'];
+        $expected = $cat->fields['name'] . $separator . $subCat->fields['name'];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID());
         $this->string($ret)->isIdenticalTo($expected);
 
        // test of return with comments
-        $expected = ['name'    => $cat->fields['name'] . $encoded_sep . $subCat->fields['name'],
-            'comment' => "<span class='b'>Complete name</span>: " . $cat->fields['name'] . $encoded_sep
+        $expected = ['name'    => $cat->fields['name'] . $separator . $subCat->fields['name'],
+            'comment' => "<span class='b'>Complete name</span>: " . $cat->fields['name'] . $encoded_separator
                                     . $subCat->fields['name'] . "<br><span class='b'>&nbsp;Comments&nbsp;</span>"
                                     . $subCat->fields['comment']
         ];
@@ -160,7 +160,7 @@ class Dropdown extends DbTestCase
         $this->array($ret)->isIdenticalTo($expected);
 
        // test of return without $tooltip
-        $expected = ['name'    => $cat->fields['name'] . $encoded_sep . $subCat->fields['name'],
+        $expected = ['name'    => $cat->fields['name'] . $separator . $subCat->fields['name'],
             'comment' => $subCat->fields['comment']
         ];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true, true, false);
@@ -170,7 +170,7 @@ class Dropdown extends DbTestCase
         $CFG_GLPI['translate_dropdowns'] = 1;
         $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
         $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
-        $expected = ['name'    => 'FR - _cat_1' . $encoded_sep . 'FR - _subcat_1',
+        $expected = ['name'    => 'FR - _cat_1' . $separator . 'FR - _subcat_1',
             'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1'
         ];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true, true, false);
@@ -262,6 +262,71 @@ class Dropdown extends DbTestCase
         ];
         $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID(), true, true, false);
         $this->array($ret)->isIdenticalTo($expected);
+
+        ///////////
+        // Location
+        $location = getItemByTypeName('Location', '_location01');
+        $expected = $location->getName();
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => $location->getName(),
+            'comment' => "<span class='b'>Complete name</span>: _location01<br>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _location01"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
+
+        //Location with code only:
+        $location = getItemByTypeName('Location', '_location02 > _sublocation02');
+        $expected = "_location02 > _sublocation02 - code_sublocation02";
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => "_location02 > _sublocation02 - code_sublocation02",
+            'comment' => "<span class='b'>Complete name</span>: _location02 &gt; _sublocation02<br>" .
+                        "<span class='b'>Code:</span> code_sublocation02<br/>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation02"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
+
+        //Location with alias only:
+        $location = getItemByTypeName('Location', '_location02 > _sublocation03');
+        $expected = "alias_sublocation03";
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => "alias_sublocation03",
+            'comment' => "<span class='b'>Complete name</span>: _location02 &gt; _sublocation03<br>" .
+                        "<span class='b'>Alias:</span> alias_sublocation03<br/>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation03"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
+
+        //Location with alias and code:
+        $location = getItemByTypeName('Location', '_location02 > _sublocation04');
+        $expected = "alias_sublocation04 - code_sublocation04";
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => "alias_sublocation04 - code_sublocation04",
+            'comment' => "<span class='b'>Complete name</span>: _location02 &gt; _sublocation04<br>" .
+                        "<span class='b'>Alias:</span> alias_sublocation04<br/>" .
+                        "<span class='b'>Code:</span> code_sublocation04<br/>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation04"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
     }
 
     public function dataGetValueWithUnit()
@@ -335,7 +400,7 @@ class Dropdown extends DbTestCase
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
@@ -411,7 +476,7 @@ class Dropdown extends DbTestCase
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'R&D' // raw value
+                    'searchText'            => 'R&D'
                 ],
                 'expected'  => [
                     'results' => [
@@ -425,37 +490,7 @@ class Dropdown extends DbTestCase
                                     'disabled' => true
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
-                                    'text'           => 'R&D',
-                                    'level'          => 2,
-                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
-                                    'selection_text' => '_cat_1 > R&D',
-                                ],
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count' => 1
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'R&#38;D' // sanitized value from front file
-                ],
-                'expected'  => [
-                    'results' => [
-                        0 => [
-                            'text'      => 'Root entity',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                                    'text'   => '_cat_1',
-                                    'level'  => 1,
-                                    'disabled' => true
-                                ],
-                                1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
@@ -497,7 +532,7 @@ class Dropdown extends DbTestCase
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
@@ -534,7 +569,7 @@ class Dropdown extends DbTestCase
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
@@ -628,15 +663,22 @@ class Dropdown extends DbTestCase
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
                     'searchText'            => 'subcat',
-                    'toadd'                 => ['key' => 'value']
+                    'toadd'                 => [
+                        'key'  => 'value',
+                        'key2' => "value with unescaped \t and escaped \\t"
+                    ]
                 ],
                 'expected'  => [
                     'results' => [
-                        0 => [
+                        [
                             'id'     => 'key',
                             'text'   => 'value'
                         ],
-                        1 => [
+                        [
+                            'id'     => 'key2',
+                            'text'   => "value with unescaped \t and escaped \\t"
+                        ],
+                        [
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
@@ -710,7 +752,7 @@ class Dropdown extends DbTestCase
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
                                     'text'           => '_cat_1 > R&D',
                                     'level'          => 0,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
@@ -935,8 +977,6 @@ class Dropdown extends DbTestCase
 
     protected function getDropdownConnectProvider()
     {
-        $encoded_sep = Sanitizer::sanitize('>');
-
         return [
             [
                 'params'    => [
@@ -950,7 +990,7 @@ class Dropdown extends DbTestCase
                             'text' => '-----',
                         ],
                         1 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity",
+                            'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
@@ -963,7 +1003,7 @@ class Dropdown extends DbTestCase
                             ]
                         ],
                         2 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_1",
+                            'text' => "Root entity > _test_root_entity > _test_child_1",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
@@ -972,7 +1012,7 @@ class Dropdown extends DbTestCase
                             ]
                         ],
                         3 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_2",
+                            'text' => "Root entity > _test_root_entity > _test_child_2",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent2', true),
@@ -1000,7 +1040,7 @@ class Dropdown extends DbTestCase
                             'text' => '-----',
                         ],
                         1 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity",
+                            'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
@@ -1009,7 +1049,7 @@ class Dropdown extends DbTestCase
                             ]
                         ],
                         2 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_1",
+                            'text' => "Root entity > _test_root_entity > _test_child_1",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
@@ -1028,7 +1068,7 @@ class Dropdown extends DbTestCase
                 'expected'  => [
                     'results' => [
                         0 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity",
+                            'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
@@ -1047,7 +1087,7 @@ class Dropdown extends DbTestCase
                 'expected'  => [
                     'results' => [
                         0 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity",
+                            'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
@@ -1199,19 +1239,26 @@ class Dropdown extends DbTestCase
                     'max'    => 30,
                     'step'   => 10,
                     'used'   => [20],
-                    'toadd'  => [5 => 'five']
+                    'toadd'  => [
+                        5 => 'five',
+                        6 => "value with unescaped \t and escaped \\t",
+                    ]
                 ],
                 'expected'  => [
                     'results'   => [
-                        0 => [
+                        [
                             'id'     => 5,
                             'text'   => 'five'
                         ],
-                        1 => [
+                        [
+                            'id'     => 6,
+                            'text'   => "value with unescaped \t and escaped \\t",
+                        ],
+                        [
                             'id'     => 10,
                             'text'   => '10'
                         ],
-                        2 => [
+                        [
                             'id'     => 30,
                             'text'   => '30'
                         ]
@@ -1470,7 +1517,7 @@ class Dropdown extends DbTestCase
         $values = (array)json_decode($values);
 
         $this->array($values)
-         ->integer['count']->isEqualTo(2)
+         ->integer['count']->isEqualTo(3)
          ->array['results']
             ->hasSize(2);
 
@@ -1483,7 +1530,7 @@ class Dropdown extends DbTestCase
         $values = (array)json_decode($values);
 
         $this->array($values)
-         ->integer['count']->isEqualTo(2)
+         ->integer['count']->isEqualTo(3)
          ->array['results']
             ->hasSize(2);
 

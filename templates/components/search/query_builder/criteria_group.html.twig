@@ -1,0 +1,63 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="list-group-item p-2 border-0 normalcriteria {{ num == 0 ? 'headerRow' : '' }}" id="{{ row_id }}">
+   <div class="row g-1">
+      <div class="col-auto">
+         <button class="btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria" type="button" data-rowid="{{ row_id }}"
+                 data-bs-toggle="tooltip" data-bs-placement="left" title="{{ __('Delete a rule') }}">
+            <i class="ti ti-square-minus" alt="-"></i>
+         </button>
+      </div>
+      <div class="col-auto">
+         {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][link]", criteria["link"] ?? '', call('\\Glpi\\Search\\SearchEngine::getLogicalOperators'), '', {
+            full_width: true,
+            input_class: 'col-12',
+            full_width_adapt_column: false,
+            mb: 'mb-0',
+            no_label: true,
+         }) }}
+      </div>
+      <div class="col-auto">
+         {% set parents_num = (parents_num|default([]))|merge([num]) %}
+         {{ call("Glpi\\Search\\Input\\QueryBuilder::showGenericSearch", [itemtype, {
+            mainform: false,
+            prefix_crit: prefix ~ '[' ~ num ~ '][criteria]',
+            parents_num: parents_num,
+            criteria: criteria['criteria'],
+         }]) }}
+      </div>
+   </div>
+</div>

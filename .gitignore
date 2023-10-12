@@ -3,6 +3,8 @@
 /config/glpi.key
 /config/glpicrypt.key
 /config/local_define.php
+/config/oauth.pem
+/config/oauth.pub
 /tests/config_db*
 /tests/cache.php
 /marketplace/*

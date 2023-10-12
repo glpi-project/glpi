@@ -1,0 +1,110 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/setup/general/base_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set field_options = {
+   'label_class': 'col-xxl-7',
+   'input_class': 'col-xxl-5',
+} %}
+
+{% block config_fields %}
+   {% set global_management_options = {
+      (constant('Config::UNIT_MANAGEMENT')): __('Yes - Restrict to unit management'),
+      (constant('Config::GLOBAL_MANAGEMENT')): __('Yes - Restrict to global management'),
+      (constant('Config::NO_MANAGEMENT')): __('No'),
+   } %}
+
+   {{ fields.dropdownYesNo(
+      'auto_create_infocoms',
+      config['auto_create_infocoms'],
+      __('Enable the financial and administrative information by default'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownArrayField(
+      'monitors_management_restrict',
+      config['monitors_management_restrict'],
+      global_management_options,
+      __('Restrict monitor management'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownField(
+      'SoftwareCategory',
+      'softwarecategories_id_ondelete',
+      config['softwarecategories_id_ondelete'],
+      __('Software category deleted by the dictionary rules'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownArrayField(
+      'peripherals_management_restrict',
+      config['peripherals_management_restrict'],
+      global_management_options,
+      __('Restrict device management'),
+      field_options
+   ) }}
+
+   {{ fields.dateField('date_tax', config['date_tax'], __('End of fiscal year'), field_options|merge({
+      maybeempty: false,
+   })) }}
+
+   {{ fields.dropdownArrayField(
+      'phones_management_restrict',
+      config['phones_management_restrict'],
+      global_management_options,
+      __('Restrict phone management'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownArrayField('use_autoname_by_entity', config['use_autoname_by_entity'], {
+      0: __('Global'),
+      1: __('By entity'),
+   }, __('Automatic fields (marked by *)'), field_options) }}
+
+   {{ fields.dropdownArrayField(
+      'printers_management_restrict',
+      config['printers_management_restrict'],
+      global_management_options,
+      __('Restrict printer management'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownArrayField('devices_in_menu', null, item_devices_types, __('Devices displayed in menu'), field_options|merge({
+      multiple: true,
+      size: 3,
+      values: config['devices_in_menu']
+   })) }}
+{% endblock %}

@@ -42,6 +42,8 @@ use Notepad;
 use Problem;
 use Session;
 use Ticket;
+use User;
+use UserEmail;
 
 /* Test for inc/massiveaction.class.php */
 
@@ -53,13 +55,13 @@ class MassiveAction extends DbTestCase
             [
                 'itemtype'     => 'Computer',
                 'items_id'     => '_test_pc01',
-                'allcount'     => 21,
-                'singlecount'  => 13
+                'allcount'     => 27,
+                'singlecount'  => 18
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
-                'allcount'     => 20,
-                'singlecount'  => 12
+                'allcount'     => 24,
+                'singlecount'  => 16
             ], [
                 'itemtype'     => 'SoftwareLicense',
                 'items_id'     => '_test_softlic_1',
@@ -68,33 +70,33 @@ class MassiveAction extends DbTestCase
             ], [
                 'itemtype'     => 'NetworkEquipment',
                 'items_id'     => '_test_networkequipment_1',
-                'allcount'     => 16,
-                'singlecount'  => 11
+                'allcount'     => 22,
+                'singlecount'  => 16
             ], [
                 'itemtype'     => 'Peripheral',
                 'items_id'     => '_test_peripheral_1',
-                'allcount'     => 18,
-                'singlecount'  => 12
+                'allcount'     => 24,
+                'singlecount'  => 17
             ], [
                 'itemtype'     => 'Printer',
                 'items_id'     => '_test_printer_all',
-                'allcount'     => 19,
-                'singlecount'  => 11
+                'allcount'     => 25,
+                'singlecount'  => 16
             ], [
                 'itemtype'     => 'Phone',
                 'items_id'     => '_test_phone_1',
-                'allcount'     => 19,
-                'singlecount'  => 11
+                'allcount'     => 25,
+                'singlecount'  => 16
             ], [
                 'itemtype'     => 'Ticket',
                 'items_id'     => '_ticket01',
                 'allcount'     => 20,
-                'singlecount'  => 10
+                'singlecount'  => 9
             ], [
                 'itemtype'     => 'Profile',
                 'items_id'     => 'Super-Admin',
-                'allcount'     => 2,
-                'singlecount'  => 1
+                'allcount'     => 3,
+                'singlecount'  => 2
             ]
         ];
     }
@@ -167,11 +169,17 @@ class MassiveAction extends DbTestCase
         };
         $ma->getMockController()->getInput = $input;
         $ma->getMockController()->itemDone =
-            function ($item, $id, $res) use (&$ma_ok, &$ma_ko) {
-                if ($res == \MassiveAction::ACTION_OK) {
-                    $ma_ok++;
+            function ($item, $ids, $res) use (&$ma_ok, &$ma_ko) {
+                if (is_array($ids)) {
+                    $increment = count($ids);
                 } else {
-                    $ma_ko++;
+                    $increment = 1;
+                }
+
+                if ($res == \MassiveAction::ACTION_OK) {
+                    $ma_ok += $increment;
+                } else {
+                    $ma_ko += $increment;
                 }
             };
 
@@ -417,7 +425,7 @@ class MassiveAction extends DbTestCase
         }
 
        // Execute action
-        $this->processMassiveActionsForOneItemtype(
+        @$this->processMassiveActionsForOneItemtype(
             "link_to_problem",
             $item,
             [$item->fields['id']],
@@ -616,6 +624,83 @@ class MassiveAction extends DbTestCase
             $expected_ok,
             $expected_ko,
             Ticket::class
+        );
+    }
+
+    /**
+     * Data provider for testDeleteEmails
+     *
+     * @return iterable
+     */
+    protected function deleteEmailsProvider(): iterable
+    {
+        // Users used for our tests
+        $user1 = getItemByTypeName("User", "post-only", true);
+        $user2 = getItemByTypeName("User", "glpi", true);
+        $user3 = getItemByTypeName("User", "tech", true);
+        $users_ids = [$user1, $user2, $user3];
+
+        // Check that no email exist for our tests users
+        $this->array((new UserEmail())->find([
+            'users_id' => $users_ids
+        ]))->hasSize(0);
+
+        // Create set of emails to be deleted
+        $this->createItems('UserEmail', [
+            // 1 email for user1
+            ['users_id' => $user1, 'email' => 'test1@mail.com'],
+            // 2 emails for user2
+            ['users_id' => $user2, 'email' => 'test2@mail.com'],
+            ['users_id' => $user2, 'email' => 'test3@mail.com'],
+            // 0 emails for user3
+        ]);
+
+        // Check that emails have been created as expected
+        $this->array((new UserEmail())->find([
+            'users_id' => $users_ids
+        ]))->hasSize(3);
+
+        // First, login as someone who shouldn't be able to run this action
+        $this->login('post-only', 'postonly');
+        $current_right = Session::haveRight(User::$rightname, UPDATE);
+        $this->boolean(boolval($current_right))->isEqualTo(false);
+        yield [$users_ids, 0, 3]; // All failed
+
+        // Now login to someone that can run this action
+        $this->login('glpi', 'glpi');
+        $current_right = Session::haveRight(User::$rightname, UPDATE);
+        $this->boolean(boolval($current_right))->isEqualTo(true);
+        yield [$users_ids, 3, 0]; // Success
+
+        // Verify that emails have been cleaned
+        $this->array((new UserEmail())->find([
+            'users_id' => $users_ids
+        ]))->hasSize(0);
+    }
+
+    /**
+     * Test the the "delete_email" massive action for User
+     *
+     * @dataProvider deleteEmailsProvider
+     *
+     * @param array $items Arrays of users' ids
+     * @param int   $ok    Number of items that should be marked as OK
+     * @param int   $ko    Number of items that should be marked as KO
+     */
+    public function testProcessMassiveActionsForOneItemtype_deleteEmail(
+        array $items,
+        int $ok,
+        int $ko,
+    ) {
+        // Execute action
+        $this->processMassiveActionsForOneItemtype(
+            "delete_emails",
+            new User(),
+            $items,
+            [],
+            $ok,
+            $ko,
+            User::class
         );
     }
 }

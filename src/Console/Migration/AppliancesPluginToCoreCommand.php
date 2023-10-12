@@ -42,11 +42,9 @@ use ApplianceEnvironment;
 use ApplianceType;
 use Change_Item;
 use Contract_Item;
-use DB;
 use Document_Item;
 use Domain;
 use Glpi\Console\AbstractCommand;
-use Glpi\Toolbox\Sanitizer;
 use Infocom;
 use Item_Problem;
 use Item_Project;
@@ -231,7 +229,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         ];
 
         foreach ($core_tables as $table) {
-            $result = $this->db->query('TRUNCATE ' . $this->db->quoteName($table));
+            $result = $this->db->delete($table, [1]);
 
             if (!$result) {
                 throw new \Symfony\Component\Console\Exception\RuntimeException(
@@ -289,7 +287,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         );
 
         $table  = Profile::getTable();
-        $result = $this->db->query(
+        $result = $this->db->doQuery(
             sprintf(
                 "UPDATE %s SET helpdesk_item_type = REPLACE(helpdesk_item_type, '%s', '%s')",
                 $this->db->quoteName($table),
@@ -389,12 +387,12 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $app_fields = Sanitizer::sanitize([
+            $app_fields = [
                 'id'            => $item['id'],
                 'appliances_id' => $item['plugin_appliances_appliances_id'],
                 'items_id'      => $item['items_id'],
                 'itemtype'      => $item['itemtype']
-            ]);
+            ];
 
             $appi = new Appliance_Item();
             if (!($appi_id = $appi->getFromDBByCrit($app_fields))) {
@@ -449,11 +447,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $app_fields = Sanitizer::sanitize([
+            $app_fields = [
                 'id'      => $env['id'],
                 'name'    => $env['name'],
                 'comment' => $env['comment']
-            ]);
+            ];
 
             $appe = new ApplianceEnvironment();
             if (!($appe_id = $appe->getFromDBByCrit($app_fields))) {
@@ -507,7 +505,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $app_fields = Sanitizer::sanitize([
+            $app_fields = [
                 'id'                       => $appliance['id'],
                 'entities_id'              => $appliance['entities_id'],
                 'is_recursive'             => $appliance['is_recursive'],
@@ -528,7 +526,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 'externalidentifier'       => $appliance['externalid'],
                 'serial'                   => $appliance['serial'],
                 'otherserial'              => $appliance['otherserial']
-            ]);
+            ];
 
             $app = new Appliance();
             if (!($app_id = $app->getFromDBByCrit($app_fields))) {
@@ -583,14 +581,14 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $appt_fields = Sanitizer::sanitize([
+            $appt_fields = [
                 'id'                 => $type['id'],
                 'entities_id'        => $type['entities_id'],
                 'is_recursive'       => $type['is_recursive'],
                 'name'               => $type['name'],
                 'comment'            => $type['comment'],
                 'externalidentifier' => $type['externalid']
-            ]);
+            ];
 
             $appt = new ApplianceType();
             if (!($appt_id = $appt->getFromDBByCrit($appt_fields))) {
@@ -677,12 +675,12 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 }
             }
 
-            $appr_fields = Sanitizer::sanitize([
+            $appr_fields = [
                 'id'                  => $row['id'],
                 'appliances_items_id' => $row['plugin_appliances_appliances_items_id'],
                 'itemtype'            => $itemtype,
                 'items_id'            => $row['relations_id']
-            ]);
+            ];
 
             $appr = new Appliance_Item_Relation();
             if (!($appr_id = $appr->getFromDBByCrit($appr_fields))) {

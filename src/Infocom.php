@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * Infocom class
@@ -146,7 +148,7 @@ class Infocom extends CommonDBChild
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSupplier($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
 
                 default:
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -157,7 +159,7 @@ class Infocom extends CommonDBChild
                             ]
                         );
                     }
-                    return self::createTabEntry(__('Management'), $nb);
+                    return self::createTabEntry(__('Management'), $nb, $item::getType());
             }
         }
         return '';
@@ -514,17 +516,20 @@ class Infocom extends CommonDBChild
                     ]
                 ],
                 'WHERE'     => [
-                    new \QueryExpression(
+                    new QueryExpression(
                         '(' . $DB->quoteName('glpi_infocoms.alert') . ' & ' . pow(2, Alert::END) . ') > 0'
                     ),
                     "$table.entities_id"       => $entity,
                     "$table.warranty_duration" => ['>', 0],
                     'NOT'                      => ["$table.warranty_date" => null],
-                    new \QueryExpression(
-                        'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_infocoms.warranty_date') . ', INTERVAL (' .
-                        $DB->quoteName('glpi_infocoms.warranty_duration') . ') MONTH), CURDATE() ) <= ' .
-                        $DB->quoteValue($before)
-                    ),
+                    new QueryExpression(QueryFunction::dateDiff(
+                        expression1: QueryFunction::dateAdd(
+                            date: 'glpi_infocoms.warranty_date',
+                            interval: new QueryExpression($DB::quoteName('glpi_infocoms.warranty_duration')),
+                            interval_unit: 'MONTH'
+                        ),
+                        expression2: QueryFunction::curdate()
+                    ) . ' <= ' . $DB::quoteValue($before)),
                     'glpi_alerts.date'         => null
                 ]
             ]);
@@ -1911,6 +1916,6 @@ class Infocom extends CommonDBChild
 
     public static function getIcon()
     {
-        return "fas fa-wallet";
+        return "ti ti-wallet";
     }
 }

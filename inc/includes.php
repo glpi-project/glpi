@@ -34,7 +34,6 @@
  */
 
 use Glpi\Http\Firewall;
-use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__DIR__));
@@ -95,30 +94,6 @@ if (!isset($PLUGINS_INCLUDED)) {
     $plugin->init(true, $PLUGINS_EXCLUDED);
 }
 
-// Security system
-if (isset($_POST)) {
-    $_UPOST = $_POST; //keep raw, as a workaround
-    if (isset($_POST['_glpi_simple_form'])) {
-        $_POST = array_map('urldecode', $_POST);
-    }
-    $_POST = Sanitizer::sanitize($_POST);
-}
-if (isset($_GET)) {
-    $_UGET = $_GET; //keep raw, as a workaround
-    $_GET  = Sanitizer::sanitize($_GET);
-}
-if (isset($_REQUEST)) {
-    $_UREQUEST = $_REQUEST; //keep raw, as a workaround
-    $_REQUEST  = Sanitizer::sanitize($_REQUEST);
-}
-if (isset($_FILES)) {
-    $_UFILES = $_FILES; //keep raw, as a workaround
-    foreach ($_FILES as &$file) {
-        $file['name'] = Sanitizer::sanitize($file['name']);
-    }
-}
-unset($file);
-
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
     $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
 }
@@ -141,7 +116,7 @@ if (isset($_REQUEST['forcetab'])) {
 }
 // Manage tabs
 if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
-    Session::setActiveTab($_REQUEST['itemtype'], Sanitizer::unsanitize($_REQUEST['glpi_tab']));
+    Session::setActiveTab($_REQUEST['itemtype'], $_REQUEST['glpi_tab']);
 }
 // Override list-limit if choosen
 if (isset($_REQUEST['glpilist_limit'])) {
@@ -149,11 +124,7 @@ if (isset($_REQUEST['glpilist_limit'])) {
 }
 
 // Security : check CSRF token
-if (
-    GLPI_USE_CSRF_CHECK
-    && !isAPI()
-    && isset($_POST) && is_array($_POST) && count($_POST)
-) {
+if (!isAPI() && isset($_POST) && is_array($_POST) && count($_POST)) {
     if (preg_match(':' . $CFG_GLPI['root_doc'] . '(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {
        // Keep CSRF token as many AJAX requests may be made at the same time.
        // This is due to the fact that read operations are often made using POST method (see #277).
@@ -178,4 +149,15 @@ if (isset($_REQUEST["force_profile"]) && ($_SESSION['glpiactiveprofile']['id'] ?
 // Manage entity change
 if (isset($_REQUEST["force_entity"]) && ($_SESSION["glpiactive_entity"] ?? -1) != $_REQUEST["force_entity"]) {
     Session::changeActiveEntities($_REQUEST["force_entity"], true);
+}
+
+// The user's current groups are stored in his session
+// If there was any change regarding groups membership and/or configuration, we
+// need to reset the data stored in his session
+$last_group_change = $GLPI_CACHE->get('last_group_change');
+if (
+    isset($_SESSION['glpigroups'])
+    && ($_SESSION['glpigroups_cache_date'] ?? "") < $last_group_change
+) {
+    Session::loadGroups();
 }

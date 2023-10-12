@@ -34,11 +34,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Inventory\Conf;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
 
@@ -393,7 +394,7 @@ class Agent extends CommonDBTM
         $deviceid = $metadata['deviceid'];
 
         $aid = false;
-        if ($this->getFromDBByCrit(Sanitizer::dbEscapeRecursive(['deviceid' => $deviceid]))) {
+        if ($this->getFromDBByCrit(['deviceid' => $deviceid])) {
             $aid = $this->fields['id'];
         }
 
@@ -464,7 +465,6 @@ class Agent extends CommonDBTM
             return 0;
         }
 
-        $input = Sanitizer::sanitize($input);
         if ($aid) {
             $input['id'] = $aid;
             // We should not update itemtype in db if not an expected one
@@ -788,7 +788,7 @@ class Agent extends CommonDBTM
 
         switch ($request) {
             case self::ACTION_STATUS:
-                $data['answer'] = Sanitizer::encodeHtmlSpecialChars(preg_replace('/status: /', '', $raw_content));
+                $data['answer'] = preg_replace('/status: /', '', $raw_content);
                 break;
             case self::ACTION_INVENTORY:
                 $now = new DateTime();
@@ -837,7 +837,13 @@ class Agent extends CommonDBTM
             'SELECT' => ['id'],
             'FROM' => self::getTable(),
             'WHERE' => [
-                'last_contact' => ['<', new QueryExpression("date_add(now(), interval -" . $retention_time . " day)")]
+                'last_contact' => ['<',
+                    QueryFunction::dateSub(
+                        date: QueryFunction::now(),
+                        interval: $retention_time,
+                        interval_unit: 'DAY'
+                    )
+                ]
             ]
         ]);
 

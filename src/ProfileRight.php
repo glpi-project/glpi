@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QuerySubQuery;
+
 /**
  * Profile class
  *
@@ -45,6 +49,40 @@ class ProfileRight extends CommonDBChild
     public static $items_id = 'profiles_id'; // Field name
     public $dohistory       = true;
 
+    /**
+     * {@inheritDoc}
+     * @note Unlike the default implementation, this one handles the fact that some or all profile rights
+     *       are already in the DB (but set to 0) when the cloned profile is created.
+     *       Therefore, we need to use update or insert DB queries rather than `CommonDBTM::add`.
+     */
+    public function clone(array $override_input = [], bool $history = true)
+    {
+        global $DB;
+
+        if ($DB->isSlave()) {
+            return false;
+        }
+        $new_item = new static();
+        $input = $this->fields;
+        $input['profiles_id'] = $override_input['profiles_id'];
+        unset($input['id']);
+
+        $input = $new_item->prepareInputForClone($input);
+
+        $result = $DB->updateOrInsert(static::getTable(), $input, [
+            'name' => $input['name'],
+            'profiles_id' => $input['profiles_id'],
+        ]);
+        if ($result !== false) {
+            $new_item->getFromDBByCrit([
+                'name' => $input['name'],
+                'profiles_id' => $input['profiles_id'],
+            ]);
+            $new_item->post_clone($this, $history);
+        }
+
+        return $new_item->fields['id'];
+    }
 
     /**
      * Get possible rights
@@ -87,11 +125,6 @@ class ProfileRight extends CommonDBChild
     public static function getProfileRights($profiles_id, array $rights = [])
     {
         global $DB;
-
-        if (!version_compare(Config::getCurrentDBVersion(), '0.84', '>=')) {
-           //table does not exists.
-            return [];
-        }
 
         $query = [
             'FROM'   => 'glpi_profilerights',
@@ -170,87 +203,6 @@ class ProfileRight extends CommonDBChild
         return $ok;
     }
 
-
-    /**
-     * @param $right
-     * @param $value
-     * @param $condition
-     *
-     * @return boolean
-     **/
-    public static function updateProfileRightAsOtherRight($right, $value, $condition)
-    {
-        global $DB;
-
-        $profiles = [];
-        $ok       = true;
-        foreach ($DB->request('glpi_profilerights', $condition) as $data) {
-            $profiles[] = $data['profiles_id'];
-        }
-        if (count($profiles)) {
-            $result = $DB->update(
-                'glpi_profilerights',
-                [
-                    'rights' => new \QueryExpression($DB->quoteName('rights') . ' | ' . (int)$value)
-                ],
-                [
-                    'name'         => $right,
-                    'profiles_id'  => $profiles
-                ]
-            );
-            if (!$result) {
-                $ok = false;
-            }
-        }
-        return $ok;
-    }
-
-
-    /**
-     * @since 0.85
-     *
-     * @param $newright      string   new right name
-     * @param $initialright  string   right name to check
-     * @param $condition              (default '')
-     *
-     * @return boolean
-     **/
-    public static function updateProfileRightsAsOtherRights($newright, $initialright, array $condition = [])
-    {
-        global $DB;
-
-        $profiles = [];
-        $ok       = true;
-
-        $criteria = [
-            'FROM'   => self::getTable(),
-            'WHERE'  => ['name' => $initialright] + $condition
-        ];
-        $iterator = $DB->request($criteria);
-
-        foreach ($iterator as $data) {
-            $profiles[$data['profiles_id']] = $data['rights'];
-        }
-        if (count($profiles)) {
-            foreach ($profiles as $key => $val) {
-                $res = $DB->update(
-                    self::getTable(),
-                    [
-                        'rights' => $val
-                    ],
-                    [
-                        'profiles_id'  => $key,
-                        'name'         => $newright
-                    ]
-                );
-                if (!$res) {
-                     $ok = false;
-                }
-            }
-        }
-        return $ok;
-    }
-
     /**
      * @param $profiles_id
      **/
@@ -258,11 +210,11 @@ class ProfileRight extends CommonDBChild
     {
         global $DB;
 
-        $subq = new \QuerySubQuery([
+        $subq = new QuerySubQuery([
             'FROM'   => 'glpi_profilerights AS CURRENT',
             'WHERE'  => [
                 'CURRENT.profiles_id'   => $profiles_id,
-                'CURRENT.NAME'          => new \QueryExpression('POSSIBLE.NAME')
+                'CURRENT.NAME'          => new QueryExpression('POSSIBLE.NAME')
             ]
         ]);
 
@@ -272,7 +224,7 @@ class ProfileRight extends CommonDBChild
             'DISTINCT'        => true,
             'FROM'            => 'glpi_profilerights AS POSSIBLE',
             'WHERE'           => [
-                new \QueryExpression($expr)
+                new QueryExpression($expr)
             ]
         ]);
 

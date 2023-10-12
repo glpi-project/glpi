@@ -1,0 +1,151 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro tfa_code_input(digits = 6) %}
+   <div class="d-flex justify-content-center">
+      {% for i in 1..digits %}
+         <input type="text" class="form-control text-center {{ i != 1 ? 'ms-2' : '' }} fw-bold" name="totp_code[]"
+             maxlength="1" pattern="[0-9]" inputmode="numeric" required style="width: 2em; font-size: 1.5em">
+      {% endfor %}
+   </div>
+   <script>
+       $(document).ready(function() {
+           const input_fields = $('input[name="totp_code[]"]');
+           input_fields.first().focus();
+           input_fields.parent().on('keyup', 'input[name="totp_code[]"]', function(e) {
+               if (e.which === 8) {
+                   return;
+               }
+               if ($(this).val().length === 1) {
+                   const next = $(this).next();
+                   if (next.length === 0) {
+                       $(this).closest('form').submit();
+                       input_fields.prop('disabled', true);
+                   }
+               }
+           });
+           input_fields.parent().on('keydown', 'input[name="totp_code[]"]', function(e) {
+               if (e.which === 8) {
+                   $(this).prev().focus();
+               }
+               if ($(this).val().length === 1) {
+                   // Move to the next input if there is one, otherwise submit the form
+                   const next = $(this).next();
+                   if (next.length) {
+                       next.focus();
+                   } else {
+                       $(this).closest('form').submit();
+                       input_fields.prop('disabled', true);
+                   }
+               }
+           });
+           // Pasting in any of the fields will fill all of them
+           input_fields.on('paste', function(e) {
+              const pasted_data = e.originalEvent.clipboardData.getData('text');
+              // Clear all fields
+              input_fields.val('');
+              let last_filled = 0;
+              input_fields.each(function(index) {
+                 if (pasted_data[index]) {
+                    $(this).val(pasted_data[index]);
+                    last_filled = index;
+                 }
+              });
+              // focus on the field after the last one filled (or the last if all filled)
+              input_fields.eq(Math.min(input_fields.length, last_filled + 1)).focus();
+          });
+       });
+   </script>
+{% endmacro %}
+
+{% macro tfa_setup(secret, qrcode, enforced = false, in_grace_period = false, grace_period_days_left = 0) %}
+   <form method="post" action="#" autocomplete="off" class="{{ enforced ? 'm-n5' : '' }}">
+      <input type="hidden" name="regenerate_backup_codes" value="1" />
+      <div class="card mx-auto" style="width: fit-content">
+         <div class="card-header">
+            {% if enforced %}
+               <h1 class="card-title">{{ __('2FA is required for your account') }}</h1>
+            {% else %}
+               <h1 class="card-title">{{ __('2FA Setup') }}</h1>
+            {% endif %}
+         </div>
+         <div class="card-body">
+            <div class="col">
+               <div>{{ __('1. Install an authenticator app on your mobile device such as Google Authenticator or Authy.') }}</div>
+               <div class="mt-2">{{ __('2. Scan the following QR code or enter the code shown into your authenticator app.') }}</div>
+               <div class="col-md-6 mx-auto">
+                  <div class="text-center">
+                     <img src="{{ qrcode }}" alt="{{ __('QR Code') }}" />
+                  </div>
+               </div>
+               <div class="mx-auto">
+                  <div>
+                     <div class="btn-group d-flex">
+                        <input class="form-control" alt="{{ __('Secret') }}" value="{{ secret }}"/>
+                        <button type="button" class="btn btn-icon flex-grow-0 flex-shrink-0" name="copy_secret" data-clipboard-text="{{ secret }}">
+                           <i class="fas fa-copy"></i>
+                        </button>
+                        <script>
+                           $(document).ready(function() {
+                               $('button[name="copy_secret"]').on('click', function() {
+                                   navigator.clipboard.writeText($(this).data('clipboard-text'));
+                               });
+                           });
+                        </script>
+                     </div>
+                     <input type="hidden" name="secret" value="{{ secret }}" />
+                     <input type="hidden" name="_idor_token" value="{{ idor_token('', {'secret': secret}) }}" />
+                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                  </div>
+               </div>
+               <div class="mt-3">{{ __('3. After entering the code into your authenticator, enter the code shown in the app to finish the setup') }}</div>
+               <div class="col-md-6 mx-auto mt-2">
+                  {# Show code input here to verify it is set correctly #}
+                  {{ _self.tfa_code_input() }}
+               </div>
+            </div>
+         </div>
+         <div class="card-footer d-flex flex-wrap">
+            {% if enforced and in_grace_period %}
+               <div>{{ __('You can skip this step for now, but you will be required to set it up later (%s days)')|format(grace_period_days_left) }}</div>
+            {% endif %}
+            <div class="ms-auto">
+               {% if enforced and in_grace_period %}
+                  <button type="submit" formnovalidate class="btn btn-outline-secondary" name="skip_mfa">{{ __('Skip') }}</button>
+               {% endif %}
+               <button type="submit" name="continue" class="btn btn-primary ms-1">{{ __('Verify') }}</button>
+            </div>
+         </div>
+      </div>
+   </form>
+{% endmacro %}

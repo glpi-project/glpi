@@ -407,20 +407,6 @@ function contructListFromTree($tree, $parent = 0)
 
 
 /**
- * Compute all completenames of Dropdown Tree table
- *
- * @param $table : dropdown tree table to compute
- *
- * @return void
- **/
-function regenerateTreeCompleteName($table)
-{
-    $dbu = new DbUtils();
-    return $dbu->regenerateTreeCompleteName($table);
-}
-
-
-/**
  * Format a user name
  *
  *@param $ID            integer  ID of the user.

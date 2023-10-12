@@ -37,7 +37,6 @@
 class RuleLocation extends Rule
 {
     public static $rightname = 'rule_location';
-    public $can_sort  = true;
 
     public function getTitle()
     {

@@ -33,7 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 
 /**
@@ -596,7 +598,7 @@ class SoftwareLicense extends CommonTreeDropdown
                     'NEWTABLE.is_template' => 0,
                     'OR'  => [
                         ['NEWTABLE.expire' => null],
-                        ['NEWTABLE.expire' => ['>', new QueryExpression('NOW()')]]
+                        ['NEWTABLE.expire' => ['>', QueryFunction::now()]]
                     ]
                 ]
             )
@@ -1227,7 +1229,8 @@ class SoftwareLicense extends CommonTreeDropdown
                     }
                     return self::createTabEntry(
                         self::getTypeName(Session::getPluralNumber()),
-                        (($nb >= 0) ? $nb : '&infin;')
+                        (($nb >= 0) ? $nb : '&infin;'),
+                        $item::getType()
                     );
                 break;
                 case 'SoftwareLicense':
@@ -1242,7 +1245,8 @@ class SoftwareLicense extends CommonTreeDropdown
                     }
                     return self::createTabEntry(
                         self::getTypeName(Session::getPluralNumber()),
-                        (($nb >= 0) ? $nb : '&infin;')
+                        (($nb >= 0) ? $nb : '&infin;'),
+                        $item::getType()
                     );
                 break;
             }

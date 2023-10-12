@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-class Problem_Ticket extends CommonDBRelation
+class Problem_Ticket extends CommonITILObject_CommonITILObject
 {
    // From CommonDBRelation
     public static $itemtype_1   = 'Problem';
@@ -43,19 +43,6 @@ class Problem_Ticket extends CommonDBRelation
 
     public static $itemtype_2   = 'Ticket';
     public static $items_id_2   = 'tickets_id';
-
-
-    /**
-     * @since 0.84
-     **/
-    public function getForbiddenStandardMassiveAction()
-    {
-
-        $forbidden   = parent::getForbiddenStandardMassiveAction();
-        $forbidden[] = 'update';
-        return $forbidden;
-    }
-
 
     public static function getTypeName($nb = 0)
     {
@@ -77,14 +64,14 @@ class Problem_Ticket extends CommonDBRelation
                         $problems = self::getTicketProblemsData($item->getID());
                         $nb = count($problems);
                     }
-                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 case 'Problem':
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $tickets = self::getProblemTicketsData($item->getID());
                         $nb = count($tickets);
                     }
-                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';
@@ -104,49 +91,6 @@ class Problem_Ticket extends CommonDBRelation
                 break;
         }
         return true;
-    }
-
-
-    /**
-     * @since 0.84
-     **/
-    public function post_addItem()
-    {
-        global $CFG_GLPI;
-
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
-
-        if ($donotif) {
-            $problem = new Problem();
-            $ticket  = new Ticket();
-            if ($problem->getFromDB($this->input["problems_id"]) && $ticket->getFromDB($this->input["tickets_id"])) {
-                NotificationEvent::raiseEvent("update", $problem);
-                NotificationEvent::raiseEvent('update', $ticket);
-            }
-        }
-
-        parent::post_addItem();
-    }
-
-
-    /**
-     * @since 0.84
-     **/
-    public function post_deleteFromDB()
-    {
-        global $CFG_GLPI;
-
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
-
-        if ($donotif) {
-            $problem = new Problem();
-            if ($problem->getFromDB($this->fields["problems_id"])) {
-                $options = [];
-                NotificationEvent::raiseEvent("delete", $problem, $options);
-            }
-        }
-
-        parent::post_deleteFromDB();
     }
 
 
@@ -296,12 +240,15 @@ class Problem_Ticket extends CommonDBRelation
             $used[$ticket['id']] = $ticket['id'];
         }
 
+        $link_types = array_map(static fn($link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
+
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
                 'link_itemtype' => __CLASS__,
                 'source_itemtype' => Problem::class,
                 'source_items_id' => $ID,
+                'link_types' => $link_types,
                 'target_itemtype' => Ticket::class,
                 'dropdown_options' => [
                     'entity'      => $problem->getEntityID(),
@@ -399,12 +346,16 @@ class Problem_Ticket extends CommonDBRelation
         foreach ($problems as $problem) {
             $used[$problem['id']] = $problem['id'];
         }
+
+        $link_types = array_map(static fn($link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
+
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
                 'link_itemtype' => __CLASS__,
                 'source_itemtype' => Ticket::class,
                 'source_items_id' => $ID,
+                'link_types' => $link_types,
                 'target_itemtype' => Problem::class,
                 'dropdown_options' => [
                     'entity'      => $ticket->getEntityID(),

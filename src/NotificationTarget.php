@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 
 /**
@@ -111,13 +112,6 @@ class NotificationTarget extends CommonDBChild
         }
 
         if ($object) {
-            if (
-                $object instanceof CommonDBTM
-                && isset($object->fields['id'])
-            ) {
-               // Reread to avoid slashes issue
-                $object->getFromDB($object->fields['id']);
-            }
             $this->obj = $object;
             $this->getObjectItem($event);
         }
@@ -143,6 +137,10 @@ class NotificationTarget extends CommonDBChild
         return parent::getTable(__CLASS__);
     }
 
+    public static function getIcon()
+    {
+        return Notification::getIcon();
+    }
 
     /**
      * Retrieve an item from the database for a specific target
@@ -218,6 +216,28 @@ class NotificationTarget extends CommonDBChild
             }
         }
 
+        //do not notify if user explicitly refused it
+        $user = new User();
+        if (
+            $this->canNotificationBeDisabled($event)
+            && isset($infos['users_id'])
+            && $user->getFromDB($infos['users_id'])
+            && !$user->isUserNotificationEnable()
+        ) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if notification (for a specific event) can be disabled
+     *
+     * @param string  $event     notification event
+     *
+     * @return boolean
+     **/
+    protected function canNotificationBeDisabled(string $event): bool
+    {
         return true;
     }
 
@@ -412,27 +432,15 @@ class NotificationTarget extends CommonDBChild
         if (!Notification::canView()) {
             return false;
         }
-        $canedit = false;
 
         if ($notification->getField('itemtype') != '') {
             $notifications_id = $notification->fields['id'];
             $canedit = $notification->can($notifications_id, UPDATE);
 
-            if ($canedit) {
-                echo "<form name='notificationtargets_form' id='notificationtargets_form'
-                  method='post' action=' ";
-                echo Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-                echo "<input type='hidden' name='notifications_id' value='" . $notification->getField('id') . "'>";
-                echo "<input type='hidden' name='itemtype' value='" . $notification->getField('itemtype') . "'>";
-            }
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>" . _n('Recipient', 'Recipients', Session::getPluralNumber()) . "</th></tr>";
-            echo "<tr class='tab_bg_2'>";
-
             $values = [];
             foreach ($this->notification_targets as $key => $val) {
-                list($type,$id) = explode('_', $key);
-                $values[$key]   = $this->notification_targets_labels[$type][$id];
+                [$type, $id] = explode('_', $key);
+                $values[$key] = $this->notification_targets_labels[$type][$id];
             }
             $targets = getAllDataFromTable(
                 self::getTable(),
@@ -446,24 +454,15 @@ class NotificationTarget extends CommonDBChild
                     $actives[$data['type'] . '_' . $data['items_id']] = $data['type'] . '_' . $data['items_id'];
                 }
             }
-
-            echo "<td>";
-            Dropdown::showFromArray('_targets', $values, ['values'   => $actives,
-                'multiple' => true,
-                'readonly' => !$canedit
+            TemplateRenderer::getInstance()->display('pages/setup/notification/recipients.html.twig', [
+                'item' => $this,
+                'notification' => $notification,
+                'all_targets' => $values,
+                'active_targets' => $actives,
+                'params' => [
+                    'canedit' => $canedit
+                ]
             ]);
-            echo "</td>";
-            if ($canedit) {
-                echo "<td width='20%'>";
-                echo "<input type='submit' class='btn btn-primary' name='update' value=\"" . _x('button', 'Update') . "\">";
-                echo "</td>";
-            }
-            echo "</tr>";
-            echo "</table>";
-        }
-
-        if ($canedit) {
-            Html::closeForm();
         }
     }
 
@@ -1467,7 +1466,8 @@ class NotificationTarget extends CommonDBChild
                     }
                     return self::createTabEntry(
                         Notification::getTypeName(Session::getPluralNumber()),
-                        $nb
+                        $nb,
+                        $item::getType()
                     );
 
                 case 'Notification':
@@ -1477,7 +1477,7 @@ class NotificationTarget extends CommonDBChild
                             ['notifications_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';
@@ -1557,19 +1557,8 @@ class NotificationTarget extends CommonDBChild
             ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
         ]);
 
-        echo "<table class='tab_cadre_fixe'>";
-
+        $notifications = [];
         if (count($iterator)) {
-            echo "<tr><th>" . __('Name') . "</th>";
-            echo "<th>" . Entity::getTypeName(1) . "</th>";
-            echo "<th>" . __('Active') . "</th>";
-            echo "<th>" . _n('Type', 'Types', 1) . "</th>";
-            echo "<th>" . __('Notification method') . "</th>";
-            echo "<th>" . NotificationEvent::getTypeName(1) . "</th>";
-            echo "<th>" . NotificationTemplate::getTypeName(1) . "</th></tr>";
-
-            $notif = new Notification();
-
             Session::initNavigateListItems(
                 'Notification',
                 //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
@@ -1581,35 +1570,16 @@ class NotificationTarget extends CommonDBChild
             );
 
             foreach ($iterator as $data) {
-                 Session::addToNavigateListItems('Notification', $data['id']);
-
+                Session::addToNavigateListItems('Notification', $data['id']);
+                $notif = new Notification();
                 if ($notif->getFromDB($data['id'])) {
-                    echo "<tr class='tab_bg_2'><td>" . $notif->getLink();
-                    echo "</td><td>" . Dropdown::getDropdownName('glpi_entities', $notif->getEntityID());
-                    echo "</td><td>" . Dropdown::getYesNo($notif->getField('is_active')) . "</td><td>";
-                    $itemtype = $notif->getField('itemtype');
-                    if ($tmp = getItemForItemtype($itemtype)) {
-                        echo $tmp->getTypeName(1);
-                    } else {
-                        echo "&nbsp;";
-                    }
-                    echo "</td><td>" . Notification_NotificationTemplate::getMode($notif->getField('mode'));
-                    echo "</td><td>" . NotificationEvent::getEventName(
-                        $itemtype,
-                        $notif->getField('event')
-                    );
-                    echo "</td>" .
-                       "<td>" . Dropdown::getDropdownName(
-                           'glpi_notificationtemplates',
-                           $notif->getField('notificationtemplates_id')
-                       );
-                    echo "</td></tr>";
+                    $notifications[] = $notif;
                 }
             }
-        } else {
-            echo "<tr class='tab_bg_2'><td class='b center'>" . __('No item found') . "</td></tr>";
         }
-        echo "</table>";
+        TemplateRenderer::getInstance()->display('pages/setup/notification/group_notifications.html.twig', [
+            'notifications' => $notifications
+        ]);
     }
 
 

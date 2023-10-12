@@ -44,7 +44,6 @@ class RuleSoftwareCategory extends Rule
 {
    // From Rule
     public static $rightname = 'rule_softwarecategories';
-    public $can_sort  = true;
 
 
     public function getTitle()

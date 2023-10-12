@@ -54,8 +54,7 @@ class PrinterLog extends DbTestCase
 
         $log = new \PrinterLog();
 
-        $cdate1 = clone $now;
-        $cdate1->sub(new \DateInterval('P14M'));
+        $cdate1 = new \DateTime('-14 months');
         $input = [
             'printers_id' => $printers_id,
             'total_pages' => 5132,
@@ -67,8 +66,7 @@ class PrinterLog extends DbTestCase
         ];
         $this->integer($log->add($input))->isGreaterThan(0);
 
-        $cdate2 = clone $now;
-        $cdate2->sub(new \DateInterval('P6M'));
+        $cdate2 = new \DateTime('-6 months');
         $input = [
             'printers_id' => $printers_id,
             'total_pages' => 6521,
@@ -77,6 +75,18 @@ class PrinterLog extends DbTestCase
             'rv_pages' => 5987,
             'scanned' => 15542,
             'date' => $cdate2->format('Y-m-d')
+        ];
+        $this->integer($log->add($input))->isGreaterThan(0);
+
+        $cdate3 = new \DateTime('first day of previous month');
+        $input = [
+            'printers_id' => $printers_id,
+            'total_pages' => 3464,
+            'bw_pages' => 2154,
+            'color_pages' => 1310,
+            'rv_pages' => 548,
+            'scanned' => 4657,
+            'date' => $cdate3->format('Y-m-d')
         ];
         $this->integer($log->add($input))->isGreaterThan(0);
 
@@ -91,10 +101,50 @@ class PrinterLog extends DbTestCase
         ];
         $this->integer($log->add($input))->isGreaterThan(0);
 
-       //per default, get 1Y old, first not included
-        $this->array($log->getMetrics($printer))->hasSize(2);
+        //per default, get 1Y old, first not included
+        $this->array($log->getMetrics($printer))->hasSize(1);
+        $this->array($log->getMetrics($printer)[$printer->getID()])->hasSize(3);
 
-       //change filter to include first one
-        $this->array($log->getMetrics($printer, ['date' => ['>=', $cdate1->format('Y-m-d')]]))->hasSize(3);
+        //same with start_date parameter
+        $this->array($log->getMetrics($printer, start_date: $cdate1))->hasSize(1);
+        $this->array($log->getMetrics($printer, start_date: $cdate1)[$printer->getID()])->hasSize(4);
+        //same with interval parameter
+        $this->array($log->getMetrics($printer, interval: 'P14M'))->hasSize(1);
+        $this->array($log->getMetrics($printer, interval: 'P14M')[$printer->getID()])->hasSize(4);
+
+        //use end_date parameter to exclude last report
+        $this->array($log->getMetrics($printer, end_date: $now)[$printer->getID()])->hasSize(3);
+        $this->array($log->getMetrics($printer, start_date: $cdate1, end_date: $now->sub(new \DateInterval('P1D')))[$printer->getID()])->hasSize(3);
+
+        $datex = new \DateTime();
+        for ($i = 0; $i < 21; $i++) {
+            $datex->sub(new \DateInterval('P1D'));
+            $input = [
+                'printers_id' => $printers_id,
+                'total_pages' => 9299,
+                'bw_pages' => 6258,
+                'color_pages' => 3041,
+                'rv_pages' => 7654,
+                'scanned' => 28177,
+                'date' => $datex->format('Y-m-d')
+            ];
+            $this->integer($log->add($input))->isGreaterThan(0);
+        }
+
+        // check working of daily format
+        $this->array($log->getMetrics($printer, format: 'daily', interval: 'P2M'))->hasSize(1);
+        $this->array($log->getMetrics($printer, interval: 'P2M', format: 'daily')[$printer->getID()])->hasSize(23);
+
+        // check working of weekly format
+        $this->array($log->getMetrics($printer, format: 'weekly', interval: 'P28D'))->hasSize(1);
+        $this->array($log->getMetrics($printer, interval: 'P28D', format: 'weekly')[$printer->getID()])->hasSize(4);
+
+        // check working of monthly format
+        $this->array($log->getMetrics($printer, format: 'monthly', interval: 'P2Y'))->hasSize(1);
+        $this->array($log->getMetrics($printer, format: 'monthly', interval: 'P2Y')[$printer->getID()])->hasSize(4);
+
+        // check working of yearly format
+        $this->array($log->getMetrics($printer, format: 'yearly', interval: 'P2Y'))->hasSize(1);
+        $this->array($log->getMetrics($printer, format: 'yearly', interval: 'P2Y')[$printer->getID()])->hasSize(2);
     }
 }

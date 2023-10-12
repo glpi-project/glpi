@@ -37,7 +37,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\Kanban;
 use Glpi\Features\Teamwork;
 use Glpi\Http\Response;
-use Glpi\Toolbox\Sanitizer;
 
 $AJAX_INCLUDE = 1;
 
@@ -47,8 +46,6 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
-
-/** @global array $_UPOST */
 
 if (!isset($_REQUEST['action'])) {
     Response::sendError(400, "Missing action parameter", Response::CONTENT_TYPE_TEXT_HTML);
@@ -140,9 +137,9 @@ if (($_POST['action'] ?? null) === 'update') {
     $checkParams(['inputs']);
     $item = new $itemtype();
     $inputs = [];
-    parse_str($_UPOST['inputs'], $inputs);
+    parse_str($_POST['inputs'], $inputs);
 
-    $result = $item->add(Sanitizer::sanitize($inputs));
+    $result = $item->add($inputs);
     if (!$result) {
         http_response_code(400);
         return;
@@ -151,7 +148,7 @@ if (($_POST['action'] ?? null) === 'update') {
     $checkParams(['inputs']);
     $item = new $itemtype();
     $inputs = [];
-    parse_str($_UPOST['inputs'], $inputs);
+    parse_str($_POST['inputs'], $inputs);
 
     $bulk_item_list = preg_split('/\r\n|[\r\n]/', $inputs['bulk_item_list']);
     if (!empty($bulk_item_list)) {
@@ -159,7 +156,7 @@ if (($_POST['action'] ?? null) === 'update') {
         foreach ($bulk_item_list as $item_entry) {
             $item_entry = trim($item_entry);
             if (!empty($item_entry)) {
-                $item->add(Sanitizer::sanitize($inputs + ['name' => $item_entry, 'content' => '']));
+                $item->add($inputs + ['name' => $item_entry, 'content' => '']);
             }
         }
     }
@@ -240,6 +237,11 @@ if (($_POST['action'] ?? null) === 'update') {
         'timestamp' => $_SESSION['glpi_currenttime']
     ];
     echo json_encode($response, JSON_FORCE_OBJECT);
+} else if ($_REQUEST['action'] === 'clear_column_state') {
+    $checkParams(['items_id']);
+    $result = Item_Kanban::clearStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id']);
+    http_response_code($result ? 200 : 500);
+    return;
 } else if ($_REQUEST['action'] === 'list_columns') {
     $checkParams(['column_field']);
     header("Content-Type: application/json; charset=UTF-8", true);

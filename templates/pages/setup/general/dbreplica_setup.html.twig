@@ -1,0 +1,245 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/setup/general/base_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% block config_fields %}
+<div class="hr-text">
+    <i class="ti ti-brand-mysql"></i>
+    <span>{{ __('Replica configuration') }}</span>
+</div>
+
+<div class="row ps-4">
+    {{ fields.textField('_dbreplicate_dbhost', replica_config['host'], __('SQL server (MariaDB or MySQL)')) }}
+    {{ fields.textField('_dbreplicate_dbdefault', replica_config['default'], _n('Database', 'Databases', 1)) }}
+
+    {{ fields.textField('_dbreplicate_dbuser', replica_config['user'], __('SQL user')) }}
+    {{ fields.passwordField('_dbreplicate_dbpassword', replica_config['password'], __('SQL password'), {
+        clearable: false
+    }) }}
+
+    {% set replica_search_opts = {
+        0: __('Never'),
+        1: __('If synced (all changes)'),
+        2: __('If synced (current user changes)'),
+        3: __('If synced or read-only account'),
+        4: __('Always'),
+    } %}
+    {{ fields.dropdownArrayField('use_slave_for_search', config['use_slave_for_search'], replica_search_opts, __('Use the replica for the search engine')) }}
+
+    {{ inputs.hidden('_dbslave_status', 1) }}
+</div>
+
+<div class="hr-text">
+    <i class="ti ti-check"></i>
+    <span>{{ __('Replication status') }}</span>
+</div>
+
+{% set primary_ok      = replication_status['primary']['file'] %}
+{% set primary_unknown = replication_status['primary']['error'] is defined and replication_status['primary']['error'] is not null %}
+
+<div class="row ps-2 mb-3">
+   <div class="col-5">
+        <div class="accordion" id="accordion-primary">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-primary">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-primary" aria-expanded="false" aria-controls="collapse-primary">
+                    <h3>
+                        <span class="status status-{{ primary_ok ? 'green' : primary_unknown ? 'muted' : 'red' }}">
+                            <span class="status-dot status-dot-animated"></span>
+                            {{ primary_ok ? _x('status', 'Up') : primary_unknown ? _x('status', 'Unkown') : _x('status', 'Down') }}
+                        </span>
+                        <span class="mx-2">{{ __('Primary') }} ({{ primary_dbhost }})</span>
+                        {% if not primary_unknown %}
+                            {% if replication_status['primary']['read_only'] == 'OFF' %}
+                                <span class="badge badge-outline text-green">{{ __('Writable') }}</span>
+                            {% else %}
+                                <span class="badge badge-outline text-blue">{{ __('Read-Only') }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </h3>
+                    </button>
+                </h2>
+                <div id="collapse-primary" class="accordion-collapse collapse" aria-labelledby="heading-primary" data-bs-parent="#accordion-primary">
+                    <div class="accordion-body">
+                    {% if primary_unknown %}
+                        <div class="alert alert-danger" role="alert">
+                            <span class="text-secondary">{{ __('MySQL server returned an error:') }}</span>
+                            <p class="mt-2">{{ replication_status['primary']['error'] }}</p>
+                        </div>
+                    {% else %}
+                        <ul class="p-0 list-unstyled space-y-3">
+                            <li>
+                                <span class="text-secondary">{{ __('Server ID:') }}</span>
+                                {{ replication_status['primary']['server_id'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">{{ __('Binary log file:') }}</span>
+                                {{ replication_status['primary']['file'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">{{ __('Binary log position:') }}</span>
+                                {{ replication_status['primary']['position'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">{{ __('Binary log GTID:') }}</span>
+                                {{ replication_status['primary']['gtid_binlog_pos'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">{{ __('Server version:') }}</span>
+                                {{ replication_status['primary']['version'] }}
+                            </li>
+                        </ul>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+   </div>
+   <div class="col-7">
+        {% for replica_num, replica_data in replication_status['replica'] %}
+
+        {# Replica is OK when both IO and SQL are running and seconds_behind_master is 0 #}
+        {% set replica_ok = replica_data['slave_io_running'] == 'Yes' and replica_data['slave_sql_running'] == 'Yes' and replica_data['seconds_behind_master'] == 0 %}
+
+        {# Replica is unknown when there is an error (connection, missing grants, ...) #}
+        {% set replica_unkown = replica_data['error'] is defined and replica_data['error'] is not null %}
+
+        <div class="accordion mb-2"
+             id="accordion-replica{{ replica_num }}">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-replica{{ replica_num }}">
+
+                    <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#collapse-replica{{ replica_num }}"
+                            aria-expanded="false" aria-controls="collapse-replica{{ replica_num }}">
+                    <h3>
+                        <span class="status status-{{ replica_ok ? 'green' : replica_unkown ? 'muted' : 'red' }}">
+                            <span class="status-dot status-dot-animated"></span>
+                            {{ replica_ok ? _x('status', 'Up') : replica_unkown ? _x('status', 'Unkown') : _x('status', 'Down') }}
+                        </span>
+                        <span class="mx-1">{{ __('Replica') }} ({{ replica_data['host'] }})</span>
+                        {% if not replica_unkown %}
+                            {% if replica_data['read_only'] == 'OFF' %}
+                                <span class="badge badge-outline text-green">{{ __('Writable') }}</span>
+                            {% else %}
+                                <span class="badge badge-outline text-blue">{{ __('Read-Only') }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </h3>
+                    </button>
+                </h2>
+                <div id="collapse-replica{{ replica_num }}" class="accordion-collapse collapse" aria-labelledby="heading-replica{{ replica_num }}" data-bs-parent="#accordion-replica{{ replica_num }}">
+                    <div class="accordion-body">
+                    {% if replica_unkown %}
+                        <div class="alert alert-danger" role="alert">
+                            <span class="text-secondary">{{ __('MySQL server returned an error:') }}</span>
+                            <p class="mt-2">{{ replica_data['error'] }}</p>
+                        </div>
+                    {% else %}
+                        <ul class="p-0 list-unstyled space-y-3">
+                            <li>
+                                <span class="text-secondary">{{ __('Server ID:') }}</span>
+                                {{ replica_data['server_id'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">{{ __('Primary binary log file:') }}</span>
+                                {{ replica_data['master_log_file'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">{{ __('Primary binary log position:') }}</span>
+                                {{ replica_data['read_master_log_pos'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">{{ __('Seconds behind primary:') }}</span>
+                                {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
+                                    <span class="badge bg-{{ replica_data['seconds_behind_master'] > 0 ? 'red' : 'green' }}-lt">{{ replica_data['seconds_behind_master'] }}</span>
+                                {% else %}
+                                    <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <span class="text-secondary" id="glpi_delay_{{ replica_num }}">{{ __('GLPI history delay:') }}</span>
+                                {% if replication_delay[replica_num] > 0 %}
+                                    <span class="badge bg-red-lt">{{ replication_delay[replica_num]|formatted_duration }}</span>
+                                {% elseif replication_delay[replica_num] == 0 %}
+                                    <span class="badge bg-green-lt">{{ __('None') }}</span>
+                                {% else %}
+                                    <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
+                                {% endif %}
+                                {% do call('Html::showToolTip', [
+                                    __('This indicates the delay between the primary and the replica for GLPI history (table: glpi_logs, column: date_mod).')
+                                ]) %}
+                            </li>
+                            <li>
+                                <span class="text-secondary">{{ __('Binary log GTID:') }}</span>
+                                {{ replica_data['gtid_slave_pos'] }}
+                            </li>
+                            <li>
+                                <span class="text-secondary">{{ __('IO running:') }}</span>
+                                <span class="badge bg-{{ replica_data['slave_io_running'] == 'Yes' ? 'green' : 'red' }}-lt">
+                                {{ replica_data['slave_io_running'] }}
+                                </span>
+                            <li>
+                                <span class="text-secondary">{{ __('SQL running:') }}</span>
+                                <span class="badge bg-{{ replica_data['slave_sql_running'] == 'Yes' ? 'green' : 'red' }}-lt">
+                                {{ replica_data['slave_sql_running'] }}
+                                </span>
+                            <li>
+                                <span class="text-secondary">{{ __('Server version:') }}</span>
+                                {{ replica_data['version'] }}
+                            </li>
+                        </ul>
+
+                        {# Display errors if slave_io_running or slave_sql_running are not running #}
+                        {% set display_alert = (replica_data['slave_io_running'] != 'Yes' or replica_data['slave_sql_running'] != 'Yes') and (replica_data['last_io_error']|length or replica_data['last_sql_error']|length) %}
+                        {% if display_alert %}
+                            <div class="alert alert-danger" role="alert">
+                                <span class="text-secondary">{{ __('MySQL server returned an error:') }}</span>
+                                <p class="mt-2">
+                                    {{ replica_data['last_io_error'] }}
+                                    {{ replica_data['last_sql_error'] }}
+                                </p>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+   </div>
+</div>
+{% endblock %}

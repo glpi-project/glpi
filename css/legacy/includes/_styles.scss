@@ -1131,23 +1131,6 @@
       }
    }
 
-   /* ################--------------- Log history filters ---------------#################### */
-
-   tr.log_history_filter_row {
-      > th {
-         vertical-align: top;
-      }
-
-      .select2-container {
-         min-width: 125px;
-      }
-
-      > th > input {
-         box-sizing: border-box;
-         min-height: 28px;
-      }
-   }
-
    td.diff {
       ins {
          color: green;
@@ -1180,12 +1163,6 @@
 
    .small {
       width: 1%;
-   }
-
-   .bookmark_record {
-      .active {
-         color: #fed175 !important;
-      }
    }
 
    .fa {
@@ -1287,7 +1264,6 @@
 
    .massiveactions {
       padding: .5em;
-      width: 90%;
 
       input.submit {
          margin-top: .5em;
@@ -1363,25 +1339,30 @@
    }
 
    /** Custom CSS form */
-   .custom_css_configuration td:not([colspan]) {
-      width: 50%;
-   }
-   .custom_css_configuration tbody,
-   .custom_css_configuration tr,
-   .custom_css_configuration td,
-   .custom_css_configuration .custom_css_container {
-      max-width: inherit; /* chain inherit "max-width" from table element to editor container */
-   }
-   .custom_css_configuration .custom_css_container {
-      width: 100%;
-   }
-   .custom_css_configuration .custom_css_container textarea {
-      box-sizing: border-box;
-      min-height: 250px;
-      width: 100%;
-   }
-   .custom_css_configuration .custom_css_container .CodeMirror.input-disabled {
-      background: rgb(235, 235, 228); /* default bg color for disabled inputs */
+   .custom_css_configuration {
+      td:not([colspan]) {
+         width: 50%;
+      }
+      .custom_css_container {
+         width: 100%;
+
+         textarea {
+            display:none;
+         }
+         .cm-editor {
+            height: 350px;
+            width: 100%;
+            border-color: var(--tblr-border-color);
+
+            .cm-scroller {
+               overflow: auto;
+            }
+         }
+
+         textarea[disabled] + .cm-editor {
+            background: rgb(235, 235, 228); /* default bg color for disabled inputs */
+         }
+      }
    }
 
    /** objectlock message */
@@ -1482,15 +1463,11 @@
    }
    /** /style for relations **/
 
-   /** Chartists styles fix **/
+   /** charts styles fix **/
    .chart {
       position: relative;
       text-align: center;
       margin-top: 1em;
-   }
-   .chartist-tooltip {
-      /* fix z-index isssue along with legend */
-      z-index: 11!important;
    }
 
    .dashboard.printer_barchart .g-chart .chart {

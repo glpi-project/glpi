@@ -38,14 +38,13 @@ namespace Glpi\Inventory\Asset;
 
 use DBmysqlIterator;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use IPAddress;
 use IPNetwork;
 use Item_DeviceNetworkCard;
 use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
-use QueryParam;
+use Glpi\DBAL\QueryParam;
 use Unmanaged;
 
 trait InventoryNetworkPort
@@ -144,7 +143,7 @@ trait InventoryNetworkPort
         $criteria = [
             'FROM'   => NetworkPort::getTable(),
             'WHERE'  => [
-                'itemtype'  => 'Unmanaged',
+                'itemtype'  => new QueryParam(),
                 'mac'       => new QueryParam()
             ]
         ];
@@ -157,8 +156,8 @@ trait InventoryNetworkPort
         foreach ($this->ports as $port) {
             if (!$this->isMainPartial() && property_exists($port, 'mac') && $port->mac != '') {
                 $stmt->bind_param(
-                    's',
-                    $port->mac
+                    'ss',
+                    ...([Unmanaged::class, $port->mac])
                 );
                 $DB->executeStatement($stmt);
                 $results = $stmt->get_result();
@@ -174,7 +173,7 @@ trait InventoryNetworkPort
                          'name'            => $port->name,
                      ];
 
-                     $networkport->update(Sanitizer::sanitize($input));
+                     $networkport->update($input);
                      $unmanaged->delete(['id' => $unmanageds_id], true);
                 }
             }
@@ -206,7 +205,7 @@ trait InventoryNetworkPort
                     'COUNT'  => 'cnt',
                     'FROM'   => IPNetwork::getTable(),
                     'WHERE'  => [
-                        'entities_id'  => $this->entities_id,
+                        'entities_id'  => new QueryParam(),
                         'address'      => new QueryParam(),
                         'netmask'      => new QueryParam(),
                         'gateway'      => new QueryParam(),
@@ -221,12 +220,18 @@ trait InventoryNetworkPort
             }
             $stmt = $this->ipnetwork_stmt;
 
-            $stmt->bind_param(
-                'sss',
+            $res = $stmt->bind_param(
+                'ssss',
+                $this->entities_id,
                 $port->subnet,
                 $port->netmask,
                 $port->gateway
             );
+            if (false === $res) {
+                $msg = "Error binding params";
+                throw new \RuntimeException($msg);
+            }
+
             $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
@@ -240,7 +245,7 @@ trait InventoryNetworkPort
                      'gateway'      => $port->gateway,
                      'entities_id'  => $this->entities_id
                  ];
-                 $ipnetwork->add(Sanitizer::sanitize($input));
+                 $ipnetwork->add($input);
             }
         }
     }
@@ -276,7 +281,7 @@ trait InventoryNetworkPort
             $input['trunk'] = 0;
         }
 
-        $netports_id = $networkport->add(Sanitizer::sanitize($input));
+        $netports_id = $networkport->add($input);
         return $netports_id;
     }
 
@@ -303,7 +308,7 @@ trait InventoryNetworkPort
             $input['name'] = $name;
         }
 
-        $netname_id = $networkname->add(Sanitizer::sanitize($input));
+        $netname_id = $networkname->add($input);
         return $netname_id;
     }
 
@@ -325,7 +330,7 @@ trait InventoryNetworkPort
                 'name'         => $ip,
                 'is_dynamic'   => 1
             ];
-            $ipaddress->add(Sanitizer::sanitize($input));
+            $ipaddress->add($input);
         }
     }
 
@@ -403,7 +408,7 @@ trait InventoryNetworkPort
                 if (count($criteria)) {
                     $criteria['id'] = $keydb;
                     $criteria['is_dynamic'] = 1;
-                    $networkport->update(Sanitizer::sanitize($criteria));
+                    $networkport->update($criteria);
                 }
 
                 //check for instantiation_type switch for NetworkPort
@@ -572,8 +577,8 @@ trait InventoryNetworkPort
                     'SELECT' => 'id',
                     'FROM'   => Item_DeviceNetworkCard::getTable(),
                     'WHERE'  => [
-                        'itemtype'  => $this->itemtype,
-                        'items_id'  => $this->items_id,
+                        'itemtype'  => new QueryParam(),
+                        'items_id'  => new QueryParam(),
                         'mac'       => new QueryParam()
                     ]
                 ];
@@ -586,7 +591,9 @@ trait InventoryNetworkPort
 
             $stmt = $this->idevice_stmt;
             $stmt->bind_param(
-                's',
+                'sss',
+                $this->itemtype,
+                $this->items_id,
                 $data->mac
             );
             $DB->executeStatement($stmt);
@@ -600,9 +607,9 @@ trait InventoryNetworkPort
 
        //store instance
         if ($instance->isNewItem()) {
-            $instance->add(Sanitizer::sanitize($input));
+            $instance->add($input);
         } else {
-            $instance->update(Sanitizer::sanitize($input));
+            $instance->update($input);
         }
     }
 

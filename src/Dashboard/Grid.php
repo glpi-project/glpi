@@ -38,6 +38,7 @@ namespace Glpi\Dashboard;
 use Config;
 use DateInterval;
 use Dropdown;
+use GLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Html;
@@ -269,11 +270,6 @@ HTML;
             }
         }
 
-        // Force clear the cards cache in debug mode
-        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            $GLPI_CACHE->delete(self::getAllDashboardCardsCacheKey());
-        }
-
         // prepare all available cards
         $cards = $this->getAllDasboardCards();
 
@@ -288,6 +284,7 @@ HTML;
         $fs_label         = __("Toggle fullscreen");
         $clone_label      = __("Clone this dashboard");
         $edit_label       = __("Toggle edit mode");
+        $filter_label     = __("Toggle filter mode");
         $add_filter_lbl   = __("Add filter");
         $add_dash_label   = __("Add a new dashboard");
         $save_label       = _x('button', "Save");
@@ -316,28 +313,30 @@ HTML;
 
         if (!self::$embed) {
             if (!$mini && $can_create) {
-                $l_tb_icons .= "<i class='btn btn-outline-secondary fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
+                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
             }
             if (!$mini && $can_clone) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-copy fs-toggle clone-dashboard' title='$clone_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-copy fs-toggle clone-dashboard' title='$clone_label'></i>";
             }
             if (!$mini && $can_edit) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-share fs-toggle open-embed' title='$embed_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-share fs-toggle open-embed' title='$embed_label'></i>";
                 $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
-               <i class='btn btn-outline-secondary far fa-save save-dashboard-name' title='{$save_label}'></i>
+               <i class='btn btn-ghost-secondary ti ti-device-floppy ms-1 save-dashboard-name' title='{$save_label}'></i>
                <span class='display-message'></span>
             </div>";
             }
             if (!$mini && $can_purge) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
             }
             if ($can_edit) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
+            } elseif (!$mini) {
+                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-filter fs-toggle filter-dashboard' title='$filter_label'></i>";
             }
 
             if (!$mini) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-maximize toggle-fullscreen' title='$fs_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-maximize toggle-fullscreen' title='$fs_label'></i>";
             }
 
             if (!$mini) {
@@ -362,8 +361,8 @@ HTML;
         $toolbars = <<<HTML
          $left_toolbar
          <span class="toolbar">
-            <i class="btn btn-outline-secondary fas fa-history auto-refresh" title="$history_label"></i>
-            <i class="btn btn-outline-secondary fas fa-moon night-mode" title="$night_label"></i>
+            <i class="btn btn-sm btn-icon btn-ghost-secondary ti ti-refresh auto-refresh" title="$history_label"></i>
+            <i class="btn btn-sm btn-icon btn-ghost-secondary ti ti-moon night-mode" title="$night_label"></i>
             $r_tb_icons
          </span>
 HTML;
@@ -374,7 +373,7 @@ HTML;
          <div class='filters_toolbar'>
             <span class='filters'></span>
             <span class='filters-control'>
-               <i class="btn btn-sm btn-icon btn-ghost-secondary fas fa-plus plus-sign add-filter">
+               <i class="btn btn-sm btn-ghost-secondary fas fa-plus plus-sign add-filter">
                   <span class='add-filter-lbl'>{$add_filter_lbl}</span>
                </i>
             </span>
@@ -691,7 +690,10 @@ HTML;
         $widgettype   = $cardopt['widgettype'] ?? "";
         $widget_def   = $widgettypes[$widgettype] ?? [];
         $use_gradient = $cardopt['use_gradient'] ?? 0;
-        $point_labels = $cardopt['point_labels'] ?? 0;
+        $palette      = $cardopt['palette'] ?? '';
+        $labels       = $cardopt['labels'] ?? 0;
+        $point_labels = $cardopt['point_labels'] ?? 1;
+        $legend       = $cardopt['legend'] ?? 1;
         $limit        = $cardopt['limit'] ?? 7;
         $color        = $cardopt['color'];
         $edit         = $params['action'] === "display_edit_widget";
@@ -708,11 +710,6 @@ HTML;
             $list_cards[$group][$index] = $data['label'] ?? $data['itemtype']::getTypeName();
         });
 
-       // manage autoescaping
-        if (isset($cardopt['markdown_content'])) {
-            $cardopt['markdown_content'] = Html::cleanPostForTextArea($cardopt['markdown_content']);
-        }
-
         TemplateRenderer::getInstance()->display('components/dashboard/widget_form.html.twig', [
             'gridstack_id' => $gridstack_id,
             'old_id'       => $old_id,
@@ -726,7 +723,10 @@ HTML;
             'color'        => $color,
             'card_id'      => $card_id,
             'use_gradient' => $use_gradient,
+            'palette'      => $palette,
+            'labels'       => $labels,
             'point_labels' => $point_labels,
+            'legend'       => $legend,
             'limit'        => $limit,
             'list_cards'   => $list_cards,
             'widget_types' => Widget::getAllTypes(),
@@ -908,7 +908,7 @@ HTML;
             $card = $cards[$card_id];
 
             $use_cache = !$force
-                && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
+                && GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT
                 && (!isset($card['cache']) || $card['cache'] == true);
             $cache_age = 40;
 
@@ -1361,7 +1361,11 @@ HTML;
                     'content' => __("Toggle edit mode to edit content"),
                 ]
             ];
-            $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
+
+            if (GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT) {
+                // Do not cache dashboard cards on `development` envs
+                $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
+            }
         }
 
         $more_cards = Plugin::doHookFunction(Hooks::DASHBOARD_CARDS);

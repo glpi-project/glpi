@@ -1,0 +1,209 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if total_number < 1 %}
+   <div class="alert alert-info">
+      {{ __('No data') }}
+   </div>
+{% else %}
+    {{ include('components/pager.html.twig', {
+        'count': filtered_number,
+        'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order
+    }) }}
+
+    <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
+        {% if showmassiveactions %}
+            {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+        {% endif %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    {% if showmassiveactions %}
+                        <th style="width: 30px;">
+                            <div>
+                                <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
+                                    value="" aria-label="{{ __('Check all') }}"
+                                    onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
+                            </div>
+                        </th>
+                    {% endif %}
+                    {% for colkey, colum in columns %}
+                        {% set sort_icon = '' %}
+                        {% set new_order = "DESC" %}
+                        {% if sort == colkey %}
+                            {% set sort_icon = order == 'ASC' ? 'ti ti-sort-ascending' : (order == 'DESC' ? 'ti ti-sort-descending' : '') %}
+                            {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
+                        {% endif %}
+
+                        {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ "&" ~ additional_params ~ "');" %}
+
+                        <th><a href="{{ sort_href }}">
+                            <i class="{{ sort_icon }}"></i>
+                            <span>{{ colum }}</span>
+                        </a></th>
+                    {% endfor %}
+
+                   {% if nofilter is not defined or csv_url|length %}
+                       <th>
+                           <span class="float-end log-toolbar mb-0">
+                               {% if nofilter is not defined %}
+                                   <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
+                                       <i class="fas fa-filter"></i>
+                                       <span class="d-none d-xl-block">{{ __('Filter') }}</span>
+                                   </button>
+                               {% endif %}
+                               {% if csv_url|length %}
+                                   <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-outline-secondary">
+                                       <i class="fas fa-file-download"></i>
+                                       <span class="d-none d-xl-block">{{ __('Export') }}</span>
+                                   </a>
+                               {% endif %}
+                           </span>
+                       </th>
+                     {% endif %}
+                </tr>
+                {% if filters|length > 0  %}
+                    <tr class="filter_row">
+                        {% if showmassiveactions %}
+                            <td></td>
+                        {% endif %}
+                        <td style="display: none">
+                            <input type="hidden" name="filters[active]" value="1" />
+                            <input type="hidden" name="items_id" value="{{ items_id }}" />
+                        </td>
+                        {% for colkey, colum in columns %}
+                            {% set formatter = formatters[colkey] ?? "" %}
+                            <td>
+                                {% if formatter == "array" and columns_values[colkey] is defined %}
+                                       <select name="filters[{{ colkey }}][]"
+                                            class="form-select filter-select-multiple" multiple>
+                                        {% for field, value in columns_values[colkey] %}
+                                            <option value="{{ field }}" {{ filters[colkey] is defined and value in filters[colkey] ? 'selected' : '' }}>
+                                                {{ value }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                {% elseif formatter == "datetime" %}
+                                    {{ call("Html::showDateTimeField", [
+                                        "filters[" ~ colkey ~ "]",
+                                        {
+                                            'value': filters[colkey],
+                                            'display': false
+                                        }
+                                    ])|raw }}
+                                {% elseif formatter == "date" %}
+                                    {{ call("Html::showDateField", [
+                                        "filters[" ~ colkey ~ "]",
+                                        {
+                                            'value': filters[colkey],
+                                            'display': false
+                                        }
+                                    ])|raw }}
+                                {% elseif formatter starts with "progress" %}
+                                    <input type="range" class="form-range"
+                                        name="filters[{{ colkey }}]"
+                                        value="{{ filters[colkey] ?? 0 }}"
+                                        min="0" max="100" step="1">
+                                {% else %}
+                                    <input type="text" class="form-control"
+                                        name="filters[{{ colkey }}]"
+                                        value="{{ filters[colkey] ?? '' }}">
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endif %}
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                    <tr>
+                        {% if showmassiveactions %}
+                            <td width='10'>
+                                <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
+                                    value="1" aria-label=""
+                                    name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                            </td>
+                        {% endif %}
+                        {% for colkey, colum in columns %}
+                            <td>
+                                {% if colkey in entry|keys %}
+
+                                    {% set formatter = formatters[colkey] %}
+
+                                    {% if formatter == "maintext" %}
+                                        <span class="d-inline-block bg-blue-lt p-1 text-truncate"
+                                            title="{{ entry[colkey] }}"
+                                            data-bs-toggle="tooltip"
+                                            style="max-width: 250px;">
+                                            {{ entry[colkey] }}
+                                        </span>
+                                    {% elseif formatter == "longtext" %}
+                                        <span class="d-inline-block text-truncate"
+                                            title="{{ entry[colkey] }}"
+                                            data-bs-toggle="tooltip"
+                                            style="max-width: 250px;">
+                                            {{ entry[colkey] }}
+                                        </span>
+                                    {% elseif formatter starts with "progress" %}
+                                        {{ call("Html::progress", [100, entry[colkey]])|raw }}
+                                    {% elseif formatter == "date" %}
+                                        {{ call("Html::convDate", [entry[colkey]])|raw }}
+                                    {% elseif formatter == "datetime" %}
+                                        {{ call("Html::convDateTime", [entry[colkey]])|raw }}
+                                    {% elseif formatter == "bytesize" %}
+                                        {{ call("Toolbox::getSize", [entry[colkey]])|raw }}
+                                    {% elseif formatter == "raw_html" %}
+                                        {{ entry[colkey]|raw }}
+                                    {% else %}
+                                        {{ entry[colkey] }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
+    <div class="ms-auto d-inline-flex align-items-center d-none d-md-block my-2">
+        {{ __('Show %s entries')|format(limitdropdown)|raw }}
+    </div>
+
+    <script type="text/javascript">
+    $(function() {
+        $('.filter-select-multiple').select2();
+    });
+    </script>
+{% endif %}

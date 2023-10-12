@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * Class IPAddress_IPNetwork : Connection between IPAddress and IPNetwork
  *
@@ -74,7 +76,7 @@ class IPAddress_IPNetwork extends CommonDBRelation
        // Then, look each IP address contained inside current Network
         $iterator = $DB->request([
             'SELECT' => [
-                new \QueryExpression($DB->quoteValue($ipnetworks_id) . ' AS ' . $DB->quoteName('ipnetworks_id')),
+                new QueryExpression($DB->quoteValue($ipnetworks_id) . ' AS ' . $DB->quoteName('ipnetworks_id')),
                 'id AS ipaddresses_id'
             ],
             'FROM'   => 'glpi_ipaddresses',

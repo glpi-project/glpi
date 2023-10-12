@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /**
  * CalendarSegment Class
  */
@@ -161,11 +164,11 @@ class CalendarSegment extends CommonDBChild
        // Do not check hour if day before the end day of after the begin day
         $iterator = $DB->request([
             'SELECT' => [
-                new \QueryExpression("
-               TIMEDIFF(
-                   LEAST(" . $DB->quoteValue($end_time) . ", " . $DB->quoteName('end') . "),
-                   GREATEST(" . $DB->quoteName('begin') . ", " . $DB->quoteValue($begin_time) . ")
-               ) AS " . $DB->quoteName('TDIFF'))
+                QueryFunction::timediff(
+                    expression1: QueryFunction::least([new QueryExpression($DB::quoteValue($end_time)), 'end']),
+                    expression2: QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))]),
+                    alias: 'TDIFF'
+                ),
             ],
             'FROM'   => 'glpi_calendarsegments',
             'WHERE'  => [
@@ -208,18 +211,11 @@ class CalendarSegment extends CommonDBChild
 
         // Common SELECT for both modes
         $SELECT = [
-            new \QueryExpression(
-                sprintf(
-                    "TIMEDIFF(
-                        %s,
-                        GREATEST(%s, %s)
-                    ) AS %s",
-                    $DB->quoteName('end'),
-                    $DB->quoteName('begin'),
-                    $DB->quoteValue($begin_time),
-                    $DB->quoteName('TDIFF')
-                ),
-            )
+            QueryFunction::timediff(
+                expression1: 'end',
+                expression2: QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))]),
+                alias: 'TDIFF'
+            ),
         ];
 
         // Common WHERE for both modes
@@ -228,15 +224,10 @@ class CalendarSegment extends CommonDBChild
             'day'          => $day,
         ];
 
+
         // Add specific SELECT and WHERE clauses
         if (!$negative_delay) {
-            $SELECT[] = new \QueryExpression(
-                sprintf("GREATEST(%s, %s) AS %s", ...[
-                    $DB->quoteName('begin'),
-                    $DB->quoteValue($begin_time),
-                    $DB->quoteName('BEGIN'),
-                ])
-            );
+            $SELECT[] = QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))], 'BEGIN');
             $WHERE['end'] = ['>', $begin_time];
         } else {
             // When counting back time, "00:00:00" can't be used for some comparison
@@ -245,14 +236,7 @@ class CalendarSegment extends CommonDBChild
             // return no results but using 23:59:59 get us the correct behavior).
             $adjusted_time_for_comparaison_in_negative_delay_mode = $begin_time == "00:00:00" ? "23:59:59" : $begin_time;
 
-            $SELECT[] = new \QueryExpression(
-                sprintf(
-                    "LEAST(%s, %s) AS %s",
-                    $DB->quoteName('end'),
-                    $DB->quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode),
-                    $DB->quoteName('END'),
-                )
-            );
+            $SELECT[] = QueryFunction::least(['end', new QueryExpression($DB::quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode))], 'END');
             $WHERE['begin'] = ['<', $adjusted_time_for_comparaison_in_negative_delay_mode];
         }
 
@@ -487,7 +471,7 @@ class CalendarSegment extends CommonDBChild
                             ['calendars_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

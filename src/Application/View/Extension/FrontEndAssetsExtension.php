@@ -225,7 +225,6 @@ JAVASCRIPT;
                 '/front/locale.php'
                 . '?domain=' . $locale_domain
                 . '&v=' . FrontEnd::getVersionCacheKey($locale_version)
-                . ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? '&debug' : '')
             );
             $script .= <<<JAVASCRIPT
             $(function() {

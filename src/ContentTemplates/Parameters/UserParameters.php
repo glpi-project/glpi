@@ -39,7 +39,6 @@ use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use Glpi\Toolbox\Sanitizer;
 use Location;
 use User;
 use UserCategory;
@@ -80,7 +79,7 @@ class UserParameters extends AbstractParameters
             new AttributeParameter("mobile", __('Mobile')),
             new AttributeParameter("firstname", __('First name')),
             new AttributeParameter("realname", __('Surname')),
-            new AttributeParameter("responsible", __('Responsible')),
+            new AttributeParameter("responsible", __('Supervisor')),
             new ObjectParameter(new LocationParameters()),
             new ObjectParameter(new UserTitleParameters()),
             new ObjectParameter(new UserCategoryParameters()),
@@ -92,8 +91,7 @@ class UserParameters extends AbstractParameters
     {
         global $CFG_GLPI;
 
-       // Output "unsanitized" values
-        $fields = Sanitizer::unsanitize($user->fields);
+        $fields = $user->fields;
 
         $values = [
             'id'        => $fields['id'],

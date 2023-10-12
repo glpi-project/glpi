@@ -53,6 +53,11 @@ class SoftwareVersion extends CommonDBChild
         return _n('Version', 'Versions', $nb);
     }
 
+    public static function getIcon()
+    {
+        return Software::getIcon();
+    }
+
 
     public function cleanDBonPurge()
     {
@@ -404,7 +409,7 @@ class SoftwareVersion extends CommonDBChild
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable($this->getTable(), ['softwares_id' => $item->getID()]);
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

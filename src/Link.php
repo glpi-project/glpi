@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Toolbox\URL;
 
 /** Link Class
@@ -54,7 +54,6 @@ class Link extends CommonDBTM
     {
         return _n('External link', 'External links', $nb);
     }
-
 
     /**
      * For plugins, add a tag to the links tags
@@ -85,12 +84,12 @@ class Link extends CommonDBTM
                 $nb = countElementsInTable(
                     ['glpi_links_itemtypes','glpi_links'],
                     [
-                        'glpi_links_itemtypes.links_id'  => new \QueryExpression(DBmysql::quoteName('glpi_links.id')),
+                        'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
                         'glpi_links_itemtypes.itemtype'  => $item->getType()
                     ] + $entity_criteria
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }
@@ -586,8 +585,6 @@ class Link extends CommonDBTM
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        global $DB;
-
         if (!self::canView()) {
             return false;
         }
@@ -661,8 +658,7 @@ class Link extends CommonDBTM
 
         if (empty($file)) {
             // Generate links
-            $link_pattern = Sanitizer::unsanitize($params['link']); // generate links from raw pattern
-            $links = $item->generateLinkContents($link_pattern, $item, true);
+            $links = $item->generateLinkContents($params['link'], $item, true);
             $i     = 1;
             foreach ($links as $key => $val) {
                 $val     = htmlspecialchars($val); // encode special chars as value was generated from a raw pattern

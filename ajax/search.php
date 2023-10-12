@@ -71,14 +71,22 @@ switch ($_REQUEST['action']) {
             die;
         }
 
-        $search_params = Search::manageParams($itemtype, $_REQUEST);
+        // Handle display params
+        $params = $_REQUEST['params'] ?? [];
+        unset($_REQUEST['params']);
+
+        $search_params = Search::manageParams($itemtype, $_REQUEST, $_REQUEST['usesession'] ?? true);
 
         if (isset($search_params['browse']) && $search_params['browse'] == 1) {
             $itemtype::showBrowseView($itemtype, $search_params, true);
         } else {
             $results = Search::getDatas($itemtype, $search_params);
             $results['searchform_id'] = $_REQUEST['searchform_id'] ?? null;
-            Search::displayData($results);
+            Search::displayData($results, $params);
+        }
+
+        if (isset($_SESSION['glpisearch'][$itemtype]['reset'])) {
+            unset($_SESSION['glpisearch'][$itemtype]);
         }
         break;
 }

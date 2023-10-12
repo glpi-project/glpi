@@ -1,0 +1,237 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro log_entry_tpl(log) %}
+    {% set log_entry_html %}
+        <div class="log_entry d-flex" id="{{ log['id'] }}">
+            {% if log['text']|split("\n")|length > 2 %}
+                <input type="checkbox" class="log_entry_toggle" id="more_{{ log['id'] }}">
+                <label for="more_{{ log['id'] }}" class="log_entry_toggle_lbl" role="button">&nbsp;</label>
+            {% else %}
+                <span class="log_entry_toggle_placeholder"></span>
+            {% endif %}
+            <label class="log_long_text" for="more_{{ log['id'] }}">
+                <a class="log_datetime badge me-1" href="#{{ log['id'] }}">
+                    {{ log['datetime']|formatted_datetime }}
+                </a>
+                <##log_text##>
+            </label>
+        </div>
+    {% endset %}
+    {{ log_entry_html|spaceless|replace({
+        '<##log_text##>': log['text']|trim,
+    })|raw }}
+{% endmacro %}
+
+{% set log_entries_html %}
+    {% if log_entries|length %}
+        {% for log_entry in log_entries %}{{ _self.log_entry_tpl(log_entry)|trim|raw }}{% endfor %}
+    {% elseif not only_content %}
+        <div class="empty">
+            <div class="empty-icon">
+                <i class="ti ti-mood-empty fa-2x"></i>
+            </div>
+            <p class="empty-title">{{ __("The log file is empty") }}</p>
+            <p class="empty-subtitle text-muted">
+                {{ __("Try enabling auto-refresh to see new content of the file") }}
+            </p>
+
+            <div class="empty-action">
+                <button type="button" class="btn btn-primary force-auto-refresh">
+                    <i class="ti ti-refresh"></i>
+                    <span>{{ __("Enable auto-refresh") }}</span>
+                </a>
+            </div>
+        </div>
+    {% endif %}
+    <a id="bottom"></a>
+{% endset %}
+
+{% if only_content %}
+    {{ log_entries_html }}
+    <div class="spinner-border mt-3" id="auto-refresh-indicator" role="status"></div>
+{% else %}
+    <div class="d-inline-flex flex-wrap flex-md-nowrap align-items-center mb-2">
+        <form action="{{ path('/front/logviewer.php') }}" method="post" class="d-inline">
+            <div class="input-group">
+                <select class="form-select w-auto" id="change-file">
+                {% for log_file in log_files %}
+                    {% set log_file_filepath = log_file['filepath'] %}
+                    <option value="{{ log_file_filepath }}"
+                            {{ log_file_filepath == filepath ? 'selected="selected"' : '' }}>
+                        {{ log_file_filepath }}
+                    </option>
+                {% endfor %}
+                </select>
+
+                <a href="?action=download_log_file&amp;filepath={{ filepath|url_encode }}"
+                   class="btn btn-outline-secondary"
+                   title="{{ __("Download file") }}"
+                   data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    <i class="ti ti-file-download"></i>
+                </a>
+
+                {% if can_clear %}
+                    <button type="submit" name="action" value="empty"
+                            class="btn btn-outline-secondary"
+                            title="{{ __("Empty file") }}"
+                            onclick="return confirm('{{ __("Are you sure you want to clear this file?") }}')"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="ti ti-file-off"></i>
+                    </button>
+                {% if can_delete %}
+                {% endif %}
+                    <button type="submit" name="action" value="delete"
+                            class="btn btn-outline-secondary"
+                            title="{{ __("Delete file") }}"
+                            onclick="return confirm('{{ __("Are you sure you want to delete this file?") }}')"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="ti ti-trash-x"></i>
+                    </button>
+                {% endif %}
+
+                <input type="hidden" name="filepath" value="{{ filepath }}">
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            </div>
+        </form>
+
+        <span class="d-inline-flex ms-3">
+            <small class="d-inline-flex text-muted text-nowrap me-3"
+                title="{{ __("file size") }}">
+                <i class="ti ti-file me-1"></i>
+                <span>{{ filesize|formatted_size }}</span>
+            </small>
+            <small class="d-inline-flex text-muted text-nowrap "
+                title="{{ __("date of last modification") }}">
+                <i class="ti ti-clock me-1"></i>
+                <span>{{ datemod|formatted_datetime }}</span>
+            </small>
+        </span>
+    </div>
+    <div class="log-viewer card">
+        <div class="card-header justify-content-between ">
+            <span class="input-icon ms-3">
+                <input type="text" value="" class="form-control" id="filter-logs-input"
+                    placeholder="{{ __("filter logs") }}">
+                <span class="input-icon-addon">
+                    <i class="ti ti-filter fa-xs"></i>
+                </span>
+            </span>
+
+            <a href="#bottom"
+                class="btn btn-sm btn-ghost-secondary ms-3"
+                title="{{ __("Scroll to bottom") }}"
+                data-bs-toggle="tooltip" data-bs-placement="bottom">
+                <i class="ti ti-player-track-next fa-rotate-90"></i>
+            </a>
+        </div>
+        <div class="log-entries card-body">
+            {{ log_entries_html }}
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <label class="form-check form-switch btn btn-sm btn-ghost-secondary ms-2 px-1 flex-column-reverse flex-sm-row flex-nowrap"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="{{ __('Toggle auto refresh') }}">
+                <input type="checkbox"
+                    id="log-auto-refresh"
+                    class="form-check-input ms-0 me-1 mt-0 fold-search"
+                    role="button" autocomplete="off">
+                <span class="form-check-label mb-1 mb-sm-0">
+                    <i class="ti ti-refresh"></i>
+                </span>
+            </label>
+
+            {% set limitdropdown = include('components/dropdown/limit.html.twig', {
+                'no_onchange': fluid_search|default(false),
+            }) %}
+            <span class="search-limit d-none d-md-block text-muted">
+                {{ __('display the last %s entries')|format(limitdropdown)|raw }}
+            </span>
+        </div>
+    </div>
+
+    <script>
+    $(function () {
+        // change log file
+        $("#change-file").on('change', function () {
+            window.location.href = "?filepath=" + encodeURIComponent($(this).val());
+        });
+
+        // manage auto-refresh of log
+        let autorefresh_interval = null;
+        $("#log-auto-refresh").change(function() {
+            if(this.checked) {
+                const log_entries = $('.log-entries');
+                const reloadContent = function() {
+                    log_entries.load('{{ path("/ajax/logviewer.php") }}', {
+                        action: 'refresh_log_file',
+                        filepath: '{{ filepath }}'
+                    }, function() {
+                        log_entries.animate({ 'scrollTop': log_entries.prop("scrollHeight")}, 1000);
+                    });
+                }
+                reloadContent();
+                autorefresh_interval = setInterval(() => {
+                    reloadContent();
+                }, 1500);
+            } else {
+                clearInterval(autorefresh_interval);
+                $("#auto-refresh-indicator").remove();
+            }
+        });
+
+        // force auto-refresh
+        $(".force-auto-refresh").click(function() {
+            $("#log-auto-refresh").prop('checked', true).change();
+        });
+
+        // filter logs
+        var delay_timer = null;
+        $('#filter-logs-input').on('input', function() {
+            const filtered_text = $(this).val().trim();
+            clearTimeout(delay_timer);
+            $('.log_entry').removeClass('d-none');
+            delay_timer = setTimeout(function() {
+                $('.log_entry').each(function() {
+                    const row = $(this);
+                    const log_text = row.text().trim();
+                    if (log_text.indexOf(filtered_text) === -1) {
+                        row.addClass('d-none');
+                    }
+                });
+            }, 500);
+        });
+    });
+    </script>
+{% endif %}

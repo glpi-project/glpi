@@ -37,7 +37,6 @@ use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Session Class
@@ -648,8 +647,23 @@ class Session
 
         $_SESSION["glpigroups"] = [];
 
+        $entity_restriction = getEntitiesRestrictCriteria(
+            Group::getTable(),
+            'entities_id',
+            $_SESSION['glpiactiveentities'],
+            true
+        );
+
+        // Build select depending on whether or not the recursive_membership
+        // column exist.
+        // Needed because this code will be executed during the upgrade processs
+        // BEFORE the recursive_membership column is added
+        $SELECT = [Group_User::getTableField('groups_id')];
+        if ($DB->fieldExists(Group::getTable(), 'recursive_membership')) {
+            $SELECT[] = Group::getTableField('recursive_membership');
+        }
         $iterator = $DB->request([
-            'SELECT'    => Group_User::getTable() . '.groups_id',
+            'SELECT'    => $SELECT,
             'FROM'      => Group_User::getTable(),
             'LEFT JOIN' => [
                 Group::getTable() => [
@@ -661,17 +675,49 @@ class Session
             ],
             'WHERE'     => [
                 Group_User::getTable() . '.users_id' => self::getLoginUserID()
-            ] + getEntitiesRestrictCriteria(
-                Group::getTable(),
-                'entities_id',
-                $_SESSION['glpiactiveentities'],
-                true
-            )
+            ] + $entity_restriction
         ]);
 
         foreach ($iterator as $data) {
             $_SESSION["glpigroups"][] = $data["groups_id"];
+
+            // Add children groups
+            if ($data['recursive_membership']) {
+                // Stack of children to load
+                $children_to_load = [$data["groups_id"]];
+
+                while (!empty($children_to_load)) {
+                    $next_child_to_load = array_pop($children_to_load);
+
+                    // Note: we can't use getSonsOf here because some groups in the
+                    // hierarchy might disable recursive membership for their own
+                    // children
+                    $children_data = $DB->request([
+                        'SELECT' => ['id', 'recursive_membership'],
+                        'FROM'   => Group::getTable(),
+                        'WHERE'  => ['groups_id' => $next_child_to_load] + $entity_restriction
+                    ]);
+
+                    // Iterate on the children
+                    foreach ($children_data as $data) {
+                        // Add the child to the user's groups
+                        $_SESSION["glpigroups"][] = $data['id'];
+
+                        // If the child support recursive membership, load its
+                        // children too
+                        if ($data['recursive_membership']) {
+                            $children_to_load[] = $data['id'];
+                        }
+                    }
+                }
+            }
         }
+
+        // Clear duplicates
+        $_SESSION["glpigroups"] = array_unique($_SESSION["glpigroups"]);
+
+        // Set new valid cache date
+        $_SESSION['glpigroups_cache_date'] = $_SESSION["glpi_currenttime"];
     }
 
 
@@ -1366,6 +1412,29 @@ class Session
         return "";
     }
 
+    /**
+     * Add multiple messages to be displayed after redirect
+     *
+     * @param array $messages     Messages to add
+     * @param bool  $check_once   Check if the message is not already added (false by default)
+     * @param int   $message_type Message type (INFO, WARNING, ERROR) (default INFO)
+     *
+     * @return void
+     **/
+    public static function addMessagesAfterRedirect(
+        $messages,
+        $check_once = false,
+        $message_type = INFO
+    ) {
+        foreach ($messages as $message) {
+            self::addMessageAfterRedirect(
+                $message,
+                $check_once,
+                $message_type,
+                false // Does not make sense for multiple messages, must always be false
+            );
+        }
+    }
 
     /**
      * Add a message to be displayed after redirect
@@ -1590,6 +1659,12 @@ class Session
      **/
     public static function checkCSRF($data)
     {
+        if (!GLPI_USE_CSRF_CHECK) {
+            trigger_error(
+                'Definition of "GLPI_USE_CSRF_CHECK" constant is deprecated and is ignore for security reasons.',
+                E_USER_WARNING
+            );
+        }
 
         $message = __("The action you have requested is not allowed.");
         if (
@@ -1600,13 +1675,11 @@ class Session
             $message = __("Your session has expired.");
         }
 
-        if (
-            GLPI_USE_CSRF_CHECK
-            && (!Session::validateCSRF($data))
-        ) {
+        if (!Session::validateCSRF($data)) {
             $requested_url = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown');
             $user_id = self::getLoginUserID() ?? 'Anonymous';
             Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url");
+
             // Output JSON if requested by client
             if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
                 http_response_code(403);
@@ -1697,10 +1770,7 @@ class Session
                 }
             };
 
-            // Check also unsanitized data, as sanitizing process may alter expected data.
-            $unsanitized_data = Sanitizer::unsanitize($data);
-
-            return $match_expected($idor_data, $data) || $match_expected($idor_data, $unsanitized_data);
+            return $match_expected($idor_data, $data);
         }
 
         return false;
@@ -1765,6 +1835,14 @@ class Session
      */
     public static function canImpersonate($user_id, ?string &$message = null)
     {
+        global $DB;
+
+        $is_super_admin = self::haveRight(Config::$rightname, UPDATE);
+
+        // Stop here if the user can't impersonate (doesn't have the right + isn't admin)
+        if (!self::haveRight('user', User::IMPERSONATE) && !$is_super_admin) {
+            return false;
+        }
 
         if (
             $user_id <= 0 || self::getLoginUserID() == $user_id
@@ -1772,11 +1850,6 @@ class Session
         ) {
             $message = __("You can't impersonate yourself.");
             return false; // Cannot impersonate invalid user, self, or already impersonated user
-        }
-
-        // Cannot impersonate if we don't have config right
-        if (!self::haveRight(Config::$rightname, UPDATE)) {
-            return false;
         }
 
         // Cannot impersonate inactive user
@@ -1787,8 +1860,31 @@ class Session
         }
 
         // Cannot impersonate user with no profile
-        if (Profile_User::getUserProfiles($user_id) == []) {
+        $other_user_profiles = Profile_User::getUserProfiles($user_id);
+        if (count($other_user_profiles) === 0) {
             $message = __("The user doesn't have any profile.");
+            return false;
+        }
+
+        if ($is_super_admin) {
+            return true; // User can impersonate anyone
+        }
+
+        // Check if user can impersonate lower-privileged users (or same level)
+        // Get all less-privileged (or equivalent) profiles than current one
+        $criteria = Profile::getUnderActiveProfileRestrictCriteria();
+        $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => Profile::getTable(),
+            'WHERE'  => $criteria
+        ]);
+        $profiles = [];
+        foreach ($iterator as $data) {
+            $profiles[] = $data['id'];
+        }
+        // Check if all profiles of the user are less-privileged than current one
+        if (count($other_user_profiles) !== count(array_intersect($profiles, array_keys($other_user_profiles)))) {
+            $message = __("User has more rights than you. You can't impersonate him.");
             return false;
         }
 
@@ -1824,6 +1920,16 @@ class Session
         $lang             = $_SESSION['glpilanguage'];
         $session_use_mode = $_SESSION['glpi_use_mode'];
 
+        $impersonator_info = [
+            'id'                            => $impersonator_id,
+            'glpiname'                      => $impersonator,
+            'glpilanguage'                  => $lang,
+            'glpi_use_mode'                 => $session_use_mode,
+            'glpiactive_entity'             => $_SESSION['glpiactive_entity'],
+            'glpiactive_entity_recursive'   => $_SESSION['glpiactive_entity_recursive'],
+            'profiles_id'                   => $_SESSION['glpiactiveprofile']['id'],
+        ];
+
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
@@ -1835,6 +1941,7 @@ class Session
         Session::loadLanguage();
 
         $_SESSION['impersonator_id'] = $impersonator_id;
+        $_SESSION['impersonator_info'] = $impersonator_info;
 
         Event::log(0, "system", 3, "Impersonate", sprintf(
             __('%1$s starts impersonating user %2$s'),
@@ -1864,11 +1971,22 @@ class Session
 
        //store user which was impersonated by another user
         $impersonate_user = $_SESSION['glpiname'];
+        $impersonator_info = $_SESSION['impersonator_info'] ?? [];
 
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
         Session::init($auth);
+
+        // Restore previous user values
+        if (!empty($impersonator_info)) {
+            // Basic values
+            $_SESSION['glpilanguage'] = $impersonator_info['glpilanguage'];
+            $_SESSION['glpi_use_mode'] = $impersonator_info['glpi_use_mode'];
+            // Restore profile/entity
+            self::changeProfile($impersonator_info['profiles_id']);
+            self::changeActiveEntities($impersonator_info['glpiactive_entity'], $impersonator_info['glpiactive_entity_recursive']);
+        }
 
         Event::log(0, "system", 3, "Impersonate", sprintf(
             __('%1$s stops impersonating user %2$s'),

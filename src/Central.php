@@ -36,7 +36,6 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
-use Glpi\System\Requirement\SafeDocumentRoot;
 
 /**
  * Central class
@@ -495,31 +494,48 @@ class Central extends CommonGLPI
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
             }
-            /*
-             * FIXME: Remove `$exclude_plugins = true` condition in GLPI 10.1.
-             * This condition is here only to prevent having this message displayed after installation of plugins that
-             * may not have yet handle the switch to utf8mb4.
-             */
-            if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables(true)->count()) > 0) {
+            if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:utf8mb4');
             }
-            /*
-             * FIXME: Remove `$exclude_plugins = true` condition in GLPI 10.1.
-             * This condition is here only to prevent having this message displayed after installation of plugins that
-             * may not have yet handle the switch to unsigned keys.
-             */
-            if (($signed_keys_col_count = $DB->getSignedKeysColumns(true)->count()) > 0) {
+            if (($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
             }
-        }
 
-        $safe_doc_root_requirement = new SafeDocumentRoot();
-        if (!$safe_doc_root_requirement->isValidated()) {
-            $messages['warnings'] = array_merge(($messages['warnings'] ?? []), $safe_doc_root_requirement->getValidationMessages());
+            /*
+             * Check if there are pending reasons items and the notification is not active
+             * If so, display a warning message
+             */
+            $notification = new \Notification();
+            if (
+                \Config::getConfigurationValue('core', 'use_notifications')
+                && countElementsInTable('glpi_pendingreasons_items') > 0
+                && !count($notification->find([
+                    'itemtype' => 'Ticket',
+                    'event'     => 'auto_reminder',
+                    'is_active'  => true,
+                ]))
+            ) {
+                $criteria = [
+                    'criteria' => [
+                        0 => [
+                            'link' => 'AND',
+                            'field' => 2,
+                            'searchtype' => 'equals',
+                            'value' => 'Ticket$#$auto_reminder'
+                        ]
+                    ]
+                ];
+                $link = '<a href="' . Notification::getSearchURL() . '?' . Toolbox::append_params($criteria) . '">' . __('notification') . '</a>';
+
+                $messages['warnings'][] = sprintf(
+                    __('You have defined pending reasons without any respective active %s.'),
+                    $link
+                );
+            }
         }
 
         if ($DB->isSlave() && !$DB->first_connection) {

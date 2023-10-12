@@ -117,7 +117,7 @@ class FieldUnicity extends CommonDropdown
 
         if (!$withtemplate) {
             if ($item->getType() == $this->getType()) {
-                return __('Duplicates');
+                return self::createTabEntry(__('Duplicates'), 0, $item::getType(), 'ti ti-copy');
             }
         }
         return '';

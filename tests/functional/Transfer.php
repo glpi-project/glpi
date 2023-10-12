@@ -84,7 +84,6 @@ class Transfer extends DbTestCase
                 'USBVendor',
                 'PCIVendor',
                 'PendingReasonCron',
-                'Netpoint',
             ]
         );
 

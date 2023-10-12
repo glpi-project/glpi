@@ -38,7 +38,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 $SECURITY_STRATEGY = 'no_check';
 
@@ -53,7 +52,9 @@ if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'test
     }
 }
 
-$_POST = array_map('stripslashes', $_POST);
+if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {
+    $_POST['totp_code'] = implode('', $_POST['totp_code']);
+}
 
 //Do login and checks
 //$user_present = 1;
@@ -63,7 +64,7 @@ if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
     $login = '';
 }
 if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
-    $password = Sanitizer::unsanitize($_POST[$_SESSION['pwdfield']]);
+    $password = $_POST[$_SESSION['pwdfield']];
 } else {
     $password = '';
 }
@@ -88,7 +89,17 @@ $auth = new Auth();
 
 
 // now we can continue with the process...
-if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth)) {
+if (isset($_REQUEST['totp_cancel'])) {
+    session_destroy();
+    Html::redirect($CFG_GLPI['root_doc'] . '/index.php');
+}
+$mfa_params = [];
+if (!empty($_POST['totp_code'])) {
+    $mfa_params['totp_code'] = $_POST['totp_code'];
+} else if (!empty($_POST['backup_code'])) {
+    $mfa_params['backup_code'] = $_POST['backup_code'];
+}
+if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth, $mfa_params)) {
     Auth::redirectIfAuthenticated();
 } else {
     http_response_code(401);

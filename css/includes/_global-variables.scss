@@ -64,7 +64,7 @@
     --card-border-color: #{$card-border-color};
 
     // table
-    --table-head-border-color: #{$table-head-border-color};
-    --table-head-color: #{$table-head-color};
-    --table-head-bg: #{$table-head-bg};
+    --table-head-border-color: #{$table-th-border-color};
+    --table-head-color: #{$table-th-color};
+    --table-head-bg: #{$table-th-bg};
 }

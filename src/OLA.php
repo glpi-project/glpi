@@ -51,6 +51,11 @@ class OLA extends LevelAgreement
         return __('OLA');
     }
 
+    public static function getIcon()
+    {
+        return SLM::getIcon();
+    }
+
     public function showFormWarning()
     {
         global $CFG_GLPI;

@@ -106,7 +106,7 @@ class DB extends \GLPITestCase
             [null, 'NULL'],
             ['null', 'NULL'],
             ['NULL', 'NULL'],
-            [new \QueryExpression('`field`'), '`field`'],
+            [new \Glpi\DBAL\QueryExpression('`field`'), '`field`'],
             ['`field', "'`field'"],
             [false, "'0'"],
             [true, "'1'"],
@@ -140,12 +140,12 @@ class DB extends \GLPITestCase
                 'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
             ], [
                 'table', [
-                    'field'  => new \QueryParam(),
-                    'other'  => new \QueryParam()
+                    'field'  => new \Glpi\DBAL\QueryParam(),
+                    'other'  => new \Glpi\DBAL\QueryParam()
                 ],
                 'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)'
             ], [
-                'table', new \QuerySubQuery([
+                'table', new \Glpi\DBAL\QuerySubQuery([
                     'SELECT' => ['id', 'name'],
                     'FROM' => 'other',
                     'WHERE' => ['NOT' => ['name' => null]]
@@ -202,9 +202,9 @@ class DB extends \GLPITestCase
                 'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))'
             ], [
                 'table', [
-                    'field'  => new \QueryParam()
+                    'field'  => new \Glpi\DBAL\QueryParam()
                 ], [
-                    'NOT' => ['id' => [new \QueryParam(), new \QueryParam()]]
+                    'NOT' => ['id' => [new \Glpi\DBAL\QueryParam(), new \Glpi\DBAL\QueryParam()]]
                 ],
                 [],
                 'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))'
@@ -218,7 +218,7 @@ class DB extends \GLPITestCase
                 'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
             ], [*/
                 'table', [
-                    'field'  => new \QueryExpression(\DBmysql::quoteName('field') . ' + 1')
+                    'field'  => new \Glpi\DBAL\QueryExpression(\DBmysql::quoteName('field') . ' + 1')
                 ], [
                     'id'  => [1, 2]
                 ],
@@ -226,7 +226,7 @@ class DB extends \GLPITestCase
                 'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
             ], [
                 'table', [
-                    'field'  => new \QueryExpression(\DBmysql::quoteName('field') . ' + 1')
+                    'field'  => new \Glpi\DBAL\QueryExpression(\DBmysql::quoteName('field') . ' + 1')
                 ], [
                     'id'  => [1, 2]
                 ],
@@ -308,7 +308,7 @@ class DB extends \GLPITestCase
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))'
             ], [
                 'table', [
-                    'NOT'  => ['id' => [new \QueryParam(), new \QueryParam()]]
+                    'NOT'  => ['id' => [new \Glpi\DBAL\QueryParam(), new \Glpi\DBAL\QueryParam()]]
                 ],
                 [],
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))'
@@ -393,12 +393,18 @@ class DB extends \GLPITestCase
         $this->object($list)->isInstanceOf(\DBmysqlIterator::class);
         $this->integer(count($list))->isGreaterThan(200);
 
+        // Tables that don't have an itemtype on purpose
+        $excluded_tables = [
+            'glpi_appliancerelations', 'glpi_oauth_access_tokens', 'glpi_oauth_auth_codes',
+            'glpi_oauth_refresh_tokens',
+        ];
+
        //check if each table has a corresponding itemtype
         foreach ($list as $line) {
             $this->array($line)
             ->hasSize(1);
             $table = $line['TABLE_NAME'];
-            if ($table == 'glpi_appliancerelations') {
+            if (in_array($table, $excluded_tables, true)) {
                 //FIXME temporary hack for unit tests
                 continue;
             }
@@ -697,8 +703,8 @@ SQL,
         $table = sprintf('glpitests_%s', uniqid());
         $this->when(
             function () use ($db, $create_query_template, $drop_query_template, $table) {
-                $db->query(sprintf($create_query_template, $table));
-                $db->query(sprintf($drop_query_template, $table));
+                $db->doQuery(sprintf($create_query_template, $table));
+                $db->doQuery(sprintf($drop_query_template, $table));
             }
         )->error()
             ->withType(E_USER_WARNING)
@@ -742,7 +748,7 @@ SQL,
     {
         $db = new \mock\DB();
 
-        $db->query('SELECT 1/0');
+        $db->doQuery('SELECT 1/0');
         $this->array($db->getLastQueryWarnings())->isEqualTo(
             [
                 [
@@ -754,7 +760,7 @@ SQL,
         );
         $this->hasSqlLogRecordThatContains('1365: Division by 0', LogLevel::WARNING);
 
-        $db->query('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
+        $db->doQuery('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
         $this->array($db->getLastQueryWarnings())->isEqualTo(
             [
                 [
@@ -773,6 +779,89 @@ SQL,
             '1292: Truncated incorrect INTEGER value: \'1a\'' . "\n" . '1292: Truncated incorrect INTEGER value: \'123b\'',
             LogLevel::WARNING
         );
+    }
+
+    protected function fetchResultProvider(): iterable
+    {
+        foreach (['fetchArray', 'fetchRow', 'fetchAssoc', 'fetchObject'] as $method) {
+            // No more results => null.
+            yield [
+                'method'   => $method,
+                'row'      => null,
+                'expected' => null,
+            ];
+
+            // Fetch failed => false.
+            yield [
+                'method'   => $method,
+                'row'      => false,
+                'expected' => false,
+            ];
+
+            // Data produced by GLPI <= 10.0 XSS cleaning process.
+            yield [
+                'method'   => $method,
+                'row'      => [
+                    'id'      => 10,
+                    'content' => '&lt;strong&gt;string&lt;/strong&gt;',
+                    'extra'   => null,
+                ],
+                'expected' => [
+                    'id'      => 10,
+                    'content' => '<strong>string</strong>',
+                    'extra'   => null,
+                ],
+            ];
+
+            // Data produced by GLPI 10.0 XSS cleaning process.
+            yield [
+                'method'   => $method,
+                'row'      => [
+                    'id'      => 10,
+                    'content' => '&#60;p&#62;HTML containing a code snippet&#60;/p&#62;&#60;pre&#62;&#38;lt;a href=&#38;quot;/test&#38;quot;&#38;gt;link&#38;lt;/a&#38;gt;&#60;/pre&#62;',
+                    'extra'   => null,
+                ],
+                'expected' => [
+                    'id'      => 10,
+                    'content' => '<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>',
+                    'extra'   => null,
+                ],
+            ];
+
+            // Data produced by GLPI 10.1.
+            yield [
+                'method'   => $method,
+                'row'      => [
+                    'id'      => 10,
+                    'content' => '<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>',
+                    'extra'   => null,
+                ],
+                'expected' => [
+                    'id'      => 10,
+                    'content' => '<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>',
+                    'extra'   => null,
+                ],
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider fetchResultProvider
+     */
+    public function testDecodeFetchResult(string $method, mixed $row, mixed $expected)
+    {
+        if ($method === 'fetchObject') {
+            $row = is_array($row) ? (object)$row : $row;
+            $expected = is_array($expected) ? (object)$expected : $expected;
+        }
+
+        $this->mockGenerator->orphanize('__construct');
+        $mysqli_result = new \mock\mysqli_result();
+        $mysqli_method = strtolower(preg_replace('/[A-Z]/', '_$0', $method)); // e.g. fetchArray -> fetch_array
+        $this->calling($mysqli_result)->{$mysqli_method} = $row;
+
+        $this->newTestedInstance();
+        $this->variable($this->testedInstance->{$method}($mysqli_result))->isEqualTo($expected);
     }
 
     protected function dataDrop()

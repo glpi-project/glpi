@@ -34,7 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
  * @since 9.4.0
@@ -281,7 +281,7 @@ class ITILFollowup extends CommonDBChild
             $options = ['followup_id' => $this->fields["id"],
                 'is_private'  => $this->fields['is_private']
             ];
-            NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
+            NotificationEvent::raiseEvent("add_followup", $parentitem, $options, $this);
         }
 
         PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
@@ -336,7 +336,7 @@ class ITILFollowup extends CommonDBChild
                            // Force is_private with data / not available
                 'is_private'  => $this->fields['is_private']
             ];
-            NotificationEvent::raiseEvent('delete_followup', $job, $options);
+            NotificationEvent::raiseEvent('delete_followup', $job, $options, $this);
         }
     }
 
@@ -355,7 +355,7 @@ class ITILFollowup extends CommonDBChild
             }
             $input = array_replace(
                 [
-                    'content'         => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'content'         => $template->getRenderedContent($parent_item),
                     'is_private'      => $template->fields['is_private'],
                     'requesttypes_id' => $template->fields['requesttypes_id'],
                 ],
@@ -429,6 +429,10 @@ class ITILFollowup extends CommonDBChild
        // }
 
         $itemtype = $input['itemtype'];
+
+        if ($itemtype == 'Ticket' && $_SESSION['glpiset_followup_tech'] && !$input['is_private']) {
+            Ticket::assignToMe($this->input["items_id"], $input["users_id"]);
+        }
 
        // Only calculate timeline_position if not already specified in the input
         if (!isset($input['timeline_position'])) {
@@ -504,7 +508,7 @@ class ITILFollowup extends CommonDBChild
                     'is_private'  => $this->fields['is_private']
                 ];
 
-                NotificationEvent::raiseEvent("update_followup", $job, $options);
+                NotificationEvent::raiseEvent("update_followup", $job, $options, $this);
             }
         }
 
@@ -606,6 +610,15 @@ class ITILFollowup extends CommonDBChild
         ];
 
         $tab[] = [
+            'id'                 => '7',
+            'table'              => self::getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'datatype'           => 'number',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
             'id'                 => '1',
             'table'              => $this->getTable(),
             'field'              => 'content',
@@ -652,8 +665,10 @@ class ITILFollowup extends CommonDBChild
             'id'                 => '6',
             'table'              => $this->getTable(),
             'field'              => 'itemtype',
-            'name'               => RequestType::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'name'               => __('Itemtype'),
+            'datatype'           => 'specific',
+            'searchtype'         => 'equals',
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -782,6 +797,40 @@ class ITILFollowup extends CommonDBChild
         return $tab;
     }
 
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        switch ($field) {
+            case 'itemtype':
+                if (in_array($values['itemtype'], ['Ticket', 'Change', 'Problem'])) {
+                    return $values['itemtype']::getTypeName(1);
+                }
+                return $values['itemtype'];
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
+
+        switch ($field) {
+            case 'itemtype':
+                return Dropdown::showFromArray($field, [
+                    'Ticket' => Ticket::getTypeName(1),
+                    'Change' => Change::getTypeName(1),
+                    'Problem' => Problem::getTypeName(1),
+                ], $options);
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
 
     public static function getFormURL($full = true)
     {
@@ -831,8 +880,8 @@ class ITILFollowup extends CommonDBChild
         $values[self::ADDMYTICKET] = ['short' => __('Add followup (requester)'),
             'long'  => __('Add a followup to tickets (requester)')
         ];
-        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (watcher)'),
-            'long'  => __('Add a followup to tickets (watcher)')
+        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (observer)'),
+            'long'  => __('Add a followup to tickets (observer)')
         ];
         $values[self::SEEPUBLIC]   = __('See public ones');
 

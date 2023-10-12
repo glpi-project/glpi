@@ -1,0 +1,179 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+{% set rand_field = rand|default(random()) %}
+
+{% block form_fields %}
+   {% block more_fields %}
+      <template id="custom-header-fields-template">
+         {% set header_field_pair %}
+            {{ fields.textField('header_name[]', '', '', {
+               no_label: true,
+               field_class: 'col-4',
+            }) }}
+            {% set remove_btn %}
+               <button class="btn btn-danger btn-icon" name="remove_header" type="button" title="{{ __('Remove') }}">
+                  <i class="ti ti-trash"></i>
+               </button>
+            {% endset %}
+            {% set header_value_autocomplete %}
+               <input type="hidden" name="header_value[]" value="">
+               <div class="header_value_autocomplete"></div>
+            {% endset %}
+            {{ fields.htmlField('header_value[]', header_value_autocomplete, '', {
+               no_label: true,
+               field_class: 'ms-2 h-100 d-flex col-4 justify-content-center',
+               add_field_html: remove_btn,
+            }) }}
+         {% endset %}
+         {{ fields.field('custom_header[]', header_field_pair, '', {
+            no_label: true,
+            field_class: 'col-12 d-flex custom-header-field-pair align-items-center',
+         }) }}
+      </template>
+
+      <div class="custom-header-fields">
+         <button class="btn btn-secondard" name="add_header" type="button">
+            <i class="ti ti-plus"></i>
+            {{ __('Add a custom header') }}
+         </button>
+      </div>
+
+      <script>
+          const add_custom_header = (name, value, readonly) => {
+              const custom_header_fields_container = $('div.custom-header-fields');
+              const template = $($('#custom-header-fields-template').html());
+              const header_name_field = template.find('input[name="header_name[]"]');
+              const header_value_field = template.find('input[name="header_value[]"]');
+              header_name_field.val(name);
+              header_value_field.val(value);
+              if (readonly) {
+                  header_name_field.prop('readonly', true);
+                  header_value_field.prop('readonly', true);
+                  // Delete the remove button
+                  template.find('button[name="remove_header"]').remove();
+              }
+              // insert the template before the add button
+              let container = $(template).insertBefore(custom_header_fields_container.find('button[name="add_header"]'));
+              // init autocomplete
+              container = container.find('.header_value_autocomplete');
+              container.attr('id', `header_value_autocomplete${Math.round(Math.random() * 1000000)}`);
+              const item_fields = {{ item_fields|keys|json_encode|raw }};
+              const opts = [];
+              $.each(item_fields, (i, v) => {
+                  {% verbatim %}
+                  opts.push({ label: `{{ ${v} }}`, value: `{{ ${v} }}` });
+                  {% endverbatim %}
+              });
+              container.data('autocomplete', window.autocomplete({
+                  'container': `#${container.attr('id')}`,
+                  'detachedMediaQuery': 'none',
+                  'openOnFocus': !readonly,
+                  onStateChange({ state }) {
+                      container.parent().find('input[name="header_value[]"]').val(state.query);
+                  },
+                  getSources({ query }) {
+                      if (readonly) {
+                          return [];
+                      }
+                      return [
+                          {
+                              sourceId: 'fields',
+                              getItems() {
+                                  return opts.filter(({ label }) => label.toLowerCase().includes(query.toLowerCase()));
+                              },
+                              templates: {
+                                  noResults() {
+                                      return 'No results';
+                                  },
+                                  item({ item, html }) {
+                                      return html`<div class="item_field_option py-1 my-n1">${item.label}</div>`;
+                                  },
+                              }
+                          },
+                      ];
+                  },
+              }));
+              container.data('autocomplete').setQuery(value);
+              if (readonly) {
+                  container.find('.aa-Input').prop('readonly', true);
+                  container.find('.aa-Input').css('width', 'calc(100% - 3rem)');
+              } else {
+                  container.find('.aa-Input').css('width', 'calc(100% - 1rem)');
+              }
+          };
+          $(() => {
+              const known_custom = {{ item.fields['custom_headers']|default([])|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
+              add_custom_header('X-GLPI-signature', __('Filled automatically'), true);
+              add_custom_header('X-GLPI-timestamp', __('Filled automatically'), true);
+              {% if item.fields['use_oauth'] %}
+                 add_custom_header('Authorization', __('Filled automatically'), true);
+              {% endif %}
+              for (const [name, value] of Object.entries(known_custom)) {
+                  add_custom_header(name, value);
+              }
+              $('div.custom-header-fields').on('click', 'button[name="add_header"]', () => {
+                  add_custom_header('', '');
+              }).on('click', 'button[name="remove_header"]', (e) => {
+                  $(e.target).closest('.custom-header-field-pair').remove();
+              });
+
+              $('body').on('click', '.aa-List .item_field_option', (e) => {
+                  const selected = $(e.target);
+                  const list_id = selected.closest('.aa-List').attr('id');
+                  // the autocomplete id is the first two parts of the list id (ex: autocomplete-1-0-List -> autocomplete-1)
+                  const autocomplete_id = list_id.split('-').slice(0, 2).join('-') + '-input';
+                  $(`#${autocomplete_id}`).closest('.header_value_autocomplete').data('autocomplete').setQuery(selected.text());
+              });
+              $('body').on('click', (e) => {
+                  // Close panels when clicking outside of them unless we click on another input,
+                  // in which case we close all panels except the panel for the one we clicked on
+                  if ($(e.target).closest('.aa-Panels, .aa-Input').length === 0) {
+                      $.each($('.header_value_autocomplete'), (i, v) => {
+                          $(v).data('autocomplete').setIsOpen(false);
+                      });
+                  } else if ($(e.target).closest('.aa-Input').length > 0) {
+                      $.each($('.header_value_autocomplete'), (i, v) => {
+                          if (!$(v).find('.aa-Input').is($(e.target))) {
+                              $(v).data('autocomplete').setIsOpen(false);
+                          }
+                      });
+                  }
+              });
+          });
+      </script>
+   {% endblock %}
+{% endblock %}

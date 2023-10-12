@@ -1,0 +1,131 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set add_padding = from_meta ? 'p-0' : 'p-2' %}
+
+{% if meta and not from_meta %}
+   {{ call("Glpi\\Search\\Input\\QueryBuilder::displayMetaCriteria", [{
+      from_meta: from_meta ?? false,
+      itemtype: itemtype,
+      p: p,
+      num: num,
+   }]) }}
+{% elseif criteria['criteria'] is defined and criteria['criteria'] is iterable %}
+   {{ call("Glpi\\Search\\Input\\QueryBuilder::displayCriteriaGroup", [{
+      itemtype: itemtype,
+      p: p,
+      num: num,
+   }]) }}
+{% else %}
+   <div class="list-group-item {{ add_padding }} border-0 normalcriteria{{ add_class }}" id="{{ row_id }}">
+      <div class="row g-1">
+         {% if not from_meta %}
+            {% if num == 0 and mainform is defined and mainform %}
+               {% set item = itemtype != 'AllAssets' ? call('getItemForItemtype', [itemtype]) : null %}
+               {% if item is not null and item.maybeDeleted() %}
+                  <input type="hidden" id="is_deleted" name="is_deleted" value="{{ p['is_deleted'] }}">
+               {% endif %}
+               <input type="hidden" id="as_map" name="as_map" value="{{ p['as_map'] }}">
+               <input type="hidden" id="browse" name="browse" value="{{ p['browse'] }}">
+               <input type="hidden" id="unpublished" name="unpublished" value="{{ p['unpublished'] }}">
+            {% endif %}
+            <div class="col-auto">
+               <button class="btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria" type="button" data-rowid="{{ row_id }}"
+                       data-bs-toggle="tooltip" data-bs-placement="left" title="{{ __('Delete a rule') }}">
+                  <i class="ti ti-square-minus" alt="-"></i>
+               </button>
+            </div>
+         {% endif %}
+
+         {% if not from_meta %}
+            <div class="col-auto">
+               {% set value = criteria['link'] is defined ? criteria['link'] : '' %}
+               {% set operators = call('Glpi\\Search\\SearchEngine::getLogicalOperators', [num == 0]) %}
+               {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][link]", value, operators, '', {
+                  full_width: true,
+                  input_class: 'col-12',
+                  full_width_adapt_column: false,
+                  no_label: true,
+                  mb: 'mb-0',
+               }) }}
+            </div>
+         {% endif %}
+
+         <div class="col-auto">
+            {% set rand = random() %}
+            {% set value = criteria['field'] is defined ? criteria['field'] : '' %}
+            {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][field]", value, values, '', {
+               rand: rand,
+               full_width: true,
+               input_class: 'col-12',
+               full_width_adapt_column: false,
+               no_label: true,
+               mb: 'mb-0',
+            }) }}
+         </div>
+
+         {% set field_id = ("dropdown_criteria" ~ prefix ~ "[" ~ num ~ "][field]" ~ rand) %}
+         {% set spanid = ("SearchSpan" ~ normalized_itemtype ~ prefix ~ num) %}
+         <div class="col-auto">
+            <div class="row g-1" id="{{ spanid }}">
+               {% set used_itemtype = itemtype == 'AllAssets' ? 'Computer' : itemtype %}
+               {% set searchtype = criteria['searchtype']|default('') %}
+
+               {% set params = {
+                  itemtype: used_itemtype,
+                  _idor_token: idor_token(used_itemtype),
+                  field: value,
+                  searchtype: searchtype,
+                  value: p_value,
+                  num: num,
+                  p: p,
+                  mb: 'mb-0',
+               } %}
+               {{ call("Glpi\\Search\\Input\\QueryBuilder::displaySearchoption", [params]) }}
+            </div>
+
+            {% do call('Ajax::updateItemOnSelectEvent', [
+               field_id,
+               spanid,
+               config('root_doc') ~ "/ajax/search.php",
+               params|merge({
+                  action: 'display_searchoption',
+                  field: '__VALUE__',
+               })
+            ]) %}
+         </div>
+      </div>
+   </div>
+{% endif %}

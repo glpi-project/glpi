@@ -40,7 +40,6 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
 use CommonITILValidation;
-use Glpi\Toolbox\Sanitizer;
 use DOMDocument;
 use ITILFollowup;
 use ITILSolution;
@@ -141,7 +140,7 @@ final class UserMention
        // Send a "you have been mentioned" notification
         foreach ($mentionned_actors_ids as $user_id) {
             $options['users_id'] = $user_id;
-            NotificationEvent::raiseEvent('user_mention', $main_item, $options);
+            NotificationEvent::raiseEvent('user_mention', $main_item, $options, $item);
         }
 
         if ($main_item instanceof CommonITILObject) {
@@ -193,7 +192,6 @@ final class UserMention
         }
 
         try {
-            $content = Sanitizer::getVerbatimValue($content);
             $dom = new DOMDocument();
             libxml_use_internal_errors(true);
             $dom->loadHTML($content);

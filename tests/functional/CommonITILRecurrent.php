@@ -593,7 +593,7 @@ abstract class CommonITILRecurrent extends DbTestCase
             ]
         );
         $created_item = null;
-        $this->boolean($instance->createItem($created_item))->isTrue();
+        $this->boolean($instance->createItem([], $created_item))->isTrue();
 
         // Validates created item fields
         $this->object($created_item)->isInstanceOf(\CommonITILObject::class);

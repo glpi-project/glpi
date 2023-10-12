@@ -225,16 +225,20 @@ class Item_SoftwareLicense extends DbTestCase
         $this->string($cSoftwareLicense->getTabNameForItem($license, 1))->isEmpty();
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
-        $expected = [1 => __('Summary'),
-            2 => _n('Item', 'Items', \Session::getPluralNumber())
+        $expected = [
+            1 => "<span><i class='ti ti-key me-2'></i>Summary</span>",
+            2 => "<span><i class='ti ti-package me-2'></i>" . _n('Item', 'Items', \Session::getPluralNumber()) . "</span>"
         ];
         $this->array($cSoftwareLicense->getTabNameForItem($license, 0))->isIdenticalTo($expected);
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
-        $expected = [1 => __('Summary'),
+        $expected = [
+            1 => "<span><i class='ti ti-key me-2'></i>Summary</span>",
             2 => \Item_SoftwareLicense::createTabEntry(
                 _n('Item', 'Items', \Session::getPluralNumber()),
-                2
+                2,
+                $license::getType(),
+                'ti ti-package'
             )
         ];
         $this->array($cSoftwareLicense->getTabNameForItem($license, 0))->isIdenticalTo($expected);

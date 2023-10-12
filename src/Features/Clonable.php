@@ -76,7 +76,8 @@ trait Clonable
             'date_mod',
             'date_creation',
             'template_name',
-            'is_template'
+            'is_template',
+            'is_default'
         ];
         foreach ($properties_to_clean as $property) {
             if (array_key_exists($property, $input)) {
@@ -221,7 +222,7 @@ trait Clonable
             return false;
         }
         $new_item = new static();
-        $input = Toolbox::addslashes_deep($this->fields);
+        $input = $this->fields;
         foreach ($override_input as $key => $value) {
             $input[$key] = $value;
         }

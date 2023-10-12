@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
 
 /**
  * @since 10.0.0
@@ -73,13 +73,13 @@ class ManualLink extends CommonDBChild
                  $count += countElementsInTable(
                      ['glpi_links_itemtypes', 'glpi_links'],
                      [
-                         'glpi_links_itemtypes.links_id'  => new \QueryExpression(DBmysql::quoteName('glpi_links.id')),
+                         'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
                          'glpi_links_itemtypes.itemtype'  => $item->getType()
                      ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
                  );
             }
         }
-        return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count);
+        return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count, $item::getType());
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -364,11 +364,8 @@ JAVASCRIPT
 
         $html = '';
 
-        // decode `&` to prevent doube encoding when value will be printed using `htmlspecialchars()`
-        $raw_url = Sanitizer::decodeHtmlSpecialChars($fields['url']);
-
         $target = $fields['open_window'] == 1 ? '_blank' : '_self';
-        $html .= '<a href="' . htmlspecialchars($raw_url) . '" target="' . $target . '">';
+        $html .= '<a href="' . htmlspecialchars($fields['url']) . '" target="' . $target . '">';
         if (!empty($fields['icon'])) {
             // Forces font family values to fallback on ".fab" family font if char is not available in ".fas" family.
             $html .= '<i class="fa-lg fa-fw fa ' . htmlspecialchars($fields['icon']) . '"'

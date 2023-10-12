@@ -71,10 +71,10 @@ function isAPI()
     }
 
     $script = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
-    if (strpos($script, 'apirest.php') !== false) {
+    if (strpos($script, 'api.php') !== false) {
         return true;
     }
-    if (strpos($script, 'apixmlrpc.php') !== false) {
+    if (strpos($script, 'apirest.php') !== false) {
         return true;
     }
 
@@ -294,26 +294,6 @@ function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi')
  */
 function glpi_autoload($classname)
 {
-
-    if (
-        $classname === 'phpCAS'
-        && file_exists(stream_resolve_include_path("CAS.php"))
-    ) {
-        include_once('CAS.php');
-        return true;
-    }
-
-    // Deprecation warn for RuleImportComputer* classes
-    if (in_array($classname, ['RuleImportComputer', 'RuleImportComputerCollection'])) {
-        Toolbox::deprecated(
-            sprintf(
-                '%s has been replaced by %s.',
-                $classname,
-                str_replace('Computer', 'Asset', $classname)
-            )
-        );
-    }
-
     $plug = isPluginItemType($classname);
     if (!$plug) {
         // PSR-4 styled autoloading for classes without namespace

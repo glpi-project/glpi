@@ -359,16 +359,22 @@ JAVASCRIPT;
 
         if ($is_ajax && $is_rrule) {
             $options['candel'] = false;
+            $options['addbuttons'] = [];
+            if ($this->can(-1, CREATE)) {
+                $options['addbuttons']['save_instance'] = [
+                    'text'  => __("Detach instance"),
+                    'icon'  => 'ti ti-unlink',
+                    'title' => __("Detach this instance from the series to create an independent event"),
+                ];
+            }
             if ($this->can($ID, PURGE)) {
-                $options['addbuttons'] = [
-                    'purge'          => [
-                        'text' => __("Delete serie"),
-                        'icon' => 'fas fa-trash-alt',
-                    ],
-                    'purge_instance' => [
-                        'text' => __("Delete instance"),
-                        'icon' => 'far fa-trash-alt',
-                    ],
+                $options['addbuttons']['purge'] = [
+                    'text' => __("Delete serie"),
+                    'icon' => 'fas fa-trash-alt',
+                ];
+                $options['addbuttons']['purge_instance'] = [
+                    'text' => __("Delete instance"),
+                    'icon' => 'far fa-trash-alt',
                 ];
             }
         }

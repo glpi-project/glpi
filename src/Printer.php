@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Socket;
 
 /**
@@ -101,6 +103,7 @@ class Printer extends CommonDBTM
         $this->addStandardTab('Cartridge', $ong, $options);
         $this->addStandardTab('PrinterLog', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Item_Disk', $ong, $options);
         $this->addStandardTab('Computer_Item', $ong, $options);
         $this->addStandardTab('NetworkPort', $ong, $options);
@@ -164,7 +167,11 @@ class Printer extends CommonDBTM
             $criteria = [
                 'SELECT'       => [
                     'itemtype',
-                    new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ' . $DB->quoteName('ids'))
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                 ],
                 'FROM'         => 'glpi_networkports_networkports',
                 'INNER JOIN'   => [
@@ -658,6 +665,8 @@ class Printer extends CommonDBTM
 
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, Printer_CartridgeInfo::rawSearchOptionsToAdd());
+
         $tab = array_merge($tab, SNMPCredential::rawSearchOptionsToAdd());
 
         return $tab;
@@ -700,8 +709,8 @@ class Printer extends CommonDBTM
     /**
      * Add a printer. If already exist in trashbin restore it
      *
-     * @param $name          the printer's name (need to be addslashes)
-     * @param $manufacturer  the software's manufacturer (need to be addslashes)
+     * @param $name          the printer's name
+     * @param $manufacturer  the software's manufacturer
      * @param $entity        the entity in which the software must be added
      * @param $comment       comment (default '')
      **/
@@ -743,8 +752,8 @@ class Printer extends CommonDBTM
     /**
      * Create a new printer
      *
-     * @param $name         the printer's name (need to be addslashes)
-     * @param $manufacturer the printer's manufacturer (need to be addslashes)
+     * @param $name         the printer's name
+     * @param $manufacturer the printer's manufacturer
      * @param $entity       the entity in which the printer must be added
      * @param $comment      (default '')
      *

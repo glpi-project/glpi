@@ -33,8 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class KnowbaseItem_Revision
-/// since version 9.2
+/**
+ * Class KnowbaseItem_Revision
+ * @since 9.2.0
+ * @todo Extend CommonDBChild
+ */
 class KnowbaseItem_Revision extends CommonDBTM
 {
     public static $rightname   = 'knowbase';
@@ -42,6 +45,11 @@ class KnowbaseItem_Revision extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Revision', 'Revisions', $nb);
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-history';
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -70,7 +78,7 @@ class KnowbaseItem_Revision extends CommonDBTM
                 $where
             );
         }
-        return self::createTabEntry(self::getTypeName($nb), $nb);
+        return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -321,8 +329,8 @@ class KnowbaseItem_Revision extends CommonDBTM
         $this->getEmpty();
         unset($this->fields['id']);
         $this->fields['knowbaseitems_id'] = $item->fields['id'];
-        $this->fields['name'] = Toolbox::addslashes_deep($item->fields['name']);
-        $this->fields['answer'] = Toolbox::addslashes_deep($item->fields['answer']);
+        $this->fields['name'] = $item->fields['name'];
+        $this->fields['answer'] = $item->fields['answer'];
         $this->fields['date'] = $item->fields['date_mod'];
         $this->fields['revision'] = $this->getNewRevision();
         $this->fields['users_id'] = $item->fields['users_id'];
@@ -341,8 +349,8 @@ class KnowbaseItem_Revision extends CommonDBTM
         $this->getEmpty();
         unset($this->fields['id']);
         $this->fields['knowbaseitems_id'] = $item->fields['knowbaseitems_id'];
-        $this->fields['name'] = Toolbox::addslashes_deep($item->fields['name']);
-        $this->fields['answer'] = Toolbox::addslashes_deep($item->fields['answer']);
+        $this->fields['name'] = $item->fields['name'];
+        $this->fields['answer'] = $item->fields['answer'];
         $this->fields['date'] = $item->fields['date_mod'];
         $this->fields['language'] = $item->fields['language'];
         $this->fields['revision'] = $this->getNewRevision();

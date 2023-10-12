@@ -70,6 +70,8 @@
         border: 0;
         font-size: 1em;
         font-weight: 400;
+        margin-left: 1.5rem !important;
+        padding: 3px;
     }
 }
 
@@ -86,6 +88,7 @@
     #navbar-menu {
         .nav-item {
             .nav-link {
+                padding: 0 1.5rem !important;
                 color: rgba($color: $mainmenu-fg, $alpha: 80%);
                 border-left: 3px solid transparent;
                 border-radius: unset;
@@ -109,6 +112,7 @@
 
                         .dropdown-item {
                             border-left: 3px solid rgba($color: #000, $alpha: 50%);
+                            padding-left: 3.25rem; // FIXME: tabler 1.0.0-beta13 missing var $container-padding-x
 
                             &.active {
                                 border-left-color: rgba($color: $primary, $alpha: 30%);
@@ -196,7 +200,7 @@
                 }
 
                 .dropdown-menu {
-                    box-shadow: $card-shadow-hover;
+                    box-shadow: $shadow-card-hover;
 
                     &.show {
                         display: none;

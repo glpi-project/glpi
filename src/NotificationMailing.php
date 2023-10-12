@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Symfony\Component\Mime\Address;
 
 /**
  *  NotificationMailing class implements the NotificationInterface
@@ -65,8 +65,7 @@ class NotificationMailing implements NotificationInterface
     public static function isUserAddressValid($address, $options = ['checkdns' => false])
     {
        //drop sanitize...
-        $address = Toolbox::stripslashes_deep($address);
-        $isValid = GLPIMailer::ValidateAddress($address);
+        $isValid = GLPIMailer::validateAddress($address);
 
         $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
         if ($checkdns) {
@@ -98,26 +97,29 @@ class NotificationMailing implements NotificationInterface
         }
 
         $mmail = new GLPIMailer();
+        $mail = $mmail->getEmail();
 
-        $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
-       // For exchange
-        $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
-        $mmail->SetFrom($sender['email'], $sender['name'] ?? '', false);
+        $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-generated');
+        // For exchange
+        $mail->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, NDR, RN, NRN');
+        $mail->from(new Address($sender['email'], $sender['name'] ?? ''));
 
         $text = __('This is a test email.') . "\n-- \n" . $CFG_GLPI["mailing_signature"];
         $recipient = $CFG_GLPI['admin_email'];
         if (defined('GLPI_FORCE_MAIL')) {
-           //force recipient to configured email address
+            //force recipient to configured email address
             $recipient = GLPI_FORCE_MAIL;
-           //add original email addess to message body
+            //add original email address to message body
             $text .= "\n" . sprintf(__('Original email address was %1$s'), $CFG_GLPI['admin_email']);
         }
 
-        $mmail->AddAddress($recipient, $CFG_GLPI["admin_email_name"]);
-        $mmail->Subject = "[GLPI] " . __('Mail test');
-        $mmail->Body    = $text;
+        $mail->to(new Address($recipient, $CFG_GLPI['admin_email_name']));
+        $mail->subject("[GLPI] " . __('Mail test'));
+        $mail->text($text);
 
-        if (!$mmail->Send()) {
+        $mmail->setDebugHeaderLine(__('Sending test email to administrator...'));
+
+        if (!$mmail->send()) {
             Session::addMessageAfterRedirect(
                 __('Failed to send test email to administrator'),
                 false,
@@ -134,6 +136,7 @@ class NotificationMailing implements NotificationInterface
 
     public function sendNotification($options = [])
     {
+        global $CFG_GLPI;
 
         $data = [];
         $data['itemtype']                             = $options['_itemtype'];
@@ -148,6 +151,8 @@ class NotificationMailing implements NotificationInterface
         $data['sendername']                           = $options['fromname'];
 
         $data['event'] = $options['event'] ?? null; // `event` has been added in GLPI 10.0.7
+        $data['itemtype_trigger'] = $options['itemtype_trigger'] ?? null;
+        $data['items_id_trigger'] = $options['items_id_trigger'] ?? 0;
 
         if (isset($options['replyto']) && $options['replyto']) {
             $data['replyto']       = $options['replyto'];
@@ -163,7 +168,7 @@ class NotificationMailing implements NotificationInterface
             $data['body_html'] = $options['content_html'];
         }
 
-        $data['recipient']                            = Toolbox::stripslashes_deep($options['to']);
+        $data['recipient']                            = $options['to'];
         $data['recipientname']                        = $options['toname'];
 
         if (!empty($options['messageid'])) {
@@ -176,9 +181,11 @@ class NotificationMailing implements NotificationInterface
 
         $data['mode'] = Notification_NotificationTemplate::MODE_MAIL;
 
+        $data['attach_documents'] = $options['attach_documents'] ?? $CFG_GLPI['attach_ticket_documents_to_mail'];
+
         $queue = new QueuedNotification();
 
-        if (!$queue->add(Sanitizer::sanitize($data))) {
+        if (!$queue->add($data)) {
             Session::addMessageAfterRedirect(__('Error inserting email to queue'), true, ERROR);
             return false;
         } else {

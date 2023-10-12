@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+
 /// Class DeviceHardDrive
 class DeviceHardDrive extends CommonDevice
 {
@@ -237,8 +239,6 @@ class DeviceHardDrive extends CommonDevice
 
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
-        global $DB;
-
         $tab = [];
 
         $tab[] = [
@@ -270,10 +270,10 @@ class DeviceHardDrive extends CommonDevice
             'width'              => 1000,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.capacity') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . '))
-            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
+            'computation'        => '(' .
+                QueryFunction::sum('TABLE.capacity') . ' / ' .
+                QueryFunction::count('TABLE.id') . ') * ' .
+                QueryFunction::count(expression: 'TABLE.id', distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -283,6 +283,6 @@ class DeviceHardDrive extends CommonDevice
 
     public static function getIcon()
     {
-        return "fas fa-hdd";
+        return "far fa-hdd";
     }
 }

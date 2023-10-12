@@ -148,7 +148,7 @@ class Impact extends \DbTestCase
         $tab_name = $impact->getTabNameForItem($computer);
         $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
-        $this->string($tab_name)->isEqualTo("Impact analysis");
+        $this->string($tab_name)->isEqualTo("<span><i class='ti ti-affiliate me-2'></i>Impact analysis</span>");
     }
 
     public function testGetTabNameForItem_enabledAsset()
@@ -169,7 +169,7 @@ class Impact extends \DbTestCase
         $tab_name = $impact->getTabNameForItem($computer2);
         $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
-        $this->string($tab_name)->isEqualTo("Impact analysis <span class='badge'>2</span>");
+        $this->string($tab_name)->isEqualTo("<span><i class='ti ti-affiliate me-2'></i>Impact analysis</span> <span class='badge'>2</span>");
     }
 
     public function testGetTabNameForItem_ITILObject()
@@ -205,7 +205,7 @@ class Impact extends \DbTestCase
         $tab_name = $impact->getTabNameForItem($ticket);
         $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
-        $this->string($tab_name)->isEqualTo("Impact analysis");
+        $this->string($tab_name)->isEqualTo("<span><i class='ti ti-affiliate me-2'></i>Impact analysis</span>");
     }
 
     public function testBuildGraph_empty()

@@ -63,8 +63,8 @@
             {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype)) %}
                disabled="disabled" style="display: none;"
             {% endif %}
-            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}" data-glpi-popover-source="content{{ unique_id }}">
-         {{ actor['title']|verbatim_value }}
+            data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}" data-glpi-popover-source="content{{ unique_id }}">
+         {{ actor['title'] }}
       </option>
    {% endfor %}
    </select>

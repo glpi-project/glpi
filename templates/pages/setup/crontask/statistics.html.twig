@@ -1,0 +1,96 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="d-flex justify-content-center">
+   <div class="col-sm-8 col-md-6 col-xlg-4 col-12 mx-2 mw-50">
+      <div class="row">
+         <h1>{{ __('Statistics') }}</h1>
+      </div>
+      <div class="list-group divide-y">
+         <div class="row list-group-item d-flex">
+            <div class="col">{{ __('Run count') }}</div>
+            <div class="col text-end">
+               <ul class="list-unstyled">
+                  <li>{{ _n('%s start', '%s starts', stats.runs.starts)|format(stats.runs.starts) }}</li>
+                  <li>{{ _n('%s stop', '%s stops', stats.runs.stops)|format(stats.runs.stops) }}</li>
+                  <li>{{ _n('%s error', '%s errors', stats.runs.errors)|format(stats.runs.errors) }}</li>
+               </ul>
+            </div>
+         </div>
+         {% if stats.runs.stops > 0 %}
+            <div class="row list-group-item d-flex">
+               <div class="col">{{ __('Start date') }}</div>
+               <div class="col text-end">{{ stats.datemin|formatted_datetime }}</div>
+            </div>
+            <div class="row list-group-item d-flex">
+               <div class="col">{{ __('Minimal time') }}</div>
+               <div class="col text-end">{{ _n('%s second', '%s seconds', stats.elapsedmin)|format(stats.elapsedmin|formatted_number) }}</div>
+            </div>
+            <div class="row list-group-item d-flex">
+               <div class="col">{{ __('Maximal time') }}</div>
+               <div class="col text-end">{{ _n('%s second', '%s seconds', stats.elapsedmax)|format(stats.elapsedmax|formatted_number) }}</div>
+            </div>
+            <div class="row list-group-item d-flex">
+               <div class="col">{{ __('Average time') }}</div>
+               <div class="col text-end fw-bold">{{ _n('%s second', '%s seconds', stats.elapsedavg)|format(stats.elapsedavg|formatted_number) }}</div>
+            </div>
+            <div class="row list-group-item d-flex">
+               <div class="col">{{ __('Total duration') }}</div>
+               <div class="col text-end">{{ _n('%s second', '%s seconds', stats.elapsedtot)|format(stats.elapsedtot|formatted_number) }}</div>
+            </div>
+            {% if stats.voltot > 0 %}
+               <div class="row list-group-item d-flex">
+                  <div class="col">{{ __('Minimal count') }}</div>
+                  <div class="col text-end">{{ _n('%s item', '%s items', stats.volmin)|format(stats.volmin) }}</div>
+               </div>
+               <div class="row list-group-item d-flex">
+                  <div class="col">{{ __('Maximal count') }}</div>
+                  <div class="col text-end">{{ _n('%s item', '%s items', stats.volmax)|format(stats.volmax) }}</div>
+               </div>
+               <div class="row list-group-item d-flex">
+                  <div class="col">{{ __('Average count') }}</div>
+                  <div class="col text-end fw-bold">{{ _n('%s item', '%s items', stats.volavg)|format(stats.volavg|formatted_number) }}</div>
+               </div>
+               <div class="row list-group-item d-flex">
+                  <div class="col">{{ __('Total count') }}</div>
+                  <div class="col text-end">{{ _n('%s item', '%s items', stats.voltot)|format(stats.voltot) }}</div>
+               </div>
+               <div class="row list-group-item d-flex">
+                  <div class="col">{{ __('Average speed') }}</div>
+                  <div class="col text-end">{{ __('%s items/sec')|format((stats.voltot / stats.elapsedtot)|formatted_number) }}</div>
+               </div>
+            {% endif %}
+         {% endif %}
+      </div>
+   </div>
+</div>

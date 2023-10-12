@@ -542,7 +542,7 @@ class DatabaseInstance extends CommonDBTM
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable(self::getTable(), ['itemtype' => $item->getType(), 'items_id' => $item->fields['id']]);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

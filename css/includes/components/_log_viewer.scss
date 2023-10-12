@@ -1,0 +1,125 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.log-viewer {
+    .log-entries {
+        height: calc(100vh - 265px);
+        overflow-y: auto;
+
+        .log_entry {
+            white-space: pre-wrap;
+            scroll-margin-top: 5em;
+
+            &:target {
+                animation: shakeX;
+                animation-duration: 2s;
+            }
+
+            .log_datetime {
+                font-family: var(--tblr-font-sans-serif);
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            .log_long_text {
+                width: 100%;
+                /* stylelint-disable-next-line value-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+                display: -webkit-box;
+                /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+                -webkit-line-clamp: 2;
+                /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                cursor: row-resize;
+                padding: 1em 0.5em 0.18em;
+                box-sizing: border-box;
+                font-family: var(--tblr-font-monospace);
+                font-size: 0.8rem;
+                border-bottom: 1px solid var(--tblr-border-color);
+
+                &:hover {
+                    background: rgba($color: #000, $alpha: 10%);
+                }
+            }
+
+            .log_entry_toggle_lbl {
+                position: relative;
+                width: 15px;
+                height: 20px;
+
+                &::after {
+                    font-family: tabler-icons !important;
+                    content: "\eb5f";
+                    position: absolute;
+                    left: 0;
+                    top: 0.3em;
+                }
+            }
+
+            .log_entry_toggle_placeholder {
+                width: 15px;
+                height: 20px;
+
+                & ~ .log_long_text {
+                    cursor: default;
+                }
+            }
+
+            .log_entry_toggle {
+                display: none;
+
+                &:checked {
+                    & ~ .log_long_text {
+                        -webkit-line-clamp: unset;
+                    }
+
+                    & ~ .log_entry_toggle_lbl {
+                        &::after {
+                            content: "\eb5d";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.horizontal-layout {
+    .log-viewer {
+        .log-entries {
+            height: calc(100vh - 350px);
+        }
+    }
+}

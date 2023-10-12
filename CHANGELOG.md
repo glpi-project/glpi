@@ -3,6 +3,230 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [10.1.0] unreleased
+
+### Added
+- Business Rules for Changes
+- Business Rules for Problems
+- Configurable toast notification location
+- `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
+- Group approval requests (any user from group can approve).
+- Satisfaction surveys for Changes
+- New right for assigning service levels to ITIL Objects (UPDATE right also still allows this).
+- New right for impersonation of users with less rights (Config UPDATE right also still allows this globally).
+- Marketplace availability configuration.
+- Toast popup message location configuration.
+- Datacenter room grid size configuration (per room).
+- Approval reminder automatic action.
+- Reservation massive actions.
+- `alias` and `code` fields for Locations.
+- Profile cloning.
+- Associated elements for recurring ITIL Objects.
+- Processes and Environment Variable tabs for automatically inventoried assets.
+- Log viewer for logs in `files/_log` directory.
+- Custom palette/theme support (uses `files/_themes` directory by default).
+- Two-Factor Authentication (2FA) support via Time-based One-time Password (TOTP).
+
+### Changed
+- ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
+- Logs are now shown using the Search Engine
+- The approval option previously named `Group` is now called `Group user(s)` to better reflect that it shows a list of users from a specific group rather than allow sending an approval for a group.
+- The ticket business rule action `Ticket category from code` was renamed to `ITIL category from code`.
+- The ticket business rule criteria `Code representing the ticket category` was renamed to `Code representing the ITIL category`.
+- The ticket business rule criteria `Ticket location` was renamed to `Location`.
+- ITIL Templates can now restrict available statuses.
+- Improved offline mode for marketplace.
+- Lines can be assigned directly to assets without needing a SIM card.
+- Planning event occurances can be detached from a series.
+- Locations are now displayed in Datacenter breadcrumbs.
+- Marketplace CLI download command now supports downloading specific versions of plugins.
+- Browse tab of Knowledgebase now uses the Search Engine.
+- Satisfaction surveys can now be configured with a custom maximum score, default score, and if a comment is required.
+- LDAP TLS version can now be specified.
+- Kanabn view state can be reset from the Kanban if the user has the right to modify the view.
+- Personal reminders in central view now include only non-public reminders created by the user.
+- Public reminders in central view now include public reminders regardless of who created them.
+- Project description field is now a rich text field.
+- Entity, profile, debug mode flag, and language are restored after ending impersonation.
+
+### Deprecated
+- Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
+
+### Removed
+- XML-RPC API.
+- `Link tickets` massive action for Tickets (Use `Link ITIL Object` instead).
+- `Link to a problem` massive action for Tickets (Use `Link ITIL Object` instead).
+- Manage tab for Knowledgebase (Unpublished is now a toggle in the browse tab).
+- The database "master" property in the status checker (/status.php and glpi:system:status), replaced by "main".
+- The database "slaves" property in the status checker (/status.php and glpi:system:status), replaced by "replicas".
+
+### API changes
+
+#### Added
+
+- `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
+- `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
+
+#### Changes
+- `chartist` library has been replaced by `echarts`.
+- `codemirror` library has been upgraded to version 6.x.
+- `htmLawed` library has been replaced by `symfony/html-sanitizer`.
+- `monolog/monolog` has been upgraded to version 3.3.
+- `photoswipe` library has been upgraded to version 5.x.
+- `phpmailer/phpmailer` library has been replaced by `symfony/mailer`.
+- `true/punycode` library has been removed.
+- `Symfony` libraries have been upgraded to version 6.0.
+- `users_id_validate` field in `CommonITILValidation` will now have a `0` value until someone approves or refuses the validation.
+  Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
+- Notifications are not deduplicated anymore.
+- Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
+  The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
+- `GLPIMailer` mailer class does not extends anymore `PHPMailer\PHPMailer\PHPMailer`.
+  We added a compatibility layer to handle main usages found in plugins, but we cannot ensure compatibility with all properties and methods that were inherited from `PHPMailer\PHPMailer\PHPMailer`.
+- `CommonGLPI::createTabEntry()` signature changed.
+- All types of rules are now sortable and ordered by ranking.
+- Plugins console commands must now use the normalized prefix `plugins:XXX` where `XXX` is the plugin key.
+- GLPI web root is now the `/public` directory and all web request to PHP scripts are proxified by `public/index.php` script.
+- Usage of `DBmysql::query()` method is prohibited to ensure that legacy unsafe DB are no more executed. To execute DB queries,
+  either `DBmysql::request()` can be used to craft query using the GLPI query builder,
+  either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
+- `js/fuzzysearch.js` replaced with `FuzzySearch/Modal` Vue component.
+- `Html::fuzzySearch()` replaced with `Html::getMenuFuzzySearchList()` function.
+- `Html::generateMenuSession()` `$force` argument has been removed.
+- `NotificationEvent::raiseEvent()` signature cahnged. A new `$trigger` parameter has been added at 4th position, and `$label` is now the 5th parameter.
+- `NotificationEventInterface::raise()` has a new `$trigger` parameter.
+- `QueryExpression` class moved to `Glpi\DBAL` namespace.
+- `QueryParam` class moved to `Glpi\DBAL` namespace.
+- `QuerySubQuery` class moved to `Glpi\DBAL` namespace.
+- `QueryUnion` class moved to `Glpi\DBAL` namespace.
+- `PrinterLog::getMetrics()` method has been made final.
+- `SavedSearch::showSaveButton()` replaced with `pages/tools/savedsearch/save_button.html.twig` template.
+- `showSystemInformations` method for `$CFG_GLPI['systeminformations_types']` types renamed to `getSystemInformation` and should return an array with a label and content.
+
+#### Deprecated
+- Usage of `GLPI_USE_CSRF_CHECK` constant.
+- Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
+- Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.
+- Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
+- Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
+- `ajax/itemTicket.php` script usage.
+- `ajax/knowbase.php` script usage.
+- `front/ticket_ticket.form.php` script usage.
+- Usage of `users_id_validate` input in `CommonITILObject`.
+- Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
+- Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
+- Usage of `verbatim_value` Twig filter.
+- `AuthLDAP::dropdownUserDeletedActions()`
+- `AuthLDAP::getOptions()`
+- `CommonITILObject::isValidator()`
+- `CommonITILValidation::alreadyExists()`
+- `CommonITILValidation::getTicketStatusNumber()`
+- `Config::validatePassword()`
+- `Consumable::showAddForm()`
+- `Consumable::showForConsumableItem()`
+- `DBmysql::truncate()`
+- `DBmysql::truncateOrDie()`
+- `Glpi\Application\View\Extension::getVerbatimValue()`
+- `Glpi\Event::showList()`
+- `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
+- `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
+- `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
+- `Glpi\Features\DCBreadcrumb::isRackPart()`
+- `Glpi\Toolbox\Sanitizer::dbEscape()`
+- `Glpi\Toolbox\Sanitizer::dbEscapeRecursive()`
+- `Glpi\Toolbox\Sanitizer::dbUnescape()`
+- `Glpi\Toolbox\Sanitizer::dbUnescapeRecursive()`
+- `Glpi\Toolbox\Sanitizer::decodeHtmlSpecialChars()`
+- `Glpi\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()`
+- `Glpi\Toolbox\Sanitizer::encodeHtmlSpecialChars()`
+- `Glpi\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()`
+- `Glpi\Toolbox\Sanitizer::getVerbatimValue()`
+- `Glpi\Toolbox\Sanitizer::isDbEscaped()`
+- `Glpi\Toolbox\Sanitizer::isHtmlEncoded()`
+- `Glpi\Toolbox\Sanitizer::isNsClassOrCallableIdentifier()`
+- `Glpi\Toolbox\Sanitizer::sanitize()`
+- `Glpi\Toolbox\Sanitizer::unsanitize()`
+- `Html::cleanInputText()`
+- `Html::cleanPostForTextArea()`
+- `Html::displayAjaxMessageAfterRedirect()`
+- `Item_Ticket::showForTicket()`
+- `HookManager::enableCSRF()`
+- `Knowbase::getTreeCategoryList()`
+- `Knowbase::showBrowseView()`
+- `Knowbase::showManageView()`
+- `KnowbaseItem::showManageForm()`
+- `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
+- `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
+- `Ticket_Ticket::checkParentSon()`
+- `Ticket_Ticket::countOpenChildren()`
+- `Ticket_Ticket::getLinkedTicketsTo()`
+- `Ticket_Ticket::manageLinkedTicketsOnSolved()`
+- `Toolbox::addslashes_deep()`
+- `Toolbox::seems_utf8()`
+- `Toolbox::stripslashes_deep()`
+- `Search::getOptions()` no longer returns a reference
+
+#### Removed
+- Usage of `csrf_compliant` plugins hook.
+- Usage of `migratetypes` plugin hooks.
+- Usage of `planning_scheduler_key` plugins hook.
+- `X-GLPI-Sanitized-Content` REST API header support.
+- Handling of encoded/escaped value in `autoName()`.
+- `regenerateTreeCompleteName()`
+- `CommonDBTM::$deduplicate_queued_notifications` property.
+- `CommonDropdown::displayHeader()`
+- `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
+- `Config::getCurrentDBVersion()`
+- `DbUtils::regenerateTreeCompleteName()`
+- `GLPI::getLogLevel()`
+- `Glpi\Api\API::returnSanitizedContent()`
+- `Glpi\Dashboard\Widget::getCssGradientPalette()`
+- `Glpi\Inventory\Conf::importFile()`
+- `Glpi\System\Requirement\DataDirectoriesProtectedPath` class.
+- `Glpi\System\Requirement\ProtectedWebAccess` class.
+- `Glpi\System\Requirement\SafeDocumentRoot` class.
+- `Glpi\System\Status\StatusChecker::getFullStatus()`
+- `Html::clean()`
+- `MailCollector::listEncodings()`
+- `Netpoint` class
+- `Plugin::migrateItemType()`
+- `ProfileRight::updateProfileRightAsOtherRight()`
+- `ProfileRight::updateProfileRightsAsOtherRights()`
+- `RSSFeed::showDiscoveredFeeds()`
+- `Rule::$can_sort` property.
+- `Rule::$orderby` property.
+- `RuleCollection::showTestResults()`
+- `RuleImportComputer` class.
+- `RuleImportComputerCollection` class.
+- `Search::computeTitle()`
+- `Search::csv_clean()`
+- `Search::findCriteriaInSession()`
+- `Search::getDefaultCriteria()`
+- `Search::getLogicalOperators()`
+- `Search::getMetaReferenceItemtype()`
+- `Search::outputData()`
+- `Search::sylk_clean()`
+- `SLM::setTicketCalendar()`
+- `Toolbox::canUseCas()`
+- `Toolbox::checkValidReferer()`
+- `Toolbox::clean_cross_side_scripting_deep()`
+- `Toolbox::endsWith()`
+- `Toolbox::filesizeDirectory()`
+- `Toolbox::getHtmLawedSafeConfig()`
+- `Toolbox::getHtmlToDisplay()`
+- `Toolbox::logError()`
+- `Toolbox::logNotice()`
+- `Toolbox::logWarning()`
+- `Toolbox::sodiumDecrypt()`
+- `Toolbox::sodiumEncrypt()`
+- `Toolbox::unclean_cross_side_scripting_deep()`
+- `XML` class.
+- Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
+- Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.
+- `CommonDBTM::$fkfield` property.
+- `getHTML` action for `ajax/fuzzysearch.php` endpoint.
+- `Config::showLibrariesInformation()`
+
 ## [10.0.11] unreleased
 
 ### Added
@@ -247,6 +471,7 @@ The present file will list all changes made to the project; according to the
 - `Search::addOrderBy()` signature changed.
 - `TicketSatisfaction::showForm()` renamed to `TicketSatisfaction::showSatisfactionForm()`.
 - `Transfer::transferDropdownNetpoint()` has been renamed to `Transfer::transferDropdownSocket()`.
+- `Dashboard` global javascript object has been moved to `GLPI.Dashboard`.
 
 #### Deprecated
 - Usage of `MyISAM` engine in database, in favor of `InnoDB` engine.
@@ -256,6 +481,7 @@ The present file will list all changes made to the project; according to the
 - `Netpoint` has been deprecated and replaced by `Socket`
 - `CommonDropdown::displayHeader()`, use `CommonDropdown::displayCentralHeader()` instead and make sure to override properly `first_level_menu`, `second_level_menu` and `third_level_menu`.
 - `GLPI::getLogLevel()`
+- `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Html::clean()`
 - `MailCollector::listEncodings()`
 - `RuleImportComputer` class

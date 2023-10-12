@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
+
 /**
  * Group class
  **/
@@ -134,13 +137,13 @@ class Group extends CommonTreeDropdown
                             ['groups_id' => $item->getID()]
                         );
                     }
-                    $ong[4] = self::createTabEntry(__('Child groups'), $nb);
+                    $ong[4] = self::createTabEntry(__('Child groups'), $nb, $item::getType());
 
                     if ($item->getField('is_itemgroup')) {
-                        $ong[1] = __('Used items');
+                        $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
                     }
                     if ($item->getField('is_assign')) {
-                        $ong[2] = __('Managed items');
+                        $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::getType(), 'ti ti-package');
                     }
                     if (
                         $item->getField('is_usergroup')
@@ -148,8 +151,9 @@ class Group extends CommonTreeDropdown
                         && Session::haveRight("user", User::UPDATEAUTHENT)
                         && AuthLDAP::useAuthLdap()
                     ) {
-                        $ong[3] = __('LDAP directory link');
+                        $ong[3] = self::createTabEntry(__('LDAP directory link'), 0, $item::getType(), 'ti ti-login');
                     }
+                    $ong[5] = self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock');
                     return $ong;
             }
         }
@@ -172,11 +176,15 @@ class Group extends CommonTreeDropdown
                         return true;
 
                     case 3:
-                        $item->showLDAPForm($item->getID());
+                        $item->showLDAPForm();
                         return true;
 
                     case 4:
-                          $item->showChildren();
+                        $item->showChildren();
+                        return true;
+
+                    case 5:
+                        $item->showSecurityForm($item->getID());
                         return true;
                 }
                 break;
@@ -231,87 +239,9 @@ class Group extends CommonTreeDropdown
      **/
     public function showForm($ID, array $options = [])
     {
-
-        $this->initForm($ID, $options);
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-        echo "<td rowspan='12' class='middle'>" . __('Comments') . "</td>";
-        echo "<td class='middle' rowspan='12'>";
-        echo "<textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('As child of') . "</td><td>";
-        self::dropdown(['value'  => $this->fields['groups_id'],
-            'name'   => 'groups_id',
-            'entity' => $this->fields['entities_id'],
-            'used'   => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : [])
+        TemplateRenderer::getInstance()->display('pages/admin/group.html.twig', [
+            'item' => $this,
         ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='subheader' colspan='2'>" . __('Visible in a ticket');
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Requester', 'Requesters', 1) . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_requester', $this->fields['is_requester']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Watcher', 'Watchers', 1) . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_watcher', $this->fields['is_watcher']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Assigned to') . "</td><td>";
-        Dropdown::showYesNo('is_assign', $this->fields['is_assign']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Task', 'Tasks', 1) . "</td><td>";
-        Dropdown::showYesNo('is_task', $this->fields['is_task']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Can be notified') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_notify', $this->fields['is_notify']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='subheader' colspan='2'>" . __('Visible in a project');
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Can be manager') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_manager', $this->fields['is_manager']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='subheader' colspan='2'>" . __('Can contain');
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Item', 'Items', Session::getPluralNumber()) . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . User::getTypeName(Session::getPluralNumber()) . "</td><td>";
-        Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
-        echo "</td></tr>";
-
-        $this->showFormButtons($options);
 
         return true;
     }
@@ -492,7 +422,7 @@ class Group extends CommonTreeDropdown
             'id'                 => '21',
             'table'              => $this->getTable(),
             'field'              => 'is_watcher',
-            'name'               => _n('Watcher', 'Watchers', 1),
+            'name'               => _n('Observer', 'Observers', 1),
             'datatype'           => 'bool'
         ];
 
@@ -576,57 +506,60 @@ class Group extends CommonTreeDropdown
             'datatype'           => 'bool'
         ];
 
+        $tab[] = [
+            'id'                 => '73',
+            'table'              => $this->getTable(),
+            'field'              => 'recursive_membership',
+            'name'               => __('Recursive membership'),
+            'datatype'           => 'bool'
+        ];
+
+        $tab[] = [
+            'id'                 => '74',
+            'table'              => $this->getTable(),
+            'field'              => 'code',
+            'name'               => __('Group code'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
+        ];
+
         return $tab;
     }
 
+    /**
+     * Show the LDAP options form for this group
+     * @return void
+     */
+    public function showLDAPForm()
+    {
+        if (
+            !$this->fields['is_usergroup']
+            || !Group::canUpdate()
+            || !Session::haveRight("user", User::UPDATEAUTHENT)
+            || !AuthLDAP::useAuthLdap()
+        ) {
+            return;
+        }
+
+        TemplateRenderer::getInstance()->display('pages/admin/group_ldap.html.twig', [
+            'item' => $this,
+            'params' => [
+                'candel' => false,
+            ]
+        ]);
+    }
 
     /**
      * @param $ID
      **/
-    public function showLDAPForm($ID)
+    public function showSecurityForm($ID)
     {
-        $options = [];
-        $this->initForm($ID, $options);
-
-        echo "<form name='groupldap_form' id='groupldap_form' method='post' action='" .
-             $this->getFormURL() . "'>";
-        echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-
-        if (
-            Group::canUpdate()
-            && Session::haveRight("user", User::UPDATEAUTHENT)
-            && AuthLDAP::useAuthLdap()
-        ) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='2' class='center'>" . __('In users') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Attribute of the user containing its groups') . "</td>";
-            echo "<td>";
-            echo Html::input('ldap_field', ['value' => $this->fields['ldap_field']]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Attribute value') . "</td>";
-            echo "<td>";
-            echo Html::input('ldap_value', ['value' => $this->fields['ldap_value']]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='2' class='center'>" . __('In groups') . "</th>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Group DN') . "</td>";
-            echo "<td>";
-            echo Html::input('ldap_group_dn', ['value' => $this->fields['ldap_group_dn']]);
-            echo "</td></tr>";
-        }
-
-        $options = ['colspan' => 1,
-            'candel'  => false
-        ];
-        $this->showFormButtons($options);
+        $canedit = self::canUpdate() && Session::haveRight("user", User::UPDATEAUTHENT);
+        TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
+            'canedit' => $canedit,
+            'item'   => $this,
+            'action' => Toolbox::getItemTypeFormURL(__CLASS__)
+        ]);
     }
 
 
@@ -1089,5 +1022,57 @@ class Group extends CommonTreeDropdown
         }
 
         return $this->getLink();
+    }
+
+    public function post_addItem()
+    {
+        // Adding a new group might invalidate the group cache if it's a new child
+        // group and recursive membership is enabled
+        if ($this->fields['groups_id']) {
+            Group::updateLastGroupChange();
+        }
+    }
+
+    public function post_updateItem($history = 1)
+    {
+        // Changing a group's parent might invalidate the group cache if recursive
+        // membership is enabled
+        $parent_changed =
+            isset($this->oldvalues['groups_id'])
+            && $this->fields['groups_id'] !== $this->oldvalues['groups_id']
+        ;
+
+        // Enabling or disabling recursion on a group will invalidate the group
+        // cache
+        $recursive_membership_changed =
+            isset($this->oldvalues['recursive_membership'])
+            && $this->fields['recursive_membership'] !== $this->oldvalues['recursive_membership']
+        ;
+
+        if ($parent_changed || $recursive_membership_changed) {
+            Group::updateLastGroupChange();
+        }
+    }
+
+    public function post_purgeItem()
+    {
+        // Purging a group will invalidate the group cache
+        Group::updateLastGroupChange();
+    }
+
+    /**
+     * Mark groups data as "changed"
+     * This will triger a rebuilding of the 'glpigroups' session data for all
+     * users
+     */
+    public static function updateLastGroupChange()
+    {
+        global $GLPI_CACHE;
+        $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);
+
+        // Reload groups immediatly
+        if (Session::getLoginUserID()) {
+            Session::loadGroups();
+        }
     }
 }

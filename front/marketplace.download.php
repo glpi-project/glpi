@@ -39,6 +39,9 @@ Session::checkRight("config", UPDATE);
 
 use Glpi\Marketplace\Controller as MarketplaceController;
 
+if (!MarketplaceController::isWebAllowed()) {
+    Html::displayRightError();
+}
 if (isset($_REQUEST['key'])) {
     $marketplace_ctrl = new MarketplaceController($_REQUEST['key']);
     $marketplace_ctrl->proxifyPluginArchive();

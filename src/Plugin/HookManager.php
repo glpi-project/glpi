@@ -35,6 +35,8 @@
 
 namespace Glpi\Plugin;
 
+use Toolbox;
+
 class HookManager
 {
     protected string $plugin;
@@ -49,6 +51,8 @@ class HookManager
      */
     public function enableCSRF(): void
     {
+        Toolbox::deprecated();
+
         global $PLUGIN_HOOKS;
 
         $PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->plugin] = true;

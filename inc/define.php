@@ -36,7 +36,7 @@
 use Glpi\SocketModel;
 
 // Current version of GLPI
-define('GLPI_VERSION', '10.0.11-dev');
+define('GLPI_VERSION', '10.1.0-dev');
 
 $schema_file = sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT);
 define(
@@ -48,8 +48,8 @@ if (!defined('GLPI_MARKETPLACE_PRERELEASES')) {
     define('GLPI_MARKETPLACE_PRERELEASES', preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1);
 }
 
-define('GLPI_MIN_PHP', '7.4.0'); // Must also be changed in top of index.php
-define('GLPI_MAX_PHP', '8.4.0'); // (Exclusive) Must also be changed in top of index.php
+define('GLPI_MIN_PHP', '8.1'); // Must also be changed in top of index.php
+define('GLPI_MAX_PHP', '8.3'); // Must also be changed in top of index.php
 define('GLPI_YEAR', '2023');
 
 //Define a global recipient address for email notifications
@@ -161,6 +161,7 @@ define("MANAGEMENT_GLOBAL", 1);
 //Mail send methods
 define("MAIL_MAIL", 0);
 define("MAIL_SMTP", 1);
+define("MAIL_SMTPS", 2);
 define("MAIL_SMTPSSL", 2);
 define("MAIL_SMTPTLS", 3);
 define("MAIL_SMTPOAUTH", 4);
@@ -253,7 +254,7 @@ $CFG_GLPI["linkuser_types"]               = ['Computer', 'Monitor', 'NetworkEqui
     'SoftwareLicense', 'Certificate', 'Appliance', 'Item_DeviceSimcard', 'Line'
 ];
 
-$CFG_GLPI["linkgroup_types"]              = ['Computer', 'Consumable', 'Monitor', 'NetworkEquipment',
+$CFG_GLPI["linkgroup_types"]              = ['Computer', 'Monitor', 'NetworkEquipment',
     'Peripheral', 'Phone', 'Printer', 'Software',
     'SoftwareLicense', 'Certificate', 'Appliance', 'Item_DeviceSimcard', 'Line'
 ];
@@ -380,7 +381,7 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
     'Project', 'ProjectTask', 'Reservation',
     'SoftwareLicense', 'Ticket', 'User',
     'SavedSearch_Alert', 'Certificate', 'Glpi\\Marketplace\\Controller',
-    'Domain'
+    'Domain', 'KnowbaseItem'
 ];
 
 $CFG_GLPI["contract_types"]               = array_merge(
@@ -410,7 +411,8 @@ $CFG_GLPI["rulecollections_types"]        = [
     'RuleRightCollection',
     'RuleSoftwareCategoryCollection',
     'RuleTicketCollection',
-                                                  //'RuleImportComputerCollection', //deprecated
+    'RuleChangeCollection',
+    'RuleProblemCollection',
     'RuleAssetCollection'
 ];
 
@@ -461,13 +463,14 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
     'number_format', 'pdffont', 'priority_1',
     'priority_2', 'priority_3', 'priority_4', 'priority_5',
     'priority_6', 'refresh_views', 'set_default_tech',
+    'set_followup_tech', 'set_solution_tech',
     'set_default_requester', 'show_count_on_tabs',
     'show_jobs_at_login', 'task_private', 'task_state',
     'use_flat_dropdowntree', 'use_flat_dropdowntree_on_search_result', 'palette', 'page_layout',
     'highcontrast_css', 'default_dashboard_central', 'default_dashboard_assets',
     'default_dashboard_helpdesk', 'default_dashboard_mini_ticket', 'default_central_tab',
     'fold_menu', 'fold_search', 'savedsearches_pinned', 'richtext_layout', 'timeline_order',
-    'itil_layout', 'timeline_action_btn_layout', 'timeline_date_format'
+    'itil_layout', 'toast_location', 'timeline_action_btn_layout', 'timeline_date_format', 'is_notif_enable_default'
 ];
 
 $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract', 'Document',
@@ -539,6 +542,10 @@ $CFG_GLPI['databaseinstance_types'] = ['Computer'];
 
 $CFG_GLPI['agent_types'] = ['Computer', 'Phone'];
 
+$CFG_GLPI['line_types'] = $CFG_GLPI['itemdevicesimcard_types'];
+
+$CFG_GLPI['itil_types'] = ['Ticket', 'Change', 'Problem'];
+
 $reservations_libs = ['fullcalendar', 'reservations'];
 
 $CFG_GLPI['javascript'] = [
@@ -564,7 +571,7 @@ $CFG_GLPI['javascript'] = [
         'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
         'ticket'    => ['rateit', 'tinymce', 'kanban', 'dashboard'],
         'problem'   => ['tinymce', 'kanban', 'sortable'],
-        'change'    => ['tinymce', 'kanban', 'sortable'],
+        'change'    => ['tinymce', 'kanban', 'sortable', 'rateit'],
         'stat'      => ['charts', 'rateit']
     ],
     'tools'     => [
@@ -582,10 +589,11 @@ $CFG_GLPI['javascript'] = [
     ],
     'config' => [
         'commondropdown'  => [
-            'ITILFollowupTemplate'  => ['tinymce'],
-            'ProjectTaskTemplate'   => ['tinymce'],
-            'SolutionTemplate'      => ['tinymce'],
-            'TaskTemplate'          => ['tinymce'],
+            'ITILFollowupTemplate'   => ['tinymce'],
+            'ProjectTaskTemplate'    => ['tinymce'],
+            'SolutionTemplate'       => ['tinymce'],
+            'TaskTemplate'           => ['tinymce'],
+            'ITILValidationTemplate' => ['tinymce'],
         ],
         'notification' => [
             'notificationtemplate' => ['tinymce']
@@ -593,7 +601,8 @@ $CFG_GLPI['javascript'] = [
         'plugin' => [
             'marketplace' => ['marketplace']
         ],
-        'config' => ['clipboard']
+        'config' => ['clipboard'],
+        'webhook' => ['monaco', 'autocomplete'],
     ],
     'admin'        => ['clipboard', 'sortable'],
     'preference'   => ['clipboard'],

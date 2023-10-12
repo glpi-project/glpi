@@ -37,14 +37,14 @@
    <button class="dropdown-item dropdown-toggle" type="button" data-bs-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
       <i class="ti ti-user-check"></i>
-      {{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value }}
+      {{ (session('glpiactiveprofile')['name'] ?? '') }}
    </button>
    <div class="dropdown-menu" data-bs-popper="none">
       <span class="dropdown-header">{{ __('Profiles') }}</span>
       {% for profile_id, profile in session('glpiprofiles') %}
       <a class="dropdown-item {{ profile_id == (session('glpiactiveprofile')['id'] ?? 0) ? 'active' : '' }}"
          href="{{ index_path() }}?newprofile={{ profile_id }}">
-         <i class="ti ti-user-check"></i>{{ profile['name']|verbatim_value }}
+         <i class="ti ti-user-check"></i>{{ profile['name'] }}
       </a>
       {% endfor %}
    </div>
@@ -55,8 +55,8 @@
    {% set target = path("front/helpdesk.public.php") %}
 {% endif %}
 
-{% set current_entity = session('glpiactive_entity_name')|verbatim_value %}
-{% set current_entity_short = session('glpiactive_entity_shortname')|verbatim_value %}
+{% set current_entity = session('glpiactive_entity_name') %}
+{% set current_entity_short = session('glpiactive_entity_shortname') %}
 {% if current_entity != current_entity_short %}
    {% set current_entity_short = '... > ' ~ current_entity_short %}
 {% endif %}

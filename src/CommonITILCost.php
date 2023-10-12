@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /**
  * CommonITILCost Class
  *
@@ -48,6 +51,10 @@ abstract class CommonITILCost extends CommonDBChild
         return _n('Cost', 'Costs', $nb);
     }
 
+    public static function getIcon()
+    {
+        return Infocom::getIcon();
+    }
 
     public function getItilObjectItemType()
     {
@@ -73,7 +80,7 @@ abstract class CommonITILCost extends CommonDBChild
                     [$item->getForeignKeyField() => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }
@@ -220,13 +227,13 @@ abstract class CommonITILCost extends CommonDBChild
             'joinparams'         => [
                 'jointype'           => 'child'
             ],
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.actiontime') . ' * ' .
-            $DB->quoteName('TABLE.cost_time') . '/' . HOUR_TIMESTAMP .
-            ' + ' . $DB->quoteName('TABLE.cost_fixed') . ' + ' .
-            $DB->quoteName('TABLE.cost_material') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ')',
+            'computation'        => new QueryExpression(
+                '(' . QueryFunction::sum(
+                    expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / ' .
+                        HOUR_TIMESTAMP . ' + ' . $DB::quoteName('TABLE.cost_fixed') . ' + ' . $DB::quoteName('TABLE.cost_material'))
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
+                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+            ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -242,11 +249,13 @@ abstract class CommonITILCost extends CommonDBChild
             'joinparams'         => [
                 'jointype'           => 'child'
             ],
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.actiontime') . ' * ' .
-            $DB->quoteName('TABLE.cost_time') . '/' . HOUR_TIMESTAMP .
-            ') / COUNT(' . $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ')',
+            'computation'        => new QueryExpression(
+                '(' . QueryFunction::sum(
+                    expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / ' .
+                        HOUR_TIMESTAMP)
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
+                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+            ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -276,10 +285,12 @@ abstract class CommonITILCost extends CommonDBChild
             'joinparams'         => [
                 'jointype'           => 'child'
             ],
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.cost_fixed') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . '))
-            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
+            'computation'        => new QueryExpression(
+                '(' . QueryFunction::sum(
+                    expression: 'TABLE.cost_fixed'
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
+                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+            ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -295,10 +306,12 @@ abstract class CommonITILCost extends CommonDBChild
             'joinparams'         => [
                 'jointype'           => 'child'
             ],
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.cost_material') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . '))
-            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
+            'computation'        => new QueryExpression(
+                '(' . QueryFunction::sum(
+                    expression: 'TABLE.cost_material'
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
+                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+            ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

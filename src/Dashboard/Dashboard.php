@@ -35,7 +35,6 @@
 
 namespace Glpi\Dashboard;
 
-use Glpi\Toolbox\Sanitizer;
 use Ramsey\Uuid\Uuid;
 use Session;
 
@@ -240,12 +239,12 @@ class Dashboard extends \CommonDBTM
 
         $DB->updateOrInsert(
             self::getTable(),
-            Sanitizer::dbEscapeRecursive([
+            [
                 'key'      => $this->key,
                 'name'     => $this->fields['name'],
                 'context'  => $this->fields['context'],
                 'users_id' => $this->fields['users_id'],
-            ]),
+            ],
             [
                 'key'  => $this->key
             ]

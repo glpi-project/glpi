@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
  * Profile_User Class
@@ -509,6 +509,34 @@ class Profile_User extends CommonDBRelation
 
         $nb = count($iterator);
 
+        if ($canedit) {
+            $used_users = array_column(iterator_to_array($iterator) ?? [], 'id');
+            echo "<div class='firstbloc'>";
+            echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
+            echo Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'><th colspan='6'>" . __('Add an authorization to a user') . "</tr>";
+
+            echo "<tr class='tab_bg_2'><td class='center'>";
+            echo "<input type='hidden' name='profiles_id' value='$ID'>";
+            Entity::dropdown(['entity' => $_SESSION['glpiactiveentities']]);
+            echo "</td><td class='center'>" . User::getTypeName(1) . "</td><td>";
+            User::dropdown([
+                'entity'    => $_SESSION['glpiactiveentities'],
+                'right'     => 'all',
+                'used'      => $used_users,
+            ]);
+            echo "</td><td>" . __('Recursive') . "</td><td>";
+            Dropdown::showYesNo("is_recursive", 0);
+            echo "</td><td class='center'>";
+            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+            echo "</td></tr>";
+
+            echo "</table>";
+            Html::closeForm();
+            echo "</div>";
+        }
+
         echo "<div class='spaced'>";
 
         if ($canedit && $nb) {
@@ -765,8 +793,8 @@ class Profile_User extends CommonDBRelation
      *
      * @since 9.3 can pass sqlfilter as a parameter
      *
-     * @param $user_ID            user ID
-     * @param $sqlfilter  string  additional filter (default [])
+     * @param int $user_ID      User ID
+     * @param array $sqlfilter  Additional filter (default [])
      *
      * @return array of the IDs of the profiles
      **/
@@ -1057,7 +1085,7 @@ class Profile_User extends CommonDBRelation
                             ])->current();
                             $nb        = $count['cpt'];
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), User::getIcon());
                     }
                     break;
 
@@ -1066,7 +1094,7 @@ class Profile_User extends CommonDBRelation
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               $nb = self::countForItem($item);
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
                     break;
 
@@ -1078,7 +1106,7 @@ class Profile_User extends CommonDBRelation
                         'Authorization',
                         'Authorizations',
                         Session::getPluralNumber()
-                    ), $nb);
+                    ), $nb, $item::getType());
             }
         }
         return '';
@@ -1264,7 +1292,6 @@ class Profile_User extends CommonDBRelation
             if (count($profile_flags) > 0) {
                 $log_entry = sprintf(__('%s (%s)'), $log_entry, implode(', ', $profile_flags));
             }
-            $log_entry = Sanitizer::dbEscape($log_entry);
             $changes = [
                 '0',
                 $type === 'delete' ? $log_entry : '',

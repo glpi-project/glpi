@@ -40,21 +40,27 @@
    <input type="hidden" name="items_id" value="{{ params["items_id"] }}">
 
    {{ fields.nullField() }}
+   {% set add_several = params['several'] is defined and params['several'] %}
 
-   {{ fields.numberField(
-      'position',
-      item.fields['position'],
-      __('Position'),
-      field_options
-   ) }}
-
+   {# Do not display position if several mode, value is compute on add #}
+   {% if not add_several %}
+      {{ fields.numberField(
+         'position',
+         item.fields['position'],
+         __('Position'),
+         field_options
+      ) }}
+   {% else %}
+    {{ fields.nullField() }}
+   {% endif %}
 
    {% set wiring_side %}
       {% do call('Glpi\\Socket::dropdownWiringSide', [
          'wiring_side',
          {
             'value': item.fields['wiring_side'],
-         }
+         },
+         add_several
       ]) %}
    {% endset %}
    {{ fields.htmlField(
@@ -76,5 +82,42 @@
       networkports,
       _n('Network port', 'Network ports', get_plural_number()),
    ) }}
+
+   {% if add_several %}
+
+      {{ fields.dropdownNumberField(
+         '_from',
+         1,
+         __('From'),
+         {
+            'min': 1
+         }
+      ) }}
+
+      {{ fields.dropdownNumberField(
+         '_to',
+         1,
+         __('To'),
+         {
+            'min': 1
+         }
+      ) }}
+
+      {{ fields.textField(
+         '_before',
+         '',
+         __('Prefix'),
+         {}
+      ) }}
+
+      {{ fields.textField(
+         '_after',
+         '',
+         __('Suffix'),
+         {}
+      ) }}
+
+      <input type="hidden" name="execute_multi" value="1">
+   {% endif %}
 
 {% endblock %}

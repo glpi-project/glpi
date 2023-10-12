@@ -39,19 +39,6 @@ use DbTestCase;
 
 class DeviceSensor extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
     public function testAdd()
     {
         $this->login();
@@ -59,7 +46,7 @@ class DeviceSensor extends DbTestCase
 
        // Add
         $in = [
-            'designation'              => $this->method,
+            'designation'              => __METHOD__,
             'manufacturers_id'         => $this->getUniqueInteger(),
             'devicesensortypes_id'     => $this->getUniqueInteger(),
             'devicesensormodels_id'    => $this->getUniqueInteger(),
@@ -90,7 +77,7 @@ class DeviceSensor extends DbTestCase
         $id = $obj->getID();
         $in = [
             'id'                    => $id,
-            'designation'           => $this->method,
+            'designation'           => __METHOD__,
             'manufacturers_id'      => $this->getUniqueInteger(),
             'devicesensortypes_id'  => $this->getUniqueInteger(),
             'devicesensormodels_id' => $this->getUniqueInteger(),
@@ -111,7 +98,7 @@ class DeviceSensor extends DbTestCase
 
        // Add
         $id = $obj->add([
-            'designation' => $this->method,
+            'designation' => __METHOD__,
         ]);
         $this->integer($id)->isGreaterThan(0);
 

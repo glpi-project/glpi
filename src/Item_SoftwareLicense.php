@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
+
 /**
  * Manage link between items and software licenses.
  */
@@ -1008,10 +1011,12 @@ JAVASCRIPT;
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForLicense($item->getID());
                     }
-                    return [1 => __('Summary'),
+                    return [1 => self::createTabEntry(__('Summary'), 0, $item::getType()),
                         2 => self::createTabEntry(
                             _n('Item', 'Items', Session::getPluralNumber()),
-                            $nb
+                            $nb,
+                            $item::getType(),
+                            'ti ti-package'
                         )
                     ];
                 }

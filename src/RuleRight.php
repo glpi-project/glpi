@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * RuleRight Class
  *
@@ -44,7 +42,6 @@ class RuleRight extends Rule
 {
    // From Rule
     public static $rightname           = 'rule_ldap';
-    public $orderby             = "name";
     public $specific_parameters = true;
 
     /**
@@ -158,20 +155,19 @@ class RuleRight extends Rule
                                     if ($res != null) {
                                         switch ($action->fields["field"]) {
                                             case "_affect_entity_by_dn":
-                                                 $entity_found = Entity::getEntityIDByDN(addslashes($res));
+                                                 $entity_found = Entity::getEntityIDByDN($res);
                                                 break;
 
                                             case "_affect_entity_by_tag":
-                                                 $entity_found = Entity::getEntityIDByTag(addslashes($res));
+                                                 $entity_found = Entity::getEntityIDByTag($res);
                                                 break;
 
                                             case "_affect_entity_by_domain":
-                                                $entity_found = Entity::getEntityIDByDomain(addslashes($res));
+                                                $entity_found = Entity::getEntityIDByDomain($res);
                                                 break;
 
                                             case "_affect_entity_by_completename":
-                                                $res          = Sanitizer::unsanitize($res);
-                                                $entity_found = Entity::getEntityIDByCompletename(addslashes($res));
+                                                $entity_found = Entity::getEntityIDByCompletename($res);
                                                 break;
 
                                             default:

@@ -42,7 +42,6 @@ use Computer;
 use DbTestCase;
 use Entity;
 use Glpi\Team\Team;
-use Glpi\Toolbox\Sanitizer;
 use Group;
 use Group_Ticket;
 use ITILCategory;
@@ -672,7 +671,7 @@ class Ticket extends DbTestCase
 
        // 6.1 -> check first task
         $taskA = array_shift($found_tasks);
-        $this->string($taskA['content'])->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars('<p>my task template A</p>'));
+        $this->string($taskA['content'])->isIdenticalTo('<p>my task template A</p>');
         $this->variable($taskA['taskcategories_id'])->isEqualTo($taskcat_id);
         $this->variable($taskA['actiontime'])->isEqualTo(60);
         $this->variable($taskA['is_private'])->isEqualTo(1);
@@ -682,7 +681,7 @@ class Ticket extends DbTestCase
 
        // 6.2 -> check second task
         $taskB = array_shift($found_tasks);
-        $this->string($taskB['content'])->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars('<p>my task template B</p>'));
+        $this->string($taskB['content'])->isIdenticalTo('<p>my task template B</p>');
         $this->variable($taskB['taskcategories_id'])->isEqualTo($taskcat_id);
         $this->variable($taskB['actiontime'])->isEqualTo(120);
         $this->variable($taskB['is_private'])->isEqualTo(0);
@@ -1198,59 +1197,59 @@ class Ticket extends DbTestCase
 
         $backtrace = debug_backtrace(0, 1);
         $caller = "File: {$backtrace[0]['file']} Function: {$backtrace[0]['function']}:{$backtrace[0]['line']}";
-       // Opening date, editable
+        // Opening date, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=date]:not([disabled])"));
         $this->array($matches)->hasSize(($openDate === true ? 1 : 0), "RW Opening date $caller");
 
-       // Time to own, editable
+        // Time to own, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
         $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Time to own editable $caller");
 
-       // Internal time to own, editable
+        // Internal time to own, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
         $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Internal time to own editable $caller");
 
-       // Time to resolve, editable
+        // Time to resolve, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
         $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Time to resolve $caller");
 
        // Internal time to resolve, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
+         $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
         $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Internal time to resolve $caller");
 
-       //Type
+        //Type
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=type]:not([disabled])"));
         $this->array($matches)->hasSize(($type === true ? 1 : 0), "Type $caller");
 
-       //Status
+        //Status
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=status]:not([disabled])"));
         $this->array($matches)->hasSize(($status === true ? 1 : 0), "Status $caller");
 
-       //Urgency
+        //Urgency
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=urgency]:not([disabled])"));
         $this->array($matches)->hasSize(($urgency === true ? 1 : 0), "Urgency $caller");
 
-       //Impact
+        //Impact
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=impact]:not([disabled])"));
         $this->array($matches)->hasSize(($impact === true ? 1 : 0), "Impact $caller");
 
-       //Category
+        //Category
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=itilcategories_id]:not([disabled])"));
         $this->array($matches)->hasSize(($category === true ? 1 : 0), "Category $caller");
 
-       //Request source file_put_contents('/tmp/out.html', $output)
+        //Request source file_put_contents('/tmp/out.html', $output)
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=requesttypes_id]:not([disabled])"));
         $this->array($matches)->hasSize($requestSource === true ? 1 : 0, "Request source $caller");
 
-       //Location
+        //Location
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=locations_id]:not([disabled])"));
         $this->array($matches)->hasSize(($location === true ? 1 : 0), "Location $caller");
 
-       //Priority, editable
+        //Priority, editable
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=priority]:not([disabled])"));
         $this->array($matches)->hasSize(($priority === true ? 1 : 0), "RW priority $caller");
 
-       //Save button
+        //Save button
         $matches = iterator_to_array($crawler->filter("#itil-footer button[type=submit][name=update]:not([disabled])"));
         $this->array($matches)->hasSize(($save === true ? 1 : 0), ($save === true ? 'Save button missing' : 'Save button present') . ' ' . $caller);
 
@@ -1353,7 +1352,7 @@ class Ticket extends DbTestCase
         $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
 
        //check output with default ACLs
-        $this->changeTechRight();
+        $this->changeTechRights(['ticket' => null]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -1372,8 +1371,8 @@ class Ticket extends DbTestCase
             $location = true
         );
 
-       //drop UPDATE ticket right from tech profile (still with OWN)
-        $this->changeTechRight(168965);
+//       //drop UPDATE ticket right from tech profile (still with OWN)
+        $this->changeTechRights(['ticket' => 168965]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -1393,7 +1392,7 @@ class Ticket extends DbTestCase
         );
 
        //drop UPDATE ticket right from tech profile (without OWN)
-        $this->changeTechRight(136197);
+        $this->changeTechRights(['ticket' => 136197]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -1413,7 +1412,7 @@ class Ticket extends DbTestCase
         );
 
        // only assign and priority right for tech (without UPDATE and OWN rights)
-        $this->changeTechRight(94209);
+        $this->changeTechRights(['ticket' => 94209]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -1432,8 +1431,52 @@ class Ticket extends DbTestCase
             $location = false
         );
 
-       // no update rights, only display for tech
-        $this->changeTechRight(3077);
+        $this->changeTechRights([
+            'ticket'    => 168967,
+            'slm'       => 256,
+        ]);
+        $this->checkFormOutput(
+            $ticket,
+            $name = true,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = true,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
+
+        $this->changeTechRights([
+            'ticket'    => 168967,
+            'slm'       => 255,
+        ]);
+        $this->checkFormOutput(
+            $ticket,
+            $name = true,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = true,
+            $openDate = true,
+            $timeOwnResolve = false,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
+
+        // no update rights, only display for tech
+        $this->changeTechRights(['ticket' => 3077]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -1484,35 +1527,64 @@ class Ticket extends DbTestCase
         );
     }
 
-    public function changeTechRight($rights = 168967)
+    public function changeTechRights(array $rights)
     {
         global $DB;
 
-       // set new rights
-        $DB->update(
-            'glpi_profilerights',
-            ['rights' => $rights],
-            [
-                'profiles_id'  => 6,
-                'name'         => 'ticket'
-            ]
-        );
+        $default_rights = [
+            'ticket'    => 168967,
+            'slm'       => 255,
+        ];
 
-       //ACLs have changed: login again.
-        $auth = new \Auth();
-        $this->boolean((bool) $auth->Login('tech', 'tech', true))->isTrue();
+        foreach ($rights as $name => $value) {
+            if (is_array($value) && isset($value['default'])) {
+                $default_rights[$name] = $value;
+            }
+            $default_value = $default_rights[$name] ?? null;
+            if ($default_value === null) {
+                throw new \Exception("Unknown right $name with no default value specified");
+            }
+            if ($value === null) {
+                $value = $default_value;
+            }
+            $this->dump("changeTechRight $name: $value");
 
-        if ($rights != 168967) {
-           //reset rights. Done here so ACLs are reset even if tests fails.
+            // set new rights
             $DB->update(
                 'glpi_profilerights',
-                ['rights' => 168967],
+                ['rights' => $value],
                 [
                     'profiles_id'  => 6,
-                    'name'         => 'ticket'
+                    'name'         => $name
                 ]
             );
+
+            //ACLs have changed: login again.
+            $auth = new \Auth();
+            $this->boolean((bool) $auth->Login('tech', 'tech', true))->isTrue();
+
+            if ($rights != $default_value) {
+                //reset rights. Done here so ACLs are reset even if tests fails.
+                $DB->update(
+                    'glpi_profilerights',
+                    ['rights' => $default_value],
+                    [
+                        'profiles_id'  => 6,
+                        'name'         => $name
+                    ]
+                );
+            }
         }
+    }
+
+    /**
+     * @param $rights
+     * @return void
+     * @deprecated 10.1.0 - Use changeTechRights() instead
+     */
+    public function changeTechRight($rights = 168967)
+    {
+        $this->changeTechRights(['ticket' => $rights]);
     }
 
     public function testPriorityAcl()
@@ -1615,6 +1687,7 @@ class Ticket extends DbTestCase
 
         $this->boolean((bool)$ticket->canAssign())->isFalse();
         $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->changeTechRights(['ticket' => 168967]);
        //check output with default ACLs
         $this->checkFormOutput(
             $ticket,
@@ -2049,7 +2122,8 @@ class Ticket extends DbTestCase
                 (int)$val->add([
                     'tickets_id'   => $tickets_id,
                     'comment_submission'      => 'A simple validation',
-                    'users_id_validate' => 5, // normal
+                    'itemtype_target' => 'User',
+                    'items_id_target' => 5, // normal
                     'status' => 2
                 ])
             )->isGreaterThan(0);
@@ -2182,7 +2256,7 @@ class Ticket extends DbTestCase
                 ],
                 'expected'  => [
                     'name' => 'This is a content with a carriage return',
-                    'content' => 'This is a content\nwith a carriage return'
+                    'content' => "This is a content\nwith a carriage return"
                 ]
             ], [
                 'input'     => [
@@ -2191,7 +2265,7 @@ class Ticket extends DbTestCase
                 ],
                 'expected'  => [
                     'name' => 'This is a content with a carriage return',
-                    'content' => 'This is a content\nwith a carriage return'
+                    'content' => "This is a content\nwith a carriage return"
                 ]
             ], [
                 'input'     => [
@@ -2200,16 +2274,7 @@ class Ticket extends DbTestCase
                 ],
                 'expected'  => [
                     'name' => 'This is a content with a carriage return',
-                    'content' => '<p>This is a content\nwith a carriage return</p>',
-                ]
-            ], [
-                'input'     => [
-                    'name'      => '',
-                    'content'   => "&lt;p&gt;This is a content\r\nwith a carriage return&lt;/p&gt;"
-                ],
-                'expected'  => [
-                    'name' => 'This is a content with a carriage return',
-                    'content' => '&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;'
+                    'content' => "<p>This is a content\nwith a carriage return</p>",
                 ]
             ], [
                 'input'     => [
@@ -2217,17 +2282,8 @@ class Ticket extends DbTestCase
                     'content'   => 'Test for buggy &#039; character'
                 ],
                 'expected'  => [
-                    'name'      => 'Test for buggy \\\' character',
-                    'content'   => 'Test for buggy \\\' character',
-                ]
-            ], [
-                'input'     => [
-                    'name'      => '',
-                    'content'   => 'Test for buggy &#39; character'
-                ],
-                'expected'  => [
-                    'name'      => 'Test for buggy \\\' character',
-                    'content'   => 'Test for buggy \\\' character',
+                    'name'      => "Test for buggy ' character",
+                    'content'   => "Test for buggy &#039; character",
                 ]
             ]
         ];
@@ -2241,7 +2297,7 @@ class Ticket extends DbTestCase
         $this
          ->if($this->newTestedInstance)
          ->then
-            ->array($this->testedInstance->prepareInputForAdd(\Toolbox::addslashes_deep($input)))
+            ->array($this->testedInstance->prepareInputForAdd($input))
                ->string['name']->isIdenticalTo($expected['name'])
                ->string['content']->isIdenticalTo($expected['content']);
     }
@@ -2385,39 +2441,39 @@ class Ticket extends DbTestCase
                     'urgency'   => 2,
                     'impact'    => 2
                 ],
-                'urgency'  => '2',
-                'impact'   => '2',
-                'priority' => '2'
+                'urgency'  => 2,
+                'impact'   => 2,
+                'priority' => 2
             ], [
                 'input'    => [
                     'urgency'   => 5
                 ],
-                'urgency'  => '5',
-                'impact'   => '3',
-                'priority' => '4'
+                'urgency'  => 5,
+                'impact'   => 3,
+                'priority' => 4
             ], [
                 'input'    => [
                     'impact'   => 5
                 ],
-                'urgency'  => '3',
-                'impact'   => '5',
-                'priority' => '4'
+                'urgency'  => 3,
+                'impact'   => 5,
+                'priority' => 4
             ], [
                 'input'    => [
                     'urgency'   => 5,
                     'impact'    => 5
                 ],
-                'urgency'  => '5',
-                'impact'   => '5',
-                'priority' => '5'
+                'urgency'  => 5,
+                'impact'   => 5,
+                'priority' => 5
             ], [
                 'input'    => [
                     'urgency'   => 5,
                     'impact'    => 1
                 ],
-                'urgency'  => '5',
-                'impact'   => '1',
-                'priority' => '2'
+                'urgency'  => 5,
+                'impact'   => 1,
+                'priority' => 2
             ]
         ];
     }
@@ -2432,9 +2488,9 @@ class Ticket extends DbTestCase
         $input['id'] = $ticket->fields['id'];
         $result = $ticket->prepareInputForUpdate($input);
         $this->array($result)
-         ->string['urgency']->isIdenticalTo($urgency)
-         ->string['impact']->isIdenticalTo($impact)
-         ->string['priority']->isIdenticalTo($priority);
+         ->integer['urgency']->isIdenticalTo($urgency)
+         ->integer['impact']->isIdenticalTo($impact)
+         ->integer['priority']->isIdenticalTo($priority);
     }
 
     public function testGetDefaultValues()
@@ -2489,7 +2545,7 @@ class Ticket extends DbTestCase
 
         $this->integer((int) $input['_add_validation'])->isEqualTo(0);
 
-        $this->array($input['users_id_validate'])->size->isEqualTo(0);
+        $this->array($input['_validation_targets'])->size->isEqualTo(0);
         $this->integer((int) $input['type'])->isEqualTo(\Ticket::INCIDENT_TYPE);
         $this->array($input['_documents_id'])->size->isEqualTo(0);
         $this->array($input['_tasktemplates_id'])->size->isEqualTo(0);
@@ -3459,7 +3515,7 @@ class Ticket extends DbTestCase
                 'TicketTask',
                 'Document'
             ],
-            'link_type'  => \Ticket_Ticket::SON_OF
+            'link_type'  => \CommonITILObject_CommonITILObject::SON_OF
         ];
 
         \Ticket::merge($ticket1, [$ticket2, $ticket3], $status, $mergeparams);
@@ -3658,7 +3714,7 @@ class Ticket extends DbTestCase
                 $instance = new \Ticket();
                 $instance->showForm('-1');
             }
-        )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
+        )->contains('src&amp;#61;&amp;#34;data:image/png;base64,' . str_replace(['+', '='], ['&amp;#43;', '&amp;#61;'], $base64Image) . '&amp;#34;');
     }
 
     public function testScreenshotConvertedIntoDocument()
@@ -3672,11 +3728,10 @@ class Ticket extends DbTestCase
         $instance = new \Ticket();
         $input = [
             'name'    => 'a ticket',
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (add)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -3699,11 +3754,10 @@ HTML
         copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $instance->update([
             'id' => $instance->getID(),
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (update)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -4337,12 +4391,14 @@ HTML
        // TicketValidation items to create before tests
         $this->createItems(TicketValidation::class, [
             [
-                'tickets_id'        => $tickets_id_1,
-                'users_id_validate' => $users_id_1,
+                'tickets_id'      => $tickets_id_1,
+                'itemtype_target' => 'User',
+                'items_id_target' => $users_id_1,
             ],
             [
-                'tickets_id'        => $tickets_id_2,
-                'users_id_validate' => $users_id_2,
+                'tickets_id'      => $tickets_id_2,
+                'itemtype_target' => 'User',
+                'items_id_target' => $users_id_2,
             ],
         ]);
 
@@ -4380,7 +4436,7 @@ HTML
     ) {
         $ticket = new \Ticket();
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->boolean($ticket->isValidator($users_id))->isEqualTo($expected);
+        $this->boolean(@$ticket->isValidator($users_id))->isEqualTo($expected);
     }
 
     public function testGetTeamRoles(): void
@@ -5671,6 +5727,94 @@ HTML
         }
     }
 
+    public function providerGetPrimaryRequesterUser()
+    {
+        $this->login();
+        $entity_id = 0;
+
+        $ticket = new \Ticket();
+        yield [
+            'ticket' => $ticket,
+            'expected' => null,
+        ];
+
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => $entity_id,
+            '_skip_auto_assign' => true,
+        ]);
+        yield [
+            'ticket' => $ticket,
+            'expected' => null,
+        ];
+
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => $entity_id,
+            '_actors'           => [
+                'requester'       => [
+                    [
+                        'itemtype'          => \User::class,
+                        'items_id'          => $_SESSION['glpiID'],
+                        'use_notification'  => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+            ],
+        ]);
+        yield [
+            'ticket' => $ticket,
+            'expected' => $_SESSION['glpiID'],
+        ];
+
+        $glpi_user = new \User();
+        $glpi_user->getFromDBbyName('glpi');
+        $normal_user = new \User();
+        $normal_user->getFromDBbyName('normal');
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => $entity_id,
+            '_actors'           => [
+                'requester'       => [
+                    [
+                        'itemtype'          => \User::class,
+                        'items_id'          => $normal_user->getID(),
+                        'use_notification'  => 0,
+                        'alternative_email' => '',
+                    ], [
+                        'itemtype'          => \User::class,
+                        'items_id'          => $glpi_user->getID(),
+                        'use_notification'  => 0,
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]);
+        yield [
+            'ticket' => $ticket,
+            'expected' => $normal_user->getID(),
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetPrimaryRequesterUser
+     */
+    public function testGetPrimaryRequesterUser($ticket, $expected)
+    {
+        $output = $ticket->getPrimaryRequesterUser();
+        if ($expected === null) {
+            $this->variable($output)->isNull();
+        } else {
+            $this->integer($output->getID())->isEqualTo($expected);
+        }
+    }
+
     protected function requestersEntitiesProvider(): iterable
     {
         $this->login();
@@ -5837,6 +5981,256 @@ HTML
     {
         $this->newTestedInstance();
         $this->array($this->testedInstance->getEntitiesForRequesters($params))->isIdenticalTo($expected);
+    }
+
+    public function testViewIncomingTicketWithoutNewTicketRight()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testViewIncomingTicketWithoutNewTicketRight',
+            'content' => 'testViewIncomingTicketWithoutNewTicketRight',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $this->changeTechRight(\Ticket::READMY);
+        $this->boolean($ticket->canViewItem())->isFalse();
+    }
+
+    public function testViewIncomingTicketWithNewTicketRight()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testViewIncomingTicketWithoutNewTicketRight',
+            'content' => 'testViewIncomingTicketWithoutNewTicketRight',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $this->changeTechRight(\Ticket::READNEWTICKET);
+        $this->boolean($ticket->canViewItem())->isTrue();
+    }
+
+    public function testAssignToMe()
+    {
+        $this->login();
+        $entity_id = 0;
+
+        $ticket = new \Ticket();
+        $fup = new \ITILFollowup();
+        $sol = new \ITILSolution();
+
+        //create a ticket
+        $ticket_id = $ticket->add([
+            'name'                  => __METHOD__,
+            'content'               => __METHOD__,
+            'entities_id'           => $entity_id,
+            '_skip_auto_assign'     => true,
+            '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //add a followup to the ticket without assigning to me (tech)
+        $this->login('tech', 'tech');
+        $_SESSION['glpiset_followup_tech'] = 0;
+        $this->integer(
+            (int)$fup->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple followup'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(0);
+
+        //add a private followup to the ticket and NOT assign to me (tech)
+        $_SESSION['glpiset_followup_tech'] = 1;
+        $this->integer(
+            (int)$fup->add([
+                'itemtype'      => 'Ticket',
+                'items_id'      => $ticket_id,
+                'content'       => 'A simple followup',
+                'is_private'    => 1
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(0);
+
+        //add a followup to the ticket and assign to me (tech)
+        $this->integer(
+            (int)$fup->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple followup'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(1);
+
+        //add a solution to the ticket and assign to me
+        $this->login('glpi', 'glpi');
+        $_SESSION['glpiset_solution_tech'] = 1;
+        $this->integer(
+            (int)$sol->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple solution'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(2);
+
+        //create a new ticket
+        $ticket_id = $ticket->add([
+            'name'                  => __METHOD__,
+            'content'               => __METHOD__,
+            'entities_id'           => $entity_id,
+            '_skip_auto_assign'     => true,
+            '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //add a solution to the ticket without assigning to me
+        $this->login('tech', 'tech');
+        $_SESSION['glpiset_solution_tech'] = 0;
+        $this->integer(
+            (int)$sol->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple solution'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(0);
+
+        //create a new ticket
+        $ticket_id = $ticket->add([
+            'name'                  => __METHOD__,
+            'content'               => __METHOD__,
+            'entities_id'           => $entity_id,
+            '_skip_auto_assign'     => true,
+            '_users_id_requester'   => getItemByTypeName('User', 'glpi', true),
+            '_users_id_observer'    => getItemByTypeName('User', 'tech', true),
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->array($actors)->hasSize(1);
+
+        //add a followup to the ticket without assigning to me
+        $this->login('glpi', 'glpi');
+        $_SESSION['glpiset_followup_tech'] = 1;
+        $this->integer(
+            (int)$fup->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple followup'
+            ])
+        )->isGreaterThan(0);
+
+        //add a followup to the ticket without assigning to me
+        $this->login('tech', 'tech');
+        $_SESSION['glpiset_followup_tech'] = 1;
+        $this->integer(
+            (int)$fup->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple followup'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(0);
+
+        //add a solution to the ticket without assigning to me
+        $this->login('glpi', 'glpi');
+        $_SESSION['glpiset_solution_tech'] = 1;
+        $this->integer(
+            (int)$sol->add([
+                'itemtype'  => 'Ticket',
+                'items_id'  => $ticket_id,
+                'content'   => 'A simple solution'
+            ])
+        )->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(0);
+    }
+
+    public function testNotificationDisabled()
+    {
+        //setup
+        $this->login();
+
+        $user = new \User();
+
+        //check default computed value
+        $this->boolean((bool)$user->getFromDB(\Session::getLoginUserID()))->isTrue();
+        $this->variable($user->fields['is_notif_enable_default'])->isNull(); //default value from user table
+        $this->boolean((bool)$user->isUserNotificationEnable())->isTrue(); //like default configuration
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                "_users_id_requester" => \Session::getLoginUserID(),
+            ] + $ticket->getDefaultValues(getItemByTypeName('Entity', '_test_root_entity', true))
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //load ticket actor
+        $ticket_user = new \Ticket_User();
+        $actors = $ticket_user->find([
+            "tickets_id" => $ticket_id,
+            "type" => CommonITILActor::REQUESTER,
+        ]);
+        $this->integer(count($actors))->isIdenticalTo(1);
+        $this->integer(reset($actors)['use_notification'])->isEqualTo(1);
+
+        //update user to explicitly refuse notification
+        $this->boolean($user->update([
+            'id' => \Session::getLoginUserID(),
+            'is_notif_enable_default' => '0'
+        ]))->isTrue();
+        //check computed value
+        $this->boolean($user->getFromDB(\Session::getLoginUserID()))->isTrue();
+        $this->boolean((bool)$user->fields['is_notif_enable_default'])->isFalse();
+        $this->boolean($user->isUserNotificationEnable())->isFalse();
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'other ticket title',
+                'content'     => 'other description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            ] + $ticket->getDefaultValues(getItemByTypeName('Entity', '_test_root_entity', true))
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        //load ticket actor
+        $ticket_user = new \Ticket_User();
+        $actors = $ticket_user->find([
+            "tickets_id" => $ticket_id,
+            "type" => CommonITILActor::REQUESTER,
+        ]);
+        $this->integer(count($actors))->isIdenticalTo(1);
+        $this->integer(reset($actors)['use_notification'])->isEqualTo(0);
     }
 
     public function testShowCentralCountCriteria()

@@ -218,7 +218,7 @@ class NotImportedEmail extends CommonDBTM
     {
         global $DB;
 
-        $DB->truncate('glpi_notimportedemails');
+        $DB->delete('glpi_notimportedemails', [1]);
     }
 
 

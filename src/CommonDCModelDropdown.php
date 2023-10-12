@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\AssetImage;
 
 /// CommonDCModelDropdown class - dropdown for datacenter items models

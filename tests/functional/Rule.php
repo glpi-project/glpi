@@ -249,7 +249,7 @@ class Rule extends DbTestCase
         $this->array($rule->criterias)->hasSize(2);
         $this->array($rule->actions)->hasSize(1);
 
-        $this->boolean($rule->getRuleWithCriteriasAndActions(100))->isFalse();
+        $this->boolean($rule->getRuleWithCriteriasAndActions(10000))->isFalse();
     }
 
     public function testMaxActionsCount()
@@ -258,7 +258,7 @@ class Rule extends DbTestCase
         $this->integer($rule->maxActionsCount())->isIdenticalTo(1);
 
         $rule = new \RuleTicket();
-        $this->integer($rule->maxActionsCount())->isIdenticalTo(36);
+        $this->integer($rule->maxActionsCount())->isIdenticalTo(41);
 
         $rule = new \RuleDictionnarySoftware();
         $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
@@ -292,7 +292,7 @@ class Rule extends DbTestCase
     public function testGetCriteriaName()
     {
         $ruleTicket = new \RuleTicket();
-        $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Ticket location');
+        $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Location');
         $this->string($ruleTicket->getCriteriaName('location'))->isIdenticalTo(__('Unavailable'));
     }
 
@@ -308,8 +308,8 @@ class Rule extends DbTestCase
             [__('Technician')             , '_users_id_assign'],
             [__('Technician group')       , '_groups_id_assign'],
             [__('Assigned to a supplier') , '_suppliers_id_assign'],
-            [_n('Watcher', 'Watchers', 1)                , '_users_id_observer'],
-            [_n('Watcher group', 'Watcher groups', 1)          , '_groups_id_observer'],
+            [_n('Observer', 'Observers', 1)                , '_users_id_observer'],
+            [_n('Observer group', 'Observer groups', 1)          , '_groups_id_observer'],
             [__('Urgency')                , 'urgency'],
             [__('Impact')                 , 'impact'],
             [__('Priority')               , 'priority'],
@@ -341,7 +341,7 @@ class Rule extends DbTestCase
             [sprintf(
                 __('%1$s - %2$s'),
                 __('Send an approval request'),
-                \Group::getTypeName(1)
+                __('Group users')
             )           , 'groups_id_validate'
             ],
             [sprintf(
@@ -608,7 +608,7 @@ class Rule extends DbTestCase
         //rename rule with a quote, then clone
         $rules_id = $cloned;
         $rule = new \RuleAsset(); //needed to reset last_clone_index...
-        $this->boolean($rule->update(['id' => $rules_id, 'name' => addslashes("User's assigned")]))->isTrue();
+        $this->boolean($rule->update(['id' => $rules_id, 'name' => "User's assigned"]))->isTrue();
         $this->boolean($rule->getFromDB($rules_id))->isTrue();
 
         $cloned = $rule->clone();

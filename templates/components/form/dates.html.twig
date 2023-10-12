@@ -52,7 +52,7 @@
 {% if withtemplate is defined and withtemplate > 0 and item.fields['template_name']|length > 0 %}
 <div class="row">
    <div class="col-12">
-      {{ __('Created from the template %s')|format(item.fields['template_name']|verbatim_value) }}
+      {{ __('Created from the template %s')|format(item.fields['template_name']) }}
    </div>
 </div>
 {% endif %}

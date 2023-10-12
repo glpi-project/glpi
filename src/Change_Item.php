@@ -233,7 +233,7 @@ class Change_Item extends CommonItilObject_Item
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
 
                 case 'User':
                 case 'Group':
@@ -249,7 +249,7 @@ class Change_Item extends CommonItilObject_Item
                         ])->current();
                         $nb = $result['cpt'];
                     }
-                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 default:
                     if (Session::haveRight("change", Change::READALL)) {
@@ -270,7 +270,7 @@ class Change_Item extends CommonItilObject_Item
                                 }
                             }
                         }
-                        return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
             }
         }

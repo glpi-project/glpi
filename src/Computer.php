@@ -66,6 +66,8 @@ class Computer extends CommonDBTM
             Item_Devices::class,
             Infocom::class,
             Item_Disk::class,
+            Item_Process::class,
+            Item_Environment::class,
             Item_SoftwareVersion::class,
             Item_SoftwareLicense::class,
             Contract_Item::class,
@@ -105,8 +107,11 @@ class Computer extends CommonDBTM
          ->addImpactTab($ong, $options)
          ->addStandardTab('Item_OperatingSystem', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
+         ->addStandardTab('Item_Line', $ong, $options)
          ->addStandardTab('Item_Disk', $ong, $options)
          ->addStandardTab('Item_SoftwareVersion', $ong, $options)
+         ->addStandardTab('Item_Process', $ong, $options)
+         ->addStandardTab('Item_Environment', $ong, $options)
          ->addStandardTab('Computer_Item', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab(Socket::class, $ong, $options)
@@ -157,39 +162,39 @@ class Computer extends CommonDBTM
 
         $changes = [];
         $update_count = count($this->updates ?? []);
-        $input = Toolbox::addslashes_deep($this->fields);
+        $input = $this->fields;
         for ($i = 0; $i < $update_count; $i++) {
            // Update contact of attached items
-            if ($this->updates[$i] == 'contact_num' && $CFG_GLPI['is_contact_autoupdate']) {
+            if ($this->updates[$i] == 'contact_num' && Entity::getUsedConfig('is_contact_autoupdate', $this->getEntityID())) {
                 $changes['contact_num'] = $input['contact_num'];
             }
-            if ($this->updates[$i] == 'contact' && $CFG_GLPI['is_contact_autoupdate']) {
+            if ($this->updates[$i] == 'contact' && Entity::getUsedConfig('is_contact_autoupdate', $this->getEntityID())) {
                 $changes['contact'] = $input['contact'];
             }
            // Update users and groups of attached items
             if (
                 $this->updates[$i] == 'users_id'
-                && $CFG_GLPI['is_user_autoupdate']
+                && Entity::getUsedConfig('is_user_autoupdate', $this->getEntityID())
             ) {
                 $changes['users_id'] = $input['users_id'];
             }
             if (
                 $this->updates[$i] == 'groups_id'
-                && $CFG_GLPI['is_group_autoupdate']
+                && Entity::getUsedConfig('is_group_autoupdate', $this->getEntityID())
             ) {
                 $changes['groups_id'] = $input['groups_id'];
             }
            // Update state of attached items
             if (
                 ($this->updates[$i] == 'states_id')
-                && ($CFG_GLPI['state_autoupdate_mode'] < 0)
+                && (Entity::getUsedConfig('state_autoupdate_mode', $this->getEntityID()) < 0)
             ) {
                 $changes['states_id'] = $input['states_id'];
             }
            // Update loction of attached items
             if (
                 $this->updates[$i] == 'locations_id'
-                && $CFG_GLPI['is_location_autoupdate']
+                && Entity::getUsedConfig('is_location_autoupdate', $this->getEntityID())
             ) {
                 $changes['locations_id'] = $input['locations_id'];
             }
@@ -312,12 +317,13 @@ class Computer extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Computer_Item::class,
                 ComputerAntivirus::class,
                 ComputerVirtualMachine::class,
+                Item_Environment::class,
+                Item_Process::class,
             ]
         );
     }
@@ -572,6 +578,18 @@ class Computer extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '81',
+            'table'              => 'glpi_reservationitems',
+            'name'               => __('Reservable'),
+            'field'              => 'is_active',
+            'joinparams'         => [
+                'jointype' => 'itemtype_item'
+            ],
+            'datatype'           => 'bool',
+            'massiveaction'      => false
         ];
 
        // add operating system search options

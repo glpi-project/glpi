@@ -187,7 +187,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
                 // read the fields to save
                 $object_state = [];
                 foreach ($fields as $field) {
-                    $object_state[$field] = $DB->escape($item->fields[$field]);
+                    $object_state[$field] = $item->fields[$field];
                 }
 
                 // Build the SQL query
@@ -262,7 +262,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         $update = [];
         foreach ($fields as $field) {
             $update[$field] = $this->fixOneField($item, $field);
-            $update[$field] = $DB->escape($update[$field]);
+            $update[$field] = $update[$field];
         }
 
         $success = $DB->update(
@@ -410,7 +410,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
 
         if (in_array($itemtype, [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
             $searches[] = [
-                $field => ['REGEXP', $DB->escape('(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)')]
+                $field => ['REGEXP', '(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)']
             ];
         }
 

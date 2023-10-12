@@ -51,7 +51,8 @@
       </span>
    {% endset %}
 
-   {% if users_id > 0 %}
+   {% set is_validation_answer = entry is defined and entry['type'] ends with 'Validation' and entry['item_action'] == 'validation-answer' %}
+   {% if is_validation_answer and entry['item']['itemtype_target'] == 'Group' %}
       {% set creator_span %}
          {{ include('components/user/link_with_tooltip.html.twig', {
             'users_id': users_id,
@@ -59,10 +60,31 @@
             'enable_anonymization': anonym_user
          }, with_context = false) }}
       {% endset %}
+      {% set group_span %}
+         <span id="group_{{ random() }}">
+            <i class="ti ti-users ms-1"></i>
+            {{ get_item_link('Group', entry['item']['items_id_target'], {
+               'enable_anonymization': enable_anonymization
+            })|raw }}
+         </span>
+      {% endset %}
 
-      {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
+      {{ __('Created: %1$s by %2$s for the group %3$s')|format(date_span, creator_span, group_span)|raw }}
+   {% elseif entry['type'] == 'ITILReminder' %}
+      {{ date_span|raw }}
    {% else %}
-      {{ __('Created: %1$s')|format(date_span)|raw }}
+      {% if users_id > 0 %}
+         {% set creator_span %}
+            {{ include('components/user/link_with_tooltip.html.twig', {
+               'users_id': users_id,
+               'enable_anonymization': anonym_user
+            }, with_context = false) }}
+         {% endset %}
+
+         {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
+      {% else %}
+         {{ __('Created: %1$s')|format(date_span)|raw }}
+      {% endif %}
    {% endif %}
 </span>
 

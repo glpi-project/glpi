@@ -31,11 +31,62 @@
  * ---------------------------------------------------------------------
  */
 
+body.api-documentation {
+    > .container {
+        .sidebar {
+            background: inherit;
+            color: inherit;
+            width: 200px;
+            position: fixed;
+            top: 70px;
+            left: 10px;
+            bottom: 0;
+            overflow: auto;
+        }
+
+        .main-content {
+            margin-left: 210px;
+        }
+    }
+}
+
 .documentation {
     background-color: white;
     max-width: 700px;
     margin: 0 auto;
     padding: 10px 20px;
+
+    .table-of-contents {
+        margin: 0;
+        padding: 0;
+
+        li {
+            margin: 0;
+            list-style: none;
+            padding: 5px 0 5px 5px;
+            border: none;
+
+            a {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: #940000;
+                border-bottom: 1px solid #a87a7a;
+            }
+
+            ul {
+                li {
+                    list-style: disc;
+
+                    a {
+                       font-weight: normal;
+                       font-size: 1rem;
+                       color: #3a5693;
+                       border-bottom: none;
+                   }
+                }
+            }
+        }
+    }
 
     h1 {
         color: #300000;
@@ -110,21 +161,14 @@
 }
 
 @include media-breakpoint-up(sm) {
-    .documentation #summary,
-    .documentation .summary {
+    .documentation .table-of-contents {
         position: fixed;
         top: 40px;
         left: 15px;
         margin-top: 0;
-
-        + ul {
-            width: 200px;
-            position: fixed;
-            top: 70px;
-            left: 10px;
-            bottom: 0;
-            overflow: auto;
-        }
+        width: 200px;
+        bottom: 0;
+        overflow: auto;
     }
 }
 

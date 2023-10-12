@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Kanban;
+
 class Item_Kanban extends CommonDBRelation
 {
     public static $itemtype_1 = 'itemtype';
@@ -134,6 +136,33 @@ class Item_Kanban extends CommonDBRelation
         } else {
            // State is not saved
             return [];
+        }
+    }
+
+    /**
+     * Clear the state of a Kanban's columns for a specific item for the current user or globally.
+     * @since 10.1.0
+     * @param string $itemtype Type of the item.
+     * @param int $items_id ID of the item.
+     * @return bool True if successful
+     */
+    public static function clearStateForItem(string $itemtype, int $items_id)
+    {
+        global $DB;
+
+        try {
+            /** @var Kanban|CommonDBTM $item */
+            $item = new $itemtype();
+            $item->getFromDB($items_id);
+            $force_global = $item->forceGlobalState();
+
+            return (bool) $DB->delete('glpi_items_kanbans', [
+                'users_id' => $force_global ? 0 : Session::getLoginUserID(),
+                'itemtype' => $itemtype,
+                'items_id' => $items_id
+            ]);
+        } catch (\Throwable $e) {
+            return false;
         }
     }
 

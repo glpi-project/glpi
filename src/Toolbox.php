@@ -34,14 +34,15 @@
  */
 
 use Glpi\Console\Application;
+use Glpi\DBAL\QueryParam;
 use Glpi\Event;
+use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Rules\RulesManager;
-use Glpi\Toolbox\Sanitizer;
-use Glpi\Toolbox\VersionParser;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -207,9 +208,12 @@ class Toolbox
      * @param $str string   string to analyse
      *
      * @return boolean
+     *
+     * @deprecated 10.1.0
      **/
     public static function seems_utf8($str)
     {
+        Toolbox::deprecated();
         return mb_check_encoding($str, "UTF-8");
     }
 
@@ -246,122 +250,15 @@ class Toolbox
     }
 
     /**
-     * @deprecated 10.0.0
-     */
-    public static function sodiumEncrypt($content, $key = null)
-    {
-        Toolbox::deprecated('Use "GLPIKey::encrypt()"');
-        $glpikey = new GLPIKey();
-        return $glpikey->encrypt($content, $key);
-    }
-
-    /**
-     * @deprecated 10.0.0
-     */
-    public static function sodiumDecrypt($content, $key = null)
-    {
-        Toolbox::deprecated('Use "GLPIKey::decrypt()"');
-        $glpikey = new GLPIKey();
-        return $glpikey->decrypt($content, $key);
-    }
-
-
-    /**
-     * Prevent from XSS
-     * Clean code
-     *
-     * @param array|string $value  item to prevent
-     *
-     * @return array|string  clean item
-     *
-     * @see unclean_cross_side_scripting_deep*
-     *
-     * @deprecated 10.0.0
-     **/
-    public static function clean_cross_side_scripting_deep($value)
-    {
-        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()"');
-        return Sanitizer::encodeHtmlSpecialCharsRecursive($value);
-    }
-
-
-    /**
-     *  Invert fonction from clean_cross_side_scripting_deep
-     *
-     * @param array|string $value  item to unclean from clean_cross_side_scripting_deep
-     *
-     * @return array|string  unclean item
-     *
-     * @see clean_cross_side_scripting_deep()
-     *
-     * @deprecated 10.0.0
-     **/
-    public static function unclean_cross_side_scripting_deep($value)
-    {
-        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()"');
-        global $DB;
-        return $DB->escape(Sanitizer::decodeHtmlSpecialCharsRecursive($value));
-    }
-
-    /**
-     * Returns a safe configuration for htmLawed.
-     *
-     * @return array
-     *
-     * @since 9.5.4
-     */
-    public static function getHtmLawedSafeConfig(): array
-    {
-        $forbidden_elements = [
-            'script',
-
-            // header elements used to link external resources
-            'link',
-            'meta',
-
-            // elements used to embed potential malicious external application
-            'applet',
-            'canvas',
-            'embed',
-            'object',
-
-            // form elements
-            'form',
-            'button',
-            'input',
-            'select',
-            'datalist',
-            'option',
-            'optgroup',
-            'textarea',
-        ];
-
-        $config = [
-            'elements'           => '* ' . implode('', array_map(fn($element) => '-' . $element, $forbidden_elements)),
-            'deny_attribute'     => 'on*, srcdoc, formaction',
-            'comment'            => 1, // 1: remove HTML comments (and do not display their contents)
-            'cdata'              => 1, // 1: remove CDATA sections (and do not display their contents)
-            'direct_list_nest'   => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
-            'schemes'            => 'href: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet, notes; *: file, http, https',
-            'no_deprecated_attr' => 0, // 0: do not transform deprecated HTML attributes
-        ];
-        if (!GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
-            $config['elements'] .= '-iframe';
-        }
-
-        return $config;
-    }
-
-    /**
      * Log in 'php-errors' all args
      *
-     * @param Logger  $logger Logger instance, if any
-     * @param integer $level  Log level (defaults to warning)
-     * @param array   $args   Arguments (message to log, ...)
+     * @param LoggerInterface   $logger Logger instance, if any
+     * @param integer           $level  Log level (defaults to warning)
+     * @param array             $args   Arguments (message to log, ...)
      *
      * @return void
      **/
-    private static function log($logger = null, $level = Logger::WARNING, $args = null)
+    private static function log(LoggerInterface $logger = null, $level = LogLevel::WARNING, $args = null)
     {
         static $tps = 0;
 
@@ -412,14 +309,14 @@ class Toolbox
         }
 
         try {
-            $logger->addRecord($level, $msg, $extra);
+            $logger->log($level, $msg, $extra);
         } catch (\Throwable $e) {
            //something went wrong, make sure logging does not cause fatal
             error_log($e);
         }
 
         global $SQLLOGGER;
-        if (isCommandLine() && $level >= Logger::WARNING && $logger !== $SQLLOGGER) {
+        if (isCommandLine() && $level >= LogLevel::WARNING && $logger !== $SQLLOGGER) {
            // Do not output related messages to $SQLLOGGER as they are redundant with
            // output made by "ErrorHandler::handleSql*()" methods.
             echo $msg;
@@ -431,20 +328,7 @@ class Toolbox
      */
     public static function logDebug()
     {
-        self::log(null, Logger::DEBUG, func_get_args());
-    }
-
-    /**
-     * PHP notice log
-     */
-    public static function logNotice()
-    {
-        self::deprecated(
-            'Use either native trigger_error($msg, E_USER_NOTICE) to log notices,'
-            . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
-            . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
-        );
-        self::log(null, Logger::NOTICE, func_get_args());
+        self::log(null, LogLevel::DEBUG, func_get_args());
     }
 
     /**
@@ -452,33 +336,7 @@ class Toolbox
      */
     public static function logInfo()
     {
-        self::log(null, Logger::INFO, func_get_args());
-    }
-
-    /**
-     * PHP warning log
-     */
-    public static function logWarning()
-    {
-        self::deprecated(
-            'Use either native trigger_error($msg, E_USER_WARNING) to log warnings,'
-            . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
-            . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
-        );
-        self::log(null, Logger::WARNING, func_get_args());
-    }
-
-    /**
-     * PHP error log
-     */
-    public static function logError()
-    {
-        self::deprecated(
-            'Use either native trigger_error($msg, E_USER_WARNING) to log errors,'
-            . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
-            . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
-        );
-        self::log(null, Logger::ERROR, func_get_args());
+        self::log(null, LogLevel::INFO, func_get_args());
     }
 
     /**
@@ -488,7 +346,7 @@ class Toolbox
     {
         global $SQLLOGGER;
         $args = func_get_args();
-        self::log($SQLLOGGER, Logger::DEBUG, $args);
+        self::log($SQLLOGGER, LogLevel::DEBUG, $args);
     }
 
     /**
@@ -498,7 +356,7 @@ class Toolbox
     {
         global $SQLLOGGER;
         $args = func_get_args();
-        self::log($SQLLOGGER, Logger::WARNING, $args);
+        self::log($SQLLOGGER, LogLevel::WARNING, $args);
     }
 
     /**
@@ -508,7 +366,7 @@ class Toolbox
     {
         global $SQLLOGGER;
         $args = func_get_args();
-        self::log($SQLLOGGER, Logger::ERROR, $args);
+        self::log($SQLLOGGER, LogLevel::ERROR, $args);
     }
 
 
@@ -662,17 +520,19 @@ class Toolbox
      * @param string      $file        storage filename
      * @param string      $filename    file title
      * @param string|null $mime        file mime type
-     * @param boolean     $add_expires add expires headers maximize cacheability ?
+     * @param boolean     $expires_headers add expires headers maximize cacheability ?
+     * @param boolean     $return_response return a Response object instead of sending it directly
      *
-     * @return void
+     * @return Response|void
+     * @phpstan-return $return_response ? Response : void
      **/
-    public static function sendFile($file, $filename, $mime = null, $expires_headers = false)
+    public static function sendFile($file, $filename, $mime = null, $expires_headers = false, bool $return_response = false)
     {
 
        // Test securite : document in DOC_DIR
         $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
 
-        if (strstr($tmpfile, "../") || strstr($tmpfile, "..\\")) {
+        if (str_contains($tmpfile, "../") || str_contains($tmpfile, "..\\")) {
             Event::log(
                 $file,
                 "sendFile",
@@ -680,11 +540,17 @@ class Toolbox
                 "security",
                 $_SESSION["glpiname"] . " try to get a non standard file."
             );
+            if ($return_response) {
+                return new Response(403);
+            }
             echo "Security attack!!!";
             die(1);
         }
 
         if (!file_exists($file)) {
+            if ($return_response) {
+                return new Response(404);
+            }
             echo "Error file $file does not exist";
             die(1);
         }
@@ -727,35 +593,51 @@ class Toolbox
             ob_clean();
         }
 
-        // Now send the file with header() magic
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastModified) . " GMT");
-        header("Etag: $etag");
+        $headers = [
+            'Last-Modified' => gmdate("D, d M Y H:i:s", $lastModified) . " GMT",
+            'Etag'          => $etag,
+            'Cache-Control' => 'private',
+        ];
         header_remove('Pragma');
-        header('Cache-Control: private');
         if ($expires_headers) {
             $max_age = WEEK_TIMESTAMP;
-            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
+            $headers['Expires'] = gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age);
         }
-        header(
-            "Content-disposition:$attachment filename=\"" .
+        $content_disposition = "$attachment filename=\"" .
             addslashes(mb_convert_encoding($filename, 'ISO-8859-1', 'UTF-8')) .
             "\"; filename*=utf-8''" .
-            rawurlencode($filename)
-        );
-        header("Content-type: " . $mime);
+            rawurlencode($filename);
+        $headers['Content-Disposition'] = $content_disposition;
+        $headers['Content-type'] = $mime;
 
        // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
        // http://tools.ietf.org/html/rfc7232#section-3.3
+        $matches_cache = false;
         if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
-            http_response_code(304); //304 - Not Modified
+            $matches_cache = true;
+        } else if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified) {
+            $matches_cache = true;
+        }
+        if ($matches_cache) {
+            $response = new Response(304, $headers);
+            if ($return_response) {
+                return $response;
+            }
+            $response->send();
             exit;
         }
-        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified) {
-            http_response_code(304); //304 - Not Modified
-            exit;
+        $content = file_get_contents($file);
+        if ($content === false) {
+            if ($return_response) {
+                return new Response(500);
+            }
+            die("Error opening file $file");
         }
-
-        readfile($file) or die("Error opening file $file");
+        $response = new Response(200, $headers, $content);
+        if ($return_response) {
+            return $response;
+        }
+        $response->send();
     }
 
 
@@ -765,9 +647,13 @@ class Toolbox
      * @param string|string[] $value value to add slashes
      *
      * @return string|string[]
+     *
+     * @deprecated 10.1.0
      **/
     public static function addslashes_deep($value)
     {
+        Toolbox::deprecated();
+
         global $DB;
 
         $value = ((array) $value === $value)
@@ -793,9 +679,12 @@ class Toolbox
      * @param array|string $value  item to stripslashes
      *
      * @return array|string stripslashes item
+     *
+     * @deprecated 10.1.0
      **/
     public static function stripslashes_deep($value)
     {
+        Toolbox::deprecated();
 
         $value = ((array) $value === $value)
                   ? array_map([__CLASS__, 'stripslashes_deep'], $value)
@@ -900,41 +789,6 @@ class Toolbox
             return 2;
         }
         return 3;
-    }
-
-
-    /**
-     * Get the filesize of a complete directory (from php.net)
-     *
-     * @param string $path  directory or file to get size
-     *
-     * @return null|integer
-     *
-     * @deprecated 10.0.0
-     **/
-    public static function filesizeDirectory($path)
-    {
-        Toolbox::deprecated();
-
-        if (!is_dir($path)) {
-            return filesize($path);
-        }
-
-        if ($handle = opendir($path)) {
-            $size = 0;
-
-            while (false !== ($file = readdir($handle))) {
-                if (($file != '.') && ($file != '..')) {
-                    $size += filesize($path . '/' . $file);
-                    $size += self::filesizeDirectory($path . '/' . $file);
-                }
-            }
-
-            closedir($handle);
-            return $size;
-        }
-
-        return null;
     }
 
 
@@ -1171,19 +1025,6 @@ class Toolbox
     public static function canUseLdap()
     {
         return extension_loaded('ldap');
-    }
-
-
-    /**
-     * Determine if CAS auth is usable checking lib existence
-     *
-     * @since 9.3
-     *
-     * @return boolean
-     **/
-    public static function canUseCas()
-    {
-        return class_exists('phpCAS');
     }
 
 
@@ -2405,6 +2246,9 @@ class Toolbox
             // Initalize rules
             RulesManager::initializeRules();
 
+            // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
+            \Glpi\OAuth\Server::generateKeys();
+
            // update default language
             Config::setConfigurationValues(
                 'core',
@@ -2499,79 +2343,6 @@ class Toolbox
 
 
     /**
-     * Check valid referer accessing GLPI
-     *
-     * @since 0.84.2
-     *
-     * @return void  display error if not permit
-     *
-     * @deprecated 10.0.7
-     **/
-    public static function checkValidReferer()
-    {
-        Toolbox::deprecated('Checking `HTTP_REFERER` does not provide any security.');
-
-        global $CFG_GLPI;
-
-        $isvalidReferer = true;
-
-        if (!isset($_SERVER['HTTP_REFERER'])) {
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                Html::displayErrorAndDie(
-                    __("No HTTP_REFERER found in request. Reload previous page before doing action again."),
-                    true
-                );
-                $isvalidReferer = false;
-            }
-        } else if (!is_array($url = parse_url($_SERVER['HTTP_REFERER']))) {
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                Html::displayErrorAndDie(
-                    __("Error when parsing HTTP_REFERER. Reload previous page before doing action again."),
-                    true
-                );
-                $isvalidReferer = false;
-            }
-        }
-
-        if (
-            !isset($url['host'])
-            || (($url['host'] != $_SERVER['SERVER_NAME'])
-            && (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])
-               || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))
-        ) {
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                Html::displayErrorAndDie(
-                    __("None or Invalid host in HTTP_REFERER. Reload previous page before doing action again."),
-                    true
-                );
-                $isvalidReferer = false;
-            }
-        }
-
-        if (
-            !isset($url['path'])
-            || (!empty($CFG_GLPI['root_doc'])
-            && (strpos($url['path'], $CFG_GLPI['root_doc']) !== 0))
-        ) {
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                Html::displayErrorAndDie(
-                    __("None or Invalid path in HTTP_REFERER. Reload previous page before doing action again."),
-                    true
-                );
-                $isvalidReferer = false;
-            }
-        }
-
-        if (!$isvalidReferer && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
-            Html::displayErrorAndDie(
-                __("The action you have requested is not allowed. Reload previous page before doing action again."),
-                true
-            );
-        }
-    }
-
-
-    /**
      * Retrieve the mime type of a file
      *
      * @since 0.85.5
@@ -2634,15 +2405,21 @@ class Toolbox
      *
      * @param string $string String to slugify
      * @param string $prefix Prefix to use (anchors cannot begin with a number)
+     * @param bool   $force_special_dash Replace all special chars by a dash
      *
      * @return string
      */
-    public static function slugify($string, $prefix = 'slug_')
+    public static function slugify(string $string = "", string $prefix = 'slug_', bool $force_special_dash = false): string
     {
         $string = transliterator_transliterate("Any-Latin; Latin-ASCII; [^a-zA-Z0-9\.\ -_] Remove;", $string);
         $string = str_replace(' ', '-', self::strtolower($string));
         $string = preg_replace('~[^0-9a-z_\.]+~i', '-', $string);
         $string = trim($string, '-');
+
+        if ($force_special_dash) {
+            $string = preg_replace('~[^-\w]+~', '-', $string);
+        }
+
         if ($string == '') {
            //prevent empty slugs; see https://github.com/glpi-project/glpi/issues/2946
            //harcoded prefix string because html @id must begin with a letter
@@ -2702,15 +2479,6 @@ class Toolbox
 
         if (count($doc_data)) {
             $base_path = $CFG_GLPI['root_doc'];
-
-            $was_html_encoded = Sanitizer::isHtmlEncoded($content_text);
-            $was_escaped      = Sanitizer::isDbEscaped($content_text);
-            if ($was_html_encoded) {
-                $content_text = Sanitizer::decodeHtmlSpecialChars($content_text);
-            }
-            if ($was_escaped) {
-                $content_text = Sanitizer::dbUnescape($content_text);
-            }
 
             foreach ($doc_data as $id => $image) {
                 if (isset($image['tag'])) {
@@ -2809,13 +2577,6 @@ class Toolbox
                     }
                 }
             }
-
-            if ($was_html_encoded) {
-                $content_text = Sanitizer::encodeHtmlSpecialChars($content_text);
-            }
-            if ($was_escaped) {
-                $content_text = Sanitizer::dbEscape($content_text);
-            }
         }
 
         return $content_text;
@@ -2833,20 +2594,15 @@ class Toolbox
      **/
     public static function cleanTagOrImage($content, array $tags)
     {
-        $content = Sanitizer::unsanitize($content);
-
         foreach ($tags as $tag) {
             $content = preg_replace("/<img.*alt=['|\"]" . $tag . "['|\"][^>]*\>/", "<p></p>", $content);
         }
-
-        $content = Sanitizer::sanitize($content);
 
         return $content;
     }
 
     /**
-     * Decode JSON in GLPI
-     * Because json can have been modified from Sanitizer
+     * Decode JSON in GLPI.
      *
      * @param string $encoded Encoded JSON
      * @param boolean $assoc  assoc parameter of json_encode native function
@@ -2856,23 +2612,17 @@ class Toolbox
     public static function jsonDecode($encoded, $assoc = false)
     {
         if (!is_string($encoded)) {
-            self::log(null, Logger::NOTICE, ['Only strings can be json to decode!']);
+            self::log(null, LogLevel::NOTICE, ['Only strings can be json to decode!']);
             return $encoded;
         }
 
         $json_data = null;
         if (self::isJSON($encoded)) {
             $json_data = $encoded;
-        } else {
-            //something went wrong... Try to unsanitize before decoding.
-            $raw_encoded = Sanitizer::unsanitize($encoded);
-            if (self::isJSON($raw_encoded)) {
-                $json_data = $raw_encoded;
-            }
         }
 
         if ($json_data === null) {
-            self::log(null, Logger::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
+            self::log(null, LogLevel::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
             return $encoded;
         }
 
@@ -2939,42 +2689,6 @@ class Toolbox
 
         // See if the string contents are valid JSON.
         return null !== json_decode($json);
-    }
-
-    /**
-     * Checks if a string starts with another one
-     *
-     * @since 9.1.5
-     *
-     * @param string $haystack String to check
-     * @param string $needle   String to find
-     *
-     * @return boolean
-     *
-     * @deprecated 10.0.0
-     */
-    public static function startsWith($haystack, $needle)
-    {
-        Toolbox::deprecated('Use native str_starts_with() function.');
-        return str_starts_with($haystack, $needle);
-    }
-
-    /**
-     * Checks if a string starts with another one
-     *
-     * @since 9.2
-     *
-     * @param string $haystack String to check
-     * @param string $needle   String to find
-     *
-     * @return boolean
-     *
-     * @deprecated 10.0.0
-     */
-    public static function endsWith($haystack, $needle)
-    {
-        Toolbox::deprecated('Use native str_ends_with() function.');
-        return str_ends_with($haystack, $needle);
     }
 
     /**
@@ -3119,36 +2833,6 @@ class Toolbox
     }
 
     /**
-     * Get HTML content to display (cleaned)
-     *
-     * @since 9.1.8
-     *
-     * @param string $content Content to display
-     *
-     * @return string
-     *
-     * @deprecated 10.0.0
-     */
-    public static function getHtmlToDisplay($content)
-    {
-        Toolbox::deprecated('Use Glpi\Toolbox\RichText::getEnhancedHtml()');
-
-        $content = Toolbox::unclean_cross_side_scripting_deep(
-            $content
-        );
-
-        $content = Html::clean($content, false, 1);
-
-       // If content does not contain <br> or <p> html tag, use nl2br
-       // Required to correctly render linebreaks from "simple text mode" from GLPI prior to 9.4.0.
-        if (!preg_match('/<br\s?\/?>/', $content) && !preg_match('/<p>/', $content)) {
-            $content = nl2br($content);
-        }
-
-        return $content;
-    }
-
-    /**
      * Strip HTML tags from a string.
      *
      * @since 10.0.0
@@ -3161,8 +2845,6 @@ class Toolbox
      */
     public static function stripTags(string $str): string
     {
-        $str = Sanitizer::getVerbatimValue($str);
-
         return strip_tags($str);
     }
 
@@ -3177,7 +2859,7 @@ class Toolbox
      *
      * @since 9.5.0
      */
-    public static function savePicture($src, $uniq_prefix = '')
+    public static function savePicture($src, $uniq_prefix = '', $keep_src = false)
     {
 
         if (!Document::isImage($src)) {
@@ -3202,7 +2884,11 @@ class Toolbox
             return false;
         }
 
-        if (!rename($src, $dest)) {
+        if (!$keep_src) {
+            if (!rename($src, $dest)) {
+                return false;
+            }
+        } else if (!copy($src, $dest)) {
             return false;
         }
 
@@ -3252,13 +2938,11 @@ class Toolbox
     {
         global $CFG_GLPI;
 
-        $path = Html::cleanInputText($path); // prevent xss
-
         if (empty($path)) {
             return null;
         }
 
-        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . $path;
+        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . htmlspecialchars($path);
     }
 
     /**
@@ -3475,7 +3159,7 @@ HTML;
        // (or would require usage of a dedicated lib).
         return (preg_match(
             "/^(?:http[s]?:\/\/(?:[^\s`!(){};'\",<>«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
-            Sanitizer::unsanitize($url)
+            $url
         ) === 1);
     }
 
@@ -3688,5 +3372,17 @@ HTML;
             $size *= pow(1024, $supported_sizes[strtolower($matches[2])]);
         }
         return $size;
+    }
+
+    /**
+     * Get itemtype name used in JS function names, etc
+     *
+     * @param string $itemtype
+     *
+     * @return string
+     */
+    final public static function getNormalizedItemtype(string $itemtype)
+    {
+        return strtolower(str_replace('\\', '', $itemtype));
     }
 }

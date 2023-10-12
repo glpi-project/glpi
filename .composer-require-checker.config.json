@@ -4,15 +4,9 @@
 
     "date", "pcre", "reflection", "spl",
 
-    "exif", "ldap", "pcntl", "xmlrpc"
+    "exif", "ldap", "pcntl"
   ],
   "symbol-whitelist": [
-    "// PHP symbols",
-    "null",
-    "false", "true",
-    "static", "self", "parent",
-    "array", "bool", "callable", "float", "int", "iterable", "object", "string", "void",
-
     "// Missing constant in Alpine Linux",
     "GLOB_BRACE",
 
@@ -21,9 +15,6 @@
 
     "// GLPI config classes",
     "DB", "DBSlave",
-
-    "// apache function",
-    "getallheaders",
 
     "// OPCache extension (not installed on testing env)",
     "opcache_get_status", "opcache_invalidate", "opcache_reset",
@@ -42,9 +33,6 @@
     "// XHProf PECL extension",
     "XHProfRuns_Default", "xhprof_disable", "xhprof_enable", "XHPROF_PATH", "XHPROF_URL",
 
-    "// phpCAS library",
-    "CAS_VERSION_2_0", "phpCAS",
-
     "// paragonie/sodium_compat library",
     "SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES", "SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES", "sodium_crypto_aead_xchacha20poly1305_ietf_decrypt", "sodium_crypto_aead_xchacha20poly1305_ietf_encrypt", "sodium_crypto_aead_chacha20poly1305_ietf_keygen",
 
@@ -56,7 +44,9 @@
     "brotli_compress",
 
     "// composer autoloader",
-    "Composer\\Autoload\\ClassLoader"
+    "Composer\\Autoload\\ClassLoader",
+
+    "SodiumException"
   ],
   "scan-files": [
     "ajax/**/*.php",

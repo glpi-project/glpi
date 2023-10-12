@@ -37,6 +37,10 @@ include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
+if (!Glpi\Marketplace\Controller::isWebAllowed()) {
+    // Redirect to classic plugins page
+    Html::redirect(Plugin::getSearchURL());
+}
 // This has to be called before search process is called, in order to add
 // "new" plugins in DB to be able to display them.
 $plugin = new Plugin();

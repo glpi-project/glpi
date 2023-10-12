@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 // Class PlanningRecall
 // @since 0.84
 class PlanningRecall extends CommonDBChild
@@ -227,20 +230,20 @@ class PlanningRecall extends CommonDBChild
             unset($_SESSION['glpiplanningreminder_isavailable']);
         }
 
-       //nedds DB::update() to support SQL functions to get migrated
-        $result = $DB->update(
+        return $DB->update(
             'glpi_planningrecalls',
             [
-                'when'   => new \QueryExpression(
-                    "DATE_SUB('$begin', INTERVAL " . $DB->quoteName('before_time') . " SECOND)"
-                ),
+                'when'   => QueryFunction::dateSub(
+                    date: new QueryExpression($DB::quoteValue($begin)),
+                    interval: new QueryExpression($DB::quoteName('before_time')),
+                    interval_unit: 'SECOND'
+                )
             ],
             [
                 'itemtype'  => $itemtype,
                 'items_id'  => $items_id
             ]
         );
-        return $result;
     }
 
 
@@ -413,7 +416,7 @@ class PlanningRecall extends CommonDBChild
             ],
             'WHERE'     => [
                 'NOT'                         => ['glpi_planningrecalls.when' => null],
-                'glpi_planningrecalls.when'   => ['<', new \QueryExpression('NOW()')],
+                'glpi_planningrecalls.when'   => ['<', QueryFunction::now()],
                 'glpi_alerts.date'            => null
             ]
         ]);
@@ -440,7 +443,7 @@ class PlanningRecall extends CommonDBChild
                     }
                 }
 
-                if (NotificationEvent::raiseEvent('planningrecall', $pr, $options)) {
+                if (NotificationEvent::raiseEvent('planningrecall', $pr, $options, $itemToNotify)) {
                     $cron_status         = 1;
                     $task->addVolume(1);
                     $alert               = new Alert();

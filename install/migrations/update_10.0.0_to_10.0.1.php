@@ -68,25 +68,21 @@ function update1000to1001()
                 [
                     'rank'      => $rank++
                 ],
-                Toolbox::addslashes_deep(
-                    [
-                        'users_id'  => "0",
-                        'itemtype'  => $type,
-                        'num'       => $newval,
-                    ]
-                )
+                [
+                    'users_id'  => "0",
+                    'itemtype'  => $type,
+                    'num'       => $newval,
+                ]
             );
         }
     }
     foreach ($DELFROMDISPLAYPREF as $type => $tab) {
         $DB->deleteOrDie(
             'glpi_displaypreferences',
-            Toolbox::addslashes_deep(
-                [
-                    'itemtype'  => $type,
-                    'num'       => $tab
-                ]
-            )
+            [
+                'itemtype'  => $type,
+                'num'       => $tab
+            ]
         );
     }
 

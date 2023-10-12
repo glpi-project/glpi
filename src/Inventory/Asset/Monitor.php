@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use Computer_Item;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use Monitor as GMonitor;
 use RuleImportAssetCollection;
 
@@ -161,11 +160,11 @@ class Monitor extends InventoryAsset
                     // add monitor
                     $val->entities_id = $entities_id;
                     $val->is_dynamic = 1;
-                    $items_id = $monitor->add(Sanitizer::sanitize($this->handleInput($val, $monitor)));
+                    $items_id = $monitor->add($this->handleInput($val, $monitor));
                 } else {
                     $items_id = $data['found_inventories'][0];
                     $monitor->getFromDB($items_id);
-                    $monitor->update(Sanitizer::sanitize($this->handleInput($val, $monitor) + ['id' => $items_id]));
+                    $monitor->update($this->handleInput($val, $monitor) + ['id' => $items_id]);
                 }
 
                 $monitors[] = $items_id;

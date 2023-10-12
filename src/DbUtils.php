@@ -34,7 +34,10 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 
 /**
  * Database utilities
@@ -451,18 +454,6 @@ final class DbUtils
             return false;
         }
 
-       // If itemtype starts with "Glpi\" or "GlpiPlugin\" followed by a "\",
-       // then it is a namespaced itemtype that has been "sanitized".
-       // Strip slashes to get its actual value.
-        $sanitized_namespaced_pattern = '/^'
-         . '(' . preg_quote(NS_GLPI, '/') . '|' . preg_quote(NS_PLUG, '/') . ')' // start with GLPI core or plugin namespace
-         . preg_quote('\\', '/') // followed by an additionnal \
-         . '/';
-        if (preg_match($sanitized_namespaced_pattern, $itemtype)) {
-            trigger_error(sprintf('Unexpected sanitized itemtype "%s" encountered.', $itemtype), E_USER_WARNING);
-            $itemtype = stripslashes($itemtype);
-        }
-
         $itemtype = $this->fixItemtypeCase($itemtype);
 
         if ($itemtype === 'Event') {
@@ -655,7 +646,7 @@ final class DbUtils
             return false;
         }
 
-        $result = $DB->query("SHOW INDEX FROM `$table`");
+        $result = $DB->doQuery("SHOW INDEX FROM `$table`");
 
         if ($result && $DB->numrows($result)) {
             while ($data = $DB->fetchAssoc($result)) {
@@ -1156,8 +1147,8 @@ final class DbUtils
         $name    = "";
         $comment = "";
 
-        $SELECTNAME    = new \QueryExpression("'' AS " . $DB->quoteName('transname'));
-        $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+        $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
+        $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
         $JOIN          = [];
         $JOINS         = [];
         if ($translate) {
@@ -1258,8 +1249,8 @@ final class DbUtils
         $name    = "";
         $comment = "";
 
-        $SELECTNAME    = new \QueryExpression("'' AS " . $DB->quoteName('transname'));
-        $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+        $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
+        $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
         $JOIN          = [];
         $JOINS         = [];
         if ($translate) {
@@ -1316,7 +1307,9 @@ final class DbUtils
                 [
                     "$table.address",
                     "$table.town",
-                    "$table.country"
+                    "$table.country",
+                    "$table.code",
+                    "$table.alias"
                 ]
             );
         }
@@ -1332,19 +1325,27 @@ final class DbUtils
                 $name = $result['completename'];
             }
 
-            $name = CommonTreeDropdown::sanitizeSeparatorInCompletename($name);
-
             if ($tooltip) {
                 $comment  = sprintf(
                     __('%1$s: %2$s') . "<br>",
                     "<span class='b'>" . __('Complete name') . "</span>",
-                    $name
+                    htmlspecialchars($name)
                 );
                 if ($table == Location::getTable()) {
-                     $acomment = '';
-                     $address = $result['address'];
-                     $town    = $result['town'];
-                     $country = $result['country'];
+                    $acomment = '';
+                    $address = $result['address'];
+                    $town    = $result['town'];
+                    $country = $result['country'];
+                    $code    = $result['code'];
+                    $alias   = $result['alias'];
+                    if (!empty($alias)) {
+                        $name = $alias;
+                        $comment .= "<span class='b'>" . __('Alias:') . "</span> " . $alias . "<br/>";
+                    }
+                    if (!empty($code)) {
+                        $name .= ' - ' . $code;
+                        $comment .= "<span class='b'>" . __('Code:') . "</span> " . $code . "<br/>";
+                    }
                     if (!empty($address)) {
                         $acomment .= $address;
                     }
@@ -1545,38 +1546,6 @@ final class DbUtils
 
 
     /**
-     * Compute all completenames of Dropdown Tree table
-     *
-     * @param string $table dropdown tree table to compute
-     *
-     * @return void
-     **/
-    public function regenerateTreeCompleteName($table)
-    {
-        global $DB;
-
-        $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => $table
-        ]);
-
-        foreach ($iterator as $data) {
-            list($name, $level) = $this->getTreeValueName($table, $data['id']);
-            $DB->update(
-                $table,
-                [
-                    'completename' => addslashes($name),
-                    'level'        => $level
-                ],
-                [
-                    'id' => $data['id']
-                ]
-            );
-        }
-    }
-
-
-    /**
      * Format a user name
      *
      * @param integer $ID           ID of the user.
@@ -1677,6 +1646,13 @@ final class DbUtils
             } else {
                 $user = $name;
             }
+        } else if ($ID === 'requester_manager') {
+            $name = __("Requester's manager");
+            if (isset($user['name'])) {
+                $user['name'] = $name;
+            } else {
+                $user = $name;
+            }
         } else if ($ID) {
             $iterator = $DB->request(
                 'glpi_users',
@@ -1769,12 +1745,6 @@ final class DbUtils
 
         $base_name = $objectName;
 
-        $objectName = Sanitizer::decodeHtmlSpecialChars($objectName);
-        $was_sanitized = $objectName !== $base_name;
-        if ($was_sanitized) {
-            Toolbox::deprecated('Handling of encoded/escaped value in autoName() is deprecated.');
-        }
-
         $matches = [];
         if (preg_match('/^<[^#]*(#{1,10})[^#]*>$/', $objectName, $matches) !== 1) {
             return $base_name;
@@ -1845,26 +1815,28 @@ final class DbUtils
                     $criteria['WHERE']['entities_id'] = $entities_id;
                 }
 
-                $subqueries[] = new \QuerySubQuery($criteria);
+                $subqueries[] = new QuerySubQuery($criteria);
             }
 
             $criteria = [
                 'SELECT' => [
-                    new \QueryExpression(
-                        "CAST(SUBSTRING(" . $DB->quoteName('code') . ", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
-                    )
+                    QueryFunction::cast(
+                        expression: QueryFunction::substring('code', $pos, $len),
+                        type: 'UNSIGNED',
+                        alias: 'no'
+                    ),
                 ],
-                'FROM'   => new \QueryUnion($subqueries, false, 'codes')
+                'FROM'   => new QueryUnion($subqueries, false, 'codes')
             ];
         } else {
             $table = $this->getTableForItemType($itemtype);
             $criteria = [
                 'SELECT' => [
-                    new \QueryExpression(
-                        "CAST(SUBSTRING(" . $DB->quoteName($field) . ", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
-                    )
+                    QueryFunction::cast(
+                        expression: QueryFunction::substring($field, $pos, $len),
+                        type: 'UNSIGNED',
+                        alias: 'no'
+                    ),
                 ],
                 'FROM'   => $table,
                 'WHERE'  => [
@@ -1885,7 +1857,7 @@ final class DbUtils
             }
         }
 
-        $subquery = new \QuerySubQuery($criteria, 'Num');
+        $subquery = new QuerySubQuery($criteria, 'Num');
         $iterator = $DB->request([
             'SELECT' => ['MAX' => 'Num.no AS lastNo'],
             'FROM'   => $subquery
@@ -1911,10 +1883,6 @@ final class DbUtils
             ],
             $autoNum
         );
-
-        if ($was_sanitized) {
-            $objectName = Sanitizer::encodeHtmlSpecialChars($objectName);
-        }
 
         return $objectName;
     }
@@ -1960,9 +1928,7 @@ final class DbUtils
         }
 
         if (is_string($end) && preg_match($date_pattern, $end) === 1) {
-            $end_expr = new QueryExpression(
-                'ADDDATE(' . $DB->quoteValue($end) . ', INTERVAL 1 DAY)'
-            );
+            $end_expr = QueryFunction::dateAdd(date: new QueryExpression($DB::quoteValue($end)), interval: 1, interval_unit: 'DAY');
             $criteria[] = [$field => ['<=', $end_expr]];
         } elseif ($end !== null && $end !== '') {
             trigger_error(

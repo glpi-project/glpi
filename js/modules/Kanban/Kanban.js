@@ -35,7 +35,7 @@ import SearchInput from "../SearchTokenizer/SearchInput.js";
 
 /* global escapeMarkupText */
 /* global sortable */
-/* global glpi_toast_error, glpi_toast_warning, glpi_toast_info */
+/* global glpi_confirm, glpi_toast_error, glpi_toast_warning, glpi_toast_info */
 
 /**
  * Kanban rights structure
@@ -536,12 +536,29 @@ class GLPIKanbanRights {
 
         const buildToolbar = function() {
             $(self.element).trigger('kanban:pre_build_toolbar');
+            const extra_toolbar_options = [];
+
             let toolbar = $("<div class='kanban-toolbar card flex-column flex-md-row'></div>").appendTo(self.element);
             $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
             let filter_input = $(`<input name='filter' class='form-control ms-1' type='text' placeholder="${__('Search or filter results')}" autocomplete="off"/>`).appendTo(toolbar);
             if (self.rights.canModifyView()) {
                 let add_column = "<button class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
                 toolbar.append(add_column);
+                extra_toolbar_options.push(`
+                <li class="dropdown-item cursor-pointer" data-action="clearState">
+                    <span>
+                      <i class="ti ti-trash"></i>${__('Reset view')}
+                   </span>
+                </li>
+                `);
+            }
+
+            if (extra_toolbar_options.length > 0) {
+                toolbar.append(`<button type="button" class="btn btn-outline-secondary ms-1 kanban-extra-toolbar-options"><i class="ti ti-dots-vertical"></i></button>`);
+                let extra_toolbar_dropdown = "<ul class='kanban-dropdown dropdown-menu kanban-extra-toolbar-options-menu' style='display: none'>";
+                extra_toolbar_dropdown += extra_toolbar_options.join('');
+                extra_toolbar_dropdown += '</ul>';
+                toolbar.append(extra_toolbar_dropdown);
             }
 
             self.filter_input = new SearchInput(filter_input, {
@@ -735,6 +752,11 @@ class GLPIKanbanRights {
                         }
                     }
                 }
+                if ($(e.target).closest(self.element + ' .kanban-extra-toolbar-options').length === 0) {
+                    $(self.element + ' .kanban-extra-toolbar-options-menu').css({
+                        display: 'none'
+                    });
+                }
             });
 
             if (Object.keys(self.supported_itemtypes).length > 0) {
@@ -849,6 +871,30 @@ class GLPIKanbanRights {
             $(self.element).on('click', '.kanban-add-column', function() {
                 refreshAddColumnForm();
             });
+            $(self.element).on('click', '.kanban-extra-toolbar-options', (e) => {
+                const toolbar = $(self.element + ' .kanban-toolbar');
+                const dropdown_element = $(e.currentTarget).siblings('.kanban-extra-toolbar-options-menu');
+                dropdown_element.css({
+                    display: 'block',
+                    position: 'fixed',
+                    left: toolbar.offset().left + toolbar.outerWidth(true) - dropdown_element.outerWidth(true),
+                    top: (toolbar.offset().top + toolbar.outerHeight(true)) - 10
+                });
+            });
+            const extra_toolbar_options_menu = $(self.element + ' .kanban-extra-toolbar-options-menu');
+            extra_toolbar_options_menu.on('click', 'li', (e) => {
+                const option = $(e.currentTarget);
+                if (option.attr('data-action') === 'clearState' && self.rights.canModifyView()) {
+                    glpi_confirm({
+                        title: __('Reset view'),
+                        message: __('Resetting the view will reset the shown columns and remove custom card ordering'),
+                        confirm_callback: () => {
+                            clearState();
+                        }
+                    });
+                }
+            });
+
             $(self.add_column_form).on('input', "input[name='column-name-filter']", function() {
                 const filter_input = $(this);
                 $(self.add_column_form + ' li').hide();
@@ -1112,7 +1158,7 @@ class GLPIKanbanRights {
                     display: 'block',
                     position: 'fixed',
                     left: toolbar.offset().left + toolbar.outerWidth(true) - column_dialog.outerWidth(true),
-                    top: toolbar.offset().top + toolbar.outerHeight(true)
+                    top: (toolbar.offset().top + toolbar.outerHeight(true)) - 10
                 });
             });
         };
@@ -2781,6 +2827,23 @@ class GLPIKanbanRights {
                 if (always) {
                     always();
                 }
+            });
+        };
+
+        const clearState = () => {
+            $.ajax({
+                type: "POST",
+                url: (self.ajax_root + "kanban.php"),
+                data: {
+                    action: "clear_column_state",
+                    itemtype: self.item.itemtype,
+                    items_id: self.item.items_id
+                }
+            }).done(function() {
+                // Reload page
+                window.location.reload();
+            }).fail(function() {
+                glpi_toast_error(__('Failed to reset Kanban view'), __('Error'));
             });
         };
 

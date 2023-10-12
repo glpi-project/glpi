@@ -1,0 +1,109 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div>
+   {{ fields.sliderField('use_default_payload', item.fields['use_default_payload'], __('Use default payload'), {
+      align_label_right: false,
+      label_class: 'col-xxl-4'
+   }) }}
+</div>
+<div id="webhook-payload-editor-container" data-webhook-id="{{ item.fields['id'] }}">
+   <div id="webhook-payload-editor-toolbar" class="mx-1" style="font-size: 1.25em">
+      <button name="editor_save" class="btn btn-icon btn-ghost-secondary">
+         <i class="fas fa-save" title="{{ _x('button', 'Save') }}"></i>
+      </button>
+      <button name="editor_find" class="btn btn-icon btn-ghost-secondary">
+         <i class="fas fa-fw fa-search" title="{{ __('Search') }}"></i>
+      </button>
+   </div>
+   <div id="payload" class="webhook-payload-editor" style="height: 600px"></div>
+   <div id="default_payload" class="d-none">
+      {{ fields.textareaField('default_payload', default_payload, '', {
+         readonly: 'readonly',
+         input_class: 'col-12',
+         field_class: 'col-12',
+         rows: 30,
+      }) }}
+   </div>
+</div>
+<script>
+    $(() => {
+        {% set payload = item.fields['payload']|default(default_payload) %}
+        const monaco = new GLPI.MonacoEditor('payload', 'twig', {{ payload|json_encode|raw }}, {{ response_schema|json_encode|raw }});
+        $("#webhook-payload-editor-container button[name='editor_find']").on('click', function() {
+            monaco.editor.getAction('actions.find').run();
+        });
+        $("#webhook-payload-editor-container button[name='editor_save']").on('click', function() {
+            let payload_template = '';
+            let reload_page = false;
+            if (!$('#payload').hasClass('d-none')) {
+                payload_template = monaco.editor.getValue();
+            }
+            $.ajax({
+                url: CFG_GLPI['root_doc'] + '/ajax/webhook.php',
+                type: 'POST',
+                data: {
+                    action: 'update_payload_template',
+                    webhook_id: $("#webhook-payload-editor-container").data('webhook-id'),
+                    payload_template: payload_template,
+                    use_default_payload: $('input[name="use_default_payload"]').is(':checked'),
+                }
+            }).done(function() {
+                if (reload_page) {
+                   window.location.reload();
+                } else {
+                   glpi_toast_info(__('Saved'));
+                }
+            });
+        });
+        $('input[name="use_default_payload"]').on('change', () => {
+           const is_default_payload = $('input[name="use_default_payload"]').is(':checked');
+           if (is_default_payload) {
+               $('#webhook-payload-editor-toolbar button').addClass('d-none');
+               $('#payload').addClass('d-none');
+               $('#default_payload').removeClass('d-none');
+           } else {
+               $('#webhook-payload-editor-toolbar button').removeClass('d-none');
+               $('#payload').removeClass('d-none');
+               $('#default_payload').addClass('d-none');
+           }
+           // Force save button to be visible
+           $('#webhook-payload-editor-toolbar button:first').removeClass('d-none');
+        });
+        $(() => {
+           $('input[name="use_default_payload"]').trigger('change');
+        });
+    });
+</script>

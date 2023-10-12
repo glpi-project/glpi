@@ -169,7 +169,7 @@ fi
 APPLICATION_ROOT=$(readlink -f "$WORKING_DIR/..")
 [[ ! -z "$APP_CONTAINER_HOME" ]] || APP_CONTAINER_HOME=$(mktemp -d -t glpi-tests-home-XXXXXXXXXX)
 [[ ! -z "$DB_IMAGE" ]] || DB_IMAGE=githubactions-mysql:8.1
-[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:7.4
+[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:8.1
 
 # Backup configuration files
 BACKUP_DIR=$(mktemp -d -t glpi-tests-backup-XXXXXXXXXX)
@@ -229,7 +229,7 @@ do
       || LAST_EXIT_CODE=$?
       ;;
     "update")
-         $APPLICATION_ROOT/.github/actions/init_initialize-0.80-db.sh \
+         $APPLICATION_ROOT/.github/actions/init_initialize-0.85.5-db.sh \
       && $APPLICATION_ROOT/.github/actions/init_initialize-9.5-db.sh \
       && docker-compose exec -T app .github/actions/test_update-from-older-version.sh \
       && docker-compose exec -T app .github/actions/test_update-from-9.5.sh \

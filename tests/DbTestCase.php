@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 // Generic test classe, to be extended for CommonDBTM Object
 
 class DbTestCase extends \GLPITestCase
@@ -117,8 +115,6 @@ class DbTestCase extends \GLPITestCase
      */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
-        $input = Sanitizer::dbUnescapeRecursive($input); // slashes in input should not be stored in DB
-
         $this->integer((int)$id)->isGreaterThan(0);
         $this->boolean($object->getFromDB($id))->isTrue();
         $this->variable($object->getField('id'))->isEqualTo($id);
@@ -145,15 +141,6 @@ class DbTestCase extends \GLPITestCase
      */
     protected function getClasses($function = false, array $excludes = [])
     {
-       // Add deprecated classes to excludes to prevent test failure
-        $excludes = array_merge(
-            $excludes,
-            [
-                'TicketFollowup', // Deprecated
-                '/^RuleImportComputer.*/', // Deprecated
-            ]
-        );
-
         $files_iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(GLPI_ROOT . '/src'),
             RecursiveIteratorIterator::SELF_FIRST
@@ -209,7 +196,6 @@ class DbTestCase extends \GLPITestCase
     protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
-        $input = Sanitizer::sanitize($input);
         $id = $item->add($input);
         $this->integer($id)->isGreaterThan(0);
 
@@ -228,18 +214,18 @@ class DbTestCase extends \GLPITestCase
      *
      * @param string $itemtype
      * @param array $input
+     * @param array $skip_fields Fields that wont be checked after creation
      */
-    protected function updateItem($itemtype, $id, $input)
+    protected function updateItem($itemtype, $id, $input, $skip_fields = [])
     {
         $item = new $itemtype();
         $input['id'] = $id;
-        $input = Sanitizer::sanitize($input);
         $success = $item->update($input);
         $this->boolean($success)->isTrue();
 
-       // Remove special fields
-        $input = array_filter($input, function ($key) {
-            return strpos($key, '_') !== 0;
+        // Remove special fields
+        $input = array_filter($input, function ($key) use ($skip_fields) {
+            return !in_array($key, $skip_fields) && strpos($key, '_') !== 0;
         }, ARRAY_FILTER_USE_KEY);
 
         $this->checkInput($item, $id, $input);
@@ -264,17 +250,31 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
+     * Delete an item of the given class
+     *
+     * @param string $itemtype
+     * @param int $id
+     */
+    protected function deleteItem($itemtype, $id): void
+    {
+        $item = new $itemtype();
+        $input['id'] = $id;
+        $success = $item->delete($input);
+        $this->boolean($success)->isTrue();
+    }
+
+    /**
      * Helper method to avoid writting the same boilerplate code for rule creation
      *
      * @param RuleBuilder $builder RuleConfiguration
      *
      * @return Rule Created rule
      */
-    protected function createRule(RuleBuilder $builder): Rule
+    protected function createRule(RuleBuilder $builder, string $ruleclass): Rule
     {
-        $rule = $this->createItem(RuleTicket::class, [
+        $rule = $this->createItem(Rule::class, [
             'is_active'    => 1,
-            'sub_type'     => 'RuleTicket',
+            'sub_type'     => $ruleclass,
             'name'         => $builder->getName(),
             'match'        => $builder->getOperator(),
             'condition'    => $builder->getCondition(),

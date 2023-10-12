@@ -33,14 +33,18 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\VersionParser;
 
 class GLPINetwork extends CommonGLPI
 {
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        return 'GLPI Network';
+        return self::createTabEntry('GLPI Network');
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-headset';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -106,7 +110,7 @@ class GLPINetwork extends CommonGLPI
                 echo "<td>";
                 echo "<div class=' " . (($informations['is_valid'] && $informations['subscription']['is_running'] ?? false) ? 'ok' : 'red') . "'> ";
                 echo "<i class='fa fa-info-circle'></i>";
-                echo Sanitizer::encodeHtmlSpecialChars($informations['validation_message']);
+                echo htmlspecialchars($informations['validation_message']);
                 echo "</div>";
                 echo "</td>";
                 echo "</tr>";
@@ -114,12 +118,12 @@ class GLPINetwork extends CommonGLPI
 
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . __('Subscription') . "</td>";
-            echo "<td>" . ($informations['subscription'] !== null ? Sanitizer::encodeHtmlSpecialChars($informations['subscription']['title']) : __('Unknown')) . "</td>";
+            echo "<td>" . ($informations['subscription'] !== null ? htmlspecialchars($informations['subscription']['title']) : __('Unknown')) . "</td>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . __('Registered by') . "</td>";
-            echo "<td>" . ($informations['owner'] !== null ? Sanitizer::encodeHtmlSpecialChars($informations['owner']['name']) : __('Unknown')) . "</td>";
+            echo "<td>" . ($informations['owner'] !== null ? htmlspecialchars($informations['owner']['name']) : __('Unknown')) . "</td>";
             echo "</tr>";
         }
 

@@ -244,6 +244,10 @@
 
             {{ include('components/itilobject/fields/global_validation.html.twig') }}
 
+            {% if item.isField('externalid') %}
+               {{ fields.textField('externalid', item.fields['externalid'], __('External ID'), field_options) }}
+            {% endif %}
+
             {{ call_plugin_hook('post_item_form', {"item": item, 'options': params}) }}
          </div>
       </div>
@@ -260,6 +264,9 @@
             <span class="badge bg-secondary ms-2">
                {{ item.countActors() }}
             </span>
+            {% if not params['template_preview'] and cancreateuser and canupdate %}
+               {{ include('components/user/create_user.html.twig') }}
+            {% endif %}
          </button>
       </h2>
       <div id="actors" class="accordion-collapse collapse {{ actors_show ? "show" : "" }}" aria-labelledby="heading-actor">
@@ -268,6 +275,35 @@
          </div>
       </div>
    </div>
+
+   {% if canreadnote %}
+      {% set notes = call('Notepad::getAllForItem', [get_item('Entity', item.fields['entities_id']), 'Ticket']) %}
+      {% set notes_show = headers_states['notes'] is not defined or headers_states['notes'] == "true" ? true : (notes|length > 0) %}
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="notes-heading" title="{{ __('Notes') }}" data-bs-toggle="tooltip">
+            <button class="accordion-button {{ notes_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#notes" aria-expanded="true" aria-controls="notes">
+               <i class="ti ti-notes me-1"></i>
+               <span class="item-title">
+                  {{ __('Entity notes') }}
+               </span>
+               <span class="badge bg-secondary ms-2">{{ notes|length }}</span>
+            </button>
+         </h2>
+         <div id="notes" class="accordion-collapse collapse {{ notes_show ? "show" : "" }}" aria-labelledby="notes-heading">
+            <div class="accordion-body row m-0 mt-n2">
+               {% if notes|length == 0 %}
+                  <div class="alert alert-info" role="alert">
+                     {{ __('There is no notes on this entity') }}
+                  </div>
+               {% else %}
+                  {% for note in notes %}
+                     <div class="alert alert-info entitynote rich_text_container" role="alert">{{ note['content']|safe_html }}</div>
+                  {% endfor %}
+               {% endif %}
+            </div>
+         </div>
+      </div>
+   {% endif %}
 
    {% if item_ticket is defined and item_ticket is not null %}
       {% set items_show = headers_states['items'] is not defined or headers_states['items'] == "true" ? true : false %}
@@ -415,32 +451,29 @@
       </div>
    {% endif %}
 
-   {% if ticket_ticket %}
-      {% set linked_tickets_show = headers_states['linked_tickets'] is defined and headers_states['linked_tickets'] == "true" ? true : false %}
-      <div class="accordion-item">
-         <h2 class="accordion-header" id="linked_tickets-heading" title="{{ 'Ticket_Ticket'|itemtype_name(nb_linked_tickets) }}" data-bs-toggle="tooltip">
-            <button class="accordion-button {{ linked_tickets_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_tickets" aria-expanded="true" aria-controls="linked_tickets">
-               <i class="ti ti-link me-1"></i>
-               {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
-               {% set nb_linked_tickets = linked_tickets|length %}
-               {% if item.isNewItem() and params['_link']['tickets_id_2'] > 0 %}
-                  {% set nb_linked_tickets = 1 %}
-               {% endif %}
-               <span class="item-title">
-                    {{ 'Ticket_Ticket'|itemtype_name(nb_linked_tickets) }}
-               </span>
-               {% if nb_linked_tickets > 0 %}
-                  <span class="badge bg-secondary ms-2">{{ nb_linked_tickets }}</span>
-               {% endif %}
-            </button>
-         </h2>
-         <div id="linked_tickets" class="accordion-collapse collapse {{ linked_tickets_show ? "show" : "" }}" aria-labelledby="linked_tickets-heading">
-            <div class="accordion-body">
-               {{ include('components/itilobject/linked_tickets.html.twig') }}
-            </div>
+   {% set linked_itilobjects_show = headers_states['linked_itilobjects'] is defined and headers_states['linked_itilobjects'] == "true" ? true : false %}
+   {% set nb_linked_itilobjects = item.isNewItem() ? 0 : call('CommonITILObject_CommonITILObject::countAllLinks', [item.getType(), item.getId()]) %}
+   <div class="accordion-item">
+      <h2 class="accordion-header" id="linked_itilobjects-heading" title="{{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}" data-bs-toggle="tooltip">
+         <button class="accordion-button {{ linked_itilobjects_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_itilobjects" aria-expanded="true" aria-controls="linked_itilobjects">
+            <i class="ti ti-link me-1"></i>
+            {% if item.isNewItem() and params['_link']['items_id_2'] > 0 %}
+               {% set nb_linked_itilobjects = 1 %}
+            {% endif %}
+            <span class="item-title">
+                 {{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}
+            </span>
+            {% if nb_linked_itilobjects > 0 %}
+               <span class="badge bg-secondary ms-2">{{ nb_linked_itilobjects }}</span>
+            {% endif %}
+         </button>
+      </h2>
+      <div id="linked_itilobjects" class="accordion-collapse collapse {{ linked_itilobjects_show ? "show" : "" }}" aria-labelledby="linked_itilobjects-heading">
+         <div class="accordion-body">
+            {{ include('components/itilobject/linked_itilobjects.html.twig') }}
          </div>
       </div>
-   {% endif %}
+   </div>
 
     <span class="d-none d-md-block">
         <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary position-absolute bottom-0 start-0 mb-2">
@@ -456,6 +489,15 @@ $(function() {
          $(this).removeClass('show');
       })
    }
+});
+
+$(function() {
+    // Prevent display of accordion header tooltips when right panel is expanded
+    $('#itil-data .accordion-header').on('show.bs.tooltip', function(e) {
+        if (!$('#itil-object-container').hasClass('right-collapsed') && $(e.target).hasClass('accordion-header')) {
+            e.preventDefault();
+        }
+    });
 });
 
 var reloadCategory = function() {

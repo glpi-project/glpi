@@ -33,81 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleTicketCollection extends RuleCollection
+class RuleTicketCollection extends RuleCommonITILObjectCollection
 {
    // From RuleCollection
-    public static $rightname                             = 'rule_ticket';
-    public $use_output_rule_process_as_next_input = true;
-    public $menu_option                           = 'ticket';
-
-
-    /**
-     * @param $entity (default 0)
-     **/
-    public function __construct($entity = 0)
-    {
-        $this->entity = $entity;
-    }
-
-
-    /**
-     * @since 0.84
-     **/
-    public static function canView()
-    {
-        return Session::haveRightsOr(self::$rightname, [READ, RuleTicket::PARENT]);
-    }
-
-
-    public function canList()
-    {
-        return static::canView();
-    }
-
+    public static $rightname    = 'rule_ticket';
+    public $menu_option         = 'ticket';
 
     public function getTitle()
     {
         return __('Business rules for tickets');
     }
 
-
-    /**
-     * @see RuleCollection::preProcessPreviewResults()
-     **/
-    public function preProcessPreviewResults($output)
-    {
-
-        $output = parent::preProcessPreviewResults($output);
-        return Ticket::showPreviewAssignAction($output);
-    }
-
-
-    /**
-     * @see RuleCollection::showInheritedTab()
-     **/
-    public function showInheritedTab()
-    {
-        return (Session::haveRight(self::$rightname, RuleTicket::PARENT) && ($this->entity));
-    }
-
-
-    /**
-     * @see RuleCollection::showChildrensTab()
-     **/
-    public function showChildrensTab()
-    {
-
-        return (Session::haveRight(self::$rightname, READ)
-              && (count($_SESSION['glpiactiveentities']) > 1));
-    }
-
-
     /**
      * @see RuleCollection::prepareInputDataForProcess()
      **/
     public function prepareInputDataForProcess($input, $params)
     {
-
         // Pass x-priority header if exists
         if (isset($input['_head']['x-priority'])) {
             $input['_x-priority'] = $input['_head']['x-priority'];
@@ -138,21 +79,6 @@ class RuleTicketCollection extends RuleCollection
             $input['_to'] = $input['_head']['to'];
         }
 
-        $input['_groups_id_of_requester'] = [];
-       // Get groups of users
-        if (isset($input['_users_id_requester'])) {
-            if (!is_array($input['_users_id_requester'])) {
-                $requesters = [$input['_users_id_requester']];
-            } else {
-                $requesters = $input['_users_id_requester'];
-            }
-            foreach ($requesters as $uid) {
-                foreach (Group_User::getUserGroups($uid) as $g) {
-                    $input['_groups_id_of_requester'][$g['id']] = $g['id'];
-                }
-            }
-        }
-
-        return $input;
+        return parent::prepareInputDataForProcess($input, $params);
     }
 }

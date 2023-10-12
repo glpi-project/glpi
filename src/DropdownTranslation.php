@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\SearchOption;
 use Glpi\RichText\RichText;
 
 /**
@@ -53,6 +54,10 @@ class DropdownTranslation extends CommonDBChild
         return _n('Translation', 'Translations', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-language';
+    }
 
     /**
      * Forbidden massives actions
@@ -74,7 +79,7 @@ class DropdownTranslation extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }
@@ -235,7 +240,7 @@ class DropdownTranslation extends CommonDBChild
 
         return countElementsInTable(
             getTableForItemType(__CLASS__),
-            ['itemtype' => $DB->escape($item->getType()),
+            ['itemtype' => $item->getType(),
                 'items_id' => $item->getID(),
                 'NOT'      => ['field' => 'completename' ]
             ]
@@ -326,7 +331,7 @@ class DropdownTranslation extends CommonDBChild
             $tmp['items_id']          = $input['items_id'];
             $tmp['itemtype']          = $input['itemtype'];
             $tmp['field']             = 'completename';
-            $tmp['value']             = addslashes($completename);
+            $tmp['value']             = $completename;
             $tmp['language']          = $input['language'];
             $tmp['_no_completename']  = true;
             if ($completenames_id) {
@@ -374,7 +379,7 @@ class DropdownTranslation extends CommonDBChild
         $canedit = $item->can($item->getID(), UPDATE);
 
        //Remove namespace separators
-        $normalized_itemtype = str_replace('\\', '', $item->getType());
+        $normalized_itemtype = Toolbox::getNormalizedItemtype($item->getType());
         if ($canedit) {
             echo "<div id='viewtranslation" . $normalized_itemtype . $item->getID() . "$rand'></div>\n";
 
@@ -401,7 +406,7 @@ class DropdownTranslation extends CommonDBChild
         $iterator = $DB->request([
             'FROM'   => getTableForItemType(__CLASS__),
             'WHERE'  => [
-                'itemtype'  => $DB->escape($item->getType()),
+                'itemtype'  => $item->getType(),
                 'items_id'  => $item->getID(),
                 'field'     => ['<>', 'completename']
             ],
@@ -609,7 +614,8 @@ JAVASCRIPT
         global $DB;
 
         $options = [];
-        foreach (Search::getOptions(get_class($item)) as $id => $field) {
+        $opts = SearchOption::getOptionsForItemtype(get_class($item));
+        foreach ($opts as $id => $field) {
            //Can only translate name, and fields whose datatype is text or string
             if (
                 isset($field['field'])
@@ -628,7 +634,7 @@ JAVASCRIPT
                 'SELECT' => 'field',
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
-                    'itemtype'  => $DB->escape($item->getType()),
+                    'itemtype'  => $item->getType(),
                     'items_id'  => $item->getID(),
                     'language'  => $language
                 ]
@@ -790,7 +796,7 @@ JAVASCRIPT
             'SELECT' => ['id'],
             'FROM'   => getTableForItemType($itemtype),
             'WHERE'  => [
-                $field   => Toolbox::addslashes_deep($value)
+                $field   => $value
             ]
         ]);
         if (count($iterator) > 0) {

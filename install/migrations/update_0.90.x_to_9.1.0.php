@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\Search\SearchOption;
+
 /**
  * Update from 0.90.5 to 9.1
  *
@@ -184,7 +187,7 @@ function update090xto910()
         $DB->updateOrDie(
             "glpi_profilerights",
             [
-                'rights' => new \QueryExpression(
+                'rights' => new QueryExpression(
                     DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue(UNLOCK)
                 )
             ],
@@ -242,7 +245,7 @@ function update090xto910()
             [
                 'name'      => "Unlock Item request",
                 'itemtype'  => "ObjectLock",
-                'date_mod'  => new \QueryExpression("NOW()")
+                'date_mod'  => new QueryExpression("NOW()")
             ],
             "9.1 Add unlock request notification template"
         );
@@ -303,7 +306,7 @@ function update090xto910()
                 'comment'                  => "",
                 'is_recursive'             => 1,
                 'is_active'                => 1,
-                'date_mod'                 => new \QueryExpression("NOW()")
+                'date_mod'                 => new QueryExpression("NOW()")
             ],
             "9.1 add Unlock Request notification"
         );
@@ -344,7 +347,7 @@ function update090xto910()
                   KEY `wwn` (`wwn`),
                   KEY `speed` (`speed`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->query($query);
+        $DB->doQuery($query);
     }
 
    /************** Kernel version for os *************/
@@ -466,12 +469,12 @@ function update090xto910()
                 'entities_id'        => 0,
                 'is_recursive'       => 1,
                 'name'               => "full access from localhost",
-                'date_mod'           => new \QueryExpression("NOW()"),
+                'date_mod'           => null,
                 'is_active'          => 1,
-                'ipv4_range_start'   => new \QueryExpression("INET_ATON('127.0.0.1')"),
-                'ipv4_range_end'     => new \QueryExpression("INET_ATON('127.0.0.1')"),
+                'ipv4_range_start'   => new QueryExpression("INET_ATON('127.0.0.1')"),
+                'ipv4_range_end'     => new QueryExpression("INET_ATON('127.0.0.1')"),
                 'ipv6'               => "::1",
-                'app_token'          => "",
+                'app_token'          => null,
                 'app_token_date'     => null,
                 'dolog_method'       => 0,
                 'comment'            => null
@@ -541,7 +544,7 @@ function update090xto910()
     if (!isset($CFG_GLPI["use_rich_text"])) {
         $CFG_GLPI["use_rich_text"] = false;
     }
-    $searchOption = Search::getOptions('Ticket');
+    $searchOption = SearchOption::getOptionsForItemtype('Ticket');
     $item_num     = 0;
     $itemtype_num = 0;
     foreach ($searchOption as $num => $option) {
@@ -752,7 +755,7 @@ function update090xto910()
         $DB->updateOrDie(
             "glpi_profilerights",
             [
-                'rights' => new \QueryExpression(
+                'rights' => new QueryExpression(
                     DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue(Ticket::SURVEY)
                 )
             ],
@@ -857,11 +860,11 @@ function update090xto910()
                     "glpi_slts",
                     [
                         'id'                 => $data['id'],
-                        'name'               => Toolbox::addslashes_deep($data['name']),
+                        'name'               => $data['name'],
                         'entities_id'        => $data['entities_id'],
                         'is_recursive'       => $data['is_recursive'],
                         'type'               => SLM::TTR,
-                        'comment'            => addslashes($data['comment']),
+                        'comment'            => $data['comment'],
                         'number_time'        => $data['resolution_time'],
                         'date_mod'           => $data['date_mod'],
                         'definition_time'    => $data['definition_time'],

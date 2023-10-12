@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 abstract class AbstractRightsDropdown
 {
     /**
@@ -151,7 +149,7 @@ abstract class AbstractRightsDropdown
         }
 
         $ret = [
-            'results' => Sanitizer::unsanitize($results),
+            'results' => $results,
             'count' =>  count($results)
         ];
 

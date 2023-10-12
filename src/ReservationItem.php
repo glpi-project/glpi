@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /**
  * ReservationItem Class
  **/
@@ -121,8 +124,8 @@ class ReservationItem extends CommonDBChild
     /**
      * Retrieve an item from the database for a specific item
      *
-     * @param $itemtype   type of the item
-     * @param $ID         ID of the item
+     * @param class-string<CommonDBTM> $itemtype Type of the item
+     * @param int $ID ID of the item
      *
      * @return true if succeed else false
      **/
@@ -596,7 +599,7 @@ class ReservationItem extends CommonDBChild
             $itemtable = getTableForItemType($itemtype);
             $itemname  = $item->getNameField();
 
-            $otherserial = new \QueryExpression($DB->quote('') . ' AS ' . $DB->quoteName('otherserial'));
+            $otherserial = new QueryExpression($DB->quote('') . ' AS ' . $DB->quoteName('otherserial'));
             if ($item->isField('otherserial')) {
                 $otherserial = "$itemtable.otherserial AS otherserial";
             }
@@ -805,8 +808,11 @@ class ReservationItem extends CommonDBChild
                 ],
                 'WHERE'     => [
                     'glpi_reservationitems.entities_id' => $entity,
-                    new QueryExpression('(UNIX_TIMESTAMP(' . $DB->quoteName('glpi_reservations.end') . ') - ' . $secs . ') < UNIX_TIMESTAMP()'),
-                    'glpi_reservations.begin'  => ['<', new \QueryExpression('NOW()')],
+                    new QueryExpression(
+                        QueryFunction::unixTimestamp('glpi_reservations.end') . ' - ' . $secs .
+                            ' < ' . QueryFunction::unixTimestamp()
+                    ),
+                    'glpi_reservations.begin'  => ['<', QueryFunction::now()],
                     'glpi_alerts.date'         => null
                 ]
             ];

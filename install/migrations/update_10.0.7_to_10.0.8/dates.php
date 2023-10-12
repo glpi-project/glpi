@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -88,7 +90,7 @@ foreach ($columns_iterator as $column) {
         case 'timestamp':
             // Min value has is "1970-01-01 00:00:01" in UTC, so if we try to use this value in a timezone with a positive offset
             // following error will be trigerred: "Incorrect datetime value: '1970-01-01 00:00:01' for column ..."
-            $min_value = new \QueryExpression(
+            $min_value = new QueryExpression(
                 sprintf(
                     'CONVERT_TZ(%s, %s, (SELECT @@SESSION.time_zone))',
                     $DB->quoteValue('1970-01-01 00:00:01'),

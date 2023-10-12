@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown
 {
     public function getCriterias()

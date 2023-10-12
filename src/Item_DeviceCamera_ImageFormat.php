@@ -59,7 +59,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
                         ]
                     );
                 }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

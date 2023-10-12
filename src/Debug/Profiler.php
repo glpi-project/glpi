@@ -50,6 +50,7 @@ final class Profiler
     public const CATEGORY_PLUGINS = 'plugins';
     public const CATEGORY_DB = 'db';
     public const CATEGORY_TWIG = 'twig';
+    public const CATEGORY_SEARCH = 'search';
 
     private static $instance;
 
@@ -86,6 +87,40 @@ final class Profiler
             $parent_id = $this->current_sections[$parent_id]->getId();
         }
         $this->current_sections[] = new ProfilerSection($category, $name, microtime(true) * 1000, $parent_id);
+    }
+
+    /**
+     * Pauses a section started with Profiler::start()
+     * @param string $name The name of the section to pause. This name must be the same as the one used in Profiler::start()
+     * @return void
+     */
+    public function pause(string $name): void
+    {
+        // get the last section with the given name and stop it
+        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
+            return $section->getName() === $name;
+        });
+        if (count($section)) {
+            $section = array_pop($section);
+            $section->pause();
+        }
+    }
+
+    /**
+     * Resumes a section started with Profiler::start()
+     * @param string $name The name of the section to resume. This name must be the same as the one used in Profiler::start()
+     * @return void
+     */
+    public function resume(string $name): void
+    {
+        // get the last section with the given name and stop it
+        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
+            return $section->getName() === $name;
+        });
+        if (count($section)) {
+            $section = array_pop($section);
+            $section->resume();
+        }
     }
 
     /**

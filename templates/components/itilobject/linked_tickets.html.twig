@@ -31,6 +31,9 @@
  # ---------------------------------------------------------------------
  #}
 
+{% do call('Toolbox::deprecated', ['Use "components/itilobject/linked_itilobjects.html.twig" instead.']) %}
+
+
 <input type="hidden" name="_link[tickets_id_1]" value="{{ item.fields['id'] }}" />
 
 {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
@@ -51,8 +54,8 @@
             <div class="col text-truncate">
                <a href="{{ 'Ticket'|itemtype_form_path(linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
                   {{ new_ticket.getStatusIcon(new_ticket.fields['status'])|raw }}
-                  <span title="{{ new_ticket.fields['name']|verbatim_value }}" data-bs-toggle="tooltip">
-                     {{ new_ticket.fields['name']|verbatim_value }}
+                  <span title="{{ new_ticket.fields['name'] }}" data-bs-toggle="tooltip">
+                     {{ new_ticket.fields['name'] }}
                   </span>
                   ({{ new_ticket.fields['id'] }})
                </a>

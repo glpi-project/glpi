@@ -86,27 +86,21 @@ class TemplateManager extends GLPITestCase
                 'error'     => 'Invalid twig template syntax',
             ],
             [
-                'content'   => '&#60;h1&#62;Test sanitized template&#60;/h1&#62;&#60;hr /&#62;{{content|raw}}',
+                'content'   => '<h1>Test HTML template</h1><hr />{{content|raw}}',
                 'params'    => ['content' => '<p>Item content</p>'],
-                'expected'  => '<h1>Test sanitized template</h1><hr /><p>Item content</p>',
+                'expected'  => '<h1>Test HTML template</h1><hr /><p>Item content</p>',
                 'error'     => null,
             ],
             [
-                'content'   => '&#60;h1&#62;Test sanitized template 2&#60;/h1&#62;&#60;hr /&#62;{{content|raw}}',
-                'params'    => ['content' => 'Item content should not be unsanitized: &#60;--'],
-                'expected'  => '<h1>Test sanitized template 2</h1><hr />Item content should not be unsanitized: &#60;--',
-                'error'     => null,
-            ],
-            [
-                'content'   => "&#60;p&#62;Test sanitized template {% if count &#62; 5 %}&#60;b&#62;++&#60;/b&#62;{% endif %}&#60;/p&#62;",
+                'content'   => "<p>Test HTML template {% if count > 5 %}<b>++</b>{% endif %}</p>",
                 'params'    => ['count' => 25],
-                'expected'  => "<p>Test sanitized template <b>++</b></p>",
+                'expected'  => "<p>Test HTML template <b>&#43;&#43;</b></p>",
                 'error'     => null,
             ],
             [
-                'content'   => '&#60;h1 onclick="alert(1);"&#62;Test safe HTML2&#60;/h1&#62;&#60;hr /&#62;{{content|raw}}',
+                'content'   => '<h1 onclick="alert(1);">Test safe HTML</h1><hr />{{content|raw}}',
                 'params'    => ['content' => 'Fill this form:<iframe src="phishing.php"></iframe>'],
-                'expected'  => '<h1>Test safe HTML2</h1><hr />Fill this form:',
+                'expected'  => '<h1>Test safe HTML</h1><hr />Fill this form:',
                 'error'     => null,
             ],
         ];

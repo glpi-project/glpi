@@ -391,7 +391,7 @@ abstract class LevelAgreementLevel extends RuleTicket
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb =  countElementsInTable(static::getTable(), [static::$fkparent => $item->getID()]);
                     }
-                    return self::createTabEntry(static::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(static::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

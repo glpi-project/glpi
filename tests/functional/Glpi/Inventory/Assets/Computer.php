@@ -194,7 +194,9 @@ class Computer extends AbstractInventoryAsset
 
     public function testAutoCleanWithoutLockedField()
     {
-        global $DB, $CFG_GLPI;
+        $this->login(); // required to be able to update entity config
+
+        global $DB;
         $item_monitor = new \Computer_Item();
 
         $manual_monitor = new \Monitor();
@@ -204,7 +206,12 @@ class Computer extends AbstractInventoryAsset
         ]);
         $this->integer($manual_monitor_id)->isGreaterThan(0);
 
-         $CFG_GLPI['is_user_autoupdate']     = 1;
+        $entity = new \Entity();
+        $this->boolean($entity->getFromDB(0))->isTrue();
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'is_user_autoupdate' => 1,
+        ]))->isTrue();
 
         $xml =  "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -296,8 +303,11 @@ class Computer extends AbstractInventoryAsset
 
 
         //Enable option to clean users_id when element is disconnected
-        $CFG_GLPI['is_user_autoclean']     = 1;
-
+        $this->boolean($entity->getFromDB(0))->isTrue();
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'is_user_autoclean' => 1,
+        ]))->isTrue();
 
         //remove Computer_Item for dynamic monitor
         $item_dynamic_monitor_id = reset($dynamic_monitors)['id'];
@@ -331,7 +341,9 @@ class Computer extends AbstractInventoryAsset
 
     public function testAutoUpdateWithoutLockedField()
     {
-        global $DB, $CFG_GLPI;
+        $this->login(); // required to be able to update entity config
+
+        global $DB;
         $item_monitor = new \Computer_Item();
 
         $manual_monitor = new \Monitor();
@@ -426,7 +438,12 @@ class Computer extends AbstractInventoryAsset
         $this->integer($manual_monitor->fields['users_id'])->isIdenticalTo($computer->fields['users_id']);
 
         //Enable option to propagate users_id on update to connected element
-        $CFG_GLPI['is_user_autoupdate']     = 1;
+        $entity = new \Entity();
+        $this->boolean($entity->getFromDB(0))->isTrue();
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'is_user_autoupdate' => 1,
+        ]))->isTrue();
 
         //change user from XML file
         $xml =  "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -1515,7 +1532,7 @@ class Computer extends AbstractInventoryAsset
 
         //check domain has been created
         $domain = new \Domain();
-        $this->boolean($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed")]))->isTrue();
+        $this->boolean($domain->getFromDBByCrit(['name' => "workgroup'ed"]))->isTrue();
 
         //check relation has been created
         $domain_item = new \Domain_Item();
@@ -1535,7 +1552,7 @@ class Computer extends AbstractInventoryAsset
         //check domain has been created
         $first_id = $domain->fields['id'];
         $domain = new \Domain();
-        $this->boolean($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed another time")]))->isTrue();
+        $this->boolean($domain->getFromDBByCrit(['name' => "workgroup'ed another time"]))->isTrue();
 
         //check relation has been created - and there is only one remaining
         $domain_item = new \Domain_Item();
@@ -1571,7 +1588,7 @@ class Computer extends AbstractInventoryAsset
         //check domain has been created
         $first_id = $domain->fields['id'];
         $domain = new \Domain();
-        $this->boolean($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed another time")]))->isTrue();
+        $this->boolean($domain->getFromDBByCrit(['name' => "workgroup'ed another time"]))->isTrue();
 
         //check relation is still present - and non dynamic one as well
         $domain_item = new \Domain_Item();

@@ -36,7 +36,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use Printer_CartridgeInfo;
 
 class Cartridge extends InventoryAsset
@@ -241,7 +240,7 @@ class Cartridge extends InventoryAsset
                         'value' => $val,
                         'id' => $keydb
                     ];
-                    $cartinfo->update(Sanitizer::sanitize($input), false);
+                    $cartinfo->update($input, false);
                     unset($value->$k);
                     unset($db_cartridges[$keydb]);
                     break;
@@ -257,11 +256,11 @@ class Cartridge extends InventoryAsset
 
         foreach ($value as $property => $val) {
             $cartinfo->add(
-                Sanitizer::sanitize([
+                [
                     'printers_id' => $this->item->fields['id'],
                     'property' => $property,
                     'value' => $val
-                ]),
+                ],
                 [],
                 false
             );

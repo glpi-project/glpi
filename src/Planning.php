@@ -33,9 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
+use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
@@ -737,12 +738,6 @@ JAVASCRIPT;
 
         self::initSessionForCurrentUser();
 
-       // scheduler feature key
-       // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
-       // but this licence is incompatible with GLPI (GPLv2)
-       // see https://fullcalendar.io/license
-        $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
-
         echo "<div" . ($fullview ? " id='planning_container'" : "") . " class='d-flex flex-wrap flex-sm-nowrap'>";
 
        // define options for current page
@@ -753,7 +748,6 @@ JAVASCRIPT;
             $options = [
                 'full_view'    => true,
                 'default_view' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
-                'license_key'  => $scheduler_key,
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
@@ -1105,8 +1099,7 @@ JAVASCRIPT;
 
         echo "<label for='$filter_key'>";
         echo $title;
-        $raw_url = Sanitizer::decodeHtmlSpecialChars($filter_data['url'] ?? '');
-        if ($filter_data['type'] == 'external' && !Toolbox::isUrlSafe($raw_url)) {
+        if ($filter_data['type'] == 'external' && !Toolbox::isUrlSafe($filter_data['url'] ?? '')) {
             $warning = sprintf(__s('URL "%s" is not allowed by your administrator.'), $filter_data['url']);
             echo "<i class='fas fa-exclamation-triangle' title='{$warning}'></i>";
         }
@@ -1350,13 +1343,13 @@ JAVASCRIPT;
             [
                 'OR' => [
                     ['glpi_users.begin_date' => null],
-                    ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]],
+                    ['glpi_users.begin_date' => ['<', QueryFunction::now()]],
                 ],
             ],
             [
                 'OR' => [
                     ['glpi_users.end_date' => null],
-                    ['glpi_users.end_date' => ['>', new QueryExpression('NOW()')]],
+                    ['glpi_users.end_date' => ['>', QueryFunction::now()]],
                 ]
             ]
         ]);
@@ -1501,8 +1494,7 @@ JAVASCRIPT;
      */
     public static function sendAddExternalForm($params = [])
     {
-        $raw_url = Sanitizer::decodeHtmlSpecialChars($params['url']);
-        if (!Toolbox::isUrlSafe($raw_url)) {
+        if (!Toolbox::isUrlSafe($params['url'])) {
             Session::addMessageAfterRedirect(
                 sprintf(__('URL "%s" is not allowed by your administrator.'), $params['url']),
                 false,
@@ -1791,7 +1783,7 @@ JAVASCRIPT;
             $input[$key] = $event['actor']['items_id'];
         }
 
-        $new_items_id = $item->add(Toolbox::addslashes_deep($input));
+        $new_items_id = $item->add($input);
 
        // manage all assigments for ProjectTask
         if (
@@ -2281,8 +2273,7 @@ JAVASCRIPT;
             if ('external' !== $planning_params['type'] || !$planning_params['display']) {
                 continue; // Ignore non external and inactive calendars
             }
-            $raw_url = Sanitizer::decodeHtmlSpecialChars($planning_params['url']);
-            $calendar_data = Toolbox::getURLContent($raw_url);
+            $calendar_data = Toolbox::getURLContent($planning_params['url']);
             if (empty($calendar_data)) {
                 continue;
             }
@@ -2290,14 +2281,14 @@ JAVASCRIPT;
                 $vcalendar = Reader::read($calendar_data);
             } catch (\Sabre\VObject\ParseException $exception) {
                 trigger_error(
-                    sprintf('Unable to parse calendar data from URL "%s"', $raw_url),
+                    sprintf('Unable to parse calendar data from URL "%s"', $planning_params['url']),
                     E_USER_WARNING
                 );
                 continue;
             }
             if (!$vcalendar instanceof VCalendar) {
                 trigger_error(
-                    sprintf('No VCalendar object found at URL "%s"', $raw_url),
+                    sprintf('No VCalendar object found at URL "%s"', $planning_params['url']),
                     E_USER_WARNING
                 );
                 continue;

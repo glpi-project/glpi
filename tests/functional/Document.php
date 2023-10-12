@@ -93,10 +93,10 @@ class Document extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Document$main'   => 'Document',
-            'Document_Item$1' => 'Associated items',
-            'Document_Item$2' => 'Documents',
-            'Log$1'           => 'Historical'
+            'Document$main'   => "<span><i class='ti ti-files me-2'></i>Document</span>",
+            'Document_Item$1' => "<span><i class='ti ti-package me-2'></i>Associated items</span>",
+            'Document_Item$2' => "<span><i class='ti ti-files me-2'></i>Documents</span>",
+            'Log$1'           => "<span><i class='ti ti-history me-2'></i>Historical</span>"
 
         ];
         $this
@@ -149,7 +149,7 @@ class Document extends DbTestCase
          ->variable['users_id']->isEqualTo($uid)
          ->string['itemtype']->isIdenticalTo('Computer')
          ->variable['items_id']->isEqualTo($cid)
-         ->string['name']->isIdenticalTo('Document: Computer - Documented Computer');
+         ->string['name']->isIdenticalTo('A_name.pdf');
     }
 
     /** Cannot work without a real document uploaded.

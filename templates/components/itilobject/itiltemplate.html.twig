@@ -1,0 +1,59 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'dropdown_form.html.twig' %}
+
+{% block more_fields %}
+   {% if affected_item_count is defined and affected_item_count > 0 %}
+      <script>
+          (function() {
+              const save_button = $('button[name="update"]');
+              const delete_button = $('button[name="delete"]');
+              const confirm_message = '{{ __('This template affects one or more items, are you sure you want to perform this action?') }}';
+
+              if (save_button.length > 0) {
+                  save_button.on('click', function() {
+                      //Ask for confirmation
+                      return confirm(confirm_message);
+                  });
+              }
+              if (delete_button.length > 0) {
+                  delete_button.on('click', function() {
+                      //Ask for confirmation
+                      return confirm(confirm_message);
+                  });
+              }
+          })();
+      </script>
+   {% endif %}
+{% endblock %}

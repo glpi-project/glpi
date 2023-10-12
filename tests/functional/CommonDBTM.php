@@ -497,12 +497,12 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->can($id[0], READ))->isTrue("Fail can read Printer 1");
         $this->boolean($printer->can($id[1], READ))->isTrue("Fail can read Printer 2");
         $this->boolean($printer->can($id[2], READ))->isFalse("Fail can't read Printer 3");
-        $this->boolean($printer->can($id[3], READ))->isFalse("Fail can't read Printer 1");
+        $this->boolean($printer->can($id[3], READ))->isFalse("Fail can't read Printer 4");
 
         $this->boolean($printer->canEdit($id[0]))->isTrue("Fail can write Printer 1");
         $this->boolean($printer->canEdit($id[1]))->isTrue("Fail can write Printer 2");
-        $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 1");
-        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 1");
+        $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 3");
+        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 4");
 
        // See only in child entity 1 + parent if recursive
         $this->boolean(\Session::changeActiveEntities($ent1))->isTrue();
@@ -513,9 +513,9 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->can($id[3], READ))->isFalse("Fail can't read Printer 4");
 
         $this->boolean($printer->canEdit($id[0]))->isFalse("Fail can't write Printer 1");
-        $this->boolean($printer->canEdit($id[1]))->isFalse("Fail can't write Printer 2");
-        $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 2");
-        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 2");
+        $this->boolean($printer->canEdit($id[1]))->isTrue("Fail can write Printer 2");
+        $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 3");
+        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 4");
 
        // See only in child entity 2 + parent if recursive
         $this->boolean(\Session::changeActiveEntities($ent2))->isTrue();
@@ -526,7 +526,7 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->can($id[3], READ))->isTrue("Fail can read Printer 4");
 
         $this->boolean($printer->canEdit($id[0]))->isFalse("Fail can't write Printer 1");
-        $this->boolean($printer->canEdit($id[1]))->isFalse("Fail can't write Printer 2");
+        $this->boolean($printer->canEdit($id[1]))->isTrue("Fail can write Printer 2");
         $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 3");
         $this->boolean($printer->canEdit($id[3]))->isTrue("Fail can write Printer 4");
     }
@@ -860,12 +860,12 @@ class CommonDBTM extends DbTestCase
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
        //test with date set
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01 \'',
             'date_creation'   => '2018-01-01 11:22:33',
             'date_mod'        => '2018-01-01 22:33:44',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
         $this->integer($computerID)->isGreaterThan(0);
@@ -878,10 +878,10 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
        //test with default date
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01 \'',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
         $this->integer($computerID)->isGreaterThan(0);
@@ -904,12 +904,12 @@ class CommonDBTM extends DbTestCase
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
        //test with date set
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01',
             'date_creation'   => '2018-01-01 11:22:33',
             'date_mod'        => '2018-01-01 22:33:44',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01");
 
         $this->integer($computerID)->isGreaterThan(0);
@@ -919,7 +919,7 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01");
 
         $this->boolean(
-            $computer->update(['id' => $computerID, 'name' => \Toolbox::addslashes_deep('Computer01 \'')])
+            $computer->update(['id' => $computerID, 'name' => 'Computer01 \''])
         )->isTrue();
         $this->string($computer->fields['name'])->isIdenticalTo('Computer01 \'');
         $this->boolean($computer->getFromDB($computerID))->isTrue();
@@ -940,6 +940,21 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['name'])->isIdenticalTo('renamed');
     }
 
+    public function testEmptyUpdateInDB()
+    {
+        // Simulate a call to `updateInDB()` that pass an invalid list of fields.
+        // This is only possible if `pre_updateInDB()` modifies the entries of either `$this->updates` and `$this->fields`
+        // and results in having an entry in `$this->updates` that does not corresponds to a valid key of `$this->fields`.
+        $computer = getItemByTypeName(\Computer::class, '_test_pc01');
+        $this->when(
+            function () use ($computer) {
+                $this->boolean($computer->updateInDB(['_not_a_real_field']))->isFalse();
+            }
+        )->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage('The `_not_a_real_field` field cannot be updated as its value is not defined.')
+            ->exists();
+    }
 
     public function testTimezones()
     {
@@ -1339,7 +1354,7 @@ class CommonDBTM extends DbTestCase
         // value that have a `\` as 255th char
         yield [
             'value'     => str_repeat('a', 254) . '\\abcdefg',
-            'truncated' => str_repeat('a', 254),
+            'truncated' => str_repeat('a', 254) . '\\',
             'length'    => 262,
         ];
 
@@ -1421,7 +1436,7 @@ class CommonDBTM extends DbTestCase
             'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
         ]))->isNotTrue();
 
-        $err_msg = "Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id1 . "'  title=\"testCheckUnicity01\">testCheckUnicity01</a> - ID: {$computers_id1} - Serial number:  - Entity: Root entity &#62; _test_root_entity]";
+        $err_msg = "Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id1 . "'  title=\"testCheckUnicity01\">testCheckUnicity01</a> - ID: {$computers_id1} - Serial number:  - Entity: Root entity > _test_root_entity]";
         $this->hasSessionMessages(1, [$err_msg]);
 
         $this->variable($computer->add([

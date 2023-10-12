@@ -187,9 +187,6 @@ body.in_modal {
         }
 
         &.btn-sm {
-            // try to have same height for ti and fa icons
-            min-height: 24px;
-
             .fa-stack {
                 height: 1.65em;
                 line-height: 1.2em;
@@ -215,9 +212,37 @@ body.in_modal {
     }
 }
 
+.btn-group {
+    .btn.btn-outline-secondary {
+        border: $input-border-width solid $input-border-color;
+
+        @include dark-mode {
+            & {
+                border-color: $input-border;
+            }
+        }
+    }
+}
+
 .toast-container {
     z-index: 999999;
     position: fixed;
+
+    &.top-left {
+        inset: 0 auto auto 0;
+    }
+
+    &.top-right {
+        inset: 0 0 auto auto;
+    }
+
+    &.bottom-left {
+        inset: auto auto 0 0;
+    }
+
+    &.bottom-right {
+        inset: auto 0 0 auto;
+    }
 }
 
 .img-overlay-wrapper {
@@ -231,6 +256,12 @@ body.in_modal {
         content: var(--logo);
         width: 200px;
         height: 110px;
+    }
+
+    .main-content-card {
+        .card-header:empty {
+            display: none;
+        }
     }
 }
 

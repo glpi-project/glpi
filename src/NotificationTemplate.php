@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * NotificationTemplate Class
@@ -66,6 +66,10 @@ class NotificationTemplate extends CommonDBTM
         return _n('Notification template', 'Notification templates', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-template';
+    }
 
     public static function canCreate()
     {
@@ -106,51 +110,13 @@ class NotificationTemplate extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
-
         if (!Config::canUpdate()) {
             return false;
         }
 
-        $spotted = false;
-
-        if (empty($ID)) {
-            if ($this->getEmpty()) {
-                $spotted = true;
-            }
-        } else {
-            if ($this->getFromDB($ID)) {
-                $spotted = true;
-            }
-        }
-
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-        echo "<td colspan='3'>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . _n('Type', 'Types', 1) . "</td><td colspan='3'>";
-        Dropdown::showItemTypes(
-            'itemtype',
-            $CFG_GLPI["notificationtemplates_types"],
-            ['value' => ($this->fields['itemtype']
-            ? $this->fields['itemtype'] : 'Ticket')
-            ]
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-        echo "<td colspan='3'>";
-        echo "<textarea cols='60' rows='5' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('CSS') . "</td>";
-        echo "<td colspan='3'>";
-        echo "<textarea cols='60' rows='5' name='css' >" . $this->fields["css"] . "</textarea></td></tr>";
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/setup/notification/template.html.twig', [
+            'item' => $this,
+        ]);
         return true;
     }
 
@@ -208,7 +174,7 @@ class NotificationTemplate extends CommonDBTM
             'name'       => $name,
             'value'     => $value,
             'comment'   => 1,
-            'condition' => ['itemtype' => addslashes($itemtype)]
+            'condition' => ['itemtype' => $itemtype]
         ]);
     }
 
@@ -284,9 +250,6 @@ class NotificationTemplate extends CommonDBTM
             if ($template_datas = $this->getByLanguage($language)) {
                //Template processing
 
-                $template_datas  = Sanitizer::unsanitize($template_datas);
-                $data            = Sanitizer::unsanitize($data);
-
                 $lang['subject']      = $target->getSubjectPrefix($event)
                 . self::process($template_datas['subject'], self::getDataForPlainText($data));
                 $lang['content_html'] = '';
@@ -300,9 +263,7 @@ class NotificationTemplate extends CommonDBTM
                         self::getDataForHtml($data)
                     );
 
-                    $css = !empty($this->fields['css'])
-                        ? Sanitizer::decodeHtmlSpecialChars($this->fields['css'])
-                        : '';
+                    $css = $this->fields['css'] ?? '';
 
                     $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"

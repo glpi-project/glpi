@@ -96,9 +96,9 @@ SQL
         $table_name = sprintf('glpitests_%s', uniqid());
 
         $this->newTestedInstance($DB);
-        $DB->query(sprintf($create_table_sql, $table_name));
+        $DB->doQuery(sprintf($create_table_sql, $table_name));
         $missing_fields = $this->testedInstance->getMissingFields($table_name);
-        $DB->query(sprintf('DROP TABLE `%s`', $table_name));
+        $DB->doQuery(sprintf('DROP TABLE `%s`', $table_name));
 
         $this->array($missing_fields)->isEqualTo($expected_missing);
     }

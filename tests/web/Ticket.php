@@ -35,9 +35,6 @@
 
 namespace tests\units;
 
-use Glpi\Toolbox\Sanitizer;
-use Symfony\Component\BrowserKit\HttpBrowser;
-
 class Ticket extends \FrontBaseClass
 {
     public function testTicketCreate()
@@ -61,6 +58,6 @@ class Ticket extends \FrontBaseClass
 
         $ticket = new \Ticket();
         $this->boolean($ticket->getFromDBByCrit(['name' => ['LIKE', '%thetestuuidtoremove']]))->isTrue();
-        $this->string(Sanitizer::unsanitize($ticket->fields['name'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
+        $this->string($ticket->fields['name'])->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
     }
 }

@@ -61,6 +61,8 @@ class Phone extends CommonDBTM
             Item_Devices::class,
             Infocom::class,
             Item_Disk::class,
+            Item_Process::class,
+            Item_Environment::class,
             Item_SoftwareVersion::class,
             Item_SoftwareLicense::class,
             Contract_Item::class,
@@ -98,7 +100,10 @@ class Phone extends CommonDBTM
         $this->addImpactTab($ong, $options);
         $this->addStandardTab('Item_OperatingSystem', $ong, $options);
         $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
+        $this->addStandardTab('Item_Process', $ong, $options);
+        $this->addStandardTab('Item_Environment', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Item_Disk', $ong, $options);
         $this->addStandardTab('Computer_Item', $ong, $options);
         $this->addStandardTab('NetworkPort', $ong, $options);
@@ -133,6 +138,16 @@ class Phone extends CommonDBTM
         unset($input['withtemplate']);
 
         return $input;
+    }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Item_Environment::class,
+                Item_Process::class,
+            ]
+        );
     }
 
 

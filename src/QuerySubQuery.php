@@ -34,46 +34,13 @@
  */
 
 /**
- *  Sub query class
- **/
-class QuerySubQuery extends AbstractQuery
+ * @deprecated 10.1.0
+ */
+class QuerySubQuery extends Glpi\DBAL\QuerySubQuery
 {
-    private $dbiterator;
-
-    /**
-     * Create a sub query
-     *
-     * @param array  $crit      Array of query criteria. Any valid DBmysqlIterator parameters are valid.
-     * @param string $alias     Alias for the whole subquery
-     */
-    public function __construct(array $crit, $alias = null)
+    public function __construct($expression)
     {
-        global $DB;
-
-        parent::__construct($alias);
-        if (empty($crit)) {
-            throw new \RuntimeException('Cannot build an empty subquery');
-        }
-
-        $this->dbiterator = new DBmysqlIterator($DB);
-        $this->dbiterator->buildQuery($crit);
-    }
-
-    /**
-     *
-     * Get SQL query
-     *
-     * @return string
-     */
-    public function getQuery()
-    {
-        global $DB;
-
-        $sql = "(" . $this->dbiterator->getSql() . ")";
-
-        if ($this->alias !== null) {
-            $sql .= ' AS ' . $DB->quoteName($this->alias);
-        }
-        return $sql;
+        Toolbox::deprecated();
+        parent::__construct($expression);
     }
 }

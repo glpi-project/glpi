@@ -134,22 +134,19 @@
                         ) }}
                      {% endif %}
 
-                     {% set dc_breadcrumbs = item is usingtrait('Glpi\\Features\\DCBreadcrumb') ? item.getDcBreadcrumb() : [] %}
-                     {% if dc_breadcrumbs|length > 0 %}
-                        {% set dc_breadcrumbs %}
-                           <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
-                              {% for dc_item in dc_breadcrumbs|reverse %}
-                                 <li class="breadcrumb-item text-nowrap">{{ dc_item|raw }}</li>
-                              {% endfor %}
-                           </ol>
-                        {% endset %}
-
+                     {% set dc_breadcrumbs %}
+                        {% if item is usingtrait('Glpi\\Features\\DCBreadcrumb') %}
+                           {{ call(item.getType() ~ '::renderDcBreadcrumb', [
+                              item.fields['id']
+                           ])|raw }}
+                        {% endif %}
+                     {% endset %}
+                     {% if dc_breadcrumbs|trim|length > 0 %}
                         {{ fields.htmlField(
                            '',
                            dc_breadcrumbs,
                            __('Data center position'),
                         ) }}
-
                         {{ fields.nullField() }} {# set an empty space in front of dc breadcrumb #}
                      {% endif %}
 
@@ -174,6 +171,16 @@
                                 'Computer', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone'
                             ],
                             field_options
+                        ) }}
+                     {% endif %}
+
+                     {% if item_type == 'DefaultFilter' and item.isField('itemtype') %}
+                        {% set field_options = field_options|merge({'types': config('globalsearch_types')}) %}
+                        {{ fields.dropdownItemTypes(
+                           'itemtype',
+                           item.fields['itemtype'],
+                           __('Itemtype'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -679,7 +686,9 @@
    {% if item_type == 'Contract' %}
       {{ include('components/form/support_hours.html.twig') }}
    {% endif %}
-   {{ include('components/form/buttons.html.twig') }}
+   {% if no_form_buttons is not defined or no_form_buttons == false %}
+      {{ include('components/form/buttons.html.twig') }}
+   {% endif %}
    {% if no_inventory_footer is not defined or no_inventory_footer == false %}
       {{ include('components/form/inventory_info.html.twig') }}
    {% endif %}

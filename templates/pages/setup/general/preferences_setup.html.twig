@@ -1,0 +1,362 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/setup/general/base_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% set field_options = {
+   'label_class': 'col-xxl-7',
+   'input_class': 'col-xxl-5',
+} %}
+
+{% block config_fields %}
+   {% if is_user %}
+      {{ fields.largeTitle(__('Personalization'), 'ti ti-adjustments') }}
+      {{ inputs.hidden('id', config['id']) }}
+   {% else %}
+      {{ fields.largeTitle(__('Default values'), 'ti ti-adjustments') }}
+   {% endif %}
+
+   {% if not can_edit_config or constant('GLPI_DEMO_MODE') %}
+      {% set lang_dropdown = '' %}
+   {% else %}
+      {% set lang_dropdown %}
+         {% do call('Dropdown::showLanguages', ['language', {
+            value: config['language']
+         }]) %}
+      {% endset %}
+   {% endif %}
+   {{ fields.htmlField('', lang_dropdown, is_user ? __('Language') : __('Default language'), field_options) }}
+   {{ fields.dropdownArrayField('date_format', config['date_format'], call('Toolbox::phpDateFormats'), __('Date format'), field_options) }}
+
+   {{ fields.dropdownArrayField('names_format', config['names_format'], {
+      (constant('User::REALNAME_BEFORE')): __('Surname, First name'),
+      (constant('User::FIRSTNAME_BEFORE')): __('First name, Surname')
+   }, __('Display order of surnames firstnames'), field_options) }}
+   {{ fields.dropdownArrayField('number_format', config['number_format'], {
+      0: '1 234.56',
+      1: '1,234.56',
+      2: '1 234,56',
+      3: '1234.56',
+      4: '1234,56',
+   }, __('Number format'), field_options) }}
+
+   {{ fields.dropdownNumberField('list_limit', config['list_limit'], __('Results to display by page'), field_options|merge({
+      min: 5,
+      max: config('list_limit_max'),
+      step: 5
+   })) }}
+   {{ fields.dropdownYesNo('backcreated', config['backcreated'], __('Go to created item after creation'), field_options) }}
+
+   {% if get_current_interface() == 'central' %}
+      {{ fields.dropdownYesNo(
+         'use_flat_dropdowntree',
+         config['use_flat_dropdowntree'],
+         __('Display the tree dropdown complete name in dropdown inputs'),
+         field_options
+      ) }}
+      {{ fields.dropdownYesNo(
+         'use_flat_dropdowntree_on_search_result',
+         config['use_flat_dropdowntree_on_search_result'],
+         __('Display the complete name of tree dropdown in search results'),
+         field_options
+      ) }}
+   {% endif %}
+
+   {% if not is_user or config('show_count_on_tabs') != -1 %}
+      {% set count_options = {
+         0: __('No'),
+         1: __('Yes')
+      } %}
+      {% if not is_user %}
+         {% set count_options = count_options + {
+            (-1): __('Never')
+         } %}
+      {% endif %}
+      {{ fields.dropdownArrayField('show_count_on_tabs', config['show_count_on_tabs'], count_options, __('Display counters'), field_options) }}
+   {% endif %}
+
+   {{ fields.dropdownYesNo('is_ids_visible', config['is_ids_visible'], __('Show GLPI ID'), field_options) }}
+   {{ fields.dropdownYesNo('keep_devices_when_purging_item', config['keep_devices_when_purging_item'], __('Keep devices when purging an item'), field_options) }}
+
+   {{ fields.dropdownYesNo('notification_to_myself', config['notification_to_myself'], __('Notifications for my changes'), field_options) }}
+   {{ fields.dropdownNumberField('display_count_on_home', config['display_count_on_home'], __('Results to display on home page'), field_options|merge({
+      min: 0,
+      max: 30
+   })) }}
+
+   {{ fields.dropdownArrayField('pdffont', config['pdffont'], call('GLPIPDF::getFontList'), __('PDF export font'), field_options) }}
+   {{ fields.dropdownArrayField('csv_delimiter', config['csv_delimiter'], {
+      ';': ';',
+      ',': ','
+   }, __('CSV delimiter'), field_options) }}
+
+   {{ fields.dropdownArrayField('palette', config['palette'], palettes, __('Color palette'), field_options|merge({
+      templateResult: 'formatThemes',
+      templateSelection: 'formatThemes',
+      escapeMarkup: 'function(m) { return m; }'
+   })) }}
+   <script>
+       function formatThemes(theme) {
+           if (!theme.id) {
+               return theme.text;
+           }
+           return $('<span></span>').html(
+               `<img src="{{ path('/front/palette_preview.php') }}?key=${theme.id}" /> ${theme.text}`
+           );
+       }
+   </script>
+
+   {{ fields.dropdownArrayField('page_layout', config['page_layout'], {
+      'horizontal': __('Horizontal (menu in header'),
+      'vertical': __('Vertical (menu in sidebar)')
+   }, __('Page layout'), field_options|merge({
+      templateResult: 'formatGlobalLayout',
+      templateSelection: 'formatGlobalLayout',
+   })) }}
+   <script>
+       function formatGlobalLayout(layout) {
+           if (!layout.id) {
+               return layout.text;
+           }
+           return $('<span></span>').html(
+               `<img src="{{ path('/pics/layout/global_layout_') }}${layout.id.toLowerCase()}.png" /> ${layout.text}`
+           );
+       }
+   </script>
+   {{ fields.dropdownArrayField('richtext_layout', config['richtext_layout'], {
+      'inline': __('Inline (no toolbars)'),
+      'classic': __('Classic (toolbar on top)')
+   }, __('Rich text field layout'), field_options) }}
+
+   {{ fields.dropdownYesNo('highcontrast_css', config['highcontrast_css'], __('Enable high contrast'), field_options) }}
+
+   {% if timezones is not null %}
+      {{ fields.dropdownArrayField('timezone', config['timezone']|default(''), timezones, __('Timezone'), field_options|merge({
+         display_emptychoice: true,
+         emptylabel: __('Use server configuration')
+      })) }}
+   {% else %}
+      {% set tz_not_config = __('Timezone usage has not been activated.') ~ ' ' ~ __('Run the "%1$s" command to activate it.')|format('php bin/console database:enable_timezones') %}
+      {{ fields.htmlField('', tz_not_config, __('Timezone'), field_options) }}
+   {% endif %}
+
+   {{ fields.dropdownArrayField('default_central_tab', config['default_central_tab'], central_tabs, __('Default central tab'), field_options) }}
+   {{ fields.dropdownArrayField('timeline_order', config['timeline_order'], {
+      (constant('CommonITILObject::TIMELINE_ORDER_NATURAL')): __('Natural order (old items on top, recent on bottom)'),
+      (constant('CommonITILObject::TIMELINE_ORDER_REVERSE')): __('Reverse order (old items on bottom, recent on top)')
+   }, __('Timeline order'), field_options) }}
+
+   {% if get_current_interface() == 'central' %}
+      {{ fields.smallTitle(__('Assistance'), 'ti ti-headset') }}
+
+      {{ fields.dropdownYesNo('followup_private', config['followup_private'], __('Private followups by default'), field_options) }}
+      {% if has_profile_right('ticket', constant('Ticket::READMY')) or has_profile_right('ticket', constant('Ticket::READALL')) or has_profile_right('ticket', constant('Ticket::READASSIGN')) %}
+         {{ fields.dropdownYesNo('show_jobs_at_login', config['show_jobs_at_login'], __('Show new tickets on the home page'), field_options) }}
+      {% else %}
+         {{ fields.htmlField('', __('No'), __('Show new tickets on the home page'), field_options) }}
+      {% endif %}
+
+      {{ fields.dropdownYesNo('task_private', config['task_private'], __('Private tasks by default'), field_options) }}
+      {{ fields.dropdownField('RequestType', 'default_requesttypes_id', config['default_requesttypes_id'], __('Request sources by default'), field_options|merge({
+         condition: {
+            is_active: 1,
+            is_ticketheader: 1
+         }
+      })) }}
+
+      {% set task_state_dropdown %}
+         {% do call('Planning::dropdownState', ['task_state', config['task_state'], true]) %}
+      {% endset %}
+      {{ fields.htmlField('', task_state_dropdown, __('Tasks state by default'), field_options) }}
+      {{ fields.dropdownNumberField(
+         'refresh_views',
+         config['refresh_views'],
+         __('Automatically refresh data (tickets list, project kanban) in minutes.'),
+         field_options|merge({
+            min: 1,
+            max: 30,
+            step: 1,
+            toadd: {
+               0: __('Never')
+            }
+         })
+      ) }}
+   {% endif %}
+
+   {% if has_profile_right('ticket', constant('Ticket::OWN')) %}
+      {{ fields.dropdownYesNo('set_default_tech', config['set_default_tech'], __('Pre-select me as a technician when creating a ticket'), field_options) }}
+   {% else %}
+      {{ fields.htmlField('', __('No'), __('Pre-select me as a technician when creating a ticket'), field_options) }}
+   {% endif %}
+   {% if has_profile_right('ticket', constant('CREATE')) %}
+      {{ fields.dropdownYesNo('set_default_requester', config['set_default_requester'], __('Pre-select me as a requester when creating a ticket'), field_options) }}
+   {% else %}
+      {{ fields.htmlField('', __('No'), __('Pre-select me as a requester when creating a ticket'), field_options) }}
+   {% endif %}
+   {% if has_profile_right('ticket', constant('Ticket::OWN')) %}
+      {{ fields.dropdownYesNo('set_followup_tech', config['set_followup_tech'], __('Add me as a technician when adding a ticket follow-up'), field_options) }}
+   {% else %}
+      {{ fields.htmlField('', __('No'), __('Add me as a technician when adding a ticket follow-up'), field_options) }}
+   {% endif %}
+   {% if has_profile_right('ticket', constant('Ticket::OWN')) %}
+      {{ fields.dropdownYesNo('set_solution_tech', config['set_solution_tech'], __('Add me as a technician when adding a ticket solution'), field_options) }}
+   {% else %}
+      {{ fields.htmlField('', __('No'), __('Add me as a technician when adding a ticket solution'), field_options) }}
+   {% endif %}
+
+   {{ fields.dropdownArrayField('timeline_action_btn_layout', config['timeline_action_btn_layout'], {
+      (constant('Config::TIMELINE_ACTION_BTN_MERGED')): __('Merged'),
+      (constant('Config::TIMELINE_ACTION_BTN_SPLITTED')): __('Splitted')
+   }, __('Action button layout'), field_options) }}
+   {{ fields.dropdownArrayField('timeline_date_format', config['timeline_date_format'], {
+      (constant('Config::TIMELINE_RELATIVE_DATE')): __('Relative'),
+      (constant('Config::TIMELINE_ABSOLUTE_DATE')): __('Precise')
+   }, __('Timeline date display'), field_options) }}
+
+   {% set priority_colors %}
+      <div class="row">
+         {% for i in 1..6 %}
+            {{ fields.colorField('priority_' ~ i, config['priority_' ~ i], call('Ticket::getPriorityName', [i]), field_options) }}
+         {% endfor %}
+      </div>
+   {% endset %}
+   <div class="hr-text my-3">
+      <i class="ti ti-palette"></i>
+      <span>{{ __('Priority colors') }}</span>
+   </div>
+   {{ fields.htmlField('', priority_colors, '', field_options|merge({
+      input_class: 'col-12',
+      field_class: 'col-12'
+   })) }}
+
+   {{ fields.smallTitle(__('Due date progression'), 'ti ti-clock-play') }}
+   {% set unit_options = {
+      '%': '%',
+      'hours': _n('Hour', 'Hours', get_plural_number()),
+      'days': _n('Day', 'Days', get_plural_number()),
+   } %}
+   {{ fields.colorField('duedateok_color', config['duedateok_color'], __('OK state color'), field_options) }}
+   {{ fields.nullField() }}
+
+   {{ fields.colorField('duedatewarning_color', config['duedatewarning_color'], __('Warning state color'), field_options) }}
+   {% set warn_unit_dropdown %}
+      {{ fields.dropdownArrayField('duedatewarning_unit', config['duedatewarning_unit'], unit_options, '', field_options|merge({
+         no_label: true,
+         field_class: '',
+         mb: ''
+      })) }}
+   {% endset %}
+   {{ fields.dropdownNumberField('duedatewarning_less', config['duedatewarning_less'], __('Warning state threshold'), field_options|merge({
+      add_field_html: warn_unit_dropdown,
+      input_class: 'col-xxl-5 d-flex align-items-center',
+   })) }}
+
+   {{ fields.colorField('duedatecritical_color', config['duedatecritical_color'], __('Critical state color'), field_options) }}
+   {% set warn_unit_dropdown %}
+      {{ fields.dropdownArrayField('duedatecritical_unit', config['duedatecritical_unit'], unit_options, '', field_options|merge({
+         no_label: true,
+         field_class: '',
+         mb: ''
+      })) }}
+   {% endset %}
+   {{ fields.dropdownNumberField('duedatecritical_less', config['duedatecritical_less'], __('Critical state threshold'), field_options|merge({
+      add_field_html: warn_unit_dropdown,
+      input_class: 'col-xxl-5 d-flex align-items-center',
+   })) }}
+
+   {% if get_current_interface() == 'central' and config('lock_use_lock_item') %}
+      {{ fields.smallTitle(__('Item locks'), 'ti ti-lock') }}
+      {{ fields.dropdownYesNo('lock_autolock_mode', config('lock_autolock_mode'), __('Auto-lock Mode'), field_options) }}
+      {{ fields.dropdownYesNo(
+         'lock_directunlock_notification',
+         config('lock_directunlock_notification'),
+         __('Direct Notification (requester for unlock will be the notification sender)'),
+         field_options
+      ) }}
+   {% endif %}
+
+   {% if call('\\Glpi\\Dashboard\\Grid::canViewOneDashboard') %}
+      {{ fields.smallTitle(__('Dashboards'), 'ti ti-dashboard') }}
+      {% macro dropdownDashboard(name, config, context = 'core') %}
+         {% do call('\\Glpi\\Dashboard\\Grid::dropdownDashboard', [name, {
+            value: config[name],
+            display_emptychoice: true,
+            context: context
+         }]) %}
+      {% endmacro %}
+
+      {{ fields.htmlField(
+         '',
+         _self.dropdownDashboard('default_dashboard_central', config),
+         __('Default for central'),
+         field_options
+      ) }}
+      {{ fields.htmlField(
+         '',
+         _self.dropdownDashboard('default_dashboard_assets', config),
+         __('Default for Assets'),
+         field_options
+      ) }}
+      {{ fields.htmlField(
+         '',
+         _self.dropdownDashboard('default_dashboard_helpdesk', config),
+         __('Default for Assistance'),
+         field_options
+      ) }}
+      {{ fields.htmlField(
+         '',
+         _self.dropdownDashboard('default_dashboard_mini_ticket', config, 'mini_core'),
+         __('Default for tickets (mini dashboard)'),
+         field_options
+      ) }}
+   {% endif %}
+
+   {{ fields.smallTitle(_n('Notification', 'Notifications', get_plural_number()), 'ti ti-bell') }}
+   {% set enable_notif_helper %}
+      <ul>
+         <li>{{ __('Disable notifications by default on ITIL objects actor configuration, with ability to derogate to it.') }}</li>
+         <li>{{ __('Disable all notifications on all other objects, without ability to derogate to it.') }}</li>
+      </ul>
+   {% endset %}
+   {{ fields.dropdownYesNo('is_notif_enable_default', config['is_notif_enable_default'], __('Enable notifications'), field_options|merge({
+      helper: enable_notif_helper
+   })) }}
+   {{ fields.dropdownArrayField('toast_location', config['toast_location']|default('bottom-right'), {
+      'top-left': __('Top left'),
+      'top-right': __('Top right'),
+      'bottom-left': __('Bottom left'),
+      'bottom-right': __('Bottom right'),
+   }, __('Notifcation location'), field_options) }}
+{% endblock %}

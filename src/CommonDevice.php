@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+
 /**
  * CommonDevice Class
  * for Device*class
@@ -216,7 +218,11 @@ abstract class CommonDevice extends CommonDropdown
             [
                 'SELECT'    => [
                     'itemtype',
-                    new QueryExpression('GROUP_CONCAT(DISTINCT ' . DBmysql::quoteName('items_id') . ') AS ids'),
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                 ],
                 'FROM'      => $linktable,
                 'WHERE'     => [
@@ -495,6 +501,20 @@ abstract class CommonDevice extends CommonDropdown
                         ];
                         break;
                 }
+            }
+        }
+
+        $model_fk = getForeignKeyFieldForItemType(static::class . 'Model');
+        if ($DB->fieldExists(static::getTable(), $model_fk)) {
+            if (isset($input[$model_fk])) {
+                $where[$model_fk] = $input[$model_fk];
+            } else {
+                $where[] = [
+                    'OR' => [
+                        [$model_fk => null],
+                        [$model_fk => 0]
+                    ]
+                ];
             }
         }
 

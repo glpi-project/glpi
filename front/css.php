@@ -63,7 +63,9 @@ $css = Html::compileScss($_GET);
 
 header('Content-Type: text/css');
 
-$is_cacheable = !isset($_GET['debug']) && !isset($_GET['nocache']);
+$is_cacheable = !isset($_GET['nocache'])
+    && GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT // do not use browser cache on development env
+;
 if ($is_cacheable) {
    // Makes CSS cacheable by browsers and proxies
     $max_age = WEEK_TIMESTAMP;

@@ -53,23 +53,11 @@ class SLM extends CommonDBTM
     const TTR = 0; // Time to resolve
     const TTO = 1; // Time to own
 
+    const RIGHT_ASSIGN = 256;
+
     public static function getTypeName($nb = 0)
     {
         return _n('Service level', 'Service levels', $nb);
-    }
-
-    /**
-     * Force calendar of the SLM if value -1: calendar of the entity
-     *
-     * @param integer $calendars_id calendars_id of the ticket
-     **/
-    public function setTicketCalendar($calendars_id)
-    {
-        Toolbox::deprecated();
-
-        if ($this->fields['use_ticket_calendar']) {
-            $this->fields['calendars_id'] = $calendars_id;
-        }
     }
 
     public function defineTabs($options = [])
@@ -294,5 +282,16 @@ class SLM extends CommonDBTM
     public static function getIcon()
     {
         return "ti ti-checkup-list";
+    }
+
+    public function getRights($interface = 'central')
+    {
+        $values = parent::getRights();
+        $values[self::RIGHT_ASSIGN]  = [
+            'short' => __('Assign'),
+            'long'  => __('Search result user display'),
+        ];
+
+        return $values;
     }
 }

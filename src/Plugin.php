@@ -155,6 +155,9 @@ class Plugin extends CommonDBTM
     public static function getMenuContent()
     {
         $menu = parent::getMenuContent() ?: [];
+        if (!MarketplaceController::isWebAllowed()) {
+            return $menu;
+        }
 
         if (static::canView()) {
             $redirect_mp = MarketplaceController::getPluginPageConfig();
@@ -185,15 +188,21 @@ class Plugin extends CommonDBTM
         $cl_title    = Plugin::getTypeName(Session::getPluralNumber());
         $classic     = "<i class='$cl_icon pointer' title='$cl_title'></i><span class='d-none d-xxl-block'>$cl_title</span>";
 
-        return [
-            $marketplace => MarketplaceView::getSearchURL(false),
+        $links = [
             $classic     => Plugin::getSearchURL(false),
         ];
+        if (MarketplaceController::isWebAllowed()) {
+            $links[$marketplace] = MarketplaceView::getSearchURL(false);
+        }
+        return $links;
     }
 
 
     public static function getAdditionalMenuOptions()
     {
+        if (!MarketplaceController::isWebAllowed()) {
+            return false;
+        }
         if (static::canView()) {
             return [
                 'marketplace' => [
@@ -987,19 +996,6 @@ class Plugin extends CommonDBTM
            // Enable autoloader and load plugin hooks
             self::load($this->fields['directory'], true);
 
-           // No activation if not CSRF compliant
-            if (
-                !isset($PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->fields['directory']])
-                || !$PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->fields['directory']]
-            ) {
-                Session::addMessageAfterRedirect(
-                    sprintf(__('Plugin %1$s is not CSRF compliant!'), $this->fields['name']),
-                    true,
-                    ERROR
-                );
-                return false;
-            }
-
             $function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
             if (function_exists($function)) {
                 ob_start();
@@ -1317,208 +1313,15 @@ class Plugin extends CommonDBTM
 
 
     /**
-     * Migrate itemtype from integer (0.72) to string (0.80)
+     * Get system information
      *
-     * @param array $types        Array of (num=>name) of type manage by the plugin
-     * @param array $glpitables   Array of GLPI table name used by the plugin
-     * @param array $plugtables   Array of Plugin table name which have an itemtype
-     *
-     * @return void
-     **/
-    public static function migrateItemType($types = [], $glpitables = [], $plugtables = [])
+     * @return array
+     * @phpstan-return array{label: string, content: string}
+     */
+    public function getSystemInformation()
     {
-        global $DB;
-
-        $typetoname = [0  => "",// For tickets
-            1  => "Computer",
-            2  => "NetworkEquipment",
-            3  => "Printer",
-            4  => "Monitor",
-            5  => "Peripheral",
-            6  => "Software",
-            7  => "Contact",
-            8  => "Supplier",
-            9  => "Infocom",
-            10 => "Contract",
-            11 => "CartridgeItem",
-            12 => "DocumentType",
-            13 => "Document",
-            14 => "KnowbaseItem",
-            15 => "User",
-            16 => "Ticket",
-            17 => "ConsumableItem",
-            18 => "Consumable",
-            19 => "Cartridge",
-            20 => "SoftwareLicense",
-            21 => "Link",
-            22 => "State",
-            23 => "Phone",
-            24 => "Device",
-            25 => "Reminder",
-            26 => "Stat",
-            27 => "Group",
-            28 => "Entity",
-            29 => "ReservationItem",
-            30 => "AuthMail",
-            31 => "AuthLDAP",
-            32 => "OcsServer",
-            33 => "RegistryKey",
-            34 => "Profile",
-            35 => "MailCollector",
-            36 => "Rule",
-            37 => "Transfer",
-            38 => "SavedSearch",
-            39 => "SoftwareVersion",
-            40 => "Plugin",
-            41 => "Item_Disk",
-            42 => "NetworkPort",
-            43 => "TicketFollowup",
-            44 => "Budget"
-        ];
-
-       // Filter tables that does not exists or does not contains an itemtype field.
-       // This kind of case exist when current method is called from plugins that based their
-       // logic on an old GLPI datamodel that may have changed upon time.
-       // see https://github.com/pluginsGLPI/order/issues/111
-        $glpitables = array_filter(
-            $glpitables,
-            function ($table) use ($DB) {
-                return $DB->tableExists($table) && $DB->fieldExists($table, 'itemtype');
-            }
-        );
-
-       //Add plugins types
-        $typetoname = self::doHookFunction(Hooks::MIGRATE_TYPES, $typetoname);
-
-        foreach ($types as $num => $name) {
-            $typetoname[$num] = $name;
-            foreach ($glpitables as $table) {
-                $DB->updateOrDie(
-                    $table,
-                    [
-                        'itemtype'  => $name,
-                    ],
-                    [
-                        'itemtype'  => $num
-                    ],
-                    "update itemtype of table $table for $name"
-                );
-            }
-        }
-
-        if (in_array('glpi_infocoms', $glpitables) && count($types)) {
-            $entities    = getAllDataFromTable('glpi_entities');
-            $entities[0] = "Root";
-
-            foreach ($types as $num => $name) {
-                $itemtable = getTableForItemType($name);
-                if (!$DB->tableExists($itemtable)) {
-                    // Just for security, shouldn't append
-                    continue;
-                }
-                $do_recursive = false;
-                if ($DB->fieldExists($itemtable, 'is_recursive')) {
-                    $do_recursive = true;
-                }
-                foreach ($entities as $entID => $val) {
-                    if ($do_recursive) {
-                       // Non recursive ones
-                        $sub_query = new \QuerySubQuery([
-                            'SELECT' => 'id',
-                            'FROM'   => $itemtable,
-                            'WHERE'  => [
-                                'entities_id'  => $entID,
-                                'is_recursive' => 0
-                            ]
-                        ]);
-
-                        $DB->updateOrDie(
-                            'glpi_infocoms',
-                            [
-                                'entities_id'  => $entID,
-                                'is_recursive' => 0
-                            ],
-                            [
-                                'itemtype'  => $name,
-                                'items_id'  => $sub_query
-                            ],
-                            "update entities_id and is_recursive=0 in glpi_infocoms for $name"
-                        );
-
-                       // Recursive ones
-                        $sub_query = new \QuerySubQuery([
-                            'SELECT' => 'id',
-                            'FROM'   => $itemtable,
-                            'WHERE'  => [
-                                'entities_id'  => $entID,
-                                'is_recursive' => 1
-                            ]
-                        ]);
-
-                        $DB->updateOrDie(
-                            'glpi_infocoms',
-                            [
-                                'entities_id'  => $entID,
-                                'is_recursive' => 1
-                            ],
-                            [
-                                'itemtype'  => $name,
-                                'items_id'  => $sub_query
-                            ],
-                            "update entities_id and is_recursive=1 in glpi_infocoms for $name"
-                        );
-                    } else {
-                        $sub_query = new \QuerySubQuery([
-                            'SELECT' => 'id',
-                            'FROM'   => $itemtable,
-                            'WHERE'  => [
-                                'entities_id'  => $entID,
-                            ]
-                        ]);
-
-                        $DB->updateOrDie(
-                            'glpi_infocoms',
-                            [
-                                'entities_id'  => $entID
-                            ],
-                            [
-                                'itemtype'  => $name,
-                                'items_id'  => $sub_query
-                            ],
-                            "update entities_id in glpi_infocoms for $name"
-                        );
-                    }
-                }
-            }
-        }
-
-        foreach ($typetoname as $num => $name) {
-            foreach ($plugtables as $table) {
-                $DB->updateOrDie(
-                    $table,
-                    [
-                        'itemtype' => $name
-                    ],
-                    [
-                        'itemtype' => $num
-                    ],
-                    "update itemtype of table $table for $name"
-                );
-            }
-        }
-    }
-
-
-    /**
-     * @param integer $width
-     **/
-    public function showSystemInformations($width)
-    {
-
-       // No need to translate, this part always display in english (for copy/paste to forum)
-
-        echo "\n<tr class='tab_bg_2'><th class='section-header'>Plugins list</th></tr>";
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
+        // No need to translate, this part always display in english (for copy/paste to forum)
+        $content = '';
 
         $plug     = new Plugin();
         $pluglist = $plug->find([], "name, directory");
@@ -1535,12 +1338,12 @@ class Plugin extends CommonDBTM
                  " Version: " . str_pad($version, 10) .
                  " State: " . str_pad($state, 40) .
                  " Install Method: " . $install_method;
-
-
-
-            echo wordwrap("\t" . $msg . "\n", $width, "\n\t\t");
+            $content .= "\n" . $msg;
         }
-        echo "\n</pre></td></tr>";
+        return [
+            'label' => 'Plugins list',
+            'content' => $content
+        ];
     }
 
 
@@ -1829,7 +1632,7 @@ class Plugin extends CommonDBTM
         if ($with_lang) {
             self::loadLang($directory);
         }
-        return Toolbox::addslashes_deep(self::getInfo($directory));
+        return self::getInfo($directory);
     }
 
     /**
@@ -2617,13 +2420,7 @@ class Plugin extends CommonDBTM
                     }
                     ob_end_clean();
                     $function = 'plugin_' . $directory . '_check_prerequisites';
-                    if (
-                        !isset($PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$directory])
-                        || !$PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$directory]
-                    ) {
-                        $output .= "<span class='error'>" . __('Not CSRF compliant') . "</span>";
-                        $do_activate = false;
-                    } else if (function_exists($function) && $do_activate) {
+                    if (function_exists($function) && $do_activate) {
                         ob_start();
                         $do_activate = $function();
                         if (!$do_activate) {

@@ -38,7 +38,8 @@ namespace Glpi\Console\Task;
 use CronTask;
 use Glpi\Console\AbstractCommand;
 use Glpi\Event;
-use QueryExpression;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -102,20 +103,18 @@ class UnlockCommand extends AbstractCommand
             [
                 'SELECT' => [
                     'id',
-                    new QueryExpression(
-                        'CONCAT('
-                        . $this->db->quoteName('itemtype')
-                        . ', ' . $this->db->quoteValue('::')
-                        . ', ' . $this->db->quoteName('name')
-                        . ') AS ' . $this->db->quoteName('task')
+                    QueryFunction::concat(
+                        params: ['itemtype', new QueryExpression($this->db::quoteValue('::')), 'name'],
+                        alias: 'task'
                     )
                 ],
                 'FROM'   => CronTask::getTable(),
                 'WHERE'  => [
                     'state' => CronTask::STATE_RUNNING,
                     new QueryExpression(
-                        'UNIX_TIMESTAMP(' .  $this->db->quoteName('lastrun') . ') + ' . $delay
-                        . ' <  UNIX_TIMESTAMP(NOW())'
+                        QueryFunction::unixTimestamp('lastrun') . " + $delay"
+                        . " < "
+                        . QueryFunction::unixTimestamp()
                     )
                 ]
             ]

@@ -33,6 +33,10 @@
 
 .asset,
 .navigationheader {
+    .left-icons {
+        width: 190px;
+    }
+
     .card-header {
         background-color: $header-bg;
         color: $header-fg;

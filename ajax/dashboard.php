@@ -44,7 +44,7 @@ if (!isset($_REQUEST["action"])) {
 }
 
 // Parse stringified JSON payload (Used to preserve integers)
-$request_data = array_merge($_REQUEST, json_decode($_UREQUEST['data'] ?? '{}', true));
+$request_data = array_merge($_REQUEST, json_decode($_REQUEST['data'] ?? '{}', true));
 unset($request_data['data']);
 
 $embed = false;

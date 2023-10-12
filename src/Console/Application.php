@@ -121,7 +121,7 @@ class Application extends BaseApplication
         }
     }
 
-    protected function getDefaultInputDefinition()
+    protected function getDefaultInputDefinition(): InputDefinition
     {
 
         $definition = new InputDefinition(
@@ -231,7 +231,7 @@ class Application extends BaseApplication
         return $this->output;
     }
 
-    protected function getCommandName(InputInterface $input)
+    protected function getCommandName(InputInterface $input): ?string
     {
         $name = parent::getCommandName($input);
         if ($name !== null) {
@@ -517,5 +517,17 @@ class Application extends BaseApplication
         }
 
         return true;
+    }
+
+    public function extractNamespace(string $name, ?int $limit = null): string
+    {
+        $parts = explode(':', $name);
+
+        if ($limit === 1 && count($parts) >= 2 && $parts[0] === 'plugins') {
+            // Force grouping plugin commands
+            $limit = 2;
+        }
+
+        return implode(':', null === $limit ? $parts : \array_slice($parts, 0, $limit));
     }
 }

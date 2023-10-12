@@ -37,6 +37,8 @@ namespace Glpi\Marketplace\Api;
 
 use GLPINetwork;
 use GuzzleHttp\Client as Guzzle_Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 use Session;
@@ -122,13 +124,13 @@ class Plugins
         try {
             $response = $this->httpClient->request($method, $endpoint, $options);
             $this->last_error = null; // Reset error buffer
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
+        } catch (RequestException | ConnectException $e) {
             $this->last_error = [
                 'title'     => "Plugins API error",
                 'exception' => $e->getMessage(),
                 'request'   => Message::toString($e->getRequest()),
             ];
-            if ($e->hasResponse()) {
+            if ($e instanceof RequestException && $e->hasResponse()) {
                 $this->last_error['response'] = Message::toString($e->getResponse());
             }
 

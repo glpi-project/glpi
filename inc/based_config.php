@@ -47,6 +47,43 @@ if (!empty($tz)) {
 
 include_once(GLPI_ROOT . "/inc/autoload.function.php");
 
+// Check if web root is configured correctly
+if (!isCommandLine()) {
+    $included_files = array_filter(
+        get_included_files(),
+        function (string $included_file) {
+            // prevent `tests/router.php` to be considered as initial script
+            return realpath($included_file) !== realpath(sprintf('%s/tests/router.php', GLPI_ROOT));
+        }
+    );
+
+    $initial_script = array_shift($included_files) ?? __FILE__;
+
+    // If `auto_prepend_file` configuration is used, ignore first included files
+    // as long as they are not located inside GLPI directory tree.
+    $prepended_file = ini_get('auto_prepend_file');
+    if ($prepended_file !== '' && $prepended_file !== 'none') {
+        $prepended_file = stream_resolve_include_path($prepended_file);
+        while (
+            $initial_script !== null
+            && !str_starts_with(
+                realpath($initial_script) ?: '',
+                realpath(GLPI_ROOT)
+            )
+        ) {
+            $initial_script = array_shift($included_files);
+        }
+    }
+
+    if (realpath($initial_script) !== realpath(sprintf('%s/public/index.php', GLPI_ROOT))) {
+        echo sprintf(
+            'Web server root directory configuration is incorrect, it should be "%s". See installation documentation for more details.' . PHP_EOL,
+            realpath(sprintf('%s/public', GLPI_ROOT))
+        );
+        exit(1);
+    }
+}
+
 (function () {
    // Define GLPI_* constants that can be customized by admin.
    //
@@ -55,7 +92,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
    // - prevent any global variables definition from current function logic.
 
     $constants = [
-      // Constants related to system paths
+        // Constants related to system paths
         'GLPI_CONFIG_DIR'      => GLPI_ROOT . '/config', // Path for configuration files (db, security key, ...)
         'GLPI_VAR_DIR'         => GLPI_ROOT . '/files',  // Path for all files
         'GLPI_MARKETPLACE_DIR' => GLPI_ROOT . '/marketplace', // Path for marketplace plugins
@@ -74,8 +111,9 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
         'GLPI_TMP_DIR'         => '{GLPI_VAR_DIR}/_tmp', // Path for temp storage
         'GLPI_UPLOAD_DIR'      => '{GLPI_VAR_DIR}/_uploads', // Path for upload storage
         "GLPI_INVENTORY_DIR"   => '{GLPI_VAR_DIR}/_inventories', //Path for inventories
+        'GLPI_THEMES_DIR'      => '{GLPI_VAR_DIR}/_themes', // Path for custom themes storage
 
-      // Security constants
+        // Security constants
         'GLPI_USE_CSRF_CHECK'            => '1',
         'GLPI_CSRF_EXPIRES'              => '7200',
         'GLPI_CSRF_MAX_TOKENS'           => '100',
@@ -88,21 +126,23 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
             '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // only accept http/https/feed protocols, and reject presence of @ (username) and : (protocol) in host part of URL
         ],
 
-      // Constants related to GLPI Project / GLPI Network external services
+        // Constants related to GLPI Project / GLPI Network external services
         'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL
         'GLPI_INSTALL_MODE'                 => is_dir(GLPI_ROOT . '/.git') ? 'GIT' : 'TARBALL', // Install mode for telemetry
         'GLPI_NETWORK_MAIL'                 => 'glpi@teclib.com',
         'GLPI_NETWORK_SERVICES'             => 'https://services.glpi-network.com', // GLPI Network services project URL
         'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_SERVICES}/api/registration/',
+        'GLPI_MARKETPLACE_ENABLE'           => 3, // 0 = Completely disabled, 1 = CLI only, 2 = Web only, 3 = CLI and Web
         'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_SERVICES}/api/marketplace/',
         'GLPI_MARKETPLACE_ALLOW_OVERRIDE'   => true, // allow marketplace to override a plugin found outside GLPI_MARKETPLACE_DIR
         'GLPI_MARKETPLACE_MANUAL_DOWNLOADS' => true, // propose manual download link of plugins which cannot be installed/updated by marketplace
         'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
+        'GLPI_DOCUMENTATION_ROOT_URL'       => 'https://links.glpi-project.org', // Official documentations root URL
 
-      // SQL compatibility
+        // SQL compatibility
         'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
 
-      // Other constants
+        // Other constants
         'GLPI_AJAX_DASHBOARD'         => '1', // 1 for "multi ajax mode" 0 for "single ajax mode" (see Glpi\Dashboard\Grid::getCards)
         'GLPI_CALDAV_IMPORT_STATE'    => 0, // external events created from a caldav client will take this state by default (0 = Planning::INFO)
         'GLPI_DEMO_MODE'              => '0',
@@ -149,6 +189,20 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
 
             define($key, $value);
         }
+    }
+
+    // GLPI environment, possible values are: `production`, `staging`, `testing`, `development`.
+    $allowed_envs = ['production', 'staging', 'testing', 'development'];
+    if (!defined('GLPI_ENVIRONMENT_TYPE')) {
+        define('GLPI_ENVIRONMENT_TYPE', 'production');
+    } elseif (!in_array(GLPI_ENVIRONMENT_TYPE, $allowed_envs)) {
+        throw new \UnexpectedValueException(
+            sprintf(
+                'Invalid GLPI_ENVIRONMENT_TYPE constant value `%s`. Allowed values are: `%s`',
+                GLPI_ENVIRONMENT_TYPE,
+                implode('`, `', $allowed_envs)
+            )
+        );
     }
 
    // Where to load plugins.

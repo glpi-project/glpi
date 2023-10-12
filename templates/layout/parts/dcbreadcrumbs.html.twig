@@ -1,0 +1,70 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+{% if breadcrumbs|length > 0 %}
+    <div class="row">
+        {% set previous_location_id = null %}
+        {% for breadcrumb_item in breadcrumbs %}
+            <div class="col-auto p-1">
+                {{ breadcrumb_item['link']|raw }}
+
+                {% if breadcrumb_item['position'] is defined %}
+                    {{ __('(U%1$u)')|format(breadcrumb_item['position']) }}
+                {% endif %}
+
+                {% if breadcrumb_item['location'] is not null and breadcrumb_item['location']['id'] != previous_location_id %}
+                    <br>
+                    <span class="p-0 float-left badge bg-blue-lt d-inline-block text-truncate"
+                          data-bs-toggle="tooltip"
+                          title="{{ breadcrumb_item['location']['completename'] }}"
+                          style="max-width: 100px;">
+                        <i class="{{ call('Location::getIcon') }}"></i>
+                        {% if breadcrumb_item['location']['locations_id'] == previous_location_id %}
+                           {% if previous_location_id is not null %}
+                              &gt;
+                           {% endif %}
+                           {{ breadcrumb_item['location']['name'] }}
+                        {% else %}
+                           {{ breadcrumb_item['location']['completename'] }}
+                        {% endif %}
+                    </span>
+                    {% set previous_location_id = breadcrumb_item['location']['id'] %}
+                {% endif %}
+            </div>
+            {% if loop.last == false %}
+                <div class="col-auto p-1">
+                    &gt;
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}

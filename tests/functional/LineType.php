@@ -39,19 +39,6 @@ use DbTestCase;
 
 class LineType extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
     public function testAdd()
     {
         $this->login();
@@ -59,7 +46,7 @@ class LineType extends DbTestCase
 
        // Add
         $in = [
-            'name'                     => $this->method,
+            'name'                     => __METHOD__,
             'comment'                  => $this->getUniqueString(),
         ];
         $id = $obj->add($in);
@@ -89,7 +76,7 @@ class LineType extends DbTestCase
         $id = $obj->getID();
         $in = [
             'id'                       => $id,
-            'name'                     => $this->method,
+            'name'                     => __METHOD__,
             'comment'                  => $this->getUniqueString(),
         ];
         $this->boolean($obj->update($in))->isTrue();
@@ -108,7 +95,7 @@ class LineType extends DbTestCase
 
        // Add
         $id = $obj->add([
-            'name'                     => $this->method,
+            'name'                     => __METHOD__,
         ]);
         $this->integer($id)->isGreaterThan(0);
 

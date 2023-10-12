@@ -229,7 +229,7 @@ class Item_Problem extends CommonItilObject_Item
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
 
                 case 'User':
                 case 'Group':
@@ -245,7 +245,7 @@ class Item_Problem extends CommonItilObject_Item
                         ])->current();
                         $nb = $result['cpt'];
                     }
-                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 default:
                     if (Session::haveRight("problem", Problem::READALL)) {
@@ -266,7 +266,7 @@ class Item_Problem extends CommonItilObject_Item
                                 }
                             }
                         }
-                        return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
             }
         }

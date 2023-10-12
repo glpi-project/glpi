@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryParam;
+
 /**
  * Group_User Class
  *
@@ -462,7 +464,6 @@ class Group_User extends CommonDBRelation
         return $entityrestrict;
     }
 
-
     /**
      * Show users of a group
      *
@@ -494,6 +495,24 @@ class Group_User extends CommonDBRelation
        // Retrieve member list
        // TODO: migrate to use CommonDBRelation::getListForItem()
         $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree, false);
+
+        // We will load implicits members from parents groups and display
+        // them after all the "direct" members
+        $parents_members = self::getParentsMembers($group, $crit);
+
+        foreach ($parents_members as $parent) {
+            // Flag group as implicit, will be used to disallow massive
+            // actions for this group
+            $parent['implicit'] = true;
+            $used[] = $parent;
+        }
+
+        // Remove duplicated data (explicit membership will be shown over
+        // implicits one. In case of no explicits membership and multiple
+        // implicites one, only the firt one will be shown)
+        // array_values is used to avoid gaps in the keys, which is needed
+        // because some code below do a for loop on the data
+        $used = array_values(self::clearDuplicatedGroupData($used));
 
         if ($canedit) {
             self::showAddUserForm($group, $ids, $entityrestrict, $crit);
@@ -582,9 +601,7 @@ class Group_User extends CommonDBRelation
                 $header_end    .= "</th>";
             }
             $header_end .= "<th>" . User::getTypeName(1) . "</th>";
-            if ($tree) {
-                $header_end .= "<th>" . Group::getTypeName(1) . "</th>";
-            }
+            $header_end .= "<th>" . Group::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Dynamic') . "</th>";
             $header_end .= "<th>" . _n('Manager', 'Managers', 1) . "</th>";
             $header_end .= "<th>" . __('Delegatee') . "</th>";
@@ -601,15 +618,15 @@ class Group_User extends CommonDBRelation
                 echo "\n<tr class='tab_bg_" . ($user->isDeleted() ? '1_2' : '1') . "'>";
                 if ($canedit) {
                     echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
+                    if (!($data['implicit'] ?? false)) {
+                        Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
+                    }
                     echo "</td>";
                 }
                 echo "<td>" . $user->getLink();
-                if ($tree) {
-                    echo "</td><td>";
-                    if ($tmpgrp->getFromDB($data['groups_id'])) {
-                        echo $tmpgrp->getLink(['comments' => true]);
-                    }
+                echo "</td><td>";
+                if ($tmpgrp->getFromDB($data['groups_id'])) {
+                    echo $tmpgrp->getLink(['comments' => true]);
                 }
                 echo "</td><td class='center'>";
                 if ($data['is_dynamic']) {
@@ -801,7 +818,7 @@ class Group_User extends CommonDBRelation
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = self::countForItem($item);
                         }
-                        return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
                     break;
 
@@ -810,12 +827,35 @@ class Group_User extends CommonDBRelation
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               $nb = self::countForItem($item);
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
                     break;
             }
         }
         return '';
+    }
+
+    public static function countForItem(CommonGLPI $item)
+    {
+        if ($item instanceof Group) {
+            $members = [];
+            $ids = [];
+            self::getDataForGroup($item, $members, $ids, '', 0, false);
+
+            // We will also count implicits members from parents groups
+            $parents_members = self::getParentsMembers($item, '');
+
+            foreach ($parents_members as $parent) {
+                $members[] = $parent;
+            }
+            $members = self::clearDuplicatedGroupData($members);
+
+            return count($members);
+        } elseif ($item instanceof User) {
+            return parent::countForItem($item);
+        }
+
+        return 0;
     }
 
 
@@ -911,6 +951,9 @@ class Group_User extends CommonDBRelation
             $DB->commit();
         }
         $stmt->close();
+
+        // Group cache must be invalidated when a user is added to a group
+        Group::updateLastGroupChange();
     }
 
 
@@ -967,5 +1010,63 @@ class Group_User extends CommonDBRelation
             $DB->commit();
         }
         $stmt->close();
+
+        // Group cache must be invalidated when a user is remove from a group
+        Group::updateLastGroupChange();
+    }
+
+    /**
+     * Get parents members for a given group
+     *
+     * @param Group $group
+     * @param mixed $crit
+     *
+     * @return array Array of array, which will contain the keys set in
+     *               self::getDataForGroup ('id', 'linkid', 'groups_id',
+     *               'is_dynamic', 'is_manager' and 'is_userdelegate')
+     */
+    protected static function getParentsMembers(Group $group, $crit): array
+    {
+        // No more parents, end recursion
+        if (!$group->fields['groups_id']) {
+            return [];
+        }
+
+        // Load parent
+        $parent = Group::getById($group->fields['groups_id']);
+
+        // Parent doesn't support recursive membership, end recursion
+        if (!$parent->fields['recursive_membership']) {
+            return [];
+        }
+
+        // Get parents members
+        $members = [];
+        $ids = [];
+        self::getDataForGroup($parent, $members, $ids, $crit);
+
+        return array_merge($members, self::getParentsMembers($parent, $crit));
+    }
+
+    /**
+     * When computer members from a group, some users may be counted as members
+     * multiple times if they are part of one or more parents groups that
+     * support recursion
+     *
+     * @param array $data
+     *
+     * return @array
+     */
+    protected static function clearDuplicatedGroupData(array $data): array
+    {
+        $user_ids = [];
+
+        return array_filter($data, function ($user_data) use (&$user_ids) {
+            if (!isset($user_ids[$user_data['id']])) {
+                $user_ids[$user_data['id']] = true;
+                return true;
+            }
+            return false;
+        });
     }
 }

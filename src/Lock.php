@@ -33,7 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\SearchOption;
 
 /**
  * This class manages locks
@@ -54,6 +58,10 @@ class Lock extends CommonGLPI
         return _n('Lock', 'Locks', $nb);
     }
 
+    public static function getIcon()
+    {
+        return "ti ti-lock";
+    }
 
     /**
      * Display form to unlock fields and links
@@ -87,7 +95,7 @@ class Lock extends CommonGLPI
             $subquery = [];
 
             //get locked field for current itemtype
-            $subquery[] = new \QuerySubQuery([
+            $subquery[] = new QuerySubQuery([
                 'SELECT' => $lockedfield->getTable() . ".*",
                 'FROM'   => $lockedfield->getTable(),
                 'WHERE'  => [
@@ -121,7 +129,7 @@ class Lock extends CommonGLPI
                         'OR' => [
                             [
                                 $lockedfield->getTable() . '.itemtype'  => $lockable_itemtype,
-                                $lockedfield->getTable() . '.items_id'  => new \QueryExpression(getTableForItemType($lockable_itemtype) . '.id')
+                                $lockedfield->getTable() . '.items_id'  => new QueryExpression(getTableForItemType($lockable_itemtype) . '.id')
                             ], [
                                 $lockedfield->getTable() . '.itemtype'  => $lockable_itemtype,
                                 $lockedfield->getTable() . '.is_global' => 1
@@ -165,10 +173,10 @@ class Lock extends CommonGLPI
                         ];
                     }
                 }
-                $subquery[] = new \QuerySubQuery($query);
+                $subquery[] = new QuerySubQuery($query);
             }
 
-            $union = new \QueryUnion($subquery);
+            $union = new QueryUnion($subquery);
             $locked_iterator = $DB->request([
                 'FROM' => $union
             ]);
@@ -195,7 +203,7 @@ class Lock extends CommonGLPI
 
 
                 //get fields labels
-                $search_options = Search::getOptions($itemtype);
+                $search_options = SearchOption::getOptionsForItemtype($itemtype);
                 foreach ($search_options as $search_option) {
                     //exclude SO added by dropdown part (to get real name)
                     //ex : Manufacturer != Firmware : Manufacturer
@@ -910,10 +918,10 @@ class Lock extends CommonGLPI
             echo "<td class='left' width='80%'>";
 
             echo "<input type='submit' name='unlock' ";
-            echo "value=\"" . addslashes(_sx('button', 'Unlock')) . "\" class='btn btn-primary'>&nbsp;";
+            echo "value=\"" . _sx('button', 'Unlock') . "\" class='btn btn-primary'>&nbsp;";
 
             echo "<input type='submit' name='purge' ";
-            echo "value=\"" . addslashes(_sx('button', 'Delete permanently')) . "\" class='btn btn-primary'>&nbsp;";
+            echo "value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>&nbsp;";
             echo "</td></tr>";
             echo "</table>";
         } else {
@@ -937,7 +945,7 @@ class Lock extends CommonGLPI
     {
 
         if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
-            return Lock::getTypeName(Session::getPluralNumber());
+            return self::createTabEntry(Lock::getTypeName(Session::getPluralNumber()), 0, $item::getType());
         }
         return '';
     }

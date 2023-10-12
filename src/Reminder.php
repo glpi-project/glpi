@@ -553,7 +553,7 @@ class Reminder extends CommonDBVisible implements
                             'Target',
                             'Targets',
                             Session::getPluralNumber()
-                        ), $nb)
+                        ), $nb, $item::getType())
                         ];
                     }
             }
@@ -871,6 +871,11 @@ class Reminder extends CommonDBVisible implements
                 ]
             );
         }
+
+        $parent = getItemForItemtype($val['itemtype']);
+        $parent->getFromDB($val[$parent->getForeignKeyField()]);
+        $html .= $parent->getLink(['icon' => true, 'forceid' => true]) . "<br>";
+        $html .= "<span>" . Entity::badgeCompletenameById($parent->getEntityID()) . "</span><br>";
         return $html;
     }
 
@@ -905,47 +910,88 @@ class Reminder extends CommonDBVisible implements
             ]
         ];
 
-        if ($personal) {
-           /// Personal notes only for central view
-            if (Session::getCurrentInterface() == 'helpdesk') {
-                return false;
-            }
+        $personal_criteria = [
+            'SELECT' => ['glpi_reminders.*'],
+            'FROM'   => 'glpi_reminders',
+            'WHERE'  => array_merge([
+                'glpi_reminders.users_id'  => $users_id,
+                [
+                    'OR'        => [
+                        'end'          => ['>=', $today],
+                        'is_planned'   => 0
+                    ]
+                ]
+            ], $visibility_criteria),
+            'ORDER'  => 'glpi_reminders.name'
+        ];
 
-            $criteria = [
-                'SELECT' => ['glpi_reminders.*'],
-                'FROM'   => 'glpi_reminders',
-                'WHERE'  => array_merge([
-                    'glpi_reminders.users_id'  => $users_id,
-                    [
-                        'OR'        => [
-                            'end'          => ['>=', $today],
-                            'is_planned'   => 0
+        $public_criteria = array_merge_recursive(
+            [
+                'SELECT'          => ['glpi_reminders.*'],
+                'DISTINCT'        => true,
+                'FROM'            => 'glpi_reminders',
+                'WHERE'           => $visibility_criteria,
+                'ORDERBY'         => 'name'
+            ],
+            self::getVisibilityCriteria()
+        );
+        // Do not force the inclusion of reminders created by the current user
+        unset($public_criteria['WHERE']['glpi_reminders.users_id'], $public_criteria['WHERE']['OR']['glpi_reminders.users_id']);
+
+        if (ReminderTranslation::isReminderTranslationActive()) {
+            $additional_criteria = [
+                'SELECT'    => ["glpi_remindertranslations.name AS transname", "glpi_remindertranslations.text AS transtext"],
+                'LEFT JOIN' => [
+                    'glpi_remindertranslations' => [
+                        'ON'  => [
+                            'glpi_reminders'             => 'id',
+                            'glpi_remindertranslations'  => 'reminders_id', [
+                                'AND'                            => [
+                                    'glpi_remindertranslations.language' => $_SESSION['glpilanguage']
+                                ]
+                            ]
                         ]
                     ]
-                ], $visibility_criteria),
-                'ORDER'  => 'glpi_reminders.name'
+                ],
             ];
+            $personal_criteria = array_merge_recursive($personal_criteria, $additional_criteria);
+            $public_criteria   = array_merge_recursive($public_criteria, $additional_criteria);
+        }
 
+        // Only standard interface users have personal reminders
+        $can_see_personal = Session::getCurrentInterface() === 'central';
+        $can_see_public = (bool) Session::haveRight(self::$rightname, READ);
+
+        $personal_reminders = [];
+        $public_reminders = [];
+
+        if ($personal && $can_see_personal) {
+            $iterator = $DB->request($personal_criteria);
+            foreach ($iterator as $data) {
+                $personal_reminders[] = $data;
+            }
+        }
+        if ($can_see_public) {
+            $iterator = $DB->request($public_criteria);
+            foreach ($iterator as $data) {
+                $public_reminders[] = $data;
+            }
+
+            // Remove all reminders from the personal list that are already in the public list (Check by id)
+            foreach ($public_reminders as $key => $public_reminder) {
+                foreach ($personal_reminders as $key2 => $personal_reminder) {
+                    if ($personal_reminder['id'] === $public_reminder['id']) {
+                        unset($personal_reminders[$key2]);
+                    }
+                }
+            }
+        }
+
+        if ($personal) {
             $titre = "<a href='" . $CFG_GLPI["root_doc"] . "/front/reminder.php'>" .
                     _n('Personal reminder', 'Personal reminders', Session::getPluralNumber()) . "</a>";
         } else {
-           // Show public reminders / not mines : need to have access to public reminders
-            if (!self::canView()) {
-                return false;
-            }
-
-            $criteria = array_merge_recursive(
-                [
-                    'SELECT'          => ['glpi_reminders.*'],
-                    'DISTINCT'        => true,
-                    'FROM'            => 'glpi_reminders',
-                    'WHERE'           => $visibility_criteria,
-                    'ORDERBY'         => 'name'
-                ],
-                self::getVisibilityCriteria()
-            );
-
-            if (Session::getCurrentInterface() != 'helpdesk') {
+            if (Session::getCurrentInterface() !== 'helpdesk') {
                 $titre = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/reminder.php\">" .
                        _n('Public reminder', 'Public reminders', Session::getPluralNumber()) . "</a>";
             } else {
@@ -953,23 +999,8 @@ class Reminder extends CommonDBVisible implements
             }
         }
 
-        if (ReminderTranslation::isReminderTranslationActive()) {
-            $criteria['LEFT JOIN']['glpi_remindertranslations'] = [
-                'ON'  => [
-                    'glpi_reminders'             => 'id',
-                    'glpi_remindertranslations'  => 'reminders_id', [
-                        'AND'                            => [
-                            'glpi_remindertranslations.language' => $_SESSION['glpilanguage']
-                        ]
-                    ]
-                ]
-            ];
-            $criteria['SELECT'][] = "glpi_remindertranslations.name AS transname";
-            $criteria['SELECT'][] = "glpi_remindertranslations.text AS transtext";
-        }
-
-        $iterator = $DB->request($criteria);
-        $nb = count($iterator);
+        $reminders = $personal ? $personal_reminders : $public_reminders;
+        $nb = count($reminders);
 
         $output = "";
         $output .= "<table class='table table-striped card-table table-hover'>";
@@ -992,7 +1023,7 @@ class Reminder extends CommonDBVisible implements
         if ($nb) {
             $rand = mt_rand();
 
-            foreach ($iterator as $data) {
+            foreach ($reminders as $data) {
                 $output .= "<tr><td>";
                 $name = $data['name'];
 

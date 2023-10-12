@@ -131,10 +131,9 @@
                {% set avatar_rand = random() %}
                {# log entries have no users_id #}
                {% if entry_user is not null %}
-                  {% set user_fields = entry_user.fields|merge({
-                      user_name: entry_user.getFriendlyName()|verbatim_value,
-                      email: entry_user.getDefaultEmail()
-                  }) %}
+                  {% set user_fields = entry_user.fields %}
+                  {% set user_fields = user_fields|merge({user_name: entry_user.getFriendlyName()}) %}
+                  {% set user_fields = user_fields|merge({email: entry_user.getDefaultEmail()}) %}
                   <span id="timeline-avatar{{ avatar_rand }}">
                      {{ include('components/user/picture.html.twig', {
                         'users_id': users_id,
@@ -173,7 +172,11 @@
                         {% endif %}
                      {% else %}
                         <div class="read-only-content">
-                           {{ entry_i['content']|safe_html }}
+                            {% if entry_i['is_content_safe'] %}
+                                {{ entry_i['content']|raw }}
+                            {% else %}
+                                {{ entry_i['content']|safe_html }}
+                            {% endif %}
                         </div>
                      {% endif %}
                      <div class="edit-content collapse">
@@ -257,4 +260,21 @@ $(function() {
       $("#right-actions").show();
    });
 });
+
+// Align ITILReminder
+let result = document.evaluate(
+   '//div[contains(@class, "timeline-header")][contains(@id, "ITILReminder_")]',
+   document,
+   null,
+   XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+   null
+);
+
+for (let i = 0; i < result.snapshotLength; i++) {
+   let node = result.snapshotItem(i);
+   let width = (i > 0 ? Math.max(result.snapshotItem(i - 1).offsetWidth, node.offsetWidth) : node.offsetWidth) + 1;
+   node.style.setProperty('width', 'var(--itilautobump-header-badge-width)');
+   node.style.setProperty('flex-direction', 'row-reverse');
+   document.documentElement.style.setProperty('--itilautobump-header-badge-width', width + 'px');
+}
 </script>

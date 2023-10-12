@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use Computer_Item;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use Peripheral as GPeripheral;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
@@ -163,12 +162,12 @@ class Peripheral extends InventoryAsset
                 if ($data['found_inventories'][0] == 0) {
                     // add peripheral
                     $handled_input = $this->handleInput($val, $peripheral) + ['entities_id' => $this->entities_id];
-                    $items_id = $peripheral->add(Sanitizer::sanitize($handled_input), [], false);
+                    $items_id = $peripheral->add($handled_input, [], false);
                 } else {
                     $items_id = $data['found_inventories'][0];
                     $peripheral->getFromDB($items_id);
                     $handled_input = $this->handleInput($val, $peripheral);
-                    $peripheral->update(Sanitizer::sanitize(['id' => $items_id] + $handled_input), false);
+                    $peripheral->update(['id' => $items_id] + $handled_input, false);
                 }
 
                 $peripherals[] = $items_id;

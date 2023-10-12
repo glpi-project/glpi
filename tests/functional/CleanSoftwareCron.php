@@ -50,7 +50,7 @@ class CleanSoftwareCron extends DbTestCase
 
         // Delete all existing software and versions
         $always_true = [
-            new \QueryExpression('1 = 1')
+            new \Glpi\DBAL\QueryExpression('1 = 1')
         ];
         $this->boolean($software->deleteByCriteria($always_true, 1))->isTrue();
         $this->boolean($software_version->deleteByCriteria($always_true, 1))->isTrue();

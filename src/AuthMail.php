@@ -298,7 +298,7 @@ class AuthMail extends CommonDBTM
             );
             if ($auth->auth_succeded) {
                  $auth->extauth      = 1;
-                 $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
+                 $auth->user_present = $auth->user->getFromDBbyName($login);
                  $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
                  //Update the authentication method for the current user
                  $auth->user->fields["authtype"] = Auth::MAIL;

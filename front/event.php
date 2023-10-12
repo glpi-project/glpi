@@ -39,8 +39,14 @@ include('../inc/includes.php');
 
 Session::checkRight("logs", READ);
 
-Html::header(Event::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "Glpi\\Event");
+Html::header(
+    Event::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    "admin",
+    "glpi\system\log\logviewer",
+    "Glpi\\Event"
+);
 
-Event::showList($_SERVER['PHP_SELF'], $_GET['order'] ?? 'DESC', $_GET['sort']  ?? 'date', $_GET['start'] ?? 0);
+Search::show(Event::class);
 
 Html::footer();

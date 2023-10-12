@@ -163,6 +163,7 @@ $RELATION = [
         'glpi_slms'                => 'calendars_id',
         'glpi_recurrentchanges'    => 'calendars_id',
         'glpi_ticketrecurrents'    => 'calendars_id',
+        'glpi_pendingreasons'     => 'calendars_id',
     ],
 
     'glpi_cartridgeitems' => [
@@ -183,18 +184,23 @@ $RELATION = [
     ],
 
     'glpi_changes' => [
-        '_glpi_changecosts'       => 'changes_id',
-        '_glpi_changes_groups'    => 'changes_id',
-        '_glpi_changes_items'     => 'changes_id',
-        '_glpi_changes_problems'  => 'changes_id',
-        '_glpi_changes_suppliers' => 'changes_id',
-        '_glpi_changes_tickets'   => 'changes_id',
-        '_glpi_changes_users'     => 'changes_id',
-        '_glpi_changetasks'       => 'changes_id',
-        '_glpi_changevalidations' => 'changes_id',
-        '_glpi_itils_projects'    => [['items_id', 'itemtype']],
-        '_glpi_itilfollowups'     => [['items_id', 'itemtype']],
-        '_glpi_itilsolutions'     => [['items_id', 'itemtype']],
+        '_glpi_changecosts'         => 'changes_id',
+        '_glpi_changes_changes'     => [
+            'changes_id_1',
+            'changes_id_2'
+        ],
+        '_glpi_changes_groups'      => 'changes_id',
+        '_glpi_changes_items'       => 'changes_id',
+        '_glpi_changes_problems'    => 'changes_id',
+        '_glpi_changes_suppliers'   => 'changes_id',
+        '_glpi_changes_tickets'     => 'changes_id',
+        '_glpi_changes_users'       => 'changes_id',
+        '_glpi_changesatisfactions' => 'changes_id',
+        '_glpi_changetasks'         => 'changes_id',
+        '_glpi_changevalidations'   => 'changes_id',
+        '_glpi_itils_projects'      => [['items_id', 'itemtype']],
+        '_glpi_itilfollowups'       => [['items_id', 'itemtype']],
+        '_glpi_itilsolutions'       => [['items_id', 'itemtype']],
     ],
 
     'glpi_changetemplates' => [
@@ -202,9 +208,11 @@ $RELATION = [
         'glpi_itilcategories'                  => [
             'changetemplates_id',
         ],
+        'glpi_changes'                         => 'changetemplates_id',
         '_glpi_changetemplatehiddenfields'     => 'changetemplates_id',
         '_glpi_changetemplatemandatoryfields'  => 'changetemplates_id',
         '_glpi_changetemplatepredefinedfields' => 'changetemplates_id',
+        '_glpi_changetemplatereadonlyfields'   => 'changetemplates_id',
         'glpi_profiles'                        => 'changetemplates_id',
         'glpi_recurrentchanges'                => 'changetemplates_id',
     ],
@@ -591,7 +599,9 @@ $RELATION = [
         '_glpi_items_operatingsystems'     => 'entities_id',
         'glpi_itilcategories'              => 'entities_id',
         'glpi_itilfollowuptemplates'       => 'entities_id',
+        'glpi_itilvalidationtemplates'     => 'entities_id',
         'glpi_knowbaseitemcategories'      => 'entities_id',
+        'glpi_knowbaseitems'               => 'entities_id',
         'glpi_knowbaseitems_profiles'      => 'entities_id',
         'glpi_lineoperators'               => 'entities_id',
         'glpi_lines'                       => 'entities_id',
@@ -657,6 +667,8 @@ $RELATION = [
         'glpi_users'                       => 'entities_id',
         'glpi_vlans'                       => 'entities_id',
         'glpi_wifinetworks'                => 'entities_id',
+        'glpi_webhooks'                    => 'entities_id',
+        'glpi_queuedwebhooks'              => 'entities_id',
     ],
 
     'glpi_filesystems' => [
@@ -741,6 +753,7 @@ $RELATION = [
             'groups_id',
         ],
         'glpi_users'                  => 'groups_id',
+        'glpi_itilvalidationtemplates_targets' => 'groups_id',
     ],
 
     'glpi_holidays' => [
@@ -832,6 +845,7 @@ $RELATION = [
 
     'glpi_lines' => [
         'glpi_items_devicesimcards' => 'lines_id',
+        '_glpi_items_lines' => 'lines_id',
     ],
 
     'glpi_linetypes' => [
@@ -1059,6 +1073,7 @@ $RELATION = [
 
     'glpi_pendingreasons' => [
         '_glpi_pendingreasons_items' => 'pendingreasons_id',
+        'glpi_itilreminders' => 'pendingreasons_id',
     ],
 
     'glpi_pdumodels' => [
@@ -1130,6 +1145,10 @@ $RELATION = [
         '_glpi_itilfollowups'      => [['items_id', 'itemtype']],
         '_glpi_itilsolutions'      => [['items_id', 'itemtype']],
         '_glpi_problemcosts'       => 'problems_id',
+        '_glpi_problems_problems'  => [
+            'problems_id_1',
+            'problems_id_2',
+        ],
         '_glpi_problems_suppliers' => 'problems_id',
         '_glpi_problems_tickets'   => 'problems_id',
         '_glpi_problems_users'     => 'problems_id',
@@ -1141,10 +1160,12 @@ $RELATION = [
         'glpi_itilcategories'                   => [
             'problemtemplates_id',
         ],
-        'glpi_profiles'                         => 'problemtemplates_id',
+        'glpi_problems'                         => 'problemtemplates_id',
         '_glpi_problemtemplatehiddenfields'     => 'problemtemplates_id',
         '_glpi_problemtemplatemandatoryfields'  => 'problemtemplates_id',
         '_glpi_problemtemplatepredefinedfields' => 'problemtemplates_id',
+        '_glpi_problemtemplatereadonlyfields'   => 'problemtemplates_id',
+        'glpi_profiles'                         => 'problemtemplates_id',
     ],
 
     'glpi_profiles' => [
@@ -1396,6 +1417,10 @@ $RELATION = [
         'glpi_tickettasks'  => 'tasktemplates_id',
     ],
 
+    'glpi_ticketrecurrents' => [
+        '_glpi_items_ticketrecurrents' => 'ticketrecurrents_id',
+    ],
+
     'glpi_tickets' => [
         '_glpi_changes_tickets'      => 'tickets_id',
         'glpi_documents'             => 'tickets_id',
@@ -1428,10 +1453,12 @@ $RELATION = [
             'tickettemplates_id_demand',
         ],
         'glpi_profiles'                        => 'tickettemplates_id',
+        'glpi_tickets'                         => 'tickettemplates_id',
         'glpi_ticketrecurrents'                => 'tickettemplates_id',
         '_glpi_tickettemplatehiddenfields'     => 'tickettemplates_id',
         '_glpi_tickettemplatemandatoryfields'  => 'tickettemplates_id',
         '_glpi_tickettemplatepredefinedfields' => 'tickettemplates_id',
+        '_glpi_tickettemplatereadonlyfields'   => 'tickettemplates_id',
     ],
 
     'glpi_transfers' => [
@@ -1583,6 +1610,10 @@ $RELATION = [
         ],
         '_glpi_useremails'              => 'users_id',
         'glpi_users'                    => 'users_id_supervisor',
+        'glpi_validatorsubstitutes'     => [
+            'users_id',
+            'users_id_substitute',
+        ],
     ],
 
     'glpi_usertitles' => [
@@ -1609,6 +1640,15 @@ $RELATION = [
 
     'glpi_wifinetworks' => [
         'glpi_networkportwifis' => 'wifinetworks_id',
+    ],
+    'glpi_webhooks' => [
+        '_glpi_queuedwebhooks' => 'webhooks_id',
+    ],
+
+    'glpi_itilvalidationtemplates' => [
+        '_glpi_itilvalidationtemplates_targets' => 'itilvalidationtemplates_id',
+        'glpi_changevalidations' => 'itilvalidationtemplates_id',
+        'glpi_ticketvalidations' => 'itilvalidationtemplates_id',
     ],
 
 ];

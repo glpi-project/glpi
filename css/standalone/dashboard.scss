@@ -187,11 +187,23 @@ $break_tablet: 1400px;
 
         .toolbar {
             .change-dashboard {
-                display: none;
+                display: none !important;
             }
 
             .edit-dashboard-properties {
                 display: inline-flex;
+            }
+        }
+    }
+
+    &.filter-mode {
+        .toolbar {
+            .change-dashboard {
+            display: none;
+            }
+
+            .filter-dashboard-properties {
+            display: inline-block;
             }
         }
 
@@ -300,22 +312,19 @@ $break_tablet: 1400px;
         i.far,
         i.fa-regular,
         i.ti {
-            font-size: 1.35em;
-            cursor: pointer;
-            padding: 5px;
-            margin-left: 5px;
+            padding: 5px 8px;
             border: 2px solid transparent;
-
-            &.ti {
-                font-size: 1.75em;
-            }
+            margin-left: 3px;
 
             @media screen and (max-width: $break_phones) {
                 display: none;
             }
 
-            &.active {
-                border: 2px inset currentcolor;
+            &.active:not(:hover) {
+                // override tabler styles
+                border: 2px inset var(--tblr-border-color);
+                color: var(--tblr-secondary);
+                background-color: rgba(var(--tblr-secondary-rgb), 0.1);
             }
 
             &.fa-moon {
@@ -1114,16 +1123,6 @@ $break_tablet: 1400px;
             stroke-width: 13px;
         }
 
-        &.pie,
-        &.line.multiple,
-        &.bar.tab10 {
-            @import "../includes/components/chartist/palette_d3_tab_10";
-        }
-
-        &.bar.tab20 {
-            @import "../includes/components/chartist/palette_d3_cat_20";
-        }
-
         .ct-legend {
             text-align: left;
             padding: 10px 0 10px 38px;
@@ -1262,27 +1261,20 @@ $break_tablet: 1400px;
     }
 }
 
-.chartist-tooltip.dashboard-tooltip {
-    $bg-color: rgba($color: #fff, $alpha: 65%);
-
-    z-index: 1080;
-    background-color: $bg-color;
-
-    @include soft-shadow;
-
-    &::before {
-        border-top-color: $bg-color;
-    }
-}
-
 .embed_block {
     border: 1px dashed #a0a0a04f;
     padding: 5px 10px;
 }
 
+.palette_preview {
+    width: calc(100% - 10px);
+}
+
 .widgettype_field {
     .widget-list {
         max-width: 400px;
+        display: flex;
+        flex-wrap: wrap;
     }
 
     input[type="radio"].widget-select {
@@ -1297,6 +1289,7 @@ $break_tablet: 1400px;
             display: none;
             text-align: center;
             font-weight: bold;
+            width: 30%;
 
             &:hover {
                 background: rgba($color: #000, $alpha: 10%);

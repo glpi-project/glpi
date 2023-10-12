@@ -35,6 +35,8 @@
 
 namespace tests\units;
 
+use Config;
+
 /* Test for inc/session.class.php */
 
 class Session extends \DbTestCase
@@ -449,6 +451,197 @@ class Session extends \DbTestCase
             'right'       => 'all'
         ]);
         $this->boolean($result)->isTrue();
+    }
+
+    public function testCanImpersonate()
+    {
+        global $DB;
+
+        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $users = [];
+        for ($i = 0; $i < 6; $i++) {
+            $user = new \User();
+            $users_id = $user->add([
+                'name'     => 'testCanImpersonate' . $i,
+                'password' => 'test',
+                'password2' => 'test',
+                'entities_id' => $root_entity,
+            ]);
+            $this->integer($users_id)->isGreaterThan(0);
+            $users[] = $users_id;
+        }
+
+        $profiles_to_copy = ['Technician', 'Admin'];
+        // Copy the data of each profile to a new one with the same name but suffixed with '-Impersonate
+        foreach ($profiles_to_copy as $profile_name) {
+            $profile = new \Profile();
+            $profiles_id = getItemByTypeName('Profile', $profile_name, true);
+            $this->integer($profiles_id)->isGreaterThan(0);
+            $profile->getFromDB($profiles_id);
+            $new_input = $profile->fields;
+            unset($new_input['id']);
+            $new_input['name'] .= '-Impersonate';
+            $new_profiles_id = $profile->add($new_input);
+
+            // Copy all rights from original profile to the new one, adding user impersonate right
+            $rights = \ProfileRight::getProfileRights($profiles_id, ['user']);
+            $rights['user'] = (int) $rights['user'] | \User::IMPERSONATE;
+            \ProfileRight::updateProfileRights($new_profiles_id, $rights);
+        }
+
+        $assign_profile = function (int $users_id, int $profiles_id) use ($root_entity) {
+            $profile_user = new \Profile_User();
+            $result = $profile_user->add([
+                'profiles_id' => $profiles_id,
+                'users_id'    => $users_id,
+                'entities_id' => $root_entity,
+            ]);
+            $this->integer($result)->isGreaterThan(0);
+            $user = new \User();
+            $this->boolean($user->update([
+                'id' => $users_id,
+                'profiles_id' => $profiles_id,
+            ]))->isTrue();
+        };
+
+        $assign_profile($users[1], getItemByTypeName('Profile', 'Technician-Impersonate', true));
+        $assign_profile($users[2], getItemByTypeName('Profile', 'Admin-Impersonate', true));
+        $assign_profile($users[3], getItemByTypeName('Profile', 'Admin-Impersonate', true));
+        $assign_profile($users[4], getItemByTypeName('Profile', 'Super-Admin', true));
+        $assign_profile($users[5], getItemByTypeName('Profile', 'Super-Admin', true));
+
+        $this->login('testCanImpersonate1', 'test');
+        $this->boolean(\Session::canImpersonate($users[0]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[1]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[2]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[3]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[4]))->isFalse();
+
+        $this->login('testCanImpersonate2', 'test');
+        $this->boolean(\Session::canImpersonate($users[0]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[1]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[2]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[3]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[4]))->isFalse();
+
+        $this->login('testCanImpersonate3', 'test');
+        $this->boolean(\Session::canImpersonate($users[0]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[1]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[2]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[3]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[4]))->isFalse();
+
+        $this->login('testCanImpersonate4', 'test');
+        // Super-admins have config UPDATE right so they can impersonate anyone (except themselves)
+        $this->boolean(\Session::canImpersonate($users[0]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[1]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[2]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[3]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[4]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[5]))->isTrue();
+
+        $assign_profile($users[0], getItemByTypeName('Profile', 'Admin-Impersonate', true));
+        $this->login('testCanImpersonate1', 'test');
+        // User 0 now has a higher-level profile (Admin) than User 1 which is only Technician
+        $this->boolean(\Session::canImpersonate($users[0]))->isFalse();
+
+        $this->login('testCanImpersonate0', 'test');
+        // Force user 0 to use Self-Service profile initially
+        \Session::changeProfile(getItemByTypeName('Profile', 'Self-Service', true));
+        // User 0's default profile is still Self-Service, so they can't impersonate anyone
+        $this->boolean(\Session::canImpersonate($users[1]))->isFalse();
+        \Session::changeProfile(getItemByTypeName('Profile', 'Admin-Impersonate', true));
+        // User 0's default profile is now Admin-Impersonate, so they can impersonate the user with Technician-Impersonate
+        $this->boolean(\Session::canImpersonate($users[1]))->isTrue();
+    }
+
+    protected function testSessionGroupsProvider(): iterable
+    {
+        // Base entity for our tests
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        // Create some groups to use for our tests
+        $group_1 = $this->createItem('Group', [
+            'name' => 'testSessionGroups Group 1',
+            'entities_id' => $entity,
+            'recursive_membership' => false,
+        ])->getID();
+        $group_1A = $this->createItem('Group', [
+            'name'        => 'testSessionGroups Group 1A',
+            'entities_id' => $entity,
+            'groups_id'   => $group_1,
+            'recursive_membership' => false,
+        ])->getID();
+
+        // Login to TU_USER account (no groups);
+        $tests_users_id = getItemByTypeName("User", TU_USER, true);
+        $this->login();
+        yield ['expected' => []];
+
+        // Assign our user to a group
+        $group_user_1 = $this->createItem('Group_User', [
+            'groups_id' => $group_1,
+            'users_id' => $tests_users_id,
+        ])->getID();
+        yield ['expected' => [$group_1]];
+
+        // Enable group recursion on all groups
+        $this->updateItem('Group', $group_1, ['recursive_membership' => true]);
+        $this->updateItem('Group', $group_1A, ['recursive_membership' => true]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Add another child group
+        $group_1A1 = $this->createItem('Group', [
+            'name'        => 'testSessionGroups Group 1A1',
+            'entities_id' => $entity,
+            'groups_id'   => $group_1A,
+            'recursive_membership' => true,
+        ])->getID();
+        yield ['expected' => [$group_1, $group_1A, $group_1A1]];
+
+        // Disable group recursion on $group_1A
+        $this->updateItem("Group", $group_1A, ['recursive_membership' => false]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Re-enable recursion
+        $this->updateItem("Group", $group_1A, ['recursive_membership' => true]);
+        yield ['expected' => [$group_1, $group_1A, $group_1A1]];
+
+        // Change parent group for $group_1A1
+        $this->updateItem("Group", $group_1A1, ['groups_id' => 0]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Disable recursion on all groups
+        $this->updateItem('Group', $group_1, ['recursive_membership' => false]);
+        $this->updateItem('Group', $group_1A, ['recursive_membership' => false]);
+        $this->updateItem('Group', $group_1A1, ['recursive_membership' => false]);
+        yield ['expected' => [$group_1]];
+
+        // Link Group 1A manually
+        $this->createItem('Group_User', [
+            'groups_id' => $group_1A,
+            'users_id' => $tests_users_id,
+        ]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Unlink Group 1
+        $this->deleteItem('Group_User', $group_user_1);
+        yield ['expected' => [$group_1A]];
+
+        // Delete group 1A
+        $this->deleteItem('Group', $group_1A);
+        yield ['expected' => []];
+    }
+
+    /**
+     * Test that $_SESSION['glpigroups'] contains the expected ids
+     *
+     * @dataprovider testSessionGroupsProvider
+     */
+    public function testSessionGroups(array $expected): void
+    {
+        $this->array($_SESSION['glpigroups'])->isEqualTo($expected);
     }
 
     protected function getRightNameForErrorProvider()

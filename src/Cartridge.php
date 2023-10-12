@@ -726,6 +726,12 @@ class Cartridge extends CommonDBRelation
         if (!$cartitem->can($tID, READ)) {
             return false;
         }
+        if (isset($_GET["start"])) {
+            $start = $_GET["start"];
+        } else {
+            $start = 0;
+        }
+
         $canedit = $cartitem->can($tID, UPDATE);
 
         $where = ['glpi_cartridges.cartridgeitems_id' => $tID];
@@ -751,6 +757,12 @@ class Cartridge extends CommonDBRelation
         $pages_printed    = 0;
         $nb_pages_printed = 0;
 
+        $total_number = countElementsInTable(
+            self::getTable(),
+            [
+                'WHERE'     => $where
+            ]
+        );
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_cartridges.*',
@@ -768,13 +780,17 @@ class Cartridge extends CommonDBRelation
                 ]
             ],
             'WHERE'     => $where,
-            'ORDER'     => $order
+            'ORDER'     => $order,
+            'START'     => (int) $start,
+            'LIMIT'     => (int) $_SESSION['glpilist_limit']
         ]);
 
         $number = count($iterator);
 
         $rand = mt_rand();
         echo "<div class='spaced'>";
+        // Display the pager
+        Html::printAjaxPager(Consumable::getTypeName(Session::getPluralNumber()), $start, $total_number);
         if ($canedit && $number) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $actions = ['purge' => _x('button', 'Delete permanently'),

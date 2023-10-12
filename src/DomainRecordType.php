@@ -335,11 +335,6 @@ class DomainRecordType extends CommonDropdown
         $fields = null;
         if (\Toolbox::isJSON($json_encoded_fields)) {
             $fields = json_decode($json_encoded_fields, true);
-        } else {
-            $fields_str = stripslashes(preg_replace('/(\\\r|\\\n)/', '', $json_encoded_fields));
-            if (\Toolbox::isJSON($fields_str)) {
-                $fields = json_decode($fields_str, true);
-            }
         }
 
         if (!is_array($fields)) {

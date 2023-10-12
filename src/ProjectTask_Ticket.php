@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 
 /**
@@ -79,13 +80,13 @@ class ProjectTask_Ticket extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 case 'Ticket':
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';
@@ -120,7 +121,12 @@ class ProjectTask_Ticket extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT'       => new QueryExpression('SUM(glpi_tickets.actiontime) AS duration'),
+            'SELECT'    => [
+                QueryFunction::sum(
+                    expression: 'glpi_tickets.actiontime',
+                    alias: 'duration'
+                )
+            ],
             'FROM'         => self::getTable(),
             'INNER JOIN'   => [
                 'glpi_tickets' => [

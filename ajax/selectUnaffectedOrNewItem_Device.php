@@ -37,6 +37,8 @@
  * @since 0.85
  */
 
+use Glpi\DBAL\QueryExpression;
+
 include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");

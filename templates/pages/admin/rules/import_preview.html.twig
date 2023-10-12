@@ -1,0 +1,135 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+<form name="form" method="post" action="rule.backup.php">
+   {{ inputs.hidden('action', 'process_import') }}
+   {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+   <div id="tabsbody" class="spaced">
+      <table class="table table-striped">
+         <thead>
+            <tr>
+               <th colspan="3" class="center">{{ __('Rules refused') }}</th>
+            </tr>
+            <tr>
+               <th>{{ _n('Type', 'Types', 1) }}</th>
+               <th>{{ __('Name') }}</th>
+               <th>{{ __('Reason of rejection') }}</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for refused in refused_rules %}
+               <tr>
+                  <td>{{ refused['type_title'] }}</td>
+                  <td>{{ refused['rule_name'] }}</td>
+                  <td>
+                     <table class="table w-100">
+                        <tbody>
+                           {% if refused['reasons']['criteria'] is not defined and refused['reasons']['actions'] is not defined %}
+                              {% if refused['reasons']['entity'] is defined %}
+                                 <tr>
+                                    <td>{{ __('%1$s (%2$s)')|format(__('Entity not found'), refused['reasons']['entity']) }}</td>
+                                    <td>
+                                       {{ fields.dropdownField('Entity', 'new_entities[' ~ refused['uuid'] ~ ']', null, __('Select the desired entity')) }}
+                                    </td>
+                                 </tr>
+                              {% endif %}
+                           {% endif %}
+                           {% if refused['reasons']['criteria'] is defined %}
+                              <tr>
+                                 <td>{{ __('Criteria refused') }}</td>
+                                 <td>
+                                    <table class="table w-100">
+                                       <thead>
+                                          <tr>
+                                             <th>{{ _n('Criterion', 'Criteria', 1) }}</th>
+                                             <th>{{ __('Condition') }}</th>
+                                             <th>{{ __('Reason') }}</th>
+                                          </tr>
+                                       </thead>
+                                       <tbody>
+                                          {% for criterion in refused['reasons']['criteria'] %}
+                                             <tr>
+                                                <td>{{ criterion['name'] }}</td>
+                                                <td>{{ criterion['label'] }}</td>
+                                                <td>{{ criterion['pattern'] }}</td>
+                                             </tr>
+                                          {% endfor %}
+                                       </tbody>
+                                    </table>
+                                 </td>
+                              </tr>
+                           {% endif %}
+                           {% if refused['reasons']['actions'] is defined %}
+                              <tr>
+                                 <td>{{ __('Actions refused') }}</td>
+                                 <td>
+                                    <table class="table w-100">
+                                       <thead>
+                                          <tr>
+                                             <th>{{ _n('Field', 'Fields', 1) }}</th>
+                                             <th>{{ __('Action type') }}</th>
+                                             <th>{{ __('Value') }}</th>
+                                          </tr>
+                                       </thead>
+                                       <tbody>
+                                       {% for action in refused['reasons']['actions'] %}
+                                          <tr>
+                                             <td>{{ action['name'] }}</td>
+                                             <td>{{ action['label'] }}</td>
+                                             <td>{{ action['value']|default('') }}</td>
+                                          </tr>
+                                       {% endfor %}
+                                       </tbody>
+                                    </table>
+                                 </td>
+                              </tr>
+                           {% endif %}
+                        </tbody>
+                     </table>
+                  </td>
+               </tr>
+            {% endfor %}
+         </tbody>
+         <tfoot>
+            <tr>
+               <td colspan="3" class="center">
+                  {{ inputs.submit('submit', _x('button', 'Post'), 1) }}
+               </td>
+            </tr>
+         </tfoot>
+      </table>
+   </div>
+</form>

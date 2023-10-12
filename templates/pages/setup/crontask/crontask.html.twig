@@ -1,0 +1,175 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="asset {{ bg }}">
+   {{ include('components/form/header.html.twig') }}
+
+   {% set rand = random() %}
+   {% set params  = params ?? [] %}
+   {% set target       = params['target'] ?? item.getFormURL() %}
+   {% set withtemplate = params['withtemplate'] ?? '' %}
+   {% set item_type = item.getType() %}
+   {% set field_options = {} %}
+   {% set can_execute = item.canEdit(item.fields['id']) %}
+
+   <div class="card-body d-flex flex-wrap">
+      <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
+         <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+            <div class="row flex-row align-items-start flex-grow-1">
+               <div class="row flex-row">
+                  {% block form_fields %}
+                     {% set name = item.fields['name'] %}
+                     {% if plugin_info %}
+                        {% set name = __('%1$s - %2$s')|format(plugin_info['plugin'], name) %}
+                     {% endif %}
+                     {% set name_field %}
+                        <span class="fw-bold">{{ name }}</span>
+                     {% endset %}
+                     {{ fields.htmlField('name', name_field, __('Name')) }}
+
+                     {{ fields.textareaField(
+                        'comment',
+                        item.fields['comment'],
+                        _n('Comment', 'Comments', get_plural_number()),
+                        field_options
+                     ) }}
+
+                     {{ fields.htmlField('description', item.getDescription(item.getID), __('Description')) }}
+
+                     {{ fields.dropdownFrequency('frequency', item.fields['frequency'], __('Run frequency')) }}
+
+                     {# Status #}
+                     {{ fields.dropdownArrayField('state', item.fields['state'], {
+                        (constant('CronTask::STATE_DISABLE')): __('Disabled'),
+                        (constant('CronTask::STATE_WAITING')): __('Scheduled')
+                     }, __('Status')) }}
+
+                     {# Run mode #}
+                     {{ fields.dropdownArrayField('mode', item.fields['mode'], {
+                        (constant('CronTask::MODE_INTERNAL')): __('GLPI'),
+                        (constant('CronTask::MODE_EXTERNAL')): __('CLI')
+                     }, __('Run mode')) }}
+
+                     {# Run period #}
+                     {% set run_period_field %}
+                        <div class="d-flex">
+                           {{ fields.dropdownNumberField('hourmin', item.fields['hourmin'], null, {
+                              min: 0,
+                              max: 24,
+                              no_label: true,
+                              field_class: ''
+                           }) }}
+                           <span class="mx-2 text-nowrap">-&gt;</span>
+                           {{ fields.dropdownNumberField('hourmax', item.fields['hourmax'], null, {
+                              min: 0,
+                              max: 24,
+                              no_label: true,
+                              field_class: ''
+                           }) }}
+                        </div>
+                     {% endset %}
+                     {{ fields.htmlField('run_period', run_period_field, __('Run period')) }}
+
+                     {# Number of days this action logs are stored #}
+                     {{ fields.dropdownNumberField('logs_lifetime', item.fields['logs_lifetime'], __('Number of days this action logs are stored'), {
+                        min: 10,
+                        max: 360,
+                        step: 10,
+                        toadd: {
+                           0: __('Infinite')
+                        }
+                     }) }}
+
+                     {# Param #}
+                     {% if item_meta.param_description is not empty %}
+                        {{ fields.dropdownNumberField('param', item.fields['param'], item_meta.param_description, {
+                           min: 0,
+                           max: 10000
+                        }) }}
+                     {% endif %}
+
+                     <div class="row flex-row">
+                        {# Last run #}
+                        {% set last_run_field %}
+                           {% if item.fields['lastrun'] is empty %}
+                              {{ __('Never') }}
+                           {% else %}
+                              {{ item.fields['lastrun']|formatted_datetime }}
+                              {% if can_execute %}
+                                 {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
+                                 <button class="btn btn-icon border-0" type="submit" name="resetdate" title="{{ __('Blank') }}">
+                                    <i class="fas fa-times-circle me-1"></i>
+                                 </button>
+                              {% endif %}
+                           {% endif %}
+                        {% endset %}
+                        {{ fields.htmlField('last_run', last_run_field, __('Last run')) }}
+
+                        {# Next run #}
+                        {% set launch = item.fields['state'] != constant('CronTask::STATE_RUNNING') and (item.fields['allowmode'] b-and constant('CronTask::MODE_INTERNAL')) %}
+                        {% set next_run_field %}
+                           {% if item.fields['state'] != constant('CronTask::STATE_WAITING') %}
+                              {{ item.getStateName(item.fields['state']) }}
+                           {% else %}
+                              {{ item_meta.next_run_display|raw }}
+                           {% endif %}
+                           {% if config('maintenance_mode') %}
+                              <div class="alert alert-warning">
+                                 {{ __('Maintenance mode enabled, running tasks is disabled') }}
+                              </div>
+                           {% elseif can_execute and launch %}
+                              {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
+                              <button class="btn btn-primary" type="submit" name="execute" value="{{ item.fields['name'] }}">{{ __('Execute') }}</button>
+                           {% endif %}
+
+                           {% if can_execute and item.fields['state'] == constant('CronTask::STATE_RUNNING') %}
+                              {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
+                              <button class="btn btn-primary" type="submit" name="resetstate">
+                                 <i class="fas fa-times-circle me-1"></i>
+                                 {{ __('Blank') }}
+                              </button>
+                           {% endif %}
+                        {% endset %}
+                        {{ fields.htmlField('next_run', next_run_field, __('Next run')) }}
+                     </div>
+                  {% endblock %}
+               </div> {# .row #}
+            </div> {# .row #}
+         </div> {# .flex-row #}
+      </div>
+   </div> {# .card-body #}
+
+   {{ include('components/form/buttons.html.twig') }}
+</div>

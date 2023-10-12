@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\ErrorHandler;
-use Glpi\Toolbox\Sanitizer;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
@@ -202,7 +201,7 @@ class MailCollector extends CommonDBTM
         if (!$withtemplate) {
             switch ($item->getType()) {
                 case __CLASS__:
-                    return _n('Action', 'Actions', Session::getPluralNumber());
+                    return self::createTabEntry(_n('Action', 'Actions', Session::getPluralNumber()));
             }
         }
         return '';
@@ -318,6 +317,26 @@ class MailCollector extends CommonDBTM
         echo "<tr class='tab_bg_1'><td>" . __('Collect only unread mail') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("collect_only_unread", $this->fields["collect_only_unread"]);
+        echo "</td></tr>\n";
+
+        echo "<tr class='tab_bg_1'><td>" . __('Automatically create user from email') . "</td>";
+        echo "<td>";
+        Dropdown::showYesNo("create_user_from_email", $this->fields["create_user_from_email"]);
+        if (!$CFG_GLPI["is_users_auto_add"]) {
+            Html::showToolTip(
+                sprintf(
+                    __('If you use this option, and this collector is likely to receive requests from users authenticating via LDAP, we advise you to activate the general configuration option "%s", in order to avoid the generation of duplicate users.'),
+                    sprintf(
+                        '<a href="%s">%s</a>',
+                        $CFG_GLPI['root_doc'] . '/front/auth.settings.php',
+                        __('Automatically add users from an external authentication source')
+                    )
+                ),
+                [
+                    'link' => $CFG_GLPI['root_doc'] . '/front/auth.settings.php',
+                ]
+            );
+        }
         echo "</td></tr>\n";
 
         echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
@@ -819,7 +838,7 @@ class MailCollector extends CommonDBTM
                               $rejinput['from']              = $requester ?? '';
                               $rejinput['to']                = $headers['to'];
                               $rejinput['users_id']          = $tkt['_users_id_requester'];
-                              $rejinput['subject']           = Sanitizer::sanitize($this->cleanSubject($headers['subject']));
+                              $rejinput['subject']           = $this->cleanSubject($headers['subject']);
                               $rejinput['messageid']         = $headers['message_id'];
                         }
                     } catch (\Throwable $e) {
@@ -1037,6 +1056,8 @@ class MailCollector extends CommonDBTM
         $tkt['_uid']         = $uid;
         $tkt['_head']        = $headers;
 
+        $createuserfromemail = $this->fields['create_user_from_email'];
+
        // Use mail date if it's defined
         if ($this->fields['use_mail_date'] && isset($headers['date'])) {
             $tkt['date'] = $headers['date'];
@@ -1077,7 +1098,7 @@ class MailCollector extends CommonDBTM
        //  Who is the user ?
         $requester = $this->getRequesterEmail($message);
 
-        $tkt['_users_id_requester']                              = User::getOrImportByEmail($requester);
+        $tkt['_users_id_requester']                              = User::getOrImportByEmail($requester, $createuserfromemail);
         $tkt["_users_id_requester_notif"]['use_notification'][0] = 1;
        // Set alternative email if user not found / used if anonymous mail creation is enable
         if (!$tkt['_users_id_requester']) {
@@ -1143,17 +1164,10 @@ class MailCollector extends CommonDBTM
             $subject = '';
         }
         $tkt['name'] = $this->cleanSubject($subject);
-        if (!Toolbox::seems_utf8($tkt['name'])) {
-            $tkt['name'] = Toolbox::encodeInUtf8($tkt['name']);
-        }
 
         $tkt['_message']  = $message;
 
-        if (!Toolbox::seems_utf8($body)) {
-            $tkt['content'] = Toolbox::encodeInUtf8($body);
-        } else {
-            $tkt['content'] = $body;
-        }
+        $tkt['content'] = $body;
 
        // Search for referenced item in headers
         $found_item = $this->getItemFromHeaders($message);
@@ -1203,28 +1217,40 @@ class MailCollector extends CommonDBTM
                 $has_header_line = preg_match('/' . $header_pattern . '/s', $tkt['content']);
                 $has_footer_line = preg_match('/' . $footer_pattern . '/s', $tkt['content']);
 
+                $stripped_content = null;
                 if ($has_header_line && $has_footer_line) {
-                   // Strip all contents between header and footer line
-                    $tkt['content'] = preg_replace(
-                        '/' . $header_pattern . '.*' . $footer_pattern . '/s',
-                        '',
+                    // Strip all contents between header and footer line
+                    $stripped_content = preg_replace(
+                        '/\s*' . $header_pattern . '.*' . $footer_pattern . '\s*/s',
+                        "\r\n",
                         $tkt['content']
                     );
                 } else if ($has_header_line) {
-                   // Strip all contents between header line and end of message
-                    $tkt['content'] = preg_replace(
-                        '/' . $header_pattern . '.*$/s',
+                    // Strip all contents between header line and end of message
+                    $stripped_content = preg_replace(
+                        '/\s*' . $header_pattern . '.*$/s',
                         '',
                         $tkt['content']
                     );
                 } else if ($has_footer_line) {
-                   // Strip all contents between begin of message and footer line
-                    $tkt['content'] = preg_replace(
-                        '/^.*' . $footer_pattern . '/s',
+                    // Strip all contents between begin of message and footer line
+                    $stripped_content = preg_replace(
+                        '/^.*' . $footer_pattern . '\s*/s',
                         '',
                         $tkt['content']
                     );
                 }
+                if (empty($stripped_content)) {
+                    // If stripped content is empty, it means that stripping was too agressive, probably because
+                    // end-user do not respect header/footer lines indications.
+                    // In this case, strip only header and footer lines to ensure they will not be duplicated in next notifications.
+                    $stripped_content = preg_replace(
+                        '/\s*(' . $header_pattern . '|' . $footer_pattern . ')\s*/s',
+                        '',
+                        $tkt['content']
+                    );
+                }
+                $tkt['content'] = trim($stripped_content);
             } else {
                // => to handle link in Ticket->post_addItem()
                 $tkt['_linkedto'] = $tkt['tickets_id'];
@@ -1299,7 +1325,6 @@ class MailCollector extends CommonDBTM
             }
         }
 
-        $tkt = Sanitizer::sanitize($tkt);
         return $tkt;
     }
 
@@ -1362,26 +1387,6 @@ class MailCollector extends CommonDBTM
     {
         $text = str_replace("=20", "\n", $text);
         return $text;
-    }
-
-
-   ///return supported encodings in lowercase.
-    public function listEncodings()
-    {
-        Toolbox::deprecated();
-       // Encoding not listed
-        static $enc = ['gb2312', 'gb18030'];
-
-        if (count($enc) == 2) {
-            foreach (mb_list_encodings() as $encoding) {
-                $enc[]   = Toolbox::strtolower($encoding);
-                $aliases = @mb_encoding_aliases($encoding);
-                foreach ($aliases as $e) {
-                    $enc[] = Toolbox::strtolower($e);
-                }
-            }
-        }
-        return $enc;
     }
 
 
@@ -1983,59 +1988,55 @@ class MailCollector extends CommonDBTM
         return $cron_status;
     }
 
-
-    public function showSystemInformations($width)
+    /**
+     * Get system information
+     *
+     * @return array
+     * @phpstan-return array{label: string, content: string}
+     */
+    public function getSystemInformation()
     {
         global $CFG_GLPI, $DB;
 
-       // No need to translate, this part always display in english (for copy/paste to forum)
-
-        echo "<tr class='tab_bg_2'><th class='section-header'>Notifications</th></tr>\n";
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
-
-        $msg = 'Way of sending emails: ';
+        // No need to translate, this part always display in english (for copy/paste to forum)
+        $content = 'Way of sending emails: ';
         switch ($CFG_GLPI['smtp_mode']) {
             case MAIL_MAIL:
-                $msg .= 'PHP';
+                $content .= 'PHP';
                 break;
 
             case MAIL_SMTP:
-                $msg .= 'SMTP';
+                $content .= 'SMTP';
                 break;
 
+            case MAIL_SMTPS:
             case MAIL_SMTPSSL:
-                $msg .= 'SMTP+SSL';
-                break;
-
             case MAIL_SMTPTLS:
-                $msg .= 'SMTP+TLS';
+                $content .= 'SMTPS';
                 break;
 
             case MAIL_SMTPOAUTH:
-                $msg .= 'SMTP+OAUTH';
+                $content .= 'SMTP+OAUTH';
                 break;
         }
         if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
-            $msg .= " (" . (empty($CFG_GLPI['smtp_username']) ? 'anonymous' : $CFG_GLPI['smtp_username']) .
-                    "@" . $CFG_GLPI['smtp_host'] . ")";
+            $mailer = new GLPIMailer();
+            $content .= sprintf('(%s)', $mailer::buildDsn(false));
         }
-        echo wordwrap($msg . "\n", $width, "\n\t\t");
-        echo "\n</pre></td></tr>";
-
-        echo "<tr class='tab_bg_2'><th>Mails receivers</th></tr>\n";
-        echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
         foreach ($DB->request('glpi_mailcollectors') as $mc) {
-            $msg  = "Name: '" . $mc['name'] . "'";
-            $msg .= " Active: " . ($mc['is_active'] ? "Yes" : "No");
-            echo wordwrap($msg . "\n", $width, "\n\t\t");
+            $content .= "\nName: '" . $mc['name'] . "'";
+            $content .= "\n\tActive: " . ($mc['is_active'] ? "Yes" : "No");
 
-            $msg  = "\tServer: '" . $mc['host'] . "'";
-            $msg .= " Login: '" . $mc['login'] . "'";
-            $msg .= " Password: " . (empty($mc['passwd']) ? "No" : "Yes");
-            echo wordwrap($msg . "\n", $width, "\n\t\t");
+            $content .= "\n\tServer: '" . $mc['host'] . "'";
+            $content .= "\n\tLogin: '" . $mc['login'] . "'";
+            $content .= "\n\tPassword: " . (empty($mc['passwd']) ? "No" : "Yes");
         }
-        echo "\n</pre></td></tr>";
+
+        return [
+            'label' => 'Notifications',
+            'content' => $content
+        ];
     }
 
 
@@ -2048,14 +2049,18 @@ class MailCollector extends CommonDBTM
         global $CFG_GLPI;
 
         $mmail = new GLPIMailer();
-        $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
-        $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
-        $mmail->AddAddress($to);
-       // Normalized header, no translation
-        $mmail->Subject  = 'Re: ' . $subject;
-        $mmail->Body     = __("Your email could not be processed.\nIf the problem persists, contact the administrator") .
-                         "\n-- \n" . $CFG_GLPI["mailing_signature"];
-        $mmail->Send();
+        $mail = $mmail->getEmail();
+        $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-replied');
+        $mail->from(new \Symfony\Component\Mime\Address($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]));
+        $mail->to($to);
+        // Normalized header, no translation
+        $mail->subject('Re: ' . $subject);
+        $mail->text(
+            __("Your email could not be processed.\nIf the problem persists, contact the administrator") .
+             "\n-- \n" . $CFG_GLPI["mailing_signature"]
+        );
+        $mmail->setDebugHeaderLine(__('Sending refused email automatic response...'));
+        $mmail->send();
     }
 
 

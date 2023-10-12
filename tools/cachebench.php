@@ -80,9 +80,6 @@ if ($nb < 100000) {
         }
     }
 
-   //echo "Regenerate tree\n";
-   //regenerateTreeCompleteName('glpi_entities');
-
     $nb = countElementsInTable('glpi_entities');
 }
 echo "+ Entities: $nb\n";

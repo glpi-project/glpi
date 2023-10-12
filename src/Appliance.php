@@ -222,7 +222,7 @@ class Appliance extends CommonDBTM
             'id'            => '10',
             'table'         => ApplianceEnvironment::getTable(),
             'field'         => 'name',
-            'name'          => __('Environment'),
+            'name'          => _n('Environment', 'Environments', 1),
             'datatype'      => 'dropdown'
         ];
 

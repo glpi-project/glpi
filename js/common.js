@@ -1496,14 +1496,19 @@ function hideDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be copied
  */
 function copyDisclosablePasswordFieldToClipboard(item) {
-    showDisclosablePasswordField(item);
+    const is_password_input = $("#" + item).prop("type") === "password";
+    if (is_password_input) {
+        showDisclosablePasswordField(item);
+    }
     $("#" + item).select();
     try {
         document.execCommand("copy");
     } catch (e) {
         alert("Copy to clipboard failed'");
     }
-    hideDisclosablePasswordField(item);
+    if (is_password_input) {
+        hideDisclosablePasswordField(item);
+    }
 }
 
 /**
@@ -1568,6 +1573,30 @@ function initSortableTable(element_id) {
     element.find('thead th').each((index, header) => {
         $(header).on('click', () => {
             sort_table(index);
+        });
+    });
+}
+
+/**
+ * Wait for an element to be available in the DOM
+ * @param {string} selector The selector to wait for
+ */
+function waitForElement(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        }
+
+        const observer = new MutationObserver(() => {
+            if (document.querySelector(selector)) {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
         });
     });
 }

@@ -229,7 +229,7 @@ class Item_Project extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
 
                 default:
                    // Not used now
@@ -251,7 +251,7 @@ class Item_Project extends CommonDBRelation
                                 }
                             }
                         }
-                        return self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
             }
         }

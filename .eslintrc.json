@@ -15,8 +15,8 @@
     ],
     "env": {
         "browser": true,
-        "es6": true,
-        "jquery": true
+        "jquery": true,
+        "es2021": true
     },
     "extends": "eslint:recommended",
     "globals": {
@@ -28,7 +28,7 @@
         "_nx": true
     },
     "parserOptions": {
-        "ecmaVersion": 8
+        "ecmaVersion": 13
     },
     "rules": {
         "eol-last": [
@@ -72,13 +72,13 @@
     },
     "overrides": [
         {
-            "files": ["js/modules/**"],
+            "files": ["js/modules/**", "js/src/**"],
             "parserOptions": {
                 "sourceType": "module"
             }
         },
         {
-            "files": [".stylelintrc.js", ".webpack.config.js"],
+            "files": [".stylelintrc.js", ".webpack.config.js", ".vue.webpack.config.js"],
             "env": {
                 "node": true
             }
@@ -91,7 +91,6 @@
                 "es2021": true
             },
             "parserOptions": {
-                "ecmaVersion": 12,
                 "sourceType": "module"
             }
         }

@@ -43,17 +43,17 @@ class DbEngine extends \GLPITestCase
             [
                 'version'   => '5.5.38-0ubuntu0.14.04.1',
                 'validated' => false,
-                'messages'  => ['Database engine version (5.5.38) is not supported. Minimum required version is MySQL 5.7.'],
+                'messages'  => ['Database engine version (5.5.38) is not supported. Minimum required version is MySQL 8.0.'],
             ],
             [
                 'version'   => '5.6.46-log',
                 'validated' => false,
-                'messages'  => ['Database engine version (5.6.46) is not supported. Minimum required version is MySQL 5.7.'],
+                'messages'  => ['Database engine version (5.6.46) is not supported. Minimum required version is MySQL 8.0.'],
             ],
             [
                 'version'   => '5.7.50-log',
-                'validated' => true,
-                'messages'  => ['Database engine version (5.7.50) is supported.'],
+                'validated' => false,
+                'messages'  => ['Database engine version (5.7.50) is not supported. Minimum required version is MySQL 8.0.'],
             ],
             [
                 'version'   => '8.0.23-standard',
@@ -63,12 +63,12 @@ class DbEngine extends \GLPITestCase
             [
                 'version'   => '10.1.48-MariaDB',
                 'validated' => false,
-                'messages'  => ['Database engine version (10.1.48) is not supported. Minimum required version is MariaDB 10.2.'],
+                'messages'  => ['Database engine version (10.1.48) is not supported. Minimum required version is MariaDB 10.3.'],
             ],
             [
                 'version'   => '10.2.36-MariaDB',
-                'validated' => true,
-                'messages'  => ['Database engine version (10.2.36) is supported.'],
+                'validated' => false,
+                'messages'  => ['Database engine version (10.2.36) is not supported. Minimum required version is MariaDB 10.3.'],
             ],
             [
                 'version'   => '10.3.28-MariaDB',

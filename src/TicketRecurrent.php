@@ -87,4 +87,41 @@ class TicketRecurrent extends CommonITILRecurrent
 
         return $input;
     }
+
+
+    public function defineTabs($options = [])
+    {
+        $ong = parent::defineTabs($options);
+        $this->addStandardTab('Item_TicketRecurrent', $ong, $options);
+        return $ong;
+    }
+
+    public static function getItemLinkClass(): ?string
+    {
+        return Item_TicketRecurrent::class;
+    }
+
+    public function getAdditionalFields()
+    {
+        $tab = parent::getAdditionalFields();
+        $tab[] = [
+            'name'  => 'ticket_per_item',
+            'label' => __('Create a ticket per linked element'),
+            'type'  => 'bool',
+            'list'  => false
+        ];
+        return $tab;
+    }
+
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Item_TicketRecurrent::class,
+            ]
+        );
+
+        parent::cleanDBonPurge();
+    }
 }

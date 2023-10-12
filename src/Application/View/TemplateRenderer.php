@@ -35,6 +35,7 @@
 
 namespace Glpi\Application\View;
 
+use GLPI;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
@@ -81,7 +82,7 @@ class TemplateRenderer
 
         $env_params = [
             'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
-            'auto_reload' => true, // Force refresh
+            'auto_reload' => GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT,
         ];
 
         $tpl_cachedir = $cachedir . '/templates';

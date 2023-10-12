@@ -41,33 +41,6 @@ class DbConfiguration extends \GLPITestCase
     {
         return [
             [
-            // Default variables on MySQL 5.7
-                'version'   => '5.7.34-standard',
-                'variables' => [
-                    'innodb_file_format'  => 'Barracuda',
-                    'innodb_large_prefix' => 1,
-                    'innodb_page_size'    => 16384,
-                ],
-                'validated' => true,
-                'messages'  => [
-                    'Database configuration is OK.',
-                ]
-            ],
-            [
-            // Incompatible variables on MySQL 5.7
-                'version'   => '5.7.34-standard',
-                'variables' => [
-                    'innodb_file_format'  => 'Antelope', // Not a problem, will enforce Barracuda for Dynamic tables
-                    'innodb_large_prefix' => 0,
-                    'innodb_page_size'    => 4096,
-                ],
-                'validated' => false,
-                'messages'  => [
-                    '"innodb_large_prefix" must be enabled.',
-                    '"innodb_page_size" must be >= 8KB.',
-                ]
-            ],
-            [
             // Default variables on MySQL 8.0
                 'version'   => '8.0.24-standard',
                 'variables' => [
@@ -97,73 +70,6 @@ class DbConfiguration extends \GLPITestCase
                 ],
                 'validated' => false,
                 'messages'  => [
-                    '"innodb_page_size" must be >= 8KB.',
-                ]
-            ],
-            [
-            // Default variables on MariaDB 10.1
-                'version'   => '10.1.48-MariaDB',
-                'variables' => [
-                    'innodb_file_format'  => 'Antelope',
-                    'innodb_large_prefix' => 0,
-                    'innodb_page_size'    => 16384,
-                ],
-                'validated' => false,
-                'messages'  => [
-                    '"innodb_large_prefix" must be enabled.',
-                ]
-            ],
-            [
-            // Required variables on MariaDB 10.1
-                'version'   => '10.1.48-MariaDB',
-                'variables' => [
-                    'innodb_file_format'  => 'Antelope',
-                    'innodb_large_prefix' => 1,
-                    'innodb_page_size'    => 16384,
-                ],
-                'validated' => true,
-                'messages'  => [
-                    'Database configuration is OK.',
-                ]
-            ],
-            [
-            // Incompatible variables on MariaDB 10.1
-                'version'   => '10.1.48-MariaDB',
-                'variables' => [
-                    'innodb_file_format'  => 'Antelope', // Not a problem, will enforce Barracuda for Dynamic tables
-                    'innodb_large_prefix' => 0,
-                    'innodb_page_size'    => 4096,
-                ],
-                'validated' => false,
-                'messages'  => [
-                    '"innodb_large_prefix" must be enabled.',
-                    '"innodb_page_size" must be >= 8KB.',
-                ]
-            ],
-            [
-            // Default variables on MariaDB 10.2
-                'version'   => '10.2.36-MariaDB',
-                'variables' => [
-                    'innodb_file_format'  => 'Barracuda',
-                    'innodb_large_prefix' => 1,
-                    'innodb_page_size'    => 16384,
-                ],
-                'validated' => true,
-                'messages'  => [
-                    'Database configuration is OK.',
-                ]
-            ],
-            [
-            // Incompatible variables on MariaDB 10.2
-                'version'   => '10.2.36-MariaDB',
-                'variables' => [
-                    'innodb_file_format'  => 'Antelope', // Not a problem, will enforce Barracuda for Dynamic tables
-                    'innodb_large_prefix' => 0,
-                    'innodb_page_size'    => 4096,
-                ],
-                'validated' => false,
-                'messages'  => [
-                    '"innodb_large_prefix" must be enabled.',
                     '"innodb_page_size" must be >= 8KB.',
                 ]
             ],
@@ -247,7 +153,7 @@ class DbConfiguration extends \GLPITestCase
         $this->mockGenerator->orphanize('__construct');
         $db = new \mock\DB();
         $this->calling($db)->getVersion = $version;
-        $this->calling($db)->query = function ($query) use ($that, $variables) {
+        $this->calling($db)->doQuery = function ($query) use ($that, $variables) {
             $matches = [];
             if (preg_match_all('/@@GLOBAL\.`(?<name>[^`]+)`/', $query, $matches) > 0) {
                   $row = [];

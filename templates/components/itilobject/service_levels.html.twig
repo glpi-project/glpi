@@ -76,7 +76,7 @@
    }
 ]) %}
 
-
+{% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) %}
 {% for la_field in la_fields %}
    {% set rand = random() %}
    {% set date_displayed = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField(la_field.datefieldname) %}
@@ -101,7 +101,7 @@
                         {{ get_item_name(la_field.la.getType(), item.fields[la_field.lafieldname]) }}
                      </span>
 
-                     {% if canupdate %}
+                     {% if can_assign_sla_ola %}
                         <i class="ti ti-x ms-1" role="button"
                            onclick="delete_date_{{ rand }}(event)"
                            title="{{ _x('button', 'Delete permanently') }}"
@@ -156,7 +156,7 @@
                         {
                            'include_field': false,
                            'id': 'date_' ~ assign_la_id,
-                           'disabled': (not canupdate),
+                           'disabled': (not can_assign_sla_ola),
                         }
                      ) }}
                   </div>
@@ -173,13 +173,13 @@
                            'include_field': false,
                            'entity': item.fields['entities_id'],
                            'condition': {'type': la_field.type},
-                           'disabled': (not canupdate),
+                           'disabled': (not can_assign_sla_ola),
                            'add_field_class': (is_expanded ? 'col-sm-6' : ''),
                         }
                      ) }}
                   </div>
 
-                  {% if canupdate %}
+                  {% if can_assign_sla_ola %}
                      <button class="btn btn-sm btn-ghost-secondary ms-1" type="button"
                            id="button_{{ assign_la_id }}"
                            data-bs-toggle="modal" data-bs-target="#{{ assign_la_id }}"

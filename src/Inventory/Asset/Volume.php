@@ -37,7 +37,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use Item_Disk;
 
 class Volume extends InventoryAsset
@@ -163,7 +162,7 @@ class Volume extends InventoryAsset
                     $input = $this->handleInput($val, $itemDisk) + [
                         'id'           => $keydb,
                     ];
-                    $itemDisk->update(Sanitizer::sanitize($input));
+                    $itemDisk->update($input);
                     unset($value[$key]);
                     unset($db_itemdisk[$keydb]);
                     break;
@@ -187,7 +186,7 @@ class Volume extends InventoryAsset
                     'itemtype'     => $this->item->getType()
                 ];
 
-                $itemDisk->add(Sanitizer::sanitize($input));
+                $itemDisk->add($input);
             }
         }
     }

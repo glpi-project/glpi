@@ -1,0 +1,168 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="card border-top-0 rounded-0 search-as-map">
+   <div id="map_container" class="card-body px-0">
+      <small class="text-muted p-1">{{ __('Search results for localized items only') }}</small>
+      <script>
+          $(function() {
+              const map = initMap($('#map_container'), 'map', 'full');
+              _loadMap(map, '{{ itemtype }}');
+          });
+          const _loadMap = function(map_elt, itemtype) {
+              L.AwesomeMarkers.Icon.prototype.options.prefix = 'far';
+              const _micon = 'circle';
+              const stdMarker = L.AwesomeMarkers.icon({
+                  icon: _micon,
+                  markerColor: 'blue'
+              });
+              const aMarker = L.AwesomeMarkers.icon({
+                  icon: _micon,
+                  markerColor: 'cadetblue'
+              });
+              const bMarker = L.AwesomeMarkers.icon({
+                  icon: _micon,
+                  markerColor: 'purple'
+              });
+              const cMarker = L.AwesomeMarkers.icon({
+                  icon: _micon,
+                  markerColor: 'darkpurple'
+              });
+              const dMarker = L.AwesomeMarkers.icon({
+                  icon: _micon,
+                  markerColor: 'red'
+              });
+              const eMarker = L.AwesomeMarkers.icon({
+                  icon: _micon,
+                  markerColor: 'darkred'
+              });
+
+
+              //retrieve geojson data
+              map_elt.spin(true);
+              $.ajax({
+                  dataType: 'json',
+                  method: 'POST',
+                  url: '{{ ajax_url }}',
+                  data: {
+                      itemtype: itemtype,
+                      params: {{ params|json_encode|raw }}
+                  }
+              }).done((data) => {
+                  const _points = data.points;
+                  const _markers = L.markerClusterGroup({
+                      iconCreateFunction: (cluster) => {
+                          const markers = cluster.getAllChildMarkers();
+                          let n = 0;
+                          for (let i = 0; i < markers.length; i++) {
+                              n += markers[i].count;
+                          }
+
+                          let c = ' marker-cluster-';
+                          if (n < 10) {
+                              c += 'small';
+                          } else if (n < 100) {
+                              c += 'medium';
+                          } else {
+                              c += 'large';
+                          }
+
+                          return new L.DivIcon({ html: '<div><span>' + n + '</span></div>', className: 'marker-cluster' + c, iconSize: new L.Point(40, 40) });
+                      }
+                  });
+
+                  $.each(_points, (index, point) => {
+                      const target = '{{ fulltarget }}'.replace(/CURLOCATION/, point.loc_id);
+                      const count_text = "{{ __('%1$s %2$s')|format('COUNT', typename) }}".replace('COUNT', point.count);
+                      let _title = `
+                          <strong>${point.title}</strong><br/>
+                          <a href='${target}'>${count_text}</a>
+                      `;
+                      if (point.types) {
+                          $.each(point.types, (tindex, type) => {
+                              _title += '<br/>' + "{{ __('%1$s %2$s')|format('COUNT', 'TYPE') }}".replace('COUNT', type.count).replace('TYPE', type.name);
+                          });
+                      }
+                      let _icon = stdMarker;
+                      if (point.count < 10) {
+                          _icon = stdMarker;
+                      } else if (point.count < 100) {
+                          _icon = aMarker;
+                      } else if (point.count < 1000) {
+                          _icon = bMarker;
+                      } else if (point.count < 5000) {
+                          _icon = cMarker;
+                      } else if (point.count < 10000) {
+                          _icon = dMarker;
+                      } else {
+                          _icon = eMarker;
+                      }
+                      const _marker = L.marker([point.lat, point.lng], { icon: _icon, title: point.title });
+                      _marker.count = point.count;
+                      _marker.bindPopup(_title);
+                      _markers.addLayer(_marker);
+                  });
+
+                  map_elt.addLayer(_markers);
+                  map_elt.fitBounds(
+                      _markers.getBounds(), {
+                          padding: [50, 50],
+                          maxZoom: 12
+                      }
+                  );
+              }).fail((response) => {
+                  const _data = response.responseJSON;
+                  let _message = escapeMarkupText(__('An error occurred loading data :('));
+                  if (_data.message) {
+                      _message = _data.message;
+                  }
+                  const fail_info = L.control();
+                  fail_info.onAdd = function (map) {
+                      this._div = L.DomUtil.create('div', 'fail_info');
+                      const reload_message = escapeMarkupText(__('Reload'));
+                      this._div.innerHTML = _message + `<br/><span id='reload_data'><i class='fa fa-sync'></i>${reload_message}</span>`;
+                      return this._div;
+                  };
+                  fail_info.addTo(map_elt);
+                  $('#reload_data').on('click', () => {
+                      $('.fail_info').remove();
+                      _loadMap(map_elt);
+                  });
+              }).always(() => {
+                  //hide spinner
+                  map_elt.spin(false);
+              });
+          }
+      </script>
+   </div>
+</div>

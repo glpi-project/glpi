@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\SearchOption;
+
 class DisplayPreference extends CommonDBTM
 {
    // From CommonGLPI
@@ -179,7 +181,7 @@ class DisplayPreference extends CommonDBTM
             }
         } else {
            // No items in the global config
-            $searchopt = Search::getOptions($input["itemtype"]);
+            $searchopt = SearchOption::getOptionsForItemtype($input["itemtype"]);
             if (count($searchopt) > 1) {
                 $done = false;
 
@@ -421,7 +423,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='up'" .
                              " title=\"" . __s('Bring up') . "\"" .
-                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-arrow-up'></i></button>";
+                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-up'></i></button>";
                             Html::closeForm();
                             echo "</td>\n";
                         } else {
@@ -436,7 +438,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='down'" .
                             " title=\"" . __s('Bring down') . "\"" .
-                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-arrow-down'></i></button>";
+                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-down'></i></button>";
                             Html::closeForm();
                             echo "</td>\n";
                         } else {
@@ -451,7 +453,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='purge'" .
                              " title=\"" . _sx('button', 'Delete permanently') . "\"" .
-                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-times-circle'></i></button>";
+                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-x'></i></button>";
                             Html::closeForm();
                             echo "</td>\n";
                         } else {
@@ -565,6 +567,7 @@ class DisplayPreference extends CommonDBTM
             echo "</td></tr>";
         }
 
+
         foreach ($fixed_columns as $searchoption_index) {
             if (!isset($searchopt[$searchoption_index])) {
                 // Missing search option; do nothing
@@ -605,7 +608,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='up'" .
                             " title=\"" . __s('Bring up') . "\"" .
-                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-arrow-up'></i></button>";
+                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-up'></i></button>";
                             Html::closeForm();
                             echo "</td>";
                         } else {
@@ -620,7 +623,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='down'" .
                              " title=\"" . __s('Bring down') . "\"" .
-                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-arrow-down'></i></button>";
+                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-down'></i></button>";
                             Html::closeForm();
                             echo "</td>";
                         } else {
@@ -635,7 +638,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='purge'" .
                             " title=\"" . _sx('button', 'Delete permanently') . "\"" .
-                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fas fa-times-circle'></i></button>";
+                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-x'></i></button>";
                             Html::closeForm();
                             echo "</td>\n";
                         } else {

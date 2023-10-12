@@ -37,7 +37,7 @@
    {% endif %}
 
    {% if may_be_located and (count > 0 or data['search']['as_map'] == 1) %}
-      <label class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+      <label class="form-check form-switch btn btn-sm btn-ghost-info me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show as map') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="as_map" value="1" autocomplete="off"
@@ -50,7 +50,7 @@
    {% endif %}
 
    {% if may_be_browsed %}
-      <label class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+      <label class="form-check form-switch btn btn-sm btn-ghost-info me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Toggle browse') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="browse" value="1" autocomplete="off"
@@ -63,7 +63,7 @@
    {% endif %}
 
    {% if may_be_deleted %}
-      <label class="form-check form-switch btn btn-sm btn-ghost-danger me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+      <label class="form-check form-switch btn btn-sm btn-ghost-danger me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show the trashbin') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="is_deleted" value="1" autocomplete="off"
@@ -75,28 +75,43 @@
       </label>
    {% endif %}
 
-   <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
-          data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
-          title="{{ __('Toggle search filters') }}">
-      <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 fold-search" role="button"
-             {{ session('glpifold_search') ? '' : 'checked' }} autocomplete="off" />
-      <span class="form-check-label mb-1 mb-sm-0">
-         <i class="ti fa-lg ti-search"></i>
-      </span>
-   </label>
+   {% if may_be_unpublished %}
+      <label class="form-check form-switch btn btn-sm btn-ghost-danger me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
+             data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show unpublished') }}">
+         <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
+                name="unpublished" value="1" autocomplete="off"
+                onclick="toogle('unpublished','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                {{ data['search']['unpublished'] == 1 ? 'checked' : '' }} />
+         <span class="form-check-label mb-1 mb-sm-0">
+            <i class="fa fa-lg fa-eye-slash"></i>
+         </span>
+      </label>
+   {% endif %}
+
+   {% if not hide_search_toggle %}
+      <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
+            data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
+            title="{{ __('Toggle search filters') }}">
+         <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 fold-search" role="button"
+               {{ session('glpifold_search') ? '' : 'checked' }} autocomplete="off" />
+         <span class="form-check-label mb-1 mb-sm-0">
+            <i class="ti fa-lg ti-search"></i>
+         </span>
+      </label>
+   {% endif %}
 
    <div class="d-inline-flex" role="group">
 
       {% if can_config and count > 0 %}
-      <button class="btn btn-sm btn-icon btn-ghost-secondary show_displaypreference_modal me-0 me-sm-1"
+      <button class="btn btn-sm btn-icon btn-ghost-secondary show_displaypreference_modal me-1 me-sm-2"
              title="{{ __('Select default items to show') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">
          <i class="ti fa-lg ti-tool"></i>
       </button>
       {% endif %}
 
       {% if count > 0 %}
-         <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdown-export"
-               data-bs-toggle="dropdown" aria-expanded="false" >
+         <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary me-1 me-sm-2" type="button" id="dropdown-export-{{ rand }}"
+               data-bs-toggle="dropdown" aria-expanded="false" data-bs-popper-config='{"strategy":"fixed"}'>
             <span class="py-1 px-2 my-n1 mx-n2"data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ _x('button', 'Export') }}">
                <i id="export_dropdown_icon" class="ti fa-lg ti-file-download"></i>
             </span>
@@ -107,7 +122,7 @@
         'order': order,
         'start': start,
       }|url_encode ~ '&' ~ posthref %}
-      <ul class="dropdown-menu" aria-labelledby="dropdown-export">
+      <ul class="dropdown-menu" style="z-index: 10001" aria-labelledby="dropdown-export-{{ rand }}">
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
             <i class="far fa-lg fa-file-pdf"></i>
             {{ __('Current page in landscape PDF') }}
@@ -147,6 +162,12 @@
          </a></li>
          {% endif %}
       </ul>
+      <script>
+            // Ugly trick to fix z-index context issue by placing our dropdown at the end of the body
+            $("#dropdown-export-{{ rand }}").on("show.bs.dropdown", function() {
+               $(document.body).append($("ul[aria-labelledby=dropdown-export-{{ rand }}]").detach());
+            });
+      </script>
       {% endif %}
    </div>
 </div>
@@ -207,6 +228,16 @@ $(document).ready(function() {
             }
          }
       });
+   });
+
+   $('.default-filter').change(function(event) {
+      const search_params = new URLSearchParams(window.location.search);
+      if (!$(this).is(":checked")) {
+          search_params.set('nodefault', '1');
+      } else {
+          search_params.delete('nodefault');
+      }
+      window.location.replace('?' + search_params.toString());
    });
 
    // Callbacks for copy success/failure

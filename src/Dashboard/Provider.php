@@ -44,6 +44,8 @@ use CommonTreeDropdown;
 use CommonDevice;
 use Config;
 use DBConnection;
+use Glpi\Search\Input\QueryBuilder;
+use Glpi\Search\SearchOption;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
     GroupTechFilter,
@@ -52,8 +54,9 @@ use Glpi\Dashboard\Filters\{
 use Group;
 use Group_Ticket;
 use Profile_User;
-use QueryExpression;
-use QuerySubQuery;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Session;
 use Stat;
 use Ticket;
@@ -341,7 +344,7 @@ class Provider
                 ];
 
                 if ($params['validation_check_user']) {
-                    $where['glpi_ticketvalidations.users_id_validate'] = Session::getLoginUserID();
+                    $where[] = \TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
                 }
 
                 $query_criteria = array_merge_recursive($query_criteria, [
@@ -353,7 +356,7 @@ class Provider
                             ]
                         ]
                     ],
-                    'WHERE' => $where,
+                    'WHERE' => $where
                 ]);
                 break;
 
@@ -450,9 +453,10 @@ class Provider
     }
 
 
-    public static function nbTicketsByAgreementStatusAndTechnician(
-        array $params = []
-    ): array {
+    public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array
+    {
+        global $DB;
+
         $DBread = DBConnection::getReadConnection();
 
         $default_params = [
@@ -470,7 +474,20 @@ class Provider
 
         $ownExceeded = Ticket::generateSLAOLAComputation('time_to_own', $table);
         $resolveExceeded = Ticket::generateSLAOLAComputation('time_to_resolve', $table);
-        $slaState = "IF ($ownExceeded AND $resolveExceeded, 3, IF ($resolveExceeded, 2, IF ($ownExceeded, 1, 0)))";
+        $slaState = QueryFunction::if(
+            condition: [$ownExceeded, $resolveExceeded],
+            true_expression: new QueryExpression('3'),
+            false_expression: QueryFunction::if(
+                condition: $resolveExceeded,
+                true_expression: new QueryExpression('2'),
+                false_expression: QueryFunction::if(
+                    condition: $ownExceeded,
+                    true_expression: new QueryExpression('1'),
+                    false_expression: new QueryExpression('0')
+                )
+            ),
+            alias: 'sla_state'
+        );
         $config = Config::getConfigurationValues('core');
         if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
             $first = "firstname";
@@ -480,13 +497,12 @@ class Provider
             $second = "firstname";
         }
 
-        $friendlyName = "CONCAT(`$userTable`.$first, ' ', `$userTable`.$second)";
         $query_criteria = [
             'COUNT' => 'cpt',
             'SELECT'    => [
-                new QueryExpression("$friendlyName as `username`"),
+                QueryFunction::concat(["{$userTable}.{$first}", new QueryExpression($DB::quoteValue(' ')), "{$userTable}.{$second}"], 'username'),
                 "$userTable.name",
-                new QueryExpression("$slaState as `sla_state`"),
+                $slaState,
             ],
             'FROM'   => $table,
             'INNER JOIN' => [
@@ -966,7 +982,7 @@ class Provider
             [
                 'SELECT' => [
                     'COUNT DISTINCT' => "$t_table.id as nb_tickets",
-                    new QueryExpression("DATE_FORMAT(" . $DB->quoteName("date") . ", '%Y-%m') AS ticket_month")
+                    QueryFunction::dateFormat('date', '%Y-%m', 'ticket_month'),
                 ],
                 'FROM'    => $t_table,
                 'WHERE'    => [
@@ -1243,32 +1259,58 @@ class Provider
 
         $criteria = [
             'SELECT'   => [
-                new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("{$t_table}_distinct.date") . "),'%Y-%m') AS period"
+                QueryFunction::fromUnixtime(
+                    expression: QueryFunction::unixTimestamp("{$t_table}_distinct.date"),
+                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
+                    alias: 'period'
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::INCOMING . ", 1, 0))
-                  as " . $DB->quoteValue(_x('status', 'New'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: ["{$t_table}_distinct.status" => Ticket::INCOMING],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
+                    ),
+                    alias: _x('status', 'New')
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::ASSIGNED . ", 1, 0))
-                  as " . $DB->quoteValue(_x('status', 'Processing (assigned)'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: ["{$t_table}_distinct.status" => Ticket::ASSIGNED],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
+                    ),
+                    alias: _x('status', 'Processing (assigned)')
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::PLANNED . ", 1, 0))
-                  as " . $DB->quoteValue(_x('status', 'Processing (planned)'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: ["{$t_table}_distinct.status" => Ticket::PLANNED],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
+                    ),
+                    alias: _x('status', 'Processing (planned)')
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::WAITING . ", 1, 0))
-                  as " . $DB->quoteValue(__('Pending'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: ["{$t_table}_distinct.status" => Ticket::WAITING],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
+                    ),
+                    alias: __('Pending')
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::SOLVED . ", 1, 0))
-                  as " . $DB->quoteValue(_x('status', 'Solved'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: ["{$t_table}_distinct.status" => Ticket::SOLVED],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
+                    ),
+                    alias: _x('status', 'Solved')
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::CLOSED . ", 1, 0))
-                  as " . $DB->quoteValue(_x('status', 'Closed'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: ["{$t_table}_distinct.status" => Ticket::CLOSED],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
+                    ),
+                    alias: _x('status', 'Closed')
                 ),
             ],
             'FROM' => new QuerySubQuery($sub_query, "{$t_table}_distinct"),
@@ -1511,11 +1553,11 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT' => [
-                    new QueryExpression("DATE_FORMAT(" . $DBread->quoteName("date") . ", '%Y-%m') AS period"),
-                    new QueryExpression("AVG(" . $DBread->quoteName("takeintoaccount_delay_stat") . ") AS avg_takeintoaccount_delay_stat"),
-                    new QueryExpression("AVG(" . $DBread->quoteName("waiting_duration") . ") AS avg_waiting_duration"),
-                    new QueryExpression("AVG(" . $DBread->quoteName("solve_delay_stat") . ") AS avg_solve_delay_stat"),
-                    new QueryExpression("AVG(" . $DBread->quoteName("close_delay_stat") . ") AS close_delay_stat"),
+                    QueryFunction::dateFormat('date', '%Y-%m', 'period'),
+                    QueryFunction::avg('takeintoaccount_delay_stat', 'avg_takeintoaccount_delay_stat'),
+                    QueryFunction::avg('waiting_duration', 'avg_waiting_duration'),
+                    QueryFunction::avg('solve_delay_stat', 'avg_solve_delay_stat'),
+                    QueryFunction::avg('close_delay_stat', 'close_delay_stat'),
                 ],
                 'FROM' => $t_table,
                 'WHERE' => [
@@ -1645,7 +1687,17 @@ class Provider
         return [$start_day, $end_day];
     }
 
-
+    private static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
+    {
+        $data = SearchOption::getOptionsForItemtype(getItemTypeForTable($table), true);
+        $sort = [];
+        foreach ($data as $ref => $opt) {
+            if (isset($opt['field'])) {
+                $sort[$ref] = $opt['linkfield'] . "-" . $opt['table'];
+            }
+        }
+        return array_search($name . "-" . $tableToSearch, $sort);
+    }
 
     /**
      * Get search criteria based on given filters.
@@ -1673,7 +1725,7 @@ class Provider
 
         $itemtype = getItemTypeForTable($table);
         if (is_a($itemtype, CommonDBTM::class, true) && $default_criteria_on_empty === true && count($s_criteria) === 0) {
-            $s_criteria = Search::getDefaultCriteria($itemtype);
+            $s_criteria = QueryBuilder::getDefaultCriteria($itemtype);
         }
 
         return ['criteria' => $s_criteria];

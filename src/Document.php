@@ -33,8 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\Http\Response;
 
 /**
  * Document class
@@ -241,27 +242,12 @@ class Document extends CommonDBTM
             && ($item = getItemForItemtype($input["itemtype"]))
             && ($input["items_id"] > 0)
         ) {
-            $typename = $item->getTypeName(1);
-            $name     = NOT_AVAILABLE;
-
-            if ($item->getFromDB($input["items_id"])) {
-                $name = $item->getNameID();
-            }
-           //TRANS: %1$s is Document, %2$s is item type, %3$s is item name
-            $input["name"] = addslashes(Html::resume_text(
-                sprintf(
-                    __('%1$s: %2$s'),
-                    Document::getTypeName(1),
-                    sprintf(__('%1$s - %2$s'), $typename, $name)
-                ),
-                200
-            ));
             $create_from_item = true;
         }
 
         $upload_ok = false;
         if (isset($input["_filename"]) && !(empty($input["_filename"]) == 1)) {
-            $upload_ok = $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+            $upload_ok = $this->moveDocument($input, array_shift($input["_filename"]));
         } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
            // Move doc from upload dir
             $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
@@ -355,6 +341,12 @@ class Document extends CommonDBTM
                 'items_id'     => $this->input["items_id"]
             ]);
 
+            if (is_a($this->input["itemtype"], CommonITILObject::class, true)) {
+                $main_item = new $this->input["itemtype"]();
+                $main_item->getFromDB($this->input["items_id"]);
+                NotificationEvent::raiseEvent('add_document', $main_item);
+            }
+
             Event::log(
                 $this->fields['id'],
                 "documents",
@@ -391,7 +383,7 @@ class Document extends CommonDBTM
 
         if (isset($input['current_filepath'])) {
             if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
-                $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+                $this->moveDocument($input, array_shift($input["_filename"]));
             } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
                // Move doc from upload dir
                 $this->moveUploadedDocument($input, $input["upload_file"]);
@@ -535,14 +527,20 @@ class Document extends CommonDBTM
      * Send a document to navigator
      *
      * @param string $context Context to resize image, if any
+     * @param bool   $return_response
+     * @return Response|void
+     * @phpstan-return $return_response ? Response : void
      **/
-    public function send($context = null)
+    public function send($context = null, bool $return_response = false)
     {
         $file = GLPI_DOC_DIR . "/" . $this->fields['filepath'];
         if ($context !== null) {
             $file = self::getImage($file, $context);
         }
-        Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime']);
+        $response = Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime'], false, $return_response);
+        if ($response !== null) {
+            return $response;
+        }
     }
 
 
@@ -1251,7 +1249,7 @@ class Document extends CommonDBTM
         }
 
        // For display
-        $input['filename'] = addslashes($filename);
+        $input['filename'] = $filename;
        // Storage path
         $input['filepath'] = $new_path;
        // Checksum
@@ -1359,7 +1357,7 @@ class Document extends CommonDBTM
         }
 
        // For display
-        $input['filename'] = addslashes($filename);
+        $input['filename'] = $filename;
        // Storage path
         $input['filepath'] = $new_path;
        // Checksum
@@ -1452,7 +1450,7 @@ class Document extends CommonDBTM
         if (self::renameForce($FILEDESC['tmp_name'], GLPI_DOC_DIR . "/" . $path)) {
             Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
            // For display
-            $input['filename'] = addslashes($FILEDESC['name']);
+            $input['filename'] = $FILEDESC['name'];
            // Storage path
             $input['filepath'] = $path;
            // Checksum
@@ -1607,7 +1605,7 @@ class Document extends CommonDBTM
         ]);
 
         foreach ($iterator as $data) {
-            if (preg_match(Sanitizer::unsanitize($data['ext']) . "i", $ext, $results) > 0) {
+            if (preg_match($data['ext'] . "i", $ext, $results) > 0) {
                 return Toolbox::strtoupper($ext);
             }
         }

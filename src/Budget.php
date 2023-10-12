@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /**
  * Budget class
  */
@@ -83,8 +86,8 @@ class Budget extends CommonDropdown
         if (!$withtemplate) {
             switch ($item->getType()) {
                 case __CLASS__:
-                    return [1 => __('Main'),
-                        2 => _n('Item', 'Items', Session::getPluralNumber())
+                    return [1 => self::createTabEntry(__('Main')),
+                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package')
                     ];
             }
         }
@@ -414,10 +417,11 @@ class Budget extends CommonDropdown
                     case 'Change':
                         $costtable = getTableForItemType($item->getType() . 'Cost');
 
-                        $sum = new QueryExpression(
-                            "SUM(" . $DB->quoteName("$costtable.actiontime") . " * " . $DB->quoteName("$costtable.cost_time") . "/" . HOUR_TIMESTAMP . "
-                                          + " . $DB->quoteName("$costtable.cost_fixed") . "
-                                          + " . $DB->quoteName("$costtable.cost_material") . ") AS " . $DB->quoteName('value')
+                        $sum = QueryFunction::sum(
+                            expression: new QueryExpression($DB::quoteName("$costtable.actiontime") . " * " . $DB::quoteName("$costtable.cost_time") . "/" . HOUR_TIMESTAMP . "
+                                          + " . $DB::quoteName("$costtable.cost_fixed") . "
+                                          + " . $DB::quoteName("$costtable.cost_material")),
+                            alias: 'value'
                         );
                         $criteria = [
                             'SELECT'       => [
@@ -756,11 +760,13 @@ class Budget extends CommonDropdown
                 case 'Problem':
                 case 'Change':
                     $costtable   = getTableForItemType($item->getType() . 'Cost');
-                    $sum = new QueryExpression(
-                        "SUM(" . $DB->quoteName("$costtable.actiontime") . " * " . $DB->quoteName("$costtable.cost_time") . "/" . HOUR_TIMESTAMP . "
-                                       + " . $DB->quoteName("$costtable.cost_fixed") . "
-                                       + " . $DB->quoteName("$costtable.cost_material") . ") AS " . $DB->quoteName('sumvalue')
+                    $sum = QueryFunction::sum(
+                        expression: new QueryExpression($DB::quoteName("$costtable.actiontime") . " * " . $DB::quoteName("$costtable.cost_time") . "/" . HOUR_TIMESTAMP . "
+                                           + " . $DB::quoteName("$costtable.cost_fixed") . "
+                                           + " . $DB::quoteName("$costtable.cost_material")),
+                        alias: 'sumvalue'
                     );
+
                     $criteria = [
                         'SELECT'       => [
                             $item->getTable() . '.entities_id',

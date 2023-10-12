@@ -303,12 +303,12 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
             $manufacturer = "";
 
             if (isset($res_rule["manufacturer"])) {
-                $manufacturer = addslashes(Dropdown::getDropdownName(
+                $manufacturer = Dropdown::getDropdownName(
                     "glpi_manufacturers",
                     $res_rule["manufacturer"]
-                ));
+                );
             } else {
-                $manufacturer = addslashes($p['manufacturer']);
+                $manufacturer = $p['manufacturer'];
             }
 
            //New printer not already present in this entity

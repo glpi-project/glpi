@@ -1,0 +1,198 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div id="new-note-form" class="ms-auto ps-3">
+    <div class="timeline-item mb-3 NotepadItem collapse show"
+        id="new-note-block" aria-expanded="false" data-bs-parent="#new-note-form">
+        <div class="row">
+            <div class="col-auto order-last d-none d-md-block">
+                {{ include('components/user/picture.html.twig', {'users_id': session('glpiID')}, with_context = false) }}
+            </div>
+            <div class="col">
+                <div class="row timeline-content t-right card mt-4">
+                    <div class="card-body">
+                        <div>
+                            <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                                <input type="hidden" name="itemtype" value="{{ itemtype }}" />
+                                <input type="hidden" name="items_id" value="{{ items_id }}" />
+                                {{ fields.textareaField(
+                                    'content',
+                                    '',
+                                    '',
+                                    {
+                                        full_width: true,
+                                        full_width_adapt_column: false,
+                                        is_horizontal: false,
+                                        enable_richtext: true,
+                                        enable_fileupload: true,
+                                    }
+                                ) }}
+                                <label class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Visible on tickets') }}">
+                                    <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
+                                            name="visible_from_ticket" value="1" autocomplete="off" />
+                                    <span class="form-check-label mb-1 mb-sm-0">{{ __('Visible on tickets') }}</span>
+                                </label>
+                                <button type="submit" value="Add" name="add" class="btn btn-primary">
+                                    <span>{{ __('Add') }}</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for note in notes %}
+    {% set id = "note#{ note['id'] }#{ rand }" %}
+    {% set classtoadd = "" %}
+    <div class="timeline-item mb-3 NotepadItem">
+        <div class="row">
+            <div class="col-auto d-none d-md-block">
+                {{ include('components/user/picture.html.twig', {'users_id': note['users_id']}, with_context = false) }}
+            </div>
+            <div class="col-12 col-sm d-flex flex-column content-part">
+                <span class="mt-2 timeline-content NotepadItem flex-grow-1 t-left card">
+                    <div class="card-body px-1 px-xxl-3">
+                        <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                            <input type="hidden" name="id" value="{{ note['id'] }}" />
+                            <div class="d-flex timeline-header">
+                                <div class="d-flex creator">
+                                    {{ include('components/itilobject/timeline/timeline_item_header_badges.html.twig', {
+                                        'users_id': note['users_id'],
+                                        'date_creation': note['date_creation'],
+                                        'date_mod': note['date_mod'],
+                                        'users_id_editor': note['users_id_lastupdater'],
+                                    }, with_context = false) }}
+                                </div>
+                                <div class="d-flex ms-auto timeline-item-buttons">
+                                    {% set actions = {} %}
+                                    {% if canedit %}
+                                        {% set edit_btn %}
+                                            <li>
+                                            <a class="dropdown-item edit-note" href="#" data-id="{{ id }}">
+                                                <i class="fa-fw ti ti-edit"></i>
+                                                <span>{{ __('Edit') }}</span>
+                                            </a>
+                                            </li>
+                                        {% endset %}
+                                        {% set actions = actions|merge({edit_btn}) %}
+                                    {% endif %}
+                                    {% if actions|length %}
+                                        <div class="dropdown ms-2">
+                                            <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ti ti-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="more-actions-{{ id }}">
+                                            {% for action in actions %}
+                                                {{ action }}
+                                            {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <button class="btn btn-sm btn-ghost-secondary close-edit-content d-none ms-auto">
+                                    <i class="ti ti-x"></i>
+                                </button>
+                            </div>
+                            <div class="entitynote rich_text_container" id="contentread{{ id }}">{{ note['content']|safe_html }}</div>
+                            {{ fields.textareaField(
+                                'content',
+                                note['content'],
+                                '',
+                                {
+                                    id: 'content' ~ id,
+                                    add_field_class: 'content' ~ id,
+                                    full_width: true,
+                                    full_width_adapt_column: false,
+                                    is_horizontal: false,
+                                    enable_richtext: true,
+                                    enable_fileupload: true,
+                                }
+                            ) }}
+                            <br>
+                            <label id='visible{{ id }}' class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0 d-none"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Visible on tickets') }}">
+                                <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
+                                        name="visible_from_ticket" value="1" autocomplete="off"
+                                        {{ note['visible_from_ticket'] == 1 ? 'checked' : '' }} />
+                                <span class="form-check-label mb-1 mb-sm-0">{{ __('Visible on tickets') }}</span>
+                            </label>
+                            <span id='visibleread{{ id }}'>
+                                {% if note['visible_from_ticket'] == 1 %}
+                                    <i class="fa fa-lg fa-eye"></i>
+                                    {{ __('Visible on tickets') }}
+                                {% else %}
+                                    <i class="fa fa-lg fa-eye-slash"></i>
+                                    {{ __('Not visible on tickets') }}
+                                {% endif %}
+                            </span>
+                            <button type="submit" value="Update" name="update" class="btn btn-primary d-none" id="submit{{ id }}">
+                                <span>{{ __('Update') }}</span>
+                            </button>
+                            <button class="btn btn-outline-danger me-2 d-none" type="submit" name="purge" value="1" id="purge{{ id }}"
+                                    onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                                <i class="ti ti-trash"></i>
+                                <span>{{ _x('button', 'Delete permanently') }}</span>
+                            </button>
+                        </form>
+                    </div>
+                </span>
+                {{ include('components/itilobject/timeline/sub_documents.html.twig', {
+                    'item': note,
+                    'entry': note
+                }) }}
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<script type="text/javascript">
+$(function() {
+    $('.edit-note').on('click', function(e) {
+        var id = this.dataset.id;
+        $('#contentread' + id).addClass('d-none');
+        $('#visibleread' + id).addClass('d-none');
+        $('#content' + id).removeClass('d-none');
+        $('#visible' + id).removeClass('d-none');
+        $('#submit' + id).removeClass('d-none');
+        $('#purge' + id).removeClass('d-none');
+    });
+});
+</script>

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * Update from 9.4.1 to 9.4.2
  *
@@ -53,7 +55,7 @@ function update941to942()
         $DB->buildUpdate(
             'glpi_configs',
             [
-                'value' => new \QueryExpression(
+                'value' => new QueryExpression(
                     'TRIM(TRAILING ' . $DB->quoteValue('/') . ' FROM ' . $DB->quoteName('value') . ')'
                 )
             ],

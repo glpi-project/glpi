@@ -64,9 +64,11 @@
                   <span class="glpi-logo mb-4" title="GLPI"></span>
                </div>
             </div>
-            <div class="card card-md">
+            <div class="card card-md main-content-card">
+               {# Keep the header on one line so that the :empty CSS selector will work #}
+               <div class="card-header">{% block header_block %}{% endblock %}</div>
                <div class="card-body">
-               {% block content_block %}{% endblock %}
+                  {% block content_block %}{% endblock %}
                </div>
             </div>
 

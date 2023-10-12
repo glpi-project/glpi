@@ -37,12 +37,12 @@ window.GLPI.Search = window.GLPI.Search || {};
 
 window.GLPI.Search.ResultsView = class ResultsView {
 
-    constructor(element_id, view_class) {
+    constructor(element_id, view_class, push_history = true, forced_params = {}) {
         this.element_id = element_id;
 
         if (this.getElement()) {
             this.getAJAXContainer().data('js_class', this);
-            this.view = new view_class(this.element_id);
+            this.view = new view_class(this.element_id, push_history, forced_params);
         }
     }
 

@@ -96,6 +96,8 @@ class Alert extends CommonDBTM
             'value'          => 0,
             'display'        => true,
             'inherit_parent' => false,
+            'show_hours'     => false,
+            'show_days'      => false,
         ];
 
         if (count($options)) {
@@ -111,7 +113,18 @@ class Alert extends CommonDBTM
         }
 
         $times[Entity::CONFIG_NEVER]  = __('Never');
+        if ($p['show_hours']) {
+            $times[HOUR_TIMESTAMP] = __('Each hour');
+            for ($i = 2; $i <= 24; $i++) {
+                $times[$i * HOUR_TIMESTAMP] = sprintf(__('Every %1$s hours'), $i);
+            }
+        }
         $times[DAY_TIMESTAMP]         = __('Each day');
+        if ($p['show_days']) {
+            for ($i = 2; $i <= 6; $i++) {
+                $times[$i * DAY_TIMESTAMP] = sprintf(__('Every %1$s days'), $i);
+            }
+        }
         $times[WEEK_TIMESTAMP]        = __('Each week');
         $times[MONTH_TIMESTAMP]       = __('Each month');
 

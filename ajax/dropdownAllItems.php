@@ -60,11 +60,14 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         'valuename'           => Dropdown::EMPTY_VALUE,
         'itemtype'            => $_POST["idtable"],
         'display_emptychoice' => true,
-        'displaywith'         => ['otherserial', 'serial'],
+        'displaywith'         => is_a($_POST['idtable'], CommonITILObject::class, true) ? ['id'] : ['otherserial', 'serial'],
         '_idor_token'         => Session::getNewIDORToken($_POST["idtable"]),
     ];
     if (isset($_POST['value'])) {
         $p['value'] = $_POST['value'];
+    }
+    if (isset($_POST['valuename'])) {
+        $p['valuename'] = $_POST['valuename'];
     }
     if (isset($_POST['entity_restrict'])) {
         $p['entity_restrict'] = $_POST['entity_restrict'];

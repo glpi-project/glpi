@@ -34,7 +34,7 @@
  */
 
 use Glpi\Features\Clonable;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\Search\SearchOption;
 
 /**
  * Class that manages all the massive actions
@@ -630,9 +630,7 @@ class MassiveAction
 
         foreach ($common_fields as $field) {
             if (isset($this->POST[$field])) {
-                // Value will be sanitized again when massive action form will be submitted.
-                // It have to be unsanitized here to prevent double sanitization.
-                echo Html::hidden($field, ['value' => Sanitizer::unsanitize($this->POST[$field])]);
+                echo Html::hidden($field, ['value' => $this->POST[$field]]);
             }
         }
     }
@@ -769,10 +767,11 @@ class MassiveAction
                 $actions[$self_pref . 'update'] = _x('button', 'Update');
 
                 if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
-                    $actions[$self_pref . 'clone'] = "<i class='fa-fw far fa-clone'></i>" . _x('button', 'Clone');
+                    $actions[$self_pref . 'clone'] = "<i class='ti ti-copy'></i>" . _x('button', 'Clone');
                 }
             }
 
+            Line::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
             CommonDBConnexity::getMassiveActionsForItemtype(
@@ -807,6 +806,7 @@ class MassiveAction
 
             Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Contract::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+            Reservation::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
            // Amend comment for objects with a 'comment' field
             $item->getEmpty();
@@ -835,6 +835,7 @@ class MassiveAction
         }
 
         Lock::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+        Consumable::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
        // Manage forbidden actions : try complete action name or MassiveAction:action_name
         $forbidden_actions = $item->getForbiddenStandardMassiveAction();
@@ -1151,7 +1152,7 @@ class MassiveAction
                         $so_item->checkGlobal(UPDATE);
                     }
 
-                    $itemtype_search_options = Search::getOptions($so_itemtype);
+                    $itemtype_search_options = SearchOption::getOptionsForItemtype($so_itemtype);
                     if (!isset($itemtype_search_options[$so_index])) {
                         exit();
                     }
@@ -1232,7 +1233,7 @@ class MassiveAction
 
                 $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-                    $submitname = stripslashes($ma->POST['submitname']);
+                    $submitname = $ma->POST['submitname'];
                 }
                 echo Html::submit($submitname, [
                     'name'  => 'massiveaction',
@@ -1261,7 +1262,7 @@ class MassiveAction
 
                 $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-                      $submitname = stripslashes($ma->POST['submitname']);
+                      $submitname = $ma->POST['submitname'];
                 }
                 echo Html::submit($submitname, [
                     'name'  => 'massiveaction',

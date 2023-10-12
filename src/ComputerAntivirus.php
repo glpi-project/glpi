@@ -70,7 +70,7 @@ class ComputerAntivirus extends CommonDBChild
                     ["computers_id" => $item->getID(), 'is_deleted' => 0 ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

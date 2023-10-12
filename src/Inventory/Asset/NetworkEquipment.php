@@ -37,7 +37,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Blacklist;
-use Glpi\Toolbox\Sanitizer;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkName;
@@ -252,16 +251,16 @@ class NetworkEquipment extends MainAsset
         $netname = new NetworkName();
         if ($netname->getFromDBByCrit(['itemtype' => 'NetworkPort', 'items_id' => $netports_id])) {
             if ($netname->fields['name'] != $port->name) {
-                $netname->update(Sanitizer::sanitize([
+                $netname->update([
                     'id'     => $netname->getID(),
                     'name'   => $port->netname ?? $port->name
-                ]));
+                ]);
             }
         } else {
             $netname->add([
                 'itemtype'  => 'NetworkPort',
                 'items_id'  => $netports_id,
-                'name'      => addslashes($port->name)
+                'name'      => $port->name
             ]);
         }
     }

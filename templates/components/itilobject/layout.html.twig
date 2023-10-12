@@ -91,14 +91,13 @@
 
 </div>
 
-{% if ticket_ticket %}
-   {# Common form fields for ticket_ticket purge action #}
-   <form method="POST" action="{{ ticket_ticket.getFormURL() }}" class="d-none" id="linked_tickets_{{ main_rand }}" data-submit-once>
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-      <input type="hidden" name="purge" value="1" />
-      <input type="hidden" name="tickets_id" value="{{ item.fields['id'] }}" />
-   </form>
-{% endif %}
+{# Common form fields for CommonITILObject_CommonITILObject purge action #}
+<form method="POST" action="{{ call('CommonITILObject_CommonITILObject::getFormURL') }}" class="d-none" id="linked_itilobjects_{{ main_rand }}" data-submit-once>
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+   <input type="hidden" name="purge" value="1" />
+   <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
+   <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
+</form>
 
 {# Common form fields for "addme_as_actor" action #}
 {% for actortype in ['requester', 'observer', 'assign'] %}

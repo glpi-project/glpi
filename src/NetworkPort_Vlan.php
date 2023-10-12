@@ -338,7 +338,7 @@ class NetworkPort_Vlan extends CommonDBRelation
                             ["networkports_id" => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Vlan::getTypeName(), $nb);
+                    return self::createTabEntry(Vlan::getTypeName(), $nb, $item::getType());
                 case 'Vlan':
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
@@ -346,7 +346,7 @@ class NetworkPort_Vlan extends CommonDBRelation
                             ["vlans_id" => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(NetworkPort::getTypeName(), $nb);
+                    return self::createTabEntry(NetworkPort::getTypeName(), $nb, $item::getType());
             }
         }
         return '';

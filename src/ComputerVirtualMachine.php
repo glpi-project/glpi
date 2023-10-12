@@ -34,7 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * Virtual machine management
@@ -59,6 +59,11 @@ class ComputerVirtualMachine extends CommonDBChild
         return __('Virtualization');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-cpu';
+    }
+
     public function useDeletedToLockIfDynamic()
     {
         return false;
@@ -79,7 +84,7 @@ class ComputerVirtualMachine extends CommonDBChild
                     ['computers_id' => $item->getID(), 'is_deleted' => 0 ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(), $nb);
+            return self::createTabEntry(self::getTypeName(), $nb, $item::getType());
         }
         return '';
     }
@@ -183,7 +188,7 @@ class ComputerVirtualMachine extends CommonDBChild
                 self::getTable(),
                 [
                     'RAW' => [
-                        'LOWER(uuid)' => self::getUUIDRestrictCriteria($comp->fields['uuid'])
+                        (string) QueryFunction::lower('uuid') => self::getUUIDRestrictCriteria($comp->fields['uuid'])
                     ]
                 ]
             );
@@ -399,7 +404,7 @@ class ComputerVirtualMachine extends CommonDBChild
             }
         }
 
-        return Sanitizer::sanitize($in);
+        return $in;
     }
 
 
@@ -423,7 +428,7 @@ class ComputerVirtualMachine extends CommonDBChild
             'FROM'   => 'glpi_computers',
             'WHERE'  => [
                 'RAW' => [
-                    'LOWER(uuid)'  => self::getUUIDRestrictCriteria($fields['uuid'])
+                    (string) QueryFunction::lower('uuid')  => self::getUUIDRestrictCriteria($fields['uuid'])
                 ]
             ]
         ]);

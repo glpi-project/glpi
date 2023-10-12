@@ -64,7 +64,7 @@ class Migration extends \GLPITestCase
             $this->db->disableTableCaching();
             $queries = [];
             $this->queries = &$queries;
-            $this->calling($this->db)->query = function ($query) use (&$queries) {
+            $this->calling($this->db)->doQuery = function ($query) use (&$queries) {
                 $queries[] = $query;
                 return true;
             };
@@ -145,17 +145,19 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo('Configuration values added for one, two (core).Task completed.');
 
         $core_queries = [
-            0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
-            1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
-            2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
-            3 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-            4 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'one \', \'key\')',
-            5 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
-            6 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
-            7 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-            8 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two \', \'value\')',
+            'SELECT * FROM `glpi_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
+            'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
+            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
+            'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
+            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
+            'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'one \', \'key\')',
+            'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
+            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
+            'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
+            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
+            'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two \', \'value\')',
         ];
-        $this->array($this->queries)->isIdenticalTo($core_queries);
+        $this->array($this->queries)->isIdenticalTo($core_queries, print_r($this->queries, true));
 
        //test with existing value on different context => new keys should be inserted in correct context
         $this->queries = [];
@@ -171,15 +173,17 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo('Configuration values added for one, two (test-context).Task completed.');
 
         $this->array($this->queries)->isIdenticalTo([
-            0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
-            1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'one\'',
-            2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
-            3 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-            4 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'one (test-context) \', \'key\')',
-            5 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'two\'',
-            6 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')',
-            7 => 'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-            8 => 'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two (test-context) \', \'value\')',
+            'SELECT * FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
+            'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'one\'',
+            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
+            'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
+            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
+            'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'one (test-context) \', \'key\')',
+            'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'two\'',
+            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')',
+            'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
+            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
+            'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two (test-context) \', \'value\')',
         ]);
 
        //test with one existing value => only new key should be inserted
@@ -669,46 +673,48 @@ class Migration extends \GLPITestCase
     {
         global $DB;
 
+        // Clean DB to handle potential failure of previous test
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'testright1', 'testright2', 'testright3', 'testright4'
+                'test_addright_1', 'test_addright_2', 'test_addright_3', 'test_addright_4'
             ]
         ]);
+
         //Test adding a READ right when profile has READ and UPDATE config right (Default)
         $this->output(
             function () {
-                $this->migration->addRight('testright1', READ);
+                $this->migration->addRight('test_addright_1', READ);
             }
-        )->isEqualTo('New rights has been added for testright1, you should review ACLs after update');
+        )->isEqualTo('New rights has been added for test_addright_1, you should review ACLs after update');
 
         //Test adding a READ right when profile has UPDATE group right
         $this->output(
             function () {
-                $this->migration->addRight('testright2', READ, ['group' => UPDATE]);
+                $this->migration->addRight('test_addright_2', READ, ['group' => UPDATE]);
             }
-        )->isEqualTo('New rights has been added for testright2, you should review ACLs after update');
+        )->isEqualTo('New rights has been added for test_addright_2, you should review ACLs after update');
 
         //Test adding an UPDATE right when profile has READ and UPDATE group right and CREATE entity right
         $this->output(
             function () {
-                $this->migration->addRight('testright3', UPDATE, [
+                $this->migration->addRight('test_addright_3', UPDATE, [
                     'group'  => READ | UPDATE,
                     'entity' => CREATE
                 ]);
             }
-        )->isEqualTo('New rights has been added for testright3, you should review ACLs after update');
+        )->isEqualTo('New rights has been added for test_addright_3, you should review ACLs after update');
 
         //Test adding a READ right when profile with no requirements
         $this->output(
             function () {
-                $this->migration->addRight('testright4', READ, []);
+                $this->migration->addRight('test_addright_4', READ, []);
             }
-        )->isEqualTo('New rights has been added for testright4, you should review ACLs after update');
+        )->isEqualTo('New rights has been added for test_addright_4, you should review ACLs after update');
 
         $right1 = $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
-                'name'   => 'testright1',
+                'name'   => 'test_addright_1',
                 'rights' => READ
             ]
         ]);
@@ -717,7 +723,7 @@ class Migration extends \GLPITestCase
         $right1 = $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
-                'name'   => 'testright2',
+                'name'   => 'test_addright_2',
                 'rights' => READ
             ]
         ]);
@@ -726,7 +732,7 @@ class Migration extends \GLPITestCase
         $right1 = $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
-                'name'   => 'testright3',
+                'name'   => 'test_addright_3',
                 'rights' => UPDATE
             ]
         ]);
@@ -735,7 +741,7 @@ class Migration extends \GLPITestCase
         $right1 = $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
-                'name'   => 'testright4',
+                'name'   => 'test_addright_4',
                 'rights' => READ
             ]
         ]);
@@ -744,23 +750,30 @@ class Migration extends \GLPITestCase
         //Test adding a READ right only on profiles where it has not been set yet
         $DB->delete('glpi_profilerights', [
             'profiles_id' => [1, 2, 3, 4],
-            'name' => 'testright4'
+            'name' => 'test_addright_4'
         ]);
 
         $this->output(
             function () {
-                $this->migration->addRight('testright4', READ | UPDATE, []);
+                $this->migration->addRight('test_addright_4', READ | UPDATE, []);
             }
-        )->isEqualTo('New rights has been added for testright4, you should review ACLs after update');
+        )->isEqualTo('New rights has been added for test_addright_4, you should review ACLs after update');
 
         $right4 = $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
-                'name'   => 'testright4',
+                'name'   => 'test_addright_4',
                 'rights' => READ | UPDATE
             ]
         ]);
         $this->integer(count($right4))->isEqualTo(4);
+
+        // Clean DB after test
+        $DB->delete('glpi_profilerights', [
+            'name' => [
+                'test_addright_1', 'test_addright_2', 'test_addright_3', 'test_addright_4'
+            ]
+        ]);
     }
 
     public function testAddRightByInterface()
@@ -769,7 +782,7 @@ class Migration extends \GLPITestCase
 
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'testright1', 'testright2', 'testright3', 'testright4'
+                'testright1', 'testright2'
             ]
         ]);
         //Test adding a READ right on central interface
@@ -804,6 +817,12 @@ class Migration extends \GLPITestCase
             ]
         ]);
         $this->integer(count($right2))->isEqualTo(1);
+
+        $DB->delete('glpi_profilerights', [
+            'name' => [
+                'testright1', 'testright2'
+            ]
+        ]);
     }
 
     public function testRenameTable()
@@ -821,7 +840,7 @@ class Migration extends \GLPITestCase
 
         $queries = [];
         $this->queries = &$queries;
-        $this->calling($this->db)->query = function ($query) use (&$queries) {
+        $this->calling($this->db)->doQuery = function ($query) use (&$queries) {
             if ($query === 'SHOW INDEX FROM `glpi_oldtable`') {
                   // Make DbUtils::isIndex return false
                   return false;
@@ -1096,10 +1115,10 @@ class Migration extends \GLPITestCase
         );
 
         $this->array($this->queries)->isIdenticalTo([
-            "UPDATE `glpi_computers` SET `itemtype` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype` = 'PluginFooThing'",
-            "UPDATE `glpi_users` SET `itemtype` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype` = 'PluginFooThing'",
-            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype_source` = 'PluginFooThing'",
-            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype_dest` = 'PluginFooThing'",
+            "UPDATE `glpi_computers` SET `itemtype` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype` = 'PluginFooThing'",
+            "UPDATE `glpi_users` SET `itemtype` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype` = 'PluginFooThing'",
+            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype_source` = 'PluginFooThing'",
+            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype_dest` = 'PluginFooThing'",
         ]);
     }
 
@@ -1171,23 +1190,24 @@ class Migration extends \GLPITestCase
     {
         global $DB;
 
+        // Clean DB to handle potential failure of previous test
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'testright1', 'testright2', 'testright3'
+                'test_updateright_1', 'test_updateright_2', 'test_updateright_3'
             ]
         ]);
 
         //Test updating a UPDATE right when profile has READ and UPDATE config right (Default)
         $this->output(
             function () {
-                $this->migration->updateRight('testright1', READ);
+                $this->migration->updateRight('test_updateright_1', READ);
             }
-        )->isEqualTo('Rights has been updated for testright1, you should review ACLs after update');
+        )->isEqualTo('Rights has been updated for test_updateright_1, you should review ACLs after update');
 
         $right1 = $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
-                'name'   => 'testright1',
+                'name'   => 'test_updateright_1',
                 'rights' => READ
             ]
         ]);
@@ -1196,14 +1216,14 @@ class Migration extends \GLPITestCase
         //Test updating a READ right when profile has UPDATE group right
         $this->output(
             function () {
-                $this->migration->updateRight('testright2', READ, ['group' => UPDATE]);
+                $this->migration->updateRight('test_updateright_2', READ, ['group' => UPDATE]);
             }
-        )->isEqualTo('Rights has been updated for testright2, you should review ACLs after update');
+        )->isEqualTo('Rights has been updated for test_updateright_2, you should review ACLs after update');
 
         $right1 = $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
-                'name'   => 'testright2',
+                'name'   => 'test_updateright_2',
                 'rights' => READ
             ]
         ]);
@@ -1212,17 +1232,17 @@ class Migration extends \GLPITestCase
         //Test updating an UPDATE right when profile has READ and UPDATE group right and CREATE entity right
         $this->output(
             function () {
-                $this->migration->updateRight('testright2', UPDATE, [
+                $this->migration->updateRight('test_updateright_2', UPDATE, [
                     'group'  => READ | UPDATE,
                     'entity' => CREATE
                 ]);
             }
-        )->isEqualTo('Rights has been updated for testright2, you should review ACLs after update');
+        )->isEqualTo('Rights has been updated for test_updateright_2, you should review ACLs after update');
 
         $right1 = $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
-                'name'   => 'testright2',
+                'name'   => 'test_updateright_2',
                 'rights' => UPDATE
             ]
         ]);
@@ -1231,17 +1251,24 @@ class Migration extends \GLPITestCase
         //Test updating a READ right when profile with no requirements
         $this->output(
             function () {
-                $this->migration->updateRight('testright3', READ, []);
+                $this->migration->updateRight('test_updateright_3', READ, []);
             }
-        )->isEqualTo('Rights has been updated for testright3, you should review ACLs after update');
+        )->isEqualTo('Rights has been updated for test_updateright_3, you should review ACLs after update');
 
         $right1 = $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
-                'name'   => 'testright3',
+                'name'   => 'test_updateright_3',
                 'rights' => READ
             ]
         ]);
         $this->integer(count($right1))->isEqualTo(8);
+
+        // Clean DB after test
+        $DB->delete('glpi_profilerights', [
+            'name' => [
+                'test_updateright_1', 'test_updateright_2', 'test_updateright_3'
+            ]
+        ]);
     }
 }

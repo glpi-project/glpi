@@ -161,6 +161,33 @@ class DCRoom extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
+        echo "<td><label for='dropdown_vis_cell_width$rand'>" . __('Cell width') . "</label></td><td>";
+        Dropdown::showNumber(
+            "vis_cell_width",
+            [
+                'value'  => $this->fields["vis_cell_width"] ?: 40,
+                'min'    => 10,
+                'max'    => 200,
+                'step'   => 1,
+                'rand'   => $rand
+            ]
+        );
+        echo "</td>";
+        echo "<td><label for='dropdown_vis_cell_height$rand'>" . __('Cell height') . "</label></td><td>";
+        Dropdown::showNumber(
+            "vis_cell_height",
+            [
+                'value'  => $this->fields["vis_cell_height"] ?: 40,
+                'min'    => 10,
+                'max'    => 200,
+                'step'   => 1,
+                'rand'   => $rand
+            ]
+        );
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1'>";
         echo "<td><label for=''>" . __('Background picture (blueprint)') . "</label></td><td>";
 
         if (!empty($this->fields['blueprint'])) {
@@ -342,7 +369,8 @@ class DCRoom extends CommonDBTM
                 }
                 return self::createTabEntry(
                     self::getTypeName(Session::getPluralNumber()),
-                    $nb
+                    $nb,
+                    $item::getType()
                 );
              break;
         }

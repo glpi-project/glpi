@@ -164,6 +164,8 @@ class Change extends CommonITILObject
             return false;
         }
 
+        $this->processRules(RuleCommonITILObject::ONADD, $input);
+
         if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
            // Manage auto assign
             $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
@@ -184,13 +186,14 @@ class Change extends CommonITILObject
         return $input;
     }
 
-
     public function prepareInputForUpdate($input)
     {
         $input = $this->transformActorsInput($input);
 
-        $input = parent::prepareInputForUpdate($input);
+        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
+        $this->processRules(RuleCommonITILObject::ONUPDATE, $input, $entid);
 
+        $input = parent::prepareInputForUpdate($input);
         return $input;
     }
 
@@ -228,7 +231,14 @@ class Change extends CommonITILObject
                 case __CLASS__:
                     $ong = [];
                     if ($item->canUpdate()) {
-                         $ong[1] = __('Statistics');
+                         $ong[1] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
+                    }
+                    $satisfaction = new ChangeSatisfaction();
+                    if (
+                        $satisfaction->getFromDB($item->getID())
+                        && in_array($item->fields['status'], self::getClosedStatusArray())
+                    ) {
+                        $ong[3] = ChangeSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
                     }
 
                     return $ong;
@@ -246,6 +256,9 @@ class Change extends CommonITILObject
                 switch ($tabnum) {
                     case 1:
                         $item->showStats();
+                        break;
+                    case 3:
+                        self::showSatisfactionTabContent($item);
                         break;
                 }
                 break;
@@ -283,17 +296,22 @@ class Change extends CommonITILObject
         $ct = new ChangeTask();
         $ct->deleteByCriteria(['changes_id' => $this->fields['id']]);
 
+        // ChangeSatisfaction does not extends CommonDBConnexity
+        $cs = new ChangeSatisfaction();
+        $cs->deleteByCriteria(['changes_id' => $this->fields['id']]);
+
         $this->deleteChildrenAndRelationsFromDb(
             [
-            // Done by parent: Change_Group::class,
+                // Done by parent: Change_Group::class,
                 Change_Item::class,
                 Change_Problem::class,
-            // Done by parent: Change_Supplier::class,
+                // Done by parent: Change_Supplier::class,
                 Change_Ticket::class,
-            // Done by parent: Change_User::class,
+                // Done by parent: Change_User::class,
                 ChangeCost::class,
                 ChangeValidation::class,
-            // Done by parent: ITILSolution::class,
+                // Done by parent: ITILSolution::class,
+                Change_Change::class,
             ]
         );
 
@@ -340,6 +358,8 @@ class Change extends CommonITILObject
             $this->getFromDB($this->fields['id']);
             NotificationEvent::raiseEvent($mailtype, $this);
         }
+
+        $this->handleSatisfactionSurveyOnUpdate();
     }
 
 
@@ -377,7 +397,7 @@ class Change extends CommonITILObject
                      unset($row['tickets_id']);
                      unset($row['id']);
                      $row['changes_id'] = $this->fields['id'];
-                     $assoc->add(Toolbox::addslashes_deep($row));
+                     $assoc->add($row);
                 }
             }
         }
@@ -402,7 +422,7 @@ class Change extends CommonITILObject
                      unset($row['problems_id']);
                      unset($row['id']);
                      $row['changes_id'] = $this->fields['id'];
-                     $assoc->add(Toolbox::addslashes_deep($row));
+                     $assoc->add($row);
                 }
             }
         }
@@ -421,8 +441,6 @@ class Change extends CommonITILObject
                 '_disablenotif' => true
             ]);
         }
-
-        $this->handleItemsIdInput();
     }
 
 
@@ -558,6 +576,8 @@ class Change extends CommonITILObject
 
         $tab = array_merge($tab, ChangeValidation::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, ChangeSatisfaction::rawSearchOptionsToAdd());
+
         $tab = array_merge($tab, ITILFollowup::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, ChangeTask::rawSearchOptionsToAdd());
@@ -681,6 +701,10 @@ class Change extends CommonITILObject
 
         $values[self::READALL] = __('See all');
         $values[self::READMY]  = __('See (author)');
+        $values[self::SURVEY]  = [
+            'short' => __('Reply to survey (my change)'),
+            'long'  => __('Reply to survey for ticket created by me')
+        ];
 
         return $values;
     }
@@ -896,9 +920,15 @@ class Change extends CommonITILObject
 
     public static function getDefaultValues($entity = 0)
     {
+        if (is_numeric(Session::getLoginUserID(false))) {
+            $users_id_requester = Session::getLoginUserID();
+        } else {
+            $users_id_requester = 0;
+        }
+
         $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
         return [
-            '_users_id_requester'        => Session::getLoginUserID(),
+            '_users_id_requester'        => $users_id_requester,
             '_users_id_requester_notif'  => [
                 'use_notification'  => $default_use_notif,
                 'alternative_email' => ''
@@ -930,7 +960,7 @@ class Change extends CommonITILObject
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,
             '_add_validation'            => 0,
-            'users_id_validate'          => [],
+            '_validation_targets'        => [],
             '_tasktemplates_id'          => [],
             'controlistcontent'          => '',
             'impactcontent'              => '',

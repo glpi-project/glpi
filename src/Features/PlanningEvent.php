@@ -42,14 +42,14 @@ use DateTimeZone;
 use Dropdown;
 use Entity;
 use ExtraVisibilityCriteria;
+use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use Group_User;
 use Html;
 use Planning;
 use PlanningEventCategory;
 use PlanningRecall;
-use QueryExpression;
+use Glpi\DBAL\QueryExpression;
 use Reminder;
 use RRule\RRule;
 use RRule\RSet;
@@ -503,7 +503,7 @@ trait PlanningEvent
                     'state'  => Planning::TODO,
                     'AND'    => [
                         'state'  => Planning::INFO,
-                        'end'    => ['>', new QueryExpression('NOW()')]
+                        'end'    => ['>', QueryFunction::now()]
                     ]
                 ]
             ];
@@ -574,7 +574,7 @@ trait PlanningEvent
                         'users_id'         => $data["users_id"],
                         'state'            => $data["state"],
                         'background'       => $has_bg ? $data['background'] : false,
-                        'name'             => Sanitizer::unsanitize($data['name']), // name is re-encoded on JS side
+                        'name'             => $data['name'],
                         'text'             => $data['text'] !== null
                      ? RichText::getSafeHtml($data['text'])
                      : '',
@@ -708,6 +708,11 @@ trait PlanningEvent
                 ]
             );
         }
+
+        $parent = getItemForItemtype($val['itemtype']);
+        $parent->getFromDB($val[$parent->getForeignKeyField()]);
+        $html .= $parent->getLink(['icon' => true, 'forceid' => true]) . "<br>";
+        $html .= "<span>" . Entity::badgeCompletenameById($parent->getEntityID()) . "</span><br>";
         return $html;
     }
 

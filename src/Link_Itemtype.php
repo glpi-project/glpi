@@ -173,7 +173,7 @@ class Link_Itemtype extends CommonDBChild
                         'Associated item type',
                         'Associated item types',
                         Session::getPluralNumber()
-                    ), $nb);
+                    ), $nb, $item::getType(), Link::getIcon());
             }
         }
         return '';

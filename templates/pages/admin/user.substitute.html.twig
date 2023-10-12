@@ -1,0 +1,149 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set id      = item.fields['id'] ?? -1 %}
+
+<div class="asset">
+
+{% if canedit %}
+   <form name="asset_form" method="post" action="{{ item.getFormURL() }}" enctype="multipart/form-data" data-submit-once>
+{% endif %}
+
+   <div id="mainformtable">
+
+      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
+
+      <div class="card-body d-flex flex-wrap">
+         <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
+            <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+               <div class="row flex-row align-items-start flex-grow-1">
+                  <div class="row flex-row">
+                     <input type="hidden" name="users_id" value={{ user.fields['id'] }} />
+
+                     <div class="row col-12 col-sm-12 mb-4">
+                        <div class="alert alert-info" style="margin: 0 auto; max-width: 900px">
+                           <span>
+                              <i class="ti ti-info-circle"></i>&nbsp;{{ __('Substitutes are users who can approve or refuse tickets on your behalf.') }}
+                           </span>
+                        </div>
+                     </div>
+
+                     {{ fields.datetimeField(
+                        'substitution_start_date',
+                        user.fields['substitution_start_date'],
+                        __('Start date ')
+                     ) }}
+
+                     {{ fields.datetimeField(
+                        'substitution_end_date',
+                        user.fields['substitution_end_date'],
+                        __('End date ')
+                     ) }}
+
+                     {{ fields.dropdownField(
+                        'User',
+                        'substitutes',
+                        [],
+                        __('Validation substitutes'),
+                        {
+                              'multiple': 'multiple',
+                              'used': [user.fields['id']],
+                              'value': substitutes,
+                              'right': 'create_ticket_validate',
+                        }
+                     ) }}
+
+                     {{ fields.nullField }}
+
+                     {% if delegators|length > 0 %}
+                        <div class="row col-12 col-sm-12 mb-4 mt-5">
+                           <div class="alert alert-info" style="margin: 0 auto; max-width: 900px">
+                              <span>
+                                 <i class="ti ti-info-circle"></i>&nbsp;{{ __('Delegators are users who gave you the right to approve or refuse tickets on their behalf.') }}
+                              </span>
+                           </div>
+                        </div>
+
+                        <div>
+                           <div class="card">
+                              <div class="table-responsive">
+                                 <table class="table card-table table-hover table-striped">
+                                 <thead>
+                                    <tr>
+                                       <th style="width: 33%;">{{ __('Name') }}</th>
+                                       <th style="width: 33%;">{{ __('Substitution start date') }}</th>
+                                       <th style="width: 33%;">{{ __('Substitution end date') }}</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                 {% for delegator in delegators %}
+                                    {% set delegator = get_item('User', delegator) %}
+                                    <tr>
+                                       <td valign="top">{{ delegator.getFriendlyName() }}</td>
+                                       <td valign="top">{{ delegator.fields['substitution_start_date'] }}</td>
+                                       <td valign="top">{{ delegator.fields['substitution_end_date'] }}</td>
+                                    </tr>
+                                 {% endfor %}
+                                 </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                        </div>
+                     {% endif %}
+
+                  </div> {# .row #}
+               </div> {# .row #}
+            </div> {# .flex-row #}
+         </div>
+      </div> {# .card-body #}
+
+      <div class="row">
+         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+      </div>
+
+      {% if canedit %}
+         <div class="card-body mx-n2 mb-4 border-top d-flex flex-row-reverse align-items-start flex-wrap">
+            <button class="btn btn-primary me-2" type="submit" name="update" value="1">
+               <i class="far fa-save"></i>
+               <span>{{ _x('button', 'Save') }}</span>
+            </button>
+         </div>
+
+         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+      </div> {# #mainformtable #}
+   </form> {# [name=asset_form] #}
+   {% else %}
+      </div> {# #mainformtable #}
+   {% endif %}
+</div>

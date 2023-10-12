@@ -42,6 +42,11 @@
       'required': true,
    }) %}
 {% endif %}
+{% if field_options.fields_template.isReadonlyField('urgency') %}
+   {% set urgency_options = urgency_options|merge({
+      'readonly': true,
+   }) %}
+{% endif %}
 
 {{ fields.field(
    'urgency',
@@ -59,6 +64,11 @@
 {% if field_options.fields_template.isMandatoryField('impact') %}
    {% set impact_options = impact_options|merge({
       'required': true,
+   }) %}
+{% endif %}
+{% if field_options.fields_template.isReadonlyField('impact') %}
+   {% set impact_options = impact_options|merge({
+      'readonly': true,
    }) %}
 {% endif %}
 
@@ -81,6 +91,11 @@
 {% if field_options.fields_template.isMandatoryField('priority') %}
    {% set priority_options = priority_options|merge({
       'required': true,
+   }) %}
+{% endif %}
+{% if field_options.fields_template.isReadonlyField('priority') %}
+   {% set priority_options = priority_options|merge({
+      'readonly': true,
    }) %}
 {% endif %}
 

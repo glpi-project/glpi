@@ -1,0 +1,81 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# Display the Filter tab #}
+<div class="row">
+    {# Add a bit of padding with the container class #}
+    <div class="col-12 search-container container">
+        {# Info section detailling the purpose of the filter #}
+        <div class="callout callout-info mt-1">
+            <h3 class="fw-normal"><i class="ti ti-info-circle me-1"></i>{{ info_title }}</h3>
+            <p class="text-muted">{{ info_description }}</p>
+        </div>
+
+        {# Do not show filters until enabled #}
+        <div id="manage_filter_ux" class="{{ filter_enabled ? "" : "d-none" }}">
+
+            {# Display search UX #}
+            {% do call('Glpi\\Search\\Input\\QueryBuilder::showGenericSearch', [itemtype, params]) %}
+
+            {# Display search results, hidden until a search is executed #}
+            <div id="criteria_filter_preview" class="d-none">
+                <h2>{{ __("Preview") }}</h2>
+                {% do call('Glpi\\Search\\SearchEngine::showOutput', [itemtype, params]) %}
+            </div>
+        </div>
+
+        {# Enable filter action #}
+        <div id="enable_filter" class="{{ filter_enabled ? "d-none" : "" }}">
+            <div class="empty align-items-start p-2">
+              <p class="empty-title">{{ __("No filter found") }}</p>
+              <p class="empty-subtitle text-muted">{{ __("There is no filter defined yet for this item.") }}</p>
+              <div class="empty-action">
+                <a id="enable_filter_action" class="btn btn-primary"><i class="ti ti-plus me-2"></i>{{ __("Create a filter") }}</a>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Display search results
+    $('button[name=search]').on('click', function(e) {
+        $("#criteria_filter_preview").removeClass("d-none");
+    });
+
+    // Enable filter action
+    $("#enable_filter_action").on('click', function(e) {
+        $("#manage_filter_ux").removeClass("d-none");
+        $("#enable_filter").addClass("d-none");
+    });
+</script>

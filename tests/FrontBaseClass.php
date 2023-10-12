@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
 use Symfony\Component\BrowserKit\HttpBrowser;
 
 class FrontBaseClass extends \GLPITestCase

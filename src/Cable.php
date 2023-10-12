@@ -40,6 +40,8 @@ use Glpi\SocketModel;
 /// Class Cable
 class Cable extends CommonDBTM
 {
+    use Glpi\Features\Clonable;
+
    // From CommonDBTM
     public $dohistory         = true;
     public static $rightname         = 'cable_management';
@@ -72,6 +74,16 @@ class Cable extends CommonDBTM
         $this->fields['color'] = '#dddddd';
         $this->fields['itemtype_endpoint_a'] = 'Computer';
         $this->fields['itemtype_endpoint_b'] = 'Computer';
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Infocom::class,
+            Item_Ticket::class,
+            Item_Problem::class,
+            Change_Item::class,
+        ];
     }
 
     public static function getAdditionalMenuLinks()
@@ -380,8 +392,8 @@ class Cable extends CommonDBTM
                 $itemtype = isset($values['itemtype_endpoint_b']) ? $values['itemtype_endpoint_b'] : $values['itemtype_endpoint_a'];
                 $items_id = isset($values['items_id_endpoint_b']) ? $values['items_id_endpoint_b'] : $values['items_id_endpoint_a'];
 
-                if (method_exists($itemtype, 'getDcBreadcrumbSpecificValueToDisplay')) {
-                    return $itemtype::getDcBreadcrumbSpecificValueToDisplay($items_id);
+                if (method_exists($itemtype, 'renderDcBreadcrumb')) {
+                    return $itemtype::renderDcBreadcrumb($items_id);
                 }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);

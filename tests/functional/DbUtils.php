@@ -251,26 +251,6 @@ class DbUtils extends DbTestCase
         }
     }
 
-    public function testGetItemForItemtypeSanitized()
-    {
-        require_once __DIR__ . '/../fixtures/pluginbarfoo.php';
-
-        $this
-         ->if($this->newTestedInstance)
-         ->when(function () {
-               $this->object($this->testedInstance->getItemForItemtype(addslashes('Glpi\Event')))->isInstanceOf('Glpi\Event');
-         })->error
-            ->withType(E_USER_WARNING)
-            ->withMessage('Unexpected sanitized itemtype "Glpi\\\\Event" encountered.')
-            ->exists()
-         ->when(function () {
-               $this->object($this->testedInstance->getItemForItemtype(addslashes('GlpiPlugin\Bar\Foo')))->isInstanceOf('GlpiPlugin\Bar\Foo');
-         })->error
-            ->withType(E_USER_WARNING)
-            ->withMessage('Unexpected sanitized itemtype "GlpiPlugin\\\\Bar\\\\Foo" encountered.')
-            ->exists();
-    }
-
     public function testGetItemForItemtypeAbstract()
     {
         require_once __DIR__ . '/../fixtures/pluginbarabstractstuff.php';
@@ -384,8 +364,8 @@ class DbUtils extends DbTestCase
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id'))->isGreaterThan(0)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context'))->isGreaterThan(0)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_tickets', 'entities_id'))->isIdenticalTo(2)
-            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']))->isIdenticalTo(17)
-            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']))->isIdenticalTo(20)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']))->isIdenticalTo(20)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']))->isIdenticalTo(26)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context', ['name' => 'version']))->isIdenticalTo(1)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id', ['context' => 'fakecontext']))->isIdenticalTo(0);
 
@@ -602,14 +582,14 @@ class DbUtils extends DbTestCase
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (\'1\')');
 
-       //keep testing old method from db.function
+        //keep testing old method from db.function
         $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('1')  ) ");
         $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (\'1\'))');
 
-       // Child
+        // Child
         $this->setEntity('_test_child_1', false);
 
         $this->string($this->testedInstance->getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
@@ -618,7 +598,7 @@ class DbUtils extends DbTestCase
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (\'2\')');
 
-       //keep testing old method from db.function
+        //keep testing old method from db.function
         $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('2')  ) ");
         $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
@@ -648,7 +628,7 @@ class DbUtils extends DbTestCase
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (\'3\') OR (`glpi_computers`.`is_recursive` = \'1\' AND `glpi_computers`.`entities_id` IN (\'0\', \'1\')))');
 
-       //keep testing old method from db.function
+        //keep testing old method from db.function
         $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('3')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0, 1)) ) ");
         $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', true));
@@ -660,7 +640,7 @@ class DbUtils extends DbTestCase
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (\'3\', \'0\', \'1\'))');
 
-       //keep testing old method from db.function
+        //keep testing old method from db.function
         $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', '', true));
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE ((`glpi_entities`.`id` IN (\'3\', \'0\', \'1\')))');
@@ -1305,11 +1285,11 @@ class DbUtils extends DbTestCase
         $this->array($result[0]['date'])
             ->hasSize(2)
             ->string[0]->isIdenticalTo('<=')
-            ->object[1]->isInstanceOf('\QueryExpression');
+            ->object[1]->isInstanceOf('\Glpi\DBAL\QueryExpression');
 
         $this->string(
             $result[0]['date'][1]->getValue()
-        )->isIdenticalTo("ADDDATE('2018-11-09', INTERVAL 1 DAY)");
+        )->isIdenticalTo("DATE_ADD('2018-11-09', INTERVAL 1 DAY)");
 
         $result = $this->testedInstance->getDateCriteria('date', '2018-11-08', '2018-11-09');
         $this->array($result)->hasSize(2);
@@ -1318,11 +1298,11 @@ class DbUtils extends DbTestCase
         $this->array($result[1]['date'])
             ->hasSize(2)
             ->string[0]->isIdenticalTo('<=')
-            ->object[1]->isInstanceOf('\QueryExpression');
+            ->object[1]->isInstanceOf('\Glpi\DBAL\QueryExpression');
 
         $this->string(
             $result[1]['date'][1]->getValue()
-        )->isIdenticalTo("ADDDATE('2018-11-09', INTERVAL 1 DAY)");
+        )->isIdenticalTo("DATE_ADD('2018-11-09', INTERVAL 1 DAY)");
 
         $result = null;
         $this->when(function () use (&$result) {
@@ -1356,51 +1336,6 @@ class DbUtils extends DbTestCase
                 'entities_id'  => -1, //default
                 'expected'     => 'Computer 1'
             ], [
-            //not a template
-                'name'         => '&lt;abc&gt;',
-                'field'        => 'name',
-                'is_template'  => false,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '&lt;abc&gt;',
-                'deprecated'   => false, // is_template=false result in exiting before deprecation warning
-            ], [
-            //does not match pattern
-                'name'         => '&lt;abc&gt;',
-                'field'        => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '&lt;abc&gt;',
-                'deprecated'   => true,
-            ], [
-            //first added
-                'name'         => '&lt;####&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '0001',
-                'deprecated'   => true,
-            ], [
-            //existing
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '_test_pc23',
-                'deprecated'   => true,
-            ], [
-            //not existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 0,
-                'expected'     => '_test_pc01',
-                'deprecated'   => true,
-            ], [
             // not existing on entity, with multibyte strings
                 'name'         => '<自動名稱測試_##>',
                 'field'       => 'name',
@@ -1417,49 +1352,13 @@ class DbUtils extends DbTestCase
                 'entities_id'  => 0,
                 'expected'     => '自動名稱—0001—測試'
             ], [
-            //existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 1,
-                'expected'     => '_test_pc04',
-                'deprecated'   => true,
-            ], [
-            //existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => '_test_pc14',
-                'deprecated'   => true,
-            ], [
-            // existing on entity, new XSS clean output
-                'name'         => '&#60;_test_pc##&#62;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => '_test_pc14',
-                'deprecated'   => true,
-            ], [
-            // existing on entity, not sanitized
+            // existing on entity
                 'name'         => '<_test_pc##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => 2,
                 'expected'     => '_test_pc14'
-            ], [
-            // not existing on entity, new XSS clean output, and containing a special char
-                'name'         => '&#60;pc_&#60;_##&#62;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => 'pc_&#60;_01',
-                'deprecated'   => true,
             ], [
             // not existing on entity, not sanitized, and containing a special char
                 'name'         => '<pc_>_##>',
@@ -1475,29 +1374,17 @@ class DbUtils extends DbTestCase
     /**
      * @dataProvider autoNameProvider
      */
-    public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected, bool $deprecated = false)
+    public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected)
     {
         $this->newTestedInstance;
 
-        $call = function () use ($name, $field, $is_template, $itemtype, $entities_id) {
-            return $this->testedInstance->autoName(
-                $name,
-                $field,
-                $is_template,
-                $itemtype,
-                $entities_id
-            );
-        };
-        if (!$deprecated) {
-            $autoname = $call();
-        } else {
-            $autoname = null;
-            $this->when($autoname = $call())
-            ->error()
-               ->withType(E_USER_DEPRECATED)
-               ->withMessage('Handling of encoded/escaped value in autoName() is deprecated.')
-               ->exists();
-        }
+        $autoname = $this->testedInstance->autoName(
+            $name,
+            $field,
+            $is_template,
+            $itemtype,
+            $entities_id
+        );
         $this->string($autoname)->isIdenticalTo($expected);
     }
 

@@ -178,7 +178,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         $iterator = static::getItemsAssociationRequest($itemtype, $items_id);
 
         foreach ($iterator as $row) {
-            $input = Toolbox::addslashes_deep($row);
+            $input = $row;
             $item = new static();
             $item->getFromDB($input[static::getIndexName()]);
             $res[] = $item;
@@ -453,7 +453,7 @@ abstract class CommonDBConnexity extends CommonDBTM
     public function getHistoryChangeWhenUpdateField($field)
     {
 
-        return ['0', addslashes($this->oldvalues[$field] ?? ''), addslashes($this->fields[$field] ?? '')];
+        return ['0', ($this->oldvalues[$field] ?? ''), ($this->fields[$field] ?? '')];
     }
 
 

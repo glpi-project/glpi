@@ -57,6 +57,10 @@ class KnowbaseItemTranslation extends CommonDBChild
         return _n('Translation', 'Translations', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-language';
+    }
 
     public function defineTabs($options = [])
     {
@@ -99,7 +103,7 @@ class KnowbaseItemTranslation extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
 
         return '';

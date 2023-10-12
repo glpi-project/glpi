@@ -62,14 +62,27 @@ $itemtype = $validation->getItilObjectItemType();
 $fk       = getForeignKeyFieldForItemType($itemtype);
 
 if (isset($_POST["add"])) {
+    if (isset($_POST['users_id_validate'])) {
+        Toolbox::deprecated('Usage of "users_id_validate" parameter is deprecated in "front/commonitilvalidation.form.php". Use "items_id_target" instead.');
+        $_POST['items_id_target'] = $_POST['users_id_validate'];
+        $_POST['itemtype_target'] = User::class;
+        unset($_POST['users_id_validate']);
+    }
+
     $validation->check(-1, CREATE, $_POST);
-    if (
-        isset($_POST['users_id_validate'])
-        && (count($_POST['users_id_validate']) > 0)
-    ) {
-        $users = $_POST['users_id_validate'];
-        foreach ($users as $user) {
-            $_POST['users_id_validate'] = $user;
+
+    if (!isset($_POST['items_id_target'])) {
+        Html::back();
+        return;
+    }
+    if (!is_array($_POST['items_id_target'])) {
+        $_POST['items_id_target'] = [$_POST['items_id_target']];
+    }
+
+    if (count($_POST['items_id_target']) > 0) {
+        $targets = $_POST['items_id_target'];
+        foreach ($targets as $target) {
+            $_POST['items_id_target'] = $target;
             $validation->add($_POST);
             Event::log(
                 $validation->getField($fk),
@@ -108,9 +121,10 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else if (isset($_POST['approval_action'])) {
-    if ($_POST['users_id_validate'] == Session::getLoginUserID()) {
+    $validation->getFromDB($_POST['id']);
+    if ($validation->canValidate($validation->fields[$validation::$items_id])) {
         $validation->update($_POST + [
-            'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED
+            'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED,
         ]);
         Html::back();
     }

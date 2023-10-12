@@ -1,0 +1,157 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="container px-4">
+    <div class="row mb-2">
+        <div class="col-12 col-xxl-6">
+            <div class="card">
+                <div class="card-header">
+                    <a href="event.php">
+                        <i class="fa-fw {{ call('Glpi\\Event::getIcon') }} me-1"></i>
+                        <span>
+                            {{ "Glpi\\Event"|itemtype_name(get_plural_number()) }}
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-xxl-6">
+            <div class="card">
+                <div class="card-header justify-content-between">
+                    <h3>{{ __("Log files") }}</h3>
+
+                    <div class="d-inline-flex">
+                        {% set sort_controls = [
+                            {
+                                'key': 'filepath',
+                                'icon': 'ti ti-alphabet-latin',
+                                'label': __("Sort by file path")
+                            }, {
+                                'key': 'size',
+                                'icon': 'ti ti-file',
+                                'label': __("Sort by size")
+                            }, {
+                                'key': 'datemod',
+                                'icon': 'ti ti-clock',
+                                'label': __("Sort by date")
+                            }
+                        ] %}
+
+                        {% for sort_control in sort_controls %}
+                            {% set active_order = (sort_control['key'] == order) %}
+                            {% set curr_sort = 'asc' %}
+                            {% set next_sort = 'asc' %}
+                            {% if active_order %}
+                                {% set curr_sort = sort %}
+                                {% if sort == "asc" %}
+                                    {% set next_sort = 'desc' %}
+                                {% endif %}
+                            {% endif %}
+
+                            <a href="?order={{ sort_control['key'] }}&amp;sort={{ next_sort }}"
+                               class="btn {{ active_order ? "btn-outline-secondary" : "btn-ghost-secondary" }} btn-sm me-1"
+                               title="{{ sort_control['label'] }}"
+                               data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                <i class="ti ti-sort-{{ curr_sort == 'asc' ? "ascending" : "descending" }}"></i>
+                                <i class="{{ sort_control['icon'] }}"></i>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for log in logs %}
+                        <span class="list-group-item list-group-item-action d-flex justify-content-between">
+                            <a class="text-truncate"
+                               href="logviewer.php?filepath={{ log['filepath']|url_encode }}">
+                                <i class="fa-fw ti ti-file me-1"></i>
+                                <span>{{ log['filepath'] }}</span>
+                            </a>
+                            <span class="d-inline-flex">
+                                <span class="badge badge-outline text-muted border fw-normal bg-azure-lt me-1"
+                                      title="{{ __("file size") }}">
+                                    {{ log['size']|formatted_size }}
+                                </span>
+                                <span class="badge badge-outline text-muted border fw-normal bg-blue-lt"
+                                      title="{{ __("date of last modification") }}">
+                                    {{ log['datemod']|formatted_datetime }}
+                                </span>
+
+                                {% if can_clear or can_delete %}
+                                    <form action="{{ path('/front/logviewer.php') }}" method="post" class="d-inline">
+                                        <input type="hidden" name="filepath" value="{{ log['filepath'] }}">
+                                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                        <span>
+                                            <a class="btn btn-sm ms-1 btn-ghost-secondary"
+                                            data-bs-toggle="dropdown"
+                                            title="{{ __("File actions") }}">
+                                                <i class="fas ti ti-dots-vertical"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                {% if can_clear %}
+                                                    <li>
+                                                        <button type="submit" name="action" value="empty"
+                                                                     class="dropdown-item"
+                                                                     title="{{ __("Empty file") }}"
+                                                                     onclick="return confirm('{{ __("Are you sure you want to clear this file?") }}')"
+                                                                     data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                                            <i class="ti ti-file-off"></i>
+                                                            <span>{{ __("Empty file") }}</span>
+                                                        </button>
+                                                    </li>
+                                                {% endif %}
+                                                {% if can_delete %}
+                                                    <li>
+                                                        <button type="submit" name="action" value="delete"
+                                                                     class="dropdown-item"
+                                                                     title="{{ __("Empty file") }}"
+                                                                     onclick="return confirm('{{ __("Are you sure you want to delete this file?") }}')"
+                                                                     data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                                            <i class="ti ti-trash-x"></i>
+                                                            <span>{{ __("Delete file") }}</span>
+                                                        </button>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </span>
+                                    </form>
+                                {% endif %}
+                            </span>
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

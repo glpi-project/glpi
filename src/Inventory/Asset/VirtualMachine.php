@@ -40,7 +40,6 @@ use AutoUpdateSystem;
 use Computer;
 use ComputerVirtualMachine;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use RuleImportAssetCollection;
 use Toolbox;
 
@@ -228,7 +227,7 @@ class VirtualMachine extends InventoryAsset
                 foreach (ComputerVirtualMachine::getUUIDRestrictCriteria($handled_input['uuid'] ?? '') as $cleaned_uuid) {
                     $sinput = [
                         'name'                     => $handled_input['name'] ?? '',
-                        'uuid'                     => Sanitizer::unsanitize($cleaned_uuid ?? ''),
+                        'uuid'                     => $cleaned_uuid ?? '',
                         'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0
                     ];
 
@@ -248,7 +247,7 @@ class VirtualMachine extends InventoryAsset
                             }
                         }
 
-                        $computerVirtualmachine->update(Sanitizer::sanitize($input));
+                        $computerVirtualmachine->update($input);
                         unset($value[$key]);
                         unset($db_vms[$keydb]);
                         break 2;
@@ -269,7 +268,7 @@ class VirtualMachine extends InventoryAsset
                 $input = $this->handleInput($val, $computerVirtualmachine);
                 $input['computers_id'] = $this->item->fields['id'];
                 $input['is_dynamic']  = 1;
-                $computerVirtualmachine->add(Sanitizer::sanitize($input));
+                $computerVirtualmachine->add($input);
             }
         }
 
@@ -312,7 +311,6 @@ class VirtualMachine extends InventoryAsset
                     $input = (array)$vm;
                     $input['itemtype'] = \Computer::class;
                     $input['entities_id'] = $this->main_asset->getEntityID();
-                    $input  = Sanitizer::sanitize($input);
                     $datarules = $rule->processAllRules($input);
 
                     if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
@@ -328,7 +326,7 @@ class VirtualMachine extends InventoryAsset
                     $computervm->getFromDB($computers_vm_id);
                     $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
-                    $computervm->update(Sanitizer::sanitize($input));
+                    $computervm->update($input);
                 }
 
                 //load if new, reload if not.

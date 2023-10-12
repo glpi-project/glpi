@@ -80,6 +80,15 @@ class Cluster extends CommonDBTM
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
+            'id'                 => 2,
+            'table'              => self::getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'datatype'           => 'number',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
             'id'                 => '31',
             'table'              => 'glpi_states',
             'field'              => 'completename',

@@ -82,7 +82,7 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
         );
 
         if (isset($_POST['pattern'])) {
-            $paramscriteria['value'] = stripslashes($_POST['pattern']);
+            $paramscriteria['value'] = $_POST['pattern'];
         }
 
         Ajax::updateItem(

@@ -35,20 +35,6 @@
 
 abstract class NotificationEventAbstract implements NotificationEventInterface
 {
-    /**
-     * Raise an ajax notification event
-     *
-     * @param string               $event              Event
-     * @param CommonGLPI           $item               Notification data
-     * @param array                $options            Options
-     * @param string               $label              Label
-     * @param array                $data               Notification data
-     * @param NotificationTarget   $notificationtarget Target
-     * @param NotificationTemplate $template           Template
-     * @param boolean              $notify_me          Whether to notify current user
-     *
-     * @return void
-     */
     public static function raise(
         $event,
         CommonGLPI $item,
@@ -58,7 +44,8 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
         NotificationTarget $notificationtarget,
         NotificationTemplate $template,
         $notify_me,
-        $emitter = null
+        $emitter = null,
+        ?CommonDBTM $trigger = null
     ) {
         global $CFG_GLPI, $DB;
         if ($CFG_GLPI['notifications_' . $options['mode']]) {
@@ -66,8 +53,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
             if (isset($options['processed'])) {
                 $processed = &$options['processed'];
                 unset($options['processed']);
-            } else { // Compat with GLPI < 9.4.2 TODO: remove in 9.5
-                $processed = [];
             }
 
             $targets = getAllDataFromTable(
@@ -127,6 +112,9 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                             ) {
                                 //Send notification to the user
                                 if ($label == '') {
+                                    $itemtype = $item->getType();
+                                    $items_id = method_exists($item, "getID") ? max($item->getID(), 0) : 0;
+
                                     $send_data = $template->getDataToSend(
                                         $notificationtarget,
                                         $tid,
@@ -135,13 +123,16 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                         $options
                                     );
                                     $send_data['_notificationtemplates_id'] = $data['notificationtemplates_id'];
-                                    $send_data['_itemtype']                 = $item->getType();
-                                    $send_data['_items_id']                 = method_exists($item, "getID")
-                                        ? max($item->getID(), 0)
-                                        : 0;
+                                    $send_data['_itemtype']                 = $itemtype;
+                                    $send_data['_items_id']                 = $items_id;
                                     $send_data['_entities_id']              = $entity;
                                     $send_data['mode']                      = $data['mode'];
                                     $send_data['event']                     = $event;
+                                    $send_data['attach_documents']          = $data['attach_documents'] == NotificationSetting::ATTACH_INHERIT
+                                        ? $CFG_GLPI['attach_ticket_documents_to_mail']
+                                        : $data['attach_documents'];
+                                    $send_data['itemtype_trigger']          = $trigger !== null ? $trigger->getType() : $itemtype;
+                                    $send_data['items_id_trigger']          = $trigger !== null ? $trigger->getID() : $items_id;
 
                                     Notification::send($send_data);
                                 } else {

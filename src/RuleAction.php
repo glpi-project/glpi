@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+
 class RuleAction extends CommonDBChild
 {
    // From CommonDBChild
@@ -98,6 +101,11 @@ class RuleAction extends CommonDBChild
     public static function getTypeName($nb = 0)
     {
         return _n('Action', 'Actions', $nb);
+    }
+
+    public static function getIcon()
+    {
+        return "ti ti-player-play";
     }
 
     protected function computeFriendlyName()
@@ -579,6 +587,12 @@ class RuleAction extends CommonDBChild
                         case "dropdown_users":
                             $param['name']  = 'value';
                             $param['right'] = 'all';
+                            $param['toadd'] = [
+                                [
+                                    'id'    => 'requester_manager',
+                                    'text'  => __("Requester's manager"),
+                                ]
+                            ];
                             User::dropdown($param);
                             $display = true;
                             break;
@@ -605,7 +619,12 @@ class RuleAction extends CommonDBChild
 
                         case "dropdown_status":
                             $param['name']  = 'value';
-                            Ticket::dropdownStatus($param);
+                            if (is_a($_POST['sub_type'], RuleCommonITILObject::class, true)) {
+                                $itil = $_POST['sub_type']::getItemtype();
+                                return $itil::dropdownStatus($param);
+                            } else {
+                                return Ticket::dropdownStatus($param);
+                            }
                             $display = true;
                             break;
 
@@ -670,7 +689,7 @@ class RuleAction extends CommonDBChild
                             $param['condition'] = [new QuerySubQuery([
                                 'SELECT' => ['COUNT' => ['users_id']],
                                 'FROM'   => 'glpi_groups_users',
-                                'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+                                'WHERE'  => ['groups_id' => new QueryExpression('glpi_groups.id')]
                             ])
                             ];
                             $param['right']     = ['validate_incident', 'validate_request'];

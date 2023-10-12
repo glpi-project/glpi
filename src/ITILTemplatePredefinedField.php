@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\SearchOption;
+
 /**
  * ITILTemplatePredefinedField Class
  *
@@ -135,7 +137,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
                     [static::$items_id => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }
@@ -272,7 +274,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         $fields        = array_diff_key($fields, self::getExcludedFields());
 
         $itil_class    = static::$itiltype;
-        $searchOption  = Search::getOptions($itil_class);
+        $searchOption  = SearchOption::getOptionsForItemtype($itil_class);
         $itil_object   = new $itil_class();
         $rand          = mt_rand();
 

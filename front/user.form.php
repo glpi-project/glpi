@@ -210,6 +210,10 @@ if (isset($_GET['getvcard'])) {
     }
 
     Html::redirect(User::getFormURLWithID($impersonated_user_id));
+} else if (isset($_POST['disable_2fa'])) {
+    Session::checkRight('user', User::UPDATEAUTHENT);
+    (new \Glpi\Security\TOTPManager())->disable2FAForUser($_POST['id']);
+    Html::back();
 } else {
     if (isset($_GET["ext_auth"])) {
         Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
@@ -246,9 +250,9 @@ if (isset($_GET['getvcard'])) {
 
          Html::back();
     } else {
+        $options = $_GET;
+        $options['formoptions'] = "data-track-changes=true";
         $menus = ["admin", "user"];
-        User::displayFullPageForItem($_GET["id"], $menus, [
-            'formoptions'  => "data-track-changes=true"
-        ]);
+        User::displayFullPageForItem($_GET["id"], $menus, $options);
     }
 }

@@ -88,8 +88,8 @@ switch ($action) {
             (isset($_GET['itemtype']) && class_exists($_GET['itemtype']))
             && isset($_GET['items_id']) && $_GET['items_id'] > 0
         ) {
-            if (method_exists($_GET['itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
-                echo $_GET['itemtype']::getDcBreadcrumbSpecificValueToDisplay($_GET['items_id']);
+            if (method_exists($_GET['itemtype'], 'renderDcBreadcrumb')) {
+                echo $_GET['itemtype']::renderDcBreadcrumb($_GET['items_id']);
             }
         } else {
             echo "";

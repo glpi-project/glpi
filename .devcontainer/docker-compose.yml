@@ -1,0 +1,57 @@
+
+version: '3.9'
+
+services:
+  php:
+    container_name: "glpi-php-fpm"
+    build:
+      context: conf/php
+    restart: unless-stopped
+    volumes:
+      - ..:/var/www/:rw
+      - ./conf/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  nginx:
+    container_name: "glpi-nginx"
+    image: "nginx:alpine"
+    restart: unless-stopped
+    volumes:
+      - ..:/var/www:ro
+      - ./conf/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    ports:
+      - "9080:80"
+
+  db:
+    container_name: "glpi-db"
+    image: mariadb:10.11
+    restart: unless-stopped
+    volumes:
+      - /var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: glpi
+      MARIADB_DATABASE: glpi
+      MARIADB_USER: glpi
+      MARIADB_PASSWORD: glpi
+    expose:
+      - "3306"
+
+  mailpit:
+    container_name: "glpi-mailpit"
+    image: "axllent/mailpit"
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+  adminer:
+    container_name: "glpi-adminer"
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+        - '9090:8080'
