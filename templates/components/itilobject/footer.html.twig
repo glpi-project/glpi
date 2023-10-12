@@ -139,12 +139,6 @@
                   </button>
                {% endif %}
 
-               {% if canupdate %}
-                  {{ include('components/form/single-action.html.twig', {
-                     'onlyicon': true
-                  }) }}
-               {% endif %}
-
                {% if item.canDeleteItem() %}
                   {% if item.isDeleted() %}
                      <button class="btn btn-outline-secondary" type="submit" name="restore" form="itil-form"
@@ -166,6 +160,12 @@
                         <i class="ti ti-trash"></i>
                      </button>
                   {% endif %}
+               {% endif %}
+
+               {% if canupdate %}
+                  {{ include('components/form/single-action.html.twig', {
+                     'onlyicon': true
+                  }) }}
                {% endif %}
             </div>
 
