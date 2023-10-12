@@ -455,9 +455,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
     private function getAPIResponse(string $path): ?array
     {
         $router = Router::getInstance();
+        $router->registerAuthMiddleware(new \Glpi\Api\HL\Middleware\InternalAuthMiddleware());
         $path = rtrim($path, '/');
         $request = new Request('GET', $path);
-        $request = $request->withHeader('Glpi-Session-Token', $_SESSION['valid_id']);
         $response = $router->handleRequest($request);
         if ($response->getStatusCode() === 200) {
             $body = (string)$response->getBody();
