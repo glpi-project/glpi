@@ -104,15 +104,31 @@ final class Search
     private function getSQLFieldForProperty(string $prop_name): string
     {
         $prop = $this->flattened_properties[$prop_name];
-        $potential_join_name = strstr($prop_name, '.', true);
-        $is_join = str_contains($prop_name, '.') && array_key_exists($potential_join_name, $this->joins);
-        $sql_field = $prop['x-field'] ?? $prop_name;
+        $is_scalar_join = false;
+        if (isset($this->joins[$prop_name])) {
+            // Scalar property whose value exists in another table
+            $is_join = true;
+            $is_scalar_join = true;
+            $sql_field = $prop['x-field'];
+        } else {
+            $potential_join_name = substr($prop_name, 0, strrpos($prop_name, '.'));
+            $is_join = $potential_join_name !== '' && array_key_exists($potential_join_name, $this->joins);
+            $sql_field = $prop['x-field'] ?? $prop_name;
+        }
+
         if (!$is_join) {
             // Only add the _. prefix if it isn't a join. '_' is the table alias for the main item.
-            $sql_field = "_.$sql_field";
+            // Still need to replace all except the last '.' with 0x1F in case it is a nested property.
+            $sql_field_parts = explode('.', $sql_field);
+            $field_name = array_pop($sql_field_parts);
+            $sql_field = trim(implode(chr(0x1F), $sql_field_parts) . '.' . $field_name, '.');
+            if (!str_contains($sql_field, chr(0x1F))) {
+                $sql_field = '_.' . $sql_field;
+            }
         } else {
-            // If the property name is different from the SQL field name, we will need to add/change the table alias
-            // $prop_name is a join where the part before the last dot is the join alias (also the property on the main item), and the part after the last dot is the property on the joined item
+            if ($is_scalar_join) {
+                return str_replace('.', chr(0x1F), $prop_name) . '.' . $sql_field;
+            }
             $join_alias = substr($prop_name, 0, strrpos($prop_name, '.'));
             $sql_field = trim(preg_replace('/^' . preg_quote($join_alias, '/') . '/', '', $sql_field), '.');
             $join_alias = str_replace('.', chr(0x1F), trim($join_alias, '.'));
@@ -180,7 +196,9 @@ final class Search
                                     separator: new QueryExpression(chr(0x1D)),
                                 );
                             } else {
-                                throw new RuntimeException("Parent join {$join_def['join_parent']} not found");
+                                // Probably a nested property
+                                $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
+                                $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), $distinct_groups);
                             }
                         } else {
                             $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
@@ -245,7 +263,27 @@ final class Search
                 ],
             ];
             if (isset($join['condition'])) {
-                $joins[$join_type][$join_table]['ON'][] = ['AND' => $join['condition']];
+                $condition = $join['condition'];
+                // recursively inject the join alias into the condition keys in the cases where they don't contain a '.'
+                $fn_update_keys = static function ($condition) use (&$fn_update_keys, $join_alias) {
+                    $new_condition = [];
+                    foreach ($condition as $key => $value) {
+                        if (is_array($value)) {
+                            $new_condition[$key] = $fn_update_keys($value);
+                        } else {
+                            $new_condition["{$join_alias}.{$key}"] = $value;
+                        }
+                    }
+                    return $new_condition;
+                };
+                $condition = $fn_update_keys($condition);
+
+
+
+//                if (!str_contains($condition, '.')) {
+//                    $condition = "{$join_alias}.{$condition}";
+//                }
+                $joins[$join_type][$join_table]['ON'][] = ['AND' => $condition];
             }
         };
         $fn_append_join($join_alias, $join_definition);
@@ -473,7 +511,19 @@ final class Search
 
     private function getPrimaryKeyPropertyForJoin(string $join): string
     {
-        $primary_key = isset($this->joins[$join]['ref_join']) ? $this->joins[$join]['ref_join']['fkey'] : $this->joins[$join]['fkey'];
+        // If this is a scalar property join, simply return the property named the same as the join
+        if (isset($this->flattened_properties[$join])) {
+            return $join;
+        }
+        $pkey_field = 'field';
+        $join_params = $this->joins[$join]['ref_join'] ?? $this->joins[$join];
+        if (isset($this->joins[$join]['ref_join'])) {
+            $pkey_field = 'fkey';
+        }
+        if (isset($join_params['x-primary-property'])) {
+            $pkey_field = 'x-primary-property';
+        }
+        $primary_key = $join_params[$pkey_field];
         $prop_matches = array_filter(
             $this->flattened_properties,
             static function ($prop_name) use ($primary_key, $join) {
@@ -525,7 +575,7 @@ final class Search
             $criteria['GROUPBY'] = ['_itemtype', '_.id'];
         } else {
             foreach ($this->joins as $join_alias => $join) {
-                $s = $this->getSelectCriteriaForProperty("$join_alias.id", true);
+                $s = $this->getSelectCriteriaForProperty($this->getPrimaryKeyPropertyForJoin($join_alias), true);
                 if ($s !== null) {
                     $criteria['SELECT'][] = $s;
                 }
@@ -594,6 +644,11 @@ final class Search
      */
     private function getTableForFKey(string $fkey, string $schema_name): string
     {
+        $normalized_fkey = str_replace(chr(0x1F), '.', $fkey);
+        if (isset($this->joins[$normalized_fkey])) {
+            // Scalar property whose value exists in another table
+            return $this->joins[$normalized_fkey]['table'];
+        }
         if (!isset($this->fkey_tables[$fkey])) {
             if ($fkey === 'id') {
                 // This is a primary key on a main item
@@ -716,6 +771,14 @@ final class Search
                 }
             }
         }
+        // Add any scalar joined properties that may have been fetched with the dehydrated row
+        // Do this last as some scalar joined properties may be nested and have other data added after the main record was built
+        foreach ($dehydrated_row as $k => $v) {
+            $normalized_k = str_replace(chr(0x1F), '.', $k);
+            if (isset($this->joins[$normalized_k]) && !isset($hydrated_record[$normalized_k])) {
+                \Toolbox::setElementByArrayPath($hydrated_record, $normalized_k, $v);
+            }
+        }
         return $hydrated_record;
     }
 
@@ -738,7 +801,7 @@ final class Search
                     $table = $this->getTableForFKey($fkey, $schema_name);
                     $itemtype = getItemTypeForTable($table);
 
-                    if ($record_ids === null) {
+                    if ($record_ids === null || $record_ids === '' || $record_ids === "\0") {
                         continue;
                     }
                     // Find which IDs we need to fetch. We will avoid fetching records multiple times.
@@ -766,11 +829,14 @@ final class Search
 
                     if ($fkey === 'id') {
                         $props_to_use = array_filter($this->flattened_properties, function ($prop_params, $prop_name) {
+                            if (isset($this->joins[$prop_name])) {
+                                /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */
+                                return false;
+                            }
                             $prop_field = $prop_params['x-field'] ?? $prop_name;
                             $mapped_from_other = isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field;
                             // We aren't handling joins or mapped fields here
-                            $potential_join_name = strstr($prop_name, '.', true);
-                            $is_join = str_contains($prop_name, '.') && array_key_exists($potential_join_name, $this->joins);
+                            $is_join = str_contains($prop_name, '.');
                             return !$is_join && !$mapped_from_other;
                         }, ARRAY_FILTER_USE_BOTH);
                         $criteria['FROM'] = "$table AS " . $DB::quoteName('_');
@@ -780,12 +846,14 @@ final class Search
                     } else {
                         $join_name = substr($fkey, 0, strrpos($fkey, chr(0x1F)));
                         $join_name = str_replace(chr(0x1F), '.', $join_name);
-                        $props_to_use = array_filter($this->flattened_properties, static function ($prop_name) use ($join_name) {
+                        $props_to_use = array_filter($this->flattened_properties, function ($prop_name) use ($join_name) {
+                            if (isset($this->joins[$prop_name])) {
+                                /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */
+                                return false;
+                            }
                             $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
                             return $prop_parent === $join_name;
                         }, ARRAY_FILTER_USE_KEY);
-                        //$props_to_use_keys = array_map(static fn ($p) => preg_replace('/^' . preg_quote($join_name, '/') . '\./', '', $p), array_keys($props_to_use));
-                        //$props_to_use = array_combine($props_to_use_keys, $props_to_use);
 
                         $criteria['FROM'] = "$table AS " . $DB::quoteName(str_replace('.', chr(0x1F), $join_name));
                         $id_field = str_replace('.', chr(0x1F), $join_name) . '.id';

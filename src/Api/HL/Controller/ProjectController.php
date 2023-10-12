@@ -116,6 +116,7 @@ final class ProjectController extends AbstractController
                                 'table' => 'glpi_projecttasks',
                                 'fkey' => 'id',
                                 'field' => 'projects_id',
+                                'x-primary-property' => 'id'
                             ],
                             'properties' => [
                                 'id' => [

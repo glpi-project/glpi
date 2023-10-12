@@ -207,13 +207,13 @@ class Schema implements \ArrayAccess
         //Not supported
     }
 
-    public static function getJoins(array $props, string $prefix = ''): array
+    public static function getJoins(array $props, string $prefix = '', ?array $parent_join = null): array
     {
         //Walk through properties recursively to find ones of type object with a "x-join" property. Return array of "x-join" properties
         $joins = [];
-        $fn_add_parent_hint = static function ($join, $prefix) {
+        $fn_add_parent_hint = static function ($join, $prefix) use ($parent_join) {
             $prefix = str_replace('.', chr(0x1F), rtrim($prefix, '.'));
-            if ($prefix === '') {
+            if ($prefix === '' || $parent_join === null) {
                 return $join;
             }
             if (isset($join['ref_join']['fkey'])) {
@@ -230,9 +230,18 @@ class Schema implements \ArrayAccess
             } else if ($prop['type'] === self::TYPE_ARRAY && isset($prop['items']['x-join'])) {
                 $new_join = $prop['items']['x-join'] + ['parent_type' => self::TYPE_ARRAY];
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
-                $joins += self::getJoins($prop['items']['properties'], $prefix . $name . '.');
+                $joins += self::getJoins($prop['items']['properties'], $prefix . $name . '.', $new_join);
             } else if ($prop['type'] === self::TYPE_OBJECT && isset($prop['properties'])) {
-                $joins += self::getJoins($prop['properties'], $prefix . $name . '.');
+                if (isset($prop['x-join'])) {
+                    $parent_join = $prop['x-join'];
+                }
+                $joins += self::getJoins($prop['properties'], $prefix . $name . '.', $parent_join);
+            } else {
+                // Scalar property joined from another table
+                if (isset($prop['x-join'])) {
+                    $new_join = $prop['x-join'] + ['parent_type' => self::TYPE_OBJECT];
+                    $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
+                }
             }
         }
         return $joins;
@@ -242,9 +251,6 @@ class Schema implements \ArrayAccess
     {
         $flattened = [];
         foreach ($props as $name => $prop) {
-            if ($name === 'printers') {
-                $t = '';
-            }
             if ($collapse_array_types && $prop['type'] === self::TYPE_ARRAY) {
                 $prop = $prop['items'];
             }
