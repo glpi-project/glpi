@@ -461,7 +461,7 @@ class ObjectLock extends CommonDBTM
     public static function setReadOnlyProfile()
     {
         /** @var array $CFG_GLPI */
-        global $CFG_GLPI, $_SESSION;
+        global $CFG_GLPI;
 
        // to prevent double set ReadOnlyProfile
         if (!isset($_SESSION['glpilocksavedprofile'])) {
@@ -498,8 +498,6 @@ class ObjectLock extends CommonDBTM
      **/
     public static function revertProfile()
     {
-        global $_SESSION;
-
         if (isset($_SESSION['glpilocksavedprofile'])) {
             $_SESSION['glpiactiveprofile'] = $_SESSION['glpilocksavedprofile'];
             unset($_SESSION['glpilocksavedprofile']);
