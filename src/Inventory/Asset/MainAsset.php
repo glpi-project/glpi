@@ -868,7 +868,7 @@ abstract class MainAsset extends InventoryAsset
             'itemtype'  => $itemtype,
             'agents_id' => $this->agent->fields['id'],
             'method'    => $this->request_query ?? Request::INVENT_QUERY,
-            'criteria'  => Sanitizer::sanitize($criteria)
+            'criteria'  => $criteria
         ];
         $rulesmatched->add($inputrulelog, [], false);
         $rulesmatched->cleanOlddata($items_id, $itemtype);

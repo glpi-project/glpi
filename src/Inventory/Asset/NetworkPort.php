@@ -43,6 +43,8 @@ use Glpi\Inventory\FilesToJSON;
 use NetworkPort as GlobalNetworkPort;
 use NetworkPortAggregate;
 use NetworkPortType;
+use Rule;
+use RuleCriteria;
 use RuleImportAssetCollection;
 use Unmanaged;
 
