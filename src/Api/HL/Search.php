@@ -277,12 +277,6 @@ final class Search
                     return $new_condition;
                 };
                 $condition = $fn_update_keys($condition);
-
-
-
-//                if (!str_contains($condition, '.')) {
-//                    $condition = "{$join_alias}.{$condition}";
-//                }
                 $joins[$join_type][$join_table]['ON'][] = ['AND' => $condition];
             }
         };
