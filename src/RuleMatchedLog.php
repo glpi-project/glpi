@@ -222,7 +222,7 @@ class RuleMatchedLog extends CommonDBTM
         echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 
         echo "<tr>";
-        echo "<th colspan='4'>";
+        echo "<th colspan='5'>";
         echo __('Rule import logs');
 
         echo "</th>";
@@ -245,7 +245,7 @@ class RuleMatchedLog extends CommonDBTM
         echo __('Module');
 
         echo "</th>";
-        echo "<th colspan='5'>";
+        echo "<th>";
         echo __('Criteria');
 
         echo "</th>";
@@ -282,13 +282,22 @@ class RuleMatchedLog extends CommonDBTM
             echo "<td>";
             if (isset($data['criteria'])) {
                 $criteria = json_decode($data['criteria'], true);
+                echo '<span class="toggle">
+                    <button class="btn">
+                        <i class="ti ti-eye"></i>
+                    </button>
+                </span>
+                <ul class="nested list-group list-group-flush card" style="display: none;">';
+                $content = '';
                 foreach ($criteria as $criterion => $value) {
                     if (is_array($value)) {
-                        $value = implode(', ', $value);
+                        $content .= '<b>' . $criterion . '</b> : ' . $this->checkIfArray($value) . '<br>';
+                    } else {
+                        $content .= '<b>' . $criterion . '</b> : ' . $value . '<br>';
                     }
-                    echo "<li>" . $criterion . " : " . $value . "</li>";
                 }
-            }
+                echo '<div class="list-group-item ">' . $content . '</div></ul>';
+            };
             echo "</td>";
             echo "</tr>";
         }
@@ -298,6 +307,25 @@ class RuleMatchedLog extends CommonDBTM
         Html::printAjaxPager(self::getTypeName(2), $start, $number);
 
         return true;
+    }
+
+    /**
+     * Check il $array is really an array and implode
+     *
+     * @param array $array
+     */
+
+    public function checkIfArray($array)
+    {
+        $content = '';
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $content .= $this->checkIfArray($value);
+            } else {
+                $content .= '<br>&bull; ' . $value;
+            }
+        }
+        return $content;
     }
 
 
@@ -372,3 +400,25 @@ class RuleMatchedLog extends CommonDBTM
         echo "</table>";
     }
 }
+?>
+
+<script>
+  // Get all toggle buttons
+  var toggleButtons = document.querySelectorAll(".toggle");
+
+  // Add click event listeners to toggle buttons
+  toggleButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      // Get the nested list
+      var nestedList = button.nextElementSibling;
+      // Toggle the display of the nested list
+      if (nestedList.style.display === "none") {
+        nestedList.style.display = "block";
+        button.innerHTML = '<button class="btn"><i class="ti ti-eye-off"></i></div>';
+      } else {
+        nestedList.style.display = "none";
+        button.innerHTML = '<button class="btn"><i class="ti ti-eye"></i></button>';
+      }
+    });
+  });
+</script>
