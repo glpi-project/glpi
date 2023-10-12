@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Application\ErrorHandler;
+use Glpi\UI\ThemeManager;
 
 $_GET["donotcheckversion"]   = true;
 $dont_check_maintenance_mode = true;
@@ -58,6 +59,17 @@ if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
 
 // Ensure warnings will not break CSS output.
 ErrorHandler::getInstance()->disableOutput();
+
+// If a custom theme is requested, we need to get the real path of the theme
+if (isset($_GET['file']) && isset($_GET['is_custom_theme']) && $_GET['is_custom_theme']) {
+    $theme = ThemeManager::getInstance()->getTheme(preg_replace('/\.scss$/', '', $_GET['file']));
+
+    if (!$theme) {
+        $theme = ThemeManager::DEFAULT_THEME;
+    }
+
+    $_GET['file'] = $theme->getPath();
+}
 
 $css = Html::compileScss($_GET);
 

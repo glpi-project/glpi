@@ -1254,10 +1254,13 @@ HTML;
             }
         }
 
-        $theme_path = $theme->getPath();
         if ($theme->isCustomTheme()) {
+            $theme_path = $theme->getKey() . '.scss?is_custom_theme=1';
+
             // Custom theme files might be modified by external source
-            $theme_path .= "?lastupdate=" . filemtime($theme->getPath(false));
+            $theme_path .= "&lastupdate=" . filemtime($theme->getPath(false));
+        } else {
+            $theme_path = $theme->getPath();
         }
         $tpl_vars['css_files'][] = ['path' => $theme_path];
 
