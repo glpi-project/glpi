@@ -186,6 +186,7 @@ class Item_Ticket extends CommonItilObject_Item
      **/
     public static function itemAddForm(Ticket $ticket, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params = [
@@ -583,7 +584,11 @@ class Item_Ticket extends CommonItilObject_Item
      **/
     public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = [])
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $params = ['tickets_id' => 0,
             'used'       => [],
@@ -928,6 +933,7 @@ class Item_Ticket extends CommonItilObject_Item
      **/
     public static function dropdown($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Default values
@@ -1012,6 +1018,7 @@ class Item_Ticket extends CommonItilObject_Item
      **/
     public static function showFormMassiveAction($ma)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {

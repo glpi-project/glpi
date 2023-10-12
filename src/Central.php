@@ -445,7 +445,11 @@ class Central extends CommonGLPI
 
     private static function getMessages(): array
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $messages = [];
 

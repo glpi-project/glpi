@@ -426,7 +426,11 @@ class ReservationItem extends CommonDBChild
 
     public static function showListSimple()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM])) {
             return false;
@@ -762,7 +766,11 @@ class ReservationItem extends CommonDBChild
      **/
     public static function cronReservation($task = null)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
             return 0;
@@ -1039,6 +1047,7 @@ class ReservationItem extends CommonDBChild
      */
     public static function getAvailableItems(string $itemtype): DBmysqlIterator
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $reservation_table = ReservationItem::getTable();
@@ -1062,6 +1071,7 @@ class ReservationItem extends CommonDBChild
      */
     public static function countAvailableItems(string $itemtype): int
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = self::getAvailableItemsCriteria($itemtype);

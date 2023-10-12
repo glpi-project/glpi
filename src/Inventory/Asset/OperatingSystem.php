@@ -136,6 +136,7 @@ class OperatingSystem extends InventoryAsset
 
     public function handle()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ios = new Item_OperatingSystem();

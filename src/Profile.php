@@ -227,6 +227,7 @@ class Profile extends CommonDBTM
 
     public function post_updateItem($history = 1)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (count($this->profileRight) > 0) {
@@ -266,6 +267,7 @@ class Profile extends CommonDBTM
 
     public function post_addItem()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $rights = ProfileRight::getAllPossibleRights();
@@ -655,6 +657,7 @@ class Profile extends CommonDBTM
      **/
     public static function currentUserHaveMoreRightThan($IDs = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (Session::isCron()) {
@@ -3670,6 +3673,7 @@ class Profile extends CommonDBTM
      **/
     public static function dropdownUnder($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $p['name']  = 'profiles_id';
@@ -3711,6 +3715,7 @@ class Profile extends CommonDBTM
      **/
     public static function getDefault()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         foreach ($DB->request('glpi_profiles', ['is_default' => 1]) as $data) {
@@ -3790,6 +3795,7 @@ class Profile extends CommonDBTM
      **/
     public static function getHelpdeskItemtypes()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $values = [];
@@ -3811,6 +3817,7 @@ class Profile extends CommonDBTM
      */
     public function getDomainRecordTypes()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -3867,6 +3874,7 @@ class Profile extends CommonDBTM
      */
     public static function haveUserRight($user_id, $rightname, $rightvalue, $entity_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request(

@@ -71,7 +71,11 @@ class DCRoom extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
         $rand = mt_rand();
 
         $this->initForm($ID, $options);
@@ -365,6 +369,7 @@ class DCRoom extends CommonDBTM
      **/
     public static function showForDatacenter(Datacenter $datacenter)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $datacenter->getID();
@@ -463,6 +468,7 @@ class DCRoom extends CommonDBTM
      */
     public function getFilled($current = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

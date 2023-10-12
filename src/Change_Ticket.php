@@ -226,6 +226,7 @@ class Change_Ticket extends CommonDBRelation
      **/
     public static function showForChange(Change $change)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $change->getField('id');
@@ -352,6 +353,7 @@ class Change_Ticket extends CommonDBRelation
      **/
     public static function showForTicket(Ticket $ticket)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $ticket->getField('id');
@@ -460,6 +462,7 @@ class Change_Ticket extends CommonDBRelation
 
     public function post_addItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];

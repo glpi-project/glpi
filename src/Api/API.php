@@ -144,6 +144,7 @@ abstract class API
      */
     public function initApi()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Load GLPI configuration
@@ -250,6 +251,7 @@ abstract class API
      */
     protected function initSession($params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->checkAppToken();
@@ -579,6 +581,10 @@ abstract class API
      */
     protected function getItem($itemtype, $id, $params = [])
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $itemtype = $this->handleDepreciation($itemtype);
@@ -1080,6 +1086,7 @@ abstract class API
      */
     protected function getItems($itemtype, $params = [], &$totalcount = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $itemtype = $this->handleDepreciation($itemtype);
@@ -1559,6 +1566,7 @@ abstract class API
      */
     protected function searchItems($itemtype, $params = [])
     {
+        /** @var array $DEBUG_SQL */
         global $DEBUG_SQL;
 
         $itemtype = $this->handleDepreciation($itemtype);
@@ -2151,6 +2159,7 @@ abstract class API
      */
     protected function lostPassword($params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($CFG_GLPI['use_notifications'] == '0' || $CFG_GLPI['notifications_mailing'] == '0') {
@@ -2347,6 +2356,7 @@ abstract class API
      */
     private function getGlpiLastMessage()
     {
+        /** @var array $DEBUG_SQL */
         global $DEBUG_SQL;
 
         $all_messages             = [];
@@ -2544,6 +2554,7 @@ abstract class API
      */
     public static function getHatoasClasses($itemtype)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $hclasses = [];
@@ -2875,6 +2886,7 @@ abstract class API
         int $id,
         string $itemtype
     ): array {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $_networkports = [];

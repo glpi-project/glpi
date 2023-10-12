@@ -231,6 +231,7 @@ class DropdownTranslation extends CommonDBChild
      **/
     public static function getNumberOfTranslationsForItem($item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         return countElementsInTable(
@@ -276,6 +277,7 @@ class DropdownTranslation extends CommonDBChild
      **/
     public function generateCompletename($input, $add = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
        // Force completename translated : used for the first translation
         $_SESSION['glpi_dropdowntranslations'][$input['itemtype']]['completename'] = 'completename';
@@ -368,7 +370,11 @@ class DropdownTranslation extends CommonDBChild
      **/
     public static function showTranslations(CommonDropdown $item)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $rand    = mt_rand();
         $canedit = $item->can($item->getID(), UPDATE);
@@ -496,6 +502,7 @@ class DropdownTranslation extends CommonDBChild
             return false;
         }
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $item = $options['parent'];
@@ -606,6 +613,7 @@ JAVASCRIPT
      **/
     public static function dropdownFields(CommonDBTM $item, $language = '', $value = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $options = [];
@@ -659,6 +667,7 @@ JAVASCRIPT
      **/
     public static function getTranslatedValue($ID, $itemtype, $field = 'name', $language = '', $value = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($language == '') {
@@ -722,6 +731,7 @@ JAVASCRIPT
      **/
     public static function getTranslationID($ID, $itemtype, $field, $language)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -767,6 +777,7 @@ JAVASCRIPT
      **/
     public static function isDropdownTranslationActive()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI['translate_dropdowns'];
@@ -784,6 +795,7 @@ JAVASCRIPT
      **/
     public static function getTranslationByName($itemtype, $field, $value)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -817,6 +829,7 @@ JAVASCRIPT
      **/
     public static function getTranslationsForAnItem($itemtype, $items_id, $field)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -872,6 +885,7 @@ JAVASCRIPT
      **/
     public static function getAvailableTranslations($language)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];

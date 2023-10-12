@@ -189,6 +189,7 @@ class VirtualMachine extends InventoryAsset
      */
     protected function getExisting(): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -285,6 +286,7 @@ class VirtualMachine extends InventoryAsset
      */
     protected function createVmComputer()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $computervm = new Computer();
@@ -375,6 +377,7 @@ class VirtualMachine extends InventoryAsset
 
     public function getExistingVMAsComputer(\stdClass $vm): int
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $computers_vm_id = 0;

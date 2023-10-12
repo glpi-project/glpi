@@ -224,6 +224,7 @@ class DeviceMemory extends CommonDevice
 
     public static function rawSearchOptionsToAdd($class, $main_joinparams)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];

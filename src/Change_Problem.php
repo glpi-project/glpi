@@ -120,6 +120,7 @@ class Change_Problem extends CommonDBRelation
      **/
     public static function showForProblem(Problem $problem)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $problem->getField('id');
@@ -231,6 +232,7 @@ class Change_Problem extends CommonDBRelation
      **/
     public static function showForChange(Change $change)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $change->getField('id');
@@ -335,6 +337,7 @@ class Change_Problem extends CommonDBRelation
 
     public function post_addItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];

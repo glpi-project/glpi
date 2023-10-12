@@ -301,7 +301,11 @@ class ConsumableItem extends CommonDBTM
      **/
     public static function cronConsumable(CronTask $task = null)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $cron_status = 1;
 

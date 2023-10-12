@@ -67,6 +67,7 @@ class Telemetry extends CommonGLPI
      */
     public static function grabGlpiInfos()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $glpi = [
@@ -117,6 +118,7 @@ class Telemetry extends CommonGLPI
      */
     public static function grabDbInfos()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $dbinfos = $DB->getInfo();
@@ -147,6 +149,7 @@ class Telemetry extends CommonGLPI
      */
     public static function grabWebserverInfos()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $server = [
@@ -355,6 +358,7 @@ class Telemetry extends CommonGLPI
      */
     public static function getViewLink()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $out = "<a id='view_telemetry' href='{$CFG_GLPI['root_doc']}/ajax/telemetry.php' class='btn btn-sm btn-info mt-2'>
@@ -380,6 +384,7 @@ class Telemetry extends CommonGLPI
      */
     public static function enable()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $DB->update(
             'glpi_crontasks',
@@ -395,6 +400,7 @@ class Telemetry extends CommonGLPI
      */
     public static function disable(): void
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $DB->update(
             'glpi_crontasks',
@@ -410,6 +416,7 @@ class Telemetry extends CommonGLPI
      */
     public static function isEnabled()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $iterator = $DB->request([
             'SELECT' => ['state'],

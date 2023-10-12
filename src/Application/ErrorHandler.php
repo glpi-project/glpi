@@ -157,6 +157,7 @@ class ErrorHandler
         static $instance = null;
 
         if ($instance === null) {
+            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
             global $PHPLOGGER;
             $instance = new self($PHPLOGGER);
         }

@@ -50,6 +50,7 @@ class GLPIMailer extends PHPMailer
      **/
     public function __construct()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->WordWrap           = 80;

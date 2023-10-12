@@ -146,6 +146,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $plugin_key = $input->getOption('plugin');

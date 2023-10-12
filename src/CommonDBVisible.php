@@ -211,6 +211,7 @@ abstract class CommonDBVisible extends CommonDBTM
      **/
     public function showVisibility()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ID      = $this->fields['id'];

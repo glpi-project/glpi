@@ -135,6 +135,7 @@ class ProjectTaskTeam extends CommonDBRelation
      **/
     public static function getTeamFor($tasks_id, bool $expand = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $team = [];
@@ -166,6 +167,7 @@ class ProjectTaskTeam extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($input['itemtype'])) {

@@ -209,6 +209,7 @@ class Printer extends NetworkEquipment
      */
     protected function handleConnectedPrinter()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $rule = new RuleImportAssetCollection();

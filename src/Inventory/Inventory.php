@@ -238,6 +238,7 @@ class Inventory
      */
     public function doInventory($test_rules = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         //check
@@ -888,6 +889,7 @@ class Inventory
      **/
     public static function cronCleanorphans($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $cron_status = 0;

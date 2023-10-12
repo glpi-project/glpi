@@ -230,6 +230,7 @@ class Plugin extends CommonDBTM
      **/
     public function init(bool $load_plugins = false, array $excluded_plugins = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         self::$plugins_state_checked = false;
@@ -379,6 +380,10 @@ class Plugin extends CommonDBTM
      **/
     public static function loadLang($plugin_key, $forcelang = '', $coretrytoload = '')
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE
+         */
         global $CFG_GLPI, $TRANSLATE;
 
        // For compatibility for plugins using $LANG
@@ -802,6 +807,7 @@ class Plugin extends CommonDBTM
      */
     public function getList(array $fields = [], array $order = ['name', 'directory'])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = [
@@ -898,6 +904,7 @@ class Plugin extends CommonDBTM
     public function install($ID, array $params = [])
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $message = '';
@@ -981,6 +988,7 @@ class Plugin extends CommonDBTM
      **/
     public function activate($ID)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if ($this->getFromDB($ID)) {
@@ -1165,6 +1173,7 @@ class Plugin extends CommonDBTM
      **/
     public function unactivateAll()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->update(
@@ -1327,6 +1336,7 @@ class Plugin extends CommonDBTM
      **/
     public static function migrateItemType($types = [], $glpitables = [], $plugtables = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $typetoname = [0  => "",// For tickets
@@ -1555,6 +1565,7 @@ class Plugin extends CommonDBTM
      **/
     public static function registerClass($itemtype, $attrib = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $plug = isPluginItemType($itemtype);
@@ -1641,6 +1652,7 @@ class Plugin extends CommonDBTM
      **/
     public static function doHook($name, $param = null)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if ($param == null) {
@@ -1700,6 +1712,7 @@ class Plugin extends CommonDBTM
      **/
     public static function doHookFunction($name, $parm = null)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $ret = $parm;
@@ -2022,6 +2035,7 @@ class Plugin extends CommonDBTM
      **/
     public static function haveImport()
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         return (isset($PLUGIN_HOOKS['import_item']) && count($PLUGIN_HOOKS['import_item']));
@@ -2268,6 +2282,7 @@ class Plugin extends CommonDBTM
      */
     public function checkGlpiParameters($params)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $compat = true;
@@ -2560,7 +2575,11 @@ class Plugin extends CommonDBTM
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-        global $PLUGIN_HOOKS, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -2855,6 +2874,7 @@ class Plugin extends CommonDBTM
      */
     public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $directory = self::getPhpDir($plugin_key, false);
@@ -3046,6 +3066,10 @@ class Plugin extends CommonDBTM
      */
     private function resetHookableCacheEntries(string $plugin_key): bool
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $CFG_GLPI, $GLPI_CACHE;
 
         $to_clear = [

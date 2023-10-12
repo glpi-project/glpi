@@ -63,6 +63,7 @@ class ProtectedWebAccess extends AbstractRequirement
 
     protected function check()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isCommandLine()) {

@@ -91,6 +91,7 @@ class Item_RemoteManagement extends CommonDBChild
      */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

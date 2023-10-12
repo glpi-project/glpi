@@ -55,6 +55,7 @@ class Supplier_Ticket extends CommonITILActor
      **/
     public function isSupplierEmail($items_id, $email)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

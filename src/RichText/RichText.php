@@ -108,6 +108,7 @@ final class RichText
         bool $preserve_case = false,
         bool $preserve_line_breaks = false
     ): string {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $content = self::normalizeHtmlContent($content, false);
@@ -263,6 +264,7 @@ final class RichText
 
         if ($enhanced_html) {
             // URLs have to be transformed into <a> tags.
+            /** @var array $autolink_options */
             global $autolink_options;
             $autolink_options['strip_protocols'] = false;
             $content = autolink($content, false, ' target="_blank"');
@@ -335,6 +337,7 @@ HTML;
      */
     private static function fixImagesPath(string $content): string
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $patterns = [

@@ -103,6 +103,7 @@ class Knowbase extends CommonGLPI
     public static function showSearchView()
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Search a solution
@@ -146,6 +147,7 @@ class Knowbase extends CommonGLPI
      **/
     public static function showBrowseView()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand        = mt_rand();
@@ -239,6 +241,7 @@ JAVASCRIPT;
     public static function getTreeCategoryList()
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $cat_table = KnowbaseItemCategory::getTable();

@@ -53,6 +53,7 @@ class Item extends \CommonDBChild
      */
     public static function getForDashboard(int $dashboards_id = 0): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $di_iterator = $DB->request([
@@ -90,6 +91,10 @@ class Item extends \CommonDBChild
      */
     public static function addForDashboard(int $dashboards_id = 0, array $items = [])
     {
+        /**
+         * @var \DBmysql $DB
+         * @var array $_UREQUEST
+         */
         global $DB, $_UREQUEST;
 
         $query_items = $DB->buildInsert(

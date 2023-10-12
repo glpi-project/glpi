@@ -225,6 +225,7 @@ class Search
      **/
     public static function showMap($itemtype, $params)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($itemtype == 'Location') {
@@ -465,6 +466,7 @@ class Search
      **/
     public static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Default values of parameters
@@ -684,7 +686,11 @@ class Search
      **/
     public static function constructSQL(array &$data)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!isset($data['itemtype'])) {
             return false;
@@ -1758,6 +1764,7 @@ class Search
      **/
     public static function displayData(array $data)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
@@ -1863,6 +1870,7 @@ class Search
      **/
     public static function outputData(array $data)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -2349,6 +2357,7 @@ class Search
      **/
     public static function getMetaItemtypeAvailable($itemtype)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $itemtype = self::getMetaReferenceItemtype($itemtype);
@@ -2438,6 +2447,7 @@ class Search
      */
     private static function isPossibleMetaSubitemOf(string $parent_itemtype, string $child_itemtype)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -2532,6 +2542,7 @@ class Search
      **/
     public static function showGenericSearch($itemtype, array $params)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Default values of parameters
@@ -2772,6 +2783,7 @@ JAVASCRIPT;
      */
     public static function displayCriteria($request = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -2975,6 +2987,7 @@ JAVASCRIPT;
      */
     public static function displayMetaCriteria($request = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -3188,6 +3201,7 @@ JAVASCRIPT;
      */
     public static function getDefaultCriteria($itemtype = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $field = '';
@@ -3232,6 +3246,7 @@ JAVASCRIPT;
      */
     public static function displaySearchoption($request = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if (
             !isset($request["itemtype"])
@@ -3475,6 +3490,7 @@ JAVASCRIPT;
     public static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val)
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $searchopt  = self::getOptions($itemtype);
@@ -3629,6 +3645,7 @@ JAVASCRIPT;
      **/
     public static function addOrderBy($itemtype, $sort_fields, $_id = 'ASC')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // BC parameter conversion
@@ -3803,6 +3820,7 @@ JAVASCRIPT;
      **/
     public static function addDefaultToView($itemtype, $params)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $toview = [];
@@ -3844,6 +3862,7 @@ JAVASCRIPT;
      **/
     public static function addDefaultSelect($itemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $itemtable = self::getOrigTableName($itemtype);
@@ -3897,7 +3916,11 @@ JAVASCRIPT;
      **/
     public static function addSelect($itemtype, $ID, $meta = 0, $meta_type = 0)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $searchopt   = self::getOptions($itemtype);
         $table       = $searchopt[$ID]["table"];
@@ -4585,6 +4608,7 @@ JAVASCRIPT;
     public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0)
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $searchopt = self::getOptions($itemtype);
@@ -6147,6 +6171,7 @@ JAVASCRIPT;
         array &$already_link_tables2,
         $joinparams = []
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $from_referencetype = self::getMetaReferenceItemtype($from_type);
@@ -6553,6 +6578,7 @@ JAVASCRIPT;
         array $addobjectparams = [],
         $orig_itemtype = null
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $searchopt = self::getOptions($itemtype);
@@ -7981,6 +8007,7 @@ HTML;
      **/
     public static function getCleanedOptions($itemtype, $action = READ, $withplugins = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options = self::getOptions($itemtype, $withplugins);
@@ -8079,6 +8106,7 @@ HTML;
      **/
     public static function &getOptions($itemtype, $withplugins = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $item = null;
@@ -8574,6 +8602,7 @@ HTML;
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE:
             case self::PDF_OUTPUT_PORTRAIT:
+                /** @var string $PDF_TABLE */
                 global $PDF_TABLE;
                 $PDF_TABLE .= "<th $options>";
                 $PDF_TABLE .= htmlspecialchars($value);
@@ -8581,7 +8610,11 @@ HTML;
                 break;
 
             case self::SYLK_OUTPUT: //sylk
-                global $SYLK_HEADER,$SYLK_SIZE;
+                /**
+                 * @var array $SYLK_HEADER
+                 * @var array $SYLK_SIZE
+                 */
+                global $SYLK_HEADER, $SYLK_SIZE;
                 $SYLK_HEADER[$num] = self::sylk_clean($value);
                 $SYLK_SIZE[$num]   = Toolbox::strlen($SYLK_HEADER[$num]);
                 break;
@@ -8637,6 +8670,7 @@ HTML;
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
+                /** @var string $PDF_TABLE */
                 global $PDF_TABLE;
                 $value = DataExport::normalizeValueForTextExport($value);
                 $value = htmlspecialchars($value);
@@ -8649,7 +8683,11 @@ HTML;
                 break;
 
             case self::SYLK_OUTPUT: //sylk
-                global $SYLK_ARRAY,$SYLK_SIZE;
+                /**
+                 * @var array $SYLK_ARRAY
+                 * @var array $SYLK_SIZE
+                 */
+                global $SYLK_ARRAY, $SYLK_SIZE;
                 $value = DataExport::normalizeValueForTextExport($value);
                 $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                 $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
@@ -8693,6 +8731,7 @@ HTML;
                 break;
 
             default:
+                /** @var array $CFG_GLPI */
                 global $CFG_GLPI;
                 $out = "<td $extraparam valign='top'>";
 
@@ -8782,6 +8821,7 @@ HTML;
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
+                /** @var string $PDF_TABLE */
                 global $PDF_TABLE;
 
                 $font       = 'helvetica';
@@ -8806,7 +8846,12 @@ HTML;
                 break;
 
             case self::SYLK_OUTPUT: //sylk
-                global $SYLK_HEADER,$SYLK_ARRAY,$SYLK_SIZE;
+                /**
+                 * @var array $SYLK_ARRAY
+                 * @var array $SYLK_HEADER
+                 * @var array $SYLK_SIZE
+                 */
+                global $SYLK_ARRAY, $SYLK_HEADER, $SYLK_SIZE;
                // largeurs des colonnes
                 foreach ($SYLK_SIZE as $num => $val) {
                     $out .= "F;W" . $num . " " . $num . " " . min(50, $val) . "\n";
@@ -8856,11 +8901,17 @@ HTML;
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
+                /** @var string $PDF_TABLE */
                 global $PDF_TABLE;
                 $PDF_TABLE = "<table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" >";
                 break;
 
             case self::SYLK_OUTPUT: // Sylk
+                /**
+                 * @var array $SYLK_ARRAY
+                 * @var array $SYLK_HEADER
+                 * @var array $SYLK_SIZE
+                 */
                 global $SYLK_ARRAY, $SYLK_HEADER, $SYLK_SIZE;
                 $SYLK_ARRAY  = [];
                 $SYLK_HEADER = [];
@@ -8934,6 +8985,7 @@ HTML;
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
+                /** @var string $PDF_TABLE */
                 global $PDF_TABLE;
                 $PDF_TABLE .= "<thead>";
                 break;
@@ -8966,6 +9018,7 @@ HTML;
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
+                /** @var string $PDF_TABLE */
                 global $PDF_TABLE;
                 $PDF_TABLE .= "</thead>";
                 break;
@@ -8998,6 +9051,7 @@ HTML;
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
+                /** @var string $PDF_TABLE */
                 global $PDF_TABLE;
                 $style = "";
                 if ($odd) {
@@ -9036,6 +9090,7 @@ HTML;
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
+                /** @var string $PDF_TABLE */
                 global $PDF_TABLE;
                 $PDF_TABLE .= '</tr>';
                 break;
@@ -9071,6 +9126,7 @@ HTML;
             if (!is_array($joinparams['condition'])) {
                 $complexjoin .= $joinparams['condition'];
             } else {
+                /** @var \DBmysql $DB */
                 global $DB;
                 $dbi = new DBmysqlIterator($DB);
                 $sql_clause = $dbi->analyseCrit($joinparams['condition']);
@@ -9098,6 +9154,7 @@ HTML;
                     if (!is_array($tab['joinparams']['condition'])) {
                         $complexjoin .= $tab['joinparams']['condition'];
                     } else {
+                        /** @var \DBmysql $DB */
                         global $DB;
                         $dbi = new DBmysqlIterator($DB);
                         $sql_clause = $dbi->analyseCrit($tab['joinparams']['condition']);

@@ -136,6 +136,7 @@ class Printer extends CommonDBTM
      **/
     public function canUnrecurs()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $this->fields['id'];
@@ -249,6 +250,7 @@ class Printer extends CommonDBTM
 
     public function cleanDBonPurge()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->update(
@@ -299,6 +301,7 @@ class Printer extends CommonDBTM
      **/
     public function getLinkedItems()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -707,6 +710,7 @@ class Printer extends CommonDBTM
      **/
     public function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Look for the software by his name in GLPI for a specific entity
@@ -752,6 +756,7 @@ class Printer extends CommonDBTM
      **/
     public function addPrinter($name, $manufacturer, $entity, $comment = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $manufacturer_id = 0;

@@ -210,6 +210,7 @@ class Alert extends CommonDBTM
      */
     public static function alertExists($itemtype, $items_id, $type)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($items_id <= 0 || $type <= 0) {
@@ -237,6 +238,7 @@ class Alert extends CommonDBTM
      */
     public static function getAlertDate($itemtype, $items_id, $type)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($items_id <= 0 || $type <= 0) {
@@ -260,6 +262,7 @@ class Alert extends CommonDBTM
      */
     public static function displayLastAlert($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($items_id) {

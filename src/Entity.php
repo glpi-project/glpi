@@ -157,6 +157,7 @@ class Entity extends CommonTreeDropdown
 
     public function pre_updateInDB()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (($key = array_search('name', $this->updates)) !== false) {
@@ -186,6 +187,7 @@ class Entity extends CommonTreeDropdown
 
     public function pre_deleteItem()
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         // Security do not delete root entity
@@ -325,6 +327,7 @@ class Entity extends CommonTreeDropdown
      **/
     public function prepareInputForAdd($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $input['name'] = isset($input['name']) ? trim($input['name']) : '';
@@ -421,6 +424,7 @@ class Entity extends CommonTreeDropdown
      */
     private function handleConfigStrategyFields(array $input): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         foreach ($input as $field => $value) {
@@ -616,6 +620,7 @@ class Entity extends CommonTreeDropdown
 
     public function post_updateItem($history = 1)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         parent::post_updateItem($history);
@@ -681,6 +686,7 @@ class Entity extends CommonTreeDropdown
      */
     public function cleanEntitySelectorCache()
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $GLPI_CACHE->delete('entity_selector');
@@ -1481,6 +1487,7 @@ class Entity extends CommonTreeDropdown
      **/
     public static function getEntitiesToNotify($field)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $entities = [];
@@ -2523,6 +2530,7 @@ class Entity extends CommonTreeDropdown
     public static function showUiCustomizationOptions(Entity $entity)
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ID = $entity->getField('id');
@@ -2649,6 +2657,7 @@ class Entity extends CommonTreeDropdown
      **/
     private static function getEntityIDByField($field, $value)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -2741,6 +2750,7 @@ class Entity extends CommonTreeDropdown
      **/
     public static function showHelpdeskOptions(Entity $entity)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ID = $entity->getField('id');
@@ -3246,6 +3256,10 @@ class Entity extends CommonTreeDropdown
      **/
     public static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $DB, $GLPI_CACHE;
 
         $id_using_strategy = [

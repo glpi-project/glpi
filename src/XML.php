@@ -112,6 +112,7 @@ class XML
      **/
     public function DoXML()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $fp = fopen($this->FilePath, 'wb');

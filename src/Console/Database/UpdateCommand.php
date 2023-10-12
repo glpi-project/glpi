@@ -121,6 +121,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
 
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance(); // Use dedicated "installer" cache
 
@@ -207,6 +208,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
         $this->askForConfirmation();
 
+        /** @var \Migration $migration */
         global $migration; // Migration scripts are using global `$migration`
         $migration = new Migration(GLPI_VERSION);
         $migration->setOutputHandler($output);
