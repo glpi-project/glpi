@@ -245,7 +245,7 @@ class RuleMatchedLog extends CommonDBTM
         echo __('Module');
 
         echo "</th>";
-        echo "<th>";
+        echo "<th colspan='5'>";
         echo __('Criteria');
 
         echo "</th>";
