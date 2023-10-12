@@ -269,10 +269,9 @@ final class Search
                     $new_condition = [];
                     foreach ($condition as $key => $value) {
                         if (is_array($value)) {
-                            $new_condition[$key] = $fn_update_keys($value);
-                        } else {
-                            $new_condition["{$join_alias}.{$key}"] = $value;
+                            $value = $fn_update_keys($value);
                         }
+                        $new_condition["{$join_alias}.{$key}"] = $value;
                     }
                     return $new_condition;
                 };
@@ -354,8 +353,22 @@ final class Search
             /** @var CommonDBTM $item */
             $item = new $itemtype();
             if ($item instanceof ExtraVisibilityCriteria) {
+                $main_table = $item::getTable();
                 $visibility_restrict = $item::getVisibilityCriteria();
+                $fn_update_keys = static function ($restrict) use (&$fn_update_keys, $main_table) {
+                    $new_restrict = [];
+                    foreach ($restrict as $key => $value) {
+                        $new_key = str_replace($main_table, '_', $key);
+                        if (is_array($value)) {
+                            $value = $fn_update_keys($value);
+                        }
+                        $new_restrict[$new_key] = $value;
+                    }
+                    return $new_restrict;
+                };
+                $visibility_restrict = $fn_update_keys($visibility_restrict);
                 $entity_restrict = $visibility_restrict['WHERE'] ?? [];
+
                 $join_types = ['LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'];
                 foreach ($join_types as $join_type) {
                     if (empty($visibility_restrict[$join_type])) {
