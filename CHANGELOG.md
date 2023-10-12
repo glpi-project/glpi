@@ -230,7 +230,6 @@ The present file will list all changes made to the project; according to the
 - `DisplayPreference::showFormGlobal` `target` parameter.
 - `DisplayPreference::showFormPerso` `target_id` parameter.
 
->>>>>>> 9f421e80d2 (migrate display pref config to twig)
 
 ## [10.0.10] unreleased
 
