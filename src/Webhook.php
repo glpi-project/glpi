@@ -1034,6 +1034,13 @@ class Webhook extends CommonDBTM implements FilterableInterface
             }
             $headers = array_merge($headers, $custom_headers);
 
+            $env = new \Twig\Environment(
+                new \Twig\Loader\ArrayLoader([
+                    'payload' => $webhook->fields['url']
+                ])
+            );
+            $webhook->fields['url'] = $env->render('payload', $api_data);
+
             $data = $webhook->fields;
             $data['items_id'] = $item->getID();
             $data['body'] = $body;
