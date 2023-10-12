@@ -352,7 +352,7 @@ class Session
         /** @var int $AJAX_INCLUDE */
         global $AJAX_INCLUDE;
 
-        if (isset($AJAX_INCLUDE) && ($url === null)) {
+        if ($AJAX_INCLUDE && ($url === null)) {
             return;
         }
         if (empty($title)) {

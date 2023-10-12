@@ -237,7 +237,7 @@ class Plugin extends CommonDBTM
         self::$activated_plugins = [];
         self::$loaded_plugins = [];
 
-        if (!isset($DB) || !$DB->connected) {
+        if (!($DB instanceof DBmysql) || !$DB->connected) {
             // Cannot init plugins list if DB is not connected
             self::$plugins_state_checked = true;
             return;
