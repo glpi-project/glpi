@@ -434,27 +434,7 @@ class Domain extends CommonDBTM
                  Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
             case 'remove_domain':
-                $compselected = $ma->getInput()['items']['Computer'];
-                $used = [];
-                //Display only the domain used by a computer
-                $domain_item = new Domain_Item();
-                $domain = new self();
-                foreach ($domain->find() as $key) {
-                    $used[] = $key['id'];
-                    foreach (
-                        $domain_item->find([
-                            'itemtype' => 'Computer',
-                            'items_id' => $compselected
-                        ]) as $domain_used
-                    ) {
-                        if (in_array($domain_used['domains_id'], $used)) {
-                            unset($used[array_search($domain_used['domains_id'], $used)]);
-                        }
-                    }
-                }
-                self::dropdownDomains([
-                    'used' => $used
-                ]);
+                self::dropdownDomains([]);
                 echo "&nbsp;" .
                  Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
@@ -517,6 +497,7 @@ class Domain extends CommonDBTM
                 return;
             case 'remove_domain':
                 $input = $ma->getInput();
+                $nolink = true;
                 foreach ($ids as $id) {
                     $domain_item = new Domain_Item();
                     foreach (
@@ -531,6 +512,10 @@ class Domain extends CommonDBTM
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                         }
+                        $nolink = false;
+                    }
+                    if ($nolink) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
