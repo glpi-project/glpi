@@ -65,12 +65,21 @@ $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
 Config::detectRootDoc();
 
-if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+if ($skip_db_check ?? false) {
+    $missing_db_config = false;
+} elseif (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+    $missing_db_config = true;
+} else {
+    include_once(GLPI_CONFIG_DIR . "/config_db.php");
+    $missing_db_config = !class_exists('DB', false);
+}
+
+if ($missing_db_config) {
     Session::loadLanguage('', false);
 
     // no translation
     $title_text        = 'GLPI seems to not be configured properly.';
-    $missing_conf_text = sprintf('Database configuration file "%s" is missing.', GLPI_CONFIG_DIR . '/config_db.php');
+    $missing_conf_text = sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php');
     $hint_text         = 'You have to either restart the install process, either restore this file.';
 
     if (!isCommandLine()) {
