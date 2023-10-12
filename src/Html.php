@@ -4378,7 +4378,7 @@ JAVASCRIPT
      *
      * @since 0.83.1
      *
-     * @return String
+     * @return string
      **/
     public static function makeTitle($string, $num, $tot)
     {
@@ -4513,7 +4513,7 @@ JAVASCRIPT
      *
      * @since 0.83.
      *
-     * @return String
+     * @return string
      **/
     public static function closeForm($display = true)
     {
@@ -4539,7 +4539,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function jsHide($id)
     {
@@ -4554,7 +4554,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function jsShow($id)
     {
@@ -4569,7 +4569,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function cleanId($id)
     {
@@ -4584,7 +4584,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function jsGetElementbyID($id)
     {
@@ -4630,7 +4630,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function jsAdaptDropdown($id, $params = [])
     {
@@ -4771,7 +4771,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function jsAjaxDropdown($name, $field_id, $url, $params = [])
     {
@@ -5342,7 +5342,7 @@ HTML;
      * @param array   $options Array of HTML attributes
      * @param boolean $minify  Try to load minified file (defaults to true)
      *
-     * @return String of script tags
+     * @return string Script tags
      **/
     public static function script($url, $options = [], $minify = true)
     {
