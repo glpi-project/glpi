@@ -759,6 +759,9 @@ final class Search
                 // Add the joined item fields
                 $join_name = substr($dehydrated_ref, 0, strrpos($dehydrated_ref, chr(0x1F)));
                 $join_name = str_replace(chr(0x1F), '.', $join_name);
+                if (!\Toolbox::hasElementByArrayPath($hydrated_record, $join_name)) {
+                    \Toolbox::setElementByArrayPath($hydrated_record, $join_name, []);
+                }
                 foreach ($needed_ids as $id) {
                     [$join_prop_path, $id] = $this->getItemRecordPath($join_name, $id, $hydrated_record);
                     if ($id === '' || $id === "\0") {
