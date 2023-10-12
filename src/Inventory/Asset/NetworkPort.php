@@ -43,7 +43,6 @@ use Glpi\Inventory\FilesToJSON;
 use NetworkPort as GlobalNetworkPort;
 use NetworkPortAggregate;
 use NetworkPortType;
-use QueryParam;
 use Rule;
 use RuleCriteria;
 use RuleImportAssetCollection;
@@ -665,7 +664,7 @@ class NetworkPort extends InventoryAsset
                     $input['name'] = $name;
                 }
             }
-            $items_id = $item->add(Sanitizer::sanitize($input));
+            $items_id = $item->add($input);
         }
 
         $rulesmatched = new \RuleMatchedLog();
