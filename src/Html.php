@@ -5342,7 +5342,7 @@ HTML;
      * @param array   $options Array of HTML attributes
      * @param boolean $minify  Try to load minified file (defaults to true)
      *
-     * @return string Script tags
+     * @return string
      **/
     public static function script($url, $options = [], $minify = true)
     {
