@@ -76,6 +76,7 @@ class Hooks
     const UNLOCK_FIELDS                 = 'unlock_fields';
     const UNDISCLOSED_CONFIG_VALUE      = 'undiscloseConfigValue';
     const FILTER_ACTORS                 = 'filter_actors';
+    const DEFAULT_DISPLAY_PREFS         = 'default_display_prefs';
 
    // Item hooks expecting an 'item' parameter
     const ADD_RECIPIENT_TO_TARGET   = 'add_recipient_to_target';

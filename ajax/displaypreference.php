@@ -33,25 +33,30 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
-}
+include('../inc/includes.php');
+Html::header_nocache();
 
-Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL,
-    DisplayPreference::GENERAL
-]);
+Session::checkLoginUser();
 
 $setupdisplay = new DisplayPreference();
 
-Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
-// Datas may come from GET or POST : use REQUEST
-if (isset($_REQUEST["itemtype"])) {
-    $setupdisplay->display([
-        'displaytype' => $_REQUEST['itemtype'],
-        'no_switch'   => $_REQUEST['no_switch'] ?? false,
-        'forced_tab'  => $_REQUEST['forcetab'] ?? null,
-        'in_modal'    => true,
-    ]);
+if (isset($_POST['users_id']) && (int) $_POST['users_id'] !== (int) Session::getLoginUserID()) {
+    Session::checkRight('search_config', DisplayPreference::GENERAL);
 }
 
-Html::popFooter();
+if (isset($_POST["activate"])) {
+    $setupdisplay->activatePerso($_POST);
+} else if (isset($_POST["disable"])) {
+    if ($_POST['users_id'] == Session::getLoginUserID()) {
+        $setupdisplay->deleteByCriteria(['users_id' => $_POST['users_id'],
+            'itemtype' => $_POST['itemtype']
+        ]);
+    }
+} else if (isset($_POST['action']) && $_POST['action'] === 'update_order') {
+    if (!isset($_POST['itemtype'], $_POST['users_id'], $_POST['opts'])) {
+        die(400);
+    }
+    $setupdisplay->updateOrder($_POST['itemtype'], $_POST['users_id'], $_POST['opts']);
+} else {
+    die(400);
+}

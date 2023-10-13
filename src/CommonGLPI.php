@@ -946,6 +946,10 @@ class CommonGLPI implements CommonGLPIInterface
             $tabs    = [];
 
             foreach ($onglets as $key => $val) {
+                if ($val === null) {
+                    // This is a placeholder tab
+                    continue;
+                }
                 $tabs[$key] = ['title'  => $val,
                     'url'    => $tabpage,
                     'params' => "_target=$target&amp;_itemtype=" . $this->getType() .

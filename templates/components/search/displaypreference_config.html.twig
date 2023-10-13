@@ -1,0 +1,233 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div id="tabsbody" class="m-n2 display_preference_config">
+    <input type="hidden" name="itemtype" value="{{ itemtype }}">
+    <input type="hidden" name="users_id" value="{{ users_id }}">
+    {% if not available_itemtype %}
+        <div class="alert alert-danger">
+            {{ __('These preferences cannot be edited at this time. The item type no longer exists or is provided by a plugin that is not enabled.') }}
+        </div>
+    {% else %}
+        {% if is_global %}
+            <div class="my-1 me-1">
+                <div class="alert alert-secondary">
+                    <i class="ti ti-info-circle"></i>
+                    <i>{{ __('These preferences are used by everyone that does not have a personal view configured.') }}</i>
+                </div>
+            </div>
+        {% endif %}
+        {% if not is_global and not has_personal %}
+            <div class="alert alert-warning mt-3">
+                {{ __('No personal criteria. Create personal parameters?') }}
+                <button type="button" class="btn btn-primary ms-3" name="activate" value="1">
+                    <i class="fas fa-plus"></i>
+                    <span>{{ __('Create') }}</span>
+                </button>
+            </div>
+        {% else %}
+            <div class="pt-3">
+                {% if available_to_add|length > 0 %}
+                    {% set add_opt_btn %}
+                        <button type="button" name="add_opt" class="btn btn-primary ms-1 d-inline-block">
+                            <i class="fas fa-plus"></i>
+                            <span>{{ _x('button', 'Add') }}</span>
+                        </button>
+                    {% endset %}
+                    {% set result_template_js %}
+                        {# Select2 js function for templateResult that hides options already added to the table where the value matches the data-opt-id attr on the rows #}
+                        (opt) => {
+                        if ($(`tr[data-opt-id="${opt.id}"]`).length > 0) {
+                        return null;
+                        }
+                        return opt.text;
+                        }
+                    {% endset %}
+
+                    <div class="d-flex justify-content-between mb-2">
+                        {{ fields.dropdownArrayField('num', null, available_to_add, '', {
+                            field_class: 'col-12 col-sm-6 d-flex',
+                            no_label: true,
+                            add_field_html: add_opt_btn,
+                            templateResult: result_template_js,
+                            mb: '',
+                        }) }}
+
+                        {% if not is_global %}
+                            <button type="button" class="btn btn-ghost-danger me-1" name="disable" value="1">{{ __('Delete personal view') }}</button>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <ul class="list-group">
+                {% for opt in entries|filter(v => v['fixed'] == true) %}
+                    <li data-opt-id="{{ opt['id'] }}" data-fixed="true" class="list-group-item py-2 disabled px-2">
+                        <i class="fa-fw d-inline-flex"></i>
+                        <span>{{ opt['name'] }}</span>
+                    </li>
+                {% endfor %}
+                {% for opt in entries|filter(v => v['fixed'] != true) %}
+                    {% set name_prefix = opt['group'] is not empty ? (opt['group']) : '' %}
+                    <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item py-2 d-flex px-2">
+                        <i class="ti ti-grip-vertical fa-fw"></i>
+                        <span class="flex-fill ms-1">{{ name_prefix ~ opt['name'] }}</span>
+                        <span>
+                            {% if opt['noremove'] is not defined or opt['noremove'] != true %}
+                                <button type="button" name="remove_opt" class="btn btn-icon btn-sm btn-ghost-danger" title="{{ _x('button', 'Delete permanently') }}">
+                                    <i class="ti ti-x"></i>
+                                </button>
+                            {% endif %}
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+</div>
+<script>
+    $(() => {
+        const config_forms = $(`#tabsbody.display_preference_config`);
+        // Select nothing by default because select2 has no problem defaulting the selection to the first item even if it is filtered out
+        config_forms.find(`select[name="num"]`).val('').trigger('change');
+        // Make sure the table rows are sortable only once
+        const sortables = `#tabsbody.display_preference_config ul.list-group`;
+        try {
+            sortable(sortables, 'destroy');
+        } catch (e) {}
+        sortable(sortables, {
+            acceptFrom: '#tabsbody.display_preference_config ul.list-group',
+            items: 'li:not([data-fixed])',
+        });
+
+        function updateOrder(element) {
+            const el = $(element);
+            const ul = el.is('ul') ? el : el.find('ul');
+
+            const opts = [];
+            ul.find('li[data-opt-id]:not([data-fixed])').each((i, el) => {
+                opts.push($(el).data('opt-id'));
+            });
+            // disable sorting temporarily
+            sortable(sortables, 'disable');
+            $.ajax({
+                url: "{{ path('/ajax/displaypreference.php') }}",
+                type: 'POST',
+                data: {
+                    'action': 'update_order',
+                    'itemtype': config_forms.find(`input[name="itemtype"]`).val(),
+                    'users_id': config_forms.find(`input[name="users_id"]`).val(),
+                    'opts': opts,
+                },
+            }).then(() => {
+                sortable(sortables, 'enable');
+            }, () => {
+                // Failure. Move item back to original position
+                const dragged = e.detail.item;
+                const original_index = e.detail.origin.elementIndex;
+                if (original_index === 0) {
+                    $(dragged).insertBefore(dragged.parent().find(`tr:eq(${original_index})`));
+                } else {
+                    $(dragged).insertAfter(dragged.parent().find(`tr:eq(${original_index})`));
+                }
+                sortable(sortables, 'enable');
+            });
+        }
+
+        $(sortables).off('sortupdate').on('sortupdate', (e) => {
+            updateOrder(e.target);
+        });
+        const submitForm = (specific_form, data) => {
+            data['itemtype'] = specific_form.find(`input[name="itemtype"]`).val();
+            data['users_id'] = specific_form.find(`input[name="users_id"]`).val();
+            // Disable all buttons since there can only be one action done at a time
+            config_forms.find(`button`).prop('disabled', true);
+            $.ajax({
+                url: "{{ path('/ajax/displaypreference.php') }}",
+                type: 'POST',
+                data: data,
+            }).then(() => {
+                // This script is inside an iframe, so this only reloads the iframe
+                window.location.reload();
+            }, () => {
+                // This script is inside an iframe, so this only reloads the iframe
+                window.location.reload();
+            });
+        };
+        config_forms.find(`button[name="activate"]`).on(`click`, (e) => {
+            submitForm($(e.target).closest('.display_preference_config'), {activate: 1});
+        });
+
+        config_forms.find(`button[name="disable"]`).on(`click`, (e) => {
+            submitForm($(e.target).closest('.display_preference_config'), {disable: 1});
+        });
+
+        config_forms.find(`button[name="add_opt"]`).on(`click`, (e) => {
+            const specific_form = $(e.target).closest('.display_preference_config');
+            const num_select = specific_form.find(`select[name="num"]`);
+            const num = num_select.val();
+            if (num === null) {
+                return;
+            }
+            // Label is the text of the selected option's optgroup + ' - ' + the text of the selected option
+            // unless it is in the first optgroup, then it is just the text of the selected option
+            const opt = num_select.find(`option[value="${num}"]`);
+            const label = opt.closest('optgroup').index() === 0 ? opt.text() : `${opt.closest('optgroup').attr('label')} - ${opt.text()}`;
+
+            const tbody = specific_form.find(`ul.list-group`);
+            tbody.append(`
+               <li data-opt-id="${num}" class="cursor-grab list-group-item d-flex justify-content-between">
+                  <span>${label}</span>
+                  <span>
+                        <button type="button" name="remove_opt" class="btn btn-icon btn-sm btn-ghost-danger" title="{{ _x('button', 'Delete permanently') }}">
+                           <i class="ti ti-x"></i>
+                        </button>
+                  </span>
+               </li>
+           `);
+            // Reset selection to first item. templateResult will automatically hide the item, but it doesn't remove it as the active selection.
+            // New selection will be blank. Doesn't seem to be a good way to reset the selection to the first item that isn't hidden by the result template.
+            num_select.val('').trigger('change');
+            updateOrder(specific_form);
+        });
+
+        config_forms.on(`click`, 'button[name="remove_opt"]', (e) => {
+            const tbody = $(e.target).closest('tbody');
+            $(e.target).closest('tr').remove();
+            // Trigger an update for the select to re-run the templateResult function
+            tbody.find(`select[name="num"]`).trigger('change');
+            updateOrder(tbody);
+        });
+    });
+</script>

@@ -93,6 +93,7 @@ class Config extends DbTestCase
             'Config$3'      => "<span><i class='ti ti-package me-2'></i>Assets</span>",
             'Config$4'      => "<span><i class='ti ti-headset me-2'></i>Assistance</span>",
             'Config$12'     => "<span><i class='ti ti-wallet me-2'></i>Management</span>",
+            'DisplayPreference$1' => "<span><i class='ti ti-columns-3 me-2'></i>Search result display</span>",
             'GLPINetwork$1' => "<span><i class='ti ti-headset me-2'></i>GLPI Network</span>",
             'Log$1'         => "<span><i class='ti ti-history me-2'></i>Historical</span>",
         ];
@@ -125,6 +126,7 @@ class Config extends DbTestCase
             'Config$7'      => "<span><i class='ti ti-dashboard me-2'></i>Performance</span>",
             'Config$8'      => "<span><i class='ti ti-api-app me-2'></i>API</span>",
             'Config$11'      => "<span><i class='ti ti-affiliate me-2'></i>Impact analysis</span>",
+            'DisplayPreference$1' => "<span><i class='ti ti-columns-3 me-2'></i>Search result display</span>",
             'GLPINetwork$1' => "<span><i class='ti ti-headset me-2'></i>GLPI Network</span>",
             'Log$1'         => "<span><i class='ti ti-history me-2'></i>Historical</span>",
         ];

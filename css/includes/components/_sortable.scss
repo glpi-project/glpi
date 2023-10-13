@@ -1,6 +1,4 @@
-<?php
-
-/**
+/*!
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,25 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
+.sortable-placeholder {
+    border: 2px dashed #dad55e;
+    background: #fff99038;
+    color: #777620;
+    height: 40px;
+    margin-top: 5px;
+
+    &.invalid-position {
+        border: 2px dashed #d3413c;
+        background: #ff7370;
+        color: #792220;
+    }
 }
-
-Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL,
-    DisplayPreference::GENERAL
-]);
-
-$setupdisplay = new DisplayPreference();
-
-Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
-// Datas may come from GET or POST : use REQUEST
-if (isset($_REQUEST["itemtype"])) {
-    $setupdisplay->display([
-        'displaytype' => $_REQUEST['itemtype'],
-        'no_switch'   => $_REQUEST['no_switch'] ?? false,
-        'forced_tab'  => $_REQUEST['forcetab'] ?? null,
-        'in_modal'    => true,
-    ]);
-}
-
-Html::popFooter();
