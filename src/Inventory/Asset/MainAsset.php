@@ -54,7 +54,6 @@ use RuleImportEntityCollection;
 use RuleLocationCollection;
 use RuleMatchedLog;
 use stdClass;
-use Toolbox;
 use Transfer;
 
 abstract class MainAsset extends InventoryAsset
