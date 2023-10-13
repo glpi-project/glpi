@@ -1224,7 +1224,7 @@ class RuleTicket extends RuleCommonITILObject
        //create action to add group as group requester
         $action_id = $ruleaction->add($action_input = [
             'rules_id'    => $ruletid,
-            'action_type' => 'assign',
+            'action_type' => 'replace',
             'field'       => '_groups_id_assign',
             'value'       => $group_id2,
         ]);

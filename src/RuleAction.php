@@ -442,6 +442,7 @@ class RuleAction extends CommonDBChild
 
         return ['assign'              => __('Assign'),
             'append'              => __('Add'),
+            'replace'              => __('Replace by'),
             'regex_result'        => __('Assign the value from regular expression'),
             'append_regex_result' => __('Add the result of regular expression'),
             'affectbyip'          => __('Assign: equipment by IP address'),
