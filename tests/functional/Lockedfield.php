@@ -377,8 +377,7 @@ class Lockedfield extends DbTestCase
         $this->boolean(
             $printer->update([
                 'id' => $printers_id,
-                'locations_id' => $locations_id,
-                'id_dynamic' => true
+                'locations_id' => $locations_id
             ])
         )->isTrue();
         $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => null]);
@@ -579,8 +578,7 @@ class Lockedfield extends DbTestCase
         $this->boolean(
             $printer->update([
                 'id' => $printers_id,
-                'locations_id' => $locations_id,
-                'id_dynamic' => true
+                'locations_id' => $locations_id
             ])
         )->isTrue();
         $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => null]);
@@ -692,8 +690,7 @@ class Lockedfield extends DbTestCase
         $this->boolean(
             $cos->update([
                 'id' => $cos->fields['id'],
-                'operatingsystemarchitectures_id' => $newarchs_id,
-                'id_dynamic' => true
+                'operatingsystemarchitectures_id' => $newarchs_id
             ])
         )->isTrue();
         $this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => null]);
@@ -705,8 +702,7 @@ class Lockedfield extends DbTestCase
         $this->boolean(
             $iav->update([
                 'id' => $iav->fields['id'],
-                'manufacturers_id' => $newmanufacturers_id,
-                'id_dynamic' => true
+                'manufacturers_id' => $newmanufacturers_id
             ])
         )->isTrue();
         $this->array($lockedfield->getLockedValues($iav->getType(), $iav->fields['id']))->isIdenticalTo(['manufacturers_id' => null]);
