@@ -41,10 +41,7 @@ include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
-if (isset($_POST["test_smtp_send"])) {
-    NotificationMailing::testNotification();
-    Html::back();
-} else if (isset($_POST["update"])) {
+if (isset($_POST["update"])) {
     $config = new Config();
     $config->update($_POST);
     Event::log(0, "system", 3, "setup", sprintf(

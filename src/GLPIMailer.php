@@ -70,10 +70,10 @@ class GLPIMailer
     private ?string $error;
 
     /**
-     * Header line to add on debug log.
+     * Debug log.
      * @var string|null
      */
-    private ?string $debug_header_line;
+    private ?string $debug;
 
     public function __construct(?TransportInterface $transport = null)
     {
@@ -181,18 +181,6 @@ class GLPIMailer
     }
 
     /**
-     * Define debug header line.
-     *
-     * @param string|null $debug_header_line
-     *
-     * @return void
-     */
-    public function setDebugHeaderLine(?string $debug_header_line): void
-    {
-        $this->debug_header_line = $debug_header_line;
-    }
-
-    /**
      * Send email.
      *
      * @return bool
@@ -208,28 +196,21 @@ class GLPIMailer
             $this->email->html($this->normalizeLineBreaks($html_body));
         }
 
-        $debug = null;
+        $this->debug = null;
         try {
             $this->error = null;
             $this->email->ensureValidity();
             $sent_message = $this->transport->send($this->email);
-            $debug = $sent_message->getDebug();
+            $this->debug = $sent_message->getDebug();
             return true;
         } catch (\Symfony\Component\Mailer\Exception\TransportExceptionInterface $e) {
             $this->error = $e->getMessage();
-            $debug = $e->getDebug();
+            $this->debug = $e->getDebug();
         } catch (\LogicException $e) {
             $this->error = $e->getMessage();
         } catch (\Throwable $e) {
             $this->error = $e->getMessage();
             ErrorHandler::getInstance()->handleException($e, true);
-        }
-
-        if ($debug !== null && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            Toolbox::logInFile(
-                'mail-debug',
-                ('# ' . ($this->debug_header_line ?? __('Sending email...')) . "\n") . $debug
-            );
         }
 
         if ($this->error !== null) {
@@ -247,6 +228,16 @@ class GLPIMailer
     public function getError(): ?string
     {
         return $this->error;
+    }
+
+    /**
+     * Get debug log.
+     *
+     * @return string|null
+     */
+    public function getDebug(): ?string
+    {
+        return $this->debug;
     }
 
     /**
