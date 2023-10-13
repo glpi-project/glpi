@@ -34,6 +34,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\Request;
 
 /**
@@ -300,64 +301,24 @@ class RuleMatchedLog extends CommonDBTM
 
         $rule = new RuleImportAsset();
 
-        echo "<table class='tab_cadre_fixe' cellpadding='1'>";
-
-        echo "<tr>";
-        echo "<th colspan='5'>";
-        echo __('Rule import logs');
-
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<th>";
-        echo _n('Date', 'Dates', 1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Rule name');
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Item type');
-
-        echo "</th>";
-        echo "<th>";
-        echo _n('Item', 'Items', 1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Module');
-
-        echo "</th>";
-        echo "</tr>";
-
         $allData = $this->find(['agents_id' => $agents_id], ['date DESC']);
+        $rows = [];
         foreach ($allData as $data) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td align='center'>";
-            echo Html::convDateTime($data['date']);
-            echo "</td>";
-            echo "<td align='center'>";
+            $row['date'] = Html::convDateTime($data['date']);
             if ($rule->getFromDB($data['rules_id'])) {
-                echo $rule->getLink(1);
+                $row['rulelink'] = $rule->getLink(1) ?? '';
             }
-            echo "</td>";
-            echo "<td align='center'>";
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
-            echo $item->getTypeName();
-            echo "</td>";
-            echo "<td align='center'>";
+            $row['itemtype'] = $item->getTypeName();
             if ($item->getFromDB($data['items_id'])) {
-                echo $item->getLink(1);
+                $row['itemlink'] = $item->getLink(1);
             }
-            echo "</td>";
-            echo "<td>";
-            echo Request::getModuleName($data['method']);
-            echo "</td>";
-            echo "</tr>";
+            $row['modulename'] = Request::getModuleName($data['method']);
+            $rows[] = $row;
         }
-        echo "</table>";
+        TemplateRenderer::getInstance()->display('components/form/rulematchedlogagent.html.twig', [
+            'allData' => $rows,
+        ]);
     }
 }
