@@ -355,9 +355,6 @@ JAVASCRIPT;
             'templateResult'    => $js,
             'templateSelection' => $js,
         ];
-        if (isset($options['rand'])) {
-            $p['rand'] = $options['rand'];
-        }
 
         $values = [static::INFO => _n('Information', 'Information', 1),
             static::TODO => __('To do'),
