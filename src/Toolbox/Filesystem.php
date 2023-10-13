@@ -62,4 +62,22 @@ class Filesystem
 
         return true;
     }
+
+    /**
+     * Checks if the files with given paths can be written.
+     *
+     * @param string[] $path
+     *
+     * @return bool
+     */
+    public static function canWriteFiles(array $paths): bool
+    {
+        foreach ($paths as $path) {
+            if (!self::canWriteFile($path)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

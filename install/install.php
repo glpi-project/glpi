@@ -133,17 +133,20 @@ function step0()
 //Step 1 checking some compatibility issue and some write tests.
 function step1($update)
 {
-    $config_write_failed  = !Filesystem::canWriteFile(GLPI_CONFIG_DIR . '/config_db.php');
-    $glpikey_write_failed = $update === 'yes' && (new GLPIKey())->keyExists()
-        ? false // no need to have write access on update if key already exists
-        : !Filesystem::canWriteFile(GLPI_CONFIG_DIR . '/glpicrypt.key');
+    $config_files_to_update = [
+        GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php',
+    ];
+    if ($update !== 'yes' || !(new GLPIKey())->keyExists()) {
+        $config_files_to_update[] = GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'glpicrypt.key';
+    }
+    $config_write_denied = !Filesystem::canWriteFiles($config_files_to_update);
     $requiremements      = (new RequirementsManager())->getCoreRequirementList();
 
     TemplateRenderer::getInstance()->display('install/step1.html.twig', [
-        'update'                => $update,
-        'config_write_failed'   => $config_write_failed,
-        'glpikey_write_failed'  => $glpikey_write_failed,
-        'requirements'          => $requiremements,
+        'update'                 => $update,
+        'config_write_denied'    => $config_write_denied,
+        'config_files_to_update' => $config_files_to_update,
+        'requirements'           => $requiremements,
     ]);
 }
 

@@ -31,7 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% if config_write_failed or glpikey_write_failed %}
+{% if config_write_denied %}
     <h3>{{ __("Checking write access to configuration files") }}</h3>
     <div class="alert alert-danger" role="alert">
         <div class="d-flex">
@@ -39,18 +39,11 @@
                 <i class="ti ti-alert-circle me-2"></i>
             </div>
             <div>
-                <h4 class="alert-title">{{ __('Unable to save configuration files') }}</h4>
+                <h4 class="alert-title">{{ __('Write access denied for configuration files') }}</h4>
                 <div class="text-secondary">
-                    {{ __('GLPI must be able to store data into configuration files.') }}<br />
-                    {% if config_write_failed %}
-                        {{ __('The `%s` file will be used to store the database configuration.')|format(constant('GLPI_CONFIG_DIR') ~ constant('DIRECTORY_SEPARATOR') ~ 'config_db.php') }}
-                        <br />
-                    {% endif %}
-                    {% if glpikey_write_failed %}
-                        {{ __('The `%s` file will be used to store the key used to encrypt sensitive data.')|format(constant('GLPI_CONFIG_DIR') ~ constant('DIRECTORY_SEPARATOR') ~ 'glpicrypt.key') }}
-                        <br />
-                    {% endif %}
-                    {{ __('Write access to these files can be removed once the GLPI installation is done.') }}
+                    {{ __('A temporary write access to the following files is required: %s.')|format('`' ~ config_files_to_update|join('`, `') ~ '`') }}
+                    <br />
+                    {{ __('Write access to these files can be removed once the operation is finished.') }}
                 </div>
             </div>
         </div>
@@ -90,7 +83,7 @@
    </form>
 {% endset %}
 
-{% if config_write_failed or glpikey_write_failed or requirements.hasMissingMandatoryRequirements() %}
+{% if config_write_denied or requirements.hasMissingMandatoryRequirements() %}
    <h3>{{ __('Do you want to continue?') }}</h3>
    <div class="text-center">
       {{ retry_form }}
