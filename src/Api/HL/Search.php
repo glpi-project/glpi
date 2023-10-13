@@ -793,7 +793,61 @@ final class Search
                 \Toolbox::setElementByArrayPath($hydrated_record, $normalized_k, $v);
             }
         }
+        $this->fixupAssembledRecord($hydrated_record);
         return $hydrated_record;
+    }
+
+    /**
+     * Fix-up the assembled result record to ensure it matches the expected schema.
+     *
+     * Steps taken include:
+     * - Removing the keys for array typed data. When assembling the record initially, the keys are the IDs of the joined records to allow for easy lookup.
+     * - Changing empty array values for object typed data to null. The value was initialized when assembling the record, but we don't know until the end of the process if any data was added to the object.
+     *   If we don't do this, these show as arrays when json encoded.
+     * @param array $record
+     * @return void
+     */
+    private function fixupAssembledRecord(array &$record): void
+    {
+        // Fix keys for array properties. Currently, the keys are probably the IDs of the joined records. They should be the index of the record in the array.
+        $array_joins = array_filter($this->joins, static function ($v) {
+            return isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_ARRAY;
+        }, ARRAY_FILTER_USE_BOTH);
+        foreach ($array_joins as $name => $join_def) {
+            // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
+            $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
+            $paths = \Toolbox::getArrayPaths($record, "/^{$pattern}$/");
+            foreach ($paths as $path) {
+                $join_prop = \Toolbox::getElementByArrayPath($record, $path);
+                if ($join_prop === null) {
+                    continue;
+                }
+                $join_prop = array_values($join_prop);
+                // Remove any empty values
+                $join_prop = array_filter($join_prop, static fn ($v) => !empty($v));
+                \Toolbox::setElementByArrayPath($record, $path, $join_prop);
+            }
+        }
+
+        // Fix empty array values for objects by replacing them with null
+        $obj_joins = array_filter($this->joins, static function ($v) {
+            return isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_OBJECT;
+        }, ARRAY_FILTER_USE_BOTH);
+        foreach ($obj_joins as $name => $join_def) {
+            // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
+            $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
+            $paths = \Toolbox::getArrayPaths($record, "/^{$pattern}$/");
+            foreach ($paths as $path) {
+                $join_prop = \Toolbox::getElementByArrayPath($record, $path);
+                if ($join_prop === null) {
+                    continue;
+                }
+                $join_prop = array_filter($join_prop, static fn ($v) => !empty($v));
+                if (empty($join_prop)) {
+                    \Toolbox::setElementByArrayPath($record, $path, null);
+                }
+            }
+        }
     }
 
     private function hydrateRecords(array $records): array

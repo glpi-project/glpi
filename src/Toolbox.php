@@ -3341,4 +3341,37 @@ HTML;
         }
         $current = $value;
     }
+
+    /**
+     * Get all paths of an array matching a regex pattern
+     * @param array $array The array to check
+     * @param string $regex The regex pattern to match against the full paths
+     * @param string $path_delimiter The delimiter used in the path
+     * @return array
+     */
+    public static function getArrayPaths(array $array, string $regex = '/.*/', string $path_delimiter = '.'): array
+    {
+        // Get all paths including intermediate paths
+        $paths = [];
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array), \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($iterator as $leafValue) {
+            $keys = [];
+            foreach (range(0, $iterator->getDepth()) as $depth) {
+                $keys[] = $iterator->getSubIterator($depth)->key();
+            }
+            // Implode keys to get all paths. For example, ['a', 'b', 'c'] will give ['a', 'a.b', 'a.b.c']
+            $temp = '';
+            foreach ($keys as $key) {
+                $temp .= $path_delimiter . $key;
+                $path = substr($temp, 1);
+                if (!empty($path) && preg_match($regex, $path) === 1) {
+                    $paths[] = $path;
+                }
+            }
+        }
+        $paths = array_unique($paths);
+
+        $t = '';
+        return $paths;
+    }
 }
