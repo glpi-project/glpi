@@ -5567,12 +5567,16 @@ class CommonDBTM extends CommonGLPI
                     $docadded[$docID]['tag'] = $doc->fields["tag"];
                 }
                 if (!$doc->checkAvailability($filename)) {
-                    $doc->update([
+                    $input2 = [
                         'id'                      => $docID,
                         '_only_if_upload_succeed' => 1,
                         '_filename'               => [$file],
                         'current_filepath'        => $filename,
-                    ]);
+                    ];
+                    if (isset($this->input[$prefixUploadName][$key])) {
+                        $input2[$prefixUploadName]  = [$this->input[$prefixUploadName][$key]];
+                    }
+                    $doc->update($input2);
                 }
             } else {
                 if ($this->getType() == 'Ticket') {
