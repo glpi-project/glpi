@@ -38,6 +38,7 @@ namespace Glpi\Console\Database;
 use DBConnection;
 use DBmysql;
 use Glpi\Cache\CacheManager;
+use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
@@ -47,7 +48,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Toolbox;
 
-class InstallCommand extends AbstractConfigureCommand
+class InstallCommand extends AbstractConfigureCommand implements ConfigurationCommandInterface
 {
     use TelemetryActivationTrait;
 
@@ -319,6 +320,17 @@ class InstallCommand extends AbstractConfigureCommand
         $this->handTelemetryActivation($input, $output);
 
         return 0; // Success
+    }
+
+    public function getConfigurationFilesToUpdate(InputInterface $input): array
+    {
+        $config_files_to_update = [
+            'glpicrypt.key', // key is regenerated everytime
+        ];
+        if (!$this->isDbAlreadyConfigured() || $input->hasParameterOption('--reconfigure', true)) {
+            $config_files_to_update[] = 'config_db.php';
+        }
+        return $config_files_to_update;
     }
 
     /**

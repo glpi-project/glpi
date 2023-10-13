@@ -37,6 +37,7 @@ namespace Glpi\Console\Cache;
 
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Command\ConfigurationCommandInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,7 +45,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @since 10.0.0
  */
-class SetNamespacePrefixCommand extends AbstractCommand
+class SetNamespacePrefixCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
     /**
      * Error code returned if cache configuration file cannot be write.
@@ -98,5 +99,10 @@ class SetNamespacePrefixCommand extends AbstractCommand
         );
 
         return 0; // Success
+    }
+
+    public function getConfigurationFilesToUpdate(InputInterface $input): array
+    {
+        return [$this->cache_manager::CONFIG_FILENAME];
     }
 }

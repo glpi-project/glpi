@@ -33,33 +33,51 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Console\Database;
+namespace Glpi\Toolbox;
 
-use Glpi\Console\Command\ConfigurationCommandInterface;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class ConfigureCommand extends AbstractConfigureCommand implements ConfigurationCommandInterface
+class Filesystem
 {
-    protected function configure()
+    /**
+     * Checks if the file with given path can be written.
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
+    public static function canWriteFile(string $path): bool
     {
+        if (file_exists($path)) {
+            return is_writable($path);
+        }
 
-        parent::configure();
+        // If the file does not exists, try to create it.
+        $file = @fopen($path, 'c');
+        if ($file === false) {
+            return false;
+        }
+        @fclose($file);
 
-        $this->setName('database:configure');
-        $this->setAliases(['db:configure']);
-        $this->setDescription('Define database configuration');
+        // Remove the file, as presence of an empty file may not be handled properly.
+        @unlink($path);
+
+        return true;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * Checks if the files with given paths can be written.
+     *
+     * @param string[] $path
+     *
+     * @return bool
+     */
+    public static function canWriteFiles(array $paths): bool
     {
-        $this->configureDatabase($input, $output);
+        foreach ($paths as $path) {
+            if (!self::canWriteFile($path)) {
+                return false;
+            }
+        }
 
-        return 0; // Success if configuration throw no EarlyExitException
-    }
-
-    public function getConfigurationFilesToUpdate(InputInterface $input): array
-    {
-        return ['config_db.php'];
+        return true;
     }
 }

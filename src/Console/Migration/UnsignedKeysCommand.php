@@ -37,11 +37,12 @@ namespace Glpi\Console\Migration;
 
 use DBConnection;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Command\ConfigurationCommandInterface;
 use Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class UnsignedKeysCommand extends AbstractCommand
+class UnsignedKeysCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
     /**
      * Error code returned when failed to migrate one column.
@@ -269,5 +270,14 @@ class UnsignedKeysCommand extends AbstractCommand
         }
 
         return 0; // Success
+    }
+
+    public function getConfigurationFilesToUpdate(InputInterface $input): array
+    {
+        $config_files_to_update = ['config_db.php'];
+        if (file_exists(GLPI_CONFIG_DIR . '/config_db_slave.php')) {
+            $config_files_to_update[] = 'config_db_slave.php';
+        }
+        return $config_files_to_update;
     }
 }
