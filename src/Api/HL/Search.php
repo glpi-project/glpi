@@ -709,22 +709,26 @@ final class Search
                 $new_path[] = array_shift($join_path_parts);
                 $current_path = implode('.', $new_path);
                 $next_id = array_shift($ids_path);
-                if (!empty($next_id) && preg_match('/\.\d+/', $current_path)) {
-                    $items = \Toolbox::getElementByArrayPath($hydrated_record, $current_path);
-                    // Remove numeric id parts from the path to get the join name
-                    $current_join = implode('.', array_filter(explode('.', $current_path), static fn ($p) => !is_numeric($p)));
-                    $primary_prop = $this->getPrimaryKeyPropertyForJoin($current_join);
-                    // We just need the last part of the property name (not the full path)
-                    $primary_prop = substr($primary_prop, strrpos($primary_prop, '.') + 1);
-                    if ($items !== null) {
-                        foreach ($items as $item_index => $item) {
-                            if (isset($item[$primary_prop])) {
-                                $next_id = $item_index;
+                // if current path points to an object, we don't need to add the ID to the path
+                $path_without_ids = implode('.', array_filter(explode('.', $current_path), static fn ($p) => !is_numeric($p)));
+                if (!isset($this->joins[$path_without_ids]['parent_type']) && $this->joins[$path_without_ids]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
+                    if (!empty($next_id) && preg_match('/\.\d+/', $current_path)) {
+                        $items = \Toolbox::getElementByArrayPath($hydrated_record, $current_path);
+                        // Remove numeric id parts from the path to get the join name
+                        $current_join = implode('.', array_filter(explode('.', $current_path), static fn($p) => !is_numeric($p)));
+                        $primary_prop = $this->getPrimaryKeyPropertyForJoin($current_join);
+                        // We just need the last part of the property name (not the full path)
+                        $primary_prop = substr($primary_prop, strrpos($primary_prop, '.') + 1);
+                        if ($items !== null) {
+                            foreach ($items as $item_index => $item) {
+                                if (isset($item[$primary_prop])) {
+                                    $next_id = $item_index;
+                                }
                             }
                         }
                     }
+                    $new_path[] = $next_id;
                 }
-                $new_path[] = $next_id;
             }
             $new_path = array_filter($new_path, static fn ($p) => !empty($p));
             $join_prop_path = implode('.', $new_path);
