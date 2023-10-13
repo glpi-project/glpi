@@ -421,6 +421,19 @@ class Domain extends CommonDBTM
 
         switch ($ma->getAction()) {
             case 'add_item':
+                Dropdown::show(
+                    'DomainRelation',
+                    [
+                        'name'   => "domainrelations_id",
+                        'value'  => DomainRelation::BELONGS,
+                        'display_emptychoice'   => false
+                    ]
+                );
+                self::dropdownDomains([]);
+                echo "&nbsp;" .
+                 Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                return true;
+            case 'remove_domain':
                 self::dropdownDomains([]);
                 echo "&nbsp;" .
                  Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
@@ -457,25 +470,55 @@ class Domain extends CommonDBTM
         $domain_item = new Domain_Item();
 
         switch ($ma->getAction()) {
-            case "add_item":
+            case 'add_item':
                 $input = $ma->getInput();
+                if (!isset($input['domains_id'])) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::NO_ACTION);
+                    return;
+                }
                 foreach ($ids as $id) {
                     $input = ['domains_id' => $input['domains_id'],
                         'items_id'                  => $id,
-                        'itemtype'                  => $item->getType()
+                        'itemtype'                  => $item->getType(),
+                        'domainrelations_id'        => $input['domainrelations_id']
                     ];
                     if ($domain_item->can(-1, UPDATE, $input)) {
-                        if ($domain_item->add($input)) {
-                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        if ($domain_item->getFromDBByCrit($input)) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
                         } else {
-                             $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                            if ($domain_item->add($input)) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            }
                         }
-                    } else {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                     }
                 }
                 return;
-
+            case 'remove_domain':
+                $input = $ma->getInput();
+                $nolink = true;
+                foreach ($ids as $id) {
+                    $domain_item = new Domain_Item();
+                    foreach (
+                        $domain_item->find([
+                            'domains_id' => $input['domains_id'],
+                            'items_id'   => $id,
+                            'itemtype'   => $item->getType()
+                        ]) as $data
+                    ) {
+                        if ($domain_item->delete($data, !$data['is_dynamic'])) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        }
+                        $nolink = false;
+                    }
+                    if ($nolink) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                    }
+                }
+                return;
             case 'install':
                 $input = $ma->getInput();
                 foreach ($ids as $key) {
