@@ -2611,7 +2611,8 @@ CREATE TABLE `glpi_documents_items` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
-  KEY `date` (`date`)
+  KEY `date` (`date`),
+  KEY `timeline_position` (`timeline_position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
