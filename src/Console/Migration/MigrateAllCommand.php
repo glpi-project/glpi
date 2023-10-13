@@ -36,11 +36,12 @@
 namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Command\ConfigurationCommandInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 
-class MigrateAllCommand extends AbstractCommand
+class MigrateAllCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
     protected function configure()
     {
@@ -85,5 +86,14 @@ class MigrateAllCommand extends AbstractCommand
         }
 
         return self::SUCCESS;
+    }
+
+    public function getConfigurationFilesToUpdate(InputInterface $input): array
+    {
+        $config_files_to_update = ['config_db.php'];
+        if (file_exists(GLPI_CONFIG_DIR . '/config_db_slave.php')) {
+            $config_files_to_update[] = 'config_db_slave.php';
+        }
+        return $config_files_to_update;
     }
 }
