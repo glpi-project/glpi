@@ -1255,7 +1255,7 @@ HTML;
         }
 
         if ($theme->isCustomTheme()) {
-            $theme_path = $theme->getKey() . '.scss?is_custom_theme=1';
+            $theme_path = $theme->getKey() . '?is_custom_theme=1';
 
             // Custom theme files might be modified by external source
             $theme_path .= "&lastupdate=" . filemtime($theme->getPath(false));

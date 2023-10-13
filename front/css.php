@@ -62,7 +62,7 @@ ErrorHandler::getInstance()->disableOutput();
 
 // If a custom theme is requested, we need to get the real path of the theme
 if (isset($_GET['file']) && isset($_GET['is_custom_theme']) && $_GET['is_custom_theme']) {
-    $theme = ThemeManager::getInstance()->getTheme(preg_replace('/\.scss$/', '', $_GET['file']));
+    $theme = ThemeManager::getInstance()->getTheme($_GET['file']);
 
     if (!$theme) {
         $theme = ThemeManager::DEFAULT_THEME;
