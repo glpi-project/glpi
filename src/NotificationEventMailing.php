@@ -408,14 +408,6 @@ class NotificationEventMailing extends NotificationEventAbstract
                 if (!empty($current->fields['messageid'])) {
                     $mail->getHeaders()->addHeader('Message-Id', $current->fields['messageid']);
                 }
-
-                $mmail->setDebugHeaderLine(
-                    sprintf(
-                        __('Sending email for notification %d (%s)...'),
-                        $current->fields['id'],
-                        $CFG_GLPI['url_base'] . $current->getFormURLWithID($current->fields['id'], false)
-                    )
-                );
             } catch (\Throwable $e) {
                 self::handleFailedSend($current, $e->getMessage());
             }

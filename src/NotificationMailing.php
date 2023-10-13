@@ -82,18 +82,22 @@ class NotificationMailing implements NotificationInterface
     }
 
 
-    public static function testNotification()
+    /**
+     * Sends a test email to the administrator.
+     *
+     * @return array An array containing success, error and debug information
+     */
+    public static function testNotification(): array
     {
         global $CFG_GLPI;
 
         $sender = Config::getEmailSender();
         if ($sender['email'] === null || !self::isUserAddressValid($sender['email'])) {
-            Session::addMessageAfterRedirect(
-                __('Sender email is not a valid email address.'),
-                false,
-                ERROR
-            );
-            return false;
+            return [
+                'success' => false,
+                'error'   => __('Sender email is not a valid email address.'),
+                'debug'   => null,
+            ];
         }
 
         $mmail = new GLPIMailer();
@@ -117,20 +121,13 @@ class NotificationMailing implements NotificationInterface
         $mail->subject("[GLPI] " . __('Mail test'));
         $mail->text($text);
 
-        $mmail->setDebugHeaderLine(__('Sending test email to administrator...'));
+        $success = $mmail->send();
 
-        if (!$mmail->send()) {
-            Session::addMessageAfterRedirect(
-                __('Failed to send test email to administrator'),
-                false,
-                ERROR
-            );
-            GLPINetwork::addErrorMessageAfterRedirect();
-            return false;
-        } else {
-            Session::addMessageAfterRedirect(__('Test email sent to administrator'));
-            return true;
-        }
+        return [
+            'success' => $success,
+            'error'   => $mmail->getError(),
+            'debug'   => $mmail->getDebug(),
+        ];
     }
 
 

@@ -356,9 +356,53 @@
                 <i class="ti ti-device-floppy"></i>
                 <span>{{ _x('button', 'Save') }}</span>
             </button>
-            <button class="btn btn-outline-secondary me-2" type="submit" name="test_smtp_send" value="1">
+            <button type="button" id="test-email-btn" class="btn btn-outline-secondary me-2" name="test_smtp_send" value="1">
                 {{ __('Send a test email to the administrator') }}
             </button>
+
+            <div class="modal fade" id="mailTestLogModal" tabindex="-1" role="dialog" aria-labelledby="mailTestLogModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="mailTestLogModalLabel">{{ __('Email sending test result') }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $('#test-email-btn').on('click', function () {
+                    const $modal = $('#mailTestLogModal');
+
+                    $.ajax({
+                        url: CFG_GLPI.root_doc + '/ajax/notificationmailingsettings.php',
+                        method: 'POST',
+                        data: {
+                            'test_smtp_send': 1
+                        }
+                    }).done(function (data) {
+                        const successText = data.success ? __('Success') : __('Error');
+                        const successClass = data.success ? 'bg-success' : 'bg-danger';
+                        const errorSection = data.error ? `<div><h4>${__('Error')}</h4><pre style="white-space: pre-wrap;">${data.error}</pre></div>` : '';
+                        const debugSection = data.debug ? `<div><h4>${__('Logs')}</h4><pre style="white-space: pre-wrap;">${data.debug}</pre></div>` : '';
+
+                        const modalBodyContent = `
+                            <div>
+                                <span class="badge mb-3 ${successClass}">${successText}</span>
+                            </div>
+                            ${errorSection}
+                            ${debugSection}
+                        `;
+
+                        $modal.find('.modal-body').html(modalBodyContent);
+                        $modal.modal('show');
+                    });
+                });
+            </script>
         </div>
     </form>
 {% else %}
