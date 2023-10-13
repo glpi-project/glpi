@@ -351,6 +351,15 @@ class Conf extends CommonGLPI
         echo "<table class='tab_cadre_fixe'>";
 
         echo "<tr>";
+        if ($config['enabled_inventory'] == false) {
+            echo "<div class='alert alert-info d-flex align-items-center' role='alert'>";
+            echo "<span class='ms-2'>";
+            echo "<i class='fas fa-info-circle'> </i> &nbsp;";
+            echo __("The inventory is disabled, remember to activate it if necessary");
+            echo "</span>";
+            echo "</div>";
+        }
+
 
         echo "<th>";
         echo "<label for='enabled_inventory'>";
