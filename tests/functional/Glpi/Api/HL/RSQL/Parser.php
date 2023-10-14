@@ -86,12 +86,8 @@ class Parser extends GLPITestCase
         ];
         $search_class = new \ReflectionClass(Search::class);
         $search = $search_class->newInstanceWithoutConstructor();
-        // The setAccessible lines can be dropped when PHP 8.1 is the min supported version
-        $search_class->getProperty('schema')->setAccessible(true);
         $search_class->getProperty('schema')->setValue($search, $schema);
-        $search_class->getProperty('flattened_properties')->setAccessible(true);
         $search_class->getProperty('flattened_properties')->setValue($search, Schema::flattenProperties($schema['properties']));
-        $search_class->getProperty('joins')->setAccessible(true);
         $search_class->getProperty('joins')->setValue($search, Schema::getJoins($schema['properties']));
         $parser = new \Glpi\Api\HL\RSQL\Parser($search);
         $this->string((string)$parser->parse($tokens))->isEqualTo($expected);
