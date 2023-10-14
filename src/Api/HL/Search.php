@@ -909,7 +909,11 @@ final class Search
                             $prop_field = $prop_params['x-field'] ?? $prop_name;
                             $mapped_from_other = isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field;
                             // We aren't handling joins or mapped fields here
-                            $is_join = str_contains($prop_name, '.');
+                            $prop_name = str_replace(chr(0x1F), '.', $prop_name);
+                            $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
+                            $is_join = count(array_filter($this->joins, static function ($j_name) use ($prop_parent) {
+                                return str_starts_with($prop_parent, $j_name);
+                            }, ARRAY_FILTER_USE_KEY)) > 0;
                             return !$is_join && !$mapped_from_other;
                         }, ARRAY_FILTER_USE_BOTH);
                         $criteria['FROM'] = "$table AS " . $DB::quoteName('_');
