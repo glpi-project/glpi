@@ -758,7 +758,12 @@ final class Search
             });
             if ($dehydrated_ref === 'id') {
                 // Add the main item fields
-                $hydrated_record = $fetched_records[$table][$needed_ids[0]];
+                $main_record = $fetched_records[$table][$needed_ids[0]];
+                $hydrated_record = [];
+                foreach ($main_record as $k => $v) {
+                    $k_path = str_replace(chr(0x1F), '.', $k);
+                    \Toolbox::setElementByArrayPath($hydrated_record, $k_path, $v);
+                }
             } else {
                 // Add the joined item fields
                 $join_name = substr($dehydrated_ref, 0, strrpos($dehydrated_ref, chr(0x1F)));
