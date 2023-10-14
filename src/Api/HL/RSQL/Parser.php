@@ -229,11 +229,14 @@ final class Parser
         // Loop through operators and set the keys to the operator property
         $operators = array_combine(array_column($operators, 'operator'), $operators);
 
+        $flat_props = $this->search->getFlattenedProperties();
+
         $buffer = [];
         while ($position < $token_count) {
             [$type, $value] = $tokens[$position];
             if ($type === Lexer::T_PROPERTY) {
                 $buffer = [
+                    'property' => $value,
                     'field' => $this->search->getSQLFieldForProperty($value),
                 ];
             } else if ($type === Lexer::T_OPERATOR) {
@@ -242,6 +245,13 @@ final class Parser
                 // Unquote value if it is quoted
                 if (preg_match('/^".*"$/', $value) || preg_match("/^'.*'$/", $value)) {
                     $value = substr($value, 1, -1);
+                }
+                if (isset($flat_props[$buffer['property']])) {
+                    $value = match ($flat_props[$buffer['property']]['type']) {
+                        // Boolean values are stored as 0 or 1 in the database, but the user may try using "true" or "false" in the RSQL query
+                        Doc\Schema::TYPE_BOOLEAN => filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
+                        default => $value,
+                    };
                 }
                 $criteria_array = $buffer['operator']($buffer['field'], $value);
                 $sql_string .= $it->analyseCrit($criteria_array);

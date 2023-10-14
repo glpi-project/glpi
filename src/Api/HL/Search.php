@@ -101,6 +101,11 @@ final class Search
         $this->rsql_parser = new Parser($this);
     }
 
+    public function getFlattenedProperties(): array
+    {
+        return $this->flattened_properties;
+    }
+
     /**
      * Check if a property is within a join or is itself a join in the case of scalar joined properties.
      * @param string $prop_name The property name
