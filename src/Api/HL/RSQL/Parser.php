@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL\RSQL;
 
 use Glpi\Api\HL\Doc;
+use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
@@ -44,15 +45,15 @@ use Glpi\DBAL\QueryFunction;
  */
 final class Parser
 {
-    private array $flattened_properties = [];
+    private Search $search;
 
     private \DBmysql $db;
 
-    public function __construct(array $schema)
+    public function __construct(Search $search)
     {
         /** @var \DBmysql $DB */
         global $DB;
-        $this->flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
+        $this->search = $search;
         $this->db = $DB;
     }
 
@@ -211,25 +212,6 @@ final class Parser
     }
 
     /**
-     * @param string $property
-     * @return string
-     * @throws RSQLException If the property is not valid.
-     */
-    private function getSQLFieldForProperty(string $property): string
-    {
-        $schema_field = $this->flattened_properties[$property] ?? null;
-        if ($schema_field === null) {
-            throw new RSQLException(sprintf(__('Invalid RSQL property: %s'), $property));
-        }
-        $sql_field = $schema_field['x-field'] ?? $property;
-
-        if (!str_contains($sql_field, '.')) {
-            $sql_field = '_.' . $sql_field;
-        }
-        return $sql_field;
-    }
-
-    /**
      * @param array $tokens Tokens from the RSQL lexer.
      * @return QueryExpression SQL criteria
      */
@@ -252,7 +234,7 @@ final class Parser
             [$type, $value] = $tokens[$position];
             if ($type === Lexer::T_PROPERTY) {
                 $buffer = [
-                    'field' => $this->getSQLFieldForProperty($value),
+                    'field' => $this->search->getSQLFieldForProperty($value),
                 ];
             } else if ($type === Lexer::T_OPERATOR) {
                 $buffer['operator'] = $operators[$value]['sql_where_callable'];

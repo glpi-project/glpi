@@ -98,21 +98,33 @@ final class Search
         $this->table_schemas = $this->getTables();
         $this->tables = array_keys($this->table_schemas);
         $this->union_search_mode = count($this->tables) > 1;
-        $this->rsql_parser = new Parser($this->schema);
+        $this->rsql_parser = new Parser($this);
     }
 
-    private function getSQLFieldForProperty(string $prop_name): string
+    /**
+     * Check if a property is within a join or is itself a join in the case of scalar joined properties.
+     * @param string $prop_name The property name
+     * @return bool
+     */
+    private function isJoinedProperty(string $prop_name): bool
+    {
+        $prop_name = str_replace(chr(0x1F), '.', $prop_name);
+        $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
+        return count(array_filter($this->joins, static function ($j_name) use ($prop_parent) {
+                return str_starts_with($prop_parent, $j_name);
+            }, ARRAY_FILTER_USE_KEY)) > 0;
+    }
+
+    public function getSQLFieldForProperty(string $prop_name): string
     {
         $prop = $this->flattened_properties[$prop_name];
         $is_scalar_join = false;
+        $is_join = $this->isJoinedProperty($prop_name);
         if (isset($this->joins[$prop_name])) {
             // Scalar property whose value exists in another table
-            $is_join = true;
             $is_scalar_join = true;
             $sql_field = $prop['x-field'];
         } else {
-            $potential_join_name = substr($prop_name, 0, strrpos($prop_name, '.'));
-            $is_join = $potential_join_name !== '' && array_key_exists($potential_join_name, $this->joins);
             $sql_field = $prop['x-field'] ?? $prop_name;
         }
 
