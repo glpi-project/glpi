@@ -1027,26 +1027,13 @@ final class Search
         foreach ($results as &$result) {
             // Handle mapped fields
             foreach ($mapped_props as $mapped_prop_name => $mapped_prop) {
-                $mapped_from_path = explode('.', $mapped_prop['x-mapped-from']);
-                $mapped_from = $result;
-                foreach ($mapped_from_path as $path_part) {
-                    if (isset($mapped_from[$path_part])) {
-                        $mapped_from = $mapped_from[$path_part];
-                    } else {
-                        $mapped_from = null;
-                        break;
-                    }
+                if (\Toolbox::hasElementByArrayPath($result, $mapped_prop['x-mapped-from'])) {
+                    \Toolbox::setElementByArrayPath(
+                        array: $result,
+                        path: $mapped_prop_name,
+                        value: $mapped_prop['x-mapper'](\Toolbox::getElementByArrayPath($result, $mapped_prop['x-mapped-from']))
+                    );
                 }
-                $mapped_to_path = explode('.', $mapped_prop_name);
-                // set the mapped value to the result of the x-mapper callable
-                $current = &$result;
-                foreach ($mapped_to_path as $path_part) {
-                    if (!isset($current[$path_part])) {
-                        $current[$path_part] = [];
-                    }
-                    $current = &$current[$path_part];
-                }
-                $current = $mapped_prop['x-mapper']($mapped_from);
             }
             $result = Doc\Schema::fromArray($schema)->castProperties($result);
         }
