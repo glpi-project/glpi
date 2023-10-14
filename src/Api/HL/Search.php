@@ -835,8 +835,8 @@ final class Search
         }
 
         // Fix empty array values for objects by replacing them with null
-        $obj_joins = array_filter($this->joins, static function ($v) {
-            return isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_OBJECT;
+        $obj_joins = array_filter($this->joins, function ($v, $k) {
+            return isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_OBJECT && !isset($this->flattened_properties[$k]);
         }, ARRAY_FILTER_USE_BOTH);
         foreach ($obj_joins as $name => $join_def) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
