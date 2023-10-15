@@ -45,7 +45,7 @@ class Parser extends GLPITestCase
     {
         return [
             [
-                [[5, 'id'], [6, '=='], [7, '20']],
+                [[5, 'id'], [6, '=='], [7, '20']], /** Tokens. First element is the token type. See T_* consts in {@link \Glpi\Api\HL\RSQL\Lexer} */
                 "(`_`.`id` = '20')"
             ],
             [
@@ -60,6 +60,26 @@ class Parser extends GLPITestCase
             [
                 [[5, 'name'], [6, '=='], [7, '(test']],
                 "(`_`.`name` = '(test')"
+            ],
+            [
+                [[5, 'scalar_join'], [6, '=='], [7, '1']],
+                "(`scalar_join`.`external_prop` = '1')" // While the property is 'scalar_join', that is also the join name. The field it points to is 'external_prop', so the resolved SQL is `scalar_join`.`external_prop`.
+            ],
+            [
+                [[5, 'scalar_join'], [6, '=='], [7, 'true']],
+                "(`scalar_join`.`external_prop` = '1')"
+            ],
+            [
+                [[5, 'scalar_join'], [6, '=='], [7, '0']],
+                "(`scalar_join`.`external_prop` = '0')"
+            ],
+            [
+                [[5, 'scalar_join'], [6, '=='], [7, 'false']],
+                "(`scalar_join`.`external_prop` = '0')"
+            ],
+            [
+                [[5, 'extra_fields.extra1'], [6, '=='], [7, 'test']],
+                "(`extra_fieldsextra1`.`extra1` = 'test')"
             ]
         ];
     }
@@ -80,6 +100,26 @@ class Parser extends GLPITestCase
                     'properties' => [
                         'id' => ['type' => 'integer'],
                         'name' => ['type' => 'string'],
+                    ]
+                ],
+                'scalar_join' => [
+                    'type' => 'boolean',
+                    'x-join' => [],
+                    'x-field' => 'external_prop'
+                ],
+                'extra_fields' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'extra1' => [
+                            'type' => 'string',
+                            'x-join' => [],
+                            'x-field' => 'extra1'
+                        ],
+                        'extra2' => [
+                            'type' => 'string',
+                            'x-join' => [],
+                            'x-field' => 'extra2'
+                        ]
                     ]
                 ]
             ]
