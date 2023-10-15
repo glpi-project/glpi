@@ -114,6 +114,9 @@ final class Search
     private function isJoinedProperty(string $prop_name): bool
     {
         $prop_name = str_replace(chr(0x1F), '.', $prop_name);
+        if (isset($this->joins[$prop_name])) {
+            return true;
+        }
         $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
         return count(array_filter($this->joins, static function ($j_name) use ($prop_parent) {
                 return str_starts_with($prop_parent, $j_name);
