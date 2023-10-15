@@ -123,7 +123,7 @@ final class AdministrationController extends AbstractController
                                 'table' => 'glpi_useremails',
                                 'fkey' => 'id',
                                 'field' => 'users_id',
-                                'x-primary-property' => 'id' // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
+                                'primary-property' => 'id' // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
                             ],
                             'properties' => [
                                 'id' => [

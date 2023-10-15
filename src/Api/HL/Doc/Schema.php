@@ -216,8 +216,8 @@ class Schema implements \ArrayAccess
             if ($prefix === '' || $parent_join === null) {
                 return $join;
             }
-            if (isset($join['ref_join']['fkey'])) {
-                $join['ref_join']['join_parent'] = $prefix;
+            if (isset($join['ref-join']['fkey'])) {
+                $join['ref-join']['join_parent'] = $prefix;
             } else if (isset($join['fkey'])) {
                 $join['join_parent'] = $prefix;
             }

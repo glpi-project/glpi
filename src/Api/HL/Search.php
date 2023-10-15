@@ -268,13 +268,13 @@ final class Search
                 $joins[$join_type] = [];
             }
             $join_table = $join['table'] . ' AS ' . $join_alias;
-            if (isset($join['ref_join'])) {
-                $join_parent = $join['ref_join']['join_parent'] ?? "{$join_alias}_ref";
+            if (isset($join['ref-join'])) {
+                $join_parent = $join['ref-join']['join_parent'] ?? "{$join_alias}_ref";
             } else {
                 $join_parent = $join['join_parent'] ?? '_';
             }
-            if (isset($join['ref_join'])) {
-                $fn_append_join("{$join_alias}_ref", $join['ref_join'], $join['parent_type'] ?? $parent_type);
+            if (isset($join['ref-join'])) {
+                $fn_append_join("{$join_alias}_ref", $join['ref-join'], $join['parent_type'] ?? $parent_type);
             }
             $joins[$join_type][$join_table] = [
                 'ON' => [
@@ -543,12 +543,12 @@ final class Search
             return $join;
         }
         $pkey_field = 'field';
-        $join_params = $this->joins[$join]['ref_join'] ?? $this->joins[$join];
-        if (isset($this->joins[$join]['ref_join'])) {
+        $join_params = $this->joins[$join]['ref-join'] ?? $this->joins[$join];
+        if (isset($this->joins[$join]['ref-join'])) {
             $pkey_field = 'fkey';
         }
-        if (isset($join_params['x-primary-property'])) {
-            $pkey_field = 'x-primary-property';
+        if (isset($join_params['primary-property'])) {
+            $pkey_field = 'primary-property';
         }
         $primary_key = $join_params[$pkey_field];
         $prop_matches = array_filter(

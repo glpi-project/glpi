@@ -121,7 +121,7 @@ final class AssetController extends AbstractController
                             'table' => \Printer::getTable(),
                             'fkey' => 'id',
                             'field' => \PrinterModel::getForeignKeyField(),
-                            'x-primary-property' => 'id' // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
+                            'primary-property' => 'id' // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
                         ],
                         'properties' => [
                             'id' => [
@@ -530,7 +530,7 @@ final class AssetController extends AbstractController
                             'table' => \PrinterModel::getTable(),
                             'fkey' => 'printermodels_id',
                             'field' => 'id',
-                            'ref_join' => [
+                            'ref-join' => [
                                 'table' => \CartridgeItem_PrinterModel::getTable(),
                                 'fkey' => 'id', // The ID field of the main table used to refer to the cartridgeitems_id of the joined table
                                 'field' => \CartridgeItem::getForeignKeyField(),
