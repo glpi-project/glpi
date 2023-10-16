@@ -110,30 +110,6 @@ final class AssetController extends AbstractController
                 'product_number' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'printers' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'description' => 'List of printers that use this model',
-                    'x-default-include' => false, // When fetching Printer Models, this property will not be included unless specifically requested (such as via GraphQL)
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'Printer',
-                        'x-join' => [
-                            'table' => \Printer::getTable(),
-                            'fkey' => 'id',
-                            'field' => \PrinterModel::getForeignKeyField(),
-                            'primary-property' => 'id' // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'x-readonly' => true,
-                            ],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'comment' => ['type' => Doc\Schema::TYPE_STRING]
-                        ]
-                    ]
-                ]
             ]
         ];
 

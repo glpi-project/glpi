@@ -88,8 +88,26 @@ final class Search
      * @var array Cache of table names for foreign keys.
      */
     private array $fkey_tables = [];
+    /**
+     * The context hint for the current search. Used to determine if a single result or a collection of results is expected.
+     * This is used in tandem with the 'x-default-contexts' value in property definitions to determine if a property should be included in the result.
+     * If 'x-default-contexts' is not defined, the property is included in all contexts.
+     * If 'x-default-contexts' differs than the current context, the property will not be included in the result unless it is explicitly requested (Possible with GraphQL).
+     * @var string
+     * @phpstan-var self::CONTEXT_*
+     */
+    private string $context;
 
-    private function __construct(array $schema, array $request_params)
+    /**
+     * Search context where a single result is fetched.
+     */
+    public const CONTEXT_SINGLE = 'single';
+    /**
+     * Search context where a collection of results is fetched.
+     */
+    public const CONTEXT_COLLECTION = 'collection';
+
+    private function __construct(array $schema, array $request_params, string $context)
     {
         $this->schema = $schema;
         $this->request_params = $request_params;
@@ -99,6 +117,7 @@ final class Search
         $this->tables = array_keys($this->table_schemas);
         $this->union_search_mode = count($this->tables) > 1;
         $this->rsql_parser = new Parser($this);
+        $this->context = $context;
     }
 
     public function getFlattenedProperties(): array
@@ -1029,14 +1048,14 @@ final class Search
      * @phpstan-return array{results: array, start: int, limit: int, total: int}
      * @throws RSQLException
      */
-    private static function getSearchResultsBySchema(array $schema, array $request_params): array
+    private static function getSearchResultsBySchema(array $schema, array $request_params, string $context): array
     {
         // Schema must be an object type
         if ($schema['type'] !== Doc\Schema::TYPE_OBJECT) {
             throw new \RuntimeException('Schema must be an object type');
         }
         // Initialize a new search
-        $search = new self($schema, $request_params);
+        $search = new self($schema, $request_params, $context);
         $ids = $search->getMatchingRecords();
         $results = $search->hydrateRecords($ids);
 
@@ -1107,7 +1126,7 @@ final class Search
             }
         }
         try {
-            $results = self::getSearchResultsBySchema($schema, $request_params);
+            $results = self::getSearchResultsBySchema($schema, $request_params, self::CONTEXT_COLLECTION);
         } catch (RSQLException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()), 400);
         }
@@ -1243,7 +1262,7 @@ final class Search
         $request_params['limit'] = 1;
         unset($request_params['start']);
         try {
-            $results = self::getSearchResultsBySchema($schema, $request_params);
+            $results = self::getSearchResultsBySchema($schema, $request_params, self::CONTEXT_SINGLE);
         } catch (RSQLException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()), 400);
         }
