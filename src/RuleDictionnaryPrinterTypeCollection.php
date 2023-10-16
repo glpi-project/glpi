@@ -43,6 +43,6 @@ class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollec
      **/
     public function getTitle()
     {
-        return __('Dictionnary of printer types');
+        return __('Dictionary of printer types');
     }
 }

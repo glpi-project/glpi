@@ -43,6 +43,6 @@ class RuleDictionnaryOperatingSystemEditionCollection extends RuleDictionnaryDro
      **/
     public function getTitle()
     {
-        return __('Dictionnary of operating system editions');
+        return __('Dictionary of operating system editions');
     }
 }

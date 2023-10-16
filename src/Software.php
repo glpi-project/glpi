@@ -871,7 +871,7 @@ class Software extends CommonDBTM
 
 
     /**
-     * Put software in trashbin because it's been removed by GLPI software dictionnary
+     * Put software in trashbin because it's been removed by GLPI software dictionary
      *
      * @param $ID        the ID of the software to put in trashbin
      * @param $comment   the comment to add to the already existing software's comment (default '')
@@ -895,7 +895,7 @@ class Software extends CommonDBTM
             $input["softwarecategories_id"] = $CFG_GLPI["softwarecategories_id_ondelete"];
         }
 
-       //Add dictionnary comment to the current comment
+       //Add dictionary comment to the current comment
         $input["comment"] = (($this->fields["comment"] != '') ? "\n" : '') . $comment;
 
         return $this->update($input);

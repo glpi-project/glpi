@@ -48,14 +48,14 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('rules:replay_dictionnary_rules');
-        $this->setDescription(__('Replay dictionnary rules on existing items'));
+        $this->setDescription(__('Replay dictionary rules on existing items'));
 
         $this->addOption(
             'dictionnary',
             'd',
             InputOption::VALUE_REQUIRED,
             sprintf(
-                __('Dictionnary to use. Possible values are: %s'),
+                __('Dictionary to use. Possible values are: %s'),
                 implode(', ', $this->getDictionnaryTypes())
             )
         );
@@ -65,7 +65,7 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
             'm',
             InputOption::VALUE_REQUIRED,
             __('If option is set, only items having given manufacturer ID will be processed.')
-            . "\n" . __('Currently only available for Software dictionnary.')
+            . "\n" . __('Currently only available for Software dictionary.')
         );
     }
 
@@ -73,11 +73,11 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
     {
 
         if (empty($input->getOption('dictionnary'))) {
-           // Ask for dictionnary argument is empty
+           // Ask for dictionary argument is empty
             /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $question = new ChoiceQuestion(
-                __('Which dictionnary do you want to replay?'),
+                __('Which dictionary do you want to replay?'),
                 $this->getDictionnaryTypes()
             );
             $answer = $question_helper->ask(
@@ -100,7 +100,7 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
             || !($rulecollection instanceof \RuleCollection)
         ) {
             throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
-                sprintf(__('Invalid "dictionnary" value.'))
+                sprintf(__('Invalid "dictionary" value.'))
             );
         }
 

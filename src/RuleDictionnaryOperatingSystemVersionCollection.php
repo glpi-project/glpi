@@ -43,6 +43,6 @@ class RuleDictionnaryOperatingSystemVersionCollection extends RuleDictionnaryDro
      **/
     public function getTitle()
     {
-        return __('Dictionnary of operating system versions');
+        return __('Dictionary of operating system versions');
     }
 }
