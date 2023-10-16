@@ -116,7 +116,7 @@ abstract class AbstractDatabaseChecker
     private function fetchTableColumns(string $table_name): void
     {
         if (!array_key_exists($table_name, $this->columns)) {
-            if (($columns_res = $this->db->query('SHOW COLUMNS FROM ' . $this->db->quoteName($table_name))) === false) {
+            if (($columns_res = $this->db->doQuery('SHOW COLUMNS FROM ' . $this->db->quoteName($table_name))) === false) {
                 throw new \Exception(sprintf('Unable to get table "%s" columns', $table_name));
             }
 
@@ -135,7 +135,7 @@ abstract class AbstractDatabaseChecker
     protected function getIndex(string $table_name): array
     {
         if (!array_key_exists($table_name, $this->indexes)) {
-            if (($keys_res = $this->db->query('SHOW INDEX FROM ' . $this->db->quoteName($table_name))) === false) {
+            if (($keys_res = $this->db->doQuery('SHOW INDEX FROM ' . $this->db->quoteName($table_name))) === false) {
                 throw new \Exception(sprintf('Unable to get table "%s" index', $table_name));
             }
 

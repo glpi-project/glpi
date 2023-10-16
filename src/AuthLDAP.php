@@ -700,6 +700,7 @@ class AuthLDAP extends CommonDBTM
      */
     public function showFormReplicatesConfig()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID     = $this->getField('id');
@@ -1529,6 +1530,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //Check if timestamp is well format, otherwise return ''
@@ -1678,6 +1680,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function displaySizeLimitWarning($limitexceeded = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($limitexceeded) {
@@ -2038,6 +2041,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function getAllUsers(array $options, &$results, &$limitexceeded)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -2433,6 +2437,7 @@ class AuthLDAP extends CommonDBTM
         &$limitexceeded,
         $order = 'DESC'
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -2587,6 +2592,7 @@ class AuthLDAP extends CommonDBTM
         $search_in_groups = true,
         $groups = []
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //First look for groups in group objects
@@ -2751,6 +2757,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function ldapChooseDirectory($target)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -2835,6 +2842,7 @@ class AuthLDAP extends CommonDBTM
         $ldap_server,
         $display = false
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $params      = Sanitizer::unsanitize($params);
@@ -3423,6 +3431,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //If no specific source is given, test all ldap directories
@@ -4179,6 +4188,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function getDefault()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         foreach ($DB->request('glpi_authldaps', ['is_default' => 1, 'is_active' => 1]) as $data) {
@@ -4189,6 +4199,7 @@ class AuthLDAP extends CommonDBTM
 
     public function post_updateItem($history = 1)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (in_array('is_default', $this->updates) && $this->input["is_default"] == 1) {
@@ -4202,6 +4213,7 @@ class AuthLDAP extends CommonDBTM
 
     public function post_addItem()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (isset($this->fields['is_default']) && $this->fields["is_default"] == 1) {
@@ -4306,6 +4318,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function getServersWithImportByEmailActive()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ldaps = [];
@@ -4477,6 +4490,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function getAllReplicateForAMaster($master_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $replicates = [];
@@ -4521,6 +4535,7 @@ class AuthLDAP extends CommonDBTM
      */
     public function getLdapExistingUser($name, $authldaps_id, $sync = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $user = new User();
 

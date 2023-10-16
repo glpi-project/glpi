@@ -37,11 +37,12 @@ namespace Glpi\Console\Migration;
 
 use DBConnection;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\System\Requirement\DbTimezones;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TimestampsCommand extends AbstractCommand
+class TimestampsCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
     /**
      * Error code returned when failed to migrate one table.
@@ -182,7 +183,7 @@ class TimestampsCommand extends AbstractCommand
                // apply alter to table
                 $query = "ALTER TABLE " . $this->db->quoteName($table) . " " . $tablealter . ";\n";
 
-                $result = $this->db->query($query);
+                $result = $this->db->doQuery($query);
                 if (false === $result) {
                     $message = sprintf(
                         __('Migration of table "%s" failed with message "(%s) %s".'),
@@ -237,5 +238,14 @@ class TimestampsCommand extends AbstractCommand
         }
 
         return 0; // Success
+    }
+
+    public function getConfigurationFilesToUpdate(InputInterface $input): array
+    {
+        $config_files_to_update = ['config_db.php'];
+        if (file_exists(GLPI_CONFIG_DIR . '/config_db_slave.php')) {
+            $config_files_to_update[] = 'config_db_slave.php';
+        }
+        return $config_files_to_update;
     }
 }

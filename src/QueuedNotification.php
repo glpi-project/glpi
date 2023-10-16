@@ -130,6 +130,7 @@ class QueuedNotification extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($input['create_time']) || empty($input['create_time'])) {
@@ -517,7 +518,11 @@ class QueuedNotification extends CommonDBTM
      */
     public static function getPendings($send_time = null, $limit = 20, $limit_modes = null, $extra_where = [])
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if ($send_time === null) {
             $send_time = date('Y-m-d H:i:s');
@@ -621,6 +626,7 @@ class QueuedNotification extends CommonDBTM
      **/
     public static function cronQueuedNotificationClean($task = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $vol = 0;

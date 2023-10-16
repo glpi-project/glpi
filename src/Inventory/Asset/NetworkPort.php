@@ -159,6 +159,7 @@ class NetworkPort extends InventoryAsset
      */
     private function prepareConnections(\stdClass $port)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $results = [];
@@ -403,6 +404,7 @@ class NetworkPort extends InventoryAsset
 
     private function handleVlans(\stdClass $port, int $netports_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!property_exists($port, 'logical_number')) {
@@ -738,6 +740,7 @@ class NetworkPort extends InventoryAsset
      */
     public function getNameForMac($mac)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $exploded = explode(':', $mac);

@@ -43,6 +43,6 @@ class RuleDictionnaryPhoneTypeCollection extends RuleDictionnaryDropdownCollecti
      **/
     public function getTitle()
     {
-        return __('Dictionnary of phone types');
+        return __('Dictionary of phone types');
     }
 }

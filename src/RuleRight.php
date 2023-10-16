@@ -390,6 +390,7 @@ class RuleRight extends Rule
 
     public function displayAdditionalRuleAction(array $action, $value = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         switch ($action['type']) {

@@ -68,7 +68,7 @@ if (!$DB->tableExists('glpi_devicecameras')) {
       KEY `date_mod` (`date_mod`),
       KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "10.0 add table glpi_devicecameras");
+    $DB->doQueryOrDie($query, "10.0 add table glpi_devicecameras");
 } else {
     $migration->dropKey('glpi_devicecameras', 'unicity');
     $migration->addKey('glpi_devicecameras', 'manufacturers_id', 'manufacturers_id');
@@ -84,7 +84,7 @@ if (!$DB->tableExists('glpi_devicecameramodels')) {
       KEY `name` (`name`),
       KEY `product_number` (`product_number`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "10.0 add table glpi_devicecameramodels");
+    $DB->doQueryOrDie($query, "10.0 add table glpi_devicecameramodels");
 }
 
 if (!$DB->tableExists('glpi_imageformats')) {
@@ -103,7 +103,7 @@ if (!$DB->tableExists('glpi_imageformats')) {
       KEY `is_recursive` (`is_recursive`),
       KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "10.0 add table glpi_imageformats");
+    $DB->doQueryOrDie($query, "10.0 add table glpi_imageformats");
 }
 
 if (!$DB->tableExists('glpi_imageresolutions')) {
@@ -124,7 +124,7 @@ if (!$DB->tableExists('glpi_imageresolutions')) {
       KEY `is_recursive` (`is_recursive`),
       KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "10.0 add table glpi_imageresolutions");
+    $DB->doQueryOrDie($query, "10.0 add table glpi_imageresolutions");
 }
 
 if (!$DB->tableExists('glpi_items_devicecameras')) {
@@ -146,7 +146,7 @@ if (!$DB->tableExists('glpi_items_devicecameras')) {
       KEY `is_recursive` (`is_recursive`),
       KEY `item` (`itemtype`,`items_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "10.0 add table glpi_items_devicecameras");
+    $DB->doQueryOrDie($query, "10.0 add table glpi_items_devicecameras");
 }
 
 if (!$DB->tableExists('glpi_items_devicecameras_imageformats')) {
@@ -160,7 +160,7 @@ if (!$DB->tableExists('glpi_items_devicecameras_imageformats')) {
       KEY `imageformats_id` (`imageformats_id`),
       KEY `is_dynamic` (`is_dynamic`)
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "10.0 add table glpi_items_devicecameras_imageformats");
+    $DB->doQueryOrDie($query, "10.0 add table glpi_items_devicecameras_imageformats");
 }
 
 if (!$DB->tableExists('glpi_items_devicecameras_imageresolutions')) {
@@ -174,5 +174,5 @@ if (!$DB->tableExists('glpi_items_devicecameras_imageresolutions')) {
       KEY `imageresolutions_id` (`imageresolutions_id`),
       KEY `is_dynamic` (`is_dynamic`)
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "10.0 add table glpi_items_devicecameras_imageresolutions");
+    $DB->doQueryOrDie($query, "10.0 add table glpi_items_devicecameras_imageresolutions");
 }

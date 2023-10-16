@@ -57,5 +57,5 @@ if (!$DB->tableExists('glpi_projecttasklinks')) {
        KEY `projecttasks_id_source` (`projecttasks_id_source`),
        KEY `projecttasks_id_target` (`projecttasks_id_target`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "Adding table glpi_projecttasklinks");
+    $DB->doQueryOrDie($query, "Adding table glpi_projecttasklinks");
 }

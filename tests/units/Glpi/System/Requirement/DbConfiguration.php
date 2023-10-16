@@ -247,7 +247,7 @@ class DbConfiguration extends \GLPITestCase
         $this->mockGenerator->orphanize('__construct');
         $db = new \mock\DB();
         $this->calling($db)->getVersion = $version;
-        $this->calling($db)->query = function ($query) use ($that, $variables) {
+        $this->calling($db)->doQuery = function ($query) use ($that, $variables) {
             $matches = [];
             if (preg_match_all('/@@GLOBAL\.`(?<name>[^`]+)`/', $query, $matches) > 0) {
                   $row = [];

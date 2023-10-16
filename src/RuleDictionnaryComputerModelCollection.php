@@ -35,9 +35,6 @@
 
 class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownCollection
 {
-   // From RuleCollection
-   //public $rule_class_name = 'RuleDictionnaryComputerModel';
-
     public $item_table  = "glpi_computermodels";
     public $menu_option = "model.computer";
 
@@ -46,6 +43,6 @@ class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownColl
      **/
     public function getTitle()
     {
-        return __('Dictionnary of computer models');
+        return __('Dictionary of computer models');
     }
 }

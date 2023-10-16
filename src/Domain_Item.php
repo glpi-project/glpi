@@ -169,6 +169,7 @@ class Domain_Item extends CommonDBRelation
      **/
     public static function showForDomain(Domain $domain)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $instID = $domain->fields['id'];
@@ -360,6 +361,7 @@ class Domain_Item extends CommonDBRelation
      */
     public static function showForItem(CommonDBTM $item, $withtemplate = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $item->getField('id');

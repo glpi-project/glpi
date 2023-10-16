@@ -217,6 +217,7 @@ class Log extends CommonDBTM
      **/
     public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = '0')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $date_mod = $_SESSION["glpi_currenttime"];
@@ -295,6 +296,7 @@ class Log extends CommonDBTM
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $itemtype = $item->getType();
@@ -779,6 +781,7 @@ class Log extends CommonDBTM
      **/
     public static function getDistinctUserNamesValuesInItemLog(CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $itemtype = $item->getType();
@@ -820,6 +823,7 @@ class Log extends CommonDBTM
      **/
     public static function getDistinctAffectedFieldValuesInItemLog(CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $itemtype = $item->getType();
@@ -993,6 +997,7 @@ class Log extends CommonDBTM
      **/
     public static function getDistinctLinkedActionValuesInItemLog(CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $itemtype = $item->getType();
@@ -1182,6 +1187,7 @@ class Log extends CommonDBTM
      **/
     public static function convertFiltersValuesToSqlCriteria(array $filters)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $sql_filters = [];
@@ -1278,6 +1284,7 @@ class Log extends CommonDBTM
 
     public static function handleQueue(): void
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $queue = static::$queue;

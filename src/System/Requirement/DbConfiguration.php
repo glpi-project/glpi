@@ -69,7 +69,7 @@ class DbConfiguration extends AbstractRequirement
             $query .= ', @@GLOBAL.' . $this->db->quoteName('innodb_large_prefix as innodb_large_prefix');
         }
 
-        if (($db_config_res = $this->db->query($query)) === false) {
+        if (($db_config_res = $this->db->doQuery($query)) === false) {
             $this->validated = false;
             $this->validation_messages[] = __('Unable to validate database configuration variables.');
         }

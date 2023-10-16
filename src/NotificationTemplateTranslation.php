@@ -72,6 +72,7 @@ class NotificationTemplateTranslation extends CommonDBChild
 
     protected function computeFriendlyName()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->getField('language') != '') {
@@ -97,6 +98,7 @@ class NotificationTemplateTranslation extends CommonDBChild
 
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Config::canUpdate()) {
@@ -188,7 +190,11 @@ class NotificationTemplateTranslation extends CommonDBChild
      **/
     public function showSummary(NotificationTemplate $template, $options = [])
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $nID     = $template->getField('id');
         $canedit = Config::canUpdate();

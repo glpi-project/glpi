@@ -43,6 +43,6 @@ class RuleDictionnaryPeripheralTypeCollection extends RuleDictionnaryDropdownCol
      **/
     public function getTitle()
     {
-        return __('Dictionnary of device types');
+        return __('Dictionary of device types');
     }
 }

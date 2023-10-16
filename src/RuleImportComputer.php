@@ -260,6 +260,10 @@ class RuleImportComputer extends Rule
      **/
     public function findWithGlobalCriteria($input)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var array $PLUGIN_HOOKS
+         */
         global $DB, $PLUGIN_HOOKS;
 
         $complex_criterias = [];

@@ -108,6 +108,7 @@ class TemplateManager
                 ]
             );
         } catch (\Twig\Error\Error $e) {
+            /** @var \GLPI $GLPI */
             global $GLPI;
             $GLPI->getErrorHandler()->handleException($e);
             return null;

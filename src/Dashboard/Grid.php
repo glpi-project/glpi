@@ -234,6 +234,7 @@ HTML;
      */
     public function show(bool $mini = false, ?string $token = null)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $rand = mt_rand();
@@ -783,6 +784,7 @@ HTML;
      */
     public function displayEmbedForm()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $entities_id  = $_SESSION['glpiactive_entity'];
@@ -880,6 +882,7 @@ HTML;
      */
     public function getCardHtml(string $card_id = "", array $card_options = []): string
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $gridstack_id = $card_options['args']['gridstack_id'] ?? $card_id;
@@ -976,6 +979,7 @@ HTML;
             $html = $render_error_html;
             $execution_time = round(microtime(true) - $start, 3);
             // Log the error message without exiting
+            /** @var \GLPI $GLPI */
             global $GLPI;
             $GLPI->getErrorHandler()->handleException($e, true);
         }
@@ -1098,6 +1102,10 @@ HTML;
      */
     public function getAllDasboardCards($force = false): array
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $CFG_GLPI, $GLPI_CACHE;
 
         $cards = $GLPI_CACHE->get(self::getAllDashboardCardsCacheKey());
@@ -1408,6 +1416,7 @@ HTML;
      */
     public function restoreLastDashboard(): string
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $new_key = "";
         $target = Toolbox::cleanTarget($_REQUEST['_target'] ?? $_SERVER['REQUEST_URI'] ?? "");
@@ -1443,6 +1452,7 @@ HTML;
      */
     public static function getDefaultDashboardForMenu(string $menu = "", bool $strict = false): string
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $grid = new self();
@@ -1458,6 +1468,11 @@ HTML;
         $config_key = 'default_dashboard_' . $menu;
         $default    = $_SESSION["glpi$config_key"] ?? "";
         if (strlen($default)) {
+            // If default is "disabled", return empty string and skip default value from config
+            if ($default == 'disabled') {
+                return "";
+            }
+
             $dasboard = new Dashboard($default);
 
             if ($dasboard->load() && $dasboard->canViewCurrent()) {
@@ -1488,7 +1503,7 @@ HTML;
     }
 
 
-    public static function dropdownDashboard(string $name = "", array $params = []): string
+    public static function dropdownDashboard(string $name = "", array $params = [], bool $disabled_option = false): string
     {
         $to_show = Dashboard::getAll(false, true, $params['context'] ?? 'core');
         $can_view_all = $params['can_view_all'] ?? false;
@@ -1498,6 +1513,10 @@ HTML;
             if (self::canViewSpecificicDashboard($key, $can_view_all)) {
                 $options_dashboards[$key] = $dashboard['name'] ?? $key;
             }
+        }
+
+        if ($disabled_option) {
+            $options_dashboards = ['disabled' => __('Disabled')] + $options_dashboards;
         }
 
         return Dropdown::showFromArray($name, $options_dashboards, $params);

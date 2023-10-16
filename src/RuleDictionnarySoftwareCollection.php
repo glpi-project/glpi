@@ -50,7 +50,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     public function getTitle()
     {
        //TRANS: software in plural
-        return __('Dictionnary of software');
+        return __('Dictionary of software');
     }
 
 
@@ -75,6 +75,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
      **/
     public function warningBeforeReplayRulesOnExistingDB($target)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         echo "<form name='testrule_form' id='softdictionnary_confirmation' method='post' action=\"" .
@@ -109,6 +110,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
 
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (isCommandLine()) {
@@ -171,12 +173,12 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                     }
                 }
 
-               //If manufacturer is set, then first run the manufacturer's dictionnary
+               //If manufacturer is set, then first run the manufacturer's dictionary
                 if (isset($input["manufacturer"])) {
                     $input["manufacturer"] = Manufacturer::processName($input["manufacturer"]);
                 }
 
-               //Replay software dictionnary rules
+               //Replay software dictionary rules
                 $res_rule = $this->processAllRules($input, [], []);
 
                 if (
@@ -207,7 +209,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                         foreach ($same_iterator as $result) {
                             $IDs[] = $result["id"];
                         }
-                        //Replay dictionnary on all the software
+                        //Replay dictionary on all the software
                         $this->replayDictionnaryOnSoftwaresByID($IDs, $res_rule);
                     }
                 }
@@ -248,6 +250,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
      **/
     public function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $new_softs  = [];
@@ -299,7 +302,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
 
 
     /**
-     * Replay dictionnary on one software
+     * Replay dictionary on one software
      *
      * @param &$new_softs      array containing new software already computed
      * @param $res_rule        array of rule results
@@ -318,6 +321,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         $manufacturer,
         array &$soft_ids
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $input["name"]         = $name;
@@ -431,6 +435,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
      **/
     public function putOldSoftsInTrash(array $soft_ids)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (count($soft_ids) > 0) {
@@ -479,6 +484,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
      */
     public function moveVersions($ID, $new_software_id, $version_id, $old_version, $new_version, $entity)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $new_versionID = $this->versionExists($new_software_id, $new_version);
@@ -579,6 +585,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
      **/
     public function moveLicenses($old_software_id, $new_software_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Return false if one of the 2 software doesn't exists
@@ -613,6 +620,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
      **/
     public function versionExists($software_id, $version)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Check if the version exists

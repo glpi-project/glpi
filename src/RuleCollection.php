@@ -48,7 +48,7 @@ class RuleCollection extends CommonDBTM
     public $orderby                               = "ranking";
    /// Processing several rules : use result of the previous one to computer the current one
     public $use_output_rule_process_as_next_input = false;
-   /// Rule collection can be replay (for dictionnary)
+   /// Rule collection can be replay (for dictionary)
     public $can_replay_rules                      = false;
    /// List of rules of the rule collection
     public $RuleList                              = null;
@@ -106,6 +106,7 @@ class RuleCollection extends CommonDBTM
         $condition = 0,
         $children = 0
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $restrict = $this->getRuleListCriteria([
@@ -216,6 +217,7 @@ class RuleCollection extends CommonDBTM
      **/
     public function getCollectionPart($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $p['start']     = 0;
@@ -260,6 +262,7 @@ class RuleCollection extends CommonDBTM
      **/
     public function getCollectionDatas($retrieve_criteria = 0, $retrieve_action = 0, $condition = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($this->RuleList === null) {
@@ -459,6 +462,7 @@ class RuleCollection extends CommonDBTM
      **/
     public function showListRules($target, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p['inherited'] = 1;
@@ -723,6 +727,7 @@ JAVASCRIPT;
      **/
     public function changeRuleOrder($ID, $action, $condition = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -846,6 +851,7 @@ JAVASCRIPT;
      **/
     public function deleteRuleOrder($ranking)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->update(
@@ -873,6 +879,7 @@ JAVASCRIPT;
      **/
     public function moveRule($ID, $ref_ID, $type = self::MOVE_AFTER)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ruleDescription = new Rule();
@@ -965,6 +972,7 @@ JAVASCRIPT;
      **/
     public static function titleBackup()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $base_url = "{$CFG_GLPI["root_doc"]}/front/rule.backup.php";
@@ -1168,6 +1176,7 @@ JAVASCRIPT;
      **/
     public static function previewImportRules()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($_FILES["xml_file"]) || ($_FILES["xml_file"]["size"] == 0)) {
@@ -1461,6 +1470,7 @@ JAVASCRIPT;
      **/
     public static function processImportRules()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $ruleCriteria = new RuleCriteria();
         $ruleAction   = new RuleAction();
@@ -1804,6 +1814,7 @@ JAVASCRIPT;
      **/
     public function prepareInputDataForProcessWithPlugins($input, $params)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $input = $this->prepareInputDataForProcess($input, $params);
@@ -1843,6 +1854,7 @@ JAVASCRIPT;
      **/
     public function prepareInputDataForTestProcess($condition = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $limit = [];
@@ -1997,6 +2009,7 @@ JAVASCRIPT;
      **/
     public function preProcessPreviewResults($output)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (isset($PLUGIN_HOOKS['use_rules'])) {
@@ -2039,13 +2052,14 @@ JAVASCRIPT;
      * Get rulecollection classname by giving his itemtype
      *
      * @param $itemtype                 itemtype
-     * @param $check_dictionnary_type   check if the itemtype is a dictionnary or not
+     * @param $check_dictionnary_type   check if the itemtype is a dictionary or not
      *                                  (false by default)
      *
      * @return RuleCollection|null
      */
     public static function getClassByType($itemtype, $check_dictionnary_type = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($plug = isPluginItemType($itemtype)) {
@@ -2087,6 +2101,7 @@ JAVASCRIPT;
      **/
     public function getFieldsToLookFor()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $params = [];
@@ -2226,6 +2241,7 @@ JAVASCRIPT;
      */
     public static function getRules(): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rules = [];

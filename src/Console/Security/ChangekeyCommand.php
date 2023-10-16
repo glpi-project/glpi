@@ -36,11 +36,12 @@
 namespace Glpi\Console\Security;
 
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Command\ConfigurationCommandInterface;
 use GLPIKey;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ChangekeyCommand extends AbstractCommand
+class ChangekeyCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
     /**
      * Error code returned when unable to renew key.
@@ -92,5 +93,10 @@ class ChangekeyCommand extends AbstractCommand
         $output->writeln('<info>' . __('New security key generated; database updated.') . '</info>');
 
         return 0; // Success
+    }
+
+    public function getConfigurationFilesToUpdate(InputInterface $input): array
+    {
+        return ['glpicrypt.key'];
     }
 }

@@ -35,9 +35,6 @@
 
 class RuleDictionnaryMonitorTypeCollection extends RuleDictionnaryDropdownCollection
 {
-   // From RuleCollection
-   //public $rule_class_name = 'RuleDictionnaryMonitorType';
-
     public $item_table  = "glpi_monitortypes";
     public $menu_option = "type.monitor";
 
@@ -46,6 +43,6 @@ class RuleDictionnaryMonitorTypeCollection extends RuleDictionnaryDropdownCollec
      **/
     public function getTitle()
     {
-        return __('Dictionnary of monitor types');
+        return __('Dictionary of monitor types');
     }
 }

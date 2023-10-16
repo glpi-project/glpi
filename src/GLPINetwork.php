@@ -170,6 +170,7 @@ class GLPINetwork extends CommonGLPI
      */
     public static function getRegistrationKey(): string
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return (new GLPIKey())->decrypt($CFG_GLPI['glpinetwork_registration_key'] ?? '');
     }
@@ -187,6 +188,7 @@ class GLPINetwork extends CommonGLPI
      */
     public static function getRegistrationInformations(bool $force_refresh = false)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $registration_key = self::getRegistrationKey();
@@ -323,6 +325,7 @@ class GLPINetwork extends CommonGLPI
 
     public static function getOffers(bool $force_refresh = false): array
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);

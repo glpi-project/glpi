@@ -77,6 +77,7 @@ class UploadHandler
 
     public function __construct($options = null, $initialize = false, $error_messages = null)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->options = array(

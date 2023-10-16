@@ -63,6 +63,7 @@ class Event extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($input['level']) && ($input['level'] <= $CFG_GLPI["event_loglevel"])) {
@@ -104,6 +105,7 @@ class Event extends CommonDBTM
      **/
     public static function log($items_id, $type, $level, $service, $event)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $input = ['items_id' => intval($items_id),
@@ -127,6 +129,7 @@ class Event extends CommonDBTM
      **/
     public static function cleanOld($day)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $secs = $day * DAY_TIMESTAMP;
@@ -188,6 +191,7 @@ class Event extends CommonDBTM
      **/
     public static function displayItemLogID($type, $items_id)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // If ID less than or equal to 0 (or Entity with ID less than 0 since Root Entity is 0)
@@ -246,7 +250,11 @@ class Event extends CommonDBTM
      **/
     public static function showForUser(string $user = "", bool $display = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
        // Show events from $result in table form
         list($logItemtype, $logService) = self::logArray();

@@ -143,6 +143,7 @@ class KnowbaseItemTranslation extends CommonDBChild
      **/
     public function showFull($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$this->can($this->fields['id'], READ)) {
@@ -185,6 +186,7 @@ class KnowbaseItemTranslation extends CommonDBChild
      **/
     public static function showTranslations(KnowbaseItem $item)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $canedit = $item->can($item->getID(), UPDATE);
@@ -370,6 +372,7 @@ class KnowbaseItemTranslation extends CommonDBChild
      **/
     public static function isKbTranslationActive()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI['translate_kb'];
@@ -419,6 +422,7 @@ class KnowbaseItemTranslation extends CommonDBChild
      **/
     public static function getAlreadyTranslatedForItem($item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];

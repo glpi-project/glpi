@@ -39,6 +39,7 @@ use Glpi\System\Requirement\DbConfiguration;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\RequirementsManager;
+use Glpi\Toolbox\Filesystem;
 
 define('GLPI_ROOT', realpath('..'));
 
@@ -132,11 +133,20 @@ function step0()
 //Step 1 checking some compatibility issue and some write tests.
 function step1($update)
 {
-    $requiremements = (new RequirementsManager())->getCoreRequirementList();
+    $config_files_to_update = [
+        GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php',
+    ];
+    if ($update !== 'yes' || !(new GLPIKey())->keyExists()) {
+        $config_files_to_update[] = GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'glpicrypt.key';
+    }
+    $config_write_denied = !Filesystem::canWriteFiles($config_files_to_update);
+    $requiremements      = (new RequirementsManager())->getCoreRequirementList();
 
     TemplateRenderer::getInstance()->display('install/step1.html.twig', [
-        'update'       => $update,
-        'requirements' => $requiremements,
+        'update'                 => $update,
+        'config_write_denied'    => $config_write_denied,
+        'config_files_to_update' => $config_files_to_update,
+        'requirements'           => $requiremements,
     ]);
 }
 
@@ -519,10 +529,17 @@ function checkConfigFile()
 {
     global $CFG_GLPI;
 
-    if (file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-        Html::redirect($CFG_GLPI['root_doc'] . "/index.php");
-        die();
+    if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+        return;
     }
+
+    include_once(GLPI_CONFIG_DIR . "/config_db.php");
+    if (!class_exists('DB', false)) {
+        return; // config file exists, but does not contains the `DB` config class
+    }
+
+    Html::redirect($CFG_GLPI['root_doc'] . "/index.php");
+    die();
 }
 
 if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {

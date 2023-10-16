@@ -273,6 +273,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function showForEntity(Entity $entity)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $entity->getField('id');
@@ -464,6 +465,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function showForProfile(Profile $prof)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID      = $prof->fields['id'];
@@ -655,6 +657,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getUserEntities($user_ID, $is_recursive = true, $default_first = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -708,6 +711,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getUserEntitiesForRight($user_ID, $rightname, $rights, $is_recursive = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $putable = Profile_User::getTable();
@@ -772,6 +776,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getUserProfiles($user_ID, $sqlfilter = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $profiles = [];
@@ -808,6 +813,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getEntitiesForProfileByUser($users_id, $profiles_id, $child = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -849,6 +855,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getEntitiesForUser($users_id, $child = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -900,6 +907,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function haveUniqueRight($user_ID, $profile_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -1031,6 +1039,7 @@ class Profile_User extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!$withtemplate) {

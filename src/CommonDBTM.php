@@ -115,7 +115,7 @@ class CommonDBTM extends CommonGLPI
     protected static $notable = false;
 
     /**
-     * List of fields that must not be taken into account for dictionnary processing.
+     * List of fields that must not be taken into account for dictionary processing.
      *
      * @var string[]
      */
@@ -291,6 +291,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getFromDB($ID)
     {
+        /** @var \DBmysql $DB */
         global $DB;
        // Make new database object and fill variables
 
@@ -376,6 +377,7 @@ class CommonDBTM extends CommonGLPI
      */
     public function getFromDBByCrit(array $crit)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $crit = ['SELECT' => 'id',
@@ -415,6 +417,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getFromDBByRequest(array $request)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Limit the request to the useful expressions
@@ -553,6 +556,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function find($condition = [], $order = [], $limit = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -602,6 +606,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getEmpty()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //make an empty database object
@@ -666,6 +671,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function updateInDB($updates, $oldvalues = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tobeupdated = [];
@@ -706,6 +712,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function addToDB()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $nb_fields = count($this->fields);
@@ -745,6 +752,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function restoreInDB()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($this->maybeDeleted()) {
@@ -772,6 +780,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function deleteFromDB($force = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -835,6 +844,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function cleanHistory()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($this->dohistory) {
@@ -861,6 +871,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function cleanRelationData()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $RELATION = getDbRelations();
@@ -1023,6 +1034,10 @@ class CommonDBTM extends CommonGLPI
      */
     public function cleanRelationTable()
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         if (in_array($this->getType(), $CFG_GLPI['agent_types'])) {
@@ -1224,7 +1239,11 @@ class CommonDBTM extends CommonGLPI
      **/
     public function add(array $input, $options = [], $history = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if ($DB->isSlave()) {
             return false;
@@ -1550,6 +1569,10 @@ class CommonDBTM extends CommonGLPI
      **/
     public function update(array $input, $history = 1, $options = [])
     {
+        /**
+         * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $DB, $GLPI_CACHE;
 
         if ($DB->isSlave()) {
@@ -1806,6 +1829,7 @@ class CommonDBTM extends CommonGLPI
      */
     protected function manageLocks()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $lockedfield = new Lockedfield();
@@ -1856,6 +1880,7 @@ class CommonDBTM extends CommonGLPI
      **/
     protected function forwardEntityInformations()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($this->fields['id']) || !($this->fields['id'] >= 0)) {
@@ -2007,6 +2032,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function delete(array $input, $force = 0, $history = 1)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($DB->isSlave()) {
@@ -2496,7 +2522,11 @@ class CommonDBTM extends CommonGLPI
      **/
     public function canUnrecurs()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $ID  = $this->fields['id'];
         if (
@@ -3833,6 +3863,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function rawSearchOptions()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $tab = [];
@@ -4034,6 +4065,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getWhitelistedSingleMassiveActions()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $actions = ['MassiveAction:add_transfer_list'];
@@ -4059,7 +4091,11 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getSpecificMassiveActions($checkitem = null)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $actions = [];
        // test if current profile has rights to unlock current item type
@@ -4458,6 +4494,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function checkUnicity($add = false, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -4623,6 +4660,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function deleteByCriteria($crit = [], $force = 0, $history = 1)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ok = false;
@@ -4707,6 +4745,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getValueToDisplay($field_id_or_search_options, $values, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $param = [
@@ -4946,6 +4985,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $param = [
@@ -5198,6 +5238,7 @@ class CommonDBTM extends CommonGLPI
      */
     public static function listTemplates($itemtype, $target, $add = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!($item = getItemForItemtype($itemtype))) {
@@ -5444,6 +5485,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function addFiles(array $input, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $default_options = [
@@ -5675,6 +5717,7 @@ class CommonDBTM extends CommonGLPI
      */
     private function assetBusinessRules($condition)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->input === false) {
@@ -5745,6 +5788,7 @@ class CommonDBTM extends CommonGLPI
      */
     public static function checkCircularRelation($items_id, $parents_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $fk = static::getForeignKeyField();

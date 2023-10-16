@@ -43,6 +43,6 @@ class RuleDictionnaryMonitorModelCollection extends RuleDictionnaryDropdownColle
      **/
     public function getTitle()
     {
-        return __('Dictionnary of computer models');
+        return __('Dictionary of computer models');
     }
 }

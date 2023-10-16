@@ -58,6 +58,7 @@ trait TreeBrowse
      */
     public static function showBrowseView(string $itemtype, array $params, $update = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
@@ -167,6 +168,7 @@ JAVASCRIPT;
      */
     public static function getTreeCategoryList(string $itemtype, array $params): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         /** @var class-string<CommonDBTM> $cat_itemtype */

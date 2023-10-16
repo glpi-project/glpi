@@ -51,6 +51,7 @@ class ImpactItem extends CommonDBTM
         CommonDBTM $item,
         bool $create_if_missing = true
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $it = $DB->request([

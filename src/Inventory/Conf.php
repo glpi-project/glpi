@@ -359,6 +359,10 @@ class Conf extends CommonGLPI
      **/
     public function showConfigForm()
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $config = \Config::getConfigurationValues('inventory');

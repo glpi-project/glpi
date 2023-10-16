@@ -144,6 +144,7 @@ abstract class API
      */
     public function initApi()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Load GLPI configuration
@@ -250,6 +251,7 @@ abstract class API
      */
     protected function initSession($params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->checkAppToken();
@@ -579,6 +581,10 @@ abstract class API
      */
     protected function getItem($itemtype, $id, $params = [])
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $itemtype = $this->handleDepreciation($itemtype);
@@ -1080,6 +1086,7 @@ abstract class API
      */
     protected function getItems($itemtype, $params = [], &$totalcount = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $itemtype = $this->handleDepreciation($itemtype);
@@ -1248,14 +1255,14 @@ abstract class API
        // Check if we need to add raw names later on
         $add_keys_names = count($params['add_keys_names']) > 0;
 
-       // build query
+        // build query
         $query = "SELECT DISTINCT " . $DB->quoteName("$table.id") . ",  " . $DB->quoteName("$table.*") . "
                 FROM " . $DB->quoteName($table) . "
                 $join
                 WHERE $where
                 ORDER BY " . $DB->quoteName($params['sort']) . " " . $params['order'] . "
                 LIMIT " . (int)$params['start'] . ", " . (int)$params['list_limit'];
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             while ($data = $DB->fetchAssoc($result)) {
                 if ($add_keys_names) {
                     // Insert raw names into the data row
@@ -1276,7 +1283,7 @@ abstract class API
 
        // get result full row counts
         $count_query = "SELECT COUNT(*) FROM {$DB->quoteName($table)} $join WHERE $where";
-        $totalcount = $DB->query($count_query)->fetch_row()[0];
+        $totalcount = $DB->doQuery($count_query)->fetch_row()[0];
 
         if ($params['range'][0] > $totalcount) {
             $this->returnError(
@@ -1559,6 +1566,7 @@ abstract class API
      */
     protected function searchItems($itemtype, $params = [])
     {
+        /** @var array $DEBUG_SQL */
         global $DEBUG_SQL;
 
         $itemtype = $this->handleDepreciation($itemtype);
@@ -2151,6 +2159,7 @@ abstract class API
      */
     protected function lostPassword($params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($CFG_GLPI['use_notifications'] == '0' || $CFG_GLPI['notifications_mailing'] == '0') {
@@ -2347,6 +2356,7 @@ abstract class API
      */
     private function getGlpiLastMessage()
     {
+        /** @var array $DEBUG_SQL */
         global $DEBUG_SQL;
 
         $all_messages             = [];
@@ -2544,6 +2554,7 @@ abstract class API
      */
     public static function getHatoasClasses($itemtype)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $hclasses = [];
@@ -2875,6 +2886,7 @@ abstract class API
         int $id,
         string $itemtype
     ): array {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $_networkports = [];

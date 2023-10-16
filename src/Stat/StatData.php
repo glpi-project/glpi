@@ -51,6 +51,7 @@ abstract class StatData
 
     public function __construct(array $params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Set up link to the download as csv page with the same parameters

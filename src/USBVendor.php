@@ -91,6 +91,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     public static function getList(): array
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $vendors = new USBVendor();
@@ -115,6 +116,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     private function getDbList(): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $list = [];
@@ -142,6 +144,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     public function invalidateListCache(): void
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $GLPI_CACHE->delete($this->cache_key);

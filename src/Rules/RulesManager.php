@@ -46,6 +46,7 @@ final class RulesManager
      */
     public static function initializeRules(): void
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rulecollections_types = $CFG_GLPI['rulecollections_types'];

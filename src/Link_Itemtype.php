@@ -61,7 +61,11 @@ class Link_Itemtype extends CommonDBChild
      **/
     public static function showForLink($link)
     {
-        global $DB,$CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $links_id = $link->getField('id');
 
@@ -200,6 +204,7 @@ class Link_Itemtype extends CommonDBChild
      */
     public static function deleteForItemtype($itemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->delete(

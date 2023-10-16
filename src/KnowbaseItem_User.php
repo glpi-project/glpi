@@ -56,6 +56,7 @@ class KnowbaseItem_User extends CommonDBRelation
      **/
     public static function getUsers($knowbaseitems_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $users = [];

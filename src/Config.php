@@ -143,6 +143,7 @@ class Config extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Unset _no_history to not save it as a configuration value
@@ -311,6 +312,7 @@ class Config extends CommonDBTM
      */
     private function handleSmtpInput(array $input): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (array_key_exists('smtp_mode', $input) && (int)$input['smtp_mode'] === MAIL_SMTPOAUTH) {
@@ -388,6 +390,7 @@ class Config extends CommonDBTM
      **/
     public function showFormDisplay()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!self::canView()) {
@@ -408,6 +411,7 @@ class Config extends CommonDBTM
      **/
     public function showFormInventory()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!self::canView()) {
@@ -593,6 +597,7 @@ class Config extends CommonDBTM
      **/
     public function showFormAuthentication()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Config::canUpdate()) {
@@ -643,7 +648,12 @@ class Config extends CommonDBTM
      **/
     public function showFormDBSlave()
     {
-        global $DB, $CFG_GLPI, $DBslave;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         * @var \DBmysql $DBslave
+         */
+        global $CFG_GLPI, $DB, $DBslave;
 
         if (!Config::canUpdate()) {
             return;
@@ -717,6 +727,7 @@ class Config extends CommonDBTM
      **/
     public function showFormAPI()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!self::canView()) {
@@ -803,6 +814,7 @@ class Config extends CommonDBTM
      **/
     public function showFormHelpdesk()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!self::canView()) {
@@ -996,6 +1008,10 @@ class Config extends CommonDBTM
      **/
     public function showFormUserPrefs($data = [])
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $oncentral = (Session::getCurrentInterface() == "central");
@@ -1499,7 +1515,7 @@ class Config extends CommonDBTM
                 'value' => $data['default_dashboard_mini_ticket'],
                 'display_emptychoice' => true,
                 'context'   => 'mini_core',
-            ]);
+            ], true);
             echo "</td></tr>";
         }
 
@@ -1521,6 +1537,7 @@ class Config extends CommonDBTM
      */
     public static function arePasswordSecurityChecksEnabled(): bool
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI["use_password_security"];
@@ -1535,6 +1552,7 @@ class Config extends CommonDBTM
      **/
     public static function displayPasswordSecurityChecks($field = 'password')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $needs = [];
@@ -1627,6 +1645,7 @@ class Config extends CommonDBTM
      **/
     public static function validatePassword($password, $display = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ok = true;
@@ -1854,6 +1873,10 @@ class Config extends CommonDBTM
 
     public static function showSystemInfoTable($params = [])
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $p = [
@@ -1997,7 +2020,11 @@ class Config extends CommonDBTM
      **/
     public function showSystemInformations()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!Config::canUpdate()) {
             return false;
@@ -2377,6 +2404,7 @@ HTML;
      **/
     public static function getLanguage($lang)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Alternative language code: en-EN --> en_EN
@@ -2416,7 +2444,11 @@ HTML;
 
     public static function detectRootDoc()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (isset($CFG_GLPI['root_doc'])) {
             return; // already computed
@@ -2567,6 +2599,7 @@ HTML;
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($item->getType() == 'Preference') {
@@ -2646,6 +2679,7 @@ HTML;
      **/
     public static function displayCheckDbEngine($fordebug = false, $version = null)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $error = 0;
@@ -2696,6 +2730,7 @@ HTML;
     public static function checkDbEngine($raw = null)
     {
         if ($raw === null) {
+            /** @var \DBmysql $DB */
             global $DB;
             $raw = $DB->getVersion();
         }
@@ -2840,6 +2875,7 @@ HTML;
      **/
     public static function getCurrentDBVersion()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Default current case
@@ -2881,6 +2917,7 @@ HTML;
      **/
     public static function getConfigurationValues($context, array $names = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = [
@@ -2928,6 +2965,10 @@ HTML;
     public static function loadLegacyConfiguration()
     {
 
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request(['FROM' => 'glpi_configs']);
@@ -3139,6 +3180,7 @@ HTML;
      */
     public function showFormLogs()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Config::canUpdate()) {
@@ -3355,6 +3397,7 @@ HTML;
      */
     public function showFormSecurity()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Config::canUpdate()) {
@@ -3556,6 +3599,7 @@ HTML;
      */
     public function showFormManagement()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!self::canView()) {
@@ -3638,7 +3682,11 @@ HTML;
 
     public function post_updateItem($history = 1)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
         // Check if password expiration mechanism has been activated
         if (
             $this->fields['name'] == 'password_expiration_delay'
@@ -3722,6 +3770,7 @@ HTML;
      */
     public static function getSafeConfig($safer = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $excludedKeys = array_flip(self::$undisclosedFields);
@@ -3892,6 +3941,7 @@ HTML;
      */
     private static function getEmailSenderFromEntityOrConfig(string $config_name, ?int $entities_id = null): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $email_config_name = $config_name;
@@ -3967,6 +4017,7 @@ HTML;
      */
     public static function getConfigIDForContext(string $context)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $iterator = $DB->request([
             'SELECT' => 'id',

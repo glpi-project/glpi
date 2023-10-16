@@ -92,7 +92,7 @@ function update0850to0853()
                   UNIQUE KEY `unicity` (`itemtype`, `items_id`, `tickets_id`),
                   KEY `tickets_id` (`tickets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "0.85 add table glpi_items_tickets");
+        $DB->doQueryOrDie($query, "0.85 add table glpi_items_tickets");
 
         $query = "SELECT `itemtype`, `items_id`, `id`
                 FROM `glpi_tickets`
@@ -100,13 +100,13 @@ function update0850to0853()
                     AND `itemtype` <> ''
                 AND `items_id` != 0";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "INSERT INTO `glpi_items_tickets`
                              (`id`, `items_id`, `itemtype`, `tickets_id`)
                           VALUES (NULL, '" . $data['items_id'] . "', '" . $data['itemtype'] . "', '" . $data['id'] . "')";
-                    $DB->queryOrDie($query, "0.85 associated ticket sitems migration");
+                    $DB->doQueryOrDie($query, "0.85 associated ticket sitems migration");
                 }
             }
         }
@@ -120,7 +120,7 @@ function update0850to0853()
     $query = "UPDATE `glpi_changes`
              SET `status` = 1
              WHERE `status` = 2";
-    $DB->queryOrDie($query, "0.85.3 correct status for change");
+    $DB->doQueryOrDie($query, "0.85.3 correct status for change");
 
     if (
         $migration->addField(
@@ -135,7 +135,7 @@ function update0850to0853()
         $query = 'UPDATE `glpi_entities`
                 SET `is_notif_enable_default` = 1
                 WHERE `id` = 0';
-        $DB->queryOrDie($query, "0.85.3 default value for is_notif_enable_default for root entity");
+        $DB->doQueryOrDie($query, "0.85.3 default value for is_notif_enable_default for root entity");
     }
 
    // ************ Keep it at the end **************
@@ -147,14 +147,14 @@ function update0850to0853()
                 FROM `glpi_displaypreferences`
                 WHERE `itemtype` = '$type'";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "SELECT MAX(`rank`)
                          FROM `glpi_displaypreferences`
                          WHERE `users_id` = '" . $data['users_id'] . "'
                                AND `itemtype` = '$type'";
-                    $result = $DB->query($query);
+                    $result = $DB->doQuery($query);
                     $rank   = $DB->result($result, 0, 0);
                     $rank++;
 
@@ -164,13 +164,13 @@ function update0850to0853()
                             WHERE `users_id` = '" . $data['users_id'] . "'
                                   AND `num` = '$newval'
                                   AND `itemtype` = '$type'";
-                        if ($result2 = $DB->query($query)) {
+                        if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
                                  $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                 $DB->query($query);
+                                 $DB->doQuery($query);
                             }
                         }
                     }
@@ -181,7 +181,7 @@ function update0850to0853()
                     $query = "INSERT INTO `glpi_displaypreferences`
                                 (`itemtype` ,`num` ,`rank` ,`users_id`)
                          VALUES ('$type', '$newval', '" . $rank++ . "', '0')";
-                    $DB->query($query);
+                    $DB->doQuery($query);
                 }
             }
         }

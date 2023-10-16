@@ -112,6 +112,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      **/
     public function cleanDBonItemDelete($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = static::getSQLCriteriaToSearchForItem($itemtype, $items_id);
@@ -198,6 +199,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      */
     public static function getItemsAssociationRequest($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         return $DB->request(static::getSQLCriteriaToSearchForItem($itemtype, $items_id));
     }
