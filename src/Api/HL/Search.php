@@ -1040,8 +1040,7 @@ final class Search
         $ids = $search->getMatchingRecords();
         $results = $search->hydrateRecords($ids);
 
-        $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
-        $mapped_props = array_filter($flattened_properties, static function ($prop) {
+        $mapped_props = array_filter($search->getFlattenedProperties(), static function ($prop) {
             return isset($prop['x-mapper']);
         });
         foreach ($results as &$result) {
