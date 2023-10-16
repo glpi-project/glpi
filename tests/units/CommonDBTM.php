@@ -72,6 +72,7 @@ class CommonDBTM extends \GLPITestCase
         // Then the item has a property inpur which contains the form data
         $item->input = $input;
         $output = $item->addFiles($input);
+        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
         $document_item = new Document_Item();
         $document_item->getFromDbByCrit([
             'itemtype' => $item->getType(),
@@ -104,6 +105,7 @@ class CommonDBTM extends \GLPITestCase
                 0 => '6079908c4be820.58460925',
             ]
         ]);
+        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
         $this->boolean($document->isNewItem())->isFalse();
 
         $item = new Computer();
@@ -129,6 +131,7 @@ class CommonDBTM extends \GLPITestCase
 
         $item->input = $input;
         $output = $item->addFiles($input);
+        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
         $document_item = new Document_Item();
         $document_item->getFromDbByCrit([
             'itemtype' => $item->getType(),
