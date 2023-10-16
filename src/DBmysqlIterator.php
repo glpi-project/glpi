@@ -786,7 +786,16 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function valid(): bool
     {
-        return $this->res instanceof \mysqli_result && $this->position < $this->count;
+        return !$this->isFailed() && $this->position < $this->count;
+    }
+
+    /**
+     * Check if the current result is not a {@link \mysqli_result}, indicating a failure.
+     * @return bool
+     */
+    public function isFailed(): bool
+    {
+        return !($this->res instanceof \mysqli_result);
     }
 
     /**

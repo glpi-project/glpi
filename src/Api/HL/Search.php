@@ -39,7 +39,6 @@ use CommonDBTM;
 use Entity;
 use ExtraVisibilityCriteria;
 use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Api\HL\Doc;
 use Glpi\Api\HL\RSQL\Lexer;
 use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
@@ -99,6 +98,23 @@ final class Search
         $this->tables = array_keys($this->table_schemas);
         $this->union_search_mode = count($this->tables) > 1;
         $this->rsql_parser = new Parser($this);
+    }
+
+    /**
+     * @throws APIException
+     */
+    private function validateIterator(\DBmysqlIterator $iterator): void
+    {
+        if ($iterator->isFailed()) {
+            $message = __('An internal error occured while trying to fetch the data.');
+            if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
+                $message .= ' ' . __('For more information, check the GLPI logs.');
+            }
+            throw new APIException(
+                message: 'A SQL error occured while trying to get data from the database',
+                user_message: $message
+            );
+        }
     }
 
     public function getFlattenedProperties(): array
@@ -569,7 +585,7 @@ final class Search
     /**
      * @return array Matching records in the format Itemtype => IDs
      * @phpstan-return array<string, int[]>
-     * @throws RSQLException
+     * @throws RSQLException|APIException
      */
     private function getMatchingRecords($ignore_pagination = false): array
     {
@@ -612,6 +628,7 @@ final class Search
 
         // request just to get the ids/union itemtypes
         $iterator = $DB->request($criteria);
+        $this->validateIterator($iterator);
 
         if ($this->union_search_mode) {
             // group by _itemtype
@@ -651,6 +668,7 @@ final class Search
                 ];
             }
             $iterator = $DB->request($criteria);
+            $this->validateIterator($iterator);
             foreach ($iterator as $data) {
                 $itemtype = $this->union_search_mode ? $data['_itemtype'] : $this->schema['x-itemtype'];
                 if (!isset($records[$itemtype])) {
@@ -1005,6 +1023,7 @@ final class Search
 
                     // Fetch the data for the current dehydrated record
                     $it = $DB->request($criteria);
+                    $this->validateIterator($it);
                     foreach ($it as $data) {
                         $cleaned_data = [];
                         foreach ($data as $k => $v) {
@@ -1027,7 +1046,7 @@ final class Search
      * @param array $request_params
      * @return array The search results
      * @phpstan-return array{results: array, start: int, limit: int, total: int}
-     * @throws RSQLException
+     * @throws RSQLException|APIException
      */
     private static function getSearchResultsBySchema(array $schema, array $request_params): array
     {
@@ -1109,6 +1128,11 @@ final class Search
             $results = self::getSearchResultsBySchema($schema, $request_params);
         } catch (RSQLException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()), 400);
+        } catch (APIException $e) {
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()));
+        } catch (\Throwable $e) {
+            $message = (new APIException())->getUserMessage();
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message));
         }
         $has_more = $results['start'] + $results['limit'] < $results['total'];
         $end = max(0, ($results['start'] + $results['limit'] - 1));
@@ -1244,7 +1268,12 @@ final class Search
         try {
             $results = self::getSearchResultsBySchema($schema, $request_params);
         } catch (RSQLException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()), 400);
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getUserMessage()), 400);
+        } catch (APIException $e) {
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()));
+        } catch (\Throwable $e) {
+            $message = (new APIException())->getUserMessage();
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message));
         }
         if (count($results['results']) === 0) {
             return AbstractController::getNotFoundErrorResponse();

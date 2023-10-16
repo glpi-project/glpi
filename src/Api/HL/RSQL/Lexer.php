@@ -92,7 +92,10 @@ final class Lexer
         $fn_validate_pos = static function () use ($pos, $length) {
             if ($pos < 0 || $pos >= $length) {
                 // This case will probably never happen. An issue should be caught before now with a more specific error message.
-                throw new RSQLException(__('Invalid RSQL query'));
+                throw new RSQLException(
+                    message: 'RSQL parser reached an invalid position while parsing the query string.',
+                    user_message: __('Invalid RSQL query')
+                );
             }
         };
 
@@ -128,7 +131,7 @@ final class Lexer
                 $buffer = '=';
                 $pos++;
                 if (!isset($query[$pos]) || $query[$pos] !== '=') {
-                    throw new RSQLException(sprintf(__('RSQL query is missing an operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
+                    throw new RSQLException('', sprintf(__('RSQL query is missing an operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
                 }
                 $fn_validate_pos();
                 // Operator should continue until the next '=' is found.
@@ -136,7 +139,7 @@ final class Lexer
                     $buffer .= $query[++$pos];
                 }
                 if (!isset($query[$pos + 1]) || $query[$pos + 1] !== '=') {
-                    throw new RSQLException(sprintf(__('RSQL query has an incomplete operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
+                    throw new RSQLException('', sprintf(__('RSQL query has an incomplete operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
                 }
                 $tokens[] = [self::T_OPERATOR, $buffer . '='];
                 // Now the value is started
@@ -145,7 +148,7 @@ final class Lexer
                 $fn_validate_pos();
                 $in_value = true;
                 if (!isset($query[$pos])) {
-                    throw new RSQLException(sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $tokens[count($tokens) - 2][1]));
+                    throw new RSQLException('', sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $tokens[count($tokens) - 2][1]));
                 }
                 // If the current char is ', ", or (, then the value continues until the matching closing quote or parenthesis is found.
                 // When matching, we ignore escaped quotes and parenthesis.
@@ -187,7 +190,7 @@ final class Lexer
                     $tokens[] = [self::T_VALUE, $buffer];
                     $buffer = '';
                 } else if ($tokens[count($tokens) - 1][0] === self::T_OPERATOR) {
-                    throw new RSQLException(sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $tokens[count($tokens) - 2][1]));
+                    throw new RSQLException('', sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $tokens[count($tokens) - 2][1]));
                 }
             }
             $pos++;
@@ -203,7 +206,7 @@ final class Lexer
             }
         }
         if ($group_open_count !== $group_close_count) {
-            throw new RSQLException(__('RSQL query has one or more unclosed groups'));
+            throw new RSQLException('', __('RSQL query has one or more unclosed groups'));
         }
         return $tokens;
     }

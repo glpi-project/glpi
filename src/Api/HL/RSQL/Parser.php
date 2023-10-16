@@ -66,7 +66,7 @@ final class Parser
     {
         // Convert string like (item1, item2,item3) to array
         if (!preg_match('/^\((.*)\)$/', $str_array, $matches)) {
-            throw new RSQLException(sprintf(__('Invalid RSQL array: %s'), $str_array));
+            throw new RSQLException('', sprintf(__('Invalid RSQL array: %s'), $str_array));
         }
 
         // Use CSV parser to handle splitting by comma (not inside quotes) to avoid headache trying to maintain custom regex
