@@ -97,6 +97,17 @@ class Parameter implements \ArrayAccess
     }
 
     /**
+     * @return mixed
+     */
+    public function getDefaultValue(): mixed
+    {
+        if ($this->schema instanceof Schema) {
+            return $this->schema->getDefault();
+        }
+        return null;
+    }
+
+    /**
      * @return bool
      */
     public function getRequired(): bool

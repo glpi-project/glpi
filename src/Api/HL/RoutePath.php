@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL;
 
 use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Api\HL\Doc\Parameter;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -407,6 +408,19 @@ final class RoutePath
      */
     public function invoke(Request $request): Response
     {
+        // Set parameters to defaults if not provided and a default is available
+        $params = $request->getParameters();
+        $docs = $this->getRouteDocs();
+        $matched_doc = array_filter($docs, static function (Doc\Route $doc) use ($request) {
+            return !count($doc->getMethods()) || in_array($request->getMethod(), $doc->getMethods(), true);
+        });
+        $route_params = $matched_doc[0]->getParameters();
+        /** @var Parameter $param */
+        foreach ($route_params as $param) {
+            if (!isset($params[$param->getName()]) && $param->getDefaultValue() !== null) {
+                $request->setParameter($param->getName(), $param->getDefaultValue());
+            }
+        }
         $response = $this->getMethod()->invoke($this->getControllerInstance(), $request);
         if ($response instanceof Response) {
             return $response;

@@ -70,7 +70,8 @@ class Schema implements \ArrayAccess
         private ?Schema $items = null,
         /** @var array|null $enum */
         private ?array $enum = null,
-        private ?string $pattern = null
+        private ?string $pattern = null,
+        private mixed $default = null
     ) {
         if ($this->format === null) {
             $this->format = self::getDefaultFormatForType($this->type);
@@ -135,6 +136,11 @@ class Schema implements \ArrayAccess
         return $this->items;
     }
 
+    public function getDefault(): mixed
+    {
+        return $this->default;
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -159,6 +165,9 @@ class Schema implements \ArrayAccess
         } else if ($this->enum !== null) {
             $r['enum'] = $this->enum;
         }
+        if ($this->default !== null) {
+            $r['default'] = $this->default;
+        }
         return $r;
     }
 
@@ -181,7 +190,16 @@ class Schema implements \ArrayAccess
         if (isset($schema['enum'])) {
             $enum = $schema['enum'];
         }
-        return new Schema(type: $type, format: $format, properties: $properties, items: $items, enum: $enum, pattern: $pattern);
+        $default = $schema['default'] ?? null;
+        return new Schema(
+            type: $type,
+            format: $format,
+            properties: $properties,
+            items: $items,
+            enum: $enum,
+            pattern: $pattern,
+            default: $default
+        );
     }
 
     public function offsetExists(mixed $offset): bool

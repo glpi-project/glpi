@@ -101,6 +101,7 @@ abstract class AbstractController
             'type' => Doc\Schema::TYPE_INTEGER,
             'format' => Doc\Schema::FORMAT_INTEGER_INT64,
             'minimum' => 0,
+            'default' => 100,
         ]
     ];
 
