@@ -82,36 +82,35 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
 
     protected function check()
     {
-        $glpi_root_directory = realpath($this->glpi_root_directory);
+        $glpi_root_realpath = realpath($this->glpi_root_directory);
 
         $missing_directories = [];
         $unsafe_directories  = [];
 
         $var_root_directory = constant($this->var_root_constant);
+        $var_root_realpath  = realpath($var_root_directory);
         if (!is_dir($var_root_directory)) {
             $missing_directories[$this->var_root_constant] = $var_root_directory;
-        } elseif (str_starts_with(realpath($var_root_directory), $glpi_root_directory)) {
+        } elseif (str_starts_with($var_root_realpath . DIRECTORY_SEPARATOR, $glpi_root_realpath . DIRECTORY_SEPARATOR)) {
             $unsafe_directories[$this->var_root_constant] = $var_root_directory;
         }
 
-        $var_root_directory = realpath($var_root_directory);
-
         foreach ($this->directories_constants as $directory_constant) {
-            $directory_path = constant($directory_constant);
+            $directory = constant($directory_constant);
+            $realpath = realpath($directory);
 
-            if (!is_dir($directory_path)) {
-                $missing_directories[$directory_constant] = $directory_path;
+            if (!is_dir($directory)) {
+                $missing_directories[$directory_constant] = $directory;
                 continue;
             }
 
-            $directory_path = realpath($directory_path);
-            if (str_starts_with($directory_path, $var_root_directory)) {
+            if (str_starts_with($realpath . DIRECTORY_SEPARATOR, $var_root_directory . DIRECTORY_SEPARATOR)) {
                 // Ignore directory as it is included in variable root path that is already tested independently.
                 continue;
             }
 
-            if (str_starts_with(realpath($directory_path), $glpi_root_directory)) {
-                $unsafe_directories[$directory_constant] = $directory_path;
+            if (str_starts_with($realpath . DIRECTORY_SEPARATOR, $glpi_root_realpath . DIRECTORY_SEPARATOR)) {
+                $unsafe_directories[$directory_constant] = $directory;
             }
         }
 
@@ -129,7 +128,7 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
             if (count($unsafe_directories) > 0) {
                 $this->validation_messages[] = sprintf(
                     __('The following directories should be placed outside "%s":'),
-                    $glpi_root_directory
+                    $glpi_root_realpath
                 );
                 foreach ($unsafe_directories as $constant => $path) {
                     $this->validation_messages[] = sprintf('‣ "%s" ("%s")', $path, $constant);
@@ -137,7 +136,7 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
             }
             $this->validation_messages[] = sprintf(
                 __('You can ignore this suggestion if your web server root directory is "%s".'),
-                $glpi_root_directory . DIRECTORY_SEPARATOR . 'public'
+                $glpi_root_realpath . DIRECTORY_SEPARATOR . 'public'
             );
         }
     }
