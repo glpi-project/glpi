@@ -286,13 +286,14 @@ class DatabaseSchemaIntegrityChecker
         }
 
         if ($include_unknown_tables) {
-            $unknown_tables_criteria = [
-                [
+            $unknown_tables_criteria = [];
+            if (count($schema) > 0) {
+                $unknown_tables_criteria[] = [
                     'NOT' => [
                         'table_name' => array_keys($schema)
                     ]
-                ],
-            ];
+                ];
+            }
             $is_context_valid = true;
             if ($context === 'core') {
                 $unknown_tables_criteria[] = [
