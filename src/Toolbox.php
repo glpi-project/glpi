@@ -3323,6 +3323,7 @@ HTML;
      * Set an element within the array at the given path.
      * @param array $array The array to check
      * @param string $path The path to the element
+     * @param mixed $value The value to set
      * @param string $path_delimiter The delimiter used in the path
      * @return void
      */
