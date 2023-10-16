@@ -161,6 +161,14 @@
                     count: 15, // number of items to display at once
                 },
 
+                // translate strings
+                strings: {
+                    loading: __("Loading..."),
+                    loadError: __("Load error!"),
+                    moreData: __("More..."),
+                    noData: __("No data found")
+                },
+
                 // load data by ajax
                 source: {
                     url:  '{{ path("/ajax/entitytreesons.php") }}',
