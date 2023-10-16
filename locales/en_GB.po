@@ -17861,7 +17861,7 @@ msgstr[1] "Printer types"
 
 #: src/Profile.php:1037
 msgid "Printers dictionnary"
-msgstr "Printers dictionnary"
+msgstr "Printers dictionary"
 
 #: src/PrinterLog.php:230
 msgid "Prints"
