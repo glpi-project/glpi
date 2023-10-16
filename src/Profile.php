@@ -1037,7 +1037,7 @@ class Profile extends CommonDBTM
                                 'scope'     => 'global'
                             ]),
                             $fn_get_rights(RuleDictionnaryPrinter::class, 'central', [
-                                'label'     => __('Printers dictionnary'),
+                                'label'     => __('Printers dictionary'),
                                 'scope'     => 'global'
                             ]),
                         ]

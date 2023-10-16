@@ -43,6 +43,6 @@ class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnar
      **/
     public function getTitle()
     {
-        return __('Dictionnary of service packs');
+        return __('Dictionary of service packs');
     }
 }

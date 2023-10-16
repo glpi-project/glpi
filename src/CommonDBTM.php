@@ -115,7 +115,7 @@ class CommonDBTM extends CommonGLPI
     protected static $notable = false;
 
     /**
-     * List of fields that must not be taken into account for dictionnary processing.
+     * List of fields that must not be taken into account for dictionary processing.
      *
      * @var string[]
      */

@@ -768,7 +768,7 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Import a value in a dropdown table.
      *
-     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
+     * This import a new dropdown if it doesn't exist - Play dictionary if needed
      *
      * @param string  $value           Value of the new dropdown (need to be addslashes)
      * @param integer $entities_id     Entity in case of specific dropdown (default -1)

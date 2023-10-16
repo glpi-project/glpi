@@ -50,7 +50,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     public function getTitle()
     {
        //TRANS: software in plural
-        return __('Dictionnary of software');
+        return __('Dictionary of software');
     }
 
 
@@ -173,12 +173,12 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                     }
                 }
 
-               //If manufacturer is set, then first run the manufacturer's dictionnary
+               //If manufacturer is set, then first run the manufacturer's dictionary
                 if (isset($input["manufacturer"])) {
                     $input["manufacturer"] = Manufacturer::processName($input["manufacturer"]);
                 }
 
-               //Replay software dictionnary rules
+               //Replay software dictionary rules
                 $res_rule = $this->processAllRules($input, [], []);
 
                 if (
@@ -209,7 +209,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                         foreach ($same_iterator as $result) {
                             $IDs[] = $result["id"];
                         }
-                        //Replay dictionnary on all the software
+                        //Replay dictionary on all the software
                         $this->replayDictionnaryOnSoftwaresByID($IDs, $res_rule);
                     }
                 }
@@ -302,7 +302,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
 
 
     /**
-     * Replay dictionnary on one software
+     * Replay dictionary on one software
      *
      * @param &$new_softs      array containing new software already computed
      * @param $res_rule        array of rule results
