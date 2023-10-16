@@ -409,7 +409,11 @@ class Location extends CommonTreeDropdown
      **/
     public function showItems()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $locations_id = $this->fields['id'];
         $current_itemtype     = Session::getSavedOption(__CLASS__, 'criterion', '');

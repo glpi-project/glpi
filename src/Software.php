@@ -239,6 +239,7 @@ class Software extends CommonDBTM
 
     public function getEmpty()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!parent::getEmpty()) {
@@ -656,6 +657,7 @@ class Software extends CommonDBTM
      **/
     public static function dropdownSoftwareToInstall($myname, $entity_restrict)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Make a select box
@@ -695,6 +697,10 @@ class Software extends CommonDBTM
      **/
     public static function dropdownLicenseToInstall($myname, $entity_restrict)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request([
@@ -764,6 +770,7 @@ class Software extends CommonDBTM
         $is_recursive = false,
         $is_helpdesk_visible = null
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $input["name"]                = $name;
@@ -814,6 +821,7 @@ class Software extends CommonDBTM
         $is_recursive = false,
         $is_helpdesk_visible = null
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Look for the software by his name in GLPI for a specific entity
@@ -872,6 +880,7 @@ class Software extends CommonDBTM
      **/
     public function putInTrash($ID, $comment = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->getFromDB($ID);
@@ -927,6 +936,7 @@ class Software extends CommonDBTM
      **/
     public function showMergeCandidates()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID   = $this->getField('id');
@@ -1017,6 +1027,7 @@ class Software extends CommonDBTM
      **/
     public function merge($item, $html = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $this->getField('id');

@@ -87,7 +87,11 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
      */
     public static function showItems(DeviceCamera $camera)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $ID = $camera->getID();
         $rand = mt_rand();

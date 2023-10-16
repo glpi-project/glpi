@@ -61,6 +61,7 @@ class ConfigExtension extends AbstractExtension
      */
     public function config(string $key)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI[$key] ?? null;

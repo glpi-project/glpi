@@ -106,6 +106,7 @@ class Appliance_Item extends CommonDBRelation
      **/
     public static function showItems(Appliance $appliance)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $appliance->fields['id'];
@@ -455,6 +456,7 @@ class Appliance_Item extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();

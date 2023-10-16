@@ -188,6 +188,10 @@ trait CalDAVUriUtilTrait
     protected function getCalendarItemForUid($uid)
     {
 
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $union = new \QueryUnion();

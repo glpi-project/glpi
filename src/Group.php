@@ -646,6 +646,7 @@ class Group extends CommonTreeDropdown
      **/
     public function getDataItems(array $types, $field, $tree, $user, $start, array &$res)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // include item of child groups ?
@@ -792,6 +793,7 @@ class Group extends CommonTreeDropdown
      **/
     public function showItems($tech)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -972,6 +974,7 @@ class Group extends CommonTreeDropdown
     public function cleanRelationData()
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         parent::cleanRelationData();

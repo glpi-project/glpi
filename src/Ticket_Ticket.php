@@ -134,6 +134,7 @@ class Ticket_Ticket extends CommonDBRelation
      **/
     public static function getLinkedTicketsTo($ID)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Make new database object and fill variables
@@ -302,6 +303,7 @@ class Ticket_Ticket extends CommonDBRelation
 
     public function post_deleteFromDB()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $t = new Ticket();
@@ -321,6 +323,7 @@ class Ticket_Ticket extends CommonDBRelation
 
     public function post_addItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $t = new Ticket();
@@ -347,6 +350,7 @@ class Ticket_Ticket extends CommonDBRelation
      */
     public static function countOpenChildren($pid)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([

@@ -96,6 +96,7 @@ abstract class CommonITILActor extends CommonDBRelation
      **/
     public function getActors($items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $users = [];
@@ -117,6 +118,7 @@ abstract class CommonITILActor extends CommonDBRelation
      **/
     public function isAlternateEmailForITILObject($items_id, $email)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -301,6 +303,7 @@ abstract class CommonITILActor extends CommonDBRelation
 
     public function post_deleteFromDB()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];

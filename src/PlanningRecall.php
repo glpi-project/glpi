@@ -69,6 +69,7 @@ class PlanningRecall extends CommonDBChild
 
     public static function isAvailable()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Cache in session
@@ -221,6 +222,7 @@ class PlanningRecall extends CommonDBChild
      **/
     public static function managePlanningUpdates($itemtype, $items_id, $begin)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (isset($_SESSION['glpiplanningreminder_isavailable'])) {
@@ -388,7 +390,11 @@ class PlanningRecall extends CommonDBChild
      **/
     public static function cronPlanningRecall($task = null)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
             return 0;

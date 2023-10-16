@@ -338,7 +338,11 @@ class Rack extends CommonDBTM
      **/
     public static function showForRoom(DCRoom $room)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $room_id = $room->getID();
         $rand = mt_rand();
@@ -780,6 +784,7 @@ JAVASCRIPT;
      */
     public function getFilled($itemtype = null, $items_id = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

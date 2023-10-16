@@ -55,6 +55,7 @@ class IPAddress_IPNetwork extends CommonDBRelation
      **/
     public static function linkIPAddressFromIPNetwork(IPNetwork $network)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $linkObject    = new self();

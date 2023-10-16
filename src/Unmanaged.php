@@ -214,6 +214,7 @@ class Unmanaged extends CommonDBTM
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         switch ($ma->getAction()) {
             case 'convert':
@@ -231,6 +232,7 @@ class Unmanaged extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         switch ($ma->getAction()) {
             case 'convert':
@@ -252,6 +254,7 @@ class Unmanaged extends CommonDBTM
      */
     public function convert(int $items_id, string $itemtype = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $this->getFromDB($items_id);

@@ -252,6 +252,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public static function getAdditionalMenuLinks()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $links = [];
@@ -279,6 +280,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function post_updateItem($history = 1)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (in_array('auto_percent_done', $this->updates) && $this->input['auto_percent_done'] == 1) {
@@ -306,6 +308,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function post_addItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Update parent percent_done
@@ -362,6 +365,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function pre_deleteItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -517,6 +521,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function rawSearchOptions()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -1193,6 +1198,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public static function showShort($id, $options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $p['output_type']            = Search::HTML_OUTPUT;
@@ -1466,6 +1472,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function showChildren()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID   = $this->getID();
@@ -1891,6 +1898,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public static function getAllForKanban($active = true, $current_id = -1)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $items = [
@@ -1959,6 +1967,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $result = [];
 
         if ($column_field === null || $column_field == 'projectstates_id') {
+            /** @var \DBmysql $DB */
             global $DB;
 
             $projectstate = new ProjectState();
@@ -2018,7 +2027,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $items      = [];
 
@@ -2630,6 +2643,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public static function recalculatePercentDone($ID)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $project = new self();

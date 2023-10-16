@@ -599,7 +599,11 @@ class Document_Item extends CommonDBRelation
      **/
     public static function showAddFormForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
        //default options
         $params['rand'] = mt_rand();
@@ -737,6 +741,7 @@ class Document_Item extends CommonDBRelation
      */
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //default options

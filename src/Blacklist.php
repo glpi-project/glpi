@@ -261,6 +261,7 @@ class Blacklist extends CommonDropdown
 
     private function loadBlacklists()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request(['FROM' => self::getTable()]);

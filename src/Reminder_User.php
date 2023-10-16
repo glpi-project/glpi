@@ -56,6 +56,7 @@ class Reminder_User extends CommonDBRelation
      **/
     public static function getUsers($reminders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $users = [];

@@ -728,7 +728,11 @@ class SoftwareLicense extends CommonTreeDropdown
      **/
     public static function cronSoftware($task = null)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $cron_status = 1;
 
@@ -850,6 +854,7 @@ class SoftwareLicense extends CommonTreeDropdown
      */
     public static function countForVersion($softwareversions_id, $entity = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -873,6 +878,7 @@ class SoftwareLicense extends CommonTreeDropdown
      **/
     public static function countForSoftware($softwares_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -927,6 +933,7 @@ class SoftwareLicense extends CommonTreeDropdown
      **/
     public static function showForSoftware(Software $software)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $softwares_id  = $software->getField('id');
@@ -1268,6 +1275,7 @@ class SoftwareLicense extends CommonTreeDropdown
 
     public static function getSonsOf($item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $entity_assign = $item->isEntityAssign();
         $nb            = 0;

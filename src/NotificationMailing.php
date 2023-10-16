@@ -85,6 +85,7 @@ class NotificationMailing implements NotificationInterface
 
     public static function testNotification()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $sender = Config::getEmailSender();

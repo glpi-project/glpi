@@ -155,6 +155,10 @@ class NetworkPortType extends CommonDropdown
      */
     public static function getInstantiationType($type)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $DB, $GLPI_CACHE;
 
         if (null === $type || empty($type)) {
@@ -208,6 +212,7 @@ class NetworkPortType extends CommonDropdown
 
     protected function invalidateCache()
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->delete('glpi_inventory_ports_types');
     }

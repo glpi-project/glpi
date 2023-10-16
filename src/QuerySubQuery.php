@@ -48,6 +48,7 @@ class QuerySubQuery extends AbstractQuery
      */
     public function __construct(array $crit, $alias = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         parent::__construct($alias);
@@ -67,6 +68,7 @@ class QuerySubQuery extends AbstractQuery
      */
     public function getQuery()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $sql = "(" . $this->dbiterator->getSql() . ")";

@@ -243,6 +243,7 @@ class Enclosure extends CommonDBTM
      */
     public function getFilled($itemtype = null, $items_id = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

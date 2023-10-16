@@ -112,6 +112,7 @@ class XML
      **/
     public function DoXML()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $fp = fopen($this->FilePath, 'wb');
@@ -124,7 +125,7 @@ class XML
                 $this->ErrorString = "Error the query can't be a null string";
                 return -1;
             }
-            $result = $DB->query($strqry);
+            $result = $DB->doQuery($strqry);
 
             if ($result == false) {
                 $this->IsError     = 1;

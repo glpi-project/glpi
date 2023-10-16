@@ -240,6 +240,7 @@ abstract class MainAsset extends InventoryAsset
      */
     protected function prepareForUsers($val)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($this->isPartial()) {
@@ -647,6 +648,10 @@ abstract class MainAsset extends InventoryAsset
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $key = $this->current_key;

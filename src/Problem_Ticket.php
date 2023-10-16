@@ -112,6 +112,7 @@ class Problem_Ticket extends CommonDBRelation
      **/
     public function post_addItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
@@ -134,6 +135,7 @@ class Problem_Ticket extends CommonDBRelation
      **/
     public function post_deleteFromDB()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];

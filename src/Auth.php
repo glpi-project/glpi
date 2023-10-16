@@ -146,6 +146,7 @@ class Auth extends CommonGLPI
      */
     public function userExists($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request(
@@ -398,6 +399,10 @@ class Auth extends CommonGLPI
      */
     public function connection_db($name, $password)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $pass_expiration_delay = (int)$CFG_GLPI['password_expiration_delay'];
@@ -511,6 +516,7 @@ class Auth extends CommonGLPI
      */
     public function getAlternateAuthSystemsUserLogin($authtype = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($authtype) {
@@ -766,7 +772,11 @@ class Auth extends CommonGLPI
      */
     public function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '')
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $this->getAuthMethods();
         $this->user_present  = 1;
@@ -1116,6 +1126,7 @@ class Auth extends CommonGLPI
      */
     public static function dropdown($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $p = [
@@ -1312,6 +1323,7 @@ class Auth extends CommonGLPI
     public static function useAuthExt()
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //Get all the ldap directories
@@ -1368,6 +1380,7 @@ class Auth extends CommonGLPI
      */
     public static function checkAlternateAuthSystems($redirect = false, $redirect_string = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($_GET["noAUTO"]) || isset($_POST["noAUTO"])) {
@@ -1440,6 +1453,7 @@ class Auth extends CommonGLPI
      */
     public static function redirectIfAuthenticated($redirect = null)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Session::getLoginUserID()) {
@@ -1487,7 +1501,11 @@ class Auth extends CommonGLPI
      */
     public static function showSynchronizationForm(User $user)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (Session::haveRight("user", User::UPDATEAUTHENT)) {
             echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('User') . "'>";
@@ -1602,6 +1620,7 @@ class Auth extends CommonGLPI
      */
     public static function showOtherAuthList()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Config::canUpdate()) {
@@ -1808,6 +1827,7 @@ class Auth extends CommonGLPI
      */
     public static function getLoginAuthMethods()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $elements = [
@@ -1887,6 +1907,7 @@ class Auth extends CommonGLPI
      */
     public static function setRememberMeCookie(string $cookie_value): void
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $cookie_name     = session_name() . '_rememberme';

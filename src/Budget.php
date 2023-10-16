@@ -320,6 +320,7 @@ class Budget extends CommonDropdown
      **/
     public function showItems()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];
@@ -663,6 +664,7 @@ class Budget extends CommonDropdown
      **/
     public function showValuesByEntity()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];

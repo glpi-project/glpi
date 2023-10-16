@@ -666,6 +666,7 @@ class Certificate extends CommonDBTM
      **/
     public static function getTypes($all = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = $CFG_GLPI['certificate_types'];
@@ -702,7 +703,11 @@ class Certificate extends CommonDBTM
      **/
     public static function cronCertificate($task = null)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI['use_notifications']) {
             return 0; // Nothing to do

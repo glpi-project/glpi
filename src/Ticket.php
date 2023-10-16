@@ -137,6 +137,7 @@ class Ticket extends CommonITILObject
 
     public static function getAdditionalMenuLinks()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $links = parent::getAdditionalMenuLinks();
@@ -734,6 +735,7 @@ class Ticket extends CommonITILObject
 
     public function pre_deleteItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -1036,6 +1038,7 @@ class Ticket extends CommonITILObject
 
     public function prepareInputForUpdate($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $input = $this->transformActorsInput($input);
@@ -1643,6 +1646,7 @@ class Ticket extends CommonITILObject
 
     public function post_updateItem($history = 1)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //for items added from rule
@@ -2236,6 +2240,7 @@ class Ticket extends CommonITILObject
      **/
     public function getActiveOrSolvedLastDaysTicketsForItem($itemtype, $items_id, $days)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = [];
@@ -2293,6 +2298,7 @@ class Ticket extends CommonITILObject
      **/
     public function countActiveTicketsForItem($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -2333,6 +2339,7 @@ class Ticket extends CommonITILObject
      */
     public function getActiveTicketsForItem($itemtype, $items_id, $type)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         return $DB->request([
@@ -2378,6 +2385,7 @@ class Ticket extends CommonITILObject
      **/
     public function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -2678,6 +2686,7 @@ class Ticket extends CommonITILObject
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {
@@ -3047,6 +3056,7 @@ JAVASCRIPT;
 
     public function rawSearchOptions()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -3871,6 +3881,7 @@ JAVASCRIPT;
      **/
     public static function computeTco(CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $totalcost = 0;
@@ -4058,6 +4069,7 @@ JAVASCRIPT;
      **/
     public static function showFormHelpdeskObserver($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //default values
@@ -4134,6 +4146,7 @@ JAVASCRIPT;
 
     public static function getDefaultValues($entity = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (is_numeric(Session::getLoginUserID(false))) {
@@ -4441,6 +4454,7 @@ JAVASCRIPT;
      */
     public static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -5160,7 +5174,11 @@ JAVASCRIPT;
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
        // show a tab with count of jobs in the central and give link
         if (!Session::haveRight(self::$rightname, self::READALL) && !self::canCreate()) {
@@ -5272,6 +5290,7 @@ JAVASCRIPT;
 
     public static function showCentralNewList()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!Session::haveRight(self::$rightname, self::READALL)) {
@@ -5334,6 +5353,7 @@ JAVASCRIPT;
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -5802,6 +5822,7 @@ JAVASCRIPT;
      **/
     public static function cronCloseTicket($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ticket = new self();
@@ -5883,7 +5904,11 @@ JAVASCRIPT;
      **/
     public static function cronAlertNotClosed($task)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
             return 0;
@@ -5945,6 +5970,7 @@ JAVASCRIPT;
      **/
     public static function cronCreateInquest($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $conf        = new Entity();
@@ -6068,6 +6094,7 @@ JAVASCRIPT;
      **/
     public static function cronPurgeTicket(CronTask $task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ticket = new self();
@@ -6385,6 +6412,7 @@ JAVASCRIPT;
      */
     private function fillInputForBusinessRules(array &$input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $entities_id = isset($input['entities_id'])
@@ -6580,6 +6608,7 @@ JAVASCRIPT;
      */
     public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $p = [
             'linktypes'          => [],

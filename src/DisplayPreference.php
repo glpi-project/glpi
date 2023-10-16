@@ -57,6 +57,7 @@ class DisplayPreference extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -120,6 +121,7 @@ class DisplayPreference extends CommonDBTM
      **/
     public static function getForTypeUser($itemtype, $user_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -156,6 +158,7 @@ class DisplayPreference extends CommonDBTM
      **/
     public function activatePerso(array $input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!Session::haveRight(self::$rightname, self::PERSONAL)) {
@@ -212,6 +215,7 @@ class DisplayPreference extends CommonDBTM
      **/
     public function orderItem(array $input, $action)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Get current item
@@ -277,6 +281,7 @@ class DisplayPreference extends CommonDBTM
      */
     protected function getFixedColumns(string $itemtype): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $fixed_columns = [];
@@ -320,6 +325,7 @@ class DisplayPreference extends CommonDBTM
      **/
     public function showFormPerso($target, $itemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $searchopt = Search::getCleanedOptions($itemtype);
@@ -509,6 +515,7 @@ class DisplayPreference extends CommonDBTM
      **/
     public function showFormGlobal($target, $itemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $searchopt = Search::getCleanedOptions($itemtype);
@@ -660,6 +667,7 @@ class DisplayPreference extends CommonDBTM
      **/
     public static function showForUser($users_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $url = Toolbox::getItemTypeFormURL(__CLASS__);

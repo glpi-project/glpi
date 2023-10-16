@@ -155,6 +155,7 @@ class CartridgeItem extends CommonDBTM
      **/
     public static function getCount($id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -176,6 +177,7 @@ class CartridgeItem extends CommonDBTM
      **/
     public function addCompatibleType($cartridgeitems_id, $printermodels_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -383,7 +385,11 @@ class CartridgeItem extends CommonDBTM
      **/
     public static function cronCartridge($task = null)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $cron_status = 1;
         if ($CFG_GLPI["use_notifications"]) {
@@ -507,6 +513,7 @@ class CartridgeItem extends CommonDBTM
      **/
     public static function dropdownForPrinter(Printer $printer)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

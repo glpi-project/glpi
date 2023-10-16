@@ -81,6 +81,7 @@ class Pdu_Plug extends CommonDBRelation
      */
     public static function showItems(PDU $pdu)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $pdu->getID();

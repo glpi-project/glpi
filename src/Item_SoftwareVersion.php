@@ -258,6 +258,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     public function updateDatasForItem($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $item = new $itemtype();
@@ -288,6 +289,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      **/
     public static function countForVersion($softwareversions_id, $entity = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $item_version_table = self::getTable(__CLASS__);
@@ -350,6 +352,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      **/
     public static function countForSoftware($softwares_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -452,7 +455,11 @@ class Item_SoftwareVersion extends CommonDBRelation
      **/
     private static function showInstallations($searchID, $crit)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!Software::canView() || !$searchID) {
             return;
@@ -857,6 +864,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      **/
     public static function showForVersionByEntity(SoftwareVersion $version)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $softwareversions_id = $version->getField('id');
@@ -910,6 +918,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null, array $filters = []): DBmysqlIterator
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $selftable     = self::getTable(__CLASS__);
@@ -1011,6 +1020,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!Software::canView()) {
@@ -1388,6 +1398,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         $canedit,
         $display
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID    = $data["id"];
@@ -1675,6 +1686,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     public static function countForItem(CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $params = self::getListForItemParams($item);

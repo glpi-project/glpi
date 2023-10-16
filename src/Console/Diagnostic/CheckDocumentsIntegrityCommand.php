@@ -97,6 +97,7 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
      */
     protected function getDocuments(): iterable
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $i = 0;

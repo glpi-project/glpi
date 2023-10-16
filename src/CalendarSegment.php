@@ -155,6 +155,7 @@ class CalendarSegment extends CommonDBChild
      **/
     public static function getActiveTimeBetween($calendars_id, $day, $begin_time, $end_time)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $sum = 0;
@@ -204,6 +205,7 @@ class CalendarSegment extends CommonDBChild
     ) {
         // TODO: unit test this method with complex calendars using multiple
         // disconnected segments per day
+        /** @var \DBmysql $DB */
         global $DB;
 
         // Common SELECT for both modes
@@ -302,6 +304,7 @@ class CalendarSegment extends CommonDBChild
      **/
     public static function getFirstWorkingHour($calendars_id, $day)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Do not check hour if day before the end day of after the begin day
@@ -327,6 +330,7 @@ class CalendarSegment extends CommonDBChild
      **/
     public static function getLastWorkingHour($calendars_id, $day)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Do not check hour if day before the end day of after the begin day
@@ -353,6 +357,7 @@ class CalendarSegment extends CommonDBChild
      **/
     public static function isAWorkingHour($calendars_id, $day, $hour)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Do not check hour if day before the end day of after the begin day
@@ -377,6 +382,7 @@ class CalendarSegment extends CommonDBChild
      **/
     public static function showForCalendar(Calendar $calendar)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $calendar->getField('id');

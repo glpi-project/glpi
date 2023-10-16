@@ -215,6 +215,7 @@ class Rule extends CommonDBTM
      **/
     public static function getMenuContent()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $menu = [];
@@ -920,6 +921,7 @@ class Rule extends CommonDBTM
      **/
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if (!$this->isNewID($ID)) {
             $this->check($ID, READ);
@@ -1121,6 +1123,7 @@ class Rule extends CommonDBTM
      **/
     public function showActionsList($rules_id, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -1238,6 +1241,7 @@ class Rule extends CommonDBTM
      **/
     public function showCriteriasList($rules_id, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -1837,6 +1841,7 @@ class Rule extends CommonDBTM
      **/
     public function prepareAllInputDataForProcess($input, $params)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $input = $this->prepareInputDataForProcess($input, $params);
@@ -1880,6 +1885,7 @@ class Rule extends CommonDBTM
      */
     public function executePluginsActions($action, $output, $params, array $input = [])
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (isset($PLUGIN_HOOKS['use_rules'])) {
@@ -2134,6 +2140,7 @@ class Rule extends CommonDBTM
      **/
     public function getNextRanking(?string $sub_type = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -2159,6 +2166,7 @@ class Rule extends CommonDBTM
      **/
     public function showMinimalActionForm($fields, $canedit, $rand)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditAction" .
@@ -2289,6 +2297,7 @@ class Rule extends CommonDBTM
      **/
     public function showMinimalCriteriaForm($fields, $canedit, $rand)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditCriteria" .
@@ -2506,6 +2515,7 @@ class Rule extends CommonDBTM
      **/
     public function displayCriteriaSelectPattern($name, $ID, $condition, $value = "", $test = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $crit    = $this->getCriteria($ID);
@@ -2865,6 +2875,7 @@ class Rule extends CommonDBTM
      **/
     public function preProcessPreviewResults($output)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (isset($PLUGIN_HOOKS['use_rules'])) {
@@ -2993,6 +3004,7 @@ class Rule extends CommonDBTM
      **/
     public static function doHookAndMergeResults($hook, $params = [], $itemtype = '')
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (empty($itemtype)) {
@@ -3044,6 +3056,7 @@ class Rule extends CommonDBTM
      **/
     public function getRulesForCriteria($crit)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $rules = [];
@@ -3287,6 +3300,7 @@ class Rule extends CommonDBTM
         $valfield,
         $fieldfield
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $fieldid = getForeignKeyFieldForTable($ruleitem->getTable());
@@ -3616,6 +3630,7 @@ class Rule extends CommonDBTM
 
         $ranking_increment = 0;
         if ($reset === false) {
+            /** @var \DBmysql $DB */
             global $DB;
             $ranking_increment = $DB->request([
                 'SELECT' => ['MAX' => 'ranking AS rank'],

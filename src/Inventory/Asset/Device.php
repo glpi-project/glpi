@@ -47,6 +47,7 @@ abstract class Device extends InventoryAsset
      */
     protected function getExisting($itemdevicetable, $fk): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -68,6 +69,7 @@ abstract class Device extends InventoryAsset
 
     public function handle()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $devicetypes = Item_Devices::getItemAffinities($this->item->getType());

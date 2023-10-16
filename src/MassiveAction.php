@@ -189,6 +189,7 @@ class MassiveAction
      **/
     public function __construct(array $POST, array $GET, $stage, ?int $items_id = null)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!empty($POST)) {
@@ -717,6 +718,7 @@ class MassiveAction
      **/
     public static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null, ?int $items_id = null)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (is_string($item)) {
@@ -929,6 +931,10 @@ class MassiveAction
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         switch ($ma->getAction()) {
@@ -1422,6 +1428,7 @@ class MassiveAction
         CommonDBTM $item,
         array $ids
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $action = $ma->getAction();

@@ -331,6 +331,7 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public static function showForSLM(SLM $slm)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$slm->can($slm->fields['id'], READ)) {
@@ -468,6 +469,7 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public function showRulesList()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $fk      = static::getFieldNames($this->fields['type'])[1];
@@ -601,6 +603,7 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public function getDataForTicket($tickets_id, $type)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         list($dateField, $field) = static::getFieldNames($type);
@@ -1099,6 +1102,7 @@ abstract class LevelAgreement extends CommonDBChild
      **/
     public static function deleteLevelsToDo(Ticket $ticket)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ticketfield = static::$prefix . "levels_id_ttr";
@@ -1120,6 +1124,7 @@ abstract class LevelAgreement extends CommonDBChild
 
     public function cleanDBonPurge()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Clean levels

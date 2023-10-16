@@ -365,6 +365,11 @@ class DBmysql
      */
     public function doQuery($query)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var array $DEBUG_SQL
+         * @var integer $SQL_TOTAL_REQUEST
+         */
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
         //FIXME Remove use of $DEBUG_SQL and $SQL_TOTAL_REQUEST
@@ -513,6 +518,11 @@ class DBmysql
      */
     public function prepare($query)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var array $DEBUG_SQL
+         * @var integer $SQL_TOTAL_REQUEST
+         */
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
         $res = $this->dbh->prepare($query);
@@ -1326,6 +1336,7 @@ class DBmysql
                 // Values that corresponds to an existing namespaced class are not sanitized (see `Glpi\Toolbox\Sanitizer::sanitize()`).
                 // However, they have to be escaped in SQL queries.
                 // Note: method is called statically, so `$DB` may be not defined yet in edge cases (install process).
+                /** @var \DBmysql $DB */
                 global $DB;
                 $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
             }

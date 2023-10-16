@@ -107,6 +107,7 @@ class NetworkPortConnectionLog extends CommonDBChild
 
     public function showForItem(NetworkPort $netport, $user_filters = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

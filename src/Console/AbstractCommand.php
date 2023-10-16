@@ -102,6 +102,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     protected function initDbConnection()
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($this->requires_db && (!($DB instanceof DBmysql) || !$DB->connected)) {
