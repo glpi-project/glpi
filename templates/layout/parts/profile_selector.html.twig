@@ -130,6 +130,10 @@
     <script type="text/javascript">
     $(function() {
         var initTree{{ rand }} = function() {
+            if ($.ui.fancytree.getTree("#tree_entity{{ rand }}") !== null) {
+                return;
+            }
+
             $('#tree_entity{{ rand }}').fancytree({
                 // load plugins
                 extensions: ['filter', 'glyph', 'grid'],
