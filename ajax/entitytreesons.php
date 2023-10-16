@@ -51,13 +51,15 @@ if (Session::getCurrentInterface() == 'helpdesk') {
 
 $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
-$ckey    = 'entity_selector';
-$subckey = sha1(json_encode($_SESSION['glpiactiveprofile']['entities']));
-$subckey .= sha1($base_path); // cached value contains links based on `$base_path`, so cache key should change when `$base_path` changes
-$all_entitiestree = $GLPI_CACHE->get($ckey, []);
+$ckey = 'entity_selector'
+    . sha1(json_encode($_SESSION['glpiactiveprofile']['entities']))
+    . sha1($base_path) // cached value contains links based on `$base_path`, so cache key should change when `$base_path` changes
+;
+
+$entitiestree = $GLPI_CACHE->get($ckey);
 
 /* calculates the tree to save it in the cache if it is not already there */
-if (!array_key_exists($subckey, $all_entitiestree)) {
+if ($entitiestree === null) {
     $entitiestree = [];
     foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
         $default_entity_id = $default_entity['id'];
@@ -92,13 +94,10 @@ if (!array_key_exists($subckey, $all_entitiestree)) {
         $entitiestree = array_merge($entitiestree, $entitytree);
     }
 
-    $all_entitiestree[$subckey] = $entitiestree;
-    $GLPI_CACHE->set($ckey, $all_entitiestree);
+    $GLPI_CACHE->set($ckey, $entitiestree);
 }
 
 /* scans the tree to select the active entity */
-$entitiestree = [];
-$entitytree = $all_entitiestree[$subckey];
 $select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
     foreach ($entities as &$entity) {
         if (isset($ancestors[$entity['key']])) {
@@ -111,10 +110,8 @@ $select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
             $select_tree($entity['children']);
         }
     }
-    return $entities;
 };
-$select_tree($entitytree);
-$entitiestree = array_merge($entitiestree, $entitytree);
+$select_tree($entitiestree);
 
 echo json_encode($entitiestree);
 exit;
