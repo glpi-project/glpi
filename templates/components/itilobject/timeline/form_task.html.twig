@@ -239,7 +239,7 @@
                      {% endset %}
 
                      {% set task_state %}
-                        {% do call('Planning::dropdownState', ['state', subitem.fields['state'], true, {}]) %}
+                        {% do call('Planning::dropdownState', ['state', subitem.fields['state'], true, {'rand': rand}]) %}
                      {% endset %}
 
                      {{ fields.htmlField(
