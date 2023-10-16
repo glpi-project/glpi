@@ -132,4 +132,28 @@ class Parser extends GLPITestCase
         $parser = new \Glpi\Api\HL\RSQL\Parser($search);
         $this->string((string)$parser->parse($tokens))->isEqualTo($expected);
     }
+
+    /**
+     * When a filter references a property that does not exist, it should be ignored to avoid invalid SQL being generated.
+     * @return void
+     */
+    public function testIgnoreInvalidProperties()
+    {
+        $schema = [
+            'properties' => [
+                'id' => ['type' => 'integer'],
+                'name' => ['type' => 'string'],
+            ]
+        ];
+
+        $search_class = new \ReflectionClass(Search::class);
+        $search = $search_class->newInstanceWithoutConstructor();
+        $search_class->getProperty('schema')->setValue($search, $schema);
+        $search_class->getProperty('flattened_properties')->setValue($search, Schema::flattenProperties($schema['properties']));
+        $search_class->getProperty('joins')->setValue($search, Schema::getJoins($schema['properties']));
+        $parser = new \Glpi\Api\HL\RSQL\Parser($search);
+        $this->string((string)$parser->parse([[5, 'test'], [6, '=='], [7, 'test']]))->isEqualTo('1');
+        // Test an invalid filter with a valid one
+        $this->string((string)$parser->parse([[5, 'test'], [6, '=='], [7, 'test'], [1, ';'], [5, 'name'], [6, '=='], [7, 'test']]))->isEqualTo("(`_`.`name` = 'test')");
+    }
 }
