@@ -9485,6 +9485,7 @@ abstract class CommonITILObject extends CommonDBTM
             $all_statuses = static::getAllStatusArray();
             foreach ($all_statuses as $status_id => $status) {
                 $columns['status'][$status_id] = [
+                    'id'           => $status_id,
                     'name'         => $status,
                     'color_class'  => 'itilstatus ' . static::getStatusKey($status_id),
                     'drop_only'    => (int) $status_id === self::CLOSED
