@@ -66,7 +66,7 @@
       {{ current_entity_short|u.truncate(35, '...') }}
    </span>
 {% else %}
-   <div class="dropdown dropstart">
+   <div class="dropdown dropstart" id="entity-tree-dropdown-{{ rand }}">
       <a href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}">
          <i class="fa-fw ti ti-stack"></i>
          {{ current_entity_short|u.truncate(35, '...') }}
@@ -130,83 +130,91 @@
 
    <script type="text/javascript">
    $(function() {
-      $('#tree_entity{{ rand }}').fancytree({
-         // load plugins
-         extensions: ['filter', 'glyph', 'grid'],
+      var initTree{{ rand }} = function() {
+        $('#tree_entity{{ rand }}').fancytree({
+            // load plugins
+            extensions: ['filter', 'glyph', 'grid'],
 
-         // Scroll node into visible area, when focused by keyboard
-         autoScroll: true,
+            // Scroll node into visible area, when focused by keyboard
+            autoScroll: true,
 
-         // enable font-awesome icons
-         glyph: {
-            preset: "awesome5",
-            map: {}
-         },
+            // enable font-awesome icons
+            glyph: {
+                preset: "awesome5",
+                map: {}
+            },
 
-         // enable virtual dom, it requires the grid (table extension) plugin
-         table: {
-            indentation: 20,       // indent 20px per node level
-            nodeColumnIdx: 0,      // render the node title into the 1st column
-            mergeStatusColumns: false,
-         },
-         grid: {
-            mergeStatusColumns: false,
-         },
-         viewport: {
-            enabled: true,
-            count: 15, // number of items to display at once
-         },
+            // enable virtual dom, it requires the grid (table extension) plugin
+            table: {
+                indentation: 20,       // indent 20px per node level
+                nodeColumnIdx: 0,      // render the node title into the 1st column
+                mergeStatusColumns: false,
+            },
+            grid: {
+                mergeStatusColumns: false,
+            },
+            viewport: {
+                enabled: true,
+                count: 15, // number of items to display at once
+            },
 
-         // load data by ajax
-         source: {
-            url:  '{{ path("/ajax/entitytreesons.php") }}',
-            cache: false
-         },
+            // load data by ajax
+            source: {
+                url:  '{{ path("/ajax/entitytreesons.php") }}',
+                cache: false
+            },
 
-         // filter plugin options
-         filter: {
-            mode: "hide", // remove unmatched nodes
-            autoExpand: true, // if results found in children, auto-expand parent
-            nodata: '{{ __("No entity found") }}', // message when no data found
-            highlight: false, // do not highlight matches by wrapping inside tags (when true, this strip the a tag)
-            counter: false, // do not show counters when filtering entity tree
-         },
+            // filter plugin options
+            filter: {
+                mode: "hide", // remove unmatched nodes
+                autoExpand: true, // if results found in children, auto-expand parent
+                nodata: '{{ __("No entity found") }}', // message when no data found
+                highlight: false, // do not highlight matches by wrapping inside tags (when true, this strip the a tag)
+                counter: false, // do not show counters when filtering entity tree
+            },
 
-         // load 3rd party scrollbar extension for viewport mode
-         preInit: function(event, data) {
-            var tree = data.tree;
+            // load 3rd party scrollbar extension for viewport mode
+            preInit: function(event, data) {
+                var tree = data.tree;
 
-            tree.verticalScrollbar = new PlainScrollbar({
-               alwaysVisible: true,
-               arrows: true,
-               orientation: "vertical",
-               onSet: function(numberOfItems) {
-                  tree.setViewport({
-                     start: Math.round(numberOfItems.start),
-                  });
-               },
-               scrollbarElement: document.getElementById("verticalScrollbar-{{ rand }}"),
-            });
-         },
+                tree.verticalScrollbar = new PlainScrollbar({
+                alwaysVisible: true,
+                arrows: true,
+                orientation: "vertical",
+                onSet: function(numberOfItems) {
+                    tree.setViewport({
+                        start: Math.round(numberOfItems.start),
+                    });
+                },
+                scrollbarElement: document.getElementById("verticalScrollbar-{{ rand }}"),
+                });
+            },
 
-         // update scrollbar when viewport is updated
-         updateViewport: function(event, data) {
-            var tree = data.tree;
+            // update scrollbar when viewport is updated
+            updateViewport: function(event, data) {
+                var tree = data.tree;
 
-            tree.verticalScrollbar.set({
-               start: tree.viewport.start,
-               total: tree.visibleNodeList.length,
-               visible: tree.viewport.count,
-            }, true);  // do not trigger `onSet`
+                tree.verticalScrollbar.set({
+                start: tree.viewport.start,
+                total: tree.visibleNodeList.length,
+                visible: tree.viewport.count,
+                }, true);  // do not trigger `onSet`
 
-            initTooltips();
-         },
+                initTooltips();
+            },
 
-        // update toolips on node expand
-        expand: function(event, data) {
-            initTooltips();
-        },
-      });
+            // update toolips on node expand
+            expand: function(event, data) {
+                initTooltips();
+            },
+        });
+      };
+
+      // init Entities tree only when user ask for it (when dropdown is opened)
+      document.getElementById('entity-tree-dropdown-{{ rand }}')
+        .addEventListener('show.bs.dropdown', function (event) {
+            initTree{{ rand }}();
+        });
 
       var searchTree = function() {
          var search_text = $("#entsearchtext{{ rand }}").val();
