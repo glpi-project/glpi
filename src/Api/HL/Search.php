@@ -138,8 +138,8 @@ final class Search
         }
         $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
         return count(array_filter($this->joins, static function ($j_name) use ($prop_parent) {
-                return str_starts_with($prop_parent, $j_name);
-            }, ARRAY_FILTER_USE_KEY)) > 0;
+            return str_starts_with($prop_parent, $j_name);
+        }, ARRAY_FILTER_USE_KEY)) > 0;
     }
 
     public function getSQLFieldForProperty(string $prop_name): string
