@@ -77,6 +77,8 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
 
 \Glpi\Tests\BootstrapUtils::initVarDirectories();
 
+include_once __DIR__ . '/../inc/includes.php';
+
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
    // Use configured cache for cache tests
@@ -86,8 +88,6 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
    // Use "in-memory" cache for other tests
     $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
-
-include_once __DIR__ . '/../inc/includes.php';
 
 // Errors/exceptions that are not explicitely validated by `$this->error()` or `$this->exception` asserter will already make test fails.
 // There is no need to pollute the output with error messages.
