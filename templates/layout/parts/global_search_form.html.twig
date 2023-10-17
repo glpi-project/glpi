@@ -31,7 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% if get_current_interface() == 'central' %}
+{% if get_current_interface() == 'central' and config('allow_search_global') %}
 <form action="{{ path('front/search.php') }}" role="search" method="get" data-submit-once>
    <div class="input-group input-group-flat">
       <input type="text" class="form-control" name="globalsearch" placeholder="{{ __('Search…') }}" />

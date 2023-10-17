@@ -95,11 +95,9 @@
             {% if user_pref('page_layout') == 'vertical' %}
                {{ include('layout/parts/breadcrumbs.html.twig') }}
 
-               {% if config('allow_search_global') %}
-                  <div class="ms-lg-auto d-none d-lg-block flex-grow-1 flex-lg-grow-0">
+                <div class="ms-lg-auto d-none d-lg-block flex-grow-1 flex-lg-grow-0">
                      {{ include('layout/parts/global_search_form.html.twig') }}
-                  </div>
-               {% endif %}
+                </div>
 
             {% elseif user_pref('page_layout') == 'horizontal' %}
                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
@@ -133,11 +131,9 @@
       <div class="navbar navbar-expand-md navbar-light secondary-bar sticky-md-top shadow-sm">
          <div class="container-fluid justify-content-start">
             {{ include('layout/parts/breadcrumbs.html.twig') }}
-            {% if config('allow_search_global') %}
-               <div class="ms-md-auto d-none d-md-block flex-grow-1 flex-md-grow-0">
-                  {{ include('layout/parts/global_search_form.html.twig') }}
-               </div>
-            {% endif %}
+            <div class="ms-md-auto d-none d-md-block flex-grow-1 flex-md-grow-0">
+                {{ include('layout/parts/global_search_form.html.twig') }}
+            </div>
          </div>
       </div>
       {% endif %}
