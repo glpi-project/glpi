@@ -739,7 +739,9 @@ abstract class MainAsset extends InventoryAsset
         } else {
             $val->states_id =  $this->item->fields['states_id'];
         }
-
+                    $known_key = md5('states_id' . $val->states_id);
+                    $this->known_links[$known_key] = $val->states_id;
+                    $this->raw_links[$known_key] = $val->states_id;
         $val->id = $this->item->fields['id'];
 
         if ($entities_id == -1) {
