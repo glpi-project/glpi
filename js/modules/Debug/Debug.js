@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global initSortableTable, escapeMarkupText, luminance, hexToRgb */
+/* global copyTextToClipboard, escapeMarkupText, hexToRgb, initSortableTable, luminance */
 
 /**
  * @typedef ProfilerSection
@@ -542,7 +542,14 @@ window.GLPI.Debug = new class Debug {
                     <tr>
                         ${filtered_request_id === undefined ? `<td><button class="btn btn-link request-link">${request_id}</button></td>` : ''}
                         <td>${query['num']}</td>
-                        <td style="max-width: 50vw; white-space: break-spaces;"><code class="d-block cm-s-default border-0">${query['query']}</code></td>
+                        <td>
+                            <div class="d-flex align-items-start" style="max-width: 50vw;">
+                                <div style="max-width: 50vw; white-space: break-spaces;" class="w-100"><code class="d-block cm-s-default border-0">${query['query']}</code></div>
+                                <button type="button" class="ms-1 copy-code btn btn-sm btn-ghost-secondary" title="Copy query to clipboard">
+                                    <i class="ti ti-clipboard-copy"></i>
+                                </button>
+                            </div>
+                        </td>
                         <td data-value-unit="ms">${query['time']} ms</td>
                         <td>${query['rows']}</td>
                         <td>${escapeMarkupText(query['warnings'])}</td>
@@ -552,6 +559,19 @@ window.GLPI.Debug = new class Debug {
             });
         });
         sql_table_body.append(rows_to_append);
+
+        $(".copy-code").on('click', function () {
+            // copy content of code block in clipboard
+            const code = $(this).parent().find('code');
+            copyTextToClipboard(code.text());
+
+            // change temporary the button icon to a check then after a while return to the original icon
+            const icon = $(this).find('i');
+            icon.removeClass('ti-clipboard-copy').addClass('ti-check');
+            setTimeout(() => {
+                icon.removeClass('ti-check').addClass('ti-clipboard-copy');
+            }, 1000);
+        });
 
         if (filtered_request_id !== undefined) {
             let total_requests = 0;
