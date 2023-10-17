@@ -285,21 +285,22 @@ final class SearchEngine
 
         // Default values of parameters
         $p = [
-            'criteria'              => [],
-            'metacriteria'          => [],
-            'sort'                  => ['1'],
-            'order'                 => ['ASC'],
-            'start'                 => 0,
-            'is_deleted'            => 0,
-            'export_all'            => 0,
-            'display_type'          => \Search::HTML_OUTPUT,
-            'showmassiveactions'    => true,
-            'dont_flush'            => false,
-            'show_pager'            => true,
-            'show_footer'           => true,
-            'no_sort'               => false,
-            'list_limit'            => $_SESSION['glpilist_limit'],
-            'massiveactionparams'   => [],
+            'criteria'                  => [],
+            'metacriteria'              => [],
+            'sort'                      => ['1'],
+            'order'                     => ['ASC'],
+            'start'                     => 0,
+            'is_deleted'                => 0,
+            'export_all'                => 0,
+            'display_type'              => \Search::HTML_OUTPUT,
+            'showmassiveactions'        => true,
+            'dont_flush'                => false,
+            'show_pager'                => true,
+            'show_footer'               => true,
+            'no_sort'                   => false,
+            'list_limit'                => $_SESSION['glpilist_limit'],
+            'massiveactionparams'       => [],
+            'disable_order_by_fallback' => false,
         ];
         if (class_exists($itemtype)) {
             $p['target']       = $itemtype::getSearchURL();

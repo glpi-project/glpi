@@ -35,6 +35,7 @@
 
 namespace Glpi\Search\Input;
 
+use AllAssets;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
@@ -540,11 +541,34 @@ final class QueryBuilder implements SearchInputInterface
      **/
     public static function manageParams($itemtype, $params = [], $usesession = true, $forcebookmark = false): array
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $default_values = [];
 
         $default_values["start"]       = 0;
         $default_values["order"]       = "ASC";
-        $default_values["sort"]        = 1;
+        if (
+            (
+                empty($params['criteria'] ?? [])  // No search criteria
+                || $params['criteria'] == self::getDefaultCriteria($itemtype) // Default criteria
+            )
+            && ( // Is an asset
+                in_array($itemtype, $CFG_GLPI['asset_types'])
+                || $itemtype == AllAssets::getType()
+            )
+        ) {
+            // Disable sort on assets default search request
+            // This improve significantly performances on default search queries without much functional costs as users
+            // often don't care about the default search results
+            $default_values["sort"] = 0;
+            // Defining "sort" to 0 is no enough as the search engine will default to sorting on the `id` column.
+            // Sorting by id still has a high performance cost on heavy requests, thus we must explicitly request
+            // that no ORDER BY clause will be set
+            $default_values["disable_order_by_fallback"] = true;
+        } else {
+            $default_values["sort"]    = 1;
+        }
         $default_values["is_deleted"]  = 0;
         $default_values["as_map"]      = 0;
         $default_values["browse"]      = $itemtype::$browse_default ?? 0;
@@ -725,9 +749,10 @@ final class QueryBuilder implements SearchInputInterface
 
         return [
             [
-                'field' => $field,
-                'link'  => 'contains',
-                'value' => ''
+                'link'       => 'AND',
+                'field'      => $field,
+                'searchtype' => 'contains',
+                'value'      => ''
             ]
         ];
     }

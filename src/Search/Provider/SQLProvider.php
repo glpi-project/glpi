@@ -3671,6 +3671,10 @@ final class SQLProvider implements SearchProviderInterface
         }
         if (count($sort_fields)) {
             $ORDER = \Search::addOrderBy($data['itemtype'], $sort_fields);
+        } elseif ($data['search']['disable_order_by_fallback'] ?? false) {
+            // Sort isn't requested by the user and fallback is disabled
+            // -> No `ORDER BY` clause for this search request
+            $ORDER = "";
         }
 
         $SELECT = rtrim(trim($SELECT), ',');
@@ -3920,7 +3924,23 @@ final class SQLProvider implements SearchProviderInterface
                         $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
                         $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
                     }
-                    $QUERY .= $tmpquery;
+
+                    // Performance optimization: limit each subqueries returned rows to the max number of items we need
+                    // to display.
+                    // This help a lot on MariaDB as it seems less smart than MySQL when dealing with these kind of
+                    // UNION requests
+                    // This can however only by done on the first page of a result set as it would break pagination on
+                    // other pages.
+                    // Sorted request also can't benefit from this optimization
+                    if (
+                        empty($ORDER) // No sort clause is defined
+                        && $data['search']['start'] == 0 // First page of results
+                    ) {
+                        $tmpquery .= " LIMIT " . $data['search']['list_limit'];
+                    }
+
+                    // Wrap inner union queries to support potential limit clause
+                    $QUERY .= "(" . $tmpquery . ")";
                 }
             }
             if (empty($QUERY)) {
