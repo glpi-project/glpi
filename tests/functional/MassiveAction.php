@@ -813,7 +813,7 @@ class MassiveAction extends DbTestCase
             \Domain::class
         );
 
-        //dynamic domain still exist but in trashbin
+        //dynamic domain still exist but in trashbin and locked
         $rows = $domain_item->find([
             'domains_id'            => $dynamic_domain->fields['id'],
             'is_dynamic'            => 1,

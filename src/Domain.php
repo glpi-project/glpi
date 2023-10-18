@@ -507,7 +507,8 @@ class Domain extends CommonDBTM
                             'itemtype'   => $item->getType()
                         ]) as $data
                     ) {
-                        if ($domain_item->delete($data, !$data['is_dynamic'])) {
+                        $purge = !$data['is_dynamic']; // dynamic relations should be preserved for inventory lock feature (dynamic + deleted = locked)
+                        if ($domain_item->delete($data, $purge)) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
