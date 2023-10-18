@@ -36,6 +36,10 @@
 namespace tests\units;
 
 use DbTestCase;
+use Computer;
+use Document;
+use Document_Item;
+use Entity;
 use SoftwareVersion;
 
 /* Test for inc/commondbtm.class.php */
@@ -1433,20 +1437,15 @@ class CommonDBTM extends DbTestCase
         $this->hasSessionMessages(1, [$err_msg]);
     }
 
-    public function testAddFiles()
+    public function testAddFilesWithNewFile()
     {
+        // Simulate legit call to `addFiles()` post_addItem / post_updateItem
+        $item = getItemByTypeName(Computer::class, '_test_pc01');
+
         $filename_txt = '65292dc32d6a87.46654965' . 'foo.txt';
         $content = $this->getUniqueString();
         file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
 
-        // We need to use an item saved in the DB, then we test AddFiles
-        // from an existing class with a table in DB.
-        $item = new Computer();
-        $item->add([
-            'name' => 'a computer',
-            'entities_id' => 0,
-        ]);
-        $item->getFromDB($item->getID());
         $input = [
             'name' => 'Upload new file',
             '_filename' => [
@@ -1459,59 +1458,60 @@ class CommonDBTM extends DbTestCase
                 0 => '65292dc32d6a87.46654965',
             ]
         ];
-
-        // The tested method is called in post_addItem()
-        // Then the item has a property inpur which contains the form data
         $item->input = $input;
-        $output = $item->addFiles($input);
+        $item->addFiles($input);
+
         unlink(GLPI_TMP_DIR . '/' . $filename_txt);
+
+        // Check the document exists and is linked to the computer
         $document_item = new Document_Item();
-        $document_item->getFromDbByCrit([
-            'itemtype' => $item->getType(),
-            'items_id' => $item->getID()
-        ]);
-        // If no or several relations are found, this assertion will fail
-        $this->boolean($document_item->isNewItem())->isFalse();
-
-        // Check the document exists
+        $this->boolean(
+            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+        )->isTrue();
         $document = new Document();
-        $document->getFromDB($document_item->fields['documents_id']);
-        $this->boolean($document->isNewItem())->isFalse();
-
-        // Check the file has the name we expect, without prefix
+        $this->boolean(
+            $document->getFromDB($document_item->fields['documents_id'])
+        )->isTrue();
         $this->string($document->fields['filename'])->isEqualTo('foo.txt');
+    }
 
-        // Try to add a file which already exists
-        $filename_txt = '6079908c4be820.58460925' . 'foo.txt';
+    public function testAddFilesSimilarToExistingDocument()
+    {
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
         $content = $this->getUniqueString();
-        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+
+        // Create the document
+        $filename1_txt = '6079908c4be820.58460925' . 'foo.txt';
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename1_txt, $content);
+
         $document = new Document();
-        $document->add([
-            'entities_id' => 0,
+        $init_document_id = $document->add([
+            'entities_id' => $root_entity_id,
             'is_recursive' => 0,
             '_only_if_upload_succeed' => 1,
             '_filename' => [
-                0 => $filename_txt,
+                0 => $filename1_txt,
             ],
             '_prefix_filename' => [
                 0 => '6079908c4be820.58460925',
             ]
         ]);
-        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
-        $this->boolean($document->isNewItem())->isFalse();
 
-        $item = new Computer();
-        $item->add([
-            'name' => 'an other computer',
-            'entities_id' => 0,
-        ]);
-        $item->getFromDB($item->getID());
-        $filename_txt = '65292dc32d6a87.22222222' . 'bar.txt';
-        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+        unlink(GLPI_TMP_DIR . '/' . $filename1_txt);
+
+        $this->boolean($document->getFromDB($init_document_id))->isTrue();
+
+        // Simulate legit call to `addFiles()` post_addItem / post_updateItem
+        $item = getItemByTypeName(Computer::class, '_test_pc01');
+
+        $filename2_txt = '65292dc32d6a87.22222222' . 'bar.txt';
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename2_txt, $content);
+
         $input = [
             'name' => 'Upload new file',
             '_filename' => [
-                0 => $filename_txt,
+                0 => $filename2_txt,
             ],
             '_tag_filename' => [
                 0 => '0bf32119-761764d0-65292dc0770083.87619309',
@@ -1520,24 +1520,23 @@ class CommonDBTM extends DbTestCase
                 0 => '65292dc32d6a87.22222222',
             ]
         ];
-
         $item->input = $input;
-        $output = $item->addFiles($input);
-        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
+        $item->addFiles($input);
+
+        unlink(GLPI_TMP_DIR . '/' . $filename2_txt);
+
+        // Check the document is linked to the computer
         $document_item = new Document_Item();
-        $document_item->getFromDbByCrit([
-            'itemtype' => $item->getType(),
-            'items_id' => $item->getID()
-        ]);
-        // If no or several relations are found, this assertion will fail
-        $this->boolean($document_item->isNewItem())->isFalse();
+        $this->boolean(
+            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+        )->isTrue();
 
-        // Check the document exists
+        // Check that first document has been updated
         $document = new Document();
-        $document->getFromDB($document_item->fields['documents_id']);
-        $this->boolean($document->isNewItem())->isFalse();
-
-        // Check the file has the name we expect, without prefix
+        $this->boolean(
+            $document->getFromDB($document_item->fields['documents_id'])
+        )->isTrue();
+        $this->integer($document->getID())->isEqualTo($init_document_id);
         $this->string($document->fields['filename'])->isEqualTo('bar.txt');
     }
 }
