@@ -84,14 +84,14 @@
 
                      {# Run period #}
                      {% set run_period_field %}
-                        <div class="d-flex">
+                        <div class="d-flex align-items-center">
                            {{ fields.dropdownNumberField('hourmin', item.fields['hourmin'], null, {
                               min: 0,
                               max: 24,
                               no_label: true,
                               field_class: ''
                            }) }}
-                           <span class="mx-2 text-nowrap">-&gt;</span>
+                           <i class="ti ti-arrow-right mb-3"></i>
                            {{ fields.dropdownNumberField('hourmax', item.fields['hourmax'], null, {
                               min: 0,
                               max: 24,
