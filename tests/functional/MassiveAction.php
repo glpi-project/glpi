@@ -38,6 +38,7 @@ namespace tests\units;
 use CommonDBTM;
 use Contract;
 use DbTestCase;
+use Domain_Item;
 use Notepad;
 use Problem;
 use Session;
@@ -702,5 +703,125 @@ class MassiveAction extends DbTestCase
             $ko,
             User::class
         );
+    }
+
+
+
+    public function testProcessMassiveActionsForOneItemtype_AddDomain()
+    {
+        $this->login('glpi', 'glpi');
+
+        $domain_item = new \Domain_Item();
+
+        //create computer
+        $computer = new \Computer();
+        $this->integer($computer->add([
+            'name' => 'test',
+            'entities_id' => 1,
+        ]))->isGreaterThan(0);
+
+        //create manual domain
+        $manual_domain = new \Domain();
+        $this->integer($manual_domain->add([
+            'name' => 'manual_domain',
+            'entities_id' => 1,
+        ]))->isGreaterThan(0);
+
+
+        $this
+        ->boolean(boolval(Session::haveRight(Domain_Item::$rightname, UPDATE)))
+        ->isIdenticalTo(true);
+
+        // Execute action to link Computer and Manual Domain
+        $this->processMassiveActionsForOneItemtype(
+            "add_item",
+            $computer,
+            [$computer->fields['id']],
+            ['domains_id' => $manual_domain->fields['id'], 'domainrelations_id' => \DomainRelation::BELONGS],
+            1,
+            0,
+            \Domain::class
+        );
+
+        //check if exist
+        $rows = $domain_item->find([
+            'domains_id'            => $manual_domain->fields['id'],
+            'items_id'              => $computer->fields['id'],
+            'itemtype'              => $computer->getType(),
+            'domainrelations_id'    => \DomainRelation::BELONGS,
+            'is_deleted'            => false,
+        ]);
+        $this->integer(count($rows))->isEqualTo(1);
+
+
+        //create new domain (for is_dynamic test)
+        $dynamic_domain = new \Domain();
+        $this->integer($dynamic_domain->add([
+            'name' => 'dynamic_domain',
+        ]))->isGreaterThan(0);
+
+        //add relation (with is_dynamic = 1)
+        $this->integer($domain_item->add([
+            'domains_id'            => $dynamic_domain->fields['id'],
+            'is_dynamic'            => 1,
+            'items_id'              => $computer->fields['id'],
+            'itemtype'              => $computer->getType(),
+            'domainrelations_id'    => \DomainRelation::BELONGS,
+            'is_deleted'            => false,
+        ]))->isGreaterThan(0);
+
+
+        // Execute action to remove link between Computer and Manual Domain
+        $this->processMassiveActionsForOneItemtype(
+            "remove_domain",
+            $computer,
+            [$computer->fields['id']],
+            ['domains_id' => $manual_domain->fields['id']],
+            1,
+            0,
+            \Domain::class
+        );
+
+        //manual Domain link should not exist
+        $rows = $domain_item->find([
+            'domains_id'            => $manual_domain->fields['id'],
+            'items_id'              => $computer->fields['id'],
+            'itemtype'              => $computer->getType(),
+            'domainrelations_id'    => \DomainRelation::BELONGS,
+        ]);
+        $this->integer(count($rows))->isEqualTo(0);
+
+        //dynamic domain still exist
+        $rows = $domain_item->find([
+            'domains_id'            => $dynamic_domain->fields['id'],
+            'is_dynamic'            => 1,
+            'items_id'              => $computer->fields['id'],
+            'itemtype'              => $computer->getType(),
+            'domainrelations_id'    => \DomainRelation::BELONGS,
+            'is_deleted'            => false,
+        ]);
+        $this->integer(count($rows))->isEqualTo(1);
+
+        // Execute action to remove link between Computer and Dynamic Domain
+        $this->processMassiveActionsForOneItemtype(
+            "remove_domain",
+            $computer,
+            [$computer->fields['id']],
+            ['domains_id' => $dynamic_domain->fields['id']],
+            1,
+            0,
+            \Domain::class
+        );
+
+        //dynamic domain still exist but in trashbin
+        $rows = $domain_item->find([
+            'domains_id'            => $dynamic_domain->fields['id'],
+            'is_dynamic'            => 1,
+            'items_id'              => $computer->fields['id'],
+            'itemtype'              => $computer->getType(),
+            'domainrelations_id'    => \DomainRelation::BELONGS,
+            'is_deleted'            => true,
+        ]);
+        $this->integer(count($rows))->isEqualTo(1);
     }
 }
