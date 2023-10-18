@@ -261,7 +261,7 @@
 
 {% macro passwordField(name, value, label = '', options = {}) %}
    {% set options = {
-      'can_regenerate' : options.can_regenerate,
+      'can_regenerate': options.can_regenerate,
       'clearable': options.clearable is defined ? options.clearable : not options.is_disclosable,
       'is_copyable': options.is_disclosable ?? false
    }|merge(options) %}
@@ -750,7 +750,7 @@
       'align_label_right': true,
       'mb': 'mb-2',
       'field_class': 'col-12 col-sm-6',
-      'container_id' : '',
+      'container_id': '',
       'add_field_class': '',
       'add_field_attribs': {},
       'center': false,

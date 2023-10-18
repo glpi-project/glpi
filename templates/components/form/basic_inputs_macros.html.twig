@@ -61,7 +61,7 @@
    {% endif %}
 
     {% set input %}
-        <input type="{{ options.type }}" {{ options.id != null ? 'id=' ~ options.id : '' }}
+        <input type="{{ options.type }}" id="{{ options.id != null ? options.id : '%id%' }}"
                class="form-control {{ options.input_addclass }}"
                name="{{ name }}" value="{{ value }}"
             {% for attr, value in options.additional_attributes %}
