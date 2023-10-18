@@ -707,9 +707,6 @@ abstract class MainAsset extends InventoryAsset
             $this->setNew();
 
             //update val according to commonDBTM process (rule)
-            $lockeds = new \Lockedfield();
-            $locks = $lockeds->getLockedValues($this->item->getType(), $this->item->fields['id']);
-
             foreach ($this->item->fields as $onadd_key => $onadd_value) {
                 // handle after
                 // we need to manage states_id on both cases (add / update)
@@ -720,8 +717,8 @@ abstract class MainAsset extends InventoryAsset
 
                 // set value computed on add by GLPI (and rules) to $val
                 // to prevent data loss during updates
-                // only for known keys (from $val) and for keys without global lock
-                if (property_exists($val, $onadd_key) && !array_key_exists($onadd_key, $locks)) {
+                // only for known keys (from $val)
+                if (property_exists($val, $onadd_key)) {
                     $val->$onadd_key = $onadd_value;
                     //update known_list
                     $known_key = md5($onadd_key . $val->$onadd_key);
