@@ -103,9 +103,30 @@
         field_options
     ) }}
 
+    {{ fields.textField(
+        'company',
+        item.fields['company'],
+        __('Company'),
+        field_options
+    ) }}
+
+    {{ fields.textField(
+        'owner',
+        item.fields['owner'],
+        __('Owner'),
+        field_options
+    ) }}
+
     {{ fields.htmlField(
         'install_date',
         item.fields['install_date']|formatted_datetime,
         __('Installation date')
+    ) }}
+
+    {{ fields.textField(
+        'hostid',
+        item.fields['hostid'],
+        __('Host ID'),
+        field_options
     ) }}
 {% endblock %}
