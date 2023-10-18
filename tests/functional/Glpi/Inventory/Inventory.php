@@ -6160,7 +6160,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => 'use TAG as otherserial',
             'match'     => 'AND',
             'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
         ];
 
         $rule = new \Rule();
@@ -6485,9 +6485,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check created computer
         $computer = new \Computer();
         $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
-        $this->string($computer->fields['comment'])->isIdenticalTo('A comment');
-        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
-        $this->integer($computer->fields['locations_id'])->isIdenticalTo($locations_id);
+        $this->variable($computer->fields['comment'])->isNull();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo(0);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo(0);
 
         //redo inventory
         $this->doInventory($xml_source, true);
@@ -6754,7 +6754,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
         $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
         //location is not set by rule on update, but is set from inventory data
-        $this->integer($neteq->fields['locations_id'])->isNotIdenticalTo($locations_id);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo(getItemByTypeName(\Location::class, 'paris.pa3', true));
     }
 
     public function testBusinessRuleOnUpdateNetworkEquipment()
@@ -6890,9 +6890,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check created network equipment
         $neteq = new \NetworkEquipment();
         $this->boolean($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']))->isTrue();
-        $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
-        $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
-        $this->integer($neteq->fields['locations_id'])->isIdenticalTo($locations_id);
+        $this->variable($neteq->fields['comment'])->isNull();
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo(0);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo(getItemByTypeName(\Location::class, 'paris.pa3', true));
 
         //redo inventory
         $this->doInventory($xml_source, true);
@@ -7173,7 +7173,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
         $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
         //location is not set by rule on update, but is set from inventory data
-        $this->integer($printer->fields['locations_id'])->isNotIdenticalTo($locations_id);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo(getItemByTypeName(\Location::class, 'Location', true));
     }
 
     public function testBusinessRuleOnUpdatePrinter()
@@ -7305,9 +7305,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check created printer
         $printer = new \Printer();
         $this->boolean($printer->getFromDBByCrit(['serial' => 'E1234567890']))->isTrue();
-        $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
-        $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
-        $this->integer($printer->fields['locations_id'])->isIdenticalTo($locations_id);
+        $this->variable($printer->fields['comment'])->isNull();
+        $this->integer($printer->fields['states_id'])->isIdenticalTo(0);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo(getItemByTypeName(\Location::class, 'Location', true));
 
         //redo inventory
         $this->doInventory($xml_source, true);
@@ -7604,7 +7604,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check created computer
         $computer = new \Computer();
         $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
-        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['states_id'])->isIdenticalTo(0);
 
         //redo inventory
         $this->doInventory($xml_source, true);

@@ -883,6 +883,12 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $input = $this->handleInput($val, $this->item);
+
+        if ($this->isNew()) {
+            // ONADD were already exececuted, and we want to skip rules that are only ONUPDATE
+            $input['_skip_rules'] = true;
+        }
+
         $this->item->update(Sanitizer::sanitize($input));
 
         if (!($this->item instanceof RefusedEquipment)) {
