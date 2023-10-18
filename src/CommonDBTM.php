@@ -5724,6 +5724,10 @@ class CommonDBTM extends CommonGLPI
             return;
         }
 
+        if (array_key_exists('_skip_rules', $this->input) && $this->input['_skip_rules'] !== false) {
+            return;
+        }
+
         // Only process itemtype that are assets
         if (in_array($this->getType(), $CFG_GLPI['asset_types'])) {
             $ruleasset          = new RuleAssetCollection();

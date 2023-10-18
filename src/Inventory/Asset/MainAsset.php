@@ -405,7 +405,7 @@ abstract class MainAsset extends InventoryAsset
      */
     public function prepareAllRulesInput(\stdClass $val): array
     {
-        $input = [];
+        $input = ['_auto' => 1];
 
         if (isset($this->getAgent()->fields['tag'])) {
             $input['tag'] = $this->getAgent()->fields['tag'];
@@ -705,8 +705,40 @@ abstract class MainAsset extends InventoryAsset
                 throw new \Exception('Unable to create item.');
             }
             $this->setNew();
+
+            //update val according to commonDBTM process (rule)
+            foreach ($this->item->fields as $onadd_key => $onadd_value) {
+                // handle after
+                // we need to manage states_id on both cases (add / update)
+                // because states_id can be configured globally by inventory configuration
+                if ($onadd_key == 'states_id') {
+                    continue;
+                }
+
+                // set value computed on add by GLPI (and rules) to $val
+                // to prevent data loss during updates
+                // only for known keys (from $val)
+                if (property_exists($val, $onadd_key)) {
+                    $val->$onadd_key = $onadd_value;
+                    //update known_list
+                    $known_key = md5($onadd_key . $val->$onadd_key);
+                    $this->known_links[$known_key] = $onadd_value;
+                    $this->raw_links[$known_key] = $onadd_value;
+                }
+            }
         }
 
+        // special case for states_id (no need for entites_id because RuleAsset has no action for entities_id)
+        // when default states is set (> 0) from inventory configuration
+        // force it to be set on the item
+        if ($default_states_id && $default_states_id != '-1') {
+            $val->states_id = $default_states_id;
+        } else {
+            $val->states_id =  $this->item->fields['states_id'];
+        }
+        $known_key = md5('states_id' . $val->states_id);
+        $this->known_links[$known_key] = $val->states_id;
+        $this->raw_links[$known_key] = $val->states_id;
         $val->id = $this->item->fields['id'];
 
         if ($entities_id == -1) {
@@ -801,7 +833,7 @@ abstract class MainAsset extends InventoryAsset
         ]);
 
         if ($this->is_discovery === true && !$this->isNew()) {
-            //if NetworkEquipement
+            //if NetworkEquipment
             //Or printer that has not changed its IP
             //do not update to prevents discoveries to remove all ports, IPs and so on found with network inventory
             if (
@@ -851,6 +883,12 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $input = $this->handleInput($val, $this->item);
+
+        if ($this->isNew()) {
+            // ONADD were already exececuted, and we want to skip rules that are only ONUPDATE
+            $input['_skip_rules'] = true;
+        }
+
         $this->item->update(Sanitizer::sanitize($input));
 
         if (!($this->item instanceof RefusedEquipment)) {
