@@ -2090,6 +2090,7 @@ class User extends CommonDBTM
                 }
 
                 foreach ($import_fields as $k => $val) {
+                    $val = addslashes(Sanitizer::unsanitize($val));
                     switch ($k) {
                         case "usertitles_id":
                             $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
