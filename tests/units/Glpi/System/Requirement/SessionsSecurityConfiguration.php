@@ -165,7 +165,7 @@ class SessionsSecurityConfiguration extends \GLPITestCase
         $this->array($this->testedInstance->getValidationMessages())->isEqualTo(
             [
                 'Checking the session cookie configuration of the web server cannot be done in the CLI context.',
-                'However, you should apply the following recommendations for configuring the web server.',
+                'You should apply the following recommendations for configuring the web server.',
                 'PHP directive "session.cookie_secure" should be set to "on" when GLPI can be accessed on HTTPS protocol.',
                 'PHP directive "session.cookie_httponly" should be set to "on" to prevent client-side script to access cookie values.',
                 'PHP directive "session.cookie_samesite" should be set, at least, to "Lax", to prevent cookie to be sent on cross-origin POST requests.',
