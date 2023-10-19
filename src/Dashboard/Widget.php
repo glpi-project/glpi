@@ -1813,7 +1813,7 @@ HTML;
         ];
 
         ob_start();
-        $params = Search::manageParams($p['itemtype'], $params);
+        $params = Search::manageParams($p['itemtype'], $params, false);
        // remove parts of search list
         $params = array_merge($params, [
             'showmassiveactions' => false,
