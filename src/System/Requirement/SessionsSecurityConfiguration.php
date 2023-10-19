@@ -49,20 +49,26 @@ class SessionsSecurityConfiguration extends AbstractRequirement
 
     protected function check()
     {
+        $is_cli = isCommandLine();
+
         $cookie_secure   = (bool)ini_get('session.cookie_secure');
         $cookie_httponly = (bool)ini_get('session.cookie_httponly');
         $cookie_samesite = ini_get('session.cookie_samesite');
 
         $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
 
-        $validated = true;
-        if ($is_https_request && !$cookie_secure) {
-            $this->validation_messages[] = __('PHP directive "session.cookie_secure" should be set to "on" when GLPI can be accessed on HTTPS protocol.');
-            $validated = false;
+        if ($is_cli) {
+            $this->validation_messages[] = __('Checking the session cookie configuration of the web server cannot be done in the CLI context.');
+            $this->validation_messages[] = __('However, you should apply the following recommendations for configuring the web server.');
+            $this->out_of_context = true;
         }
-        if (!$cookie_httponly) {
+        $cookie_secure_ko = $is_https_request && !$cookie_secure;
+        if ($is_cli || $cookie_secure_ko) {
+            $this->validation_messages[] = __('PHP directive "session.cookie_secure" should be set to "on" when GLPI can be accessed on HTTPS protocol.');
+        }
+        $cookie_httponly_ko = !$cookie_httponly;
+        if ($is_cli || $cookie_httponly_ko) {
             $this->validation_messages[] = __('PHP directive "session.cookie_httponly" should be set to "on" to prevent client-side script to access cookie values.');
-            $validated = false;
         }
 
         // 'session.cookie_samesite' can be:
@@ -75,15 +81,15 @@ class SessionsSecurityConfiguration extends AbstractRequirement
         //                  For instance, it will break oauthsso/oauthimap plugins.
         //                  We should consider it as valid, but we should not recommand it.
         // - '' (empty):    directive will not be sent to the browser, and browser should apply the Lax policy.
-        if (!in_array(strtolower($cookie_samesite), ['lax', 'strict', ''])) {
+        $cookie_samesite_ko = !in_array(strtolower($cookie_samesite), ['lax', 'strict', '']);
+        if ($is_cli || $cookie_samesite_ko) {
             $this->validation_messages[] = __('PHP directive "session.cookie_samesite" should be set, at least, to "Lax", to prevent cookie to be sent on cross-origin POST requests.');
-            $validated = false;
         }
 
-        $this->validated = $validated;
+        $this->validated = !$cookie_secure_ko && !$cookie_httponly_ko && !$cookie_samesite_ko;
 
-        if ($validated) {
-            $this->validation_messages[] = __s('Sessions configuration is secured.');
+        if (!$is_cli && $this->validated) {
+            $this->validation_messages[] = __('Sessions configuration is secured.');
         }
     }
 }
