@@ -1489,7 +1489,9 @@ class Toolbox
                     Html::redirect($redirect_to);
                 }
 
-                $data = explode("_", $where);
+                // explode with limit 3 to preserve the last part of the url
+                // /index.php?redirect=ticket_2_Ticket$main#TicketValidation_1 (preserve anchor)
+                $data = explode("_", $where, 3);
                 $forcetab = '';
                 // forcetab for simple items
                 if (isset($data[2])) {

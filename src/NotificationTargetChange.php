@@ -79,11 +79,17 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
        // Common ITIL data
         $data = parent::getDataForObject($item, $options, $simple);
 
-       // Specific data
+        // Specific data
+        $anchor = null;
+        if (isset($options['validation_id']) && $options['validation_id']) {
+            $anchor = "ChangeValidation_" . $options['validation_id'];
+        }
+
         $data['##change.urlvalidation##']
                      = $this->formatURL(
                          $options['additionnaloption']['usertype'],
-                         "change_" . $item->getField("id") . '_Change$main'
+                         "change_" . $item->getField("id") . '_Change$main',
+                         $anchor
                      );
         $data['##change.globalvalidation##']
                      = ChangeValidation::getStatus($item->getField('global_validation'));

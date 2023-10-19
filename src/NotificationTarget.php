@@ -673,8 +673,9 @@ class NotificationTarget extends CommonDBChild
      *
      * @param $usertype
      * @param $redirect
+     * @param $anchor
      **/
-    public function formatURL($usertype, $redirect)
+    public function formatURL($usertype, $redirect, ?string $anchor = null)
     {
         if (urldecode($redirect) === $redirect) {
             // `redirect` parameter value have to be url-encoded.
@@ -684,18 +685,23 @@ class NotificationTarget extends CommonDBChild
             $redirect = rawurlencode($redirect);
         }
 
+        if (!empty($anchor)) {
+            // anchor have to be url-encoded to correctly pass '#' character as '%23'
+            $anchor = rawurlencode('#' . $anchor);
+        }
+
         $base_url = $this->getUrlBase();
 
         switch ($usertype) {
             case self::EXTERNAL_USER:
-                return "$base_url/index.php?redirect=$redirect";
+                return "$base_url/index.php?redirect={$redirect}{$anchor}";
 
             case self::ANONYMOUS_USER:
                // No URL
                 return '';
 
             case self::GLPI_USER:
-                return "$base_url/index.php?redirect=$redirect&noAUTO=1";
+                return "$base_url/index.php?redirect={$redirect}&noAUTO=1{$anchor}";
         }
     }
 

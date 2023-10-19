@@ -162,11 +162,18 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         $data = parent::getDataForObject($item, $options, $simple);
 
         $data['##ticket.content##'] = $data['##ticket.description##'];
-       // Specific data
+
+        // Specific data
+        $anchor = null;
+        if (isset($options['validation_id']) && $options['validation_id']) {
+            $anchor = "TicketValidation_" . $options['validation_id'];
+        }
+
         $data['##ticket.urlvalidation##']
                         = $this->formatURL(
                             $options['additionnaloption']['usertype'],
-                            "ticket_" . $item->getField("id") . '_Ticket$main'
+                            "ticket_" . $item->getField("id") . '_Ticket$main',
+                            $anchor
                         );
         $data['##ticket.globalvalidation##']
                         = TicketValidation::getStatus($item->getField('global_validation'));
