@@ -358,7 +358,7 @@ JAVASCRIPT;
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
             $js = "
-         var initialHash = window.location.hash;
+         var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false) {
             const href_url_params = new URLSearchParams($(tablink).prop('href'));
             var url = tablink.attr('href');
@@ -375,11 +375,11 @@ JAVASCRIPT;
                   }
                ).done(function() {
                     // try to restore the scroll on a specific anchor
-                    if (initialHash.length > 0) {
+                    if (url_hash.length > 0) {
                         // as we load content by ajax, when full page was ready, the anchor was not present
                         // se we recall it to force the scroll.
-                        window.location.hash = initialHash;
-                        initialHash   = ''; // unset hash (to avoid scrolling when changing tabs)
+                        window.location.hash = url_hash;
+                        url_hash   = ''; // unset hash (to avoid scrolling when changing tabs)
                     }
                });
             }
