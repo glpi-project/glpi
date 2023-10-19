@@ -105,12 +105,56 @@ class NotificationTargetTicket extends DbTestCase
 
         $basic_options = [
             'additionnaloption' => [
-                'usertype' => ''
+                'usertype' => \NotificationTarget::GLPI_USER,
             ]
         ];
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
         $this->array($ret['tasks'])->isIdenticalTo($expected);
+
+        //add validation for TU_USER
+        $ticket_validation = new \TicketValidation();
+        $ticket_validation_id = $ticket_validation->add([
+            "tickets_id" => $tkt->getID(),
+            "status" => \CommonITILValidation::WAITING,
+            "itemtype_target" => \User::class,
+            "items_id_target" => getItemByTypeName(\User::class, TU_USER, true),
+        ]);
+        $this->integer($ticket_validation_id)->isGreaterThan(0);
+
+        $basic_options['validation_id'] = $ticket_validation_id;
+        $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
+
+        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo(
+            sprintf(
+                '%s/index.php?redirect=ticket_%d_Ticket%%24main&noAUTO=1%%23TicketValidation_%d',
+                $CFG_GLPI['url_base'],
+                $tkt->getID(),
+                $ticket_validation_id
+            )
+        );
+
+        //add another validation for jsmith123
+        $ticket_validation = new \TicketValidation();
+        $ticket_validation_id = $ticket_validation->add([
+            "tickets_id" => $tkt->getID(),
+            "status" => \CommonITILValidation::WAITING,
+            "itemtype_target" => \User::class,
+            "items_id_target" => getItemByTypeName(\User::class, 'jsmith123', true),
+        ]);
+        $this->integer($ticket_validation_id)->isGreaterThan(0);
+
+        $basic_options['validation_id'] = $ticket_validation_id;
+        $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
+
+        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo(
+            sprintf(
+                '%s/index.php?redirect=ticket_%d_Ticket%%24main&noAUTO=1%%23TicketValidation_%d',
+                $CFG_GLPI['url_base'],
+                $tkt->getID(),
+                $ticket_validation_id
+            )
+        );
 
        // test of the getDataForObject for default language fr_FR
         $CFG_GLPI['translate_dropdowns'] = 1;
