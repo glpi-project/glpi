@@ -677,10 +677,7 @@ JAVASCRIPT
        //If dropdown translation is globally off, or if this itemtype cannot be translated,
        //then original value should be returned
         $item = new $itemtype();
-        if (
-            !$ID
-            || !Session::haveTranslations($itemtype, $field)
-        ) {
+        if (!self::canBeTranslated($item)) {
             return $value;
         }
        //ID > 0 : dropdown item might be translated !
