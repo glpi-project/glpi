@@ -59,7 +59,7 @@ class SessionsSecurityConfiguration extends AbstractRequirement
 
         if ($is_cli) {
             $this->validation_messages[] = __('Checking the session cookie configuration of the web server cannot be done in the CLI context.');
-            $this->validation_messages[] = __('However, you should apply the following recommendations for configuring the web server.');
+            $this->validation_messages[] = __('You should apply the following recommendations for configuring the web server.');
             $this->out_of_context = true;
         }
         $cookie_secure_ko = $is_https_request && !$cookie_secure;
