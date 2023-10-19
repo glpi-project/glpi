@@ -372,7 +372,14 @@ JAVASCRIPT;
                      tab_key: href_url_params.get('_glpi_tab'),
                      withtemplate: " . (int)($_GET['withtemplate'] ?? 0) . "
                   }
-               );
+               ).done(function() {
+                    // try to restore the scroll on a specific anchor
+                    if (window.location.hash.length > 0) {
+                        // as we load content by ajax, when full page was ready, the anchor was not present
+                        // se we recall it to force the scroll.
+                        window.location.hash = window.location.hash;
+                    }
+               });
             }
             if ($(target).html() && !force_reload) {
                 updateCurrentTab();
