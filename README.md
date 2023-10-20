@@ -74,7 +74,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consul
 ## Prerequisites
 
 * A web server (Apache, Nginx, IIS, etc.)
-* MariaDB >= 10.3 or MySQL >= 8.0
+* MariaDB >= 10.5 or MySQL >= 8.0
 * PHP (See compatibility matrix below)
 
     | GLPI Version | Minimum PHP | Maximum PHP |

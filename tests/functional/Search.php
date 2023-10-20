@@ -2444,13 +2444,7 @@ class Search extends DbTestCase
         // required, because there is no search option that corresponds to it yet.
 
         global $DB;
-        $version_string = $DB->getVersion();
-        $server  = preg_match('/-MariaDB/', $version_string) ? 'MariaDB' : 'MySQL';
-        $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $version_string);
-        $is_mariadb      = $server === 'MariaDB';
-        $is_mariadb_10_2 = $is_mariadb && version_compare($version, '10.3', '<');
-        $is_mysql_5_7    = $server === 'MySQL' && version_compare($version, '8.0', '<');
-
+        $is_mariadb = preg_match('/-MariaDB/', $DB->getVersion()) === 1;
 
         // Check simple values search.
         // Usage is only relevant for textual fields, so it is not tested on other fields.
@@ -2732,11 +2726,6 @@ class Search extends DbTestCase
             'expected_and'      => "(1=0)",
             'expected_and_not'  => "(1=0)",
         ];
-        if ($is_mysql_5_7) {
-            // log for both AND and AND NOT cases
-            $this->hasSqlLogRecordThatContains("Truncated incorrect date value: '%test%'", LogLevel::WARNING);
-            $this->hasSqlLogRecordThatContains("Truncated incorrect date value: '%test%'", LogLevel::WARNING);
-        }
         yield [
             'itemtype'          => \Contract::class,
             'search_option'     => 20, // end_date
@@ -2744,11 +2733,6 @@ class Search extends DbTestCase
             'expected_and'      => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) LIKE '%2023-12%')",
             'expected_and_not'  => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) NOT LIKE '%2023-12%' OR DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) IS NULL)",
         ];
-        if ($is_mysql_5_7) {
-            // log for both AND and AND NOT cases
-            $this->hasSqlLogRecordThatContains("Truncated incorrect date value: '%2023-12%'", LogLevel::WARNING);
-            $this->hasSqlLogRecordThatContains("Truncated incorrect date value: '%2023-12%'", LogLevel::WARNING);
-        }
 
         // datatype=email
         yield [
@@ -2881,10 +2865,7 @@ class Search extends DbTestCase
                 'expected_and_not'  => "(`glpi_authldaps`.`port` IS NOT NULL AND `glpi_authldaps`.`port` <> '')",
             ];
             // log for both AND and AND NOT cases
-            if ($is_mariadb_10_2) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-            } elseif ($is_mariadb) {
+            if ($is_mariadb) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
@@ -2898,10 +2879,7 @@ class Search extends DbTestCase
                 'expected_and_not'  => "(`glpi_authldaps`.`timeout` IS NOT NULL AND `glpi_authldaps`.`timeout` <> '')",
             ];
             // log for both AND and AND NOT cases
-            if ($is_mariadb_10_2) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-            } elseif ($is_mariadb) {
+            if ($is_mariadb) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
@@ -2945,10 +2923,7 @@ class Search extends DbTestCase
                 'expected_and_not'  => "(`ITEM_Ticket_27` IS NOT NULL AND `ITEM_Ticket_27` <> '')",
             ];
             // log for both AND and AND NOT cases
-            if ($is_mariadb_10_2) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-            } elseif ($is_mariadb) {
+            if ($is_mariadb) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
@@ -2980,10 +2955,7 @@ class Search extends DbTestCase
                 'expected_and_not'  => "(`glpi_crontasks`.`frequency` IS NOT NULL AND `glpi_crontasks`.`frequency` <> '')",
             ];
             // log for both AND and AND NOT cases
-            if ($is_mariadb_10_2) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-            } elseif ($is_mariadb) {
+            if ($is_mariadb) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }

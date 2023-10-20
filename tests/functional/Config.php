@@ -400,11 +400,11 @@ class Config extends DbTestCase
             ], [
                 'raw'       => '10.3.28-MariaDB',
                 'version'   => '10.3.28',
-                'compat'    => true
+                'compat'    => false
             ], [
                 'raw'       => '10.4.8-MariaDB-1:10.4.8+maria~bionic',
                 'version'   => '10.4.8',
-                'compat'    => true
+                'compat'    => false
             ], [
                 'raw'       => '10.5.9-MariaDB',
                 'version'   => '10.5.9',

@@ -63,22 +63,22 @@ class DbEngine extends \GLPITestCase
             [
                 'version'   => '10.1.48-MariaDB',
                 'validated' => false,
-                'messages'  => ['Database engine version (10.1.48) is not supported. Minimum required version is MariaDB 10.3.'],
+                'messages'  => ['Database engine version (10.1.48) is not supported. Minimum required version is MariaDB 10.5.'],
             ],
             [
                 'version'   => '10.2.36-MariaDB',
                 'validated' => false,
-                'messages'  => ['Database engine version (10.2.36) is not supported. Minimum required version is MariaDB 10.3.'],
+                'messages'  => ['Database engine version (10.2.36) is not supported. Minimum required version is MariaDB 10.5.'],
             ],
             [
                 'version'   => '10.3.28-MariaDB',
-                'validated' => true,
-                'messages'  => ['Database engine version (10.3.28) is supported.'],
+                'validated' => false,
+                'messages'  => ['Database engine version (10.3.28) is not supported. Minimum required version is MariaDB 10.5.'],
             ],
             [
                 'version'   => '10.4.8-MariaDB-1:10.4.8+maria~bionic',
-                'validated' => true,
-                'messages'  => ['Database engine version (10.4.8) is supported.'],
+                'validated' => false,
+                'messages'  => ['Database engine version (10.4.8) is not supported. Minimum required version is MariaDB 10.5.'],
             ],
             [
                 'version'   => '10.5.9-MariaDB',
