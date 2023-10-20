@@ -3926,6 +3926,7 @@ JS;
 
                // Content settings
                entity_encoding: 'raw',
+               valid_elements: '*',
                invalid_elements: '{$invalid_elements}',
                readonly: {$readonlyjs},
                relative_urls: false,
