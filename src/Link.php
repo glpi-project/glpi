@@ -46,7 +46,7 @@ class Link extends CommonDBTM
     public static $rightname = 'link';
     public static $tags      = ['[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
         '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
-        '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]'
+        '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]', '[MODEL]'
     ];
 
 
@@ -312,6 +312,46 @@ class Link extends CommonDBTM
         ) {
             $link = str_replace("[SERIAL]", $item->getField('serial'), $link);
         }
+	if (
+	    strstr($link,"[MODEL]")
+	    && $item->isField('computermodels_id')
+	) {
+            $link = str_replace("[MODEL]",
+		    str_replace(" ", "_", Dropdown::getDropdownName("glpi_computermodels", $item->getField('computermodels_id'))),
+		    $link);
+	}
+	if (
+	    strstr($link,"[MODEL]")
+	    && $item->isField('monitormodels_id')
+	) {
+	    $link = str_replace("[MODEL]",
+	            str_replace(" ", "_", Dropdown::getDropdownName("glpi_monitormodels", $item->getField('monitormodels_id'))),
+		    $link);
+	}
+	if (
+	    strstr($link,"[MODEL]")
+	    && $item->isField('networkequipmentmodels_id')
+	) {
+	    $link = str_replace("[MODEL]",
+	            str_replace(" ", "_", Dropdown::getDropdownName("glpi_networkequipmentmodels", $item->getField('networkequipmentmodels_id'))),
+	            $link);
+	}
+	if (
+	    strstr($link,"[MODEL]")
+	    && $item->isField('peripheralmodels_id')
+	) {
+	    $link = str_replace("[MODEL]",
+		    str_replace(" ", "_", Dropdown::getDropdownName("glpi_peripheralsmodels", $item->getField('peripheralmodels_id'))),
+		    $link);
+	}
+	if (
+	    strstr($link,"[MODEL]")
+	    && $item->isField('printermodels_id')
+	) {
+	    $link = str_replace("[MODEL]",
+		    str_replace(" ", "_", Dropdown::getDropdownName("glpi_printermodels", $item->getField('printermodels_id'))),
+		    $link);
+	}
         if (
             strstr($link, "[OTHERSERIAL]")
             && $item->isField('otherserial')
