@@ -43,6 +43,6 @@ class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCo
      **/
     public function getTitle()
     {
-        return __('Dictionnary of device models');
+        return __('Dictionary of device models');
     }
 }

@@ -56,6 +56,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      **/
     public function getAdditionalFields()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $fields = parent::getAdditionalFields();
@@ -128,6 +129,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
     public function rawSearchOptions()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $options = parent::rawSearchOptions();
         $table   = $this->getTable();

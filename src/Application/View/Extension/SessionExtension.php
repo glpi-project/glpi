@@ -116,6 +116,7 @@ class SessionExtension extends AbstractExtension
      */
     public function userPref(string $name, bool $decode = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $data = $_SESSION['glpi' . $name] ?? $CFG_GLPI[$name] ?? null;

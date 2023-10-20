@@ -455,6 +455,7 @@ class Provider
 
     public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DBread = DBConnection::getReadConnection();
@@ -598,10 +599,10 @@ class Provider
             }
             $label = $username ?? $name;
             $data['labels'][] = $label;
-            array_unshift($data['series'][0]['data'], $allLate[$name]);
-            array_unshift($data['series'][1]['data'], $resolveLate[$name]);
-            array_unshift($data['series'][2]['data'], $ownLate[$name]);
-            array_unshift($data['series'][3]['data'], $onTime[$name]);
+            array_push($data['series'][0]['data'], $allLate[$name]);
+            array_push($data['series'][1]['data'], $resolveLate[$name]);
+            array_push($data['series'][2]['data'], $ownLate[$name]);
+            array_push($data['series'][3]['data'], $onTime[$name]);
         }
 
         if (count($data['series'][0]['data']) < 1) {
@@ -742,10 +743,10 @@ class Provider
             }
             $label = $username ?? $name;
             $data['labels'][] = $label;
-            array_unshift($data['series'][0]['data'], $allLate[$name]);
-            array_unshift($data['series'][1]['data'], $resolveLate[$name]);
-            array_unshift($data['series'][2]['data'], $ownLate[$name]);
-            array_unshift($data['series'][3]['data'], $onTime[$name]);
+            array_push($data['series'][0]['data'], $allLate[$name]);
+            array_push($data['series'][1]['data'], $resolveLate[$name]);
+            array_push($data['series'][2]['data'], $ownLate[$name]);
+            array_push($data['series'][3]['data'], $onTime[$name]);
         }
 
         if (count($data['series'][0]['data']) < 1) {

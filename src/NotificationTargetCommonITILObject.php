@@ -160,7 +160,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addLinkedUserByType($type)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $userlinktable = getTableForItemType($this->obj->userlinkclass);
         $fkfield       = $this->obj->getForeignKeyField();
@@ -253,6 +257,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addLinkedGroupByType($type)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $grouplinktable = getTableForItemType($this->obj->grouplinkclass);
@@ -287,6 +292,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addLinkedGroupWithoutSupervisorByType($type)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $grouplinktable = getTableForItemType($this->obj->grouplinkclass);
@@ -317,6 +323,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addLinkedGroupSupervisorByType($type)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $grouplinktable = getTableForItemType($this->obj->grouplinkclass);
@@ -354,6 +361,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addOldAssignTechnician()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -414,6 +422,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addSupplier($sendprivate = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -460,6 +469,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addValidationApprover($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (isset($options['validation_id'])) {
@@ -493,6 +503,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      **/
     public function addValidationRequester($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (isset($options['validation_id'])) {
@@ -525,6 +536,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addValidationTarget($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (isset($options['validation_id'])) {
@@ -567,6 +579,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addFollowupAuthor($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (isset($options['followup_id'])) {
@@ -604,6 +617,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addTaskAuthor($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // In case of delete task pass user id
@@ -651,6 +665,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addTaskAssignUser($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // In case of delete task pass user id
@@ -700,6 +715,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addTaskAssignGroup($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // In case of delete task pass user id
@@ -728,6 +744,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
     public function addAdditionnalInfosForTarget()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -767,6 +784,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
     protected function getShowPrivateInfo(array $data)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($data['users_id']) || count($this->private_profiles) === 0) {
@@ -790,6 +808,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
     protected function getIsSelfServiceInfo(array $data)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($data['users_id']) || count($this->central_profiles) === 0) {
@@ -1133,6 +1152,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      **/
     public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $is_self_service = $options['additionnaloption']['is_self_service'] ?? true;

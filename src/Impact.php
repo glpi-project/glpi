@@ -75,6 +75,7 @@ class Impact extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Class of the current item
@@ -250,6 +251,7 @@ class Impact extends CommonGLPI
         array $graph,
         bool $scripts = false
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $impact_item = ImpactItem::findForItem($item);
@@ -816,6 +818,7 @@ class Impact extends CommonGLPI
      */
     public static function printAssetSelectionForm(array $items)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Dropdown values
@@ -881,6 +884,7 @@ class Impact extends CommonGLPI
         string $filter,
         int $page = 0
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Check if this type is enabled in config
@@ -980,6 +984,7 @@ class Impact extends CommonGLPI
      */
     public static function printImpactNetworkContainer()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $action = $CFG_GLPI['root_doc'] . '/ajax/impact.php';
@@ -1187,6 +1192,7 @@ class Impact extends CommonGLPI
         int $direction,
         array $explored_nodes = []
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Source and target are determined by the direction in which we are
@@ -1287,6 +1293,7 @@ class Impact extends CommonGLPI
      */
     private static function addNode(array &$nodes, CommonDBTM $item)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Check if the node already exist
@@ -1664,6 +1671,7 @@ class Impact extends CommonGLPI
      */
     public static function clean(\CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Skip if not a valid impact type
@@ -1760,6 +1768,7 @@ class Impact extends CommonGLPI
 
        // Remove any forbidden values
         return array_filter($enabled, function ($itemtype) {
+            /** @var array $CFG_GLPI */
             global $CFG_GLPI;
 
             return isset($CFG_GLPI['impact_asset_types'][$itemtype]);
@@ -1773,6 +1782,7 @@ class Impact extends CommonGLPI
      */
     public static function getDefaultItemtypes()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $values = $CFG_GLPI["default_impact_asset_types"];
@@ -1784,6 +1794,7 @@ class Impact extends CommonGLPI
      */
     public static function showConfigForm()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Form head

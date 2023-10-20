@@ -1153,6 +1153,9 @@ CREATE TABLE `glpi_items_operatingsystems` (
   `operatingsystemkernelversions_id` int unsigned NOT NULL DEFAULT '0',
   `license_number` varchar(255) DEFAULT NULL,
   `licenseid` varchar(255) DEFAULT NULL,
+  `company` varchar(255) DEFAULT NULL,
+  `owner` varchar(255) DEFAULT NULL,
+  `hostid` varchar(255) DEFAULT NULL,
   `operatingsystemeditions_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -2622,7 +2625,8 @@ CREATE TABLE `glpi_documents_items` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
-  KEY `date` (`date`)
+  KEY `date` (`date`),
+  KEY `timeline_position` (`timeline_position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

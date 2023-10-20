@@ -97,6 +97,10 @@ $template_iterator = $DB->request([
 foreach ($template_iterator as $template_data) {
     $content_html = $template_data['content_html'];
 
+    if ($content_html === null) {
+        continue;
+    }
+
     if (str_contains($content_html, '&lt;p&gt;') && str_contains($content_html, '&lt;/p&gt;')) {
         // HTML still contains encoded HTML. It can be result of 2 different initial states
         // 1. DB content may contains be partially encoded (contains both encoded and raw HTML).

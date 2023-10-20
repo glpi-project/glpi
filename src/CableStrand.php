@@ -103,6 +103,7 @@ class CableStrand extends CommonDropdown
      */
     public function showItems()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $cablestrands_id = $this->fields['id'];

@@ -55,7 +55,7 @@ if (!$DB->tableExists('glpi_items_ticketrecurrents')) {
         KEY `items_id` (`items_id`),
         KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, "10.1.0 add table glpi_items_ticket");
+    $DB->doQueryOrDie($query, "10.1.0 add table glpi_items_ticket");
 }
 
 // Add glpi_items_ticketrecurrents table for associated elements

@@ -52,6 +52,7 @@ class LocationFilter extends AbstractFilter
 
     public static function canBeApplied(string $table): bool
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         return $DB->fieldExists($table, 'locations_id');

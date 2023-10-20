@@ -52,5 +52,5 @@ if (!$DB->tableExists('glpi_items_lines')) {
       UNIQUE KEY `unicity` (`lines_id`,`itemtype`,`items_id`),
       KEY `item` (`itemtype`,`items_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, "10.0 add table glpi_items_lines");
+    $DB->doQueryOrDie($query, "10.0 add table glpi_items_lines");
 }

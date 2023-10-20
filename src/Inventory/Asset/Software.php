@@ -245,6 +245,7 @@ class Software extends InventoryAsset
 
     public function handle()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $mainasset_entities_id = 0;
@@ -572,6 +573,7 @@ class Software extends InventoryAsset
      */
     private function populateSoftware()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -631,6 +633,7 @@ class Software extends InventoryAsset
      */
     private function populateVersions()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!count($this->softwares)) {
@@ -709,6 +712,7 @@ class Software extends InventoryAsset
      */
     private function storeSoftware()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $software = new GSoftware();
@@ -764,6 +768,7 @@ class Software extends InventoryAsset
      */
     private function storeVersions()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $version = new SoftwareVersion();
@@ -855,6 +860,7 @@ class Software extends InventoryAsset
      */
     private function storeAssetLink()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!count($this->data)) {

@@ -147,6 +147,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                 return true;
 
             case 'add_item':
+                /** @var array $CFG_GLPI */
                 global $CFG_GLPI;
                 echo "<table class='tab_cadre_fixe'>";
                 echo "<tr class='tab_bg_2 center'>";
@@ -292,6 +293,7 @@ class Item_SoftwareLicense extends CommonDBRelation
      **/
     public static function countForLicense($softwarelicenses_id, $entity = '', $itemtype = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -360,6 +362,7 @@ class Item_SoftwareLicense extends CommonDBRelation
      **/
     public static function countForSoftware($softwares_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $license_table = SoftwareLicense::getTable();
@@ -438,6 +441,7 @@ class Item_SoftwareLicense extends CommonDBRelation
      **/
     public static function showForLicenseByEntity(SoftwareLicense $license)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $softwarelicense_id = $license->getField('id');
@@ -517,7 +521,11 @@ class Item_SoftwareLicense extends CommonDBRelation
      **/
     public static function showForLicense(SoftwareLicense $license)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $searchID = $license->getField('id');
 
@@ -957,6 +965,7 @@ JAVASCRIPT;
      **/
     public static function getLicenseForInstallation($itemtype, $items_id, $softwareversions_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $lic = [];
@@ -1055,6 +1064,7 @@ JAVASCRIPT;
      **/
     public static function countLicenses($softwares_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([

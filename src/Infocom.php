@@ -71,6 +71,7 @@ class Infocom extends CommonDBChild
      **/
     public static function canApplyOn($item)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // All devices are subjects to infocom !
@@ -100,6 +101,7 @@ class Infocom extends CommonDBChild
      **/
     public static function getItemtypesThatCanHave()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = array_merge(
@@ -485,7 +487,11 @@ class Infocom extends CommonDBChild
      **/
     public static function cronInfocom($task = null)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
             return 0;
@@ -767,7 +773,11 @@ class Infocom extends CommonDBChild
      **/
     public static function showDisplayLink($itemtype, $device_id)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (
             !Session::haveRight(self::$rightname, READ)
@@ -1886,6 +1896,7 @@ class Infocom extends CommonDBChild
      */
     public static function getTypes($where)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $types_iterator = $DB->request([

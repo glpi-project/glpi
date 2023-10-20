@@ -709,7 +709,7 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($users)->hasSize(910);
+        $this->array($users)->hasSize(912);
         $this->array($results)->hasSize(0);
 
         $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
@@ -764,7 +764,7 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($groups)->hasSize(910);
+        $this->array($groups)->hasSize(912);
 
        /** TODO: filter search... I do not know how to do. */
     }
@@ -846,11 +846,21 @@ class AuthLDAP extends DbTestCase
         $connection = $ldap->connect();
         $this->object($connection)->isInstanceOf('\LDAP\Connection');
 
+        // Invalid group
         $cn = \AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=glpi,dc=org');
         $this->boolean($cn)->isFalse();
 
-        $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2, dc=glpi,dc=org');
+        // Valid group with no special chars
+        $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org');
         $this->string($cn)->isIdenticalTo('glpi2-group1');
+
+        // OU with special `#` char protected by a `\`
+        $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=glpi,dc=org');
+        $this->string($cn)->isIdenticalTo('glpi2-group2');
+
+        // OU with special `#` char escaped to `\23`
+        $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org');
+        $this->string($cn)->isIdenticalTo('glpi2-group2');
     }
 
     /**
@@ -875,30 +885,59 @@ class AuthLDAP extends DbTestCase
          ->hasKeys(['userpassword', 'uid', 'objectclass', 'sn']);
     }
 
+    protected function ldapGroupUserProvider(): iterable
+    {
+        yield [
+            'group_dn'            => 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org',
+            'user_uid'            => 'remi',
+            'expected_group_dn'   => 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org',
+            'expected_group_name' => 'glpi2-group1',
+        ];
+
+        // OU with special `#` char protected by a `\`
+        yield [
+            'group_dn'            => 'cn=glpi2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=glpi,dc=org',
+            'user_uid'            => 'specialchar1',
+            // openladap replaces `\#` by `\23` (23 is the ascii code for #)
+            'expected_group_dn'   => 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org',
+            'expected_group_name' => 'glpi2-group2',
+        ];
+
+        // OU with special `#` char escaped to `\23`
+        yield [
+            'group_dn'            => 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org',
+            'user_uid'            => 'specialchar2',
+            'expected_group_dn'   => 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org',
+            'expected_group_name' => 'glpi2-group2',
+        ];
+    }
+
     /**
      * Test get group
      *
      * @extensions ldap
      *
+     * @dataProvider ldapGroupUserProvider
+     *
      * @return void
      */
-    public function testGetGroupByDn()
+    public function testGetGroupByDn(string $group_dn, string $user_uid, string $expected_group_dn, string $expected_group_name)
     {
         $ldap = $this->ldap;
 
         $group = \AuthLDAP::getGroupByDn(
             $ldap->connect(),
-            'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2, dc=glpi,dc=org'
+            $group_dn
         );
 
         $this->array($group)->isIdenticalTo([
             'cn'     => [
-                'count'   => 1,
-                0        => 'glpi2-group1',
+                'count' => 1,
+                0       => $expected_group_name,
             ],
             0        => 'cn',
             'count'  => 1,
-            'dn'     => 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org'
+            'dn'     => $expected_group_dn
         ]);
     }
 
@@ -907,14 +946,17 @@ class AuthLDAP extends DbTestCase
      *
      * @extensions ldap
      *
+     * @dataProvider ldapGroupUserProvider
+     *
      * @return void
      */
-    public function testLdapImportGroup()
+    public function testLdapImportGroup(string $group_dn, string $user_uid, string $expected_group_dn, string $expected_group_name)
     {
         $ldap = $this->ldap;
 
+        // Valid group with no special chars
         $import = \AuthLDAP::ldapImportGroup(
-            'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org',
+            $group_dn,
             [
                 'authldaps_id' => $ldap->getID(),
                 'entities_id'  => 0,
@@ -925,14 +967,14 @@ class AuthLDAP extends DbTestCase
 
         $this->integer($import)->isGreaterThan(0);
 
-       //check group
+        //check group
         $group = new \Group();
         $this->boolean($group->getFromDB($import))->isTrue();
 
         $this->array($group->fields)
-         ->string['name']->isIdenticalTo('glpi2-group1')
-         ->string['completename']->isIdenticalTo('glpi2-group1')
-         ->string['ldap_group_dn']->isIdenticalTo('cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org');
+            ->string['name']->isIdenticalTo($expected_group_name)
+            ->string['completename']->isIdenticalTo($expected_group_name)
+            ->string['ldap_group_dn']->isIdenticalTo($expected_group_dn);
     }
 
     /**
@@ -940,50 +982,53 @@ class AuthLDAP extends DbTestCase
      *
      * @extensions ldap
      *
+     * @dataProvider ldapGroupUserProvider
+     *
      * @return void
      */
-    public function testLdapImportUserGroup()
+    public function testLdapImportUserGroup(string $group_dn, string $user_uid, string $expected_group_dn, string $expected_group_name)
     {
         $ldap = $this->ldap;
 
-        $import = \AuthLDAP::ldapImportGroup(
-            'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org',
-            [
-                'authldaps_id' => $ldap->getID(),
-                'entities_id'  => 0,
-                'is_recursive' => true,
-                'type'         => 'groups'
-            ]
-        );
-
-        $this->integer($import)->isGreaterThan(0);
-
-       //check group
+        // Import group, unless it exists
         $group = new \Group();
-        $this->boolean($group->getFromDB($import))->isTrue();
+        if (!$group->getFromDBByCrit(['name' => $expected_group_name])) {
+            $import = \AuthLDAP::ldapImportGroup(
+                $group_dn,
+                [
+                    'authldaps_id' => $ldap->getID(),
+                    'entities_id'  => 0,
+                    'is_recursive' => true,
+                    'type'         => 'groups'
+                ]
+            );
+
+            $this->integer($import)->isGreaterThan(0);
+            $this->boolean($group->getFromDB($import))->isTrue();
+        }
 
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
                 'method' => \AuthLDAP::IDENTIFIER_LOGIN,
-                'value'  => 'remi'
+                'value'  => $user_uid
             ],
             \AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->array($import)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED);
+            ->hasSize(2)
+            ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED);
         $this->integer((int)$import['id'])->isGreaterThan(0);
 
-       //check created user
+        //check created user
         $user = new \User();
         $this->boolean($user->getFromDB($import['id']))->isTrue();
 
         $usergroups = \Group_User::getUserGroups($user->getID());
         $this->array($usergroups[0])
-         ->variable['id']->isEqualTo($group->getID())
-         ->string['name']->isIdenticalTo($group->fields['name']);
+            ->variable['id']->isEqualTo($group->getID())
+            ->string['name']->isIdenticalTo($expected_group_name);
     }
 
 
@@ -1386,7 +1431,7 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($users)->hasSize(910);
+        $this->array($users)->hasSize(912);
         $this->array($results)->hasSize(0);
 
         $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;

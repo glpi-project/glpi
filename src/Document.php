@@ -71,6 +71,7 @@ class Document extends CommonDBTM
      **/
     public static function canApplyOn($item)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // All devices can have documents!
@@ -103,6 +104,7 @@ class Document extends CommonDBTM
      **/
     public static function getItemtypesThatCanHave()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return array_merge(
@@ -223,6 +225,7 @@ class Document extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // security (don't accept filename from $_REQUEST)
@@ -516,6 +519,7 @@ class Document extends CommonDBTM
      **/
     public static function getMaxUploadSize()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //TRANS: %s is a size
@@ -553,7 +557,11 @@ class Document extends CommonDBTM
      **/
     public function getDownloadLink($linked_item = null, $len = 20)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $link_params = '';
         if (is_string($linked_item)) {
@@ -638,6 +646,7 @@ class Document extends CommonDBTM
     public function getFromDBbyContent($entity, $path)
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (empty($path)) {
@@ -774,6 +783,7 @@ class Document extends CommonDBTM
     private function canViewFileFromReminder()
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!Session::getLoginUserID()) {
@@ -817,6 +827,10 @@ class Document extends CommonDBTM
     private function canViewFileFromKnowbaseItem()
     {
 
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
        // Knowbase items can be viewed by non connected user in case of public FAQ
@@ -874,6 +888,7 @@ class Document extends CommonDBTM
     private function canViewFileFromItilObject($itemtype, $items_id)
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!Session::getLoginUserID()) {
@@ -913,6 +928,7 @@ class Document extends CommonDBTM
      */
     private function canViewFileFromItem($itemtype, $items_id): bool
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $item = new $itemtype();
@@ -1578,6 +1594,7 @@ class Document extends CommonDBTM
      **/
     public static function isValidDoc($filename)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $splitter = explode(".", $filename);
@@ -1631,7 +1648,11 @@ class Document extends CommonDBTM
      **/
     public static function dropdown($options = [])
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $p['name']    = 'documents_id';
         $p['entity']  = '';
@@ -1877,6 +1898,7 @@ class Document extends CommonDBTM
      **/
     public static function cronCleanOrphans(CronTask $task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $dtable = static::getTable();

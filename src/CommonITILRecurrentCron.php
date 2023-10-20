@@ -64,6 +64,7 @@ class CommonITILRecurrentCron extends CommonDBTM
      */
     public static function cronRecurrentItems(CronTask $task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $total = 0;

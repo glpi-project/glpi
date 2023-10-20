@@ -121,6 +121,7 @@ class PrinterLog extends CommonDBChild
         DateTime $end_date = new DateTime(),
         string $format = 'dynamic'
     ): array {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($printers && !is_array($printers)) {

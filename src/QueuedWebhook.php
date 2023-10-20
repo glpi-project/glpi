@@ -119,6 +119,7 @@ class QueuedWebhook extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($input['create_time']) || empty($input['create_time'])) {
@@ -153,6 +154,7 @@ class QueuedWebhook extends CommonDBChild
      */
     public static function sendById(int $ID): bool
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $queued_webhook = new self();
@@ -499,6 +501,7 @@ JS);
      */
     public static function getPendings($send_time = null, $limit = 20, $extra_where = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($send_time === null) {
@@ -585,6 +588,7 @@ JS);
      **/
     public static function cronQueuedWebhookClean(CronTask $task = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $vol = 0;

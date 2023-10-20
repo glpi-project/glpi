@@ -63,6 +63,11 @@ final class SYLKSearchOutput extends ExportSearchOutput
 
     public static function showHeader($rows, $cols, $fixed = 0): string
     {
+        /**
+         * @var array $SYLK_ARRAY
+         * @var array $SYLK_HEADER
+         * @var array $SYLK_SIZE
+         */
         global $SYLK_ARRAY, $SYLK_HEADER, $SYLK_SIZE;
         $SYLK_ARRAY  = [];
         $SYLK_HEADER = [];
@@ -97,7 +102,11 @@ final class SYLKSearchOutput extends ExportSearchOutput
 
     public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string
     {
-        global $SYLK_HEADER,$SYLK_SIZE;
+        /**
+         * @var array $SYLK_HEADER
+         * @var array $SYLK_SIZE
+         */
+        global $SYLK_HEADER, $SYLK_SIZE;
         $SYLK_HEADER[$num] = self::cleanValue($value);
         $SYLK_SIZE[$num]   = \Toolbox::strlen($SYLK_HEADER[$num]);
         $num++;
@@ -106,7 +115,11 @@ final class SYLKSearchOutput extends ExportSearchOutput
 
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {
-        global $SYLK_ARRAY,$SYLK_SIZE;
+        /**
+         * @var array $SYLK_ARRAY
+         * @var array $SYLK_SIZE
+         */
+        global $SYLK_ARRAY, $SYLK_SIZE;
         $value = DataExport::normalizeValueForTextExport($value ?? '');
         $value = preg_replace('/' . \Search::LBBR . '/', '<br>', $value);
         $value = preg_replace('/' . \Search::LBHR . '/', '<hr>', $value);
@@ -121,7 +134,12 @@ final class SYLKSearchOutput extends ExportSearchOutput
 
     public static function showFooter($title = "", $count = null): string
     {
-        global $SYLK_HEADER,$SYLK_ARRAY,$SYLK_SIZE;
+        /**
+         * @var array $SYLK_ARRAY
+         * @var array $SYLK_HEADER
+         * @var array $SYLK_SIZE
+         */
+        global $SYLK_ARRAY, $SYLK_HEADER, $SYLK_SIZE;
         // largeurs des colonnes
         $out = '';
         foreach ($SYLK_SIZE as $num => $val) {

@@ -56,6 +56,7 @@ class Entity_KnowbaseItem extends CommonDBRelation
      **/
     public static function getEntities($knowbaseitems_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ent   = [];

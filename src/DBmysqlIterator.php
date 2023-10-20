@@ -116,10 +116,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     public function execute($table, $crit = "", $debug = false)
     {
         $this->buildQuery($table, $crit, $debug);
-        $this->res = false;
-        if ($this->conn) {
-            $this->res = $this->conn->doQuery($this->sql);
-        }
+        $this->res = $this->conn ? $this->conn->doQuery($this->sql) : false;
         $this->count = $this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0;
         $this->setPosition(0);
         return $this;

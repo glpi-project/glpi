@@ -53,6 +53,7 @@ class Item_Kanban extends CommonDBRelation
      */
     public static function saveStateForItem($itemtype, $items_id, $state)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         /** @var Kanban|CommonDBTM $item */
@@ -105,6 +106,7 @@ class Item_Kanban extends CommonDBRelation
      */
     public static function loadStateForItem($itemtype, $items_id, $timestamp = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         /** @var Kanban|CommonDBTM $item */
@@ -148,6 +150,7 @@ class Item_Kanban extends CommonDBRelation
      */
     public static function clearStateForItem(string $itemtype, int $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         try {

@@ -275,7 +275,11 @@ class Link extends CommonDBTM
     {
         $safe_url = func_num_args() === 3 ? func_get_arg(2) : true;
 
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
        // Replace [FIELD:<field name>]
         $matches = [];
@@ -633,6 +637,7 @@ class Link extends CommonDBTM
      **/
     public static function getAllLinksFor($item, $params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $computedlinks = [];
@@ -749,6 +754,7 @@ class Link extends CommonDBTM
 
     public static function getLinksDataForItem(CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $restrict = self::getEntityRestrictForItem($item);

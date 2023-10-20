@@ -579,6 +579,7 @@ class Group extends CommonTreeDropdown
      **/
     public function getDataItems(array $types, $field, $tree, $user, $start, array &$res)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // include item of child groups ?
@@ -725,6 +726,7 @@ class Group extends CommonTreeDropdown
      **/
     public function showItems($tech)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -905,6 +907,7 @@ class Group extends CommonTreeDropdown
     public function cleanRelationData()
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         parent::cleanRelationData();
@@ -1067,6 +1070,7 @@ class Group extends CommonTreeDropdown
      */
     public static function updateLastGroupChange()
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);
 

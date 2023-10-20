@@ -422,6 +422,7 @@ class Appliance extends CommonDBTM
      */
     public static function getTypes($all = false): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = $CFG_GLPI['appliance_types'];

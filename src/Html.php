@@ -259,6 +259,7 @@ class Html
      **/
     public static function formatNumber($number, $edit = false, $forcedecimal = -1)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Php 5.3 : number_format() expects parameter 1 to be double,
@@ -487,11 +488,15 @@ class Html
      **/
     public static function redirectToLogin($params = '')
     {
-        global $CFG_GLPI, $AJAX_INCLUDE;
+        /**
+         * @var int $AJAX_INCLUDE
+         * @var array $CFG_GLPI
+         */
+        global $AJAX_INCLUDE, $CFG_GLPI;
 
         $dest     = $CFG_GLPI["root_doc"] . "/index.php";
 
-        if (!isset($AJAX_INCLUDE)) {
+        if (!$AJAX_INCLUDE) {
             $url_dest = preg_replace(
                 '/^' . preg_quote($CFG_GLPI["root_doc"], '/') . '/',
                 '',
@@ -519,6 +524,10 @@ class Html
      **/
     public static function displayNotFoundError(string $additional_info = '')
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var bool $HEADER_LOADED
+         */
         global $CFG_GLPI, $HEADER_LOADED;
 
         if (!$HEADER_LOADED) {
@@ -591,6 +600,7 @@ class Html
     {
         Toolbox::deprecated("The js function is already provided by js/misc.js");
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         echo Html::scriptBlock("
@@ -739,6 +749,7 @@ class Html
      **/
     public static function displayErrorAndDie($message, $minimal = false)
     {
+        /** @var bool $HEADER_LOADED */
         global $HEADER_LOADED;
 
         if (!$HEADER_LOADED) {
@@ -1052,6 +1063,10 @@ HTML;
         bool $add_id = true,
         bool $allow_insecured_iframe = false
     ) {
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         // complete title with id if exist
@@ -1285,6 +1300,7 @@ HTML;
      **/
     public static function getMenuInfos()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $can_read_dashboard      = Session::haveRight('dashboard', READ);
@@ -1386,6 +1402,7 @@ HTML;
      */
     public static function generateMenuSession()
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
         $menu = [];
 
@@ -1498,6 +1515,7 @@ HTML;
      */
     public static function generateHelpMenu()
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $menu = [
@@ -1635,6 +1653,11 @@ HTML;
         $option = "",
         bool $add_id = true
     ) {
+        /**
+         * @var array $CFG_GLPI
+         * @var bool $HEADER_LOADED
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $HEADER_LOADED, $DB;
 
         // If in modal : display popHeader
@@ -1693,6 +1716,11 @@ HTML;
      **/
     public static function footer($keepDB = false)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var bool $FOOTER_LOADED
+         * @var array $PLUGIN_HOOKS
+         */
         global $CFG_GLPI, $FOOTER_LOADED, $PLUGIN_HOOKS;
 
        // If in modal : display popFooter
@@ -1835,6 +1863,7 @@ HTML;
      **/
     public static function simpleHeader($title, $links = [])
     {
+        /** @var bool $HEADER_LOADED */
         global $HEADER_LOADED;
 
        // Print a nice HTML-head for help page
@@ -1886,7 +1915,11 @@ HTML;
         string $option = "",
         bool $add_id = true
     ) {
-        global $HEADER_LOADED, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var bool $HEADER_LOADED
+         */
+        global $CFG_GLPI, $HEADER_LOADED;
 
         // Print a nice HTML-head for help page
         if ($HEADER_LOADED) {
@@ -1924,6 +1957,7 @@ HTML;
      */
     private static function getPageHeaderTplVars(): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $founded_new_version = null;
@@ -1980,6 +2014,7 @@ HTML;
      **/
     public static function nullHeader($title, $url = '')
     {
+        /** @var bool $HEADER_LOADED */
         global $HEADER_LOADED;
 
         if ($HEADER_LOADED) {
@@ -2036,6 +2071,7 @@ HTML;
         $item = "none",
         $option = ""
     ) {
+        /** @var bool $HEADER_LOADED */
         global $HEADER_LOADED;
 
        // Print a nice HTML-head for every page
@@ -2069,6 +2105,7 @@ HTML;
         string $item = "none",
         string $option = ""
     ): void {
+        /** @var bool $HEADER_LOADED */
         global $HEADER_LOADED;
 
         if ($HEADER_LOADED) {
@@ -2088,6 +2125,7 @@ HTML;
      **/
     public static function popFooter()
     {
+        /** @var bool $FOOTER_LOADED */
         global $FOOTER_LOADED;
 
         if ($FOOTER_LOADED) {
@@ -2144,6 +2182,7 @@ HTML;
      **/
     public static function openArrowMassives($formname, $fixed = false, $ontop = false, $onright = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         Toolbox::deprecated('openArrowMassives() method is deprecated');
@@ -2315,6 +2354,7 @@ HTML;
      **/
     public static function getCheckbox(array $options)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params                    = [];
@@ -2483,6 +2523,7 @@ HTML;
      **/
     public static function getOpenMassiveActionsForm($name = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (empty($name)) {
@@ -2530,6 +2571,7 @@ HTML;
      **/
     public static function showMassiveActions($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
@@ -2705,6 +2747,7 @@ HTML;
      **/
     public static function showDateField($name, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -2882,6 +2925,7 @@ JS;
      **/
     public static function showDateTimeField($name, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -3020,6 +3064,7 @@ JS;
      */
     public static function showTimeField($name, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -3132,6 +3177,7 @@ JS;
      **/
     public static function showGenericDateTimeSearch($element, $value = '', $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -3555,6 +3601,7 @@ JS;
      **/
     public static function showToolTip($content, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $param = [
@@ -3757,6 +3804,10 @@ JS;
         $enable_images = true,
         int $editor_height = 150,
     ) {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
        // load tinymce lib
@@ -3970,6 +4021,7 @@ JAVASCRIPT
         string $preset_target,
         ?string $link_id = null
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $url = "/front/contenttemplates/documentation.php?preset=$preset_target";
@@ -4198,6 +4250,7 @@ JAVASCRIPT
         $item_type_output_param = 0,
         $additional_info = ''
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $list_limit = $_SESSION['glpilist_limit'];
@@ -4367,7 +4420,7 @@ JAVASCRIPT
      *
      * @since 0.83.1
      *
-     * @return String
+     * @return string
      **/
     public static function makeTitle($string, $num, $tot)
     {
@@ -4500,7 +4553,7 @@ JAVASCRIPT
      *
      * @since 0.83.
      *
-     * @return String
+     * @return string
      **/
     public static function closeForm($display = true)
     {
@@ -4526,7 +4579,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function jsHide($id)
     {
@@ -4541,7 +4594,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function jsShow($id)
     {
@@ -4556,7 +4609,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function cleanId($id)
     {
@@ -4571,7 +4624,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function jsGetElementbyID($id)
     {
@@ -4617,10 +4670,11 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function jsAdaptDropdown($id, $params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $width = '';
@@ -4758,10 +4812,11 @@ JAVASCRIPT
      *
      * @since 0.85.
      *
-     * @return String
+     * @return string
      **/
     public static function jsAjaxDropdown($name, $field_id, $url, $params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $default_options = [
@@ -5331,7 +5386,7 @@ HTML;
      * @param array   $options Array of HTML attributes
      * @param boolean $minify  Try to load minified file (defaults to true)
      *
-     * @return String of script tags
+     * @return string
      **/
     public static function script($url, $options = [], $minify = true)
     {
@@ -5480,6 +5535,7 @@ HTML;
      **/
     public static function file($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $randupload             = mt_rand();
@@ -5739,6 +5795,7 @@ HTML;
      */
     private static function uploadedFiles($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //default options
@@ -6123,6 +6180,7 @@ HTML;
      **/
     public static function getImageHtmlTagForDocument($document_id, $width, $height, $addLink = true, $more_link = "")
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $document = new Document();
@@ -6197,6 +6255,10 @@ HTML;
      */
     public static function requireJs($name)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         if (isset($_SESSION['glpi_js_toload'][$name])) {
@@ -6332,6 +6394,10 @@ HTML;
      */
     private static function loadJavascript()
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
        // transfer core variables to javascript side
@@ -6445,6 +6511,7 @@ HTML;
      */
     public static function getCoreVariablesForJavascript(bool $full = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // prevent leak of data for non logged sessions
@@ -6508,6 +6575,7 @@ HTML;
      */
     final public static function getPrefixedUrl($url)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $prefix = $CFG_GLPI['root_doc'];
         if (substr($url, 0, 1) != '/') {
@@ -6673,6 +6741,10 @@ HTML;
      */
     public static function compileScss($args)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $CFG_GLPI, $GLPI_CACHE;
 
         if (!isset($args['file']) || empty($args['file'])) {
@@ -6799,6 +6871,8 @@ HTML;
               }
 CSS;
             }
+
+            /** @var \Glpi\Console\Application $application */
             global $application;
             if ($application instanceof Application) {
                 throw $e;

@@ -57,6 +57,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->insert('glpi_oauth_access_tokens', [
@@ -70,6 +71,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
     public function revokeAccessToken($tokenId)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->delete('glpi_oauth_access_tokens', ['identifier' => $tokenId]);
@@ -77,6 +79,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
     public function isAccessTokenRevoked($tokenId)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

@@ -83,7 +83,11 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeSoftware()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_item_software_install']);
         if ($month) {
@@ -138,7 +142,11 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeInfocom()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_infocom_creation']);
         if ($month) {
@@ -169,7 +177,11 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeUserinfos()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_profile_user']);
         if ($month) {
@@ -238,7 +250,11 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeDevices()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $actions = [
             Log::HISTORY_ADD_DEVICE          => "adddevice",
@@ -268,7 +284,11 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeRelations()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $actions = [
             Log::HISTORY_ADD_RELATION     => "addrelation",
@@ -296,7 +316,11 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeItems()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $actions = [
             Log::HISTORY_CREATE_ITEM      => "createitem",
@@ -327,7 +351,11 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeRefusedLogs()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_refusedequipment']);
         if ($month) {
@@ -352,7 +380,11 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeOthers()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $actions = [
             16 => 'comments',
@@ -379,7 +411,11 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgePlugins()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_plugins']);
         if ($month) {
@@ -400,7 +436,11 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeAll()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_all']);
         if ($month) {

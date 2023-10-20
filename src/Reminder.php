@@ -219,6 +219,7 @@ class Reminder extends CommonDBVisible implements
     public static function addVisibilityJoins($forceall = false)
     {
        //not deprecated because used in Search
+        /** @var \DBmysql $DB */
         global $DB;
 
        //get and clean criteria
@@ -614,6 +615,7 @@ class Reminder extends CommonDBVisible implements
      **/
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initForm($ID, $options);
@@ -819,6 +821,7 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $html = "";
@@ -890,7 +893,11 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $users_id = Session::getLoginUserID();
         $today    = date('Y-m-d');
@@ -1133,6 +1140,7 @@ class Reminder extends CommonDBVisible implements
     private static function getItemsAsVCalendars(array $query)
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $reminder_iterator = $DB->request($query);

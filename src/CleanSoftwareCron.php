@@ -193,6 +193,7 @@ class CleanSoftwareCron extends CommonDBTM
         CommonDBTM $em,
         int $max
     ): int {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $total = 0;

@@ -255,6 +255,7 @@ class ITILFollowup extends CommonDBChild
     public function post_addItem()
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Handle rich-text images and uploaded documents
@@ -306,6 +307,7 @@ class ITILFollowup extends CommonDBChild
 
     public function post_deleteFromDB()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $donotif = $CFG_GLPI["use_notifications"];
@@ -470,6 +472,7 @@ class ITILFollowup extends CommonDBChild
 
     public function post_updateItem($history = 1)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $job      = new $this->fields['itemtype']();
@@ -1071,6 +1074,7 @@ class ITILFollowup extends CommonDBChild
      */
     public function isFromSupportAgent()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Get parent item

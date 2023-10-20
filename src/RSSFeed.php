@@ -208,6 +208,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public static function addVisibilityJoins($forceall = false)
     {
        //not deprecated because used in Search
+        /** @var \DBmysql $DB */
         global $DB;
 
        //get and clean criteria
@@ -872,6 +873,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         // Fetch feed data, unless it is already cached
@@ -923,7 +925,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $users_id             = Session::getLoginUserID();
 

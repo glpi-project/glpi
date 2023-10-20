@@ -62,6 +62,7 @@ class UserEmail extends CommonDBChild
      **/
     public static function getDefaultForUser($users_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Get default one
@@ -91,6 +92,7 @@ class UserEmail extends CommonDBChild
      **/
     public static function getAllForUser($users_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $emails = [];
@@ -120,6 +122,7 @@ class UserEmail extends CommonDBChild
      **/
     public static function isEmailForUser($users_id, $email)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -293,6 +296,7 @@ class UserEmail extends CommonDBChild
 
     public function post_updateItem($history = 1)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // if default is set : unsed others for the users
@@ -318,6 +322,7 @@ class UserEmail extends CommonDBChild
 
     public function post_addItem()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // if default is set : unset others for the users
@@ -340,6 +345,7 @@ class UserEmail extends CommonDBChild
 
     public function post_deleteFromDB()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // if default is set : set default to another one

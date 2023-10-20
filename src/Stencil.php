@@ -95,6 +95,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
      */
     public static function getStencilFromID(int $id): ?Stencil
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

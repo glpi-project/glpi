@@ -326,6 +326,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     final public function defineAllTabs($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $onglets = [];
@@ -409,6 +410,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function addImpactTab(array &$ong, array $options)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Check if impact analysis is enabled for this item type
@@ -775,6 +777,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function redirectToList()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -993,6 +996,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function showNavigationHeader($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // for objects not in table like central
@@ -1272,6 +1276,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function showDebugInfo()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (method_exists($this, 'showDebug')) {
@@ -1414,6 +1419,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function showDislayOptions($sub_itemtype = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options      = static::getAvailableDisplayOptions();
@@ -1484,6 +1490,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getDisplayOptionsLink($sub_itemtype = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -1549,6 +1556,10 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function getKBLinks()
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         if (!($this instanceof CommonDBTM)) {

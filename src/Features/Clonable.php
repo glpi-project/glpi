@@ -216,6 +216,7 @@ trait Clonable
      */
     public function clone(array $override_input = [], bool $history = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($DB->isSlave()) {

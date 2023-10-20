@@ -95,7 +95,11 @@ class KnowbaseItem_Revision extends CommonDBTM
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $item_id = $item->getID();
         $item_type = $item::getType();
@@ -365,6 +369,7 @@ class KnowbaseItem_Revision extends CommonDBTM
      */
     private function getNewRevision()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([

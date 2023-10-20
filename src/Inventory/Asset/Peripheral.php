@@ -138,6 +138,7 @@ class Peripheral extends InventoryAsset
 
     public function handle()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $rule = new RuleImportAssetCollection();

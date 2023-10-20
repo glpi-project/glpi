@@ -103,6 +103,7 @@ final class Search
      */
     private function getSelectCriteriaForProperty(string $prop_name, bool $distinct_groups = false): ?QueryExpression
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $prop = $this->flattened_properties[$prop_name];
@@ -186,6 +187,7 @@ final class Search
 
     private function getFrom(array $criteria)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($this->union_search_mode) {
@@ -341,6 +343,7 @@ final class Search
      */
     private function getMatchingRecords($ignore_pagination = false): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $records = [];
@@ -470,6 +473,7 @@ final class Search
 
     private function hydrateRecords(array $records): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $hydrated_records = [];
@@ -812,6 +816,7 @@ final class Search
 
     private static function getIDForOtherUniqueFieldBySchema(array $schema, string $field, mixed $value): ?int
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($schema['properties'][$field])) {

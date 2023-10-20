@@ -65,6 +65,7 @@ class MigrationCleaner extends CommonGLPI
 
     public static function canView()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($_SESSION['glpishowmigrationcleaner'])) {

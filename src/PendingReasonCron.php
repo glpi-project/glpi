@@ -64,6 +64,7 @@ class PendingReasonCron extends CommonDBTM
      */
     public static function cronPendingreason_autobump_autosolve(CronTask $task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $config = Config::getConfigurationValues('core', ['system_user']);

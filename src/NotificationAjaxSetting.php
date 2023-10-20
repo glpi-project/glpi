@@ -58,6 +58,7 @@ class NotificationAjaxSetting extends NotificationSetting
 
     public function showFormConfig()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         echo "<form action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>";

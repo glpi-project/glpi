@@ -92,7 +92,11 @@ class NetworkPort_Vlan extends CommonDBRelation
      **/
     public static function showForNetworkPort(NetworkPort $port)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $ID = $port->getID();
         if (!$port->can($ID, READ)) {
@@ -212,7 +216,11 @@ class NetworkPort_Vlan extends CommonDBRelation
 
     public static function showForVlan(Vlan $vlan)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $ID = $vlan->getID();
         if (!$vlan->can($ID, READ)) {
@@ -308,6 +316,7 @@ class NetworkPort_Vlan extends CommonDBRelation
      **/
     public static function getVlansForNetworkPort($portID)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $vlans = [];

@@ -43,6 +43,7 @@ final class PDFLandscapeSearchOutput extends PDFSearchOutput
 {
     public static function showFooter($title = "", $count = null): string
     {
+        /** @var string $PDF_TABLE */
         global $PDF_TABLE;
 
         $font       = 'helvetica';

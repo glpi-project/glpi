@@ -62,6 +62,7 @@ trait DCBreadcrumb
     {
         Toolbox::deprecated();
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $item = $this;
@@ -226,6 +227,7 @@ trait DCBreadcrumb
      */
     final public static function renderDcBreadcrumb(int $items_id): string
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $breadcrumb = [];

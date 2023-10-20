@@ -74,6 +74,7 @@ class Stat extends CommonGLPI
      **/
     public static function getItems($itemtype, $date1, $date2, $type, $parent = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!$item = getItemForItemtype($itemtype)) {
@@ -415,6 +416,7 @@ class Stat extends CommonGLPI
      **/
     public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "")
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Set display type for export if define
@@ -1563,6 +1565,7 @@ class Stat extends CommonGLPI
      **/
     public static function showItems($target, $date1, $date2, $start)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $view_entities = Session::isMultiEntitiesMode();
@@ -1709,7 +1712,11 @@ class Stat extends CommonGLPI
      **/
     public static function title()
     {
-        global $PLUGIN_HOOKS, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $opt_list["Ticket"]                             = __('Tickets');
 

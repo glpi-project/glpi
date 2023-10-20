@@ -63,6 +63,7 @@ class EnableMaintenanceModeCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $values = [

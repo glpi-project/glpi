@@ -115,6 +115,7 @@ class Planning extends CommonGLPI
 
     public static function getAdditionalMenuLinks()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $links = [];
@@ -376,6 +377,7 @@ JAVASCRIPT;
      **/
     public static function checkAlreadyPlanned($users_id, $begin, $end, $except = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $planned = false;
@@ -448,6 +450,7 @@ JAVASCRIPT;
      **/
     public static function checkAvailability($params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($params['itemtype'])) {
@@ -883,6 +886,7 @@ JAVASCRIPT;
 
     public static function getPlanningTypes()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return array_merge(
@@ -952,6 +956,7 @@ JAVASCRIPT;
      */
     public static function showPlanningFilter()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $headings = ['filters'    => __("Events type"),
@@ -1010,6 +1015,7 @@ JAVASCRIPT;
      */
     public static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Invalid data, skip
@@ -1201,6 +1207,7 @@ JAVASCRIPT;
      */
     public static function showAddPlanningForm()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -1306,7 +1313,7 @@ JAVASCRIPT;
     {
         echo Group::getTypeName(1) . " : <br>";
 
-        $condition = ['is_task' => 1];
+        $condition = [];
        // filter groups
         if (!Session::haveRight('planning', self::READALL)) {
             $condition['id'] = $_SESSION['glpigroups'];
@@ -1517,6 +1524,7 @@ JAVASCRIPT;
 
     public static function showAddEventForm($params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (count($CFG_GLPI['planning_add_types']) == 1) {
@@ -1609,6 +1617,7 @@ JAVASCRIPT;
      */
     public static function showAddEventClassicForm($params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($params["id"]) && ($params["id"] > 0)) {
@@ -1947,6 +1956,7 @@ JAVASCRIPT;
      */
     public static function constructEventsArray($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $param['start']               = '';
@@ -2571,6 +2581,7 @@ JAVASCRIPT;
      **/
     public static function showCentral($who)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -2613,6 +2624,7 @@ JAVASCRIPT;
      **/
     public static function generateIcal($who, $whogroup, $limititemtype = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (

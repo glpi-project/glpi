@@ -144,6 +144,7 @@ class Config extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Unset _no_history to not save it as a configuration value
@@ -324,6 +325,7 @@ class Config extends CommonDBTM
      */
     private function handleSmtpInput(array $input): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (array_key_exists('smtp_mode', $input) && $input['smtp_mode'] === MAIL_SMTPTLS) {
@@ -406,6 +408,7 @@ class Config extends CommonDBTM
      **/
     public function showFormDisplay()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!self::canView()) {
@@ -426,6 +429,7 @@ class Config extends CommonDBTM
      **/
     public function showFormInventory()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!self::canView()) {
@@ -480,7 +484,12 @@ class Config extends CommonDBTM
      **/
     public function showFormDBSlave()
     {
-        global $DB, $CFG_GLPI, $DBslave;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         * @var \DBmysql $DBslave
+         */
+        global $CFG_GLPI, $DB, $DBslave;
 
         if (!static::canUpdate()) {
             return;
@@ -520,6 +529,7 @@ class Config extends CommonDBTM
      **/
     public function showFormAPI()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!self::canView()) {
@@ -553,6 +563,7 @@ class Config extends CommonDBTM
      **/
     public function showFormHelpdesk()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!self::canView()) {
@@ -595,6 +606,10 @@ class Config extends CommonDBTM
      **/
     public function showFormUserPrefs($data = [])
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $userpref  = false;
@@ -631,6 +646,7 @@ class Config extends CommonDBTM
      */
     public static function arePasswordSecurityChecksEnabled(): bool
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI["use_password_security"];
@@ -667,6 +683,7 @@ class Config extends CommonDBTM
      **/
     public static function validatePassword($password, $display = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         Toolbox::deprecated(
@@ -795,6 +812,10 @@ class Config extends CommonDBTM
 
     public static function showSystemInfoTable()
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $oldlang = $_SESSION['glpilanguage'];
@@ -867,6 +888,9 @@ class Config extends CommonDBTM
      **/
     public function showSystemInformations()
     {
+        /**
+         * @var array $CFG_GLPI
+         */
         global $CFG_GLPI;
 
         if (!static::canUpdate()) {
@@ -1132,6 +1156,7 @@ class Config extends CommonDBTM
      **/
     public static function getLanguage($lang)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Alternative language code: en-EN --> en_EN
@@ -1171,7 +1196,11 @@ class Config extends CommonDBTM
 
     public static function detectRootDoc()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (isset($CFG_GLPI['root_doc'])) {
             return; // already computed
@@ -1322,6 +1351,7 @@ class Config extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($item->getType() == 'Preference') {
@@ -1401,6 +1431,7 @@ class Config extends CommonDBTM
      **/
     public static function displayCheckDbEngine($fordebug = false, $version = null)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $error = 0;
@@ -1451,6 +1482,7 @@ class Config extends CommonDBTM
     public static function checkDbEngine($raw = null)
     {
         if ($raw === null) {
+            /** @var \DBmysql $DB */
             global $DB;
             $raw = $DB->getVersion();
         }
@@ -1598,6 +1630,7 @@ class Config extends CommonDBTM
      **/
     public static function getConfigurationValues($context, array $names = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = [
@@ -1645,6 +1678,10 @@ class Config extends CommonDBTM
     public static function loadLegacyConfiguration()
     {
 
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request(['FROM' => 'glpi_configs']);
@@ -1830,6 +1867,7 @@ class Config extends CommonDBTM
      */
     public function showFormLogs()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!static::canUpdate()) {
@@ -1891,6 +1929,7 @@ class Config extends CommonDBTM
      */
     public function showFormSecurity()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Config::canUpdate()) {
@@ -1912,6 +1951,7 @@ class Config extends CommonDBTM
      */
     public function showFormManagement()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!self::canView()) {
@@ -1955,7 +1995,11 @@ class Config extends CommonDBTM
 
     public function post_updateItem($history = 1)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
         // Check if password expiration mechanism has been activated
         if (
             $this->fields['name'] == 'password_expiration_delay'
@@ -2039,6 +2083,7 @@ class Config extends CommonDBTM
      */
     public static function getSafeConfig($safer = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $excludedKeys = array_flip(self::$undisclosedFields);
@@ -2209,6 +2254,7 @@ class Config extends CommonDBTM
      */
     private static function getEmailSenderFromEntityOrConfig(string $config_name, ?int $entities_id = null): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $email_config_name = $config_name;
@@ -2284,6 +2330,7 @@ class Config extends CommonDBTM
      */
     public static function getConfigIDForContext(string $context)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $iterator = $DB->request([
             'SELECT' => 'id',

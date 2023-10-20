@@ -58,6 +58,7 @@ final class PermissionManager
 
     public function getAllEntities(int $users_id): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $profile_table = Profile::getTable();

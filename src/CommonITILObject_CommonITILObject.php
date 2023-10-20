@@ -106,6 +106,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {
@@ -291,6 +292,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         if (static::class == self::class) {
             throw new \LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
         }
+        /** @var \DBmysql $DB */
         global $DB;
 
         $links = [];
@@ -524,6 +526,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
             throw new \LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
         }
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $count = 0;

@@ -160,6 +160,7 @@ class Notepad extends CommonDBChild
      **/
     public static function getAllForItem(CommonDBTM $item, $target = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $data = [];

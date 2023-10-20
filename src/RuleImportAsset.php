@@ -445,7 +445,12 @@ class RuleImportAsset extends Rule
 
     public function findWithGlobalCriteria($input)
     {
-        global $DB, $PLUGIN_HOOKS, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         * @var array $PLUGIN_HOOKS
+         */
+        global $CFG_GLPI, $DB, $PLUGIN_HOOKS;
 
         $this->complex_criteria = [];
         $this->restrict_entity = false;
@@ -921,8 +926,13 @@ class RuleImportAsset extends Rule
 
         if (count($this->actions)) {
             foreach ($this->actions as $action) {
-                if ($action->fields['field'] == '_ignore_import' || $action->fields["value"] == self::RULE_ACTION_DENIED) {
+                if ($action->fields["value"] == self::RULE_ACTION_DENIED) {
                     $output['action'] = self::LINK_RESULT_DENIED;
+                    return $output;
+                }
+
+                if ($action->fields['field'] == '_ignore_import') {
+                    $output['action'] = self::LINK_RESULT_CREATE;
                     return $output;
                 }
 
@@ -1046,6 +1056,7 @@ class RuleImportAsset extends Rule
      */
     public static function getItemTypesForRules()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = [];
@@ -1092,6 +1103,7 @@ class RuleImportAsset extends Rule
      */
     public function getGlobalCriteria(): array
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $criteria = array_merge([

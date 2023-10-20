@@ -50,6 +50,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->insert('glpi_oauth_refresh_tokens', [
@@ -61,6 +62,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     public function revokeRefreshToken($tokenId)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->delete('glpi_oauth_refresh_tokens', [
@@ -70,6 +72,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     public function isRefreshTokenRevoked($tokenId)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

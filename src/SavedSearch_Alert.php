@@ -153,6 +153,7 @@ class SavedSearch_Alert extends CommonDBChild
      **/
     public static function showForSavedSearch(SavedSearch $search, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $search->getID();
@@ -272,6 +273,7 @@ class SavedSearch_Alert extends CommonDBChild
      */
     private static function saveContext()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $context = [];
         $context['$_SESSION'] = $_SESSION;
@@ -290,6 +292,7 @@ class SavedSearch_Alert extends CommonDBChild
      */
     private static function restoreContext($context)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $_SESSION = $context['$_SESSION'];
         $CFG_GLPI = $context['$CFG_GLPI'];
@@ -306,6 +309,7 @@ class SavedSearch_Alert extends CommonDBChild
      */
     public static function cronSavedSearchesAlerts($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

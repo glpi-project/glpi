@@ -58,6 +58,7 @@ class OLA extends LevelAgreement
 
     public function showFormWarning()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" . __s('Warning') . "'>";

@@ -112,6 +112,7 @@ class Socket extends CommonDBChild
     public static function showNetworkPortForm($itemtype, $items_id, $networkports_id = 0, $options = [])
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         //if form is called from an item, retrieve itemtype and items
@@ -265,6 +266,7 @@ class Socket extends CommonDBChild
      **/
     public static function getSocketLinkTypes()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $values = [];
         foreach ($CFG_GLPI["socket_types"] as $itemtype) {
@@ -281,6 +283,7 @@ class Socket extends CommonDBChild
      **/
     public static function getSocketAlreadyLinked(string $itemtype, int $items_id): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $already_use = [];
         $sub_query = [];
@@ -608,6 +611,7 @@ class Socket extends CommonDBChild
      **/
     public function findID(array &$input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!empty($input["name"])) {
@@ -650,6 +654,7 @@ class Socket extends CommonDBChild
 
     public function cleanIfStealNetworkPort()
     {
+        /** @var \DBmysql $DB */
         global $DB;
        //find other socket with same networkport and reset it
         if ($this->fields['networkports_id'] > 0) {
@@ -683,6 +688,7 @@ class Socket extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if (!$withtemplate) {
             $nb = 0;
@@ -715,6 +721,7 @@ class Socket extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if ($item->getType() == 'Location') {
             self::showForLocation($item);
@@ -735,6 +742,7 @@ class Socket extends CommonDBChild
     public static function showListForItem($item)
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $canedit = self::canUpdate();
@@ -910,6 +918,7 @@ class Socket extends CommonDBChild
      **/
     public static function showForLocation($item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID       = $item->getField('id');

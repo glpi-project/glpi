@@ -75,6 +75,14 @@ class OperatingSystem extends InventoryAsset
             if (property_exists($this->extra_data['hardware'], 'winprodkey')) {
                 $val->license_number = $this->extra_data['hardware']->winprodkey;
             }
+
+            if (property_exists($this->extra_data['hardware'], 'wincompany')) {
+                $val->company = $this->extra_data['hardware']->wincompany;
+            }
+
+            if (property_exists($this->extra_data['hardware'], 'winowner')) {
+                $val->owner = $this->extra_data['hardware']->winowner;
+            }
         }
 
         if (property_exists($val, 'full_name')) {
@@ -135,6 +143,7 @@ class OperatingSystem extends InventoryAsset
 
     public function handle()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ios = new Item_OperatingSystem();

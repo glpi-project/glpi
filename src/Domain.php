@@ -74,6 +74,7 @@ class Domain extends CommonDBTM
 
     public function cleanDBonPurge()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ditem = new Domain_Item();
@@ -349,6 +350,7 @@ class Domain extends CommonDBTM
      * */
     public static function dropdownDomains($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $p = [
@@ -593,6 +595,7 @@ class Domain extends CommonDBTM
      */
     public static function expiredDomainsCriteria($entities_id): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $delay = Entity::getUsedConfig('send_domains_alert_expired_delay', $entities_id);
@@ -617,6 +620,7 @@ class Domain extends CommonDBTM
      */
     public static function closeExpiriesDomainsCriteria($entities_id): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $delay = Entity::getUsedConfig('send_domains_alert_close_expiries_delay', $entities_id);
@@ -642,7 +646,11 @@ class Domain extends CommonDBTM
      */
     public static function cronDomainsAlert($task = null)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
             return 0; // Nothing to do
@@ -752,6 +760,7 @@ class Domain extends CommonDBTM
      * */
     public static function getTypes($all = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = $CFG_GLPI['domain_types'];
@@ -793,6 +802,7 @@ class Domain extends CommonDBTM
 
     public static function getUsed(array $used, $domaintype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

@@ -147,6 +147,7 @@ trait Kanban
 
     public static function getKanbanPluginFilters($itemtype)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
         $filters = [];
 

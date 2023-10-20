@@ -55,6 +55,7 @@ class Right extends \CommonDBChild
      */
     public static function getForDashboard(int $dashboards_id = 0): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $dr_iterator = $DB->request([
@@ -88,6 +89,7 @@ class Right extends \CommonDBChild
      */
     public static function addForDashboard(int $dashboards_id = 0, array $rights = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query_rights = $DB->buildInsert(

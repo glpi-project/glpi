@@ -99,6 +99,7 @@ class Knowbase extends CommonGLPI
     public static function showSearchView()
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Search a solution
@@ -146,6 +147,7 @@ class Knowbase extends CommonGLPI
     {
         Toolbox::deprecated();
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand        = mt_rand();
@@ -242,6 +244,7 @@ JAVASCRIPT;
     {
         Toolbox::deprecated();
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $cat_table = KnowbaseItemCategory::getTable();

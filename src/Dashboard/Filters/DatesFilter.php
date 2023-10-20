@@ -54,6 +54,7 @@ class DatesFilter extends AbstractFilter
 
     public static function canBeApplied(string $table): bool
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         return $DB->fieldExists($table, 'date')
@@ -66,6 +67,7 @@ class DatesFilter extends AbstractFilter
 
     public static function getCriteria(string $table, $value): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!is_array($value) || count($value) !== 2) {
@@ -94,6 +96,7 @@ class DatesFilter extends AbstractFilter
 
     public static function getSearchCriteria(string $table, $value): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!is_array($value) || count($value) !== 2) {

@@ -85,6 +85,7 @@ class Session
      **/
     public static function init(Auth $auth)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($auth->auth_succeded) {
@@ -347,9 +348,10 @@ class Session
      **/
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
+        /** @var int $AJAX_INCLUDE */
         global $AJAX_INCLUDE;
 
-        if (isset($AJAX_INCLUDE) && ($url === null)) {
+        if ($AJAX_INCLUDE && ($url === null)) {
             return;
         }
         if (empty($title)) {
@@ -561,6 +563,7 @@ class Session
      **/
     public static function initEntityProfiles($userID)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $_SESSION['glpiprofiles'] = [];
@@ -643,6 +646,7 @@ class Session
      **/
     public static function loadGroups()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $_SESSION["glpigroups"] = [];
@@ -734,6 +738,10 @@ class Session
      **/
     public static function loadLanguage($forcelang = '', $with_plugins = true)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE
+         */
         global $CFG_GLPI, $TRANSLATE;
 
         if (!isset($_SESSION["glpilanguage"])) {
@@ -829,6 +837,7 @@ class Session
      */
     public static function getPreferredLanguage(): string
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Extract accepted languages from headers
@@ -867,6 +876,7 @@ class Session
      */
     public static function getPluralNumber()
     {
+        /** @var int $DEFAULT_PLURAL_NUMBER */
         global $DEFAULT_PLURAL_NUMBER;
 
         if (isset($_SESSION['glpipluralnumber'])) {
@@ -963,6 +973,7 @@ class Session
      **/
     public static function checkValidSessionId()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -1040,6 +1051,7 @@ class Session
      **/
     public static function checkFaqAccess()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$CFG_GLPI["use_public_faq"]) {
@@ -1334,6 +1346,7 @@ class Session
      **/
     public static function haveRight($module, $right)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (Session::isInventory()) {
@@ -1559,6 +1572,7 @@ class Session
      **/
     public static function getNewCSRFToken(bool $standalone = false)
     {
+        /** @var string $CURRENTCSRFTOKEN */
         global $CURRENTCSRFTOKEN;
 
         $token = $standalone ? '' : $CURRENTCSRFTOKEN;
@@ -1835,6 +1849,7 @@ class Session
      */
     public static function canImpersonate($user_id, ?string &$message = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $is_super_admin = self::haveRight(Config::$rightname, UPDATE);

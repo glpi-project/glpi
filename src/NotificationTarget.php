@@ -549,6 +549,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public function addToRecipientsList(array $data)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $new_target = null;
@@ -675,6 +676,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public function formatURL($usertype, $redirect)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (urldecode($redirect) === $redirect) {
@@ -832,6 +834,7 @@ class NotificationTarget extends CommonDBChild
      **/
     final public function addForGroup($manager, $group_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // members/managers of the group allowed on object entity
@@ -951,6 +954,7 @@ class NotificationTarget extends CommonDBChild
 
     public function addProfilesToTargets()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         foreach ($DB->request('glpi_profiles') as $data) {
@@ -968,6 +972,7 @@ class NotificationTarget extends CommonDBChild
      **/
     final public function addGroupsToTargets($entity)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Filter groups which can be notified and have members (as notifications are sent to members)
@@ -1086,6 +1091,7 @@ class NotificationTarget extends CommonDBChild
      **/
     final public function addUserByField($field, $search_in_object = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $id = [];
@@ -1160,6 +1166,7 @@ class NotificationTarget extends CommonDBChild
      */
     final public function addForProfile($profiles_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
@@ -1388,6 +1395,7 @@ class NotificationTarget extends CommonDBChild
      */
     private function getGlobalTagsData(): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return [
@@ -1495,6 +1503,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public static function countForGroup(Group $group)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $count = $DB->request([
@@ -1531,6 +1540,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public static function showForGroup(Group $group)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!Notification::canView()) {

@@ -61,6 +61,7 @@ class NotificationMailingSetting extends NotificationSetting
 
     public function showFormConfig()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $attach_documents_values = [

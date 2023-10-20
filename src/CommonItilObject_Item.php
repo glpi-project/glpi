@@ -554,6 +554,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!static::$itemtype_1::canView()) {
@@ -721,7 +722,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      **/
     public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = [])
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $params = [
             static::$items_id_1 => 0,
@@ -1066,6 +1071,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      **/
     public static function dropdown($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         // Default values
@@ -1151,6 +1157,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      **/
     public static function showFormMassiveAction($ma)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {
@@ -1464,6 +1471,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $entity_restrict = -1,
         $options = []
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params = [static::$items_id_1 => 0,

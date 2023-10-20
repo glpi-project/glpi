@@ -167,6 +167,7 @@ class NetworkEquipment extends CommonDBTM
      **/
     public function canUnrecurs()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $this->fields['id'];

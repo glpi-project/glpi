@@ -81,6 +81,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     public static function getAdminData()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $admin = Config::getAdminEmailSender();
@@ -101,6 +102,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     public static function getEntityAdminsData($entity)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $admin = Config::getAdminEmailSender($entity);
@@ -120,6 +122,10 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     public static function send(array $data)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $processed = [];
@@ -446,6 +452,7 @@ class NotificationEventMailing extends NotificationEventAbstract
      */
     private static function handleFailedSend(QueuedNotification $notification, string $error): void
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $messageerror = __('Error in sending the email');

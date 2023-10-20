@@ -135,6 +135,7 @@ trait InventoryNetworkPort
      */
     private function cleanUnmanageds()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $networkport = new NetworkPort();
@@ -187,6 +188,7 @@ trait InventoryNetworkPort
      */
     private function handleIpNetworks()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ipnetwork = new IPNetwork();
@@ -341,6 +343,7 @@ trait InventoryNetworkPort
      */
     private function handleUpdates()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $db_ports = [];
@@ -548,6 +551,7 @@ trait InventoryNetworkPort
      */
     private function handleInstantiation($type, $data, $ports_id, $load)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!in_array($type, ['NetworkPortEthernet', 'NetworkPortFiberchannel'])) {

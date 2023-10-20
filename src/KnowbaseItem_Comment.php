@@ -93,6 +93,7 @@ class KnowbaseItem_Comment extends CommonDBTM
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Total Number of comments
@@ -242,6 +243,7 @@ class KnowbaseItem_Comment extends CommonDBTM
      */
     public static function getCommentsForKbItem($kbitem_id, $lang, $parent = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $where = [

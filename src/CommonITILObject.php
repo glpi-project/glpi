@@ -1630,6 +1630,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getActiveOrSolvedLastDaysForItem($itemtype, $items_id, $days)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = [];
@@ -2299,6 +2300,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function pre_updateInDB()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // get again object to reload actors
@@ -2724,6 +2726,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $input = $this->handleInputDeprecations($input);
@@ -3092,6 +3095,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function post_clone($source, $history)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $update = [];
         if (isset($source->fields['users_id_lastupdater'])) {
@@ -3137,6 +3141,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function computePriority($urgency, $impact)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($CFG_GLPI[static::MATRIX_FIELD][$urgency][$impact])) {
@@ -3163,6 +3168,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function dropdownPriority(array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -3356,6 +3362,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function dropdownUrgency(array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -3479,6 +3486,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function dropdownImpact(array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -4055,6 +4063,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {
@@ -4501,6 +4510,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getSearchOptionsSolution()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $tab = [];
 
@@ -4868,6 +4878,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public static function generateSLAOLAComputation($type, $table = "TABLE")
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         switch ($type) {
@@ -5086,6 +5097,7 @@ abstract class CommonITILObject extends CommonDBTM
         $withsupplier = false,
         $inobject = true
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = ['user'  => User::getTypeName(1)];
@@ -5179,6 +5191,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function showActorAddFormOnCreate($type, array $options)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $typename = static::getActorFieldNameType($type);
@@ -5425,6 +5438,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($this->getFromDB($ID)) {
@@ -5456,6 +5470,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function updateActionTime($ID)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tot       = 0;
@@ -5489,7 +5504,11 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function getAllTypesForHelpdesk()
     {
-        global $PLUGIN_HOOKS, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
        /// TODO ticket_types -> itil_types
 
@@ -5714,6 +5733,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedAuthorBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $linkclass = new $this->userlinkclass();
@@ -5795,6 +5815,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedRecipientBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -5862,6 +5883,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedGroupBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $linkclass = new $this->grouplinkclass();
@@ -5935,6 +5957,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedUserTitleOrTypeBetween($date1 = '', $date2 = '', $title = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $linkclass = new $this->userlinkclass();
@@ -6014,6 +6037,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedPriorityBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6058,6 +6082,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedUrgencyBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6103,6 +6128,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedImpactBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6148,6 +6174,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedRequestTypeBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6192,6 +6219,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedSolutionTypeBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6244,6 +6272,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedTechBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $linkclass = new $this->userlinkclass();
@@ -6319,6 +6348,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedTechTaskBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $linktable = getTableForItemType($this->getType() . 'Task');
@@ -6411,6 +6441,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedSupplierBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $linkclass = new $this->supplierlinkclass();
@@ -6480,6 +6511,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedAssignGroupBetween($date1 = '', $date2 = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $linkclass = new $this->grouplinkclass();
@@ -6556,6 +6588,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public static function showShort($id, $options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $p = [
@@ -7053,6 +7086,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function getTimelineItemtypes(): array
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         /** @var CommonITILObject $obj_type */
@@ -7173,6 +7207,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function getLegacyTimelineActionsHTML(): string
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $legacy_actions = '';
@@ -7666,6 +7701,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function getITILActors()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $users_table = $this->getTable() . '_users';
@@ -7754,6 +7790,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function numberOfFollowups($with_private = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $RESTRICT = [];
@@ -7783,6 +7820,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function numberOfTasks($with_private = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = 'glpi_' . strtolower($this->getType()) . 'tasks';
@@ -8318,6 +8356,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function getLinkedItems(): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $assets = $DB->request([
@@ -8476,6 +8515,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function handleNewItemNotifications(): void
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -9252,6 +9292,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         // List of items to return
@@ -9651,6 +9692,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $categories = [];
         if (!empty($category_ids)) {
+            /** @var \DBmysql $DB */
             global $DB;
 
             $cat_table = ITILCategory::getTable();
@@ -9915,6 +9957,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function getTeam(): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $team = [];
@@ -9985,6 +10028,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function getTimelineStats(): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $stats = [
@@ -10120,6 +10164,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function fillInputForBusinessRules(array &$input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $entities_id = isset($input['entities_id'])
@@ -10207,6 +10252,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function cronCreateInquest($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $inquest_class = static::getType() . 'Satisfaction';

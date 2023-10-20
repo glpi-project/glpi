@@ -147,6 +147,7 @@ abstract class CommonDropdown extends CommonDBTM
      **/
     public function getAdditionalFields()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $fields = [];
@@ -245,6 +246,7 @@ abstract class CommonDropdown extends CommonDBTM
      **/
     public function prepareInputForAdd($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // if item based on location, create item in the same entity as location
@@ -406,6 +408,7 @@ abstract class CommonDropdown extends CommonDBTM
 
     public function rawSearchOptions()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $tab = [];
 
@@ -532,6 +535,7 @@ abstract class CommonDropdown extends CommonDBTM
      */
     public function isUsed()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $RELATION = getDbRelations();
@@ -685,6 +689,7 @@ abstract class CommonDropdown extends CommonDBTM
      **/
     public function findID(array &$input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!empty($input["name"])) {
@@ -752,7 +757,7 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Import a value in a dropdown table.
      *
-     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
+     * This import a new dropdown if it doesn't exist - Play dictionary if needed
      *
      * @param string  $value           Value of the new dropdown
      * @param integer $entities_id     Entity in case of specific dropdown (default -1)
@@ -934,6 +939,7 @@ abstract class CommonDropdown extends CommonDBTM
      **/
     public function getLinks($withname = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = '';

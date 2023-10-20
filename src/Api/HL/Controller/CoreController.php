@@ -163,6 +163,7 @@ final class CoreController extends AbstractController
     )]
     public function showDocumentation(Request $request): Response
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $generator = new OpenAPIGenerator(Router::getInstance());
@@ -425,6 +426,7 @@ HTML;
     )]
     public function authorize(Request $request): Response
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         try {
             $auth_request = Server::getAuthorizationServer()->validateAuthorizationRequest($request);

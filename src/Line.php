@@ -224,6 +224,7 @@ class Line extends CommonDBTM
 
     public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, CommonDBTM $checkitem = null)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);

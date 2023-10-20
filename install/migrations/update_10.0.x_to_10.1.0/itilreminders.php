@@ -60,7 +60,7 @@ if (!$DB->tableExists('glpi_itilreminders')) {
         KEY `date_creation` (`date_creation`),
         KEY `pendingreasons_id` (`pendingreasons_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, '10.1 add table glpi_itilreminders');
+    $DB->doQueryOrDie($query, '10.1 add table glpi_itilreminders');
 } else {
     $migration->addField('glpi_itilreminders', 'name', 'varchar(255) DEFAULT NULL');
     $migration->addField('glpi_itilreminders', 'content', 'text');

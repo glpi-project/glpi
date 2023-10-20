@@ -37,11 +37,13 @@ namespace Glpi\Console\Database;
 
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
+use GLPIKey;
 use Migration;
 use Session;
 use Symfony\Component\Console\Helper\Table;
@@ -50,7 +52,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Update;
 
-class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
+class UpdateCommand extends AbstractCommand implements ConfigurationCommandInterface, ForceNoPluginsOptionCommandInterface
 {
     use TelemetryActivationTrait;
 
@@ -119,6 +121,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
 
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance(); // Use dedicated "installer" cache
 
@@ -205,6 +208,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
         $this->askForConfirmation();
 
+        /** @var \Migration $migration */
         global $migration; // Migration scripts are using global `$migration`
         $migration = new Migration(GLPI_VERSION);
         $migration->setOutputHandler($output);
@@ -336,5 +340,14 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         }
 
         return $version_cleaned;
+    }
+
+    public function getConfigurationFilesToUpdate(InputInterface $input): array
+    {
+        if (!(new GLPIKey())->keyExists()) {
+            return ['glpicrypt.key'];
+        }
+
+        return [];
     }
 }

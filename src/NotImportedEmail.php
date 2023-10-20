@@ -216,6 +216,7 @@ class NotImportedEmail extends CommonDBTM
 
     public static function deleteLog()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->delete('glpi_notimportedemails', [1]);

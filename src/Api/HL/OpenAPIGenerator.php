@@ -223,6 +223,7 @@ EOT;
      */
     public function getSchema(): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $component_schemas = self::getComponentSchemas();

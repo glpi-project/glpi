@@ -338,6 +338,7 @@ class NetworkPortInstantiation extends CommonDBChild
         HTMLTableCell $father = null,
         array $options = []
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $display_options = $options['display_options'];
@@ -433,6 +434,7 @@ class NetworkPortInstantiation extends CommonDBChild
      **/
     public static function getItemsByMac($mac, $wildcard_search = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $mac = strtolower($mac);
@@ -544,6 +546,10 @@ class NetworkPortInstantiation extends CommonDBChild
      **/
     public function showNetworkCardField(NetworkPort $netport, $options = [], $recursiveItems = [])
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         echo "<td>" . DeviceNetworkCard::getTypeName(1) . "</td>\n";
@@ -744,6 +750,7 @@ class NetworkPortInstantiation extends CommonDBChild
      **/
     public function showNetworkPortSelector($recursiveItems, $origin)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (count($recursiveItems) == 0) {
@@ -992,6 +999,7 @@ class NetworkPortInstantiation extends CommonDBChild
      **/
     public static function dropdownConnect($ID, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p['name']        = 'networkports_id';

@@ -64,7 +64,11 @@ class CommonITILValidationCron extends CommonDBTM
      */
     public static function cronApprovalReminder(CronTask $task)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $cron_status = 1;
 

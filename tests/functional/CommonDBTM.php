@@ -36,6 +36,10 @@
 namespace tests\units;
 
 use DbTestCase;
+use Computer;
+use Document;
+use Document_Item;
+use Entity;
 use SoftwareVersion;
 
 /* Test for inc/commondbtm.class.php */
@@ -1446,5 +1450,108 @@ class CommonDBTM extends DbTestCase
         ]))->isNotTrue();
 
         $this->hasSessionMessages(1, [$err_msg]);
+    }
+
+    public function testAddFilesWithNewFile()
+    {
+        // Simulate legit call to `addFiles()` post_addItem / post_updateItem
+        $item = getItemByTypeName(Computer::class, '_test_pc01');
+
+        $filename_txt = '65292dc32d6a87.46654965' . 'foo.txt';
+        $content = $this->getUniqueString();
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+
+        $input = [
+            'name' => 'Upload new file',
+            '_filename' => [
+                0 => $filename_txt,
+            ],
+            '_tag_filename' => [
+                0 => '0bf32119-761764d0-65292dc0770083.87619309',
+            ],
+            '_prefix_filename' => [
+                0 => '65292dc32d6a87.46654965',
+            ]
+        ];
+        $item->input = $input;
+        $item->addFiles($input);
+
+        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
+
+        // Check the document exists and is linked to the computer
+        $document_item = new Document_Item();
+        $this->boolean(
+            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+        )->isTrue();
+        $document = new Document();
+        $this->boolean(
+            $document->getFromDB($document_item->fields['documents_id'])
+        )->isTrue();
+        $this->string($document->fields['filename'])->isEqualTo('foo.txt');
+    }
+
+    public function testAddFilesSimilarToExistingDocument()
+    {
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $content = $this->getUniqueString();
+
+        // Create the document
+        $filename1_txt = '6079908c4be820.58460925' . 'foo.txt';
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename1_txt, $content);
+
+        $document = new Document();
+        $init_document_id = $document->add([
+            'entities_id' => $root_entity_id,
+            'is_recursive' => 0,
+            '_only_if_upload_succeed' => 1,
+            '_filename' => [
+                0 => $filename1_txt,
+            ],
+            '_prefix_filename' => [
+                0 => '6079908c4be820.58460925',
+            ]
+        ]);
+
+        unlink(GLPI_TMP_DIR . '/' . $filename1_txt);
+
+        $this->boolean($document->getFromDB($init_document_id))->isTrue();
+
+        // Simulate legit call to `addFiles()` post_addItem / post_updateItem
+        $item = getItemByTypeName(Computer::class, '_test_pc01');
+
+        $filename2_txt = '65292dc32d6a87.22222222' . 'bar.txt';
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename2_txt, $content);
+
+        $input = [
+            'name' => 'Upload new file',
+            '_filename' => [
+                0 => $filename2_txt,
+            ],
+            '_tag_filename' => [
+                0 => '0bf32119-761764d0-65292dc0770083.87619309',
+            ],
+            '_prefix_filename' => [
+                0 => '65292dc32d6a87.22222222',
+            ]
+        ];
+        $item->input = $input;
+        $item->addFiles($input);
+
+        unlink(GLPI_TMP_DIR . '/' . $filename2_txt);
+
+        // Check the document is linked to the computer
+        $document_item = new Document_Item();
+        $this->boolean(
+            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+        )->isTrue();
+
+        // Check that first document has been updated
+        $document = new Document();
+        $this->boolean(
+            $document->getFromDB($document_item->fields['documents_id'])
+        )->isTrue();
+        $this->integer($document->getID())->isEqualTo($init_document_id);
+        $this->string($document->fields['filename'])->isEqualTo('bar.txt');
     }
 }

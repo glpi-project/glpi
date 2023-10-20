@@ -55,5 +55,5 @@ if (!$DB->tableExists('glpi_dashboards_filters')) {
          KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`),
          KEY `users_id` (`users_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "10.0 add table glpi_dashboards_filters");
+    $DB->doQueryOrDie($query, "10.0 add table glpi_dashboards_filters");
 }

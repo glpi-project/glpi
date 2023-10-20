@@ -221,6 +221,7 @@ class IPAddress extends CommonDBChild
 
     public static function showForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($item->getType() == 'IPNetwork') {
@@ -330,6 +331,7 @@ class IPAddress extends CommonDBChild
      **/
     public static function countForItem(CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         switch ($item->getType()) {
@@ -599,6 +601,7 @@ class IPAddress extends CommonDBChild
      **/
     public function setAddressFromString($address, $itemtype = "", $items_id = -1)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $this->disableAddress();
@@ -783,6 +786,7 @@ class IPAddress extends CommonDBChild
      **/
     public function setAddressFromBinary($address, $itemtype = "", $items_id = -1)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $this->disableAddress();
@@ -966,6 +970,7 @@ class IPAddress extends CommonDBChild
      **/
     public static function getItemsByIPAddress($IPaddress)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // We must resolv binary address :
@@ -1144,7 +1149,11 @@ class IPAddress extends CommonDBChild
         HTMLTableCell $father = null,
         array $options = []
     ) {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (
             ($item !== null)

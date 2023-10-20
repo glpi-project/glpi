@@ -55,7 +55,7 @@ if (!$DB->tableExists($table)) {
         KEY `search_itemtype` (`search_itemtype`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 
-    $DB->queryOrDie($query, "Add table $table");
+    $DB->doQueryOrDie($query, "Add table $table");
 }
 
 $table = "glpi_defaultfilters";
@@ -72,7 +72,7 @@ if (!$DB->tableExists($table)) {
         KEY `is_active` (`is_active`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 
-    $DB->queryOrDie($query, "Add table $table");
+    $DB->doQueryOrDie($query, "Add table $table");
 }
 
 $migration->addRight(DefaultFilter::$rightname, ALLSTANDARDRIGHT, ['config' => UPDATE]);

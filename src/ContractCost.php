@@ -230,6 +230,7 @@ class ContractCost extends CommonDBChild
      **/
     public function getLastCostForContract($contracts_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -312,7 +313,11 @@ class ContractCost extends CommonDBChild
      **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $ID = $contract->fields['id'];
 

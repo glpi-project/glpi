@@ -207,6 +207,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
     public function post_addItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -221,6 +222,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
     public function post_UpdateItem($history = 1)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {

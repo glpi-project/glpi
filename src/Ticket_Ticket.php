@@ -132,6 +132,7 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
     {
         Toolbox::deprecated('Use "Ticket_Ticket::getLinkedTo()"');
 
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Make new database object and fill variables

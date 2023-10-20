@@ -364,6 +364,8 @@ class DBmysql
      * @var integer $SQL_TOTAL_REQUEST
      *
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 10.0.11
      */
     public function query($query)
     {
@@ -383,6 +385,11 @@ class DBmysql
      */
     public function doQuery($query)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var array $DEBUG_SQL
+         * @var integer $SQL_TOTAL_REQUEST
+         */
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
         //FIXME Remove use of $DEBUG_SQL and $SQL_TOTAL_REQUEST
@@ -481,8 +488,24 @@ class DBmysql
      * @param string $message Explanation of query (default '')
      *
      * @return mysqli_result Query result handler
+     *
+     * @deprecated 10.0.11
      */
     public function queryOrDie($query, $message = '')
+    {
+        trigger_error('Executing direct queries is not allowed!', E_USER_ERROR);
+    }
+
+    /**
+     * Execute a MySQL query and die
+     * (optionnaly with a message) if it fails
+     *
+     * @param string $query   Query to execute
+     * @param string $message Explanation of query (default '')
+     *
+     * @return mysqli_result Query result handler
+     */
+    public function doQueryOrDie($query, $message = '')
     {
         $res = $this->doQuery($query);
         if (!$res) {
@@ -512,6 +535,11 @@ class DBmysql
      */
     public function prepare($query)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var array $DEBUG_SQL
+         * @var integer $SQL_TOTAL_REQUEST
+         */
         global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
         $res = $this->dbh->prepare($query);
@@ -1322,6 +1350,7 @@ class DBmysql
             // transform boolean as int (prevent `false` to be transformed to empty string)
             $value = "'" . (int)$value . "'";
         } else {
+            /** @var \DBmysql $DB */
             global $DB;
             $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
             $value = "'$value'";
@@ -1756,14 +1785,20 @@ class DBmysql
     {
         $known_types = [
             'TABLE',
-            'VIEW'
+            'VIEW',
+            'INDEX',
+            'FOREIGN KEY',
+            'FIELD'
         ];
         if (!in_array($type, $known_types)) {
             throw new \InvalidArgumentException('Unknown type to drop: ' . $type);
         }
 
         $name = $this::quoteName($name);
-        $query = "DROP $type";
+        $query = 'DROP';
+        if ($type != 'FIELD') {
+            $query .= " $type";
+        }
         if ($exists) {
             $query .= ' IF EXISTS';
         }

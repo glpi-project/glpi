@@ -89,6 +89,7 @@ class NotificationMailing implements NotificationInterface
      */
     public static function testNotification(): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $sender = Config::getEmailSender();
@@ -133,6 +134,7 @@ class NotificationMailing implements NotificationInterface
 
     public function sendNotification($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $data = [];

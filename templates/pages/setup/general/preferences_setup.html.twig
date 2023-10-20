@@ -309,12 +309,12 @@
 
    {% if call('\\Glpi\\Dashboard\\Grid::canViewOneDashboard') %}
       {{ fields.smallTitle(__('Dashboards'), 'ti ti-dashboard') }}
-      {% macro dropdownDashboard(name, config, context = 'core') %}
+      {% macro dropdownDashboard(name, config, context = 'core', disabled_option = false) %}
          {% do call('\\Glpi\\Dashboard\\Grid::dropdownDashboard', [name, {
             value: config[name],
             display_emptychoice: true,
             context: context
-         }]) %}
+         }, disabled_option]) %}
       {% endmacro %}
 
       {{ fields.htmlField(
@@ -337,7 +337,7 @@
       ) }}
       {{ fields.htmlField(
          '',
-         _self.dropdownDashboard('default_dashboard_mini_ticket', config, 'mini_core'),
+         _self.dropdownDashboard('default_dashboard_mini_ticket', config, 'mini_core', true),
          __('Default for tickets (mini dashboard)'),
          field_options
       ) }}

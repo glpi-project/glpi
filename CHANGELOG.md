@@ -87,9 +87,9 @@ The present file will list all changes made to the project; according to the
 - All types of rules are now sortable and ordered by ranking.
 - Plugins console commands must now use the normalized prefix `plugins:XXX` where `XXX` is the plugin key.
 - GLPI web root is now the `/public` directory and all web request to PHP scripts are proxified by `public/index.php` script.
-- Usage of `DBmysql::query()` method is prohibited to ensure that legacy unsafe DB are no more executed. To execute DB queries,
+- Usage of `DBmysql::query()`, `DBmysql::queryOrDie()` method are prohibited to ensure that legacy unsafe DB are no more executed. To execute DB queries,
   either `DBmysql::request()` can be used to craft query using the GLPI query builder,
-  either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
+  either `DBmysql::doQuery()`/`DBmysql::doQueryOrDie()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
 - `js/fuzzysearch.js` replaced with `FuzzySearch/Modal` Vue component.
 - `Html::fuzzySearch()` replaced with `Html::getMenuFuzzySearchList()` function.
 - `Html::generateMenuSession()` `$force` argument has been removed.
@@ -249,6 +249,11 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- Usage of the `DBmysql::query()` method is deprecated, for security reasons, as it is most of the time used in an insecure way.
+  To execute DB queries, either `DBmysql::request()` can be used to craft query using the GLPI query builder,
+  either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted SQL string.
+  This deprecation will not trigger any error, unless the `GLPI_STRICT_DEPRECATED` constant is set to `true`, to avoid
+  cluttering error logs.
 
 #### Removed
 

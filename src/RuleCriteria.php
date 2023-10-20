@@ -351,6 +351,7 @@ class RuleCriteria extends CommonDBChild
      **/
     public function getRuleCriterias($rules_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $rules_list = [];
@@ -715,6 +716,7 @@ class RuleCriteria extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Yllen: you always have parent for criteria

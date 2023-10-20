@@ -76,6 +76,10 @@ class GLPI
      */
     public function initLogger()
     {
+        /**
+         * @var \Psr\Log\LoggerInterface $PHPLOGGER
+         * @var \Psr\Log\LoggerInterface $SQLLOGGER
+         */
         global $PHPLOGGER, $SQLLOGGER;
 
         if (defined('GLPI_LOG_LVL')) {

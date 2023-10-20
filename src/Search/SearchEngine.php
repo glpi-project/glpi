@@ -104,6 +104,7 @@ final class SearchEngine
      **/
     public static function getMetaItemtypeAvailable($itemtype): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ref_itemtype = self::getMetaReferenceItemtype($itemtype);
@@ -196,6 +197,7 @@ final class SearchEngine
      */
     public static function isPossibleMetaSubitemOf(string $parent_itemtype, string $child_itemtype): bool
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -264,6 +266,7 @@ final class SearchEngine
      **/
     public static function prepareDataForSearch($itemtype, array $params, array $forcedisplay = []): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Default values of parameters
@@ -481,6 +484,7 @@ final class SearchEngine
      **/
     public static function addDefaultToView($itemtype, $params): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $toview = [];

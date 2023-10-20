@@ -159,6 +159,7 @@ class NetworkPort extends InventoryAsset
      */
     private function prepareConnections(\stdClass $port)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $results = [];
@@ -403,6 +404,7 @@ class NetworkPort extends InventoryAsset
 
     private function handleVlans(\stdClass $port, int $netports_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!property_exists($port, 'logical_number')) {
@@ -663,23 +665,24 @@ class NetworkPort extends InventoryAsset
                 }
             }
             $items_id = $item->add($input);
-
-            $rulesmatched = new \RuleMatchedLog();
-            $agents_id = $this->agent->fields['id'];
-            if (empty($agents_id)) {
-                $agents_id = 0;
-            }
-            $inputrulelog = [
-                'date'      => date('Y-m-d H:i:s'),
-                'rules_id'  => $rules_id,
-                'items_id'  => $items_id,
-                'itemtype'  => $itemtype,
-                'agents_id' => $agents_id,
-                'method'    => 'inventory'
-            ];
-            $rulesmatched->add($inputrulelog, [], false);
-            $rulesmatched->cleanOlddata($items_id, $itemtype);
         }
+
+        $rulesmatched = new \RuleMatchedLog();
+        $agents_id = $this->agent->fields['id'];
+        if (empty($agents_id)) {
+            $agents_id = 0;
+        }
+
+        $inputrulelog = [
+            'date'      => date('Y-m-d H:i:s'),
+            'rules_id'  => $rules_id,
+            'items_id'  => $items_id,
+            'itemtype'  => $itemtype,
+            'agents_id' => $agents_id,
+            'method'    => 'inventory'
+        ];
+        $rulesmatched->add($inputrulelog, [], false);
+        $rulesmatched->cleanOlddata($items_id, $itemtype);
 
         if (!count($ports_id)) {
            //create network port
@@ -737,6 +740,7 @@ class NetworkPort extends InventoryAsset
      */
     public function getNameForMac($mac)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $exploded = explode(':', $mac);

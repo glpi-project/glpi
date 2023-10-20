@@ -94,6 +94,7 @@ class DatabaseInstance extends CommonDBTM
 
     public function getDatabases(): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $dbs = [];
 
@@ -114,6 +115,7 @@ class DatabaseInstance extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -501,6 +503,7 @@ class DatabaseInstance extends CommonDBTM
      */
     public static function getTypes($all = false): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = $CFG_GLPI['databaseinstance_types'];
@@ -561,6 +564,7 @@ class DatabaseInstance extends CommonDBTM
 
     public static function showInstances(CommonDBTM $item, $withtemplate)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $instances = $DB->request([

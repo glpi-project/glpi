@@ -125,6 +125,7 @@ abstract class NotificationSetting extends CommonDBTM
      */
     public static function disableAll()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $CFG_GLPI['use_notifications'] = 0;

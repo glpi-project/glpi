@@ -43,6 +43,7 @@ class ClientRepository implements ClientRepositoryInterface
 {
     public function getClientEntity($clientIdentifier)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

@@ -246,6 +246,7 @@ class DeviceFirmware extends CommonDevice
         HTMLTableHeader $father = null,
         array $options = []
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -267,6 +268,7 @@ class DeviceFirmware extends CommonDevice
         HTMLTableCell $father = null,
         array $options = []
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 

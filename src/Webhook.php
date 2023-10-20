@@ -322,6 +322,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     private static function getAPIItemtypeData(): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         static $supported = null;
@@ -871,6 +872,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function validateCRAChallenge($url, $body, $secret): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $challenge_response = [];
@@ -942,6 +944,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function raise(string $event, CommonDBTM $item): void
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         // Ignore raising if the table doesn't exist (happens during install/update)

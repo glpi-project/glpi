@@ -1,4 +1,5 @@
 <script setup>
+    /* global copyTextToClipboard */
     import {computed, ref} from "vue";
 
     const props = defineProps({
@@ -106,6 +107,18 @@
             sort_dir.value = 'asc';
         }
     }
+    function copyToClipboard(e) {
+        // copy content of code block in clipboard
+        const code =  $(e.currentTarget).parent().find('code');
+        copyTextToClipboard(code.text());
+
+        // change temporary the button icon to a check then after a while return to the original icon
+        const icon = $(e.currentTarget).find('i');
+        icon.removeClass('ti-clipboard-copy').addClass('ti-check');
+        setTimeout(() => {
+            icon.removeClass('ti-check').addClass('ti-clipboard-copy');
+        }, 1000);
+    }
 </script>
 
 <template>
@@ -127,7 +140,16 @@
                 <tr v-for="query in sorted_queries_data" :key="query.request_id + '-' + query.num">
                     <td v-if="is_global_mode"><button class="btn btn-link request-link">{{ query.request_id }}</button></td>
                     <td>{{ query.num }}</td>
-                    <td><code class="d-block cm-s-default border-0" v-html="query.query"></code></td>
+                    <td>
+                        <div class="d-flex align-items-start" style="max-width: 50vw;">
+                            <div style="max-width: 50vw; white-space: break-spaces;" class="w-100">
+                                <code class="d-block cm-s-default border-0" v-html="query.query"></code>
+                            </div>
+                            <button type="button" @click="copyToClipboard($event)" class="ms-1 copy-code btn btn-sm btn-ghost-secondary" title="Copy query to clipboard">
+                                <i class="ti ti-clipboard-copy"></i>
+                            </button>
+                        </div>
+                    </td>
                     <td>{{ query.time }} ms</td>
                     <td>{{ query.rows }}</td>
                     <td>{{ query.warnings }}</td>

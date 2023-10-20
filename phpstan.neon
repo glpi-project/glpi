@@ -13,3 +13,5 @@ parameters:
     ignoreErrors:
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
+rules:
+    - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule

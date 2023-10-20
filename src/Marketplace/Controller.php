@@ -411,6 +411,7 @@ class Controller extends CommonGLPI
      */
     public static function cronCheckAllUpdates(CronTask $task = null): int
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $cron_status = 0;

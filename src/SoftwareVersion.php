@@ -234,6 +234,7 @@ class SoftwareVersion extends CommonDBChild
      **/
     public static function dropdownForOneSoftware($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //$softwares_id,$value=0
@@ -303,6 +304,7 @@ class SoftwareVersion extends CommonDBChild
      **/
     public static function showForSoftware(Software $soft)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $softwares_id = $soft->getField('id');

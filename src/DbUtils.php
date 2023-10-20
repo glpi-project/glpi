@@ -191,6 +191,7 @@ final class DbUtils
      */
     public function getTableForItemType($itemtype)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Force singular for itemtype : States case
@@ -240,6 +241,7 @@ final class DbUtils
      */
     public function getItemTypeForTable($table)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($CFG_GLPI['glpiitemtypetables'][$table])) {
@@ -343,6 +345,7 @@ final class DbUtils
      */
     public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         // If a class exists for this itemtype, just return the declared class name.
@@ -488,6 +491,7 @@ final class DbUtils
      */
     public function countElementsInTable($table, $condition = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!is_array($table)) {
@@ -595,6 +599,7 @@ final class DbUtils
      */
     public function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         static $cache = [];
@@ -639,6 +644,7 @@ final class DbUtils
      */
     public function isIndex($table, $field)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!$DB->tableExists($table)) {
@@ -668,6 +674,7 @@ final class DbUtils
      */
     public function isForeignKeyContraint($table, $keyname)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = [
@@ -709,6 +716,7 @@ final class DbUtils
         $is_recursive = false,
         $complete_request = false
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = $separator . " ( ";
@@ -896,6 +904,10 @@ final class DbUtils
      */
     public function getSonsOf($table, $IDf)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $DB, $GLPI_CACHE;
 
         $ckey = 'sons_cache_' . $table . '_' . $IDf;
@@ -1004,6 +1016,10 @@ final class DbUtils
      */
     public function getAncestorsOf($table, $items_id)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $DB, $GLPI_CACHE;
 
         if ($items_id === null) {
@@ -1142,6 +1158,7 @@ final class DbUtils
      */
     public function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $name    = "";
@@ -1244,6 +1261,7 @@ final class DbUtils
      */
     public function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $name    = "";
@@ -1405,6 +1423,7 @@ final class DbUtils
      */
     public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
@@ -1443,6 +1462,7 @@ final class DbUtils
      */
     public function getTreeForItem($table, $IDf)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
@@ -1560,6 +1580,7 @@ final class DbUtils
      */
     public function formatUserName($ID, $login, $realname, $firstname, $link = 1, $cut = 0, $force_config = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $before = "";
@@ -1629,6 +1650,7 @@ final class DbUtils
      */
     public function getUserName($ID, $link = 0, $disable_anon = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $user = "";
@@ -1737,7 +1759,11 @@ final class DbUtils
      */
     public function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!$isTemplate) {
             return $objectName;
@@ -1894,6 +1920,7 @@ final class DbUtils
      */
     public function closeDBConnections()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Case of not init $DB object
@@ -1913,6 +1940,7 @@ final class DbUtils
      */
     public function getDateCriteria($field, $begin, $end)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $date_pattern = '/^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$/'; // `YYYY-mm-dd` optionaly followed by ` HH:ii:ss`

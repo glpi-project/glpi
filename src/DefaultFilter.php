@@ -115,6 +115,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
 
     public static function getSearchCriteria(string $itemtype): ?array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $default_table = self::getTable();

@@ -67,6 +67,7 @@ abstract class CommonDevice extends CommonDropdown
      **/
     public static function getDeviceTypes()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI['device_types'];
@@ -195,6 +196,7 @@ abstract class CommonDevice extends CommonDropdown
      **/
     public function canUnrecurs()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $this->fields['id'];
@@ -476,6 +478,7 @@ abstract class CommonDevice extends CommonDropdown
      **/
     public function import(array $input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $with_history = $input['with_history'] ?? true;
@@ -634,6 +637,7 @@ abstract class CommonDevice extends CommonDropdown
 
     public static function getFormURL($full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -645,6 +649,7 @@ abstract class CommonDevice extends CommonDropdown
 
     public static function getSearchURL($full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');

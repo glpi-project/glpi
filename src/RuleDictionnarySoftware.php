@@ -53,7 +53,7 @@ class RuleDictionnarySoftware extends Rule
     public function getTitle()
     {
        //TRANS: plural for software
-        return __('Dictionnary of software');
+        return __('Dictionary of software');
     }
 
 

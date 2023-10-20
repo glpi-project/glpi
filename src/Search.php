@@ -478,6 +478,7 @@ class Search
      **/
     public static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $criteria = SQLProvider::getHavingCriteria($LINK, $NOT, $itemtype, $ID, $searchtype, $val);
         if (count($criteria) === 0) {
@@ -601,6 +602,7 @@ class Search
      **/
     public static function addDefaultWhere($itemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $criteria = SQLProvider::getDefaultWhereCriteria($itemtype);
         if (count($criteria) === 0) {
@@ -631,6 +633,7 @@ class Search
      **/
     public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $criteria = SQLProvider::getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta);
         if (count($criteria) === 0) {
@@ -663,6 +666,7 @@ class Search
      **/
     public static function addDefaultJoin($itemtype, $ref_table, array &$already_link_tables)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $criteria = SQLProvider::getDefaultJoinCriteria($itemtype, $ref_table, $already_link_tables);
         $iterator = new DBmysqlIterator($DB);
@@ -703,6 +707,7 @@ class Search
         $joinparams = [],
         $field = ''
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
         $criteria = SQLProvider::getLeftJoinCriteria(
             $itemtype,
@@ -742,6 +747,7 @@ class Search
         array &$already_link_tables2,
         $joinparams = []
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
         $joins = SQLProvider::getMetaLeftJoinCriteria($from_type, $to_type, $already_link_tables2, $joinparams);
         $iterator = new DBmysqlIterator($DB);

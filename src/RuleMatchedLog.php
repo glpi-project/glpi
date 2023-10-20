@@ -170,6 +170,7 @@ class RuleMatchedLog extends CommonDBTM
      */
     public function cleanOlddata($items_id, $itemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -198,6 +199,7 @@ class RuleMatchedLog extends CommonDBTM
      */
     public function showItemForm($items_id, $itemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $rule    = new RuleImportAsset();

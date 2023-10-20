@@ -42,6 +42,7 @@ class RemoteManagement extends InventoryAsset
 {
     public function prepare(): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!in_array($this->item->getType(), $CFG_GLPI['remote_management_types'])) {
@@ -76,6 +77,7 @@ class RemoteManagement extends InventoryAsset
      */
     protected function getExisting(): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $db_existing = [];

@@ -297,11 +297,11 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
 
         $this->array($this->queries)->isIdenticalTo([
-            "ALTER TABLE `change_table` DROP `id`  ,\n" .
+            "ALTER TABLE `change_table` DROP `id` ,\n" .
          "CHANGE `ID` `id` INT NOT NULL DEFAULT '0'   FIRST  ",
         ]);
 
-       // Test change field with move to after an other column
+       // Test change field with move to after another column
         $this->queries = [];
         $this->calling($this->db)->fieldExists = true;
 
@@ -314,7 +314,7 @@ class Migration extends \GLPITestCase
 
         $collate = $DB->use_utf8mb4 ? 'utf8mb4_unicode_ci' : 'utf8_unicode_ci';
         $this->array($this->queries)->isIdenticalTo([
-            "ALTER TABLE `change_table` DROP `name`  ,\n" .
+            "ALTER TABLE `change_table` DROP `name` ,\n" .
          "CHANGE `NAME` `name` VARCHAR(255) COLLATE $collate DEFAULT NULL   AFTER `id` ",
         ]);
     }

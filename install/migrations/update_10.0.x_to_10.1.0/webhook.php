@@ -78,7 +78,7 @@ if (!$DB->tableExists('glpi_webhooks')) {
       KEY `date_creation` (`date_creation`),
       KEY `date_mod` (`date_mod`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "add table glpi_webhooks");
+    $DB->doQueryOrDie($query, "add table glpi_webhooks");
 }
 
 $ADDTODISPLAYPREF[Webhook::class] = [3, 4, 5];
@@ -113,7 +113,7 @@ if (!$DB->tableExists('glpi_queuedwebhooks')) {
       KEY `send_time` (`send_time`),
       KEY `sent_time` (`sent_time`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "add table glpi_webhooks");
+    $DB->doQueryOrDie($query, "add table glpi_webhooks");
 }
 
 // Entity, ID, Webhook, Itemtype, Items ID, URL, Creation date

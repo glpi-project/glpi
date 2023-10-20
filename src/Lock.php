@@ -70,7 +70,11 @@ class Lock extends CommonGLPI
      **/
     public static function showForItem(CommonDBTM $item)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $ID       = $item->getID();
         $itemtype = $item->getType();
@@ -976,6 +980,7 @@ class Lock extends CommonGLPI
      **/
     public static function getLocksQueryInfosByItemType($itemtype, $baseitemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $condition = [];
@@ -1098,6 +1103,7 @@ class Lock extends CommonGLPI
         $is_deleted = 0,
         CommonDBTM $checkitem = null
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $action_unlock_component = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_component';
@@ -1182,6 +1188,7 @@ class Lock extends CommonGLPI
         CommonDBTM $baseitem,
         array $ids
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         switch ($ma->getAction()) {

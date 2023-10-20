@@ -50,6 +50,7 @@ final class Parser
 
     public function __construct(array $schema)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $this->flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
         $this->db = $DB;

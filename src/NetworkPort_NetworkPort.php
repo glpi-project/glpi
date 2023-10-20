@@ -131,6 +131,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     public function connectToHub($ports_id, $hubs_id)
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $netport = new NetworkPort();

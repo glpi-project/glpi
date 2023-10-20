@@ -370,6 +370,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
 
     public static function showNewLine($odd = false, $is_deleted = false): string
     {
+        /** @var string $PDF_TABLE */
         global $PDF_TABLE;
         $style = "";
         if ($odd) {
@@ -381,6 +382,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
 
     public static function showEndLine(bool $is_header_line): string
     {
+        /** @var string $PDF_TABLE */
         global $PDF_TABLE;
         $PDF_TABLE .= '</tr>';
         return '';
@@ -388,6 +390,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
 
     public static function showBeginHeader(): string
     {
+        /** @var string $PDF_TABLE */
         global $PDF_TABLE;
         $PDF_TABLE .= "<thead>";
         return '';
@@ -395,6 +398,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
 
     public static function showHeader($rows, $cols, $fixed = 0): string
     {
+        /** @var string $PDF_TABLE */
         global $PDF_TABLE;
         $PDF_TABLE = "<table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" >";
         return '';
@@ -402,6 +406,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
 
     public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string
     {
+        /** @var string $PDF_TABLE */
         global $PDF_TABLE;
         $PDF_TABLE .= "<th $options>";
         $PDF_TABLE .= htmlspecialchars($value);
@@ -412,6 +417,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
 
     public static function showEndHeader(): string
     {
+        /** @var string $PDF_TABLE */
         global $PDF_TABLE;
         $PDF_TABLE .= "</thead>";
         return '';
@@ -419,6 +425,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
 
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {
+        /** @var string $PDF_TABLE */
         global $PDF_TABLE;
         $value = DataExport::normalizeValueForTextExport($value ?? '');
         $value = htmlspecialchars($value);

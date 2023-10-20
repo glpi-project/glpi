@@ -146,6 +146,7 @@ class Supplier extends CommonDBTM
 
     public function rawSearchOptions()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -375,6 +376,7 @@ class Supplier extends CommonDBTM
      **/
     public function getLinks($withname = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -407,6 +409,7 @@ class Supplier extends CommonDBTM
      **/
     public function showInfocoms()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $instID = $this->fields['id'];
@@ -600,6 +603,7 @@ class Supplier extends CommonDBTM
      **/
     public static function getSuppliersByEmail($email)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $suppliers = $DB->request([

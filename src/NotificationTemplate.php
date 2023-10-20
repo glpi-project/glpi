@@ -521,6 +521,7 @@ class NotificationTemplate extends CommonDBTM
      **/
     public function getByLanguage($language)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

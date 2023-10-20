@@ -64,7 +64,7 @@ if (!$DB->tableExists('glpi_changes_changes')) {
         UNIQUE KEY `unicity` (`changes_id_1`,`changes_id_2`),
         KEY `changes_id_2` (`changes_id_2`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, "10.1.0 add table glpi_changes_changes");
+    $DB->doQueryOrDie($query, "10.1.0 add table glpi_changes_changes");
 }
 
 if (!$DB->tableExists('glpi_problems_problems')) {
@@ -77,5 +77,5 @@ if (!$DB->tableExists('glpi_problems_problems')) {
         UNIQUE KEY `unicity` (`problems_id_1`,`problems_id_2`),
         KEY `problems_id_2` (`problems_id_2`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, "10.1.0 add table glpi_problems_problems");
+    $DB->doQueryOrDie($query, "10.1.0 add table glpi_problems_problems");
 }

@@ -46,7 +46,7 @@ class RuleDictionnaryPrinter extends Rule
 
     public function getTitle()
     {
-        return __('Dictionnary of printers');
+        return __('Dictionary of printers');
     }
 
 

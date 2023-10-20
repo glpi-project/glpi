@@ -158,7 +158,11 @@ class Computer extends CommonDBTM
 
     public function post_updateItem($history = 1)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $changes = [];
         $update_count = count($this->updates ?? []);
@@ -331,6 +335,7 @@ class Computer extends CommonDBTM
 
     public function getLinkedItems()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

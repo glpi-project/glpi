@@ -140,6 +140,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $canedit    = $this->can($ID, UPDATE);
@@ -420,6 +421,7 @@ JAVASCRIPT;
     private static function getItemsAsVCalendars(array $criteria)
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = [

@@ -902,6 +902,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      **/
     public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null, bool $display = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $items_id = $item->getID();

@@ -304,6 +304,7 @@ class Toolbox
         $tps = microtime(true);
 
         if ($logger === null) {
+            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
             global $PHPLOGGER;
             $logger = $PHPLOGGER;
         }
@@ -315,6 +316,7 @@ class Toolbox
             error_log($e);
         }
 
+        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
         global $SQLLOGGER;
         if (isCommandLine() && $level >= LogLevel::WARNING && $logger !== $SQLLOGGER) {
            // Do not output related messages to $SQLLOGGER as they are redundant with
@@ -344,6 +346,7 @@ class Toolbox
      */
     public static function logSqlDebug()
     {
+        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
         global $SQLLOGGER;
         $args = func_get_args();
         self::log($SQLLOGGER, LogLevel::DEBUG, $args);
@@ -354,6 +357,7 @@ class Toolbox
      */
     public static function logSqlWarning()
     {
+        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
         global $SQLLOGGER;
         $args = func_get_args();
         self::log($SQLLOGGER, LogLevel::WARNING, $args);
@@ -364,6 +368,7 @@ class Toolbox
      */
     public static function logSqlError()
     {
+        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
         global $SQLLOGGER;
         $args = func_get_args();
         self::log($SQLLOGGER, LogLevel::ERROR, $args);
@@ -425,11 +430,15 @@ class Toolbox
      * @param  string $message the message to send
      * @return void
      */
-    public static function deprecated($message = "Called method is deprecated")
+    public static function deprecated($message = "Called method is deprecated", $strict = true)
     {
-        trigger_error($message, E_USER_DEPRECATED);
+        if (
+            $strict === true ||
+            (defined('GLPI_STRICT_DEPRECATED') && GLPI_STRICT_DEPRECATED === true)
+        ) {
+            trigger_error($message, E_USER_DEPRECATED);
+        }
     }
-
 
     /**
      * Log a message in log file
@@ -442,6 +451,7 @@ class Toolbox
      **/
     public static function logInFile($name, $text, $force = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $user = '';
@@ -457,6 +467,7 @@ class Toolbox
             $ok = error_log(date("Y-m-d H:i:s") . "$user\n" . $text, 3, GLPI_LOG_DIR . "/" . $name . ".log");
         }
 
+        /** @var \Glpi\Console\Application $application */
         global $application;
         if ($application instanceof Application) {
             $application->getOutput()->writeln('<comment>' . $text . '</comment>', OutputInterface::VERBOSITY_VERY_VERBOSE);
@@ -487,6 +498,7 @@ class Toolbox
      **/
     public static function setDebugMode($mode = null, $debug_sql = null, $debug_vars = null, $log_in_files = null)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($mode)) {
@@ -654,6 +666,7 @@ class Toolbox
     {
         Toolbox::deprecated();
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $value = ((array) $value === $value)
@@ -1087,6 +1100,7 @@ class Toolbox
      **/
     public static function getItemTypeFormURL($itemtype, $full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -1116,6 +1130,7 @@ class Toolbox
      **/
     public static function getItemTypeSearchURL($itemtype, $full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -1150,6 +1165,7 @@ class Toolbox
      **/
     public static function getItemTypeTabsURL($itemtype, $full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $filename = "/ajax/common.tabs.php";
@@ -1281,6 +1297,7 @@ class Toolbox
         bool $check_url_safeness = false,
         ?array &$curl_info = null
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($check_url_safeness && !Toolbox::isUrlSafe($url)) {
@@ -1441,6 +1458,7 @@ class Toolbox
      **/
     public static function manageRedirect($where)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!empty($where)) {
@@ -2187,6 +2205,7 @@ class Toolbox
      **/
     public static function createSchema($lang = 'en_GB', DBmysql $database = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (null === $database) {
@@ -2471,6 +2490,7 @@ class Toolbox
      **/
     public static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = [], bool $add_link = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $document = new Document();
@@ -2939,6 +2959,7 @@ class Toolbox
      */
     public static function getPictureUrl($path, $full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (empty($path)) {
@@ -3229,6 +3250,7 @@ HTML;
      */
     public static function cleanTarget(string $target): string
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $file = preg_replace('/^' . preg_quote($CFG_GLPI['root_doc'], '/') . '/', '', $target);
@@ -3280,6 +3302,7 @@ HTML;
      */
     public static function handleProfileChangeRedirect(): void
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $redirect = $_SESSION['_redirected_from_profile_selector'] ?? false;

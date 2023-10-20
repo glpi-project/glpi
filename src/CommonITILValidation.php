@@ -198,6 +198,7 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public static function canValidate($items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -310,6 +311,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function post_addItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Handle rich-text images
@@ -438,6 +440,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function post_updateItem($history = 1)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $item    = new static::$itemtype();
@@ -707,6 +710,7 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public static function getNumberToValidate($users_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $row = $DB->request([
@@ -826,6 +830,7 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         Toolbox::deprecated();
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $row = $DB->request([
@@ -857,6 +862,7 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         Toolbox::deprecated();
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -882,6 +888,7 @@ abstract class CommonITILValidation extends CommonDBChild
     public static function showFormMassiveAction()
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = [
@@ -1003,7 +1010,11 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public function showSummary(CommonDBTM $item)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (
             !Session::haveRightsOr(
@@ -1714,6 +1725,7 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public static function dropdownValidator(array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (array_key_exists('name', $options)) {
@@ -1976,6 +1988,7 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     public static function alertValidation(CommonITILObject $item, $type)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // No alert for new item

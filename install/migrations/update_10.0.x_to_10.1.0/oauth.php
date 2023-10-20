@@ -52,7 +52,7 @@ if (!$DB->tableExists('glpi_oauth_access_tokens')) {
         PRIMARY KEY (`identifier`),
         KEY `client` (`client`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC";
-    $DB->queryOrDie($query, "10.1.0 add table glpi_oauth_access_tokens");
+    $DB->doQueryOrDie($query, "10.1.0 add table glpi_oauth_access_tokens");
 }
 
 if (!$DB->tableExists('glpi_oauth_auth_codes')) {
@@ -65,7 +65,7 @@ if (!$DB->tableExists('glpi_oauth_auth_codes')) {
         PRIMARY KEY (`identifier`),
         KEY `client` (`client`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC";
-    $DB->queryOrDie($query, "10.1.0 add table glpi_oauth_auth_codes");
+    $DB->doQueryOrDie($query, "10.1.0 add table glpi_oauth_auth_codes");
 }
 
 if (!$DB->tableExists('glpi_oauth_refresh_tokens')) {
@@ -76,7 +76,7 @@ if (!$DB->tableExists('glpi_oauth_refresh_tokens')) {
         PRIMARY KEY (`identifier`),
         KEY `access_token` (`access_token`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC";
-    $DB->queryOrDie($query, "10.1.0 add table glpi_oauth_refresh_tokens");
+    $DB->doQueryOrDie($query, "10.1.0 add table glpi_oauth_refresh_tokens");
 }
 
 if (!$DB->tableExists('glpi_oauthclients')) {
@@ -96,7 +96,7 @@ if (!$DB->tableExists('glpi_oauthclients')) {
         KEY `name` (`name`),
         KEY `is_active` (`is_active`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC";
-    $DB->queryOrDie($query, "10.1.0 add table glpi_oauthclients");
+    $DB->doQueryOrDie($query, "10.1.0 add table glpi_oauthclients");
 }
 
 $migration->addRight('oauth_client', ALLSTANDARDRIGHT, ['config' => UPDATE]);

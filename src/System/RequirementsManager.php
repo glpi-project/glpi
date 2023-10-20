@@ -132,6 +132,7 @@ class RequirementsManager
 
         $requirements[] = new InstallationNotOverriden($db);
 
+        /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
         global $PHPLOGGER;
         $requirements[] = new LogsWriteAccess($PHPLOGGER);
 

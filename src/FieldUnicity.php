@@ -158,6 +158,7 @@ class FieldUnicity extends CommonDropdown
      **/
     public function showItemtype($ID, $value = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //Criteria already added : only display the selected itemtype
@@ -203,6 +204,7 @@ class FieldUnicity extends CommonDropdown
      **/
     public static function getUnicityFieldsConfig($itemtype, $entities_id = 0, $check_active = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Get the first active configuration for this itemtype
@@ -277,6 +279,7 @@ class FieldUnicity extends CommonDropdown
      **/
     public static function dropdownFields($itemtype, $options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $p = [
@@ -535,6 +538,7 @@ class FieldUnicity extends CommonDropdown
      **/
     public static function deleteForItemtype($itemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->delete(
@@ -553,6 +557,7 @@ class FieldUnicity extends CommonDropdown
      **/
     public static function showDoubles(FieldUnicity $unicity)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $fields       = [];

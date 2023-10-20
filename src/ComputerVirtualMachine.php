@@ -417,6 +417,7 @@ class ComputerVirtualMachine extends CommonDBChild
      **/
     public static function findVirtualMachine($fields = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($fields['uuid']) || empty($fields['uuid'])) {

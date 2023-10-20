@@ -278,6 +278,7 @@ class ComputerAntivirus extends CommonDBChild
      **/
     public static function showForComputer(Computer $comp, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $comp->fields['id'];

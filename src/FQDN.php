@@ -148,6 +148,7 @@ class FQDN extends CommonDropdown
      **/
     public static function getFQDNIDByFQDN($fqdn, $wildcard_search = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (empty($fqdn)) {

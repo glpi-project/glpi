@@ -685,6 +685,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
      */
     public function getRelatedElements(): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $items = [];
         if (($item_class = static::getItemLinkClass()) !== null) {

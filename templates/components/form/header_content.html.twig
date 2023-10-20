@@ -96,7 +96,7 @@
          {% endif %}
          {% if withtemplate == 1 and item.id > 0 %}
             {{ _n('Template', 'Templates', 1) }} - {{ nametype }} - {{ template_name }}
-         {% elseif item.id > 0 %}
+         {% elseif not item.isNewItem() %}
             {{ nametype }} - {{ friendlyname }}
          {% else %}
             {{ nametype }}

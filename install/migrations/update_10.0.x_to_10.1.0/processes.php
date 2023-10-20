@@ -62,5 +62,5 @@ if (!$DB->tableExists('glpi_items_processes')) {
       KEY `is_deleted` (`is_deleted`),
       KEY `is_dynamic` (`is_dynamic`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, "10.0 add table glpi_items_processes");
+    $DB->doQueryOrDie($query, "10.0 add table glpi_items_processes");
 }

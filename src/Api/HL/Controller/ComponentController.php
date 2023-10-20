@@ -599,6 +599,7 @@ class ComponentController extends AbstractController
     )]
     public function index(Request $request): Response
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $supported_types = [];

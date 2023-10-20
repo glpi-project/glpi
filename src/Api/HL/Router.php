@@ -120,6 +120,7 @@ class Router
      */
     public static function getAPIVersions(): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $low_level_api_description = <<<EOT
@@ -153,6 +154,7 @@ EOT;
      */
     public static function getInstance(): Router
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         static $instance;
@@ -332,6 +334,7 @@ EOT;
      */
     private function cacheRoutes(array $routes): void
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $hints = [];
@@ -346,6 +349,7 @@ EOT;
      */
     private function getRoutesFromCache(): array
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $routes = [];

@@ -239,6 +239,7 @@ class Software extends CommonDBTM
 
     public function getEmpty()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!parent::getEmpty()) {
@@ -656,6 +657,7 @@ class Software extends CommonDBTM
      **/
     public static function dropdownSoftwareToInstall($myname, $entity_restrict)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Make a select box
@@ -695,6 +697,10 @@ class Software extends CommonDBTM
      **/
     public static function dropdownLicenseToInstall($myname, $entity_restrict)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request([
@@ -764,6 +770,7 @@ class Software extends CommonDBTM
         $is_recursive = false,
         $is_helpdesk_visible = null
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $input["name"]                = $name;
@@ -814,6 +821,7 @@ class Software extends CommonDBTM
         $is_recursive = false,
         $is_helpdesk_visible = null
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Look for the software by his name in GLPI for a specific entity
@@ -863,7 +871,7 @@ class Software extends CommonDBTM
 
 
     /**
-     * Put software in trashbin because it's been removed by GLPI software dictionnary
+     * Put software in trashbin because it's been removed by GLPI software dictionary
      *
      * @param $ID        the ID of the software to put in trashbin
      * @param $comment   the comment to add to the already existing software's comment (default '')
@@ -872,6 +880,7 @@ class Software extends CommonDBTM
      **/
     public function putInTrash($ID, $comment = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->getFromDB($ID);
@@ -886,7 +895,7 @@ class Software extends CommonDBTM
             $input["softwarecategories_id"] = $CFG_GLPI["softwarecategories_id_ondelete"];
         }
 
-       //Add dictionnary comment to the current comment
+       //Add dictionary comment to the current comment
         $input["comment"] = (($this->fields["comment"] != '') ? "\n" : '') . $comment;
 
         return $this->update($input);
@@ -927,6 +936,7 @@ class Software extends CommonDBTM
      **/
     public function showMergeCandidates()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID   = $this->getField('id');
@@ -1017,6 +1027,7 @@ class Software extends CommonDBTM
      **/
     public function merge($item, $html = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $this->getField('id');

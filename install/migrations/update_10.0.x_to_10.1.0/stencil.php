@@ -59,5 +59,5 @@ if (!$DB->tableExists($table)) {
         KEY `date_mod` (`date_mod`),
         KEY `date_creation` (`date_creation`)
     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, '10.1 add table $table');
+    $DB->doQueryOrDie($query, '10.1 add table $table');
 }

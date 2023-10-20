@@ -59,6 +59,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
     public static function displayData(array $data, array $params = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
@@ -214,6 +215,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $out = "<td $extraparam valign='top'>";
 

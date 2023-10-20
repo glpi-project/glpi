@@ -75,6 +75,7 @@ class SlaLevel extends LevelAgreementLevel
      **/
     public function showForSLA(SLA $sla)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $sla->getField('id');
@@ -292,6 +293,7 @@ class SlaLevel extends LevelAgreementLevel
      **/
     public static function getFirstSlaLevel($slas_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -322,6 +324,7 @@ class SlaLevel extends LevelAgreementLevel
      **/
     public static function getNextSlaLevel($slas_id, $slalevels_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

@@ -110,6 +110,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
     protected function migratePlugin(): void
     {
         //prevent infocom creation from general setup
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if (isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]) {
             $CFG_GLPI['auto_create_infocoms'] = false;

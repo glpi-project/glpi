@@ -60,7 +60,7 @@ if (!$DB->tableExists('glpi_itilvalidationtemplates')) {
         KEY `date_mod` (`date_mod`),
         KEY `date_creation` (`date_creation`)
     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, '10.1 add table glpi_itilvalidationtemplates');
+    $DB->doQueryOrDie($query, '10.1 add table glpi_itilvalidationtemplates');
 }
 
 // Add ITILValidationTemplatesTargets table
@@ -76,7 +76,7 @@ if (!$DB->tableExists('glpi_itilvalidationtemplates_targets')) {
         KEY `item` (`itemtype`,`items_id`),
         KEY `groups_id` (`groups_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, '10.1 add table glpi_itilvalidationtemplates_targets');
+    $DB->doQueryOrDie($query, '10.1 add table glpi_itilvalidationtemplates_targets');
 }
 
 $table = 'glpi_changevalidations';

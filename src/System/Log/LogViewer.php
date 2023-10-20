@@ -165,6 +165,7 @@ final class LogViewer extends CommonGLPI
 
     public static function getSearchURL($full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return implode(

@@ -65,9 +65,8 @@ if (isset($_POST["update"])) {
         $_POST['_item']   = key($_POST["items"]);
         $_POST['begin']   = $_POST['resa']["begin"];
         $_POST['end']     = $_POST['resa']["end"];
-        if ($rr->update($_POST)) {
-            Html::back();
-        }
+        $rr->update($_POST);
+        Html::back();
     }
 } else if (isset($_POST["purge"])) {
     $reservationitems_id = key($_POST["items"]);

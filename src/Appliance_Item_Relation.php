@@ -59,6 +59,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      */
     public static function getTypes($all = false): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = $CFG_GLPI['appliance_relation_types'];
@@ -178,6 +179,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      */
     public static function getForApplianceItem(int $appliances_items_id = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

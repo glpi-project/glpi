@@ -125,6 +125,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
    // Key function to manage the children of the node
     private function alterElementInsideTree($step)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $oldParent     = null;
