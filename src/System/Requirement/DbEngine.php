@@ -62,7 +62,7 @@ class DbEngine extends AbstractRequirement
 
         switch ($server) {
             case 'MariaDB':
-                $min_version = '10.3';
+                $min_version = '10.5';
                 break;
             case 'MySQL':
             default:

@@ -74,50 +74,6 @@ class DbConfiguration extends \GLPITestCase
                 ]
             ],
             [
-            // Default variables on MariaDB 10.3
-                'version'   => '10.3.27-MariaDB',
-                'variables' => [
-                    'innodb_page_size'    => 16384,
-                ],
-                'validated' => true,
-                'messages'  => [
-                    'Database configuration is OK.',
-                ]
-            ],
-            [
-            // Incompatible variables on MariaDB 10.3
-                'version'   => '10.3.27-MariaDB',
-                'variables' => [
-                    'innodb_page_size'    => 4096,
-                ],
-                'validated' => false,
-                'messages'  => [
-                    '"innodb_page_size" must be >= 8KB.',
-                ]
-            ],
-            [
-            // Default variables on MariaDB 10.4
-                'version'   => '10.4.17-MariaDB',
-                'variables' => [
-                    'innodb_page_size'    => 16384,
-                ],
-                'validated' => true,
-                'messages'  => [
-                    'Database configuration is OK.',
-                ]
-            ],
-            [
-            // Incompatible variables on MariaDB 10.4
-                'version'   => '10.4.17-MariaDB',
-                'variables' => [
-                    'innodb_page_size'    => 4096,
-                ],
-                'validated' => false,
-                'messages'  => [
-                    '"innodb_page_size" must be >= 8KB.',
-                ]
-            ],
-            [
             // Default variables on MariaDB 10.5
                 'version'   => '10.5.8-MariaDB',
                 'variables' => [
