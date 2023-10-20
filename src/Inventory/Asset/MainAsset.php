@@ -48,6 +48,7 @@ use Glpi\Toolbox\Sanitizer;
 use NetworkEquipment;
 use Printer;
 use RefusedEquipment;
+use RuleImportAsset;
 use RuleImportAssetCollection;
 use RuleImportEntityCollection;
 use RuleLocationCollection;
@@ -584,8 +585,10 @@ abstract class MainAsset extends InventoryAsset
                     //Only main item is stored as refused, not all APs
                     unset($this->data[$key]);
                 } else {
-                    $input['rules_id'] = $datarules['rules_id'];
-                    $this->addRefused($input);
+                    if ($datarules['action'] != RuleImportAsset::LINK_RESULT_DENIED) {
+                        $input['rules_id'] = $datarules['rules_id'];
+                        $this->addRefused($input);
+                    }
                 }
             }
         }

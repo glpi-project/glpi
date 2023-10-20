@@ -67,14 +67,19 @@
                                     </span>
                                 </td>
                                 <td>
-                                    {% for item in result['items'] %}
-                                        <div>
-                                            <span>
-                                            <i class="{{ item.getIcon() }}"></i>
-                                            {{ get_item_link(item) }}
-                                            </span>
-                                        </div>
-                                    {% endfor %}
+                                    {% if result['items'] is empty %}
+                                        {{ __('Import denied (no log)') }}
+                                    {% else %}
+                                        {% for item in result['items'] %}
+                                            <div>
+                                                <span>
+                                                <i class="{{ item.getIcon() }}"></i>
+                                                {{ get_item_link(item) }}
+                                                </span>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+
                                 </td>
                             </tr>
                             {% endfor %}
