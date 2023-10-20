@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\RichText\RichText;
+
 /**
  * Reservation Class
  **/
@@ -336,6 +339,11 @@ class Reservation extends CommonDBChild
     public static function canCreate()
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+    }
+
+    public function canCreateItem()
+    {
+        return self::canCreate();
     }
 
 
@@ -697,37 +705,11 @@ JAVASCRIPT;
             }
         }
 
-        echo "<div class='center'><form method='post' name=form action='" . Reservation::getFormURL() . "'>";
-
-        if (!empty($ID)) {
-            echo "<input type='hidden' name='id' value='$ID'>";
-        }
-
-        echo "<table class='tab_cadre' width='100%'>";
-        echo "<tr><th colspan='2'>" . __('Reserve an item') . "</th></tr>\n";
-
-       // Add Hardware name
         $r = new ReservationItem();
-
-        echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";
-        echo "<td>";
-
-        $temp_item  = $options['item'];
-        $first_item = array_pop($temp_item);
-        if (count($options['item']) == 1 && $first_item == 0) {
-           // only one id = 0, display an item dropdown
-            Dropdown::showSelectItemFromItemtypes([
-                'items_id_name'   => 'items[]',
-                'itemtypes'       => self::getReservableItemtypes(),
-                'entity_restrict' => Session::getActiveEntity(),
-                'checkright'      => false,
-                'ajax_page'       => $CFG_GLPI['root_doc'] . '/ajax/reservable_items.php'
-            ]);
-            echo "<span id='item_dropdown'>";
-        } else {
-           // existing item(s)
-            foreach ($options['item'] as $itemID) {
-                $r->getFromDB($itemID);
+        $items = [];
+        foreach ($options['item'] as $itemID) {
+            // existing item(s)
+            if ($r->getFromDB($itemID)) {
                 $type = $r->fields["itemtype"];
                 $name = NOT_AVAILABLE;
                 $item = null;
@@ -742,143 +724,42 @@ JAVASCRIPT;
                     }
                 }
 
-                echo "<span class='b'>" . sprintf(__('%1$s - %2$s'), $type, $name) . "</span><br>";
-                echo "<input type='hidden' name='items[$itemID]' value='$itemID'>";
+                $items[] = [
+                    'id'        => $itemID,
+                    'type_name' => sprintf(__('%1$s - %2$s'), $type, $name),
+                    'comment'   => $r->fields['comment'] ?? '',
+                ];
             }
         }
 
-        echo "</td></tr>";
-
         $uid = (empty($ID) ? Session::getLoginUserID() : $resa->fields['users_id']);
-        echo "<tr class='tab_bg_2'><td>" . __('By') . "</td>";
-        echo "<td>";
+        $resa->fields["users_id_friendlyname"] = User::getFriendlyNameById($uid);
 
-        $entities_id   = Session::getActiveEntity();
-        $is_recursive  = Session::getIsActiveEntityRecursive();
-        if (isset($item)) {
-            $entities_id  = $item->getEntityID();
-            $is_recursive = $item->isRecursive();
-        }
-        if (
-            !Session::haveRight("reservation", UPDATE)
-            || !Session::haveAccessToEntity($entities_id)
-        ) {
-            echo "<input type='hidden' name='users_id' value='" . $uid . "'>";
-            echo getUserName($uid);
-        } else {
-            User::dropdown([
-                'value'        => $uid,
-                'entity'       => $entities_id,
-                'entity_sons'  => $is_recursive,
-                'right'        => 'all'
-            ]);
-        }
-        echo "</td></tr>\n";
-        echo "<tr class='tab_bg_2'><td>" . __('Start date') . "</td><td>";
-        Html::showDateTimeField("resa[begin]", [
-            'value'      => $resa->fields["begin"],
-            'maybeempty' => false
-        ]);
-        echo "</td></tr>";
+        $entities_id  = (isset($item)) ? $item->getEntityID() : Session::getActiveEntity();
+        $canedit = Session::haveRight("reservation", UPDATE) && Session::haveAccessToEntity($entities_id);
+
         $default_delay = floor((strtotime($resa->fields["end"]) - strtotime($resa->fields["begin"]))
                              / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
                        * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
-        echo "<tr class='tab_bg_2'><td>" . __('Duration') . "</td><td>";
-        $rand = Dropdown::showTimeStamp("resa[_duration]", [
-            'min'        => 0,
-            'max'        => 24 * HOUR_TIMESTAMP,
-            'value'      => $default_delay,
-            'emptylabel' => __('Specify an end date')
-        ]);
-        echo "<br><div id='date_end$rand'></div>";
-        $params = [
-            'duration'     => '__VALUE__',
-            'end'          => $resa->fields["end"],
-            'name'         => "resa[end]"
-        ];
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_resa[_duration]$rand",
-            "date_end$rand",
-            $CFG_GLPI["root_doc"] . "/ajax/planningend.php",
-            $params
-        );
 
         if ($default_delay == 0) {
-            $params['duration'] = 0;
-            Ajax::updateItem("date_end$rand", $CFG_GLPI["root_doc"] . "/ajax/planningend.php", $params);
-        }
-        Alert::displayLastAlert('Reservation', $ID);
-        echo "</td></tr>";
-
-        if (empty($ID)) {
-            echo "<tr class='tab_bg_2'><td>" . __('Repetition') . "</td>";
-            echo "<td>";
-            $rand = Dropdown::showFromArray('periodicity[type]', [
-                ''      => _x('periodicity', 'None'),
-                'day'   => _x('periodicity', 'Daily'),
-                'week'  => _x('periodicity', 'Weekly'),
-                'month' => _x('periodicity', 'Monthly')
-            ]);
-            $field_id = Html::cleanId("dropdown_periodicity[type]$rand");
-
-            Ajax::updateItemOnSelectEvent(
-                $field_id,
-                "resaperiodcontent$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/resaperiod.php",
-                [
-                    'type'     => '__VALUE__',
-                    'end'      => $resa->fields["end"]
-                ]
-            );
-            echo "<br><div id='resaperiodcontent$rand'></div>";
-
-            echo "</td></tr>";
+            $options['duration'] = 0;
         }
 
-        echo "<tr class='tab_bg_2'><td>" . __('Comments') . "</td>";
-        echo "<td><textarea name='comment' rows='8' class='form-control'>" . $resa->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
+        $options['canedit'] = ($resa->fields["users_id"] == Session::getLoginUserID())
+                             || Session::haveRight(static::$rightname, UPDATE);
+        $options['candel'] = ($resa->fields["users_id"] == Session::getLoginUserID())
+                             || Session::haveRightsOr(static::$rightname, [PURGE, UPDATE]);
 
-        if (empty($ID)) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='2' class='top center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-        } else {
-            if (
-                ($resa->fields["users_id"] == Session::getLoginUserID())
-                || Session::haveRightsOr(static::$rightname, [PURGE, UPDATE])
-            ) {
-                echo "<tr class='tab_bg_2'>";
-                if (
-                    ($resa->fields["users_id"] == Session::getLoginUserID())
-                    || Session::haveRight(static::$rightname, PURGE)
-                ) {
-                    echo "<td class='top center'>";
-                    echo "<input type='submit' name='purge' value=\"" . _sx('button', 'Delete permanently') . "\"
-                      class='btn btn-primary'>";
-                    if ($resa->fields["group"] > 0) {
-                        echo "<br><input type='checkbox' name='_delete_group'>&nbsp;" .
-                             __s('Delete all repetition');
-                    }
-                    echo "</td>";
-                }
-                if (
-                    ($resa->fields["users_id"] == Session::getLoginUserID())
-                    || Session::haveRight(static::$rightname, UPDATE)
-                ) {
-                    echo "<td class='top center'>";
-                    echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\"
-                     class='btn btn-primary'>";
-                    echo "</td>";
-                }
-                echo "</tr>";
-            }
-        }
-        echo "</table>";
-        Html::closeForm();
-        echo "</div>";
-
+        $resa->initForm($ID, $resa->fields);
+        TemplateRenderer::getInstance()->display('components/form/reservation.html.twig', [
+            'item'              => $resa,
+            'items'             => $items,
+            'itemtypes'         => self::getReservableItemtypes(),
+            'default_delay'     => $default_delay,
+            'params'            => $options,
+            'canedit'           => $canedit,
+        ]);
         return true;
     }
 

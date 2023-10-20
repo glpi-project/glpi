@@ -1,0 +1,196 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    {% if items|length > 0 %}
+        {% for item in items %}
+            {{ fields.htmlField(
+                '',
+                item.type_name,
+                _n('Item', 'Items', items|length)
+            ) }}
+            {{ fields.htmlField(
+                '',
+                item.comment,
+                __('Notes')
+            ) }}
+            {{ fields.hiddenField(
+                'items[' ~ item.id ~ ']',
+                item.id,
+                '',
+                {
+                    add_field_class: 'd-none'
+                }
+            ) }}
+        {% endfor %}
+    {% else %}
+        {{ fields.dropdownItemsFromItemtypes(
+            'items[]',
+            _n('Item', 'Items', 1),
+            {
+                items_id_name   : 'items[]',
+                itemtypes       : itemtypes,
+                entity_restrict : session('glpiactive_entity'),
+                checkright      : false,
+                ajax_page       : config('root_doc') ~ '/ajax/reservable_items.php'
+            }
+        ) }}
+    {% endif %}
+
+    {% if canedit %}
+        {{ fields.dropdownField(
+            'User',
+            'users_id',
+            item.fields['users_id'],
+            __('By'),
+            {
+                entity      : item.fields['entities_id'],
+                right       : 'all'
+            }
+        ) }}
+    {% else %}
+        {{ fields.htmlField(
+            '',
+            item.fields['users_id_friendlyname'],
+            __('By')
+        ) }}
+    {% endif %}
+
+    {{ fields.datetimeField(
+        'resa[begin]',
+        item.fields['begin'],
+        __('Start date'),
+        {
+            maybeempty: false,
+        }
+    ) }}
+
+    {% set rand = random() %}
+
+    {{ fields.dropdownTimestampField(
+        'resa[_duration]',
+        default_delay,
+        __('Duration'),
+        {
+            rand        : rand,
+            min         : 0,
+            max         : 24 * constant('HOUR_TIMESTAMP'),
+            value       : default_delay,
+            emptylabel  : __('Specify an end date')
+        }
+    ) }}
+
+    {{ fields.ajaxField('date_end' ~ rand, '') }}
+
+    {% do call('Ajax::updateItemOnSelectEvent', [
+        'dropdown_resa__duration_' ~ rand,
+        'date_end' ~ rand,
+        config('root_doc') ~ '/ajax/planningend.php',
+        {
+            duration    : '__VALUE__',
+            end         : item.fields['end'],
+            name        : "resa[end]"
+        }
+    ]) %}
+
+    {% if default_delay == 0 %}
+        {% do call('Ajax::updateItem', [
+            'date_end' ~ rand,
+            config('root_doc') ~ '/ajax/planningend.php',
+            {
+                duration    : 0,
+                end         : item.fields['end'],
+                name        : "resa[end]"
+            }
+        ]) %}
+    {% endif %}
+
+    {% do call('Alert::displayLastAlert', [
+        'Reservation',
+        item.fields['id']
+    ]) %}
+
+    {% if item.fields['id'] is empty %}
+        {{ fields.dropdownArrayField(
+            'periodicity[type]',
+            '',
+            {
+                '' : _x('periodicity', 'None'),
+                'day' : _x('periodicity', 'Daily'),
+                'week' : _x('periodicity', 'Weekly'),
+                'month' : _x('periodicity', 'Monthly')
+            },
+            __('Repetition'),
+            {
+                rand : rand
+            }
+        ) }}
+
+        {{ fields.ajaxField('resaperiodcontent' ~ rand, '') }}
+
+        {% do call('Ajax::updateItemOnSelectEvent', [
+            'dropdown_periodicity_type_' ~ rand,
+            'resaperiodcontent' ~ rand,
+            config('root_doc') ~ '/ajax/resaperiod.php',
+            {
+                type    : '__VALUE__',
+                end     : item.fields['end'],
+                name    : "resa[end]"
+            }
+        ]) %}
+    {% endif %}
+
+    {{ fields.textareaField(
+        'comment',
+        item.fields['comment'],
+        __("Comments"),
+        {
+            enable_richtext     : true,
+            enable_fileupload   : false,
+            cols                : 30,
+            rows                : 10
+        }
+    ) }}
+
+    {% if item.fields['group'] > 0 %}
+        {{ fields.checkboxField(
+            '_delete_group',
+            '',
+            __('Delete all repetition')
+        ) }}
+    {% endif %}
+
+{% endblock %}

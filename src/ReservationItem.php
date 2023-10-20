@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
@@ -401,26 +402,13 @@ class ReservationItem extends CommonDBChild
                 }
             }
 
-            echo "<div class='center'><form method='post' name=form action='" . $this->getFormURL() . "'>";
-            echo "<input type='hidden' name='id' value='$ID'>";
-            echo "<table class='tab_cadre'>";
-            echo "<tr><th colspan='2'>" . __s('Modify the comment') . "</th></tr>";
-
-           // Ajouter le nom du materiel
-            echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";
-            echo "<td class='b'>" . sprintf(__('%1$s - %2$s'), $type, $name) . "</td></tr>\n";
-
-            echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-            echo "<td><textarea name='comment' cols='30' rows='10' >" . $r->fields["comment"];
-            echo "</textarea></td></tr>\n";
-
-            echo "<tr class='tab_bg_2'><td colspan='2' class='top center'>";
-            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
-            echo "</td></tr>\n";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            $options['candel'] = false;
+            $this->initForm($ID, $options);
+            TemplateRenderer::getInstance()->display('components/form/reservationitem_comment.html.twig', [
+                'item'      => $r,
+                'type_name' => sprintf(__('%1$s - %2$s'), $type, $name),
+                'params'    => $options,
+            ]);
             return true;
         }
         return false;
