@@ -37,8 +37,6 @@ namespace Glpi\Security;
 
 use Profile;
 use Profile_User;
-use ProfileRight;
-use Glpi\DBAL\QueryExpression;
 
 /**
  * Check permission information for a user, including users other than the currently logged in one.
