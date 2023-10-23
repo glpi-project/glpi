@@ -52,14 +52,14 @@ class DeviceProcessor extends CommonDevice
             [
                 [
                     'name'  => 'frequency_default',
-                    'label' => __('Frequency by default'),
+                    'label' => sprintf(__('%1$s (%2$s)'), __('Frequency by default'), __('MHz')),
                     'type'  => 'integer',
                     'min'   => 0,
                     'unit'  => __('MHz'),
                 ],
                 [
                     'name'  => 'frequence',
-                    'label' => __('Frequency'),
+                    'label' => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
                     'type'  => 'integer',
                     'min'   => 0,
                     'unit'  => __('MHz'),
@@ -94,7 +94,7 @@ class DeviceProcessor extends CommonDevice
             'id'                 => '11',
             'table'              => $this->getTable(),
             'field'              => 'frequency_default',
-            'name'               => __('Frequency by default'),
+            'name'               => sprintf(__('%1$s (%2$s)'), __('Frequency by default'), __('MHz')),
             'datatype'           => 'integer',
         ];
 
@@ -102,7 +102,7 @@ class DeviceProcessor extends CommonDevice
             'id'                 => '12',
             'table'              => $this->getTable(),
             'field'              => 'frequence',
-            'name'               => __('Frequency'),
+            'name'               => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
             'datatype'           => 'integer',
         ];
 
@@ -280,7 +280,7 @@ class DeviceProcessor extends CommonDevice
             'id'                 => '36',
             'table'              => 'glpi_items_deviceprocessors',
             'field'              => 'frequency',
-            'name'               => __('Processor frequency'),
+            'name'               => sprintf(__('%1$s (%2$s)'), __('Processor frequency'), __('MHz')),
             'unit'               => 'MHz',
             'forcegroupby'       => true,
             'usehaving'          => true,

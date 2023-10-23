@@ -50,7 +50,7 @@ class Item_DeviceProcessor extends Item_Devices
         return [
             'frequency' => [
                 'long name'  => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
-                'short name' => __('Frequency'),
+                'short name' => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
                 'size'       => 10,
                 'id'         => 20,
                 'datatype'   => 'integer',
