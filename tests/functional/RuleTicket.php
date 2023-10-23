@@ -45,6 +45,7 @@ use Group_User;
 use ITILCategory;
 use ITILFollowup;
 use ITILFollowupTemplate;
+use Location;
 use Rule;
 use RuleAction;
 use RuleBuilder;
@@ -3388,5 +3389,57 @@ class RuleTicket extends DbTestCase
         ]);
         $ticket->getFromDB($ticket->getID());
         $this->integer($ticket->fields['urgency'])->isEqualTo($urgency_if_rule_triggered);
+    }
+
+    /**
+     * Test that the "Code representing the ticket category" criterion works correctly
+     * even when the category has been modified just before.
+     *
+     * @return void
+     */
+    public function testCategoryCodeCriterionAfterCategoryModification(): void
+    {
+        // Get the root entity
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        // Create a category
+        $category = $this->createItem(ITILCategory::class, [
+            'name' => 'Test category',
+            'code' => 'test_category',
+            'entities_id' => $entity,
+        ]);
+
+        // Create a location
+        $location = $this->createItem(Location::class, [
+            'name' => 'Test location',
+            'entities_id' => $entity,
+        ]);
+
+        // Create two rules
+        $builder = new RuleBuilder('Test category code criterion rule');
+        $builder
+            ->addCriteria('urgency', Rule::PATTERN_IS, 5)
+            ->addAction('assign', 'itilcategories_id', $category->getID());
+        $this->createRule($builder);
+
+        $builder
+            ->addCriteria('itilcategories_id_code', Rule::PATTERN_IS, $category->fields['code'])
+            ->addAction('assign', 'locations_id', $location->getID());
+        $this->createRule($builder);
+
+        // Create a ticket with "Very high" urgency
+        $ticket = $this->createItem(\Ticket::class, [
+            'name' => 'Test ticket',
+            'content' => 'Test ticket content',
+            'urgency' => 5, // Assuming 5 is "Very high"
+            'entities_id' => $entity,
+        ]);
+
+        // Check if the category "Test category" is assigned
+        $ticket->getFromDB($ticket->getID());
+        $this->integer($ticket->fields['itilcategories_id'])->isEqualTo($category->getID());
+
+        // Check if the location "Test location" is assigned
+        $this->integer($ticket->fields['locations_id'])->isEqualTo($location->getID());
     }
 }
