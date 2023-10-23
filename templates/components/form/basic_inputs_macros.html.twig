@@ -145,10 +145,14 @@
 
 
 {% macro color(name, value, options = {}) %}
+    {% set options = {
+        id: name ~ '_' ~ options.rand
+    }|merge(options) %}
+
     {{ _self.input(name, value, options|merge({'type': 'text'})) }}
     <script>
         $(function () {
-            $("#%id%").spectrum({
+            $("#{{ options.id }}").spectrum({
                 showInput: true,
                 preferredFormat: "hex",
                 type: "text",
@@ -203,7 +207,10 @@
         'enableTime': false,
         'checkIsExpired ': false,
     }|merge(options) %}
-    {% set options = {'id': name|slug ~ '_' ~ options.rand}|merge(options) %}
+
+    {% set options = {
+        'id': name|slug ~ '_' ~ options.rand
+    }|merge(options) %}
 
     {% if value == 'NULL' %}
       {% set value = null %}
@@ -328,7 +335,7 @@
 
 {% macro checkbox(name, value, options = {}) %}
     {% set options = {
-        'id': '%id%',
+        'id': null,
         'input_addclass': '',
         'readonly': false,
         'disabled': false,
@@ -338,7 +345,7 @@
     <input type="hidden"   name="{{ name }}" value="0" />
     <input type="checkbox" name="{{ name }}" value="1"
            class="form-check-input {{ options.input_addclass }}"
-           id="{{ options.id }}"
+           {{ options.id != null ? 'id="' ~ options.id ~ '"' : '' }}
            {{ value == 1 ? 'checked' : '' }}
            {{ options.readonly ? 'readonly' : '' }}
            {{ options.required ? 'required' : '' }}

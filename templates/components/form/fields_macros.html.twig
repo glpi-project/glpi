@@ -94,6 +94,10 @@
 
 
 {% macro textField(name, value, label = '', options = {}) %}
+   {% set options = {
+      'id': '%id%'
+   }|merge(options) %}
+
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
         {{ _inputs.text(name, value, options) }}
@@ -105,6 +109,7 @@
 
 {% macro checkboxField(name, value, label = '', options = {}) %}
    {% set options = {
+      'id': '%id%',
       'center': true,
    }|merge(options) %}
 
@@ -150,6 +155,10 @@
 
 
 {% macro numberField(name, value, label = '', options = {}) %}
+    {% set options = {
+        'id': '%id%'
+    }|merge(options) %}
+
     {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
         {{ _inputs.number(name, value, options) }}
@@ -250,6 +259,10 @@
 
 
 {% macro colorField(name, value, label = '', options = {}) %}
+    {% set options = {
+        'id': '%id%'
+    }|merge(options) %}
+
     {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
         {{ _inputs.color(name, value, options) }}
@@ -261,7 +274,8 @@
 
 {% macro passwordField(name, value, label = '', options = {}) %}
    {% set options = {
-      'can_regenerate' : options.can_regenerate,
+      'id': '%id%',
+      'can_regenerate': options.can_regenerate,
       'clearable': options.clearable is defined ? options.clearable : not options.is_disclosable,
       'is_copyable': options.is_disclosable ?? false
    }|merge(options) %}
@@ -284,6 +298,10 @@
 
 
 {% macro emailField(name, value, label = '', options = {}) %}
+    {% set options = {
+        'id': '%id%'
+    }|merge(options) %}
+
     {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
         {{ _inputs.email(name, value, options) }}
@@ -294,6 +312,7 @@
 
 {% macro fileField(name, value, label = '', options = {}) %}
    {% set options = {
+      'id': '%id%',
       'rand': random(),
       'simple': false,
    }|merge(options) %}
@@ -402,7 +421,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownArrayField(name, value, elements, label = '', options = {}) %}
@@ -430,7 +449,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownTimestampField(name, value, label = '', options = {}) %}
@@ -457,7 +476,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownYesNo(name, value, label = '', options = {}) %}
@@ -483,7 +502,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownItemTypes(name, value, label = '', options = {}) %}
@@ -512,7 +531,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownItemsFromItemtypes(name, label = '', options = {}) %}
@@ -527,7 +546,7 @@
    {% set field %}
       {% do call('Dropdown::showSelectItemFromItemtypes', [options]) %}
    {% endset %}
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownIcons(name, value, label = '', options = {}) %}
@@ -553,7 +572,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownHoursField(name, value, label = '', options = {}) %}
@@ -580,7 +599,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownFrequency(name, value, label = '', options = {}) %}
@@ -605,7 +624,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownField(itemtype, name, value, label = '', options = {}) %}
@@ -642,7 +661,7 @@
    {% endset %}
 
    {% if field|trim is not empty %}
-      {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+      {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
    {% endif %}
 {% endmacro %}
 
@@ -687,7 +706,7 @@
    {% if not options.include_field %}
       {{ field }}
    {% else %}
-      {% set id    = options.id|length > 0 ? options.id : (name ~ '_' ~ options.rand) %}
+      {% set id    = options.id|length > 0 and options.id != '%id%' ? options.id : (name ~ '_' ~ options.rand) %}
       {% set field = field|replace({'%id%': id}) %}
       {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 
@@ -750,7 +769,7 @@
       'align_label_right': true,
       'mb': 'mb-2',
       'field_class': 'col-12 col-sm-6',
-      'container_id' : '',
+      'container_id': '',
       'add_field_class': '',
       'add_field_attribs': {},
       'center': false,
