@@ -65,7 +65,7 @@ if (isset($_GET['file']) && isset($_GET['is_custom_theme']) && $_GET['is_custom_
     $theme = ThemeManager::getInstance()->getTheme($_GET['file']);
 
     if (!$theme) {
-        $theme = ThemeManager::DEFAULT_THEME;
+        $theme = ThemeManager::getInstance()->getTheme(ThemeManager::DEFAULT_THEME);
     }
 
     $_GET['file'] = $theme->getPath();
