@@ -79,12 +79,14 @@ final class PermissionManager
         ]);
         $entities = [];
         foreach ($iterator as $row) {
-            $entities[] = $row['entities_id'];
+            $entities[] = [$row['entities_id']];
             if ($row['is_recursive']) {
-                /** @noinspection SlowArrayOperationsInLoopInspection */
-                $entities = array_merge($entities, getSonsOf('glpi_entities', $row['entities_id']));
+                $entities[] = getSonsOf('glpi_entities', $row['entities_id']);
             }
         }
+
+        // Avoid running array_merge in a loop by storing multiple arrays into $entities
+        $entities = array_merge(...$entities);
 
         return array_unique($entities);
     }
