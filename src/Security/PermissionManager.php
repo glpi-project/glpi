@@ -69,13 +69,12 @@ final class PermissionManager
                 $profile_table => [
                     'ON'    => [
                         $profile_table => 'id',
-                        Profile_User::getTable() => 'profiles_id', [
-                            'AND' => [
-                                Profile_User::getTableField('users_id') => $users_id,
-                            ]
-                        ]
+                        Profile_User::getTable() => 'profiles_id',
                     ]
                 ]
+            ],
+            'WHERE' => [
+                Profile_User::getTableField('users_id') => $users_id,
             ]
         ]);
         $entities = [];
