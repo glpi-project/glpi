@@ -151,4 +151,107 @@ class NotificationEventMailing extends DbTestCase
          ->withMessage('Invalid email address "entadmin2localhost" configured for entity "' . $entity2->getID() . '". Default administrator email will be used.')
          ->exists();
     }
+
+    public function testMemoryUsageFromImgAndNotification()
+    {
+        global $DB;
+        $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+
+        // Mock mailer transport
+        $transport = new class () extends \Symfony\Component\Mailer\Transport\AbstractTransport {
+            public $sent_email;
+
+            protected function doSend(\Symfony\Component\Mailer\SentMessage $message): void
+            {
+                // Extract message from envelope
+                $envelope_reflection = new \ReflectionClass(\Symfony\Component\Mailer\DelayedEnvelope::class);
+                /* @var \Symfony\Component\Mime\Email $email */
+                $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
+            }
+
+            public function __toString(): string
+            {
+                return 'test://';
+            }
+        };
+
+        // Enable notifications
+        $CFG_GLPI['use_notifications'] = $CFG_GLPI['notifications_mailing'] = true;
+
+        $update_ticket_notif   = new \Notification();
+        $this->boolean($update_ticket_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'add_followup']))->isTrue();
+
+
+        // Ensure only tested notification is active
+        $deactivated = $DB->update(
+            \Notification::getTable(),
+            ['is_active' => false],
+            ['id' => ['<>', $update_ticket_notif->getID()]]
+        );
+        $this->boolean($deactivated)->isTrue();
+        $this->boolean($update_ticket_notif->update(['id' => $update_ticket_notif->getID(), 'is_active' => 1]))->isTrue();
+
+        // Ensure that there is no notification queued
+        $this->integer(countElementsInTable(\QueuedNotification::getTable(), ['is_deleted' => 0]))->isEqualTo(0);
+
+        // Create new ticket
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name' => $this->getUniqueString(),
+            'content' => 'test',
+        ]);
+        $this->boolean($ticket->isNewItem())->isFalse();
+
+        //create ITILFollup with heavy img
+        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/heavy_img.png'));
+        $user = getItemByTypeName('User', TU_USER, true);
+        $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
+        $instance = new \ITILFollowup();
+        $input = [
+            'users_id' => $user,
+            'items_id' => $ticket->getID(),
+            'itemtype' => 'Ticket',
+            'name'    => 'a followup',
+            'content' => <<<HTML
+<p>Test with a ' (add)</p>
+<p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
+HTML,
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [
+                '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
+            ],
+            '_prefix_filename' => [
+                '5e5e92ffd9bd91.11111111',
+            ]
+        ];
+        copy(__DIR__ . '/../fixtures/uploads/heavy_img.png', GLPI_TMP_DIR . '/' . $filename);
+
+        $instance->add($input);
+
+        $this->boolean($instance->isNewItem())->isFalse();
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
+        $expected = 'a href="/front/document.send.php?docid=';
+        $this->string($instance->fields['content'])->contains($expected);
+
+        $queued_notifications = getAllDataFromTable(\QueuedNotification::getTable(), ['is_deleted' => 0]);
+        $this->array($queued_notifications)->hasSize(1);
+
+
+        $item_start = microtime(true);
+
+        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
+        \NotificationEventMailing::send($queued_notifications);
+        \NotificationEventMailing::setMailer(null);
+
+
+        $exec_time = round(microtime(true) - $item_start, 5);
+        $bench = [
+            'exectime'  => $exec_time,
+            'mem'       => memory_get_usage(),
+            'mem_real'  => memory_get_usage(true),
+            'mem_peak'  => memory_get_peak_usage(),
+        ];
+    }
 }
