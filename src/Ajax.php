@@ -380,9 +380,8 @@ JAVASCRIPT;
                         // se we recall it to force the scroll.
                         window.location.href = url_hash;
 
-                        // animate parent with a flash
-                        $(url_hash).closest('.timeline-item')
-                            .addClass('animate__animated animate__shakeX animate__slower');
+                        // animate item with a flash
+                        $(url_hash).addClass('animate__animated animate__shakeX animate__slower');
 
                         // unset hash (to avoid scrolling when changing tabs)
                         url_hash   = '';
