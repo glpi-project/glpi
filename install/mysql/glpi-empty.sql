@@ -2743,6 +2743,7 @@ CREATE TABLE `glpi_entities` (
   `mail_domain` varchar(255) DEFAULT NULL,
   `entity_ldapfilter` text,
   `mailing_signature` text,
+  `url_base` text,
   `cartridges_alert_repeat` int NOT NULL DEFAULT '-2',
   `consumables_alert_repeat` int NOT NULL DEFAULT '-2',
   `use_licenses_alert` int NOT NULL DEFAULT '-2',
