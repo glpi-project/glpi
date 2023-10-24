@@ -567,6 +567,7 @@ class RuleTicket extends Rule
         $criterias['itilcategories_id']['name']               = _n('Category', 'Categories', 1);
         $criterias['itilcategories_id']['linkfield']          = 'itilcategories_id';
         $criterias['itilcategories_id']['type']               = 'dropdown';
+        $criterias['itilcategories_id']['linked_criteria']    = 'itilcategories_id_code';
 
         $criterias['itilcategories_id_code']['table']              = 'glpi_itilcategories';
         $criterias['itilcategories_id_code']['field']              = 'code';
